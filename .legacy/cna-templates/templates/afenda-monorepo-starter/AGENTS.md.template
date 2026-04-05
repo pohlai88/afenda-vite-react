@@ -1,0 +1,7 @@
+# AGENTS.md
+
+This project was generated from the **Afenda monorepo** CNA template (`afenda-monorepo-starter`).
+
+- Prefer feature work under `apps/web/src/features/`.
+- Shared TS config lives under `packages/typescript-config` and is referenced via your workspace scope.
+- For AI-oriented rules in an Afenda monorepo, align with the reference `AGENTS.md` in the Afenda repository (documentation-first, type safety, Turborepo scripts).

@@ -1,0 +1,95 @@
+{
+  "$schema": "./afenda.config.schema.json",
+  "schemaVersion": 1,
+  "product": {
+    "name": "Afenda",
+    "description": "Afenda ERP: Turborepo monorepo with React + Vite web client (apps/web)."
+  },
+  "workspace": {
+    "packageManager": "pnpm",
+    "rootPackageName": "afenda-monorepo",
+    "defaultPackageScope": "@afenda/"
+  },
+  "paths": {
+    "webApp": "apps/web",
+    "typescriptSharedConfig": "packages/typescript-config"
+  },
+  "readmeTargets": [
+    {
+      "path": "docs",
+      "mode": "docs-root",
+      "description": "Generate the top-level documentation index for repo-wide guides."
+    },
+    {
+      "path": "docs",
+      "mode": "docs-collections",
+      "description": "Generate README indexes for governed documentation subdirectories."
+    },
+    {
+      "path": "scripts",
+      "mode": "scripts",
+      "description": "Generate the scripts directory index and support-file summary."
+    },
+    {
+      "path": ".agents/skills/shadcn",
+      "mode": "generic-formal-directory",
+      "title": "Shadcn skill docs",
+      "description": "Generate an index for the in-repo shadcn skill guidance and companion markdown references.",
+      "includeChildDirectories": true
+    }
+  ],
+  "workspaceGovernance": {
+    "rootTopology": {
+      "primaryProductDirectories": ["apps", "packages"],
+      "allowedRootDirectories": [
+        "apps",
+        "packages",
+        "docs",
+        "scripts",
+        "dist",
+        "node_modules"
+      ],
+      "requiredRootFiles": [
+        "package.json",
+        "pnpm-workspace.yaml",
+        "turbo.json",
+        "tsconfig.json",
+        "eslint.config.js",
+        "prettier.config.js",
+        "AGENTS.md"
+      ]
+    },
+    "featureTemplate": {
+      "featuresRoot": "apps/web/src/features",
+      "requiredDirectories": [
+        "components",
+        "hooks",
+        "services",
+        "types",
+        "actions",
+        "utils"
+      ],
+      "requiredFiles": ["index.ts"],
+      "enforceWhenFeatureExists": true
+    },
+    "sharedPackageTemplate": {
+      "packagePath": "packages/shared",
+      "requiredDirectories": [
+        "components",
+        "contexts",
+        "db",
+        "hooks",
+        "lib",
+        "provider",
+        "services"
+      ],
+      "requireDirectoriesWhenPackageExists": true
+    },
+    "webClientSrc": {
+      "srcRoot": "apps/web/src",
+      "allowedTopLevelDirectories": ["features", "pages", "share"],
+      "requiredShareSubdirectories": ["routing", "providers", "state"],
+      "enforce": true
+    }
+  }
+}

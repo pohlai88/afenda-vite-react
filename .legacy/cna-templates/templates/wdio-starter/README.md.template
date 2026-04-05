@@ -1,0 +1,62 @@
+# WebdriverIO Test Framework
+
+This project was generated using [create-awesome-node-app](https://www.npmjs.com/package/create-awesome-node-app). **DON'T USE THIS TEMPLATE AS IS!** Generate yours using the command and following the options in the interactive menu.
+
+## Features
+
+- ⚡️ **TypeScript Support** - Write type-safe tests
+- 🧪 **Mocha & Chai** - Popular testing framework and assertion library
+- 🌐 **Cross-browser Testing** - Test in Chrome, Firefox, and Safari
+- 🚀 **Parallel Execution** - Run tests in parallel for faster execution
+- 🔄 **Selenoid Support** - Run tests in a containerized environment
+- 📊 **Multiple Reporters** - Get detailed test reports
+
+## Quick Start
+
+1. **Install Dependencies**
+   ```bash
+   fnm use
+   <%= installCommand%>
+   ```
+
+2. **Run Tests**
+   ```bash
+   # Run tests locally
+   <%= runCommand%> test:local
+
+   # Run tests remotely
+   <%= runCommand%> test:remote
+   ```
+
+## Documentation
+
+Detailed documentation is available in the `docs/` directory:
+
+- [Project Structure](./docs/PROJECT_STRUCTURE.md) - Overview of the project architecture
+- [Test Configuration](./docs/TEST_CONFIGURATION.md) - Configuration and setup
+- [Writing Tests](./docs/WRITING_TESTS.md) - How to write and organize tests
+- [Running Tests](./docs/RUNNING_TESTS.md) - Running tests in different environments
+
+## Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `test:local` | Run tests locally |
+| `test:remote` | Run tests using Selenoid |
+| `selenoid` | Manage Selenoid instance |
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `CHROME` | Number of Chrome instances |
+| `FIREFOX` | Number of Firefox instances |
+| `SAFARI` | Number of Safari instances |
+| `BROWSER_VISIBLE` | Run browsers in visible mode |
+| `MAX_INSTANCES` | Maximum number of concurrent instances |
+
+For more details, see [Test Configuration](./docs/TEST_CONFIGURATION.md).
+
+## Contributing
+
+Consult [CONTRIBUTING.md](./CONTRIBUTING.md) for local authoring standards (spec style, selectors, retries). For broader template issues use: [Create-Node-App/cna-templates](https://github.com/Create-Node-App/cna-templates).

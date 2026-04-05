@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@ionic/react": "^8.4.3",
+    "@ionic/react-router": "^8.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^7.0.1",
+    "@capacitor/cli": "^7.0.1",
+    "@capacitor/core": "^7.0.1",
+    "@ionic/cli": "^7.2.0"
+  },
+  "scripts": {
+    "prepare:android": "ionic cap add android && ionic cap copy android"
+  }
+}

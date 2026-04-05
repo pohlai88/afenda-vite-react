@@ -1,0 +1,65 @@
+import { defineConfig } from 'vite';
+import path from 'path';
+import react from '@vitejs/plugin-react';
+import eslint from 'vite-plugin-eslint';
+import { VitePWA } from 'vite-plugin-pwa';
+
+const { PORT = '3000' } = process.env;
+
+/** Matches imports like `@/foo` when projectImportPath is `@/` */
+const importAlias = '<%= projectImportPath %>'.replace(/\/$/, '') || '@';
+const root = path.resolve(import.meta.dirname, '<%= srcDir %>');
+
+const vitePluginPWA = () =>
+  VitePWA({
+    registerType: 'autoUpdate',
+    injectRegister: 'auto',
+    devOptions: {
+      enabled: true,
+    },
+    manifest: {
+      name: '<%= projectName %>',
+      short_name: '<%= projectName %>',
+      description: '<%= projectName %> — web app',
+      theme_color: '#ffffff',
+      icons: [
+        {
+          src: '/pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: '/pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+      ],
+    },
+  });
+
+// https://vite.dev/config/
+export default defineConfig(({ command }) => ({
+  plugins: [
+    react(),
+    ...(command === 'serve' ? [eslint()] : []),
+    vitePluginPWA(),
+  ],
+  server: {
+    host: '0.0.0.0',
+    port: parseInt(PORT, 10),
+  },
+  resolve: {
+    alias: {
+      [importAlias]: path.join(root, path.sep),
+    },
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx',
+        '.ts': 'tsx',
+      },
+    },
+  },
+}));

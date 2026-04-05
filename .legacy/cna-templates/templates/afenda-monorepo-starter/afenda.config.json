@@ -1,0 +1,23 @@
+{
+  "customOptions": [
+    {
+      "name": "packageScope",
+      "type": "text",
+      "message": "npm scope for workspace packages (e.g. `@afenda/`). Leave blank for unscoped packages.",
+      "initial": "@afenda/",
+      "required": false
+    },
+    {
+      "name": "srcDir",
+      "type": "text",
+      "message": "Subdirectory for the web app source (e.g. `src`). Leave blank for root.",
+      "initial": "src"
+    },
+    {
+      "name": "projectImportPath",
+      "type": "text",
+      "message": "Import alias for the web app, e.g. `@/`",
+      "initial": "@/"
+    }
+  ]
+}

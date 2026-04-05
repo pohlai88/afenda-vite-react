@@ -1,0 +1,60 @@
+{
+  "name": "afenda-monorepo",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "postinstall": "simple-git-hooks",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:run": "turbo run test:run",
+    "test:coverage": "turbo run test:coverage",
+    "format": "turbo run format",
+    "format:check": "turbo run format:check",
+    "check": "pnpm run script:check-afenda-config && turbo run lint typecheck test:run build",
+    "preview": "turbo run preview",
+    "script:node-info": "tsx scripts/node-info.ts",
+    "script:generate-docs-readme": "tsx scripts/generate-docs-readme.ts",
+    "script:check-afenda-config": "tsx scripts/check-afenda-config.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/node": "^24.12.2",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "lint-staged": "^16.4.0",
+    "only-allow": "^1.2.2",
+    "prettier": "^3.8.1",
+    "simple-git-hooks": "^2.13.1",
+    "tsx": "^4.21.0",
+    "turbo": "^2.5.5",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.57.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,tsx,jsx,css,scss,md,json,yml,yaml,html}": [
+      "prettier --write --ignore-unknown"
+    ],
+    "apps/**/*.{js,mjs,cjs,ts,tsx,jsx}": [
+      "eslint --cache --cache-location .eslintcache --fix --concurrency auto"
+    ],
+    "packages/**/*.{js,mjs,cjs,ts,tsx,jsx}": [
+      "eslint --cache --cache-location .eslintcache --fix --concurrency auto"
+    ]
+  }
+}

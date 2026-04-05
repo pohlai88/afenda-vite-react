@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@xstate/react": "^5.0.2",
+    "xstate": "^5.19.2"
+  }
+}

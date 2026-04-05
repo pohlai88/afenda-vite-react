@@ -1,0 +1,21 @@
+# <%= projectName %>
+
+Afenda-style monorepo: **pnpm** workspaces, **Turborepo**, and a **React + Vite** app under `apps/web`.
+
+## Layout
+
+- `apps/web` — web UI (React, Vite, feature folders under `src/features` per starter conventions)
+- `packages/typescript-config` — shared `tsconfig` JSON consumed via the workspace scope you chose at generation time
+- Root `afenda.config.json` — template prompts were applied at generation; keep a copy of your conventions in-repo if you add `afenda.config.json` for tooling
+
+## Commands
+
+```sh
+pnpm install
+pnpm dev
+pnpm build
+```
+
+## Afenda
+
+This template is maintained in the Afenda template bank. See the monorepo `AGENTS.md` for AI and contributor conventions.

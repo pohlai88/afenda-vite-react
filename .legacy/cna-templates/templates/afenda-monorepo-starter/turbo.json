@@ -1,0 +1,49 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "globalDependencies": ["pnpm-workspace.yaml", "turbo.json"],
+  "globalEnv": ["NODE_ENV", "CI"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": ["NODE_ENV", "MODE", "VITE_*"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": ["node_modules/.tmp/**"]
+    },
+    "lint": {
+      "inputs": ["$TURBO_DEFAULT$"]
+    },
+    "test": {
+      "cache": false,
+      "persistent": true,
+      "env": ["NODE_ENV", "VITE_*"],
+      "passThroughEnv": ["VITEST_*"]
+    },
+    "test:run": {
+      "dependsOn": ["^build"],
+      "env": ["NODE_ENV", "VITE_*"],
+      "passThroughEnv": ["VITEST_*"]
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV", "VITE_*"],
+      "passThroughEnv": ["VITEST_*"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "env": ["NODE_ENV", "VITE_*"]
+    },
+    "preview": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "env": ["NODE_ENV", "PORT", "VITE_*"]
+    },
+    "format": { "cache": false },
+    "format:check": { "cache": false }
+  }
+}

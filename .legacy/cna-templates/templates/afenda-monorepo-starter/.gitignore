@@ -1,0 +1,17 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+node_modules
+dist/
+**/dist/
+coverage
+.eslintcache
+.turbo
+**/.eslintcache
+dist-ssr
+*.local
+.env.turbo
+.idea
+.DS_Store

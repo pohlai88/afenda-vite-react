@@ -1,0 +1,125 @@
+name: Test Template and Extension Combinations
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+  schedule:
+    - cron: "0 0 * * 0" # Weekly on Sunday at midnight UTC
+
+permissions:
+  contents: read
+
+jobs:
+  generate-combinations:
+    name: Generate test combinations
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate random combinations
+        id: set-matrix
+        run: |
+          node <<EOF
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('./templates.json', 'utf8'));
+          const repoDir = process.cwd();
+
+          const templates = data.templates.map(t => ({
+            slug: t.slug,
+            type: t.type,
+            localUrl: \`file://\${repoDir}?subdir=templates/\${t.slug.replace(/-boilerplate$|-starter$/, '') + '-starter'}\`,
+          }));
+          const extensions = data.extensions;
+
+          // Build local URL for each extension using its url path
+          const extLocalUrl = (ext) => {
+            const match = ext.url.match(/\/extensions\/([^/]+)(?:\/|$)/);
+            const dir = match ? match[1] : null;
+            return dir ? \`file://\${repoDir}?subdir=extensions/\${dir}\` : null;
+          };
+
+          const randomCombinations = data.templates.map(template => {
+            const compatibleExtensions = extensions.filter(ext => {
+              const extTypes = Array.isArray(ext.type) ? ext.type : [ext.type];
+              return extTypes.includes(template.type);
+            });
+
+            const categories = [...new Set(compatibleExtensions.map(e => e.category))];
+            const selectedExtensions = categories
+              .map(category => {
+                const categoryExtensions = compatibleExtensions.filter(e => e.category === category);
+                const ext = categoryExtensions[Math.floor(Math.random() * categoryExtensions.length)];
+                if (!ext) return null;
+                const url = extLocalUrl(ext);
+                return url;
+              })
+              .filter(Boolean);
+
+            // Derive local template URL from the url field in templates.json
+            const tplMatch = template.url.match(/\/templates\/([^/]+)(?:\/|$)/);
+            const tplDir = tplMatch ? tplMatch[1] : null;
+            const templateUrl = tplDir ? \`file://\${repoDir}?subdir=templates/\${tplDir}\` : template.slug;
+
+            return { template: template.slug, templateUrl, extensions: selectedExtensions };
+          });
+
+          const matrix = JSON.stringify(randomCombinations);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, 'matrix=' + matrix + '\n');
+          EOF
+
+  test-combinations:
+    name: Test ${{ matrix.combination.template }}
+    needs: generate-combinations
+    strategy:
+      fail-fast: false
+      matrix:
+        combination: ${{ fromJson(needs.generate-combinations.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run tests for combination
+        run: |
+          echo "Testing template: ${{ matrix.combination.template }}"
+          echo "Template URL: ${{ matrix.combination.templateUrl }}"
+          echo "With extensions: ${{ join(matrix.combination.extensions, ' ') }}"
+
+          ADDONS="${{ join(matrix.combination.extensions, ' ') }}"
+          ADDONS_FLAG=""
+          if [ -n "$ADDONS" ]; then
+            ADDONS_FLAG="--addons $ADDONS"
+          fi
+
+          npx create-awesome-node-app my-project \
+            -t "${{ matrix.combination.templateUrl }}" \
+            $ADDONS_FLAG
+
+          cd my-project
+
+          npm run format --if-present
+          npm run lint:fix --if-present
+          npm run build --if-present
+
+          tree -I 'node_modules|dist|.git'

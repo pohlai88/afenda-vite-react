@@ -1,0 +1,64 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "globalDependencies": ["pnpm-workspace.yaml", "turbo.json", "eslint.config.js"],
+  "globalEnv": ["NODE_ENV", "CI"],
+  "tasks": {
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
+    "build": {
+      "dependsOn": ["^build", "^transit"],
+      "outputs": ["dist/**"],
+      "env": ["NODE_ENV", "MODE", "VITE_*"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/apps/web/.env",
+        "$TURBO_ROOT$/apps/web/.env.*",
+        "$TURBO_ROOT$/packages/typescript-config/**/*.json"
+      ]
+    },
+    "typecheck": {
+      "dependsOn": ["^build", "^transit"],
+      "outputs": ["node_modules/.tmp/**"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/typescript-config/**/*.json"]
+    },
+    "lint": {
+      "dependsOn": ["^transit"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/eslint.config.js"]
+    },
+    "test": {
+      "cache": false,
+      "persistent": true,
+      "env": ["NODE_ENV", "VITE_*"],
+      "passThroughEnv": ["VITEST_*"]
+    },
+    "test:run": {
+      "dependsOn": ["^transit"],
+      "env": ["NODE_ENV", "VITE_*"],
+      "passThroughEnv": ["VITEST_*"]
+    },
+    "test:coverage": {
+      "dependsOn": ["^transit"],
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV", "VITE_*"],
+      "passThroughEnv": ["VITEST_*"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "env": ["NODE_ENV", "VITE_*"]
+    },
+    "preview": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "env": ["NODE_ENV", "PORT", "VITE_*"]
+    },
+    "format": {
+      "cache": false
+    },
+    "format:check": {
+      "cache": false
+    }
+  }
+}

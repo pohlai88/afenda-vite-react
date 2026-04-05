@@ -1,0 +1,10 @@
+dist
+.turbo
+apps/*/dist
+dist-ssr
+coverage
+node_modules
+.pnpm-store
+.vite
+*.min.js
+pnpm-lock.yaml

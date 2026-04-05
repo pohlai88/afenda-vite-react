@@ -1,0 +1,24 @@
+{
+  "name": "@afenda/testing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Workspace testing strategy: shared Vitest setup and future home for E2E, Storybook, and UI/a11y test glue.",
+  "exports": {
+    "./vitest/setup": "./src/vitest/setup.ts",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\""
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^6.9.1"
+  },
+  "devDependencies": {
+    "@afenda/tsconfig": "workspace:*",
+    "typescript": "~5.9.3"
+  }
+}

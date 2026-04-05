@@ -1,0 +1,20 @@
+{
+  "name": "<%= packageScope %>tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "*.json"
+  ],
+  "scripts": {
+    "format": "prettier --write \"**/*.json\"",
+    "format:check": "prettier --check \"**/*.json\""
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1"
+  },
+  "exports": {
+    "./base.json": "./base.json",
+    "./react-app.json": "./react-app.json",
+    "./node.json": "./node.json"
+  }
+}
