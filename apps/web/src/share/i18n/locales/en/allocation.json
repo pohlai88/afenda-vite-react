@@ -1,0 +1,10 @@
+{
+  "error": {
+    "over_allocated": {
+      "message": "Allocated quantity exceeds available stock for this line."
+    }
+  },
+  "header": {
+    "title": { "label": "Allocations" }
+  }
+}

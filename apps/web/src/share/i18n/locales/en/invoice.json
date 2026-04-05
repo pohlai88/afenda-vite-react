@@ -1,0 +1,15 @@
+{
+  "header": {
+    "title": { "label": "Invoices" }
+  },
+  "status": {
+    "paid": { "label": "Paid" },
+    "draft": { "label": "Draft" }
+  },
+  "total": {
+    "message": "{{count}} invoices"
+  },
+  "entity": {
+    "label": "Invoice"
+  }
+}

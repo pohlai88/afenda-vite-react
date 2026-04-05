@@ -1,0 +1,170 @@
+{
+  "version": 2,
+  "decisions": [
+    {
+      "id": "decision-001",
+      "glossaryTermId": "error.allocation.over_allocated",
+      "canonicalKey": "allocation.error.over_allocated.message",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Frappe uses a generic 'exceeds available stock' phrasing. Odoo uses 'cannot allocate more than available quantity'. Afenda normalizes to line-level phrasing: 'Allocated quantity exceeds available stock for this line.' for precision in multi-line allocation contexts.",
+      "frappeCandidate": "Allocated quantity exceeds available stock.",
+      "odooCandidate": "You cannot allocate more than the available quantity.",
+      "resolvedValue": "Allocated quantity exceeds available stock for this line."
+    },
+    {
+      "id": "decision-002",
+      "glossaryTermId": "domain.settlement",
+      "canonicalKey": "settlement.header.title.label",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Odoo uses 'Payments' for the settlement area. Afenda distinguishes 'Settlement' (reconciliation/netting) from 'Payment' (instrument/transaction) as separate business concepts in the ERP domain model.",
+      "frappeCandidate": "Settlements",
+      "odooCandidate": "Payments",
+      "resolvedValue": "Settlements"
+    },
+    {
+      "id": "decision-003",
+      "glossaryTermId": "status.settlement.pending",
+      "canonicalKey": "settlement.status.pending.label",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Both Frappe and Odoo use bare 'Pending'. Afenda adds 'settlement' qualifier for clarity when displayed alongside payment-pending states.",
+      "frappeCandidate": "Pending",
+      "odooCandidate": "Pending",
+      "resolvedValue": "Pending settlement"
+    },
+    {
+      "id": "decision-004",
+      "glossaryTermId": "status.settlement.completed",
+      "canonicalKey": "settlement.status.completed.label",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Odoo uses 'Reconciled' which implies accounting reconciliation. Afenda uses 'Settled' to match the Settlement domain and avoid confusion with bank reconciliation.",
+      "frappeCandidate": "Settled",
+      "odooCandidate": "Reconciled",
+      "resolvedValue": "Settled"
+    },
+    {
+      "id": "decision-005",
+      "glossaryTermId": "entity.finance",
+      "canonicalKey": "dashboard.card.finance.title.label",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Frappe uses 'Accounts', Odoo uses 'Invoicing'. Afenda uses 'Finance' as a broader term encompassing all financial management capabilities, not just invoicing or chart of accounts.",
+      "frappeCandidate": "Accounts",
+      "odooCandidate": "Invoicing",
+      "resolvedValue": "Finance"
+    },
+    {
+      "id": "decision-006",
+      "glossaryTermId": "entity.customers",
+      "canonicalKey": "dashboard.card.customers.title.label",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Odoo uses 'Contacts' (broader, includes vendors/suppliers). Afenda separates customer-facing CRM from vendor management; 'Customers' is the correct scoped label.",
+      "frappeCandidate": "Customers",
+      "odooCandidate": "Contacts",
+      "resolvedValue": "Customers"
+    },
+    {
+      "id": "decision-007",
+      "glossaryTermId": "entity.reports",
+      "canonicalKey": "dashboard.card.reports.title.label",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Odoo uses 'Reporting' (gerund form). Afenda uses 'Reports' (noun) consistent with the dashboard card naming pattern (Inventory, Sales, Customers, etc.).",
+      "frappeCandidate": "Reports",
+      "odooCandidate": "Reporting",
+      "resolvedValue": "Reports"
+    },
+    {
+      "id": "decision-008",
+      "glossaryTermId": "domain.auth.login",
+      "canonicalKey": "auth.login.title.label",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Frappe uses 'Login', Odoo uses 'Log in'. Afenda uses 'ERP Login' as a branded entry point title that identifies the system context.",
+      "frappeCandidate": "Login",
+      "odooCandidate": "Log in",
+      "resolvedValue": "ERP Login"
+    },
+    {
+      "id": "decision-009",
+      "glossaryTermId": "domain.dashboard",
+      "canonicalKey": "dashboard.header.title.label",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Both systems use bare 'Dashboard'. Afenda uses 'ERP Dashboard' for brand context in the application chrome.",
+      "frappeCandidate": "Dashboard",
+      "odooCandidate": "Dashboard",
+      "resolvedValue": "ERP Dashboard"
+    },
+    {
+      "id": "decision-010",
+      "glossaryTermId": "module.inventory.page",
+      "canonicalKey": "shell.erp_module.inventory.page.title",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Frappe uses 'Stock', Odoo uses 'Inventory'. Afenda uses 'Inventory Management' as the full page title to differentiate from the dashboard card label.",
+      "frappeCandidate": "Stock",
+      "odooCandidate": "Inventory",
+      "resolvedValue": "Inventory Management"
+    },
+    {
+      "id": "decision-011",
+      "glossaryTermId": "module.sales.page",
+      "canonicalKey": "shell.erp_module.sales.page.title",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Frappe uses 'Selling', Odoo uses 'Sales'. Afenda uses 'Sales Management' as the full page title.",
+      "frappeCandidate": "Selling",
+      "odooCandidate": "Sales",
+      "resolvedValue": "Sales Management"
+    },
+    {
+      "id": "decision-012",
+      "glossaryTermId": "module.finance.page",
+      "canonicalKey": "shell.erp_module.finance.page.title",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Frappe uses 'Accounting', Odoo uses 'Invoicing'. Afenda uses 'Financial Management' as the domain-neutral page title.",
+      "frappeCandidate": "Accounting",
+      "odooCandidate": "Invoicing",
+      "resolvedValue": "Financial Management"
+    },
+    {
+      "id": "decision-013",
+      "glossaryTermId": "module.employees.page",
+      "canonicalKey": "shell.erp_module.employees.page.title",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Frappe uses 'Human Resources', Odoo uses 'Employees'. Afenda uses 'Employee Management' as the full page title for consistency with the Management suffix pattern.",
+      "frappeCandidate": "Human Resources",
+      "odooCandidate": "Employees",
+      "resolvedValue": "Employee Management"
+    },
+    {
+      "id": "decision-014",
+      "glossaryTermId": "module.settings.page",
+      "canonicalKey": "shell.erp_module.settings.page.title",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Both Frappe and Odoo use 'Settings'. Afenda uses 'System Settings' to differentiate from user-level preferences.",
+      "frappeCandidate": "Settings",
+      "odooCandidate": "Settings",
+      "resolvedValue": "System Settings"
+    },
+    {
+      "id": "decision-015",
+      "glossaryTermId": "domain.allocation",
+      "canonicalKey": "allocation.header.title.label",
+      "decidedAt": "2026-04-06T00:00:00.000Z",
+      "action": "glossary_override",
+      "rationale": "Frappe uses 'Stock Entry' (transaction-focused), Odoo uses 'Stock Move' (movement-focused). Afenda uses 'Allocations' to represent the business concept of reserving/committing inventory to specific orders, distinct from generic stock operations.",
+      "frappeCandidate": "Stock Entry",
+      "odooCandidate": "Stock Move",
+      "resolvedValue": "Allocations"
+    }
+  ]
+}

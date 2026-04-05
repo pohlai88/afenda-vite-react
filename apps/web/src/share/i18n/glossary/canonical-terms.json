@@ -1,0 +1,159 @@
+{
+  "version": 2,
+  "terms": [
+    {
+      "id": "entity.invoice",
+      "canonicalKey": "invoice.entity.label",
+      "en": "Invoice",
+      "category": "business_entity",
+      "notes": "Canonical customer-facing label for the Invoice entity."
+    },
+    {
+      "id": "entity.invoice.header",
+      "canonicalKey": "invoice.header.title.label",
+      "en": "Invoices",
+      "category": "business_entity",
+      "notes": "Module header for invoice listing; plural form of Invoice."
+    },
+    {
+      "id": "status.invoice.paid",
+      "canonicalKey": "invoice.status.paid.label",
+      "en": "Paid",
+      "category": "invariant_status",
+      "notes": "Posted/paid invoice state; must stay glossary-consistent across modules."
+    },
+    {
+      "id": "status.invoice.draft",
+      "canonicalKey": "invoice.status.draft.label",
+      "en": "Draft",
+      "category": "invariant_status",
+      "notes": "Unpublished/unsubmitted document state; shared across entities."
+    },
+    {
+      "id": "domain.allocation",
+      "canonicalKey": "allocation.header.title.label",
+      "en": "Allocations",
+      "category": "business_entity",
+      "notes": "Stock or commitment allocation area; distinct from generic assignment."
+    },
+    {
+      "id": "error.allocation.over_allocated",
+      "canonicalKey": "allocation.error.over_allocated.message",
+      "en": "Allocated quantity exceeds available stock for this line.",
+      "category": "business_entity",
+      "notes": "Invariant error when stock allocation exceeds availability. Afenda uses line-level phrasing."
+    },
+    {
+      "id": "domain.settlement",
+      "canonicalKey": "settlement.header.title.label",
+      "en": "Settlements",
+      "category": "business_entity",
+      "notes": "Payment settlement area. Afenda uses 'Settlement' not 'Payment' to distinguish from payment instruments."
+    },
+    {
+      "id": "status.settlement.pending",
+      "canonicalKey": "settlement.status.pending.label",
+      "en": "Pending settlement",
+      "category": "invariant_status",
+      "notes": "Awaiting settlement processing; Afenda adds 'settlement' qualifier for clarity."
+    },
+    {
+      "id": "status.settlement.completed",
+      "canonicalKey": "settlement.status.completed.label",
+      "en": "Settled",
+      "category": "invariant_status",
+      "notes": "Completed settlement; Afenda uses 'Settled' not 'Reconciled'."
+    },
+    {
+      "id": "domain.dashboard",
+      "canonicalKey": "dashboard.header.title.label",
+      "en": "ERP Dashboard",
+      "category": "business_entity",
+      "notes": "Main ERP dashboard title; Afenda adds 'ERP' prefix for context."
+    },
+    {
+      "id": "entity.inventory",
+      "canonicalKey": "dashboard.card.inventory.title.label",
+      "en": "Inventory",
+      "category": "business_entity",
+      "notes": "Afenda uses 'Inventory' not Frappe's 'Stock'."
+    },
+    {
+      "id": "entity.sales",
+      "canonicalKey": "dashboard.card.sales.title.label",
+      "en": "Sales",
+      "category": "business_entity",
+      "notes": "Afenda uses 'Sales' not Frappe's 'Selling'."
+    },
+    {
+      "id": "entity.customers",
+      "canonicalKey": "dashboard.card.customers.title.label",
+      "en": "Customers",
+      "category": "business_entity",
+      "notes": "Afenda uses 'Customers' not Odoo's 'Contacts'."
+    },
+    {
+      "id": "entity.finance",
+      "canonicalKey": "dashboard.card.finance.title.label",
+      "en": "Finance",
+      "category": "business_entity",
+      "notes": "Afenda uses 'Finance' not Frappe's 'Accounts' or Odoo's 'Invoicing'."
+    },
+    {
+      "id": "entity.employees",
+      "canonicalKey": "dashboard.card.employees.title.label",
+      "en": "Employees",
+      "category": "business_entity",
+      "notes": "Shared across Frappe and Odoo; Afenda retains 'Employees'."
+    },
+    {
+      "id": "entity.reports",
+      "canonicalKey": "dashboard.card.reports.title.label",
+      "en": "Reports",
+      "category": "business_entity",
+      "notes": "Afenda uses 'Reports' not Odoo's 'Reporting'."
+    },
+    {
+      "id": "domain.auth.login",
+      "canonicalKey": "auth.login.title.label",
+      "en": "ERP Login",
+      "category": "business_entity",
+      "notes": "Afenda uses 'ERP Login' as branded login title, distinct from generic 'Login' or 'Log in'."
+    },
+    {
+      "id": "module.inventory.page",
+      "canonicalKey": "shell.erp_module.inventory.page.title",
+      "en": "Inventory Management",
+      "category": "business_entity",
+      "notes": "Afenda uses 'Inventory Management' as full page title; Frappe uses 'Stock', Odoo uses 'Inventory'."
+    },
+    {
+      "id": "module.sales.page",
+      "canonicalKey": "shell.erp_module.sales.page.title",
+      "en": "Sales Management",
+      "category": "business_entity",
+      "notes": "Afenda uses 'Sales Management' as full page title; Frappe uses 'Selling', Odoo uses 'Sales'."
+    },
+    {
+      "id": "module.finance.page",
+      "canonicalKey": "shell.erp_module.finance.page.title",
+      "en": "Financial Management",
+      "category": "business_entity",
+      "notes": "Afenda uses 'Financial Management'; Frappe uses 'Accounting', Odoo uses 'Invoicing'."
+    },
+    {
+      "id": "module.employees.page",
+      "canonicalKey": "shell.erp_module.employees.page.title",
+      "en": "Employee Management",
+      "category": "business_entity",
+      "notes": "Afenda uses 'Employee Management'; Frappe uses 'Human Resources', Odoo uses 'Employees'."
+    },
+    {
+      "id": "module.settings.page",
+      "canonicalKey": "shell.erp_module.settings.page.title",
+      "en": "System Settings",
+      "category": "business_entity",
+      "notes": "Afenda uses 'System Settings'; both Frappe and Odoo use 'Settings'."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "header": {
+    "title": { "label": "Settlements" }
+  },
+  "status": {
+    "pending": { "label": "Pending settlement" },
+    "completed": { "label": "Settled" }
+  }
+}

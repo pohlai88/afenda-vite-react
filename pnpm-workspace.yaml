@@ -1,3 +1,13 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+# Central versions for deps shared across workspace packages.
+# Reference in package.json as "catalog:" (see https://pnpm.io/catalogs).
+catalog:
+  '@types/node': ^24.12.2
+  '@vitest/coverage-v8': ^4.1.2
+  prettier: ^3.8.1
+  typescript: ~5.9.3
+  vite: ^8.0.3
+  vitest: ^4.1.2

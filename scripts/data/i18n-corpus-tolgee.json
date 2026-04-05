@@ -1,0 +1,1810 @@
+{
+  "version": 2,
+  "source": "tolgee",
+  "generatedAt": "2026-04-05T23:19:41.070Z",
+  "fetchedFrom": [
+    "http://localhost:8085/v2/projects/2/translations?size=200&page=0&languages=en,ms,id,vi"
+  ],
+  "entries": [
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/allocation/en",
+      "value": "Allocated quantity exceeds available stock for this line."
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/allocation/id",
+      "value": "Kuantitas alokasi melebihi stok yang tersedia untuk baris ini."
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/allocation/ms",
+      "value": "Kuantiti diperuntukkan melebihi stok tersedia untuk baris ini."
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/allocation/vi",
+      "value": "Số lượng phân bổ vượt quá tồn kho khả dụng cho dòng này."
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/allocation/en",
+      "value": "Allocations"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/allocation/id",
+      "value": "Alokasi"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/allocation/ms",
+      "value": "Peruntukan"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/allocation/vi",
+      "value": "Phân bổ"
+    },
+    {
+      "afendaKey": "auth.login.placeholder.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/auth/en",
+      "value": "Login form coming soon…"
+    },
+    {
+      "afendaKey": "auth.login.placeholder.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/auth/id",
+      "value": "Formulir masuk akan segera hadir…"
+    },
+    {
+      "afendaKey": "auth.login.placeholder.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/auth/ms",
+      "value": "Borang log masuk akan datang…"
+    },
+    {
+      "afendaKey": "auth.login.placeholder.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/auth/vi",
+      "value": "Biểu mẫu đăng nhập sắp ra mắt…"
+    },
+    {
+      "afendaKey": "auth.login.subtitle.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/auth/en",
+      "value": "Please sign in to access the ERP system."
+    },
+    {
+      "afendaKey": "auth.login.subtitle.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/auth/id",
+      "value": "Silakan masuk untuk mengakses sistem ERP."
+    },
+    {
+      "afendaKey": "auth.login.subtitle.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/auth/ms",
+      "value": "Sila log masuk untuk mengakses sistem ERP."
+    },
+    {
+      "afendaKey": "auth.login.subtitle.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/auth/vi",
+      "value": "Vui lòng đăng nhập để truy cập hệ thống ERP."
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/auth/en",
+      "value": "ERP Login"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/auth/id",
+      "value": "Masuk ERP"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/auth/ms",
+      "value": "Log masuk ERP"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/auth/vi",
+      "value": "Đăng nhập ERP"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.description.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Manage customer relationships"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.description.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Kelola hubungan pelanggan"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.description.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Urus hubungan pelanggan"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.description.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Quản lý quan hệ khách hàng"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.link.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "View Customers →"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.link.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Lihat pelanggan →"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.link.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Lihat pelanggan →"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.link.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Xem khách hàng →"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Customers"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Pelanggan"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Pelanggan"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Khách hàng"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.description.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Staff management and HR"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.description.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Manajemen staf dan SDM"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.description.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Pengurusan kakitangan dan HR"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.description.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Quản lý nhân sự"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.link.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "View Employees →"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.link.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Lihat karyawan →"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.link.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Lihat pekerja →"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.link.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Xem nhân viên →"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Employees"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Karyawan"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Pekerja"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Nhân viên"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.description.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Financial reports and transactions"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.description.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Laporan keuangan dan transaksi"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.description.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Laporan kewangan dan transaksi"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.description.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Báo cáo tài chính và giao dịch"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.link.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "View Finance →"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.link.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Lihat keuangan →"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.link.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Lihat kewangan →"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.link.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Xem tài chính →"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Finance"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Keuangan"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Kewangan"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Tài chính"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.description.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Manage your products and stock levels"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.description.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Kelola produk dan level stok Anda"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.description.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Urus produk dan paras stok anda"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.description.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Quản lý sản phẩm và mức tồn kho"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.link.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "View Inventory →"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.link.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Lihat inventaris →"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.link.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Lihat inventori →"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.link.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Xem tồn kho →"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Inventory"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Inventaris"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Inventori"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Tồn kho"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.description.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Analytics and business intelligence"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.description.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Analitik dan business intelligence"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.description.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Analitik dan business intelligence"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.description.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Phân tích và business intelligence"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.link.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "View Reports →"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.link.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Lihat laporan →"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.link.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Lihat laporan →"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.link.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Xem báo cáo →"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Reports"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Laporan"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Laporan"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Báo cáo"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.description.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Track orders and sales performance"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.description.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Lacak pesanan dan kinerja penjualan"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.description.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Jejak pesanan dan prestasi jualan"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.description.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Theo dõi đơn hàng và hiệu suất bán"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.link.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "View Sales →"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.link.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Lihat penjualan →"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.link.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Lihat jualan →"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.link.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Xem bán hàng →"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Sales"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Penjualan"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Jualan"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Bán hàng"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_one",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "{{count}} open task today"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_one",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "{{count}} tugas terbuka hari ini"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_one",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "{{count}} tugasan terbuka hari ini"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_one",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "{{count}} việc mở hôm nay"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_other",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "{{count}} open tasks today"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_other",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "{{count}} tugas terbuka hari ini"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_other",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "{{count}} tugasan terbuka hari ini"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_other",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "{{count}} việc mở hôm nay"
+    },
+    {
+      "afendaKey": "dashboard.demo.separator",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "·"
+    },
+    {
+      "afendaKey": "dashboard.demo.separator",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "·"
+    },
+    {
+      "afendaKey": "dashboard.demo.separator",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "·"
+    },
+    {
+      "afendaKey": "dashboard.demo.separator",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "·"
+    },
+    {
+      "afendaKey": "dashboard.header.guest_name.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "User"
+    },
+    {
+      "afendaKey": "dashboard.header.guest_name.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Pengguna"
+    },
+    {
+      "afendaKey": "dashboard.header.guest_name.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Pengguna"
+    },
+    {
+      "afendaKey": "dashboard.header.guest_name.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Người dùng"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "ERP Dashboard"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Dasbor ERP"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Papan pemuka ERP"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Bảng điều khiển ERP"
+    },
+    {
+      "afendaKey": "dashboard.header.welcome.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "value": "Welcome back, {{name}}!"
+    },
+    {
+      "afendaKey": "dashboard.header.welcome.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "value": "Selamat datang kembali, {{name}}!"
+    },
+    {
+      "afendaKey": "dashboard.header.welcome.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "value": "Selamat kembali, {{name}}!"
+    },
+    {
+      "afendaKey": "dashboard.header.welcome.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "value": "Chào mừng trở lại, {{name}}!"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "value": "Invoice"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/invoice/id",
+      "value": "Faktur"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/invoice/ms",
+      "value": "Invois"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/invoice/vi",
+      "value": "Hóa đơn"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "value": "Invoices"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/invoice/id",
+      "value": "Faktur"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/invoice/ms",
+      "value": "Invois"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/invoice/vi",
+      "value": "Hóa đơn"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "value": "Draft"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/invoice/id",
+      "value": "Draf"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/invoice/ms",
+      "value": "Draf"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/invoice/vi",
+      "value": "Bản nháp"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "value": "Paid"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/invoice/id",
+      "value": "Lunas"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/invoice/ms",
+      "value": "Dibayar"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/invoice/vi",
+      "value": "Đã thanh toán"
+    },
+    {
+      "afendaKey": "invoice.total.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "value": "{{count}} invoices"
+    },
+    {
+      "afendaKey": "invoice.total.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/invoice/id",
+      "value": "{{count}} faktur"
+    },
+    {
+      "afendaKey": "invoice.total.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/invoice/ms",
+      "value": "{{count}} invois"
+    },
+    {
+      "afendaKey": "invoice.total.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/invoice/vi",
+      "value": "{{count}} hóa đơn"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/settlement/en",
+      "value": "Settlements"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/settlement/id",
+      "value": "Penyelesaian"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/settlement/ms",
+      "value": "Penyelesaian"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/settlement/vi",
+      "value": "Thanh toán bù trừ"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/settlement/en",
+      "value": "Settled"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/settlement/id",
+      "value": "Selesai"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/settlement/ms",
+      "value": "Diselesaikan"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/settlement/vi",
+      "value": "Đã quyết toán"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/settlement/en",
+      "value": "Pending settlement"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/settlement/id",
+      "value": "Menunggu penyelesaian"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/settlement/ms",
+      "value": "Penyelesaian tertunda"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/settlement/vi",
+      "value": "Đang chờ quyết toán"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.description",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Manage customer relationships, contacts, and interactions."
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.description",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Kelola hubungan pelanggan, kontak, dan interaksi."
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.description",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Urus hubungan pelanggan, kenalan, dan interaksi."
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.description",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Quản lý quan hệ khách hàng, liên hệ và tương tác."
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.title",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Customer Management"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.title",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Manajemen Pelanggan"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.title",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Pengurusan Pelanggan"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.title",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Quản lý khách hàng"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.placeholder.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Customer module coming soon…"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.placeholder.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Modul pelanggan akan segera hadir…"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.placeholder.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Modul pelanggan akan datang…"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.placeholder.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Mô-đun khách hàng sắp ra mắt…"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.description",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "HR management, staff scheduling, and performance tracking."
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.description",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Manajemen HR, penjadwalan staf, dan pelacakan kinerja."
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.description",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Pengurusan HR, penjadualan kakitangan, dan penjejakan prestasi."
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.description",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Quản lý HR, lịch làm việc và theo dõi hiệu suất."
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Employee Management"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Manajemen Karyawan"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Pengurusan Pekerja"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Quản lý nhân viên"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.placeholder.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Employee module coming soon…"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.placeholder.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Modul karyawan akan segera hadir…"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.placeholder.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Modul pekerja akan datang…"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.placeholder.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Mô-đun nhân viên sắp ra mắt…"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.description",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Accounting, financial reports, and transaction management."
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.description",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Akuntansi, laporan keuangan, dan manajemen transaksi."
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.description",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Perakaunan, laporan kewangan, dan pengurusan transaksi."
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.description",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Kế toán, báo cáo tài chính và quản lý giao dịch."
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Financial Management"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Manajemen Keuangan"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Pengurusan Kewangan"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Quản lý tài chính"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.placeholder.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Finance module coming soon…"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.placeholder.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Modul keuangan akan segera hadir…"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.placeholder.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Modul kewangan akan datang…"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.placeholder.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Mô-đun tài chính sắp ra mắt…"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.description",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Manage your products, stock levels, and inventory transactions."
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.description",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Kelola produk, level stok, dan transaksi inventaris Anda."
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.description",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Urus produk, paras stok, dan transaksi inventori anda."
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.description",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Quản lý sản phẩm, mức tồn kho và giao dịch tồn kho."
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Inventory Management"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Manajemen Inventaris"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Pengurusan Inventori"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Quản lý tồn kho"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.placeholder.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Inventory module coming soon…"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.placeholder.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Modul inventaris akan segera hadir…"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.placeholder.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Modul inventori akan datang…"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.placeholder.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Mô-đun tồn kho sắp ra mắt…"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.description",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Analytics, dashboards, and business intelligence."
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.description",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Analitik, dasbor, dan business intelligence."
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.description",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Analitik, papan pemuka, dan business intelligence."
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.description",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Phân tích, bảng điều khiển và business intelligence."
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.title",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Business Reports"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.title",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Laporan Bisnis"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.title",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Laporan Perniagaan"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.title",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Báo cáo kinh doanh"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.placeholder.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Reports module coming soon…"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.placeholder.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Modul laporan akan segera hadir…"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.placeholder.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Modul laporan akan datang…"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.placeholder.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Mô-đun báo cáo sắp ra mắt…"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.description",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Track orders, manage sales pipeline, and monitor revenue."
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.description",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Lacak pesanan, kelola pipeline penjualan, dan pantau pendapatan."
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.description",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Jejak pesanan, urus saluran jualan, dan pantau hasil."
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.description",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Theo dõi đơn hàng, quản lý pipeline bán hàng và doanh thu."
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Sales Management"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Manajemen Penjualan"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Pengurusan Jualan"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Quản lý bán hàng"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.placeholder.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Sales module coming soon…"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.placeholder.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Modul penjualan akan segera hadir…"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.placeholder.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Modul jualan akan datang…"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.placeholder.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Mô-đun bán hàng sắp ra mắt…"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.description",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Configure system preferences, user roles, and integrations."
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.description",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Konfigurasi preferensi sistem, peran pengguna, dan integrasi."
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.description",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Konfigurasi pilihan sistem, peranan pengguna, dan integrasi."
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.description",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Cấu hình tùy chọn hệ thống, vai trò người dùng và tích hợp."
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "System Settings"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Pengaturan Sistem"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Tetapan Sistem"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Cài đặt hệ thống"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.placeholder.message",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Settings module coming soon…"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.placeholder.message",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Modul pengaturan akan segera hadir…"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.placeholder.message",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Modul tetapan akan datang…"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.placeholder.message",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Mô-đun cài đặt sắp ra mắt…"
+    },
+    {
+      "afendaKey": "shell.error.not_found.description",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "The page you're looking for doesn't exist."
+    },
+    {
+      "afendaKey": "shell.error.not_found.description",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Halaman yang Anda cari tidak ada."
+    },
+    {
+      "afendaKey": "shell.error.not_found.description",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Halaman yang anda cari tidak wujud."
+    },
+    {
+      "afendaKey": "shell.error.not_found.description",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Trang bạn tìm không tồn tại."
+    },
+    {
+      "afendaKey": "shell.error.not_found.link_dashboard",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Go back to Dashboard"
+    },
+    {
+      "afendaKey": "shell.error.not_found.link_dashboard",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Kembali ke Dasbor"
+    },
+    {
+      "afendaKey": "shell.error.not_found.link_dashboard",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Kembali ke Papan Pemuka"
+    },
+    {
+      "afendaKey": "shell.error.not_found.link_dashboard",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Quay lại Bảng điều khiển"
+    },
+    {
+      "afendaKey": "shell.error.not_found.title",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "404 — Page not found"
+    },
+    {
+      "afendaKey": "shell.error.not_found.title",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "404 — Halaman tidak ditemukan"
+    },
+    {
+      "afendaKey": "shell.error.not_found.title",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "404 — Halaman tidak dijumpai"
+    },
+    {
+      "afendaKey": "shell.error.not_found.title",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "404 — Không tìm thấy trang"
+    },
+    {
+      "afendaKey": "shell.language.label",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Language"
+    },
+    {
+      "afendaKey": "shell.language.label",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Bahasa"
+    },
+    {
+      "afendaKey": "shell.language.label",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Bahasa"
+    },
+    {
+      "afendaKey": "shell.language.label",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Ngôn ngữ"
+    },
+    {
+      "afendaKey": "shell.language.option_en",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "English"
+    },
+    {
+      "afendaKey": "shell.language.option_en",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "English"
+    },
+    {
+      "afendaKey": "shell.language.option_en",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "English"
+    },
+    {
+      "afendaKey": "shell.language.option_en",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "English"
+    },
+    {
+      "afendaKey": "shell.language.option_id",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Bahasa Indonesia"
+    },
+    {
+      "afendaKey": "shell.language.option_id",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Bahasa Indonesia"
+    },
+    {
+      "afendaKey": "shell.language.option_id",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Bahasa Indonesia"
+    },
+    {
+      "afendaKey": "shell.language.option_id",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Bahasa Indonesia"
+    },
+    {
+      "afendaKey": "shell.language.option_ms",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Bahasa Melayu"
+    },
+    {
+      "afendaKey": "shell.language.option_ms",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Bahasa Melayu"
+    },
+    {
+      "afendaKey": "shell.language.option_ms",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Bahasa Melayu"
+    },
+    {
+      "afendaKey": "shell.language.option_ms",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Bahasa Melayu"
+    },
+    {
+      "afendaKey": "shell.language.option_vi",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Tiếng Việt"
+    },
+    {
+      "afendaKey": "shell.language.option_vi",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Tiếng Việt"
+    },
+    {
+      "afendaKey": "shell.language.option_vi",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Tiếng Việt"
+    },
+    {
+      "afendaKey": "shell.language.option_vi",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Tiếng Việt"
+    },
+    {
+      "afendaKey": "shell.loading.erp_system",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Loading ERP System…"
+    },
+    {
+      "afendaKey": "shell.loading.erp_system",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Memuat sistem ERP…"
+    },
+    {
+      "afendaKey": "shell.loading.erp_system",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Memuatkan sistem ERP…"
+    },
+    {
+      "afendaKey": "shell.loading.erp_system",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Đang tải hệ thống ERP…"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.brand_name",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Afenda"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.brand_name",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Afenda"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.brand_name",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Afenda"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.brand_name",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Afenda"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.open_erp",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "open the ERP app"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.open_erp",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "buka aplikasi ERP"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.open_erp",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "buka aplikasi ERP"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.open_erp",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "mở ứng dụng ERP"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.placeholder_primary",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Use this area for product messaging, pricing, and onboarding flows."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.placeholder_primary",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Gunakan area ini untuk pesan produk, harga, dan alur onboarding."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.placeholder_primary",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Gunakan ruang ini untuk mesej produk, harga, dan alur onboarding."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.placeholder_primary",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Dùng khu vực này cho thông điệp sản phẩm, giá và luồng onboarding."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sentence_end",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sentence_end",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sentence_end",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sentence_end",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Sign in"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Masuk"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Log masuk"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Đăng nhập"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in_or",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "or"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in_or",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "atau"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in_or",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "atau"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in_or",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "hoặc"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.subtitle",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Marketing and product entry page for the ERP web platform."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.subtitle",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Halaman pemasaran dan pintu masuk produk untuk platform ERP web."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.subtitle",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Halaman pemasaran dan kemasukan produk untuk platform ERP web."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.subtitle",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Trang tiếp thị và điểm vào sản phẩm cho nền tảng ERP web."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.title",
+      "locale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "value": "Afenda ERP Platform"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.title",
+      "locale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "value": "Platform ERP Afenda"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.title",
+      "locale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "value": "Platform ERP Afenda"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.title",
+      "locale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "value": "Nền tảng ERP Afenda"
+    }
+  ]
+}

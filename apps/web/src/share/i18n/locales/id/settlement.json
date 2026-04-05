@@ -1,0 +1,9 @@
+{
+  "header": {
+    "title": { "label": "Penyelesaian" }
+  },
+  "status": {
+    "pending": { "label": "Menunggu penyelesaian" },
+    "completed": { "label": "Selesai" }
+  }
+}

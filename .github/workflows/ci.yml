@@ -39,8 +39,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Regenerate i18n corpora and audit
+        run: pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit
+
+      - name: Check generated i18n artifacts are committed
+        run: git diff --exit-code -- scripts/data/i18n-corpus-*.json apps/web/src/share/i18n/audit/conflicts.json apps/web/src/share/i18n/audit/provenance.json
+
       - name: Validate Afenda config
         run: pnpm run script:check-afenda-config
+
+      - name: Validate i18n policy and conflicts
+        run: pnpm run script:validate-i18n
 
       - name: Format check
         run: pnpm run format:check

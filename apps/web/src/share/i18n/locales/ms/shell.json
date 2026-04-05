@@ -1,0 +1,82 @@
+{
+  "loading": {
+    "erp_system": "Memuatkan sistem ERP…"
+  },
+  "marketing": {
+    "landing": {
+      "brand_name": "Afenda",
+      "title": "Platform ERP Afenda",
+      "subtitle": "Halaman pemasaran dan kemasukan produk untuk platform ERP web.",
+      "placeholder_primary": "Gunakan ruang ini untuk mesej produk, harga, dan alur onboarding.",
+      "sign_in": "Log masuk",
+      "sign_in_or": "atau",
+      "open_erp": "buka aplikasi ERP",
+      "sentence_end": "."
+    }
+  },
+  "error": {
+    "not_found": {
+      "title": "404 — Halaman tidak dijumpai",
+      "description": "Halaman yang anda cari tidak wujud.",
+      "link_dashboard": "Kembali ke Papan Pemuka"
+    }
+  },
+  "language": {
+    "label": "Bahasa",
+    "option_en": "English",
+    "option_ms": "Bahasa Melayu",
+    "option_id": "Bahasa Indonesia",
+    "option_vi": "Tiếng Việt"
+  },
+  "erp_module": {
+    "inventory": {
+      "page": {
+        "title": "Pengurusan Inventori",
+        "description": "Urus produk, paras stok, dan transaksi inventori anda."
+      },
+      "placeholder": { "message": "Modul inventori akan datang…" }
+    },
+    "sales": {
+      "page": {
+        "title": "Pengurusan Jualan",
+        "description": "Jejak pesanan, urus saluran jualan, dan pantau hasil."
+      },
+      "placeholder": { "message": "Modul jualan akan datang…" }
+    },
+    "customers": {
+      "page": {
+        "title": "Pengurusan Pelanggan",
+        "description": "Urus hubungan pelanggan, kenalan, dan interaksi."
+      },
+      "placeholder": { "message": "Modul pelanggan akan datang…" }
+    },
+    "employees": {
+      "page": {
+        "title": "Pengurusan Pekerja",
+        "description": "Pengurusan HR, penjadualan kakitangan, dan penjejakan prestasi."
+      },
+      "placeholder": { "message": "Modul pekerja akan datang…" }
+    },
+    "finance": {
+      "page": {
+        "title": "Pengurusan Kewangan",
+        "description": "Perakaunan, laporan kewangan, dan pengurusan transaksi."
+      },
+      "placeholder": { "message": "Modul kewangan akan datang…" }
+    },
+    "reports": {
+      "page": {
+        "title": "Laporan Perniagaan",
+        "description": "Analitik, papan pemuka, dan business intelligence."
+      },
+      "placeholder": { "message": "Modul laporan akan datang…" }
+    },
+    "settings": {
+      "page": {
+        "title": "Tetapan Sistem",
+        "description": "Konfigurasi pilihan sistem, peranan pengguna, dan integrasi."
+      },
+      "placeholder": { "message": "Modul tetapan akan datang…" }
+    }
+  }
+}

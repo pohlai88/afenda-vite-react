@@ -1,0 +1,10 @@
+{
+  "error": {
+    "over_allocated": {
+      "message": "Kuantiti diperuntukkan melebihi stok tersedia untuk baris ini."
+    }
+  },
+  "header": {
+    "title": { "label": "Peruntukan" }
+  }
+}

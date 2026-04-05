@@ -43,7 +43,8 @@ apps/web/
     └── share/            # Shared client infrastructure (expand here, not at src root)
         ├── routing/      # createBrowserRouter, marketing + /app/* feature routes
         ├── providers/    # e.g. TanStack Query client + QueryClientProvider
-        └── state/        # e.g. Zustand app shell store
+        ├── state/        # e.g. Zustand app shell store
+        └── i18n/         # i18next bootstrap, locales, glossary, audit artifacts (SEA i18n)
         # (future) components/, contexts/, hooks/, services/, actions/, utils/
 ```
 
@@ -59,20 +60,20 @@ apps/web/
 
 ## Route map (ERP under `/app/*`)
 
-| Path (canonical) | Feature module | Notes |
-| --- | --- | --- |
-| `/` | — | Marketing [`pages/Landing`](../apps/web/src/pages/Landing.tsx) |
-| `/app` | — | Redirects to `/app/dashboard` |
-| `/app/login` | `features/auth` | Login / sign-in UX |
-| `/app/dashboard` | `features/dashboard` | Executive / role home |
-| `/app/inventory` | `features/inventory` | Stock, warehouses, … |
-| `/app/sales` | `features/sales` | Orders, pipeline, … |
-| `/app/customers` | `features/customers` | Customer master, … |
-| `/app/employees` | `features/employees` | HR / staff, … |
-| `/app/finance` | `features/finance` | GL, journals, … |
-| `/app/reports` | `features/reports` | Reporting, exports |
-| `/app/settings` | `features/settings` | Tenant / app preferences |
-| `/app/*` | `features/not-found` | In-app 404 |
+| Path (canonical) | Feature module       | Notes                                                          |
+| ---------------- | -------------------- | -------------------------------------------------------------- |
+| `/`              | —                    | Marketing [`pages/Landing`](../apps/web/src/pages/Landing.tsx) |
+| `/app`           | —                    | Redirects to `/app/dashboard`                                  |
+| `/app/login`     | `features/auth`      | Login / sign-in UX                                             |
+| `/app/dashboard` | `features/dashboard` | Executive / role home                                          |
+| `/app/inventory` | `features/inventory` | Stock, warehouses, …                                           |
+| `/app/sales`     | `features/sales`     | Orders, pipeline, …                                            |
+| `/app/customers` | `features/customers` | Customer master, …                                             |
+| `/app/employees` | `features/employees` | HR / staff, …                                                  |
+| `/app/finance`   | `features/finance`   | GL, journals, …                                                |
+| `/app/reports`   | `features/reports`   | Reporting, exports                                             |
+| `/app/settings`  | `features/settings`  | Tenant / app preferences                                       |
+| `/app/*`         | `features/not-found` | In-app 404                                                     |
 
 **Design system:** Module accent colors in [Design system](./DESIGN_SYSTEM.md) §3.2.3 align with these areas—reuse when theming each feature.
 
@@ -84,27 +85,28 @@ apps/web/
 
 Place shared building blocks **under `share/`**, not at `src/` root:
 
-| Concern | Location |
-| --- | --- |
-| Route tables, redirects | `share/routing/` |
-| React providers, query client | `share/providers/` |
-| Global / shell client state | `share/state/` |
-| Design-system primitives, layout shell | `share/components/` (when added) |
-| Shared React context | `share/contexts/` (when added) |
-| Reusable hooks | `share/hooks/` (when added) |
-| HTTP / API client helpers | `share/services/` (when added) |
-| Cross-feature commands | `share/actions/` (when added) |
+| Concern                                         | Location                                                        |
+| ----------------------------------------------- | --------------------------------------------------------------- |
+| Route tables, redirects                         | `share/routing/`                                                |
+| React providers, query client                   | `share/providers/`                                              |
+| Global / shell client state                     | `share/state/`                                                  |
+| **i18n** runtime, locale JSON, glossary & audit | **`share/i18n/`** ([i18n dependencies](./dependencies/i18n.md)) |
+| Design-system primitives, layout shell          | `share/components/` (when added)                                |
+| Shared React context                            | `share/contexts/` (when added)                                  |
+| Reusable hooks                                  | `share/hooks/` (when added)                                     |
+| HTTP / API client helpers                       | `share/services/` (when added)                                  |
+| Cross-feature commands                          | `share/actions/` (when added)                                   |
 
 When you add a new **`share/`** subdirectory that must always exist, list it under **`workspaceGovernance.webClientSrc.requiredShareSubdirectories`** in [`scripts/afenda.config.json`](../scripts/afenda.config.json) so CI keeps the tree honest.
 
 ### What we do **not** put in `apps/web`
 
-| Concern | Location |
-| --- | --- |
-| Drizzle schema, SQL migrations | `packages/database` or `apps/api` ([Database](./DATABASE.md)) |
-| OAuth token exchange, webhooks | Backend API ([Integrations](./INTEGRATIONS.md)) |
-| Long-running sync jobs | Workers / queue consumers, not the Vite bundle |
-| Dumping-ground `src/lib` or extra top-level `src/components` | Use **`share/`** (enforced topology) |
+| Concern                                                      | Location                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------- |
+| Drizzle schema, SQL migrations                               | `packages/database` or `apps/api` ([Database](./DATABASE.md)) |
+| OAuth token exchange, webhooks                               | Backend API ([Integrations](./INTEGRATIONS.md))               |
+| Long-running sync jobs                                       | Workers / queue consumers, not the Vite bundle                |
+| Dumping-ground `src/lib` or extra top-level `src/components` | Use **`share/`** (enforced topology)                          |
 
 ---
 
@@ -125,9 +127,9 @@ src/features/<feature-name>/
 
 Principles:
 
-- **High cohesion** — related code stays together  
-- **Low coupling** — interact via **`index.ts`** exports or **`share/`**  
-- **DDD** — folder names match business language where practical  
+- **High cohesion** — related code stays together
+- **Low coupling** — interact via **`index.ts`** exports or **`share/`**
+- **DDD** — folder names match business language where practical
 
 ---
 
@@ -198,11 +200,11 @@ Register paths only in **`share/routing`**; keep **`LoginView`** implementation 
 
 ## Benefits
 
-1. **Maintainability** — changes stay inside a feature’s boundary when possible.  
-2. **Scalability** — new ERP modules add folders without rewiring the whole tree.  
-3. **Performance** — code splitting stays explicit at the routing layer.  
-4. **Clear ownership** — product and engineering can map folders to capabilities.  
-5. **Type safety** — TypeScript across `apps/web`; server types can be shared via packages later.  
+1. **Maintainability** — changes stay inside a feature’s boundary when possible.
+2. **Scalability** — new ERP modules add folders without rewiring the whole tree.
+3. **Performance** — code splitting stays explicit at the routing layer.
+4. **Clear ownership** — product and engineering can map folders to capabilities.
+5. **Type safety** — TypeScript across `apps/web`; server types can be shared via packages later.
 6. **Locked topology** — `script:check-afenda-config` fails on accidental `src/` root sprawl.
 
 ---

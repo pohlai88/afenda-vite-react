@@ -1,0 +1,44 @@
+{
+  "header": {
+    "title": { "label": "Bảng điều khiển ERP" },
+    "welcome": { "message": "Chào mừng trở lại, {{name}}!" },
+    "guest_name": { "label": "Người dùng" }
+  },
+  "card": {
+    "inventory": {
+      "title": { "label": "Tồn kho" },
+      "description": { "message": "Quản lý sản phẩm và mức tồn kho" },
+      "link": { "label": "Xem tồn kho →" }
+    },
+    "sales": {
+      "title": { "label": "Bán hàng" },
+      "description": { "message": "Theo dõi đơn hàng và hiệu suất bán" },
+      "link": { "label": "Xem bán hàng →" }
+    },
+    "customers": {
+      "title": { "label": "Khách hàng" },
+      "description": { "message": "Quản lý quan hệ khách hàng" },
+      "link": { "label": "Xem khách hàng →" }
+    },
+    "finance": {
+      "title": { "label": "Tài chính" },
+      "description": { "message": "Báo cáo tài chính và giao dịch" },
+      "link": { "label": "Xem tài chính →" }
+    },
+    "employees": {
+      "title": { "label": "Nhân viên" },
+      "description": { "message": "Quản lý nhân sự" },
+      "link": { "label": "Xem nhân viên →" }
+    },
+    "reports": {
+      "title": { "label": "Báo cáo" },
+      "description": { "message": "Phân tích và business intelligence" },
+      "link": { "label": "Xem báo cáo →" }
+    }
+  },
+  "demo": {
+    "priority_items_one": "{{count}} việc mở hôm nay",
+    "priority_items_other": "{{count}} việc mở hôm nay",
+    "separator": "·"
+  }
+}

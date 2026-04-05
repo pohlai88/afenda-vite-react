@@ -1,0 +1,9 @@
+{
+  "header": {
+    "title": { "label": "Penyelesaian" }
+  },
+  "status": {
+    "pending": { "label": "Penyelesaian tertunda" },
+    "completed": { "label": "Diselesaikan" }
+  }
+}

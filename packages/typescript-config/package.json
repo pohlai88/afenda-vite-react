@@ -10,7 +10,7 @@
     "format:check": "prettier --check \"**/*.json\""
   },
   "devDependencies": {
-    "prettier": "^3.8.1"
+    "prettier": "catalog:"
   },
   "exports": {
     "./base.json": "./base.json",

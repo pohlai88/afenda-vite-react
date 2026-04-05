@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "source": "odoo",
+  "entries": [
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "value": "Invoice"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/views/account_move_views.xml",
+      "value": "Invoices"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/models/account_move.py",
+      "value": "Paid"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/models/account_move.py",
+      "value": "Draft"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/stock/views/stock_move_views.xml",
+      "value": "Allocations"
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "locale": "en",
+      "sourcePath": "odoo/addons/stock/models/stock_move.py",
+      "value": "You cannot allocate more than the available quantity."
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/views/account_payment_views.xml",
+      "value": "Payments"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/models/account_payment.py",
+      "value": "Pending"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/models/account_payment.py",
+      "value": "Reconciled"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/web/static/src/views/dashboard.xml",
+      "value": "Dashboard"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/stock/views/stock_menus.xml",
+      "value": "Inventory"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/sale/views/sale_menus.xml",
+      "value": "Sales"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/contacts/views/contact_views.xml",
+      "value": "Contacts"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/views/account_menus.xml",
+      "value": "Invoicing"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/hr/views/hr_employee_views.xml",
+      "value": "Employees"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/web/views/report_views.xml",
+      "value": "Reporting"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/web/views/webclient_templates.xml",
+      "value": "Log in"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "en",
+      "sourcePath": "odoo/addons/stock/views/stock_menus.xml",
+      "value": "Inventory"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "en",
+      "sourcePath": "odoo/addons/sale/views/sale_menus.xml",
+      "value": "Sales"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/views/account_menus.xml",
+      "value": "Invoicing"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "en",
+      "sourcePath": "odoo/addons/hr/views/hr_menus.xml",
+      "value": "Employees"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "locale": "en",
+      "sourcePath": "odoo/addons/base/views/res_config_settings_views.xml",
+      "value": "Settings"
+    }
+  ]
+}

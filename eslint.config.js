@@ -170,6 +170,49 @@ export default defineConfig([
   },
 
   {
+    name: 'apps/web/features-formatting-governance',
+    files: [
+      'apps/web/src/features/**/*.{ts,tsx}',
+      'apps/web/src/pages/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "NewExpression[callee.object.name='Intl'][callee.property.name='NumberFormat']",
+          message:
+            'Use share/i18n/format helpers (formatNumber, formatCurrency, formatPercent) instead of Intl.NumberFormat in feature code.',
+        },
+        {
+          selector:
+            "CallExpression[callee.object.name='Intl'][callee.property.name='NumberFormat']",
+          message:
+            'Use share/i18n/format helpers (formatNumber, formatCurrency, formatPercent) instead of Intl.NumberFormat in feature code.',
+        },
+        {
+          selector:
+            "NewExpression[callee.object.name='Intl'][callee.property.name='DateTimeFormat']",
+          message:
+            'Use share/i18n/format helper formatDate instead of Intl.DateTimeFormat in feature code.',
+        },
+        {
+          selector:
+            "CallExpression[callee.object.name='Intl'][callee.property.name='DateTimeFormat']",
+          message:
+            'Use share/i18n/format helper formatDate instead of Intl.DateTimeFormat in feature code.',
+        },
+        {
+          selector:
+            "CallExpression[callee.property.name='toLocaleString'], CallExpression[callee.property.name='toLocaleDateString'], CallExpression[callee.property.name='toLocaleTimeString']",
+          message:
+            'Use share/i18n/format helpers (formatNumber, formatCurrency, formatPercent, formatDate) instead of toLocale* in feature code.',
+        },
+      ],
+    },
+  },
+
+  {
     name: 'tooling-config-files',
     files: [
       'eslint.config.js',
@@ -188,7 +231,11 @@ export default defineConfig([
 
   {
     name: 'tests',
-    files: ['**/*.{test,spec}.{js,ts,tsx}', '**/__tests__/**/*.{js,ts,tsx}'],
+    files: [
+      '**/*.{test,spec}.{js,ts,tsx}',
+      '**/__tests__/**/*.{js,ts,tsx}',
+      '**/__test__/**/*.{js,ts,tsx}',
+    ],
     languageOptions: {
       globals: {
         ...globals.vitest,
@@ -196,6 +243,10 @@ export default defineConfig([
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
       'no-console': 'off',
     },
   },

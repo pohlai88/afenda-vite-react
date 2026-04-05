@@ -1,0 +1,10 @@
+{
+  "error": {
+    "over_allocated": {
+      "message": "Số lượng phân bổ vượt quá tồn kho khả dụng cho dòng này."
+    }
+  },
+  "header": {
+    "title": { "label": "Phân bổ" }
+  }
+}

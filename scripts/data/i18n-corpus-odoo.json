@@ -1,0 +1,327 @@
+{
+  "version": 2,
+  "source": "odoo",
+  "generatedAt": "2026-04-05T23:19:41.172Z",
+  "fetchedFrom": [
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/account/i18n/account.pot",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/stock/i18n/stock.pot",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/web/i18n/web.pot",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/sale/i18n/sale.pot",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/contacts/i18n/contacts.pot",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/hr/i18n/hr.pot",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/account/i18n/id.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/stock/i18n/id.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/web/i18n/id.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/sale/i18n/id.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/contacts/i18n/id.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/hr/i18n/id.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/account/i18n/vi.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/stock/i18n/vi.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/web/i18n/vi.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/sale/i18n/vi.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/contacts/i18n/vi.po",
+    "https://raw.githubusercontent.com/odoo/odoo/master/addons/hr/i18n/vi.po"
+  ],
+  "entries": [
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/stock/i18n/stock.pot",
+      "value": "Stock Move"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/stock/i18n/id.po",
+      "value": "Pergerakkan Stok"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/stock/i18n/vi.po",
+      "value": "Điều chuyển tồn kho"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/web/i18n/web.pot",
+      "value": "Log in"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/web/i18n/id.po",
+      "value": "Log masuk"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/web/i18n/vi.po",
+      "value": "Đăng nhập"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/contacts/i18n/contacts.pot",
+      "value": "Contacts"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/contacts/i18n/id.po",
+      "value": "Kontak"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/contacts/i18n/vi.po",
+      "value": "Liên hệ"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/hr/i18n/hr.pot",
+      "value": "Employees"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/hr/i18n/id.po",
+      "value": "Karyawan"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/hr/i18n/vi.po",
+      "value": "Nhân viên"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "value": "Invoicing"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "value": "Penagihan"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "value": "Hóa đơn"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/stock/i18n/stock.pot",
+      "value": "Inventory"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/stock/i18n/id.po",
+      "value": "Stok Persediaan"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/stock/i18n/vi.po",
+      "value": "Tồn kho"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/sale/i18n/sale.pot",
+      "value": "Sales"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/sale/i18n/id.po",
+      "value": "Penjualan"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/sale/i18n/vi.po",
+      "value": "Bán hàng"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "value": "Invoice"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "value": "Faktur"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "value": "Hóa đơn"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "value": "Invoices"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "value": "Faktur"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "value": "Hóa đơn"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "value": "Draft"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "value": "Nháp"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "value": "Paid"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "value": "Lunas"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "value": "Đã thanh toán"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "value": "Payments"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "value": "Pembayaran"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "value": "Thanh toán"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "value": "Reconciled"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "value": "Direkonsiliasi"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "value": "Đã đối chiếu"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "en",
+      "sourcePath": "odoo/addons/hr/i18n/hr.pot",
+      "value": "Employees"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "id",
+      "sourcePath": "odoo/addons/hr/i18n/id.po",
+      "value": "Karyawan"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/hr/i18n/vi.po",
+      "value": "Nhân viên"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "value": "Invoicing"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "value": "Penagihan"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "value": "Hóa đơn"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "en",
+      "sourcePath": "odoo/addons/stock/i18n/stock.pot",
+      "value": "Inventory"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "id",
+      "sourcePath": "odoo/addons/stock/i18n/id.po",
+      "value": "Stok Persediaan"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/stock/i18n/vi.po",
+      "value": "Tồn kho"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "en",
+      "sourcePath": "odoo/addons/sale/i18n/sale.pot",
+      "value": "Sales"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "id",
+      "sourcePath": "odoo/addons/sale/i18n/id.po",
+      "value": "Penjualan"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "vi",
+      "sourcePath": "odoo/addons/sale/i18n/vi.po",
+      "value": "Bán hàng"
+    }
+  ]
+}

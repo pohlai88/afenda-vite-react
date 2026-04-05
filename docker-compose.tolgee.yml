@@ -1,0 +1,31 @@
+services:
+  tolgee-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - tolgee-db-data:/var/lib/postgresql/data
+    ports:
+      - '54320:5432'
+
+  tolgee:
+    image: tolgee/tolgee:latest
+    restart: unless-stopped
+    depends_on:
+      - tolgee-db
+    ports:
+      - '${TOLGEE_PORT:-8085}:8080'
+    environment:
+      spring.datasource.url: jdbc:postgresql://tolgee-db:5432/postgres
+      spring.datasource.username: postgres
+      spring.datasource.password: postgres
+      tolgee.authentication.enabled: 'true'
+      tolgee.authentication.initial-username: admin
+      tolgee.authentication.initial-password: admin
+      tolgee.authentication.jwt-secret: '${TOLGEE_JWT_SECRET:-afenda-local-dev-secret-change-me}'
+
+volumes:
+  tolgee-db-data:

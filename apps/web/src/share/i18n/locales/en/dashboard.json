@@ -1,0 +1,44 @@
+{
+  "header": {
+    "title": { "label": "ERP Dashboard" },
+    "welcome": { "message": "Welcome back, {{name}}!" },
+    "guest_name": { "label": "User" }
+  },
+  "card": {
+    "inventory": {
+      "title": { "label": "Inventory" },
+      "description": { "message": "Manage your products and stock levels" },
+      "link": { "label": "View Inventory →" }
+    },
+    "sales": {
+      "title": { "label": "Sales" },
+      "description": { "message": "Track orders and sales performance" },
+      "link": { "label": "View Sales →" }
+    },
+    "customers": {
+      "title": { "label": "Customers" },
+      "description": { "message": "Manage customer relationships" },
+      "link": { "label": "View Customers →" }
+    },
+    "finance": {
+      "title": { "label": "Finance" },
+      "description": { "message": "Financial reports and transactions" },
+      "link": { "label": "View Finance →" }
+    },
+    "employees": {
+      "title": { "label": "Employees" },
+      "description": { "message": "Staff management and HR" },
+      "link": { "label": "View Employees →" }
+    },
+    "reports": {
+      "title": { "label": "Reports" },
+      "description": { "message": "Analytics and business intelligence" },
+      "link": { "label": "View Reports →" }
+    }
+  },
+  "demo": {
+    "priority_items_one": "{{count}} open task today",
+    "priority_items_other": "{{count}} open tasks today",
+    "separator": "·"
+  }
+}

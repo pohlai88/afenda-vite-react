@@ -1,0 +1,2466 @@
+{
+  "version": 2,
+  "generatedAt": "2026-04-05T23:20:07.544Z",
+  "entries": [
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Allocated quantity exceeds the available stock.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/allocation/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Allocated quantity exceeds available stock for this line.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/allocation/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Kuantitas alokasi melebihi stok yang tersedia untuk baris ini.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/allocation/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Kuantiti diperuntukkan melebihi stok tersedia untuk baris ini.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/allocation/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Số lượng phân bổ vượt quá tồn kho khả dụng cho dòng này.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Stock Entry",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Entri Persediaan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/stock/i18n/stock.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Stock Move",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/stock/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pergerakkan Stok",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/stock/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Điều chuyển tồn kho",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/allocation/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Allocations",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/allocation/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Alokasi",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/allocation/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Peruntukan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/allocation/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Phân bổ",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.placeholder.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/auth/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Login form coming soon…",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.subtitle.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/auth/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Please sign in to access the ERP system.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Login",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Masuk",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Đăng nhập",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/web/i18n/web.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Log in",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/web/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Log masuk",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/web/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Đăng nhập",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/auth/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "ERP Login",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/auth/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Masuk ERP",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/auth/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Log masuk ERP",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/auth/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Đăng nhập ERP",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.description.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Manage customer relationships",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.link.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "View Customers →",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Customer",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pelanggan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/contacts/i18n/contacts.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Contacts",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/contacts/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Kontak",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/contacts/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Liên hệ",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Customers",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pelanggan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pelanggan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Khách hàng",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.description.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Staff management and HR",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.link.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "View Employees →",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Employee",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Karyawan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Nhân viên",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/hr/i18n/hr.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Employees",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/hr/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Karyawan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/hr/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Nhân viên",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Employees",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Karyawan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pekerja",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Nhân viên",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.description.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Financial reports and transactions",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.link.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "View Finance →",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Accounts",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Akun",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invoicing",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penagihan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Hóa đơn",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Finance",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Keuangan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Kewangan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Tài chính",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.description.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Manage your products and stock levels",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.link.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "View Inventory →",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Stock",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "persediaan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Kho",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/stock/i18n/stock.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Inventory",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/stock/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Stok Persediaan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/stock/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Tồn kho",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Inventory",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Inventaris",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Inventori",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Tồn kho",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.description.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Analytics and business intelligence",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.link.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "View Reports →",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Report",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Laporan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Báo cáo",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Reports",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Laporan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Laporan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Báo cáo",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.description.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Track orders and sales performance",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.link.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "View Sales →",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Selling",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penjualan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/sale/i18n/sale.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Sales",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/sale/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penjualan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/sale/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Bán hàng",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Sales",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penjualan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Jualan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Bán hàng",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_one",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "{{count}} open task today",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.demo.priority_items_other",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "{{count}} open tasks today",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.demo.separator",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "·",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.header.guest_name.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "User",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Dashboard",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Dasbor",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Trang tổng quan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "ERP Dashboard",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/dashboard/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Dasbor ERP",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/dashboard/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Papan pemuka ERP",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/dashboard/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Bảng điều khiển ERP",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "dashboard.header.welcome.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/dashboard/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Welcome back, {{name}}!",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invoice",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Faktur",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Hóa đơn",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invoice",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Faktur",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Hóa đơn",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invoice",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/invoice/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Faktur",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/invoice/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invois",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/invoice/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Hóa đơn",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invoices",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Faktur",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Hóa đơn",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invoices",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Faktur",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Hóa đơn",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invoices",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/invoice/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Faktur",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/invoice/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invois",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/invoice/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Hóa đơn",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Draft",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Draf",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Bản nháp",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Draft",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Nháp",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Draft",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/invoice/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Draf",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/invoice/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Draf",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/invoice/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Bản nháp",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Paid",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Dibayar",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Paid",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Lunas",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Đã thanh toán",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Paid",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/invoice/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Lunas",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/invoice/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Dibayar",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/invoice/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Đã thanh toán",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "invoice.total.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/invoice/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "{{count}} invoices",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Payment Entry",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Masuk pembayaran",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Payments",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pembayaran",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Thanh toán",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/settlement/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Settlements",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/settlement/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penyelesaian",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/settlement/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penyelesaian",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/settlement/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Thanh toán bù trừ",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Settled",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Diselesaikan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Reconciled",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Direkonsiliasi",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Đã đối chiếu",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/settlement/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Settled",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/settlement/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Selesai",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/settlement/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Diselesaikan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/settlement/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Đã quyết toán",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pending",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Đang chờ xử lý",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/settlement/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pending settlement",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/settlement/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Menunggu penyelesaian",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/settlement/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penyelesaian tertunda",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/settlement/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Đang chờ quyết toán",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.description",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Manage customer relationships, contacts, and interactions.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Customer Management",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.customers.placeholder.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Customer module coming soon…",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.description",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "HR management, staff scheduling, and performance tracking.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Human Resources",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Sumber daya manusia",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Nhân sự",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/hr/i18n/hr.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Employees",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/hr/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Karyawan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/hr/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Nhân viên",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Employee Management",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Manajemen Karyawan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pengurusan Pekerja",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Quản lý nhân viên",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.placeholder.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Employee module coming soon…",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.description",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Accounting, financial reports, and transaction management.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Accounting",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Akuntansi",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Kế toán",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/account/i18n/account.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Invoicing",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/account/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penagihan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/account/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Hóa đơn",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Financial Management",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Manajemen Keuangan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pengurusan Kewangan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Quản lý tài chính",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.placeholder.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Finance module coming soon…",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.description",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Manage your products, stock levels, and inventory transactions.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Stock",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "persediaan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Kho",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/stock/i18n/stock.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Inventory",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/stock/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Stok Persediaan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/stock/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Tồn kho",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Inventory Management",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Manajemen Inventaris",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pengurusan Inventori",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Quản lý tồn kho",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.placeholder.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Inventory module coming soon…",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.description",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Analytics, dashboards, and business intelligence.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Business Reports",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.reports.placeholder.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Reports module coming soon…",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.description",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Track orders, manage sales pipeline, and monitor revenue.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Selling",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penjualan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "odoo/addons/sale/i18n/sale.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Sales",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "odoo/addons/sale/i18n/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Penjualan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "sourceSystem": "odoo",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "odoo/addons/sale/i18n/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Bán hàng",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Sales Management",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Manajemen Penjualan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pengurusan Jualan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Quản lý bán hàng",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.placeholder.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Sales module coming soon…",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.description",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Configure system preferences, user roles, and integrations.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Settings",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pengaturan",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "sourceSystem": "frappe",
+      "sourceTier": "reference",
+      "sourceLocale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Thiết lập",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "System Settings",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "id",
+      "sourcePath": "tolgee/api/shell/id",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Pengaturan Sistem",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "ms",
+      "sourcePath": "tolgee/api/shell/ms",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Tetapan Sistem",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "vi",
+      "sourcePath": "tolgee/api/shell/vi",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Cài đặt hệ thống",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.placeholder.message",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Settings module coming soon…",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.error.not_found.description",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "The page you're looking for doesn't exist.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.error.not_found.link_dashboard",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Go back to Dashboard",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.error.not_found.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "404 — Page not found",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.language.label",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Language",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.language.option_en",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "English",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.language.option_id",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Bahasa Indonesia",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.language.option_ms",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Bahasa Melayu",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.language.option_vi",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Tiếng Việt",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.loading.erp_system",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Loading ERP System…",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.brand_name",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Afenda",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.open_erp",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "open the ERP app",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.placeholder_primary",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Use this area for product messaging, pricing, and onboarding flows.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sentence_end",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": ".",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Sign in",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.sign_in_or",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "or",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.subtitle",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Marketing and product entry page for the ERP web platform.",
+      "decisionStatus": "accepted"
+    },
+    {
+      "afendaKey": "shell.marketing.landing.title",
+      "sourceSystem": "tolgee",
+      "sourceTier": "primary",
+      "sourceLocale": "en",
+      "sourcePath": "tolgee/api/shell/en",
+      "importTimestamp": "2026-04-05T23:20:07.544Z",
+      "candidateValue": "Afenda ERP Platform",
+      "decisionStatus": "accepted"
+    }
+  ]
+}

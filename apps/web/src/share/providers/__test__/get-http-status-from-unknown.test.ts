@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 
-import { getHttpStatusFromUnknown } from './get-http-status-from-unknown'
+import { getHttpStatusFromUnknown } from '../get-http-status-from-unknown'
 
 test('returns undefined for non-objects', () => {
   expect(getHttpStatusFromUnknown('err')).toBeUndefined()

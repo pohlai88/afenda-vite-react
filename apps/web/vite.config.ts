@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+import { getAfendaVitestTestOptions } from '@afenda/testing/vitest/defaults'
 import { defineConfig, loadEnv } from 'vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
@@ -207,6 +208,9 @@ export default defineConfig(({ command, mode }) => {
         'react-hook-form',
         'zod',
         'date-fns',
+        'i18next',
+        'react-i18next',
+        'i18next-browser-languagedetector',
         // Add other large dependencies here
       ],
       // Exclude dependencies from pre-bundling
@@ -235,22 +239,7 @@ export default defineConfig(({ command, mode }) => {
       hmrPartialAccept: true,
     },
 
-    // Vitest (https://vitest.dev/guide/#configuring-vitest)
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      setupFiles: ['@afenda/testing/vitest/setup'],
-      include: ['src/**/*.{test,spec}.{ts,tsx}'],
-      coverage: {
-        provider: 'v8',
-        reporter: ['text', 'json-summary', 'html'],
-        exclude: [
-          'node_modules/**',
-          '**/*.d.ts',
-          '**/*.{config,css}.{js,ts}',
-          'dist/**',
-        ],
-      },
-    },
+    // Vitest — shared defaults from @afenda/testing (see packages/testing/src/vitest/defaults.ts)
+    test: getAfendaVitestTestOptions(),
   }
 })

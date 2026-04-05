@@ -4,7 +4,12 @@ import { LoginView } from '@/features/auth'
 import { CustomersView } from '@/features/customers'
 import { DashboardView } from '@/features/dashboard'
 import { EmployeesView } from '@/features/employees'
-import { FinanceView } from '@/features/finance'
+import {
+  AllocationView,
+  FinanceView,
+  InvoiceView,
+  SettlementView,
+} from '@/features/finance'
 import { InventoryView } from '@/features/inventory'
 import { NotFoundView } from '@/features/not-found'
 import { ReportsView } from '@/features/reports'
@@ -20,6 +25,9 @@ export const featureRoutes: RouteObject[] = [
   { path: '/app/customers', element: <CustomersView /> },
   { path: '/app/employees', element: <EmployeesView /> },
   { path: '/app/finance', element: <FinanceView /> },
+  { path: '/app/invoices', element: <InvoiceView /> },
+  { path: '/app/allocations', element: <AllocationView /> },
+  { path: '/app/settlements', element: <SettlementView /> },
   { path: '/app/reports', element: <ReportsView /> },
   { path: '/app/settings', element: <SettingsView /> },
   { path: '/app/*', element: <NotFoundView /> },

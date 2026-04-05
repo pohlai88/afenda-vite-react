@@ -1,0 +1,82 @@
+{
+  "loading": {
+    "erp_system": "Loading ERP System…"
+  },
+  "marketing": {
+    "landing": {
+      "brand_name": "Afenda",
+      "title": "Afenda ERP Platform",
+      "subtitle": "Marketing and product entry page for the ERP web platform.",
+      "placeholder_primary": "Use this area for product messaging, pricing, and onboarding flows.",
+      "sign_in": "Sign in",
+      "sign_in_or": "or",
+      "open_erp": "open the ERP app",
+      "sentence_end": "."
+    }
+  },
+  "error": {
+    "not_found": {
+      "title": "404 — Page not found",
+      "description": "The page you're looking for doesn't exist.",
+      "link_dashboard": "Go back to Dashboard"
+    }
+  },
+  "language": {
+    "label": "Language",
+    "option_en": "English",
+    "option_ms": "Bahasa Melayu",
+    "option_id": "Bahasa Indonesia",
+    "option_vi": "Tiếng Việt"
+  },
+  "erp_module": {
+    "inventory": {
+      "page": {
+        "title": "Inventory Management",
+        "description": "Manage your products, stock levels, and inventory transactions."
+      },
+      "placeholder": { "message": "Inventory module coming soon…" }
+    },
+    "sales": {
+      "page": {
+        "title": "Sales Management",
+        "description": "Track orders, manage sales pipeline, and monitor revenue."
+      },
+      "placeholder": { "message": "Sales module coming soon…" }
+    },
+    "customers": {
+      "page": {
+        "title": "Customer Management",
+        "description": "Manage customer relationships, contacts, and interactions."
+      },
+      "placeholder": { "message": "Customer module coming soon…" }
+    },
+    "employees": {
+      "page": {
+        "title": "Employee Management",
+        "description": "HR management, staff scheduling, and performance tracking."
+      },
+      "placeholder": { "message": "Employee module coming soon…" }
+    },
+    "finance": {
+      "page": {
+        "title": "Financial Management",
+        "description": "Accounting, financial reports, and transaction management."
+      },
+      "placeholder": { "message": "Finance module coming soon…" }
+    },
+    "reports": {
+      "page": {
+        "title": "Business Reports",
+        "description": "Analytics, dashboards, and business intelligence."
+      },
+      "placeholder": { "message": "Reports module coming soon…" }
+    },
+    "settings": {
+      "page": {
+        "title": "System Settings",
+        "description": "Configure system preferences, user roles, and integrations."
+      },
+      "placeholder": { "message": "Settings module coming soon…" }
+    }
+  }
+}

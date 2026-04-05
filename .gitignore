@@ -17,6 +17,7 @@ apps/*/.eslintcache
 dist-ssr
 *.local
 .env.turbo
+.env.tolgee
 
 # Editor directories and files
 .vscode/*

@@ -88,7 +88,7 @@
     "webClientSrc": {
       "srcRoot": "apps/web/src",
       "allowedTopLevelDirectories": ["features", "pages", "share"],
-      "requiredShareSubdirectories": ["routing", "providers", "state"],
+      "requiredShareSubdirectories": ["routing", "providers", "state", "i18n"],
       "enforce": true
     }
   }

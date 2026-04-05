@@ -1,0 +1,82 @@
+{
+  "loading": {
+    "erp_system": "Đang tải hệ thống ERP…"
+  },
+  "marketing": {
+    "landing": {
+      "brand_name": "Afenda",
+      "title": "Nền tảng ERP Afenda",
+      "subtitle": "Trang tiếp thị và điểm vào sản phẩm cho nền tảng ERP web.",
+      "placeholder_primary": "Dùng khu vực này cho thông điệp sản phẩm, giá và luồng onboarding.",
+      "sign_in": "Đăng nhập",
+      "sign_in_or": "hoặc",
+      "open_erp": "mở ứng dụng ERP",
+      "sentence_end": "."
+    }
+  },
+  "error": {
+    "not_found": {
+      "title": "404 — Không tìm thấy trang",
+      "description": "Trang bạn tìm không tồn tại.",
+      "link_dashboard": "Quay lại Bảng điều khiển"
+    }
+  },
+  "language": {
+    "label": "Ngôn ngữ",
+    "option_en": "English",
+    "option_ms": "Bahasa Melayu",
+    "option_id": "Bahasa Indonesia",
+    "option_vi": "Tiếng Việt"
+  },
+  "erp_module": {
+    "inventory": {
+      "page": {
+        "title": "Quản lý tồn kho",
+        "description": "Quản lý sản phẩm, mức tồn kho và giao dịch tồn kho."
+      },
+      "placeholder": { "message": "Mô-đun tồn kho sắp ra mắt…" }
+    },
+    "sales": {
+      "page": {
+        "title": "Quản lý bán hàng",
+        "description": "Theo dõi đơn hàng, quản lý pipeline bán hàng và doanh thu."
+      },
+      "placeholder": { "message": "Mô-đun bán hàng sắp ra mắt…" }
+    },
+    "customers": {
+      "page": {
+        "title": "Quản lý khách hàng",
+        "description": "Quản lý quan hệ khách hàng, liên hệ và tương tác."
+      },
+      "placeholder": { "message": "Mô-đun khách hàng sắp ra mắt…" }
+    },
+    "employees": {
+      "page": {
+        "title": "Quản lý nhân viên",
+        "description": "Quản lý HR, lịch làm việc và theo dõi hiệu suất."
+      },
+      "placeholder": { "message": "Mô-đun nhân viên sắp ra mắt…" }
+    },
+    "finance": {
+      "page": {
+        "title": "Quản lý tài chính",
+        "description": "Kế toán, báo cáo tài chính và quản lý giao dịch."
+      },
+      "placeholder": { "message": "Mô-đun tài chính sắp ra mắt…" }
+    },
+    "reports": {
+      "page": {
+        "title": "Báo cáo kinh doanh",
+        "description": "Phân tích, bảng điều khiển và business intelligence."
+      },
+      "placeholder": { "message": "Mô-đun báo cáo sắp ra mắt…" }
+    },
+    "settings": {
+      "page": {
+        "title": "Cài đặt hệ thống",
+        "description": "Cấu hình tùy chọn hệ thống, vai trò người dùng và tích hợp."
+      },
+      "placeholder": { "message": "Mô-đun cài đặt sắp ra mắt…" }
+    }
+  }
+}

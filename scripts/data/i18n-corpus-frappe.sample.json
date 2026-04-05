@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "source": "frappe",
+  "entries": [
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "en",
+      "sourcePath": "frappe/frappe/locale/en.csv",
+      "value": "Invoice"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "en",
+      "sourcePath": "erpnext/accounts/doctype/sales_invoice/sales_invoice.json",
+      "value": "Invoices"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "en",
+      "sourcePath": "erpnext/accounts/doctype/sales_invoice/sales_invoice.json",
+      "value": "Paid"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "en",
+      "sourcePath": "erpnext/accounts/doctype/sales_invoice/sales_invoice.json",
+      "value": "Draft"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "en",
+      "sourcePath": "erpnext/stock/doctype/stock_entry/stock_entry.json",
+      "value": "Allocations"
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "locale": "en",
+      "sourcePath": "erpnext/stock/doctype/stock_entry/stock_entry.py",
+      "value": "Allocated quantity exceeds available stock."
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "en",
+      "sourcePath": "erpnext/accounts/doctype/payment_entry/payment_entry.json",
+      "value": "Settlements"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "en",
+      "sourcePath": "erpnext/accounts/doctype/payment_entry/payment_entry.json",
+      "value": "Pending"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "en",
+      "sourcePath": "erpnext/accounts/doctype/payment_entry/payment_entry.json",
+      "value": "Settled"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/frappe/desk/page/setup_wizard/setup_wizard.js",
+      "value": "Dashboard"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "en",
+      "sourcePath": "erpnext/stock/module.json",
+      "value": "Inventory"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "en",
+      "sourcePath": "erpnext/selling/module.json",
+      "value": "Sales"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "en",
+      "sourcePath": "erpnext/selling/doctype/customer/customer.json",
+      "value": "Customers"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "en",
+      "sourcePath": "erpnext/accounts/module.json",
+      "value": "Accounts"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "en",
+      "sourcePath": "erpnext/hr/doctype/employee/employee.json",
+      "value": "Employees"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/frappe/core/page/data_import/data_import.json",
+      "value": "Reports"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/frappe/www/login.html",
+      "value": "Login"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "en",
+      "sourcePath": "erpnext/stock/module.json",
+      "value": "Stock"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "en",
+      "sourcePath": "erpnext/selling/module.json",
+      "value": "Selling"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "en",
+      "sourcePath": "erpnext/accounts/module.json",
+      "value": "Accounting"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "en",
+      "sourcePath": "erpnext/hr/module.json",
+      "value": "Human Resources"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "locale": "en",
+      "sourcePath": "frappe/frappe/core/page/setup_wizard/setup_wizard.js",
+      "value": "Settings"
+    }
+  ]
+}

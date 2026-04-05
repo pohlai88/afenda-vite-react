@@ -1,0 +1,15 @@
+{
+  "header": {
+    "title": { "label": "Faktur" }
+  },
+  "status": {
+    "paid": { "label": "Lunas" },
+    "draft": { "label": "Draf" }
+  },
+  "total": {
+    "message": "{{count}} faktur"
+  },
+  "entity": {
+    "label": "Faktur"
+  }
+}

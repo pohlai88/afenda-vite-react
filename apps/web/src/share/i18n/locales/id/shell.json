@@ -1,0 +1,82 @@
+{
+  "loading": {
+    "erp_system": "Memuat sistem ERP…"
+  },
+  "marketing": {
+    "landing": {
+      "brand_name": "Afenda",
+      "title": "Platform ERP Afenda",
+      "subtitle": "Halaman pemasaran dan pintu masuk produk untuk platform ERP web.",
+      "placeholder_primary": "Gunakan area ini untuk pesan produk, harga, dan alur onboarding.",
+      "sign_in": "Masuk",
+      "sign_in_or": "atau",
+      "open_erp": "buka aplikasi ERP",
+      "sentence_end": "."
+    }
+  },
+  "error": {
+    "not_found": {
+      "title": "404 — Halaman tidak ditemukan",
+      "description": "Halaman yang Anda cari tidak ada.",
+      "link_dashboard": "Kembali ke Dasbor"
+    }
+  },
+  "language": {
+    "label": "Bahasa",
+    "option_en": "English",
+    "option_ms": "Bahasa Melayu",
+    "option_id": "Bahasa Indonesia",
+    "option_vi": "Tiếng Việt"
+  },
+  "erp_module": {
+    "inventory": {
+      "page": {
+        "title": "Manajemen Inventaris",
+        "description": "Kelola produk, level stok, dan transaksi inventaris Anda."
+      },
+      "placeholder": { "message": "Modul inventaris akan segera hadir…" }
+    },
+    "sales": {
+      "page": {
+        "title": "Manajemen Penjualan",
+        "description": "Lacak pesanan, kelola pipeline penjualan, dan pantau pendapatan."
+      },
+      "placeholder": { "message": "Modul penjualan akan segera hadir…" }
+    },
+    "customers": {
+      "page": {
+        "title": "Manajemen Pelanggan",
+        "description": "Kelola hubungan pelanggan, kontak, dan interaksi."
+      },
+      "placeholder": { "message": "Modul pelanggan akan segera hadir…" }
+    },
+    "employees": {
+      "page": {
+        "title": "Manajemen Karyawan",
+        "description": "Manajemen HR, penjadwalan staf, dan pelacakan kinerja."
+      },
+      "placeholder": { "message": "Modul karyawan akan segera hadir…" }
+    },
+    "finance": {
+      "page": {
+        "title": "Manajemen Keuangan",
+        "description": "Akuntansi, laporan keuangan, dan manajemen transaksi."
+      },
+      "placeholder": { "message": "Modul keuangan akan segera hadir…" }
+    },
+    "reports": {
+      "page": {
+        "title": "Laporan Bisnis",
+        "description": "Analitik, dasbor, dan business intelligence."
+      },
+      "placeholder": { "message": "Modul laporan akan segera hadir…" }
+    },
+    "settings": {
+      "page": {
+        "title": "Pengaturan Sistem",
+        "description": "Konfigurasi preferensi sistem, peran pengguna, dan integrasi."
+      },
+      "placeholder": { "message": "Modul pengaturan akan segera hadir…" }
+    }
+  }
+}

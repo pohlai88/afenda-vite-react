@@ -18,15 +18,21 @@
     "test:coverage": "turbo run test:coverage",
     "format": "turbo run format",
     "format:check": "turbo run format:check",
-    "check": "pnpm run script:check-afenda-config && turbo run lint typecheck test:run build",
+    "check": "pnpm run script:check-afenda-config && pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit && pnpm run script:validate-i18n && pnpm run script:i18n-check && turbo run lint typecheck test:run build",
     "preview": "turbo run preview",
     "script:node-info": "tsx scripts/node-info.ts",
     "script:generate-docs-readme": "tsx scripts/generate-docs-readme.ts",
-    "script:check-afenda-config": "tsx scripts/check-afenda-config.ts"
+    "script:check-afenda-config": "tsx scripts/check-afenda-config.ts",
+    "script:validate-i18n": "tsx scripts/validate-i18n.ts",
+    "script:i18n-check": "pnpm --filter @afenda/web i18n:check",
+    "script:i18n-check:unused": "pnpm --filter @afenda/web i18n:check:unused",
+    "script:i18n-crossref-audit": "tsx scripts/i18n-crossref-audit.ts",
+    "script:i18n-corpus-ingest": "tsx scripts/i18n-corpus-ingest.ts",
+    "script:i18n-tolgee-seed": "tsx scripts/i18n-tolgee-seed.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
-    "@types/node": "^24.12.2",
+    "@types/node": "catalog:",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -36,11 +42,11 @@
     "globals": "^17.4.0",
     "lint-staged": "^16.4.0",
     "only-allow": "^1.2.2",
-    "prettier": "^3.8.1",
+    "prettier": "catalog:",
     "simple-git-hooks": "^2.13.1",
     "tsx": "^4.21.0",
     "turbo": "^2.5.5",
-    "typescript": "~5.9.3",
+    "typescript": "catalog:",
     "typescript-eslint": "^8.57.0"
   },
   "simple-git-hooks": {

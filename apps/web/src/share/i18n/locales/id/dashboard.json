@@ -1,0 +1,44 @@
+{
+  "header": {
+    "title": { "label": "Dasbor ERP" },
+    "welcome": { "message": "Selamat datang kembali, {{name}}!" },
+    "guest_name": { "label": "Pengguna" }
+  },
+  "card": {
+    "inventory": {
+      "title": { "label": "Inventaris" },
+      "description": { "message": "Kelola produk dan level stok Anda" },
+      "link": { "label": "Lihat inventaris →" }
+    },
+    "sales": {
+      "title": { "label": "Penjualan" },
+      "description": { "message": "Lacak pesanan dan kinerja penjualan" },
+      "link": { "label": "Lihat penjualan →" }
+    },
+    "customers": {
+      "title": { "label": "Pelanggan" },
+      "description": { "message": "Kelola hubungan pelanggan" },
+      "link": { "label": "Lihat pelanggan →" }
+    },
+    "finance": {
+      "title": { "label": "Keuangan" },
+      "description": { "message": "Laporan keuangan dan transaksi" },
+      "link": { "label": "Lihat keuangan →" }
+    },
+    "employees": {
+      "title": { "label": "Karyawan" },
+      "description": { "message": "Manajemen staf dan SDM" },
+      "link": { "label": "Lihat karyawan →" }
+    },
+    "reports": {
+      "title": { "label": "Laporan" },
+      "description": { "message": "Analitik dan business intelligence" },
+      "link": { "label": "Lihat laporan →" }
+    }
+  },
+  "demo": {
+    "priority_items_one": "{{count}} tugas terbuka hari ini",
+    "priority_items_other": "{{count}} tugas terbuka hari ini",
+    "separator": "·"
+  }
+}

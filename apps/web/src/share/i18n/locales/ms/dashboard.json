@@ -1,0 +1,44 @@
+{
+  "header": {
+    "title": { "label": "Papan pemuka ERP" },
+    "welcome": { "message": "Selamat kembali, {{name}}!" },
+    "guest_name": { "label": "Pengguna" }
+  },
+  "card": {
+    "inventory": {
+      "title": { "label": "Inventori" },
+      "description": { "message": "Urus produk dan paras stok anda" },
+      "link": { "label": "Lihat inventori →" }
+    },
+    "sales": {
+      "title": { "label": "Jualan" },
+      "description": { "message": "Jejak pesanan dan prestasi jualan" },
+      "link": { "label": "Lihat jualan →" }
+    },
+    "customers": {
+      "title": { "label": "Pelanggan" },
+      "description": { "message": "Urus hubungan pelanggan" },
+      "link": { "label": "Lihat pelanggan →" }
+    },
+    "finance": {
+      "title": { "label": "Kewangan" },
+      "description": { "message": "Laporan kewangan dan transaksi" },
+      "link": { "label": "Lihat kewangan →" }
+    },
+    "employees": {
+      "title": { "label": "Pekerja" },
+      "description": { "message": "Pengurusan kakitangan dan HR" },
+      "link": { "label": "Lihat pekerja →" }
+    },
+    "reports": {
+      "title": { "label": "Laporan" },
+      "description": { "message": "Analitik dan business intelligence" },
+      "link": { "label": "Lihat laporan →" }
+    }
+  },
+  "demo": {
+    "priority_items_one": "{{count}} tugasan terbuka hari ini",
+    "priority_items_other": "{{count}} tugasan terbuka hari ini",
+    "separator": "·"
+  }
+}

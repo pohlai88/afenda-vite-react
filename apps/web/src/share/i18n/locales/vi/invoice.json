@@ -1,0 +1,15 @@
+{
+  "header": {
+    "title": { "label": "Hóa đơn" }
+  },
+  "status": {
+    "paid": { "label": "Đã thanh toán" },
+    "draft": { "label": "Bản nháp" }
+  },
+  "total": {
+    "message": "{{count}} hóa đơn"
+  },
+  "entity": {
+    "label": "Hóa đơn"
+  }
+}
