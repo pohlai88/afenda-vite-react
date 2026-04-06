@@ -17,6 +17,8 @@ Use this dependency page as ecosystem/reference context and keep implementation 
 
 This document describes how **Afenda** intends to use **[shadcn/ui](https://ui.shadcn.com)**—reusable, accessible components built on **[Radix UI](https://www.radix-ui.com/)** primitives and styled with **[Tailwind CSS](https://tailwindcss.com/)**—inside **`apps/web`** (Vite + React, **not** Next.js).
 
+Repo note: Afenda treats `packages/ui` as a Radix-first primitive library. The only approved exception today is `Combobox`, which upstream shadcn still implements with `@base-ui/react` even under the Radix docs path. `AccessibleIcon` and `VisuallyHidden` are part of the approved Radix utility baseline. `Toolbar` is intentionally excluded until a concrete workflow requires it. See `docs/COMPONENTS_AND_STYLING.md` for the normative rule.
+
 **Status:** Adopted for `apps/web`. Use [Components and styling](../COMPONENTS_AND_STYLING.md) as the canonical ruleset, and this page for dependency-level references.
 
 **Official documentation (source of truth for CLI and defaults):**

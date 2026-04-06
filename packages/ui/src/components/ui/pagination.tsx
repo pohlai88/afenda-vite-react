@@ -2,6 +2,7 @@ import type * as React from 'react'
 
 import { cn } from '@afenda/ui/lib/utils'
 import { Button } from '@afenda/ui/components/ui/button'
+import { VisuallyHidden } from '@afenda/ui/components/ui/visually-hidden'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -117,7 +118,7 @@ function PaginationEllipsis({
       {...props}
     >
       <MoreHorizontalIcon />
-      <span className="sr-only">More pages</span>
+      <VisuallyHidden>More pages</VisuallyHidden>
     </span>
   )
 }

@@ -7,6 +7,7 @@ import { cn } from '@afenda/ui/lib/utils'
 import { Button } from '@afenda/ui/components/ui/button'
 import { Input } from '@afenda/ui/components/ui/input'
 import { Separator } from '@afenda/ui/components/ui/separator'
+import { VisuallyHidden } from '@afenda/ui/components/ui/visually-hidden'
 import {
   Sheet,
   SheetContent,
@@ -192,10 +193,12 @@ function Sidebar({
           }
           side={side}
         >
-          <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-          </SheetHeader>
+          <VisuallyHidden>
+            <SheetHeader>
+              <SheetTitle>Sidebar</SheetTitle>
+              <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+            </SheetHeader>
+          </VisuallyHidden>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
       </Sheet>
@@ -269,7 +272,7 @@ function SidebarTrigger({
       {...props}
     >
       <PanelLeftIcon />
-      <span className="sr-only">Toggle Sidebar</span>
+      <VisuallyHidden>Toggle Sidebar</VisuallyHidden>
     </Button>
   )
 }

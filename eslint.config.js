@@ -217,6 +217,35 @@ export default defineConfig([
     files: ['packages/ui/src/**/*.{ts,tsx}'],
     rules: {
       'react-refresh/only-export-components': 'off',
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "JSXAttribute[name.name='className'][value.value=/\\bsr-only\\b/]",
+          message:
+            'Use the shared VisuallyHidden primitive instead of raw sr-only JSX in packages/ui.',
+        },
+      ],
+    },
+  },
+
+  {
+    name: 'packages/ui/base-ui-boundary',
+    files: ['packages/ui/src/**/*.{ts,tsx}'],
+    ignores: ['packages/ui/src/components/ui/combobox.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@base-ui/react',
+              message:
+                'Use radix-ui primitives in packages/ui. The only approved @base-ui/react exception is packages/ui/src/components/ui/combobox.tsx.',
+            },
+          ],
+        },
+      ],
     },
   },
 

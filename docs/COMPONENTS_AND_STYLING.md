@@ -105,6 +105,17 @@ Two `components.json` files exist — one per workspace that the CLI targets:
 - `rsc: false`
 - `tailwind.config: ""`
 
+### Primitive Baseline Enforcement
+
+- `packages/ui` is a Radix-first primitive library. New primitives must use the unified `radix-ui` package unless an ADR or explicit repo rule says otherwise.
+- `packages/ui/src/components/ui/combobox.tsx` is the single approved Base UI exception because upstream shadcn currently implements `Combobox` with `@base-ui/react` even in the Radix docs path.
+- Do not introduce additional `@base-ui/react` imports in `packages/ui/src/components/ui/`.
+- Do not add parallel primitive implementations for the same control family (for example, a second select, menu, dialog, or popover primitive backed by a different library).
+- Preserve shadcn token-based styling and component composition. Do not replace primitive styles with hardcoded color classes or one-off CSS when extending primitives.
+- The approved Radix utility primitives to keep available by default are `Slot`, `Direction`, `AccessibleIcon`, and `VisuallyHidden`.
+- `Toolbar` is intentionally not part of the primitive baseline at this stage. Use layout composition and app toolbar utilities for ERP toolbars unless a concrete keyboard-toolbar requirement justifies a dedicated primitive.
+- Treat `packages/ui/src/components/ui/` as sealed for alternate primitive additions after this baseline. New primitives require a concrete missing capability, not speculative future usage.
+
 ### Path and Topology Rules
 
 Three-tier component topology:
@@ -165,6 +176,10 @@ After `shadcn` CLI generation:
 - Dialog/Sheet/Drawer must include title components.
 - Group-based menu/select items should be nested in matching group primitives.
 - Form fields should include label/description/message semantics.
+- Use `aria-label` on the interactive control first when an icon-only button, link, or trigger needs an accessible name.
+- Use `VisuallyHidden` for hidden text content inside a component when the component needs screen-reader-only copy in its rendered content.
+- Use `AccessibleIcon` only when the icon element itself needs an accessible label. Do not use it for decorative icons or when the parent control already has an accessible name.
+- In `packages/ui`, do not use raw JSX with `className="sr-only"` for hidden content. Use the shared `VisuallyHidden` primitive instead.
 
 ### Customization Order
 
@@ -191,6 +206,9 @@ These are current approved choices and may evolve with ADR:
 
 - `style: "radix-luma"` in shadcn initialization (can evolve to another `radix-*` style with ADR).
 - Radix primitives as component API baseline.
+- `Combobox` is the only approved Base UI-backed primitive in `packages/ui` until upstream shadcn provides a Radix-backed implementation or the repo adopts a replacement by ADR.
+- `AccessibleIcon` and `VisuallyHidden` are included as baseline accessibility utility primitives.
+- `Toolbar` remains excluded from the primitive baseline unless a concrete product workflow requires Radix toolbar semantics.
 - Sonner as the toast implementation.
 - Domain-to-chart color mapping strategy.
 - App shell navigation grouping taxonomy.
@@ -200,6 +218,8 @@ These are current approved choices and may evolve with ADR:
 - Tailwind through PostCSS in `apps/web`.
 - CSS Modules in Tailwind-owned UI surfaces.
 - `tailwindcss-animate` (the v3 JS-config plugin; use `tw-animate-css` instead).
+- New `@base-ui/react` primitives in `packages/ui` other than the approved `Combobox` exception.
+- Adding speculative primitives to `packages/ui/src/components/ui/` without a concrete reuse case or approved baseline decision.
 - A separate `.light` class block that duplicates `:root` tokens.
 - Subtraction-based radius formulas (`calc(var(--radius) - Npx)`).
 - Mixed color formats (e.g. `hsl()` in `:root` alongside `oklch()`).

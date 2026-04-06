@@ -13,7 +13,7 @@ import {
   NON_EN_APPROVED_RATIO_THRESHOLD,
   RELEASE_NAMESPACES,
   SUPPORTED_LOCALES,
-} from '../apps/web/src/share/i18n/policy.ts'
+} from '../apps/web/src/share/i18n/policy.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(__dirname, '..')

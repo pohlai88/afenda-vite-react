@@ -5,6 +5,7 @@ import useEmblaCarousel, {
 
 import { cn } from '@afenda/ui/lib/utils'
 import { Button } from '@afenda/ui/components/ui/button'
+import { VisuallyHidden } from '@afenda/ui/components/ui/visually-hidden'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 
 type CarouselApi = UseEmblaCarouselType[1]
@@ -194,7 +195,7 @@ function CarouselPrevious({
       {...props}
     >
       <ChevronLeftIcon />
-      <span className="sr-only">Previous slide</span>
+      <VisuallyHidden>Previous slide</VisuallyHidden>
     </Button>
   )
 }
@@ -224,7 +225,7 @@ function CarouselNext({
       {...props}
     >
       <ChevronRightIcon />
-      <span className="sr-only">Next slide</span>
+      <VisuallyHidden>Next slide</VisuallyHidden>
     </Button>
   )
 }

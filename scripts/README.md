@@ -9,11 +9,14 @@ Run scripts from the repository root with `pnpm` so they use the workspace toolc
 
 Layout and contribution rules (flat vs one subdirectory) live in [`RULES.md`](./RULES.md).
 
-| Script                                            | Run                                    | Purpose                                                                                                           |
-| ------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| [Check Afenda config](./check-afenda-config.ts)   | `pnpm run script:check-afenda-config`  | Validates the Afenda workspace manifest, path drift, package manager alignment, and internal package scope usage. |
-| [Generate docs README](./generate-docs-readme.ts) | `pnpm run script:generate-docs-readme` | Generates stable `README.md` indexes for `docs/` and other supported repo directories.                            |
-| [Node info](./node-info.ts)                       | `pnpm run script:node-info`            | Example TypeScript CLI script — run with pnpm run script:node-info.                                               |
+| Script                                                 | Run                                    | Purpose                                                                                                           |
+| ------------------------------------------------------ | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| [Check Afenda config](./check-afenda-config.ts)        | `pnpm run script:check-afenda-config`  | Validates the Afenda workspace manifest, path drift, package manager alignment, and internal package scope usage. |
+| [Check UI primitives](./seal/check-ui-primitives.ts)   | `pnpm run script:check-ui-primitives`  | Validates the sealed packages/ui primitive boundary, approved inventory, and accessibility conventions.           |
+| [Lock UI primitives](./seal/lock-ui-primitives.ts)     | `pnpm run script:lock-ui-primitives`   | Marks the sealed packages/ui primitive files read-only and stores the local unlock-key hash.                      |
+| [Unlock UI primitives](./seal/unlock-ui-primitives.ts) | `pnpm run script:unlock-ui-primitives` | Validates the local unlock key and marks sealed packages/ui primitive files writable for intentional edits.       |
+| [Generate docs README](./generate-docs-readme.ts)      | `pnpm run script:generate-docs-readme` | Generates stable `README.md` indexes for `docs/` and other supported repo directories.                            |
+| [Node info](./node-info.ts)                            | `pnpm run script:node-info`            | Example TypeScript CLI script — run with pnpm run script:node-info.                                               |
 
 ## Support files
 

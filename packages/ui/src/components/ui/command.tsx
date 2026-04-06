@@ -13,6 +13,7 @@ import {
   InputGroup,
   InputGroupAddon,
 } from '@afenda/ui/components/ui/input-group'
+import { VisuallyHidden } from '@afenda/ui/components/ui/visually-hidden'
 import { SearchIcon, CheckIcon } from 'lucide-react'
 
 function Command({
@@ -46,10 +47,12 @@ function CommandDialog({
 }) {
   return (
     <Dialog {...props}>
-      <DialogHeader className="sr-only">
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
-      </DialogHeader>
+      <VisuallyHidden>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+      </VisuallyHidden>
       <DialogContent
         className={cn(
           'top-1/3 translate-y-0 overflow-hidden rounded-4xl! p-0',

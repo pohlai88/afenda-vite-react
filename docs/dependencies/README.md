@@ -41,15 +41,15 @@ Long-form guides usually share a common shape: Afenda context, official document
 
 ### Web client (planned)
 
-| Guide                               | Status  | Scope                                                            |
-| ----------------------------------- | ------- | ---------------------------------------------------------------- |
-| [Tailwind CSS v4](./tailwind-v4.md) | Planned | Utility CSS setup and Vite integration when adopted.             |
-| [shadcn/ui](./shadcn-ui.md)         | Planned | Radix-based copy-in components, `components.json`, and theming.  |
-| [Storybook](./storybook.md)         | Planned | Component sandbox and documentation workflow.                    |
-| [i18n](./i18n.md)                   | Planned | Internationalization stack and localization rollout guidance.    |
-| [Tiptap](./tiptap.md)               | Planned | Rich-text editor stack based on ProseMirror.                     |
-| [XYFlow](./xyflow.md)               | Planned | Diagramming and node-based UI with `@xyflow/react`.              |
-| [wcag-contrast](./wcag-contrast.md) | Planned | Automated token and contrast checks for accessibility workflows. |
+| Guide                               | Status      | Scope                                                            |
+| ----------------------------------- | ----------- | ---------------------------------------------------------------- |
+| [Tailwind CSS v4](./tailwind-v4.md) | Adopted     | Utility CSS setup and Vite integration when adopted.             |
+| [shadcn/ui](./shadcn-ui.md)         | Adopted     | Radix-based copy-in components, `components.json`, and theming.  |
+| [Storybook](./storybook.md)         | Planned     | Component sandbox and documentation workflow.                    |
+| [i18n](./i18n.md)                   | Implemented | Internationalization stack and localization rollout guidance.    |
+| [Tiptap](./tiptap.md)               | Planned     | Rich-text editor stack based on ProseMirror.                     |
+| [XYFlow](./xyflow.md)               | Planned     | Diagramming and node-based UI with `@xyflow/react`.              |
+| [wcag-contrast](./wcag-contrast.md) | Planned     | Automated token and contrast checks for accessibility workflows. |
 
 ### Backend, data, and integrations (planned)
 
@@ -64,12 +64,13 @@ Long-form guides usually share a common shape: Afenda context, official document
 
 ### Optional / when you standardize
 
-| Guide                                                   | Status              | Scope                                                                         |
-| ------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------- |
-| [MSW](./msw.md)                                         | Optional            | API mocks in tests and Storybook when the team standardizes them.             |
-| [Auth.js / Auth0](./authjs-auth0.md)                    | Patterns documented | Authentication-library notes and pointers back to the auth architecture docs. |
-| [Vercel Serverless / Edge](./vercel-serverless-edge.md) | Not default         | Guidance for in-repo functions if the SPA later gains them.                   |
-| [Sentry / OpenTelemetry](./sentry-opentelemetry.md)     | Optional            | Error monitoring and tracing once observability is standardized.              |
+| Guide                                                   | Status              | Scope                                                                                                    |
+| ------------------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------- |
+| [MSW](./msw.md)                                         | Optional            | API mocks in tests and Storybook when the team standardizes them.                                        |
+| [Auth.js / Auth0](./authjs-auth0.md)                    | Patterns documented | Authentication-library notes and pointers back to the auth architecture docs.                            |
+| [Vercel Serverless / Edge](./vercel-serverless-edge.md) | Not default         | Guidance for in-repo functions if the SPA later gains them.                                              |
+| [Sentry / OpenTelemetry](./sentry-opentelemetry.md)     | Optional            | Error monitoring and tracing once observability is standardized.                                         |
+| [Translation platforms](./translation-platforms.md)     | Research            | Compare self-hosted localization platforms for Afenda translation operations and terminology governance. |
 
 ## Related documentation
 

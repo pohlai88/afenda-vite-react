@@ -281,11 +281,35 @@ const SCRIPT_FILE_OVERRIDES: Record<string, ScriptOverride> = {
     order: 5,
     runCommand: 'pnpm run script:check-afenda-config',
   },
+  'seal/check-ui-primitives.ts': {
+    title: 'Check UI primitives',
+    description:
+      'Validates the sealed packages/ui primitive boundary, approved inventory, and accessibility conventions.',
+    order: 8,
+    runCommand: 'pnpm run script:check-ui-primitives',
+  },
+  'seal/lock-ui-primitives.ts': {
+    title: 'Lock UI primitives',
+    description:
+      'Marks the sealed packages/ui primitive files read-only and stores the local unlock-key hash.',
+    order: 9,
+    runCommand: 'pnpm run script:lock-ui-primitives',
+  },
+  'seal/unlock-ui-primitives.ts': {
+    title: 'Unlock UI primitives',
+    description:
+      'Validates the local unlock key and marks sealed packages/ui primitive files writable for intentional edits.',
+    order: 10,
+    runCommand: 'pnpm run script:unlock-ui-primitives',
+  },
+  'seal/ui-primitives.ts': {
+    hidden: true,
+  },
   'generate-docs-readme.ts': {
     title: 'Generate docs README',
     description:
       'Generates stable `README.md` indexes for `docs/` and other supported repo directories.',
-    order: 10,
+    order: 15,
     runCommand: 'pnpm run script:generate-docs-readme',
   },
   'node-info.ts': {

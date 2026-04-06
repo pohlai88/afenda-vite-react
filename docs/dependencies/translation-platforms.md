@@ -1,3 +1,11 @@
+---
+title: Translation platforms
+description: Compare self-hosted localization platforms for Afenda translation operations and terminology governance.
+category: optional
+status: Research
+order: 90
+---
+
 # Translation platforms (Transifex-like) for Afenda
 
 This guide evaluates open-source, self-hosted localization platforms for Afenda and enforces a strict separation between operations workflow and semantic authority.

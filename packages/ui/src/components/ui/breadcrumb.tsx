@@ -2,6 +2,7 @@ import type * as React from 'react'
 import { Slot } from 'radix-ui'
 
 import { cn } from '@afenda/ui/lib/utils'
+import { VisuallyHidden } from '@afenda/ui/components/ui/visually-hidden'
 import { ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<'nav'>) {
@@ -103,7 +104,7 @@ function BreadcrumbEllipsis({
       {...props}
     >
       <MoreHorizontalIcon />
-      <span className="sr-only">More</span>
+      <VisuallyHidden>More</VisuallyHidden>
     </span>
   )
 }

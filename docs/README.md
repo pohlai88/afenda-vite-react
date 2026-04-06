@@ -13,27 +13,29 @@ These guides describe Afenda, Vite, and ERP concerns for this repository. They a
 
 ## Core documentation
 
-| Document                                              | Description                                                                                            |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| [Architecture](./ARCHITECTURE.md)                     | Monorepo + ERP systems view; SPA vs API vs database.                                                   |
-| [API reference](./API.md)                             | REST contract: `/api/tenants/{tenant}/...`, errors, and tenant-scoped routes.                          |
-| [Documentation scope](./DOCUMENTATION_SCOPE.md)       | Normative vs optional docs; what blocks implementation and what does not.                              |
-| [Project structure](./PROJECT_STRUCTURE.md)           | `apps/web` layout, routes, features, and migration toward `features/*`.                                |
-| [Design system](./DESIGN_SYSTEM.md)                   | Tokens, layout, motion, typography, and accessibility rules.                                           |
-| [Brand guidelines](./BRAND_GUIDELINES.md)             | Logo, palette, gradient rules, and Afenda visual identity guidance.                                    |
-| [Components and styling](./COMPONENTS_AND_STYLING.md) | React component patterns, colocation rules, and UI implementation guidance.                            |
-| [Database](./DATABASE.md)                             | PostgreSQL, Drizzle, migrations, and tenant-oriented schema notes.                                     |
-| [Authentication](./AUTHENTICATION.md)                 | Vite SPA + backend auth flow, sessions, guards, and Auth0 integration notes.                           |
-| [Roles and permissions](./ROLES_AND_PERMISSIONS.md)   | RBAC roles, PBAC permission keys, and API vs UI enforcement.                                           |
-| [State management](./STATE_MANAGEMENT.md)             | Local state, Zustand, TanStack Query, forms, and Context boundaries.                                   |
-| [Performance](./PERFORMANCE.md)                       | Bundle, list, memoization, and loading-state guidance for the web app.                                 |
-| [Project configuration](./PROJECT_CONFIGURATION.md)   | ESLint, Prettier, TypeScript, Turborepo, and repo tooling conventions.                                 |
-| [Testing](./TESTING.md)                               | Vitest + React Testing Library guidance for `apps/web`.                                                |
-| [Integrations](./INTEGRATIONS.md)                     | Third-party APIs, OAuth flows, webhooks, and sync patterns.                                            |
-| [Deployment](./DEPLOYMENT.md)                         | Vercel static deployment, environment variables, and SPA rewrites.                                     |
-| [Glossary](./GLOSSARY.md)                             | ERP and platform vocabulary used across the repository.                                                |
-| [Architecture evolution](./ARCHITECTURE_EVOLUTION.md) | Decision policy for when to upgrade architecture now vs later, with measurable triggers and ownership. |
-| [Monorepo boundaries](./MONOREPO_BOUNDARIES.md)       | This gives a deterministic scaffold for shared cross-app capabilities.                                 |
+| Document                                                                | Description                                                                                                 |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| [Architecture](./ARCHITECTURE.md)                                       | Monorepo + ERP systems view; SPA vs API vs database.                                                        |
+| [API reference](./API.md)                                               | REST contract: `/api/tenants/{tenant}/...`, errors, and tenant-scoped routes.                               |
+| [Documentation scope](./DOCUMENTATION_SCOPE.md)                         | Normative vs optional docs; what blocks implementation and what does not.                                   |
+| [Project structure](./PROJECT_STRUCTURE.md)                             | `apps/web` layout, routes, features, and migration toward `features/*`.                                     |
+| [Design system](./DESIGN_SYSTEM.md)                                     | Tokens, layout, motion, typography, and accessibility rules.                                                |
+| [Brand guidelines](./BRAND_GUIDELINES.md)                               | Logo, palette, gradient rules, and Afenda visual identity guidance.                                         |
+| [Components and styling](./COMPONENTS_AND_STYLING.md)                   | React component patterns, colocation rules, and UI implementation guidance.                                 |
+| [Database](./DATABASE.md)                                               | PostgreSQL, Drizzle, migrations, and tenant-oriented schema notes.                                          |
+| [Authentication](./AUTHENTICATION.md)                                   | Vite SPA + backend auth flow, sessions, guards, and Auth0 integration notes.                                |
+| [Roles and permissions](./ROLES_AND_PERMISSIONS.md)                     | RBAC roles, PBAC permission keys, and API vs UI enforcement.                                                |
+| [State management](./STATE_MANAGEMENT.md)                               | Local state, Zustand, TanStack Query, forms, and Context boundaries.                                        |
+| [Performance](./PERFORMANCE.md)                                         | Bundle, list, memoization, and loading-state guidance for the web app.                                      |
+| [Project configuration](./PROJECT_CONFIGURATION.md)                     | ESLint, Prettier, TypeScript, Turborepo, and repo tooling conventions.                                      |
+| [Testing](./TESTING.md)                                                 | Vitest + React Testing Library guidance for `apps/web`.                                                     |
+| [Integrations](./INTEGRATIONS.md)                                       | Third-party APIs, OAuth flows, webhooks, and sync patterns.                                                 |
+| [Deployment](./DEPLOYMENT.md)                                           | Vercel static deployment, environment variables, and SPA rewrites.                                          |
+| [Glossary](./GLOSSARY.md)                                               | ERP and platform vocabulary used across the repository.                                                     |
+| [Architecture evolution](./ARCHITECTURE_EVOLUTION.md)                   | Decision policy for when to upgrade architecture now vs later, with measurable triggers and ownership.      |
+| [ERP App Shell Specification](./APP_SHELL_SPEC.md)                      | Architecture specification for the authenticated ERP shell in apps/web.                                     |
+| [Monorepo boundaries](./MONOREPO_BOUNDARIES.md)                         | This gives a deterministic scaffold for shared cross-app capabilities.                                      |
+| [Tailwind + shadcn Migration Plan](./TAILWIND_SHADCN_MIGRATION_PLAN.md) | One-time execution plan for adopting Tailwind CSS v4, shadcn/ui, and ERP app shell foundations in apps/web. |
 
 ## Documentation collections
 

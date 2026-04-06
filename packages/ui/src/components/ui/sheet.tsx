@@ -3,6 +3,7 @@ import { Dialog as SheetPrimitive } from 'radix-ui'
 
 import { cn } from '@afenda/ui/lib/utils'
 import { Button } from '@afenda/ui/components/ui/button'
+import { VisuallyHidden } from '@afenda/ui/components/ui/visually-hidden'
 import { XIcon } from 'lucide-react'
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
@@ -74,7 +75,7 @@ function SheetContent({
               size="icon-sm"
             >
               <XIcon />
-              <span className="sr-only">Close</span>
+              <VisuallyHidden>Close</VisuallyHidden>
             </Button>
           </SheetPrimitive.Close>
         )}
