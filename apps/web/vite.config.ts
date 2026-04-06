@@ -2,6 +2,7 @@
 import { getAfendaVitestTestOptions } from '@afenda/testing/vitest/defaults'
 import { defineConfig, loadEnv } from 'vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import babel from '@rolldown/plugin-babel'
 import legacy from '@vitejs/plugin-legacy'
 import path from 'path'
@@ -22,6 +23,9 @@ export default defineConfig(({ command, mode }) => {
 
     // Plugin configuration
     plugins: [
+      // Tailwind CSS v4 plugin (must be before React)
+      tailwindcss(),
+
       // React plugin with Fast Refresh
       react({
         // JSX runtime (automatic is recommended for React 17+)
@@ -77,12 +81,7 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
-        '~': path.resolve(__dirname, './src'),
-        // Add more aliases as needed
-        components: path.resolve(__dirname, './src/components'),
-        utils: path.resolve(__dirname, './src/utils'),
-        hooks: path.resolve(__dirname, './src/hooks'),
-        types: path.resolve(__dirname, './src/types'),
+        '@afenda/ui': path.resolve(__dirname, '../../packages/ui/src'),
       },
     },
 
@@ -173,27 +172,6 @@ export default defineConfig(({ command, mode }) => {
       cssCodeSplit: true,
       // CSS minification
       cssMinify: mode === 'production',
-    },
-
-    // CSS configuration
-    css: {
-      // CSS modules
-      modules: {
-        localsConvention: 'camelCase',
-      },
-      // PostCSS configuration
-      postcss: './postcss.config.js',
-      // CSS preprocessor options
-      preprocessorOptions: {
-        scss: {
-          additionalData: '@import "@/styles/variables.scss";',
-        },
-        less: {
-          modifyVars: {
-            'primary-color': '#1890ff',
-          },
-        },
-      },
     },
 
     // Dependency optimization

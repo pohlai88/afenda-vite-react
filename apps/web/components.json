@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "radix-luma",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/index.css",
+    "baseColor": "neutral",
+    "cssVariables": true
+  },
+  "iconLibrary": "lucide",
+  "rtl": false,
+  "aliases": {
+    "components": "@/share/components",
+    "hooks": "@/share/hooks",
+    "lib": "@/share/lib",
+    "utils": "@afenda/ui/lib/utils",
+    "ui": "@afenda/ui/components"
+  }
+}

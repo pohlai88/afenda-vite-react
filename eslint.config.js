@@ -213,6 +213,14 @@ export default defineConfig([
   },
 
   {
+    name: 'packages/ui/component-library-overrides',
+    files: ['packages/ui/src/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+
+  {
     name: 'tooling-config-files',
     files: [
       'eslint.config.js',

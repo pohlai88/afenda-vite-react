@@ -1,16 +1,23 @@
 ---
 title: shadcn/ui
 description: Radix-based copy-in components, `components.json`, and theming.
-category: web-client-planned
-status: Planned
+category: web-client
+status: Adopted
 order: 20
 ---
 
 # shadcn/ui components guide (Afenda / Vite)
 
+Primary standard now lives in `docs/COMPONENTS_AND_STYLING.md`.
+Use this dependency page as ecosystem/reference context and keep implementation rules centralized in:
+
+- `docs/COMPONENTS_AND_STYLING.md`
+- `docs/APP_SHELL_SPEC.md`
+- `docs/TAILWIND_SHADCN_MIGRATION_PLAN.md`
+
 This document describes how **Afenda** intends to use **[shadcn/ui](https://ui.shadcn.com)**—reusable, accessible components built on **[Radix UI](https://www.radix-ui.com/)** primitives and styled with **[Tailwind CSS](https://tailwindcss.com/)**—inside **`apps/web`** (Vite + React, **not** Next.js).
 
-**Today:** `apps/web` does not yet ship Tailwind or a `components.json`; RHF + Zod are already in use. When you add shadcn, follow this guide and align tokens with [Design system](../DESIGN_SYSTEM.md) and [Brand guidelines](../BRAND_GUIDELINES.md).
+**Status:** Adopted for `apps/web`. Use [Components and styling](../COMPONENTS_AND_STYLING.md) as the canonical ruleset, and this page for dependency-level references.
 
 **Official documentation (source of truth for CLI and defaults):**
 
@@ -29,14 +36,14 @@ Afenda follows the **copy/paste** model: components are **not** a black-box depe
 
 ### Compared to a default shadcn init
 
-| Aspect            | Typical CLI default | Afenda convention                                                   |
-| ----------------- | ------------------- | ------------------------------------------------------------------- |
-| **Runtime**       | Next.js App Router  | **Vite SPA** — no React Server Components; no `'use client'`        |
-| **Location**      | `components/ui/`    | **`apps/web/src/share/components/ui/`** (shared client UI)         |
+| Aspect            | Typical CLI default | Afenda convention                                                                                                  |
+| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Runtime**       | Next.js App Router  | **Vite SPA** — no React Server Components; no `'use client'`                                                       |
+| **Location**      | `components/ui/`    | **`apps/web/src/share/components/ui/`** (shared client UI)                                                         |
 | **Alias**         | `@/components/ui`   | Prefer **`@/share/components/ui`** (or add a `vite` / `tsconfig` alias that resolves to `src/share/components/ui`) |
-| **`cn()`**        | `@/lib/utils`       | **`@/share/utils/cn`** (or `share/lib/utils.ts`) — **not** `src/lib/` |
-| **Global CSS**    | `app/globals.css`   | **`src/index.css`** (or your single entry stylesheet)               |
-| **Barrel export** | Often omitted       | Optional **`index.ts`** for stable import paths                     |
+| **`cn()`**        | `@/lib/utils`       | **`@/share/utils/cn`** (or `share/lib/utils.ts`) — **not** `src/lib/`                                              |
+| **Global CSS**    | `app/globals.css`   | **`src/index.css`** (or your single entry stylesheet)                                                              |
+| **Barrel export** | Often omitted       | Optional **`index.ts`** for stable import paths                                                                    |
 
 You can use **`npx shadcn@latest add <name>`** once **`components.json`** exists under **`apps/web/`**, or copy from [shadcn docs](https://ui.shadcn.com/docs/components) and fix imports manually.
 

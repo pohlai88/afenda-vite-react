@@ -15,6 +15,7 @@
   "exports": {
     "./base.json": "./base.json",
     "./react-app.json": "./react-app.json",
+    "./react-library.json": "./react-library.json",
     "./node.json": "./node.json"
   }
 }

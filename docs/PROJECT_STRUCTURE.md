@@ -18,6 +18,8 @@ Three top-level buckets under **`src/`**:
 
 **Backend data and Drizzle** live in **separate packages** (e.g. `apps/api`, `packages/database`)—not under `apps/web/src`. See [Database](./DATABASE.md) and [Architecture](./ARCHITECTURE.md).
 
+**UI primitives** (shadcn/ui copy-in components, `cn()` utility) live in [`packages/ui/`](../packages/ui/) (`@afenda/ui`). The shadcn CLI deposits primitives here; `apps/web` depends on `@afenda/ui` and imports them as `@afenda/ui/components/<name>`. Both workspaces have a `components.json` with matching `style`, `iconLibrary`, and `baseColor` per [shadcn monorepo requirements](https://ui.shadcn.com/docs/monorepo).
+
 **Workspace testing** (unit, future E2E, Storybook, UI/a11y glue) is centered on [`packages/testing/`](../packages/testing/) (`@afenda/testing`); Vitest **`setupFiles`** in **`apps/web/vite.config.ts`** points at **`@afenda/testing/vitest/setup`**—see [Testing](./TESTING.md).
 
 ---
@@ -91,7 +93,8 @@ Place shared building blocks **under `share/`**, not at `src/` root:
 | React providers, query client                   | `share/providers/`                                              |
 | Global / shell client state                     | `share/state/`                                                  |
 | **i18n** runtime, locale JSON, glossary & audit | **`share/i18n/`** ([i18n dependencies](./dependencies/i18n.md)) |
-| Design-system primitives, layout shell          | `share/components/` (when added)                                |
+| UI primitives (shadcn/ui)                       | `packages/ui/src/components/ui/` (`@afenda/ui`)                 |
+| App shell layout, composed widgets              | `share/components/layout/` (when added)                         |
 | Shared React context                            | `share/contexts/` (when added)                                  |
 | Reusable hooks                                  | `share/hooks/` (when added)                                     |
 | HTTP / API client helpers                       | `share/services/` (when added)                                  |
@@ -107,6 +110,7 @@ When you add a new **`share/`** subdirectory that must always exist, list it und
 | OAuth token exchange, webhooks                               | Backend API ([Integrations](./INTEGRATIONS.md))               |
 | Long-running sync jobs                                       | Workers / queue consumers, not the Vite bundle                |
 | Dumping-ground `src/lib` or extra top-level `src/components` | Use **`share/`** (enforced topology)                          |
+| shadcn/ui primitive components in `apps/web`                 | Use **`packages/ui`** (`@afenda/ui`)                          |
 
 ---
 

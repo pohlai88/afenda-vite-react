@@ -12,6 +12,7 @@
   },
   "paths": {
     "webApp": "apps/web",
+    "uiPackage": "packages/ui",
     "typescriptSharedConfig": "packages/typescript-config"
   },
   "readmeTargets": [
@@ -83,6 +84,12 @@
         "provider",
         "services"
       ],
+      "requireDirectoriesWhenPackageExists": true
+    },
+    "uiPackageTemplate": {
+      "packagePath": "packages/ui",
+      "requiredDirectories": ["src/components/ui", "src/hooks", "src/lib"],
+      "requiredFiles": ["components.json", "package.json", "tsconfig.json"],
       "requireDirectoriesWhenPackageExists": true
     },
     "webClientSrc": {
