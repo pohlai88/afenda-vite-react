@@ -9,6 +9,7 @@ export type ReadmeTargetMode =
   | 'docs-collections'
   | 'scripts'
   | 'generic-formal-directory'
+  | 'packages-ui'
 
 export interface ReadmeTargetDefinition {
   path: string
@@ -179,8 +180,8 @@ export function assertAfendaConfigShape(
     'workspaceGovernance.featureTemplate.requiredFiles',
   )
   assert(
-    typeof value.workspaceGovernance.featureTemplate.enforceWhenFeatureExists ===
-      'boolean',
+    typeof value.workspaceGovernance.featureTemplate
+      .enforceWhenFeatureExists === 'boolean',
     'workspaceGovernance.featureTemplate.enforceWhenFeatureExists must be a boolean.',
   )
 
@@ -215,7 +216,9 @@ export function assertAfendaConfigShape(
     'workspaceGovernance.webClientSrc.allowedTopLevelDirectories',
   )
   assert(
-    Array.isArray(value.workspaceGovernance.webClientSrc.requiredShareSubdirectories),
+    Array.isArray(
+      value.workspaceGovernance.webClientSrc.requiredShareSubdirectories,
+    ),
     'workspaceGovernance.webClientSrc.requiredShareSubdirectories must be an array.',
   )
   value.workspaceGovernance.webClientSrc.requiredShareSubdirectories.forEach(
@@ -263,6 +266,15 @@ export function assertReadmeTargetDefinition(
     assertNonEmptyString(value.title, `${label}.title`)
     assertNonEmptyString(value.description, `${label}.description`)
   }
+
+  if (value.mode === 'packages-ui') {
+    assertNonEmptyString(value.title, `${label}.title`)
+    assertNonEmptyString(value.description, `${label}.description`)
+    assert(
+      value.path === 'packages/ui',
+      `${label}.path must be "packages/ui" for packages-ui mode.`,
+    )
+  }
 }
 
 export function assertReadmeTargetMode(
@@ -273,8 +285,9 @@ export function assertReadmeTargetMode(
     value === 'docs-root' ||
       value === 'docs-collections' ||
       value === 'scripts' ||
-      value === 'generic-formal-directory',
-    `${label} must be one of: docs-root, docs-collections, scripts, generic-formal-directory.`,
+      value === 'generic-formal-directory' ||
+      value === 'packages-ui',
+    `${label} must be one of: docs-root, docs-collections, scripts, generic-formal-directory, packages-ui.`,
   )
 }
 

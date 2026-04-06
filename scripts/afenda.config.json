@@ -37,6 +37,12 @@
       "title": "Shadcn skill docs",
       "description": "Generate an index for the in-repo shadcn skill guidance and companion markdown references.",
       "includeChildDirectories": true
+    },
+    {
+      "path": "packages/ui",
+      "mode": "packages-ui",
+      "title": "Afenda UI package",
+      "description": "Shared shadcn-style components, hooks, utilities, and global styles for the web client (`@afenda/ui`)."
     }
   ],
   "workspaceGovernance": {

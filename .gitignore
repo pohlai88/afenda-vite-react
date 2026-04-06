@@ -30,4 +30,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-scripts/seal/ui-primitives.lock.json

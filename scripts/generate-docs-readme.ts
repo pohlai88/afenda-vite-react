@@ -281,35 +281,11 @@ const SCRIPT_FILE_OVERRIDES: Record<string, ScriptOverride> = {
     order: 5,
     runCommand: 'pnpm run script:check-afenda-config',
   },
-  'seal/check-ui-primitives.ts': {
-    title: 'Check UI primitives',
-    description:
-      'Validates the sealed packages/ui primitive boundary, approved inventory, and accessibility conventions.',
-    order: 8,
-    runCommand: 'pnpm run script:check-ui-primitives',
-  },
-  'seal/lock-ui-primitives.ts': {
-    title: 'Lock UI primitives',
-    description:
-      'Marks the sealed packages/ui primitive files read-only and stores the local unlock-key hash.',
-    order: 9,
-    runCommand: 'pnpm run script:lock-ui-primitives',
-  },
-  'seal/unlock-ui-primitives.ts': {
-    title: 'Unlock UI primitives',
-    description:
-      'Validates the local unlock key and marks sealed packages/ui primitive files writable for intentional edits.',
-    order: 10,
-    runCommand: 'pnpm run script:unlock-ui-primitives',
-  },
-  'seal/ui-primitives.ts': {
-    hidden: true,
-  },
   'generate-docs-readme.ts': {
     title: 'Generate docs README',
     description:
-      'Generates stable `README.md` indexes for `docs/` and other supported repo directories.',
-    order: 15,
+      'Generates stable `README.md` indexes for `docs/`, `packages/ui`, and other supported repo directories.',
+    order: 10,
     runCommand: 'pnpm run script:generate-docs-readme',
   },
   'node-info.ts': {
@@ -540,6 +516,44 @@ const DEPENDENCY_CATEGORY_ORDER = [
   'optional',
 ] as const
 
+/** Governed `packages/ui` source areas that receive an auto-generated `README.md`. */
+const PACKAGES_UI_SOURCE_SUBDIRS: ReadonlyArray<{
+  relativeDir: string
+  heading: string
+  blurb: string
+}> = [
+  {
+    relativeDir: 'src/components/ui',
+    heading: 'Components',
+    blurb:
+      'Radix-based primitives and copy-in components (shadcn-style), exported as `@afenda/ui/components/*`.',
+  },
+  {
+    relativeDir: 'src/hooks',
+    heading: 'Hooks',
+    blurb: 'React hooks exported from `@afenda/ui/hooks`.',
+  },
+  {
+    relativeDir: 'src/lib',
+    heading: 'Utilities',
+    blurb: 'Helper functions exported from `@afenda/ui/lib`.',
+  },
+  {
+    relativeDir: 'src/styles',
+    heading: 'Styles',
+    blurb: 'Global CSS and design tokens for the UI package.',
+  },
+]
+
+interface UiSourceModuleEntry {
+  fileName: string
+  absolutePath: string
+  relativeToPackage: string
+  title: string
+  description: string
+  order: number
+}
+
 async function main() {
   const afendaConfig = await loadAfendaConfig()
 
@@ -585,6 +599,11 @@ async function main() {
         path.join(target.absolutePath, 'README.md'),
         await renderFormalDirectoryReadme(target, workspaceRoot),
       )
+      continue
+    }
+
+    if (target.mode === 'packages-ui') {
+      await renderPackagesUiReadmes(workspaceRoot, afendaConfig, target)
       continue
     }
 
@@ -1093,6 +1112,288 @@ async function getGenericChildDirectorySections(
         left.title.localeCompare(right.title) ||
         left.directoryName.localeCompare(right.directoryName),
     )
+}
+
+async function renderPackagesUiReadmes(
+  workspaceRoot: string,
+  afendaConfig: AfendaConfig,
+  target: ResolvedReadmeTarget,
+): Promise<void> {
+  const packageRoot = target.absolutePath
+
+  for (const section of PACKAGES_UI_SOURCE_SUBDIRS) {
+    const sectionDir = path.join(packageRoot, section.relativeDir)
+
+    try {
+      await fs.access(sectionDir)
+    } catch {
+      continue
+    }
+
+    await writeIfChanged(
+      path.join(sectionDir, 'README.md'),
+      await renderUiPackageSubdirectoryReadme(
+        packageRoot,
+        workspaceRoot,
+        section,
+        afendaConfig.paths.webApp,
+      ),
+    )
+  }
+
+  await writeIfChanged(
+    path.join(packageRoot, 'README.md'),
+    await renderUiPackageRootReadme(
+      packageRoot,
+      workspaceRoot,
+      afendaConfig,
+      target,
+    ),
+  )
+}
+
+async function renderUiPackageRootReadme(
+  packageRoot: string,
+  workspaceRoot: string,
+  afendaConfig: AfendaConfig,
+  target: ResolvedReadmeTarget,
+): Promise<string> {
+  const title = target.title ?? 'Afenda UI package'
+  const description =
+    target.description ??
+    `Shared UI package for \`${afendaConfig.paths.webApp}\` and consumers of \`@afenda/ui\`.`
+
+  const indexRows: string[][] = []
+
+  for (const section of PACKAGES_UI_SOURCE_SUBDIRS) {
+    const sectionDir = path.join(packageRoot, section.relativeDir)
+
+    try {
+      await fs.access(sectionDir)
+    } catch {
+      continue
+    }
+
+    const readmePath = path.join(sectionDir, 'README.md')
+
+    indexRows.push([
+      section.heading,
+      section.blurb,
+      formatLink(packageRoot, readmePath, `${section.heading} index`),
+    ])
+  }
+
+  const sections = [
+    GENERATED_HEADER,
+    `# ${title}`,
+    '',
+    description,
+    '',
+    `This package is consumed by \`${afendaConfig.paths.webApp}\` via \`@afenda/ui\` (see \`package.json\` \`exports\`).`,
+    '',
+    '## Source index',
+    '',
+    renderTable(['Area', 'Description', 'Index'], indexRows),
+    '',
+    '## Related',
+    '',
+    `- [Repository root README](${relativeMarkdownPath(packageRoot, path.join(workspaceRoot, 'README.md'))})`,
+    `- [Documentation index](${relativeMarkdownPath(packageRoot, path.join(workspaceRoot, 'docs', 'README.md'))})`,
+    `- [Components and styling](${relativeMarkdownPath(packageRoot, path.join(workspaceRoot, 'docs', 'COMPONENTS_AND_STYLING.md'))})`,
+  ]
+
+  return withTrailingNewline(sections.join('\n'))
+}
+
+async function renderUiPackageSubdirectoryReadme(
+  packageRoot: string,
+  workspaceRoot: string,
+  section: (typeof PACKAGES_UI_SOURCE_SUBDIRS)[number],
+  webAppPath: string,
+): Promise<string> {
+  const sectionDir = path.join(packageRoot, section.relativeDir)
+  const entries = await getUiSourceModuleEntries(sectionDir, packageRoot)
+
+  assertUniqueTitles(entries, `packages/ui/${section.relativeDir}`)
+  assertNonEmptyUiDescriptions(entries, `packages/ui/${section.relativeDir}`)
+
+  const sections = [
+    GENERATED_HEADER,
+    `# ${section.heading}`,
+    '',
+    section.blurb,
+    '',
+    renderTable(
+      ['Module', 'Description'],
+      entries.map((entry) => [
+        formatLink(sectionDir, entry.absolutePath, entry.title),
+        entry.description,
+      ]),
+    ),
+    '',
+    '## Related',
+    '',
+    `- [UI package README](${relativeMarkdownPath(sectionDir, path.join(packageRoot, 'README.md'))}) - Package overview.`,
+    `- [Web app](${relativeMarkdownPath(sectionDir, path.join(workspaceRoot, webAppPath))}) - Primary consumer (\`${webAppPath}\`).`,
+  ]
+
+  return withTrailingNewline(sections.join('\n'))
+}
+
+function assertNonEmptyUiDescriptions(
+  entries: UiSourceModuleEntry[],
+  label: string,
+) {
+  for (const entry of entries) {
+    if (!entry.description.trim()) {
+      throw new Error(
+        `Empty description for ${entry.relativeToPackage} in ${label}.`,
+      )
+    }
+  }
+}
+
+async function getUiSourceModuleEntries(
+  directory: string,
+  packageRoot: string,
+): Promise<UiSourceModuleEntry[]> {
+  const files = await collectFlatUiSourceFiles(directory)
+
+  const entries = await Promise.all(
+    files.map(async (fileName) => {
+      const absolutePath = path.join(directory, fileName)
+      const content = await fs.readFile(absolutePath, 'utf8')
+      const title = extractSourceModuleTitle(content, fileName)
+      const description = extractSourceModuleDescription(content, title)
+
+      return {
+        fileName,
+        absolutePath,
+        relativeToPackage: toPosixPath(
+          path.relative(packageRoot, absolutePath),
+        ),
+        title,
+        description,
+        order: 999,
+      } satisfies UiSourceModuleEntry
+    }),
+  )
+
+  return sortEntries(entries)
+}
+
+async function collectFlatUiSourceFiles(directory: string): Promise<string[]> {
+  const dirEntries = await fs.readdir(directory, { withFileTypes: true })
+
+  return dirEntries
+    .filter((entry) => entry.isFile())
+    .map((entry) => entry.name)
+    .filter((name) => {
+      if (name === 'README.md') {
+        return false
+      }
+
+      if (!/\.(ts|tsx|css)$/i.test(name)) {
+        return false
+      }
+
+      if (name.endsWith('.d.ts')) {
+        return false
+      }
+
+      return true
+    })
+    .sort((left, right) => left.localeCompare(right))
+}
+
+function extractSourceModuleTitle(content: string, fileName: string): string {
+  if (/\.css$/i.test(fileName)) {
+    const stem = fileName.replace(/\.css$/i, '')
+
+    return stem === 'globals'
+      ? 'Global styles'
+      : toTitleCase(stem.replace(/[-_]/g, ' '))
+  }
+
+  const exportFn = content.match(
+    /export\s+(?:async\s+)?function\s+([A-Za-z_$][\w$]*)/,
+  )
+
+  if (exportFn) {
+    return exportFn[1]
+  }
+
+  const exportConstTyped = content.match(
+    /export\s+const\s+([A-Za-z_$][\w$]*)\s*:/,
+  )
+
+  if (exportConstTyped) {
+    return exportConstTyped[1]
+  }
+
+  const exportConst = content.match(/export\s+const\s+([A-Za-z_$][\w$]*)/)
+
+  if (exportConst) {
+    return exportConst[1]
+  }
+
+  const innerFn = content.match(/^\s*function\s+([A-Z][A-Za-z0-9_]*)\s*\(/m)
+
+  if (innerFn) {
+    return innerFn[1]
+  }
+
+  const stem = fileName.replace(/\.(tsx?)$/i, '')
+
+  if (stem === 'index') {
+    return 'Public exports'
+  }
+
+  if (stem.startsWith('use-')) {
+    const parts = stem.slice(4).split(/[-_]/)
+
+    return (
+      'use' +
+      parts
+        .map((part) =>
+          part.length > 0
+            ? `${part.charAt(0).toUpperCase()}${part.slice(1).toLowerCase()}`
+            : '',
+        )
+        .join('')
+    )
+  }
+
+  return toTitleCase(stem.replace(/[-_]/g, ' '))
+}
+
+function extractSourceModuleDescription(content: string, title: string) {
+  const leadingCommentMatch = content.match(/^\/\*\*([\s\S]*?)\*\//)
+
+  if (leadingCommentMatch) {
+    const commentLines = leadingCommentMatch[1]
+      .split(/\r?\n/)
+      .map((line) => line.replace(/^\s*\*\s?/, '').trim())
+      .filter((line) => line && !line.startsWith('@'))
+
+    const firstNarrativeLine = commentLines.find(
+      (line) => !isLowSignalDescription(stripMarkdown(line)),
+    )
+
+    if (firstNarrativeLine) {
+      return clampDescription(stripMarkdown(firstNarrativeLine))
+    }
+  }
+
+  return buildUiSourceFallbackDescription(title)
+}
+
+function buildUiSourceFallbackDescription(title: string) {
+  if (title === 'Public exports') {
+    return 'Barrel file that re-exports symbols from sibling modules for this subpath of `@afenda/ui`.'
+  }
+
+  return `Shared \`${title}\` source in \`@afenda/ui\`; open the file for implementation details.`
 }
 
 async function getDirectoryEntries(

@@ -58,7 +58,8 @@
               "docs-root",
               "docs-collections",
               "scripts",
-              "generic-formal-directory"
+              "generic-formal-directory",
+              "packages-ui"
             ]
           },
           "title": { "type": "string", "minLength": 1 },
@@ -70,6 +71,16 @@
             "if": {
               "properties": {
                 "mode": { "const": "generic-formal-directory" }
+              }
+            },
+            "then": {
+              "required": ["title", "description"]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "mode": { "const": "packages-ui" }
               }
             },
             "then": {
