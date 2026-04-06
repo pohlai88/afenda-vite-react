@@ -2,7 +2,10 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { ErpModulePage } from '@/share/i18n'
 
+import { useFinanceActionBar } from '../use-finance-action-bar'
+
 export function FinanceView() {
+  useFinanceActionBar()
   const { t } = useTranslation(['invoice', 'allocation', 'settlement'])
 
   return (

@@ -15,20 +15,27 @@ import { NotFoundView } from '@/features/not-found'
 import { ReportsView } from '@/features/reports'
 import { SalesView } from '@/features/sales'
 import { SettingsView } from '@/features/settings'
+import { ErpLayout } from '@/share/components/layout'
 
 export const featureRoutes: RouteObject[] = [
-  { path: '/app', element: <Navigate to="/app/dashboard" replace /> },
   { path: '/app/login', element: <LoginView /> },
-  { path: '/app/dashboard', element: <DashboardView /> },
-  { path: '/app/inventory', element: <InventoryView /> },
-  { path: '/app/sales', element: <SalesView /> },
-  { path: '/app/customers', element: <CustomersView /> },
-  { path: '/app/employees', element: <EmployeesView /> },
-  { path: '/app/finance', element: <FinanceView /> },
-  { path: '/app/invoices', element: <InvoiceView /> },
-  { path: '/app/allocations', element: <AllocationView /> },
-  { path: '/app/settlements', element: <SettlementView /> },
-  { path: '/app/reports', element: <ReportsView /> },
-  { path: '/app/settings', element: <SettingsView /> },
-  { path: '/app/*', element: <NotFoundView /> },
+  {
+    path: '/app',
+    element: <ErpLayout />,
+    children: [
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: 'dashboard', element: <DashboardView /> },
+      { path: 'inventory', element: <InventoryView /> },
+      { path: 'sales', element: <SalesView /> },
+      { path: 'customers', element: <CustomersView /> },
+      { path: 'employees', element: <EmployeesView /> },
+      { path: 'finance', element: <FinanceView /> },
+      { path: 'invoices', element: <InvoiceView /> },
+      { path: 'allocations', element: <AllocationView /> },
+      { path: 'settlements', element: <SettlementView /> },
+      { path: 'reports', element: <ReportsView /> },
+      { path: 'settings', element: <SettingsView /> },
+      { path: '*', element: <NotFoundView /> },
+    ],
+  },
 ]

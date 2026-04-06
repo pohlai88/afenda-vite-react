@@ -8,6 +8,6 @@ export {
   formatPercent,
   getFormatLocale,
 } from './format'
-export { LanguageSwitcher } from './components/LanguageSwitcher'
+export { LanguageSwitcher } from './components/language-switcher'
 export { ErpModulePage } from './components/ErpModulePage'
 export type { ErpModulePageId } from './components/ErpModulePage'

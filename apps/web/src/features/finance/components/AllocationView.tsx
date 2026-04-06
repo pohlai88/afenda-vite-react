@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
 
+import { useFinanceActionBar } from '../use-finance-action-bar'
+
 export function AllocationView() {
+  useFinanceActionBar()
   const { t } = useTranslation('allocation')
 
   return (

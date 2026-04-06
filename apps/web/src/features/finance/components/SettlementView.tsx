@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
 
+import { useFinanceActionBar } from '../use-finance-action-bar'
+
 export function SettlementView() {
+  useFinanceActionBar()
   const { t } = useTranslation('settlement')
 
   return (

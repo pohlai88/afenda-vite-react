@@ -56,9 +56,6 @@
   "files.eol": "\n",
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
-  "files.readonlyInclude": {
-    "**/packages/ui/**": true
-  },
 
   "search.exclude": {
     "**/node_modules": true,

@@ -1,6 +1,7 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+  - 'packages/features/*'
 
 # Central versions for deps shared across workspace packages.
 # Reference in package.json as "catalog:" (see https://pnpm.io/catalogs).

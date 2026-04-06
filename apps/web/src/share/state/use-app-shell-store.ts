@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
+function applyThemeClass(theme: 'light' | 'dark') {
+  if (typeof document === 'undefined') return
+  document.documentElement.classList.toggle('dark', theme === 'dark')
+}
+
 interface AppShellState {
   currentUser: {
     id: string | null
@@ -33,7 +38,10 @@ export const useAppShellStore = create<AppShellState>()(
         logout: () => set({ currentUser: null }),
         toggleSidebar: () =>
           set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-        setTheme: (theme) => set({ theme }),
+        setTheme: (theme) => {
+          set({ theme })
+          applyThemeClass(theme)
+        },
         setLanguage: (language) => set({ language }),
         updateLastModified: (module) =>
           set((state) => ({
@@ -50,6 +58,9 @@ export const useAppShellStore = create<AppShellState>()(
           language: state.language,
           sidebarOpen: state.sidebarOpen,
         }),
+        onRehydrateStorage: () => (state) => {
+          if (state?.theme) applyThemeClass(state.theme)
+        },
       },
     ),
     { name: 'app-shell-store' },

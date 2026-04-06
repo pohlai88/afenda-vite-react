@@ -17,7 +17,8 @@ This document defines **key terms** used in the **Afenda** monorepo so product, 
 7. [Optional product modules (reference)](#7-optional-product-modules-reference)
 8. [Disambiguation summary](#8-disambiguation-summary)
 9. [External references](#9-external-references)
-10. [Maintenance](#10-maintenance)
+10. [Truth operating UI (Afenda shell)](#10-truth-operating-ui-afenda-shell)
+11. [Maintenance](#11-maintenance)
 
 ---
 
@@ -25,11 +26,11 @@ This document defines **key terms** used in the **Afenda** monorepo so product, 
 
 Afenda’s primary UI is a **Vite + React SPA** in **`apps/web`**. [Vite](https://vitejs.dev/) builds a **client** bundle for the browser. Business rules, secrets, and **PostgreSQL** access belong on a **server** (API, workers, serverless)—see [Architecture](./ARCHITECTURE.md).
 
-| Term | Meaning in Afenda |
-| --- | --- |
-| **Client** | Code that runs in the **browser** after `vite build` (React tree, TanStack Query, Zustand, etc.). Uses **`import.meta.env`** and **`VITE_*`** variables ([Deployment](./DEPLOYMENT.md)). |
-| **Server / API** | Trusted runtime that holds **`DATABASE_URL`**, signs tokens, enforces authorization. **Never** ship DB credentials in the client bundle. |
-| **Environment variables** | **`VITE_*`** — exposed to client build. **No `VITE_` prefix** — server-only (Auth secrets, DB, provider keys). |
+| Term                         | Meaning in Afenda                                                                                                                                                                                                 |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Client**                   | Code that runs in the **browser** after `vite build` (React tree, TanStack Query, Zustand, etc.). Uses **`import.meta.env`** and **`VITE_*`** variables ([Deployment](./DEPLOYMENT.md)).                          |
+| **Server / API**             | Trusted runtime that holds **`DATABASE_URL`**, signs tokens, enforces authorization. **Never** ship DB credentials in the client bundle.                                                                          |
+| **Environment variables**    | **`VITE_*`** — exposed to client build. **No `VITE_` prefix** — server-only (Auth secrets, DB, provider keys).                                                                                                    |
 | **SSR / extra environments** | The default product is **not** Next.js SSR. Vite 6’s [Environment API](https://vitejs.dev/guide/api-environment) allows multiple build targets (e.g. edge, workers); use it only if you add non-browser runtimes. |
 
 ---
@@ -65,11 +66,11 @@ An **employee** (or more generally a **party** / **business partner**) is a **do
 
 **Difference (common pattern):**
 
-| | User | Employee / party |
-| --- | --- | --- |
-| Purpose | **Access** the system | **Represents** someone in business data |
-| Login | Yes | Optional |
-| Per tenant | Membership + roles | Org structure, HR, approvals |
+|            | User                  | Employee / party                        |
+| ---------- | --------------------- | --------------------------------------- |
+| Purpose    | **Access** the system | **Represents** someone in business data |
+| Login      | Yes                   | Optional                                |
+| Per tenant | Membership + roles    | Org structure, HR, approvals            |
 
 ---
 
@@ -162,13 +163,13 @@ Similarly, **AI-assisted** features (quizzes, agenda suggestions, semantic searc
 
 ## 8. Disambiguation summary
 
-| A | B |
-| --- | --- |
-| **User** | **Employee / party** — login identity vs business record |
-| **Tenant** | **Legal entity** — customer org vs statutory company (tenant may have many legal entities) |
-| **Role (RBAC)** | **Job title** — permissions vs HR label |
-| **Posting (accounting)** | **HTTP POST** — financial transfer vs API verb |
-| **Client (Vite)** | **Customer client** — browser runtime vs CRM “account” |
+| A                        | B                                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| **User**                 | **Employee / party** — login identity vs business record                                   |
+| **Tenant**               | **Legal entity** — customer org vs statutory company (tenant may have many legal entities) |
+| **Role (RBAC)**          | **Job title** — permissions vs HR label                                                    |
+| **Posting (accounting)** | **HTTP POST** — financial transfer vs API verb                                             |
+| **Client (Vite)**        | **Customer client** — browser runtime vs CRM “account”                                     |
 
 ---
 
@@ -180,7 +181,24 @@ Similarly, **AI-assisted** features (quizzes, agenda suggestions, semantic searc
 
 ---
 
-## 10. Maintenance
+## 10. Truth operating UI (Afenda shell)
+
+Afenda’s ERP chrome is a **truth-aware navigation system**: the shell surfaces **integrity state**, **scope**, and **resolution paths**, not only generic SaaS patterns.
+
+| Term                        | Meaning in Afenda                                                                                                                                                                                                                             |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Truth scope**             | Deterministic operational context for ERP work: tenant, **legal entity**, **accounting period**, and **reporting currency**. Wrong scope ⇒ wrong valuations, allocations, and consolidation. Typed as `TruthScope` in `@afenda/core/truth`.   |
+| **Truth status**            | State of a single **invariant** or business rule: severity, optional priority, **scope impact** (global / entity / transaction), message, optional **doctrine** reference, and optional **resolution** spec (`auto` / `manual` / `assisted`). |
+| **Truth health summary**    | Aggregated view: **integrity score**, invariant failures, warnings, last reconciliation timestamp. Shown in the user menu and drives high-level signals.                                                                                      |
+| **Truth alert**             | UI-facing alert derived from truth status: category (invariant, financial integrity, system, message), read state, and links toward entity refs / resolution. Distinct from generic “notifications”.                                          |
+| **Resolution (spec)**       | How an issue is fixed: stable **key**, resolution **type**, optional **action path** (route or command). AI or assisted UX is optional; the **spec** is mandatory for deterministic UX.                                                       |
+| **Truth UI interpretation** | Presentation metadata (badges, tab strip models, CSS severity mapping) lives in `@afenda/core/truth-ui`, separate from canonical **truth** contracts so UI evolution cannot corrupt doctrine-stable types.                                    |
+
+**Implementation references:** `packages/features/core` (`@afenda/core`), truth tokens in `apps/web/src/index.css` (`--color-truth-*`), shell components under `apps/web/src/share/components/navigation` and `shell-ui`.
+
+---
+
+## 11. Maintenance
 
 Update this glossary when:
 
@@ -188,4 +206,4 @@ Update this glossary when:
 2. **Tenant** or **auth** model changes ([Authentication](./AUTHENTICATION.md)).
 3. Terms are **misused** in UI or APIs—fix docs and labels together.
 
-**Last updated:** 2026-04-05
+**Last updated:** 2026-04-06

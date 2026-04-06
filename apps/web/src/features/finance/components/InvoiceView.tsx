@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
 
+import { useFinanceActionBar } from '../use-finance-action-bar'
+
 export function InvoiceView() {
+  useFinanceActionBar()
   const { t } = useTranslation('invoice')
 
   return (
