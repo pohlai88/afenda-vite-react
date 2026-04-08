@@ -81,6 +81,7 @@ Aligned with [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) and [Off
 
 ## Related documentation
 
+- [Vite enterprise practices (workspace)](../VITE_ENTERPRISE_WORKSPACE.md) — periodic review checklist for `apps/web` + CI
 - [React](./react.md)
 - [Vitest](./vitest.md)
 - [TypeScript](./typescript.md)

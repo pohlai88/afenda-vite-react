@@ -1,0 +1,20 @@
+id: no-inline-record-classmap
+language: TypeScript
+severity: warning
+message: "Inline object with Tailwind class values found inside a Record-typed variable. Semantic class mappings belong in @afenda/shadcn-ui — use a governed resolver instead."
+note: "Move this mapping to packages/shadcn-ui/src/semantic/domain/ and expose it via a getter. See packages/shadcn-ui/RULES.md."
+files:
+  - "apps/**/*.{ts,tsx}"
+rule:
+  kind: variable_declarator
+  all:
+    - has:
+        kind: type_annotation
+        regex: "Record<"
+    - has:
+        kind: object
+        has:
+          kind: pair
+          has:
+            kind: string
+            regex: "(bg|text|border|ring|fill|stroke|rounded|shadow)-"

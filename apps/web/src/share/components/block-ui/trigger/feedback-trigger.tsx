@@ -20,8 +20,8 @@ export function FeedbackTrigger({ onClick, className }: FeedbackTriggerProps) {
       type="button"
       variant="ghost"
       size="sm"
-      className={cn('h-8 px-2 text-sm font-medium', className)}
       onClick={onClick}
+      className={cn(className)}
       aria-label={t('feedback.aria_label', 'Send feedback')}
     >
       {t('feedback.label', 'Feedback')}

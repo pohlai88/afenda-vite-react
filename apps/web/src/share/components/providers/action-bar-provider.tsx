@@ -10,34 +10,65 @@ import {
 
 import type { TruthActionBarTab } from '@afenda/core/truth-ui'
 
+import {
+  selectActiveActionBarPrefs,
+  useActionBarPrefsStore,
+} from '@/share/client-store'
+
+import { resolveEffectiveActionBarTabs } from './action-bar-effective-tabs'
 import type {
   ActionBarContextValue,
   ActionBarProviderProps,
+  UseActionBarOptions,
 } from './action-bar-provider.types'
 
 const EMPTY_TABS: readonly TruthActionBarTab[] = []
 
 const ActionBarContext = createContext<ActionBarContextValue | null>(null)
 
+interface Registration {
+  readonly scopeKey: string
+  readonly tabs: readonly TruthActionBarTab[]
+}
+
 /**
- * ActionBarProvider manages the Row 2 action bar tabs.
- * Module pages register their tabs via useActionBar(), and
- * the action bar component consumes them via useActionBarContext().
+ * ActionBarProvider manages Row 2: available actions per scope and user visibility prefs.
+ * Module views register a catalog via `useActionBar({ scopeKey, tabs })`.
  */
 export function ActionBarProvider({ children }: ActionBarProviderProps) {
-  const [tabs, setTabs] = useState<readonly TruthActionBarTab[]>(EMPTY_TABS)
+  const [registration, setRegistration] = useState<Registration | null>(null)
 
-  const registerTabs = useCallback((newTabs: readonly TruthActionBarTab[]) => {
-    setTabs(newTabs)
-  }, [])
+  const selectedKeysByScope = useActionBarPrefsStore(selectActiveActionBarPrefs)
 
-  const clearTabs = useCallback(() => {
-    setTabs(EMPTY_TABS)
+  const displayTabs = useMemo(() => {
+    if (!registration) return EMPTY_TABS
+    return resolveEffectiveActionBarTabs(
+      registration.tabs,
+      registration.scopeKey,
+      selectedKeysByScope,
+    )
+  }, [registration, selectedKeysByScope])
+
+  const registerScope = useCallback(
+    (scopeKey: string, tabs: readonly TruthActionBarTab[]) => {
+      setRegistration({ scopeKey, tabs })
+    },
+    [],
+  )
+
+  const clearScope = useCallback(() => {
+    setRegistration(null)
   }, [])
 
   const value = useMemo<ActionBarContextValue>(
-    () => ({ tabs, registerTabs, clearTabs }),
-    [tabs, registerTabs, clearTabs],
+    () => ({
+      tabs: displayTabs,
+      availableTabs: registration?.tabs ?? EMPTY_TABS,
+      scopeKey: registration?.scopeKey ?? null,
+      registerScope,
+      clearScope,
+    }),
+    [displayTabs, registration, registerScope, clearScope],
   )
 
   return (
@@ -48,31 +79,25 @@ export function ActionBarProvider({ children }: ActionBarProviderProps) {
 }
 
 /**
- * Module-level views call this hook to register their action bar tabs.
- * Tabs are cleared on unmount.
- *
- * @example
- * useActionBar([
- *   { key: 'overview', labelKey: 'finance.tabs.overview', path: '/app/finance', icon: 'Wallet' },
- *   { key: 'invoices', labelKey: 'finance.tabs.invoices', path: '/app/finance/invoices', icon: 'FileText', badge: { value: 12, severity: 'pending' } },
- * ])
+ * Module views register the **catalog** of actions the user may show in Row 2.
+ * Selection defaults to **all** until the user changes prefs (persisted).
  */
-export function useActionBar(tabs: readonly TruthActionBarTab[]) {
+export function useActionBar({ scopeKey, tabs }: UseActionBarOptions): void {
   const context = useContext(ActionBarContext)
-  const registerTabs = context?.registerTabs
-  const clearTabs = context?.clearTabs
+  const registerScope = context?.registerScope
+  const clearScope = context?.clearScope
 
   useLayoutEffect(() => {
-    registerTabs?.(tabs)
-    return () => clearTabs?.()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [registerTabs, clearTabs, JSON.stringify(tabs)])
+    registerScope?.(scopeKey, tabs)
+    return () => clearScope?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- badge updates use same keys
+  }, [registerScope, clearScope, scopeKey, JSON.stringify(tabs)])
 }
 
 /**
- * Shell chrome components (action bar) consume tabs through this hook.
+ * Shell chrome (action bar UI) consumes this hook.
  */
-export function useActionBarContext() {
+export function useActionBarContext(): ActionBarContextValue {
   const context = useContext(ActionBarContext)
 
   if (!context) {

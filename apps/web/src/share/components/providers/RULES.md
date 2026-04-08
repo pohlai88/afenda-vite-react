@@ -18,8 +18,10 @@ shared components can consume without prop drilling.
 ## What Belongs Here
 
 - Shell metadata provider (`ShellMetadataProvider`)
-- **Action bar provider** (`ActionBarProvider`) — registers Row 2 module tabs (`TruthActionBarTab`) via `useActionBar()`
+- **Action bar provider** (`ActionBarProvider`) — Row 2 catalog per `scopeKey` via `useActionBar({ scopeKey, tabs })`; user visibility in `useActionBarPrefsStore`, **namespaced by tenant + user** (`prefsByContext`, synced via `useSyncActionBarPrefsContext` in ERP layout). Migrate from legacy flat storage preserves old prefs once into the active context.
+- **`action-bar-effective-tabs.ts`** — not a provider; pure `resolveEffectiveActionBarTabs` helper co-located next to `action-bar-provider.tsx`.
 - **Global search provider** (`GlobalSearchProvider`) — command palette open state, `globalQuery`, recent **text** searches, recent **palette command** ids, pinned palette command ids (localStorage), client-side result cache (`useGlobalSearch` / `useGlobalSearchOptional`)
+- **TanStack Query** — `QueryProvider` only (`query-provider.tsx`); imports shared `queryClient` from **`share/query/`** (not a service layer — cache defaults + retry helpers). Dev-only React Query Devtools when `import.meta.env.DEV`.
 - Theme provider
 - Sidebar visibility provider
 - View mode provider
@@ -27,11 +29,11 @@ shared components can consume without prop drilling.
 
 ## What Does Not Belong Here
 
-- API services or fetch clients
+- Low-level API service modules or hand-rolled fetch clients (Query **client configuration** lives in **`share/query/`**)
 - Authentication business logic
 - Tenant resolution or multi-tenant policy
 - Route definitions
-- Global app state that belongs in `share/state`
+- Global app state that belongs in `share/client-store`
 - Large composition roots that mix unrelated concerns
 
 ## Anti-Dump Rules
@@ -45,7 +47,7 @@ shared components can consume without prop drilling.
 
 ## Layout composition
 
-- ERP layout (`share/components/layout`) should wrap shell chrome with **`ActionBarProvider`** whenever `ActionBar` / `TopNavBar` Row 2 is used, so `useActionBarContext()` is defined.
+- ERP layout (`share/components/layout`) should wrap shell chrome with **`ActionBarProvider`** whenever `TopActionBar` / `TopNavBar` Row 2 is used, so `useActionBarContext()` is defined.
 - **`ShellMetadataProvider`** may wrap the same subtree so route views can call `useShellMetadata` without duplicating providers per page.
 - **`GlobalSearchProvider`** should wrap the same ERP shell subtree when `TopNavBar` uses `useGlobalSearch()` (command palette + shared search state).
 
@@ -55,7 +57,7 @@ Add a new provider only when:
 
 - multiple downstream components need the same transient UI context, and
 - prop drilling would make the UI harder to maintain, and
-- the concern does not already belong in `share/state`
+- the concern does not already belong in `share/client-store`
 
 If a provider starts to own more than one concern, split it before adding new
 features.

@@ -1,8 +1,22 @@
 import type * as React from 'react'
 
+import {
+  tableDefaults,
+  type TableDensity,
+} from '../../../../shadcn-ui/src/lib/constant'
 import { cn } from '@afenda/ui/lib/utils'
 
-function Table({ className, ...props }: React.ComponentProps<'table'>) {
+function Table({
+  className,
+  density = tableDefaults.density,
+  striped = tableDefaults.striped,
+  stickyHeader = tableDefaults.stickyHeader,
+  ...props
+}: React.ComponentProps<'table'> & {
+  density?: TableDensity
+  striped?: boolean
+  stickyHeader?: boolean
+}) {
   return (
     <div
       data-slot="table-container"
@@ -10,7 +24,10 @@ function Table({ className, ...props }: React.ComponentProps<'table'>) {
     >
       <table
         data-slot="table"
-        className={cn('w-full caption-bottom text-sm', className)}
+        data-density={density}
+        data-striped={striped}
+        data-sticky-header={stickyHeader}
+        className={cn('group/table w-full caption-bottom text-sm', className)}
         {...props}
       />
     </div>
@@ -21,7 +38,10 @@ function TableHeader({ className, ...props }: React.ComponentProps<'thead'>) {
   return (
     <thead
       data-slot="table-header"
-      className={cn('[&_tr]:border-b', className)}
+      className={cn(
+        '[&_tr]:border-b group-data-[sticky-header=true]/table:sticky group-data-[sticky-header=true]/table:top-0 group-data-[sticky-header=true]/table:z-10 group-data-[sticky-header=true]/table:bg-background',
+        className,
+      )}
       {...props}
     />
   )
@@ -55,7 +75,7 @@ function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
     <tr
       data-slot="table-row"
       className={cn(
-        'border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted',
+        'border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted group-data-[striped=true]/table:odd:bg-muted/30',
         className,
       )}
       {...props}
@@ -68,7 +88,7 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
     <th
       data-slot="table-head"
       className={cn(
-        'h-12 px-3 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0',
+        'h-12 px-3 text-left align-middle font-medium whitespace-nowrap text-foreground group-data-[density=compact]/table:h-10 group-data-[density=compact]/table:px-2.5 group-data-[density=comfortable]/table:h-14 group-data-[density=comfortable]/table:px-4 [&:has([role=checkbox])]:pr-0',
         className,
       )}
       {...props}
@@ -81,7 +101,7 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
     <td
       data-slot="table-cell"
       className={cn(
-        'p-3 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0',
+        'p-3 align-middle whitespace-nowrap group-data-[density=compact]/table:px-2.5 group-data-[density=compact]/table:py-2 group-data-[density=comfortable]/table:px-4 group-data-[density=comfortable]/table:py-4 [&:has([role=checkbox])]:pr-0',
         className,
       )}
       {...props}

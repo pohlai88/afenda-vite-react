@@ -1,6 +1,14 @@
 /// <reference types="vitest/config" />
 import { getAfendaVitestTestOptions } from '@afenda/testing/vitest/defaults'
-import { defineConfig, loadEnv } from 'vite'
+import { DevTools } from '@vitejs/devtools'
+import {
+  defineConfig,
+  loadEnv,
+  type ConfigEnv,
+  type PluginOption,
+  type UserConfig,
+} from 'vite'
+import { visualizer } from 'rollup-plugin-visualizer'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import babel from '@rolldown/plugin-babel'
@@ -8,9 +16,17 @@ import legacy from '@vitejs/plugin-legacy'
 import path from 'path'
 
 // https://vite.dev/config/
-export default defineConfig(({ command, mode }) => {
+async function resolveUserConfig({
+  command,
+  mode,
+}: ConfigEnv): Promise<UserConfig> {
   // Load environment variables
   const env = loadEnv(mode, process.cwd(), '')
+  const analyze = mode === 'analyze'
+  const devToolsPlugins =
+    command === 'serve' && process.env.VITEST !== 'true'
+      ? await DevTools({ builtinDevTools: true })
+      : []
 
   return {
     // Base configuration
@@ -34,7 +50,7 @@ export default defineConfig(({ command, mode }) => {
         // jsxImportSource: '@emotion/react', // Change this based on your needs
       }),
 
-      // Legacy browser support (must be before other plugins)
+      // Legacy browser support (after @vitejs/plugin-react; see plugin-legacy docs)
       legacy({
         targets: ['defaults', 'not IE 11'],
         additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
@@ -75,6 +91,20 @@ export default defineConfig(({ command, mode }) => {
           }
         },
       },
+
+      ...(analyze
+        ? [
+            visualizer({
+              filename: path.resolve(__dirname, 'dist/stats.html'),
+              gzipSize: true,
+              brotliSize: true,
+              template: 'treemap',
+              open: false,
+            }) as PluginOption,
+          ]
+        : []),
+
+      ...devToolsPlugins,
     ],
 
     // Path resolution
@@ -89,6 +119,9 @@ export default defineConfig(({ command, mode }) => {
       port: parseInt(env.VITE_PORT) || 5173,
       host: env.VITE_HOST || 'localhost',
       open: env.VITE_OPEN_BROWSER === 'true',
+      warmup: {
+        clientFiles: ['./src/main.tsx', './src/App.tsx', './src/index.css'],
+      },
       cors: true,
       // Proxy configuration for API calls
       proxy: {
@@ -128,29 +161,27 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         output: {
           // Manual chunks for better caching
-          manualChunks: (id) => {
-            if (id.includes('node_modules')) {
-              if (id.includes('react') || id.includes('react-dom')) {
-                return 'vendor'
-              }
-              if (id.includes('react-router')) {
-                return 'router'
-              }
-              if (id.includes('@radix-ui')) {
-                return 'ui'
-              }
-              // Legacy polyfills chunk
-              if (
-                id.includes('core-js') ||
-                id.includes('regenerator-runtime')
-              ) {
-                return 'polyfills'
-              }
-              return 'vendor'
+          manualChunks: (id: string) => {
+            if (!id.includes('node_modules')) return
+            if (id.includes('react-router')) {
+              return 'router'
             }
+            if (id.includes('@radix-ui')) {
+              return 'ui'
+            }
+            if (id.includes('core-js') || id.includes('regenerator-runtime')) {
+              return 'polyfills'
+            }
+            if (id.includes('node_modules/react-dom/')) {
+              return 'vendor-react-dom'
+            }
+            if (id.includes('node_modules/react/')) {
+              return 'vendor-react'
+            }
+            return 'vendor'
           },
           // Asset file naming
-          assetFileNames: (assetInfo) => {
+          assetFileNames: (assetInfo: { name?: string | null }) => {
             if (
               /\.(png|jpe?g|svg|gif|tiff|bmp|ico)$/i.test(assetInfo.name ?? '')
             ) {
@@ -171,6 +202,16 @@ export default defineConfig(({ command, mode }) => {
       cssCodeSplit: true,
       // CSS minification
       cssMinify: mode === 'production',
+
+      // Rolldown DevTools data: enable only for `vite build --mode analyze` so
+      // default production keeps `rollupOptions.output` manual chunking intact.
+      ...(analyze
+        ? {
+            rolldownOptions: {
+              devtools: {},
+            },
+          }
+        : {}),
     },
 
     // Dependency optimization
@@ -219,4 +260,8 @@ export default defineConfig(({ command, mode }) => {
     // Vitest — shared defaults from @afenda/testing (see packages/testing/src/vitest/defaults.ts)
     test: getAfendaVitestTestOptions(),
   }
-})
+}
+
+export default defineConfig(
+  resolveUserConfig as (env: ConfigEnv) => UserConfig | Promise<UserConfig>,
+)

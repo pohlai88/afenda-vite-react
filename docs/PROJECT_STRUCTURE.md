@@ -20,6 +20,8 @@ Three top-level buckets under **`src/`**:
 
 **UI primitives** (shadcn/ui copy-in components, `cn()` utility) live in [`packages/ui/`](../packages/ui/) (`@afenda/ui`). The shadcn CLI deposits primitives here; `apps/web` depends on `@afenda/ui` and imports them as `@afenda/ui/components/<name>`. Both workspaces have a `components.json` with matching `style`, `iconLibrary`, and `baseColor` per [shadcn monorepo requirements](https://ui.shadcn.com/docs/monorepo).
 
+**Governed UI and semantic layer** live in [`packages/shadcn-ui/`](../packages/shadcn-ui/) (`@afenda/shadcn-ui`). This package owns the **constant layer** (59 per-component contracts, 12 governance policies, domain-to-UI adapters), the **semantic adapter layer** (tone, emphasis, surface primitives and domain-specific mappers like `allocation.ts`, `settlement.ts`), and **semantic wrapper components** (`SemanticAlert`, `SemanticBadge`, etc.). See [Architecture](./ARCHITECTURE.md#3-governed-ui-architecture-packagesshadcn-ui) for the full topology and dependency flow. For adding new modules, see [Architecture: Adding a new ERP module](./ARCHITECTURE.md#4-adding-a-new-erp-module).
+
 **Workspace testing** (unit, future E2E, Storybook, UI/a11y glue) is centered on [`packages/testing/`](../packages/testing/) (`@afenda/testing`); Vitest **`setupFiles`** in **`apps/web/vite.config.ts`** points at **`@afenda/testing/vitest/setup`**—see [Testing](./TESTING.md).
 
 ---
@@ -90,13 +92,14 @@ Place shared building blocks **under `share/`**, not at `src/` root:
 | Concern                                         | Location                                                        |
 | ----------------------------------------------- | --------------------------------------------------------------- |
 | Route tables, redirects                         | `share/routing/`                                                |
-| React providers, query client                   | `share/providers/`                                              |
-| Global / shell client state                     | `share/state/`                                                  |
+| React providers                                 | `share/components/providers/`                                   |
+| TanStack Query client (defaults, not fetch)     | `share/query/`                                                  |
+| Global / shell Zustand stores (SPA client)      | `share/client-store/`                                           |
 | **i18n** runtime, locale JSON, glossary & audit | **`share/i18n/`** ([i18n dependencies](./dependencies/i18n.md)) |
 | UI primitives (shadcn/ui)                       | `packages/ui/src/components/ui/` (`@afenda/ui`)                 |
 | App shell layout, composed widgets              | `share/components/layout/` (when added)                         |
 | Shared React context                            | `share/contexts/` (when added)                                  |
-| Reusable hooks                                  | `share/hooks/` (when added)                                     |
+| Reusable hooks (React, non-store)               | `share/react-hooks/`                                            |
 | HTTP / API client helpers                       | `share/services/` (when added)                                  |
 | Cross-feature commands                          | `share/actions/` (when added)                                   |
 

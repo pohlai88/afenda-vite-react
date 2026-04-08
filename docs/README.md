@@ -27,6 +27,7 @@ These guides describe Afenda, Vite, and ERP concerns for this repository. They a
 | [Roles and permissions](./ROLES_AND_PERMISSIONS.md)                     | RBAC roles, PBAC permission keys, and API vs UI enforcement.                                                |
 | [State management](./STATE_MANAGEMENT.md)                               | Local state, Zustand, TanStack Query, forms, and Context boundaries.                                        |
 | [Performance](./PERFORMANCE.md)                                         | Bundle, list, memoization, and loading-state guidance for the web app.                                      |
+| [Vite enterprise practices (workspace)](./VITE_ENTERPRISE_WORKSPACE.md) | Vite 8 + Rolldown quality baseline, apps/web wiring, DevTools/Vitest guards, and review checklist.          |
 | [Project configuration](./PROJECT_CONFIGURATION.md)                     | ESLint, Prettier, TypeScript, Turborepo, and repo tooling conventions.                                      |
 | [Testing](./TESTING.md)                                                 | Vitest + React Testing Library guidance for `apps/web`.                                                     |
 | [Integrations](./INTEGRATIONS.md)                                       | Third-party APIs, OAuth flows, webhooks, and sync patterns.                                                 |

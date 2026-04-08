@@ -1,6 +1,11 @@
 import type * as React from 'react'
+import { cva } from 'class-variance-authority'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 
+import {
+  dialogDefaults,
+  type DialogSize,
+} from '../../../../shadcn-ui/src/lib/constant'
 import { cn } from '@afenda/ui/lib/utils'
 import { Button } from '@afenda/ui/components/ui/button'
 import { VisuallyHidden } from '@afenda/ui/components/ui/visually-hidden'
@@ -46,23 +51,41 @@ function DialogOverlay({
   )
 }
 
+const dialogContentVariants = cva(
+  'fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-4xl bg-popover p-6 text-sm text-popover-foreground shadow-xl ring-1 ring-foreground/5 duration-100 outline-none dark:ring-foreground/10 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+  {
+    variants: {
+      size: {
+        sm: 'sm:max-w-sm',
+        md: 'sm:max-w-md',
+        lg: 'sm:max-w-lg',
+        xl: 'sm:max-w-xl',
+        full: 'h-[calc(100%-2rem)] sm:max-w-[calc(100%-2rem)]',
+      },
+    },
+    defaultVariants: {
+      size: dialogDefaults.size,
+    },
+  },
+)
+
 function DialogContent({
   className,
   children,
   showCloseButton = true,
+  size = dialogDefaults.size,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
+  size?: DialogSize
 }) {
   return (
     <DialogPortal>
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
-        className={cn(
-          'fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-4xl bg-popover p-6 text-sm text-popover-foreground shadow-xl ring-1 ring-foreground/5 duration-100 outline-none sm:max-w-md dark:ring-foreground/10 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
-          className,
-        )}
+        data-size={size}
+        className={cn(dialogContentVariants({ size }), className)}
         {...props}
       >
         {children}

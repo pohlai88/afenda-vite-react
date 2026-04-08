@@ -22,6 +22,8 @@ import type {
   SearchResultTypePresentation,
 } from '@/share/components/providers/global-search-provider.types'
 
+import { SearchOverlayShell } from './search-overlay-shell'
+
 export interface SearchSuggestionsProps {
   results: readonly GlobalSearchResult[]
   /** Limits keyboard handling to events whose target lies inside this subtree (e.g. wrapper around input + panel). */
@@ -133,9 +135,9 @@ export function SearchSuggestions({
 
   if (isLoading) {
     return (
-      <div
+      <SearchOverlayShell
         className={cn(
-          'absolute top-full right-0 left-0 z-50 mt-1 rounded-2xl border border-border bg-popover p-4 shadow-lg',
+          'p-4',
           className,
         )}
         role="status"
@@ -146,7 +148,7 @@ export function SearchSuggestions({
           <Spinner className="size-4" />
           <span>{t('search_suggestions.searching')}</span>
         </div>
-      </div>
+      </SearchOverlayShell>
     )
   }
 
@@ -164,12 +166,11 @@ export function SearchSuggestions({
   )
 
   return (
-    <div
+    <SearchOverlayShell
       className={cn(
-        'absolute top-full right-0 left-0 z-50 mt-1 overflow-hidden rounded-2xl border border-border bg-popover shadow-lg',
+        'overflow-hidden',
         className,
       )}
-      data-slot="search-suggestions"
     >
       <div className="max-h-[300px] overflow-y-auto">
         {Object.entries(grouped).map(([type, typeResults]) => {
@@ -240,6 +241,6 @@ export function SearchSuggestions({
           })}
         </span>
       </div>
-    </div>
+    </SearchOverlayShell>
   )
 }

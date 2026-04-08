@@ -46,13 +46,31 @@
     "settings": "Tetapan",
     "help": "Bantuan",
     "search": "Carian",
-    "breadcrumb_root": "ERP"
+    "breadcrumb_root": "ERP",
+    "side_nav_label": "Navigasi utama",
+    "workspace": {
+      "section_primary": "Ruang kerja",
+      "section_operations": "Operasi",
+      "section_insights": "Wawasan & integrasi",
+      "section_app": "Aplikasi",
+      "event_log": "Log peristiwa",
+      "audit_trail": "Jejak audit",
+      "partner_integrations": "Integrasi rakan kongsi",
+      "placeholder_title": "Ruang kerja",
+      "placeholder_body": "Kawasan ini akan digantikan oleh modul khusus apabila tersedia."
+    }
   },
   "finance_tabs": {
     "overview": "Gambaran",
     "invoices": "Invois",
     "allocations": "Peruntukan",
     "settlements": "Penyelesaian"
+  },
+  "action_bar": {
+    "customize_aria": "Sesuaikan bar tindakan",
+    "customize_title": "Bar tindakan",
+    "customize_hint": "Pilih pintasan yang dipaparkan. Secara lalai, semua dipaparkan.",
+    "show_all": "Tunjuk semua"
   },
   "user_menu": {
     "truth_status": "Kesihatan Sistem",
@@ -84,6 +102,7 @@
   },
   "command_palette": {
     "title": "Palet Perintah",
+    "bar_placeholder": "Cari perintah…",
     "description": "Cari perintah untuk dijalankan",
     "placeholder": "Taip perintah atau carian…",
     "empty": "Tiada hasil dijumpai.",
@@ -111,7 +130,9 @@
     "action_switch_subsidiary_hint": "Buka tetapan untuk laraskan skop",
     "footer_navigate": "navigasi",
     "footer_select": "pilih",
-    "footer_close": "tutup"
+    "footer_close": "tutup",
+    "shortcut_aria_command_k": "Pintasan papan kekunci: Command K",
+    "shortcut_aria_ctrl_k": "Pintasan papan kekunci: Ctrl K"
   },
   "search_suggestions": {
     "searching": "Mencari…",
@@ -123,6 +144,11 @@
     "placeholder": "Cari…",
     "semantic_badge": "Semantik",
     "clear": "Kosongkan carian"
+  },
+  "global_search": {
+    "no_results": "Tiada padanan",
+    "type_navigation": "Navigasi",
+    "error": "Carian gagal. Cuba lagi."
   },
   "notifications": {
     "title": "Pemberitahuan",
@@ -138,7 +164,11 @@
   },
   "sidebar": {
     "toggle": "Tukar bar sisi",
-    "brand": "Afenda"
+    "brand": "Afenda",
+    "control_title": "Bar sisi",
+    "mode_expanded": "Dikembangkan",
+    "mode_collapsed": "Diruntuhkan",
+    "mode_hover": "Kembang semasa hover"
   },
   "feedback": {
     "label": "Maklum balas",

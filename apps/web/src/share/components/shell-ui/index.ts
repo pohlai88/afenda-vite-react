@@ -8,5 +8,14 @@
  */
 export { ShellActionSlot } from './shell-action-slot'
 export type { ShellActionSlotProps } from './shell-action-slot'
+export {
+  ShellPopoverContent,
+  shellScopeStripPopoverAnchor,
+  shellTopRailPopoverAnchor,
+} from './shell-popover-content'
+export type {
+  ShellPopoverContentProps,
+  ShellPopoverVariant,
+} from './shell-popover-content'
 export { ShellTitle } from './shell-title'
 export type { ShellTitleProps } from './shell-title'

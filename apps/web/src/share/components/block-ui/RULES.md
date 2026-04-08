@@ -27,17 +27,19 @@ It is the home for reusable composed blocks, not full application structures.
 - Small metadata strips
 - Compact shell heading groups
 - Reusable composed rows or panels built from shared standalone components
+- **`panel/`** — trigger-linked **panels and popovers**: sheet or popover bodies
+  paired with **`trigger/`** (`help-panel`, `feedback-popover`, `resolution-panel`,
+  `truth-alert-panel`). Consumed by **`navigation/`** (e.g. top bar), not `shell-ui`.
 - **`trigger/`** — shell **trigger blocks**: composed controls (e.g. button + icon +
-  count badge, `Kbd` hint, dropdown trigger) that open or anchor work done in
-  **`navigation/`** (help sheet, resolution popover, truth alerts, command menu, etc.).
-  They are blocks, not `shell-ui` primitives.
+  count badge, `Kbd` hint, dropdown trigger) that open or anchor **`panel/`** or
+  **`search/`** (command palette). They are blocks, not `shell-ui` primitives.
 - **`switch-toggle/`** — theme and scope **switch** blocks: e.g. `ThemeToggle`,
   `ScopeSwitcher` (popover + command list, severity dot). Consumed by **`navigation/`**
   and layouts, not `shell-ui` primitives.
 
 ## What Does Not Belong Here
 
-- **Truth-aware navigation rows** (breadcrumb scope strip, action bar, command palette, truth panels) — those belong in **`navigation/`** and consume `shell-ui` + `providers`.
+- **Navigation structures** (breadcrumb scope strip, action bar, top bar, mobile drawer, command palette host) — those belong in **`navigation/`** (and **`search/`** for the palette) and consume `block-ui` + `shell-ui` + `providers`.
 - Full app headers
 - Full sidebars
 - Mobile navigation
@@ -79,7 +81,8 @@ It is the home for reusable composed blocks, not full application structures.
 - `shell-title-block.tsx`
 - `brand-title-block.tsx`
 - `page-action-block.tsx`
-- `trigger/help-trigger.tsx`, `trigger/command-palette-trigger.tsx`
+- `panel/help-panel.tsx`, `panel/feedback-popover.tsx`, `panel/resolution-panel.tsx`, `panel/truth-alert-panel.tsx`
+- `trigger/help-trigger.tsx`, `trigger/mobile-nav-trigger.tsx`, `trigger/command-palette-trigger.tsx`
 - `switch-toggle/theme-toggle.tsx`, `switch-toggle/scope-switcher.tsx`
 
 ## Bad Examples

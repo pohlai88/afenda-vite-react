@@ -1,7 +1,12 @@
 import type * as React from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cva } from 'class-variance-authority'
 import { Slot } from 'radix-ui'
 
+import {
+  badgeDefaults,
+  type BadgeEmphasis,
+  type BadgeVariant,
+} from '../../../../shadcn-ui/src/lib/constant'
 import { cn } from '@afenda/ui/lib/utils'
 
 const badgeVariants = cva(
@@ -9,38 +14,113 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground [a]:hover:bg-primary/80',
-        secondary:
-          'bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80',
-        destructive:
-          'bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20',
-        outline:
-          'border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground',
-        ghost:
-          'hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50',
-        link: 'text-primary underline-offset-4 hover:underline',
+        default: '',
+        secondary: '',
+        outline: 'border-border text-foreground [a]:hover:bg-muted',
+        success: '',
+        warning: '',
+        destructive: '',
+        info: '',
+      },
+      emphasis: {
+        subtle: '',
+        solid: '',
       },
     },
+    compoundVariants: [
+      {
+        variant: 'default',
+        emphasis: 'subtle',
+        className: 'bg-primary/10 text-primary [a]:hover:bg-primary/20',
+      },
+      {
+        variant: 'default',
+        emphasis: 'solid',
+        className: 'bg-primary text-primary-foreground [a]:hover:bg-primary/80',
+      },
+      {
+        variant: 'secondary',
+        emphasis: 'subtle',
+        className:
+          'bg-secondary/70 text-secondary-foreground [a]:hover:bg-secondary',
+      },
+      {
+        variant: 'secondary',
+        emphasis: 'solid',
+        className:
+          'bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80',
+      },
+      {
+        variant: 'success',
+        emphasis: 'subtle',
+        className: 'bg-success/10 text-success [a]:hover:bg-success/20',
+      },
+      {
+        variant: 'success',
+        emphasis: 'solid',
+        className: 'bg-success text-success-foreground [a]:hover:bg-success/80',
+      },
+      {
+        variant: 'warning',
+        emphasis: 'subtle',
+        className: 'bg-warning/15 text-warning [a]:hover:bg-warning/25',
+      },
+      {
+        variant: 'warning',
+        emphasis: 'solid',
+        className: 'bg-warning text-warning-foreground [a]:hover:bg-warning/80',
+      },
+      {
+        variant: 'destructive',
+        emphasis: 'subtle',
+        className:
+          'bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20',
+      },
+      {
+        variant: 'destructive',
+        emphasis: 'solid',
+        className:
+          'bg-destructive text-destructive-foreground focus-visible:ring-destructive/30 [a]:hover:bg-destructive/90',
+      },
+      {
+        variant: 'info',
+        emphasis: 'subtle',
+        className: 'bg-info/10 text-info [a]:hover:bg-info/20',
+      },
+      {
+        variant: 'info',
+        emphasis: 'solid',
+        className: 'bg-info text-info-foreground [a]:hover:bg-info/80',
+      },
+    ],
     defaultVariants: {
-      variant: 'default',
+      variant: badgeDefaults.variant,
+      emphasis: badgeDefaults.emphasis,
     },
   },
 )
 
+type BadgeProps = React.ComponentProps<'span'> & {
+  variant?: BadgeVariant
+  emphasis?: BadgeEmphasis
+  asChild?: boolean
+}
+
 function Badge({
   className,
-  variant = 'default',
+  variant = badgeDefaults.variant,
+  emphasis = badgeDefaults.emphasis,
   asChild = false,
   ...props
-}: React.ComponentProps<'span'> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+}: BadgeProps) {
   const Comp = asChild ? Slot.Root : 'span'
 
   return (
     <Comp
       data-slot="badge"
       data-variant={variant}
-      className={cn(badgeVariants({ variant }), className)}
+      data-emphasis={emphasis}
+      className={cn(badgeVariants({ variant, emphasis }), className)}
       {...props}
     />
   )

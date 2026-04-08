@@ -13,6 +13,7 @@ import {
 import { InventoryView } from '@/features/inventory'
 import { NotFoundView } from '@/features/not-found'
 import { ReportsView } from '@/features/reports'
+import { WorkspacePlaceholderView } from '@/features/workspace-placeholder'
 import { SalesView } from '@/features/sales'
 import { SettingsView } from '@/features/settings'
 import { ErpLayout } from '@/share/components/layout'
@@ -34,6 +35,7 @@ export const featureRoutes: RouteObject[] = [
       { path: 'allocations', element: <AllocationView /> },
       { path: 'settlements', element: <SettlementView /> },
       { path: 'reports', element: <ReportsView /> },
+      { path: 'workspace/:slug', element: <WorkspacePlaceholderView /> },
       { path: 'settings', element: <SettingsView /> },
       { path: '*', element: <NotFoundView /> },
     ],

@@ -1,6 +1,10 @@
 import type * as React from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cva } from 'class-variance-authority'
 
+import {
+  alertDefaults,
+  type AlertVariant,
+} from '../../../../shadcn-ui/src/lib/constant'
 import { cn } from '@afenda/ui/lib/utils'
 
 const alertVariants = cva(
@@ -9,26 +13,44 @@ const alertVariants = cva(
     variants: {
       variant: {
         default: 'bg-card text-card-foreground',
+        info: 'border-info/20 bg-info/10 text-info *:data-[slot=alert-description]:text-info/90',
+        success:
+          'border-success/20 bg-success/10 text-success *:data-[slot=alert-description]:text-success/90',
+        warning:
+          'border-warning/20 bg-warning/10 text-warning *:data-[slot=alert-description]:text-warning/90',
         destructive:
-          'bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 *:[svg]:text-current',
+          'border-destructive/20 bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 *:[svg]:text-current',
+      },
+      withIcon: {
+        true: '',
+        false: '[&>svg]:hidden',
       },
     },
     defaultVariants: {
-      variant: 'default',
+      variant: alertDefaults.variant,
+      withIcon: alertDefaults.withIcon,
     },
   },
 )
 
+type AlertProps = React.ComponentProps<'div'> & {
+  variant?: AlertVariant
+  withIcon?: boolean
+}
+
 function Alert({
   className,
-  variant,
+  variant = alertDefaults.variant,
+  withIcon = alertDefaults.withIcon,
   ...props
-}: React.ComponentProps<'div'> & VariantProps<typeof alertVariants>) {
+}: AlertProps) {
   return (
     <div
       data-slot="alert"
       role="alert"
-      className={cn(alertVariants({ variant }), className)}
+      data-variant={variant}
+      data-with-icon={withIcon}
+      className={cn(alertVariants({ variant, withIcon }), className)}
       {...props}
     />
   )

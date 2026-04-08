@@ -2,7 +2,7 @@
 
 This document describes how **`apps/web`** uses **[Zustand](https://github.com/pmndrs/zustand)** **v5** for **small, client-only UI state** (shell, theme, layout prefs)—**not** authoritative ERP **server truth**, which belongs behind the HTTP [API](../API.md) and **[TanStack Query](./tanstack-query.md)**.
 
-**Status:** **Adopted** in **`apps/web`** — **`zustand`** **`^5.0.12`** in [`apps/web/package.json`](../../apps/web/package.json). A concrete shell store lives in [`apps/web/src/share/state/use-app-shell-store.ts`](../../apps/web/src/share/state/use-app-shell-store.ts): **`create`** with **`devtools`** wrapping **`persist`**, **`partialize`** limiting what reaches **`localStorage`**.
+**Status:** **Adopted** in **`apps/web`** — **`zustand`** **`^5.0.12`** in [`apps/web/package.json`](../../apps/web/package.json). A concrete shell store lives in [`apps/web/src/share/client-store/app-shell-store.ts`](../../apps/web/src/share/client-store/app-shell-store.ts): **`create`** with **`devtools`** wrapping **`persist`**, **`partialize`** limiting what reaches **`localStorage`**.
 
 **Official documentation:**
 
@@ -33,7 +33,7 @@ This document describes how **`apps/web`** uses **[Zustand](https://github.com/p
 | --- | --- |
 | **Server truth** | Tenant data, permissions, domain entities → **HTTP** + **TanStack Query** ([API](../API.md), [TanStack Query](./tanstack-query.md)) |
 | **Stores** | **Small**, feature-scoped stores; avoid one **global god-store** unless it stays UI-only ([State management](../STATE_MANAGEMENT.md)) |
-| **Example** | [`use-app-shell-store.ts`](../../apps/web/src/share/state/use-app-shell-store.ts) — **`partialize`** persists **`theme`**, **`language`**, **`sidebarOpen`** only; **`currentUser`** and **`lastUpdated`** stay **non-persisted** (review when wiring real auth) |
+| **Example** | [`app-shell-store.ts`](../../apps/web/src/share/client-store/app-shell-store.ts) — **`partialize`** persists **`theme`**, **`language`**, **`sidebarOpen`** only; **`currentUser`** and **`lastUpdated`** stay **non-persisted** (review when wiring real auth) |
 | **Placement** | New substantial client state → prefer **`apps/web/src/features/*`** colocation ([AGENTS.md](../../AGENTS.md)) |
 | **Persist** | **Non-sensitive** UX only; **tokens**, refresh material, or **PII** require explicit [Authentication](../AUTHENTICATION.md) / security review |
 
@@ -49,7 +49,7 @@ This document describes how **`apps/web`** uses **[Zustand](https://github.com/p
 
 ## Deeper reference
 
-- [`apps/web/src/share/state/use-app-shell-store.ts`](../../apps/web/src/share/state/use-app-shell-store.ts) — **`devtools` + `persist` + `partialize`** pattern.
+- [`apps/web/src/share/client-store/app-shell-store.ts`](../../apps/web/src/share/client-store/app-shell-store.ts) — **`devtools` + `persist` + `partialize`** pattern.
 - [Vite](./vite.md) — **`zustand`** in **`optimizeDeps.include`** where useful ([`vite.config.ts`](../../apps/web/vite.config.ts)).
 
 ---

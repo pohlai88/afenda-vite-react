@@ -12,7 +12,10 @@
 import { Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouterProvider } from 'react-router-dom'
-import { QueryProvider } from './share/providers/query-provider'
+import { TooltipProvider } from '@afenda/shadcn-ui'
+import { Toaster } from '@afenda/ui/components/ui/sonner'
+import { ThemeProvider } from '@/components/theme-provider'
+import { QueryProvider } from '@/share/components/providers'
 import { appRouter } from './share/routing/router'
 
 function AppShell() {
@@ -24,12 +27,19 @@ function AppShell() {
       >
         <RouterProvider router={appRouter} />
       </Suspense>
+      <Toaster richColors position="top-right" />
     </QueryProvider>
   )
 }
 
 function App() {
-  return <AppShell />
+  return (
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <TooltipProvider delayDuration={0}>
+        <AppShell />
+      </TooltipProvider>
+    </ThemeProvider>
+  )
 }
 
 export default App

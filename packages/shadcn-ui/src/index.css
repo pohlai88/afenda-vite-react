@@ -1,0 +1,5 @@
+/*
+ * CSS entry referenced by `components.json`.
+ * Delegates to the canonical layered package-owned CSS stack.
+ */
+@import "./design-css/index.css";

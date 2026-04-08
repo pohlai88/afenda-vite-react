@@ -59,7 +59,7 @@ State that **only one subtree** needs. Pass it to children via **props** when ap
 Controls **interactive** behavior: open modals, side panels, theme, wizard steps, UI flags—not necessarily persisted server data.
 
 - Prefer **colocated** state (parent or small subtree) before a global store.
-- **This repo:** [**Zustand**](https://github.com/pmndrs/zustand) is a good default (small API, TypeScript-friendly, multiple small stores).
+- **This repo:** [**Zustand**](https://github.com/pmndrs/zustand) is a good default (small API, TypeScript-friendly, multiple small stores). Shared SPA stores (shell, truth demo, action-bar prefs) live in **`apps/web/src/share/client-store/`** — not React `useState` hooks (those stay in components or **`share/react-hooks/`** for reusable DOM/media logic). **Naming:** Zustand subscriber hooks are **`useXxxStore`**; generic React hooks in **`react-hooks/`** are **`useXxx`** without the `Store` suffix (both use `use` because both are hooks — see `apps/web/src/share/client-store/RULES.md` and `react-hooks/RULES.md`). **Filenames:** `client-store` modules use **`*-store.ts`** or descriptive kebab **without** a `use-` prefix; **`react-hooks/`** files stay **`use-*.ts`**. **Exports** keep the `use` prefix.
 - **Alternatives:** [**Jotai**](https://github.com/pmndrs/jotai), [**Recoil**](https://recoiljs.org/) — pick **one** pattern per area and stay consistent ([Project structure](./PROJECT_STRUCTURE.md)).
 
 ---
@@ -67,6 +67,8 @@ Controls **interactive** behavior: open modals, side panels, theme, wizard steps
 ## 4. Server cache state
 
 Remote data you **reuse**, **invalidate**, and **refresh** belongs in **TanStack Query**, not in a hand-rolled Redux/Zustand mirror.
+
+- Shared **`QueryClient`** defaults (stale time, retry policy) live in **`apps/web/src/share/query/`**; React wiring is **`QueryProvider`** in **`share/components/providers/`** — not HTTP services (`queryFn` / API modules stay in features or `share/api`).
 
 - Use **query keys** that reflect tenant + resource identity.
 - Use **`queryClient.invalidateQueries`** after mutations.

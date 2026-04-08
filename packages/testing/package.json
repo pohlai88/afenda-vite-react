@@ -22,10 +22,11 @@
     "@testing-library/jest-dom": "^6.9.1"
   },
   "devDependencies": {
+    "@afenda/eslint-config": "workspace:*",
     "@afenda/tsconfig": "workspace:*",
     "@vitest/coverage-v8": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:",
+    "vite": "8.0.5",
     "vitest": "catalog:"
   }
 }

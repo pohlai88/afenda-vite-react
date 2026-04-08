@@ -1,9 +1,12 @@
 /**
  * RESPONSIBILITY ENVELOPE
  * File role: shared shell `providers` public API barrel.
- * Owns: React providers and hooks for shell metadata, action bar, global search, etc.
+ * Owns: React providers and hooks for shell metadata, action bar, global search,
+ * and TanStack `QueryProvider` (client singleton: `@/share/query`).
  * Must not own: presentational components (those live under `components/*` slices).
  */
+export { QueryProvider } from './query-provider'
+
 export {
   ShellMetadataProvider,
   useShellMetadata,

@@ -79,6 +79,32 @@ Critical constraints:
    - Shell-specific: `sidebar-*`
    - Charts: `chart-1` through `chart-5`
 
+### Tailwind v4 Anti-Drift Rules
+
+1. `@theme` and `@theme inline` are token-ownership layers only. Do not place component recipes or page styling there.
+2. `@utility` is for small semantic helpers such as typography, dense-data formatting, and single-purpose text/link/code helpers.
+3. `@layer components` in `apps/web/src/index.css` is for canonical app primitives only, not route-specific implementations.
+4. New global selectors like `.page`, `.dashboard-*`, `.placeholder`, or other page-era aliases are forbidden.
+5. Arbitrary values are a last resort. If a value is reused or semantically meaningful, promote it into tokens or a named utility.
+6. Direct token-shaped classes like `text-(--color-foo)` in product UI are forbidden when a semantic utility or shared primitive already exists.
+7. Prefer semantic Tailwind utilities and approved `ui-*` primitives before introducing new shared selectors.
+
+### Approved App Vocabulary
+
+Feature code in `apps/web` should prefer this vocabulary:
+
+- Layout: `ui-page`, `ui-section`, `ui-stack-tight`, `ui-stack`, `ui-stack-relaxed`, `ui-card-grid`
+- Headers: `ui-header`, `ui-proof-header`, `ui-kicker`
+- Titles and text: `ui-title`, `ui-title-page`, `ui-title-hero`, `ui-title-section`, `ui-title-card`, `ui-lede`, `ui-copy`, `ui-fine`, `heading-*`, `text-*`
+- Surfaces: `ui-surface`, `ui-surface-raised`, `ui-surface-hero`, `ui-empty-state`
+- State helpers: `ui-truth-row-*`
+- Search/overlay shell: shared React wrappers in `apps/web/src/share/components/search/` rather than repeated overlay class strings
+
+When a new screen cannot be expressed with this vocabulary, either:
+
+1. extend the canonical vocabulary deliberately, or
+2. create a reusable shared component instead of introducing a one-off global selector
+
 ### shadcn Configuration Rules (Monorepo)
 
 Two `components.json` files exist — one per workspace that the CLI targets:
@@ -127,7 +153,7 @@ Three-tier component topology:
 Supporting locations:
 
 - `cn()` utility lives at `packages/ui/src/lib/utils.ts`. Imported as `@afenda/ui/lib/utils`.
-- Reusable hooks live under `packages/ui/src/hooks/` (UI-level) or `apps/web/src/share/hooks/` (app-level).
+- Reusable hooks live under `packages/ui/src/hooks/` (UI-level) or `apps/web/src/share/react-hooks/` (app-level DOM/media/shortcut hooks; not Zustand — see `share/client-store/`).
 - Do not place shared UI in `apps/web/src/components/` root.
 
 ### `cn()` Rule
@@ -190,6 +216,28 @@ Customize in this order:
 3. CSS variable extension in `index.css`
 4. Wrapper components
 
+### Styling Escalation Matrix
+
+Use this decision order for new styling work:
+
+1. `@theme` / theme blocks in `apps/web/src/index.css`
+   Use for primitive tokens, semantic aliases, and theme-specific token remapping.
+2. `@utility` in `apps/web/src/index.css`
+   Use for tiny reusable semantic helpers with low structural complexity.
+3. `.ui-*` primitives in `apps/web/src/index.css`
+   Use for canonical shell/layout/surface primitives consumed across many screens.
+4. `apps/web/src/share/components/block-ui/`
+   Use for composed app-level blocks that combine multiple primitives or controls.
+5. `packages/ui/src/components/ui/`
+   Use for reusable design-system components with variants, slots, and stable APIs.
+
+Escalate upward when:
+
+- the same class recipe appears three or more times
+- a pattern has multiple variants or interaction states
+- a pattern needs accessibility semantics beyond plain styling
+- multiple features need the same structure, not just the same colors
+
 ### Adding Custom Colors
 
 When adding a custom semantic color:
@@ -237,6 +285,48 @@ This standard does not define:
 - Server-driven navigation config protocol.
 - Visual regression tooling strategy.
 
+## Governance Pipeline
+
+Automated governance scripts enforce the standards above. Run them from the repo root.
+
+### UI drift governance
+
+```sh
+pnpm run script:ui-drift-governance
+```
+
+Runs three checkers in sequence:
+
+| Layer | Script | Scope | What it catches |
+|-------|--------|-------|-----------------|
+| **0** | `check-ui-drift.ts` | `packages/ui/`, `packages/shadcn-ui/` | Raw color classes, arbitrary Tailwind values, inline style violations |
+| **1** | `check-ui-drift-ast.ts` | `apps/web/src/features/`, `apps/web/src/share/` | Raw Tailwind in feature code, ungoverned element + className combos, local wrapper factories |
+| **2** | `check-ui-wrapper-contracts.ts` | `packages/shadcn-ui/src`, `packages/ui/src` | Swallowed props/ref, Radix primitive replacement, `asChild` drift, suspicious local state |
+
+Feature code should use `ui-*` CSS utilities and governed components (`Card`, `Button`, `Badge`, etc.) instead of raw `<div className="flex gap-4 p-6">`. The layer-1 checker recognizes `ui-*` class tokens as governed and does not flag them.
+
+### UI color governance
+
+```sh
+pnpm run script:ui-color-governance
+```
+
+Validates OKLCH token stem consistency, color variable alignment, and ESLint color rules across governed packages.
+
+### Governed component contracts
+
+Each UI primitive in `packages/shadcn-ui/src/lib/constant/component/<name>.ts` defines a three-part contract:
+
+1. **Vocabularies** -- legal value tuples for each dimension (variant, size, etc.)
+2. **Defaults** -- Zod-validated fallback props the `.tsx` file imports
+3. **Policy** -- boolean flags controlling what feature code is allowed to extend
+
+When adding a new UI primitive or extending an existing one, update the contract file first, then wire the `.tsx` component to import from it. See [`component/_TEMPLATE.ts`](../packages/shadcn-ui/src/lib/constant/component/_TEMPLATE.ts).
+
+### Adding a new ERP module
+
+See [Architecture: Adding a new ERP module](./ARCHITECTURE.md#4-adding-a-new-erp-module) for the complete step-by-step checklist covering feature folders, routes, semantic adapters, domain constants, action bar hooks, i18n, and validation.
+
 ## Quick Compliance Checklist
 
 1. Tailwind plugin is `@tailwindcss/vite`.
@@ -245,12 +335,15 @@ This standard does not define:
 4. `index.css` imports `tw-animate-css` and `shadcn/tailwind.css`.
 5. Tokens are semantic, in OKLCH, and mapped via `@theme inline`.
 6. Radius tokens use multiplication formulas (`calc(var(--radius) * N)`).
-7. No `.light` class block — `:root` is the light default.
+7. No `.light` class block -- `:root` is the light default.
 8. Generated UI primitives in `packages/ui` use `@afenda/ui/*` aliases; app components use `@/share/*`. No `'use client'` directives.
 9. UI code uses semantic classes, not raw color classes.
+10. Feature code uses `ui-*` vocabulary and governed components, not raw HTML + Tailwind.
+11. `pnpm run script:ui-drift-governance` exits with 0 errors.
 
 ## Related Documents
 
+- `docs/ARCHITECTURE.md` (governed UI architecture, dependency flow, adding new modules)
 - `docs/TAILWIND_SHADCN_MIGRATION_PLAN.md` (one-time implementation steps)
 - `docs/APP_SHELL_SPEC.md` (app shell architecture and decisions)
 - `docs/DESIGN_SYSTEM.md`

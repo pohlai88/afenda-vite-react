@@ -1,0 +1,22 @@
+/*
+ * Typography plugin variables intentionally live outside @theme.
+ * Consumers can opt into @tailwindcss/typography without redefining colors.
+ */
+:root {
+  --tw-prose-body: var(--foreground-light);
+  --tw-prose-headings: var(--foreground-default);
+  --tw-prose-lead: var(--foreground-light);
+  --tw-prose-links: var(--brand-link);
+  --tw-prose-bold: var(--foreground-default);
+  --tw-prose-counters: var(--foreground-light);
+  --tw-prose-bullets: var(--foreground-muted);
+  --tw-prose-hr: var(--background-surface-300);
+  --tw-prose-quotes: var(--foreground-light);
+  --tw-prose-quote-borders: var(--background-surface-300);
+  --tw-prose-captions: var(--foreground-muted);
+  --tw-prose-code: var(--foreground-default);
+  --tw-prose-pre-code: var(--foreground-muted);
+  --tw-prose-pre-bg: var(--background-surface-200);
+  --tw-prose-th-borders: var(--border-default);
+  --tw-prose-td-borders: var(--border-default);
+}

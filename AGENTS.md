@@ -32,6 +32,7 @@ Monorepo guides live under repo-root **`docs/`** (human-readable index: [`docs/R
 | Testing (Vitest + RTL)                                         | [`docs/TESTING.md`](docs/TESTING.md)                               |
 | State management approach                                      | [`docs/STATE_MANAGEMENT.md`](docs/STATE_MANAGEMENT.md)             |
 | Project / build configuration                                  | [`docs/PROJECT_CONFIGURATION.md`](docs/PROJECT_CONFIGURATION.md)   |
+| Vite enterprise practices (`apps/web` + CI checklist)          | [`docs/VITE_ENTERPRISE_WORKSPACE.md`](docs/VITE_ENTERPRISE_WORKSPACE.md) |
 
 ### 2. Operating principles (AI perspective)
 

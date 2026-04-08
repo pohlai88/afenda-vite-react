@@ -5,8 +5,11 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "baseUrl": ".",
     "paths": {
-      "@afenda/ui/*": ["./src/*"]
+      "@afenda/ui/*": ["./src/*"],
+      "@afenda/shadcn-ui/lib/constant": [
+        "../shadcn-ui/src/lib/constant/index.ts"
+      ]
     }
   },
-  "include": ["src"]
+  "include": ["src", "../shadcn-ui/src/lib/constant/**/*.ts", "../shadcn-ui/src/lib/constant/**/*.json"]
 }

@@ -4,10 +4,12 @@ export function LoginView() {
   const { t } = useTranslation('auth')
 
   return (
-    <div className="login-page">
-      <h1>{t('login.title.label')}</h1>
-      <p>{t('login.subtitle.message')}</p>
-      <div className="placeholder">{t('login.placeholder.message')}</div>
-    </div>
+    <section className="ui-page ui-stack-relaxed">
+      <header className="ui-header">
+        <h1 className="ui-title-page">{t('login.title.label')}</h1>
+        <p className="ui-lede">{t('login.subtitle.message')}</p>
+      </header>
+      <div className="ui-empty-state">{t('login.placeholder.message')}</div>
+    </section>
   )
 }

@@ -9,19 +9,21 @@ import {
   SparklesIcon,
   SunIcon,
 } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { useTranslation } from 'react-i18next'
 
 import type { TruthStatus } from '@afenda/core/truth'
 import type { ResolutionSuggestion } from '@afenda/core/truth-ui'
 
 import { useGlobalSearch } from '@/share/components/providers'
-import { useAppShellStore } from '@/share/state/use-app-shell-store'
-import { TRUTH_DEMO_RESOLUTIONS } from '@/share/state/truth-demo-seed'
-import { useTruthHealthStore } from '@/share/state/use-truth-health-store'
-import { useTruthScopeStore } from '@/share/state/use-truth-scope-store'
-import { useTruthShellBootstrap } from '@/share/state/use-truth-shell-bootstrap'
+import { useAppShellStore } from '@/share/client-store'
+import { TRUTH_DEMO_RESOLUTIONS } from '@/share/client-store/truth-demo-seed'
+import { useTruthHealthStore } from '@/share/client-store/truth-health-store'
+import { useTruthScopeStore } from '@/share/client-store/truth-scope-store'
+import { useTruthShellBootstrap } from '@/share/client-store/truth-shell-bootstrap'
 
-import { useNavItems } from '../navigation/use-nav-items'
+import { useNavItems } from '../navigation'
+import { rankAndDedupeCommands } from './command-palette-utils'
 import {
   type PaletteCommand,
   type PaletteGroup,
@@ -184,6 +186,8 @@ export interface UsePaletteCommandsResult {
   readonly isPinned: (commandId: string) => boolean
 }
 
+const EMPTY_PERMISSIONS: readonly string[] = []
+
 /**
  * Builds normalized, deduped, ranked palette commands (static + dynamic) for {@link CommandPalette}.
  */
@@ -193,12 +197,14 @@ export function usePaletteCommands(
   useTruthShellBootstrap()
   const { t } = useTranslation('shell')
   const navigate = useNavigate()
+  const { setTheme } = useTheme()
   const { pathname } = useLocation()
   const { groups: navGroups } = useNavItems()
   const health = useTruthHealthStore((s) => s.health)
   const subsidiaryList = useTruthScopeStore((s) => s.subsidiaryList)
-  const setTheme = useAppShellStore((s) => s.setTheme)
-  const permissions = useAppShellStore((s) => s.currentUser?.permissions ?? [])
+  const permissions = useAppShellStore(
+    (s) => s.currentUser?.permissions ?? EMPTY_PERMISSIONS,
+  )
 
   const {
     recentCommands,
@@ -503,7 +509,7 @@ export function usePaletteCommands(
     for (const g of PALETTE_GROUP_ORDER) {
       const list = result.get(g)
       if (list) {
-        list.sort((a, b) => b.priority - a.priority)
+        result.set(g, rankAndDedupeCommands(list))
       }
     }
 

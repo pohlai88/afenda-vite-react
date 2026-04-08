@@ -1,8 +1,9 @@
 import type { TruthBadge } from './truth-badge'
 
 /**
- * TruthActionBarTab represents a single tab in the Row 2 action bar.
- * Each module registers its tabs via ActionBarProvider.
+ * TruthActionBarTab describes one candidate action in the Row 2 action bar catalog.
+ * Modules register a list per `scopeKey`; the shell shows all by default unless the
+ * user hides items (persisted prefs). `key` must be stable within that scope.
  *
  * Example tabs for Finance module:
  * - Overview (no badge)

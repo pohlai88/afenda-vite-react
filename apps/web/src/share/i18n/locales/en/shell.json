@@ -46,13 +46,31 @@
     "settings": "Settings",
     "help": "Get Help",
     "search": "Search",
-    "breadcrumb_root": "ERP"
+    "breadcrumb_root": "ERP",
+    "side_nav_label": "Primary navigation",
+    "workspace": {
+      "section_primary": "Workspace",
+      "section_operations": "Operations",
+      "section_insights": "Insights & integrations",
+      "section_app": "Application",
+      "event_log": "Event log",
+      "audit_trail": "Audit trail",
+      "partner_integrations": "Partner integrations",
+      "placeholder_title": "Workspace",
+      "placeholder_body": "This area will be replaced by a dedicated module when it ships."
+    }
   },
   "finance_tabs": {
     "overview": "Overview",
     "invoices": "Invoices",
     "allocations": "Allocations",
     "settlements": "Settlements"
+  },
+  "action_bar": {
+    "customize_aria": "Customize action bar",
+    "customize_title": "Action bar",
+    "customize_hint": "Choose which shortcuts appear. By default, all are shown.",
+    "show_all": "Show all"
   },
   "user_menu": {
     "truth_status": "System Health",
@@ -84,6 +102,7 @@
   },
   "command_palette": {
     "title": "Command Palette",
+    "bar_placeholder": "Search commands…",
     "description": "Search for a command to run",
     "placeholder": "Type a command or search…",
     "empty": "No results found.",
@@ -111,7 +130,9 @@
     "action_switch_subsidiary_hint": "Open settings to adjust scope",
     "footer_navigate": "navigate",
     "footer_select": "select",
-    "footer_close": "close"
+    "footer_close": "close",
+    "shortcut_aria_command_k": "Keyboard shortcut: Command K",
+    "shortcut_aria_ctrl_k": "Keyboard shortcut: Ctrl K"
   },
   "search_suggestions": {
     "searching": "Searching…",
@@ -123,6 +144,11 @@
     "placeholder": "Search…",
     "semantic_badge": "Semantic",
     "clear": "Clear search"
+  },
+  "global_search": {
+    "no_results": "No matches",
+    "type_navigation": "Navigation",
+    "error": "Search failed. Try again."
   },
   "notifications": {
     "title": "Notifications",
@@ -138,7 +164,11 @@
   },
   "sidebar": {
     "toggle": "Toggle sidebar",
-    "brand": "Afenda"
+    "brand": "Afenda",
+    "control_title": "Sidebar",
+    "mode_expanded": "Expanded",
+    "mode_collapsed": "Collapsed",
+    "mode_hover": "Expand on hover"
   },
   "feedback": {
     "label": "Feedback",

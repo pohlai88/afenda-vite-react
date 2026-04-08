@@ -1,7 +1,12 @@
-import type * as React from 'react'
 import { Command as CommandPrimitive } from 'cmdk'
+import type * as React from 'react'
+import { cva } from 'class-variance-authority'
 
-import { cn } from '@afenda/ui/lib/utils'
+import {
+  commandDefaults,
+  type CommandGroupRole,
+  type CommandItemIntent,
+} from '../../../../shadcn-ui/src/lib/constant'
 import {
   Dialog,
   DialogContent,
@@ -14,7 +19,27 @@ import {
   InputGroupAddon,
 } from '@afenda/ui/components/ui/input-group'
 import { VisuallyHidden } from '@afenda/ui/components/ui/visually-hidden'
-import { SearchIcon, CheckIcon } from 'lucide-react'
+import { cn } from '@afenda/ui/lib/utils'
+import { CheckIcon, SearchIcon } from 'lucide-react'
+
+const commandItemVariants = cva(
+  "group/command-item relative flex cursor-default items-center gap-2 rounded-2xl px-3 py-2 text-sm font-medium outline-hidden select-none in-data-[slot=dialog-content]:rounded-3xl data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-selected:bg-muted data-selected:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-selected:*:[svg]:text-foreground",
+  {
+    variants: {
+      intent: {
+        default: '',
+        destructive:
+          'text-destructive data-selected:bg-destructive/10 data-selected:text-destructive',
+        navigation: '',
+        create: 'text-primary data-selected:text-primary',
+        open: '',
+      },
+    },
+    defaultVariants: {
+      intent: commandDefaults.intent,
+    },
+  },
+)
 
 function Command({
   className,
@@ -38,12 +63,15 @@ function CommandDialog({
   children,
   className,
   showCloseButton = false,
+  contentId,
   ...props
 }: React.ComponentProps<typeof Dialog> & {
   title?: string
   description?: string
   className?: string
   showCloseButton?: boolean
+  /** Sets `id` on `DialogContent` (e.g. for `aria-controls` on an external trigger). */
+  contentId?: string
 }) {
   return (
     <Dialog {...props}>
@@ -54,6 +82,8 @@ function CommandDialog({
         </DialogHeader>
       </VisuallyHidden>
       <DialogContent
+        size="lg"
+        id={contentId}
         className={cn(
           'top-1/3 translate-y-0 overflow-hidden rounded-4xl! p-0',
           className,
@@ -120,11 +150,15 @@ function CommandEmpty({
 
 function CommandGroup({
   className,
+  role = commandDefaults.role,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Group>) {
+}: React.ComponentProps<typeof CommandPrimitive.Group> & {
+  role?: CommandGroupRole
+}) {
   return (
     <CommandPrimitive.Group
       data-slot="command-group"
+      data-role={role}
       className={cn(
         'overflow-hidden p-1.5 text-foreground **:[[cmdk-group-heading]]:px-3 **:[[cmdk-group-heading]]:py-2 **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-muted-foreground',
         className,
@@ -150,13 +184,17 @@ function CommandSeparator({
 function CommandItem({
   className,
   children,
+  intent = commandDefaults.intent,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Item>) {
+}: React.ComponentProps<typeof CommandPrimitive.Item> & {
+  intent?: CommandItemIntent
+}) {
   return (
     <CommandPrimitive.Item
       data-slot="command-item"
+      data-intent={intent}
       className={cn(
-        "group/command-item relative flex cursor-default items-center gap-2 rounded-2xl px-3 py-2 text-sm font-medium outline-hidden select-none in-data-[slot=dialog-content]:rounded-3xl data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-selected:bg-muted data-selected:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-selected:*:[svg]:text-foreground",
+        commandItemVariants({ intent }),
         className,
       )}
       {...props}
@@ -186,11 +224,11 @@ function CommandShortcut({
 export {
   Command,
   CommandDialog,
-  CommandInput,
-  CommandList,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
-  CommandShortcut,
+  CommandList,
   CommandSeparator,
+  CommandShortcut,
 }

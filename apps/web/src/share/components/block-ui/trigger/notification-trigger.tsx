@@ -7,15 +7,12 @@ import { cn } from '@afenda/ui/lib/utils'
 export interface NotificationTriggerProps {
   count?: number
   onClick?: MouseEventHandler<HTMLButtonElement>
-  className?: string
-  /** Tailwind classes for the count pill (e.g. info / warning / success). */
   badgeColor?: string
 }
 
 export function NotificationTrigger({
   count = 0,
   onClick,
-  className,
   badgeColor = 'bg-destructive text-destructive-foreground',
 }: NotificationTriggerProps) {
   const hasNotifications = count > 0
@@ -26,7 +23,7 @@ export function NotificationTrigger({
       type="button"
       variant="ghost"
       size="icon"
-      className={cn('relative h-8 w-8', className)}
+      className="relative rounded-full"
       onClick={onClick}
       aria-label={
         hasNotifications
@@ -34,7 +31,7 @@ export function NotificationTrigger({
           : 'Notifications'
       }
     >
-      <BellIcon className="h-4 w-4" aria-hidden="true" />
+      <BellIcon aria-hidden="true" />
       {hasNotifications ? (
         <span
           className={cn(

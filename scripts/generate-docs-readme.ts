@@ -165,7 +165,8 @@ const GENERATED_HEADER = [
 const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
   'ARCHITECTURE.md': {
     title: 'Architecture',
-    description: 'Monorepo + ERP systems view; SPA vs API vs database.',
+    description:
+      'Monorepo + ERP systems view, governed UI layer, semantic adapter flow, and adding new modules.',
     order: 10,
   },
   'API.md': {
@@ -231,6 +232,12 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
     description:
       'Bundle, list, memoization, and loading-state guidance for the web app.',
     order: 120,
+  },
+  'VITE_ENTERPRISE_WORKSPACE.md': {
+    title: 'Vite enterprise practices (workspace)',
+    description:
+      'Vite 8 + Rolldown quality baseline, apps/web wiring, DevTools/Vitest guards, and review checklist.',
+    order: 125,
   },
   'PROJECT_CONFIGURATION.md': {
     title: 'Project configuration',

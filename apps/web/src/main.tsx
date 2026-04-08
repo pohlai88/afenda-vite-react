@@ -9,6 +9,7 @@
  * Styling rule: import the single global stylesheet entry only.
  * Related files: `index.html`, `App.tsx`, `index.css`.
  */
+import './vite-preload-recovery'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'

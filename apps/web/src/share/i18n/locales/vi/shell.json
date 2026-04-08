@@ -46,13 +46,31 @@
     "settings": "Cài đặt",
     "help": "Trợ giúp",
     "search": "Tìm kiếm",
-    "breadcrumb_root": "ERP"
+    "breadcrumb_root": "ERP",
+    "side_nav_label": "Điều hướng chính",
+    "workspace": {
+      "section_primary": "Không gian làm việc",
+      "section_operations": "Vận hành",
+      "section_insights": "Thông tin chi tiết & tích hợp",
+      "section_app": "Ứng dụng",
+      "event_log": "Nhật ký sự kiện",
+      "audit_trail": "Dấu vết kiểm toán",
+      "partner_integrations": "Tích hợp đối tác",
+      "placeholder_title": "Không gian làm việc",
+      "placeholder_body": "Khu vực này sẽ được thay bằng một module riêng khi sẵn sàng."
+    }
   },
   "finance_tabs": {
     "overview": "Tổng quan",
     "invoices": "Hóa đơn",
     "allocations": "Phân bổ",
     "settlements": "Thanh toán"
+  },
+  "action_bar": {
+    "customize_aria": "Tùy chỉnh thanh thao tác",
+    "customize_title": "Thanh thao tác",
+    "customize_hint": "Chọn lối tắt hiển thị. Mặc định hiển thị tất cả.",
+    "show_all": "Hiện tất cả"
   },
   "user_menu": {
     "truth_status": "Sức khỏe hệ thống",
@@ -84,6 +102,7 @@
   },
   "command_palette": {
     "title": "Bảng lệnh",
+    "bar_placeholder": "Tìm lệnh…",
     "description": "Tìm lệnh để chạy",
     "placeholder": "Nhập lệnh hoặc tìm kiếm…",
     "empty": "Không tìm thấy kết quả.",
@@ -111,7 +130,9 @@
     "action_switch_subsidiary_hint": "Mở cài đặt để điều chỉnh phạm vi",
     "footer_navigate": "di chuyển",
     "footer_select": "chọn",
-    "footer_close": "đóng"
+    "footer_close": "đóng",
+    "shortcut_aria_command_k": "Phím tắt: Command K",
+    "shortcut_aria_ctrl_k": "Phím tắt: Ctrl K"
   },
   "search_suggestions": {
     "searching": "Đang tìm…",
@@ -123,6 +144,11 @@
     "placeholder": "Tìm kiếm…",
     "semantic_badge": "Ngữ nghĩa",
     "clear": "Xóa tìm kiếm"
+  },
+  "global_search": {
+    "no_results": "Không có kết quả",
+    "type_navigation": "Điều hướng",
+    "error": "Tìm kiếm thất bại. Thử lại."
   },
   "notifications": {
     "title": "Thông báo",
@@ -138,7 +164,11 @@
   },
   "sidebar": {
     "toggle": "Đổi thanh bên",
-    "brand": "Afenda"
+    "brand": "Afenda",
+    "control_title": "Thanh bên",
+    "mode_expanded": "Mở rộng",
+    "mode_collapsed": "Thu gọn",
+    "mode_hover": "Mở rộng khi di chuột"
   },
   "feedback": {
     "label": "Phản hồi",

@@ -1,8 +1,17 @@
-import type { ReactNode } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import { Outlet } from 'react-router-dom'
 
-import { useTruthNavProps } from '@/share/state'
+import { SidebarInset, SidebarProvider } from '@afenda/ui/components/ui/sidebar'
 
+import {
+  useAppShellStore,
+  useTruthNavProps,
+} from '@/share/client-store'
+import { useSyncActionBarPrefsContext } from '@/share/client-store/sync-action-bar-prefs-context'
+
+import { DASHBOARD_SIDEBAR_WIDTH } from '../navigation/side-nav/dashboard-sidebar-tokens'
+import { SideNavBar } from '../navigation/side-nav/side-nav-bar'
+import { ErpContentArea } from './erp-content-area'
 import {
   ActionBarProvider,
   GlobalSearchProvider,
@@ -16,12 +25,18 @@ export interface ErpLayoutProps {
 
 /**
  * ErpLayout is the main shell layout for authenticated ERP routes.
- * Renders the top navigation bar and the routed content.
  *
- * Providers:
- * - `ShellMetadataProvider` — page title / breadcrumb metadata from route views
- * - `GlobalSearchProvider` — shared command palette / search query / recents
- * - `ActionBarProvider` — Row 2 module tabs registered via `useActionBar()`
+ * Layout architecture (Supabase-style chrome):
+ * - `SidebarProvider` sets `--sidebar-width` and `--header-height` (top bar row).
+ * - **Row 1:** `TopNavBar` full width (`shrink-0`) — natural height (nav row + action bar).
+ * - **Row 2:** `SideNavBar` + `SidebarInset` use `flex-1 min-h-0` so they fill only the
+ *   space **below** the top bar (no separate calc needed).
+ * - `ErpContentArea` is the routed content region (scroll + `@container/main`).
+ *
+ * Sidebar mode:
+ * - `'expanded'`   → always open
+ * - `'collapsed'`  → always icon-only
+ * - `'hover'`      → icon-only at rest, expands on mouse-enter
  */
 export function ErpLayout({ children }: ErpLayoutProps) {
   return (
@@ -37,11 +52,60 @@ export function ErpLayout({ children }: ErpLayoutProps) {
 
 function ErpLayoutChrome({ children }: { children?: ReactNode }) {
   const truthNav = useTruthNavProps()
+  useSyncActionBarPrefsContext()
+
+  const sidebarMode = useAppShellStore((s) => s.sidebarMode)
+  const setSidebarMode = useAppShellStore((s) => s.setSidebarMode)
+
+  // Hover state — only meaningful when sidebarMode === 'hover'
+  const [isHovered, setIsHovered] = useState(false)
+
+  // The sidebar is open when:
+  // - user preference is 'expanded', OR
+  // - preference is 'hover' AND the pointer is over the sidebar
+  const effectiveOpen =
+    sidebarMode === 'expanded' || (sidebarMode === 'hover' && isHovered)
+
+  // ⌘B / rail clicks update the preference (ignored in hover mode)
+  const handleOpenChange = (open: boolean) => {
+    if (sidebarMode === 'hover') return
+    setSidebarMode(open ? 'expanded' : 'collapsed')
+  }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <TopNavBar {...truthNav} />
-      <main className="flex-1">{children ?? <Outlet />}</main>
-    </div>
+    <SidebarProvider
+      className="h-svh flex-col overflow-hidden"
+      open={effectiveOpen}
+      onOpenChange={handleOpenChange}
+      style={
+        {
+          '--sidebar-width': DASHBOARD_SIDEBAR_WIDTH,
+          '--header-height': 'calc(var(--spacing) * 12)',
+        } as CSSProperties
+      }
+    >
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="shrink-0">
+          <TopNavBar
+            {...truthNav}
+            className="relative z-40 shrink-0"
+            features={{ mobileDrawer: false, sidebarTrigger: false }}
+          />
+        </div>
+        <div className="relative flex min-h-0 flex-1 overflow-hidden">
+          <SideNavBar
+            onMouseEnter={
+              sidebarMode === 'hover' ? () => setIsHovered(true) : undefined
+            }
+            onMouseLeave={
+              sidebarMode === 'hover' ? () => setIsHovered(false) : undefined
+            }
+          />
+          <SidebarInset className="min-h-0">
+            <ErpContentArea>{children ?? <Outlet />}</ErpContentArea>
+          </SidebarInset>
+        </div>
+      </div>
+    </SidebarProvider>
   )
 }

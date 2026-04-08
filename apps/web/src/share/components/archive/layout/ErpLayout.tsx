@@ -1,8 +1,7 @@
-import { useCallback } from 'react'
 import { Outlet } from 'react-router-dom'
 import { SidebarInset, SidebarProvider } from '@afenda/ui/components/ui/sidebar'
 import { TooltipProvider } from '@afenda/ui/components/ui/tooltip'
-import { useAppShellStore } from '@/share/state/use-app-shell-store'
+import { useAppShellStore } from '@/share/client-store/app-shell-store'
 import { ShellContextProvider } from './shell-context'
 import { AppSidebar } from './AppSidebar'
 import { AppHeader } from './AppHeader'
@@ -13,22 +12,22 @@ import { AppHeader } from './AppHeader'
  *
  * Provider hierarchy (ERP-scoped):
  *   ShellContextProvider > TooltipProvider > SidebarProvider > AppSidebar + SidebarInset
+ *
+ * @deprecated Use the canonical `ErpLayout` from `@/share/components/layout`
  */
 export function ErpLayout() {
-  const sidebarOpen = useAppShellStore((s) => s.sidebarOpen)
-  const toggleSidebar = useAppShellStore((s) => s.toggleSidebar)
+  const sidebarMode = useAppShellStore((s) => s.sidebarMode)
+  const setSidebarMode = useAppShellStore((s) => s.setSidebarMode)
 
-  const handleOpenChange = useCallback(
-    (open: boolean) => {
-      if (open !== sidebarOpen) toggleSidebar()
-    },
-    [sidebarOpen, toggleSidebar],
-  )
+  const sidebarOpen = sidebarMode === 'expanded'
 
   return (
     <ShellContextProvider>
       <TooltipProvider delayDuration={0}>
-        <SidebarProvider open={sidebarOpen} onOpenChange={handleOpenChange}>
+        <SidebarProvider
+          open={sidebarOpen}
+          onOpenChange={(open) => setSidebarMode(open ? 'expanded' : 'collapsed')}
+        >
           <AppSidebar />
           <SidebarInset>
             <AppHeader />

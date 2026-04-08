@@ -3,7 +3,7 @@ import type { TruthSeverity } from '../truth/truth-status'
 
 /**
  * Categories for truth alerts.
- * Maps to tabs in the truth-alert-panel.
+ * Maps to tabs in `block-ui/panel/truth-alert-panel`.
  */
 export type TruthAlertCategory =
   | 'invariant'
@@ -12,7 +12,7 @@ export type TruthAlertCategory =
   | 'message'
 
 /**
- * TruthAlertItem represents a single alert in the truth-alert-panel.
+ * TruthAlertItem represents a single alert in `block-ui/panel/truth-alert-panel`.
  * This is the UI interpretation of TruthStatus with additional UI metadata.
  */
 export interface TruthAlertItem {

@@ -3,6 +3,7 @@ import { PlusIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { Button } from '@afenda/ui/components/ui/button'
+import { cn } from '@afenda/ui/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,8 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@afenda/ui/components/ui/dropdown-menu'
-import { cn } from '@afenda/ui/lib/utils'
-
 type DropdownMenuItemOnSelect = NonNullable<
   ComponentProps<typeof DropdownMenuItem>['onSelect']
 >
@@ -39,12 +38,12 @@ function isCreateActionSeparator(
 
 export interface CreateActionTriggerProps {
   actions: readonly CreateAction[]
-  className?: string
+  triggerClassName?: string
 }
 
 export function CreateActionTrigger({
   actions,
-  className,
+  triggerClassName,
 }: CreateActionTriggerProps) {
   if (actions.length === 0) return null
 
@@ -55,10 +54,10 @@ export function CreateActionTrigger({
           type="button"
           variant="ghost"
           size="icon"
-          className={cn('h-8 w-8', className)}
+          className={cn(triggerClassName)}
           aria-label="Create new"
         >
-          <PlusIcon className="h-4 w-4" aria-hidden="true" />
+          <PlusIcon aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-48">
@@ -75,10 +74,7 @@ export function CreateActionTrigger({
             >
               <Link to={action.to}>
                 {action.icon ? (
-                  <action.icon
-                    className="mr-2 h-4 w-4 opacity-70"
-                    aria-hidden="true"
-                  />
+                  <action.icon className="mr-2 opacity-70" aria-hidden="true" />
                 ) : null}
                 {action.label}
               </Link>
@@ -90,10 +86,7 @@ export function CreateActionTrigger({
               aria-label={action.itemAriaLabel}
             >
               {action.icon ? (
-                <action.icon
-                  className="mr-2 h-4 w-4 opacity-70"
-                  aria-hidden="true"
-                />
+                <action.icon className="mr-2 opacity-70" aria-hidden="true" />
               ) : null}
               {action.label}
             </DropdownMenuItem>

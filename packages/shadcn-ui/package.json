@@ -1,0 +1,56 @@
+{
+  "name": "@afenda/shadcn-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Governed semantic UI and shadcn/ui copy-in components for Afenda.",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"components.json\" \"registry/registry.json\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"components.json\" \"registry/registry.json\"",
+    "registry:build": "shadcn build registry/registry.json -o registry/r",
+    "registry:serve": "pnpm dlx serve registry/r -l 3333"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./semantic": "./src/semantic/index.ts",
+    "./design-css": "./src/design-css/index.css",
+    "./components/*": "./src/components/*.tsx",
+    "./components/ui/*": "./src/components/ui/*.tsx",
+    "./lib/constant": "./src/lib/constant/index.ts",
+    "./lib/utils": "./src/lib/utils.ts",
+    "./lib/*": "./src/lib/*.ts"
+  },
+  "dependencies": {
+    "@afenda/core": "workspace:*",
+    "@base-ui/react": "^1.3.0",
+    "class-variance-authority": "catalog:",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "embla-carousel-react": "^8.6.0",
+    "input-otp": "^1.4.2",
+    "lucide-react": "catalog:",
+    "next-themes": "^0.4.6",
+    "radix-ui": "^1.4.3",
+    "react-day-picker": "^9.14.0",
+    "react-resizable-panels": "^4.9.0",
+    "recharts": "3.8.0",
+    "sonner": "catalog:",
+    "tw-animate-css": "^1.4.0",
+    "tailwind-merge": "^3.3.1",
+    "vaul": "catalog:",
+    "zod": "^4.3.6"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@afenda/tsconfig": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -100,8 +100,16 @@
     },
     "webClientSrc": {
       "srcRoot": "apps/web/src",
-      "allowedTopLevelDirectories": ["features", "pages", "share"],
-      "requiredShareSubdirectories": ["routing", "providers", "state", "i18n"],
+      "allowedTopLevelDirectories": ["components", "features", "pages", "share"],
+      "requiredShareSubdirectories": [
+        "api",
+        "client-store",
+        "components",
+        "i18n",
+        "query",
+        "react-hooks",
+        "routing"
+      ],
       "enforce": true
     }
   }

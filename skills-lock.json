@@ -1,6 +1,16 @@
 {
   "version": 1,
   "skills": {
+    "ast-grep": {
+      "source": "pproenca/dot-skills",
+      "sourceType": "github",
+      "computedHash": "d21b4ab166d9d1d31e6c95dbeea697aaf3843d8d8f71a67ab5d32813a3177707"
+    },
+    "eslint-plugin": {
+      "source": "third774/dotfiles",
+      "sourceType": "github",
+      "computedHash": "d18464048b92c8fcf6c5fb88381e385cd0e7c2d3001d3c4754b94eb26d3deed1"
+    },
     "turborepo": {
       "source": "vercel/turborepo",
       "sourceType": "github",

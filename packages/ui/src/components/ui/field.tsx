@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
+import { type FieldState } from '../../../../shadcn-ui/src/lib/constant'
 import { cn } from '@afenda/ui/lib/utils'
 import { Label } from '@afenda/ui/components/ui/label'
 import { Separator } from '@afenda/ui/components/ui/separator'
@@ -50,7 +51,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 const fieldVariants = cva(
-  'group/field flex w-full gap-3 data-[invalid=true]:text-destructive',
+  'group/field flex w-full gap-3',
   {
     variants: {
       orientation: {
@@ -60,9 +61,16 @@ const fieldVariants = cva(
         responsive:
           'flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px',
       },
+      state: {
+        default: '',
+        invalid: 'data-[invalid=true]:text-destructive',
+        disabled: 'data-[disabled=true]:opacity-70',
+        readonly: 'data-[readonly=true]:opacity-90',
+      },
     },
     defaultVariants: {
       orientation: 'vertical',
+      state: 'default',
     },
   },
 )
@@ -70,14 +78,23 @@ const fieldVariants = cva(
 function Field({
   className,
   orientation = 'vertical',
+  state = 'default',
   ...props
-}: React.ComponentProps<'div'> & VariantProps<typeof fieldVariants>) {
+}: React.ComponentProps<'div'> &
+  VariantProps<typeof fieldVariants> & {
+    state?: FieldState
+  }) {
   return (
     <div
       role="group"
       data-slot="field"
       data-orientation={orientation}
-      className={cn(fieldVariants({ orientation }), className)}
+      data-state={state}
+      data-invalid={state === 'invalid' || undefined}
+      data-disabled={state === 'disabled' || undefined}
+      data-readonly={state === 'readonly' || undefined}
+      aria-disabled={state === 'disabled' || undefined}
+      className={cn(fieldVariants({ orientation, state }), className)}
       {...props}
     />
   )

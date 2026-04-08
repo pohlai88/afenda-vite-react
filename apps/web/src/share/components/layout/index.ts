@@ -4,3 +4,8 @@
  * Owns: app shell layout primitives for ERP-style pages (e.g. finance dashboards).
  */
 export { ErpLayout, type ErpLayoutProps } from './erp-layout'
+export {
+  ErpContentArea,
+  type ErpContentAreaProps,
+  type ErpContentAreaSplitViewProps,
+} from './erp-content-area'

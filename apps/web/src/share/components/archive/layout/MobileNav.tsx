@@ -9,7 +9,7 @@ import {
 } from '@afenda/ui/components/ui/sheet'
 import { Button } from '@afenda/ui/components/ui/button'
 import { LayoutDashboardIcon, XIcon } from 'lucide-react'
-import { useAppShellStore } from '@/share/state/use-app-shell-store'
+import { useAppShellStore } from '@/share/client-store/app-shell-store'
 import { navGroups, type NavItem } from './nav-data'
 import { cn } from '@afenda/ui/lib/utils'
 

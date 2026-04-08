@@ -104,7 +104,7 @@ Shared vocabulary (inspired by common design-system practice: clarity, semantic 
 | Color roles | Material / industry practice | Primary / secondary / accent + semantic status |
 | Token naming | Semantic first (`primary`, `muted`) | Maps to CSS variables and Tailwind when adopted |
 | Neutrals | 12-step style ramps (compare Radix) | Warm gray ~260 hue; tune for contrast |
-| Color spaces | OKLCH for fixed ramps; HSL for theme vars | See [§3.1](#3-color-system) |
+| Color spaces | OKLCH for all color tokens | See [§3.1](#3-color-system) |
 | Type scale | Major third (~1.25) | Dense dashboards ([§4.2](#4-typography)) |
 | Accessibility | WCAG 2.1 AA | [§12](#12-accessibility) |
 
@@ -114,7 +114,7 @@ Shared vocabulary (inspired by common design-system practice: clarity, semantic 
 
 ### 3.1 Why OKLCH
 
-**OKLCH** is perceptually uniform: equal numeric steps read as even brightness steps—useful for **neutrals**, **status**, and **domain** colors. **Tenant brand** colors often arrive as hex; convert to OKLCH/HSL for ramps and **dark mode** pairs when you implement theming.
+**OKLCH** is perceptually uniform: equal numeric steps read as even brightness steps—useful for **neutrals**, **status**, and **domain** colors. All theme tokens (`:root`, `.dark`, `.classic-dark`) use OKLCH triplets (`L C H`) exclusively. **Tenant brand** colors often arrive as hex; convert to OKLCH for ramps and **dark mode** pairs when you implement theming.
 
 Benefits: predictable contrast work, harmonious palettes from a seed, cross-hue balance.
 
@@ -185,7 +185,7 @@ Primary, secondary, accent defaults and gradient rules: [**Brand guidelines**](.
 
 ### 4.1 Font
 
-**DM Sans** — single family for UI and headings; differentiate with **weight** and **tracking**, not multiple families. See [Brand guidelines](./BRAND_GUIDELINES.md) §3.
+**Geist Variable** (`@fontsource-variable/geist`) — single family for UI and headings; differentiate with **weight** and **tracking**, not multiple families. See [Brand guidelines](./BRAND_GUIDELINES.md) §3.
 
 ### 4.2 Type scale
 
@@ -236,14 +236,15 @@ Adapt to your navigation model; keep **one** consistent content padding.
 
 ### 5.3 Border radius
 
-Drive from **`--radius`** (tenant/admin configurable in future). Typical derivation:
+Drive from **`--radius`** (tenant/admin configurable in future). Multiplication-based derivation (not subtraction):
 
-| Token | Typical | Usage |
+| Token | Formula | Usage |
 | --- | --- | --- |
-| `sm` | radius − 4px | Chips, small controls |
-| `md` | base (~10px) | Inputs, buttons |
-| `lg` | base + 4px | Cards |
-| `xl` | base + 8px | Modals, large panels |
+| `sm` | `calc(var(--radius) * 0.75)` | Chips, small controls |
+| `md` | `calc(var(--radius) * 0.875)` | Inputs, buttons |
+| `lg` | `var(--radius)` | Cards (base) |
+| `xl` | `calc(var(--radius) * 1.5)` | Modals, large panels |
+| `2xl` | `calc(var(--radius) * 2)` | Hero surfaces |
 
 ---
 

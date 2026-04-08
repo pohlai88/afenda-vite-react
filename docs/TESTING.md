@@ -41,7 +41,7 @@ src/features/auth/
     LoginView.tsx
   __test__/
     login-view.test.tsx        # imports from ../components/LoginView
-src/share/providers/
+src/share/query/
   get-http-status-from-unknown.ts
   __test__/
     get-http-status-from-unknown.test.ts

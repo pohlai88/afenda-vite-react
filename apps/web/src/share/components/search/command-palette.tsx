@@ -1,14 +1,5 @@
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
-import {
-  AlertTriangleIcon,
-  BookOpenIcon,
-  ClockIcon,
-  PinIcon,
-  SearchIcon,
-  Settings2Icon,
-  SparklesIcon,
-  WrenchIcon,
-} from 'lucide-react'
+import { BookOpenIcon, PinIcon, SearchIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 /**
@@ -33,8 +24,18 @@ import {
 import { Kbd } from '@afenda/ui/components/ui/kbd'
 import { cn } from '@afenda/ui/lib/utils'
 
-import type { PaletteCommand, PaletteGroup } from './command-palette.types'
-import { PALETTE_GROUP_ORDER } from './command-palette.types'
+import type { PaletteCommand } from './command-palette.types'
+import {
+  buildPaletteBrowseBlocks,
+  buildPaletteQueryCommands,
+} from './command-palette-display-model'
+import { getPaletteGroupUi } from './command-palette-group-meta'
+import { GLOBAL_COMMAND_PALETTE_CONTENT_ID } from './command-palette-ids'
+import { getCommandPaletteOpenChordLabel } from './command-palette-platform'
+import {
+  paletteCommandRowClassName,
+  paletteSeverityBadgeLabel,
+} from './command-palette-presentation'
 import { usePaletteCommands } from './use-palette-commands'
 
 export interface CommandPaletteProps {
@@ -51,47 +52,6 @@ function commandFilterValue(cmd: {
   return [cmd.title, cmd.subtitle ?? '', ...cmd.keywords].join(' ').trim()
 }
 
-function groupHeadingIcon(group: PaletteGroup) {
-  switch (group) {
-    case 'recent':
-      return <ClockIcon className="mr-1 inline-block size-3" />
-    case 'pinned':
-      return <PinIcon className="mr-1 inline-block size-3" />
-    case 'suggested':
-      return <SparklesIcon className="mr-1 inline-block size-3" />
-    case 'search':
-      return <SearchIcon className="mr-1 inline-block size-3" />
-    case 'audit':
-      return (
-        <AlertTriangleIcon className="mr-1 inline-block size-3 text-(--color-truth-broken)" />
-      )
-    case 'resolve':
-      return (
-        <SparklesIcon className="mr-1 inline-block size-3 text-(--color-truth-valid)" />
-      )
-    case 'actions':
-      return <WrenchIcon className="mr-1 inline-block size-3" />
-    case 'settings':
-      return <Settings2Icon className="mr-1 inline-block size-3" />
-    default:
-      return null
-  }
-}
-
-function groupHeadingKey(group: PaletteGroup): string {
-  const keys: Record<PaletteGroup, string> = {
-    recent: 'command_palette.group_recent',
-    pinned: 'command_palette.group_pinned',
-    suggested: 'command_palette.group_suggested',
-    search: 'command_palette.group_nav',
-    audit: 'command_palette.group_audit',
-    resolve: 'command_palette.group_resolve',
-    actions: 'command_palette.group_actions',
-    settings: 'command_palette.group_settings',
-  }
-  return keys[group]
-}
-
 /**
  * Global command palette (⌘K / Ctrl+K): ranked commands, truth audit/resolve, theme, recents/pins.
  */
@@ -99,10 +59,16 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const { t } = useTranslation('shell')
   const [input, setInput] = useState('')
 
-  const closePalette = useCallback(() => {
+  const openChordLabel = getCommandPaletteOpenChordLabel()
+
+  const clearInput = useCallback(() => {
     setInput('')
+  }, [])
+
+  const closePalette = useCallback(() => {
+    clearInput()
     onOpenChange(false)
-  }, [onOpenChange])
+  }, [clearInput, onOpenChange])
 
   const { groups, togglePin, isPinned } = usePaletteCommands(closePalette)
   const hasQuery = input.trim().length > 0
@@ -110,11 +76,11 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const handleOpenChange = useCallback(
     (next: boolean) => {
       if (!next) {
-        setInput('')
+        clearInput()
       }
       onOpenChange(next)
     },
-    [onOpenChange],
+    [clearInput, onOpenChange],
   )
 
   const emptyHints = useMemo(
@@ -147,17 +113,14 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     }
 
     if (hasQuery) {
-      const ranked = PALETTE_GROUP_ORDER.flatMap(
-        (group) => groups.get(group) ?? [],
-      )
-      ranked.sort((a, b) => b.priority - a.priority)
+      const ranked = buildPaletteQueryCommands(groups)
       if (ranked.length === 0) return [] as DisplayGroup[]
       return [
         {
           key: 'query-results',
           heading: (
             <>
-              {groupHeadingIcon('search')}
+              <SearchIcon className="mr-1 inline-block size-3" />
               {t('nav.search')}
             </>
           ),
@@ -166,63 +129,40 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       ] satisfies DisplayGroup[]
     }
 
-    const out: DisplayGroup[] = []
-    for (const group of PALETTE_GROUP_ORDER) {
-      const cmds = groups.get(group) ?? []
-      if (cmds.length === 0) continue
+    const blocks = buildPaletteBrowseBlocks(groups)
+    return blocks.map((block) => {
+      const meta = getPaletteGroupUi(block.paletteGroup)
+      const Icon = meta.Icon
+      const headingText = block.sectionLabel ?? t(meta.headingKey)
 
-      if (group === 'search') {
-        const bySection = new Map<string, PaletteCommand[]>()
-        for (const cmd of cmds) {
-          const key = cmd.section ?? ''
-          const list = bySection.get(key)
-          if (list) list.push(cmd)
-          else bySection.set(key, [cmd])
-        }
-        for (const [sectionLabel, sectionCmds] of bySection.entries()) {
-          out.push({
-            key: `search-${sectionLabel || 'default'}`,
-            heading: (
-              <>
-                {groupHeadingIcon(group)}
-                {sectionLabel || t(groupHeadingKey(group) as never)}
-              </>
-            ),
-            commands: sectionCmds,
-          })
-        }
-        continue
-      }
-
-      out.push({
-        key: group,
+      return {
+        key: block.key,
         heading: (
           <>
-            {groupHeadingIcon(group)}
-            {t(groupHeadingKey(group) as never)}
+            <Icon
+              className={cn('mr-1 inline-block size-3', meta.iconClassName)}
+            />
+            {headingText}
           </>
         ),
-        commands: cmds,
-      })
-    }
-
-    return out
+        commands: block.commands,
+      } satisfies DisplayGroup
+    })
   }, [groups, hasQuery, t])
 
   const renderCommandItem = useCallback(
     (cmd: PaletteCommand) => {
       const Icon = cmd.icon
       const pinned = isPinned(cmd.id)
+      const rowTone = paletteCommandRowClassName(cmd)
+      const severityLabel = paletteSeverityBadgeLabel(cmd)
 
       return (
         <CommandItem
           key={cmd.id}
           value={commandFilterValue(cmd)}
           onSelect={cmd.run}
-          className={cn(
-            cmd.severity === 'broken' &&
-              'text-(--color-truth-broken-foreground)',
-          )}
+          className={cn(rowTone)}
         >
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
             <div className="flex items-center gap-2">
@@ -237,12 +177,12 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               </span>
             ) : null}
           </div>
-          {cmd.severity && cmd.severity !== 'neutral' ? (
+          {severityLabel ? (
             <Badge
               variant="outline"
               className="hidden shrink-0 capitalize sm:inline-flex"
             >
-              {cmd.severity}
+              {severityLabel}
             </Badge>
           ) : null}
           {cmd.confidence !== undefined ? (
@@ -270,6 +210,11 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 e.preventDefault()
                 e.stopPropagation()
               }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.stopPropagation()
+                }
+              }}
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
@@ -289,6 +234,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     <CommandDialog
       open={open}
       onOpenChange={handleOpenChange}
+      contentId={GLOBAL_COMMAND_PALETTE_CONTENT_ID}
       title={t('command_palette.title')}
       description={t('command_palette.description')}
     >
@@ -336,20 +282,20 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-3 py-2 text-xs text-muted-foreground">
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1">
-            <Kbd className="text-[10px]">↑</Kbd>
-            <Kbd className="text-[10px]">↓</Kbd>
+            <Kbd className="text-micro">↑</Kbd>
+            <Kbd className="text-micro">↓</Kbd>
             <span>{t('command_palette.footer_navigate')}</span>
           </span>
           <span className="inline-flex items-center gap-1">
-            <Kbd className="text-[10px]">↵</Kbd>
+            <Kbd className="text-micro">↵</Kbd>
             <span>{t('command_palette.footer_select')}</span>
           </span>
           <span className="inline-flex items-center gap-1">
-            <Kbd className="text-[10px]">esc</Kbd>
+            <Kbd className="text-micro">esc</Kbd>
             <span>{t('command_palette.footer_close')}</span>
           </span>
         </div>
-        <Kbd className="text-[10px]">⌘K</Kbd>
+        <Kbd className="text-micro">{openChordLabel}</Kbd>
       </div>
     </CommandDialog>
   )

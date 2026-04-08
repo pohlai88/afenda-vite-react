@@ -27,7 +27,7 @@ import {
   BellIcon,
   LogOutIcon,
 } from 'lucide-react'
-import { useAppShellStore } from '@/share/state/use-app-shell-store'
+import { useAppShellStore } from '@/share/client-store/app-shell-store'
 
 function getInitials(name: string | null | undefined): string {
   if (!name) return 'U'

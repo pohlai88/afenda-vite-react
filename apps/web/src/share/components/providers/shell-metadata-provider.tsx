@@ -52,18 +52,22 @@ export function useShellMetadata(incoming: ShellMetadata) {
   const context = useContext(ShellMetadataContext)
   const setMetadata = context?.setMetadata
 
-  useLayoutEffect(() => {
-    setMetadata?.(incoming)
+  // Compute breadcrumbs signature inline (not in dep array) to avoid the
+  // "complex expression in dep array" lint warning.
+  const breadcrumbsKey = JSON.stringify(incoming.breadcrumbs)
 
+  // Stabilise the incoming object so useLayoutEffect does not fire on every
+  // render when the caller recreates the literal with the same logical values.
+  const stableIncoming = useMemo<ShellMetadata>(
+    () => incoming,
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- breadcrumbs compared by value via breadcrumbsKey
+    [incoming.title, incoming.actions, breadcrumbsKey],
+  )
+
+  useLayoutEffect(() => {
+    setMetadata?.(stableIncoming)
     return () => setMetadata?.(EMPTY_SHELL_METADATA)
-    // Deps use stringified values to avoid loops from object identity churn.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    setMetadata,
-    incoming.title,
-    incoming.actions,
-    JSON.stringify(incoming.breadcrumbs),
-  ])
+  }, [setMetadata, stableIncoming])
 }
 
 /**

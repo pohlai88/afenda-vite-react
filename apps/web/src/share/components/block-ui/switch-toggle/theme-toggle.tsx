@@ -1,26 +1,20 @@
 import { useCallback } from 'react'
 import { MoonIcon, SunIcon } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@afenda/ui/components/ui/button'
-import { cn } from '@afenda/ui/lib/utils'
 
-import { useAppShellStore } from '@/share/state/use-app-shell-store'
-
-export interface ThemeToggleProps {
-  className?: string
-}
-
-export function ThemeToggle({ className }: ThemeToggleProps) {
+export function ThemeToggle() {
   const { t } = useTranslation('shell')
-  const theme = useAppShellStore((state) => state.theme)
-  const setTheme = useAppShellStore((state) => state.setTheme)
+  const { resolvedTheme, setTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
 
   const toggleLabel = t('theme.toggle', 'Toggle theme')
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === 'light' ? 'dark' : 'light')
-  }, [theme, setTheme])
+    setTheme(isDark ? 'light' : 'dark')
+  }, [isDark, setTheme])
 
   return (
     <Button
@@ -29,14 +23,14 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       size="icon"
       onClick={toggleTheme}
       aria-label={toggleLabel}
-      aria-pressed={theme === 'dark'}
+      aria-pressed={isDark}
       title={toggleLabel}
-      className={cn('size-8', className)}
+      className="rounded-full"
     >
-      {theme === 'light' ? (
-        <SunIcon className="size-4" aria-hidden="true" />
+      {isDark ? (
+        <MoonIcon aria-hidden="true" />
       ) : (
-        <MoonIcon className="size-4" aria-hidden="true" />
+        <SunIcon aria-hidden="true" />
       )}
     </Button>
   )

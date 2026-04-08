@@ -14,7 +14,7 @@ import {
   SidebarRail,
 } from '@afenda/ui/components/ui/sidebar'
 import { LayoutDashboardIcon } from 'lucide-react'
-import { useAppShellStore } from '@/share/state/use-app-shell-store'
+import { useAppShellStore } from '@/share/client-store/app-shell-store'
 import { navGroups, type NavGroup, type NavItem } from './nav-data'
 import { UserMenu } from './UserMenu'
 

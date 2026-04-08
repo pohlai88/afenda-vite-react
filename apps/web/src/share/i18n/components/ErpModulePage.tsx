@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type PageContent = {
@@ -15,7 +16,13 @@ export type ErpModulePageId =
   | 'reports'
   | 'settings'
 
-export function ErpModulePage({ module: mod }: { module: ErpModulePageId }) {
+export function ErpModulePage({
+  module: mod,
+  children,
+}: {
+  module: ErpModulePageId
+  children?: ReactNode
+}) {
   const { t } = useTranslation('shell')
   let content: PageContent
 
@@ -72,10 +79,12 @@ export function ErpModulePage({ module: mod }: { module: ErpModulePageId }) {
   }
 
   return (
-    <div className="page">
-      <h1>{content.title}</h1>
-      <p>{content.description}</p>
-      <div className="placeholder">{content.placeholder}</div>
-    </div>
+    <section className="ui-page ui-stack-relaxed">
+      <header className="ui-header">
+        <h1 className="ui-title-page">{content.title}</h1>
+        <p className="ui-lede">{content.description}</p>
+      </header>
+      {children ?? <div className="ui-empty-state">{content.placeholder}</div>}
+    </section>
   )
 }

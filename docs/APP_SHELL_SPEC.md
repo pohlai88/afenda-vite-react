@@ -14,7 +14,7 @@ This document defines the app-shell structure and behavioral rules. Styling law 
 
 - `apps/web/src/App.tsx` currently mounts providers and `RouterProvider`.
 - `apps/web/src/share/routing/feature-routes.tsx` is currently a flat route list.
-- `apps/web/src/share/state/use-app-shell-store.ts` already has shell-ready state:
+- `apps/web/src/share/client-store/app-shell-store.ts` already has shell-ready state:
   - `sidebarOpen`
   - `theme`
   - `language`

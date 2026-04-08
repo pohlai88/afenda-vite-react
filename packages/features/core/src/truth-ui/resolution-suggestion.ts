@@ -2,7 +2,7 @@ import type { TruthResolution } from '../truth/truth-resolution'
 
 /**
  * ResolutionSuggestion represents a suggested fix for a truth issue.
- * Displayed in the resolution-panel.
+ * Displayed in `block-ui/panel/resolution-panel`.
  *
  * Example:
  * - problemKey: "fx_rate_missing"

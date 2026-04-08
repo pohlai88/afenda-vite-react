@@ -8,6 +8,15 @@ This folder is for real navigation structures and navigation-specific UI.
 navigation. It sits above standalone `shell-ui` pieces and above `block-ui`
 compositions when those pieces become part of an actual navigation structure.
 
+## Folder layout
+
+- **`top-nav/`** — `TopNavBar`, desktop links/menus, `TopActionBar` (+ widget / customise), `TopUserMenu` (+ `top-user-menu-config`).
+- **`side-nav/`** — `SideNavBar` (+ `side-nav-group`, `side-nav-item`, `side-nav-user`, `side-nav-secondary`): left application sidebar using canonical shadcn `Sidebar` primitives (icon rail collapse, mobile sheet). Follows shadcn sidebar-07/sidebar-16 block patterns with zero className overrides on primitives. Reuses `nav-catalog/` + `useNavItems()`.
+- **`scope-strip/`** — left side of the **top nav row** (horizontal): `NavBreadcrumbBar` (logo / org / subsidiary / module). Not a vertical left sidebar or collapsible rail.
+- **`nav-catalog/`** — shared nav **data**: `nav-model`, `nav-config`, `useNavItems` (consumed by top nav, side nav, mobile drawer, command palette).
+- **`mobile-nav/`** — `MobileNavDrawer`.
+- **`index.ts`** — public barrel; prefer importing from here or `src/share/components`.
+
 ## Industry Standard Gate (Supabase / GitHub baseline)
 
 Do not treat a new navigation component as valid unless it meets or exceeds the
@@ -26,7 +35,7 @@ A production-grade top navbar must provide:
 - user menu with unauthenticated fallback, **theme and locale inside the menu** (GitHub-style), optional **truth status** section
 - mobile trigger with aria-expanded
 - mobile navigation drawer with user summary
-- **second row action bar** (module tabs) with truth badges when registered via `useActionBar()`
+- **second row action bar** — module **catalog** via `useActionBar({ scopeKey, tabs })`; user can hide items (prefs store); default shows **all** registered actions.
 
 If the new implementation does not match or exceed those capabilities, do not
 pretend it is better. Either keep building the missing upstream pieces or use
@@ -38,8 +47,8 @@ the legacy structure.
 - nav group dropdown menus
 - nav links and nav item renderers
 - (command palette implementation: **`search/`** — navigates to routes; truth groups; theme)
-- **truth-aware panels**: truth-alert-panel, resolution-panel, help-panel, feedback-popover
-- **nav-breadcrumb-bar**, **action-bar** + **action-bar-item**
+- **trigger-linked overlays** (help, feedback, resolution, truth alerts): use **`block-ui/panel/`**; the navbar composes them like other `block-ui` pieces
+- **`scope-strip/nav-breadcrumb-bar`**, **top-action-bar** + **top-action-bar-widget**
 - mobile nav drawers
 - navigation models, configs, and hooks
 - user navigation menus when they are part of the navigation structure
@@ -51,7 +60,7 @@ the legacy structure.
 - app layout wrappers
 - tenant or auth business logic
 - generic shell primitives that belong in `shell-ui`
-- small composed blocks that belong in `block-ui` (including `block-ui/trigger/` and `block-ui/switch-toggle/`)
+- small composed blocks that belong in `block-ui` (including `block-ui/panel/`, `block-ui/trigger/`, and `block-ui/switch-toggle/`)
 - the command menu trigger **block** (belongs in `block-ui/trigger/`, consumed here)
 
 ## Required Inputs Before Rebuilding A Navbar
@@ -61,8 +70,9 @@ To claim a new navbar meets industry standard, these upstream pieces must exist:
 - brand/logo primitives
 - shell metadata provider
 - standalone shell utilities plus **block-ui** triggers (command, notification,
-  create action, help, feedback, resolution, truth alert) and **switch-toggle**
-  blocks (theme toggle, scope switcher)
+  create action, help, feedback, resolution, truth alert, mobile nav), **`block-ui/panel/`**
+  surfaces paired with those triggers, and **switch-toggle** blocks (theme toggle,
+  scope switcher)
 - reusable title/brand blocks
 - typed navigation model with group support
 - permission-filtered nav items hook
@@ -98,7 +108,7 @@ Before calling the new navbar "better", verify it has:
 
 - Canonical types (`TruthScope`, `TruthStatus`, `TruthHealthSummary`, `TruthResolution`) live in **`@afenda/core/truth`**.
 - UI interpretation types (`TruthAlertItem`, `TruthActionBarTab`, `TruthBadge`, selectors) live in **`@afenda/core/truth-ui`**.
-- Runtime lists and health surface: **`useTruthScopeStore`**, **`useTruthHealthStore`** in `share/state` (Zustand).
+- Runtime lists and health surface: **`useTruthScopeStore`**, **`useTruthHealthStore`** in `share/client-store` (Zustand).
 - Do not merge truth and truth-ui folders in the app layer; import from the correct export path.
 
 ## Naming Policy
