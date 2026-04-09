@@ -74,11 +74,11 @@ function assertBoolean(value: unknown, label: string): void {
 function assertEnum(
   value: unknown,
   allowed: readonly string[],
-  label: string,
+  label: string
 ): void {
   if (typeof value !== "string" || !allowed.includes(value)) {
     throw new Error(
-      `${label} must be one of [${allowed.join(", ")}], got "${String(value)}"`,
+      `${label} must be one of [${allowed.join(", ")}], got "${String(value)}"`
     )
   }
 }
@@ -86,7 +86,7 @@ function assertEnum(
 function assertAllBooleans(
   policy: Readonly<Record<string, unknown>>,
   keys: readonly string[],
-  policyName: string,
+  policyName: string
 ): void {
   for (const key of keys) {
     assertBoolean(policy[key], `${policyName}.${key}`)
@@ -105,45 +105,69 @@ function assertUniqueStrings(values: readonly string[], label: string): void {
 }
 
 function validateOwnershipPolicy(): void {
-  assertUniqueStrings(ownershipPolicy.uiOwnerRoots, "ownershipPolicy.uiOwnerRoots")
-  assertUniqueStrings(ownershipPolicy.wrapperContractScanRoots, "ownershipPolicy.wrapperContractScanRoots")
-  assertUniqueStrings(ownershipPolicy.productRoots, "ownershipPolicy.productRoots")
-  assertUniqueStrings(ownershipPolicy.semanticOwnerRoots, "ownershipPolicy.semanticOwnerRoots")
-  assertUniqueStrings(ownershipPolicy.tokenOwnerFiles, "ownershipPolicy.tokenOwnerFiles")
+  assertUniqueStrings(
+    ownershipPolicy.uiOwnerRoots,
+    "ownershipPolicy.uiOwnerRoots"
+  )
+  assertUniqueStrings(
+    ownershipPolicy.wrapperContractScanRoots,
+    "ownershipPolicy.wrapperContractScanRoots"
+  )
+  assertUniqueStrings(
+    ownershipPolicy.productRoots,
+    "ownershipPolicy.productRoots"
+  )
+  assertUniqueStrings(
+    ownershipPolicy.semanticOwnerRoots,
+    "ownershipPolicy.semanticOwnerRoots"
+  )
+  assertUniqueStrings(
+    ownershipPolicy.tokenOwnerFiles,
+    "ownershipPolicy.tokenOwnerFiles"
+  )
   assertUniqueStrings(
     ownershipPolicy.inlineStyleExceptionRoots,
-    "ownershipPolicy.inlineStyleExceptionRoots",
+    "ownershipPolicy.inlineStyleExceptionRoots"
   )
 
   for (const root of ownershipPolicy.wrapperContractScanRoots) {
     if (!ownershipPolicy.uiOwnerRoots.includes(root)) {
       throw new Error(
-        `ownershipPolicy.wrapperContractScanRoots entry "${root}" is not listed in uiOwnerRoots`,
+        `ownershipPolicy.wrapperContractScanRoots entry "${root}" is not listed in uiOwnerRoots`
       )
     }
   }
 }
 
 function validateImportPolicy(): void {
-  assertUniqueStrings(importPolicy.bannedImportPatterns, "importPolicy.bannedImportPatterns")
-  assertUniqueStrings(importPolicy.allowedCnImportPaths, "importPolicy.allowedCnImportPaths")
+  assertUniqueStrings(
+    importPolicy.bannedImportPatterns,
+    "importPolicy.bannedImportPatterns"
+  )
+  assertUniqueStrings(
+    importPolicy.allowedCnImportPaths,
+    "importPolicy.allowedCnImportPaths"
+  )
   assertUniqueStrings(
     importPolicy.directRadixImportAllowlist,
-    "importPolicy.directRadixImportAllowlist",
+    "importPolicy.directRadixImportAllowlist"
   )
-  assertUniqueStrings(importPolicy.cvaImportAllowlist, "importPolicy.cvaImportAllowlist")
+  assertUniqueStrings(
+    importPolicy.cvaImportAllowlist,
+    "importPolicy.cvaImportAllowlist"
+  )
 }
 
 function validateRadixPolicy(): void {
   assertUniqueStrings(
     radixPolicy.allowedPrimitivePackages,
-    "radixPolicy.allowedPrimitivePackages",
+    "radixPolicy.allowedPrimitivePackages"
   )
 
   for (const pkg of radixPolicy.allowedPrimitivePackages) {
     if (!pkg.startsWith("@radix-ui/react-")) {
       throw new Error(
-        `radixPolicy.allowedPrimitivePackages entry "${pkg}" does not start with @radix-ui/react-`,
+        `radixPolicy.allowedPrimitivePackages entry "${pkg}" does not start with @radix-ui/react-`
       )
     }
   }
@@ -159,7 +183,7 @@ function validateRadixContractPolicy(): void {
       "warnOnLocalStateReplacingPrimitiveBehavior",
       "warnOnSuspiciousAsChildContractDrift",
     ],
-    "radixContractPolicy",
+    "radixContractPolicy"
   )
 }
 
@@ -170,11 +194,11 @@ function validateReactPolicy(): void {
 function validateTailwindPolicy(): void {
   assertUniqueStrings(
     tailwindPolicy.allowedArbitraryValueFragments,
-    "tailwindPolicy.allowedArbitraryValueFragments",
+    "tailwindPolicy.allowedArbitraryValueFragments"
   )
   assertUniqueStrings(
     tailwindPolicy.allowedSelectorFragments,
-    "tailwindPolicy.allowedSelectorFragments",
+    "tailwindPolicy.allowedSelectorFragments"
   )
 }
 
@@ -182,7 +206,7 @@ function validateShellContextPolicy(): void {
   assertEnum(
     shellContextPolicy.defaultShellScope,
     shellScopeValues,
-    "shellContextPolicy.defaultShellScope",
+    "shellContextPolicy.defaultShellScope"
   )
   assertAllBooleans(
     shellContextPolicy,
@@ -196,7 +220,7 @@ function validateShellContextPolicy(): void {
       "requireTenantIsolationBinding",
       "requireOperatorScopeSeparation",
     ],
-    "shellContextPolicy",
+    "shellContextPolicy"
   )
 }
 
@@ -204,7 +228,7 @@ function validateAppShellPolicy(): void {
   assertEnum(
     appShellPolicy.defaultZone,
     shellZoneValues,
-    "appShellPolicy.defaultZone",
+    "appShellPolicy.defaultZone"
   )
   assertAllBooleans(
     appShellPolicy,
@@ -217,7 +241,7 @@ function validateAppShellPolicy(): void {
       "allowFeatureLevelShellZoneFork",
       "allowFeatureLevelShellMetadataFork",
     ],
-    "appShellPolicy",
+    "appShellPolicy"
   )
 }
 
@@ -225,12 +249,12 @@ function validateMetadataUiPolicy(): void {
   assertEnum(
     metadataUiPolicy.defaultSemanticSource,
     metadataSemanticSourceValues,
-    "metadataUiPolicy.defaultSemanticSource",
+    "metadataUiPolicy.defaultSemanticSource"
   )
   assertEnum(
     metadataUiPolicy.defaultStyleBindingMode,
     styleBindingModeValues,
-    "metadataUiPolicy.defaultStyleBindingMode",
+    "metadataUiPolicy.defaultStyleBindingMode"
   )
   assertAllBooleans(
     metadataUiPolicy,
@@ -244,7 +268,7 @@ function validateMetadataUiPolicy(): void {
       "requireSemanticTokenBinding",
       "requireMetadataMappingToUseGovernedLayer",
     ],
-    "metadataUiPolicy",
+    "metadataUiPolicy"
   )
 }
 
@@ -252,7 +276,7 @@ function validateStyleBindingPolicy(): void {
   assertEnum(
     styleBindingPolicy.primaryGlobalStyleOwner,
     globalStyleOwnerValues,
-    "styleBindingPolicy.primaryGlobalStyleOwner",
+    "styleBindingPolicy.primaryGlobalStyleOwner"
   )
   assertAllBooleans(
     styleBindingPolicy,
@@ -267,7 +291,7 @@ function validateStyleBindingPolicy(): void {
       "requireComponentsToConsumeTokenOutputs",
       "requireMetadataBoundStylesToUseGlobalLayer",
     ],
-    "styleBindingPolicy",
+    "styleBindingPolicy"
   )
 }
 
@@ -277,20 +301,20 @@ function validateClassPolicy(): void {
     [
       "allowRawPaletteClasses",
       "allowArbitraryValuesInFeatures",
-      "allowInlineVisualStyleProps",
+      "allowInlineStyleAttributeInProductUi",
       "allowHexRgbHslColorsInProductUi",
       "allowCvaOutsideUiPackage",
       "allowDirectRadixImportOutsideUiPackage",
-      "allowUnboundTokensInFeatures",
+      "allowDirectTokenUsageInFeatures",
     ],
-    "classPolicy",
+    "classPolicy"
   )
   if (
-    typeof classPolicy.maxClassNameTokensInFeatures !== "number" ||
-    classPolicy.maxClassNameTokensInFeatures < 0
+    typeof classPolicy.maxRecommendedClassNameTokensInFeatures !== "number" ||
+    classPolicy.maxRecommendedClassNameTokensInFeatures < 0
   ) {
     throw new Error(
-      `classPolicy.maxClassNameTokensInFeatures must be a non-negative integer, got ${classPolicy.maxClassNameTokensInFeatures}`,
+      `classPolicy.maxRecommendedClassNameTokensInFeatures must be a non-negative integer, got ${classPolicy.maxRecommendedClassNameTokensInFeatures}`
     )
   }
 }
@@ -308,7 +332,7 @@ function validateComponentPolicy(): void {
       "requireGovernedComponentsInFeatures",
       "requireTruthMappingFromGovernedSource",
     ],
-    "componentPolicy",
+    "componentPolicy"
   )
 }
 
@@ -320,7 +344,7 @@ function validateLayoutPolicy(): void {
       "allowFeatureLevelTrackDefinitions",
       "allowFeatureLevelGapOverride",
     ],
-    "layoutPolicy",
+    "layoutPolicy"
   )
 }
 
@@ -331,7 +355,7 @@ function validateCrossPolicyConsistency(): void {
   ) {
     throw new Error(
       "shadcnPolicy.allowCvaOutsideUiOwner is true but importPolicy.cvaImportAllowlist is empty — " +
-        "product code would be allowed CVA but have no approved import path.",
+        "product code would be allowed CVA but have no approved import path."
     )
   }
 
@@ -341,7 +365,7 @@ function validateCrossPolicyConsistency(): void {
   ) {
     throw new Error(
       "radixPolicy.allowDirectPrimitiveImportOutsideUiOwner is true but " +
-        "importPolicy.directRadixImportAllowlist is empty — no approved import path.",
+        "importPolicy.directRadixImportAllowlist is empty — no approved import path."
     )
   }
 
@@ -349,7 +373,7 @@ function validateCrossPolicyConsistency(): void {
     classPolicy.allowRawPaletteClasses !== tailwindPolicy.allowRawPaletteClasses
   ) {
     throw new Error(
-      "classPolicy.allowRawPaletteClasses and tailwindPolicy.allowRawPaletteClasses are out of sync.",
+      "classPolicy.allowRawPaletteClasses and tailwindPolicy.allowRawPaletteClasses are out of sync."
     )
   }
   if (
@@ -357,22 +381,22 @@ function validateCrossPolicyConsistency(): void {
     tailwindPolicy.allowArbitraryValuesInFeatures
   ) {
     throw new Error(
-      "classPolicy.allowArbitraryValuesInFeatures and tailwindPolicy.allowArbitraryValuesInFeatures are out of sync.",
+      "classPolicy.allowArbitraryValuesInFeatures and tailwindPolicy.allowArbitraryValuesInFeatures are out of sync."
     )
   }
   if (
-    classPolicy.allowInlineVisualStyleProps !==
+    classPolicy.allowInlineStyleAttributeInProductUi !==
     tailwindPolicy.allowInlineVisualStyleProps
   ) {
     throw new Error(
-      "classPolicy.allowInlineVisualStyleProps and tailwindPolicy.allowInlineVisualStyleProps are out of sync.",
+      "classPolicy.allowInlineStyleAttributeInProductUi and tailwindPolicy.allowInlineVisualStyleProps are out of sync."
     )
   }
   if (
     classPolicy.allowCvaOutsideUiPackage !== shadcnPolicy.allowCvaOutsideUiOwner
   ) {
     throw new Error(
-      "classPolicy.allowCvaOutsideUiPackage and shadcnPolicy.allowCvaOutsideUiOwner are out of sync.",
+      "classPolicy.allowCvaOutsideUiPackage and shadcnPolicy.allowCvaOutsideUiOwner are out of sync."
     )
   }
   if (
@@ -381,7 +405,7 @@ function validateCrossPolicyConsistency(): void {
   ) {
     throw new Error(
       "classPolicy.allowDirectRadixImportOutsideUiPackage and " +
-        "radixPolicy.allowDirectPrimitiveImportOutsideUiOwner are out of sync.",
+        "radixPolicy.allowDirectPrimitiveImportOutsideUiOwner are out of sync."
     )
   }
 }

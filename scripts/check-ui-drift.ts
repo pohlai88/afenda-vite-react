@@ -6,8 +6,8 @@
  * Usage:
  *   pnpm run script:check-ui-drift
  */
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
+import { readFileSync } from "node:fs"
+import path from "node:path"
 
 import {
   type RegexFinding,
@@ -30,19 +30,19 @@ import {
   exitWithStatus,
   TRUTH_UI_GOVERNED_SPECIFIERS,
   TRUTH_UI_IMPORT_RE,
-} from '../tools/ui-drift/shared/index.js'
+} from "../tools/ui-drift/shared/index.js"
 
 type RuleCode =
-  | 'UIX-IMPORT-001'
-  | 'UIX-IMPORT-002'
-  | 'UIX-COLOR-001'
-  | 'UIX-COLOR-002'
-  | 'UIX-CLASS-001'
-  | 'UIX-STYLE-001'
-  | 'UIX-SEMANTIC-001'
-  | 'UIX-SEMANTIC-002'
-  | 'UIX-CONTROL-001'
-  | 'UIX-VARIANT-001'
+  | "UIX-IMPORT-001"
+  | "UIX-IMPORT-002"
+  | "UIX-COLOR-001"
+  | "UIX-COLOR-002"
+  | "UIX-CLASS-001"
+  | "UIX-STYLE-001"
+  | "UIX-SEMANTIC-001"
+  | "UIX-SEMANTIC-002"
+  | "UIX-CONTROL-001"
+  | "UIX-VARIANT-001"
 
 const ROOT_DIR = findRepoRoot()
 
@@ -59,7 +59,8 @@ const RAW_TAILWIND_PALETTE_RE =
 const HARDCODED_COLOR_RE =
   /(?:(?:^|[\s;:,{(])#[0-9a-fA-F]{3,8}\b)|(?:rgb[a]?\()|(?:hsl[a]?\()|(?:oklch\()/g
 
-const TOKEN_BACKED_COLOR_RE = /(?:rgb[a]?|hsl[a]?|oklch|oklab|lch|lab|color)\(\s*var\(/
+const TOKEN_BACKED_COLOR_RE =
+  /(?:rgb[a]?|hsl[a]?|oklch|oklab|lch|lab|color)\(\s*var\(/
 
 const ARBITRARY_VALUE_RE =
   /\b(?:w|h|min-w|min-h|max-w|max-h|p|px|py|pt|pr|pb|pl|m|mx|my|mt|mr|mb|ml|gap|rounded|text|leading|tracking|top|right|bottom|left|inset|translate-x|translate-y|grid-cols|grid-rows)-\[[^\]]+\]/g
@@ -76,7 +77,8 @@ const LOCAL_SEMANTIC_MAP_RE =
 const LOCAL_VARIANT_FACTORY_RE =
   /\b(?:cva\s*\(|defineVariants?\s*\(|createVariants?\s*\(|get[A-Z][A-Za-z0-9]+Classes\s*\()/g
 
-const CSS_UTILITY_HINT_RE = /\b(?:bg-|text-|border-|ring-|stroke-|fill-|shadow-|rounded-)\b/
+const CSS_UTILITY_HINT_RE =
+  /\b(?:bg-|text-|border-|ring-|stroke-|fill-|shadow-|rounded-)\b/
 
 /** Non-global version of LOCAL_SEMANTIC_MAP_RE for presence checks without lastIndex drift. */
 const SEMANTIC_MAP_NAME_RE_NG =
@@ -120,7 +122,7 @@ async function main() {
       checkArbitraryValues(relativeFile, content)
     }
 
-    if (!classPolicy.allowInlineVisualStyleProps) {
+    if (!classPolicy.allowInlineStyleAttributeInProductUi) {
       checkInlineStyles(relativeFile, content)
     }
 
@@ -146,7 +148,7 @@ async function main() {
 
 function safeRead(file: string): string | null {
   try {
-    return readFileSync(file, 'utf8')
+    return readFileSync(file, "utf8")
   } catch {
     return null
   }
@@ -157,12 +159,12 @@ function checkRadixImport(file: string, content: string) {
 
   forEachMatch(content, RADIX_IMPORT_RE, (match, index) => {
     pushFinding({
-      rule: 'UIX-IMPORT-001',
+      rule: "UIX-IMPORT-001",
       file,
       line: lineNumberAt(content, index),
       text: match[0],
       message:
-        'Direct @radix-ui/react-* import outside governed UI package. Use wrapped primitives only.',
+        "Direct @radix-ui/react-* import outside governed UI package. Use wrapped primitives only.",
     })
   })
 }
@@ -172,12 +174,12 @@ function checkCvaImport(file: string, content: string) {
 
   forEachMatch(content, CVA_IMPORT_RE, (match, index) => {
     pushFinding({
-      rule: 'UIX-IMPORT-002',
+      rule: "UIX-IMPORT-002",
       file,
       line: lineNumberAt(content, index),
       text: match[0],
       message:
-        'class-variance-authority import outside governed UI package. Variant definition must live in the UI owner package only.',
+        "class-variance-authority import outside governed UI package. Variant definition must live in the UI owner package only.",
     })
   })
 }
@@ -185,35 +187,44 @@ function checkCvaImport(file: string, content: string) {
 function checkRawPaletteClasses(file: string, content: string) {
   forEachMatch(content, RAW_TAILWIND_PALETTE_RE, (match, index) => {
     pushFinding({
-      rule: 'UIX-COLOR-001',
+      rule: "UIX-COLOR-001",
       file,
       line: lineNumberAt(content, index),
       text: match[0],
-      message: 'Raw Tailwind palette class found. Use token-backed semantic classes instead.',
+      message:
+        "Raw Tailwind palette class found. Use token-backed semantic classes instead.",
     })
   })
 }
 
 function checkHardcodedColors(file: string, content: string) {
   forEachMatch(content, HARDCODED_COLOR_RE, (match, index) => {
-    const surroundingContext = content.slice(index, index + match[0].length + 30)
+    const surroundingContext = content.slice(
+      index,
+      index + match[0].length + 30
+    )
     if (TOKEN_BACKED_COLOR_RE.test(surroundingContext)) return
 
-    if (match[0].trimStart().startsWith('#') && isLikelyProseLine(content, index)) return
+    if (
+      match[0].trimStart().startsWith("#") &&
+      isLikelyProseLine(content, index)
+    )
+      return
 
     pushFinding({
-      rule: 'UIX-COLOR-002',
+      rule: "UIX-COLOR-002",
       file,
       line: lineNumberAt(content, index),
       text: match[0],
-      message: 'Hardcoded color literal found. Use CSS variables / semantic tokens instead.',
+      message:
+        "Hardcoded color literal found. Use CSS variables / semantic tokens instead.",
     })
   })
 }
 
 function isLikelyProseLine(content: string, index: number): boolean {
-  const lineStart = content.lastIndexOf('\n', index) + 1
-  const lineEnd = content.indexOf('\n', index)
+  const lineStart = content.lastIndexOf("\n", index) + 1
+  const lineEnd = content.indexOf("\n", index)
   const line = content.slice(lineStart, lineEnd === -1 ? undefined : lineEnd)
 
   if (CSS_UTILITY_HINT_RE.test(line)) return false
@@ -232,11 +243,12 @@ function checkArbitraryValues(file: string, content: string) {
     if (ARBITRARY_VALUE_ALLOWLIST.some((allowed) => allowed.test(text))) return
 
     pushFinding({
-      rule: 'UIX-CLASS-001',
+      rule: "UIX-CLASS-001",
       file,
       line: lineNumberAt(content, index),
       text,
-      message: 'Arbitrary Tailwind value found. Use governed tokens / scales instead.',
+      message:
+        "Arbitrary Tailwind value found. Use governed tokens / scales instead.",
     })
   })
 }
@@ -247,12 +259,12 @@ function checkInlineStyles(file: string, content: string) {
     if (hasInlineStyleException(content, index)) return
 
     pushFinding({
-      rule: 'UIX-STYLE-001',
+      rule: "UIX-STYLE-001",
       file,
       line: lineNumberAt(content, index),
       text: truncateExcerpt(text, 160),
       message:
-        'Inline visual style prop found. Use tokens, variants, or governed component props instead.',
+        "Inline visual style prop found. Use tokens, variants, or governed component props instead.",
     })
   })
 }
@@ -267,12 +279,12 @@ function checkLocalSemanticMaps(file: string, content: string) {
 
   forEachMatch(content, LOCAL_SEMANTIC_MAP_RE, (match, index) => {
     pushFinding({
-      rule: 'UIX-SEMANTIC-001',
+      rule: "UIX-SEMANTIC-001",
       file,
       line: lineNumberAt(content, index),
       text: match[0],
       message:
-        'Suspicious local semantic/style map found. Domain/status-to-UI mapping should live in the governed semantic/domain layer.',
+        "Suspicious local semantic/style map found. Domain/status-to-UI mapping should live in the governed semantic/domain layer.",
     })
   })
 }
@@ -292,11 +304,11 @@ function checkTruthUiMapping(file: string, content: string) {
   if (!match) return
 
   pushFinding({
-    rule: 'UIX-SEMANTIC-002',
+    rule: "UIX-SEMANTIC-002",
     file,
     line: lineNumberAt(content, match.index),
     text: match[0],
-    message: `Domain-to-UI semantic mapping found without a governed truth-UI import. Import from ${TRUTH_UI_GOVERNED_SPECIFIERS.join(' or ')} instead of building local mappings.`,
+    message: `Domain-to-UI semantic mapping found without a governed truth-UI import. Import from ${TRUTH_UI_GOVERNED_SPECIFIERS.join(" or ")} instead of building local mappings.`,
   })
 }
 
@@ -311,9 +323,9 @@ function checkRawHtmlControls(file: string, content: string) {
 
   forEachMatch(content, RAW_FORM_CONTROL_RE, (match, index) => {
     const tagMatch = /<(\w+)/.exec(match[0])
-    const tagName = tagMatch?.[1] ?? 'element'
+    const tagName = tagMatch?.[1] ?? "element"
     pushFinding({
-      rule: 'UIX-CONTROL-001',
+      rule: "UIX-CONTROL-001",
       file,
       line: lineNumberAt(content, index),
       text: match[0].trim(),
@@ -324,7 +336,7 @@ function checkRawHtmlControls(file: string, content: string) {
 
 /** Returns true when the file path is in the application feature layer. */
 function isFeatureCode(file: string): boolean {
-  return normalizePath(file).includes('/features/')
+  return normalizePath(file).includes("/features/")
 }
 
 function checkLocalVariantFactories(file: string, content: string) {
@@ -332,17 +344,17 @@ function checkLocalVariantFactories(file: string, content: string) {
 
   forEachMatch(content, LOCAL_VARIANT_FACTORY_RE, (match, index) => {
     pushFinding({
-      rule: 'UIX-VARIANT-001',
+      rule: "UIX-VARIANT-001",
       file,
       line: lineNumberAt(content, index),
       text: match[0],
       message:
-        'Local variant factory detected. Variant construction should live in the governed UI package.',
+        "Local variant factory detected. Variant construction should live in the governed UI package.",
     })
   })
 }
 
-function pushFinding(finding: Omit<RegexFinding, 'severity'>) {
+function pushFinding(finding: Omit<RegexFinding, "severity">) {
   const severity = getRuleLevel(finding.rule as RuleCode, activeRulePolicy)
   if (severity == null) return
 
@@ -353,7 +365,11 @@ function pushFinding(finding: Omit<RegexFinding, 'severity'>) {
 }
 
 function sortFindings(a: RegexFinding, b: RegexFinding): number {
-  return a.file.localeCompare(b.file) || a.line - b.line || a.rule.localeCompare(b.rule)
+  return (
+    a.file.localeCompare(b.file) ||
+    a.line - b.line ||
+    a.rule.localeCompare(b.rule)
+  )
 }
 
 function report(): never {
@@ -361,19 +377,28 @@ function report(): never {
   const format = getOutputFormat()
 
   if (sorted.length === 0) {
-    if (format === 'json') {
-      console.log(JSON.stringify({ findings: [], summary: { errors: 0, warnings: 0 }, byRule: {} }, null, 2))
+    if (format === "json") {
+      console.log(
+        JSON.stringify(
+          { findings: [], summary: { errors: 0, warnings: 0 }, byRule: {} },
+          null,
+          2
+        )
+      )
     } else {
-      console.log('✅ UI drift check passed. No violations found.')
+      console.log("✅ UI drift check passed. No violations found.")
     }
     process.exit(0)
   }
 
-  if (format === 'json') {
+  if (format === "json") {
     printJsonReport(sorted)
   } else {
-    printTextReport(sorted, 'UI Drift Report', (f) =>
-      `[${(f.severity as Severity).toUpperCase()}] ${f.rule} ${f.file}:${f.line}\n  ${f.message}\n  ${f.text}`,
+    printTextReport(
+      sorted,
+      "UI Drift Report",
+      (f) =>
+        `[${(f.severity as Severity).toUpperCase()}] ${f.rule} ${f.file}:${f.line}\n  ${f.message}\n  ${f.text}`
     )
   }
 

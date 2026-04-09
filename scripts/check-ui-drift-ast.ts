@@ -11,15 +11,15 @@
  *   pnpm run script:check-ui-drift:ast
  *   pnpm run script:check-ui-drift:ast --format=json
  */
-import path from 'node:path'
-import { existsSync } from 'node:fs'
+import path from "node:path"
+import { existsSync } from "node:fs"
 import {
   Node,
   Project,
   QuoteKind,
   type PropertyAssignment,
   type SourceFile,
-} from 'ts-morph'
+} from "ts-morph"
 
 import {
   type AstFinding,
@@ -48,37 +48,37 @@ import {
   GOVERNED_COMPONENT_NAMES,
   TRUTH_MAPPING_IMPORT_SOURCES,
   TAILWIND_UTILITY_RE,
-} from '../tools/ui-drift/shared/index.js'
+} from "../tools/ui-drift/shared/index.js"
 
 type RuleCode =
-  | 'UIX-AST-IMPORT-001'
-  | 'UIX-AST-IMPORT-002'
-  | 'UIX-AST-IMPORT-003'
-  | 'UIX-AST-IMPORT-004'
-  | 'UIX-AST-COLOR-001'
-  | 'UIX-AST-COLOR-002'
-  | 'UIX-AST-CLASS-001'
-  | 'UIX-AST-STYLE-001'
-  | 'UIX-AST-SEMANTIC-001'
-  | 'UIX-AST-SEMANTIC-002'
-  | 'UIX-AST-SEMANTIC-REQUIRED-001'
-  | 'UIX-AST-SEMANTIC-REQUIRED-002'
-  | 'UIX-AST-SEMANTIC-REQUIRED-003'
-  | 'UIX-AST-CONTROL-001'
-  | 'UIX-AST-VARIANT-001'
-  | 'UIX-AST-TOKEN-001'
-  | 'UIX-AST-TOKEN-002'
-  | 'UIX-AST-TOKEN-003'
-  | 'UIX-AST-TOKEN-004'
-  | 'UIX-AST-TRUTH-001'
-  | 'UIX-AST-TRUTH-002'
-  | 'UIX-AST-TRUTH-003'
-  | 'UIX-AST-COMPLEXITY-001'
-  | 'UIX-AST-COMPLEXITY-002'
-  | 'UIX-AST-COMPLEXITY-003'
-  | 'UIX-AST-COMPONENT-001'
-  | 'UIX-AST-COMPONENT-002'
-  | 'UIX-AST-COMPONENT-003'
+  | "UIX-AST-IMPORT-001"
+  | "UIX-AST-IMPORT-002"
+  | "UIX-AST-IMPORT-003"
+  | "UIX-AST-IMPORT-004"
+  | "UIX-AST-COLOR-001"
+  | "UIX-AST-COLOR-002"
+  | "UIX-AST-CLASS-001"
+  | "UIX-AST-STYLE-001"
+  | "UIX-AST-SEMANTIC-001"
+  | "UIX-AST-SEMANTIC-002"
+  | "UIX-AST-SEMANTIC-REQUIRED-001"
+  | "UIX-AST-SEMANTIC-REQUIRED-002"
+  | "UIX-AST-SEMANTIC-REQUIRED-003"
+  | "UIX-AST-CONTROL-001"
+  | "UIX-AST-VARIANT-001"
+  | "UIX-AST-TOKEN-001"
+  | "UIX-AST-TOKEN-002"
+  | "UIX-AST-TOKEN-003"
+  | "UIX-AST-TOKEN-004"
+  | "UIX-AST-TRUTH-001"
+  | "UIX-AST-TRUTH-002"
+  | "UIX-AST-TRUTH-003"
+  | "UIX-AST-COMPLEXITY-001"
+  | "UIX-AST-COMPLEXITY-002"
+  | "UIX-AST-COMPLEXITY-003"
+  | "UIX-AST-COMPONENT-001"
+  | "UIX-AST-COMPONENT-002"
+  | "UIX-AST-COMPONENT-003"
 
 const ROOT_DIR = findRepoRoot()
 const REPORT_ROOT = ROOT_DIR
@@ -121,65 +121,69 @@ const LAYOUT_TOKEN_RE =
 const LOW_LEVEL_PRIMITIVE_IMPORT_RE =
   /(?:^|\/)(?:alert|badge|input|table)(?:\.tsx?)?$/
 
-const LOW_LEVEL_PRIMITIVE_NAMES = new Set(['Alert', 'Badge', 'Input', 'Table'])
+const LOW_LEVEL_PRIMITIVE_NAMES = new Set(["Alert", "Badge", "Input", "Table"])
 
 const SEMANTIC_WRAPPER_NAMES = new Set([
-  'SemanticAlert',
-  'SemanticBadge',
-  'SemanticField',
-  'SemanticPanel',
-  'SemanticSection',
-  'InvariantAlert',
-  'InvariantBadge',
-  'AllocationBadge',
-  'SettlementBadge',
-  'ReconciliationAlert',
+  "SemanticAlert",
+  "SemanticBadge",
+  "SemanticField",
+  "SemanticPanel",
+  "SemanticSection",
+  "InvariantAlert",
+  "InvariantBadge",
+  "AllocationBadge",
+  "SettlementBadge",
+  "ReconciliationAlert",
 ])
 
 const TRUTH_RULE_KEYSETS: Array<{
-  rule: Extract<RuleCode, 'UIX-AST-TRUTH-001' | 'UIX-AST-TRUTH-002' | 'UIX-AST-TRUTH-003'>
+  rule: Extract<
+    RuleCode,
+    "UIX-AST-TRUTH-001" | "UIX-AST-TRUTH-002" | "UIX-AST-TRUTH-003"
+  >
   regex: RegExp
 }> = [
   {
-    rule: 'UIX-AST-TRUTH-001',
+    rule: "UIX-AST-TRUTH-001",
     regex: /\b(?:low|medium|high|critical)\b/i,
   },
   {
-    rule: 'UIX-AST-TRUTH-002',
+    rule: "UIX-AST-TRUTH-002",
     regex:
       /\b(?:draft|pending|partial|allocated|reversed|blocked|failed|open|settled|overdue|matched|partially_matched|unmatched|conflict)\b/i,
   },
   {
-    rule: 'UIX-AST-TRUTH-003',
+    rule: "UIX-AST-TRUTH-003",
     regex: /\b(?:present|missing|stale|tampered|unverified)\b/i,
   },
 ]
 
 const INLINE_STYLE_PROP_NAMES = new Set([
-  'color',
-  'background',
-  'backgroundColor',
-  'borderColor',
-  'outlineColor',
-  'boxShadow',
-  'borderRadius',
-  'padding',
-  'paddingTop',
-  'paddingRight',
-  'paddingBottom',
-  'paddingLeft',
-  'margin',
-  'marginTop',
-  'marginRight',
-  'marginBottom',
-  'marginLeft',
-  'fontSize',
-  'fontWeight',
-  'lineHeight',
-  'letterSpacing',
+  "color",
+  "background",
+  "backgroundColor",
+  "borderColor",
+  "outlineColor",
+  "boxShadow",
+  "borderRadius",
+  "padding",
+  "paddingTop",
+  "paddingRight",
+  "paddingBottom",
+  "paddingLeft",
+  "margin",
+  "marginTop",
+  "marginRight",
+  "marginBottom",
+  "marginLeft",
+  "fontSize",
+  "fontWeight",
+  "lineHeight",
+  "letterSpacing",
 ])
 
-const CSS_UTILITY_HINT_RE = /\b(?:bg-|text-|border-|ring-|stroke-|fill-|shadow-|rounded-)\b/
+const CSS_UTILITY_HINT_RE =
+  /\b(?:bg-|text-|border-|ring-|stroke-|fill-|shadow-|rounded-)\b/
 
 const findings: AstFinding[] = []
 let activeRulePolicy: RulePolicyShape<RuleCode>
@@ -189,11 +193,16 @@ async function main() {
   governance = await loadGovernanceModules<RuleCode>(ROOT_DIR)
   activeRulePolicy = governance.rulePolicy
 
-  const { classPolicy, componentPolicy, ownershipPolicy, tailwindPolicy, shadcnPolicy } =
-    governance
+  const {
+    classPolicy,
+    componentPolicy,
+    ownershipPolicy,
+    tailwindPolicy,
+    shadcnPolicy,
+  } = governance
 
   const productUiPrefixes = ownershipPolicy.productRoots.map((root) =>
-    normalizePath(path.join(ROOT_DIR, root)),
+    normalizePath(path.join(ROOT_DIR, root))
   )
 
   const project = new Project({
@@ -205,7 +214,10 @@ async function main() {
     },
   })
 
-  const sourceFilesToScan = listFilesForScanByPolicy(ROOT_DIR, ownershipPolicy.productRoots)
+  const sourceFilesToScan = listFilesForScanByPolicy(
+    ROOT_DIR,
+    ownershipPolicy.productRoots
+  )
   project.addSourceFilesAtPaths(sourceFilesToScan)
 
   const sourceFiles = project
@@ -215,8 +227,16 @@ async function main() {
   for (const sourceFile of sourceFiles) {
     const file = normalizePath(sourceFile.getFilePath())
     const inFeature = isFeatureFile(file)
-    const governed = isGovernedUiOwnerByPolicy(file, ROOT_DIR, ownershipPolicy.uiOwnerRoots)
-    const semanticOwner = isSemanticOwnerByPolicy(file, ROOT_DIR, ownershipPolicy.semanticOwnerRoots)
+    const governed = isGovernedUiOwnerByPolicy(
+      file,
+      ROOT_DIR,
+      ownershipPolicy.uiOwnerRoots
+    )
+    const semanticOwner = isSemanticOwnerByPolicy(
+      file,
+      ROOT_DIR,
+      ownershipPolicy.semanticOwnerRoots
+    )
 
     if (
       !governance.radixPolicy.allowDirectPrimitiveImportOutsideUiOwner ||
@@ -246,21 +266,40 @@ async function main() {
       checkLocalVariantFactories(sourceFile, governed)
     }
 
-    if (componentPolicy.requireGovernedComponentsInFeatures && inFeature && !governed) {
+    if (
+      componentPolicy.requireGovernedComponentsInFeatures &&
+      inFeature &&
+      !governed
+    ) {
       checkFeatureClassNameUsage(sourceFile)
       checkRawElementsWithTailwind(sourceFile)
       checkPrimitiveImports(sourceFile)
     }
 
-    if (!classPolicy.allowUnboundTokensInFeatures && inFeature && !governed) {
+    if (
+      !classPolicy.allowDirectTokenUsageInFeatures &&
+      inFeature &&
+      !governed
+    ) {
       checkUnboundTokens(sourceFile)
     }
 
-    if (classPolicy.maxClassNameTokensInFeatures > 0 && inFeature && !governed) {
-      checkClassNameComplexity(sourceFile, classPolicy.maxClassNameTokensInFeatures)
+    if (
+      classPolicy.maxRecommendedClassNameTokensInFeatures > 0 &&
+      inFeature &&
+      !governed
+    ) {
+      checkClassNameComplexity(
+        sourceFile,
+        classPolicy.maxRecommendedClassNameTokensInFeatures
+      )
     }
 
-    if (componentPolicy.requireTruthMappingFromGovernedSource && inFeature && !governed) {
+    if (
+      componentPolicy.requireTruthMappingFromGovernedSource &&
+      inFeature &&
+      !governed
+    ) {
       checkTruthMappingSources(sourceFile)
     }
 
@@ -275,19 +314,22 @@ async function main() {
 
 function findTsConfig(): string {
   const candidates = [
-    path.join(ROOT_DIR, 'tsconfig.json'),
-    path.join(ROOT_DIR, 'tsconfig.base.json'),
+    path.join(ROOT_DIR, "tsconfig.json"),
+    path.join(ROOT_DIR, "tsconfig.base.json"),
   ]
 
   for (const candidate of candidates) {
     if (existsSync(candidate)) return candidate
   }
 
-  console.error('Unable to locate tsconfig.json or tsconfig.base.json')
+  console.error("Unable to locate tsconfig.json or tsconfig.base.json")
   process.exit(2)
 }
 
-function shouldScanFile(sourceFile: SourceFile, productUiPrefixes: string[]): boolean {
+function shouldScanFile(
+  sourceFile: SourceFile,
+  productUiPrefixes: string[]
+): boolean {
   const file = normalizePath(sourceFile.getFilePath())
 
   if (!/\.[jt]sx?$/.test(file)) return false
@@ -298,90 +340,101 @@ function shouldScanFile(sourceFile: SourceFile, productUiPrefixes: string[]): bo
   return true
 }
 
-function checkImports(sourceFile: SourceFile, governed: boolean, semanticOwner: boolean) {
+function checkImports(
+  sourceFile: SourceFile,
+  governed: boolean,
+  semanticOwner: boolean
+) {
   const { radixPolicy, shadcnPolicy, importPolicy } = governance
 
   for (const decl of sourceFile.getImportDeclarations()) {
     const moduleSpecifier = decl.getModuleSpecifierValue()
     const importedNames = new Set(
-      decl.getNamedImports().map((specifier) => specifier.getName()),
+      decl.getNamedImports().map((specifier) => specifier.getName())
     )
     const defaultImport = decl.getDefaultImport()?.getText()
 
     if (
       !radixPolicy.allowDirectPrimitiveImportOutsideUiOwner &&
       !governed &&
-      moduleSpecifier.startsWith('@radix-ui/react-') &&
+      moduleSpecifier.startsWith("@radix-ui/react-") &&
       !importPolicy.directRadixImportAllowlist.includes(moduleSpecifier)
     ) {
       pushNodeFinding(
         sourceFile,
         decl,
-        'UIX-AST-IMPORT-001',
-        'Direct @radix-ui/react-* import outside governed UI package. Use wrapped primitives only.',
+        "UIX-AST-IMPORT-001",
+        "Direct @radix-ui/react-* import outside governed UI package. Use wrapped primitives only."
       )
     }
 
     if (
       !shadcnPolicy.allowCvaOutsideUiOwner &&
       !governed &&
-      moduleSpecifier === 'class-variance-authority' &&
+      moduleSpecifier === "class-variance-authority" &&
       !importPolicy.cvaImportAllowlist.includes(moduleSpecifier)
     ) {
       pushNodeFinding(
         sourceFile,
         decl,
-        'UIX-AST-IMPORT-002',
-        'class-variance-authority import outside governed UI package. Variant definition must live only in the governed UI owner package.',
+        "UIX-AST-IMPORT-002",
+        "class-variance-authority import outside governed UI package. Variant definition must live only in the governed UI owner package."
       )
     }
 
     // Skip semantic adapter import check for governed owners and semantic owners (truth-ui domain).
     if (!governed && !semanticOwner) {
-      const isBannedImport = importPolicy.bannedImportPatterns.some((pattern) =>
-        moduleSpecifier.startsWith(pattern) || moduleSpecifier === pattern,
+      const isBannedImport = importPolicy.bannedImportPatterns.some(
+        (pattern) =>
+          moduleSpecifier.startsWith(pattern) || moduleSpecifier === pattern
       )
 
       if (
         !isBannedImport &&
-        (moduleSpecifier === 'clsx' || moduleSpecifier === 'tailwind-merge')
+        (moduleSpecifier === "clsx" || moduleSpecifier === "tailwind-merge")
       ) {
         pushNodeFinding(
           sourceFile,
           decl,
-          'UIX-AST-IMPORT-003',
-          'Tailwind/class merge helper imported outside governed UI package. Use governed semantic or primitive components instead.',
+          "UIX-AST-IMPORT-003",
+          "Tailwind/class merge helper imported outside governed UI package. Use governed semantic or primitive components instead."
         )
       } else if (
         shadcnPolicy.requireGovernedCnHelper &&
-        (moduleSpecifier.startsWith('.') || moduleSpecifier.startsWith('@/')) &&
-        (importedNames.has('cn') || defaultImport === 'cn') &&
-        !importPolicy.allowedCnImportPaths.some((allowed) => moduleSpecifier.endsWith(allowed) || moduleSpecifier === allowed)
+        (moduleSpecifier.startsWith(".") || moduleSpecifier.startsWith("@/")) &&
+        (importedNames.has("cn") || defaultImport === "cn") &&
+        !importPolicy.allowedCnImportPaths.some(
+          (allowed) =>
+            moduleSpecifier.endsWith(allowed) || moduleSpecifier === allowed
+        )
       ) {
         pushNodeFinding(
           sourceFile,
           decl,
-          'UIX-AST-IMPORT-003',
-          'cn() imported from non-governed path. Use governed cn() from approved import paths only.',
+          "UIX-AST-IMPORT-003",
+          "cn() imported from non-governed path. Use governed cn() from approved import paths only."
         )
       }
 
       // Only flag camelCase names that combine a domain concept with a UI-mapping word.
       // Excludes PascalCase component/type names and ALL_CAPS constants (false positives).
       const looksLikeLocalSemanticAdapterImport =
-        (moduleSpecifier.startsWith('.') || moduleSpecifier.startsWith('@/')) &&
-        [...importedNames].some((name) =>
-          /^[a-z]/.test(name) &&
-          /(?:status|severity|badge|alert|tone|variant)/i.test(name) &&
-          /(?:class|classes|color|colors|map|lookup|variant|presentation|uiModel)/i.test(name),
+        (moduleSpecifier.startsWith(".") || moduleSpecifier.startsWith("@/")) &&
+        [...importedNames].some(
+          (name) =>
+            /^[a-z]/.test(name) &&
+            /(?:status|severity|badge|alert|tone|variant)/i.test(name) &&
+            /(?:class|classes|color|colors|map|lookup|variant|presentation|uiModel)/i.test(
+              name
+            )
         )
 
       if (looksLikeLocalSemanticAdapterImport) {
         pushNodeFinding(
           sourceFile,
           decl,
-          'UIX-AST-IMPORT-004',
-          'Semantic adapter imported from a local feature/shared file. Import governed mappings from @afenda/shadcn-ui/semantic or the constant layer instead.',
+          "UIX-AST-IMPORT-004",
+          "Semantic adapter imported from a local feature/shared file. Import governed mappings from @afenda/shadcn-ui/semantic or the constant layer instead."
         )
       }
     }
@@ -393,17 +446,24 @@ function checkStringLiterals(sourceFile: SourceFile, governed: boolean) {
   const { tailwindPolicy } = governance
 
   sourceFile.forEachDescendant((node) => {
-    if (!Node.isStringLiteral(node) && !Node.isNoSubstitutionTemplateLiteral(node)) return
+    if (
+      !Node.isStringLiteral(node) &&
+      !Node.isNoSubstitutionTemplateLiteral(node)
+    )
+      return
 
     const value = node.getLiteralText()
     if (!value) return
 
-    if (!tailwindPolicy.allowRawPaletteClasses && RAW_TAILWIND_PALETTE_RE.test(value)) {
+    if (
+      !tailwindPolicy.allowRawPaletteClasses &&
+      RAW_TAILWIND_PALETTE_RE.test(value)
+    ) {
       pushNodeFinding(
         sourceFile,
         node,
-        'UIX-AST-COLOR-001',
-        'Raw Tailwind palette class found. Use token-backed semantic classes instead.',
+        "UIX-AST-COLOR-001",
+        "Raw Tailwind palette class found. Use token-backed semantic classes instead."
       )
     }
 
@@ -416,21 +476,24 @@ function checkStringLiterals(sourceFile: SourceFile, governed: boolean) {
       pushNodeFinding(
         sourceFile,
         node,
-        'UIX-AST-COLOR-002',
-        'Hardcoded color literal found. Use CSS variables / semantic tokens instead.',
+        "UIX-AST-COLOR-002",
+        "Hardcoded color literal found. Use CSS variables / semantic tokens instead."
       )
     }
 
     if (
       !tailwindPolicy.allowArbitraryValuesInFeatures &&
       ARBITRARY_VALUE_RE.test(value) &&
-      !isAllowedArbitraryValueByPolicy(value, tailwindPolicy.allowedArbitraryValueFragments)
+      !isAllowedArbitraryValueByPolicy(
+        value,
+        tailwindPolicy.allowedArbitraryValueFragments
+      )
     ) {
       pushNodeFinding(
         sourceFile,
         node,
-        'UIX-AST-CLASS-001',
-        'Arbitrary Tailwind value found. Use governed scales, tokens, or approved component props instead.',
+        "UIX-AST-CLASS-001",
+        "Arbitrary Tailwind value found. Use governed scales, tokens, or approved component props instead."
       )
     }
   })
@@ -456,15 +519,18 @@ function checkJsxInlineStyles(sourceFile: SourceFile, governed: boolean) {
   if (governed) return
   const file = normalizePath(sourceFile.getFilePath())
 
-  if (isInlineStyleExceptionByPolicy(
-    file,
-    ROOT_DIR,
-    governance.ownershipPolicy.inlineStyleExceptionRoots,
-  )) return
+  if (
+    isInlineStyleExceptionByPolicy(
+      file,
+      ROOT_DIR,
+      governance.ownershipPolicy.inlineStyleExceptionRoots
+    )
+  )
+    return
 
   sourceFile.forEachDescendant((node) => {
     if (!Node.isJsxAttribute(node)) return
-    if (node.getNameNode().getText() !== 'style') return
+    if (node.getNameNode().getText() !== "style") return
     if (hasInlineStyleException(sourceFile, node)) return
 
     const initializer = node.getInitializer()
@@ -472,20 +538,22 @@ function checkJsxInlineStyles(sourceFile: SourceFile, governed: boolean) {
       pushNodeFinding(
         sourceFile,
         node,
-        'UIX-AST-STYLE-001',
-        'Inline style prop found. Use tokens, variants, or governed props instead.',
+        "UIX-AST-STYLE-001",
+        "Inline style prop found. Use tokens, variants, or governed props instead."
       )
       return
     }
 
     const rawExpression = initializer.getExpression()
-    const expression = rawExpression ? unwrapTypeAssertion(rawExpression) : undefined
+    const expression = rawExpression
+      ? unwrapTypeAssertion(rawExpression)
+      : undefined
     if (!expression || !Node.isObjectLiteralExpression(expression)) {
       pushNodeFinding(
         sourceFile,
         node,
-        'UIX-AST-STYLE-001',
-        'Dynamic inline style expression found. Inline visual styling is not allowed here.',
+        "UIX-AST-STYLE-001",
+        "Dynamic inline style expression found. Inline visual styling is not allowed here."
       )
       return
     }
@@ -496,8 +564,8 @@ function checkJsxInlineStyles(sourceFile: SourceFile, governed: boolean) {
     pushNodeFinding(
       sourceFile,
       node,
-      'UIX-AST-STYLE-001',
-      `Inline visual style prop found (${visualProps.join(', ')}). Use tokens, variants, or governed props instead.`,
+      "UIX-AST-STYLE-001",
+      `Inline visual style prop found (${visualProps.join(", ")}). Use tokens, variants, or governed props instead.`
     )
   })
 }
@@ -530,11 +598,14 @@ function checkLocalSemanticMaps(sourceFile: SourceFile, governed: boolean) {
   if (governed) return
 
   const file = normalizePath(sourceFile.getFilePath())
-  if (isSemanticOwnerByPolicy(
-    file,
-    ROOT_DIR,
-    governance.ownershipPolicy.semanticOwnerRoots,
-  )) return
+  if (
+    isSemanticOwnerByPolicy(
+      file,
+      ROOT_DIR,
+      governance.ownershipPolicy.semanticOwnerRoots
+    )
+  )
+    return
 
   for (const statement of sourceFile.getVariableStatements()) {
     for (const declaration of statement.getDeclarations()) {
@@ -548,8 +619,8 @@ function checkLocalSemanticMaps(sourceFile: SourceFile, governed: boolean) {
       pushNodeFinding(
         sourceFile,
         declaration,
-        'UIX-AST-SEMANTIC-001',
-        'Suspicious local semantic/style map found. Status/severity/domain-to-UI mapping should live in the governed semantic/domain layer.',
+        "UIX-AST-SEMANTIC-001",
+        "Suspicious local semantic/style map found. Status/severity/domain-to-UI mapping should live in the governed semantic/domain layer."
       )
     }
   }
@@ -561,10 +632,15 @@ function looksLikeSemanticStyleMap(objectLiteral: Node): boolean {
   const props = objectLiteral.getProperties().filter(Node.isPropertyAssignment)
   if (props.length < 2) return false
 
-  const keyText = props.map((prop) => getPropertyName(prop) ?? '').join(' ')
-  const valueText = props.map((prop) => prop.getInitializer()?.getText() ?? '').join(' ')
+  const keyText = props.map((prop) => getPropertyName(prop) ?? "").join(" ")
+  const valueText = props
+    .map((prop) => prop.getInitializer()?.getText() ?? "")
+    .join(" ")
 
-  return DOMAIN_STATUS_MAP_KEYS_RE.test(keyText) && VISUAL_PROP_OR_VALUE_RE.test(valueText)
+  return (
+    DOMAIN_STATUS_MAP_KEYS_RE.test(keyText) &&
+    VISUAL_PROP_OR_VALUE_RE.test(valueText)
+  )
 }
 
 function checkLocalVariantFactories(sourceFile: SourceFile, governed: boolean) {
@@ -572,23 +648,27 @@ function checkLocalVariantFactories(sourceFile: SourceFile, governed: boolean) {
   if (governance.shadcnPolicy.allowLocalVariantFactoryOutsideUiOwner) return
 
   sourceFile.forEachDescendant((node) => {
-    if (Node.isCallExpression(node) && node.getExpression().getText() === 'cva') {
+    if (
+      Node.isCallExpression(node) &&
+      node.getExpression().getText() === "cva"
+    ) {
       pushNodeFinding(
         sourceFile,
         node,
-        'UIX-AST-VARIANT-001',
-        'Local cva() usage detected outside governed UI package. Variant construction should live in the governed UI layer.',
+        "UIX-AST-VARIANT-001",
+        "Local cva() usage detected outside governed UI package. Variant construction should live in the governed UI layer."
       )
     }
 
     if (Node.isFunctionDeclaration(node) || Node.isVariableDeclaration(node)) {
-      const name = typeof node.getName === 'function' ? node.getName() : undefined
+      const name =
+        typeof node.getName === "function" ? node.getName() : undefined
       if (name != null && LOCAL_VARIANT_FACTORY_NAME_RE.test(name)) {
         pushNodeFinding(
           sourceFile,
           node,
-          'UIX-AST-VARIANT-001',
-          'Suspicious local variant factory detected. Variant construction should live in the governed UI layer.',
+          "UIX-AST-VARIANT-001",
+          "Suspicious local variant factory detected. Variant construction should live in the governed UI layer."
         )
       }
     }
@@ -598,18 +678,22 @@ function checkLocalVariantFactories(sourceFile: SourceFile, governed: boolean) {
 function stripGoverned(className: string): string {
   return className
     .split(/\s+/)
-    .filter((token) => token.length > 0 && !token.startsWith('ui-'))
-    .join(' ')
+    .filter((token) => token.length > 0 && !token.startsWith("ui-"))
+    .join(" ")
 }
 
 function checkFeatureClassNameUsage(sourceFile: SourceFile) {
   sourceFile.forEachDescendant((node) => {
-    if (!Node.isJsxAttribute(node) || node.getNameNode().getText() !== 'className') return
+    if (
+      !Node.isJsxAttribute(node) ||
+      node.getNameNode().getText() !== "className"
+    )
+      return
 
     const initializer = node.getInitializer()
     if (!initializer) return
 
-    let classNameValue = ''
+    let classNameValue = ""
     if (Node.isStringLiteral(initializer)) {
       classNameValue = initializer.getLiteralText()
     } else if (Node.isJsxExpression(initializer)) {
@@ -620,8 +704,8 @@ function checkFeatureClassNameUsage(sourceFile: SourceFile) {
       pushNodeFinding(
         sourceFile,
         node,
-        'UIX-AST-SEMANTIC-REQUIRED-001',
-        'Raw Tailwind className found in feature code. Prefer governed semantic components or approved shell primitives.',
+        "UIX-AST-SEMANTIC-REQUIRED-001",
+        "Raw Tailwind className found in feature code. Prefer governed semantic components or approved shell primitives."
       )
     }
   })
@@ -629,18 +713,19 @@ function checkFeatureClassNameUsage(sourceFile: SourceFile) {
 
 function checkRawElementsWithTailwind(sourceFile: SourceFile) {
   sourceFile.forEachDescendant((node) => {
-    if (!Node.isJsxOpeningElement(node) && !Node.isJsxSelfClosingElement(node)) return
+    if (!Node.isJsxOpeningElement(node) && !Node.isJsxSelfClosingElement(node))
+      return
 
     const tagName = node.getTagNameNode().getText()
     if (!RAW_ELEMENT_NAMES.has(tagName)) return
 
-    const classNameAttr = node.getAttribute('className')
+    const classNameAttr = node.getAttribute("className")
     if (!classNameAttr || !Node.isJsxAttribute(classNameAttr)) return
 
     const initializer = classNameAttr.getInitializer()
     if (!initializer) return
 
-    let classNameValue = ''
+    let classNameValue = ""
     if (Node.isStringLiteral(initializer)) {
       classNameValue = initializer.getLiteralText()
     } else if (Node.isJsxExpression(initializer)) {
@@ -656,8 +741,8 @@ function checkRawElementsWithTailwind(sourceFile: SourceFile) {
       pushNodeFinding(
         sourceFile,
         node,
-        'UIX-AST-SEMANTIC-REQUIRED-003',
-        `Raw <${tagName}> with Tailwind utilities in feature code. Use a governed component (${[...GOVERNED_COMPONENT_NAMES].slice(0, 5).join(', ')}...) instead.`,
+        "UIX-AST-SEMANTIC-REQUIRED-003",
+        `Raw <${tagName}> with Tailwind utilities in feature code. Use a governed component (${[...GOVERNED_COMPONENT_NAMES].slice(0, 5).join(", ")}...) instead.`
       )
     }
   })
@@ -665,15 +750,16 @@ function checkRawElementsWithTailwind(sourceFile: SourceFile) {
 
 function checkUnboundTokens(sourceFile: SourceFile) {
   sourceFile.forEachDescendant((node) => {
-    if (!Node.isJsxOpeningElement(node) && !Node.isJsxSelfClosingElement(node)) return
+    if (!Node.isJsxOpeningElement(node) && !Node.isJsxSelfClosingElement(node))
+      return
 
-    const classNameAttr = node.getAttribute('className')
+    const classNameAttr = node.getAttribute("className")
     if (!classNameAttr || !Node.isJsxAttribute(classNameAttr)) return
 
     const initializer = classNameAttr.getInitializer()
     if (!initializer) return
 
-    let classNameValue = ''
+    let classNameValue = ""
     if (Node.isStringLiteral(initializer)) {
       classNameValue = initializer.getLiteralText()
     } else if (Node.isJsxExpression(initializer)) {
@@ -687,8 +773,8 @@ function checkUnboundTokens(sourceFile: SourceFile) {
       pushNodeFinding(
         sourceFile,
         classNameAttr,
-        'UIX-AST-TOKEN-001',
-        'Unbound spacing token in feature code. Use semantic props or governed layout primitives instead.',
+        "UIX-AST-TOKEN-001",
+        "Unbound spacing token in feature code. Use semantic props or governed layout primitives instead."
       )
     }
 
@@ -696,8 +782,8 @@ function checkUnboundTokens(sourceFile: SourceFile) {
       pushNodeFinding(
         sourceFile,
         classNameAttr,
-        'UIX-AST-TOKEN-002',
-        'Unbound typography token in feature code. Use semantic text or governed component variants instead.',
+        "UIX-AST-TOKEN-002",
+        "Unbound typography token in feature code. Use semantic text or governed component variants instead."
       )
     }
 
@@ -705,8 +791,8 @@ function checkUnboundTokens(sourceFile: SourceFile) {
       pushNodeFinding(
         sourceFile,
         classNameAttr,
-        'UIX-AST-TOKEN-003',
-        'Unbound radius/shadow/border token in feature code. Use semantic surface components instead.',
+        "UIX-AST-TOKEN-003",
+        "Unbound radius/shadow/border token in feature code. Use semantic surface components instead."
       )
     }
 
@@ -714,8 +800,8 @@ function checkUnboundTokens(sourceFile: SourceFile) {
       pushNodeFinding(
         sourceFile,
         classNameAttr,
-        'UIX-AST-TOKEN-004',
-        'Direct width/height/grid sizing token found in feature code. Prefer governed layout primitives or semantic wrappers.',
+        "UIX-AST-TOKEN-004",
+        "Direct width/height/grid sizing token found in feature code. Prefer governed layout primitives or semantic wrappers."
       )
     }
   })
@@ -723,15 +809,16 @@ function checkUnboundTokens(sourceFile: SourceFile) {
 
 function checkClassNameComplexity(sourceFile: SourceFile, maxTokens: number) {
   sourceFile.forEachDescendant((node) => {
-    if (!Node.isJsxOpeningElement(node) && !Node.isJsxSelfClosingElement(node)) return
+    if (!Node.isJsxOpeningElement(node) && !Node.isJsxSelfClosingElement(node))
+      return
 
-    const classNameAttr = node.getAttribute('className')
+    const classNameAttr = node.getAttribute("className")
     if (!classNameAttr || !Node.isJsxAttribute(classNameAttr)) return
 
     const initializer = classNameAttr.getInitializer()
     if (!initializer) return
 
-    let classNameValue = ''
+    let classNameValue = ""
     if (Node.isStringLiteral(initializer)) {
       classNameValue = initializer.getLiteralText()
     } else if (Node.isJsxExpression(initializer)) {
@@ -746,8 +833,8 @@ function checkClassNameComplexity(sourceFile: SourceFile, maxTokens: number) {
       pushNodeFinding(
         sourceFile,
         classNameAttr,
-        'UIX-AST-COMPLEXITY-001',
-        `className has ${tokenCount} Tailwind tokens (max ${maxTokens}). Extract to a governed component or use semantic variants.`,
+        "UIX-AST-COMPLEXITY-001",
+        `className has ${tokenCount} Tailwind tokens (max ${maxTokens}). Extract to a governed component or use semantic variants.`
       )
     }
   })
@@ -768,8 +855,8 @@ function checkPrimitiveImports(sourceFile: SourceFile) {
     pushNodeFinding(
       sourceFile,
       decl,
-      'UIX-AST-COMPONENT-001',
-      `Low-level ${importedPrimitive} imported in feature code. Prefer a governed semantic wrapper when one exists.`,
+      "UIX-AST-COMPONENT-001",
+      `Low-level ${importedPrimitive} imported in feature code. Prefer a governed semantic wrapper when one exists.`
     )
   }
 }
@@ -784,8 +871,8 @@ function checkConditionalStylingComplexity(sourceFile: SourceFile) {
     pushNodeFinding(
       sourceFile,
       node,
-      'UIX-AST-COMPLEXITY-002',
-      'Conditional styling logic found in render code. Move visual decision trees into governed semantic adapters.',
+      "UIX-AST-COMPLEXITY-002",
+      "Conditional styling logic found in render code. Move visual decision trees into governed semantic adapters."
     )
   })
 }
@@ -802,12 +889,12 @@ function checkFeatureLocalWrapperExports(sourceFile: SourceFile) {
 
     const hasExport = Node.isClassDeclaration(node)
       ? node.isExported()
-      : typeof node.isExported === 'function'
+      : typeof node.isExported === "function"
         ? node.isExported()
         : false
     if (!hasExport) return
 
-    const name = typeof node.getName === 'function' ? node.getName() : undefined
+    const name = typeof node.getName === "function" ? node.getName() : undefined
     if (name == null) return
     if (SEMANTIC_WRAPPER_NAMES.has(name)) return
     if (!/(?:Badge|Panel|Section|Alert|Field|Card)$/i.test(name)) return
@@ -815,8 +902,8 @@ function checkFeatureLocalWrapperExports(sourceFile: SourceFile) {
     pushNodeFinding(
       sourceFile,
       node,
-      'UIX-AST-COMPONENT-002',
-      'Feature file exports a reusable visual wrapper. Move generic visual abstractions into the governed UI package.',
+      "UIX-AST-COMPONENT-002",
+      "Feature file exports a reusable visual wrapper. Move generic visual abstractions into the governed UI package."
     )
   })
 }
@@ -828,7 +915,7 @@ function checkTruthMappingSources(sourceFile: SourceFile) {
   }
 
   const hasGovernedTruthImport = TRUTH_MAPPING_IMPORT_SOURCES.some((source) =>
-    [...importSources].some((imp) => imp.includes(source)),
+    [...importSources].some((imp) => imp.includes(source))
   )
 
   for (const statement of sourceFile.getVariableStatements()) {
@@ -842,7 +929,7 @@ function checkTruthMappingSources(sourceFile: SourceFile) {
           sourceFile,
           declaration,
           matchedTruthRule,
-          'Domain-to-UI mapping defined locally. Import from governed truth layer (@afenda/shadcn-ui/lib/constant) instead.',
+          "Domain-to-UI mapping defined locally. Import from governed truth layer (@afenda/shadcn-ui/lib/constant) instead."
         )
       }
     }
@@ -855,13 +942,15 @@ function looksLikeDomainToUiMapping(objectLiteral: Node): boolean {
   const props = objectLiteral.getProperties().filter(Node.isPropertyAssignment)
   if (props.length < 2) return false
 
-  const keyText = props.map((prop) => getPropertyName(prop) ?? '').join(' ')
-  const valueText = props.map((prop) => prop.getInitializer()?.getText() ?? '').join(' ')
+  const keyText = props.map((prop) => getPropertyName(prop) ?? "").join(" ")
+  const valueText = props
+    .map((prop) => prop.getInitializer()?.getText() ?? "")
+    .join(" ")
 
   const hasDomainKeys = DOMAIN_STATUS_MAP_KEYS_RE.test(keyText)
   const hasUiValues =
     /\b(?:success|warning|destructive|info|default|outline|secondary|bg-|text-|border-)\b/.test(
-      valueText,
+      valueText
     )
 
   return hasDomainKeys && hasUiValues
@@ -872,7 +961,7 @@ function getTruthRuleForMapping(objectLiteral: Node): RuleCode | null {
   if (!Node.isObjectLiteralExpression(objectLiteral)) return null
 
   const props = objectLiteral.getProperties().filter(Node.isPropertyAssignment)
-  const keyText = props.map((prop) => getPropertyName(prop) ?? '').join(' ')
+  const keyText = props.map((prop) => getPropertyName(prop) ?? "").join(" ")
 
   for (const entry of TRUTH_RULE_KEYSETS) {
     if (entry.regex.test(keyText)) {
@@ -880,7 +969,7 @@ function getTruthRuleForMapping(objectLiteral: Node): RuleCode | null {
     }
   }
 
-  return 'UIX-AST-TRUTH-002'
+  return "UIX-AST-TRUTH-002"
 }
 
 function unwrapTypeAssertion(node: Node): Node {
@@ -898,7 +987,7 @@ function getPropertyName(prop: PropertyAssignment): string | undefined {
     Node.isStringLiteral(nameNode) ||
     Node.isNumericLiteral(nameNode)
   ) {
-    return nameNode.getText().replace(/^["']|["']$/g, '')
+    return nameNode.getText().replace(/^["']|["']$/g, "")
   }
 
   return undefined
@@ -908,7 +997,7 @@ function pushNodeFinding(
   sourceFile: SourceFile,
   node: Node,
   rule: RuleCode,
-  message: string,
+  message: string
 ) {
   const severity = getRuleLevel(rule, activeRulePolicy)
   if (severity == null) return
@@ -941,19 +1030,28 @@ function report(): never {
   const format = getOutputFormat()
 
   if (sorted.length === 0) {
-    if (format === 'json') {
-      console.log(JSON.stringify({ findings: [], summary: { errors: 0, warnings: 0 }, byRule: {} }, null, 2))
+    if (format === "json") {
+      console.log(
+        JSON.stringify(
+          { findings: [], summary: { errors: 0, warnings: 0 }, byRule: {} },
+          null,
+          2
+        )
+      )
     } else {
-      console.log('✅ UI drift AST check passed. No violations found.')
+      console.log("✅ UI drift AST check passed. No violations found.")
     }
     process.exit(0)
   }
 
-  if (format === 'json') {
+  if (format === "json") {
     printJsonReport(sorted)
   } else {
-    printTextReport(sorted, 'UI Drift AST Report', (f) =>
-      `[${(f.severity as Severity).toUpperCase()}] ${f.rule} ${f.file}:${f.line}:${f.column}\n  ${f.message}\n  ${f.excerpt}`,
+    printTextReport(
+      sorted,
+      "UI Drift AST Report",
+      (f) =>
+        `[${(f.severity as Severity).toUpperCase()}] ${f.rule} ${f.file}:${f.line}:${f.column}\n  ${f.message}\n  ${f.excerpt}`
     )
   }
 

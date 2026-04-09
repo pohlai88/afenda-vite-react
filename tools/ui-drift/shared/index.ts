@@ -4,13 +4,13 @@
  * Extracted here so both the regex and AST checkers consume a single source of
  * truth for repo-root discovery, policy loading, finding types, and reporting.
  */
-import { existsSync, readdirSync, statSync } from 'node:fs'
-import path from 'node:path'
-import { pathToFileURL } from 'node:url'
+import { existsSync, readdirSync, statSync } from "node:fs"
+import path from "node:path"
+import { pathToFileURL } from "node:url"
 
-export type Severity = 'error' | 'warning'
-export type OutputFormat = 'text' | 'json'
-export type GovernanceRuleLevel = 'error' | 'warning' | 'off'
+export type Severity = "error" | "warning"
+export type OutputFormat = "text" | "json"
+export type GovernanceRuleLevel = "error" | "warning" | "off"
 
 export interface BaseFinding {
   severity: Severity
@@ -35,9 +35,9 @@ export interface ClassPolicyShape {
   allowRawPaletteClasses: boolean
   allowHexRgbHslColorsInProductUi: boolean
   allowArbitraryValuesInFeatures: boolean
-  allowInlineVisualStyleProps: boolean
-  allowUnboundTokensInFeatures: boolean
-  maxClassNameTokensInFeatures: number
+  allowInlineStyleAttributeInProductUi: boolean
+  allowDirectTokenUsageInFeatures: boolean
+  maxRecommendedClassNameTokensInFeatures: number
 }
 
 export interface ComponentPolicyShape {
@@ -89,7 +89,7 @@ export interface RadixContractPolicyShape {
   warnOnSuspiciousAsChildContractDrift: boolean
 }
 
-export type UtilityDomainLevel = true | 'token-only' | 'semantic-only'
+export type UtilityDomainLevel = true | "token-only" | "semantic-only"
 
 export interface TailwindPolicyShape {
   requireThemeVariables: boolean
@@ -180,41 +180,52 @@ export interface GovernanceModules<RuleCode extends string> {
   appShellPolicy: AppShellPolicyShape
 }
 
-export const EXPECTED_GOVERNANCE_VERSION = '1'
+export const EXPECTED_GOVERNANCE_VERSION = "1"
 
-export const SCAN_ROOTS = ['apps', 'packages'] as const
+export const SCAN_ROOTS = ["apps", "packages"] as const
 
 export const EXCLUDED_DIR_NAMES = new Set([
-  '.git',
-  '.next',
-  '.turbo',
-  'build',
-  'coverage',
-  'dist',
-  'node_modules',
-  'storybook-static',
+  ".git",
+  ".next",
+  ".turbo",
+  "build",
+  "coverage",
+  "dist",
+  "node_modules",
+  "storybook-static",
 ])
 
 export const EXCLUDED_PATH_PARTS = [
-  '/node_modules/',
-  '/dist/',
-  '/build/',
-  '/coverage/',
-  '/.turbo/',
-  '/storybook-static/',
+  "/node_modules/",
+  "/dist/",
+  "/build/",
+  "/coverage/",
+  "/.turbo/",
+  "/storybook-static/",
 ] as const
 
-export const CODE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'])
+export const CODE_EXTENSIONS = new Set([
+  ".ts",
+  ".tsx",
+  ".js",
+  ".jsx",
+  ".mjs",
+  ".cjs",
+])
 
-export const EXCLUDE_FILE_PATTERNS = [/\.test\./, /\.spec\./, /\.stories\./] as const
+export const EXCLUDE_FILE_PATTERNS = [
+  /\.test\./,
+  /\.spec\./,
+  /\.stories\./,
+] as const
 
 export const ALLOWED_UI_OWNERS_RELATIVE = [
-  'packages/shadcn-ui/src',
-  'packages/ui/src',
-  'packages/design-system/src/components/shadcn',
+  "packages/shadcn-ui/src",
+  "packages/ui/src",
+  "packages/design-system/src/components/shadcn",
 ] as const
 
-export const PRODUCT_UI_PATH_HINTS_RELATIVE = ['apps', 'packages'] as const
+export const PRODUCT_UI_PATH_HINTS_RELATIVE = ["apps", "packages"] as const
 
 /**
  * Matches a well-formed inline-style exception pragma.
@@ -245,14 +256,25 @@ export function extractPragmaExpiry(lookback: string): Date | null {
  *   - The pragma is missing `reason`
  *   - The `expires` date is present and falls strictly before today
  */
-export function isValidInlineStyleException(lookback: string, today = new Date()): boolean {
+export function isValidInlineStyleException(
+  lookback: string,
+  today = new Date()
+): boolean {
   if (!INLINE_STYLE_EXCEPTION_PRAGMA_RE.test(lookback)) return false
 
   const expiry = extractPragmaExpiry(lookback)
   if (expiry !== null) {
     if (isNaN(expiry.getTime())) return false
-    const expiryDay = new Date(expiry.getFullYear(), expiry.getMonth(), expiry.getDate())
-    const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    const expiryDay = new Date(
+      expiry.getFullYear(),
+      expiry.getMonth(),
+      expiry.getDate()
+    )
+    const todayDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    )
     if (expiryDay < todayDay) return false
   }
 
@@ -264,8 +286,8 @@ export function isValidInlineStyleException(lookback: string, today = new Date()
  * Semantic style maps in feature code must trace to one of these.
  */
 export const TRUTH_UI_GOVERNED_SPECIFIERS = [
-  '@afenda/core/truth-ui',
-  '@afenda/core/truth',
+  "@afenda/core/truth-ui",
+  "@afenda/core/truth",
 ] as const
 
 /**
@@ -276,68 +298,68 @@ export const TRUTH_UI_IMPORT_RE =
   /from\s+["'](?:@afenda\/core\/truth(?:-ui)?|@afenda\/ui\/(?:semantic|truth-mapping)|@afenda\/shadcn-ui\/(?:semantic|lib\/constant))['"]/
 
 export const GOVERNED_COMPONENT_NAMES = new Set([
-  'Alert',
-  'AlertDialog',
-  'AllocationBadge',
-  'Avatar',
-  'Badge',
-  'Button',
-  'Calendar',
-  'Card',
-  'Checkbox',
-  'Command',
-  'Dialog',
-  'Drawer',
-  'DropdownMenu',
-  'Form',
-  'Input',
-  'InvariantAlert',
-  'InvariantBadge',
-  'Label',
-  'ReconciliationAlert',
-  'SemanticAlert',
-  'SemanticBadge',
-  'SemanticField',
-  'SemanticPanel',
-  'SemanticSection',
-  'Popover',
-  'Progress',
-  'RadioGroup',
-  'ScrollArea',
-  'Select',
-  'Separator',
-  'SettlementBadge',
-  'Sheet',
-  'Skeleton',
-  'Slider',
-  'Switch',
-  'Table',
-  'Tabs',
-  'Textarea',
-  'Toast',
-  'Tooltip',
+  "Alert",
+  "AlertDialog",
+  "AllocationBadge",
+  "Avatar",
+  "Badge",
+  "Button",
+  "Calendar",
+  "Card",
+  "Checkbox",
+  "Command",
+  "Dialog",
+  "Drawer",
+  "DropdownMenu",
+  "Form",
+  "Input",
+  "InvariantAlert",
+  "InvariantBadge",
+  "Label",
+  "ReconciliationAlert",
+  "SemanticAlert",
+  "SemanticBadge",
+  "SemanticField",
+  "SemanticPanel",
+  "SemanticSection",
+  "Popover",
+  "Progress",
+  "RadioGroup",
+  "ScrollArea",
+  "Select",
+  "Separator",
+  "SettlementBadge",
+  "Sheet",
+  "Skeleton",
+  "Slider",
+  "Switch",
+  "Table",
+  "Tabs",
+  "Textarea",
+  "Toast",
+  "Tooltip",
 ])
 
 export const RAW_ELEMENT_NAMES = new Set([
-  'div',
-  'span',
-  'section',
-  'article',
-  'aside',
-  'header',
-  'footer',
-  'main',
-  'nav',
-  'ul',
-  'ol',
-  'li',
-  'p',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
+  "div",
+  "span",
+  "section",
+  "article",
+  "aside",
+  "header",
+  "footer",
+  "main",
+  "nav",
+  "ul",
+  "ol",
+  "li",
+  "p",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
 ])
 
 export const UNBOUND_SPACING_TOKENS_RE =
@@ -355,29 +377,29 @@ export const TAILWIND_UTILITY_RE =
 export const FEATURE_PATH_PATTERN = /[/\\]features?[/\\]/i
 
 export const GOVERNED_UI_IMPORT_SOURCES = [
-  '@afenda/ui',
-  '@afenda/shadcn-ui',
-  '@afenda/shadcn-ui/semantic',
-  '@/components/ui',
-  '~/components/ui',
-  '../components/ui',
-  '../../components/ui',
+  "@afenda/ui",
+  "@afenda/shadcn-ui",
+  "@afenda/shadcn-ui/semantic",
+  "@/components/ui",
+  "~/components/ui",
+  "../components/ui",
+  "../../components/ui",
 ] as const
 
 export const TRUTH_MAPPING_IMPORT_SOURCES = [
-  '@afenda/ui/semantic',
-  '@afenda/ui/truth-mapping',
-  '@afenda/shadcn-ui/semantic',
-  '@afenda/shadcn-ui/lib/constant',
-  'packages/shadcn-ui/src/lib/constant',
+  "@afenda/ui/semantic",
+  "@afenda/ui/truth-mapping",
+  "@afenda/shadcn-ui/semantic",
+  "@afenda/shadcn-ui/lib/constant",
+  "packages/shadcn-ui/src/lib/constant",
 ] as const
 
 export function normalizePath(value: string): string {
-  return value.replace(/\\/g, '/').replace(/\/+$/, '')
+  return value.replace(/\\/g, "/").replace(/\/+$/, "")
 }
 
 export function truncateExcerpt(text: string, max = 180): string {
-  const singleLine = text.replace(/\s+/g, ' ').trim()
+  const singleLine = text.replace(/\s+/g, " ").trim()
   return singleLine.length <= max ? singleLine : `${singleLine.slice(0, max)}…`
 }
 
@@ -386,9 +408,9 @@ export function findRepoRoot(startDir = process.cwd()): string {
 
   while (true) {
     const markers = [
-      path.join(current, 'scripts', 'afenda.config.json'),
-      path.join(current, 'pnpm-workspace.yaml'),
-      path.join(current, '.git'),
+      path.join(current, "scripts", "afenda.config.json"),
+      path.join(current, "pnpm-workspace.yaml"),
+      path.join(current, ".git"),
     ]
 
     if (markers.some((marker) => existsSync(marker))) {
@@ -398,7 +420,7 @@ export function findRepoRoot(startDir = process.cwd()): string {
     const parent = path.dirname(current)
     if (parent === current) {
       console.error(
-        'Unable to locate repo root (expected scripts/afenda.config.json, pnpm-workspace.yaml, or .git).',
+        "Unable to locate repo root (expected scripts/afenda.config.json, pnpm-workspace.yaml, or .git)."
       )
       process.exit(2)
     }
@@ -409,12 +431,12 @@ export function findRepoRoot(startDir = process.cwd()): string {
 
 export function validateScanRoots(rootDir: string): void {
   const missing = SCAN_ROOTS.filter(
-    (scanPath) => !existsSync(path.join(rootDir, scanPath)),
+    (scanPath) => !existsSync(path.join(rootDir, scanPath))
   )
 
   if (missing.length > 0) {
     console.error(
-      `UI drift scan root(s) do not exist:\n${missing.map((r) => `  - ${r}`).join('\n')}`,
+      `UI drift scan root(s) do not exist:\n${missing.map((r) => `  - ${r}`).join("\n")}`
     )
     process.exit(2)
   }
@@ -443,7 +465,8 @@ export function listFilesForScan(rootDir: string): string[] {
 
   for (const scanPath of SCAN_ROOTS) {
     const absolutePath = path.join(rootDir, scanPath)
-    if (!existsSync(absolutePath) || !statSync(absolutePath).isDirectory()) continue
+    if (!existsSync(absolutePath) || !statSync(absolutePath).isDirectory())
+      continue
 
     for (const file of walkFilesRecursive(absolutePath)) {
       if (shouldSkipFile(file)) continue
@@ -459,7 +482,8 @@ export function shouldSkipFile(absoluteFile: string): boolean {
   const ext = path.extname(normalized)
 
   if (!CODE_EXTENSIONS.has(ext)) return true
-  if (EXCLUDE_FILE_PATTERNS.some((pattern) => pattern.test(normalized))) return true
+  if (EXCLUDE_FILE_PATTERNS.some((pattern) => pattern.test(normalized)))
+    return true
   if (EXCLUDED_PATH_PARTS.some((part) => normalized.includes(part))) return true
 
   return false
@@ -470,13 +494,19 @@ export function isGovernedUiOwner(file: string, rootDir: string): boolean {
   return ALLOWED_UI_OWNERS_RELATIVE.some((prefix) => {
     const relativePrefix = normalizePath(prefix)
     const absolutePrefix = normalizePath(path.join(rootDir, prefix))
-    return normalized.startsWith(relativePrefix) || normalized.startsWith(absolutePrefix)
+    return (
+      normalized.startsWith(relativePrefix) ||
+      normalized.startsWith(absolutePrefix)
+    )
   })
 }
 
 export function isProductUiFile(file: string): boolean {
   const normalized = normalizePath(file)
-  return PRODUCT_UI_PATH_HINTS_RELATIVE.some((prefix) => normalized.includes(`/${prefix}/`) || normalized.startsWith(prefix))
+  return PRODUCT_UI_PATH_HINTS_RELATIVE.some(
+    (prefix) =>
+      normalized.includes(`/${prefix}/`) || normalized.startsWith(prefix)
+  )
 }
 
 export function isFeatureFile(file: string): boolean {
@@ -510,18 +540,20 @@ export function hasAnyUnboundTokens(className: string): boolean {
 
 export function getRuleLevel<RuleCode extends string>(
   rule: RuleCode,
-  rulePolicy: RulePolicyShape<RuleCode>,
+  rulePolicy: RulePolicyShape<RuleCode>
 ): Severity | null {
-  const level = rulePolicy[rule]?.level ?? 'error'
-  return level === 'off' ? null : level
+  const level = rulePolicy[rule]?.level ?? "error"
+  return level === "off" ? null : level
 }
 
 export function getOutputFormat(): OutputFormat {
-  const arg = process.argv.find((entry) => entry.startsWith('--format='))
-  return arg === '--format=json' ? 'json' : 'text'
+  const arg = process.argv.find((entry) => entry.startsWith("--format="))
+  return arg === "--format=json" ? "json" : "text"
 }
 
-export function buildRuleCounts<F extends { rule: string }>(items: F[]): Record<string, number> {
+export function buildRuleCounts<F extends { rule: string }>(
+  items: F[]
+): Record<string, number> {
   const counts: Record<string, number> = {}
   for (const item of items) {
     counts[item.rule] = (counts[item.rule] ?? 0) + 1
@@ -540,9 +572,9 @@ export function lineNumberAt(content: string, index: number): number {
 export function forEachMatch(
   content: string,
   regex: RegExp,
-  fn: (match: RegExpExecArray, index: number) => void,
+  fn: (match: RegExpExecArray, index: number) => void
 ): void {
-  const flags = regex.flags.includes('g') ? regex.flags : `${regex.flags}g`
+  const flags = regex.flags.includes("g") ? regex.flags : `${regex.flags}g`
   const re = new RegExp(regex.source, flags)
 
   let match: RegExpExecArray | null
@@ -552,13 +584,16 @@ export function forEachMatch(
 }
 
 export async function loadGovernanceModules<RuleCode extends string>(
-  rootDir: string,
+  rootDir: string
 ): Promise<GovernanceModules<RuleCode>> {
   const constantLayerUrl = pathToFileURL(
-    path.join(rootDir, 'packages/shadcn-ui/src/lib/constant/index.ts'),
+    path.join(rootDir, "packages/shadcn-ui/src/lib/constant/index.ts")
   ).href
   const validatorUrl = pathToFileURL(
-    path.join(rootDir, 'packages/shadcn-ui/src/lib/constant/validate-constants.ts'),
+    path.join(
+      rootDir,
+      "packages/shadcn-ui/src/lib/constant/validate-constants.ts"
+    )
   ).href
 
   const constantLayerModule = (await import(constantLayerUrl)) as {
@@ -611,13 +646,13 @@ export async function loadGovernanceModules<RuleCode extends string>(
     appShellPolicy == null ||
     validateConstantLayer == null
   ) {
-    console.error('Unable to load the governed constant layer.')
+    console.error("Unable to load the governed constant layer.")
     process.exit(2)
   }
 
   if (governanceVersion !== EXPECTED_GOVERNANCE_VERSION) {
     console.error(
-      `Governance version mismatch. Expected ${EXPECTED_GOVERNANCE_VERSION}, got ${String(governanceVersion)}.`,
+      `Governance version mismatch. Expected ${EXPECTED_GOVERNANCE_VERSION}, got ${String(governanceVersion)}.`
     )
     process.exit(2)
   }
@@ -644,20 +679,23 @@ export async function loadGovernanceModules<RuleCode extends string>(
 export function isGovernedUiOwnerByPolicy(
   file: string,
   rootDir: string,
-  uiOwnerRoots: readonly string[],
+  uiOwnerRoots: readonly string[]
 ): boolean {
   const normalized = normalizePath(file)
   return uiOwnerRoots.some((prefix) => {
     const relativePrefix = normalizePath(prefix)
     const absolutePrefix = normalizePath(path.join(rootDir, prefix))
-    return normalized.startsWith(relativePrefix) || normalized.startsWith(absolutePrefix)
+    return (
+      normalized.startsWith(relativePrefix) ||
+      normalized.startsWith(absolutePrefix)
+    )
   })
 }
 
 export function isSemanticOwnerByPolicy(
   file: string,
   rootDir: string,
-  semanticOwnerRoots: readonly string[],
+  semanticOwnerRoots: readonly string[]
 ): boolean {
   return isGovernedUiOwnerByPolicy(file, rootDir, semanticOwnerRoots)
 }
@@ -665,14 +703,14 @@ export function isSemanticOwnerByPolicy(
 export function isInlineStyleExceptionByPolicy(
   file: string,
   rootDir: string,
-  inlineStyleExceptionRoots: readonly string[],
+  inlineStyleExceptionRoots: readonly string[]
 ): boolean {
   return isGovernedUiOwnerByPolicy(file, rootDir, inlineStyleExceptionRoots)
 }
 
 export function isAllowedArbitraryValueByPolicy(
   value: string,
-  allowedFragments: readonly string[],
+  allowedFragments: readonly string[]
 ): boolean {
   if (allowedFragments.some((fragment) => value.includes(fragment))) return true
 
@@ -683,15 +721,15 @@ export function isAllowedArbitraryValueByPolicy(
 
 export function listFilesForScanByPolicy(
   rootDir: string,
-  scanRoots: readonly string[],
+  scanRoots: readonly string[]
 ): string[] {
   const missing = scanRoots.filter(
-    (scanPath) => !existsSync(path.join(rootDir, scanPath)),
+    (scanPath) => !existsSync(path.join(rootDir, scanPath))
   )
 
   if (missing.length > 0) {
     console.error(
-      `UI drift scan root(s) do not exist:\n${missing.map((r) => `  - ${r}`).join('\n')}`,
+      `UI drift scan root(s) do not exist:\n${missing.map((r) => `  - ${r}`).join("\n")}`
     )
     process.exit(2)
   }
@@ -700,7 +738,8 @@ export function listFilesForScanByPolicy(
 
   for (const scanPath of scanRoots) {
     const absolutePath = path.join(rootDir, scanPath)
-    if (!existsSync(absolutePath) || !statSync(absolutePath).isDirectory()) continue
+    if (!existsSync(absolutePath) || !statSync(absolutePath).isDirectory())
+      continue
 
     for (const file of walkFilesRecursive(absolutePath)) {
       if (shouldSkipFile(file)) continue
@@ -712,8 +751,8 @@ export function listFilesForScanByPolicy(
 }
 
 export function printJsonReport<F extends BaseFinding>(findings: F[]): void {
-  const errors = findings.filter((f) => f.severity === 'error')
-  const warnings = findings.filter((f) => f.severity === 'warning')
+  const errors = findings.filter((f) => f.severity === "error")
+  const warnings = findings.filter((f) => f.severity === "warning")
 
   console.log(
     JSON.stringify(
@@ -726,39 +765,41 @@ export function printJsonReport<F extends BaseFinding>(findings: F[]): void {
         byRule: buildRuleCounts(findings),
       },
       null,
-      2,
-    ),
+      2
+    )
   )
 }
 
 export function printTextReport<F extends BaseFinding>(
   findings: F[],
   title: string,
-  formatFinding: (finding: F) => string,
+  formatFinding: (finding: F) => string
 ): void {
-  const errors = findings.filter((f) => f.severity === 'error')
-  const warnings = findings.filter((f) => f.severity === 'warning')
+  const errors = findings.filter((f) => f.severity === "error")
+  const warnings = findings.filter((f) => f.severity === "warning")
 
   console.log(title)
-  console.log('='.repeat(title.length) + '\n')
+  console.log("=".repeat(title.length) + "\n")
 
   for (const finding of findings) {
     console.log(formatFinding(finding))
-    console.log('')
+    console.log("")
   }
 
-  console.log('Summary')
-  console.log('-------')
+  console.log("Summary")
+  console.log("-------")
   console.log(`Errors: ${errors.length}`)
   console.log(`Warnings: ${warnings.length}`)
-  console.log('\nBy rule')
-  console.log('-------')
-  for (const [rule, count] of Object.entries(buildRuleCounts(findings)).sort()) {
+  console.log("\nBy rule")
+  console.log("-------")
+  for (const [rule, count] of Object.entries(
+    buildRuleCounts(findings)
+  ).sort()) {
     console.log(`${rule}: ${count}`)
   }
 }
 
 export function exitWithStatus<F extends BaseFinding>(findings: F[]): never {
-  const hasErrors = findings.some((f) => f.severity === 'error')
+  const hasErrors = findings.some((f) => f.severity === "error")
   process.exit(hasErrors ? 1 : 0)
 }

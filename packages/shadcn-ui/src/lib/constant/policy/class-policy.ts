@@ -19,12 +19,12 @@ const classPolicySchema = z
   .object({
     allowRawPaletteClasses: z.boolean(),
     allowArbitraryValuesInFeatures: z.boolean(),
-    allowInlineVisualStyleProps: z.boolean(),
+    allowInlineStyleAttributeInProductUi: z.boolean(),
     allowHexRgbHslColorsInProductUi: z.boolean(),
     allowCvaOutsideUiPackage: z.boolean(),
     allowDirectRadixImportOutsideUiPackage: z.boolean(),
-    allowUnboundTokensInFeatures: z.boolean(),
-    maxClassNameTokensInFeatures: z.number().int().min(0),
+    allowDirectTokenUsageInFeatures: z.boolean(),
+    maxRecommendedClassNameTokensInFeatures: z.number().int().min(0),
   })
   .strict()
 
@@ -32,12 +32,12 @@ export const classPolicy = defineConstMap(
   classPolicySchema.parse({
     allowRawPaletteClasses: false,
     allowArbitraryValuesInFeatures: false,
-    allowInlineVisualStyleProps: false,
+    allowInlineStyleAttributeInProductUi: false,
     allowHexRgbHslColorsInProductUi: false,
     allowCvaOutsideUiPackage: false,
     allowDirectRadixImportOutsideUiPackage: false,
-    allowUnboundTokensInFeatures: false,
-    maxClassNameTokensInFeatures: 5,
+    allowDirectTokenUsageInFeatures: false,
+    maxRecommendedClassNameTokensInFeatures: 8,
   })
 )
 

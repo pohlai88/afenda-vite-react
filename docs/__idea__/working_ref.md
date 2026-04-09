@@ -4,17 +4,17 @@ Yes — this is **directionally strong**, but for a production governance policy
 
 This is already good in 5 important ways:
 
-* **clear authority**
-* **schema-validated**
-* **single canonical export**
-* **boolean-based enforcement surface**
-* **CI-friendly and deterministic**
+- **clear authority**
+- **schema-validated**
+- **single canonical export**
+- **boolean-based enforcement surface**
+- **CI-friendly and deterministic**
 
 But right now it still has a few structural weaknesses:
 
 1. it mixes **different governance layers** into one flat object
 2. several flags are **too coarse** for long-term enforcement
-3. `maxClassNameTokensInFeatures: 5` is likely **too blunt and risky**
+3. `maxRecommendedClassNameTokensInFeatures: 5` is likely **too blunt and risky**
 4. some policy names describe **implementation detail**, not **governed intent**
 5. it lacks room for **exceptions, scope, and rationale**
 
@@ -26,10 +26,10 @@ But right now it still has a few structural weaknesses:
 
 It explains:
 
-* what this file governs
-* who consumes it
-* why it exists
-* how changes should be treated
+- what this file governs
+- who consumes it
+- why it exists
+- how changes should be treated
 
 That is exactly what a reviewed governance constant should do.
 
@@ -52,11 +52,11 @@ These rules are not all the same kind of policy.
 
 You currently mix:
 
-* **color governance**
-* **style prop governance**
-* **package boundary governance**
-* **token discipline**
-* **complexity limits**
+- **color governance**
+- **style prop governance**
+- **package boundary governance**
+- **token discipline**
+- **complexity limits**
 
 That usually becomes hard to maintain because one file starts acting like a junk drawer.
 
@@ -64,9 +64,9 @@ That usually becomes hard to maintain because one file starts acting like a junk
 
 These are conceptually different:
 
-* `allowRawPaletteClasses`
-* `allowDirectRadixImportOutsideUiPackage`
-* `maxClassNameTokensInFeatures`
+- `allowRawPaletteClasses`
+- `allowDirectRadixImportOutsideUiPackage`
+- `maxRecommendedClassNameTokensInFeatures`
 
 One is about **visual token drift**, one is about **architectural ownership**, one is about **complexity/readability**.
 
@@ -76,47 +76,47 @@ They should not stay in one flat bucket forever.
 
 ## 2. Several names are too broad
 
-### `allowInlineVisualStyleProps`
+### `allowInlineStyleAttributeInProductUi`
 
 This is ambiguous.
 
 What counts as “visual style props”?
 
-* `className`?
-* `style`?
-* `variant`?
-* `size`?
-* `tone`?
-* props like `iconClassName`?
+- `className`?
+- `style`?
+- `variant`?
+- `size`?
+- `tone`?
+- props like `iconClassName`?
 
 This should be more precise.
 
 Better examples:
 
-* `allowInlineStyleAttributeInProductUi`
-* `allowVisualClassCompositionInFeatures`
-* `allowFeatureLevelVariantStyling`
+- `allowInlineStyleAttributeInProductUi`
+- `allowVisualClassCompositionInFeatures`
+- `allowFeatureLevelVariantStyling`
 
 Because enforcement must match the policy name exactly.
 
 ---
 
-### `allowUnboundTokensInFeatures`
+### `allowDirectTokenUsageInFeatures`
 
 This is also unclear.
 
 Does “unbound” mean:
 
-* raw token strings not mapped through constants?
-* direct CSS vars?
-* direct semantic token usage without domain adapter?
-* tokens not coming from approved helper functions?
+- raw token strings not mapped through constants?
+- direct CSS vars?
+- direct semantic token usage without domain adapter?
+- tokens not coming from approved helper functions?
 
 This needs definition, otherwise people reading the policy will interpret it differently.
 
 ---
 
-## 3. `maxClassNameTokensInFeatures` is risky
+## 3. `maxRecommendedClassNameTokensInFeatures` is risky
 
 This one is the weakest rule in the set.
 
@@ -124,11 +124,11 @@ A token count limit sounds attractive, but in practice it often creates false po
 
 A feature may legitimately have:
 
-* responsive classes
-* dark mode classes
-* state classes
-* layout classes
-* accessibility classes
+- responsive classes
+- dark mode classes
+- state classes
+- layout classes
+- accessibility classes
 
 A strict max like `5` can punish valid code while not actually preventing drift.
 
@@ -137,13 +137,13 @@ A strict max like `5` can punish valid code while not actually preventing drift.
 A bad class string can still be short:
 
 ```tsx
-className="bg-red-500 text-white rounded-xl"
+className = "bg-red-500 text-white rounded-xl"
 ```
 
 A good class string can be longer:
 
 ```tsx
-className="flex items-center gap-2 px-3 py-2 text-sm font-medium"
+className = "flex items-center gap-2 px-3 py-2 text-sm font-medium"
 ```
 
 So token count is not a strong proxy for governance quality.
@@ -152,13 +152,13 @@ So token count is not a strong proxy for governance quality.
 
 Use this only as:
 
-* a **warning**, not an error
-* a **smell detector**, not a truth rule
+- a **warning**, not an error
+- a **smell detector**, not a truth rule
 
 Or rename it to something more honest like:
 
-* `warnClassNameTokenCountOver`
-* `maxRecommendedClassNameTokensInFeatures`
+- `warnClassNameTokenCountOver`
+- `maxRecommendedClassNameTokensInFeatures`
 
 That makes it governance guidance, not false precision.
 
@@ -192,7 +192,7 @@ const classPolicySchema = z
       .object({
         allowCvaOutsideUiPackage: z.boolean(),
         allowDirectRadixImportOutsideUiPackage: z.boolean(),
-        allowUnboundTokensInFeatures: z.boolean(),
+        allowDirectTokenUsageInFeatures: z.boolean(),
       })
       .strict(),
 
@@ -207,10 +207,10 @@ const classPolicySchema = z
 
 This helps because:
 
-* rules become easier to scan
-* enforcement can map by domain
-* future additions stay organized
-* review becomes more precise
+- rules become easier to scan
+- enforcement can map by domain
+- future additions stay organized
+- review becomes more precise
 
 ---
 
@@ -224,24 +224,24 @@ Not all rules should have equal enforcement meaning.
 
 These are true governance boundaries:
 
-* raw palette classes
-* hex/rgb/hsl colors
-* direct Radix import outside UI package
-* CVA outside UI package
+- raw palette classes
+- hex/rgb/hsl colors
+- direct Radix import outside UI package
+- CVA outside UI package
 
 ### Soft rules
 
 These are maintainability signals:
 
-* class token count
-* maybe some class composition patterns
+- class token count
+- maybe some class composition patterns
 
 These should not look identical in policy shape unless your tooling also models severity elsewhere.
 
 A better model is:
 
 ```ts
-severity: 'error' | 'warn' | 'off'
+severity: "error" | "warn" | "off"
 ```
 
 instead of only booleans.
@@ -249,8 +249,8 @@ instead of only booleans.
 For example:
 
 ```ts
-rawPaletteClasses: 'error'
-classNameTokenCount: 'warn'
+rawPaletteClasses: "error"
+classNameTokenCount: "warn"
 ```
 
 That is much more scalable than `true/false`.
@@ -275,11 +275,11 @@ exceptions: z.object({
 
 Because some rules are valid in:
 
-* tests
-* stories
-* migration shims
-* generated files
-* low-level UI primitives only
+- tests
+- stories
+- migration shims
+- generated files
+- low-level UI primitives only
 
 If not modeled centrally, exceptions drift into scripts and ESLint rules separately.
 
@@ -289,8 +289,8 @@ If not modeled centrally, exceptions drift into scripts and ESLint rules separat
 
 Your names imply at least two scopes:
 
-* product UI
-* UI package
+- product UI
+- UI package
 
 That distinction is important and should probably be first-class.
 
@@ -300,8 +300,8 @@ I would make scope explicit in naming or structure.
 
 Example:
 
-* `allowHexRgbHslColorsInProductUi`
-* `allowDirectRadixImportOutsideUiPackage`
+- `allowHexRgbHslColorsInProductUi`
+- `allowDirectRadixImportOutsideUiPackage`
 
 These are good individually, but the policy would be stronger if the scope model is documented once and reused consistently.
 
@@ -311,10 +311,10 @@ These are good individually, but the policy would be stronger if the scope model
 
 ## Keep
 
-* `allowRawPaletteClasses`
-* `allowHexRgbHslColorsInProductUi`
-* `allowCvaOutsideUiPackage`
-* `allowDirectRadixImportOutsideUiPackage`
+- `allowRawPaletteClasses`
+- `allowHexRgbHslColorsInProductUi`
+- `allowCvaOutsideUiPackage`
+- `allowDirectRadixImportOutsideUiPackage`
 
 These are strong governance rules.
 
@@ -322,30 +322,30 @@ These are strong governance rules.
 
 ## Rename
 
-### `allowInlineVisualStyleProps`
+### `allowInlineStyleAttributeInProductUi`
 
 to one of:
 
-* `allowInlineStyleAttributeInProductUi`
-* `allowVisualStylingViaPropsInFeatures`
+- `allowInlineStyleAttributeInProductUi`
+- `allowVisualStylingViaPropsInFeatures`
 
 Pick the one that matches your actual enforcement rule.
 
-### `allowUnboundTokensInFeatures`
+### `allowDirectTokenUsageInFeatures`
 
 to one of:
 
-* `allowDirectTokenUsageInFeatures`
-* `allowTokenUsageOutsideSemanticAdapters`
-* `allowRawDesignTokenReferencesInFeatures`
+- `allowDirectTokenUsageInFeatures`
+- `allowTokenUsageOutsideSemanticAdapters`
+- `allowRawDesignTokenReferencesInFeatures`
 
 Again, choose the one your AST/lint actually detects.
 
-### `maxClassNameTokensInFeatures`
+### `maxRecommendedClassNameTokensInFeatures`
 
 to:
 
-* `maxRecommendedClassNameTokensInFeatures`
+- `maxRecommendedClassNameTokensInFeatures`
 
 That makes it honest.
 
@@ -359,17 +359,17 @@ This is good, but maybe too broad.
 
 Tailwind arbitrary values include many things:
 
-* spacing
-* width
-* z-index
-* color
-* shadow
-* calc()
+- spacing
+- width
+- z-index
+- color
+- shadow
+- calc()
 
 You may eventually need to distinguish:
 
-* `allowArbitraryColorValuesInFeatures`
-* `allowArbitraryLayoutValuesInFeatures`
+- `allowArbitraryColorValuesInFeatures`
+- `allowArbitraryLayoutValuesInFeatures`
 
 Because color drift is usually more dangerous than occasional layout escape hatches.
 
@@ -393,9 +393,9 @@ Here is a refined version that is still close to yours:
  * Validation: schema-validated, strict, and reviewable at authoring time.
  * Purpose: preserve visual consistency, package ownership, and anti-drift discipline at scale.
  */
-import { z } from 'zod/v4'
+import { z } from "zod/v4"
 
-import { defineConstMap } from '../schema/shared'
+import { defineConstMap } from "../schema/shared"
 
 const classPolicySchema = z
   .object({
@@ -420,7 +420,7 @@ export const classPolicy = defineConstMap(
     allowDirectRadixImportOutsideUiPackage: false,
     allowDirectTokenUsageInFeatures: false,
     maxRecommendedClassNameTokensInFeatures: 8,
-  }),
+  })
 )
 
 export type ClassPolicy = typeof classPolicy
@@ -434,22 +434,22 @@ export type ClassPolicy = typeof classPolicy
 
 Your real goal is not only:
 
-* “ban bad classes”
+- “ban bad classes”
 
 Your real goal is:
 
-* **UI package owns primitives**
-* **features consume governed semantics**
-* **tokens flow through approved surfaces**
-* **visual meaning is not recreated ad hoc**
+- **UI package owns primitives**
+- **features consume governed semantics**
+- **tokens flow through approved surfaces**
+- **visual meaning is not recreated ad hoc**
 
 So the best class policy is one piece of a bigger governance model:
 
-* **primitive ownership policy**
-* **class/style drift policy**
-* **semantic mapping policy**
-* **token usage policy**
-* **package boundary policy**
+- **primitive ownership policy**
+- **class/style drift policy**
+- **semantic mapping policy**
+- **token usage policy**
+- **package boundary policy**
 
 This file is good, but it should stay clearly scoped to **class/style governance**, not become the whole UI constitution.
 
@@ -461,16 +461,16 @@ This file is good, but it should stay clearly scoped to **class/style governance
 
 ### Must refine
 
-* rename vague fields
-* weaken or reframe the token-count rule
-* prepare for grouped subdomains
+- rename vague fields
+- weaken or reframe the token-count rule
+- prepare for grouped subdomains
 
 ### Good as-is
 
-* strict schema
-* canonical const export
-* strong anti-drift intent
-* CI-consumable shape
+- strict schema
+- canonical const export
+- strong anti-drift intent
+- CI-consumable shape
 
 ### Production-grade next step
 
@@ -478,8 +478,8 @@ Move from a **flat boolean policy** to a **domain-grouped, scope-aware policy wi
 
 If you want, I can draft the **fully production-grade v3 version** with:
 
-* grouped domains
-* better names
-* severity model
-* exception model
-* header kept within your repo style.
+- grouped domains
+- better names
+- severity model
+- exception model
+- header kept within your repo style.
