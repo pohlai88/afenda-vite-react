@@ -54,9 +54,9 @@ export function CommandPaletteBar({
         data-testid="command-palette-bar"
         className={cn(
           'top-nav-omni-bar',
-          'cursor-pointer gap-2 border-border/50 bg-muted/20 px-0 text-left text-muted-foreground transition-colors',
+          'border-border/50 bg-muted/20 text-muted-foreground cursor-pointer gap-2 px-0 text-left transition-colors',
           'hover:border-border/70 hover:bg-muted/35',
-          'focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none',
+          'focus-visible:border-ring focus-visible:ring-ring/30 focus-visible:ring-2 focus-visible:outline-none',
         )}
         aria-label={title}
         aria-describedby={shortcutHintId}
@@ -65,15 +65,15 @@ export function CommandPaletteBar({
         aria-controls={paletteContentId}
         onClick={onOpen}
       >
-        <span className="flex shrink-0 items-center px-2.5 text-muted-foreground/75">
+        <span className="text-muted-foreground/75 flex shrink-0 items-center px-2.5">
           <SearchIcon className="size-4 shrink-0" aria-hidden />
         </span>
-        <span className="min-w-0 flex-1 truncate text-(length:--top-nav-font-size) text-muted-foreground/80">
+        <span className="text-muted-foreground/80 min-w-0 flex-1 truncate text-(length:--top-nav-font-size)">
           {placeholder}
         </span>
         <span className="flex shrink-0 items-center pr-2.5">
           <Kbd
-            className="h-5 min-w-5 rounded-md border border-border/60 bg-background/80 px-1.5 text-[10px] font-medium text-muted-foreground/80 shadow-none"
+            className="border-border/60 bg-background/80 text-muted-foreground/80 h-5 min-w-5 rounded-md border px-1.5 text-[10px] font-medium shadow-none"
             aria-hidden
           >
             {chordLabel}
