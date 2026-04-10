@@ -1,4 +1,4 @@
-import * as React from "react"
+import type * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -42,6 +42,7 @@ function PaginationLink({
   className,
   isActive,
   size = "icon",
+  children,
   ...props
 }: PaginationLinkProps) {
   return (
@@ -56,7 +57,9 @@ function PaginationLink({
         data-slot="pagination-link"
         data-active={isActive}
         {...props}
-      />
+      >
+        {children}
+      </a>
     </Button>
   )
 }

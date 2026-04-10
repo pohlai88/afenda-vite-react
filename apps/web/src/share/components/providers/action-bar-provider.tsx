@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react'
 
-import type { TruthActionBarTab } from '@afenda/core/truth-ui'
+import type { ActionBarTab } from '@/share/types'
 
 import {
   selectActiveActionBarPrefs,
@@ -22,13 +22,13 @@ import type {
   UseActionBarOptions,
 } from './action-bar-provider.types'
 
-const EMPTY_TABS: readonly TruthActionBarTab[] = []
+const EMPTY_TABS: readonly ActionBarTab[] = []
 
 const ActionBarContext = createContext<ActionBarContextValue | null>(null)
 
 interface Registration {
   readonly scopeKey: string
-  readonly tabs: readonly TruthActionBarTab[]
+  readonly tabs: readonly ActionBarTab[]
 }
 
 /**
@@ -50,7 +50,7 @@ export function ActionBarProvider({ children }: ActionBarProviderProps) {
   }, [registration, selectedKeysByScope])
 
   const registerScope = useCallback(
-    (scopeKey: string, tabs: readonly TruthActionBarTab[]) => {
+    (scopeKey: string, tabs: readonly ActionBarTab[]) => {
       setRegistration({ scopeKey, tabs })
     },
     [],

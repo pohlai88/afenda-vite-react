@@ -13,11 +13,13 @@ dist/
 coverage
 .eslintcache
 .turbo
+.tmp/
 apps/*/.eslintcache
 dist-ssr
 *.local
 .env.turbo
 .env.tolgee
+reports/shell-governance/*.json
 
 # Editor directories and files
 .vscode/*

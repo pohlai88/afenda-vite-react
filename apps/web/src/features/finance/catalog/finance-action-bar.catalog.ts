@@ -1,4 +1,4 @@
-import type { TruthActionBarTab } from '@afenda/core/truth-ui'
+import type { ActionBarTab } from '@/share/types'
 
 /**
  * Finance module Row-2 **catalog** (candidate tabs). Replace or merge from
@@ -6,7 +6,7 @@ import type { TruthActionBarTab } from '@afenda/core/truth-ui'
  *
  * @see `share/api/action-bar-prefs.api.stub.ts` — persisted visibility per tenant/user.
  */
-export const FINANCE_TOP_ACTION_BAR_CATALOG: readonly TruthActionBarTab[] = [
+export const FINANCE_TOP_ACTION_BAR_CATALOG: readonly ActionBarTab[] = [
   {
     key: 'overview',
     labelKey: 'finance_tabs.overview',

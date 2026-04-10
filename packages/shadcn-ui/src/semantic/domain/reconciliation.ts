@@ -29,9 +29,9 @@ export const reconciliationUiStateValues = [
 export type ReconciliationUiState = (typeof reconciliationUiStateValues)[number]
 
 export interface ReconciliationUiModel {
-  tone: SemanticTone
-  badgeLabel: string
-  icon: LucideIcon
+  readonly tone: SemanticTone
+  readonly badgeLabel: string
+  readonly icon: LucideIcon
 }
 
 const reconciliationUiModelMap: Record<
@@ -63,7 +63,7 @@ const reconciliationUiModelMap: Record<
     badgeLabel: "Stale",
     icon: TimerReset,
   },
-}
+} as const satisfies Record<ReconciliationUiState, ReconciliationUiModel>
 
 export function getReconciliationUiModel(
   state: ReconciliationUiState

@@ -13,7 +13,7 @@
  * indicators). Use role="status" only in domain-specific wrappers where the badge announces
  * dynamic status information that should interrupt assistive technology.
  */
-import type { ReactNode, Ref } from "react"
+import { forwardRef, type ReactNode } from "react"
 
 import { renderSemanticIcon, getBadgeClasses } from "../internal/presentation"
 import { cn } from "../../lib/utils"
@@ -22,6 +22,10 @@ import {
   type AllocationUiState,
 } from "../domain/allocation"
 import {
+  getEvidenceUiModel,
+  type EvidenceUiState,
+} from "../domain/evidence"
+import {
   getInvariantUiModel,
   type InvariantSeverity,
 } from "../domain/invariant"
@@ -29,6 +33,10 @@ import {
   getSettlementUiModel,
   type SettlementUiState,
 } from "../domain/settlement"
+import {
+  getIntegritySeverityUiModel,
+  type ShellIntegritySeverity,
+} from "../domain/integrity-severity"
 import type { SemanticEmphasis } from "../primitives/emphasis"
 import type { SemanticTone } from "../primitives/tone"
 
@@ -40,7 +48,6 @@ export interface SemanticBadgeProps {
   children: ReactNode
   /** Layout composition className. Must not override governed tone, emphasis, or surface. */
   className?: string
-  ref?: Ref<HTMLSpanElement>
 }
 
 export interface InvariantBadgeProps {
@@ -53,31 +60,47 @@ export interface AllocationBadgeProps {
   children?: ReactNode
 }
 
+export interface EvidenceBadgeProps {
+  state: EvidenceUiState
+  children?: ReactNode
+}
+
 export interface SettlementBadgeProps {
   state: SettlementUiState
   children?: ReactNode
 }
 
-export function SemanticBadge({
-  tone = "neutral",
-  emphasis = "soft",
-  size = "md",
-  icon,
-  children,
-  className,
-  ref,
-}: SemanticBadgeProps) {
-  return (
-    <span
-      ref={ref}
-      data-slot="semantic-badge"
-      className={cn(getBadgeClasses(tone, emphasis, size), className)}
-    >
-      {icon ? <span className="inline-flex items-center">{icon}</span> : null}
-      <span>{children}</span>
-    </span>
-  )
+export interface IntegritySeverityBadgeProps {
+  severity: ShellIntegritySeverity
+  children?: ReactNode
 }
+
+export const SemanticBadge = forwardRef<HTMLSpanElement, SemanticBadgeProps>(
+  (
+    {
+      tone = "neutral",
+      emphasis = "soft",
+      size = "md",
+      icon,
+      children,
+      className,
+    },
+    ref
+  ) => {
+    return (
+      <span
+        ref={ref}
+        data-slot="semantic-badge"
+        className={cn(getBadgeClasses(tone, emphasis, size), className)}
+      >
+        {icon ? <span className="inline-flex items-center">{icon}</span> : null}
+        <span>{children}</span>
+      </span>
+    )
+  }
+)
+
+SemanticBadge.displayName = "SemanticBadge"
 
 export function InvariantBadge({ severity, children }: InvariantBadgeProps) {
   const model = getInvariantUiModel(severity)
@@ -107,6 +130,20 @@ export function AllocationBadge({ state, children }: AllocationBadgeProps) {
   )
 }
 
+export function EvidenceBadge({ state, children }: EvidenceBadgeProps) {
+  const model = getEvidenceUiModel(state)
+
+  return (
+    <SemanticBadge
+      tone={model.tone}
+      emphasis={model.tone === "destructive" ? "solid" : "soft"}
+      icon={renderSemanticIcon(model.icon, "size-3.5")}
+    >
+      {children ?? model.badgeLabel}
+    </SemanticBadge>
+  )
+}
+
 export function SettlementBadge({ state, children }: SettlementBadgeProps) {
   const model = getSettlementUiModel(state)
 
@@ -117,6 +154,23 @@ export function SettlementBadge({ state, children }: SettlementBadgeProps) {
       icon={renderSemanticIcon(model.icon, "size-3.5")}
     >
       {children ?? model.badgeLabel}
+    </SemanticBadge>
+  )
+}
+
+export function IntegritySeverityBadge({
+  severity,
+  children,
+}: IntegritySeverityBadgeProps) {
+  const model = getIntegritySeverityUiModel(severity)
+
+  return (
+    <SemanticBadge
+      tone={model.tone}
+      emphasis={model.tone === "destructive" ? "solid" : "soft"}
+      icon={renderSemanticIcon(model.icon, "size-3.5")}
+    >
+      {children ?? model.label}
     </SemanticBadge>
   )
 }

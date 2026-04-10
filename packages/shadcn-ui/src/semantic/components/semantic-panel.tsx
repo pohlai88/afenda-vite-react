@@ -8,7 +8,7 @@
  * Changes: preserve semantic contract and accessibility behavior when evolving this component.
  * Purpose: keep panel rendering deterministic and semantically meaningful.
  */
-import { useId, type ReactNode, type Ref } from "react"
+import { forwardRef, useId, type ReactNode } from "react"
 
 import {
   getPanelClasses,
@@ -29,49 +29,54 @@ export interface SemanticPanelProps {
   children: ReactNode
   /** Layout composition className. Must not override governed tone, emphasis, or surface. */
   className?: string
-  ref?: Ref<HTMLElement>
 }
 
-export function SemanticPanel({
-  surface = "panel",
-  density = "comfortable",
-  emphasis = "soft",
-  header,
-  toolbar,
-  footer,
-  children,
-  className,
-  ref,
-}: SemanticPanelProps) {
-  const headingId = useId()
-  const sectionSpacing = getPanelSectionSpacing(density)
+export const SemanticPanel = forwardRef<HTMLElement, SemanticPanelProps>(
+  (
+    {
+      surface = "panel",
+      density = "comfortable",
+      emphasis = "soft",
+      header,
+      toolbar,
+      footer,
+      children,
+      className,
+    },
+    ref
+  ) => {
+    const headingId = useId()
+    const sectionSpacing = getPanelSectionSpacing(density)
 
-  return (
-    <section
-      ref={ref}
-      data-slot="semantic-panel"
-      aria-labelledby={header ? headingId : undefined}
-      className={cn(getPanelClasses(surface, density, emphasis), className)}
-    >
-      {header || toolbar ? (
-        <div
-          className={cn(
-            "flex items-start justify-between gap-4 border-b border-border/60",
-            sectionSpacing
-          )}
-        >
-          <div id={header ? headingId : undefined} className="min-w-0 flex-1">
-            {header}
+    return (
+      <section
+        ref={ref}
+        data-slot="semantic-panel"
+        aria-labelledby={header ? headingId : undefined}
+        className={cn(getPanelClasses(surface, density, emphasis), className)}
+      >
+        {header || toolbar ? (
+          <div
+            className={cn(
+              "flex items-start justify-between gap-4 border-b border-border/60",
+              sectionSpacing
+            )}
+          >
+            <div id={header ? headingId : undefined} className="min-w-0 flex-1">
+              {header}
+            </div>
+            {toolbar ? <div className="shrink-0">{toolbar}</div> : null}
           </div>
-          {toolbar ? <div className="shrink-0">{toolbar}</div> : null}
-        </div>
-      ) : null}
-      <div className={sectionSpacing}>{children}</div>
-      {footer ? (
-        <div className={cn("border-t border-border/60", sectionSpacing)}>
-          {footer}
-        </div>
-      ) : null}
-    </section>
-  )
-}
+        ) : null}
+        <div className={sectionSpacing}>{children}</div>
+        {footer ? (
+          <div className={cn("border-t border-border/60", sectionSpacing)}>
+            {footer}
+          </div>
+        ) : null}
+      </section>
+    )
+  }
+)
+
+SemanticPanel.displayName = "SemanticPanel"

@@ -147,7 +147,7 @@ module.exports = {
     messages: {
       noLocalSemanticMap:
         'Semantic class mapping belongs in @afenda/shadcn-ui. ' +
-        'Use a governed resolver (e.g. getTruthSeverityPresentation, getBadgeToneClass) ' +
+        'Use a governed resolver (e.g. getIntegritySeverityPresentation, getBadgeToneClass) ' +
         'or request a new accessor from packages/shadcn-ui/src/semantic/.',
     },
   },

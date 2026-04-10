@@ -266,6 +266,12 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
     description: 'ERP and platform vocabulary used across the repository.',
     order: 170,
   },
+  'SHELL_COMPONENTS_GUARDRAILS.md': {
+    title: 'Shell Components Guardrails (moved)',
+    description:
+      'Redirects to the live guardrails document under `packages/shadcn-ui/src/lib/constant/policy/shell/`.',
+    order: 171,
+  },
 }
 
 const ROOT_COLLECTION_OVERRIDES: Record<string, DirectoryOverride> = {

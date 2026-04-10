@@ -1,1 +1,5 @@
-export { ThemeProvider, useTheme } from '@afenda/shadcn-ui/components/theme-provider'
+export {
+  ThemeProvider,
+  useTheme,
+  type Theme,
+} from '@afenda/shadcn-ui/components/theme-provider'

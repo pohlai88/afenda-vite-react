@@ -6,7 +6,7 @@
  * where `map` is `Record<registrationScopeKey, orderedTabKey[]>`.
  */
 
-import type { TruthActionBarTab } from '@afenda/core/truth-ui'
+import type { ActionBarTab } from '@/share/types'
 
 /** Payload aligned with persisted `prefsByContext[storageKey]`. */
 export type ActionBarPrefsScopeMap = Record<string, string[]>
@@ -37,9 +37,6 @@ export function saveActionBarPrefsStub(
 
 /**
  * Optional future: server returns full tab definitions instead of static catalogs.
- * Not used by the shell today — modules still register `TruthActionBarTab[]` locally.
+ * Not used by the shell today — modules still register `ActionBarTab[]` locally.
  */
-export type RemoteActionBarCatalogStub = Record<
-  string,
-  readonly TruthActionBarTab[]
->
+export type RemoteActionBarCatalogStub = Record<string, readonly ActionBarTab[]>

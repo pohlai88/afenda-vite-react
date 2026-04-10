@@ -160,28 +160,28 @@
       "canonicalKey": "glossary.truth.scope.label",
       "en": "Truth scope",
       "category": "truth_operating",
-      "notes": "Deterministic ERP context: tenant, legal entity, accounting period, reporting currency; contracts in @afenda/core/truth."
+      "notes": "Deterministic ERP context: tenant, legal entity, accounting period, reporting currency; legacy contracts removed pending ERP-native types."
     },
     {
       "id": "truth.alert",
       "canonicalKey": "glossary.truth.alert.label",
       "en": "Truth alert",
       "category": "truth_operating",
-      "notes": "Integrity or invariant signal in shell UI; not generic notifications. Maps to TruthAlertItem in @afenda/core/truth-ui."
+      "notes": "Integrity or invariant signal in shell UI; not generic notifications. Presentation types will be reintroduced under ERP vocabulary."
     },
     {
       "id": "truth.resolution",
       "canonicalKey": "glossary.truth.resolution.label",
       "en": "Resolution",
       "category": "truth_operating",
-      "notes": "Concrete fix path for a truth issue: key, type auto|manual|assisted, optional actionPath; doctrine-stable in @afenda/core/truth."
+      "notes": "Concrete fix path for an integrity issue: key, type auto|manual|assisted, optional actionPath; doctrine-stable contracts TBD."
     },
     {
       "id": "truth.integrity_score",
       "canonicalKey": "glossary.truth.integrity_score.label",
       "en": "Integrity score",
       "category": "truth_operating",
-      "notes": "Aggregated health metric (0–100) from TruthHealthSummary; shown in user menu truth status section."
+      "notes": "Aggregated health metric (0–100); shown in user menu when shell health data is provided."
     }
   ]
 }

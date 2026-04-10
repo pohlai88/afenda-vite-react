@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import type { TruthActionBarTab } from '@afenda/core/truth-ui'
+import type { ActionBarTab } from '@/share/types'
 
 import { resolveEffectiveActionBarTabs } from '../action-bar-effective-tabs'
 
-const tabs: TruthActionBarTab[] = [
+const tabs: ActionBarTab[] = [
   { key: 'a', labelKey: 'a', path: '/a', icon: 'Circle' },
   { key: 'b', labelKey: 'b', path: '/b', icon: 'Circle' },
   { key: 'c', labelKey: 'c', path: '/c', icon: 'Circle' },

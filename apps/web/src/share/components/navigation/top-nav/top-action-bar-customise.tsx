@@ -11,7 +11,7 @@ import {
 } from '@afenda/ui/components/ui/popover'
 import { cn } from '@afenda/ui/lib/utils'
 
-import type { TruthActionBarTab } from '@afenda/core/truth-ui'
+import type { ActionBarTab } from '@/share/types'
 
 import {
   selectActiveActionBarPrefs,
@@ -90,7 +90,7 @@ export function TopActionBarCustomiseMenu({
           )}
         </p>
         <ul className="flex max-h-64 flex-col gap-2 overflow-y-auto pr-1">
-          {availableTabs.map((tab: TruthActionBarTab) => {
+          {availableTabs.map((tab: ActionBarTab) => {
             const id = `top-action-bar-opt-${scopeKey}-${tab.key}`
             return (
               <li key={tab.key} className="flex items-center gap-2">

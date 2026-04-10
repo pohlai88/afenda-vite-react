@@ -8,8 +8,12 @@
  * Changes: preserve semantic contract and accessibility behavior when evolving this component.
  * Purpose: keep alert rendering deterministic, accessible, and semantically meaningful.
  */
-import type { ReactNode, Ref } from "react"
+import { forwardRef, type ReactNode } from "react"
 
+import {
+  getEvidenceUiModel,
+  type EvidenceUiState,
+} from "../domain/evidence"
 import {
   getInvariantUiModel,
   type InvariantSeverity,
@@ -33,7 +37,6 @@ export interface SemanticAlertProps {
   role?: "status" | "alert"
   /** Layout composition className. Must not override governed tone, emphasis, or surface. */
   className?: string
-  ref?: Ref<HTMLDivElement>
 }
 
 export interface InvariantAlertProps {
@@ -43,45 +46,57 @@ export interface InvariantAlertProps {
   resolution?: ReactNode
 }
 
+export interface EvidenceAlertProps {
+  state: EvidenceUiState
+  title?: ReactNode
+  description?: ReactNode
+}
+
 export interface ReconciliationAlertProps {
   state: ReconciliationUiState
   title?: ReactNode
   description?: ReactNode
 }
 
-export function SemanticAlert({
-  tone,
-  title,
-  description,
-  icon,
-  emphasis = "soft",
-  actions,
-  role = "status",
-  className,
-  ref,
-}: SemanticAlertProps) {
-  return (
-    <div
-      ref={ref}
-      data-slot="semantic-alert"
-      className={cn(getAlertClasses(tone, emphasis), className)}
-      role={role}
-    >
-      <div className="flex items-start gap-3">
-        {icon ? (
-          <div className="mt-0.5 inline-flex shrink-0 items-center">{icon}</div>
-        ) : null}
-        <div className="min-w-0 flex-1 space-y-1">
-          {title ? <div className="font-medium">{title}</div> : null}
-          {description ? (
-            <div className="text-sm opacity-90">{description}</div>
+export const SemanticAlert = forwardRef<HTMLDivElement, SemanticAlertProps>(
+  (
+    {
+      tone,
+      title,
+      description,
+      icon,
+      emphasis = "soft",
+      actions,
+      role = "status",
+      className,
+    },
+    ref
+  ) => {
+    return (
+      <div
+        ref={ref}
+        data-slot="semantic-alert"
+        className={cn(getAlertClasses(tone, emphasis), className)}
+        role={role}
+      >
+        <div className="flex items-start gap-3">
+          {icon ? (
+            <div className="mt-0.5 inline-flex shrink-0 items-center">{icon}</div>
           ) : null}
+          <div className="min-w-0 flex-1 space-y-1">
+            {title ? <div className="font-medium">{title}</div> : null}
+            {description ? (
+              <div className="text-sm opacity-90">{description}</div>
+            ) : null}
+          </div>
+          {actions ? <div className="shrink-0">{actions}</div> : null}
         </div>
-        {actions ? <div className="shrink-0">{actions}</div> : null}
       </div>
-    </div>
-  )
-}
+    )
+  }
+)
+
+SemanticAlert.displayName = "SemanticAlert"
 
 export function InvariantAlert({
   severity,
@@ -119,6 +134,22 @@ export function ReconciliationAlert({
       icon={renderSemanticIcon(model.icon, "size-4")}
       emphasis={model.tone === "destructive" ? "solid" : "soft"}
       role={model.tone === "destructive" ? "alert" : "status"}
+    />
+  )
+}
+
+export function EvidenceAlert({ state, title, description }: EvidenceAlertProps) {
+  const model = getEvidenceUiModel(state)
+  const isBlocking = state === "missing" || state === "tampered"
+
+  return (
+    <SemanticAlert
+      tone={model.tone}
+      title={title ?? model.badgeLabel}
+      description={description}
+      icon={renderSemanticIcon(model.icon, "size-4")}
+      emphasis={isBlocking ? "solid" : "soft"}
+      role={isBlocking ? "alert" : "status"}
     />
   )
 }

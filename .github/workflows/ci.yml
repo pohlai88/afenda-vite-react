@@ -51,6 +51,19 @@ jobs:
       - name: Validate i18n policy and conflicts
         run: pnpm run script:validate-i18n
 
+      - name: Run shell governance report
+        run: pnpm run script:check-shell-governance-report -- --format=json
+
+      - name: Shell state policy (doctrine + narrow scan)
+        run: pnpm run script:check-shell-state-policy
+
+      - name: Upload shell governance report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shell-governance-report
+          path: reports/shell-governance/*.json
+          if-no-files-found: error
+
       - name: Format check
         run: pnpm run format:check
 

@@ -3,14 +3,18 @@ import { Outlet } from 'react-router-dom'
 
 import { SidebarInset, SidebarProvider } from '@afenda/ui/components/ui/sidebar'
 
-import {
-  useAppShellStore,
-  useTruthNavProps,
-} from '@/share/client-store'
+import { useAppShellStore } from '@/share/client-store'
 import { useSyncActionBarPrefsContext } from '@/share/client-store/sync-action-bar-prefs-context'
 
 import { DASHBOARD_SIDEBAR_WIDTH } from '../navigation/side-nav/dashboard-sidebar-tokens'
 import { SideNavBar } from '../navigation/side-nav/side-nav-bar'
+import {
+  ShellContent,
+  ShellHeader,
+  ShellOverlayContainer,
+  ShellRoot,
+  ShellSidebar,
+} from '../shell-ui'
 import { ErpContentArea } from './erp-content-area'
 import {
   ActionBarProvider,
@@ -51,22 +55,16 @@ export function ErpLayout({ children }: ErpLayoutProps) {
 }
 
 function ErpLayoutChrome({ children }: { children?: ReactNode }) {
-  const truthNav = useTruthNavProps()
   useSyncActionBarPrefsContext()
 
   const sidebarMode = useAppShellStore((s) => s.sidebarMode)
   const setSidebarMode = useAppShellStore((s) => s.setSidebarMode)
 
-  // Hover state — only meaningful when sidebarMode === 'hover'
   const [isHovered, setIsHovered] = useState(false)
 
-  // The sidebar is open when:
-  // - user preference is 'expanded', OR
-  // - preference is 'hover' AND the pointer is over the sidebar
   const effectiveOpen =
     sidebarMode === 'expanded' || (sidebarMode === 'hover' && isHovered)
 
-  // ⌘B / rail clicks update the preference (ignored in hover mode)
   const handleOpenChange = (open: boolean) => {
     if (sidebarMode === 'hover') return
     setSidebarMode(open ? 'expanded' : 'collapsed')
@@ -84,28 +82,33 @@ function ErpLayoutChrome({ children }: { children?: ReactNode }) {
         } as CSSProperties
       }
     >
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="shrink-0">
-          <TopNavBar
-            {...truthNav}
-            className="relative z-40 shrink-0"
-            features={{ mobileDrawer: false, sidebarTrigger: false }}
-          />
-        </div>
-        <div className="relative flex min-h-0 flex-1 overflow-hidden">
-          <SideNavBar
-            onMouseEnter={
-              sidebarMode === 'hover' ? () => setIsHovered(true) : undefined
-            }
-            onMouseLeave={
-              sidebarMode === 'hover' ? () => setIsHovered(false) : undefined
-            }
-          />
-          <SidebarInset className="min-h-0">
-            <ErpContentArea>{children ?? <Outlet />}</ErpContentArea>
-          </SidebarInset>
-        </div>
-      </div>
+      <ShellRoot>
+        <ShellOverlayContainer className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <ShellHeader>
+            <TopNavBar
+              className="relative z-40 shrink-0"
+              features={{ mobileDrawer: false, sidebarTrigger: false }}
+            />
+          </ShellHeader>
+          <div className="relative flex min-h-0 flex-1 overflow-hidden">
+            <ShellSidebar>
+              <SideNavBar
+                onMouseEnter={
+                  sidebarMode === 'hover' ? () => setIsHovered(true) : undefined
+                }
+                onMouseLeave={
+                  sidebarMode === 'hover' ? () => setIsHovered(false) : undefined
+                }
+              />
+            </ShellSidebar>
+            <SidebarInset className="min-h-0">
+              <ShellContent>
+                <ErpContentArea>{children ?? <Outlet />}</ErpContentArea>
+              </ShellContent>
+            </SidebarInset>
+          </div>
+        </ShellOverlayContainer>
+      </ShellRoot>
     </SidebarProvider>
   )
 }

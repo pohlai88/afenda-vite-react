@@ -9,16 +9,21 @@
  */
 export * from "./components/semantic-alert"
 export * from "./components/semantic-badge"
+export * from "./components/semantic-card"
+export * from "./components/semantic-dialog"
 export * from "./components/semantic-field"
 export * from "./components/semantic-panel"
+export * from "./components/semantic-progress"
 export * from "./components/semantic-section"
+export * from "./components/semantic-table"
+export * from "./components/semantic-toast"
 
 export * from "./domain/allocation"
 export * from "./domain/evidence"
 export * from "./domain/invariant"
 export * from "./domain/reconciliation"
 export * from "./domain/settlement"
-export * from "./domain/truth-severity"
+export * from "./domain/integrity-severity"
 
 export * from "./primitives/density"
 export * from "./primitives/emphasis"

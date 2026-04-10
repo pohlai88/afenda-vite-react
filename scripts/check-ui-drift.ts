@@ -28,8 +28,8 @@ import {
   printTextReport,
   truncateExcerpt,
   exitWithStatus,
-  TRUTH_UI_GOVERNED_SPECIFIERS,
-  TRUTH_UI_IMPORT_RE,
+  GOVERNED_DOMAIN_UI_SPECIFIERS,
+  GOVERNED_DOMAIN_UI_IMPORT_RE,
 } from "../tools/ui-drift/shared/index.js"
 
 type RuleCode =
@@ -130,8 +130,8 @@ async function main() {
       checkLocalSemanticMaps(relativeFile, content)
     }
 
-    if (componentPolicy.requireTruthMappingFromGovernedSource) {
-      checkTruthUiMapping(relativeFile, content)
+    if (componentPolicy.requireGovernedDomainToUiMapping) {
+      checkGovernedDomainUiMapping(relativeFile, content)
     }
 
     if (!componentPolicy.allowFeatureLevelVariantDefinition) {
@@ -291,14 +291,13 @@ function checkLocalSemanticMaps(file: string, content: string) {
 
 /**
  * UIX-SEMANTIC-002: a semantic/status map exists in feature code AND the file has no
- * import from a governed truth-UI source (@afenda/core/truth or @afenda/core/truth-ui).
- * This upgrades SEMANTIC-001 from advisory to actionable.
+ * import from a governed semantic/constant source (e.g. @afenda/shadcn-ui/semantic).
  */
-function checkTruthUiMapping(file: string, content: string) {
+function checkGovernedDomainUiMapping(file: string, content: string) {
   if (isGovernedUiOwner(file, ROOT_DIR)) return
   if (!isFeatureCode(file)) return
   if (!SEMANTIC_MAP_NAME_RE_NG.test(content)) return
-  if (TRUTH_UI_IMPORT_RE.test(content)) return
+  if (GOVERNED_DOMAIN_UI_IMPORT_RE.test(content)) return
 
   const match = SEMANTIC_MAP_NAME_RE_NG.exec(content)
   if (!match) return
@@ -308,7 +307,7 @@ function checkTruthUiMapping(file: string, content: string) {
     file,
     line: lineNumberAt(content, match.index),
     text: match[0],
-    message: `Domain-to-UI semantic mapping found without a governed truth-UI import. Import from ${TRUTH_UI_GOVERNED_SPECIFIERS.join(" or ")} instead of building local mappings.`,
+    message: `Domain-to-UI semantic mapping found without a governed import. Import from ${GOVERNED_DOMAIN_UI_SPECIFIERS.join(" or ")} instead of building local mappings.`,
   })
 }
 

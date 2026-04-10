@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/components/theme-provider'
 
 import { cn } from '@afenda/ui/lib/utils'
 import {
@@ -37,10 +37,10 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@afenda/ui/components/ui/dropdown-menu'
-import type { TruthHealthSummary } from '@afenda/core/truth'
 import { SUPPORTED_LOCALES } from '@/share/i18n'
+import type { ShellHealthSummary } from '@/share/types'
 import { useAppShellStore } from '@/share/client-store/app-shell-store'
-import { getTruthSeverityPresentation } from '@afenda/shadcn-ui/semantic'
+import { getIntegritySeverityPresentation } from '@afenda/shadcn-ui/semantic'
 
 const LOCALE_DISPLAY: Record<string, { name: string; flag: string }> = {
   en: { name: 'English', flag: '🇺🇸' },
@@ -51,8 +51,8 @@ const LOCALE_DISPLAY: Record<string, { name: string; flag: string }> = {
 
 export interface TopUserMenuProps {
   loginHref?: string
-  /** Truth health summary for Section 0 */
-  healthSummary?: TruthHealthSummary | null
+  /** Shell health summary for Section 0 (optional). */
+  healthSummary?: ShellHealthSummary | null
   /** Merged into the avatar trigger button (e.g. top nav icon rail). */
   triggerClassName?: string
 }
@@ -75,7 +75,7 @@ function getIntegritySeverity(score: number) {
 
 /**
  * Top nav user menu: 6-section dropdown on the right of `TopNavBar`.
- * 0. Truth Status (integrity score, last reconciliation)
+ * 0. System health (integrity score, last reconciliation) when provided
  * 1. Identity (avatar, name, email)
  * 2. User Status (available/busy/away/invisible)
  * 3. Personal Navigation (account, billing, notifications, audit log)
@@ -113,10 +113,10 @@ export function TopUserMenu({
   }
 
   const integrityTone = healthSummary
-    ? getTruthSeverityPresentation(getIntegritySeverity(healthSummary.integrityScore))
+    ? getIntegritySeverityPresentation(getIntegritySeverity(healthSummary.integrityScore))
     : null
-  const brokenTone = getTruthSeverityPresentation('broken')
-  const warningTone = getTruthSeverityPresentation('warning')
+  const brokenTone = getIntegritySeverityPresentation('broken')
+  const warningTone = getIntegritySeverityPresentation('warning')
 
   return (
     <DropdownMenu>
@@ -138,12 +138,12 @@ export function TopUserMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-56" align="end">
-        {/* Section 0: Truth Status */}
+        {/* Section 0: System health */}
         {healthSummary && (
           <>
             <DropdownMenuGroup>
               <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                {t('user_menu.truth_status', 'System Health')}
+                {t('user_menu.system_health', 'System Health')}
               </DropdownMenuLabel>
               <div className="px-2 py-1.5 text-sm">
                 <div className="flex items-center justify-between">
@@ -234,7 +234,7 @@ export function TopUserMenu({
                   <CircleIcon
                     className={cn(
                       'size-3',
-                      getTruthSeverityPresentation('valid').iconClassName,
+                      getIntegritySeverityPresentation('valid').iconClassName,
                     )}
                   />
                   {t('user_menu.status_available', 'Available')}
@@ -300,7 +300,14 @@ export function TopUserMenu({
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+                <DropdownMenuRadioGroup
+                  value={theme}
+                  onValueChange={(value) => {
+                    if (value === 'light' || value === 'dark' || value === 'system') {
+                      setTheme(value)
+                    }
+                  }}
+                >
                   <DropdownMenuRadioItem value="light">
                     <SunIcon className="mr-2 size-4" />
                     {t('user_menu.theme_light', 'Light')}

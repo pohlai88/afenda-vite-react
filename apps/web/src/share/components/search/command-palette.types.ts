@@ -1,6 +1,6 @@
 import type { ComponentType, SVGProps } from 'react'
 
-import type { TruthSeverity } from '@afenda/core/truth'
+import type { ShellIntegritySeverity } from '@afenda/shadcn-ui/semantic'
 
 /**
  * Normalized command row for the global palette (cmdk + ranking + dedupe).
@@ -27,24 +27,18 @@ export type PaletteGroup =
 export interface PaletteCommand {
   readonly id: string
   readonly kind: PaletteCommandKind
-  /** Canonical group before recent/pinned/suggested overrides at render time. */
   readonly group: PaletteGroup
-  /** When set (e.g. main nav label), `search` rows split into multiple `CommandGroup`s. */
   readonly section?: string
   readonly title: string
   readonly subtitle?: string
-  /** Extra tokens for cmdk `value` / fuzzy matching. */
   readonly keywords: readonly string[]
   readonly icon?: ComponentType<SVGProps<SVGSVGElement>>
-  /** Shown via `CommandShortcut` (display only until global chord router exists). */
   readonly shortcut?: string
-  /** Higher sorts earlier within the same section. */
   readonly priority: number
   readonly run: () => void
-  readonly severity?: TruthSeverity
+  readonly severity?: ShellIntegritySeverity
   readonly confidence?: number
   readonly entityRefs?: readonly string[]
-  /** When true, UI may show a pin control (stored in `GlobalSearchProvider`). */
   readonly pinEligible?: boolean
 }
 

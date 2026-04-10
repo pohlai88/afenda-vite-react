@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next'
 
 import { cn } from '@afenda/ui/lib/utils'
 
-import type { TruthActionBarTab } from '@afenda/core/truth-ui'
-import { getTruthSeverityPresentation } from '@afenda/shadcn-ui/semantic'
+import type { ActionBarTab } from '@/share/types'
+import { getIntegritySeverityPresentation } from '@afenda/shadcn-ui/semantic'
 
 export interface TopActionBarWidgetProps {
-  tab: TruthActionBarTab
+  tab: ActionBarTab
   className?: string
 }
 
@@ -25,7 +25,7 @@ export function TopActionBarWidget({
 
   const label = t(tab.labelKey as never)
   const badgeTone = tab.badge
-    ? getTruthSeverityPresentation(tab.badge.severity)
+    ? getIntegritySeverityPresentation(tab.badge.severity)
     : null
 
   return (

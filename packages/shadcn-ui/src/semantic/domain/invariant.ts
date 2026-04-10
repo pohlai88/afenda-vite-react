@@ -23,11 +23,11 @@ export const invariantSeverityValues = [
 export type InvariantSeverity = (typeof invariantSeverityValues)[number]
 
 export interface InvariantUiModel {
-  tone: SemanticTone
-  icon: LucideIcon
-  badgeLabel: string
-  alertRole: "status" | "alert"
-  emphasis: SemanticEmphasis
+  readonly tone: SemanticTone
+  readonly icon: LucideIcon
+  readonly badgeLabel: string
+  readonly alertRole: "status" | "alert"
+  readonly emphasis: SemanticEmphasis
 }
 
 const invariantUiModelMap: Record<InvariantSeverity, InvariantUiModel> = {
@@ -59,7 +59,7 @@ const invariantUiModelMap: Record<InvariantSeverity, InvariantUiModel> = {
     alertRole: "alert",
     emphasis: "solid",
   },
-}
+} as const satisfies Record<InvariantSeverity, InvariantUiModel>
 
 export function getInvariantUiModel(
   severity: InvariantSeverity

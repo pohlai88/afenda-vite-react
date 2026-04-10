@@ -12,6 +12,20 @@ const THEMES = { light: "", dark: ".dark" } as const
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const
 type TooltipNameType = number | string
 
+function getChartPayloadKey(value: unknown): string {
+  return typeof value === "string" || typeof value === "number"
+    ? String(value)
+    : "value"
+}
+
+function getPayloadColor(value: unknown): string | undefined {
+  if (typeof value === "string") return value
+  if (typeof value !== "object" || value === null) return undefined
+
+  const payloadRecord = value as Record<string, unknown>
+  return typeof payloadRecord.fill === "string" ? payloadRecord.fill : undefined
+}
+
 export type ChartConfig = Record<
   string,
   {
@@ -152,7 +166,7 @@ function ChartTooltipContent({
     }
 
     const [item] = payload
-    const key = `${labelKey ?? item?.dataKey ?? item?.name ?? "value"}`
+    const key = getChartPayloadKey(labelKey ?? item?.dataKey ?? item?.name)
     const itemConfig = getPayloadConfigFromPayload(config, item, key)
     const value =
       !labelKey && typeof label === "string"
@@ -200,9 +214,12 @@ function ChartTooltipContent({
         {payload
           .filter((item) => item.type !== "none")
           .map((item, index) => {
-            const key = `${nameKey ?? item.name ?? item.dataKey ?? "value"}`
+            const key = getChartPayloadKey(nameKey ?? item.name ?? item.dataKey)
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
-            const indicatorColor = color ?? item.payload?.fill ?? item.color
+            const indicatorColor =
+              color ??
+              getPayloadColor(item.payload) ??
+              (typeof item.color === "string" ? item.color : undefined)
 
             return (
               <div
@@ -213,7 +230,7 @@ function ChartTooltipContent({
                 )}
               >
                 {formatter && item?.value !== undefined && item.name ? (
-                  formatter(item.value, item.name, item, index, item.payload)
+                  formatter(item.value, item.name, item, index, payload)
                 ) : (
                   <>
                     {itemConfig?.icon ? (
@@ -299,7 +316,7 @@ function ChartLegendContent({
       {payload
         .filter((item) => item.type !== "none")
         .map((item, index) => {
-          const key = `${nameKey ?? item.dataKey ?? "value"}`
+          const key = getChartPayloadKey(nameKey ?? item.dataKey)
           const itemConfig = getPayloadConfigFromPayload(config, item, key)
 
           return (

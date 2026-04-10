@@ -8,23 +8,73 @@
  * Consumption: CI, AST checkers, and drift tooling read this for Radix governance truth.
  * Changes: expand the approved packages list deliberately; removals require migration planning.
  * Constraints: allowedPrimitivePackages must be exact npm package names, not prefixes or globs.
- * Validation: schema-validated shape plus uniqueness assertions in validate-constants.
+ * Validation: schema-validated shape plus uniqueness and package-name shape in Zod superRefine;
+ *   validate-constants repeats checks at the aggregate boundary.
+ * Ownership boundary: “UI owner” vs outside is resolved using ownershipPolicy.uiOwnerRoots
+ *   (see ownership-policy.ts); this file does not duplicate those paths.
  * Purpose: prevent Radix primitive drift and maintain accessibility guarantees centrally.
  */
 import { z } from "zod/v4"
 
-import { defineConstMap, defineTuple, nonEmptyStringSchema } from "../schema/shared"
+import {
+  defineConstMap,
+  defineTuple,
+  hasDuplicateStrings,
+} from "../schema/shared"
 
-const radixPolicySchema = z
+/**
+ * Exact scoped npm package name for @radix-ui/react-* primitives.
+ * Rejects globs, path-like strings, and prefix-only forms.
+ */
+const radixPrimitivePackageNameSchema = z
+  .string()
+  .trim()
+  .regex(
+    /^@radix-ui\/react-[a-z0-9]+(?:-[a-z0-9]+)*$/,
+    "Expected exact @radix-ui/react-* npm package name (no globs, slashes, or prefixes)."
+  )
+
+/** Runtime-checked non-empty list; single cast for defineTuple (Zod already guarantees min(1)). */
+function assertNonEmptyTuple(values: readonly string[]): [string, ...string[]] {
+  if (values.length === 0) {
+    throw new Error("allowedPrimitivePackages must contain at least one package.")
+  }
+  return values as unknown as [string, ...string[]]
+}
+
+export const radixPolicySchema = z
   .object({
     allowDirectPrimitiveImportOutsideUiOwner: z.boolean(),
     requirePrimitiveWrappingInUiOwner: z.boolean(),
     allowAsChild: z.boolean(),
+    /**
+     * When false: feature and non-owner code must not replace or fork Radix interaction
+     * semantics (open/close, focus traps, keyboard handling) outside governed wrappers.
+     * Does not forbid normal composition or props on wrappers inside UI owners.
+     */
     allowCustomBehaviorForks: z.boolean(),
+    /**
+     * When false: arbitrary ARIA/role/focus/keyboard overrides that bypass the governed
+     * primitive wrapper contract are not allowed in product paths. Legitimate a11y
+     * composition remains inside governed UI packages per wrapper contracts.
+     */
     allowAdHocAccessibilityOverrides: z.boolean(),
-    allowedPrimitivePackages: z.array(nonEmptyStringSchema).min(1).readonly(),
+    allowedPrimitivePackages: z
+      .array(radixPrimitivePackageNameSchema)
+      .min(1)
+      .readonly(),
   })
   .strict()
+  .superRefine((policy, ctx) => {
+    if (hasDuplicateStrings(policy.allowedPrimitivePackages)) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          "allowedPrimitivePackages must not contain duplicate entries (govern as a set).",
+        path: ["allowedPrimitivePackages"],
+      })
+    }
+  })
 
 export const radixPolicy = defineConstMap(
   radixPolicySchema.parse({
@@ -69,10 +119,10 @@ export const radixPolicy = defineConstMap(
 export type RadixPolicy = typeof radixPolicy
 
 export const radixPrimitivePackageValues = defineTuple(
-  radixPolicy.allowedPrimitivePackages as unknown as [string, ...string[]]
+  assertNonEmptyTuple(radixPolicy.allowedPrimitivePackages)
 )
 
-const radixContractPolicySchema = z
+export const radixContractPolicySchema = z
   .object({
     /**
      * Wrapped primitive components must pass through remaining props.
@@ -90,13 +140,13 @@ const radixContractPolicySchema = z
     requirePrimitiveRenderInWrapper: z.boolean(),
 
     /**
-     * Warn if local open/checked/selected state appears to replace
-     * primitive-controlled behavior in wrapper files.
+     * Heuristic: warn if local open/checked/selected state appears to replace
+     * primitive-controlled behavior in wrapper files (softer than objective checks above).
      */
     warnOnLocalStateReplacingPrimitiveBehavior: z.boolean(),
 
     /**
-     * Warn if asChild-capable wrappers appear to remove composition flexibility.
+     * Heuristic: warn if asChild-capable wrappers appear to remove composition flexibility.
      */
     warnOnSuspiciousAsChildContractDrift: z.boolean(),
   })
@@ -113,3 +163,85 @@ export const radixContractPolicy = defineConstMap(
 )
 
 export type RadixContractPolicy = typeof radixContractPolicy
+export type RadixPolicyInput = z.input<typeof radixPolicySchema>
+export type RadixContractPolicyInput = z.input<typeof radixContractPolicySchema>
+
+export function parseRadixPolicy(value: unknown): RadixPolicy {
+  return radixPolicySchema.parse(value)
+}
+
+export function assertRadixPolicy(input: unknown): RadixPolicy {
+  try {
+    return radixPolicySchema.parse(input)
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      throw new Error(`Invalid RadixPolicy: ${err.message}`, { cause: err })
+    }
+    throw err
+  }
+}
+
+export function safeParseRadixPolicy(
+  input: unknown
+): { success: true; data: RadixPolicy } | { success: false; error: string } {
+  const result = radixPolicySchema.safeParse(input)
+  if (result.success) {
+    return { success: true, data: result.data }
+  }
+  return { success: false, error: result.error.message }
+}
+
+export function isRadixPolicy(input: unknown): input is RadixPolicy {
+  return radixPolicySchema.safeParse(input).success
+}
+
+export function parseRadixContractPolicy(value: unknown): RadixContractPolicy {
+  return radixContractPolicySchema.parse(value)
+}
+
+export function assertRadixContractPolicy(input: unknown): RadixContractPolicy {
+  try {
+    return radixContractPolicySchema.parse(input)
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      throw new Error(`Invalid RadixContractPolicy: ${err.message}`, { cause: err })
+    }
+    throw err
+  }
+}
+
+export function safeParseRadixContractPolicy(
+  input: unknown
+):
+  | { success: true; data: RadixContractPolicy }
+  | { success: false; error: string } {
+  const result = radixContractPolicySchema.safeParse(input)
+  if (result.success) {
+    return { success: true, data: result.data }
+  }
+  return { success: false, error: result.error.message }
+}
+
+export function isRadixContractPolicy(
+  input: unknown
+): input is RadixContractPolicy {
+  return radixContractPolicySchema.safeParse(input).success
+}
+
+export const RadixPolicyUtils = Object.freeze({
+  schema: radixPolicySchema,
+  assert: assertRadixPolicy,
+  is: isRadixPolicy,
+  parse: parseRadixPolicy,
+  safeParse: safeParseRadixPolicy,
+  defaults: radixPolicy,
+})
+
+export const RadixContractPolicyUtils = Object.freeze({
+  schema: radixContractPolicySchema,
+  assert: assertRadixContractPolicy,
+  is: isRadixContractPolicy,
+  parse: parseRadixContractPolicy,
+  safeParse: safeParseRadixContractPolicy,
+  defaults: radixContractPolicy,
+})

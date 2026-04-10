@@ -29,9 +29,9 @@ export const evidenceUiStateValues = [
 export type EvidenceUiState = (typeof evidenceUiStateValues)[number]
 
 export interface EvidenceUiModel {
-  tone: SemanticTone
-  badgeLabel: string
-  icon: LucideIcon
+  readonly tone: SemanticTone
+  readonly badgeLabel: string
+  readonly icon: LucideIcon
 }
 
 const evidenceUiModelMap: Record<EvidenceUiState, EvidenceUiModel> = {
@@ -60,7 +60,7 @@ const evidenceUiModelMap: Record<EvidenceUiState, EvidenceUiModel> = {
     badgeLabel: "Unverified",
     icon: BadgeHelp,
   },
-}
+} as const satisfies Record<EvidenceUiState, EvidenceUiModel>
 
 export function getEvidenceUiModel(state: EvidenceUiState): EvidenceUiModel {
   return evidenceUiModelMap[state]

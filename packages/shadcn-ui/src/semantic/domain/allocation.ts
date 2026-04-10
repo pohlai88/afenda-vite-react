@@ -33,9 +33,9 @@ export const allocationUiStateValues = [
 export type AllocationUiState = (typeof allocationUiStateValues)[number]
 
 export interface AllocationUiModel {
-  tone: SemanticTone
-  badgeLabel: string
-  icon: LucideIcon
+  readonly tone: SemanticTone
+  readonly badgeLabel: string
+  readonly icon: LucideIcon
 }
 
 const allocationUiModelMap: Record<AllocationUiState, AllocationUiModel> = {
@@ -74,7 +74,7 @@ const allocationUiModelMap: Record<AllocationUiState, AllocationUiModel> = {
     badgeLabel: "Failed",
     icon: CircleSlash,
   },
-}
+} as const satisfies Record<AllocationUiState, AllocationUiModel>
 
 export function getAllocationUiModel(
   state: AllocationUiState

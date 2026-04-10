@@ -25,7 +25,7 @@ ruleTester.run('no-local-semantic-map', plugin.rules['no-local-semantic-map'] as
   valid: [
     // Non-className record is fine
     {
-      code: `const SEVERITY_LABELS: Record<TruthSeverity, string> = { valid: 'Valid', warning: 'Warning', broken: 'Broken', pending: 'Pending', neutral: 'Neutral' }`,
+      code: `const SEVERITY_LABELS: Record<ShellIntegritySeverity, string> = { valid: 'Valid', warning: 'Warning', broken: 'Broken', pending: 'Pending', neutral: 'Neutral' }`,
     },
     // Non-tailwind string values are fine
     {
@@ -65,7 +65,7 @@ ruleTester.run('no-local-semantic-map', plugin.rules['no-local-semantic-map'] as
     },
     // Variable named *StyleMap
     {
-      code: `const truthStyleMap = { valid: 'bg-truth-valid', warning: 'bg-truth-warning' }`,
+      code: `const integrityStyleMap = { valid: 'bg-truth-valid', warning: 'bg-truth-warning' }`,
       errors: [{ messageId: 'noLocalSemanticMap' }],
     },
     // Variable named *SeverityMap
@@ -73,9 +73,9 @@ ruleTester.run('no-local-semantic-map', plugin.rules['no-local-semantic-map'] as
       code: `const badgeSeverityMap = { broken: 'bg-destructive text-destructive-foreground', warning: 'bg-warning' }`,
       errors: [{ messageId: 'noLocalSemanticMap' }],
     },
-    // Record<TruthSeverity, ...> with className fields
+    // Record<ShellIntegritySeverity, ...> with className fields
     {
-      code: `const PRESENTATION: Record<TruthSeverity, TruthSeverityPresentation> = { valid: { badgeClassName: 'bg-truth-valid', borderClassName: 'border-l-truth-valid', dotClassName: 'bg-truth-valid', iconClassName: 'text-truth-valid', pillClassName: 'bg-truth-valid-subtle', rowClassName: 'ui-row-valid', textClassName: 'text-truth-valid' } }`,
+      code: `const PRESENTATION: Record<ShellIntegritySeverity, IntegritySeverityPresentation> = { valid: { badgeClassName: 'bg-truth-valid', borderClassName: 'border-l-truth-valid', dotClassName: 'bg-truth-valid', iconClassName: 'text-truth-valid', pillClassName: 'bg-truth-valid-subtle', rowClassName: 'ui-row-valid', textClassName: 'text-truth-valid' } }`,
       errors: [{ messageId: 'noLocalSemanticMap' }],
     },
     // Record<SemanticEmphasis, ...> with className values

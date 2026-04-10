@@ -23,39 +23,6 @@ const navData = {
   secondaryItems: [],
 }
 
-const truthScopeState = {
-  scope: {
-    tenantId: 'org-1',
-    legalEntityId: 'sub-1',
-  },
-  orgList: [{ id: 'org-1', name: 'Org 1' }],
-  subsidiaryList: [
-    {
-      id: 'sub-1',
-      name: 'Subsidiary 1',
-      orgId: 'org-1',
-      legalEntityCode: 'LE-1',
-    },
-  ],
-  switchOrg: vi.fn(),
-  switchSubsidiary: vi.fn(),
-}
-
-const truthHealthState = {
-  health: null,
-  alerts: [],
-  markRead: vi.fn(),
-  markAllRead: vi.fn(),
-}
-
-vi.mock('@/share/client-store', () => ({
-  useTruthScopeStore: (selector: (state: typeof truthScopeState) => unknown) =>
-    selector(truthScopeState),
-  useTruthHealthStore: (
-    selector: (state: typeof truthHealthState) => unknown,
-  ) => selector(truthHealthState),
-}))
-
 vi.mock('@/share/components/providers', () => ({
   useGlobalSearch: () => ({
     isCommandPaletteOpen: false,
@@ -118,6 +85,10 @@ vi.mock('../../search', () => ({
   useCommandPaletteShortcut: () => undefined,
 }))
 
+vi.mock('../../shell-ui', () => ({
+  ShellSearchBar: () => <div data-testid="shell-search-bar" />,
+}))
+
 vi.mock('../../block-ui', () => ({
   CreateActionTrigger: () => <div data-testid="create-action-trigger" />,
   FeedbackPopover: () => <div data-testid="feedback-popover" />,
@@ -127,8 +98,6 @@ vi.mock('../../block-ui', () => ({
       Open mobile nav
     </button>
   ),
-  ResolutionPanel: () => <div data-testid="resolution-panel" />,
-  TruthAlertPanel: () => <div data-testid="truth-alert-panel" />,
 }))
 
 describe('TopNavBar mobile branching', () => {
@@ -142,9 +111,7 @@ describe('TopNavBar mobile branching', () => {
           globalSearch: false,
           feedback: false,
           createActions: false,
-          truthAlerts: false,
           help: false,
-          resolutions: false,
           actionBar: false,
         }}
       />,
@@ -163,9 +130,7 @@ describe('TopNavBar mobile branching', () => {
           globalSearch: false,
           feedback: false,
           createActions: false,
-          truthAlerts: false,
           help: false,
-          resolutions: false,
           actionBar: false,
         }}
       />,

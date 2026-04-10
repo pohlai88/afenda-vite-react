@@ -17,13 +17,32 @@ import { defineConstMap, defineTuple, nonEmptyStringSchema } from "../schema/sha
 
 const repoPathSchema = nonEmptyStringSchema
 
-const ownershipPolicySchema = z
+export const ownershipPolicySchema = z
   .object({
     uiOwnerRoots: z.array(repoPathSchema).min(1).readonly(),
+    /**
+     * Subset of `uiOwnerRoots` audited by the wrapper-contract checker.
+     * Validated at runtime: every entry must appear in `uiOwnerRoots`.
+     */
     wrapperContractScanRoots: z.array(repoPathSchema).min(1).readonly(),
+    /**
+     * Broad drift-scan roots (apps + packages), not “product app code only.”
+     * AST/regex scanners use this as inclusion roots; governance owners live under
+     * `packages/*` too, so the name is intentionally broad. Narrow only if a check
+     * should exclude package trees by design.
+     */
     productRoots: z.array(repoPathSchema).min(1).readonly(),
     semanticOwnerRoots: z.array(repoPathSchema).min(1).readonly(),
+    /**
+     * Canonical token authority entrypoints (files or future dirs). Prefer adding
+     * paths here over scattering token sources; a rename to `tokenOwnerPaths` may
+     * follow if multiple files/dirs become first-class.
+     */
     tokenOwnerFiles: z.array(repoPathSchema).min(1).readonly(),
+    /**
+     * Narrow zones where inline-style exceptions are allowed by policy.
+     * Does not grant general styling freedom outside governed components.
+     */
     inlineStyleExceptionRoots: z.array(repoPathSchema).min(1).readonly(),
   })
   .strict()
@@ -34,7 +53,6 @@ export const ownershipPolicy = defineConstMap(
       "packages/shadcn-ui/src",
       "packages/shadcn-ui/registry",
       "packages/ui/src",
-      "packages/design-system/src/components/shadcn",
       "packages/radix-ui-themes/src",
     ],
     /**
@@ -47,6 +65,7 @@ export const ownershipPolicy = defineConstMap(
       "packages/shadcn-ui/src",
       "packages/ui/src",
     ],
+    // Governed scan surface for drift tooling (see schema JSDoc — not “product-only”).
     productRoots: [
       "apps",
       "packages",
@@ -54,7 +73,6 @@ export const ownershipPolicy = defineConstMap(
     semanticOwnerRoots: [
       "packages/ui/src/lib/semantic",
       "packages/shadcn-ui/src/lib/semantic",
-      "packages/features/core/src/truth-ui",
     ],
     tokenOwnerFiles: [
       "apps/web/src/index.css",
@@ -67,9 +85,49 @@ export const ownershipPolicy = defineConstMap(
 )
 
 export type OwnershipPolicy = typeof ownershipPolicy
+export type OwnershipPolicyInput = z.input<typeof ownershipPolicySchema>
+
+export function parseOwnershipPolicy(value: unknown): OwnershipPolicy {
+  return ownershipPolicySchema.parse(value)
+}
+
+export function assertOwnershipPolicy(input: unknown): OwnershipPolicy {
+  try {
+    return ownershipPolicySchema.parse(input)
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      throw new Error(`Invalid OwnershipPolicy: ${err.message}`, { cause: err })
+    }
+    throw err
+  }
+}
+
+export function safeParseOwnershipPolicy(
+  input: unknown
+): { success: true; data: OwnershipPolicy } | { success: false; error: string } {
+  const result = ownershipPolicySchema.safeParse(input)
+  if (result.success) {
+    return { success: true, data: result.data }
+  }
+  return { success: false, error: result.error.message }
+}
+
+export function isOwnershipPolicy(input: unknown): input is OwnershipPolicy {
+  return ownershipPolicySchema.safeParse(input).success
+}
+
+export const OwnershipPolicyUtils = Object.freeze({
+  schema: ownershipPolicySchema,
+  assert: assertOwnershipPolicy,
+  is: isOwnershipPolicy,
+  parse: parseOwnershipPolicy,
+  safeParse: safeParseOwnershipPolicy,
+  defaults: ownershipPolicy,
+})
 
 export const ownershipRootKindValues = defineTuple([
   "ui-owner",
+  "wrapper-contract-scan",
   "product",
   "semantic-owner",
   "token-owner",

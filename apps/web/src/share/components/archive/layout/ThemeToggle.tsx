@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/components/theme-provider'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@afenda/ui/components/ui/button'
 import { MoonIcon, SunIcon } from 'lucide-react'

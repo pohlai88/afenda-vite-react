@@ -8,6 +8,8 @@
  * Changes: preserve deterministic vocabulary and exact value coverage.
  * Purpose: keep semantic-state usage consistent across semantic components.
  */
+import { z } from "zod"
+
 export const semanticStateValues = [
   "idle",
   "active",
@@ -17,4 +19,6 @@ export const semanticStateValues = [
   "readonly",
 ] as const
 
-export type SemanticState = (typeof semanticStateValues)[number]
+export const semanticStateSchema = z.enum(semanticStateValues)
+
+export type SemanticState = z.infer<typeof semanticStateSchema>

@@ -22,6 +22,11 @@ import {
 } from "ts-morph"
 
 import {
+  resolveEffectiveClassPolicyTokenThresholds,
+  type EffectiveClassPolicyTokenThresholds,
+} from "../packages/shadcn-ui/src/lib/constant/policy/class-governance-scope.ts"
+import { styleBindingPolicy } from "../packages/shadcn-ui/src/lib/constant/policy/style-binding.ts"
+import {
   type AstFinding,
   type GovernanceModules,
   type RulePolicyShape,
@@ -31,6 +36,7 @@ import {
   getOutputFormat,
   getRuleLevel,
   isAllowedArbitraryValueByPolicy,
+  isBarrelResolvedModuleFile,
   isFeatureFile,
   isGovernedUiOwnerByPolicy,
   isInlineStyleExceptionByPolicy,
@@ -39,6 +45,7 @@ import {
   listFilesForScanByPolicy,
   loadGovernanceModules,
   normalizePath,
+  resolveModuleSpecifierToAbsolutePath,
   printJsonReport,
   printTextReport,
   truncateExcerpt,
@@ -55,6 +62,8 @@ type RuleCode =
   | "UIX-AST-IMPORT-002"
   | "UIX-AST-IMPORT-003"
   | "UIX-AST-IMPORT-004"
+  | "UIX-AST-IMPORT-005"
+  | "UIX-AST-IMPORT-006"
   | "UIX-AST-COLOR-001"
   | "UIX-AST-COLOR-002"
   | "UIX-AST-CLASS-001"
@@ -76,9 +85,23 @@ type RuleCode =
   | "UIX-AST-COMPLEXITY-001"
   | "UIX-AST-COMPLEXITY-002"
   | "UIX-AST-COMPLEXITY-003"
+  | "UIX-AST-COMPLEXITY-004"
   | "UIX-AST-COMPONENT-001"
   | "UIX-AST-COMPONENT-002"
   | "UIX-AST-COMPONENT-003"
+  | "UIX-AST-SHELL-001"
+  | "UIX-AST-SHELL-002"
+  | "UIX-AST-SHELL-003"
+  | "UIX-AST-SHELL-004"
+  | "UIX-AST-SHELL-005"
+  | "UIX-AST-SHELL-006"
+  | "UIX-AST-SHELL-007"
+  | "UIX-AST-SHELL-008"
+  | "UIX-AST-SHELL-009"
+  | "UIX-AST-SHELL-010"
+  | "UIX-AST-SHELL-011"
+  | "UIX-AST-SHELL-012"
+  | "UIX-AST-SHELL-013"
 
 const ROOT_DIR = findRepoRoot()
 const REPORT_ROOT = ROOT_DIR
@@ -102,6 +125,12 @@ const LOCAL_VARIANT_FACTORY_NAME_RE =
 
 const DOMAIN_STATUS_MAP_KEYS_RE =
   /\b(?:paid|unpaid|pending|failed|success|error|warning|open|closed|draft|approved|rejected|cancelled|settled|unsettled|matched|unmatched|allocated|unallocated|overdue|blocked|low|medium|high|critical|partial|reversed|conflict|stale|missing|tampered|unverified)\b/i
+
+const INLINE_METADATA_TOKEN_MAP_NAME_RE =
+  /(?:metadata|status|severity|truth|disclosure|action|interaction|layout).*(?:token|class|tone|variant|map|lookup)|(?:token|class|tone|variant|map|lookup).*(?:metadata|status|severity|truth|disclosure|action|interaction|layout)/i
+
+const INLINE_METADATA_TOKEN_VALUE_RE =
+  /(?:text-|bg-|border-|ring-|shadow-|rounded-|var\(--|token(?:s)?\.|semantic(?:-|_)?token|tone(?:-|_)?|variant(?:-|_)?|destructive|warning|success|info)/i
 
 const VISUAL_PROP_OR_VALUE_RE =
   /\b(?:className|tone|variant|severity|surface|emphasis|bg-|text-|border-|ring-|shadow-|rounded-|success|warning|destructive|danger|info|accent|primary)\b/
@@ -134,6 +163,50 @@ const SEMANTIC_WRAPPER_NAMES = new Set([
   "AllocationBadge",
   "SettlementBadge",
   "ReconciliationAlert",
+])
+
+const SHELL_ZONE_VALUES = new Set([
+  "root",
+  "header",
+  "sidebar",
+  "content",
+  "panel",
+  "overlay",
+  "command",
+  "footer",
+  "main",
+  "left",
+  "right",
+])
+
+const SHELL_METADATA_KEYS = new Set([
+  "zone",
+  "density",
+  "viewport",
+  "navigationState",
+  "commandAvailability",
+  "inOverlay",
+  "navigationContextBound",
+])
+
+const SHELL_DENSITY_VALUES = new Set([
+  "compact",
+  "comfortable",
+  "spacious",
+  "cozy",
+  "dense",
+  "wide",
+])
+
+const SHELL_VIEWPORT_VALUES = new Set([
+  "mobile",
+  "tablet",
+  "desktop",
+  "wide",
+  "small",
+  "medium",
+  "large",
+  "xl",
 ])
 
 const TRUTH_RULE_KEYSETS: Array<{
@@ -189,6 +262,17 @@ const findings: AstFinding[] = []
 let activeRulePolicy: RulePolicyShape<RuleCode>
 let governance: GovernanceModules<RuleCode>
 
+function getScanRootsOverride(): string[] | null {
+  const raw = process.env.UI_DRIFT_SCAN_ROOTS
+  if (raw == null || raw.trim().length === 0) {
+    return null
+  }
+  return raw
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0)
+}
+
 async function main() {
   governance = await loadGovernanceModules<RuleCode>(ROOT_DIR)
   activeRulePolicy = governance.rulePolicy
@@ -196,12 +280,16 @@ async function main() {
   const {
     classPolicy,
     componentPolicy,
+    metadataUiPolicy,
     ownershipPolicy,
     tailwindPolicy,
     shadcnPolicy,
+    shellPolicy,
   } = governance
 
-  const productUiPrefixes = ownershipPolicy.productRoots.map((root) =>
+  const scanRoots = getScanRootsOverride() ?? ownershipPolicy.productRoots
+
+  const productUiPrefixes = scanRoots.map((root) =>
     normalizePath(path.join(ROOT_DIR, root))
   )
 
@@ -214,10 +302,7 @@ async function main() {
     },
   })
 
-  const sourceFilesToScan = listFilesForScanByPolicy(
-    ROOT_DIR,
-    ownershipPolicy.productRoots
-  )
+  const sourceFilesToScan = listFilesForScanByPolicy(ROOT_DIR, scanRoots)
   project.addSourceFilesAtPaths(sourceFilesToScan)
 
   const sourceFiles = project
@@ -285,31 +370,96 @@ async function main() {
     }
 
     if (
-      classPolicy.maxRecommendedClassNameTokensInFeatures > 0 &&
+      !metadataUiPolicy.allowInlineMetadataToTokenMappingInFeatures &&
       inFeature &&
       !governed
     ) {
-      checkClassNameComplexity(
-        sourceFile,
-        classPolicy.maxRecommendedClassNameTokensInFeatures
+      checkInlineMetadataToTokenMapping(sourceFile)
+    }
+
+    if (inFeature && !governed) {
+      const tokenThresholds = resolveEffectiveClassPolicyTokenThresholds(
+        classPolicy,
+        file
       )
+      if (
+        tokenThresholds.maxRecommended > 0 ||
+        tokenThresholds.warnTokens > 0 ||
+        tokenThresholds.errorTokens > 0
+      ) {
+        checkClassNameComplexity(sourceFile, tokenThresholds)
+      }
     }
 
     if (
-      componentPolicy.requireTruthMappingFromGovernedSource &&
+      componentPolicy.requireGovernedDomainToUiMapping &&
       inFeature &&
       !governed
     ) {
       checkTruthMappingSources(sourceFile)
     }
 
+    if (!governed) {
+      checkRequireShellComponentRegistration(sourceFile)
+      checkNoUndeclaredShellDependency(sourceFile)
+      checkValidateShellZoneDeclaration(sourceFile)
+    }
+
     if (inFeature && !governed) {
+      if (!shellPolicy.allowFeatureLevelShellZoneFork) {
+        checkLocalShellZoneVocabulary(sourceFile)
+      }
+      if (!shellPolicy.allowFeatureLevelShellMetadataFork) {
+        checkLocalShellMetadataContract(sourceFile)
+        checkFeatureShellProviderFork(sourceFile)
+      }
+      if (!shellPolicy.allowFeatureLevelNavigationContextFork) {
+        checkFeatureNavigationContextFork(sourceFile)
+      }
+      if (!shellPolicy.allowFeatureLevelCommandInfrastructureFork) {
+        checkFeatureCommandContextFork(sourceFile)
+      }
+      if (!shellPolicy.allowFeatureLevelDensityVocabularyFork) {
+        checkFeatureDensityVocabularyFork(sourceFile)
+      }
+      if (!shellPolicy.allowFeatureLevelViewportVocabularyFork) {
+        checkFeatureViewportVocabularyFork(sourceFile)
+      }
+      checkNoLocalShellContext(sourceFile)
+      checkNoFeatureShellUseContext(sourceFile)
+      checkPreferShellSelectorHooks(sourceFile)
+
       checkConditionalStylingComplexity(sourceFile)
       checkFeatureLocalWrapperExports(sourceFile)
     }
   }
 
   report()
+}
+
+function checkInlineMetadataToTokenMapping(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (!Node.isVariableDeclaration(node)) return
+
+    const name = node.getName()
+    if (!INLINE_METADATA_TOKEN_MAP_NAME_RE.test(name)) return
+
+    const rawInitializer = node.getInitializer()
+    const initializer = rawInitializer
+      ? unwrapTypeAssertion(rawInitializer)
+      : undefined
+    if (!initializer || !Node.isObjectLiteralExpression(initializer)) return
+
+    const objectText = initializer.getText()
+    if (!INLINE_METADATA_TOKEN_VALUE_RE.test(objectText)) return
+
+    pushNodeFinding(
+      sourceFile,
+      node,
+      "UIX-AST-CONTROL-001",
+      "Inline metadata-to-token mapping detected in feature code. Route metadata through governed adapters/registries instead of local token maps."
+    )
+  })
 }
 
 function findTsConfig(): string {
@@ -346,6 +496,33 @@ function checkImports(
   semanticOwner: boolean
 ) {
   const { radixPolicy, shadcnPolicy, importPolicy } = governance
+  const sourcePath = normalizePath(sourceFile.getFilePath())
+  const inImportPolicyOwner = isSourcePathWithinPrefixes(
+    sourcePath,
+    importPolicy.governedUiOwnerSourcePathPrefixes
+  )
+  const hasRadixSourceExemption = isSourcePathWithinPrefixes(
+    sourcePath,
+    importPolicy.directRadixImportAllowedSourcePathPrefixes
+  )
+  const hasCvaSourceExemption = isSourcePathWithinPrefixes(
+    sourcePath,
+    importPolicy.cvaImportAllowedSourcePathPrefixes
+  )
+  const hasLocalCnSourceExemption = isSourcePathWithinPrefixes(
+    sourcePath,
+    importPolicy.allowedLocalCnImportSourcePathPrefixes
+  )
+  const allowedGlobalStyleOwnerPaths = new Set(
+    styleBindingPolicy.allowedGlobalStyleOwners.map((ownerPath: string) =>
+      normalizePath(path.join(ROOT_DIR, ownerPath))
+    )
+  )
+  const governedGlobalStyleOwnerBaseNames = new Set(
+    styleBindingPolicy.allowedGlobalStyleOwners.map((ownerPath: string) =>
+      path.basename(normalizePath(ownerPath))
+    )
+  )
 
   for (const decl of sourceFile.getImportDeclarations()) {
     const moduleSpecifier = decl.getModuleSpecifierValue()
@@ -357,8 +534,9 @@ function checkImports(
     if (
       !radixPolicy.allowDirectPrimitiveImportOutsideUiOwner &&
       !governed &&
-      moduleSpecifier.startsWith("@radix-ui/react-") &&
-      !importPolicy.directRadixImportAllowlist.includes(moduleSpecifier)
+      !inImportPolicyOwner &&
+      !hasRadixSourceExemption &&
+      moduleSpecifier.startsWith("@radix-ui/react-")
     ) {
       pushNodeFinding(
         sourceFile,
@@ -371,8 +549,9 @@ function checkImports(
     if (
       !shadcnPolicy.allowCvaOutsideUiOwner &&
       !governed &&
-      moduleSpecifier === "class-variance-authority" &&
-      !importPolicy.cvaImportAllowlist.includes(moduleSpecifier)
+      !inImportPolicyOwner &&
+      !hasCvaSourceExemption &&
+      moduleSpecifier === "class-variance-authority"
     ) {
       pushNodeFinding(
         sourceFile,
@@ -382,12 +561,12 @@ function checkImports(
       )
     }
 
-    // Skip semantic adapter import check for governed owners and semantic owners (truth-ui domain).
+    // Skip semantic adapter import check for governed owners and semantic owners.
     if (!governed && !semanticOwner) {
-      const isBannedImport = importPolicy.bannedImportPatterns.some(
-        (pattern) =>
-          moduleSpecifier.startsWith(pattern) || moduleSpecifier === pattern
-      )
+      const isBannedImport =
+        importPolicy.bannedImportPrefixes.some((pattern) =>
+          moduleSpecifier.startsWith(pattern)
+        ) || importPolicy.bannedExactImportPaths.includes(moduleSpecifier)
 
       if (
         !isBannedImport &&
@@ -403,6 +582,7 @@ function checkImports(
         shadcnPolicy.requireGovernedCnHelper &&
         (moduleSpecifier.startsWith(".") || moduleSpecifier.startsWith("@/")) &&
         (importedNames.has("cn") || defaultImport === "cn") &&
+        !hasLocalCnSourceExemption &&
         !importPolicy.allowedCnImportPaths.some(
           (allowed) =>
             moduleSpecifier.endsWith(allowed) || moduleSpecifier === allowed
@@ -438,7 +618,72 @@ function checkImports(
         )
       }
     }
+
+    if (
+      importPolicy.bannedImportPatternLabels.includes(
+        "barrel-import-in-feature"
+      ) &&
+      isFeatureFile(sourcePath) &&
+      !governed &&
+      !semanticOwner
+    ) {
+      const resolved = resolveModuleSpecifierToAbsolutePath(
+        sourcePath,
+        moduleSpecifier
+      )
+      if (
+        resolved != null &&
+        isBarrelResolvedModuleFile(resolved)
+      ) {
+        pushNodeFinding(
+          sourceFile,
+          decl,
+          "UIX-AST-IMPORT-005",
+          "Barrel import in feature code (importPolicy label barrel-import-in-feature). Import the concrete module instead of a directory or index re-export."
+        )
+      }
+    }
+
+    if (
+      !styleBindingPolicy.allowFeatureLevelGlobalStyleFork &&
+      moduleSpecifier.endsWith(".css")
+    ) {
+      const resolvedCssPath = resolveModuleSpecifierToAbsolutePath(
+        sourcePath,
+        moduleSpecifier
+      )
+      if (resolvedCssPath == null) continue
+
+      const normalizedCssPath = normalizePath(resolvedCssPath)
+      const cssFileName = path.basename(normalizedCssPath)
+      const looksLikeGlobalOwnerImport =
+        governedGlobalStyleOwnerBaseNames.has(cssFileName)
+
+      if (
+        looksLikeGlobalOwnerImport &&
+        !allowedGlobalStyleOwnerPaths.has(normalizedCssPath)
+      ) {
+        const allowedOwnersList = [...styleBindingPolicy.allowedGlobalStyleOwners]
+          .sort()
+          .join(", ")
+        pushNodeFinding(
+          sourceFile,
+          decl,
+          "UIX-AST-IMPORT-006",
+          `Global style owner import resolves to "${normalizePath(path.relative(ROOT_DIR, normalizedCssPath))}", which is not in styleBindingPolicy.allowedGlobalStyleOwners. Use one of: ${allowedOwnersList}.`
+        )
+      }
+    }
   }
+}
+
+function isSourcePathWithinPrefixes(
+  sourcePath: string,
+  prefixes: readonly string[]
+): boolean {
+  return prefixes.some((prefix) =>
+    sourcePath.includes(`/${normalizePath(prefix).replace(/^\/+/, "")}`)
+  )
 }
 
 function checkStringLiterals(sourceFile: SourceFile, governed: boolean) {
@@ -807,7 +1052,14 @@ function checkUnboundTokens(sourceFile: SourceFile) {
   })
 }
 
-function checkClassNameComplexity(sourceFile: SourceFile, maxTokens: number) {
+function checkClassNameComplexity(
+  sourceFile: SourceFile,
+  thresholds: EffectiveClassPolicyTokenThresholds
+) {
+  const { resolvedScope, maxRecommended, warnTokens, errorTokens } = thresholds
+  const lane =
+    resolvedScope == null ? "global-only" : `lane:${resolvedScope}`
+
   sourceFile.forEachDescendant((node) => {
     if (!Node.isJsxOpeningElement(node) && !Node.isJsxSelfClosingElement(node))
       return
@@ -829,12 +1081,33 @@ function checkClassNameComplexity(sourceFile: SourceFile, maxTokens: number) {
     }
 
     const tokenCount = countTailwindTokens(classNameValue)
-    if (tokenCount > maxTokens) {
+
+    if (errorTokens > 0 && tokenCount > errorTokens) {
+      pushNodeFinding(
+        sourceFile,
+        classNameAttr,
+        "UIX-AST-COMPLEXITY-004",
+        `className has ${tokenCount} Tailwind tokens (${lane}, error threshold ${errorTokens}). Extract to a governed component or use semantic variants.`
+      )
+      return
+    }
+
+    if (warnTokens > 0 && tokenCount > warnTokens) {
       pushNodeFinding(
         sourceFile,
         classNameAttr,
         "UIX-AST-COMPLEXITY-001",
-        `className has ${tokenCount} Tailwind tokens (max ${maxTokens}). Extract to a governed component or use semantic variants.`
+        `className has ${tokenCount} Tailwind tokens (${lane}, warn ${warnTokens}, error at ${errorTokens}). Extract to a governed component or use semantic variants.`
+      )
+      return
+    }
+
+    if (maxRecommended > 0 && tokenCount > maxRecommended) {
+      pushNodeFinding(
+        sourceFile,
+        classNameAttr,
+        "UIX-AST-COMPLEXITY-001",
+        `className has ${tokenCount} Tailwind tokens (${lane}, recommended max ${maxRecommended}). Extract to a governed component or use semantic variants.`
       )
     }
   })
@@ -908,6 +1181,515 @@ function checkFeatureLocalWrapperExports(sourceFile: SourceFile) {
   })
 }
 
+function checkLocalShellZoneVocabulary(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (Node.isVariableDeclaration(node)) {
+      const name = node.getName()
+      if (!/(?:shell.*zone|zone.*(?:values|options|enum))/i.test(name)) return
+
+      const values = getStringLiteralValuesFromInitializer(node.getInitializer())
+      if (values.length < 2) return
+      if (!values.some((value) => SHELL_ZONE_VALUES.has(value))) return
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-001",
+        "Local shell-zone vocabulary found in feature code. Import and consume canonical shell zone vocabulary from the governed constant layer."
+      )
+      return
+    }
+
+    if (Node.isTypeAliasDeclaration(node)) {
+      const name = node.getName()
+      if (!/(?:shell.*zone|zone.*(?:type|kind))/i.test(name)) return
+
+      const values = getStringLiteralsFromUnionType(node.getTypeNode())
+      if (values.length < 2) return
+      if (!values.some((value) => SHELL_ZONE_VALUES.has(value))) return
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-001",
+        "Local shell-zone union type found in feature code. Reuse canonical shell zone types from shell policy governance."
+      )
+    }
+  })
+}
+
+function checkLocalShellMetadataContract(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (Node.isInterfaceDeclaration(node) || Node.isTypeAliasDeclaration(node)) {
+      const name = node.getName()
+      if (!/(?:shell.*meta|meta.*shell|shell.*state)/i.test(name)) return
+
+      const keyCount = countShellMetadataKeysInTypeNode(node.getTypeNode())
+      if (keyCount < 3) return
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-002",
+        "Feature-local shell metadata contract detected. Consume canonical ShellMetadata from the governed constant layer."
+      )
+      return
+    }
+
+    if (Node.isVariableDeclaration(node)) {
+      const name = node.getName()
+      if (!/(?:shell.*meta|meta.*shell|shell.*state)/i.test(name)) return
+
+      const initializer = node.getInitializer()
+      if (!initializer || !Node.isObjectLiteralExpression(initializer)) return
+
+      const keyCount = countShellMetadataKeysInObjectLiteral(initializer)
+      if (keyCount < 3) return
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-002",
+        "Feature-local shell metadata object detected. Use canonical shell metadata provider/hook surfaces instead."
+      )
+    }
+  })
+}
+
+function checkFeatureShellProviderFork(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (
+      !Node.isFunctionDeclaration(node) &&
+      !Node.isVariableDeclaration(node) &&
+      !Node.isClassDeclaration(node)
+    ) {
+      return
+    }
+
+    const name = typeof node.getName === "function" ? node.getName() : undefined
+    if (name == null) return
+    if (!/(?:^ShellProvider$|^AppShellProvider$|^ShellMetadataProvider$)/.test(name)) {
+      return
+    }
+
+    pushNodeFinding(
+      sourceFile,
+      node,
+      "UIX-AST-SHELL-003",
+      "Feature-level shell provider declaration detected. Shell provider infrastructure must remain platform-owned."
+    )
+  })
+}
+
+function checkFeatureNavigationContextFork(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (Node.isVariableDeclaration(node)) {
+      const name = node.getName()
+      const initializer = node.getInitializer()
+      if (
+        initializer &&
+        Node.isCallExpression(initializer) &&
+        initializer.getExpression().getText() === "createContext" &&
+        /(?:NavigationContext|NavContext|SidebarContext)/.test(name)
+      ) {
+        pushNodeFinding(
+          sourceFile,
+          node,
+          "UIX-AST-SHELL-004",
+          "Feature-local navigation context detected. Use canonical shell navigation context instead of forking runtime navigation truth."
+        )
+      }
+      return
+    }
+
+    if (
+      Node.isFunctionDeclaration(node) ||
+      Node.isClassDeclaration(node) ||
+      Node.isVariableDeclaration(node)
+    ) {
+      const name = typeof node.getName === "function" ? node.getName() : undefined
+      if (name == null) return
+      if (!/(?:NavigationProvider|NavProvider|SidebarProvider)/.test(name)) return
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-004",
+        "Feature-level navigation provider fork detected. Keep navigation runtime context in shell infrastructure."
+      )
+    }
+  })
+}
+
+function checkFeatureCommandContextFork(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (Node.isVariableDeclaration(node)) {
+      const name = node.getName()
+      const initializer = node.getInitializer()
+      if (
+        initializer &&
+        Node.isCallExpression(initializer) &&
+        initializer.getExpression().getText() === "createContext" &&
+        /(?:CommandContext|CommandPaletteContext|GlobalSearchContext)/.test(name)
+      ) {
+        pushNodeFinding(
+          sourceFile,
+          node,
+          "UIX-AST-SHELL-005",
+          "Feature-local command context detected. Use canonical shell command infrastructure context."
+        )
+      }
+      return
+    }
+
+    if (
+      Node.isFunctionDeclaration(node) ||
+      Node.isClassDeclaration(node) ||
+      Node.isVariableDeclaration(node)
+    ) {
+      const name = typeof node.getName === "function" ? node.getName() : undefined
+      if (name == null) return
+      if (!/(?:CommandProvider|CommandPaletteProvider|CommandMenuProvider)/.test(name)) {
+        return
+      }
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-005",
+        "Feature-level command provider fork detected. Global command infrastructure must remain shell-owned."
+      )
+    }
+  })
+}
+
+function checkFeatureDensityVocabularyFork(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (Node.isVariableDeclaration(node)) {
+      const name = node.getName()
+      if (!/(?:density|layoutDensity|uiDensity)/i.test(name)) return
+
+      const values = getStringLiteralValuesFromInitializer(node.getInitializer())
+      if (values.length < 2) return
+      if (!values.some((value) => SHELL_DENSITY_VALUES.has(value))) return
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-006",
+        "Feature-local density vocabulary detected. Use canonical shell density semantics."
+      )
+      return
+    }
+
+    if (Node.isTypeAliasDeclaration(node)) {
+      const name = node.getName()
+      if (!/(?:density|layoutDensity|uiDensity)/i.test(name)) return
+
+      const values = getStringLiteralsFromUnionType(node.getTypeNode())
+      if (values.length < 2) return
+      if (!values.some((value) => SHELL_DENSITY_VALUES.has(value))) return
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-006",
+        "Feature-local density union type detected. Reuse canonical shell density vocabulary."
+      )
+    }
+  })
+}
+
+function checkFeatureViewportVocabularyFork(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (Node.isVariableDeclaration(node)) {
+      const name = node.getName()
+      if (!/(?:viewport|breakpoint|device(?:Kind|Type)?)/i.test(name)) return
+
+      const values = getStringLiteralValuesFromInitializer(node.getInitializer())
+      if (values.length < 2) return
+      if (!values.some((value) => SHELL_VIEWPORT_VALUES.has(value))) return
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-007",
+        "Feature-local viewport vocabulary detected. Use canonical shell viewport semantics."
+      )
+      return
+    }
+
+    if (Node.isTypeAliasDeclaration(node)) {
+      const name = node.getName()
+      if (!/(?:viewport|breakpoint|device(?:Kind|Type)?)/i.test(name)) return
+
+      const values = getStringLiteralsFromUnionType(node.getTypeNode())
+      if (values.length < 2) return
+      if (!values.some((value) => SHELL_VIEWPORT_VALUES.has(value))) return
+
+      pushNodeFinding(
+        sourceFile,
+        node,
+        "UIX-AST-SHELL-007",
+        "Feature-local viewport union type detected. Reuse canonical shell viewport vocabulary."
+      )
+    }
+  })
+}
+
+function checkNoLocalShellContext(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (!Node.isVariableDeclaration(node)) return
+    const name = node.getName()
+    const initializer = node.getInitializer()
+    if (!initializer || !Node.isCallExpression(initializer)) return
+    if (initializer.getExpression().getText() !== "createContext") return
+    if (
+      !/(?:Shell.*Context|ShellMetadataContext|NavigationContext|CommandContext|LayoutContext|ViewportContext)/.test(
+        name
+      )
+    ) {
+      return
+    }
+
+    pushNodeFinding(
+      sourceFile,
+      node,
+      "UIX-AST-SHELL-008",
+      "Local shell-related context detected in feature code. Use canonical shell provider/hook surfaces instead of feature-level context creation."
+    )
+  })
+}
+
+function checkNoFeatureShellUseContext(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (!Node.isCallExpression(node)) return
+    if (node.getExpression().getText() !== "useContext") return
+    const firstArg = node.getArguments()[0]
+    if (!firstArg) return
+    const contextName = firstArg.getText()
+    if (
+      !/(?:Shell.*Context|ShellMetadataContext|NavigationContext|CommandContext|LayoutContext|ViewportContext)/.test(
+        contextName
+      )
+    ) {
+      return
+    }
+
+    pushNodeFinding(
+      sourceFile,
+      node,
+      "UIX-AST-SHELL-009",
+      "Feature-level useContext on shell-like context detected. Prefer canonical shell hooks (useShellMetadata / selector hooks)."
+    )
+  })
+}
+
+function checkPreferShellSelectorHooks(sourceFile: SourceFile) {
+  sourceFile.forEachDescendant((node) => {
+    if (!Node.isBinaryExpression(node)) return
+    const op = node.getOperatorToken().getText()
+    if (op !== "===" && op !== "!==") return
+
+    const expressionText = node.getText()
+    const isShellFieldCompare =
+      /\b(?:shell|metadata)\.(?:zone|viewport|navigationState|density|commandAvailability)\b/.test(
+        expressionText
+      ) && /['"](?:root|header|sidebar|content|panel|overlay|command|footer|mobile|tablet|desktop|wide|compact|comfortable|spacious|expanded|collapsed|hidden|enabled|disabled)['"]/.test(
+        expressionText
+      )
+
+    if (!isShellFieldCompare) return
+
+    pushNodeFinding(
+      sourceFile,
+      node,
+      "UIX-AST-SHELL-010",
+      "Direct shell metadata comparison found. Prefer canonical shell selectors or selector hooks for repeated shell semantics."
+    )
+  })
+}
+
+function checkRequireShellComponentRegistration(sourceFile: SourceFile) {
+  const filePath = normalizePath(sourceFile.getFilePath())
+  if (!filePath.includes("/components/shell-ui/")) return
+
+  const registeredComponentNames = new Set(
+    Object.values(governance.shellComponentRegistry).map(
+      (entry) => entry.componentName
+    )
+  )
+
+  sourceFile.forEachDescendant((node) => {
+    if (!Node.isFunctionDeclaration(node)) return
+    if (!node.isExported()) return
+
+    const name = node.getName()
+    if (!name || !/^Shell[A-Z]/.test(name)) return
+    if (registeredComponentNames.has(name)) return
+
+    pushNodeFinding(
+      sourceFile,
+      node,
+      "UIX-AST-SHELL-011",
+      `Shell-aware component "${name}" is not registered in shell-component-registry. Add a canonical registry entry before using this component as shell infrastructure.`
+    )
+  })
+}
+
+function checkNoUndeclaredShellDependency(sourceFile: SourceFile) {
+  const filePath = normalizePath(sourceFile.getFilePath())
+  if (!filePath.includes("/components/shell-ui/")) return
+
+  const contractByComponentName = new Map(
+    Object.values(governance.shellComponentRegistry).map((entry) => [
+      entry.componentName,
+      entry,
+    ])
+  )
+
+  sourceFile.forEachDescendant((node) => {
+    if (!Node.isFunctionDeclaration(node) || !node.isExported()) return
+    const componentName = node.getName()
+    if (!componentName || !/^Shell[A-Z]/.test(componentName)) return
+
+    const contract = contractByComponentName.get(componentName)
+    if (!contract) return
+
+    const body = node.getBody()
+    if (!body) return
+    const bodyText = body.getText()
+    const usesShellMetadata =
+      /useShellMetadata\(/.test(bodyText) ||
+      /useIsShell[A-Z]/.test(bodyText) ||
+      /isShell[A-Z]/.test(bodyText)
+
+    if (!usesShellMetadata) return
+    if (contract.participation.shellMetadata !== "none") return
+
+    pushNodeFinding(
+      sourceFile,
+      node,
+      "UIX-AST-SHELL-012",
+      `Component "${componentName}" consumes shell metadata/selectors but registry declares participation.shellMetadata as "none". Update shell-component-registry contract.`
+    )
+  })
+}
+
+function checkValidateShellZoneDeclaration(sourceFile: SourceFile) {
+  const filePath = normalizePath(sourceFile.getFilePath())
+  if (!filePath.includes("/components/shell-ui/")) return
+
+  const contractByComponentName = new Map(
+    Object.values(governance.shellComponentRegistry).map((entry) => [
+      entry.componentName,
+      entry,
+    ])
+  )
+
+  sourceFile.forEachDescendant((node) => {
+    if (!Node.isFunctionDeclaration(node) || !node.isExported()) return
+    const componentName = node.getName()
+    if (!componentName || !/^Shell[A-Z]/.test(componentName)) return
+
+    const contract = contractByComponentName.get(componentName)
+    if (!contract || contract.zone == null) return
+
+    const impliedZone = inferZoneFromComponentName(componentName)
+    if (!impliedZone || impliedZone === contract.zone) return
+
+    pushNodeFinding(
+      sourceFile,
+      node,
+      "UIX-AST-SHELL-013",
+      `Component "${componentName}" implies "${impliedZone}" zone but registry declares "${contract.zone}". Align component naming or registry zone declaration.`
+    )
+  })
+}
+
+function inferZoneFromComponentName(name: string): string | null {
+  if (/Header/.test(name)) return "header"
+  if (/Sidebar/.test(name)) return "sidebar"
+  if (/Overlay|Popover|Dialog|Modal/.test(name)) return "overlay"
+  if (/Panel/.test(name)) return "panel"
+  if (/Content/.test(name)) return "content"
+  if (/Footer/.test(name)) return "footer"
+  if (/Command/.test(name)) return "command"
+  return null
+}
+
+function getStringLiteralValuesFromInitializer(initializer: Node | undefined): string[] {
+  if (!initializer) return []
+
+  if (Node.isArrayLiteralExpression(initializer)) {
+    return initializer
+      .getElements()
+      .filter(
+        (element): element is Node =>
+          Node.isStringLiteral(element) || Node.isNoSubstitutionTemplateLiteral(element)
+      )
+      .map((element) =>
+        Node.isStringLiteral(element) || Node.isNoSubstitutionTemplateLiteral(element)
+          ? element.getLiteralText()
+          : ""
+      )
+      .filter((value) => value.length > 0)
+  }
+
+  return []
+}
+
+function getStringLiteralsFromUnionType(typeNode: Node | undefined): string[] {
+  if (!typeNode || !Node.isUnionTypeNode(typeNode)) return []
+
+  const values: string[] = []
+  for (const node of typeNode.getTypeNodes()) {
+    if (Node.isLiteralTypeNode(node)) {
+      const literal = node.getLiteral()
+      if (
+        Node.isStringLiteral(literal) ||
+        Node.isNoSubstitutionTemplateLiteral(literal)
+      ) {
+        values.push(literal.getLiteralText())
+      }
+    }
+  }
+  return values
+}
+
+function countShellMetadataKeysInObjectLiteral(node: Node): number {
+  if (!Node.isObjectLiteralExpression(node)) return 0
+  const keys = new Set<string>()
+  for (const prop of node.getProperties()) {
+    if (!Node.isPropertyAssignment(prop)) continue
+    const key = getPropertyName(prop)
+    if (key && SHELL_METADATA_KEYS.has(key)) keys.add(key)
+  }
+  return keys.size
+}
+
+function countShellMetadataKeysInTypeNode(typeNode: Node | undefined): number {
+  if (!typeNode) return 0
+  const keys = new Set<string>()
+
+  if (Node.isTypeLiteralNode(typeNode)) {
+    for (const member of typeNode.getMembers()) {
+      if (!Node.isPropertySignature(member)) continue
+      const nameNode = member.getNameNode()
+      if (
+        Node.isIdentifier(nameNode) ||
+        Node.isStringLiteral(nameNode) ||
+        Node.isNumericLiteral(nameNode)
+      ) {
+        const key = nameNode.getText().replace(/^["']|["']$/g, "")
+        if (SHELL_METADATA_KEYS.has(key)) keys.add(key)
+      }
+    }
+  }
+
+  return keys.size
+}
+
 function checkTruthMappingSources(sourceFile: SourceFile) {
   const importSources = new Set<string>()
   for (const decl of sourceFile.getImportDeclarations()) {
@@ -929,7 +1711,7 @@ function checkTruthMappingSources(sourceFile: SourceFile) {
           sourceFile,
           declaration,
           matchedTruthRule,
-          "Domain-to-UI mapping defined locally. Import from governed truth layer (@afenda/shadcn-ui/lib/constant) instead."
+          "Domain-to-UI mapping defined locally. Import from governed constant layer (@afenda/shadcn-ui/lib/constant) instead."
         )
       }
     }

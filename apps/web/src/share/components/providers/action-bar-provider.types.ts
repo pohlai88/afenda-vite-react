@@ -1,20 +1,20 @@
 import type { ReactNode } from 'react'
 
-import type { TruthActionBarTab } from '@afenda/core/truth-ui'
+import type { ActionBarTab } from '@/share/types'
 
 /**
  * Context value for the action bar provider.
  */
 export interface ActionBarContextValue {
   /** Tabs after user visibility prefs (what Row 2 renders as links). */
-  readonly tabs: readonly TruthActionBarTab[]
+  readonly tabs: readonly ActionBarTab[]
   /** Full catalog for the active scope (module-offered actions). */
-  readonly availableTabs: readonly TruthActionBarTab[]
+  readonly availableTabs: readonly ActionBarTab[]
   /** Active registration scope, or null when nothing registered. */
   readonly scopeKey: string | null
   readonly registerScope: (
     scopeKey: string,
-    tabs: readonly TruthActionBarTab[],
+    tabs: readonly ActionBarTab[],
   ) => void
   readonly clearScope: () => void
 }
@@ -32,5 +32,5 @@ export interface ActionBarProviderProps {
  */
 export interface UseActionBarOptions {
   readonly scopeKey: string
-  readonly tabs: readonly TruthActionBarTab[]
+  readonly tabs: readonly ActionBarTab[]
 }

@@ -6,6 +6,7 @@
 const { createSemanticTokenAllowlistRule } = require('./semantic-token-allowlist-rule.cjs')
 const noDirectSemanticColorRule = require('./no-direct-semantic-color-rule.cjs')
 const noLocalSemanticMapRule = require('./no-local-semantic-map-rule.cjs')
+const noDirectRadixOutsideUiRule = require('./no-direct-radix-outside-ui-rule.cjs')
 const RAW_TAILWIND_COLOR_RE =
   /\b(text|bg|border|ring|fill|stroke|outline|shadow|decoration|from|to|via|placeholder|caret|accent|divide|ring-offset)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}(\/\d{1,3})?\b/u
 
@@ -327,5 +328,6 @@ module.exports = {
     'no-direct-semantic-color': noDirectSemanticColorRule,
     'semantic-token-allowlist': createSemanticTokenAllowlistRule(),
     'no-local-semantic-map': noLocalSemanticMapRule,
+    'no-direct-radix-outside-ui': noDirectRadixOutsideUiRule,
   },
 }

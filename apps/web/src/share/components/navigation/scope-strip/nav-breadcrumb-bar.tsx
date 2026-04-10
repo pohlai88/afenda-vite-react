@@ -8,6 +8,10 @@ import { cn } from '@afenda/ui/lib/utils'
 import { Logo } from '../../brand'
 import { ScopeSwitcher } from '../../block-ui'
 import {
+  ShellTenantSwitcher,
+  ShellWorkspaceSwitcher,
+} from '../../shell-ui'
+import {
   topNavBreadcrumbNavClassName,
   topNavModuleCrumbClassName,
   topNavShellIconTriggerClassName,
@@ -66,26 +70,34 @@ export function NavBreadcrumbBar({
 
       <Separator />
 
-      {scopeLevels.map((level, index) => (
-        <Fragment key={level.id}>
-          {index > 0 ? <Separator /> : null}
-          <ScopeSwitcher
-            label={level.label}
-            currentValue={level.currentValue}
-            items={level.items}
-            onSelect={level.onSelect}
-            severity={level.severity}
-            searchPlaceholder={level.searchPlaceholder}
-            mode={scopeMode === 'icon' ? 'icon' : 'text'}
-            icon={level.icon}
-            className={
-              scopeMode === 'icon'
-                ? topNavShellIconTriggerClassName
-                : scopeTextTriggerClassName
-            }
-          />
-        </Fragment>
-      ))}
+      {scopeLevels.map((level, index) => {
+        const ScopeSwitcherComponent =
+          level.id === 'tenant'
+            ? ShellTenantSwitcher
+            : level.id === 'legalEntity'
+              ? ShellWorkspaceSwitcher
+              : ScopeSwitcher
+        const switcherProps = {
+          label: level.label,
+          currentValue: level.currentValue,
+          items: level.items,
+          onSelect: level.onSelect,
+          severity: level.severity,
+          searchPlaceholder: level.searchPlaceholder,
+          mode: scopeMode === 'icon' ? ('icon' as const) : ('text' as const),
+          icon: level.icon,
+          className:
+            scopeMode === 'icon'
+              ? topNavShellIconTriggerClassName
+              : scopeTextTriggerClassName,
+        }
+        return (
+          <Fragment key={level.id}>
+            {index > 0 ? <Separator /> : null}
+            <ScopeSwitcherComponent {...switcherProps} />
+          </Fragment>
+        )
+      })}
 
       {derivedModule && (
         <>

@@ -6,15 +6,6 @@
  */
 export { useAppShellStore, type SidebarMode } from './app-shell-store'
 export {
-  useTruthScopeStore,
-  type ScopeOrg,
-  type ScopeSubsidiary,
-  type ScopeAccountingPeriod,
-} from './truth-scope-store'
-export { useTruthHealthStore } from './truth-health-store'
-export { useTruthNavProps, type TruthNavProps } from './truth-nav-props'
-export { useTruthShellBootstrap } from './truth-shell-bootstrap'
-export {
   LEGACY_ACTION_BAR_PREFS_KEY,
   buildActionBarPrefsContextKey,
   buildActionBarPrefsStorageKey,

@@ -21,7 +21,7 @@
  *     <Input id="email" aria-describedby={errors.email ? "email-error" : "email-hint"} />
  *   </SemanticField>
  */
-import { useId, type ReactNode, type Ref } from "react"
+import { forwardRef, useId, type ReactNode } from "react"
 
 import { getFieldStackClasses } from "../internal/presentation"
 import { cn } from "../../lib/utils"
@@ -38,49 +38,54 @@ export interface SemanticFieldProps {
   density?: SemanticDensity
   /** Layout composition className. Must not override governed density or field structure. */
   className?: string
-  ref?: Ref<HTMLDivElement>
 }
 
-export function SemanticField({
-  id,
-  label,
-  hint,
-  error,
-  required = false,
-  children,
-  density = "comfortable",
-  className,
-  ref,
-}: SemanticFieldProps) {
-  const generatedId = useId()
-  const fieldId = id ?? generatedId
-  const hintId = hint && !error ? `${fieldId}-hint` : undefined
-  const errorId = error ? `${fieldId}-error` : undefined
+export const SemanticField = forwardRef<HTMLDivElement, SemanticFieldProps>(
+  (
+    {
+      id,
+      label,
+      hint,
+      error,
+      required = false,
+      children,
+      density = "comfortable",
+      className,
+    },
+    ref
+  ) => {
+    const generatedId = useId()
+    const fieldId = id ?? generatedId
+    const hintId = hint && !error ? `${fieldId}-hint` : undefined
+    const errorId = error ? `${fieldId}-error` : undefined
 
-  return (
-    <div
-      ref={ref}
-      data-slot="semantic-field"
-      className={cn(getFieldStackClasses(density), className)}
-    >
-      <div className="flex items-center gap-1 text-sm font-medium">
-        <label htmlFor={fieldId}>{label}</label>
-        {required ? (
-          <span aria-hidden="true" className="text-destructive">
-            *
-          </span>
+    return (
+      <div
+        ref={ref}
+        data-slot="semantic-field"
+        className={cn(getFieldStackClasses(density), className)}
+      >
+        <div className="flex items-center gap-1 text-sm font-medium">
+          <label htmlFor={fieldId}>{label}</label>
+          {required ? (
+            <span aria-hidden="true" className="text-destructive">
+              *
+            </span>
+          ) : null}
+        </div>
+        <div>{children}</div>
+        {error ? (
+          <div id={errorId} className="text-sm text-destructive" role="alert">
+            {error}
+          </div>
+        ) : hint ? (
+          <div id={hintId} className="text-sm text-muted-foreground">
+            {hint}
+          </div>
         ) : null}
       </div>
-      <div>{children}</div>
-      {error ? (
-        <div id={errorId} className="text-sm text-destructive" role="alert">
-          {error}
-        </div>
-      ) : hint ? (
-        <div id={hintId} className="text-sm text-muted-foreground">
-          {hint}
-        </div>
-      ) : null}
-    </div>
-  )
-}
+    )
+  }
+)
+
+SemanticField.displayName = "SemanticField"

@@ -15,9 +15,9 @@ import { Popover, PopoverTrigger } from '@afenda/ui/components/ui/popover'
 import { ShellPopoverContent } from '@/share/components/shell-ui'
 import { Separator } from '@afenda/ui/components/ui/separator'
 
-import type { ResolutionSuggestion } from '@afenda/core/truth-ui'
+import type { ResolutionSuggestion } from '@/share/types'
 
-import { getTruthSeverityPresentation } from '@afenda/shadcn-ui/semantic'
+import { getIntegritySeverityPresentation } from '@afenda/shadcn-ui/semantic'
 import { ResolutionTrigger } from '../trigger'
 
 export interface ResolutionPanelProps {
@@ -44,7 +44,7 @@ export function ResolutionPanel({
   const { t } = useTranslation('shell')
   const [question, setQuestion] = useState('')
   const [open, setOpen] = useState(false)
-  const validTone = getTruthSeverityPresentation('valid')
+  const validTone = getIntegritySeverityPresentation('valid')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

@@ -6,7 +6,7 @@ import {
   SemanticSection,
 } from '@afenda/shadcn-ui/semantic'
 
-import { useFinanceActionBar } from '../hooks'
+import { useFinanceActionBar } from '../hooks/use-finance-action-bar'
 
 export function AllocationView() {
   useFinanceActionBar()

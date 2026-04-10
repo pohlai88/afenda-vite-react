@@ -29,6 +29,22 @@ export interface AstFinding extends BaseFinding {
   excerpt: string
 }
 
+/** Optional per-lane numeric overrides; aligns with eslint-config `resolveClassGovernanceScope`. */
+export interface ClassPolicyScopeHintsShape {
+  maxRecommendedClassNameTokens?: number
+  warnClassNameTokenCount?: number
+  errorClassNameTokenCount?: number
+}
+
+export interface ClassPolicyScopesShape {
+  uiPackage?: ClassPolicyScopeHintsShape
+  featureUi?: ClassPolicyScopeHintsShape
+  sharedAppUi?: ClassPolicyScopeHintsShape
+  appShell?: ClassPolicyScopeHintsShape
+  chartInterop?: ClassPolicyScopeHintsShape
+  richContent?: ClassPolicyScopeHintsShape
+}
+
 export interface ClassPolicyShape {
   allowDirectRadixImportOutsideUiPackage: boolean
   allowCvaOutsideUiPackage: boolean
@@ -37,14 +53,28 @@ export interface ClassPolicyShape {
   allowArbitraryValuesInFeatures: boolean
   allowInlineStyleAttributeInProductUi: boolean
   allowDirectTokenUsageInFeatures: boolean
+  allowAsChildOutsideUiPackage: boolean
+  allowSlotOutsideUiPackage: boolean
+  allowFeatureLevelVariantMaps: boolean
+  allowFeatureLevelStatusToClassMapping: boolean
+  allowFeatureLevelSemanticColorMapping: boolean
+  allowFeatureLevelTruthToVariantMapping: boolean
+  allowArbitraryZIndex: boolean
+  allowPositioningUtilities: boolean
+  allowGridTemplateOverrides: boolean
+  allowClassNamePassThrough: boolean
+  allowCnComposition: boolean
   maxRecommendedClassNameTokensInFeatures: number
+  warnClassNameTokenCount: number
+  errorClassNameTokenCount: number
+  scopes: ClassPolicyScopesShape
 }
 
 export interface ComponentPolicyShape {
   allowFeatureLevelSemanticMaps: boolean
   allowFeatureLevelVariantDefinition: boolean
   requireGovernedComponentsInFeatures: boolean
-  requireTruthMappingFromGovernedSource: boolean
+  requireGovernedDomainToUiMapping: boolean
 }
 
 export interface OwnershipPolicyShape {
@@ -57,10 +87,14 @@ export interface OwnershipPolicyShape {
 }
 
 export interface ImportPolicyShape {
-  bannedImportPatterns: readonly string[]
+  bannedImportPrefixes: readonly string[]
+  bannedExactImportPaths: readonly string[]
+  bannedImportPatternLabels: readonly string[]
   allowedCnImportPaths: readonly string[]
-  directRadixImportAllowlist: readonly string[]
-  cvaImportAllowlist: readonly string[]
+  governedUiOwnerSourcePathPrefixes: readonly string[]
+  allowedLocalCnImportSourcePathPrefixes: readonly string[]
+  directRadixImportAllowedSourcePathPrefixes: readonly string[]
+  cvaImportAllowedSourcePathPrefixes: readonly string[]
 }
 
 export interface ShadcnPolicyShape {
@@ -131,6 +165,10 @@ export interface ReactPolicyShape {
   bannedPatterns: readonly string[]
 }
 
+export interface MetadataUiPolicyShape {
+  allowInlineMetadataToTokenMappingInFeatures: boolean
+}
+
 export type RulePolicyShape<RuleCode extends string> = Readonly<
   Record<
     RuleCode,
@@ -153,15 +191,19 @@ export interface ShellContextPolicyShape {
   requireOperatorScopeSeparation: boolean
 }
 
-export interface AppShellPolicyShape {
-  defaultZone: string
+export interface ShellPolicyShape {
+  defaultComponentZone: string
   requireShellMetadataProvider: boolean
   requireNavigationContext: boolean
-  requireCommandContext: boolean
+  requireCommandInfrastructure: boolean
   requireLayoutDensityContext: boolean
-  requireViewportAwareness: boolean
+  requireResponsiveShellLayout: boolean
   allowFeatureLevelShellZoneFork: boolean
   allowFeatureLevelShellMetadataFork: boolean
+  allowFeatureLevelNavigationContextFork: boolean
+  allowFeatureLevelCommandInfrastructureFork: boolean
+  allowFeatureLevelDensityVocabularyFork: boolean
+  allowFeatureLevelViewportVocabularyFork: boolean
 }
 
 export interface GovernanceModules<RuleCode extends string> {
@@ -176,8 +218,9 @@ export interface GovernanceModules<RuleCode extends string> {
   radixContractPolicy: RadixContractPolicyShape
   tailwindPolicy: TailwindPolicyShape
   reactPolicy: ReactPolicyShape
+  metadataUiPolicy: MetadataUiPolicyShape
   shellContextPolicy: ShellContextPolicyShape
-  appShellPolicy: AppShellPolicyShape
+  shellPolicy: ShellPolicyShape
 }
 
 export const EXPECTED_GOVERNANCE_VERSION = "1"
@@ -222,7 +265,6 @@ export const EXCLUDE_FILE_PATTERNS = [
 export const ALLOWED_UI_OWNERS_RELATIVE = [
   "packages/shadcn-ui/src",
   "packages/ui/src",
-  "packages/design-system/src/components/shadcn",
 ] as const
 
 export const PRODUCT_UI_PATH_HINTS_RELATIVE = ["apps", "packages"] as const
@@ -282,20 +324,19 @@ export function isValidInlineStyleException(
 }
 
 /**
- * Canonical module specifiers for governed truth-UI sources.
+ * Canonical module specifiers for governed domain-to-UI semantic sources.
  * Semantic style maps in feature code must trace to one of these.
  */
-export const TRUTH_UI_GOVERNED_SPECIFIERS = [
-  "@afenda/core/truth-ui",
-  "@afenda/core/truth",
+export const GOVERNED_DOMAIN_UI_SPECIFIERS = [
+  "@afenda/shadcn-ui/semantic",
+  "@afenda/shadcn-ui/lib/constant",
 ] as const
 
 /**
- * Regex to detect a governed truth-UI import in file content (for the regex checker).
- * Aligned with TRUTH_MAPPING_IMPORT_SOURCES used by the AST checker.
+ * Regex to detect a governed semantic/constant import in file content (for the regex checker).
  */
-export const TRUTH_UI_IMPORT_RE =
-  /from\s+["'](?:@afenda\/core\/truth(?:-ui)?|@afenda\/ui\/(?:semantic|truth-mapping)|@afenda\/shadcn-ui\/(?:semantic|lib\/constant))['"]/
+export const GOVERNED_DOMAIN_UI_IMPORT_RE =
+  /from\s+["'](?:@afenda\/shadcn-ui\/(?:semantic|lib\/constant)|@afenda\/ui\/(?:semantic|truth-mapping))['"]/
 
 export const GOVERNED_COMPONENT_NAMES = new Set([
   "Alert",
@@ -509,6 +550,62 @@ export function isProductUiFile(file: string): boolean {
   )
 }
 
+const RESOLVABLE_EXTENSIONS = [
+  "",
+  ".ts",
+  ".tsx",
+  ".js",
+  ".jsx",
+  ".mjs",
+  ".cjs",
+  ".json",
+  ".css",
+] as const
+
+/**
+ * Resolves local module specifiers to absolute repo paths when possible.
+ * Supports relative imports and common app aliases (`@/`, `~/`) for web src.
+ */
+export function resolveModuleSpecifierToAbsolutePath(
+  sourcePath: string,
+  moduleSpecifier: string
+): string | null {
+  let baseCandidate: string | null = null
+
+  if (moduleSpecifier.startsWith(".")) {
+    baseCandidate = path.resolve(path.dirname(sourcePath), moduleSpecifier)
+  } else if (moduleSpecifier.startsWith("@/") || moduleSpecifier.startsWith("~/")) {
+    const repoRoot = findRepoRoot()
+    baseCandidate = path.join(repoRoot, "apps", "web", "src", moduleSpecifier.slice(2))
+  } else {
+    return null
+  }
+
+  const candidates = new Set<string>()
+  for (const ext of RESOLVABLE_EXTENSIONS) {
+    candidates.add(baseCandidate + ext)
+  }
+  for (const ext of RESOLVABLE_EXTENSIONS.slice(1)) {
+    candidates.add(path.join(baseCandidate, `index${ext}`))
+  }
+
+  for (const candidate of candidates) {
+    if (existsSync(candidate) && statSync(candidate).isFile()) {
+      return normalizePath(candidate)
+    }
+  }
+
+  return null
+}
+
+/**
+ * True when a resolved module file appears to be a barrel re-export target.
+ */
+export function isBarrelResolvedModuleFile(resolvedPath: string): boolean {
+  const normalized = normalizePath(resolvedPath)
+  return /\/index\.(?:ts|tsx|js|jsx|mjs|cjs)$/.test(normalized)
+}
+
 export function isFeatureFile(file: string): boolean {
   return FEATURE_PATH_PATTERN.test(file)
 }
@@ -608,8 +705,9 @@ export async function loadGovernanceModules<RuleCode extends string>(
     radixContractPolicy?: RadixContractPolicyShape
     tailwindPolicy?: TailwindPolicyShape
     reactPolicy?: ReactPolicyShape
+    metadataUiPolicy?: MetadataUiPolicyShape
     shellContextPolicy?: ShellContextPolicyShape
-    appShellPolicy?: AppShellPolicyShape
+    shellPolicy?: ShellPolicyShape
   }
   const validatorModule = (await import(validatorUrl)) as {
     validateConstantLayer?: () => void
@@ -626,8 +724,9 @@ export async function loadGovernanceModules<RuleCode extends string>(
   const radixContractPolicy = constantLayerModule.radixContractPolicy
   const tailwindPolicy = constantLayerModule.tailwindPolicy
   const reactPolicy = constantLayerModule.reactPolicy
+  const metadataUiPolicy = constantLayerModule.metadataUiPolicy
   const shellContextPolicy = constantLayerModule.shellContextPolicy
-  const appShellPolicy = constantLayerModule.appShellPolicy
+  const shellPolicy = constantLayerModule.shellPolicy
   const validateConstantLayer = validatorModule.validateConstantLayer
 
   if (
@@ -642,8 +741,9 @@ export async function loadGovernanceModules<RuleCode extends string>(
     radixContractPolicy == null ||
     tailwindPolicy == null ||
     reactPolicy == null ||
+    metadataUiPolicy == null ||
     shellContextPolicy == null ||
-    appShellPolicy == null ||
+    shellPolicy == null ||
     validateConstantLayer == null
   ) {
     console.error("Unable to load the governed constant layer.")
@@ -671,8 +771,9 @@ export async function loadGovernanceModules<RuleCode extends string>(
     radixContractPolicy,
     tailwindPolicy,
     reactPolicy,
+    metadataUiPolicy,
     shellContextPolicy,
-    appShellPolicy,
+    shellPolicy,
   }
 }
 

@@ -1,485 +1,213 @@
-Yes — this is **directionally strong**, but for a production governance policy, I would refine it further.
+This is a **good implementation pass**. The important part is that you did **not** force doc-pure theory into the constant layer and break the live shell model. That was the right call. The uploaded summary reflects a disciplined translation of doctrine into the repo rather than a blind transplant.
 
-## Overall verdict
+## Verdict
 
-This is already good in 5 important ways:
+You implemented the **highest-value, lowest-risk** subset:
 
-- **clear authority**
-- **schema-validated**
-- **single canonical export**
-- **boolean-based enforcement surface**
-- **CI-friendly and deterministic**
+* doc alignment instead of doc literalism
+* explicit `parentFrameSlot`
+* safe slot-contract strengthening
+* doctrine README
+* no destructive reserved-slot rule
+* no unnecessary naming churn
 
-But right now it still has a few structural weaknesses:
+That is the correct enterprise move.
 
-1. it mixes **different governance layers** into one flat object
-2. several flags are **too coarse** for long-term enforcement
-3. `maxRecommendedClassNameTokensInFeatures: 5` is likely **too blunt and risky**
-4. some policy names describe **implementation detail**, not **governed intent**
-5. it lacks room for **exceptions, scope, and rationale**
+## What is now materially better
 
----
+### 1. The shell hierarchy is now explicit
 
-# What is strong already
+Adding `parentFrameSlot` is the biggest architectural win in this round.
 
-## 1. The header is good
+Before, the system depended too much on:
 
-It explains:
+* slot naming
+* zone inference
+* convention memory
 
-- what this file governs
-- who consumes it
-- why it exists
-- how changes should be treated
+Now, each occupant slot can explicitly declare which structural frame owns it. That makes the shell easier to:
 
-That is exactly what a reviewed governance constant should do.
+* validate
+* document
+* reason about
+* evolve safely across phases
 
-## 2. Schema is strict
+This is a real doctrine upgrade, not cosmetic cleanup.
 
-`.strict()` is correct here.
-For policy truth, silent extra keys are dangerous.
+### 2. Your contract is stronger without becoming brittle
 
-## 3. Flat booleans are easy for CI
+The rules you added are the right kind of rules:
 
-This is a good starting point because linters and scripts can read it without ambiguity.
+* frame rows require `parentFrameSlot: null`
+* frame rows cannot be `multiEntry`
+* frame rows must have exactly one allowed kind
+* required slots must be active
+* occupant rows must point to the correct frame for their zone
 
----
+Those are structural truths, not speculative preferences. Good.
 
-# What needs refinement
+### 3. You preserved Phase 1 reality
 
-## 1. The current shape is too flat
+Keeping:
 
-These rules are not all the same kind of policy.
+* `content.main` active
+* `overlay.global` active
+* `overlay.command` reserved
 
-You currently mix:
+was the correct decision.
 
-- **color governance**
-- **style prop governance**
-- **package boundary governance**
-- **token discipline**
-- **complexity limits**
+That preserves shipping truth while still allowing doctrine to express future intent. You avoided the common mistake of making the registry “cleaner” by making the runtime false.
 
-That usually becomes hard to maintain because one file starts acting like a junk drawer.
+### 4. The README addition matters more than it looks
 
-### Example
+The doctrine map is not paperwork. It reduces future drift by giving contributors a human-readable model of:
 
-These are conceptually different:
+* zones
+* frames
+* occupants
+* active vs reserved state
+* validator expectations
 
-- `allowRawPaletteClasses`
-- `allowDirectRadixImportOutsideUiPackage`
-- `maxRecommendedClassNameTokensInFeatures`
-
-One is about **visual token drift**, one is about **architectural ownership**, one is about **complexity/readability**.
-
-They should not stay in one flat bucket forever.
+That is exactly the kind of artifact that keeps shell policy from becoming tribal knowledge.
 
 ---
 
-## 2. Several names are too broad
+## What I would still refine next
 
-### `allowInlineStyleAttributeInProductUi`
+### A. Add a validator for `parentFrameSlot` coherence at registry level
 
-This is ambiguous.
+You already validate it in the contract, which is good. I would still add an explicit registry-level check for diagnostics quality.
 
-What counts as “visual style props”?
+Why:
 
-- `className`?
-- `style`?
-- `variant`?
-- `size`?
-- `tone`?
-- props like `iconClassName`?
+* contract errors catch malformed rows
+* registry validator should explain architecture failures in shell language
 
-This should be more precise.
+Examples:
 
-Better examples:
+* occupant slot points at missing frame slot
+* occupant slot parent frame zone mismatch
+* frame slot has non-null parent
+* occupant slot declared under a frame that is not active
 
-- `allowInlineStyleAttributeInProductUi`
-- `allowVisualClassCompositionInFeatures`
-- `allowFeatureLevelVariantStyling`
+This gives better CI messages than relying only on schema refinement.
 
-Because enforcement must match the policy name exactly.
+### B. Distinguish “structural readiness” from “population readiness”
 
----
+Right now `slotStatus` is carrying a lot.
 
-### `allowDirectTokenUsageInFeatures`
+You may later want two ideas:
 
-This is also unclear.
+* slot exists and is doctrinally active
+* slot currently has live occupants or not
 
-Does “unbound” mean:
+Not urgent now, but eventually you may want:
 
-- raw token strings not mapped through constants?
-- direct CSS vars?
-- direct semantic token usage without domain adapter?
-- tokens not coming from approved helper functions?
+* `slotStatus: active | reserved`
+* plus derived runtime signals like `isPopulated`, not authored policy
 
-This needs definition, otherwise people reading the policy will interpret it differently.
+Do **not** add another authored field yet unless you truly need it.
 
----
+### C. Tighten frame ownership reporting
 
-## 3. `maxRecommendedClassNameTokensInFeatures` is risky
+Since frames are now first-class via `parentFrameSlot`, your governance report should eventually show:
 
-This one is the weakest rule in the set.
+| Frame | Zone | Status | Child slots | Registered occupants |
+| ----- | ---- | ------ | ----------- | -------------------- |
 
-A token count limit sounds attractive, but in practice it often creates false positives.
+That will make shell drift obvious instantly.
 
-A feature may legitimately have:
+### D. Decide whether `null` is truly the right frame-parent sentinel
 
-- responsive classes
-- dark mode classes
-- state classes
-- layout classes
-- accessibility classes
+Using `null` for frame rows is fine, but be deliberate.
 
-A strict max like `5` can punish valid code while not actually preventing drift.
+I would keep it if:
 
-### Why it is weak
+* you want authored explicitness
+* you want the contract to force a conscious declaration
 
-A bad class string can still be short:
-
-```tsx
-className = "bg-red-500 text-white rounded-xl"
-```
-
-A good class string can be longer:
-
-```tsx
-className = "flex items-center gap-2 px-3 py-2 text-sm font-medium"
-```
-
-So token count is not a strong proxy for governance quality.
-
-### Better approach
-
-Use this only as:
-
-- a **warning**, not an error
-- a **smell detector**, not a truth rule
-
-Or rename it to something more honest like:
-
-- `warnClassNameTokenCountOver`
-- `maxRecommendedClassNameTokensInFeatures`
-
-That makes it governance guidance, not false precision.
+I would avoid making it optional. `null` is better than “missing” here.
 
 ---
 
-# What I would change structurally
+## What I would **not** change
 
-## Recommended v2 shape
+These were correct non-actions:
 
-Split the policy into subdomains:
+### Do not rename `slotRole` / `slotStatus`
 
-```ts
-const classPolicySchema = z
-  .object({
-    color: z
-      .object({
-        allowRawPaletteClasses: z.boolean(),
-        allowHexRgbHslColorsInProductUi: z.boolean(),
-        allowArbitraryValuesInFeatures: z.boolean(),
-      })
-      .strict(),
+Your current names are clearer in repo context and avoid churn.
 
-    style: z
-      .object({
-        allowInlineStyleAttributeInProductUi: z.boolean(),
-        allowFeatureLevelVisualClassComposition: z.boolean(),
-      })
-      .strict(),
+### Do not adopt doc-style component kinds
 
-    architecture: z
-      .object({
-        allowCvaOutsideUiPackage: z.boolean(),
-        allowDirectRadixImportOutsideUiPackage: z.boolean(),
-        allowDirectTokenUsageInFeatures: z.boolean(),
-      })
-      .strict(),
+That would be a large conceptual rewrite with low immediate value.
 
-    complexity: z
-      .object({
-        maxRecommendedClassNameTokensInFeatures: z.number().int().min(0),
-      })
-      .strict(),
-  })
-  .strict()
-```
+### Do not add `reserved_slot_has_registered_components`
 
-This helps because:
+At least not as a blanket rule.
 
-- rules become easier to scan
-- enforcement can map by domain
-- future additions stay organized
-- review becomes more precise
+That rule is only valid if your doctrine defines reserved as “must be empty.” Your current Phase 1 model does not need that globally.
 
 ---
 
-# What I would change semantically
+## Biggest remaining gap
 
-## 1. Separate hard bans from soft thresholds
+The main thing still missing is probably not another constant. It is likely **cross-artifact consistency reporting**.
 
-Not all rules should have equal enforcement meaning.
+You now have:
 
-### Hard bans
+* policy
+* contract
+* registry
+* helper
+* README
+* validator
 
-These are true governance boundaries:
+What you want next is a stronger answer to:
 
-- raw palette classes
-- hex/rgb/hsl colors
-- direct Radix import outside UI package
-- CVA outside UI package
+> “Can a contributor see, in one place, whether the shell structure, ownership, and readiness still line up?”
 
-### Soft rules
+So my next recommendation is:
 
-These are maintainability signals:
+## Next best move
 
-- class token count
-- maybe some class composition patterns
+Build a **shell governance matrix/report** that outputs:
 
-These should not look identical in policy shape unless your tooling also models severity elsewhere.
+* slot id
+* zone
+* slot role
+* slot status
+* parent frame slot
+* required
+* multi-entry
+* allowed component kinds
+* registered component owners
 
-A better model is:
-
-```ts
-severity: "error" | "warn" | "off"
-```
-
-instead of only booleans.
-
-For example:
-
-```ts
-rawPaletteClasses: "error"
-classNameTokenCount: "warn"
-```
-
-That is much more scalable than `true/false`.
+That would turn your shell doctrine into something inspectable, not just encoded.
 
 ---
 
-## 2. Add exception strategy explicitly
+## Final assessment
 
-Production governance always needs **reviewed exceptions**.
+This was a **strong and mature implementation pass**.
 
-Without that, teams start bypassing the system elsewhere.
+You improved:
 
-You may want a section like:
+* structural clarity
+* validation integrity
+* documentation quality
+* shell hierarchy explicitness
 
-```ts
-exceptions: z.object({
-  allowInTestFiles: z.boolean(),
-  allowInStorybookFiles: z.boolean(),
-  allowInUiPackageOnly: z.boolean(),
-}).strict()
-```
+without:
 
-Because some rules are valid in:
+* breaking the live model
+* importing unsafe pseudo-code
+* over-abstracting the constant layer
 
-- tests
-- stories
-- migration shims
-- generated files
-- low-level UI primitives only
-
-If not modeled centrally, exceptions drift into scripts and ESLint rules separately.
+That is exactly the right way to evolve this system.
 
 ---
 
-## 3. Clarify “product UI” vs “UI package”
+## Implementation status (repo)
 
-Your names imply at least two scopes:
-
-- product UI
-- UI package
-
-That distinction is important and should probably be first-class.
-
-Right now the policy assumes consumers already understand scope boundaries.
-
-I would make scope explicit in naming or structure.
-
-Example:
-
-- `allowHexRgbHslColorsInProductUi`
-- `allowDirectRadixImportOutsideUiPackage`
-
-These are good individually, but the policy would be stronger if the scope model is documented once and reused consistently.
-
----
-
-# Specific field-by-field advice
-
-## Keep
-
-- `allowRawPaletteClasses`
-- `allowHexRgbHslColorsInProductUi`
-- `allowCvaOutsideUiPackage`
-- `allowDirectRadixImportOutsideUiPackage`
-
-These are strong governance rules.
-
----
-
-## Rename
-
-### `allowInlineStyleAttributeInProductUi`
-
-to one of:
-
-- `allowInlineStyleAttributeInProductUi`
-- `allowVisualStylingViaPropsInFeatures`
-
-Pick the one that matches your actual enforcement rule.
-
-### `allowDirectTokenUsageInFeatures`
-
-to one of:
-
-- `allowDirectTokenUsageInFeatures`
-- `allowTokenUsageOutsideSemanticAdapters`
-- `allowRawDesignTokenReferencesInFeatures`
-
-Again, choose the one your AST/lint actually detects.
-
-### `maxRecommendedClassNameTokensInFeatures`
-
-to:
-
-- `maxRecommendedClassNameTokensInFeatures`
-
-That makes it honest.
-
----
-
-## Reconsider
-
-### `allowArbitraryValuesInFeatures`
-
-This is good, but maybe too broad.
-
-Tailwind arbitrary values include many things:
-
-- spacing
-- width
-- z-index
-- color
-- shadow
-- calc()
-
-You may eventually need to distinguish:
-
-- `allowArbitraryColorValuesInFeatures`
-- `allowArbitraryLayoutValuesInFeatures`
-
-Because color drift is usually more dangerous than occasional layout escape hatches.
-
----
-
-# Recommended stronger version
-
-Here is a refined version that is still close to yours:
-
-```ts
-/**
- * GOVERNANCE POLICY — class-policy
- * Canonical policy definition for class-string and visual-style drift prevention.
- * Scope: governs class composition, styling escapes, token usage, and package-boundary styling ownership.
- * Authority: this policy is reviewed governance truth; downstream lint, AST, and CI checks must read from here.
- * Design: rules must be deterministic, explainable, scope-aware, and enforceable without hidden heuristics.
- * Enforcement: distinguish hard governance bans from soft maintainability thresholds in downstream consumers.
- * Consumption: product UI, shared UI package, and CI checks must align to this reviewed policy surface.
- * Changes: update deliberately, preserve naming precision, and document rationale for every policy expansion.
- * Constraints: policy keys must map cleanly to real enforcement logic; avoid vague or overloaded terms.
- * Validation: schema-validated, strict, and reviewable at authoring time.
- * Purpose: preserve visual consistency, package ownership, and anti-drift discipline at scale.
- */
-import { z } from "zod/v4"
-
-import { defineConstMap } from "../schema/shared"
-
-const classPolicySchema = z
-  .object({
-    allowRawPaletteClasses: z.boolean(),
-    allowArbitraryValuesInFeatures: z.boolean(),
-    allowInlineStyleAttributeInProductUi: z.boolean(),
-    allowHexRgbHslColorsInProductUi: z.boolean(),
-    allowCvaOutsideUiPackage: z.boolean(),
-    allowDirectRadixImportOutsideUiPackage: z.boolean(),
-    allowDirectTokenUsageInFeatures: z.boolean(),
-    maxRecommendedClassNameTokensInFeatures: z.number().int().min(0),
-  })
-  .strict()
-
-export const classPolicy = defineConstMap(
-  classPolicySchema.parse({
-    allowRawPaletteClasses: false,
-    allowArbitraryValuesInFeatures: false,
-    allowInlineStyleAttributeInProductUi: false,
-    allowHexRgbHslColorsInProductUi: false,
-    allowCvaOutsideUiPackage: false,
-    allowDirectRadixImportOutsideUiPackage: false,
-    allowDirectTokenUsageInFeatures: false,
-    maxRecommendedClassNameTokensInFeatures: 8,
-  })
-)
-
-export type ClassPolicy = typeof classPolicy
-```
-
----
-
-# My strongest advice
-
-## Make this policy express **ownership**, not just prohibition
-
-Your real goal is not only:
-
-- “ban bad classes”
-
-Your real goal is:
-
-- **UI package owns primitives**
-- **features consume governed semantics**
-- **tokens flow through approved surfaces**
-- **visual meaning is not recreated ad hoc**
-
-So the best class policy is one piece of a bigger governance model:
-
-- **primitive ownership policy**
-- **class/style drift policy**
-- **semantic mapping policy**
-- **token usage policy**
-- **package boundary policy**
-
-This file is good, but it should stay clearly scoped to **class/style governance**, not become the whole UI constitution.
-
----
-
-# Final verdict
-
-## Keep it, but refine before freezing
-
-### Must refine
-
-- rename vague fields
-- weaken or reframe the token-count rule
-- prepare for grouped subdomains
-
-### Good as-is
-
-- strict schema
-- canonical const export
-- strong anti-drift intent
-- CI-consumable shape
-
-### Production-grade next step
-
-Move from a **flat boolean policy** to a **domain-grouped, scope-aware policy with hard-ban vs warning semantics**.
-
-If you want, I can draft the **fully production-grade v3 version** with:
-
-- grouped domains
-- better names
-- severity model
-- exception model
-- header kept within your repo style.
+Following this note, the codebase adds **registry-level `parentFrameSlot` validation** (`validate-shell-registry.ts`: `frame_parent_frame_slot_must_be_null`, `occupant_parent_frame_*`, etc.) and extends **`pnpm run script:check-shell-governance-report`** with a **`slotDoctrineMatrix`** in the JSON report plus a **Slot doctrine matrix** section in the default text output.

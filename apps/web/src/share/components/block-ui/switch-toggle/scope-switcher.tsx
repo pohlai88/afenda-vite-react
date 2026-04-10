@@ -15,11 +15,11 @@ import {
 import { Popover, PopoverTrigger } from '@afenda/ui/components/ui/popover'
 import { cn } from '@afenda/ui/lib/utils'
 
-import type { TruthSeverity } from '@afenda/core/truth'
+import type { ShellIntegritySeverity } from '@afenda/shadcn-ui/semantic'
 import { ShellPopoverContent } from '@/share/components/shell-ui'
 import { SearchOverlayShell } from '@/share/components/search'
 
-import { getTruthSeverityPresentation } from '@afenda/shadcn-ui/semantic'
+import { getIntegritySeverityPresentation } from '@afenda/shadcn-ui/semantic'
 
 export interface ScopeSwitcherItem {
   readonly id: string
@@ -54,7 +54,7 @@ export interface ScopeSwitcherProps {
   /** Called when user selects a different item */
   onSelect: (itemId: string) => void
   /** Optional severity indicator (shows colored dot) */
-  severity?: TruthSeverity
+  severity?: ShellIntegritySeverity
   /** Placeholder text for search input */
   searchPlaceholder?: string
   /** Text shown when no items match search */
@@ -70,7 +70,7 @@ export interface ScopeSwitcherProps {
 }
 
 /**
- * ScopeSwitcher is a reusable dropdown for any truth scope level.
+ * ScopeSwitcher is a reusable dropdown for any ERP scope level.
  * Use flat `items` (breadcrumb org/subsidiary) or `groups` for larger datasets.
  */
 export function ScopeSwitcher({
@@ -104,7 +104,7 @@ export function ScopeSwitcher({
   const resolvedEmptyText =
     emptyText ?? t('breadcrumb.scope_no_results', 'No results found.')
   const severityTone = severity
-    ? getTruthSeverityPresentation(severity)
+    ? getIntegritySeverityPresentation(severity)
     : null
 
   const selectedItem = useMemo(

@@ -35,7 +35,7 @@ describe('semantic UI package', () => {
 
   it('keeps evidence adapter mappings deterministic', () => {
     expect(getEvidenceUiModel('tampered')).toMatchObject({
-      tone: 'danger',
+      tone: 'destructive',
       badgeLabel: 'Tampered',
     })
   })

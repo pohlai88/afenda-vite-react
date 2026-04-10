@@ -10,7 +10,7 @@
  * Changes: update canonical source files first, then keep this aggregate synchronized.
  * Purpose: expose one reviewable component index for tooling and validation.
  */
-import { z } from "zod/v4"
+import { type z } from "zod/v4"
 
 import { accordionVariantValues } from "../component/accordion"
 import { alertVariantValues } from "../component/alert"
@@ -85,7 +85,7 @@ import { toggleSizeValues, toggleVariantValues } from "../component/toggle"
 import { tooltipVariantValues } from "../component/tooltip"
 import {
   defineConstMap,
-  nonEmptyEnumListSchema,
+  nestedRegistrySchemaFromDefinition,
   type NestedRegistryTupleMapDefinition,
 } from "../schema/shared"
 
@@ -179,229 +179,6 @@ type ComponentRegistryDefinition = NestedRegistryTupleMapDefinition<{
   tooltip: { variants: typeof tooltipVariantValues }
 }>
 
-export const componentRegistrySchema = z
-  .object({
-    accordion: z
-      .object({ variants: nonEmptyEnumListSchema(accordionVariantValues) })
-      .strict(),
-    alert: z
-      .object({ variants: nonEmptyEnumListSchema(alertVariantValues) })
-      .strict(),
-    alertDialog: z
-      .object({
-        contentSizes: nonEmptyEnumListSchema(alertDialogContentSizeValues),
-      })
-      .strict(),
-    aspectRatio: z
-      .object({ variants: nonEmptyEnumListSchema(aspectRatioVariantValues) })
-      .strict(),
-    avatar: z
-      .object({ variants: nonEmptyEnumListSchema(avatarVariantValues) })
-      .strict(),
-    badge: z
-      .object({ variants: nonEmptyEnumListSchema(badgeVariantValues) })
-      .strict(),
-    breadcrumb: z
-      .object({ variants: nonEmptyEnumListSchema(breadcrumbVariantValues) })
-      .strict(),
-    button: z
-      .object({
-        variants: nonEmptyEnumListSchema(buttonVariantValues),
-        sizes: nonEmptyEnumListSchema(buttonSizeValues),
-      })
-      .strict(),
-    buttonGroup: z
-      .object({
-        orientations: nonEmptyEnumListSchema(buttonGroupOrientationValues),
-      })
-      .strict(),
-    calendar: z
-      .object({ variants: nonEmptyEnumListSchema(calendarVariantValues) })
-      .strict(),
-    card: z
-      .object({
-        surfaces: nonEmptyEnumListSchema(cardSurfaceValues),
-        paddings: nonEmptyEnumListSchema(cardPaddingValues),
-      })
-      .strict(),
-    carousel: z
-      .object({
-        orientations: nonEmptyEnumListSchema(carouselOrientationValues),
-      })
-      .strict(),
-    chart: z
-      .object({ themeKeys: nonEmptyEnumListSchema(chartThemeKeyValues) })
-      .strict(),
-    checkbox: z
-      .object({ variants: nonEmptyEnumListSchema(checkboxVariantValues) })
-      .strict(),
-    collapsible: z
-      .object({ variants: nonEmptyEnumListSchema(collapsibleVariantValues) })
-      .strict(),
-    combobox: z
-      .object({ variants: nonEmptyEnumListSchema(comboboxVariantValues) })
-      .strict(),
-    command: z
-      .object({
-        roles: nonEmptyEnumListSchema(commandGroupRoleValues),
-        intents: nonEmptyEnumListSchema(commandItemIntentValues),
-      })
-      .strict(),
-    contextMenu: z
-      .object({ variants: nonEmptyEnumListSchema(contextMenuVariantValues) })
-      .strict(),
-    dialog: z
-      .object({ sizes: nonEmptyEnumListSchema(dialogSizeValues) })
-      .strict(),
-    direction: z
-      .object({ dirs: nonEmptyEnumListSchema(directionDirValues) })
-      .strict(),
-    drawer: z
-      .object({ directions: nonEmptyEnumListSchema(drawerDirectionValues) })
-      .strict(),
-    dropdownMenu: z
-      .object({ variants: nonEmptyEnumListSchema(dropdownMenuVariantValues) })
-      .strict(),
-    empty: z
-      .object({
-        mediaVariants: nonEmptyEnumListSchema(emptyMediaVariantValues),
-      })
-      .strict(),
-    field: z
-      .object({
-        orientations: nonEmptyEnumListSchema(fieldOrientationValues),
-        states: nonEmptyEnumListSchema(fieldStateValues),
-      })
-      .strict(),
-    form: z
-      .object({ fieldStates: nonEmptyEnumListSchema(fieldStateValues) })
-      .strict(),
-    hoverCard: z
-      .object({ variants: nonEmptyEnumListSchema(hoverCardVariantValues) })
-      .strict(),
-    input: z
-      .object({ sizes: nonEmptyEnumListSchema(inputSizeValues) })
-      .strict(),
-    inputGroup: z
-      .object({
-        addonAligns: nonEmptyEnumListSchema(inputGroupAddonAlignValues),
-        buttonSizes: nonEmptyEnumListSchema(inputGroupButtonSizeValues),
-      })
-      .strict(),
-    inputOtp: z
-      .object({ variants: nonEmptyEnumListSchema(inputOtpVariantValues) })
-      .strict(),
-    item: z
-      .object({
-        variants: nonEmptyEnumListSchema(itemVariantValues),
-        sizes: nonEmptyEnumListSchema(itemSizeValues),
-        mediaVariants: nonEmptyEnumListSchema(itemMediaVariantValues),
-      })
-      .strict(),
-    kbd: z
-      .object({ variants: nonEmptyEnumListSchema(kbdVariantValues) })
-      .strict(),
-    label: z
-      .object({ variants: nonEmptyEnumListSchema(labelVariantValues) })
-      .strict(),
-    menubar: z
-      .object({ variants: nonEmptyEnumListSchema(menubarVariantValues) })
-      .strict(),
-    nativeSelect: z
-      .object({ variants: nonEmptyEnumListSchema(nativeSelectVariantValues) })
-      .strict(),
-    navigationMenu: z
-      .object({
-        variants: nonEmptyEnumListSchema(navigationMenuVariantValues),
-      })
-      .strict(),
-    pagination: z
-      .object({ variants: nonEmptyEnumListSchema(paginationVariantValues) })
-      .strict(),
-    popover: z
-      .object({ variants: nonEmptyEnumListSchema(popoverVariantValues) })
-      .strict(),
-    progress: z
-      .object({ variants: nonEmptyEnumListSchema(progressVariantValues) })
-      .strict(),
-    radioGroup: z
-      .object({ variants: nonEmptyEnumListSchema(radioGroupVariantValues) })
-      .strict(),
-    resizable: z
-      .object({ variants: nonEmptyEnumListSchema(resizableVariantValues) })
-      .strict(),
-    scrollArea: z
-      .object({ variants: nonEmptyEnumListSchema(scrollAreaVariantValues) })
-      .strict(),
-    select: z
-      .object({ variants: nonEmptyEnumListSchema(selectVariantValues) })
-      .strict(),
-    separator: z
-      .object({
-        orientations: nonEmptyEnumListSchema(separatorOrientationValues),
-      })
-      .strict(),
-    sheet: z
-      .object({ sides: nonEmptyEnumListSchema(sheetSideValues) })
-      .strict(),
-    sidebar: z
-      .object({
-        menuButtonVariants: nonEmptyEnumListSchema(
-          sidebarMenuButtonVariantValues,
-        ),
-        menuButtonSizes: nonEmptyEnumListSchema(sidebarMenuButtonSizeValues),
-      })
-      .strict(),
-    skeleton: z
-      .object({ variants: nonEmptyEnumListSchema(skeletonVariantValues) })
-      .strict(),
-    slider: z
-      .object({ variants: nonEmptyEnumListSchema(sliderVariantValues) })
-      .strict(),
-    sonner: z
-      .object({ themes: nonEmptyEnumListSchema(sonnerThemeValues) })
-      .strict(),
-    spinner: z
-      .object({ variants: nonEmptyEnumListSchema(spinnerVariantValues) })
-      .strict(),
-    switch: z
-      .object({ variants: nonEmptyEnumListSchema(switchVariantValues) })
-      .strict(),
-    table: z
-      .object({ densities: nonEmptyEnumListSchema(tableDensityValues) })
-      .strict(),
-    tabs: z
-      .object({ listVariants: nonEmptyEnumListSchema(tabsListVariantValues) })
-      .strict(),
-    textarea: z
-      .object({ variants: nonEmptyEnumListSchema(textareaVariantValues) })
-      .strict(),
-    themeProvider: z
-      .object({ themes: nonEmptyEnumListSchema(themeProviderThemeValues) })
-      .strict(),
-    toast: z
-      .object({ variants: nonEmptyEnumListSchema(toastVariantValues) })
-      .strict(),
-    toggle: z
-      .object({
-        variants: nonEmptyEnumListSchema(toggleVariantValues),
-        sizes: nonEmptyEnumListSchema(toggleSizeValues),
-      })
-      .strict(),
-    toggleGroup: z
-      .object({
-        variants: nonEmptyEnumListSchema(toggleVariantValues),
-        sizes: nonEmptyEnumListSchema(toggleSizeValues),
-        orientations: nonEmptyEnumListSchema(toggleGroupOrientationValues),
-      })
-      .strict(),
-    tooltip: z
-      .object({ variants: nonEmptyEnumListSchema(tooltipVariantValues) })
-      .strict(),
-  })
-  .strict()
-export type ComponentRegistrySnapshot = z.infer<typeof componentRegistrySchema>
-
 const componentRegistryDefinition = {
   accordion: { variants: accordionVariantValues },
   alert: { variants: alertVariantValues },
@@ -480,6 +257,11 @@ const componentRegistryDefinition = {
   tooltip: { variants: tooltipVariantValues },
 } as const satisfies ComponentRegistryDefinition
 
+export const componentRegistrySchema = nestedRegistrySchemaFromDefinition(
+  componentRegistryDefinition,
+)
+export type ComponentRegistrySnapshot = z.infer<typeof componentRegistrySchema>
+
 export const componentRegistry = defineConstMap(
-  componentRegistrySchema.parse(componentRegistryDefinition)
+  componentRegistrySchema.parse(componentRegistryDefinition),
 )

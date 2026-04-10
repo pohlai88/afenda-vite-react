@@ -3,6 +3,8 @@ import { createConfig } from '@afenda/eslint-config'
 const baseConfig = createConfig({ rootDir: import.meta.dirname })
 
 export default [
+  /** Reference-only Supabase archive; not typechecked and not a published surface. */
+  { ignores: ['packages/shadcn-ui/src/legacy-supabase/**'] },
   ...baseConfig,
   {
     name: 'ui-drift/import-fence',
@@ -10,7 +12,6 @@ export default [
     ignores: [
       'packages/ui/src/**/*.{js,jsx,ts,tsx}',
       'packages/shadcn-ui/src/**/*.{js,jsx,ts,tsx}',
-      'packages/design-system/src/components/shadcn/**/*.{js,jsx,ts,tsx}',
       '**/*.{test,spec}.{js,jsx,ts,tsx}',
       '**/*.stories.{js,jsx,ts,tsx}',
       '**/__tests__/**',

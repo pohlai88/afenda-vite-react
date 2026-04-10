@@ -1,6 +1,6 @@
 import type { ComponentType, SVGProps } from 'react'
 
-import type { TruthSeverity } from '@afenda/core/truth'
+import type { ShellIntegritySeverity } from '@afenda/shadcn-ui/semantic'
 
 import type { ScopeSwitcherItem } from '../../block-ui'
 
@@ -16,6 +16,6 @@ export interface NavBreadcrumbScopeLevel {
   readonly items: readonly ScopeSwitcherItem[]
   readonly currentValue: string | null
   readonly onSelect: (id: string) => void
-  readonly severity?: TruthSeverity
+  readonly severity?: ShellIntegritySeverity
   readonly icon?: ComponentType<SVGProps<SVGSVGElement>>
 }

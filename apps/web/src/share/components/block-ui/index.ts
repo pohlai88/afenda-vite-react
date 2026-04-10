@@ -10,20 +10,16 @@ export { BrandTitleBlock } from './brand-title-block'
 export type { BrandTitleBlockProps } from './brand-title-block'
 export { ShellTitleBlock } from './shell-title-block'
 export type { ShellTitleBlockProps } from './shell-title-block'
-export { getTruthSeverityPresentation } from '@afenda/shadcn-ui/semantic'
-export type { TruthSeverityPresentation } from '@afenda/shadcn-ui/semantic'
-
 export {
-  FeedbackPopover,
-  HelpPanel,
-  ResolutionPanel,
-  TruthAlertPanel,
-} from './panel'
+  getIntegritySeverityPresentation,
+  type IntegritySeverityPresentation,
+} from '@afenda/shadcn-ui/semantic'
+
+export { FeedbackPopover, HelpPanel, ResolutionPanel } from './panel'
 export type {
   FeedbackPopoverProps,
   HelpPanelProps,
   ResolutionPanelProps,
-  TruthAlertPanelProps,
 } from './panel'
 
 export { ScopeSwitcher, ThemeToggle } from './switch-toggle'
@@ -41,7 +37,6 @@ export {
   MobileNavTrigger,
   NotificationTrigger,
   ResolutionTrigger,
-  TruthAlertTrigger,
 } from './trigger'
 export type {
   CommandPaletteTriggerProps,
@@ -54,5 +49,4 @@ export type {
   MobileNavTriggerProps,
   NotificationTriggerProps,
   ResolutionTriggerProps,
-  TruthAlertTriggerProps,
 } from './trigger'

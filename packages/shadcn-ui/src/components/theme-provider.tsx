@@ -15,10 +15,13 @@ import {
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react"
 
-type Theme = "dark" | "light" | "system"
+export type Theme = "dark" | "light" | "system"
+
+type ResolvedTheme = "dark" | "light"
 
 type ThemeProviderProps = {
   children: ReactNode
@@ -27,8 +30,27 @@ type ThemeProviderProps = {
 }
 
 type ThemeProviderState = {
+  /** Persisted preference: `system` follows OS light/dark. */
   theme: Theme
   setTheme: (theme: Theme) => void
+  /** Effective light/dark after resolving `system` (and OS preference). */
+  resolvedTheme: ResolvedTheme
+}
+
+function subscribePreferredColorScheme(onStoreChange: () => void): () => void {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)")
+  mq.addEventListener("change", onStoreChange)
+  return () => mq.removeEventListener("change", onStoreChange)
+}
+
+function getPreferredColorSchemeSnapshot(): ResolvedTheme {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light"
+}
+
+function getPreferredColorSchemeServerSnapshot(): ResolvedTheme {
+  return "light"
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
@@ -75,7 +97,19 @@ export function ThemeProvider({
     [storageKey]
   )
 
-  const value = useMemo(() => ({ theme, setTheme }), [theme, setTheme])
+  const systemResolved = useSyncExternalStore(
+    subscribePreferredColorScheme,
+    getPreferredColorSchemeSnapshot,
+    getPreferredColorSchemeServerSnapshot
+  )
+
+  const resolvedTheme: ResolvedTheme =
+    theme === "system" ? systemResolved : theme
+
+  const value = useMemo(
+    () => ({ theme, setTheme, resolvedTheme }),
+    [theme, setTheme, resolvedTheme]
+  )
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>

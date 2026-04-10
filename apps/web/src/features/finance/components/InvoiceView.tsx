@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from '@afenda/ui/components/ui/card'
 
-import { useFinanceActionBar } from '../hooks'
+import { useFinanceActionBar } from '../hooks/use-finance-action-bar'
 
 export function InvoiceView() {
   useFinanceActionBar()

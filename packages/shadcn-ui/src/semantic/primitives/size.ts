@@ -8,6 +8,10 @@
  * Changes: preserve deterministic vocabulary and exact value coverage.
  * Purpose: keep semantic-size usage consistent across semantic components.
  */
+import { z } from "zod"
+
 export const semanticSizeValues = ["xs", "sm", "md", "lg"] as const
 
-export type SemanticSize = (typeof semanticSizeValues)[number]
+export const semanticSizeSchema = z.enum(semanticSizeValues)
+
+export type SemanticSize = z.infer<typeof semanticSizeSchema>

@@ -2,7 +2,7 @@
  * Runtime provider/bootstrap checker.
  *
  * Verifies app bootstrap and shell composition satisfy shellContextPolicy
- * and appShellPolicy from the governed constant layer:
+ * and shellPolicy from the governed constant layer:
  * - auth / shell / tenant / user / locale / theme providers
  * - shell runtime contexts for navigation / command / density / metadata
  *
@@ -18,7 +18,8 @@ import type {
   AstFinding,
   GovernanceModules,
   ShellContextPolicyShape,
-  AppShellPolicyShape,
+  ShellPolicyShape,
+  ShellComponentContractShape,
   RulePolicyShape,
 } from '../tools/ui-drift/shared/index.js'
 import {
@@ -42,6 +43,7 @@ type RuleCode =
   | 'UIX-RUNTIME-008'
   | 'UIX-RUNTIME-009'
   | 'UIX-RUNTIME-010'
+  | 'UIX-RUNTIME-011'
 
 interface IndexedFile {
   relativePath: string
@@ -51,7 +53,7 @@ interface IndexedFile {
 const ROOT_DIR = normalizePath(findRepoRoot())
 const findings: AstFinding[] = []
 
-const BOOTSTRAP_FILE_CANDIDATES = [
+const _BOOTSTRAP_FILE_CANDIDATES = [
   'apps/web/src/main.tsx',
   'apps/web/src/main.ts',
   'apps/web/src/App.tsx',
@@ -171,7 +173,7 @@ function pushFinding(
 function checkRequiredProviders(
   files: IndexedFile[],
   ctx: ShellContextPolicyShape,
-  shell: AppShellPolicyShape,
+  shell: ShellPolicyShape,
   rulePolicy: RulePolicyShape<RuleCode>,
 ) {
   const checks: Array<{
@@ -207,7 +209,7 @@ function checkRequiredProviders(
     {
       enabled: shell.requireShellMetadataProvider,
       rule: 'UIX-RUNTIME-005',
-      message: 'appShellPolicy requires shell metadata context, but no ShellMetadataProvider-like bootstrap signal was found.',
+      message: 'shellPolicy requires shell metadata context, but no ShellMetadataProvider-like bootstrap signal was found.',
       signals: PROVIDER_SIGNAL_MAP.shellMetadataProvider,
     },
   ]
@@ -305,7 +307,7 @@ function checkOperatorScopeSeparation(
 
 function checkShellContextRequirements(
   files: IndexedFile[],
-  shell: AppShellPolicyShape,
+  shell: ShellPolicyShape,
   rulePolicy: RulePolicyShape<RuleCode>,
 ) {
   const checks: Array<{
@@ -317,25 +319,27 @@ function checkShellContextRequirements(
     {
       enabled: shell.requireNavigationContext,
       rule: 'UIX-RUNTIME-010',
-      message: 'appShellPolicy requires navigation context, but no NavigationProvider-like signal was found.',
+      message: 'shellPolicy requires navigation context, but no NavigationProvider-like signal was found.',
       signals: PROVIDER_SIGNAL_MAP.navigationContext,
     },
     {
-      enabled: shell.requireCommandContext,
+      enabled: shell.requireCommandInfrastructure,
       rule: 'UIX-RUNTIME-010',
-      message: 'appShellPolicy requires command context, but no CommandPaletteProvider-like signal was found.',
+      message:
+        'shellPolicy requires command infrastructure, but no CommandPaletteProvider-like signal was found.',
       signals: PROVIDER_SIGNAL_MAP.commandContext,
     },
     {
       enabled: shell.requireLayoutDensityContext,
       rule: 'UIX-RUNTIME-010',
-      message: 'appShellPolicy requires layout density context, but no DensityProvider-like signal was found.',
+      message: 'shellPolicy requires layout density context, but no DensityProvider-like signal was found.',
       signals: PROVIDER_SIGNAL_MAP.densityContext,
     },
     {
-      enabled: shell.requireViewportAwareness,
+      enabled: shell.requireResponsiveShellLayout,
       rule: 'UIX-RUNTIME-010',
-      message: 'appShellPolicy requires viewport awareness, but no ViewportProvider-like signal was found.',
+      message:
+        'shellPolicy requires responsive shell layout, but no ViewportProvider-like signal was found.',
       signals: PROVIDER_SIGNAL_MAP.viewportContext,
     },
   ]
@@ -350,6 +354,63 @@ function checkShellContextRequirements(
       check.message,
       rulePolicy,
       `Missing shell context signals: ${check.signals.join(', ')}`,
+    )
+  }
+}
+
+function checkShellComponentContractRequirements(
+  files: IndexedFile[],
+  shellComponentContract: ShellComponentContractShape,
+  rulePolicy: RulePolicyShape<RuleCode>,
+) {
+  const requirementChecks: Array<{
+    dependencyName: string
+    selector: (
+      entry: ShellComponentContractShape[string],
+    ) => 'none' | 'optional' | 'required'
+    signals: readonly string[]
+  }> = [
+    {
+      dependencyName: 'shell metadata context',
+      selector: (entry) => entry.participation.shellMetadata,
+      signals: PROVIDER_SIGNAL_MAP.shellMetadataProvider,
+    },
+    {
+      dependencyName: 'navigation context',
+      selector: (entry) => entry.participation.navigationContext,
+      signals: PROVIDER_SIGNAL_MAP.navigationContext,
+    },
+    {
+      dependencyName: 'command infrastructure',
+      selector: (entry) => entry.participation.commandInfrastructure,
+      signals: PROVIDER_SIGNAL_MAP.commandContext,
+    },
+    {
+      dependencyName: 'layout density context',
+      selector: (entry) => entry.participation.layoutDensity,
+      signals: PROVIDER_SIGNAL_MAP.densityContext,
+    },
+    {
+      dependencyName: 'responsive shell layout context',
+      selector: (entry) => entry.participation.responsiveShell,
+      signals: PROVIDER_SIGNAL_MAP.viewportContext,
+    },
+  ]
+
+  for (const check of requirementChecks) {
+    const requiredBy = Object.entries(shellComponentContract)
+      .filter(([_, entry]) => entry.shellAware && check.selector(entry) === 'required')
+      .map(([componentKey]) => componentKey)
+
+    if (requiredBy.length === 0) continue
+    if (anyFileContainsSignal(files, check.signals)) continue
+
+    pushFinding(
+      files[0],
+      'UIX-RUNTIME-011',
+      `Shell component contract requires ${check.dependencyName}, but no matching provider bootstrap signal was found.`,
+      rulePolicy,
+      `Required by: ${requiredBy.join(', ')}; missing signals: ${check.signals.join(', ')}`,
     )
   }
 }
@@ -372,10 +433,11 @@ async function main() {
 
   const scanPool = appFiles.length > 0 ? appFiles : indexedFiles
 
-  checkRequiredProviders(scanPool, governance.shellContextPolicy, governance.appShellPolicy, governance.rulePolicy)
+  checkRequiredProviders(scanPool, governance.shellContextPolicy, governance.shellPolicy, governance.rulePolicy)
   checkTenantScopeDiscipline(scanPool, governance.shellContextPolicy, governance.rulePolicy)
   checkOperatorScopeSeparation(scanPool, governance.shellContextPolicy, governance.rulePolicy)
-  checkShellContextRequirements(scanPool, governance.appShellPolicy, governance.rulePolicy)
+  checkShellContextRequirements(scanPool, governance.shellPolicy, governance.rulePolicy)
+  checkShellComponentContractRequirements(scanPool, governance.shellComponentContract, governance.rulePolicy)
 
   const format = getOutputFormat()
 

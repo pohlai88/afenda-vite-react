@@ -7,6 +7,9 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"components.json\" \"registry/registry.json\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"components.json\" \"registry/registry.json\"",
     "registry:build": "shadcn build registry/registry.json -o registry/r",
@@ -24,7 +27,6 @@
     "./lib/*": "./src/lib/*.ts"
   },
   "dependencies": {
-    "@afenda/core": "workspace:*",
     "@base-ui/react": "^1.3.0",
     "class-variance-authority": "catalog:",
     "clsx": "^2.1.1",
@@ -32,7 +34,6 @@
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "catalog:",
-    "next-themes": "^0.4.6",
     "radix-ui": "^1.4.3",
     "react-day-picker": "^9.14.0",
     "react-resizable-panels": "^4.9.0",
@@ -48,9 +49,14 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@afenda/testing": "workspace:*",
+    "@testing-library/react": "^16.3.2",
     "@afenda/tsconfig": "workspace:*",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vite": "8.0.5",
+    "vitest": "catalog:",
     "typescript": "catalog:"
   }
 }

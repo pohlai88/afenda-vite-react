@@ -31,9 +31,9 @@ export const settlementUiStateValues = [
 export type SettlementUiState = (typeof settlementUiStateValues)[number]
 
 export interface SettlementUiModel {
-  tone: SemanticTone
-  badgeLabel: string
-  icon: LucideIcon
+  readonly tone: SemanticTone
+  readonly badgeLabel: string
+  readonly icon: LucideIcon
 }
 
 const settlementUiModelMap: Record<SettlementUiState, SettlementUiModel> = {
@@ -67,7 +67,7 @@ const settlementUiModelMap: Record<SettlementUiState, SettlementUiModel> = {
     badgeLabel: "Failed",
     icon: CircleSlash,
   },
-}
+} as const satisfies Record<SettlementUiState, SettlementUiModel>
 
 export function getSettlementUiModel(
   state: SettlementUiState
