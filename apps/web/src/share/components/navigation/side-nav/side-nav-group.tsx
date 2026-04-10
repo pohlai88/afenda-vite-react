@@ -1,19 +1,19 @@
-import { ChevronRightIcon } from 'lucide-react'
+import { ChevronRightIcon } from "lucide-react"
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@afenda/ui/components/ui/collapsible'
+} from "@afenda/shadcn-ui/components/ui/collapsible"
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-} from '@afenda/ui/components/ui/sidebar'
+} from "@afenda/shadcn-ui/components/ui/sidebar"
 
-import type { TopNavGroup as TopNavGroupModel } from '../nav-catalog/nav-model'
-import { SideNavItem } from './side-nav-item'
+import type { TopNavGroup as TopNavGroupModel } from "../nav-catalog/nav-model"
+import { SideNavItem } from "./side-nav-item"
 
 export interface SideNavGroupProps {
   group: TopNavGroupModel
@@ -27,7 +27,7 @@ export interface SideNavGroupProps {
 export function SideNavGroup({ group }: SideNavGroupProps) {
   if (group.showGroupLabel === false) {
     return (
-      <SidebarGroup className="p-0 px-2 pb-1 pt-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:px-1">
+      <SidebarGroup className="p-0 px-2 pt-0 pb-1 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:px-1">
         <SidebarGroupContent className="px-0">
           <SidebarMenu className="gap-0.5">
             {group.items.map((item) => (

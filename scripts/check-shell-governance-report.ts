@@ -27,6 +27,7 @@ import {
   normalizePath,
   loadGovernanceModules,
 } from "../tools/ui-drift/shared/index.js"
+import { shellGovernanceReportsDir } from "./lib/artifact-paths.js"
 
 type RuleCode = "UIX-SHELL-REPORT-001"
 
@@ -78,7 +79,7 @@ interface ShellGovernanceReport {
 }
 
 const ROOT_DIR = normalizePath(findRepoRoot())
-const REPORTS_DIR = path.join(ROOT_DIR, "reports", "shell-governance")
+const REPORTS_DIR = shellGovernanceReportsDir(ROOT_DIR)
 const VERSIONED_REPORT_RE = /^shell-governance-report\.v(\d{4})\.json$/
 
 async function loadSerializeShellDoctrineManifest(): Promise<
@@ -158,7 +159,10 @@ async function loadShellComponentRegistryForReport(): Promise<
     >
   }
 
-  if (!module.shellComponentRegistry || typeof module.shellComponentRegistry !== "object") {
+  if (
+    !module.shellComponentRegistry ||
+    typeof module.shellComponentRegistry !== "object"
+  ) {
     throw new Error(
       "Unable to load shellComponentRegistry from shell-component-registry.ts."
     )
@@ -295,7 +299,9 @@ function extractExportedShellComponentNames(content: string): string[] {
   return [...names]
 }
 
-function countBy<T extends string>(items: readonly T[]): Record<string, number> {
+function countBy<T extends string>(
+  items: readonly T[]
+): Record<string, number> {
   const counts: Record<string, number> = {}
   for (const item of items) {
     counts[item] = (counts[item] ?? 0) + 1
@@ -320,12 +326,17 @@ function resolveNextReportVersion(reportDir: string): number {
   return maxVersion + 1
 }
 
-function writeVersionedReport(report: Omit<ShellGovernanceReport, "reportFile">): string {
+function writeVersionedReport(
+  report: Omit<ShellGovernanceReport, "reportFile">
+): string {
   mkdirSync(REPORTS_DIR, { recursive: true })
   const version = report.reportVersion.toString().padStart(4, "0")
   const versionedFilename = `shell-governance-report.v${version}.json`
   const versionedPath = path.join(REPORTS_DIR, versionedFilename)
-  const latestPath = path.join(REPORTS_DIR, "shell-governance-report.latest.json")
+  const latestPath = path.join(
+    REPORTS_DIR,
+    "shell-governance-report.latest.json"
+  )
 
   const finalReport: ShellGovernanceReport = {
     ...report,
@@ -437,9 +448,12 @@ async function main() {
     reportFile,
   }
 
-  const serializeShellDoctrineManifest = await loadSerializeShellDoctrineManifest()
+  const serializeShellDoctrineManifest =
+    await loadSerializeShellDoctrineManifest()
   const manifestJson = serializeShellDoctrineManifest(true)
-  const manifestVersionStr = reportBase.reportVersion.toString().padStart(4, "0")
+  const manifestVersionStr = reportBase.reportVersion
+    .toString()
+    .padStart(4, "0")
   mkdirSync(REPORTS_DIR, { recursive: true })
   const manifestVersionedPath = path.join(
     REPORTS_DIR,
@@ -458,7 +472,9 @@ async function main() {
   } else {
     console.log("Shell Governance Report")
     console.log("======================\n")
-    console.log(`Observed shell components: ${report.summary.observedShellComponents}`)
+    console.log(
+      `Observed shell components: ${report.summary.observedShellComponents}`
+    )
     console.log(
       `Registered shell components: ${report.summary.registeredShellComponents}`
     )
@@ -489,9 +505,7 @@ async function main() {
     for (const row of report.slotDoctrineMatrix) {
       const kinds = row.allowedComponentKinds.join(", ")
       const owners =
-        row.registeredOwners.length > 0
-          ? row.registeredOwners.join(", ")
-          : "—"
+        row.registeredOwners.length > 0 ? row.registeredOwners.join(", ") : "—"
       const children =
         row.childSlotIds.length > 0 ? row.childSlotIds.join(", ") : "—"
       const parent = row.parentFrameSlot ?? "—"

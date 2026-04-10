@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react'
-import { BookOpenIcon, PinIcon, SearchIcon } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useCallback, useMemo, useState, type ReactNode } from "react"
+import { BookOpenIcon, PinIcon, SearchIcon } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 /**
  * Primitives follow cmdk + shadcn Command composition: `CommandDialog` is the dialog shell;
@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
  * @see https://github.com/dip/cmdk
  * @see https://ui.shadcn.com/docs/components/radix/command
  */
-import { Badge } from '@afenda/ui/components/ui/badge'
+import { Badge } from "@afenda/shadcn-ui/components/ui/badge"
 import {
   Command,
   CommandDialog,
@@ -20,23 +20,23 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '@afenda/ui/components/ui/command'
-import { Kbd } from '@afenda/ui/components/ui/kbd'
-import { cn } from '@afenda/ui/lib/utils'
+} from "@afenda/shadcn-ui/components/ui/command"
+import { Kbd } from "@afenda/shadcn-ui/components/ui/kbd"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import type { PaletteCommand } from './command-palette.types'
+import type { PaletteCommand } from "./command-palette.types"
 import {
   buildPaletteBrowseBlocks,
   buildPaletteQueryCommands,
-} from './command-palette-display-model'
-import { getPaletteGroupUi } from './command-palette-group-meta'
-import { GLOBAL_COMMAND_PALETTE_CONTENT_ID } from './command-palette-ids'
-import { getCommandPaletteOpenChordLabel } from './command-palette-platform'
+} from "./command-palette-display-model"
+import { getPaletteGroupUi } from "./command-palette-group-meta"
+import { GLOBAL_COMMAND_PALETTE_CONTENT_ID } from "./command-palette-ids"
+import { getCommandPaletteOpenChordLabel } from "./command-palette-platform"
 import {
   paletteCommandRowClassName,
   paletteSeverityBadgeLabel,
-} from './command-palette-presentation'
-import { usePaletteCommands } from './use-palette-commands'
+} from "./command-palette-presentation"
+import { usePaletteCommands } from "./use-palette-commands"
 
 export interface CommandPaletteProps {
   /** Mirrors Radix/shadcn `Dialog` open state. */
@@ -49,20 +49,20 @@ function commandFilterValue(cmd: {
   subtitle?: string
   keywords: readonly string[]
 }): string {
-  return [cmd.title, cmd.subtitle ?? '', ...cmd.keywords].join(' ').trim()
+  return [cmd.title, cmd.subtitle ?? "", ...cmd.keywords].join(" ").trim()
 }
 
 /**
  * Global command palette (⌘K / Ctrl+K): ranked commands, truth audit/resolve, theme, recents/pins.
  */
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
-  const { t } = useTranslation('shell')
-  const [input, setInput] = useState('')
+  const { t } = useTranslation("shell")
+  const [input, setInput] = useState("")
 
   const openChordLabel = getCommandPaletteOpenChordLabel()
 
   const clearInput = useCallback(() => {
-    setInput('')
+    setInput("")
   }, [])
 
   const closePalette = useCallback(() => {
@@ -80,29 +80,29 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       }
       onOpenChange(next)
     },
-    [clearInput, onOpenChange],
+    [clearInput, onOpenChange]
   )
 
   const emptyHints = useMemo(
     () => [
       {
-        label: t('command_palette.empty_hint_search'),
-        value: 'invoice finance',
+        label: t("command_palette.empty_hint_search"),
+        value: "invoice finance",
       },
       {
-        label: t('command_palette.empty_hint_explain'),
-        value: 'audit invariant truth',
+        label: t("command_palette.empty_hint_explain"),
+        value: "audit invariant truth",
       },
       {
-        label: t('command_palette.empty_hint_resolve'),
-        value: 'resolve allocation fix',
+        label: t("command_palette.empty_hint_resolve"),
+        value: "resolve allocation fix",
       },
       {
-        label: t('command_palette.empty_hint_theme'),
-        value: 'theme dark light',
+        label: t("command_palette.empty_hint_theme"),
+        value: "theme dark light",
       },
     ],
-    [t],
+    [t]
   )
 
   const displayGroups = useMemo(() => {
@@ -117,11 +117,11 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       if (ranked.length === 0) return [] as DisplayGroup[]
       return [
         {
-          key: 'query-results',
+          key: "query-results",
           heading: (
             <>
               <SearchIcon className="mr-1 inline-block size-3" />
-              {t('nav.search')}
+              {t("nav.search")}
             </>
           ),
           commands: ranked,
@@ -140,7 +140,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         heading: (
           <>
             <Icon
-              className={cn('mr-1 inline-block size-3', meta.iconClassName)}
+              className={cn("mr-1 inline-block size-3", meta.iconClassName)}
             />
             {headingText}
           </>
@@ -186,7 +186,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             </Badge>
           ) : null}
           {cmd.confidence !== undefined ? (
-            <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+            <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
               {Math.round(cmd.confidence * 100)}%
             </span>
           ) : null}
@@ -197,13 +197,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             <button
               type="button"
               className={cn(
-                'ml-1 shrink-0 rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground',
-                pinned && 'text-primary',
+                "ml-1 shrink-0 rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground",
+                pinned && "text-primary"
               )}
               aria-label={
                 pinned
-                  ? t('command_palette.unpin_command')
-                  : t('command_palette.pin_command')
+                  ? t("command_palette.unpin_command")
+                  : t("command_palette.pin_command")
               }
               aria-pressed={pinned}
               onPointerDown={(e) => {
@@ -211,7 +211,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 e.stopPropagation()
               }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
+                if (e.key === "Enter" || e.key === " ") {
                   e.stopPropagation()
                 }
               }}
@@ -227,7 +227,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         </CommandItem>
       )
     },
-    [isPinned, t, togglePin],
+    [isPinned, t, togglePin]
   )
 
   return (
@@ -235,12 +235,12 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       open={open}
       onOpenChange={handleOpenChange}
       contentId={GLOBAL_COMMAND_PALETTE_CONTENT_ID}
-      title={t('command_palette.title')}
-      description={t('command_palette.description')}
+      title={t("command_palette.title")}
+      description={t("command_palette.description")}
     >
-      <Command label={t('command_palette.title')} shouldFilter>
+      <Command label={t("command_palette.title")} shouldFilter>
         <CommandInput
-          placeholder={t('command_palette.placeholder')}
+          placeholder={t("command_palette.placeholder")}
           value={input}
           onValueChange={setInput}
         />
@@ -252,7 +252,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 aria-hidden
               />
               <p className="text-sm text-muted-foreground">
-                {t('command_palette.empty')}
+                {t("command_palette.empty")}
               </p>
               <div className="flex max-w-full flex-wrap justify-center gap-2 px-2">
                 {emptyHints.map((hint) => (
@@ -284,15 +284,15 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
           <span className="inline-flex items-center gap-1">
             <Kbd className="text-micro">↑</Kbd>
             <Kbd className="text-micro">↓</Kbd>
-            <span>{t('command_palette.footer_navigate')}</span>
+            <span>{t("command_palette.footer_navigate")}</span>
           </span>
           <span className="inline-flex items-center gap-1">
             <Kbd className="text-micro">↵</Kbd>
-            <span>{t('command_palette.footer_select')}</span>
+            <span>{t("command_palette.footer_select")}</span>
           </span>
           <span className="inline-flex items-center gap-1">
             <Kbd className="text-micro">esc</Kbd>
-            <span>{t('command_palette.footer_close')}</span>
+            <span>{t("command_palette.footer_close")}</span>
           </span>
         </div>
         <Kbd className="text-micro">{openChordLabel}</Kbd>

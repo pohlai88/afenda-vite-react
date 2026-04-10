@@ -1,8 +1,8 @@
-import { type ComponentPropsWithoutRef, forwardRef } from 'react'
+import { type ComponentPropsWithoutRef, forwardRef } from "react"
 
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-export type ShellOverlayContainerProps = ComponentPropsWithoutRef<'div'>
+export type ShellOverlayContainerProps = ComponentPropsWithoutRef<"div">
 
 /**
  * Stacking context for shell chrome so overlays/popovers layer predictably above content.
@@ -17,7 +17,7 @@ export const ShellOverlayContainer = forwardRef<
       ref={ref}
       data-shell-zone="overlay"
       data-shell-key="shell-overlay-container"
-      className={cn('relative isolate', className)}
+      className={cn("relative isolate", className)}
       {...props}
     />
   )

@@ -1,6 +1,6 @@
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import { useShellMetadataContext } from '../../providers'
+import { useShellMetadataContext } from "../../providers"
 
 export interface ShellTitleProps {
   className?: string
@@ -14,8 +14,8 @@ export function ShellTitle({ className, fallback }: ShellTitleProps) {
   if (!title) return null
 
   const classes = cn(
-    'truncate text-sm font-semibold tracking-tight text-foreground',
-    className,
+    "truncate text-sm font-semibold tracking-tight text-foreground",
+    className
   )
 
   return <span className={classes}>{title}</span>

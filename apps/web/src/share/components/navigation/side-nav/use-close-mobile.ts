@@ -1,6 +1,6 @@
-import { useCallback } from 'react'
+import { useCallback } from "react"
 
-import { useSidebar } from '@afenda/ui/components/ui/sidebar'
+import { useSidebar } from "@afenda/shadcn-ui/components/ui/sidebar"
 
 /**
  * Returns a stable callback that closes the mobile sidebar sheet when called.

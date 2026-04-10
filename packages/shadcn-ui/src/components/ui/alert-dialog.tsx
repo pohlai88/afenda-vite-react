@@ -1,8 +1,8 @@
 import type * as React from "react"
 import { AlertDialog as AlertDialogPrimitive } from "radix-ui"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
 
 function AlertDialog({
   ...props

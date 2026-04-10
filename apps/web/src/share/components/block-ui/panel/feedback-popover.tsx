@@ -1,17 +1,17 @@
-import { AlertTriangleIcon, LightbulbIcon } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { AlertTriangleIcon, LightbulbIcon } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
-import { Button } from '@afenda/ui/components/ui/button'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
 import {
   Popover,
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from '@afenda/ui/components/ui/popover'
+} from "@afenda/shadcn-ui/components/ui/popover"
 
-import { ShellPopoverContent } from '@/share/components/shell-ui'
+import { ShellPopoverContent } from "@/share/components/shell-ui"
 
-import { FeedbackTrigger } from '../trigger'
+import { FeedbackTrigger } from "../trigger"
 
 export interface FeedbackPopoverProps {
   /** Called when user selects "Issue" */
@@ -31,7 +31,7 @@ export function FeedbackPopover({
   onIdea,
   triggerClassName,
 }: FeedbackPopoverProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
 
   return (
     <Popover>
@@ -41,20 +41,22 @@ export function FeedbackPopover({
       <ShellPopoverContent shellVariant="topRail">
         <PopoverHeader className="gap-2">
           <PopoverTitle className="text-sm font-semibold">
-            {t('feedback.heading', 'What would you like to share?')}
+            {t("feedback.heading", "What would you like to share?")}
           </PopoverTitle>
         </PopoverHeader>
         <div className="grid grid-cols-2 gap-3">
           <FeedbackCard
-            icon={<AlertTriangleIcon className="size-6 text-muted-foreground" />}
-            title={t('feedback.issue_title', 'Issue')}
-            subtitle={t('feedback.issue_subtitle', 'with my project')}
+            icon={
+              <AlertTriangleIcon className="size-6 text-muted-foreground" />
+            }
+            title={t("feedback.issue_title", "Issue")}
+            subtitle={t("feedback.issue_subtitle", "with my project")}
             onClick={onIssue}
           />
           <FeedbackCard
             icon={<LightbulbIcon className="size-6 text-muted-foreground" />}
-            title={t('feedback.idea_title', 'Idea')}
-            subtitle={t('feedback.idea_subtitle', 'to improve Afenda')}
+            title={t("feedback.idea_title", "Idea")}
+            subtitle={t("feedback.idea_subtitle", "to improve Afenda")}
             onClick={onIdea}
           />
         </div>

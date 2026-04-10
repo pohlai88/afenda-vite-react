@@ -1,9 +1,9 @@
-import type { ComponentType, SVGProps } from 'react'
-import { ChevronsUpDownIcon, CheckIcon } from 'lucide-react'
-import { useId, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import type { ComponentType, SVGProps } from "react"
+import { ChevronsUpDownIcon, CheckIcon } from "lucide-react"
+import { useId, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 
-import { Button } from '@afenda/ui/components/ui/button'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
 import {
   Command,
   CommandEmpty,
@@ -11,15 +11,18 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@afenda/ui/components/ui/command'
-import { Popover, PopoverTrigger } from '@afenda/ui/components/ui/popover'
-import { cn } from '@afenda/ui/lib/utils'
+} from "@afenda/shadcn-ui/components/ui/command"
+import {
+  Popover,
+  PopoverTrigger,
+} from "@afenda/shadcn-ui/components/ui/popover"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import type { ShellIntegritySeverity } from '@afenda/shadcn-ui/semantic'
-import { ShellPopoverContent } from '@/share/components/shell-ui'
-import { SearchOverlayShell } from '@/share/components/search'
+import type { ShellIntegritySeverity } from "@afenda/shadcn-ui/semantic"
+import { ShellPopoverContent } from "@/share/components/shell-ui"
+import { SearchOverlayShell } from "@/share/components/search"
 
-import { getIntegritySeverityPresentation } from '@afenda/shadcn-ui/semantic'
+import { getIntegritySeverityPresentation } from "@afenda/shadcn-ui/semantic"
 
 export interface ScopeSwitcherItem {
   readonly id: string
@@ -64,7 +67,7 @@ export interface ScopeSwitcherProps {
    * `icon` — compact glyph + popover (Supabase-style scope), no long label in the bar.
    * Requires `icon` component.
    */
-  mode?: 'text' | 'icon'
+  mode?: "text" | "icon"
   /** Shown in the trigger when `mode="icon"` */
   icon?: ComponentType<SVGProps<SVGSVGElement>>
 }
@@ -83,10 +86,10 @@ export function ScopeSwitcher({
   searchPlaceholder,
   emptyText,
   className,
-  mode = 'text',
+  mode = "text",
   icon: Icon,
 }: ScopeSwitcherProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const [open, setOpen] = useState(false)
   const listId = useId()
 
@@ -100,28 +103,28 @@ export function ScopeSwitcher({
   }, [isGrouped, groups, items])
 
   const resolvedSearchPlaceholder =
-    searchPlaceholder ?? t('breadcrumb.scope_search_default', 'Search...')
+    searchPlaceholder ?? t("breadcrumb.scope_search_default", "Search...")
   const resolvedEmptyText =
-    emptyText ?? t('breadcrumb.scope_no_results', 'No results found.')
+    emptyText ?? t("breadcrumb.scope_no_results", "No results found.")
   const severityTone = severity
     ? getIntegritySeverityPresentation(severity)
     : null
 
   const selectedItem = useMemo(
     () => allItems.find((item) => item.id === currentValue),
-    [allItems, currentValue],
+    [allItems, currentValue]
   )
-  const displayLabel = selectedItem?.name ?? label ?? 'Select...'
+  const displayLabel = selectedItem?.name ?? label ?? "Select..."
   const titleHint = [label, displayLabel, selectedItem?.badge]
     .filter(Boolean)
-    .join(' · ')
-  const useIconMode = mode === 'icon' && Icon
+    .join(" · ")
+  const useIconMode = mode === "icon" && Icon
 
   const renderItem = (item: ScopeSwitcherItem) => (
     <CommandItem
       key={item.id}
-      value={`${item.name} ${item.badge ?? ''} ${item.id}`}
-      keywords={[item.name, item.badge ?? '', item.id]}
+      value={`${item.name} ${item.badge ?? ""} ${item.id}`}
+      keywords={[item.name, item.badge ?? "", item.id]}
       onSelect={() => {
         onSelect(item.id)
         setOpen(false)
@@ -129,7 +132,7 @@ export function ScopeSwitcher({
     >
       <span className="flex-1 truncate">{item.name}</span>
       {item.badge ? (
-        <span className="text-micro ml-2 rounded bg-muted px-1 font-medium text-muted-foreground">
+        <span className="ml-2 rounded bg-muted px-1 text-micro font-medium text-muted-foreground">
           {item.badge}
         </span>
       ) : null}
@@ -152,9 +155,9 @@ export function ScopeSwitcher({
           title={titleHint}
           className={cn(
             useIconMode
-              ? 'relative h-8 w-8 shrink-0 justify-center p-0'
-              : 'h-8 justify-between gap-1 px-2 text-sm font-medium',
-            className,
+              ? "relative h-8 w-8 shrink-0 justify-center p-0"
+              : "h-8 justify-between gap-1 px-2 text-sm font-medium",
+            className
           )}
         >
           {useIconMode ? (
@@ -162,8 +165,8 @@ export function ScopeSwitcher({
               {severity ? (
                 <span
                   className={cn(
-                    'absolute right-1 top-1 z-10 h-1.5 w-1.5 rounded-full ring-2 ring-background',
-                    severityTone?.dotClassName,
+                    "absolute top-1 right-1 z-10 h-1.5 w-1.5 rounded-full ring-2 ring-background",
+                    severityTone?.dotClassName
                   )}
                   aria-hidden="true"
                 />
@@ -178,15 +181,15 @@ export function ScopeSwitcher({
               {severity ? (
                 <span
                   className={cn(
-                    'mr-1 h-2 w-2 shrink-0 rounded-full',
-                    severityTone?.dotClassName,
+                    "mr-1 h-2 w-2 shrink-0 rounded-full",
+                    severityTone?.dotClassName
                   )}
                   aria-hidden="true"
                 />
               ) : null}
               <span className="truncate">{displayLabel}</span>
               {selectedItem?.badge ? (
-                <span className="text-micro ml-1 rounded bg-muted px-1 font-medium text-muted-foreground">
+                <span className="ml-1 rounded bg-muted px-1 text-micro font-medium text-muted-foreground">
                   {selectedItem.badge}
                 </span>
               ) : null}
@@ -201,10 +204,10 @@ export function ScopeSwitcher({
       <ShellPopoverContent
         shellVariant="scopeStrip"
         className={cn(
-          'p-0',
+          "p-0",
           isGrouped
-            ? 'w-[min(100vw-2rem,280px)]'
-            : 'min-w-52 w-auto max-w-[min(100vw-2rem,20rem)]',
+            ? "w-[min(100vw-2rem,280px)]"
+            : "w-auto max-w-[min(100vw-2rem,20rem)] min-w-52"
         )}
       >
         <SearchOverlayShell className="static mt-0 w-full rounded-[inherit] border-0 bg-transparent shadow-none">

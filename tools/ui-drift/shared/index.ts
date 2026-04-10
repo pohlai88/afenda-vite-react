@@ -228,6 +228,7 @@ export const EXPECTED_GOVERNANCE_VERSION = "1"
 export const SCAN_ROOTS = ["apps", "packages"] as const
 
 export const EXCLUDED_DIR_NAMES = new Set([
+  ".artifacts",
   ".git",
   ".next",
   ".turbo",
@@ -239,6 +240,7 @@ export const EXCLUDED_DIR_NAMES = new Set([
 ])
 
 export const EXCLUDED_PATH_PARTS = [
+  "/.artifacts/",
   "/node_modules/",
   "/dist/",
   "/build/",
@@ -262,10 +264,7 @@ export const EXCLUDE_FILE_PATTERNS = [
   /\.stories\./,
 ] as const
 
-export const ALLOWED_UI_OWNERS_RELATIVE = [
-  "packages/shadcn-ui/src",
-  "packages/ui/src",
-] as const
+export const ALLOWED_UI_OWNERS_RELATIVE = ["packages/shadcn-ui/src"] as const
 
 export const PRODUCT_UI_PATH_HINTS_RELATIVE = ["apps", "packages"] as const
 
@@ -418,7 +417,6 @@ export const TAILWIND_UTILITY_RE =
 export const FEATURE_PATH_PATTERN = /[/\\]features?[/\\]/i
 
 export const GOVERNED_UI_IMPORT_SOURCES = [
-  "@afenda/ui",
   "@afenda/shadcn-ui",
   "@afenda/shadcn-ui/semantic",
   "@/components/ui",
@@ -428,9 +426,8 @@ export const GOVERNED_UI_IMPORT_SOURCES = [
 ] as const
 
 export const TRUTH_MAPPING_IMPORT_SOURCES = [
-  "@afenda/ui/semantic",
-  "@afenda/ui/truth-mapping",
   "@afenda/shadcn-ui/semantic",
+  "@afenda/shadcn-ui/truth-mapping",
   "@afenda/shadcn-ui/lib/constant",
   "packages/shadcn-ui/src/lib/constant",
 ] as const
@@ -574,9 +571,18 @@ export function resolveModuleSpecifierToAbsolutePath(
 
   if (moduleSpecifier.startsWith(".")) {
     baseCandidate = path.resolve(path.dirname(sourcePath), moduleSpecifier)
-  } else if (moduleSpecifier.startsWith("@/") || moduleSpecifier.startsWith("~/")) {
+  } else if (
+    moduleSpecifier.startsWith("@/") ||
+    moduleSpecifier.startsWith("~/")
+  ) {
     const repoRoot = findRepoRoot()
-    baseCandidate = path.join(repoRoot, "apps", "web", "src", moduleSpecifier.slice(2))
+    baseCandidate = path.join(
+      repoRoot,
+      "apps",
+      "web",
+      "src",
+      moduleSpecifier.slice(2)
+    )
   } else {
     return null
   }

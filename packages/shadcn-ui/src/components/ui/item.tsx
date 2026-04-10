@@ -3,8 +3,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
 
 import { itemDefaults } from "../../lib/constant/component/item"
-import { cn } from "@/lib/utils"
-import { Separator } from "@/components/ui/separator"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
+import { Separator } from "@afenda/shadcn-ui/components/ui/separator"
 
 function ItemGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (

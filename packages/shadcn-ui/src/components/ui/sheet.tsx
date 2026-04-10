@@ -6,7 +6,8 @@ import {
   type SheetSide,
 } from "../../lib/constant/component/sheet"
 import { cn } from "../../lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { VisuallyHidden } from "@afenda/shadcn-ui/components/ui/visually-hidden"
 import { XIcon } from "lucide-react"
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
@@ -77,9 +78,8 @@ function SheetContent({
               className="absolute top-4 right-4 bg-secondary"
               size="icon-sm"
             >
-              <XIcon
-              />
-              <span className="sr-only">Close</span>
+              <XIcon />
+              <VisuallyHidden>Close</VisuallyHidden>
             </Button>
           </SheetPrimitive.Close>
         )}
@@ -115,10 +115,7 @@ function SheetTitle({
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn(
-        "text-base font-medium text-foreground",
-        className
-      )}
+      className={cn("text-base font-medium text-foreground", className)}
       {...props}
     />
   )

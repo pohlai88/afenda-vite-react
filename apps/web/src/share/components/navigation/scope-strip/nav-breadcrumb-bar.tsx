@@ -1,26 +1,23 @@
-import { Fragment } from 'react'
-import { SlashIcon } from 'lucide-react'
-import { useLocation } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+import { Fragment } from "react"
+import { SlashIcon } from "lucide-react"
+import { useLocation } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import { Logo } from '../../brand'
-import { ScopeSwitcher } from '../../block-ui'
-import {
-  ShellTenantSwitcher,
-  ShellWorkspaceSwitcher,
-} from '../../shell-ui'
+import { Logo } from "../../brand"
+import { ScopeSwitcher } from "../../block-ui"
+import { ShellTenantSwitcher, ShellWorkspaceSwitcher } from "../../shell-ui"
 import {
   topNavBreadcrumbNavClassName,
   topNavModuleCrumbClassName,
   topNavShellIconTriggerClassName,
-} from '../top-nav/top-nav-chrome-tokens'
+} from "../top-nav/top-nav-chrome-tokens"
 
-import type { NavBreadcrumbScopeLevel } from './nav-breadcrumb-bar.types'
+import type { NavBreadcrumbScopeLevel } from "./nav-breadcrumb-bar.types"
 
 const scopeTextTriggerClassName =
-  'h-8 max-w-[14rem] justify-between rounded-md border border-transparent bg-transparent gap-1 px-2.5 text-[length:var(--top-nav-font-size)] font-medium text-muted-foreground/85 hover:border-border/60 hover:bg-muted/35 hover:text-foreground'
+  "h-8 max-w-[14rem] justify-between rounded-md border border-transparent bg-transparent gap-1 px-2.5 text-[length:var(--top-nav-font-size)] font-medium text-muted-foreground/85 hover:border-border/60 hover:bg-muted/35 hover:text-foreground"
 
 export interface NavBreadcrumbBarProps {
   /**
@@ -37,7 +34,7 @@ export interface NavBreadcrumbBarProps {
   /**
    * `icon` — compact icon+dropdown per level. `text` — full-label triggers.
    */
-  scopeMode?: 'icon' | 'text'
+  scopeMode?: "icon" | "text"
 }
 
 /**
@@ -47,11 +44,11 @@ export interface NavBreadcrumbBarProps {
 export function NavBreadcrumbBar({
   scopeLevels,
   currentModule,
-  logoHref = '/app',
+  logoHref = "/app",
   className,
-  scopeMode = 'icon',
+  scopeMode = "icon",
 }: NavBreadcrumbBarProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const location = useLocation()
 
   const derivedModule = currentModule ?? deriveModuleFromPath(location.pathname)
@@ -59,22 +56,22 @@ export function NavBreadcrumbBar({
   return (
     <nav
       className={cn(topNavBreadcrumbNavClassName, className)}
-      aria-label={t('breadcrumb.aria_label', 'Scope navigation')}
+      aria-label={t("breadcrumb.aria_label", "Scope navigation")}
     >
       <Logo
         showText={false}
         href={logoHref}
         className="mr-0.5 shrink-0"
-        ariaLabel={t('breadcrumb.home', 'Home')}
+        ariaLabel={t("breadcrumb.home", "Home")}
       />
 
       <Separator />
 
       {scopeLevels.map((level, index) => {
         const ScopeSwitcherComponent =
-          level.id === 'tenant'
+          level.id === "tenant"
             ? ShellTenantSwitcher
-            : level.id === 'legalEntity'
+            : level.id === "legalEntity"
               ? ShellWorkspaceSwitcher
               : ScopeSwitcher
         const switcherProps = {
@@ -84,10 +81,10 @@ export function NavBreadcrumbBar({
           onSelect: level.onSelect,
           severity: level.severity,
           searchPlaceholder: level.searchPlaceholder,
-          mode: scopeMode === 'icon' ? ('icon' as const) : ('text' as const),
+          mode: scopeMode === "icon" ? ("icon" as const) : ("text" as const),
           icon: level.icon,
           className:
-            scopeMode === 'icon'
+            scopeMode === "icon"
               ? topNavShellIconTriggerClassName
               : scopeTextTriggerClassName,
         }
@@ -102,7 +99,7 @@ export function NavBreadcrumbBar({
       {derivedModule && (
         <>
           <Separator />
-          <span className={cn(topNavModuleCrumbClassName, 'px-0.5')}>
+          <span className={cn(topNavModuleCrumbClassName, "px-0.5")}>
             {derivedModule}
           </span>
         </>
@@ -121,8 +118,8 @@ function Separator() {
 }
 
 function deriveModuleFromPath(pathname: string): string | undefined {
-  const segments = pathname.split('/').filter(Boolean)
-  if (segments[0] === 'app' && segments[1]) {
+  const segments = pathname.split("/").filter(Boolean)
+  if (segments[0] === "app" && segments[1]) {
     return segments[1].charAt(0).toUpperCase() + segments[1].slice(1)
   }
   return undefined

@@ -6,18 +6,18 @@ Canonical **shell policy, contracts, registries, validators, runtime, and vocabu
 
 ## Directory layout
 
-| Subfolder / root files | Role |
-|------------------------|------|
-| `policy/` | `*-policy.ts` — governance doctrine, defaults, enforcement switches. |
-| `contract/` | `*-contract.ts` — Zod schemas and registration truth (metadata, components, slots, search). |
-| `registry/` | `*-registry.ts` — frozen key → row maps (`shellComponentRegistry`, slot contract by slot id). |
-| `validation/` | Validators, issue-code modules, and pure helpers (`shell-state-doctrine.ts` is re-exported via `validate-shell-state-policy.ts`). |
-| `runtime/` | `shell-provider.tsx`, hooks, selectors, `shell-helpers.ts` (no policy authoring). |
-| `shell-state-key-vocabulary.ts` | **Leaf** — canonical tuple + schema for governed **state keys** only. |
-| `shell-values.ts` | **Barrel** — re-exports vocabulary tuples/schemas (zones, scopes, slots, overlays, search, state keys) + `ShellVocabulary` namespace. |
-| `shell-doctrine-manifest.ts` | JSON-stable manifest for baselines and tooling. |
-| `index.ts` | Public **export surface** for this folder (see header JSDoc for layer order and validation pipeline). |
-| `SHELL_COMPONENTS_GUARDRAILS.md` | Enterprise matrix, phased build, Definition of Done. |
+| Subfolder / root files           | Role                                                                                                                                  |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `policy/`                        | `*-policy.ts` — governance doctrine, defaults, enforcement switches.                                                                  |
+| `contract/`                      | `*-contract.ts` — Zod schemas and registration truth (metadata, components, slots, search).                                           |
+| `registry/`                      | `*-registry.ts` — frozen key → row maps (`shellComponentRegistry`, slot contract by slot id).                                         |
+| `validation/`                    | Validators, issue-code modules, and pure helpers (`shell-state-doctrine.ts` is re-exported via `validate-shell-state-policy.ts`).     |
+| `runtime/`                       | `shell-provider.tsx`, hooks, selectors, `shell-helpers.ts` (no policy authoring).                                                     |
+| `shell-state-key-vocabulary.ts`  | **Leaf** — canonical tuple + schema for governed **state keys** only.                                                                 |
+| `shell-values.ts`                | **Barrel** — re-exports vocabulary tuples/schemas (zones, scopes, slots, overlays, search, state keys) + `ShellVocabulary` namespace. |
+| `shell-doctrine-manifest.ts`     | JSON-stable manifest for baselines and tooling.                                                                                       |
+| `index.ts`                       | Public **export surface** for this folder (see header JSDoc for layer order and validation pipeline).                                 |
+| `SHELL_COMPONENTS_GUARDRAILS.md` | Enterprise matrix, phased build, Definition of Done.                                                                                  |
 
 ## Philosophy (repo-first doctrine)
 
@@ -44,13 +44,13 @@ Shell policy here is **aligned to the live product**, not copied from illustrati
 
 Structural **frame** slots (`slotRole: "frame"`, `parentFrameSlot: null`) host chrome; **occupant** slots set `parentFrameSlot` to that zone’s `*.frame` id. Authoritative rows: `registry/shell-slot-registry.ts` (`shellSlotContractBySlotId`).
 
-| Zone | Frame slot (`required`) | Occupant slots (parent = zone frame) |
-|------|-------------------------|--------------------------------------|
-| root | `root.frame` | — |
-| header | `header.frame` | `header.leading`, `header.breadcrumbs`, `header.center`, `header.trailing` |
-| sidebar | `sidebar.frame` | `sidebar.primary`, `sidebar.secondary` |
-| content | `content.frame` | `content.banner`, `content.toolbar`, `content.main` |
-| overlay | `overlay.frame` | `overlay.global` (active), `overlay.command` (reserved) |
+| Zone    | Frame slot (`required`) | Occupant slots (parent = zone frame)                                       |
+| ------- | ----------------------- | -------------------------------------------------------------------------- |
+| root    | `root.frame`            | —                                                                          |
+| header  | `header.frame`          | `header.leading`, `header.breadcrumbs`, `header.center`, `header.trailing` |
+| sidebar | `sidebar.frame`         | `sidebar.primary`, `sidebar.secondary`                                     |
+| content | `content.frame`         | `content.banner`, `content.toolbar`, `content.main`                        |
+| overlay | `overlay.frame`         | `overlay.global` (active), `overlay.command` (reserved)                    |
 
 **Phase 1 `slotStatus`:** almost all slots are **active**; **`overlay.command`** is **reserved** (doctrine placeholder). This differs from illustrative docs that mark many slots reserved while still registering components—do not copy that blindly.
 
@@ -219,9 +219,9 @@ If `script:check-shell-state-policy` flags a **false positive** in shell-ui / `p
 
 The shell governance report script writes JSON artifacts to:
 
-- `reports/shell-governance/shell-governance-report.vNNNN.json` (incrementing snapshot)
-- `reports/shell-governance/shell-governance-report.latest.json` (latest pointer)
-- `reports/shell-governance/shell-doctrine-manifest.vNNNN.json` and `shell-doctrine-manifest.latest.json` — same version counter; contents from `serializeShellDoctrineManifest(true)` (registry keys, slot ids, state keys, validation pipeline names)
+- `.artifacts/reports/shell-governance/shell-governance-report.vNNNN.json` (incrementing snapshot)
+- `.artifacts/reports/shell-governance/shell-governance-report.latest.json` (latest pointer)
+- `.artifacts/reports/shell-governance/shell-doctrine-manifest.vNNNN.json` and `shell-doctrine-manifest.latest.json` — same version counter; contents from `serializeShellDoctrineManifest(true)` (registry keys, slot ids, state keys, validation pipeline names)
 
 Each run increments the version number (`v0001`, `v0002`, …), so shell governance evidence stays auditable over time.
 
@@ -237,6 +237,6 @@ The CI workflow runs:
 
 And uploads:
 
-- `reports/shell-governance/*.json`
+- `.artifacts/reports/shell-governance/*.json`
 
 as a build artifact named `shell-governance-report`.

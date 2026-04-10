@@ -9,29 +9,36 @@
  * Usage:
  *   tsx scripts/check-color-consistency.ts
  */
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
-import path from 'node:path'
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs"
+import path from "node:path"
 
 const SCAN_PATHS = [
-  'packages/ui/src/components',
-  'apps/web/src/features',
-  'apps/web/src/share/components',
+  "packages/shadcn-ui/src/components",
+  "apps/web/src/features",
+  "apps/web/src/share/components",
 ] as const
 
-const EXCLUDE_DIR_NAMES = new Set(['__tests__', '__test__'])
+const EXCLUDE_DIR_NAMES = new Set(["__tests__", "__test__"])
 
 /** When true, only `.ts` and `.tsx` (matches prior `rg --type code` behavior). */
-const CODE_TS_TSX = new Set(['.ts', '.tsx'])
+const CODE_TS_TSX = new Set([".ts", ".tsx"])
 
-const ALL_UI_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'])
+const ALL_UI_EXTENSIONS = new Set([
+  ".ts",
+  ".tsx",
+  ".js",
+  ".jsx",
+  ".mjs",
+  ".cjs",
+])
 
 type RuleName =
-  | 'raw-tailwind-color'
-  | 'arbitrary-tailwind-color'
-  | 'hardcoded-color'
-  | 'hsl-var-usage'
+  | "raw-tailwind-color"
+  | "arbitrary-tailwind-color"
+  | "hardcoded-color"
+  | "hsl-var-usage"
 
-type Severity = 'error'
+type Severity = "error"
 
 interface ParsedMatch {
   file: string
@@ -66,16 +73,16 @@ function validateScanPaths() {
   if (missing.length > 0) {
     fail(
       [
-        'Color consistency scan path(s) do not exist:',
+        "Color consistency scan path(s) do not exist:",
         ...missing.map((p) => `  - ${p}`),
-      ].join('\n'),
+      ].join("\n")
     )
   }
 }
 
 function normalizeReportPath(absoluteFile: string): string {
   const rel = path.relative(process.cwd(), absoluteFile)
-  return rel.split(path.sep).join('/')
+  return rel.split(path.sep).join("/")
 }
 
 function shouldSkipFilePath(absoluteFile: string): boolean {
@@ -84,8 +91,13 @@ function shouldSkipFilePath(absoluteFile: string): boolean {
     if (EXCLUDE_DIR_NAMES.has(seg)) return true
   }
   const base = path.basename(absoluteFile)
-  if (base.endsWith('.css')) return true
-  if (/\.test\./.test(base) || /\.spec\./.test(base) || /\.stories\./.test(base)) return true
+  if (base.endsWith(".css")) return true
+  if (
+    /\.test\./.test(base) ||
+    /\.spec\./.test(base) ||
+    /\.stories\./.test(base)
+  )
+    return true
   return false
 }
 
@@ -116,10 +128,10 @@ function getCodeTextOnly(rawText: string): string {
 function isCommentOnly(text: string): boolean {
   const trimmed = text.trim()
   return (
-    trimmed.startsWith('//') ||
-    trimmed.startsWith('*') ||
-    trimmed.startsWith('/*') ||
-    trimmed.startsWith('*/')
+    trimmed.startsWith("//") ||
+    trimmed.startsWith("*") ||
+    trimmed.startsWith("/*") ||
+    trimmed.startsWith("*/")
   )
 }
 
@@ -129,7 +141,7 @@ function isImportLine(text: string): boolean {
 
 function isAllowedColorException(match: ParsedMatch): boolean {
   const text = getCodeTextOnly(match.text)
-  const normalizedFile = match.file.split(path.sep).join('/')
+  const normalizedFile = match.file.split(path.sep).join("/")
 
   /**
    * Centralized exceptions.
@@ -144,9 +156,9 @@ function isAllowedColorException(match: ParsedMatch): boolean {
 
   // Allow Recharts adapter/integration edge cases in dedicated infra paths only.
   if (
-    normalizedFile.includes('/chart/') ||
-    normalizedFile.includes('/charts/') ||
-    normalizedFile.includes('/charting/')
+    normalizedFile.includes("/chart/") ||
+    normalizedFile.includes("/charts/") ||
+    normalizedFile.includes("/charting/")
   ) {
     if (/\b(recharts|stroke=|fill=)\b/i.test(text)) return true
   }
@@ -174,7 +186,7 @@ function collectViolationsForRule(rule: Rule) {
 
       let content: string
       try {
-        content = readFileSync(absoluteFile, 'utf-8')
+        content = readFileSync(absoluteFile, "utf-8")
       } catch {
         continue
       }
@@ -183,7 +195,7 @@ function collectViolationsForRule(rule: Rule) {
       const lines = content.split(/\r?\n/)
 
       for (let i = 0; i < lines.length; i += 1) {
-        const line = lines[i] ?? ''
+        const line = lines[i] ?? ""
         if (!lineMatchesPattern(line, rule.pattern)) continue
 
         const parsed: ParsedMatch = {
@@ -206,30 +218,27 @@ function collectViolationsForRule(rule: Rule) {
 
 const rules: Rule[] = [
   {
-    name: 'raw-tailwind-color',
-    severity: 'error',
+    name: "raw-tailwind-color",
+    severity: "error",
     description:
-      'Raw Tailwind palette utilities are not allowed in governed product UI code.',
-    pattern:
-      String.raw`\b(text|bg|border|ring|fill|stroke|outline|shadow|decoration|from|to|via|placeholder|caret|accent|divide|ring-offset)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}(\/\d{1,3})?\b`,
+      "Raw Tailwind palette utilities are not allowed in governed product UI code.",
+    pattern: String.raw`\b(text|bg|border|ring|fill|stroke|outline|shadow|decoration|from|to|via|placeholder|caret|accent|divide|ring-offset)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}(\/\d{1,3})?\b`,
     shouldSkip: isAllowedColorException,
   },
   {
-    name: 'arbitrary-tailwind-color',
-    severity: 'error',
+    name: "arbitrary-tailwind-color",
+    severity: "error",
     description:
-      'Arbitrary Tailwind color utilities are not allowed; use semantic tokens/utilities instead.',
-    pattern:
-      String.raw`\b(text|bg|border|ring|fill|stroke|outline|shadow|decoration|from|to|via|placeholder|caret|accent|divide|ring-offset)-\[[^\]]*(#|rgb\(|rgba\(|hsl\(|hsla\(|oklch\()[^\]]*\]`,
+      "Arbitrary Tailwind color utilities are not allowed; use semantic tokens/utilities instead.",
+    pattern: String.raw`\b(text|bg|border|ring|fill|stroke|outline|shadow|decoration|from|to|via|placeholder|caret|accent|divide|ring-offset)-\[[^\]]*(#|rgb\(|rgba\(|hsl\(|hsla\(|oklch\()[^\]]*\]`,
     shouldSkip: isAllowedColorException,
   },
   {
-    name: 'hardcoded-color',
-    severity: 'error',
+    name: "hardcoded-color",
+    severity: "error",
     description:
-      'Hardcoded color values are not allowed in TS/TSX product UI code.',
-    pattern:
-      String.raw`(#[0-9a-fA-F]{3,8}\b|\brgb\(|\brgba\(|\bhsl\(|\bhsla\(|\boklch\()`,
+      "Hardcoded color values are not allowed in TS/TSX product UI code.",
+    pattern: String.raw`(#[0-9a-fA-F]{3,8}\b|\brgb\(|\brgba\(|\bhsl\(|\bhsla\(|\boklch\()`,
     extensions: CODE_TS_TSX,
     shouldSkip: (match) => {
       const text = getCodeTextOnly(match.text)
@@ -240,10 +249,10 @@ const rules: Rule[] = [
     },
   },
   {
-    name: 'hsl-var-usage',
-    severity: 'error',
+    name: "hsl-var-usage",
+    severity: "error",
     description:
-      'hsl(var(--...)) is not allowed in component code; use approved token mapping / OKLCH strategy instead.',
+      "hsl(var(--...)) is not allowed in component code; use approved token mapping / OKLCH strategy instead.",
     pattern: String.raw`hsl\(var\(`,
     extensions: CODE_TS_TSX,
     shouldSkip: (match) => {
@@ -281,7 +290,7 @@ function printViolations(items: Violation[]) {
     console.error(`  ${rule.description}\n`)
 
     const ruleViolations = sorted.filter((v) => v.rule === rule.name)
-    let currentFile = ''
+    let currentFile = ""
 
     for (const violation of ruleViolations) {
       if (violation.file !== currentFile) {
@@ -291,17 +300,23 @@ function printViolations(items: Violation[]) {
       console.error(`    ${violation.line}: ${violation.text}`)
     }
 
-    console.error('')
+    console.error("")
   }
 
-  console.error('Fix:')
-  console.error('  - Use semantic utilities such as bg-background, text-foreground, border-border.')
-  console.error('  - Use approved product tokens instead of raw palette classes or hardcoded values.')
-  console.error('  - Do not use arbitrary Tailwind color values in product UI code.')
-  console.error('')
-  console.error('Docs:')
-  console.error('  - docs/COMPONENTS_AND_STYLING.md § Token and Theming Rules')
-  console.error('')
+  console.error("Fix:")
+  console.error(
+    "  - Use semantic utilities such as bg-background, text-foreground, border-border."
+  )
+  console.error(
+    "  - Use approved product tokens instead of raw palette classes or hardcoded values."
+  )
+  console.error(
+    "  - Do not use arbitrary Tailwind color values in product UI code."
+  )
+  console.error("")
+  console.error("Docs:")
+  console.error("  - docs/COMPONENTS_AND_STYLING.md § Token and Theming Rules")
+  console.error("")
 }
 
 function main() {
@@ -316,7 +331,7 @@ function main() {
     process.exit(1)
   }
 
-  console.log('✅ No color consistency violations found.')
+  console.log("✅ No color consistency violations found.")
 }
 
 main()

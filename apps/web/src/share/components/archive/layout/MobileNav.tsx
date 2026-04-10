@@ -1,21 +1,21 @@
-import { memo, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link, useLocation } from 'react-router-dom'
+import { memo, useMemo } from "react"
+import { useTranslation } from "react-i18next"
+import { Link, useLocation } from "react-router-dom"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from '@afenda/ui/components/ui/sheet'
-import { Button } from '@afenda/ui/components/ui/button'
-import { LayoutDashboardIcon, XIcon } from 'lucide-react'
-import { useAppShellStore } from '@/share/client-store/app-shell-store'
-import { navGroups, type NavItem } from './nav-data'
-import { cn } from '@afenda/ui/lib/utils'
+} from "@afenda/shadcn-ui/components/ui/sheet"
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { LayoutDashboardIcon, XIcon } from "lucide-react"
+import { useAppShellStore } from "@/share/client-store/app-shell-store"
+import { navGroups, type NavItem } from "./nav-data"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
 /** Typed wrapper so nav-data `string` keys satisfy the strict i18n union. */
 function useShellT() {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   return t as (key: string, options?: Record<string, unknown>) => string
 }
 
@@ -33,11 +33,11 @@ function usePermittedGroups() {
           ...group,
           items: group.items.filter(
             (item: NavItem) =>
-              !item.permissionKey || permissions.includes(item.permissionKey),
+              !item.permissionKey || permissions.includes(item.permissionKey)
           ),
         }))
         .filter((group) => group.items.length > 0),
-    [permissions],
+    [permissions]
   )
 }
 
@@ -62,7 +62,7 @@ export const MobileNav = memo(function MobileNav({
               <LayoutDashboardIcon className="size-4" />
             </div>
             <SheetTitle className="text-base font-semibold">
-              {t('sidebar.brand')}
+              {t("sidebar.brand")}
             </SheetTitle>
           </div>
           <Button
@@ -78,7 +78,7 @@ export const MobileNav = memo(function MobileNav({
         <nav className="flex-1 overflow-y-auto p-4">
           {groups.map((group) => (
             <div key={group.labelKey} className="mb-4">
-              <p className="mb-1 px-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <p className="mb-1 px-2 text-xs font-medium tracking-wider text-muted-foreground uppercase">
                 {t(group.labelKey)}
               </p>
               <ul className="space-y-0.5">
@@ -92,10 +92,10 @@ export const MobileNav = memo(function MobileNav({
                         to={href}
                         onClick={() => onOpenChange(false)}
                         className={cn(
-                          'flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium transition-colors',
+                          "flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium transition-colors",
                           isActive
-                            ? 'bg-primary/10 text-primary'
-                            : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                         )}
                       >
                         <item.icon className="size-4 shrink-0" />

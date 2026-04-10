@@ -1,8 +1,8 @@
-import { type ComponentPropsWithoutRef, forwardRef } from 'react'
+import { type ComponentPropsWithoutRef, forwardRef } from "react"
 
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-export type ShellSidebarProps = ComponentPropsWithoutRef<'div'>
+export type ShellSidebarProps = ComponentPropsWithoutRef<"div">
 
 /** Primary navigation chrome region (`sidebar` zone). Wraps the app sidebar rail. */
 export const ShellSidebar = forwardRef<HTMLDivElement, ShellSidebarProps>(
@@ -12,9 +12,9 @@ export const ShellSidebar = forwardRef<HTMLDivElement, ShellSidebarProps>(
         ref={ref}
         data-shell-zone="sidebar"
         data-shell-key="shell-sidebar"
-        className={cn('relative flex min-h-0 shrink-0', className)}
+        className={cn("relative flex min-h-0 shrink-0", className)}
         {...props}
       />
     )
-  },
+  }
 )

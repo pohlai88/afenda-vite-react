@@ -24,12 +24,12 @@ It does not replace runtime app-shell behavior in `apps/web`; instead, it provid
 
 The mature shell plan is not “layout only”. Each shell-aware surface is evaluated along dimensions that match enterprise multi-tenant products:
 
-| Dimension | Role |
-| --- | --- |
-| **Zone** | Placement (`root`, `header`, `sidebar`, `content`, `panel`, `overlay`, `command`, `footer`) — from `shell-policy` / `shell-metadata-contract`. |
-| **Kind** | Participation role (`platform`, `navigation`, `command`, `overlay`, `content`, `supporting`, and over time `identity`, `security`, `notification`, `governance` where the matrix calls for finer semantics). |
-| **Scope** | Whose truth the surface represents: `platform`, `tenant`, `workspace`, `user`, `session`, `environment`. |
-| **Isolation** | Boundary discipline: `tenant_strict`, `workspace_strict`, `session_bound`, `global_safe`. |
+| Dimension         | Role                                                                                                                                                                                                             |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Zone**          | Placement (`root`, `header`, `sidebar`, `content`, `panel`, `overlay`, `command`, `footer`) — from `shell-policy` / `shell-metadata-contract`.                                                                   |
+| **Kind**          | Participation role (`platform`, `navigation`, `command`, `overlay`, `content`, `supporting`, and over time `identity`, `security`, `notification`, `governance` where the matrix calls for finer semantics).     |
+| **Scope**         | Whose truth the surface represents: `platform`, `tenant`, `workspace`, `user`, `session`, `environment`.                                                                                                         |
+| **Isolation**     | Boundary discipline: `tenant_strict`, `workspace_strict`, `session_bound`, `global_safe`.                                                                                                                        |
 | **Priority tier** | Sequencing: **Implemented** (in registry/runtime), **Foundation** (shell is not real without it), **Enterprise Core**, **Operational Governance** (trust/compliance/ops), **Expansion** (depth after stability). |
 
 **Enterprise state coverage** is explicit: unresolved tenant/workspace, access denied, offline/degraded, no-data, and similar surfaces are first-class (see Section F in the guardrails matrix). Omitting them produces a shell that looks complete but fails in production edge cases.
@@ -119,8 +119,8 @@ Integrated governance command:
 
 Generated artifacts:
 
-- `reports/shell-governance/shell-governance-report.vNNNN.json`
-- `reports/shell-governance/shell-governance-report.latest.json`
+- `.artifacts/reports/shell-governance/shell-governance-report.vNNNN.json`
+- `.artifacts/reports/shell-governance/shell-governance-report.latest.json`
 
 Versioning is incremental (`v0001`, `v0002`, ...), enabling governance snapshots across builds.
 

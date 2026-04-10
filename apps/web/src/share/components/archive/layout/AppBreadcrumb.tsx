@@ -1,6 +1,6 @@
-import { memo, useMemo, Fragment } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link, useLocation } from 'react-router-dom'
+import { memo, useMemo, Fragment } from "react"
+import { useTranslation } from "react-i18next"
+import { Link, useLocation } from "react-router-dom"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,12 +8,12 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@afenda/ui/components/ui/breadcrumb'
-import { useShellContext } from './shell-context'
+} from "@afenda/shadcn-ui/components/ui/breadcrumb"
+import { useShellContext } from "./shell-context"
 
 /** Typed wrapper so nav-data `string` keys satisfy the strict i18n union. */
 function useShellT() {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   return t as (key: string, options?: Record<string, unknown>) => string
 }
 
@@ -28,12 +28,12 @@ export const AppBreadcrumb = memo(function AppBreadcrumb() {
 
   const segments = useMemo(() => {
     const parts = pathname
-      .replace(/^\/app\/?/, '')
-      .split('/')
+      .replace(/^\/app\/?/, "")
+      .split("/")
       .filter(Boolean)
 
     const routeSegments = parts.map((part, i) => {
-      const href = `/app/${parts.slice(0, i + 1).join('/')}`
+      const href = `/app/${parts.slice(0, i + 1).join("/")}`
       const labelKey = `nav.${part}`
       const label = t(labelKey, { defaultValue: part })
       return { label, href }
@@ -52,7 +52,7 @@ export const AppBreadcrumb = memo(function AppBreadcrumb() {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to="/app/dashboard">{t('nav.breadcrumb_root')}</Link>
+            <Link to="/app/dashboard">{t("nav.breadcrumb_root")}</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         {segments.map((seg, i) => {
@@ -65,7 +65,7 @@ export const AppBreadcrumb = memo(function AppBreadcrumb() {
                   <BreadcrumbPage>{seg.label}</BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink asChild>
-                    <Link to={seg.href ?? '#'}>{seg.label}</Link>
+                    <Link to={seg.href ?? "#"}>{seg.label}</Link>
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>

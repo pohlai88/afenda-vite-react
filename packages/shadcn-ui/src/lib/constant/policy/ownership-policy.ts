@@ -13,7 +13,11 @@
  */
 import { z } from "zod/v4"
 
-import { defineConstMap, defineTuple, nonEmptyStringSchema } from "../schema/shared"
+import {
+  defineConstMap,
+  defineTuple,
+  nonEmptyStringSchema,
+} from "../schema/shared"
 
 const repoPathSchema = nonEmptyStringSchema
 
@@ -50,10 +54,9 @@ export const ownershipPolicySchema = z
 export const ownershipPolicy = defineConstMap(
   ownershipPolicySchema.parse({
     uiOwnerRoots: [
-      "packages/shadcn-ui/src",
-      "packages/shadcn-ui/registry",
-      "packages/ui/src",
       "packages/radix-ui-themes/src",
+      "packages/shadcn-ui/registry",
+      "packages/shadcn-ui/src",
     ],
     /**
      * Subset of uiOwnerRoots whose wrapper implementations follow the shadcn
@@ -61,26 +64,15 @@ export const ownershipPolicy = defineConstMap(
      * wrapper contract checker.  Packages that use the `asChild` dynamic-Comp
      * pattern or contain archived / template code are excluded.
      */
-    wrapperContractScanRoots: [
-      "packages/shadcn-ui/src",
-      "packages/ui/src",
-    ],
+    wrapperContractScanRoots: ["packages/shadcn-ui/src"],
     // Governed scan surface for drift tooling (see schema JSDoc — not “product-only”).
-    productRoots: [
-      "apps",
-      "packages",
-    ],
+    productRoots: ["apps", "packages"],
     semanticOwnerRoots: [
-      "packages/ui/src/lib/semantic",
-      "packages/shadcn-ui/src/lib/semantic",
+      "packages/shadcn-ui/src/lib/constant/semantic",
+      "packages/shadcn-ui/src/semantic",
     ],
-    tokenOwnerFiles: [
-      "apps/web/src/index.css",
-    ],
-    inlineStyleExceptionRoots: [
-      "packages/ui/src/components/chart",
-      "packages/ui/src/components/measurement",
-    ],
+    tokenOwnerFiles: ["apps/web/src/index.css"],
+    inlineStyleExceptionRoots: ["packages/shadcn-ui/src/components/ui/chart"],
   })
 )
 
@@ -104,7 +96,9 @@ export function assertOwnershipPolicy(input: unknown): OwnershipPolicy {
 
 export function safeParseOwnershipPolicy(
   input: unknown
-): { success: true; data: OwnershipPolicy } | { success: false; error: string } {
+):
+  | { success: true; data: OwnershipPolicy }
+  | { success: false; error: string } {
   const result = ownershipPolicySchema.safeParse(input)
   if (result.success) {
     return { success: true, data: result.data }

@@ -19,7 +19,13 @@ dist-ssr
 *.local
 .env.turbo
 .env.tolgee
-reports/shell-governance/*.json
+
+# Repo-level artifacts (see docs/REPO_ARTIFACT_POLICY.md)
+.artifacts/cache/turbo/**
+!.artifacts/cache/turbo/.gitkeep
+.artifacts/reports/shell-governance/*.json
+.artifacts/tmp/*
+!.artifacts/tmp/.gitkeep
 
 # Editor directories and files
 .vscode/*

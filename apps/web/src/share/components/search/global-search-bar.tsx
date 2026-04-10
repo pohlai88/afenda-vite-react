@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react"
+import { useTranslation } from "react-i18next"
 
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
 import type {
   GlobalSearchResult,
   SearchResultTypePresentation,
-} from '@/share/components/providers/global-search-provider.types'
-import { useGlobalSearch } from '@/share/components/providers'
+} from "@/share/components/providers/global-search-provider.types"
+import { useGlobalSearch } from "@/share/components/providers"
 
-import { SearchOverlayShell } from './search-overlay-shell'
-import { SearchSuggestions } from './search-suggestions'
-import { SemanticSearchInput } from './semantic-search-input'
+import { SearchOverlayShell } from "./search-overlay-shell"
+import { SearchSuggestions } from "./search-suggestions"
+import { SemanticSearchInput } from "./semantic-search-input"
 
 export interface GlobalSearchBarProps {
   className?: string
@@ -20,7 +20,7 @@ export interface GlobalSearchBarProps {
   /** Debounced text query; return hits (e.g. nav, API, index). */
   fetchResults: (query: string) => Promise<readonly GlobalSearchResult[]>
   getTypePresentation: (
-    type: string,
+    type: string
   ) => SearchResultTypePresentation | undefined
   debounceMs?: number
   maxSuggestions?: number
@@ -41,7 +41,7 @@ export function GlobalSearchBar({
   maxSuggestions = 8,
   inputId,
 }: GlobalSearchBarProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const wrapperRef = useRef<HTMLDivElement>(null)
   const { globalQuery, setGlobalQuery, setCachedResults, addRecentSearch } =
     useGlobalSearch()
@@ -81,23 +81,23 @@ export function GlobalSearchBar({
         setIsLoading(false)
       }
     },
-    [fetchResults, setCachedResults],
+    [fetchResults, setCachedResults]
   )
 
   const handleSearch = useCallback(
     (q: string) => {
       void runSearch(q)
     },
-    [runSearch],
+    [runSearch]
   )
 
   const handleSelect = useCallback(
     (_hit: GlobalSearchResult) => {
       if (trimmedQuery) addRecentSearch(trimmedQuery)
-      setGlobalQuery('')
+      setGlobalQuery("")
       setResults([])
     },
-    [addRecentSearch, setGlobalQuery, trimmedQuery],
+    [addRecentSearch, setGlobalQuery, trimmedQuery]
   )
 
   const keyboardScopeRef: RefObject<HTMLElement | null> = wrapperRef
@@ -105,7 +105,7 @@ export function GlobalSearchBar({
   return (
     <div
       ref={wrapperRef}
-      className={cn('relative w-full max-w-xl min-w-0', className)}
+      className={cn("relative w-full max-w-xl min-w-0", className)}
     >
       <SemanticSearchInput
         id={inputId}
@@ -131,7 +131,7 @@ export function GlobalSearchBar({
             className="px-3 py-2 text-sm text-muted-foreground"
             role="alert"
           >
-            {t('global_search.error')}
+            {t("global_search.error")}
           </SearchOverlayShell>
         ) : results.length > 0 ? (
           <SearchSuggestions
@@ -144,7 +144,7 @@ export function GlobalSearchBar({
           />
         ) : (
           <SearchOverlayShell className="px-3 py-2 text-sm text-muted-foreground">
-            {t('global_search.no_results')}
+            {t("global_search.no_results")}
           </SearchOverlayShell>
         )
       ) : null}

@@ -1,28 +1,28 @@
-import { Settings2Icon } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { Settings2Icon } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
-import { Button } from '@afenda/ui/components/ui/button'
-import { Checkbox } from '@afenda/ui/components/ui/checkbox'
-import { Label } from '@afenda/ui/components/ui/label'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { Checkbox } from "@afenda/shadcn-ui/components/ui/checkbox"
+import { Label } from "@afenda/shadcn-ui/components/ui/label"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@afenda/ui/components/ui/popover'
-import { cn } from '@afenda/ui/lib/utils'
+} from "@afenda/shadcn-ui/components/ui/popover"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import type { ActionBarTab } from '@/share/types'
+import type { ActionBarTab } from "@/share/types"
 
 import {
   selectActiveActionBarPrefs,
   useActionBarPrefsStore,
-} from '@/share/client-store'
-import { useActionBarContext } from '../../providers'
+} from "@/share/client-store"
+import { useActionBarContext } from "../../providers"
 
 function effectiveKeySet(
   scopeKey: string,
   availableKeys: string[],
-  selectedKeysByScope: Record<string, string[]>,
+  selectedKeysByScope: Record<string, string[]>
 ): Set<string> {
   const stored = selectedKeysByScope[scopeKey]
   if (stored === undefined) {
@@ -39,12 +39,12 @@ export function TopActionBarCustomiseMenu({
 }: {
   className?: string
 }) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const { scopeKey, availableTabs } = useActionBarContext()
   const selectedKeysByScope = useActionBarPrefsStore(selectActiveActionBarPrefs)
   const setSelectedKeys = useActionBarPrefsStore((s) => s.setSelectedKeys)
   const clearScopeSelection = useActionBarPrefsStore(
-    (s) => s.clearScopeSelection,
+    (s) => s.clearScopeSelection
   )
 
   if (!scopeKey || availableTabs.length === 0) {
@@ -73,20 +73,20 @@ export function TopActionBarCustomiseMenu({
           type="button"
           variant="ghost"
           size="icon"
-          className={cn('h-8 w-8 shrink-0', className)}
-          aria-label={t('action_bar.customize_aria', 'Customize action bar')}
+          className={cn("h-8 w-8 shrink-0", className)}
+          aria-label={t("action_bar.customize_aria", "Customize action bar")}
         >
           <Settings2Icon aria-hidden />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-3" align="end" sideOffset={8}>
         <p className="mb-2 text-sm font-medium">
-          {t('action_bar.customize_title', 'Action bar')}
+          {t("action_bar.customize_title", "Action bar")}
         </p>
         <p className="mb-3 text-xs text-muted-foreground">
           {t(
-            'action_bar.customize_hint',
-            'Choose which shortcuts appear. By default, all are shown.',
+            "action_bar.customize_hint",
+            "Choose which shortcuts appear. By default, all are shown."
           )}
         </p>
         <ul className="flex max-h-64 flex-col gap-2 overflow-y-auto pr-1">
@@ -116,7 +116,7 @@ export function TopActionBarCustomiseMenu({
           className="mt-3 w-full"
           onClick={() => clearScopeSelection(scopeKey)}
         >
-          {t('action_bar.show_all', 'Show all')}
+          {t("action_bar.show_all", "Show all")}
         </Button>
       </PopoverContent>
     </Popover>

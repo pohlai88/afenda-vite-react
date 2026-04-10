@@ -1,8 +1,13 @@
 import type * as React from "react"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { VisuallyHidden } from "@afenda/shadcn-ui/components/ui/visually-hidden"
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizontalIcon,
+} from "lucide-react"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -114,9 +119,8 @@ function PaginationEllipsis({
       )}
       {...props}
     >
-      <MoreHorizontalIcon
-      />
-      <span className="sr-only">More pages</span>
+      <MoreHorizontalIcon />
+      <VisuallyHidden>More pages</VisuallyHidden>
     </span>
   )
 }

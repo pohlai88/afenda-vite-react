@@ -1,10 +1,10 @@
-import { memo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { memo } from "react"
+import { useTranslation } from "react-i18next"
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from '@afenda/ui/components/ui/avatar'
+} from "@afenda/shadcn-ui/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,42 +13,42 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@afenda/ui/components/ui/dropdown-menu'
+} from "@afenda/shadcn-ui/components/ui/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@afenda/ui/components/ui/sidebar'
+} from "@afenda/shadcn-ui/components/ui/sidebar"
 import {
   EllipsisVerticalIcon,
   CircleUserRoundIcon,
   CreditCardIcon,
   BellIcon,
   LogOutIcon,
-} from 'lucide-react'
-import { useAppShellStore } from '@/share/client-store/app-shell-store'
+} from "lucide-react"
+import { useAppShellStore } from "@/share/client-store/app-shell-store"
 
 function getInitials(name: string | null | undefined): string {
-  if (!name) return 'U'
+  if (!name) return "U"
   return name
-    .split(' ')
+    .split(" ")
     .map((w) => w[0])
-    .join('')
+    .join("")
     .toUpperCase()
     .slice(0, 2)
 }
 
 export const UserMenu = memo(function UserMenu() {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const { isMobile } = useSidebar()
   const currentUser = useAppShellStore((s) => s.currentUser)
   const logout = useAppShellStore((s) => s.logout)
 
-  const displayName = currentUser?.name ?? 'Guest'
+  const displayName = currentUser?.name ?? "Guest"
   const email = currentUser?.id
     ? `${currentUser.id}@afenda.app`
-    : 'guest@afenda.app'
+    : "guest@afenda.app"
 
   return (
     <SidebarMenu>
@@ -76,7 +76,7 @@ export const UserMenu = memo(function UserMenu() {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
+            side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
@@ -100,21 +100,21 @@ export const UserMenu = memo(function UserMenu() {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <CircleUserRoundIcon />
-                {t('user_menu.account')}
+                {t("user_menu.account")}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCardIcon />
-                {t('user_menu.billing')}
+                {t("user_menu.billing")}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <BellIcon />
-                {t('user_menu.notifications')}
+                {t("user_menu.notifications")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={() => logout()}>
               <LogOutIcon />
-              {t('user_menu.logout')}
+              {t("user_menu.logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,15 +1,15 @@
 /// <reference types="node" />
 
-import fs from 'fs/promises'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import fs from "fs/promises"
+import path from "path"
+import { fileURLToPath } from "url"
 
 export type ReadmeTargetMode =
-  | 'docs-root'
-  | 'docs-collections'
-  | 'scripts'
-  | 'generic-formal-directory'
-  | 'packages-ui'
+  | "docs-root"
+  | "docs-collections"
+  | "scripts"
+  | "generic-formal-directory"
+  | "packages-ui"
 
 export interface ReadmeTargetDefinition {
   path: string
@@ -27,7 +27,7 @@ export interface AfendaConfig {
     description: string
   }
   workspace: {
-    packageManager: 'pnpm'
+    packageManager: "pnpm"
     rootPackageName: string
     defaultPackageScope: string
   }
@@ -74,11 +74,11 @@ export interface WebClientSrcGovernance {
 }
 
 export const scriptDirectory = path.dirname(fileURLToPath(import.meta.url))
-export const workspaceRoot = path.resolve(scriptDirectory, '..')
-export const afendaConfigPath = path.join(scriptDirectory, 'afenda.config.json')
+export const workspaceRoot = path.resolve(scriptDirectory, "..")
+export const afendaConfigPath = path.join(scriptDirectory, "afenda.config.json")
 export const afendaSchemaPath = path.join(
   scriptDirectory,
-  'afenda.config.schema.json',
+  "afenda.config.schema.json"
 )
 
 export async function loadAfendaConfig(): Promise<AfendaConfig> {
@@ -89,52 +89,52 @@ export async function loadAfendaConfig(): Promise<AfendaConfig> {
 }
 
 export async function readJsonFile(filePath: string): Promise<unknown> {
-  const raw = await fs.readFile(filePath, 'utf8')
+  const raw = await fs.readFile(filePath, "utf8")
   return JSON.parse(raw) as unknown
 }
 
 export function assertAfendaConfigShape(
-  value: unknown,
+  value: unknown
 ): asserts value is AfendaConfig {
-  assert(isRecord(value), 'Afenda config must be a JSON object.')
+  assert(isRecord(value), "Afenda config must be a JSON object.")
 
-  assert(value.schemaVersion === 1, 'Afenda config schemaVersion must be 1.')
+  assert(value.schemaVersion === 1, "Afenda config schemaVersion must be 1.")
 
-  assert(isRecord(value.product), 'Afenda config product must be an object.')
-  assertNonEmptyString(value.product.name, 'product.name')
-  assertNonEmptyString(value.product.description, 'product.description')
+  assert(isRecord(value.product), "Afenda config product must be an object.")
+  assertNonEmptyString(value.product.name, "product.name")
+  assertNonEmptyString(value.product.description, "product.description")
 
   assert(
     isRecord(value.workspace),
-    'Afenda config workspace must be an object.',
+    "Afenda config workspace must be an object."
   )
   assert(
-    value.workspace.packageManager === 'pnpm',
-    'Afenda config workspace.packageManager must be "pnpm".',
+    value.workspace.packageManager === "pnpm",
+    'Afenda config workspace.packageManager must be "pnpm".'
   )
   assertNonEmptyString(
     value.workspace.rootPackageName,
-    'workspace.rootPackageName',
+    "workspace.rootPackageName"
   )
   assertNonEmptyString(
     value.workspace.defaultPackageScope,
-    'workspace.defaultPackageScope',
+    "workspace.defaultPackageScope"
   )
 
-  assert(isRecord(value.paths), 'Afenda config paths must be an object.')
-  assertNonEmptyString(value.paths.webApp, 'paths.webApp')
+  assert(isRecord(value.paths), "Afenda config paths must be an object.")
+  assertNonEmptyString(value.paths.webApp, "paths.webApp")
   assertNonEmptyString(
     value.paths.typescriptSharedConfig,
-    'paths.typescriptSharedConfig',
+    "paths.typescriptSharedConfig"
   )
 
   assert(
     Array.isArray(value.readmeTargets),
-    'Afenda config readmeTargets must be an array.',
+    "Afenda config readmeTargets must be an array."
   )
   assert(
     value.readmeTargets.length > 0,
-    'Afenda config readmeTargets must contain at least one target.',
+    "Afenda config readmeTargets must contain at least one target."
   )
 
   value.readmeTargets.forEach((target, index) => {
@@ -143,101 +143,101 @@ export function assertAfendaConfigShape(
 
   assert(
     isRecord(value.workspaceGovernance),
-    'Afenda config workspaceGovernance must be an object.',
+    "Afenda config workspaceGovernance must be an object."
   )
 
   assert(
     isRecord(value.workspaceGovernance.rootTopology),
-    'workspaceGovernance.rootTopology must be an object.',
+    "workspaceGovernance.rootTopology must be an object."
   )
   assertStringArray(
     value.workspaceGovernance.rootTopology.primaryProductDirectories,
-    'workspaceGovernance.rootTopology.primaryProductDirectories',
+    "workspaceGovernance.rootTopology.primaryProductDirectories"
   )
   assertStringArray(
     value.workspaceGovernance.rootTopology.allowedRootDirectories,
-    'workspaceGovernance.rootTopology.allowedRootDirectories',
+    "workspaceGovernance.rootTopology.allowedRootDirectories"
   )
   assertStringArray(
     value.workspaceGovernance.rootTopology.requiredRootFiles,
-    'workspaceGovernance.rootTopology.requiredRootFiles',
+    "workspaceGovernance.rootTopology.requiredRootFiles"
   )
 
   assert(
     isRecord(value.workspaceGovernance.featureTemplate),
-    'workspaceGovernance.featureTemplate must be an object.',
+    "workspaceGovernance.featureTemplate must be an object."
   )
   assertNonEmptyString(
     value.workspaceGovernance.featureTemplate.featuresRoot,
-    'workspaceGovernance.featureTemplate.featuresRoot',
+    "workspaceGovernance.featureTemplate.featuresRoot"
   )
   assertStringArray(
     value.workspaceGovernance.featureTemplate.requiredDirectories,
-    'workspaceGovernance.featureTemplate.requiredDirectories',
+    "workspaceGovernance.featureTemplate.requiredDirectories"
   )
   assertStringArray(
     value.workspaceGovernance.featureTemplate.requiredFiles,
-    'workspaceGovernance.featureTemplate.requiredFiles',
+    "workspaceGovernance.featureTemplate.requiredFiles"
   )
   assert(
     typeof value.workspaceGovernance.featureTemplate
-      .enforceWhenFeatureExists === 'boolean',
-    'workspaceGovernance.featureTemplate.enforceWhenFeatureExists must be a boolean.',
+      .enforceWhenFeatureExists === "boolean",
+    "workspaceGovernance.featureTemplate.enforceWhenFeatureExists must be a boolean."
   )
 
   assert(
     isRecord(value.workspaceGovernance.sharedPackageTemplate),
-    'workspaceGovernance.sharedPackageTemplate must be an object.',
+    "workspaceGovernance.sharedPackageTemplate must be an object."
   )
   assertNonEmptyString(
     value.workspaceGovernance.sharedPackageTemplate.packagePath,
-    'workspaceGovernance.sharedPackageTemplate.packagePath',
+    "workspaceGovernance.sharedPackageTemplate.packagePath"
   )
   assertStringArray(
     value.workspaceGovernance.sharedPackageTemplate.requiredDirectories,
-    'workspaceGovernance.sharedPackageTemplate.requiredDirectories',
+    "workspaceGovernance.sharedPackageTemplate.requiredDirectories"
   )
   assert(
     typeof value.workspaceGovernance.sharedPackageTemplate
-      .requireDirectoriesWhenPackageExists === 'boolean',
-    'workspaceGovernance.sharedPackageTemplate.requireDirectoriesWhenPackageExists must be a boolean.',
+      .requireDirectoriesWhenPackageExists === "boolean",
+    "workspaceGovernance.sharedPackageTemplate.requireDirectoriesWhenPackageExists must be a boolean."
   )
 
   assert(
     isRecord(value.workspaceGovernance.webClientSrc),
-    'workspaceGovernance.webClientSrc must be an object.',
+    "workspaceGovernance.webClientSrc must be an object."
   )
   assertNonEmptyString(
     value.workspaceGovernance.webClientSrc.srcRoot,
-    'workspaceGovernance.webClientSrc.srcRoot',
+    "workspaceGovernance.webClientSrc.srcRoot"
   )
   assertStringArray(
     value.workspaceGovernance.webClientSrc.allowedTopLevelDirectories,
-    'workspaceGovernance.webClientSrc.allowedTopLevelDirectories',
+    "workspaceGovernance.webClientSrc.allowedTopLevelDirectories"
   )
   assert(
     Array.isArray(
-      value.workspaceGovernance.webClientSrc.requiredShareSubdirectories,
+      value.workspaceGovernance.webClientSrc.requiredShareSubdirectories
     ),
-    'workspaceGovernance.webClientSrc.requiredShareSubdirectories must be an array.',
+    "workspaceGovernance.webClientSrc.requiredShareSubdirectories must be an array."
   )
   value.workspaceGovernance.webClientSrc.requiredShareSubdirectories.forEach(
     (item, index) => {
       assertNonEmptyString(
         item,
-        `workspaceGovernance.webClientSrc.requiredShareSubdirectories[${index}]`,
+        `workspaceGovernance.webClientSrc.requiredShareSubdirectories[${index}]`
       )
-    },
+    }
   )
   assert(
-    typeof value.workspaceGovernance.webClientSrc.enforce === 'boolean',
-    'workspaceGovernance.webClientSrc.enforce must be a boolean.',
+    typeof value.workspaceGovernance.webClientSrc.enforce === "boolean",
+    "workspaceGovernance.webClientSrc.enforce must be a boolean."
   )
 }
 
 export function assertReadmeTargetDefinition(
   value: unknown,
-  label: string,
+  label: string
 ): asserts value is ReadmeTargetDefinition {
   assert(isRecord(value), `${label} must be an object.`)
   assertNonEmptyString(value.path, `${label}.path`)
@@ -253,57 +253,57 @@ export function assertReadmeTargetDefinition(
 
   if (value.includeChildDirectories !== undefined) {
     assert(
-      typeof value.includeChildDirectories === 'boolean',
-      `${label}.includeChildDirectories must be a boolean.`,
+      typeof value.includeChildDirectories === "boolean",
+      `${label}.includeChildDirectories must be a boolean.`
     )
     assert(
-      value.mode === 'generic-formal-directory',
-      `${label}.includeChildDirectories is only supported for generic-formal-directory targets.`,
+      value.mode === "generic-formal-directory",
+      `${label}.includeChildDirectories is only supported for generic-formal-directory targets.`
     )
   }
 
-  if (value.mode === 'generic-formal-directory') {
+  if (value.mode === "generic-formal-directory") {
     assertNonEmptyString(value.title, `${label}.title`)
     assertNonEmptyString(value.description, `${label}.description`)
   }
 
-  if (value.mode === 'packages-ui') {
+  if (value.mode === "packages-ui") {
     assertNonEmptyString(value.title, `${label}.title`)
     assertNonEmptyString(value.description, `${label}.description`)
     assert(
-      value.path === 'packages/ui',
-      `${label}.path must be "packages/ui" for packages-ui mode.`,
+      value.path === "packages/shadcn-ui",
+      `${label}.path must be "packages/shadcn-ui" for packages-ui mode.`
     )
   }
 }
 
 export function assertReadmeTargetMode(
   value: unknown,
-  label: string,
+  label: string
 ): asserts value is ReadmeTargetMode {
   assert(
-    value === 'docs-root' ||
-      value === 'docs-collections' ||
-      value === 'scripts' ||
-      value === 'generic-formal-directory' ||
-      value === 'packages-ui',
-    `${label} must be one of: docs-root, docs-collections, scripts, generic-formal-directory, packages-ui.`,
+    value === "docs-root" ||
+      value === "docs-collections" ||
+      value === "scripts" ||
+      value === "generic-formal-directory" ||
+      value === "packages-ui",
+    `${label} must be one of: docs-root, docs-collections, scripts, generic-formal-directory, packages-ui.`
   )
 }
 
 export function assertNonEmptyString(
   value: unknown,
-  label: string,
+  label: string
 ): asserts value is string {
   assert(
-    typeof value === 'string' && value.trim().length > 0,
-    `${label} must be a non-empty string.`,
+    typeof value === "string" && value.trim().length > 0,
+    `${label} must be a non-empty string.`
   )
 }
 
 export function assertStringArray(
   value: unknown,
-  label: string,
+  label: string
 ): asserts value is string[] {
   assert(Array.isArray(value), `${label} must be an array.`)
   assert(value.length > 0, `${label} must contain at least one item.`)
@@ -313,11 +313,11 @@ export function assertStringArray(
 }
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
+  return typeof value === "object" && value !== null
 }
 
 export function toPosixPath(value: string) {
-  return value.split(path.sep).join('/')
+  return value.split(path.sep).join("/")
 }
 
 export function assert(condition: unknown, message: string): asserts condition {

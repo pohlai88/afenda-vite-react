@@ -1,16 +1,13 @@
-import { MenuIcon } from 'lucide-react'
+import { MenuIcon } from "lucide-react"
 
-import { Button } from '@afenda/ui/components/ui/button'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
 
 export interface MobileNavTriggerProps {
   onClick: () => void
   expanded?: boolean
 }
 
-export function MobileNavTrigger({
-  onClick,
-  expanded,
-}: MobileNavTriggerProps) {
+export function MobileNavTrigger({ onClick, expanded }: MobileNavTriggerProps) {
   return (
     <Button
       variant="ghost"

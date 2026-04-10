@@ -1,9 +1,9 @@
-import { type MouseEventHandler } from 'react'
-import { CircleHelpIcon } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { type MouseEventHandler } from "react"
+import { CircleHelpIcon } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
-import { Button } from '@afenda/ui/components/ui/button'
-import { cn } from '@afenda/ui/lib/utils'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
 export interface HelpTriggerProps {
   onClick?: MouseEventHandler<HTMLButtonElement>
@@ -19,7 +19,7 @@ export function HelpTrigger({
   disabled,
   className,
 }: HelpTriggerProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
 
   return (
     <Button
@@ -29,8 +29,8 @@ export function HelpTrigger({
       className={cn(className)}
       onClick={onClick}
       disabled={disabled}
-      aria-label={t('help.aria_label', 'Help and support')}
-      title={t('help.tooltip', 'Help')}
+      aria-label={t("help.aria_label", "Help and support")}
+      title={t("help.tooltip", "Help")}
     >
       <CircleHelpIcon aria-hidden="true" />
     </Button>

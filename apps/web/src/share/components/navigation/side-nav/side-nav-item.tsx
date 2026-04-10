@@ -1,14 +1,14 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation } from "react-router-dom"
 
 import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@afenda/ui/components/ui/sidebar'
+} from "@afenda/shadcn-ui/components/ui/sidebar"
 
-import { isTopNavItemActive, type TopNavItem } from '../nav-catalog/nav-model'
-import { dashboardSidebarMenuButtonClassName } from './dashboard-sidebar-tokens'
-import { useCloseMobile } from './use-close-mobile'
+import { isTopNavItemActive, type TopNavItem } from "../nav-catalog/nav-model"
+import { dashboardSidebarMenuButtonClassName } from "./dashboard-sidebar-tokens"
+import { useCloseMobile } from "./use-close-mobile"
 
 export interface SideNavItemProps {
   item: TopNavItem
@@ -28,13 +28,12 @@ export function SideNavItem({ item }: SideNavItemProps) {
   const Icon = item.icon
 
   const showBadge =
-    item.badge !== undefined && item.badge !== null && item.badge !== ''
+    item.badge !== undefined && item.badge !== null && item.badge !== ""
 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
         asChild
-        hasIcon={Boolean(Icon)}
         isActive={isActive}
         tooltip={item.label}
         className={dashboardSidebarMenuButtonClassName}
@@ -42,7 +41,7 @@ export function SideNavItem({ item }: SideNavItemProps) {
         <Link
           to={item.to}
           onClick={closeMobile}
-          aria-current={isActive ? 'page' : undefined}
+          aria-current={isActive ? "page" : undefined}
         >
           {Icon ? <Icon /> : null}
           <span>{item.label}</span>

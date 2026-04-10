@@ -1,8 +1,8 @@
-import { type ComponentPropsWithoutRef, forwardRef } from 'react'
+import { type ComponentPropsWithoutRef, forwardRef } from "react"
 
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-export type ShellHeaderProps = ComponentPropsWithoutRef<'div'>
+export type ShellHeaderProps = ComponentPropsWithoutRef<"div">
 
 /**
  * Top chrome region (`header` zone). Wraps the primary app header; inner surfaces may
@@ -15,9 +15,9 @@ export const ShellHeader = forwardRef<HTMLDivElement, ShellHeaderProps>(
         ref={ref}
         data-shell-zone="header"
         data-shell-key="shell-header"
-        className={cn('shrink-0', className)}
+        className={cn("shrink-0", className)}
         {...props}
       />
     )
-  },
+  }
 )

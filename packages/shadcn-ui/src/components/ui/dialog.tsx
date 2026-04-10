@@ -9,7 +9,8 @@ import {
   type DialogSize,
 } from "../../lib/constant/component/dialog"
 import { cn } from "../../lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { VisuallyHidden } from "@afenda/shadcn-ui/components/ui/visually-hidden"
 import { XIcon } from "lucide-react"
 
 function Dialog({
@@ -97,9 +98,8 @@ function DialogContent({
               className="absolute top-4 right-4 bg-secondary"
               size="icon-sm"
             >
-              <XIcon
-              />
-              <span className="sr-only">Close</span>
+              <XIcon />
+              <VisuallyHidden>Close</VisuallyHidden>
             </Button>
           </DialogPrimitive.Close>
         )}
@@ -152,10 +152,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn(
-        "text-base leading-none font-medium",
-        className
-      )}
+      className={cn("text-base leading-none font-medium", className)}
       {...props}
     />
   )

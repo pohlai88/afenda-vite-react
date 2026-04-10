@@ -1,7 +1,7 @@
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import { Logo } from '../brand'
-import { ShellTitle } from '../shell-ui'
+import { Logo } from "../brand"
+import { ShellTitle } from "../shell-ui"
 
 export interface BrandTitleBlockProps {
   className?: string
@@ -22,7 +22,7 @@ export function BrandTitleBlock({
   logoUrl,
   logoHref = null,
 }: BrandTitleBlockProps) {
-  const containerClasses = cn('flex min-w-0 items-center gap-3', className)
+  const containerClasses = cn("flex min-w-0 items-center gap-3", className)
 
   return (
     <div className={containerClasses}>

@@ -1,13 +1,13 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom"
 
-import { cn } from '@afenda/ui/lib/utils'
-import { DEFAULT_BRAND_NAME } from './brand.constants'
-import type { LogoProps } from './brand.types'
-import { LogoMark } from './logo-mark'
-import { LogoWordmark } from './logo-wordmark'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
+import { DEFAULT_BRAND_NAME } from "./brand.constants"
+import type { LogoProps } from "./brand.types"
+import { LogoMark } from "./logo-mark"
+import { LogoWordmark } from "./logo-wordmark"
 
 export function Logo({
-  size = 'md',
+  size = "md",
   showText = true,
   href = null,
   className,
@@ -16,7 +16,7 @@ export function Logo({
   logoUrl,
   markFallback,
 }: LogoProps) {
-  const containerClasses = cn('inline-flex items-center gap-2', className)
+  const containerClasses = cn("inline-flex items-center gap-2", className)
   const content = (
     <>
       <LogoMark

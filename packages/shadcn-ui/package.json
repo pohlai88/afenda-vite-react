@@ -24,7 +24,8 @@
     "./components/ui/*": "./src/components/ui/*.tsx",
     "./lib/constant": "./src/lib/constant/index.ts",
     "./lib/utils": "./src/lib/utils.ts",
-    "./lib/*": "./src/lib/*.ts"
+    "./lib/*": "./src/lib/*.ts",
+    "./hooks/*": "./src/hooks/*.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

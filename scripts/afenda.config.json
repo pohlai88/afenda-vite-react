@@ -12,7 +12,7 @@
   },
   "paths": {
     "webApp": "apps/web",
-    "uiPackage": "packages/ui",
+    "uiPackage": "packages/shadcn-ui",
     "typescriptSharedConfig": "packages/typescript-config"
   },
   "readmeTargets": [
@@ -39,10 +39,10 @@
       "includeChildDirectories": true
     },
     {
-      "path": "packages/ui",
+      "path": "packages/shadcn-ui",
       "mode": "packages-ui",
       "title": "Afenda UI package",
-      "description": "Shared shadcn-style components, hooks, utilities, and global styles for the web client (`@afenda/ui`)."
+      "description": "Governed shadcn-style primitives, semantic layer, and utilities for the web client (`@afenda/shadcn-ui`)."
     }
   ],
   "workspaceGovernance": {
@@ -93,14 +93,19 @@
       "requireDirectoriesWhenPackageExists": true
     },
     "uiPackageTemplate": {
-      "packagePath": "packages/ui",
+      "packagePath": "packages/shadcn-ui",
       "requiredDirectories": ["src/components/ui", "src/hooks", "src/lib"],
       "requiredFiles": ["components.json", "package.json", "tsconfig.json"],
       "requireDirectoriesWhenPackageExists": true
     },
     "webClientSrc": {
       "srcRoot": "apps/web/src",
-      "allowedTopLevelDirectories": ["components", "features", "pages", "share"],
+      "allowedTopLevelDirectories": [
+        "components",
+        "features",
+        "pages",
+        "share"
+      ],
       "requiredShareSubdirectories": [
         "api",
         "client-store",

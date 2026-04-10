@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { emptyDefaults } from "../../lib/constant/component/empty"
-import { cn } from "@/lib/utils"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
 function Empty({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -60,10 +60,7 @@ function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="empty-title"
-      className={cn(
-        "text-lg font-medium tracking-tight",
-        className
-      )}
+      className={cn("text-lg font-medium tracking-tight", className)}
       {...props}
     />
   )

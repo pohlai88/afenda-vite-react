@@ -9,21 +9,21 @@
  * Styling rule: consume shared app classes and tokens, do not define them here.
  * Related files: `main.tsx`, `share/routing/router.tsx`, `index.css`.
  */
-import { Suspense } from 'react'
-import { useTranslation } from 'react-i18next'
-import { RouterProvider } from 'react-router-dom'
-import { TooltipProvider } from '@afenda/shadcn-ui'
-import { Toaster } from '@afenda/ui/components/ui/sonner'
-import { ThemeProvider } from '@/components/theme-provider'
-import { QueryProvider } from '@/share/components/providers'
-import { appRouter } from './share/routing/router'
+import { Suspense } from "react"
+import { useTranslation } from "react-i18next"
+import { RouterProvider } from "react-router-dom"
+import { TooltipProvider } from "@afenda/shadcn-ui"
+import { Toaster } from "@afenda/shadcn-ui/components/ui/sonner"
+import { ThemeProvider } from "@/components/theme-provider"
+import { QueryProvider } from "@/share/components/providers"
+import { appRouter } from "./share/routing/router"
 
 function AppShell() {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   return (
     <QueryProvider>
       <Suspense
-        fallback={<div className="loading">{t('loading.erp_system')}</div>}
+        fallback={<div className="loading">{t("loading.erp_system")}</div>}
       >
         <RouterProvider router={appRouter} />
       </Suspense>

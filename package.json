@@ -46,7 +46,7 @@
     "script:ast-grep-scan": "ast-grep scan --config sgconfig.yml",
     "script:ui-drift-governance": "pnpm run script:check-ui-drift && pnpm run script:check-ui-drift:ast && pnpm run script:check-ui-wrapper-contracts && pnpm run script:check-runtime-providers && pnpm run script:check-shell-governance-report && pnpm run script:check-policy-manifests && pnpm run script:check-metadata-ui-fixtures && pnpm run script:check-style-binding-fixtures && pnpm run script:ast-grep-scan",
     "script:check-stem-sync": "tsx scripts/check-stem-sync.ts",
-    "script:ui-color-governance": "pnpm run script:check-stem-sync && pnpm run script:check-color-consistency && pnpm exec eslint packages/ui/src/components apps/web/src/features apps/web/src/share/components --max-warnings 0 --cache --cache-location .eslintcache --concurrency auto"
+    "script:ui-color-governance": "pnpm run script:check-stem-sync && pnpm run script:check-color-consistency && pnpm exec eslint packages/shadcn-ui/src/components apps/web/src/features apps/web/src/share/components --max-warnings 0 --cache --cache-location .eslintcache --concurrency auto"
   },
   "devDependencies": {
     "@afenda/eslint-config": "workspace:*",
@@ -56,6 +56,7 @@
     "lint-staged": "^16.4.0",
     "only-allow": "^1.2.2",
     "prettier": "catalog:",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "shadcn": "^4.2.0",
     "simple-git-hooks": "^2.13.1",
     "ts-morph": "^27.0.2",

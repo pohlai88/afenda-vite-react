@@ -1,6 +1,6 @@
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import { ShellActionSlot, ShellTitle } from '../shell-ui'
+import { ShellActionSlot, ShellTitle } from "../shell-ui"
 
 export interface ShellTitleBlockProps {
   className?: string
@@ -16,8 +16,8 @@ export function ShellTitleBlock({
   fallbackTitle,
 }: ShellTitleBlockProps) {
   const containerClasses = cn(
-    'flex min-w-0 items-center justify-between gap-3',
-    className,
+    "flex min-w-0 items-center justify-between gap-3",
+    className
   )
 
   return (

@@ -1,19 +1,19 @@
-import { Link, useLocation } from 'react-router-dom'
-import { XIcon } from 'lucide-react'
+import { Link, useLocation } from "react-router-dom"
+import { XIcon } from "lucide-react"
 
-import { cn } from '@afenda/ui/lib/utils'
-import { Avatar, AvatarFallback } from '@afenda/ui/components/ui/avatar'
-import { Button } from '@afenda/ui/components/ui/button'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
+import { Avatar, AvatarFallback } from "@afenda/shadcn-ui/components/ui/avatar"
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from '@afenda/ui/components/ui/sheet'
+} from "@afenda/shadcn-ui/components/ui/sheet"
 
-import { useAppShellStore } from '@/share/client-store/app-shell-store'
-import { BrandTitleBlock } from '../../block-ui'
-import { isTopNavItemActive, type TopNavItem } from '../nav-catalog/nav-model'
+import { useAppShellStore } from "@/share/client-store/app-shell-store"
+import { BrandTitleBlock } from "../../block-ui"
+import { isTopNavItemActive, type TopNavItem } from "../nav-catalog/nav-model"
 
 export interface MobileNavDrawerProps {
   open: boolean
@@ -25,12 +25,12 @@ export interface MobileNavDrawerProps {
 }
 
 function getInitials(name: string | null | undefined) {
-  if (!name) return 'U'
+  if (!name) return "U"
 
   return name
-    .split(' ')
+    .split(" ")
     .map((word) => word[0])
-    .join('')
+    .join("")
     .toUpperCase()
     .slice(0, 2)
 }
@@ -82,12 +82,12 @@ export function MobileNavDrawer({
                 key={item.to}
                 to={item.to}
                 onClick={() => onOpenChange(false)}
-                aria-current={isActive ? 'page' : undefined}
+                aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  'flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200',
+                  "flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200",
                   isActive
-                    ? 'bg-primary/15 font-semibold text-primary [box-shadow:inset_3px_0_0_0_oklch(var(--primary))]'
-                    : 'text-muted-foreground hover:bg-muted/80 hover:text-foreground',
+                    ? "bg-primary/15 font-semibold text-primary [box-shadow:inset_3px_0_0_0_oklch(var(--primary))]"
+                    : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 )}
               >
                 {item.label}
@@ -106,12 +106,12 @@ export function MobileNavDrawer({
               </Avatar>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">
-                  {currentUser.name ?? 'Guest'}
+                  {currentUser.name ?? "Guest"}
                 </p>
                 <p className="truncate text-xs text-muted-foreground">
                   {currentUser.id
                     ? `${currentUser.id}@afenda.app`
-                    : 'guest@afenda.app'}
+                    : "guest@afenda.app"}
                 </p>
               </div>
             </div>

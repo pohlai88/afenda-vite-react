@@ -1,19 +1,19 @@
-import { useCallback } from 'react'
-import { MoonIcon, SunIcon } from 'lucide-react'
-import { useTheme } from '@/components/theme-provider'
-import { useTranslation } from 'react-i18next'
+import { useCallback } from "react"
+import { MoonIcon, SunIcon } from "lucide-react"
+import { useTheme } from "@/components/theme-provider"
+import { useTranslation } from "react-i18next"
 
-import { Button } from '@afenda/ui/components/ui/button'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
 
 export function ThemeToggle() {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const { resolvedTheme, setTheme } = useTheme()
-  const isDark = resolvedTheme === 'dark'
+  const isDark = resolvedTheme === "dark"
 
-  const toggleLabel = t('theme.toggle', 'Toggle theme')
+  const toggleLabel = t("theme.toggle", "Toggle theme")
 
   const toggleTheme = useCallback(() => {
-    setTheme(isDark ? 'light' : 'dark')
+    setTheme(isDark ? "light" : "dark")
   }, [isDark, setTheme])
 
   return (

@@ -14,14 +14,14 @@
  *   - asChild contract drift                 → UIX-RADIX-005
  *   - shadcn primitive substructure drift    → UIX-SHADCN-002
  *
- * Scan scope: packages/shadcn-ui/src and packages/ui/src only (uiOwnerRoots).
+ * Scan scope: packages/shadcn-ui/src only (wrapperContractScanRoots).
  *
  * Usage:
  *   pnpm run script:check-ui-wrapper-contracts
  *   pnpm run script:check-ui-wrapper-contracts --format=json
  */
-import path from 'node:path'
-import { existsSync } from 'node:fs'
+import path from "node:path"
+import { existsSync } from "node:fs"
 import {
   Node,
   Project,
@@ -33,7 +33,7 @@ import {
   type JsxSelfClosingElement,
   type JsxOpeningElement,
   type SourceFile,
-} from 'ts-morph'
+} from "ts-morph"
 
 import {
   type AstFinding,
@@ -50,15 +50,15 @@ import {
   truncateExcerpt,
   exitWithStatus,
   EXCLUDED_PATH_PARTS,
-} from '../tools/ui-drift/shared/index.js'
+} from "../tools/ui-drift/shared/index.js"
 
 type RuleCode =
-  | 'UIX-RADIX-001'
-  | 'UIX-RADIX-002'
-  | 'UIX-RADIX-003'
-  | 'UIX-RADIX-004'
-  | 'UIX-RADIX-005'
-  | 'UIX-SHADCN-002'
+  | "UIX-RADIX-001"
+  | "UIX-RADIX-002"
+  | "UIX-RADIX-003"
+  | "UIX-RADIX-004"
+  | "UIX-RADIX-005"
+  | "UIX-SHADCN-002"
 
 const ROOT_DIR = findRepoRoot()
 const REPORT_ROOT = ROOT_DIR
@@ -81,7 +81,7 @@ async function main() {
 
   const sourceFilesToScan = listFilesForScanByPolicy(
     ROOT_DIR,
-    governance.ownershipPolicy.wrapperContractScanRoots,
+    governance.ownershipPolicy.wrapperContractScanRoots
   )
   project.addSourceFilesAtPaths(sourceFilesToScan)
 
@@ -93,7 +93,10 @@ async function main() {
     const primitiveNamespaceAliases = getRadixNamespaceAliases(sourceFile)
     const primitiveNamedAliases = getRadixNamedAliases(sourceFile)
 
-    if (primitiveNamespaceAliases.length === 0 && primitiveNamedAliases.length === 0) {
+    if (
+      primitiveNamespaceAliases.length === 0 &&
+      primitiveNamedAliases.length === 0
+    ) {
       continue
     }
 
@@ -107,7 +110,7 @@ async function main() {
       const primitiveJsxNodes = findPrimitiveJsxNodes(
         body,
         primitiveNamespaceAliases,
-        primitiveNamedAliases,
+        primitiveNamedAliases
       )
 
       if (primitiveJsxNodes.length === 0) {
@@ -122,7 +125,11 @@ async function main() {
       }
 
       if (contract.requireRefForwardingOrExplicitRefPassThrough) {
-        checkRefForwardingOrRefPassThrough(sourceFile, wrapperFn, primitiveJsxNodes)
+        checkRefForwardingOrRefPassThrough(
+          sourceFile,
+          wrapperFn,
+          primitiveJsxNodes
+        )
       }
 
       if (contract.warnOnLocalStateReplacingPrimitiveBehavior) {
@@ -133,7 +140,11 @@ async function main() {
         checkSuspiciousAsChildDrift(sourceFile, wrapperFn, primitiveJsxNodes)
       }
 
-      checkSuspiciousShadcnSubstructure(sourceFile, wrapperFn, primitiveJsxNodes)
+      checkSuspiciousShadcnSubstructure(
+        sourceFile,
+        wrapperFn,
+        primitiveJsxNodes
+      )
     }
   }
 
@@ -145,7 +156,8 @@ async function main() {
 // ---------------------------------------------------------------------------
 
 async function loadGovernance(): Promise<GovernanceModules<RuleCode>> {
-  const { loadGovernanceModules } = await import('../tools/ui-drift/shared/index.js')
+  const { loadGovernanceModules } =
+    await import("../tools/ui-drift/shared/index.js")
   return loadGovernanceModules<RuleCode>(ROOT_DIR)
 }
 
@@ -155,15 +167,15 @@ async function loadGovernance(): Promise<GovernanceModules<RuleCode>> {
 
 function findTsConfig(): string {
   const candidates = [
-    path.join(ROOT_DIR, 'tsconfig.json'),
-    path.join(ROOT_DIR, 'tsconfig.base.json'),
+    path.join(ROOT_DIR, "tsconfig.json"),
+    path.join(ROOT_DIR, "tsconfig.base.json"),
   ]
 
   for (const candidate of candidates) {
     if (existsSync(candidate)) return candidate
   }
 
-  console.error('Unable to locate tsconfig.json or tsconfig.base.json')
+  console.error("Unable to locate tsconfig.json or tsconfig.base.json")
   process.exit(2)
 }
 
@@ -182,7 +194,9 @@ function shouldScanFile(sourceFile: SourceFile): boolean {
 function getRadixNamespaceAliases(sourceFile: SourceFile): string[] {
   return sourceFile
     .getImportDeclarations()
-    .filter((decl) => decl.getModuleSpecifierValue().startsWith('@radix-ui/react-'))
+    .filter((decl) =>
+      decl.getModuleSpecifierValue().startsWith("@radix-ui/react-")
+    )
     .map((decl) => decl.getNamespaceImport()?.getText())
     .filter((v): v is string => v !== undefined)
 }
@@ -190,11 +204,13 @@ function getRadixNamespaceAliases(sourceFile: SourceFile): string[] {
 function getRadixNamedAliases(sourceFile: SourceFile): string[] {
   return sourceFile
     .getImportDeclarations()
-    .filter((decl) => decl.getModuleSpecifierValue().startsWith('@radix-ui/react-'))
+    .filter((decl) =>
+      decl.getModuleSpecifierValue().startsWith("@radix-ui/react-")
+    )
     .flatMap((decl) =>
       decl
         .getNamedImports()
-        .map((named) => named.getAliasNode()?.getText() ?? named.getName()),
+        .map((named) => named.getAliasNode()?.getText() ?? named.getName())
     )
 }
 
@@ -203,9 +219,11 @@ function getRadixNamedAliases(sourceFile: SourceFile): string[] {
 // ---------------------------------------------------------------------------
 
 function getCandidateWrapperFunctions(
-  sourceFile: SourceFile,
+  sourceFile: SourceFile
 ): Array<FunctionDeclaration | FunctionExpression | ArrowFunction> {
-  const result: Array<FunctionDeclaration | FunctionExpression | ArrowFunction> = []
+  const result: Array<
+    FunctionDeclaration | FunctionExpression | ArrowFunction
+  > = []
 
   for (const fn of sourceFile.getFunctions()) {
     result.push(fn)
@@ -215,7 +233,8 @@ function getCandidateWrapperFunctions(
     const initializer = variable.getInitializer()
     if (
       initializer &&
-      (Node.isArrowFunction(initializer) || Node.isFunctionExpression(initializer))
+      (Node.isArrowFunction(initializer) ||
+        Node.isFunctionExpression(initializer))
     ) {
       result.push(initializer)
     }
@@ -225,7 +244,7 @@ function getCandidateWrapperFunctions(
 }
 
 function getFunctionBodyNode(
-  fn: FunctionDeclaration | FunctionExpression | ArrowFunction,
+  fn: FunctionDeclaration | FunctionExpression | ArrowFunction
 ): ReturnType<typeof fn.getBody> | undefined {
   return fn.getBody() ?? undefined
 }
@@ -237,16 +256,17 @@ function getFunctionBodyNode(
 function findPrimitiveJsxNodes(
   scope: Node,
   namespaceAliases: readonly string[],
-  namedAliases: readonly string[],
+  namedAliases: readonly string[]
 ): Array<JsxOpeningElement | JsxSelfClosingElement> {
   const results: Array<JsxOpeningElement | JsxSelfClosingElement> = []
 
   scope.forEachDescendant((node) => {
-    if (!Node.isJsxOpeningElement(node) && !Node.isJsxSelfClosingElement(node)) return
+    if (!Node.isJsxOpeningElement(node) && !Node.isJsxSelfClosingElement(node))
+      return
 
     const tagText = node.getTagNameNode().getText()
     const matchesNamespace = namespaceAliases.some((alias) =>
-      tagText.startsWith(`${alias}.`),
+      tagText.startsWith(`${alias}.`)
     )
     const matchesNamed = namedAliases.includes(tagText)
 
@@ -266,15 +286,15 @@ function findPrimitiveJsxNodes(
 function checkPrimitiveRenderPresence(
   sourceFile: SourceFile,
   wrapperFn: FunctionDeclaration | FunctionExpression | ArrowFunction,
-  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>,
+  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>
 ) {
   if (primitiveJsxNodes.length > 0) return
 
   pushNodeFinding(
     sourceFile,
     wrapperFn,
-    'UIX-RADIX-003',
-    'Wrapper does not appear to render a Radix primitive. Wrapped primitive contract may have drifted into custom DOM behavior.',
+    "UIX-RADIX-003",
+    "Wrapper does not appear to render a Radix primitive. Wrapped primitive contract may have drifted into custom DOM behavior."
   )
 }
 
@@ -282,10 +302,10 @@ function checkPrimitiveRenderPresence(
 function checkPropsSpreadToPrimitive(
   sourceFile: SourceFile,
   wrapperFn: FunctionDeclaration | FunctionExpression | ArrowFunction,
-  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>,
+  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>
 ) {
   const hasPropsParam = getFunctionParameterNames(wrapperFn).some(
-    (name) => name === 'props',
+    (name) => name === "props"
   )
   if (!hasPropsParam) return
 
@@ -295,16 +315,16 @@ function checkPropsSpreadToPrimitive(
       .some(
         (attr) =>
           Node.isJsxSpreadAttribute(attr) &&
-          attr.getExpression().getText() === 'props',
-      ),
+          attr.getExpression().getText() === "props"
+      )
   )
 
   if (!hasSpreadToPrimitive) {
     pushNodeFinding(
       sourceFile,
       wrapperFn,
-      'UIX-RADIX-001',
-      'Wrapper accepts props but does not spread them to the underlying Radix primitive.',
+      "UIX-RADIX-001",
+      "Wrapper accepts props but does not spread them to the underlying Radix primitive."
     )
   }
 }
@@ -313,10 +333,10 @@ function checkPropsSpreadToPrimitive(
 function checkRefForwardingOrRefPassThrough(
   sourceFile: SourceFile,
   wrapperFn: FunctionDeclaration | FunctionExpression | ArrowFunction,
-  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>,
+  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>
 ) {
   const paramNames = getFunctionParameterNames(wrapperFn)
-  const hasRefParam = paramNames.includes('ref')
+  const hasRefParam = paramNames.includes("ref")
   const isForwardRef = isInsideForwardRef(wrapperFn)
 
   if (!hasRefParam && !isForwardRef) return
@@ -324,19 +344,19 @@ function checkRefForwardingOrRefPassThrough(
   const hasRefOnPrimitive = primitiveJsxNodes.some((node) =>
     node.getAttributes().some((attr) => {
       if (!Node.isJsxAttribute(attr)) return false
-      if (attr.getNameNode().getText() !== 'ref') return false
+      if (attr.getNameNode().getText() !== "ref") return false
       const initializer = attr.getInitializer()
       if (!initializer || !Node.isJsxExpression(initializer)) return false
-      return initializer.getExpression()?.getText() === 'ref'
-    }),
+      return initializer.getExpression()?.getText() === "ref"
+    })
   )
 
   if (!hasRefOnPrimitive) {
     pushNodeFinding(
       sourceFile,
       wrapperFn,
-      'UIX-RADIX-002',
-      'Wrapper appears to support ref flow but does not pass ref to the underlying Radix primitive.',
+      "UIX-RADIX-002",
+      "Wrapper appears to support ref flow but does not pass ref to the underlying Radix primitive."
     )
   }
 }
@@ -344,7 +364,7 @@ function checkRefForwardingOrRefPassThrough(
 /** UIX-RADIX-004: local state naming patterns that may replace primitive-controlled behavior. */
 function checkSuspiciousLocalState(
   sourceFile: SourceFile,
-  wrapperFn: FunctionDeclaration | FunctionExpression | ArrowFunction,
+  wrapperFn: FunctionDeclaration | FunctionExpression | ArrowFunction
 ) {
   const body = getFunctionBodyNode(wrapperFn)
   if (!body) return
@@ -353,22 +373,22 @@ function checkSuspiciousLocalState(
     .getDescendantsOfKind(SyntaxKind.CallExpression)
     .some((call) => {
       const expr = call.getExpression().getText()
-      return expr === 'useState' || expr === 'React.useState'
+      return expr === "useState" || expr === "React.useState"
     })
 
   if (!hasUseState) return
 
   const suspicious =
     /\b(open|setOpen|checked|setChecked|selected|setSelected|active|setActive)\b/.test(
-      body.getText(),
+      body.getText()
     )
 
   if (suspicious) {
     pushNodeFinding(
       sourceFile,
       wrapperFn,
-      'UIX-RADIX-004',
-      'Wrapper contains local state that may be replacing primitive-controlled behavior. Review whether this should remain Radix-driven.',
+      "UIX-RADIX-004",
+      "Wrapper contains local state that may be replacing primitive-controlled behavior. Review whether this should remain Radix-driven."
     )
   }
 }
@@ -377,7 +397,7 @@ function checkSuspiciousLocalState(
 function checkSuspiciousAsChildDrift(
   sourceFile: SourceFile,
   wrapperFn: FunctionDeclaration | FunctionExpression | ArrowFunction,
-  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>,
+  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>
 ) {
   const text = wrapperFn.getText()
   const mentionsAsChild = /\basChild\b/.test(text)
@@ -386,16 +406,16 @@ function checkSuspiciousAsChildDrift(
   const passesAsChild = primitiveJsxNodes.some((node) =>
     node.getAttributes().some((attr) => {
       if (!Node.isJsxAttribute(attr)) return false
-      return attr.getNameNode().getText() === 'asChild'
-    }),
+      return attr.getNameNode().getText() === "asChild"
+    })
   )
 
   if (!passesAsChild) {
     pushNodeFinding(
       sourceFile,
       wrapperFn,
-      'UIX-RADIX-005',
-      'Wrapper references asChild but does not appear to pass it through to the primitive. Composition flexibility may have drifted.',
+      "UIX-RADIX-005",
+      "Wrapper references asChild but does not appear to pass it through to the primitive. Composition flexibility may have drifted."
     )
   }
 }
@@ -408,18 +428,20 @@ function checkSuspiciousAsChildDrift(
 function checkSuspiciousShadcnSubstructure(
   sourceFile: SourceFile,
   wrapperFn: FunctionDeclaration | FunctionExpression | ArrowFunction,
-  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>,
+  primitiveJsxNodes: Array<JsxOpeningElement | JsxSelfClosingElement>
 ) {
   const wrapperName = getWrapperName(wrapperFn)
   if (!wrapperName) return
 
   const suggestsStructuredPrimitive =
     /(Accordion|Dialog|Popover|Tooltip|Tabs|DropdownMenu|Select|Sheet|Collapsible|ContextMenu|AlertDialog|HoverCard|Menubar|NavigationMenu)/.test(
-      wrapperName,
+      wrapperName
     )
   if (!suggestsStructuredPrimitive) return
 
-  const tagTexts = primitiveJsxNodes.map((node) => node.getTagNameNode().getText())
+  const tagTexts = primitiveJsxNodes.map((node) =>
+    node.getTagNameNode().getText()
+  )
   const hasTrigger = tagTexts.some((tag) => /\.Trigger$/.test(tag))
   const hasContent = tagTexts.some((tag) => /\.Content$/.test(tag))
   const hasItem = tagTexts.some((tag) => /\.Item$/.test(tag))
@@ -428,8 +450,8 @@ function checkSuspiciousShadcnSubstructure(
     pushNodeFinding(
       sourceFile,
       wrapperFn,
-      'UIX-SHADCN-002',
-      'Wrapper name suggests a structured primitive, but expected primitive substructure (Trigger/Content/Item) is not visible. Review for shadcn/Radix composition drift.',
+      "UIX-SHADCN-002",
+      "Wrapper name suggests a structured primitive, but expected primitive substructure (Trigger/Content/Item) is not visible. Review for shadcn/Radix composition drift."
     )
   }
 }
@@ -439,20 +461,20 @@ function checkSuspiciousShadcnSubstructure(
 // ---------------------------------------------------------------------------
 
 function getFunctionParameterNames(
-  fn: FunctionDeclaration | FunctionExpression | ArrowFunction,
+  fn: FunctionDeclaration | FunctionExpression | ArrowFunction
 ): string[] {
   return fn.getParameters().map((param) => param.getName())
 }
 
 function isInsideForwardRef(
-  fn: FunctionDeclaration | FunctionExpression | ArrowFunction,
+  fn: FunctionDeclaration | FunctionExpression | ArrowFunction
 ): boolean {
   let current: Node | undefined = fn.getParent()
 
   while (current) {
     if (Node.isCallExpression(current)) {
       const expr = current.getExpression().getText()
-      if (expr === 'forwardRef' || expr === 'React.forwardRef') return true
+      if (expr === "forwardRef" || expr === "React.forwardRef") return true
     }
     current = current.getParent()
   }
@@ -461,7 +483,7 @@ function isInsideForwardRef(
 }
 
 function getWrapperName(
-  fn: FunctionDeclaration | FunctionExpression | ArrowFunction,
+  fn: FunctionDeclaration | FunctionExpression | ArrowFunction
 ): string | undefined {
   if (Node.isFunctionDeclaration(fn)) return fn.getName() ?? undefined
 
@@ -479,7 +501,7 @@ function pushNodeFinding(
   sourceFile: SourceFile,
   node: Node,
   rule: RuleCode,
-  message: string,
+  message: string
 ) {
   const severity = getRuleLevel(rule, activeRulePolicy)
   if (severity == null) return
@@ -516,28 +538,28 @@ function report(): never {
   const format = getOutputFormat()
 
   if (sorted.length === 0) {
-    if (format === 'json') {
+    if (format === "json") {
       console.log(
         JSON.stringify(
           { findings: [], summary: { errors: 0, warnings: 0 }, byRule: {} },
           null,
-          2,
-        ),
+          2
+        )
       )
     } else {
-      console.log('✅ UI wrapper contract check passed. No violations found.')
+      console.log("✅ UI wrapper contract check passed. No violations found.")
     }
     process.exit(0)
   }
 
-  if (format === 'json') {
+  if (format === "json") {
     printJsonReport(sorted)
   } else {
     printTextReport(
       sorted,
-      'UI Wrapper Contract Report',
+      "UI Wrapper Contract Report",
       (f: AstFinding) =>
-        `[${(f.severity as Severity).toUpperCase()}] ${f.rule} ${f.file}:${f.line}:${f.column}\n  ${f.message}\n  ${f.excerpt}`,
+        `[${(f.severity as Severity).toUpperCase()}] ${f.rule} ${f.file}:${f.line}:${f.column}\n  ${f.message}\n  ${f.excerpt}`
     )
   }
 

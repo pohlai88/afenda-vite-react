@@ -1,27 +1,30 @@
-import { useState, type CSSProperties, type ReactNode } from 'react'
-import { Outlet } from 'react-router-dom'
+import { useState, type CSSProperties, type ReactNode } from "react"
+import { Outlet } from "react-router-dom"
 
-import { SidebarInset, SidebarProvider } from '@afenda/ui/components/ui/sidebar'
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@afenda/shadcn-ui/components/ui/sidebar"
 
-import { useAppShellStore } from '@/share/client-store'
-import { useSyncActionBarPrefsContext } from '@/share/client-store/sync-action-bar-prefs-context'
+import { useAppShellStore } from "@/share/client-store"
+import { useSyncActionBarPrefsContext } from "@/share/client-store/sync-action-bar-prefs-context"
 
-import { DASHBOARD_SIDEBAR_WIDTH } from '../navigation/side-nav/dashboard-sidebar-tokens'
-import { SideNavBar } from '../navigation/side-nav/side-nav-bar'
+import { DASHBOARD_SIDEBAR_WIDTH } from "../navigation/side-nav/dashboard-sidebar-tokens"
+import { SideNavBar } from "../navigation/side-nav/side-nav-bar"
 import {
   ShellContent,
   ShellHeader,
   ShellOverlayContainer,
   ShellRoot,
   ShellSidebar,
-} from '../shell-ui'
-import { ErpContentArea } from './erp-content-area'
+} from "../shell-ui"
+import { ErpContentArea } from "./erp-content-area"
 import {
   ActionBarProvider,
   GlobalSearchProvider,
   ShellMetadataProvider,
-} from '../providers'
-import { TopNavBar } from '../navigation'
+} from "../providers"
+import { TopNavBar } from "../navigation"
 
 export interface ErpLayoutProps {
   children?: ReactNode
@@ -63,11 +66,11 @@ function ErpLayoutChrome({ children }: { children?: ReactNode }) {
   const [isHovered, setIsHovered] = useState(false)
 
   const effectiveOpen =
-    sidebarMode === 'expanded' || (sidebarMode === 'hover' && isHovered)
+    sidebarMode === "expanded" || (sidebarMode === "hover" && isHovered)
 
   const handleOpenChange = (open: boolean) => {
-    if (sidebarMode === 'hover') return
-    setSidebarMode(open ? 'expanded' : 'collapsed')
+    if (sidebarMode === "hover") return
+    setSidebarMode(open ? "expanded" : "collapsed")
   }
 
   return (
@@ -77,8 +80,8 @@ function ErpLayoutChrome({ children }: { children?: ReactNode }) {
       onOpenChange={handleOpenChange}
       style={
         {
-          '--sidebar-width': DASHBOARD_SIDEBAR_WIDTH,
-          '--header-height': 'calc(var(--spacing) * 12)',
+          "--sidebar-width": DASHBOARD_SIDEBAR_WIDTH,
+          "--header-height": "calc(var(--spacing) * 12)",
         } as CSSProperties
       }
     >
@@ -94,10 +97,12 @@ function ErpLayoutChrome({ children }: { children?: ReactNode }) {
             <ShellSidebar>
               <SideNavBar
                 onMouseEnter={
-                  sidebarMode === 'hover' ? () => setIsHovered(true) : undefined
+                  sidebarMode === "hover" ? () => setIsHovered(true) : undefined
                 }
                 onMouseLeave={
-                  sidebarMode === 'hover' ? () => setIsHovered(false) : undefined
+                  sidebarMode === "hover"
+                    ? () => setIsHovered(false)
+                    : undefined
                 }
               />
             </ShellSidebar>

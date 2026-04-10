@@ -3,24 +3,25 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
 
 import { sidebarDefaults } from "../../lib/constant/component/sidebar"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
+import { useIsMobile } from "@afenda/shadcn-ui/hooks/use-mobile"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { VisuallyHidden } from "@afenda/shadcn-ui/components/ui/visually-hidden"
+import { Input } from "@afenda/shadcn-ui/components/ui/input"
+import { Separator } from "@afenda/shadcn-ui/components/ui/separator"
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@afenda/shadcn-ui/components/ui/sheet"
+import { Skeleton } from "@afenda/shadcn-ui/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@afenda/shadcn-ui/components/ui/tooltip"
 import { PanelLeftIcon } from "lucide-react"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
@@ -193,7 +194,7 @@ function Sidebar({
           }
           side={side}
         >
-          <SheetHeader className="sr-only">
+          <SheetHeader className={cn("sr-only")}>
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
@@ -270,7 +271,7 @@ function SidebarTrigger({
       {...props}
     >
       <PanelLeftIcon />
-      <span className="sr-only">Toggle Sidebar</span>
+      <VisuallyHidden>Toggle Sidebar</VisuallyHidden>
     </Button>
   )
 }
@@ -474,7 +475,7 @@ const sidebarMenuButtonVariants = cva(
       variant: {
         default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         outline:
-          "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
+          "bg-background ring-1 ring-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:ring-sidebar-accent",
       },
       size: {
         default: "h-9 text-sm",

@@ -6,8 +6,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { type FieldState } from "../../lib/constant/component/form"
 import { fieldDefaults } from "../../lib/constant/component/field"
 import { cn } from "../../lib/utils"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
+import { Label } from "@afenda/shadcn-ui/components/ui/label"
+import { Separator } from "@afenda/shadcn-ui/components/ui/separator"
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
@@ -53,30 +53,27 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-const fieldVariants = cva(
-  "group/field flex w-full gap-3",
-  {
-    variants: {
-      orientation: {
-        vertical: "flex-col *:w-full [&>.sr-only]:w-auto",
-        horizontal:
-          "flex-row items-center has-[>[data-slot=field-content]]:items-start *:data-[slot=field-label]:flex-auto has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
-        responsive:
-          "flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
-      },
-      state: {
-        default: "",
-        invalid: "data-[invalid=true]:text-destructive",
-        disabled: "data-[disabled=true]:opacity-70",
-        readonly: "data-[readonly=true]:opacity-90",
-      },
+const fieldVariants = cva("group/field flex w-full gap-3", {
+  variants: {
+    orientation: {
+      vertical: "flex-col *:w-full [&>.sr-only]:w-auto",
+      horizontal:
+        "flex-row items-center has-[>[data-slot=field-content]]:items-start *:data-[slot=field-label]:flex-auto has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
+      responsive:
+        "flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
     },
-    defaultVariants: {
-      orientation: fieldDefaults.orientation,
-      state: fieldDefaults.state,
+    state: {
+      default: "",
+      invalid: "data-[invalid=true]:text-destructive",
+      disabled: "data-[disabled=true]:opacity-70",
+      readonly: "data-[readonly=true]:opacity-90",
     },
-  }
-)
+  },
+  defaultVariants: {
+    orientation: fieldDefaults.orientation,
+    state: fieldDefaults.state,
+  },
+})
 
 function Field({
   className,

@@ -14,11 +14,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@afenda/shadcn-ui/components/ui/dialog"
 import {
   InputGroup,
   InputGroupAddon,
-} from "@/components/ui/input-group"
+} from "@afenda/shadcn-ui/components/ui/input-group"
 import { SearchIcon, CheckIcon } from "lucide-react"
 
 const commandItemVariants = cva(
@@ -62,20 +62,24 @@ function CommandDialog({
   children,
   className,
   showCloseButton = false,
+  contentId,
   ...props
 }: React.ComponentProps<typeof Dialog> & {
   title?: string
   description?: string
   className?: string
   showCloseButton?: boolean
+  /** Sets `id` on the dialog content surface (e.g. for tests / `aria-controls`). */
+  contentId?: string
 }) {
   return (
     <Dialog {...props}>
-      <DialogHeader className="sr-only">
+      <DialogHeader className="absolute m-[-1px] h-px w-px overflow-hidden border-0 p-0 whitespace-nowrap">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
       <DialogContent
+        id={contentId}
         size="lg"
         className={cn(
           "top-1/3 translate-y-0 overflow-hidden rounded-4xl! p-0",
@@ -186,10 +190,7 @@ function CommandItem({
     <CommandPrimitive.Item
       data-slot="command-item"
       data-intent={intent}
-      className={cn(
-        commandItemVariants({ intent }),
-        className
-      )}
+      className={cn(commandItemVariants({ intent }), className)}
       {...props}
     >
       {children}

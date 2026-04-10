@@ -1,6 +1,6 @@
 # Afenda — React + Vite monorepo
 
-**Afenda** is an **ERP** product delivered as a **pnpm** + **Turborepo** workspace: the Vite web client lives under `apps/web`. This repo is the product source tree—follow [`docs/README.md`](docs/README.md) for the full doc index, [`docs/`](docs/) for sources, and [`AGENTS.md`](./AGENTS.md) for AI execution notes.
+**Afenda** is an **ERP** product delivered as a **pnpm** + **Turborepo** workspace: the Vite web client lives under `apps/web`. This repo is the product source tree—follow [`docs/README.md`](docs/README.md) for the full doc index, [`docs/`](docs/) for sources, and [`AGENTS.md`](./AGENTS.md) for AI execution notes. Generated repo-level evidence and caches belong under [`.artifacts/`](docs/REPO_ARTIFACT_POLICY.md) per [`docs/REPO_ARTIFACT_POLICY.md`](docs/REPO_ARTIFACT_POLICY.md).
 
 ## Features
 
@@ -67,23 +67,23 @@ pnpm --filter @afenda/web dev
 
 Most day-to-day work uses `pnpm dev`. Other root scripts (via Turborepo):
 
-| `pnpm <script>` | Description |
-| --- | --- |
-| `dev` | Dev tasks for the workspace (includes the Vite app) |
-| `format` | Format with Prettier |
-| `format:check` | Check formatting |
-| `lint` | ESLint across workspace packages |
-| `typecheck` | TypeScript project references |
-| `test` | Vitest (watch, where configured) |
-| `test:run` | Vitest single run |
-| `check` | `lint`, `typecheck`, `test:run`, and `build` |
-| `build` | Production builds |
+| `pnpm <script>` | Description                                         |
+| --------------- | --------------------------------------------------- |
+| `dev`           | Dev tasks for the workspace (includes the Vite app) |
+| `format`        | Format with Prettier                                |
+| `format:check`  | Check formatting                                    |
+| `lint`          | ESLint across workspace packages                    |
+| `typecheck`     | TypeScript project references                       |
+| `test`          | Vitest (watch, where configured)                    |
+| `test:run`      | Vitest single run                                   |
+| `check`         | `lint`, `typecheck`, `test:run`, and `build`        |
+| `build`         | Production builds                                   |
 
 Package-specific scripts (for example extra lint or test targets) live in each `package.json`; run them with `pnpm --filter <package-name> <script>`.
 
 ## Production
 
-| `pnpm <script>` | Description |
-| --- | --- |
-| `preview` | Preview production builds (per package tasks) |
-| `build` | Build applications and packages for production (e.g. web output under `apps/web/dist/`) |
+| `pnpm <script>` | Description                                                                             |
+| --------------- | --------------------------------------------------------------------------------------- |
+| `preview`       | Preview production builds (per package tasks)                                           |
+| `build`         | Build applications and packages for production (e.g. web output under `apps/web/dist/`) |

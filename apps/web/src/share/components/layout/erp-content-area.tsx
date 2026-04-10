@@ -1,16 +1,16 @@
-import type { ComponentProps, ReactNode } from 'react'
+import type { ComponentProps, ReactNode } from "react"
 
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from '@afenda/ui/components/ui/resizable'
-import { cn } from '@afenda/ui/lib/utils'
+} from "@afenda/shadcn-ui/components/ui/resizable"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
 export interface ErpContentAreaSplitViewProps {
   autoSaveId?: string
   className?: string
-  orientation?: 'horizontal' | 'vertical'
+  orientation?: "horizontal" | "vertical"
   primary: ReactNode
   secondary: ReactNode
   primaryId?: string
@@ -24,7 +24,7 @@ export interface ErpContentAreaSplitViewProps {
   withHandle?: boolean
 }
 
-export interface ErpContentAreaProps extends ComponentProps<'section'> {
+export interface ErpContentAreaProps extends ComponentProps<"section"> {
   containerClassName?: string
   splitView?: ErpContentAreaSplitViewProps
 }
@@ -38,16 +38,18 @@ export function ErpContentArea({
 }: ErpContentAreaProps) {
   const content = splitView ? (
     <ResizablePanelGroup
-      autoSaveId={splitView.autoSaveId}
-      className={cn('min-h-0 flex-1', splitView.className)}
-      orientation={splitView.orientation ?? 'horizontal'}
-      panelIds={[splitView.primaryId ?? 'primary', splitView.secondaryId ?? 'secondary']}
+      id={splitView.autoSaveId}
+      className={cn("min-h-0 flex-1", splitView.className)}
+      orientation={splitView.orientation ?? "horizontal"}
     >
       <ResizablePanel
-        id={splitView.primaryId ?? 'primary'}
+        id={splitView.primaryId ?? "primary"}
         defaultSize={splitView.primaryDefaultSize}
       >
-        <div className="flex h-full min-h-0 flex-col" data-slot="erp-content-area-primary">
+        <div
+          className="flex h-full min-h-0 flex-col"
+          data-slot="erp-content-area-primary"
+        >
           {splitView.primary}
         </div>
       </ResizablePanel>
@@ -56,11 +58,14 @@ export function ErpContentArea({
         collapsible={splitView.secondaryCollapsible}
         collapsedSize={splitView.secondaryCollapsedSize}
         defaultSize={splitView.secondaryDefaultSize}
-        id={splitView.secondaryId ?? 'secondary'}
+        id={splitView.secondaryId ?? "secondary"}
         maxSize={splitView.secondaryMaxSize}
         minSize={splitView.secondaryMinSize}
       >
-        <div className="flex h-full min-h-0 flex-col" data-slot="erp-content-area-secondary">
+        <div
+          className="flex h-full min-h-0 flex-col"
+          data-slot="erp-content-area-secondary"
+        >
           {splitView.secondary}
         </div>
       </ResizablePanel>
@@ -72,14 +77,14 @@ export function ErpContentArea({
   return (
     <section
       data-slot="erp-content-area"
-      className={cn('flex min-h-0 flex-1 flex-col overflow-y-auto', className)}
+      className={cn("flex min-h-0 flex-1 flex-col overflow-y-auto", className)}
       {...props}
     >
       <div className="flex flex-1 flex-col">
         <div
           className={cn(
-            '@container/main flex flex-1 flex-col gap-4 px-4 py-4 md:gap-6 md:py-6 lg:px-6',
-            containerClassName,
+            "@container/main flex flex-1 flex-col gap-4 px-4 py-4 md:gap-6 md:py-6 lg:px-6",
+            containerClassName
           )}
         >
           {content}

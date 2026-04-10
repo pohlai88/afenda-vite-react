@@ -1,6 +1,6 @@
-import { memo, useMemo, type ComponentProps } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link, useLocation } from 'react-router-dom'
+import { memo, useMemo, type ComponentProps } from "react"
+import { useTranslation } from "react-i18next"
+import { Link, useLocation } from "react-router-dom"
 import {
   Sidebar,
   SidebarContent,
@@ -12,15 +12,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from '@afenda/ui/components/ui/sidebar'
-import { LayoutDashboardIcon } from 'lucide-react'
-import { useAppShellStore } from '@/share/client-store/app-shell-store'
-import { navGroups, type NavGroup, type NavItem } from './nav-data'
-import { UserMenu } from './UserMenu'
+} from "@afenda/shadcn-ui/components/ui/sidebar"
+import { LayoutDashboardIcon } from "lucide-react"
+import { useAppShellStore } from "@/share/client-store/app-shell-store"
+import { navGroups, type NavGroup, type NavItem } from "./nav-data"
+import { UserMenu } from "./UserMenu"
 
 /** Typed wrapper so nav-data `string` keys satisfy the strict i18n union. */
 function useShellT() {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   return t as (key: string, options?: Record<string, unknown>) => string
 }
 
@@ -30,9 +30,9 @@ function usePermissionFilter(items: NavItem[]): NavItem[] {
     () =>
       items.filter(
         (item) =>
-          !item.permissionKey || permissions.includes(item.permissionKey),
+          !item.permissionKey || permissions.includes(item.permissionKey)
       ),
-    [items, permissions],
+    [items, permissions]
   )
 }
 
@@ -75,9 +75,9 @@ const NavGroupSection = memo(function NavGroupSection({
 })
 
 export const AppSidebar = memo(function AppSidebar(
-  props: ComponentProps<typeof Sidebar>,
+  props: ComponentProps<typeof Sidebar>
 ) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -95,7 +95,7 @@ export const AppSidebar = memo(function AppSidebar(
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {t('sidebar.brand')}
+                    {t("sidebar.brand")}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
                     ERP

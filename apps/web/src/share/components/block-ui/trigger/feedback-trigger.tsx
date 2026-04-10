@@ -1,8 +1,8 @@
-import { type MouseEventHandler } from 'react'
-import { useTranslation } from 'react-i18next'
+import { type MouseEventHandler } from "react"
+import { useTranslation } from "react-i18next"
 
-import { Button } from '@afenda/ui/components/ui/button'
-import { cn } from '@afenda/ui/lib/utils'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
 export interface FeedbackTriggerProps {
   onClick?: MouseEventHandler<HTMLButtonElement>
@@ -13,7 +13,7 @@ export interface FeedbackTriggerProps {
  * FeedbackTrigger is a text button (Supabase style) that opens the feedback popover.
  */
 export function FeedbackTrigger({ onClick, className }: FeedbackTriggerProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
 
   return (
     <Button
@@ -22,9 +22,9 @@ export function FeedbackTrigger({ onClick, className }: FeedbackTriggerProps) {
       size="sm"
       onClick={onClick}
       className={cn(className)}
-      aria-label={t('feedback.aria_label', 'Send feedback')}
+      aria-label={t("feedback.aria_label", "Send feedback")}
     >
-      {t('feedback.label', 'Feedback')}
+      {t("feedback.label", "Feedback")}
     </Button>
   )
 }

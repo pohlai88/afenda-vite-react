@@ -1,29 +1,29 @@
-import { CircleDotIcon, PanelLeftIcon } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { CircleDotIcon, PanelLeftIcon } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
-import { Button } from '@afenda/ui/components/ui/button'
-import { Label } from '@afenda/ui/components/ui/label'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { Label } from "@afenda/shadcn-ui/components/ui/label"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@afenda/ui/components/ui/popover'
+} from "@afenda/shadcn-ui/components/ui/popover"
 import {
   RadioGroup,
   RadioGroupItem,
-} from '@afenda/ui/components/ui/radio-group'
+} from "@afenda/shadcn-ui/components/ui/radio-group"
 import {
   SidebarMenuButton,
   useSidebar,
-} from '@afenda/ui/components/ui/sidebar'
-import { cn } from '@afenda/ui/lib/utils'
+} from "@afenda/shadcn-ui/components/ui/sidebar"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import { type SidebarMode, useAppShellStore } from '@/share/client-store'
+import { type SidebarMode, useAppShellStore } from "@/share/client-store"
 
-import { dashboardSidebarMenuButtonClassName } from './dashboard-sidebar-tokens'
+import { dashboardSidebarMenuButtonClassName } from "./dashboard-sidebar-tokens"
 
 export interface SideNavTriggerProps {
-  variant?: 'icon' | 'menu'
+  variant?: "icon" | "menu"
   className?: string
 }
 
@@ -39,46 +39,45 @@ export interface SideNavTriggerProps {
  * button itself (avoids the open-and-immediately-toggle conflict).
  */
 export function SideNavTrigger({
-  variant = 'icon',
+  variant = "icon",
   className,
 }: SideNavTriggerProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const { isMobile } = useSidebar()
   const sidebarMode = useAppShellStore((s) => s.sidebarMode)
   const setSidebarMode = useAppShellStore((s) => s.setSidebarMode)
-  const controlLabel = t('sidebar.control_title' as never, {
-    defaultValue: 'Sidebar',
+  const controlLabel = t("sidebar.control_title" as never, {
+    defaultValue: "Sidebar",
   })
 
   const options: { value: SidebarMode; label: string }[] = [
     {
-      value: 'expanded',
-      label: t('sidebar.mode_expanded' as never, { defaultValue: 'Expanded' }),
+      value: "expanded",
+      label: t("sidebar.mode_expanded" as never, { defaultValue: "Expanded" }),
     },
     {
-      value: 'collapsed',
-      label: t('sidebar.mode_collapsed' as never, {
-        defaultValue: 'Collapsed',
+      value: "collapsed",
+      label: t("sidebar.mode_collapsed" as never, {
+        defaultValue: "Collapsed",
       }),
     },
     {
-      value: 'hover',
-      label: t('sidebar.mode_hover' as never, {
-        defaultValue: 'Expand on hover',
+      value: "hover",
+      label: t("sidebar.mode_hover" as never, {
+        defaultValue: "Expand on hover",
       }),
     },
   ]
 
   const trigger =
-    variant === 'menu' ? (
+    variant === "menu" ? (
       <SidebarMenuButton
-        hasIcon
         tooltip={controlLabel}
         className={cn(
           dashboardSidebarMenuButtonClassName,
-          'justify-start group-data-[collapsible=icon]:justify-center',
-          'group-data-[collapsible=icon]:[&_span]:sr-only',
-          className,
+          "justify-start group-data-[collapsible=icon]:justify-center",
+          "group-data-[collapsible=icon]:[&_span]:sr-only",
+          className
         )}
       >
         <PanelLeftIcon aria-hidden />
@@ -89,8 +88,8 @@ export function SideNavTrigger({
         variant="ghost"
         size="icon"
         className={className}
-        aria-label={t('sidebar.toggle' as never, {
-          defaultValue: 'Toggle sidebar',
+        aria-label={t("sidebar.toggle" as never, {
+          defaultValue: "Toggle sidebar",
         })}
       >
         <PanelLeftIcon aria-hidden />
@@ -101,14 +100,12 @@ export function SideNavTrigger({
     <Popover>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent
-        align={variant === 'menu' ? 'end' : 'start'}
-        side={variant === 'menu' && !isMobile ? 'right' : 'bottom'}
+        align={variant === "menu" ? "end" : "start"}
+        side={variant === "menu" && !isMobile ? "right" : "bottom"}
         className="w-52"
       >
         <div className="grid gap-3">
-          <p className="text-sm font-medium leading-none">
-            {controlLabel}
-          </p>
+          <p className="text-sm leading-none font-medium">{controlLabel}</p>
           <RadioGroup
             value={sidebarMode}
             onValueChange={(v) => setSidebarMode(v as SidebarMode)}
@@ -121,7 +118,7 @@ export function SideNavTrigger({
                   className="flex flex-1 items-center justify-between gap-2"
                 >
                   {opt.label}
-                  {opt.value === 'hover' ? (
+                  {opt.value === "hover" ? (
                     <CircleDotIcon
                       aria-hidden
                       className="text-muted-foreground"

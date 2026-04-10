@@ -10,18 +10,18 @@ import {
   ScrollTextIcon,
   SunIcon,
   UserIcon,
-} from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useTheme } from '@/components/theme-provider'
+} from "lucide-react"
+import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { useTheme } from "@/components/theme-provider"
 
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from '@afenda/ui/components/ui/avatar'
-import { Button } from '@afenda/ui/components/ui/button'
+} from "@afenda/shadcn-ui/components/ui/avatar"
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,17 +36,17 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@afenda/ui/components/ui/dropdown-menu'
-import { SUPPORTED_LOCALES } from '@/share/i18n'
-import type { ShellHealthSummary } from '@/share/types'
-import { useAppShellStore } from '@/share/client-store/app-shell-store'
-import { getIntegritySeverityPresentation } from '@afenda/shadcn-ui/semantic'
+} from "@afenda/shadcn-ui/components/ui/dropdown-menu"
+import { SUPPORTED_LOCALES } from "@/share/i18n"
+import type { ShellHealthSummary } from "@/share/types"
+import { useAppShellStore } from "@/share/client-store/app-shell-store"
+import { getIntegritySeverityPresentation } from "@afenda/shadcn-ui/semantic"
 
 const LOCALE_DISPLAY: Record<string, { name: string; flag: string }> = {
-  en: { name: 'English', flag: '🇺🇸' },
-  ms: { name: 'Bahasa Malaysia', flag: '🇲🇾' },
-  id: { name: 'Bahasa Indonesia', flag: '🇮🇩' },
-  vi: { name: 'Tiếng Việt', flag: '🇻🇳' },
+  en: { name: "English", flag: "🇺🇸" },
+  ms: { name: "Bahasa Malaysia", flag: "🇲🇾" },
+  id: { name: "Bahasa Indonesia", flag: "🇮🇩" },
+  vi: { name: "Tiếng Việt", flag: "🇻🇳" },
 }
 
 export interface TopUserMenuProps {
@@ -58,19 +58,19 @@ export interface TopUserMenuProps {
 }
 
 function getInitials(name: string | null | undefined) {
-  if (!name) return 'U'
+  if (!name) return "U"
   return name
-    .split(' ')
+    .split(" ")
     .map((word) => word[0])
-    .join('')
+    .join("")
     .toUpperCase()
     .slice(0, 2)
 }
 
 function getIntegritySeverity(score: number) {
-  if (score >= 90) return 'valid' as const
-  if (score >= 70) return 'warning' as const
-  return 'broken' as const
+  if (score >= 90) return "valid" as const
+  if (score >= 70) return "warning" as const
+  return "broken" as const
 }
 
 /**
@@ -83,11 +83,11 @@ function getIntegritySeverity(score: number) {
  * 5. Session (logout)
  */
 export function TopUserMenu({
-  loginHref = '/login',
+  loginHref = "/login",
   healthSummary,
   triggerClassName,
 }: TopUserMenuProps) {
-  const { t, i18n } = useTranslation('shell')
+  const { t, i18n } = useTranslation("shell")
   const { theme, setTheme } = useTheme()
   const currentUser = useAppShellStore((state) => state.currentUser)
   const logout = useAppShellStore((state) => state.logout)
@@ -97,15 +97,15 @@ export function TopUserMenu({
   if (!currentUser) {
     return (
       <Link to={loginHref}>
-        <Button size="sm">{t('marketing.landing.sign_in', 'Sign In')}</Button>
+        <Button size="sm">{t("marketing.landing.sign_in", "Sign In")}</Button>
       </Link>
     )
   }
 
-  const displayName = currentUser.name ?? 'Guest'
+  const displayName = currentUser.name ?? "Guest"
   const email = currentUser.id
     ? `${currentUser.id}@afenda.app`
-    : 'guest@afenda.app'
+    : "guest@afenda.app"
 
   const handleLanguageChange = (locale: string) => {
     setLanguage(locale)
@@ -113,10 +113,12 @@ export function TopUserMenu({
   }
 
   const integrityTone = healthSummary
-    ? getIntegritySeverityPresentation(getIntegritySeverity(healthSummary.integrityScore))
+    ? getIntegritySeverityPresentation(
+        getIntegritySeverity(healthSummary.integrityScore)
+      )
     : null
-  const brokenTone = getIntegritySeverityPresentation('broken')
-  const warningTone = getIntegritySeverityPresentation('warning')
+  const brokenTone = getIntegritySeverityPresentation("broken")
+  const warningTone = getIntegritySeverityPresentation("warning")
 
   return (
     <DropdownMenu>
@@ -125,15 +127,13 @@ export function TopUserMenu({
           variant="ghost"
           size="icon"
           className={cn(
-            triggerClassName ?? 'rounded-full',
-            triggerClassName && 'overflow-hidden p-0',
+            triggerClassName ?? "rounded-full",
+            triggerClassName && "overflow-hidden p-0"
           )}
         >
-          <Avatar className={triggerClassName ? 'size-7' : undefined}>
+          <Avatar className={triggerClassName ? "size-7" : undefined}>
             <AvatarImage src="" alt={displayName} />
-            <AvatarFallback>
-              {getInitials(displayName)}
-            </AvatarFallback>
+            <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -143,18 +143,15 @@ export function TopUserMenu({
           <>
             <DropdownMenuGroup>
               <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                {t('user_menu.system_health', 'System Health')}
+                {t("user_menu.system_health", "System Health")}
               </DropdownMenuLabel>
               <div className="px-2 py-1.5 text-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">
-                    {t('user_menu.integrity_score', 'Integrity')}
+                    {t("user_menu.integrity_score", "Integrity")}
                   </span>
                   <span
-                    className={cn(
-                      'font-medium',
-                      integrityTone?.textClassName,
-                    )}
+                    className={cn("font-medium", integrityTone?.textClassName)}
                   >
                     {healthSummary.integrityScore}%
                   </span>
@@ -162,11 +159,11 @@ export function TopUserMenu({
                 {healthSummary.lastReconciliation && (
                   <div className="mt-1 flex items-center justify-between">
                     <span className="text-muted-foreground">
-                      {t('user_menu.last_reconciled', 'Last reconciled')}
+                      {t("user_menu.last_reconciled", "Last reconciled")}
                     </span>
                     <span className="text-xs">
                       {new Date(
-                        healthSummary.lastReconciliation,
+                        healthSummary.lastReconciliation
                       ).toLocaleDateString()}
                     </span>
                   </div>
@@ -177,23 +174,23 @@ export function TopUserMenu({
                     {healthSummary.invariantFailures.length > 0 && (
                       <span
                         className={cn(
-                          'rounded px-1.5 py-0.5',
-                          brokenTone.pillClassName,
+                          "rounded px-1.5 py-0.5",
+                          brokenTone.pillClassName
                         )}
                       >
-                        {healthSummary.invariantFailures.length}{' '}
-                        {t('user_menu.failures', 'failures')}
+                        {healthSummary.invariantFailures.length}{" "}
+                        {t("user_menu.failures", "failures")}
                       </span>
                     )}
                     {healthSummary.warnings.length > 0 && (
                       <span
                         className={cn(
-                          'rounded px-1.5 py-0.5',
-                          warningTone.pillClassName,
+                          "rounded px-1.5 py-0.5",
+                          warningTone.pillClassName
                         )}
                       >
-                        {healthSummary.warnings.length}{' '}
-                        {t('user_menu.warnings', 'warnings')}
+                        {healthSummary.warnings.length}{" "}
+                        {t("user_menu.warnings", "warnings")}
                       </span>
                     )}
                   </div>
@@ -209,9 +206,7 @@ export function TopUserMenu({
           <div className="flex items-center gap-3 px-2 py-2">
             <Avatar>
               <AvatarImage src="" alt={displayName} />
-              <AvatarFallback>
-                {getInitials(displayName)}
-              </AvatarFallback>
+              <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <p className="text-sm font-medium">{displayName}</p>
@@ -226,35 +221,32 @@ export function TopUserMenu({
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <ActivityIcon className="mr-2 size-4" />
-              {t('user_menu.status', 'Status')}
+              {t("user_menu.status", "Status")}
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuItem>
                   <CircleIcon
                     className={cn(
-                      'size-3',
-                      getIntegritySeverityPresentation('valid').iconClassName,
+                      "size-3",
+                      getIntegritySeverityPresentation("valid").iconClassName
                     )}
                   />
-                  {t('user_menu.status_available', 'Available')}
+                  {t("user_menu.status_available", "Available")}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <CircleIcon className="size-3 fill-destructive text-destructive" />
-                  {t('user_menu.status_busy', 'Busy')}
+                  {t("user_menu.status_busy", "Busy")}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <CircleIcon
-                    className={cn(
-                      'size-3',
-                      warningTone.iconClassName,
-                    )}
+                    className={cn("size-3", warningTone.iconClassName)}
                   />
-                  {t('user_menu.status_away', 'Away')}
+                  {t("user_menu.status_away", "Away")}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <CircleIcon className="size-3 fill-muted-foreground text-muted-foreground" />
-                  {t('user_menu.status_invisible', 'Invisible')}
+                  {t("user_menu.status_invisible", "Invisible")}
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
@@ -267,25 +259,25 @@ export function TopUserMenu({
           <DropdownMenuItem asChild>
             <Link to="/app/account">
               <UserIcon className="mr-2 size-4" />
-              {t('user_menu.account', 'Account')}
+              {t("user_menu.account", "Account")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/app/billing">
               <CreditCardIcon className="mr-2 size-4" />
-              {t('user_menu.billing', 'Billing')}
+              {t("user_menu.billing", "Billing")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/app/settings/notifications">
               <BellIcon className="mr-2 size-4" />
-              {t('user_menu.notification_settings', 'Notifications')}
+              {t("user_menu.notification_settings", "Notifications")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/app/audit-log">
               <ScrollTextIcon className="mr-2 size-4" />
-              {t('user_menu.audit_log', 'Audit Log')}
+              {t("user_menu.audit_log", "Audit Log")}
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -296,28 +288,32 @@ export function TopUserMenu({
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <PaletteIcon className="mr-2 size-4" />
-              {t('user_menu.theme', 'Theme')}
+              {t("user_menu.theme", "Theme")}
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuRadioGroup
                   value={theme}
                   onValueChange={(value) => {
-                    if (value === 'light' || value === 'dark' || value === 'system') {
+                    if (
+                      value === "light" ||
+                      value === "dark" ||
+                      value === "system"
+                    ) {
                       setTheme(value)
                     }
                   }}
                 >
                   <DropdownMenuRadioItem value="light">
                     <SunIcon className="mr-2 size-4" />
-                    {t('user_menu.theme_light', 'Light')}
+                    {t("user_menu.theme_light", "Light")}
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="dark">
                     <MoonIcon className="mr-2 size-4" />
-                    {t('user_menu.theme_dark', 'Dark')}
+                    {t("user_menu.theme_dark", "Dark")}
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="system">
-                    {t('user_menu.theme_system', 'System')}
+                    {t("user_menu.theme_system", "System")}
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>
@@ -327,7 +323,7 @@ export function TopUserMenu({
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <GlobeIcon className="mr-2 size-4" />
-              {t('user_menu.language', 'Language')}
+              {t("user_menu.language", "Language")}
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
@@ -337,7 +333,7 @@ export function TopUserMenu({
                 >
                   {SUPPORTED_LOCALES.map((locale) => (
                     <DropdownMenuRadioItem key={locale} value={locale}>
-                      {LOCALE_DISPLAY[locale]?.flag ?? ''}{' '}
+                      {LOCALE_DISPLAY[locale]?.flag ?? ""}{" "}
                       {LOCALE_DISPLAY[locale]?.name ?? locale}
                     </DropdownMenuRadioItem>
                   ))}
@@ -355,7 +351,7 @@ export function TopUserMenu({
             onSelect={() => logout()}
           >
             <LogOutIcon className="mr-2 size-4" />
-            {t('user_menu.logout', 'Log out')}
+            {t("user_menu.logout", "Log out")}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

@@ -1,18 +1,18 @@
-import * as React from 'react'
+import * as React from "react"
 
-import { fireEvent, render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen } from "@testing-library/react"
+import { MemoryRouter } from "react-router-dom"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 const sidebarMock = vi.hoisted(() => ({
   state: {
     isMobile: false,
-    state: 'expanded' as 'expanded' | 'collapsed',
+    state: "expanded" as "expanded" | "collapsed",
     setOpenMobile: vi.fn<(open: boolean) => void>(),
   },
 }))
 
-vi.mock('@afenda/ui/components/ui/sidebar', () => ({
+vi.mock("@afenda/shadcn-ui/components/ui/sidebar", () => ({
   SidebarMenuItem: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
   ),
@@ -29,8 +29,8 @@ vi.mock('@afenda/ui/components/ui/sidebar', () => ({
   }) =>
     asChild
       ? React.cloneElement(children, {
-          'data-active': String(Boolean(isActive)),
-          'data-tooltip': tooltip,
+          "data-active": String(Boolean(isActive)),
+          "data-tooltip": tooltip,
         })
       : children,
   SidebarMenuBadge: ({ children }: { children: React.ReactNode }) => (
@@ -39,60 +39,60 @@ vi.mock('@afenda/ui/components/ui/sidebar', () => ({
   useSidebar: () => sidebarMock.state,
 }))
 
-import { SideNavItem } from '../side-nav/side-nav-item'
+import { SideNavItem } from "../side-nav/side-nav-item"
 
-describe('SideNavItem', () => {
+describe("SideNavItem", () => {
   beforeEach(() => {
     sidebarMock.state.isMobile = false
-    sidebarMock.state.state = 'expanded'
+    sidebarMock.state.state = "expanded"
     sidebarMock.state.setOpenMobile.mockReset()
   })
 
-  it('marks the active route with aria-current', () => {
+  it("marks the active route with aria-current", () => {
     render(
-      <MemoryRouter initialEntries={['/app/dashboard']}>
-        <SideNavItem item={{ label: 'Dashboard', to: '/app/dashboard' }} />
-      </MemoryRouter>,
+      <MemoryRouter initialEntries={["/app/dashboard"]}>
+        <SideNavItem item={{ label: "Dashboard", to: "/app/dashboard" }} />
+      </MemoryRouter>
     )
 
     expect(
       screen
-        .getByRole('link', { name: 'Dashboard' })
-        .getAttribute('aria-current'),
-    ).toBe('page')
+        .getByRole("link", { name: "Dashboard" })
+        .getAttribute("aria-current")
+    ).toBe("page")
   })
 
-  it('closes the mobile sheet when a route is activated on mobile', () => {
+  it("closes the mobile sheet when a route is activated on mobile", () => {
     sidebarMock.state.isMobile = true
 
     render(
-      <MemoryRouter initialEntries={['/app/dashboard']}>
-        <SideNavItem item={{ label: 'Dashboard', to: '/app/dashboard' }} />
-      </MemoryRouter>,
+      <MemoryRouter initialEntries={["/app/dashboard"]}>
+        <SideNavItem item={{ label: "Dashboard", to: "/app/dashboard" }} />
+      </MemoryRouter>
     )
 
-    fireEvent.click(screen.getByRole('link', { name: 'Dashboard' }))
+    fireEvent.click(screen.getByRole("link", { name: "Dashboard" }))
 
     expect(sidebarMock.state.setOpenMobile).toHaveBeenCalledWith(false)
   })
 
-  it('renders a badge when badge prop is set', () => {
+  it("renders a badge when badge prop is set", () => {
     render(
-      <MemoryRouter initialEntries={['/app/dashboard']}>
-        <SideNavItem item={{ label: 'Inbox', to: '/app/inbox', badge: 5 }} />
-      </MemoryRouter>,
+      <MemoryRouter initialEntries={["/app/dashboard"]}>
+        <SideNavItem item={{ label: "Inbox", to: "/app/inbox", badge: 5 }} />
+      </MemoryRouter>
     )
 
-    expect(screen.getByTestId('side-nav-badge').textContent).toBe('5')
+    expect(screen.getByTestId("side-nav-badge").textContent).toBe("5")
   })
 
-  it('does not render a badge when badge is undefined', () => {
+  it("does not render a badge when badge is undefined", () => {
     render(
-      <MemoryRouter initialEntries={['/app/dashboard']}>
-        <SideNavItem item={{ label: 'Home', to: '/app/home' }} />
-      </MemoryRouter>,
+      <MemoryRouter initialEntries={["/app/dashboard"]}>
+        <SideNavItem item={{ label: "Home", to: "/app/home" }} />
+      </MemoryRouter>
     )
 
-    expect(screen.queryByTestId('side-nav-badge')).toBeNull()
+    expect(screen.queryByTestId("side-nav-badge")).toBeNull()
   })
 })

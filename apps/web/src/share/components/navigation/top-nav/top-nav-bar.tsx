@@ -1,37 +1,37 @@
-import type { ReactNode } from 'react'
-import { useCallback, useMemo, useState } from 'react'
-import { MapPinIcon } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import type { ReactNode } from "react"
+import { useCallback, useMemo, useState } from "react"
+import { MapPinIcon } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
-import { Separator } from '@afenda/ui/components/ui/separator'
-import { cn } from '@afenda/ui/lib/utils'
+import { Separator } from "@afenda/shadcn-ui/components/ui/separator"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import type { SearchResultTypePresentation } from '@/share/components/providers/global-search-provider.types'
-import { useGlobalSearch } from '@/share/components/providers'
+import type { SearchResultTypePresentation } from "@/share/components/providers/global-search-provider.types"
+import { useGlobalSearch } from "@/share/components/providers"
 import {
   CreateActionTrigger,
   FeedbackPopover,
   HelpPanel,
   MobileNavTrigger,
-} from '../../block-ui'
-import { TopActionBar } from './top-action-bar'
+} from "../../block-ui"
+import { TopActionBar } from "./top-action-bar"
 import {
   buildNavGlobalSearchResults,
   CommandPalette,
   CommandPaletteBar,
   GLOBAL_SEARCH_NAV_TYPE,
   useCommandPaletteShortcut,
-} from '../../search'
-import { ShellSearchBar } from '../../shell-ui'
-import { MobileNavDrawer } from '../mobile-nav/mobile-nav-drawer'
-import type { TopNavGroup, TopNavItem } from '../nav-catalog/nav-model'
-import { NavBreadcrumbBar } from '../scope-strip/nav-breadcrumb-bar'
-import type { NavBreadcrumbScopeLevel } from '../scope-strip/nav-breadcrumb-bar.types'
-import { TopNavGroupMenu } from './top-nav-group-menu'
-import { TopNavLink } from './top-nav-link'
-import { useNavItems } from '../nav-catalog/use-nav-items'
-import { useCreateActions } from '../nav-catalog/use-create-actions'
-import { TopUserMenu } from './top-user-menu'
+} from "../../search"
+import { ShellSearchBar } from "../../shell-ui"
+import { MobileNavDrawer } from "../mobile-nav/mobile-nav-drawer"
+import type { TopNavGroup, TopNavItem } from "../nav-catalog/nav-model"
+import { NavBreadcrumbBar } from "../scope-strip/nav-breadcrumb-bar"
+import type { NavBreadcrumbScopeLevel } from "../scope-strip/nav-breadcrumb-bar.types"
+import { TopNavGroupMenu } from "./top-nav-group-menu"
+import { TopNavLink } from "./top-nav-link"
+import { useNavItems } from "../nav-catalog/use-nav-items"
+import { useCreateActions } from "../nav-catalog/use-create-actions"
+import { TopUserMenu } from "./top-user-menu"
 import {
   TOP_NAV_MAX_SCOPE_ICON_SWITCHERS,
   topNavRowClassName,
@@ -41,7 +41,7 @@ import {
   topNavShellIconTriggerClassName,
   topNavShellTextTriggerClassName,
   topNavSearchInputGroupClassName,
-} from './top-nav-chrome-tokens'
+} from "./top-nav-chrome-tokens"
 
 /**
  * Feature toggles for the top navigation bar.
@@ -88,7 +88,7 @@ export interface TopNavBarProps {
 export function TopNavBar({
   className,
   brandName,
-  logoHref = '/app',
+  logoHref = "/app",
   items: itemsOverride,
   groups: groupsOverride,
   flatItemThreshold = 4,
@@ -102,7 +102,7 @@ export function TopNavBar({
     ...featuresProp,
   }
 
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const resolved = useNavItems()
   const items = itemsOverride ?? resolved.items
   const groups = groupsOverride ?? resolved.groups
@@ -113,37 +113,38 @@ export function TopNavBar({
   useCommandPaletteShortcut(
     features.commandPalette,
     isCommandPaletteOpen,
-    setCommandPaletteOpen,
+    setCommandPaletteOpen
   )
 
   const createActions = useCreateActions()
 
   const containerClasses = cn(
-    'sticky top-0 z-40 w-full border-b border-border bg-background',
-    className,
+    "sticky top-0 z-40 w-full border-b border-border bg-background",
+    className
   )
 
   const useFlatNav = groups.length <= 1 && items.length <= flatItemThreshold
 
   const scopeLevels = useMemo((): readonly NavBreadcrumbScopeLevel[] => {
-    if (scopeLevelsProp) return scopeLevelsProp.slice(0, TOP_NAV_MAX_SCOPE_ICON_SWITCHERS)
+    if (scopeLevelsProp)
+      return scopeLevelsProp.slice(0, TOP_NAV_MAX_SCOPE_ICON_SWITCHERS)
     return []
   }, [scopeLevelsProp])
 
   const fetchNavResults = useCallback(
     (q: string) => Promise.resolve(buildNavGlobalSearchResults(items, q)),
-    [items],
+    [items]
   )
 
   const getSearchTypePresentation = useCallback(
     (type: string): SearchResultTypePresentation | undefined => {
       if (type !== GLOBAL_SEARCH_NAV_TYPE) return undefined
       return {
-        label: t('global_search.type_navigation'),
+        label: t("global_search.type_navigation"),
         icon: <MapPinIcon className="shrink-0 opacity-80" aria-hidden />,
       }
     },
-    [t],
+    [t]
   )
 
   return (
@@ -153,7 +154,7 @@ export function TopNavBar({
           <div className={topNavLeftClusterClassName}>
             <NavBreadcrumbBar
               scopeLevels={scopeLevels}
-              logoHref={logoHref ?? '/app'}
+              logoHref={logoHref ?? "/app"}
               className="shrink-0"
             />
 
@@ -164,7 +165,7 @@ export function TopNavBar({
                   className="mx-1 hidden h-4 shrink-0 md:block"
                 />
                 <nav
-                  className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto overflow-y-hidden no-scrollbar"
+                  className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto overflow-y-hidden"
                   aria-label="Primary navigation"
                 >
                   {useFlatNav

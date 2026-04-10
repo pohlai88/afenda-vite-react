@@ -1,9 +1,9 @@
-import { type MouseEventHandler } from 'react'
-import { SparklesIcon, CheckCircleIcon } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { type MouseEventHandler } from "react"
+import { SparklesIcon, CheckCircleIcon } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
-import { Button } from '@afenda/ui/components/ui/button'
-import { cn } from '@afenda/ui/lib/utils'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
 export interface ResolutionTriggerProps {
   /** Number of unresolved issues */
@@ -20,7 +20,7 @@ export function ResolutionTrigger({
   onClick,
   className,
 }: ResolutionTriggerProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const hasIssues = unresolvedCount > 0
 
   return (
@@ -32,11 +32,11 @@ export function ResolutionTrigger({
       onClick={onClick}
       aria-label={
         hasIssues
-          ? t('resolution.aria_label_issues', {
+          ? t("resolution.aria_label_issues", {
               count: unresolvedCount,
-              defaultValue: `${unresolvedCount} issue${unresolvedCount > 1 ? 's' : ''} to resolve`,
+              defaultValue: `${unresolvedCount} issue${unresolvedCount > 1 ? "s" : ""} to resolve`,
             })
-          : t('resolution.aria_label_ok', 'System OK')
+          : t("resolution.aria_label_ok", "System OK")
       }
     >
       {hasIssues ? (

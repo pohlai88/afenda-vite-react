@@ -1,18 +1,18 @@
-import type { ComponentProps, ComponentType, SVGProps } from 'react'
-import { PlusIcon } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import type { ComponentProps, ComponentType, SVGProps } from "react"
+import { PlusIcon } from "lucide-react"
+import { Link } from "react-router-dom"
 
-import { Button } from '@afenda/ui/components/ui/button'
-import { cn } from '@afenda/ui/lib/utils'
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@afenda/ui/components/ui/dropdown-menu'
+} from "@afenda/shadcn-ui/components/ui/dropdown-menu"
 type DropdownMenuItemOnSelect = NonNullable<
-  ComponentProps<typeof DropdownMenuItem>['onSelect']
+  ComponentProps<typeof DropdownMenuItem>["onSelect"]
 >
 
 /** Row that only renders a visual separator (ignored by assistive tech via Radix). */
@@ -31,9 +31,9 @@ export interface CreateActionItem {
 export type CreateAction = CreateActionSeparator | CreateActionItem
 
 function isCreateActionSeparator(
-  action: CreateAction,
+  action: CreateAction
 ): action is CreateActionSeparator {
-  return 'separator' in action && action.separator
+  return "separator" in action && action.separator
 }
 
 export interface CreateActionTriggerProps {

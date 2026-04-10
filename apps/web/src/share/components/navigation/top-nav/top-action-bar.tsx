@@ -1,8 +1,8 @@
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
-import { useActionBarContext } from '../../providers'
-import { TopActionBarCustomiseMenu } from './top-action-bar-customise'
-import { TopActionBarWidget } from './top-action-bar-widget'
+import { useActionBarContext } from "../../providers"
+import { TopActionBarCustomiseMenu } from "./top-action-bar-customise"
+import { TopActionBarWidget } from "./top-action-bar-widget"
 
 export interface TopActionBarProps {
   className?: string
@@ -22,8 +22,8 @@ export function TopActionBar({ className }: TopActionBarProps) {
   return (
     <nav
       className={cn(
-        'flex items-center gap-1 overflow-x-auto border-b border-border bg-background px-(--top-nav-padding-x) lg:px-(--top-nav-padding-x-lg)',
-        className,
+        "flex items-center gap-1 overflow-x-auto border-b border-border bg-background px-(--top-nav-padding-x) lg:px-(--top-nav-padding-x-lg)",
+        className
       )}
       aria-label="Module navigation"
     >

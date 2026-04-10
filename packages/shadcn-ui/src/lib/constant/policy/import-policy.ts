@@ -37,7 +37,9 @@ export const importPolicySchema = z
     directRadixImportAllowedSourcePathPrefixes: z
       .array(nonEmptyStringSchema)
       .readonly(),
-    cvaImportAllowedSourcePathPrefixes: z.array(nonEmptyStringSchema).readonly(),
+    cvaImportAllowedSourcePathPrefixes: z
+      .array(nonEmptyStringSchema)
+      .readonly(),
   })
   .strict()
 
@@ -46,18 +48,13 @@ export const importPolicy = defineConstMap(
     bannedImportPrefixes: ["@radix-ui/react-"],
     bannedExactImportPaths: ["class-variance-authority"],
     bannedImportPatternLabels: ["barrel-import-in-feature"],
-    allowedCnImportPaths: [
-      "@afenda/ui/lib/utils/cn",
-      "@afenda/shadcn-ui/lib/utils/cn",
-    ],
+    allowedCnImportPaths: ["@afenda/shadcn-ui/lib/utils/cn"],
     governedUiOwnerSourcePathPrefixes: [
       "packages/shadcn-ui/src/components/ui/",
       "packages/shadcn-ui/src/lib/",
-      "packages/ui/src/",
     ],
     allowedLocalCnImportSourcePathPrefixes: [
       "packages/shadcn-ui/src/lib/utils/",
-      "packages/ui/src/lib/",
     ],
     directRadixImportAllowedSourcePathPrefixes: [],
     cvaImportAllowedSourcePathPrefixes: [],

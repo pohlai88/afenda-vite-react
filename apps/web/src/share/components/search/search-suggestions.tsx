@@ -5,24 +5,24 @@ import {
   useRef,
   useState,
   type RefObject,
-} from 'react'
-import { Link } from 'react-router-dom'
-import { FileTextIcon } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+} from "react"
+import { Link } from "react-router-dom"
+import { FileTextIcon } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
-import { Badge } from '@afenda/ui/components/ui/badge'
-import { Kbd } from '@afenda/ui/components/ui/kbd'
-import { Progress } from '@afenda/ui/components/ui/progress'
-import { Separator } from '@afenda/ui/components/ui/separator'
-import { Spinner } from '@afenda/ui/components/ui/spinner'
-import { cn } from '@afenda/ui/lib/utils'
+import { Badge } from "@afenda/shadcn-ui/components/ui/badge"
+import { Kbd } from "@afenda/shadcn-ui/components/ui/kbd"
+import { Progress } from "@afenda/shadcn-ui/components/ui/progress"
+import { Separator } from "@afenda/shadcn-ui/components/ui/separator"
+import { Spinner } from "@afenda/shadcn-ui/components/ui/spinner"
+import { cn } from "@afenda/shadcn-ui/lib/utils"
 
 import type {
   GlobalSearchResult,
   SearchResultTypePresentation,
-} from '@/share/components/providers/global-search-provider.types'
+} from "@/share/components/providers/global-search-provider.types"
 
-import { SearchOverlayShell } from './search-overlay-shell'
+import { SearchOverlayShell } from "./search-overlay-shell"
 
 export interface SearchSuggestionsProps {
   results: readonly GlobalSearchResult[]
@@ -31,7 +31,7 @@ export interface SearchSuggestionsProps {
   /** When false, arrow/enter navigation is not active. */
   active: boolean
   getTypePresentation: (
-    type: string,
+    type: string
   ) => SearchResultTypePresentation | undefined
   isLoading?: boolean
   onSelect?: (result: GlobalSearchResult) => void
@@ -44,7 +44,7 @@ function defaultPresentation(type: string): SearchResultTypePresentation {
   return {
     label: type,
     icon: <FileTextIcon />,
-    labelClassName: 'text-muted-foreground',
+    labelClassName: "text-muted-foreground",
   }
 }
 
@@ -59,7 +59,7 @@ export function SearchSuggestions({
   showSimilarity = true,
   className,
 }: SearchSuggestionsProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const selectedIdRef = useRef<string | null>(null)
 
@@ -69,12 +69,12 @@ export function SearchSuggestions({
 
   const displayResults = useMemo(
     () => results.slice(0, maxResults),
-    [results, maxResults],
+    [results, maxResults]
   )
 
   const applyPresentation = useCallback(
     (type: string) => getTypePresentation(type) ?? defaultPresentation(type),
-    [getTypePresentation],
+    [getTypePresentation]
   )
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export function SearchSuggestions({
       if (!root || !root.contains(e.target as Node)) return
 
       switch (e.key) {
-        case 'ArrowDown': {
+        case "ArrowDown": {
           e.preventDefault()
           setSelectedId((prev) => {
             if (displayResults.length === 0) return null
@@ -97,7 +97,7 @@ export function SearchSuggestions({
           })
           break
         }
-        case 'ArrowUp': {
+        case "ArrowUp": {
           e.preventDefault()
           setSelectedId((prev) => {
             if (displayResults.length === 0) return null
@@ -112,7 +112,7 @@ export function SearchSuggestions({
           })
           break
         }
-        case 'Enter': {
+        case "Enter": {
           e.preventDefault()
           const id = selectedIdRef.current
           if (!id) return
@@ -120,7 +120,7 @@ export function SearchSuggestions({
           if (hit) onSelect?.(hit)
           break
         }
-        case 'Escape': {
+        case "Escape": {
           setSelectedId(null)
           break
         }
@@ -129,24 +129,21 @@ export function SearchSuggestions({
       }
     }
 
-    document.addEventListener('keydown', onKeyDown, true)
-    return () => document.removeEventListener('keydown', onKeyDown, true)
+    document.addEventListener("keydown", onKeyDown, true)
+    return () => document.removeEventListener("keydown", onKeyDown, true)
   }, [active, displayResults, keyboardScopeRef, onSelect])
 
   if (isLoading) {
     return (
       <SearchOverlayShell
-        className={cn(
-          'p-4',
-          className,
-        )}
+        className={cn("p-4", className)}
         role="status"
         aria-live="polite"
         aria-busy="true"
       >
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Spinner className="size-4" />
-          <span>{t('search_suggestions.searching')}</span>
+          <span>{t("search_suggestions.searching")}</span>
         </div>
       </SearchOverlayShell>
     )
@@ -162,23 +159,18 @@ export function SearchSuggestions({
       acc[result.type].push(result)
       return acc
     },
-    {},
+    {}
   )
 
   return (
-    <SearchOverlayShell
-      className={cn(
-        'overflow-hidden',
-        className,
-      )}
-    >
+    <SearchOverlayShell className={cn("overflow-hidden", className)}>
       <div className="max-h-[300px] overflow-y-auto">
         {Object.entries(grouped).map(([type, typeResults]) => {
           const config = applyPresentation(type)
           return (
             <div key={type}>
               <div className="flex items-center gap-1.5 bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground">
-                <span className={cn('shrink-0', config.labelClassName)}>
+                <span className={cn("shrink-0", config.labelClassName)}>
                   {config.icon}
                 </span>
                 <span>{config.label}</span>
@@ -193,8 +185,8 @@ export function SearchSuggestions({
                     to={result.url}
                     onClick={() => onSelect?.(result)}
                     className={cn(
-                      'flex items-center gap-3 px-3 py-2 text-sm transition-colors hover:bg-accent',
-                      isSelected && 'bg-accent',
+                      "flex items-center gap-3 px-3 py-2 text-sm transition-colors hover:bg-accent",
+                      isSelected && "bg-accent"
                     )}
                   >
                     <div className="min-w-0 flex-1">
@@ -230,13 +222,13 @@ export function SearchSuggestions({
         <div className="flex flex-wrap items-center gap-1">
           <Kbd>↑</Kbd>
           <Kbd>↓</Kbd>
-          <span>{t('search_suggestions.navigate')}</span>
+          <span>{t("search_suggestions.navigate")}</span>
           <span aria-hidden="true">·</span>
           <Kbd>↵</Kbd>
-          <span>{t('search_suggestions.select')}</span>
+          <span>{t("search_suggestions.select")}</span>
         </div>
         <span>
-          {t('search_suggestions.result_count', {
+          {t("search_suggestions.result_count", {
             count: displayResults.length,
           })}
         </span>

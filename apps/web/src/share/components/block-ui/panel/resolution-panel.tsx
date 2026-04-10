@@ -3,22 +3,25 @@ import {
   ChevronRightIcon,
   SparklesIcon,
   SendIcon,
-} from 'lucide-react'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+} from "lucide-react"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
-import { Badge } from '@afenda/ui/components/ui/badge'
-import { Button } from '@afenda/ui/components/ui/button'
-import { Input } from '@afenda/ui/components/ui/input'
-import { Popover, PopoverTrigger } from '@afenda/ui/components/ui/popover'
+import { Badge } from "@afenda/shadcn-ui/components/ui/badge"
+import { Button } from "@afenda/shadcn-ui/components/ui/button"
+import { Input } from "@afenda/shadcn-ui/components/ui/input"
+import {
+  Popover,
+  PopoverTrigger,
+} from "@afenda/shadcn-ui/components/ui/popover"
 
-import { ShellPopoverContent } from '@/share/components/shell-ui'
-import { Separator } from '@afenda/ui/components/ui/separator'
+import { ShellPopoverContent } from "@/share/components/shell-ui"
+import { Separator } from "@afenda/shadcn-ui/components/ui/separator"
 
-import type { ResolutionSuggestion } from '@/share/types'
+import type { ResolutionSuggestion } from "@/share/types"
 
-import { getIntegritySeverityPresentation } from '@afenda/shadcn-ui/semantic'
-import { ResolutionTrigger } from '../trigger'
+import { getIntegritySeverityPresentation } from "@afenda/shadcn-ui/semantic"
+import { ResolutionTrigger } from "../trigger"
 
 export interface ResolutionPanelProps {
   /** List of resolution suggestions */
@@ -41,16 +44,16 @@ export function ResolutionPanel({
   onAskAssistant,
   triggerClassName,
 }: ResolutionPanelProps) {
-  const { t } = useTranslation('shell')
-  const [question, setQuestion] = useState('')
+  const { t } = useTranslation("shell")
+  const [question, setQuestion] = useState("")
   const [open, setOpen] = useState(false)
-  const validTone = getIntegritySeverityPresentation('valid')
+  const validTone = getIntegritySeverityPresentation("valid")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (question.trim() && onAskAssistant) {
       onAskAssistant(question.trim())
-      setQuestion('')
+      setQuestion("")
     }
   }
 
@@ -69,10 +72,10 @@ export function ResolutionPanel({
         <div className="border-b border-border px-4 py-3">
           <h2
             id="resolution-panel-title"
-            className="flex items-center gap-2 text-base font-semibold leading-tight"
+            className="flex items-center gap-2 text-base leading-tight font-semibold"
           >
             <SparklesIcon className="size-5 shrink-0" aria-hidden />
-            {t('resolution.title', 'Resolution Center')}
+            {t("resolution.title", "Resolution Center")}
             {suggestions.length > 0 ? (
               <Badge
                 variant="secondary"
@@ -85,14 +88,14 @@ export function ResolutionPanel({
         </div>
 
         <div
-          className="min-h-0 flex-1 flex flex-col gap-4 overflow-y-auto px-4 py-4"
+          className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-4"
           role="region"
           aria-labelledby="resolution-panel-title"
         >
           {suggestions.length > 0 ? (
             <section>
               <h3 className="mb-2 text-sm font-medium text-muted-foreground">
-                {t('resolution.suggested_fixes', 'Suggested fixes')}
+                {t("resolution.suggested_fixes", "Suggested fixes")}
               </h3>
               <ul className="flex flex-col gap-2">
                 {suggestions.map((suggestion) => (
@@ -115,10 +118,10 @@ export function ResolutionPanel({
                 aria-hidden="true"
               />
               <p className="text-sm font-medium">
-                {t('resolution.all_resolved', 'All issues resolved')}
+                {t("resolution.all_resolved", "All issues resolved")}
               </p>
               <p className="text-xs text-muted-foreground">
-                {t('resolution.no_issues', 'No outstanding issues to resolve.')}
+                {t("resolution.no_issues", "No outstanding issues to resolve.")}
               </p>
             </div>
           )}
@@ -127,27 +130,27 @@ export function ResolutionPanel({
 
           <section>
             <h3 className="mb-2 text-sm font-medium text-muted-foreground">
-              {t('resolution.ask_assistant', 'Ask Assistant')}
+              {t("resolution.ask_assistant", "Ask Assistant")}
             </h3>
             <form onSubmit={handleSubmit} className="flex gap-2">
               <Input
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
                 placeholder={t(
-                  'resolution.ask_placeholder',
-                  'I am having trouble with...',
+                  "resolution.ask_placeholder",
+                  "I am having trouble with..."
                 )}
                 className="flex-1"
               />
               <Button type="submit" size="icon" disabled={!question.trim()}>
                 <SendIcon className="size-4" aria-hidden />
-                <span className="sr-only">{t('resolution.send', 'Send')}</span>
+                <span className="sr-only">{t("resolution.send", "Send")}</span>
               </Button>
             </form>
             <p className="mt-2 text-xs text-muted-foreground">
               {t(
-                'resolution.assistant_note',
-                'AI-powered assistance coming soon.',
+                "resolution.assistant_note",
+                "AI-powered assistance coming soon."
               )}
             </p>
           </section>
@@ -163,15 +166,15 @@ interface ResolutionCardProps {
 }
 
 function ResolutionCard({ suggestion, onResolve }: ResolutionCardProps) {
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation("shell")
 
   const confidencePercent = Math.round(suggestion.confidence * 100)
   const resolutionTypeLabel =
-    suggestion.resolution.type === 'auto'
-      ? t('resolution.type_auto', 'Auto-fix')
-      : suggestion.resolution.type === 'assisted'
-        ? t('resolution.type_assisted', 'Assisted')
-        : t('resolution.type_manual', 'Manual')
+    suggestion.resolution.type === "auto"
+      ? t("resolution.type_auto", "Auto-fix")
+      : suggestion.resolution.type === "assisted"
+        ? t("resolution.type_assisted", "Assisted")
+        : t("resolution.type_manual", "Manual")
 
   return (
     <div className="rounded-lg border border-border bg-card p-3">
@@ -182,16 +185,14 @@ function ResolutionCard({ suggestion, onResolve }: ResolutionCardProps) {
             {suggestion.suggestedAction}
           </p>
         </div>
-        <Badge variant="secondary">
-          {resolutionTypeLabel}
-        </Badge>
+        <Badge variant="secondary">{resolutionTypeLabel}</Badge>
       </div>
       <div className="flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
-          {t('resolution.confidence', 'Confidence')}: {confidencePercent}%
+          {t("resolution.confidence", "Confidence")}: {confidencePercent}%
         </span>
         <Button variant="ghost" size="sm" onClick={onResolve} className="h-7">
-          {t('resolution.apply', 'Apply')}
+          {t("resolution.apply", "Apply")}
           <ChevronRightIcon className="ml-1 size-3" aria-hidden />
         </Button>
       </div>
