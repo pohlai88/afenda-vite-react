@@ -52,7 +52,7 @@ export const TOKEN_PIPELINE_VERSION_POLICY = {
  * JSON manifest shape version (bump only when `ThemeArtifactManifest` changes).
  * Keep in sync with `THEME_ARTIFACT_MANIFEST_SCHEMA_VERSION` in `token-manifest.ts`.
  */
-export const TOKEN_PIPELINE_MANIFEST_SCHEMA_VERSION = 1 as const
+export const TOKEN_PIPELINE_MANIFEST_SCHEMA_VERSION = 3 as const
 
 /**
  * Current contract summary.

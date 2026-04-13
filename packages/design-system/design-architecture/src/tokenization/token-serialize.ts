@@ -1,20 +1,13 @@
 /**
- * TOKEN SERIALIZE
+ * TOKEN SERIALIZE (FIXED STRUCTURE)
  *
- * Serializes bridged token data into deterministic CSS text fragments.
+ * Output order (STRICT):
+ * 1. @theme static
+ * 2. .dark (colors only)
+ * 3. :root (runtime only)
+ * 4. @keyframes
  *
- * Rules:
- * - consume bridged data only
- * - preserve stable section order
- * - preserve stable declaration order
- * - emit text only
- * - do not invent tokens
- *
- * Output sections:
- * - @theme static { ... }
- * - .dark { ... }
- * - :root { ... } for runtime parameters
- * - @keyframes ...
+ * NO duplicate :root blocks allowed.
  */
 
 import type { KeyframeToken } from './token-constants'
@@ -42,13 +35,15 @@ function serializeDeclarationBlock(
   selector: string,
   declarations: ReadonlyArray<CssDeclaration>,
 ): string {
-  if (declarations.length === 0) {
-    return ''
-  }
+  if (declarations.length === 0) return ''
 
   const lines = declarations.map(serializeDeclaration).join(NL)
   return `${selector} {${NL}${lines}${NL}}`
 }
+
+// =============================================================================
+// Keyframes (unchanged)
+// =============================================================================
 
 function getPercentageStepValue(stepName: string): number | null {
   const match = /^(\d+(?:\.\d+)?)%$/.exec(stepName)
@@ -56,25 +51,11 @@ function getPercentageStepValue(stepName: string): number | null {
 }
 
 function compareKeyframeStepNames(left: string, right: string): number {
-  if (left === right) {
-    return 0
-  }
-
-  if (left === 'from') {
-    return -1
-  }
-
-  if (right === 'from') {
-    return 1
-  }
-
-  if (left === 'to') {
-    return 1
-  }
-
-  if (right === 'to') {
-    return -1
-  }
+  if (left === right) return 0
+  if (left === 'from') return -1
+  if (right === 'from') return 1
+  if (left === 'to') return 1
+  if (right === 'to') return -1
 
   const leftPercentage = getPercentageStepValue(left)
   const rightPercentage = getPercentageStepValue(right)
@@ -83,13 +64,8 @@ function compareKeyframeStepNames(left: string, right: string): number {
     return leftPercentage - rightPercentage
   }
 
-  if (leftPercentage !== null) {
-    return -1
-  }
-
-  if (rightPercentage !== null) {
-    return 1
-  }
+  if (leftPercentage !== null) return -1
+  if (rightPercentage !== null) return 1
 
   return left.localeCompare(right)
 }
@@ -102,34 +78,27 @@ function serializeKeyframeStyleRecord(
   styleRecord: KeyframeBlock[string],
 ): string {
   return Object.entries(styleRecord)
-    .sort(([left], [right]) => left.localeCompare(right))
-    .map(([property, value]) => `${DOUBLE_INDENT}${property}: ${value};`)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([prop, value]) => `${DOUBLE_INDENT}${prop}: ${value};`)
     .join(NL)
 }
 
 function serializeKeyframeSteps(block: KeyframeBlock): string {
   return getOrderedKeyframeStepNames(block)
-    .map((stepName) => {
-      const styleRecord = block[stepName]
-
-      if (!styleRecord) {
-        return ''
-      }
-
-      const styleLines = serializeKeyframeStyleRecord(styleRecord)
-      return `${INDENT}${stepName} {${NL}${styleLines}${NL}${INDENT}}`
+    .filter((step) => block[step] != null)
+    .map((step) => {
+      const styles = serializeKeyframeStyleRecord(block[step]!)
+      return `${INDENT}${step} {${NL}${styles}${NL}${INDENT}}`
     })
-    .filter((value) => value.length > 0)
     .join(NL)
 }
 
 function serializeKeyframe(name: KeyframeToken, block: KeyframeBlock): string {
-  const steps = serializeKeyframeSteps(block)
-  return `@keyframes ${name} {${NL}${steps}${NL}}`
+  return `@keyframes ${name} {${NL}${serializeKeyframeSteps(block)}${NL}}`
 }
 
 // =============================================================================
-// Section serializers
+// Sections
 // =============================================================================
 
 export function serializeThemeStaticBlock(
@@ -147,7 +116,7 @@ export function serializeDarkModeBlock(
   return serializeDeclarationBlock('.dark', bridged.darkModeDeclarations)
 }
 
-export function serializeRuntimeParameterBlock(
+export function serializeRuntimeRootBlock(
   bridged: BridgedThemeTokens = bridgedThemeTokens,
 ): string {
   return serializeDeclarationBlock(
@@ -165,7 +134,7 @@ export function serializeKeyframesBlock(
 }
 
 // =============================================================================
-// Root serializer
+// Root serializer (FIXED ORDER)
 // =============================================================================
 
 export function serializeThemeCss(
@@ -173,29 +142,25 @@ export function serializeThemeCss(
 ): SerializedThemeCss {
   const themeStaticBlock = serializeThemeStaticBlock(bridged)
   const darkModeBlock = serializeDarkModeBlock(bridged)
-  const runtimeParameterBlock = serializeRuntimeParameterBlock(bridged)
+  const runtimeRootBlock = serializeRuntimeRootBlock(bridged)
   const keyframesBlock = serializeKeyframesBlock(bridged)
 
   const combined = [
     themeStaticBlock,
     darkModeBlock,
-    runtimeParameterBlock,
+    runtimeRootBlock,
     keyframesBlock,
   ]
-    .filter((block) => block.length > 0)
+    .filter((b) => b.length > 0)
     .join(TOKEN_SECTION_GAP)
 
   return {
     themeStaticBlock,
     darkModeBlock,
-    runtimeParameterBlock,
+    runtimeParameterBlock: runtimeRootBlock,
     keyframesBlock,
     combined,
   }
 }
-
-// =============================================================================
-// Canonical serialized export
-// =============================================================================
 
 export const serializedThemeCss = serializeThemeCss()

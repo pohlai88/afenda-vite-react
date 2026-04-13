@@ -23,7 +23,8 @@
     "i18n:policy": "tsx src/app/_platform/i18n/scripts/check-i18n-policy.ts",
     "format": "prettier --write \"src\" \"public\" \"index.html\" \"*.config.*\"",
     "format:check": "prettier --check \"src\" \"public\" \"index.html\" \"*.config.*\"",
-    "shell:validation-report": "tsx --tsconfig tsconfig.app.json src/app/_platform/shell/scripts/write-shell-metadata-validation-report.ts"
+    "shell:validation-report": "tsx --tsconfig tsconfig.app.json src/app/_platform/shell/scripts/write-shell-metadata-validation-report.ts",
+    "shell:validation-report:compare": "tsx --tsconfig tsconfig.app.json src/app/_platform/shell/scripts/compare-shell-validation-reports.ts"
   },
   "dependencies": {
     "@afenda/design-system": "workspace:*",
@@ -42,6 +43,7 @@
     "i18next": "^26.0.3",
     "i18next-browser-languagedetector": "^8.2.1",
     "lucide-react": "catalog:",
+    "next-themes": "0.4.6",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

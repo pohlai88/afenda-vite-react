@@ -21,6 +21,11 @@ import { shellSlotActivationV1 } from "../policy/shell-navigation-policy"
 import { useShellNavigation } from "../hooks/use-shell-navigation"
 import { ShellNavIcon } from "./shell-nav-icon"
 
+/**
+ * Sidebar chrome is **policy-driven** (`shellNavigationItems`, groups), not `ShellMetadata`.
+ * Route `handle.shell` does not drive this component — see shell README / shell-route-definitions.
+ */
+
 function groupItemsByGroup(
   items: readonly ShellNavigationItem[]
 ): Map<string, ShellNavigationItem[]> {
@@ -50,7 +55,7 @@ export function AppShellSidebar() {
   return (
     <Sidebar collapsible="icon" variant="sidebar">
       <SidebarHeader className="border-b border-sidebar-border">
-        <div className="flex items-center gap-2 px-2 py-1.5">
+        <div className="ui-shell-sidebar-brand">
           <span className="truncate font-semibold text-sidebar-foreground">
             {t("sidebar.brand")}
           </span>
@@ -78,7 +83,7 @@ export function AppShellSidebar() {
                         <SidebarMenuItem key={item.id}>
                           <SidebarMenuButton
                             aria-disabled
-                            className="cursor-not-allowed opacity-60"
+                            className="ui-shell-nav-disabled"
                             disabled
                             type="button"
                           >
@@ -128,7 +133,10 @@ export function AppShellSidebar() {
       {shellSlotActivationV1["shell.sidebar.footer"] ? (
         <>
           <SidebarSeparator />
-          <div data-slot="shell.sidebar.footer" className="p-2" />
+          <div
+            data-slot="shell.sidebar.footer"
+            className="ui-shell-sidebar-footer-slot"
+          />
         </>
       ) : null}
       <SidebarRail />

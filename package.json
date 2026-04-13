@@ -21,6 +21,8 @@
     "format": "turbo run format",
     "format:check": "turbo run format:check",
     "tokens:check": "pnpm --filter @afenda/design-system run tokens:check",
+    "design-system:generate": "pnpm --filter @afenda/design-system run generate-design-system",
+    "design-system:generated-drift-check": "pnpm --filter @afenda/design-system run test:generated-drift-check",
     "icons:generate": "pnpm --filter @afenda/design-system run icons:generate",
     "icons:check": "pnpm --filter @afenda/design-system run icons:check",
     "check": "pnpm run script:check-afenda-config && pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit && pnpm run script:validate-i18n && pnpm run script:i18n-check && pnpm run tokens:check && turbo run lint typecheck test:run build",

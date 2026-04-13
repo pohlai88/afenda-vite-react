@@ -63,6 +63,16 @@ export const auditActionCatalog = {
     requiresResolutionRef: true,
     description: "Governed redaction was applied to audit evidence.",
   },
+  "shell.interaction.recorded": {
+    key: "shell.interaction.recorded",
+    category: "shell-ui",
+    risk: "low",
+    truthImpact: false,
+    requiresReason: false,
+    requiresResolutionRef: false,
+    description:
+      "UI shell interaction evidence only (navigation, command invocation surface) — not business-domain truth.",
+  },
 } as const satisfies Record<string, AuditActionDefinition>
 
 export type AuditActionKey = keyof typeof auditActionCatalog

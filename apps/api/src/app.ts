@@ -2,6 +2,7 @@ import { insertGovernedAuditLog, type DatabaseClient } from "@afenda/database"
 import { Hono } from "hono"
 
 import { auditContextMiddleware } from "./audit-context.js"
+import { handleShellInteractionAudit } from "./shell-interaction-audit.js"
 
 const DEMO_SESSION_SUBJECT = "api.demo.session"
 
@@ -52,6 +53,10 @@ export function createApp(db: DatabaseClient) {
 
     return c.json({ id: row.id, recordedAt: row.recordedAt.toISOString() }, 201)
   })
+
+  app.post("/v1/audit/shell-interaction", (c) =>
+    handleShellInteractionAudit(c, db)
+  )
 
   return app
 }

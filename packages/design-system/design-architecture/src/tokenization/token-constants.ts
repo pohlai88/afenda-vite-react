@@ -119,7 +119,6 @@ export const dataDisplayColorTokenValues = [
   'table-pinned',
 ] as const
 
-/** Content / layout surfaces: prose blocks, code blocks, text selection (not `surface-*` state tokens). */
 export const contentColorTokenValues = [
   'surface',
   'surface-foreground',
@@ -155,6 +154,33 @@ export const colorTokenValues = [
   ...enterpriseUiColorTokenValues,
 ] as const
 
+/**
+ * Primitive-owned colors.
+ *
+ * These are the source-authority tokens that must be explicitly authored
+ * per mode. They are not allowed to be silently overridden by derived tokens.
+ */
+export const primitiveColorTokenValues = [
+  ...semanticCoreColorTokenValues,
+  ...chartColorTokenValues,
+  ...sidebarColorTokenValues,
+  ...feedbackColorTokenValues,
+] as const
+
+/**
+ * Derived-owned colors.
+ *
+ * These are generated / projected semantic tokens that are expected to be
+ * authored from primitive anchors via `var(...)` / `color-mix(...)`.
+ */
+export const derivedColorTokenValues = [
+  ...primaryScaleColorTokenValues,
+  ...contentColorTokenValues,
+  ...surfaceStateColorTokenValues,
+  ...borderHierarchyColorTokenValues,
+  ...dataDisplayColorTokenValues,
+] as const
+
 // =============================================================================
 // Size, layout, density
 // =============================================================================
@@ -178,7 +204,6 @@ export const containerTokenValues = [
   '2xl',
 ] as const
 
-/** Tailwind v4 `@theme` breakpoint overrides (`--breakpoint-*`). */
 export const breakpointTokenValues = ['3xl', '4xl'] as const
 
 export const densityTokenValues = [
@@ -233,8 +258,6 @@ export const animationTokenValues = [
   'dialog-out',
 ] as const
 
-// Keyframe names intentionally mirror animation tokens so `--animate-*`
-// variables can reference matching Tailwind v4 `@keyframes` identifiers.
 export const keyframeTokenValues = animationTokenValues
 
 // =============================================================================
@@ -243,6 +266,8 @@ export const keyframeTokenValues = animationTokenValues
 
 export const tokenFamilyValues = [
   'semantic-colors',
+  'primitive-colors',
+  'derived-colors',
   'chart-colors',
   'sidebar-colors',
   'content-colors',
@@ -263,6 +288,8 @@ export type TokenFamily = (typeof tokenFamilyValues)[number]
 
 export const tokenFamilyMembers = {
   'semantic-colors': semanticColorTokenValues,
+  'primitive-colors': primitiveColorTokenValues,
+  'derived-colors': derivedColorTokenValues,
   'chart-colors': chartColorTokenValues,
   'sidebar-colors': sidebarColorTokenValues,
   'content-colors': contentColorTokenValues,
@@ -312,6 +339,10 @@ export type EnterpriseUiColorToken =
   (typeof enterpriseUiColorTokenValues)[number]
 
 export type ContentColorToken = (typeof contentColorTokenValues)[number]
+
+export type PrimitiveColorToken = (typeof primitiveColorTokenValues)[number]
+
+export type DerivedColorToken = (typeof derivedColorTokenValues)[number]
 
 export type ColorToken = (typeof colorTokenValues)[number]
 
@@ -455,6 +486,9 @@ const borderHierarchyColorTokenSet = new Set<string>(
 const feedbackColorTokenSet = new Set<string>(feedbackColorTokenValues)
 const dataDisplayColorTokenSet = new Set<string>(dataDisplayColorTokenValues)
 const enterpriseUiColorTokenSet = new Set<string>(enterpriseUiColorTokenValues)
+const contentColorTokenSet = new Set<string>(contentColorTokenValues)
+const primitiveColorTokenSet = new Set<string>(primitiveColorTokenValues)
+const derivedColorTokenSet = new Set<string>(derivedColorTokenValues)
 const colorTokenSet = new Set<string>(colorTokenValues)
 const radiusTokenSet = new Set<string>(radiusTokenValues)
 const containerTokenSet = new Set<string>(containerTokenValues)
@@ -536,6 +570,20 @@ export function isEnterpriseUiColorToken(
   value: string,
 ): value is EnterpriseUiColorToken {
   return enterpriseUiColorTokenSet.has(value)
+}
+
+export function isContentColorToken(value: string): value is ContentColorToken {
+  return contentColorTokenSet.has(value)
+}
+
+export function isPrimitiveColorToken(
+  value: string,
+): value is PrimitiveColorToken {
+  return primitiveColorTokenSet.has(value)
+}
+
+export function isDerivedColorToken(value: string): value is DerivedColorToken {
+  return derivedColorTokenSet.has(value)
 }
 
 export function isColorToken(value: string): value is ColorToken {

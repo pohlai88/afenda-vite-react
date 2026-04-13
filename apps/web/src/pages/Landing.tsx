@@ -9,7 +9,7 @@ import {
 } from "@afenda/design-system/ui-primitives"
 
 /**
- * Marketing entry at `/` — outside `AppShellLayout`.
+ * Marketing landing at `/` — outside `AppShellLayout`.
  * Structured for accessibility (skip link, heading order) and enterprise CTAs.
  */
 export default function Landing() {
@@ -18,7 +18,7 @@ export default function Landing() {
   return (
     <>
       <a
-        className="sr-only inline-flex rounded-md bg-background px-4 py-2 text-sm font-medium shadow-lg focus-ring focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100"
+        className="sr-only inline-flex rounded-md bg-background px-4 py-2 text-sm font-medium shadow-lg focus-ring focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100]"
         href="#landing-main"
       >
         {t("marketing.landing.skip_to_main")}
@@ -56,7 +56,7 @@ export default function Landing() {
               </Link>
             </Button>
             <Button asChild variant="outline">
-              <Link to="/app/login">{t("marketing.landing.sign_in")}</Link>
+              <Link to="/app">{t("marketing.landing.sign_in")}</Link>
             </Button>
           </div>
         </section>

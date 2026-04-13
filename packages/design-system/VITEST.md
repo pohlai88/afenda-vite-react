@@ -175,7 +175,7 @@ pnpm --filter @afenda/design-system test:coverage
 pnpm --filter @afenda/design-system test:update-generated-check
 ```
 
-`test:update-generated-check` is an alias for `test:generated-drift-check`: it regenerates `design-architecture/src/generated/generated-theme.css` and `generated-theme.manifest.json`, then fails if the working tree differs.
+`test:update-generated-check` is an alias for `test:generated-drift-check`: it runs `design-architecture/scripts/run-generated-theme-drift-check.ts`, which regenerates `design-architecture/src/generated/generated-theme.css` and `generated-theme.manifest.json`, then fails if either file differs from `HEAD` (manifest `emitRevision` bumps only when emitted CSS bytes change).
 
 Coverage alone does not prove emitted output integrity.
 
@@ -237,11 +237,11 @@ If `design-architecture/src/tokenization/**` changed:
 
 ## 6. Policy decisions (recommended defaults)
 
-| Question | Recommendation |
-| --- | --- |
-| Should tokenization be in `coverage.include`? | **Yes** for `design-architecture/src/tokenization/**/*.ts` when the pipeline is canonical (current config). |
-| Should coverage be required in CI? | **Yes** — use `pnpm --filter @afenda/design-system test:coverage`. |
-| How should generated or volatile paths be handled? | **Exclude narrowly and explicitly.** Do not lower thresholds to compensate for sloppy scoping. |
+| Question                                           | Recommendation                                                                                              |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Should tokenization be in `coverage.include`?      | **Yes** for `design-architecture/src/tokenization/**/*.ts` when the pipeline is canonical (current config). |
+| Should coverage be required in CI?                 | **Yes** — use `pnpm --filter @afenda/design-system test:coverage`.                                          |
+| How should generated or volatile paths be handled? | **Exclude narrowly and explicitly.** Do not lower thresholds to compensate for sloppy scoping.              |
 
 ---
 

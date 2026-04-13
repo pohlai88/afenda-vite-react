@@ -24,6 +24,7 @@ dist-ssr
 packages/vitest-config/vitest-github/
 packages/vitest-config/_vitest-github/
 packages/eslint-config/_eslint-github/
+packages/pino-logger/pino-github/
 
 # Repo-level artifacts (see docs/REPO_ARTIFACT_POLICY.md)
 .artifacts/cache/turbo/**

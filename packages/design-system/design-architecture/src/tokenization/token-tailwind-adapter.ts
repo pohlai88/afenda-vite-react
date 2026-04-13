@@ -1,36 +1,51 @@
 /**
- * TOKEN TAILWIND ADAPTER
- *
- * Optional post-serialize compatibility adapter for Tailwind v4 / shadcn-style
- * runtime aliases.
- *
- * Relationship to Tailwind v4:
- * - Official Tailwind v4 + shadcn examples often show unprefixed semantic globals
- *   (for example `--background`) with `@theme inline` mapping `--color-*` to them.
- * - This pipeline keeps `--color-*`, `--radius-*`, `--font-*`, etc. as canonical
- *   runtime variables and treats unprefixed shadcn-style names as compatibility aliases.
- * - Adapters may emit either direction in theory, but this adapter emits compatibility
- *   aliases from canonical variables after the core serialized output.
+ * TOKEN TAILWIND ADAPTER (CLEAN, ENFORCED, SINGLE-LAYER)
  *
  * Purpose:
- * - emit compatibility aliases from shadcn-registry metadata
- * - keep canonical `--color-*`, `--radius-*`, `--font-*` naming untouched
- * - append optional adapter blocks after core serialized CSS
+ * - Emit shadcn compatibility aliases from canonical tokens
+ * - Emit aliases once on `:root` only; canonical `.dark` already switches `--color-*`,
+ *   so `var(--color-*)` resolves correctly without duplicating the same block under `.dark`
+ * - Prevent drift, duplicates, and invalid mappings
  *
  * Rules:
- * - this is an adapter, not a second compiler
- * - consume registry metadata and serialized output only
- * - do not redefine canonical token truth
- * - do not replace @theme static as the primary model
- *
- * When bridging to shadcn-style unprefixed aliases, validate production CSS for unintended
- * literal template fragments (e.g. `<alpha-value>`) per your bundler.
+ * - This is an adapter, NOT a compiler
+ * - Do not redefine canonical tokens
+ * - Do not emit multiple :root or .dark blocks
  */
 
 import { shadcnRegistry } from './shadcn-registry'
 import { serializedThemeCss } from './token-serialize'
 import { TOKEN_LINE_BREAK as NL, TOKEN_SECTION_GAP } from './token-text'
 import type { SerializedThemeCss } from './token-types'
+
+//
+// GOVERNANCE — strict validation
+//
+
+const ALLOWED_CANONICAL_COLOR_PREFIX = '--color-'
+const ALLOWED_CANONICAL_FONT_PREFIX = '--font-'
+
+const ALLOWED_ALIAS_NAMES = new Set<string>([
+  ...shadcnRegistry.colors.map((token) => `--${token}`),
+  ...shadcnRegistry.extraRuntimeAliases.map((row) => row.alias),
+  ...shadcnRegistry.wrappedAliases.map((row) => row.alias),
+])
+
+function validateAlias(alias: string, canonical: string): void {
+  if (!ALLOWED_ALIAS_NAMES.has(alias)) {
+    throw new Error(`Illegal alias name: ${alias}`)
+  }
+
+  const ok =
+    canonical.startsWith(ALLOWED_CANONICAL_COLOR_PREFIX) ||
+    canonical.startsWith(ALLOWED_CANONICAL_FONT_PREFIX)
+
+  if (!ok) {
+    throw new Error(
+      `Alias ${alias} must map to canonical token, got: ${canonical}`,
+    )
+  }
+}
 
 //
 // TYPES
@@ -41,20 +56,6 @@ export interface TailwindAdapterAliasDeclaration {
   readonly canonical: `--${string}`
 }
 
-export interface TailwindAdapterSpecialAliasDeclaration extends TailwindAdapterAliasDeclaration {
-  readonly adapterKind: 'special'
-}
-
-export interface TailwindAdapterBlocks {
-  readonly rootRequiredAliasBlock: string
-  readonly darkRequiredAliasBlock: string
-  readonly rootExtraRuntimeAliasBlock: string
-  readonly darkExtraRuntimeAliasBlock: string
-  readonly rootSpecialAliasBlock: string
-  readonly darkSpecialAliasBlock: string
-  readonly combined: string
-}
-
 export interface TailwindAdapterOptions {
   readonly includeRequiredAliases?: boolean
   readonly includeExtraRuntimeAliases?: boolean
@@ -62,218 +63,126 @@ export interface TailwindAdapterOptions {
 }
 
 //
-// SELECTORS
+// HELPERS
 //
 
-const ROOT_SELECTOR = ':root' as const
-const DARK_SELECTOR = '.dark' as const
-
-//
-// FORMATTING HELPERS
-//
-
+const ROOT = ':root'
 const INDENT = '  '
 
-function serializeAliasDeclaration(
-  declaration: TailwindAdapterAliasDeclaration,
-): string {
-  return `${INDENT}${declaration.alias}: var(${declaration.canonical});`
+function serializeDeclaration(d: TailwindAdapterAliasDeclaration): string {
+  return `${INDENT}${d.alias}: var(${d.canonical});`
 }
 
-function serializeAliasBlock(
+function buildBlock(
   selector: string,
   declarations: readonly TailwindAdapterAliasDeclaration[],
 ): string {
-  if (declarations.length === 0) {
-    return ''
-  }
+  if (declarations.length === 0) return ''
 
-  const lines = declarations.map(serializeAliasDeclaration).join(NL)
+  const lines = declarations.map(serializeDeclaration).join(NL)
   return `${selector} {${NL}${lines}${NL}}`
 }
 
-function createSectionComment(title: string): string {
-  return `/* ${title} */`
+//
+// BUILDERS (SAFE)
+//
+
+function buildRequired(): TailwindAdapterAliasDeclaration[] {
+  const seen = new Set<string>()
+
+  return shadcnRegistry.requiredColorAliases
+    .filter((r) => r.emitKind === 'direct')
+    .map((r) => {
+      validateAlias(r.alias, r.canonical)
+
+      if (seen.has(r.alias)) {
+        throw new Error(`Duplicate alias: ${r.alias}`)
+      }
+
+      seen.add(r.alias)
+
+      return { alias: r.alias, canonical: r.canonical }
+    })
 }
 
-function buildAliasSection(
-  sectionComment: string,
-  selector: string,
-  declarations: readonly TailwindAdapterAliasDeclaration[],
+function buildExtra(): TailwindAdapterAliasDeclaration[] {
+  const seen = new Set<string>()
+
+  return shadcnRegistry.extraRuntimeAliases
+    .filter((r) => r.emitKind === 'runtime-only')
+    .map((r) => {
+      validateAlias(r.alias, r.canonical)
+
+      if (seen.has(r.alias)) {
+        throw new Error(`Duplicate alias: ${r.alias}`)
+      }
+
+      seen.add(r.alias)
+
+      return { alias: r.alias, canonical: r.canonical }
+    })
+}
+
+function buildSpecial(): TailwindAdapterAliasDeclaration[] {
+  const seen = new Set<string>()
+
+  return shadcnRegistry.wrappedAliases
+    .filter((r) => r.emitKind === 'wrapped')
+    .map((r) => {
+      validateAlias(r.alias, r.canonical)
+
+      if (seen.has(r.alias)) {
+        throw new Error(`Duplicate alias: ${r.alias}`)
+      }
+
+      seen.add(r.alias)
+
+      return { alias: r.alias, canonical: r.canonical }
+    })
+}
+
+//
+// ROOT BUILDER (FIXED — SINGLE BLOCK ONLY)
+//
+
+export function buildTailwindAdapter(
+  options: TailwindAdapterOptions = {},
 ): string {
-  if (declarations.length === 0) {
-    return ''
-  }
+  const required =
+    (options.includeRequiredAliases ?? true) ? buildRequired() : []
+  const extra = (options.includeExtraRuntimeAliases ?? true) ? buildExtra() : []
+  const special = (options.includeSpecialAliases ?? true) ? buildSpecial() : []
+
+  // 🔥 MERGE ALL — SINGLE SOURCE OF TRUTH
+  const all = [...required, ...extra, ...special]
+
+  if (all.length === 0) return ''
+
+  const rootBlock = buildBlock(ROOT, all)
+  const darkBlock = ''
 
   return [
-    createSectionComment(sectionComment),
-    serializeAliasBlock(selector, declarations),
-  ].join(NL)
-}
-
-//
-// DECLARATION BUILDERS
-//
-
-export function buildRequiredAliasDeclarations(): readonly TailwindAdapterAliasDeclaration[] {
-  return shadcnRegistry.requiredColorAliases
-    .filter((row) => row.emitKind === 'direct')
-    .map((row) => ({
-      alias: row.alias,
-      canonical: row.canonical,
-    }))
-}
-
-export function buildExtraRuntimeAliasDeclarations(): readonly TailwindAdapterAliasDeclaration[] {
-  return shadcnRegistry.extraRuntimeAliases
-    .filter((row) => row.emitKind === 'runtime-only')
-    .map((row) => ({
-      alias: row.alias,
-      canonical: row.canonical,
-    }))
-}
-
-export function buildSpecialAliasDeclarations(): readonly TailwindAdapterSpecialAliasDeclaration[] {
-  return shadcnRegistry.wrappedAliases
-    .filter((row) => row.emitKind === 'wrapped')
-    .map((row) => ({
-      alias: row.alias,
-      canonical: row.canonical,
-      adapterKind: 'special' as const,
-    }))
-}
-
-//
-// BLOCK BUILDERS
-//
-
-export function buildRootRequiredAliasBlock(
-  declarations: readonly TailwindAdapterAliasDeclaration[] = buildRequiredAliasDeclarations(),
-): string {
-  return buildAliasSection(
-    'shadcn required parity aliases (root)',
-    ROOT_SELECTOR,
-    declarations,
-  )
-}
-
-export function buildDarkRequiredAliasBlock(
-  declarations: readonly TailwindAdapterAliasDeclaration[] = buildRequiredAliasDeclarations(),
-): string {
-  return buildAliasSection(
-    'shadcn required parity aliases (dark)',
-    DARK_SELECTOR,
-    declarations,
-  )
-}
-
-export function buildRootExtraRuntimeAliasBlock(
-  declarations: readonly TailwindAdapterAliasDeclaration[] = buildExtraRuntimeAliasDeclarations(),
-): string {
-  return buildAliasSection(
-    'shadcn extra runtime aliases (root)',
-    ROOT_SELECTOR,
-    declarations,
-  )
-}
-
-export function buildDarkExtraRuntimeAliasBlock(
-  declarations: readonly TailwindAdapterAliasDeclaration[] = buildExtraRuntimeAliasDeclarations(),
-): string {
-  return buildAliasSection(
-    'shadcn extra runtime aliases (dark)',
-    DARK_SELECTOR,
-    declarations,
-  )
-}
-
-export function buildRootSpecialAliasBlock(
-  declarations: readonly TailwindAdapterSpecialAliasDeclaration[] = buildSpecialAliasDeclarations(),
-): string {
-  return buildAliasSection(
-    'shadcn special aliases (root)',
-    ROOT_SELECTOR,
-    declarations,
-  )
-}
-
-export function buildDarkSpecialAliasBlock(
-  declarations: readonly TailwindAdapterSpecialAliasDeclaration[] = buildSpecialAliasDeclarations(),
-): string {
-  return buildAliasSection(
-    'shadcn special aliases (dark)',
-    DARK_SELECTOR,
-    declarations,
-  )
-}
-
-//
-// ROOT ADAPTER BUILDER
-//
-
-export function buildTailwindAdapterBlocks(
-  options: TailwindAdapterOptions = {},
-): TailwindAdapterBlocks {
-  const includeRequiredAliases = options.includeRequiredAliases ?? true
-  const includeExtraRuntimeAliases = options.includeExtraRuntimeAliases ?? true
-  const includeSpecialAliases = options.includeSpecialAliases ?? true
-
-  const requiredDeclarations = includeRequiredAliases
-    ? buildRequiredAliasDeclarations()
-    : []
-
-  const extraDeclarations = includeExtraRuntimeAliases
-    ? buildExtraRuntimeAliasDeclarations()
-    : []
-
-  const specialDeclarations = includeSpecialAliases
-    ? buildSpecialAliasDeclarations()
-    : []
-
-  const rootRequiredAliasBlock =
-    buildRootRequiredAliasBlock(requiredDeclarations)
-  const darkRequiredAliasBlock =
-    buildDarkRequiredAliasBlock(requiredDeclarations)
-  const rootExtraRuntimeAliasBlock =
-    buildRootExtraRuntimeAliasBlock(extraDeclarations)
-  const darkExtraRuntimeAliasBlock =
-    buildDarkExtraRuntimeAliasBlock(extraDeclarations)
-  const rootSpecialAliasBlock = buildRootSpecialAliasBlock(specialDeclarations)
-  const darkSpecialAliasBlock = buildDarkSpecialAliasBlock(specialDeclarations)
-
-  const combined = [
-    rootRequiredAliasBlock,
-    darkRequiredAliasBlock,
-    rootExtraRuntimeAliasBlock,
-    darkExtraRuntimeAliasBlock,
-    rootSpecialAliasBlock,
-    darkSpecialAliasBlock,
+    '/* =========================================================',
+    '   4. SHADCN COMPATIBILITY ALIASES',
+    '========================================================= */',
+    rootBlock,
+    darkBlock,
   ]
-    .filter((block) => block.length > 0)
-    .join(TOKEN_SECTION_GAP)
-
-  return {
-    rootRequiredAliasBlock,
-    darkRequiredAliasBlock,
-    rootExtraRuntimeAliasBlock,
-    darkExtraRuntimeAliasBlock,
-    rootSpecialAliasBlock,
-    darkSpecialAliasBlock,
-    combined,
-  }
+    .filter(Boolean)
+    .join(NL)
 }
 
 //
-// POST-SERIALIZE APPEND
+// FINAL APPEND
 //
 
 export function appendTailwindAdapter(
   serialized: SerializedThemeCss = serializedThemeCss,
   options: TailwindAdapterOptions = {},
 ): string {
-  const adapter = buildTailwindAdapterBlocks(options)
+  const adapterBlock = buildTailwindAdapter(options)
 
-  return [serialized.combined, adapter.combined]
-    .filter((block) => block.length > 0)
+  return [serialized.combined, adapterBlock]
+    .filter((b) => b.length > 0)
     .join(TOKEN_SECTION_GAP)
 }

@@ -1,110 +1,118 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from 'vitest'
 
 import {
   evaluateColorTokenCollisions,
   evaluateThemeColorCollisions,
   groupTokensByIdenticalValue,
-} from "../src/tokenization/token-color-collision-policy"
-import { themeTokenSource } from "../src/tokenization/token-source"
-import type { ColorTokenRecord } from "../src/tokenization/token-types"
+} from '../src/tokenization/token-color-collision-policy'
+import { themeTokenSource } from '../src/tokenization/token-source'
+import type { PrimitiveColorTokenRecord } from '../src/tokenization/token-types'
 
-describe("token-color-collision-policy", () => {
-  it("flags chart vs status primitives sharing one value as errors", () => {
+describe('token-color-collision-policy', () => {
+  it('flags chart vs status primitives sharing one value as errors', () => {
     const record = {
       ...minimalColorRecordBase(),
-      "chart-1": "oklch(50% 0.2 264)",
-      info: "oklch(50% 0.2 264)",
-    } satisfies ColorTokenRecord
+      'chart-1': 'oklch(50% 0.2 264)',
+      info: 'oklch(50% 0.2 264)',
+    } satisfies PrimitiveColorTokenRecord
 
     const findings = evaluateColorTokenCollisions({
       record,
-      mode: "light",
-      layer: "primitive",
+      mode: 'light',
+      layer: 'primitive',
     })
-    expect(findings.some((f) => f.severity === "error")).toBe(true)
-    expect(findings.some((f) => f.kind === "chart-status-signal-same-value")).toBe(true)
+    expect(findings.some((f) => f.severity === 'error')).toBe(true)
+    expect(
+      findings.some((f) => f.kind === 'chart-status-signal-same-value'),
+    ).toBe(true)
   })
 
-  it("allows primary/ring/sidebar brand parity without chart/status mix", () => {
-    const v = "oklch(45% 0.2 264)"
+  it('allows primary/ring/sidebar brand parity without chart/status mix', () => {
+    const v = 'oklch(45% 0.2 264)'
     const record = {
       ...minimalColorRecordBase(),
       primary: v,
       ring: v,
-      "sidebar-primary": v,
-      "sidebar-ring": v,
-      "chart-1": "oklch(62% 0.19 264)",
-      info: "oklch(58% 0.18 252)",
-      success: "oklch(62% 0.16 145)",
-      warning: "oklch(78% 0.16 75)",
-    } satisfies ColorTokenRecord
+      'sidebar-primary': v,
+      'sidebar-ring': v,
+      'chart-1': 'oklch(62% 0.19 264)',
+      info: 'oklch(58% 0.18 252)',
+      success: 'oklch(62% 0.16 145)',
+      warning: 'oklch(78% 0.16 75)',
+    } satisfies PrimitiveColorTokenRecord
 
     const findings = evaluateColorTokenCollisions({
       record,
-      mode: "light",
-      layer: "primitive",
+      mode: 'light',
+      layer: 'primitive',
     })
-    expect(findings.filter((f) => f.severity === "error")).toHaveLength(0)
+    expect(findings.filter((f) => f.severity === 'error')).toHaveLength(0)
   })
 
-  it("warns when secondary, muted, and accent share one value", () => {
-    const v = "oklch(96% 0.01 264)"
+  it('warns when secondary, muted, and accent share one value', () => {
+    const v = 'oklch(96% 0.01 264)'
     const record = {
       ...minimalColorRecordBase(),
       secondary: v,
       muted: v,
       accent: v,
-    } satisfies ColorTokenRecord
+    } satisfies PrimitiveColorTokenRecord
 
     const findings = evaluateColorTokenCollisions({
       record,
-      mode: "light",
-      layer: "primitive",
+      mode: 'light',
+      layer: 'primitive',
     })
     expect(
       findings.some(
-        (f) => f.severity === "warn" && f.kind === "secondary-muted-accent-collapsed",
+        (f) =>
+          f.severity === 'warn' &&
+          f.kind === 'secondary-muted-accent-collapsed',
       ),
     ).toBe(true)
   })
 
-  it("themeTokenSource has no collision policy errors (primitive + derived)", () => {
+  it('themeTokenSource has no collision policy errors (primitive + derived)', () => {
     const { colors } = themeTokenSource
     const all = evaluateThemeColorCollisions({
       primitive: colors.primitive,
       derived: colors.derived,
     })
-    const errors = all.filter((f) => f.severity === "error")
+    const errors = all.filter((f) => f.severity === 'error')
     expect(errors).toEqual([])
   })
 
-  it("themeTokenSource collision warnings only use documented kinds", () => {
+  it('themeTokenSource collision warnings only use documented kinds', () => {
     const { colors } = themeTokenSource
     const all = evaluateThemeColorCollisions({
       primitive: colors.primitive,
       derived: colors.derived,
     })
-    const warns = all.filter((f) => f.severity === "warn")
+    const warns = all.filter((f) => f.severity === 'warn')
     expect(
       warns.every((w) =>
-        ["secondary-muted-accent-collapsed", "table-header-same-as-surface-disabled"].includes(
-          w.kind,
-        ),
+        [
+          'secondary-muted-accent-collapsed',
+          'table-header-same-as-surface-disabled',
+        ].includes(w.kind),
       ),
     ).toBe(true)
   })
 
-  it("groupTokensByIdenticalValue groups by exact string", () => {
+  it('groupTokensByIdenticalValue groups by exact string', () => {
     const record = themeTokenSource.colors.primitive.light
     const groups = groupTokensByIdenticalValue(record)
-    expect(groups.get("oklch(100% 0 0)")?.sort()).toEqual(["card", "popover"].sort())
-    expect(groups.get("oklch(98.8% 0.006 185)")?.sort()).toEqual(
-      ["background", "ring-offset"].sort(),
+    // Expectations track canonical `themeColorLayers.primitive.light` (token-source.ts).
+    expect(groups.get('oklch(97.2% 0.006 210)')?.sort()).toEqual(
+      ['background', 'ring-offset'].sort(),
+    )
+    expect(groups.get('oklch(86% 0.012 210)')?.sort()).toEqual(
+      ['border', 'input'].sort(),
     )
   })
 })
 
 /** Minimal stub: only keys referenced in tests above need real strings; use theme source for integration. */
-function minimalColorRecordBase(): ColorTokenRecord {
+function minimalColorRecordBase(): PrimitiveColorTokenRecord {
   return themeTokenSource.colors.primitive.light
 }

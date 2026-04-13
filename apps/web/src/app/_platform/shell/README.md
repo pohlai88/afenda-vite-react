@@ -32,7 +32,25 @@ Authenticated **runtime frame** for `/app/*`: sidebar, header, breadcrumbs, and 
 
 Shell `services/` are **pure** (deterministic, side-effect free): navigation filtering, breadcrumb segments from route `handle`, `resolveShellBreadcrumbs`, etc. No domain orchestration or API calls in v1.
 
-**Metadata governance:** `validateShellMetadata` is the **field** validator; **invariant** truth (catalog + router scope) is expressed as `ShellInvariantIssue` with stable `SHELL_INV_*` codes in `contract/shell-invariant-codes.ts`. `collectShellRouteCatalogIssues` maps field/system checks into those codes; `assertShellRouteCatalog` fails CI on breach. `pnpm --filter @afenda/web shell:validation-report` writes a `ShellValidationReport` JSON under `.artifacts/reports/shell-governance/` (see repo `docs/REPO_ARTIFACT_POLICY.md`): `status`, `generatedAt`, `routeCount`, `issueCount`, deterministically sorted `issues`, `summary.bySeverity` (always `critical` / `high` / `medium` counts) and `summary.byCode` (sorted keys), and optional `resolutionTrace` when supplied to `buildShellValidationReport`. Runtime hooks log field validation issues in development only; production relies on CI.
+**Metadata governance:** `validateShellMetadata` is the **field** validator; **invariant** truth (catalog + router scope) is expressed as `ShellInvariantIssue` with stable `SHELL_INV_*` codes in `contract/shell-invariant-codes.ts`. `collectShellRouteCatalogIssues` maps field/system checks into those codes; `assertShellRouteCatalog` fails CI on breach. `pnpm --filter @afenda/web shell:validation-report` writes a `ShellValidationReport` JSON under `.artifacts/reports/shell-governance/` (see repo `docs/REPO_ARTIFACT_POLICY.md`): `version` (`SHELL_VALIDATION_REPORT_SCHEMA_VERSION`), `status`, `generatedAt`, `routeCount`, `issueCount`, deterministically sorted `issues`, `summary`, optional `resolutionTrace` / `traceSamples`, and embedded **`doctrine`** (resolution mode and coverage semantics — self-contained for reviewers). Runtime hooks log field validation issues in development only; production relies on CI.
+
+**Diff-aware governance (first wave):** `diffShellValidationReports` produces a deterministic `ShellValidationReportDiff` with `hasBreakingChanges` (schema/doctrine drift, `ok → error`, new issue codes, trace resolution changes, removed required samples, added negative controls). `formatShellValidationReportDiff` prints a short CI-friendly summary (title reflects breaking vs non-breaking). Set `SHELL_GOVERNANCE_BASELINE_PATH` to a baseline JSON when running `shell:validation-report` to emit `shell-metadata-validation-report.diff.json` and fail the process when `hasBreakingChanges` is true (human summary + raw JSON on stderr). Use `shell:validation-report:compare` with two file paths for ad-hoc comparisons.
+
+### Shell command execution (runtime map)
+
+| Path                                                                                        | Scope                                    | Use when                                                                                                                                                |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`shellCommandActivityStore`**, **`useShellCommandActivity`**, **`useShellCommandRunner`** | App-wide, one active run per `commandId` | Header actions, any surface that must stay in sync across components (`AppShellHeaderActions` uses this).                                               |
+| **`useShellCommandInteraction`**                                                            | Per hook instance (local `Set`)          | Modals or feature areas that should not share global activity.                                                                                          |
+| **`useShellCommandExecutor`** / **`createShellCommandExecutor`**                            | No activity / feedback orchestration     | Low-level execution only; prefer **`useShellCommandRunner`** for UI.                                                                                    |
+| **`createShellCommandDispatcher`**                                                          | Throws on failure                        | Tests (`shell-command-dispatcher.test.ts`) or callers that want throw semantics — there is **no** `useShellCommandDispatcher` hook (removed as unused). |
+| **`createShellCommandInteractionController`**                                               | Imperative, new `Set` per factory call   | Tests; not wired to the global activity store.                                                                                                          |
+
+`useShellCommandRunner` forwards **`routeId`** from `useShellRouteResolution().trace.registeredRouteId` (catalog match for the current pathname) into `executor.execute`, unless the call supplies **`routeId`** on the context. Optional **`tenantId`** / **`actorUserId`** on the context are passed through when your auth layer sets them.
+
+### Shell coverage invariant
+
+Resolution trace validation uses `buildShellValidationTraceSamples`, which emits **`ShellTraceExpectation`** rows: each **required** sample states `expectedMode` (`direct` or `fallback`) and `expectedResolvedRouteId` (route family owner). Concrete catalog paths are direct samples; `coverage.descendantSamplePaths` on a route declares fallback samples for that family. **Negative controls** expect `none` / `null`. Mismatches are `SHELL_INV_COVERAGE_001` (**critical**) for required samples or missing trace rows, and `SHELL_INV_COVERAGE_002` (**high**) when a negative control resolves. The report embeds full `traceSamples` expectations; it does not claim universal URL enumeration.
 
 ### Metadata pipeline (runtime)
 
@@ -50,6 +68,8 @@ Stable order of responsibilities:
 The shell does **not** define the app theme. Shared layout tokens, `@source` scanning, plugins, and base rules live in **`apps/web/src/index.css`** (Tailwind v4 CSS-first entry, plus generated theme from `packages/design-system`). Chrome uses **`@afenda/design-system`** primitives (`ui-primitives`, `icons`).
 
 When something looks wrong **globally** (colors, dark mode, focus rings, body background), inspect **`index.css`** and the design-system generated theme—not `policy/` or shell contracts. When only **sidebar/header** layout breaks, check shell components **and** the underlying primitive implementations (for example flex children may need `min-w-0` for truncation).
+
+**Doctrine:** Shell contracts and governance tests are **not** “over-engineered noise”—they keep route-driven chrome consistent at ERP scale. If the frame feels unfinished, that is usually **missing product polish** (global theme wiring, document title, semantic chrome utilities), not a reason to flatten metadata or bypass hooks.
 
 ## Debugging
 
@@ -261,8 +281,8 @@ Slot IDs are typed in `contract/shell-slot-contract.ts`. Most slots are **empty*
 
 **Resolvers:** `resolveShellBreadcrumbs`, `resolveShellHeaderActions`, `resolveShellMetadata`, `resolveShellTitle`, `validateShellMetadata`, `translateShellNamespaceKey`.
 
-**Hooks:** `useCurrentShellRoute`, `useShellBreadcrumbs`, `useShellHeaderActions`, `useShellMetadata`, `useShellRouteMeta`, `useShellRouteResolution`, `useShellTitle`.
+**Hooks:** `useCurrentShellRoute`, `useShellBreadcrumbs`, `useShellHeaderActions`, `useShellMetadata`, `useShellRouteMeta`, `useShellRouteResolution`, `useShellTitle`, `useShellCommandActivity`, `useShellCommandRunner`, `useShellCommandInteraction`, `useShellCommandExecutor`, `useShellCommandFeedback`, feedback ports (`useToastPort`, `useBannerPort`, `useInlineFeedbackPort`).
 
 **Chrome:** `AppShellBreadcrumb`, `AppShellHeader`, `AppShellHeaderActions`, `AppShellLayout`, `AppShellNotFound`, `AppShellSidebar`.
 
-**Governance:** `assertShellMetadata`, `assertShellRouteCatalog`, `collectShellRouteCatalogIssues`, `mapShellMetadataValidationToShellInvariant`, `buildShellValidationReport`, `ShellValidationReport`, `ShellValidationReportSummary`, `ShellResolutionTraceRecord`, `BuildShellValidationReportOptions`, `ShellInvariantError`, `createShellInvariantError`.
+**Governance:** `assertShellMetadata`, `assertShellRouteCatalog`, `collectShellRouteCatalogIssues`, `mapShellMetadataValidationToShellInvariant`, `buildShellValidationReport`, `diffShellValidationReports`, `formatShellValidationReportDiff`, `ShellValidationReport`, `ShellValidationReportDiff`, `ShellValidationReportDoctrine`, `ShellValidationReportIssueDelta`, `ShellValidationReportSampleDelta`, `ShellValidationReportSummary`, `ShellValidationReportTraceChange`, `SHELL_VALIDATION_REPORT_SCHEMA_VERSION`, `shellValidationReportDoctrine`, `ShellResolutionTraceRecord`, `BuildShellValidationReportOptions`, `ShellInvariantError`, `createShellInvariantError`.

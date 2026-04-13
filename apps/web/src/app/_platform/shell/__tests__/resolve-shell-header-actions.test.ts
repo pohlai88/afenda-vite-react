@@ -36,11 +36,41 @@ describe("resolveShellHeaderActions", () => {
         labelKey: "actions.createInvoice",
         label: "t:actions.createInvoice",
         kind: "link",
+        tone: "default",
+        visibility: "always",
         to: "/billing/invoices/create",
         commandId: undefined,
-        icon: undefined,
-        emphasis: "default",
-        isDisabled: false,
+        disabled: false,
+      },
+    ])
+  })
+
+  it("resolves translated labels and defaults (trimmed ids and keys)", () => {
+    const actions: readonly ShellHeaderActionDescriptor[] = [
+      {
+        id: " create ",
+        labelKey: " actions.create ",
+        kind: "link",
+        to: " /orders/new ",
+      },
+    ]
+
+    expect(
+      resolveShellHeaderActions({
+        actions,
+        translate: (key) => `t:${key}`,
+      })
+    ).toEqual([
+      {
+        id: "create",
+        labelKey: "actions.create",
+        label: "t:actions.create",
+        kind: "link",
+        tone: "default",
+        visibility: "always",
+        to: "/orders/new",
+        commandId: undefined,
+        disabled: false,
       },
     ])
   })
@@ -52,8 +82,9 @@ describe("resolveShellHeaderActions", () => {
         labelKey: "actions.refresh",
         kind: "command",
         commandId: " refresh-active-view ",
-        emphasis: "primary",
-        isDisabled: true,
+        tone: "primary",
+        visibility: "desktop-only",
+        disabled: true,
       },
     ]
 
@@ -68,32 +99,13 @@ describe("resolveShellHeaderActions", () => {
         labelKey: "actions.refresh",
         label: "t:actions.refresh",
         kind: "command",
+        tone: "primary",
+        visibility: "desktop-only",
         to: undefined,
         commandId: "refresh-active-view",
-        icon: undefined,
-        emphasis: "primary",
-        isDisabled: true,
+        disabled: true,
       },
     ])
-  })
-
-  it("normalizes blank icon values to undefined", () => {
-    const actions: readonly ShellHeaderActionDescriptor[] = [
-      {
-        id: "open-help",
-        labelKey: "actions.help",
-        kind: "command",
-        commandId: "open-help",
-        icon: " ",
-      },
-    ]
-
-    const result = resolveShellHeaderActions({
-      actions,
-      translate,
-    })
-
-    expect(result[0]?.icon).toBeUndefined()
   })
 
   it("uses the supplied translator for final labels", () => {

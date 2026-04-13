@@ -125,7 +125,8 @@
   "theme": {
     "toggle": "Tukar tema",
     "light": "Cerah",
-    "dark": "Gelap"
+    "dark": "Gelap",
+    "system": "Sistem"
   },
   "command_palette": {
     "title": "Palet Perintah",
@@ -285,6 +286,7 @@
     "scope_no_results": "Tiada hasil."
   },
   "actions": {
+    "command_running": "Memuatkan…",
     "refresh": "Segar semula",
     "createInvoice": "Cipta invois",
     "reload": "Muat semula",
@@ -341,6 +343,34 @@
         "description": "Konfigurasi pilihan sistem, peranan pengguna, dan integrasi."
       },
       "placeholder": { "message": "Modul tetapan akan datang…" }
+    }
+  },
+  "command": {
+    "generic": {
+      "completed": "Tindakan berjaya diselesaikan.",
+      "cancelled": "Tindakan dibatalkan.",
+      "unauthorized": "Anda tidak dibenarkan melakukan tindakan ini.",
+      "validationFailed": "Tindakan tidak dapat diselesaikan kerana input tidak sah.",
+      "invariantFailed": "Tindakan melanggar invariant sistem yang diperlukan.",
+      "notFound": "Sumber yang diminta tidak dijumpai.",
+      "conflict": "Tindakan tidak dapat diselesaikan kerana keadaan yang bertentangan.",
+      "systemError": "Ralat sistem yang tidak dijangka berlaku."
+    },
+    "dashboard": {
+      "refresh": {
+        "completed": "Papan pemuka berjaya disegarkan semula."
+      }
+    },
+    "orders": {
+      "create": {
+        "completed": "Pesanan berjaya dicipta.",
+        "validationFailed": "Penciptaan pesanan tidak dapat diselesaikan kerana input tidak sah.",
+        "unauthorized": "Anda tidak dibenarkan mencipta pesanan.",
+        "conflict": "Penciptaan pesanan tidak dapat diselesaikan kerana keadaan yang bertentangan."
+      }
+    },
+    "refreshEventsView": {
+      "completed": "Paparan acara berjaya disegarkan semula."
     }
   }
 }

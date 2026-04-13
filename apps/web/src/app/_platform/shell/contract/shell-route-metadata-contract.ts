@@ -8,6 +8,15 @@
 
 import type { ShellMetadata } from "./shell-metadata-contract"
 
+/** Optional governance coverage for catalog trace / CI resolution assertions. */
+export interface ShellRouteCoverageMetadata {
+  /**
+   * Declared descendant URL pathnames that must resolve by **fallback** to this route
+   * family (not guessed — omit when the family is leaf-only or must not own deep paths).
+   */
+  readonly descendantSamplePaths?: readonly string[]
+}
+
 export interface ShellRouteMetadata {
   /** Stable route identity (sidebar, analytics, debugging). */
   readonly routeId: string
@@ -20,4 +29,7 @@ export interface ShellRouteMetadata {
 
   /** Title + breadcrumb trail for shell chrome. */
   readonly shell: ShellMetadata
+
+  /** Optional governance coverage metadata for trace/report testing. */
+  readonly coverage?: ShellRouteCoverageMetadata
 }

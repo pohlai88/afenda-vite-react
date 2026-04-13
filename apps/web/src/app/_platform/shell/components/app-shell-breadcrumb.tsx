@@ -32,9 +32,7 @@ export function AppShellBreadcrumb(): ReactElement | null {
       <BreadcrumbList>
         {items.map((item, index) => (
           <Fragment key={item.id}>
-            {index > 0 ? (
-              <BreadcrumbSeparator className="[&>svg]:size-3.5" />
-            ) : null}
+            {index > 0 ? <BreadcrumbSeparator /> : null}
 
             <BreadcrumbItem>
               {item.kind === "link" && item.to ? (

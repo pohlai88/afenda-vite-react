@@ -70,6 +70,36 @@ const breadcrumbIdInvariantCode = {
   ShellInvariantCode
 >
 
+/**
+ * Maps `validateShellHeaderActions` subcodes embedded in
+ * `SHELL_METADATA_INVALID_HEADER_ACTION` messages to stable `SHELL_INV_ACTION_*` codes.
+ */
+function mapShellHeaderActionValidationMessageToInvariantCode(
+  message: string
+): ShellInvariantCode {
+  const match = /^\[([A-Z0-9_]+)\]/.exec(message)
+  const sub = match?.[1]
+
+  switch (sub) {
+    case "SHELL_HEADER_ACTION_INVALID_ID":
+    case "SHELL_HEADER_ACTION_DUPLICATE_ID":
+      return "SHELL_INV_ACTION_001"
+    case "SHELL_HEADER_ACTION_INVALID_LABEL_KEY":
+      return "SHELL_INV_ACTION_002"
+    case "SHELL_HEADER_ACTION_INVALID_KIND":
+      return "SHELL_INV_ACTION_003"
+    case "SHELL_HEADER_ACTION_MISSING_LINK_TARGET":
+      return "SHELL_INV_ACTION_004"
+    case "SHELL_HEADER_ACTION_MISSING_COMMAND_ID":
+      return "SHELL_INV_ACTION_005"
+    case "SHELL_HEADER_ACTION_INVALID_COMMAND_CONFIGURATION":
+    case "SHELL_HEADER_ACTION_INVALID_LINK_CONFIGURATION":
+      return "SHELL_INV_ACTION_006"
+    default:
+      return "SHELL_INV_ACTION_001"
+  }
+}
+
 function mapValidationIssue(
   route: ShellRouteMetadata,
   issue: ShellMetadataValidationIssue
@@ -120,54 +150,11 @@ function mapValidationIssue(
         message: issue.message,
       }
 
-    case shellMetadataValidationCodes.DUPLICATE_HEADER_ACTION_ID:
+    case shellMetadataValidationCodes.INVALID_HEADER_ACTION:
       return {
-        code: "SHELL_INV_ACTION_001",
-        severity: "high",
-        routeId: route.routeId,
-        path: issue.path,
-        message: issue.message,
-      }
-
-    case shellMetadataValidationCodes.INVALID_HEADER_ACTION_LABEL_KEY:
-      return {
-        code: "SHELL_INV_ACTION_002",
-        severity: "high",
-        routeId: route.routeId,
-        path: issue.path,
-        message: issue.message,
-      }
-
-    case shellMetadataValidationCodes.INVALID_HEADER_ACTION_KIND:
-      return {
-        code: "SHELL_INV_ACTION_003",
-        severity: "high",
-        routeId: route.routeId,
-        path: issue.path,
-        message: issue.message,
-      }
-
-    case shellMetadataValidationCodes.INVALID_HEADER_ACTION_TARGET:
-      return {
-        code: "SHELL_INV_ACTION_004",
-        severity: "high",
-        routeId: route.routeId,
-        path: issue.path,
-        message: issue.message,
-      }
-
-    case shellMetadataValidationCodes.INVALID_HEADER_ACTION_COMMAND_ID:
-      return {
-        code: "SHELL_INV_ACTION_005",
-        severity: "high",
-        routeId: route.routeId,
-        path: issue.path,
-        message: issue.message,
-      }
-
-    case shellMetadataValidationCodes.CONTRADICTORY_HEADER_ACTION_PAYLOAD:
-      return {
-        code: "SHELL_INV_ACTION_006",
+        code: mapShellHeaderActionValidationMessageToInvariantCode(
+          issue.message
+        ),
         severity: "high",
         routeId: route.routeId,
         path: issue.path,

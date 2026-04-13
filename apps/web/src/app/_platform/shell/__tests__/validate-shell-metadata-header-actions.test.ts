@@ -20,7 +20,7 @@ describe("validateShellMetadata headerActions", () => {
           labelKey: "actions.refresh",
           kind: "command",
           commandId: "refresh-active-view",
-          emphasis: "primary",
+          tone: "primary",
         },
       ],
     }
@@ -43,8 +43,9 @@ describe("validateShellMetadata headerActions", () => {
 
     expect(validateShellMetadata(metadata)).toEqual([
       {
-        code: shellMetadataValidationCodes.DUPLICATE_HEADER_ACTION_ID,
-        message: "Header action id must not be empty.",
+        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION,
+        message:
+          "[SHELL_HEADER_ACTION_INVALID_ID] Header action id must not be empty.",
         path: "headerActions[0].id",
       },
     ])
@@ -71,8 +72,9 @@ describe("validateShellMetadata headerActions", () => {
 
     expect(validateShellMetadata(metadata)).toEqual([
       {
-        code: shellMetadataValidationCodes.DUPLICATE_HEADER_ACTION_ID,
-        message: 'Duplicate header action id "refresh" detected.',
+        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION,
+        message:
+          '[SHELL_HEADER_ACTION_DUPLICATE_ID] Duplicate header action id "refresh" detected.',
         path: "headerActions[1].id",
       },
     ])
@@ -93,8 +95,9 @@ describe("validateShellMetadata headerActions", () => {
 
     expect(validateShellMetadata(metadata)).toEqual([
       {
-        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION_LABEL_KEY,
-        message: "Header action labelKey must not be empty.",
+        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION,
+        message:
+          "[SHELL_HEADER_ACTION_INVALID_LABEL_KEY] Header action labelKey must not be empty.",
         path: "headerActions[0].labelKey",
       },
     ])
@@ -114,8 +117,9 @@ describe("validateShellMetadata headerActions", () => {
 
     expect(validateShellMetadata(metadata)).toEqual([
       {
-        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION_TARGET,
-        message: 'Header action kind "link" requires a non-empty `to`.',
+        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION,
+        message:
+          '[SHELL_HEADER_ACTION_MISSING_LINK_TARGET] Link header action requires a non-empty "to".',
         path: "headerActions[0].to",
       },
     ])
@@ -135,9 +139,9 @@ describe("validateShellMetadata headerActions", () => {
 
     expect(validateShellMetadata(metadata)).toEqual([
       {
-        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION_COMMAND_ID,
+        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION,
         message:
-          'Header action kind "command" requires a non-empty `commandId`.',
+          '[SHELL_HEADER_ACTION_MISSING_COMMAND_ID] Command header action requires a non-empty "commandId".',
         path: "headerActions[0].commandId",
       },
     ])
@@ -159,8 +163,9 @@ describe("validateShellMetadata headerActions", () => {
 
     expect(validateShellMetadata(metadata)).toEqual([
       {
-        code: shellMetadataValidationCodes.CONTRADICTORY_HEADER_ACTION_PAYLOAD,
-        message: 'Header action kind "link" must not define `commandId`.',
+        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION,
+        message:
+          '[SHELL_HEADER_ACTION_INVALID_LINK_CONFIGURATION] Link header action must not define "commandId".',
         path: "headerActions[0].commandId",
       },
     ])
@@ -182,8 +187,9 @@ describe("validateShellMetadata headerActions", () => {
 
     expect(validateShellMetadata(metadata)).toEqual([
       {
-        code: shellMetadataValidationCodes.CONTRADICTORY_HEADER_ACTION_PAYLOAD,
-        message: 'Header action kind "command" must not define `to`.',
+        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION,
+        message:
+          '[SHELL_HEADER_ACTION_INVALID_COMMAND_CONFIGURATION] Command header action must not define "to".',
         path: "headerActions[0].to",
       },
     ])

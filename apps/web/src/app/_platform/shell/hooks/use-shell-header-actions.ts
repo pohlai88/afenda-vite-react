@@ -1,9 +1,8 @@
 /**
  * SHELL HEADER ACTIONS HOOK
  *
- * Runtime integration hook for shell header actions.
- * Reads governed shell metadata, resolves action descriptors into render-ready
- * items, and keeps shell action policy out of JSX.
+ * Runtime integration hook for resolved shell header actions.
+ * Consumes governed shell metadata and resolves translated, render-ready actions.
  */
 
 import { useMemo } from "react"
@@ -24,6 +23,6 @@ export function useShellHeaderActions(): ShellHeaderActionResolvedItem[] {
         actions: metadata.headerActions ?? [],
         translate: (labelKey) => translateShellNamespaceKey(t, labelKey),
       }),
-    [metadata.headerActions, t]
+    [metadata, t]
   )
 }

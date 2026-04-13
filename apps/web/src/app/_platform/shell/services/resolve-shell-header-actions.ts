@@ -1,15 +1,8 @@
 /**
  * RESOLVE SHELL HEADER ACTIONS
  *
- * Pure resolver for route-owned shell header action metadata.
- * Converts declarative action descriptors into render-ready action items for
- * shell chrome consumers.
- *
- * Rules:
- * - emphasis defaults to `default`
- * - disabled state defaults to `false`
- * - labels are translated through the supplied translator
- * - path strings are trimmed/normalized for link actions
+ * Pure resolver for shell header action descriptors.
+ * Converts route-owned action metadata into render-ready shell action items.
  */
 
 import type {
@@ -39,14 +32,17 @@ export function resolveShellHeaderActions(
   options: ResolveShellHeaderActionsOptions
 ): ShellHeaderActionResolvedItem[] {
   return options.actions.map((action) => ({
-    id: action.id,
-    labelKey: action.labelKey,
-    label: options.translate(action.labelKey),
+    id: action.id.trim(),
+    labelKey: action.labelKey.trim(),
+    label: options.translate(action.labelKey.trim()),
     kind: action.kind,
+    tone: action.tone ?? "default",
+    visibility: action.visibility ?? "always",
+    commandId:
+      action.kind === "command"
+        ? action.commandId?.trim() || undefined
+        : undefined,
     to: action.kind === "link" ? normalizePath(action.to) : undefined,
-    commandId: action.kind === "command" ? action.commandId?.trim() : undefined,
-    icon: action.icon?.trim() || undefined,
-    emphasis: action.emphasis ?? "default",
-    isDisabled: action.isDisabled ?? false,
+    disabled: action.disabled ?? false,
   }))
 }

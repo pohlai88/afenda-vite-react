@@ -16,7 +16,7 @@ import {
   themeModeValues,
 } from './token-constants'
 import type { ColorToken, ThemeMode } from './token-constants'
-import type { ColorTokenRecord, ThemeModeRecord } from './token-types'
+import type { ThemeModeRecord } from './token-types'
 
 /** Status primitives that must stay distinct from chart hues. */
 export const STATUS_SIGNAL_COLOR_TOKENS = [
@@ -44,14 +44,20 @@ function sortTokens(left: ColorToken, right: ColorToken): number {
 
 /**
  * Invert a color record into groups of tokens that share the exact same value string.
+ * Only keys present on the record are considered (primitive vs derived layers are separate).
  */
 export function groupTokensByIdenticalValue(
-  record: ColorTokenRecord,
+  record: Readonly<Partial<Record<ColorToken, string>>>,
 ): Map<string, ColorToken[]> {
   const byValue = new Map<string, ColorToken[]>()
 
   for (const key of colorTokenValues) {
-    const value = record[key].trim()
+    const raw = record[key]
+    if (raw === undefined) {
+      continue
+    }
+
+    const value = raw.trim()
     const tokens = byValue.get(value)
 
     if (tokens) {
@@ -121,7 +127,7 @@ function findSelectedTokens(
  * Evaluate collision policy for one mode and layer. Errors must be empty for CI.
  */
 export function evaluateColorTokenCollisions(options: {
-  readonly record: ColorTokenRecord
+  readonly record: Readonly<Partial<Record<ColorToken, string>>>
   readonly mode: ThemeMode
   readonly layer: ColorTokenLayer
 }): readonly ColorCollisionFinding[] {
@@ -183,8 +189,12 @@ export function evaluateColorTokenCollisions(options: {
 }
 
 export function evaluateThemeColorCollisions(options: {
-  readonly primitive: ThemeModeRecord<ColorTokenRecord>
-  readonly derived: ThemeModeRecord<ColorTokenRecord>
+  readonly primitive: ThemeModeRecord<
+    Readonly<Partial<Record<ColorToken, string>>>
+  >
+  readonly derived: ThemeModeRecord<
+    Readonly<Partial<Record<ColorToken, string>>>
+  >
 }): readonly ColorCollisionFinding[] {
   const findings: ColorCollisionFinding[] = []
 

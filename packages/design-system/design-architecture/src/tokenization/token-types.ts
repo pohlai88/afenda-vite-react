@@ -8,8 +8,11 @@
  * - no manual canonical string unions
  * - no values, validation, or CSS serialization in this module
  *
- * Purpose: stable shapes for source, normalization, bridging, and serialization; predictable
- * Tailwind v4 emission; explicit Figma / Tailwind / shadcn family boundaries.
+ * Purpose:
+ * - stable shapes for source, normalization, bridging, and serialization
+ * - predictable Tailwind v4 emission
+ * - explicit Figma / Tailwind / shadcn family boundaries
+ * - explicit primitive-vs-derived ownership boundaries
  */
 
 import type {
@@ -27,9 +30,11 @@ import type {
   ControlSizeToken,
   DensityCssVarName,
   DensityToken,
+  DerivedColorToken,
   FontCssVarName,
   FontToken,
   KeyframeToken,
+  PrimitiveColorToken,
   RadiusCssVarName,
   RadiusToken,
   TextSizeCssVarName,
@@ -62,10 +67,31 @@ export type KeyframeEntry = readonly [KeyframeToken, KeyframeBlock]
 // =============================================================================
 
 /**
- * Full canonical color map per mode (see `colorTokenValues`).
- * Primitive and derived layers each carry the full vocabulary; values differ by layer.
+ * Full canonical final color map.
+ *
+ * Use this only for fully merged / emitted color surfaces.
+ * Do not use this as the authoring contract for primitive or derived layers.
  */
 export type ColorTokenRecord = Readonly<Record<ColorToken, string>>
+
+/**
+ * Primitive-owned source-authority colors.
+ *
+ * These are explicit semantic anchors that must be authored per mode and must
+ * not be silently overridden by the derived layer.
+ */
+export type PrimitiveColorTokenRecord = Readonly<
+  Record<PrimitiveColorToken, string>
+>
+
+/**
+ * Derived-owned colors.
+ *
+ * These are computed / projected semantic tokens derived from primitive anchors.
+ */
+export type DerivedColorTokenRecord = Readonly<
+  Record<DerivedColorToken, string>
+>
 
 export type RadiusTokenRecord = Readonly<Record<RadiusToken, string>>
 
@@ -94,8 +120,8 @@ export type KeyframeTokenRecord = Readonly<Record<KeyframeToken, KeyframeBlock>>
 // =============================================================================
 
 export interface ThemeColorSource {
-  readonly primitive: ThemeModeRecord<ColorTokenRecord>
-  readonly derived: ThemeModeRecord<ColorTokenRecord>
+  readonly primitive: ThemeModeRecord<PrimitiveColorTokenRecord>
+  readonly derived: ThemeModeRecord<DerivedColorTokenRecord>
 }
 
 export interface ThemeRuntimeParameterSource {
@@ -120,15 +146,20 @@ export interface ThemeTokenSource {
 // Normalized shape
 // =============================================================================
 
-export type NormalizedColorTokenEntries = readonly [
+export type NormalizedPrimitiveColorTokenEntries = readonly [
   ThemeMode,
-  TokenEntries<ColorToken>,
+  TokenEntries<PrimitiveColorToken>,
+]
+
+export type NormalizedDerivedColorTokenEntries = readonly [
+  ThemeMode,
+  TokenEntries<DerivedColorToken>,
 ]
 
 export interface NormalizedThemeTokenSource {
   readonly modes: readonly ThemeMode[]
-  readonly primitiveColors: ReadonlyArray<NormalizedColorTokenEntries>
-  readonly derivedColors: ReadonlyArray<NormalizedColorTokenEntries>
+  readonly primitiveColors: ReadonlyArray<NormalizedPrimitiveColorTokenEntries>
+  readonly derivedColors: ReadonlyArray<NormalizedDerivedColorTokenEntries>
   readonly radius: TokenEntries<RadiusToken>
   readonly containers: TokenEntries<ContainerToken>
   readonly breakpoints: TokenEntries<BreakpointToken>
@@ -145,6 +176,11 @@ export interface NormalizedThemeTokenSource {
 // Bridge shape
 // =============================================================================
 
+/**
+ * Theme-static declarations:
+ * - fully merged color variables
+ * - non-runtime token families emitted into `@theme static`
+ */
 export type ThemeStaticDeclarationName =
   | ColorCssVarName
   | RadiusCssVarName
@@ -155,9 +191,16 @@ export type ThemeStaticDeclarationName =
   | ComponentSpacingCssVarName
   | AnimationCssVarName
 
+/**
+ * Dark mode declarations:
+ * - fully merged color variables emitted into `.dark`
+ */
 export type DarkModeDeclarationName = ColorCssVarName
 
-/** Density and control sizes stay on `:root`; text/spacing live in `@theme static` for Tailwind utilities. */
+/**
+ * Runtime parameters stay on `:root`.
+ * Text sizes and spacing remain theme-static so Tailwind can emit matching utilities.
+ */
 export type RuntimeParameterDeclarationName =
   | DensityCssVarName
   | ControlSizeCssVarName
@@ -191,7 +234,7 @@ export interface BridgedThemeTokens {
 
 /**
  * Per-family token name lists for diagnostics, completeness checks, and family-aware tooling.
- * Keys and member literals are tied to {@link tokenFamilyMembers} via {@link TokenFamilyMember}.
+ * Keys and member literals are tied to `tokenFamilyMembers` via `TokenFamilyMember`.
  */
 export type ThemeTokenFamilyMap = {
   readonly [K in TokenFamily]: ReadonlyArray<TokenFamilyMember<K>>

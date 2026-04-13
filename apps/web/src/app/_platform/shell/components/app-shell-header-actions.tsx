@@ -1,50 +1,83 @@
 /**
  * APP SHELL HEADER ACTIONS
  *
- * Presentational shell header actions component.
- * This component renders resolved header action items only and does not own
- * metadata policy or action descriptor normalization.
+ * Presentational renderer for resolved shell header actions.
+ * Command actions use `useShellCommandRunner` + global activity (disable + loading).
  */
 
 import type { ReactElement } from "react"
+import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
 import { Button } from "@afenda/design-system/ui-primitives"
+import { cn } from "@afenda/design-system/utils"
 
 import type { ShellHeaderActionResolvedItem } from "../contract/shell-header-action-contract"
+import { useShellCommandActivity } from "../hooks/use-shell-command-activity"
+import {
+  type ShellCommandRunner,
+  useShellCommandRunner,
+} from "../hooks/use-shell-command-runner"
 import { useShellHeaderActions } from "../hooks/use-shell-header-actions"
 
-export interface AppShellHeaderActionsProps {
-  /** Runtime dispatch for `command` actions — `commandId` is a governed intent token, not a callback in metadata. */
-  onCommandAction?: (commandId: string) => void
+function HeaderCommandButton(props: {
+  readonly commandId: string
+  readonly disabled: boolean | undefined
+  readonly variant: "default" | "secondary"
+  readonly visibilityClass: string | undefined
+  readonly label: string
+  readonly runCommand: ShellCommandRunner
+}): ReactElement {
+  const { commandId, disabled, variant, visibilityClass, label, runCommand } =
+    props
+  const isRunning = useShellCommandActivity(commandId)
+  const { t } = useTranslation("shell")
+
+  return (
+    <Button
+      type="button"
+      variant={variant}
+      disabled={Boolean(disabled) || isRunning}
+      aria-busy={isRunning}
+      className={cn(visibilityClass)}
+      onClick={() => {
+        void runCommand({
+          commandId,
+          intent: "header-action",
+        })
+      }}
+    >
+      {isRunning ? t("actions.command_running") : label}
+    </Button>
+  )
 }
 
-function mapEmphasisToVariant(
-  emphasis: ShellHeaderActionResolvedItem["emphasis"]
+function mapToneToVariant(
+  tone: ShellHeaderActionResolvedItem["tone"]
 ): "default" | "secondary" {
-  switch (emphasis) {
-    case "primary":
-      return "default"
-    case "secondary":
-      return "secondary"
-    default:
-      return "secondary"
+  if (tone === "primary") {
+    return "default"
   }
+
+  return "secondary"
 }
 
-export function AppShellHeaderActions(
-  props: AppShellHeaderActionsProps
-): ReactElement | null {
+export function AppShellHeaderActions(): ReactElement | null {
   const actions = useShellHeaderActions()
+  const runCommand = useShellCommandRunner()
 
   if (actions.length === 0) {
     return null
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="ui-shell-header-actions-row">
       {actions.map((action) => {
-        const variant = mapEmphasisToVariant(action.emphasis)
+        const variant = mapToneToVariant(action.tone)
+        const visibilityClass =
+          action.visibility === "desktop-only"
+            ? "ui-visible-desktop-only"
+            : undefined
 
         if (action.kind === "link" && action.to) {
           return (
@@ -52,7 +85,8 @@ export function AppShellHeaderActions(
               key={action.id}
               asChild
               variant={variant}
-              disabled={action.isDisabled}
+              disabled={action.disabled}
+              className={cn(visibilityClass)}
             >
               <Link to={action.to}>{action.label}</Link>
             </Button>
@@ -62,15 +96,15 @@ export function AppShellHeaderActions(
         if (action.kind === "command" && action.commandId) {
           const commandId = action.commandId
           return (
-            <Button
+            <HeaderCommandButton
               key={action.id}
-              type="button"
+              commandId={commandId}
+              disabled={action.disabled}
               variant={variant}
-              disabled={action.isDisabled}
-              onClick={() => props.onCommandAction?.(commandId)}
-            >
-              {action.label}
-            </Button>
+              visibilityClass={visibilityClass}
+              label={action.label}
+              runCommand={runCommand}
+            />
           )
         }
 

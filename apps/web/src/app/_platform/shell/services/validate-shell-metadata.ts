@@ -7,6 +7,7 @@
 import type { ShellMetadata } from "../contract/shell-metadata-contract"
 import type { ShellMetadataValidationCode } from "../contract/shell-metadata-validation-codes"
 import { shellMetadataValidationCodes } from "../contract/shell-metadata-validation-codes"
+import { validateShellHeaderActions } from "./validate-shell-header-actions"
 
 export interface ShellMetadataValidationIssue {
   code: ShellMetadataValidationCode
@@ -69,84 +70,14 @@ export function validateShellMetadata(
     }
   }
 
-  const seenHeaderActionIds = new Set<string>()
-
-  for (const [index, action] of (metadata.headerActions ?? []).entries()) {
-    const basePath = `headerActions[${index}]`
-    const normalizedId = action.id.trim()
-
-    if (normalizedId.length === 0) {
-      issues.push({
-        code: shellMetadataValidationCodes.DUPLICATE_HEADER_ACTION_ID,
-        message: "Header action id must not be empty.",
-        path: `${basePath}.id`,
-      })
-    } else if (seenHeaderActionIds.has(normalizedId)) {
-      issues.push({
-        code: shellMetadataValidationCodes.DUPLICATE_HEADER_ACTION_ID,
-        message: `Duplicate header action id "${normalizedId}" detected.`,
-        path: `${basePath}.id`,
-      })
-    } else {
-      seenHeaderActionIds.add(normalizedId)
-    }
-
-    if (action.labelKey.trim().length === 0) {
-      issues.push({
-        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION_LABEL_KEY,
-        message: "Header action labelKey must not be empty.",
-        path: `${basePath}.labelKey`,
-      })
-    }
-
-    if (action.kind !== "link" && action.kind !== "command") {
-      issues.push({
-        code: shellMetadataValidationCodes.INVALID_HEADER_ACTION_KIND,
-        message: `Unsupported header action kind "${String(action.kind)}".`,
-        path: `${basePath}.kind`,
-      })
-      continue
-    }
-
-    if (action.kind === "link") {
-      if (action.to === undefined || action.to.trim().length === 0) {
-        issues.push({
-          code: shellMetadataValidationCodes.INVALID_HEADER_ACTION_TARGET,
-          message: 'Header action kind "link" requires a non-empty `to`.',
-          path: `${basePath}.to`,
-        })
-      }
-
-      if (action.commandId !== undefined) {
-        issues.push({
-          code: shellMetadataValidationCodes.CONTRADICTORY_HEADER_ACTION_PAYLOAD,
-          message: 'Header action kind "link" must not define `commandId`.',
-          path: `${basePath}.commandId`,
-        })
-      }
-    }
-
-    if (action.kind === "command") {
-      if (
-        action.commandId === undefined ||
-        action.commandId.trim().length === 0
-      ) {
-        issues.push({
-          code: shellMetadataValidationCodes.INVALID_HEADER_ACTION_COMMAND_ID,
-          message:
-            'Header action kind "command" requires a non-empty `commandId`.',
-          path: `${basePath}.commandId`,
-        })
-      }
-
-      if (action.to !== undefined) {
-        issues.push({
-          code: shellMetadataValidationCodes.CONTRADICTORY_HEADER_ACTION_PAYLOAD,
-          message: 'Header action kind "command" must not define `to`.',
-          path: `${basePath}.to`,
-        })
-      }
-    }
+  for (const issue of validateShellHeaderActions(
+    metadata.headerActions ?? []
+  )) {
+    issues.push({
+      code: shellMetadataValidationCodes.INVALID_HEADER_ACTION,
+      message: `[${issue.code}] ${issue.message}`,
+      path: issue.path,
+    })
   }
 
   return issues

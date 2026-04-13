@@ -35,6 +35,25 @@ describe("audit pipeline", () => {
     ).toThrow(/actorType=unknown/)
   })
 
+  it("builds shell.interaction.recorded for UI with system actor", () => {
+    const row = buildAuditLog({
+      tenantId: "00000000-0000-4000-8000-000000000001",
+      action: "shell.interaction.recorded",
+      actorType: "system",
+      subjectType: "shell_interaction",
+      subjectId: "shell_ix_1",
+      sourceChannel: "ui",
+      outcome: "success",
+      metadata: {
+        module: "apps/web",
+        extra: { interactionPhase: "succeeded" },
+      },
+    })
+
+    expect(row.actionCategory).toBe("shell-ui")
+    expect(row.riskLevel).toBe("low")
+  })
+
   it("serializes audit rows with ISO timestamps", () => {
     const row = {
       id: "00000000-0000-4000-8000-000000000099",

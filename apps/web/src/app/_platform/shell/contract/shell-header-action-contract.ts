@@ -1,25 +1,27 @@
 /**
  * SHELL HEADER ACTION CONTRACT
  *
- * Canonical declarative header-action contracts for the platform shell.
- * These descriptors are emitted by route-owned shell metadata and later
- * resolved into render-ready action items for the shell chrome.
+ * Canonical descriptor contracts for shell header actions.
+ * These contracts keep route-owned shell actions declarative and prevent
+ * component-local invention of header buttons.
  *
  * Rules:
- * - ids must be stable and source-owned
- * - labels are translation keys, not display text
- * - descriptors must remain declarative
- * - no callbacks, JSX, or component instances in metadata
- * - action payload requirements depend on `kind`
+ * - descriptors are metadata, not executable closures
+ * - action identity must be stable
+ * - labels are translation keys, not resolved text
+ * - execution is expressed declaratively through command ids or navigation targets
+ * - resolved items are render-ready and safe for presentational consumers
  */
 
-export type ShellHeaderActionKind = "link" | "command"
+export type ShellHeaderActionKind = "command" | "link"
 
-export type ShellHeaderActionEmphasis = "default" | "primary" | "secondary"
+export type ShellHeaderActionTone = "default" | "primary" | "secondary"
+
+export type ShellHeaderActionVisibility = "always" | "desktop-only"
 
 export interface ShellHeaderActionDescriptor {
   /**
-   * Stable identity for the action.
+   * Stable action identity owned by the metadata producer.
    */
   id: string
 
@@ -34,32 +36,31 @@ export interface ShellHeaderActionDescriptor {
   kind: ShellHeaderActionKind
 
   /**
-   * Route target for navigational header actions.
-   * Required when `kind === "link"`.
+   * Optional button tone for the shell chrome.
    */
-  to?: string
+  tone?: ShellHeaderActionTone
 
   /**
-   * Command identifier for command-driven actions.
-   * Required when `kind === "command"`.
+   * Optional visibility contract for responsive rendering.
+   */
+  visibility?: ShellHeaderActionVisibility
+
+  /**
+   * Declarative command id for runtime action execution.
+   * Required when kind = "command".
    */
   commandId?: string
 
   /**
-   * Optional icon token/name.
-   * Interpretation belongs to the rendering layer.
+   * Declarative navigation target.
+   * Required when kind = "link".
    */
-  icon?: string
+  to?: string
 
   /**
-   * Optional visual emphasis hint for the chrome layer.
+   * Optional disabled state.
    */
-  emphasis?: ShellHeaderActionEmphasis
-
-  /**
-   * Optional declarative disabled state.
-   */
-  isDisabled?: boolean
+  disabled?: boolean
 }
 
 export interface ShellHeaderActionResolvedItem {
@@ -67,11 +68,11 @@ export interface ShellHeaderActionResolvedItem {
   labelKey: string
   label: string
   kind: ShellHeaderActionKind
-  to?: string
+  tone: ShellHeaderActionTone
+  visibility: ShellHeaderActionVisibility
   commandId?: string
-  icon?: string
-  emphasis: ShellHeaderActionEmphasis
-  isDisabled: boolean
+  to?: string
+  disabled: boolean
 }
 
 export interface ResolveShellHeaderActionsOptions {

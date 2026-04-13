@@ -31,6 +31,11 @@ export const shellInvariantCodeRegistry = {
   SHELL_INV_RESOLVE_002:
     "resolved breadcrumb set must be stable for same pathname",
 
+  SHELL_INV_COVERAGE_001:
+    "required governed app path must resolve to shell metadata",
+  SHELL_INV_COVERAGE_002:
+    "negative control path must not resolve to shell metadata",
+
   SHELL_INV_ACTION_001: "header action id empty or duplicate within route",
   SHELL_INV_ACTION_002: "header action labelKey invalid",
   SHELL_INV_ACTION_003: "header action kind invalid",

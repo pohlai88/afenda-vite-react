@@ -11,7 +11,7 @@
  *   Keep the two boundaries distinct so serializer-only drift checks stay meaningful.
  */
 
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { bridgedThemeTokens } from '../src/tokenization/token-bridge'
@@ -19,6 +19,7 @@ import { createGeneratedFileHeader } from '../src/tokenization/token-emit'
 import {
   buildThemeArtifactManifest,
   defaultThemeManifestPath,
+  resolveEmitRevisionForArtifact,
   serializeThemeArtifactManifest,
 } from '../src/tokenization/token-manifest'
 import { serializedThemeCss } from '../src/tokenization/token-serialize'
@@ -79,6 +80,15 @@ export async function generateThemeCssArtifact(
   const manifestPath =
     options.manifestFilePath ?? defaultThemeManifestPath(options.outputFilePath)
 
+  let previousManifestRaw: string | undefined
+  try {
+    previousManifestRaw = await readFile(manifestPath, 'utf8')
+  } catch {
+    previousManifestRaw = undefined
+  }
+
+  const emitRevision = resolveEmitRevisionForArtifact(css, previousManifestRaw)
+
   // Manifest fingerprints and section metrics refer to this **final** byte string
   // (header + serialized core + adapter), not the serializer-only core.
   const manifest = buildThemeArtifactManifest({
@@ -87,6 +97,7 @@ export async function generateThemeCssArtifact(
     cssFileName: path.basename(options.outputFilePath),
     bridged: bridgedThemeTokens,
     serialized: serializedThemeCss,
+    emitRevision,
   })
 
   await writeFile(

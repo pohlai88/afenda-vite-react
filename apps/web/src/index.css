@@ -1,20 +1,20 @@
 /**
- * APP CSS ENTRY — design-system-aligned stylesheet
+ * APP CSS ENTRY — FINAL (TOKEN-SAFE, NO OVERRIDES)
  *
- * Order follows the design-system local entry:
- * import Tailwind, animation CSS, generated theme tokens, then register sources,
- * plugins, variants, utilities, base rules, and shared component patterns.
- *
- * Reference: packages/design-system/design-architecture/src/local.css
+ * Rules:
+ * - NO Tailwind color utilities (@apply bg-*, text-*, border-*)
+ * - ALL colors use canonical tokens: var(--color-*)
+ * - Tailwind only for layout, spacing, typography scale
  */
 
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../../../packages/design-system/design-architecture/src/generated/generated-theme.css";
 
-/**
- * Content paths for class detection (relative to this file).
- */
+/* -------------------------------------------------------------------------- */
+/* Tailwind Setup                                                             */
+/* -------------------------------------------------------------------------- */
+
 @source "./";
 @source "../../../packages/design-system/ui-primitives";
 @source "../../../packages/design-system/icons";
@@ -27,21 +27,138 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Full-bleed hairline; use aria-hidden on decorative chrome where it has no accessible name. */
+/* -------------------------------------------------------------------------- */
+/* Utilities (TOKEN-SAFE)                                                     */
+/* -------------------------------------------------------------------------- */
+
 @utility line-t {
-  @apply relative before:absolute before:top-0 before:-left-[100vw] before:h-px before:w-[200vw] before:bg-foreground/10;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100vw;
+    height: 1px;
+    width: 200vw;
+    background-color: color-mix(
+      in oklab,
+      var(--color-foreground) 10%,
+      transparent
+    );
+  }
 }
 
 @utility focus-ring {
-  @apply ring-offset-background outline-none;
+  outline: none;
 
   &:focus-visible {
-    @apply ring-2 ring-ring ring-offset-2;
+    box-shadow:
+      0 0 0 2px var(--color-ring),
+      0 0 0 4px var(--color-background);
   }
 }
 
 @utility text-gradient {
-  @apply bg-linear-to-r from-primary to-accent bg-clip-text text-transparent;
+  background-image: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-accent)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Layout utilities (safe) */
+
+@utility ui-page {
+  @apply mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8;
+}
+
+@utility ui-stack-relaxed {
+  @apply flex min-w-0 flex-col gap-8 md:gap-10;
+}
+
+@utility ui-stack-tight {
+  @apply flex min-w-0 flex-col gap-3;
+}
+
+@utility ui-header {
+  @apply space-y-3;
+}
+
+@utility ui-title-hero {
+  @apply text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl;
+}
+
+@utility ui-title-page {
+  @apply text-2xl font-semibold tracking-tight sm:text-3xl;
+}
+
+@utility ui-title-section {
+  @apply text-lg font-semibold tracking-tight sm:text-xl;
+}
+
+@utility ui-lede {
+  @apply text-base leading-relaxed sm:text-lg;
+}
+
+/* TOKEN-SAFE components */
+
+@utility ui-empty-state {
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-border);
+  background-color: color-mix(in oklab, var(--color-muted) 30%, transparent);
+  padding: 3rem 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+}
+
+/* Shell layout (safe) */
+
+@utility ui-shell-header-strip {
+  @apply flex h-14 shrink-0 items-center gap-2 px-4;
+  border-bottom: 1px solid var(--color-border);
+}
+
+@utility ui-shell-content {
+  @apply flex flex-1 flex-col p-6;
+}
+
+@utility ui-shell-sidebar-brand {
+  @apply flex min-w-0 items-center gap-2 px-2 py-1.5;
+}
+
+@utility ui-shell-slot-top {
+  @apply px-6 py-2;
+  border-bottom: 1px solid var(--color-border);
+}
+
+@utility ui-shell-overlay {
+  @apply pointer-events-none fixed inset-0 z-50;
+}
+
+@utility ui-shell-header-actions-row {
+  @apply flex shrink-0 items-center gap-2;
+}
+
+@utility ui-shell-trailing-slot {
+  @apply min-w-8;
+}
+
+@utility ui-shell-sidebar-footer-slot {
+  @apply p-2;
+}
+
+@utility ui-visible-desktop-only {
+  @apply hidden md:inline-flex;
+}
+
+@utility ui-shell-nav-disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -54,10 +171,14 @@
   ::after,
   ::backdrop,
   ::file-selector-button {
-    @apply border-border;
+    border-color: var(--color-border);
   }
 
   html {
+    color-scheme: light;
+  }
+
+  html.light {
     color-scheme: light;
   }
 
@@ -66,7 +187,10 @@
   }
 
   body {
-    @apply bg-background font-sans text-foreground antialiased;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
 
   @media (prefers-reduced-motion: reduce) {

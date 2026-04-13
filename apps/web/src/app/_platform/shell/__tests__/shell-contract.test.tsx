@@ -1,12 +1,13 @@
-import { render, screen } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
 import { beforeAll, describe, expect, it, vi } from "vitest"
 
 import { initI18n } from "@/app/_platform/i18n"
 import "@/app/_platform/shell/types/shell-route-handle"
+import { AppThemeProvider } from "@/app/_platform/theme/app-theme-provider"
 
 import { AppShellLayout } from "../components/app-shell-layout"
-import Home from "@/pages/Home"
+import Landing from "@/pages/Landing"
 
 describe("App shell layout contract", () => {
   beforeAll(async () => {
@@ -18,22 +19,30 @@ describe("App shell layout contract", () => {
         addEventListener: vi.fn(),
         removeEventListener: vi.fn(),
         dispatchEvent: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
       }))
     )
     await initI18n()
   })
 
-  it("renders marketing home without the shell sidebar wrapper", () => {
-    const router = createMemoryRouter([{ path: "/", element: <Home /> }], {
+  it("renders marketing home without the shell sidebar wrapper", async () => {
+    const router = createMemoryRouter([{ path: "/", element: <Landing /> }], {
       initialEntries: ["/"],
     })
 
-    const { container } = render(<RouterProvider router={router} />)
+    const { container } = await act(async () =>
+      render(
+        <AppThemeProvider>
+          <RouterProvider router={router} />
+        </AppThemeProvider>
+      )
+    )
 
     expect(container.querySelector('[data-slot="sidebar-wrapper"]')).toBeNull()
   })
 
-  it("renders /app routes inside SidebarProvider chrome", () => {
+  it("renders /app routes inside SidebarProvider chrome", async () => {
     const router = createMemoryRouter(
       [
         {
@@ -71,7 +80,13 @@ describe("App shell layout contract", () => {
       { initialEntries: ["/app/events"] }
     )
 
-    const { container } = render(<RouterProvider router={router} />)
+    const { container } = await act(async () =>
+      render(
+        <AppThemeProvider>
+          <RouterProvider router={router} />
+        </AppThemeProvider>
+      )
+    )
 
     expect(
       container.querySelector('[data-slot="sidebar-wrapper"]')

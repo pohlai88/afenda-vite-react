@@ -68,6 +68,9 @@ export const shellAppChildRouteDefinitions = [
           },
         ],
       },
+      coverage: {
+        descendantSamplePaths: ["/app/events/123"],
+      },
     } satisfies ShellRouteMetadata,
   },
   {
@@ -103,6 +106,9 @@ export const shellAppChildRouteDefinitions = [
             to: shellAppChildPath("partners"),
           },
         ],
+      },
+      coverage: {
+        descendantSamplePaths: ["/app/partners/acme/settings"],
       },
     } satisfies ShellRouteMetadata,
   },

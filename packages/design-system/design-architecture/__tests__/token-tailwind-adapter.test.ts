@@ -1,60 +1,48 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from 'vitest'
 
 import {
   appendTailwindAdapter,
-  buildTailwindAdapterBlocks,
-} from "../src/tokenization/token-tailwind-adapter"
-import { serializedThemeCss } from "../src/tokenization/token-serialize"
+  buildTailwindAdapter,
+} from '../src/tokenization/token-tailwind-adapter'
+import { serializedThemeCss } from '../src/tokenization/token-serialize'
 
-describe("token-tailwind-adapter", () => {
-  it("emits required aliases into both root and dark blocks", () => {
-    const adapter = buildTailwindAdapterBlocks()
+describe('token-tailwind-adapter', () => {
+  it('emits required aliases on :root only (no duplicate .dark alias block)', () => {
+    const adapter = buildTailwindAdapter()
 
-    expect(adapter.rootRequiredAliasBlock).toContain(":root")
-    expect(adapter.rootRequiredAliasBlock).toContain(
-      "--background: var(--color-background);",
-    )
-    expect(adapter.rootRequiredAliasBlock).toContain(
-      "--ring-offset: var(--color-ring-offset);",
-    )
+    expect(adapter).toContain(':root')
+    expect(adapter).toContain('--background: var(--color-background);')
+    expect(adapter).toContain('--ring-offset: var(--color-ring-offset);')
+    expect(adapter).toContain('4. SHADCN COMPATIBILITY ALIASES')
 
-    expect(adapter.darkRequiredAliasBlock).toContain(".dark")
-    expect(adapter.darkRequiredAliasBlock).toContain(
-      "--background: var(--color-background);",
-    )
-    expect(adapter.darkRequiredAliasBlock).toContain(
-      "--ring-offset: var(--color-ring-offset);",
-    )
+    expect(adapter).not.toContain('.dark {')
   })
 
-  it("can disable extra runtime and special aliases independently", () => {
-    const adapter = buildTailwindAdapterBlocks({
+  it('can disable extra runtime and special aliases independently', () => {
+    const adapter = buildTailwindAdapter({
       includeExtraRuntimeAliases: false,
       includeSpecialAliases: false,
     })
 
-    expect(adapter.rootRequiredAliasBlock).toContain(
-      "--background: var(--color-background);",
-    )
-    expect(adapter.darkRequiredAliasBlock).toContain(
-      "--background: var(--color-background);",
-    )
+    expect(adapter).toContain('--background: var(--color-background);')
+    expect(adapter).not.toContain('.dark {')
 
-    expect(adapter.rootExtraRuntimeAliasBlock).toBe("")
-    expect(adapter.darkExtraRuntimeAliasBlock).toBe("")
-    expect(adapter.rootSpecialAliasBlock).toBe("")
-    expect(adapter.darkSpecialAliasBlock).toBe("")
+    expect(adapter).not.toContain('--font-family-sans: var(--font-sans);')
+    expect(adapter).not.toContain('--selection-bg: var(--color-primary-100);')
   })
 
-  it("appends adapter css after serialized core output", () => {
+  it('appends adapter css after serialized core output', () => {
     const adapted = appendTailwindAdapter(serializedThemeCss)
 
     expect(adapted.startsWith(serializedThemeCss.combined)).toBe(true)
-    expect(adapted).toContain("@theme static")
-    expect(adapted).toContain(".dark")
-    expect(adapted).toContain(
-      "/* shadcn required parity aliases (root) */",
-    )
-    expect(adapted).toContain("--background: var(--color-background);")
+    expect(adapted).toContain('@theme static')
+    expect(adapted).toContain('.dark')
+    expect(adapted).toContain('4. SHADCN COMPATIBILITY ALIASES')
+    expect(adapted).toContain('--background: var(--color-background);')
+
+    const shadcnSection = adapted.split('4. SHADCN COMPATIBILITY ALIASES')[1]
+    expect(shadcnSection).toBeDefined()
+    expect(shadcnSection).toContain(':root')
+    expect(shadcnSection).not.toContain('.dark {')
   })
 })

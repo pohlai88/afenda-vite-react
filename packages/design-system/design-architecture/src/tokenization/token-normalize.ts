@@ -4,37 +4,41 @@
  * Deterministic normalization for the tokenization pipeline.
  *
  * Rules:
- * - consume a validated {@link ThemeTokenSource} only
+ * - consume a validated `ThemeTokenSource` only
  * - follow canonical family and mode order from `token-constants`
  * - emit arrays/tuples for stable bridge and serialization
  * - do not invent tokens or emit CSS text
  *
- * Purpose: remove object-iteration drift; stabilize traversal for Tailwind v4, Figma, and
- * snapshots; keep primitive colors, derived colors, runtime parameters, and motion explicit.
+ * Purpose:
+ * - remove object-iteration drift
+ * - stabilize traversal for Tailwind v4, Figma, and snapshots
+ * - keep primitive colors, derived colors, runtime parameters, and motion explicit
  */
 
 import {
   type AnimationToken,
   type BreakpointToken,
-  type ColorToken,
   type ComponentSpacingToken,
   type ContainerToken,
   type ControlSizeToken,
   type DensityToken,
+  type DerivedColorToken,
   type FontToken,
   type KeyframeToken,
+  type PrimitiveColorToken,
   type RadiusToken,
   type TextSizeToken,
   type ThemeMode,
   animationTokenValues,
   breakpointTokenValues,
-  colorTokenValues,
   componentSpacingTokenValues,
   containerTokenValues,
   controlSizeTokenValues,
   densityTokenValues,
+  derivedColorTokenValues,
   fontTokenValues,
   keyframeTokenValues,
+  primitiveColorTokenValues,
   radiusTokenValues,
   textSizeTokenValues,
   themeModeValues,
@@ -82,20 +86,20 @@ function normalizeKeyframeRecord(
 
 export function normalizePrimitiveColors(
   source: ThemeTokenSource,
-): ReadonlyArray<readonly [ThemeMode, TokenEntries<ColorToken>]> {
-  return normalizeModeStringRecord<ColorToken>(
+): ReadonlyArray<readonly [ThemeMode, TokenEntries<PrimitiveColorToken>]> {
+  return normalizeModeStringRecord<PrimitiveColorToken>(
     themeModeValues,
-    colorTokenValues,
+    primitiveColorTokenValues,
     source.colors.primitive,
   )
 }
 
 export function normalizeDerivedColors(
   source: ThemeTokenSource,
-): ReadonlyArray<readonly [ThemeMode, TokenEntries<ColorToken>]> {
-  return normalizeModeStringRecord<ColorToken>(
+): ReadonlyArray<readonly [ThemeMode, TokenEntries<DerivedColorToken>]> {
+  return normalizeModeStringRecord<DerivedColorToken>(
     themeModeValues,
-    colorTokenValues,
+    derivedColorTokenValues,
     source.colors.derived,
   )
 }
@@ -206,7 +210,7 @@ export function normalizeThemeTokenSource(
 }
 
 // =============================================================================
-// Canonical normalized export (default validated source)
+// Canonical normalized export
 // =============================================================================
 
 export const normalizedThemeTokenSource =

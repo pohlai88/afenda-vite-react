@@ -1,14 +1,15 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 3,
+  "emitRevision": 1,
   "generator": {
     "package": "@afenda/design-system",
     "packageVersion": "0.0.0"
   },
   "css": {
     "fileName": "generated-theme.css",
-    "sha256": "b5a12250668563c0d375c9ae93cbfcb234a92680031132ff6537dcff932134df",
-    "byteLength": 16100,
-    "lineCount": 387
+    "sha256": "4b28dc7ac22f6e9d024b105d5333a0e003725121fe2c434c43d5a52197c5c619",
+    "byteLength": 14229,
+    "lineCount": 330
   },
   "tokenization": {
     "themeStaticDeclarationCount": 110,
@@ -35,6 +36,6 @@
     "runtimeParameterLineCount": 12,
     "keyframesLineCount": 61,
     "combinedLineCount": 264,
-    "emittedLineCount": 387
+    "emittedLineCount": 330
   }
 }

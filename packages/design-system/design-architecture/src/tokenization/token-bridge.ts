@@ -12,8 +12,8 @@
  *
  * Architecture:
  * - primitive colors provide source-owned values
- * - derived colors override / finalize semantic aliases
- * - bridge emits merged final color declarations per mode
+ * - derived colors provide derived-only semantic projections
+ * - bridge emits one full final color declaration list per mode
  * - density and control sizes remain on `:root`; text sizes and component spacing are
  *   theme-static so Tailwind can emit matching utilities from `@theme`.
  */
@@ -22,6 +22,7 @@ import {
   animationCssVarName,
   breakpointCssVarName,
   colorCssVarName,
+  colorTokenValues,
   componentSpacingCssVarName,
   containerCssVarName,
   controlSizeCssVarName,
@@ -75,41 +76,83 @@ function findModeEntries<K extends string>(
   return found[1]
 }
 
-/**
- * Merge two ordered token-entry lists into one ordered final list.
- *
- * Rules:
- * - preserve the order of the base list
- * - only override values for existing keys
- * - do not add ad hoc keys
- *
- * Assumption:
- * normalize stage already guarantees the same canonical token coverage/order.
- */
-function mergeOrderedEntries<K extends string>(
-  baseEntries: ReadonlyArray<readonly [K, string]>,
+// =============================================================================
+// Ownership guards
+// =============================================================================
+
+const DERIVED_OVERRIDE_FORBIDDEN_TOKENS = new Set<string>([
+  'background',
+  'foreground',
+  'card',
+  'card-foreground',
+  'popover',
+  'popover-foreground',
+  'primary',
+  'primary-foreground',
+  'secondary',
+  'secondary-foreground',
+  'muted',
+  'muted-foreground',
+  'accent',
+  'accent-foreground',
+  'destructive',
+  'destructive-foreground',
+  'border',
+  'input',
+  'ring',
+  'ring-offset',
+  'chart-1',
+  'chart-2',
+  'chart-3',
+  'chart-4',
+  'chart-5',
+  'sidebar',
+  'sidebar-foreground',
+  'sidebar-primary',
+  'sidebar-primary-foreground',
+  'sidebar-accent',
+  'sidebar-accent-foreground',
+  'sidebar-border',
+  'sidebar-ring',
+  'success',
+  'success-foreground',
+  'warning',
+  'warning-foreground',
+  'info',
+  'info-foreground',
+])
+
+function assertNoForbiddenDerivedOverrides<K extends string>(
   overrideEntries: ReadonlyArray<readonly [K, string]>,
-): ReadonlyArray<readonly [K, string]> {
-  const baseKeys = new Set(baseEntries.map(([key]) => key))
-  const overrideMap = new Map<K, string>()
-
-  for (const [key, value] of overrideEntries) {
-    if (!baseKeys.has(key)) {
-      throw new Error(`Unexpected override token: ${key}`)
+): void {
+  for (const [key] of overrideEntries) {
+    if (DERIVED_OVERRIDE_FORBIDDEN_TOKENS.has(key)) {
+      throw new Error(
+        `Illegal derived override for primitive-owned token: ${key}`,
+      )
     }
-
-    overrideMap.set(key, value)
   }
-
-  return baseEntries.map(([key, baseValue]) => {
-    const overrideValue = overrideMap.get(key)
-    return [key, overrideValue ?? baseValue] as const
-  })
 }
 
 // =============================================================================
 // Color bridging
 // =============================================================================
+
+function buildEntryMap<K extends string>(
+  entries: ReadonlyArray<readonly [K, string]>,
+): ReadonlyMap<string, string> {
+  const map = new Map<string, string>()
+
+  for (const [key, value] of entries) {
+    if (map.has(key)) {
+      throw new Error(`Duplicate normalized token entry: ${key}`)
+    }
+
+    map.set(key, value)
+  }
+
+  return map
+}
 
 function bridgeMergedModeColorDeclarations(
   source: NormalizedThemeTokenSource,
@@ -117,7 +160,21 @@ function bridgeMergedModeColorDeclarations(
 ): CssDeclarationList<ColorCssVarName> {
   const primitiveEntries = findModeEntries(source.primitiveColors, mode)
   const derivedEntries = findModeEntries(source.derivedColors, mode)
-  const mergedEntries = mergeOrderedEntries(primitiveEntries, derivedEntries)
+
+  assertNoForbiddenDerivedOverrides(derivedEntries)
+
+  const primitiveMap = buildEntryMap(primitiveEntries)
+  const derivedMap = buildEntryMap(derivedEntries)
+
+  const mergedEntries = colorTokenValues.map((token) => {
+    const value = derivedMap.get(token) ?? primitiveMap.get(token)
+
+    if (value === undefined) {
+      throw new Error(`Missing merged color token for mode ${mode}: ${token}`)
+    }
+
+    return [token, value] as const
+  })
 
   return mapEntriesToDeclarations(mergedEntries, colorCssVarName)
 }
@@ -245,9 +302,5 @@ export function bridgeThemeTokens(
     keyframes: bridgeKeyframes(source),
   }
 }
-
-// =============================================================================
-// Canonical bridged export
-// =============================================================================
 
 export const bridgedThemeTokens = bridgeThemeTokens()

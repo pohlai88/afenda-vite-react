@@ -125,7 +125,8 @@
   "theme": {
     "toggle": "Ganti tema",
     "light": "Terang",
-    "dark": "Gelap"
+    "dark": "Gelap",
+    "system": "Sistem"
   },
   "command_palette": {
     "title": "Palet Perintah",
@@ -285,6 +286,7 @@
     "scope_no_results": "Tidak ada hasil."
   },
   "actions": {
+    "command_running": "Memuat…",
     "refresh": "Segarkan",
     "createInvoice": "Buat faktur",
     "reload": "Muat ulang",
@@ -341,6 +343,34 @@
         "description": "Konfigurasi preferensi sistem, peran pengguna, dan integrasi."
       },
       "placeholder": { "message": "Modul pengaturan akan segera hadir…" }
+    }
+  },
+  "command": {
+    "generic": {
+      "completed": "Tindakan berhasil diselesaikan.",
+      "cancelled": "Tindakan dibatalkan.",
+      "unauthorized": "Anda tidak diizinkan melakukan tindakan ini.",
+      "validationFailed": "Tindakan tidak dapat diselesaikan karena masukan tidak valid.",
+      "invariantFailed": "Tindakan melanggar invariant sistem yang wajib.",
+      "notFound": "Sumber daya yang diminta tidak ditemukan.",
+      "conflict": "Tindakan tidak dapat diselesaikan karena keadaan yang bertentangan.",
+      "systemError": "Terjadi kesalahan sistem yang tidak terduga."
+    },
+    "dashboard": {
+      "refresh": {
+        "completed": "Dasbor berhasil disegarkan."
+      }
+    },
+    "orders": {
+      "create": {
+        "completed": "Pesanan berhasil dibuat.",
+        "validationFailed": "Pembuatan pesanan tidak dapat diselesaikan karena masukan tidak valid.",
+        "unauthorized": "Anda tidak diizinkan membuat pesanan.",
+        "conflict": "Pembuatan pesanan tidak dapat diselesaikan karena keadaan yang bertentangan."
+      }
+    },
+    "refreshEventsView": {
+      "completed": "Tampilan acara berhasil disegarkan."
     }
   }
 }

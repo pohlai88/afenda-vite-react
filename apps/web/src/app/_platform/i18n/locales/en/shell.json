@@ -125,7 +125,8 @@
   "theme": {
     "toggle": "Toggle theme",
     "light": "Light",
-    "dark": "Dark"
+    "dark": "Dark",
+    "system": "System"
   },
   "command_palette": {
     "title": "Command Palette",
@@ -285,6 +286,7 @@
     "scope_no_results": "No results found."
   },
   "actions": {
+    "command_running": "Loading…",
     "refresh": "Refresh",
     "createInvoice": "Create invoice",
     "reload": "Reload",
@@ -341,6 +343,34 @@
         "description": "Configure system preferences, user roles, and integrations."
       },
       "placeholder": { "message": "Settings module coming soon…" }
+    }
+  },
+  "command": {
+    "generic": {
+      "completed": "Action completed successfully.",
+      "cancelled": "Action was cancelled.",
+      "unauthorized": "You are not allowed to perform this action.",
+      "validationFailed": "The action could not be completed because the input is invalid.",
+      "invariantFailed": "The action violated a required system invariant.",
+      "notFound": "The requested resource could not be found.",
+      "conflict": "The action could not be completed because of a conflicting state.",
+      "systemError": "An unexpected system error occurred."
+    },
+    "dashboard": {
+      "refresh": {
+        "completed": "Dashboard refreshed successfully."
+      }
+    },
+    "orders": {
+      "create": {
+        "completed": "Order created successfully.",
+        "validationFailed": "Order creation could not be completed because the input is invalid.",
+        "unauthorized": "You are not allowed to create orders.",
+        "conflict": "Order creation could not be completed because of a conflicting state."
+      }
+    },
+    "refreshEventsView": {
+      "completed": "Events view refreshed successfully."
     }
   }
 }

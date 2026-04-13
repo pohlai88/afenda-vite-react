@@ -21,7 +21,7 @@
     "check:imports": "tsx design-architecture/scripts/check-design-system-imports.ts",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:generated-drift-check": "pnpm exec tsx design-architecture/scripts/generate-design-system.ts && git diff --exit-code -- design-architecture/src/generated/generated-theme.css design-architecture/src/generated/generated-theme.manifest.json",
+    "test:generated-drift-check": "pnpm exec tsx design-architecture/scripts/run-generated-theme-drift-check.ts",
     "test:update-generated-check": "pnpm run test:generated-drift-check",
     "test": "vitest"
   },

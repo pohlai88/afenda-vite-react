@@ -3,6 +3,10 @@
  *
  * Small normalization boundary for shell metadata.
  * Keeps hook code lean and makes future selector growth easier.
+ *
+ * **Governance trace:** catalog resolution modes (`direct` / `fallback` / `none`) for CI
+ * artifacts are defined in `build-shell-resolution-trace.ts` (SHELL RESOLUTION DOCTRINE).
+ * Runtime route matching stays in `resolve-shell-route-resolution.ts` and hooks.
  */
 
 import type { ShellMetadata } from "../contract/shell-metadata-contract"

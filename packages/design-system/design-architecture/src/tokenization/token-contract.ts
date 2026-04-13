@@ -20,13 +20,14 @@ import { z } from 'zod/v4'
 import {
   animationTokenValues,
   breakpointTokenValues,
-  colorTokenValues,
   componentSpacingTokenValues,
   containerTokenValues,
   controlSizeTokenValues,
   densityTokenValues,
+  derivedColorTokenValues,
   fontTokenValues,
   keyframeTokenValues,
+  primitiveColorTokenValues,
   radiusTokenValues,
   textSizeTokenValues,
   themeModeValues,
@@ -90,8 +91,13 @@ export const keyframeBlockSchema = z
 // Family record schemas
 // =============================================================================
 
-export const colorTokenRecordSchema =
-  createExactStringRecordSchema(colorTokenValues)
+export const primitiveColorTokenRecordSchema = createExactStringRecordSchema(
+  primitiveColorTokenValues,
+)
+
+export const derivedColorTokenRecordSchema = createExactStringRecordSchema(
+  derivedColorTokenValues,
+)
 
 export const radiusTokenRecordSchema =
   createExactStringRecordSchema(radiusTokenValues)
@@ -133,11 +139,11 @@ export const keyframeTokenRecordSchema = createExactObjectRecordSchema(
 // =============================================================================
 
 export const primitiveColorModesSchema = createModeRecordSchema(
-  colorTokenRecordSchema,
+  primitiveColorTokenRecordSchema,
 )
 
 export const derivedColorModesSchema = createModeRecordSchema(
-  colorTokenRecordSchema,
+  derivedColorTokenRecordSchema,
 )
 
 export const themeColorSourceSchema = z
@@ -184,7 +190,13 @@ export const themeTokenSourceSchema = z
 export type KeyframeStepContract = z.infer<typeof keyframeStepSchema>
 export type KeyframeBlockContract = z.infer<typeof keyframeBlockSchema>
 
-export type ColorTokenRecordContract = z.infer<typeof colorTokenRecordSchema>
+export type PrimitiveColorTokenRecordContract = z.infer<
+  typeof primitiveColorTokenRecordSchema
+>
+export type DerivedColorTokenRecordContract = z.infer<
+  typeof derivedColorTokenRecordSchema
+>
+
 export type RadiusTokenRecordContract = z.infer<typeof radiusTokenRecordSchema>
 export type ContainerTokenRecordContract = z.infer<
   typeof containerTokenRecordSchema
@@ -235,7 +247,6 @@ type Equal<X, Y> =
 
 type Expect<T extends true> = T
 
-/** Compile-time guard: Zod output must match `ThemeTokenSource`. */
 export type ThemeTokenSourceContractMatchesThemeTokenSource = Expect<
   Equal<ThemeTokenSource, ThemeTokenSourceContract>
 >
@@ -244,11 +255,6 @@ export type ThemeTokenSourceContractMatchesThemeTokenSource = Expect<
 // Parse entrypoint
 // =============================================================================
 
-/**
- * Canonical parser for token-source.ts.
- *
- * Keep one obvious parse boundary for the source stage.
- */
 export function parseThemeTokenSource(input: unknown): ThemeTokenSource {
   return themeTokenSourceSchema.parse(input)
 }

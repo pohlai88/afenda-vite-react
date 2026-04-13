@@ -12,7 +12,8 @@
  * - consume bridged / serialized / emitted outputs only
  * - keep metrics deterministic
  * - keep manifest shape versioned
- * - avoid volatile fields in the default committed manifest
+ * - `emitRevision` is a monotonic integer from `resolveEmitRevisionForArtifact` when writing
+ *   via `generateThemeCssArtifact` (increments only when emitted CSS `sha256` changes).
  */
 
 import { createHash } from 'node:crypto'
@@ -38,7 +39,7 @@ import type { BridgedThemeTokens, SerializedThemeCss } from './token-types'
  * Bump only when the manifest JSON shape changes.
  * Do not bump for ordinary token or CSS content changes.
  */
-export const THEME_ARTIFACT_MANIFEST_SCHEMA_VERSION = 1 as const
+export const THEME_ARTIFACT_MANIFEST_SCHEMA_VERSION = 3 as const
 
 //
 // PACKAGE VERSION
@@ -103,6 +104,11 @@ export interface ThemeManifestSections {
 
 export interface ThemeArtifactManifest {
   readonly schemaVersion: typeof THEME_ARTIFACT_MANIFEST_SCHEMA_VERSION
+  /**
+   * Increments when emitted theme CSS bytes change; stable across regenerations with identical output.
+   * See `resolveEmitRevisionForArtifact`.
+   */
+  readonly emitRevision: number
   readonly generator: ThemeManifestGenerator
   readonly css: ThemeManifestCssArtifact
   readonly tokenization: ThemeManifestTokenization
@@ -115,14 +121,56 @@ export interface BuildThemeArtifactManifestOptions {
   readonly bridged?: BridgedThemeTokens
   readonly serialized?: SerializedThemeCss
   readonly cssFileName?: string
+  /** Set by `generateThemeCssArtifact` from `resolveEmitRevisionForArtifact`. Default `1`. */
+  readonly emitRevision?: number
 }
 
 //
 // HELPERS
 //
 
-function sha256(content: string): string {
+export function sha256ThemeArtifactContent(content: string): string {
   return createHash('sha256').update(content, 'utf8').digest('hex')
+}
+
+function sha256(content: string): string {
+  return sha256ThemeArtifactContent(content)
+}
+
+/**
+ * Next manifest `emitRevision`: starts at 1; increments only when `emittedCss` hash differs from
+ * the previous manifest’s `css.sha256`. Same bytes → same revision (stable for git / CI).
+ */
+export function resolveEmitRevisionForArtifact(
+  emittedCss: string,
+  previousManifestRaw: string | undefined,
+): number {
+  const newHash = sha256ThemeArtifactContent(emittedCss)
+
+  if (previousManifestRaw === undefined) {
+    return 1
+  }
+
+  try {
+    const prev = JSON.parse(previousManifestRaw) as {
+      css?: { sha256?: string }
+      emitRevision?: unknown
+    }
+    const prevHash = prev.css?.sha256
+    const prevRev =
+      typeof prev.emitRevision === 'number' &&
+      Number.isFinite(prev.emitRevision)
+        ? Math.max(1, Math.floor(prev.emitRevision))
+        : 1
+
+    if (prevHash === newHash) {
+      return prevRev
+    }
+
+    return prevRev + 1
+  } catch {
+    return 1
+  }
 }
 
 function countLines(content: string): number {
@@ -219,8 +267,11 @@ export function buildThemeArtifactManifest(
     options.cssFileName ??
     (basename(outputPath) || DEFAULT_EMITTED_THEME_FILENAME)
 
+  const emitRevision = options.emitRevision ?? 1
+
   return {
     schemaVersion: THEME_ARTIFACT_MANIFEST_SCHEMA_VERSION,
+    emitRevision,
     generator: buildGeneratorManifest(),
     css: buildCssArtifactManifest(emittedContent, cssFileName),
     tokenization: buildTokenizationManifest(bridged),

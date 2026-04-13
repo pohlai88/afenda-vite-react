@@ -2,22 +2,16 @@ import type { RouteObject } from "react-router-dom"
 
 import "@/app/_platform/shell/types/shell-route-handle"
 
-import AppLogin from "@/pages/AppLogin"
-import Home from "@/pages/Home"
+import Landing from "@/pages/Landing"
 
 /**
- * Top-level routes outside the authenticated app shell: marketing and auth placeholder.
+ * Top-level routes outside the app shell: marketing landing only.
  * Composed into {@link browserRoutes} in `route-browser.tsx`.
  */
 export const rootRouteObjects: RouteObject[] = [
   {
     path: "/",
-    element: <Home />,
-    handle: { shell: null },
-  },
-  {
-    path: "/app/login",
-    element: <AppLogin />,
+    element: <Landing />,
     handle: { shell: null },
   },
 ]

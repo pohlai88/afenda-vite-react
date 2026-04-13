@@ -5,10 +5,11 @@ import { LanguageSwitcher } from "@/app/_platform/i18n/components/language-switc
 import { shellSlotActivationV1 } from "../policy/shell-navigation-policy"
 import { AppShellBreadcrumb } from "./app-shell-breadcrumb"
 import { AppShellHeaderActions } from "./app-shell-header-actions"
+import { AppShellThemeToggle } from "./app-shell-theme-toggle"
 
 export function AppShellHeader() {
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
+    <header className="ui-shell-header-strip">
       <SidebarTrigger className="-ml-1" />
       <Separator className="mr-1 h-4" orientation="vertical" />
       <div className="min-w-0 flex-1">
@@ -17,11 +18,15 @@ export function AppShellHeader() {
       {shellSlotActivationV1["shell.header.leading"] ? (
         <div data-slot="shell.header.leading" />
       ) : null}
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="ui-shell-header-actions-row">
         <AppShellHeaderActions />
+        <AppShellThemeToggle />
         <LanguageSwitcher />
         {shellSlotActivationV1["shell.header.trailing"] ? (
-          <div data-slot="shell.header.trailing" className="min-w-8" />
+          <div
+            data-slot="shell.header.trailing"
+            className="ui-shell-trailing-slot"
+          />
         ) : null}
       </div>
     </header>

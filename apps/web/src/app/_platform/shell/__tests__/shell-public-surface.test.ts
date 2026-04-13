@@ -13,13 +13,21 @@ import * as Shell from "../index"
 const REQUIRED_GOVERNANCE_EXPORTS = [
   "assertShellMetadata",
   "assertShellRouteCatalog",
+  "buildShellResolutionTrace",
   "buildShellValidationReport",
   "collectShellRouteCatalogIssues",
   "mapShellMetadataValidationToShellInvariant",
+  "SHELL_VALIDATION_REPORT_SCHEMA_VERSION",
   "shellMetadataValidationCodeList",
   "shellMetadataValidationCodes",
   "shellRouteMetadataList",
+  "diffShellValidationReports",
+  "formatShellValidationReportDiff",
+  "shellCommandActivityStore",
+  "shellValidationReportDoctrine",
   "resolveShellMetadata",
+  "useShellCommandActivity",
+  "useShellCommandRunner",
   "validateShellMetadata",
 ] as const
 

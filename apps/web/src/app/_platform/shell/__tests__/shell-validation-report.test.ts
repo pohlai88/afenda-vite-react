@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest"
 
 import type { ShellInvariantIssue } from "../contract/shell-invariant-contract"
-import { buildShellValidationReport } from "../services/shell-validation-report"
+import {
+  buildShellValidationReport,
+  SHELL_VALIDATION_REPORT_SCHEMA_VERSION,
+  shellValidationReportDoctrine,
+} from "../services/shell-validation-report"
 
 describe("buildShellValidationReport", () => {
   it("sorts issues deterministically for stable report JSON", () => {
@@ -35,6 +39,8 @@ describe("buildShellValidationReport", () => {
       generatedAt: "2026-04-13T12:00:00.000Z",
     })
 
+    expect(report.version).toBe(SHELL_VALIDATION_REPORT_SCHEMA_VERSION)
+    expect(report.doctrine).toEqual(shellValidationReportDoctrine)
     expect(report.status).toBe("ok")
     expect(report.generatedAt).toBe("2026-04-13T12:00:00.000Z")
     expect(report.routeCount).toBe(5)
@@ -47,6 +53,7 @@ describe("buildShellValidationReport", () => {
     })
     expect(report.summary.byCode).toEqual({})
     expect(report.resolutionTrace).toBeUndefined()
+    expect(report.traceSamples).toBeUndefined()
   })
 
   it("aggregates summary.bySeverity and summary.byCode with sorted keys", () => {
@@ -113,5 +120,31 @@ describe("buildShellValidationReport", () => {
     })
 
     expect(report.resolutionTrace).toEqual(trace)
+  })
+
+  it("embeds traceSamples when provided in options", () => {
+    const traceSamples = {
+      required: [
+        {
+          pathname: "/app",
+          expectedMode: "direct" as const,
+          expectedResolvedRouteId: "app-layout",
+        },
+      ],
+      negativeControls: [
+        {
+          pathname: "/login",
+          expectedMode: "none" as const,
+          expectedResolvedRouteId: null,
+        },
+      ],
+    }
+
+    const report = buildShellValidationReport(1, [], {
+      generatedAt: "2026-01-01T00:00:00.000Z",
+      traceSamples,
+    })
+
+    expect(report.traceSamples).toEqual(traceSamples)
   })
 })

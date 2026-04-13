@@ -125,7 +125,8 @@
   "theme": {
     "toggle": "Đổi giao diện",
     "light": "Sáng",
-    "dark": "Tối"
+    "dark": "Tối",
+    "system": "Hệ thống"
   },
   "command_palette": {
     "title": "Bảng lệnh",
@@ -285,6 +286,7 @@
     "scope_no_results": "Không có kết quả."
   },
   "actions": {
+    "command_running": "Đang tải…",
     "refresh": "Làm mới",
     "createInvoice": "Tạo hóa đơn",
     "reload": "Tải lại",
@@ -341,6 +343,34 @@
         "description": "Cấu hình tùy chọn hệ thống, vai trò người dùng và tích hợp."
       },
       "placeholder": { "message": "Mô-đun cài đặt sắp ra mắt…" }
+    }
+  },
+  "command": {
+    "generic": {
+      "completed": "Hành động đã hoàn tất.",
+      "cancelled": "Hành động đã bị hủy.",
+      "unauthorized": "Bạn không được phép thực hiện hành động này.",
+      "validationFailed": "Không thể hoàn tất hành động vì dữ liệu đầu vào không hợp lệ.",
+      "invariantFailed": "Hành động vi phạm một ràng buộc hệ thống bắt buộc.",
+      "notFound": "Không tìm thấy tài nguyên được yêu cầu.",
+      "conflict": "Không thể hoàn tất hành động vì trạng thái xung đột.",
+      "systemError": "Đã xảy ra lỗi hệ thống không mong muốn."
+    },
+    "dashboard": {
+      "refresh": {
+        "completed": "Đã làm mới bảng điều khiển."
+      }
+    },
+    "orders": {
+      "create": {
+        "completed": "Đã tạo đơn hàng thành công.",
+        "validationFailed": "Không thể tạo đơn hàng vì dữ liệu đầu vào không hợp lệ.",
+        "unauthorized": "Bạn không được phép tạo đơn hàng.",
+        "conflict": "Không thể tạo đơn hàng vì trạng thái xung đột."
+      }
+    },
+    "refreshEventsView": {
+      "completed": "Đã làm mới chế độ xem sự kiện."
     }
   }
 }

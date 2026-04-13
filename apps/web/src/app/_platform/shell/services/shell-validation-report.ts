@@ -3,6 +3,50 @@ import type {
   ShellInvariantSeverity,
 } from "../contract/shell-invariant-contract"
 
+import type { ShellValidationTraceSamples } from "./shell-validation-trace-samples"
+
+/** Schema version for CI artifacts and consumers that branch on report shape. */
+export const SHELL_VALIDATION_REPORT_SCHEMA_VERSION = "1.0" as const
+
+export type ShellValidationReportSchemaVersion =
+  typeof SHELL_VALIDATION_REPORT_SCHEMA_VERSION
+
+/**
+ * Self-contained semantics for `resolutionTrace` / coverage (embedded in every report so
+ * reviewers do not need repo context to interpret modes).
+ */
+export interface ShellValidationReportDoctrine {
+  readonly resolutionModes: {
+    readonly direct: string
+    readonly fallback: string
+    readonly none: string
+  }
+  readonly coverageRules: {
+    readonly required: string
+    readonly negativeControls: string
+  }
+  readonly scope: {
+    /** URL prefix for governed authenticated app shell routes in this artifact. */
+    readonly governedPrefix: string
+  }
+}
+
+/** Frozen doctrine strings — single source for builder output and documentation. */
+export const shellValidationReportDoctrine: ShellValidationReportDoctrine = {
+  resolutionModes: {
+    direct: "exact canonical route match",
+    fallback: "descendant of declared canonical child route",
+    none: "no governed match",
+  },
+  coverageRules: {
+    required: "must resolve as expected",
+    negativeControls: "must not resolve",
+  },
+  scope: {
+    governedPrefix: "/app",
+  },
+}
+
 /**
  * Optional path-resolution evidence (populated when trace is wired; not required for catalog validation).
  */
@@ -21,7 +65,7 @@ export interface ShellValidationReportSummary {
 }
 
 /**
- * Governance artifact for shell route catalog validation. Schema is stable for CI and optional resolution trace.
+ * Standalone governance artifact: invariants, optional trace, expectations, and embedded doctrine.
  */
 export interface ShellValidationReport {
   readonly status: "ok" | "error"
@@ -33,6 +77,12 @@ export interface ShellValidationReport {
   readonly summary: ShellValidationReportSummary
   /** Optional resolution trace when the builder supplies it (runtime path matching evidence). */
   readonly resolutionTrace?: readonly ShellResolutionTraceRecord[]
+  /** Governance sample expectations (required + negative controls) when supplied. */
+  readonly traceSamples?: ShellValidationTraceSamples
+  /** How to read `resolutionMode` and coverage rules without external docs. */
+  readonly doctrine: ShellValidationReportDoctrine
+  /** Report JSON schema version (bump when fields or semantics change). */
+  readonly version: ShellValidationReportSchemaVersion
 }
 
 export interface BuildShellValidationReportOptions {
@@ -40,6 +90,7 @@ export interface BuildShellValidationReportOptions {
   readonly generatedAt?: string
   /** Optional trace rows to embed in the report (reserved for future resolver instrumentation). */
   readonly resolutionTrace?: readonly ShellResolutionTraceRecord[]
+  readonly traceSamples?: ShellValidationTraceSamples
 }
 
 /** Deterministic ordering for CI artifacts and snapshot-stable JSON. */
@@ -111,5 +162,10 @@ export function buildShellValidationReport(
     ...(options?.resolutionTrace !== undefined
       ? { resolutionTrace: options.resolutionTrace }
       : {}),
+    ...(options?.traceSamples !== undefined
+      ? { traceSamples: options.traceSamples }
+      : {}),
+    doctrine: shellValidationReportDoctrine,
+    version: SHELL_VALIDATION_REPORT_SCHEMA_VERSION,
   }
 }
