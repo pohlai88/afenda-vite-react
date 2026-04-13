@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "description": "Canonical design system: tokens, UI primitives, icon infrastructure, and shadcn-compatible runtime artifacts.",
+  "types": "./index.ts",
   "sideEffects": [
     "**/*.css"
   ],
@@ -12,8 +13,8 @@
     "tokens:check": "pnpm run validate-tokens",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
-    "format": "prettier --write \"utils/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/src/governance/**/*.ts\" \"design-architecture/src/tokenization/**/*.ts\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.ts\" \"prettier.config.js\"",
-    "format:check": "prettier --check \"utils/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/src/governance/**/*.ts\" \"design-architecture/src/tokenization/**/*.ts\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.ts\" \"prettier.config.js\"",
+    "format": "prettier --write \"utils/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/src/governance/**/*.ts\" \"design-architecture/src/tokenization/**/*.ts\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.{ts,tsx}\" \"prettier.config.js\"",
+    "format:check": "prettier --check \"utils/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/src/governance/**/*.ts\" \"design-architecture/src/tokenization/**/*.ts\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.{ts,tsx}\" \"prettier.config.js\"",
     "icons:generate": "tsx icons/script/build-icons.ts",
     "icons:check": "tsx icons/script/build-icons.ts && git diff --exit-code -- icons",
     "generate-design-system": "tsx design-architecture/scripts/generate-design-system.ts",
@@ -35,7 +36,7 @@
       "import": "./utils/index.ts",
       "default": "./utils/index.ts"
     },
-    "./utils/*": "./utils/*.ts",
+    "./utils/*": "./utils/*",
     "./ui-primitives": {
       "types": "./ui-primitives/index.ts",
       "import": "./ui-primitives/index.ts",
@@ -46,7 +47,7 @@
       "import": "./ui-primitives/_registry.ts",
       "default": "./ui-primitives/_registry.ts"
     },
-    "./ui-primitives/*": "./ui-primitives/*.tsx",
+    "./ui-primitives/*": "./ui-primitives/*",
     "./governance": {
       "types": "./design-architecture/src/governance/index.ts",
       "import": "./design-architecture/src/governance/index.ts",
@@ -82,6 +83,12 @@
       "import": "./icons/index.ts",
       "default": "./icons/index.ts"
     },
+    "./hooks": {
+      "types": "./hooks/index.ts",
+      "import": "./hooks/index.ts",
+      "default": "./hooks/index.ts"
+    },
+    "./hooks/*": "./hooks/*",
     "./lib/*": "./lib/*",
     "./lib/newyork-v4/*": "./lib/newyork-v4/*",
     "./design-architecture/local.css": "./design-architecture/src/local.css"

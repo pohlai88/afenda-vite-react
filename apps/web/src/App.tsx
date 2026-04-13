@@ -1,24 +1,20 @@
 import { Suspense } from "react"
 import { RouterProvider } from "react-router-dom"
-import { TooltipProvider } from "@afenda/shadcn-ui-deprecated"
-import { ThemeProvider } from "@/share/components/theme"
-import { QueryProvider } from "@/share/components/providers"
-import { appRouter } from "./share/routing/router"
 
+import { router } from "./router"
+
+/**
+ * Minimal app shell: only React Router + Suspense.
+ * Layer in providers (theme, query client, etc.) here when you need them.
+ */
 export default function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <TooltipProvider delayDuration={0}>
-        <QueryProvider>
-          <Suspense
-            fallback={
-              <div className="p-4 text-sm text-muted-foreground">Loading…</div>
-            }
-          >
-            <RouterProvider router={appRouter} />
-          </Suspense>
-        </QueryProvider>
-      </TooltipProvider>
-    </ThemeProvider>
+    <Suspense
+      fallback={
+        <div className="p-4 text-sm text-muted-foreground">Loading…</div>
+      }
+    >
+      <RouterProvider router={router} />
+    </Suspense>
   )
 }

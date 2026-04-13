@@ -7,7 +7,22 @@
     "paths": {
       "@afenda/design-system": ["./index.ts"],
       "@afenda/design-system/utils": ["./utils/index.ts"],
+      "@afenda/design-system/utils/*": ["./utils/*"],
+      "@afenda/design-system/ui-primitives": ["./ui-primitives/index.ts"],
       "@afenda/design-system/ui-primitives/*": ["./ui-primitives/*"],
+      "@afenda/design-system/hooks": ["./hooks/index.ts"],
+      "@afenda/design-system/hooks/*": ["./hooks/*"],
+      "@afenda/design-system/icons": ["./icons/index.ts"],
+      "@afenda/design-system/icons/*": ["./icons/*"],
+      "@afenda/design-system/tokenization": [
+        "./design-architecture/src/tokenization/index.ts"
+      ],
+      "@afenda/design-system/governance": [
+        "./design-architecture/src/governance/index.ts"
+      ],
+      "@afenda/design-system/scripts": [
+        "./design-architecture/scripts/index.ts"
+      ],
       "@afenda/design-system/lib/*": ["./lib/*"]
     }
   },
@@ -15,6 +30,7 @@
     "index.ts",
     "vitest.config.ts",
     "utils/**/*.ts",
+    "hooks/*.ts",
     "hooks/**/*.ts",
     "ui-primitives/**/*.ts",
     "ui-primitives/**/*.tsx",
@@ -26,8 +42,5 @@
     "icons/**/*.ts",
     "icons/**/*.tsx"
   ],
-  "exclude": [
-    "**/z_archive/**",
-    "lib/newyork-v4/examples/**"
-  ]
+  "exclude": ["**/z_archive/**", "lib/newyork-v4/examples/**"]
 }

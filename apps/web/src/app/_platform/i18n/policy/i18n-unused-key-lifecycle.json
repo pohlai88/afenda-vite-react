@@ -1,0 +1,32 @@
+{
+  "allowedUnusedKeys": [],
+  "allowedUnusedKeyPrefixes": [
+    "allocation.",
+    "auth.login.",
+    "dashboard.card.",
+    "dashboard.demo.",
+    "dashboard.header.guest_name.",
+    "glossary.truth.",
+    "invoice.",
+    "settlement.",
+    "shell.action_bar.",
+    "shell.breadcrumb.",
+    "shell.command_palette.",
+    "shell.create.",
+    "shell.error.",
+    "shell.feedback.",
+    "shell.finance_tabs.",
+    "shell.global_search.",
+    "shell.help.",
+    "shell.language.",
+    "shell.nav.",
+    "shell.notifications.",
+    "shell.resolution.",
+    "shell.search_suggestions.",
+    "shell.semantic_search.",
+    "shell.sidebar.",
+    "shell.theme.",
+    "shell.truth_alerts.",
+    "shell.user_menu."
+  ]
+}

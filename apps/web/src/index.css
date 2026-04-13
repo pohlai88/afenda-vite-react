@@ -1,141 +1,115 @@
 /**
- * APP CSS ENTRY — canonical unified stylesheet
+ * APP CSS ENTRY — design-system-aligned stylesheet
  *
- * Tailwind v4 entry for the app.
- * This file owns composition, custom utilities, base rules, and shared component patterns.
- * Theme tokens are generated from the TypeScript token pipeline and inserted into the
- * generated theme section below.
+ * Order follows the design-system local entry:
+ * import Tailwind, animation CSS, generated theme tokens, then register sources,
+ * plugins, variants, utilities, base rules, and shared component patterns.
+ *
+ * Reference: packages/design-system/design-architecture/src/local.css
  */
 
- @import "tailwindcss";
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "../../../packages/design-system/design-architecture/src/generated/generated-theme.css";
 
- /**
-  * Explicit source registration.
-  * Keep these paths aligned to actual repo ownership.
-  */
- @source "./";
-
- /**
-  * Tailwind plugins
-  */
- @plugin "@tailwindcss/forms" {
-   strategy: class;
- }
-
- @plugin "@tailwindcss/typography";
-
- /**
-  * Class-based dark mode
-  */
- @custom-variant dark (&:where(.dark, .dark *));
-
- /* -------------------------------------------------------------------------- */
- /* GENERATED THEME — emitted by token pipeline                                */
- /* -------------------------------------------------------------------------- */
-
- /*
-   The emitter writes this section from:
-   - foundation/
-   - source/
-   - derived/
-   - normalize/
-   - validate/
-   - emitter/
-
-   Contents include:
-   - @theme static
-   - semantic variables
-   - derived variables
-   - radius/container/font variables
-   - animation variables
-   - keyframes
-   - .dark overrides
+/**
+ * Content paths for class detection (relative to this file).
  */
+@source "./";
+@source "../../../packages/design-system/ui-primitives";
+@source "../../../packages/design-system/icons";
 
- /* GENERATED THEME START */
+@plugin "@tailwindcss/forms" {
+  strategy: class;
+}
 
- /* emitter output goes here */
+@plugin "@tailwindcss/typography";
 
- /* GENERATED THEME END */
+@custom-variant dark (&:where(.dark, .dark *));
 
- /* -------------------------------------------------------------------------- */
- /* Custom utilities                                                           */
- /* -------------------------------------------------------------------------- */
+/* Full-bleed hairline; use aria-hidden on decorative chrome where it has no accessible name. */
+@utility line-t {
+  @apply relative before:absolute before:top-0 before:-left-[100vw] before:h-px before:w-[200vw] before:bg-foreground/10;
+}
 
- @utility focus-ring {
-   @apply outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
- }
+@utility focus-ring {
+  @apply ring-offset-background outline-none;
 
- @utility text-gradient {
-   @apply bg-linear-to-r from-primary to-accent bg-clip-text text-transparent;
- }
+  &:focus-visible {
+    @apply ring-2 ring-ring ring-offset-2;
+  }
+}
 
- /* -------------------------------------------------------------------------- */
- /* Base                                                                       */
- /* -------------------------------------------------------------------------- */
+@utility text-gradient {
+  @apply bg-linear-to-r from-primary to-accent bg-clip-text text-transparent;
+}
 
- @layer base {
-   *,
-   ::before,
-   ::after,
-   ::backdrop,
-   ::file-selector-button {
-     @apply border-border;
-   }
+/* -------------------------------------------------------------------------- */
+/* Base                                                                       */
+/* -------------------------------------------------------------------------- */
 
-   html {
-     color-scheme: light;
-   }
+@layer base {
+  *,
+  ::before,
+  ::after,
+  ::backdrop,
+  ::file-selector-button {
+    @apply border-border;
+  }
 
-   html.dark {
-     color-scheme: dark;
-   }
+  html {
+    color-scheme: light;
+  }
 
-   body {
-     @apply bg-background font-sans text-foreground antialiased;
-   }
+  html.dark {
+    color-scheme: dark;
+  }
 
-   @media (prefers-reduced-motion: reduce) {
-     *,
-     ::before,
-     ::after {
-       animation-duration: 0.01ms !important;
-       animation-iteration-count: 1 !important;
-       transition-duration: 0.01ms !important;
-       scroll-behavior: auto !important;
-     }
-   }
- }
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
 
- /* -------------------------------------------------------------------------- */
- /* Components                                                                 */
- /* -------------------------------------------------------------------------- */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
 
- @layer components {
-   @supports selector([popover]:popover-open) {
-     [data-advance-popover] {
-       transition:
-         opacity 0.2s var(--ease-out),
-         transform 0.2s var(--ease-out),
-         display 0.2s allow-discrete;
-       opacity: 0;
-       transform: scale(0.96);
-       transform-origin: center;
-       overscroll-behavior: contain;
-       -webkit-tap-highlight-color: transparent;
-       contain: layout;
-     }
+/* -------------------------------------------------------------------------- */
+/* Components                                                                 */
+/* -------------------------------------------------------------------------- */
 
-     [data-advance-popover]:popover-open {
-       opacity: 1;
-       transform: scale(1);
-     }
+@layer components {
+  @supports selector([popover]:popover-open) {
+    [data-advance-popover] {
+      transition:
+        opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        display 0.2s allow-discrete;
+      opacity: 0;
+      transform: scale(0.96);
+      transform-origin: center;
+      overscroll-behavior: contain;
+      -webkit-tap-highlight-color: transparent;
+      contain: layout;
+    }
 
-     @starting-style {
-       [data-advance-popover]:popover-open {
-         opacity: 0;
-         transform: scale(0.96);
-       }
-     }
-   }
- }
+    [data-advance-popover]:popover-open {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @starting-style {
+      [data-advance-popover]:popover-open {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+    }
+  }
+}

@@ -1,9 +1,11 @@
 /**
- * Default package entry: tokenization + optional barrels.
- * - Tokens: `@afenda/design-system/tokenization` (same graph as `.`).
- * - UI primitives: `@afenda/design-system/ui-primitives` (React); tree-shake friendly in bundlers.
- * - Shared helpers: `@afenda/design-system/utils` (`cn`, etc.).
+ * Package root entry — re-exports tokenization, `utils`, and the full UI primitives barrel.
+ * Prefer subpaths when you want a smaller module graph (`package.json` → `"exports"`):
+ * `@afenda/design-system/tokenization` (alias `./tokens`), `./governance`, `./utils`,
+ * `./ui-primitives`, `./icons`, `./hooks`, `./scripts`.
+ *
+ * Icons are not re-exported here; use `@afenda/design-system/icons` so icon code stays tree-shakeable.
  */
-export * from "./design-architecture/src/tokenization/index"
-export * from "./utils/index"
-export * from "./ui-primitives/index"
+export * from './design-architecture/src/tokenization/index'
+export * from './utils/index'
+export * from './ui-primitives/index'
