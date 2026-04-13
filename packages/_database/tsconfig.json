@@ -1,0 +1,7 @@
+{
+  "extends": "../typescript-config/base.json",
+  "compilerOptions": {
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["drizzle.config.ts", "vitest.config.ts", "src/**/*.ts"]
+}

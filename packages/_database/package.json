@@ -1,0 +1,62 @@
+{
+  "name": "@afenda/database",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Canonical server-only PostgreSQL and Drizzle persistence boundary for Afenda.",
+  "types": "./src/index.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "pnpm run typecheck",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./schema": {
+      "types": "./src/schema/index.ts",
+      "import": "./src/schema/index.ts",
+      "default": "./src/schema/index.ts"
+    },
+    "./authorization": {
+      "types": "./src/authorization/index.ts",
+      "import": "./src/authorization/index.ts",
+      "default": "./src/authorization/index.ts"
+    },
+    "./tenancy": {
+      "types": "./src/tenancy/index.ts",
+      "import": "./src/tenancy/index.ts",
+      "default": "./src/tenancy/index.ts"
+    },
+    "./seeds": {
+      "types": "./src/seeds/index.ts",
+      "import": "./src/seeds/index.ts",
+      "default": "./src/seeds/index.ts"
+    }
+  },
+  "dependencies": {
+    "drizzle-orm": "catalog:",
+    "pg": "catalog:"
+  },
+  "devDependencies": {
+    "@afenda/tsconfig": "workspace:*",
+    "@afenda/vitest-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/pg": "catalog:",
+    "drizzle-kit": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

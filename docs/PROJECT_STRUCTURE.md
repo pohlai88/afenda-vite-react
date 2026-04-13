@@ -18,7 +18,7 @@ Three top-level buckets under **`src/`**:
 
 App-local composition that is not feature-specific belongs under **`share/components/`** (or a feature folder), not a fourth top-level `src/components/` tree.
 
-**Backend data and Drizzle** live in **separate packages** (e.g. `apps/api`, `packages/database`)—not under `apps/web/src`. See [Database](./DATABASE.md) and [Architecture](./ARCHITECTURE.md).
+**Backend data and Drizzle** live in **`packages/_database`** (public import `@afenda/database`) and future server/API code—not under `apps/web/src`. See [Database](./DATABASE.md) and [Architecture](./ARCHITECTURE.md).
 
 **Governed UI** (shadcn/ui copy-in primitives, `cn()`, governance constants, semantic adapters) lives in [`packages/shadcn-ui-deprecated/`](../packages/shadcn-ui-deprecated/) (`@afenda/shadcn-ui-deprecated`). The shadcn CLI targets this package and `apps/web`; both have a `components.json` with matching `style`, `iconLibrary`, and `baseColor` per [shadcn monorepo requirements](https://ui.shadcn.com/docs/monorepo). The package owns the **constant layer** (per-component contracts, governance policies, domain-to-UI adapters), the **semantic adapter layer** (tone, emphasis, surface primitives and domain-specific mappers), and **semantic wrapper components** (`SemanticAlert`, `SemanticBadge`, etc.). See [Architecture](./ARCHITECTURE.md#3-governed-ui-architecture-packagesshadcn-ui) for topology and dependency flow. For adding new modules, see [Architecture: Adding a new ERP module](./ARCHITECTURE.md#4-adding-a-new-erp-module).
 
@@ -91,31 +91,31 @@ apps/web/
 
 Place shared building blocks **under `share/`**, not at `src/` root:
 
-| Concern                                         | Location                                                        |
-| ----------------------------------------------- | --------------------------------------------------------------- |
-| Route tables, redirects                         | `share/routing/`                                                |
-| React providers                                 | `share/components/providers/`                                   |
-| TanStack Query client (defaults, not fetch)     | `share/query/`                                                  |
-| Global / shell Zustand stores (SPA client)      | `share/client-store/`                                           |
-| **i18n** runtime, locale JSON, glossary & audit | **`share/i18n/`** ([i18n dependencies](./dependencies/i18n.md)) |
-| UI primitives (shadcn/ui)                       | `packages/shadcn-ui-deprecated/src/components/ui/` (`@afenda/shadcn-ui-deprecated`)   |
-| App shell layout, composed widgets              | `share/components/layout/` (when added)                         |
-| Shared React context                            | `share/contexts/` (when added)                                  |
-| Reusable hooks (React, non-store)               | `share/react-hooks/`                                            |
-| HTTP / API client helpers                       | `share/services/` (when added)                                  |
-| Cross-feature commands                          | `share/actions/` (when added)                                   |
+| Concern                                         | Location                                                                            |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Route tables, redirects                         | `share/routing/`                                                                    |
+| React providers                                 | `share/components/providers/`                                                       |
+| TanStack Query client (defaults, not fetch)     | `share/query/`                                                                      |
+| Global / shell Zustand stores (SPA client)      | `share/client-store/`                                                               |
+| **i18n** runtime, locale JSON, glossary & audit | **`share/i18n/`** ([i18n dependencies](./dependencies/i18n.md))                     |
+| UI primitives (shadcn/ui)                       | `packages/shadcn-ui-deprecated/src/components/ui/` (`@afenda/shadcn-ui-deprecated`) |
+| App shell layout, composed widgets              | `share/components/layout/` (when added)                                             |
+| Shared React context                            | `share/contexts/` (when added)                                                      |
+| Reusable hooks (React, non-store)               | `share/react-hooks/`                                                                |
+| HTTP / API client helpers                       | `share/services/` (when added)                                                      |
+| Cross-feature commands                          | `share/actions/` (when added)                                                       |
 
 When you add a new **`share/`** subdirectory that must always exist, list it under **`workspaceGovernance.webClientSrc.requiredShareSubdirectories`** in [`scripts/afenda.config.json`](../scripts/afenda.config.json) so CI keeps the tree honest.
 
 ### What we do **not** put in `apps/web`
 
-| Concern                                                      | Location                                                      |
-| ------------------------------------------------------------ | ------------------------------------------------------------- |
-| Drizzle schema, SQL migrations                               | `packages/database` or `apps/api` ([Database](./DATABASE.md)) |
-| OAuth token exchange, webhooks                               | Backend API ([Integrations](./INTEGRATIONS.md))               |
-| Long-running sync jobs                                       | Workers / queue consumers, not the Vite bundle                |
-| Duplicated primitives under ad-hoc app `components/ui` trees | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`) instead      |
-| shadcn/ui primitive components in `apps/web`                 | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`)            |
+| Concern                                                      | Location                                                                         |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Drizzle schema, SQL migrations                               | `packages/_database` / `@afenda/database` ([Database](./DATABASE.md))            |
+| OAuth token exchange, webhooks                               | Backend API ([Integrations](./INTEGRATIONS.md))                                  |
+| Long-running sync jobs                                       | Workers / queue consumers, not the Vite bundle                                   |
+| Duplicated primitives under ad-hoc app `components/ui` trees | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`) instead |
+| shadcn/ui primitive components in `apps/web`                 | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`)         |
 
 ---
 
@@ -153,10 +153,10 @@ Principles:
 
 ```typescript
 // ✅ Good — uses the feature’s public surface
-import { PostingDialog } from '@/features/finance'
+import { PostingDialog } from "@/features/finance"
 
 // ❌ Avoid — couples to internal layout
-import { PostingDialog } from '@/features/finance/components/PostingDialog'
+import { PostingDialog } from "@/features/finance/components/PostingDialog"
 ```
 
 ### 3. Optional ESLint guard
@@ -196,8 +196,8 @@ This is **not** enabled by default in this repo—add when the team wants strict
 
 ```tsx
 // src/features/auth/index.ts
-export { LoginView } from './components/LoginView'
-export { useAuthFeature } from './hooks/useAuthFeature'
+export { LoginView } from "./components/LoginView"
+export { useAuthFeature } from "./hooks/useAuthFeature"
 
 // src/share/routing/feature-routes.tsx (excerpt)
 // { path: '/app/login', element: <LoginView /> }

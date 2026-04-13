@@ -8,9 +8,9 @@ order: 20
 
 # Drizzle ORM guide (Afenda / server-side)
 
-This document describes how **Afenda** intends to use **[Drizzle ORM](https://orm.drizzle.team/)** for **PostgreSQL** in **server-only** packages (**`apps/api`**, **`packages/database`**, workers)—**not** inside **`apps/web`** (Vite has no DB client).
+This document describes how **Afenda** uses **[Drizzle ORM](https://orm.drizzle.team/)** for **PostgreSQL** in **server-only** packages, canonically **`packages/_database`** with public import **`@afenda/database`**—**not** inside **`apps/web`** (Vite has no DB client).
 
-**Today:** those packages may not exist in the tree yet; **[Database](../DATABASE.md)** remains authoritative for **connection strings**, **monorepo layout**, **migrations workflow**, and **ERP-oriented schema** (tenants, RBAC). This guide adds **Drizzle-specific** conventions so new code is consistent.
+**[Database](../DATABASE.md)** remains authoritative for **connection strings**, **monorepo layout**, **migrations workflow**, and **ERP-oriented schema** (tenants, RBAC). This guide adds **Drizzle-specific** conventions so new code is consistent.
 
 **Deeper reference:** the repo [Drizzle ORM skill](../../.agents/skills/drizzle-orm/SKILL.md) (advanced schemas, query patterns, performance notes)—use it when designing complex modules.
 
@@ -45,32 +45,34 @@ This document describes how **Afenda** intends to use **[Drizzle ORM](https://or
 
 ---
 
-## Package layout (when you add the DB layer)
+## Package layout
 
 Align with [Database](../DATABASE.md) §3. Typical shape:
 
 ```text
-packages/database/          # or schema colocated under apps/api/
+packages/_database/         # package name: @afenda/database
 ├── drizzle.config.ts       # defineConfig({ dialect, schema, out, dbCredentials, ... })
 ├── package.json            # drizzle-orm, pg; dev: drizzle-kit, @types/pg; scripts: db:generate, db:migrate, ...
 ├── src/
-│   ├── index.ts            # export `db`, re-export schema
-│   └── schema/
-│       ├── index.ts        # aggregate exports
-│       ├── tenants.ts
-│       └── ...               # domain modules
+│   ├── tenancy/
+│   ├── identity/
+│   ├── authorization/
+│   ├── organization/
+│   ├── audit/
+│   ├── schema/             # aggregate exports
+│   └── index.ts            # export `db`, re-export approved public APIs
 └── drizzle/                # generated migration SQL (default folder name; override with `out`)
 ```
 
 Minimal **`drizzle.config.ts`** (align `schema` / `out` with your tree):
 
 ```typescript
-import { defineConfig } from 'drizzle-kit'
+import { defineConfig } from "drizzle-kit"
 
 export default defineConfig({
-  dialect: 'postgresql',
-  schema: './src/schema/index.ts',
-  out: './drizzle',
+  dialect: "postgresql",
+  schema: "./src/schema/index.ts",
+  out: "./drizzle",
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },
@@ -93,10 +95,10 @@ Use **`drizzle-orm/node-postgres`** with a **`pg` `Pool`** (matches [PostgreSQL 
 ## Client bootstrap
 
 ```typescript
-// packages/database/src/client.ts (illustrative)
-import { drizzle } from 'drizzle-orm/node-postgres'
-import { Pool } from 'pg'
-import * as schema from './schema/index.js'
+// packages/_database/src/client.ts (illustrative)
+import { drizzle } from "drizzle-orm/node-postgres"
+import { Pool } from "pg"
+import * as schema from "./schema/index.js"
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -140,13 +142,13 @@ Business tables **must** be scoped to a tenant unless explicitly global (rare):
 - Enforce tenant isolation in **every** query path from [API](../API.md) handlers—**never** trust `tenant` from the URL without verifying membership ([Roles and permissions](../ROLES_AND_PERMISSIONS.md)).
 
 ```typescript
-import { pgTable, uuid, text, timestamp } from 'drizzle-orm/pg-core'
+import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core"
 
-export const exampleRecords = pgTable('example_records', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  tenantId: uuid('tenant_id').notNull(), // FK to tenants.id in your schema
-  name: text('name').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
+export const exampleRecords = pgTable("example_records", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull(), // FK to tenants.id in your schema
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
 })
@@ -219,8 +221,8 @@ Workflow summary—full commands and safety rules: **[Database](../DATABASE.md)*
 Generate insert/update/select Zod schemas from tables to share shapes with **[Zod](./zod.md)** and HTTP handlers. Prefer **`drizzle-orm/zod`** (standalone **`drizzle-zod`** is deprecated in favor of in-repo validators—see [Upgrade guide](https://orm.drizzle.team/docs/upgrade-v1), [Zod doc](https://orm.drizzle.team/docs/zod)):
 
 ```typescript
-import { createInsertSchema, createSelectSchema } from 'drizzle-orm/zod'
-import { exampleRecords } from './schema/example.js'
+import { createInsertSchema, createSelectSchema } from "drizzle-orm/zod"
+import { exampleRecords } from "./schema/example.js"
 
 export const exampleSelectSchema = createSelectSchema(exampleRecords)
 export const exampleInsertSchema = createInsertSchema(exampleRecords, {

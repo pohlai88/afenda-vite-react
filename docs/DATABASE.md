@@ -4,7 +4,7 @@ Afenda ERP data lives in **PostgreSQL**, accessed from **server-side** code (API
 
 **Drizzle-specific guidelines** (client setup, tenant columns, query performance, `drizzle-orm/zod`): [Drizzle ORM dependency guide](./dependencies/drizzle-orm.md).
 
-This repo’s **`apps/web`** package does not embed a database client today. When you add a backend (e.g. **`apps/api`**) or a shared package (e.g. **`packages/database`**), place **Drizzle schema**, **migrations**, and **`drizzle.config.ts`** there and run scripts with **`pnpm --filter <package>`**.
+This repo’s **`apps/web`** package does not embed a database client. The canonical database package is **`packages/_database`** and its public import name is **`@afenda/database`**. Place **Drizzle schema**, **migrations**, and **`drizzle.config.ts`** there; backend/API code imports from `@afenda/database`.
 
 ---
 
@@ -32,25 +32,27 @@ Adjust schema names (`afenda`, `drizzle`) to match your project. **`public`** is
 
 ---
 
-## 3. Suggested monorepo layout
+## 3. Canonical monorepo layout
 
-Illustrative paths—rename to match what you create:
+`packages/_database` is intentionally underscore-prefixed for repo governance, while the public package name remains clean:
 
 ```text
-packages/database/          # or apps/api/
+packages/_database/         # package name: @afenda/database
 ├── drizzle.config.ts
 ├── src/
-│   ├── index.ts            # db client export
-│   └── schema/
-│       ├── index.ts
-│       ├── tenants.ts
-│       ├── users.ts
-│       ├── audit.ts
-│       └── ...             # ERP modules (finance, inventory, etc.)
+│   ├── tenancy/
+│   ├── identity/
+│   ├── authorization/
+│   ├── organization/
+│   ├── audit/
+│   ├── constants/          # infrastructure constants only
+│   ├── helpers/            # low-level helpers only
+│   ├── schema/             # aggregate Drizzle exports
+│   └── index.ts            # public db client export
 └── drizzle/                # generated SQL migrations
 ```
 
-The **`apps/web`** client calls **HTTP APIs** only; APIs import `db` from this package.
+The **`apps/web`** client calls **HTTP APIs** only. It must not import `@afenda/database`, `drizzle-orm`, or `pg`.
 
 ---
 
@@ -58,12 +60,12 @@ The **`apps/web`** client calls **HTTP APIs** only; APIs import `db` from this p
 
 Define scripts in the database/API **`package.json`** and run them via the workspace filter:
 
-| Script (example) | Description |
-| --- | --- |
-| `db:generate` | `drizzle-kit generate` — create migration SQL from schema changes |
-| `db:migrate` | `drizzle-kit migrate` — apply pending migrations |
-| `db:push` | `drizzle-kit push` — **dev only**; quick sync without migration files |
-| `db:studio` | `drizzle-kit studio` — inspect data locally |
+| Script (example) | Description                                                           |
+| ---------------- | --------------------------------------------------------------------- |
+| `db:generate`    | `drizzle-kit generate` — create migration SQL from schema changes     |
+| `db:migrate`     | `drizzle-kit migrate` — apply pending migrations                      |
+| `db:push`        | `drizzle-kit push` — **dev only**; quick sync without migration files |
+| `db:studio`      | `drizzle-kit studio` — inspect data locally                           |
 
 ```bash
 pnpm --filter @afenda/database db:generate
@@ -87,7 +89,7 @@ tenants                 # Organizations (companies)
 
 **Roles and permissions (RBAC + PBAC):** model `permissions`, `roles`, `role_permissions`, and **many-to-many** `tenant_membership_roles` (RBAC assignment). Effective grants are the **union** of role permissions; APIs enforce **permission keys** (PBAC). See [Roles and permissions](./ROLES_AND_PERMISSIONS.md).
 
-Module-specific tables (finance, inventory, HR, etc.) should **reference `tenant_id`** (or equivalent) and follow your domain model in **`packages/database/src/schema/`**.
+Module-specific tables (finance, inventory, HR, etc.) should **reference `tenant_id`** (or equivalent) and live under their owning domain in **`packages/_database/src/<domain>/`**, with aggregate exports from **`packages/_database/src/schema/`**.
 
 ### 5.2 Auth-related tables
 
@@ -121,15 +123,17 @@ Query with **cosine distance** (`<=>`) or **inner product** per [pgvector](https
 ### 6.1 Tenants
 
 ```typescript
-// packages/database/src/schema/tenants.ts (illustrative)
-import { pgTable, uuid, varchar, text, timestamp } from 'drizzle-orm/pg-core';
+// packages/_database/src/tenancy/schema/tenants.ts (illustrative)
+import { pgTable, uuid, varchar, text, timestamp } from "drizzle-orm/pg-core"
 
-export const tenants = pgTable('tenants', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  slug: varchar('slug', { length: 63 }).unique().notNull(),
-  name: text('name').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-});
+export const tenants = pgTable("tenants", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  slug: varchar("slug", { length: 63 }).unique().notNull(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+})
 ```
 
 ### 6.2 Enum-style columns
@@ -143,13 +147,13 @@ Use **Postgres enums** or **text + check constraints** via Drizzle for finite se
 ### 7.1 Client and queries
 
 ```typescript
-import { db } from '@afenda/database';
-import { tenants } from '@afenda/database/schema';
-import { eq } from 'drizzle-orm';
+import { db } from "@afenda/database"
+import { tenants } from "@afenda/database/schema"
+import { eq } from "drizzle-orm"
 
 const tenant = await db.query.tenants.findFirst({
-  where: eq(tenants.slug, 'acme'),
-});
+  where: eq(tenants.slug, "acme"),
+})
 ```
 
 ### 7.2 Inserts and transactions
@@ -157,12 +161,12 @@ const tenant = await db.query.tenants.findFirst({
 Use **transactions** for multi-step ERP operations (e.g. post a journal entry + update balances).
 
 ```typescript
-import { db } from '@afenda/database';
+import { db } from "@afenda/database"
 
 await db.transaction(async (tx) => {
   // await tx.insert(...)
   // await tx.update(...)
-});
+})
 ```
 
 ### 7.3 Relations (Drizzle query API)
@@ -172,7 +176,7 @@ Define relations in schema and use `with: { ... }` for nested reads when appropr
 ### 7.4 Vector similarity (optional)
 
 ```typescript
-import { sql } from 'drizzle-orm';
+import { sql } from "drizzle-orm"
 
 // Example: cosine distance — adjust table/column names
 // await db.select().from(documents)
