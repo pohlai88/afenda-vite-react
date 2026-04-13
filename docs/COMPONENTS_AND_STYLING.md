@@ -1,13 +1,13 @@
 # Components and Styling Standard
 
-Normative standard for UI implementation in `apps/web` and `packages/ui`.
+Normative standard for UI implementation in `apps/web` and `packages/shadcn-ui-deprecated`.
 
 This document defines the stable rules for Tailwind CSS v4 + shadcn/ui in Afenda. It does not define one-time migration sequencing; use `docs/TAILWIND_SHADCN_MIGRATION_PLAN.md` for execution steps and `docs/APP_SHELL_SPEC.md` for shell architecture decisions.
 
 ## Scope and Authority
 
-- Applies to all ERP UI code in `apps/web/src/features/*`, shared client UI in `apps/web/src/share/*`, and UI primitives in `packages/ui/`.
-- Supersedes legacy styling guidance that assumed pre-Tailwind CSS-only setup.
+- Applies to all ERP UI code in `apps/web/src/features/*`, shared client UI in `apps/web/src/share/*`, and UI primitives in `packages/shadcn-ui-deprecated/`.
+- Supersedes older styling guidance that assumed pre-Tailwind CSS-only setup.
 - Pair with `docs/DESIGN_SYSTEM.md` for token intent and `docs/BRAND_GUIDELINES.md` for brand usage constraints.
 
 ## Approved UI Stack
@@ -50,7 +50,7 @@ This document defines the stable rules for Tailwind CSS v4 + shadcn/ui in Afenda
 Use this structure in `apps/web/src/index.css`:
 
 1. **Imports**: `@import "tailwindcss"`, then `@plugin` directives (`@tailwindcss/forms`, `@tailwindcss/typography`), then `@import "tw-animate-css"`, `@import "shadcn/tailwind.css"`, `@import "@fontsource-variable/geist"`.
-2. **Source**: `@source` directive to scan `packages/ui/src` for class usage.
+2. **Source**: `@source` directive to scan `packages/shadcn-ui-deprecated/src` for class usage.
 3. **Custom variant**: `@custom-variant dark (&:where(.dark, .dark *))`.
 4. **Tokens**: Root-level `:root` (light) and `.dark` variable blocks in OKLCH. No separate `.light` class block.
 5. **Theme mapping**: `@theme inline` variable-to-utility mapping with multiplication-based radius formulas.
@@ -109,21 +109,21 @@ When a new screen cannot be expressed with this vocabulary, either:
 
 Two `components.json` files exist — one per workspace that the CLI targets:
 
-**`packages/ui/components.json`** (UI primitives):
+**`packages/shadcn-ui-deprecated/components.json`** (UI primitives):
 
-- All aliases point to `@afenda/ui/*`
-- `tailwind.css` points to `src/styles/globals.css`
+- Aliases resolve to `@/` paths inside the package (`src/` as baseUrl).
+- `tailwind.css` points to `src/index.css`
 
 **`apps/web/components.json`** (app-level blocks):
 
-- `aliases.ui` and `aliases.utils` point to `@afenda/ui/*`
+- `aliases.ui` and `aliases.utils` point to `@afenda/shadcn-ui-deprecated/*`
 - `aliases.components`, `aliases.hooks`, `aliases.lib` point to `@/share/*`
 - `tailwind.css` points to `src/index.css`
 
 **Shared immutable fields** (must match across both files per [monorepo docs](https://ui.shadcn.com/docs/monorepo)):
 
 - `style: "radix-luma"`
-- `tailwind.baseColor: "neutral"`
+- `tailwind.baseColor: "zinc"` (keep aligned across both `components.json` files)
 - `iconLibrary: "lucide"`
 
 **Common settings**:
@@ -133,32 +133,32 @@ Two `components.json` files exist — one per workspace that the CLI targets:
 
 ### Primitive Baseline Enforcement
 
-- `packages/ui` is a Radix-first primitive library. New primitives must use the unified `radix-ui` package unless an ADR or explicit repo rule says otherwise.
-- `packages/ui/src/components/ui/combobox.tsx` is the single approved Base UI exception because upstream shadcn currently implements `Combobox` with `@base-ui/react` even in the Radix docs path.
-- Do not introduce additional `@base-ui/react` imports in `packages/ui/src/components/ui/`.
+- `packages/shadcn-ui-deprecated` is a Radix-first primitive library. New primitives must use the unified `radix-ui` package unless an ADR or explicit repo rule says otherwise.
+- `packages/shadcn-ui-deprecated/src/components/ui/combobox.tsx` is the single approved Base UI exception because upstream shadcn currently implements `Combobox` with `@base-ui/react` even in the Radix docs path.
+- Do not introduce additional `@base-ui/react` imports in `packages/shadcn-ui-deprecated/src/components/ui/`.
 - Do not add parallel primitive implementations for the same control family (for example, a second select, menu, dialog, or popover primitive backed by a different library).
 - Preserve shadcn token-based styling and component composition. Do not replace primitive styles with hardcoded color classes or one-off CSS when extending primitives.
 - The approved Radix utility primitives to keep available by default are `Slot`, `Direction`, `AccessibleIcon`, and `VisuallyHidden`.
 - `Toolbar` is intentionally not part of the primitive baseline at this stage. Use layout composition and app toolbar utilities for ERP toolbars unless a concrete keyboard-toolbar requirement justifies a dedicated primitive.
-- Treat `packages/ui/src/components/ui/` as sealed for alternate primitive additions after this baseline. New primitives require a concrete missing capability, not speculative future usage.
+- Treat `packages/shadcn-ui-deprecated/src/components/ui/` as sealed for alternate primitive additions after this baseline. New primitives require a concrete missing capability, not speculative future usage.
 
 ### Path and Topology Rules
 
 Three-tier component topology:
 
-1. **`packages/ui/src/components/ui/`** — shadcn/ui primitives (Button, Card, Sidebar, etc.). Imported as `@afenda/ui/components/<name>`.
+1. **`packages/shadcn-ui-deprecated/src/components/ui/`** — shadcn/ui primitives (Button, Card, Sidebar, etc.). Imported as `@afenda/shadcn-ui-deprecated/components/<name>`.
 2. **`apps/web/src/share/components/`** — App-level shared components (app shell layout, composed widgets). Imported as `@/share/components/<name>`.
 3. **`apps/web/src/features/*/components/`** — Feature-specific components. Imported via feature public API.
 
 Supporting locations:
 
-- `cn()` utility lives at `packages/ui/src/lib/utils.ts`. Imported as `@afenda/ui/lib/utils`.
-- Reusable hooks live under `packages/ui/src/hooks/` (UI-level) or `apps/web/src/share/react-hooks/` (app-level DOM/media/shortcut hooks; not Zustand — see `share/client-store/`).
+- `cn()` utility lives at `packages/shadcn-ui-deprecated/src/lib/utils.ts`. Imported as `@afenda/shadcn-ui-deprecated/lib/utils`.
+- Reusable hooks live under `packages/shadcn-ui-deprecated/src/hooks/` (UI-level) or `apps/web/src/share/react-hooks/` (app-level DOM/media/shortcut hooks; not Zustand — see `share/client-store/`).
 - Do not place shared UI in `apps/web/src/components/` root.
 
 ### `cn()` Rule
 
-`cn()` is the required helper for merged/conditional class names, living in `packages/ui/src/lib/utils.ts`:
+`cn()` is the required helper for merged/conditional class names, living in `packages/shadcn-ui-deprecated/src/lib/utils.ts`:
 
 ```ts
 import { clsx, type ClassValue } from 'clsx'
@@ -169,10 +169,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 ```
 
-Import in both `packages/ui` and `apps/web` as:
+Import in both `packages/shadcn-ui-deprecated` and `apps/web` as:
 
 ```ts
-import { cn } from '@afenda/ui/lib/utils'
+import { cn } from '@afenda/shadcn-ui-deprecated/lib/utils'
 ```
 
 ### Post-CLI Cleanup Rules
@@ -180,7 +180,7 @@ import { cn } from '@afenda/ui/lib/utils'
 After `shadcn` CLI generation:
 
 - Strip `'use client'` directives (Vite SPA context).
-- Verify UI primitive imports use `@afenda/ui/...` aliases, app component imports use `@/share/...` aliases.
+- Verify UI primitive imports use `@afenda/shadcn-ui-deprecated/...` aliases, app component imports use `@/share/...` aliases.
 - Remove duplicate `@layer base` blocks if generated.
 - Ensure no `tailwind.config.ts` is present.
 - Ensure no `tailwindcss-animate` (v3 JS plugin) imports are introduced. `tw-animate-css` is the approved v4 replacement.
@@ -205,7 +205,7 @@ After `shadcn` CLI generation:
 - Use `aria-label` on the interactive control first when an icon-only button, link, or trigger needs an accessible name.
 - Use `VisuallyHidden` for hidden text content inside a component when the component needs screen-reader-only copy in its rendered content.
 - Use `AccessibleIcon` only when the icon element itself needs an accessible label. Do not use it for decorative icons or when the parent control already has an accessible name.
-- In `packages/ui`, do not use raw JSX with `className="sr-only"` for hidden content. Use the shared `VisuallyHidden` primitive instead.
+- In `packages/shadcn-ui-deprecated`, do not use raw JSX with `className="sr-only"` for hidden content. Use the shared `VisuallyHidden` primitive instead.
 
 ### Customization Order
 
@@ -228,7 +228,7 @@ Use this decision order for new styling work:
    Use for canonical shell/layout/surface primitives consumed across many screens.
 4. `apps/web/src/share/components/block-ui/`
    Use for composed app-level blocks that combine multiple primitives or controls.
-5. `packages/ui/src/components/ui/`
+5. `packages/shadcn-ui-deprecated/src/components/ui/`
    Use for reusable design-system components with variants, slots, and stable APIs.
 
 Escalate upward when:
@@ -254,7 +254,7 @@ These are current approved choices and may evolve with ADR:
 
 - `style: "radix-luma"` in shadcn initialization (can evolve to another `radix-*` style with ADR).
 - Radix primitives as component API baseline.
-- `Combobox` is the only approved Base UI-backed primitive in `packages/ui` until upstream shadcn provides a Radix-backed implementation or the repo adopts a replacement by ADR.
+- `Combobox` is the only approved Base UI-backed primitive in `packages/shadcn-ui-deprecated` until upstream shadcn provides a Radix-backed implementation or the repo adopts a replacement by ADR.
 - `AccessibleIcon` and `VisuallyHidden` are included as baseline accessibility utility primitives.
 - `Toolbar` remains excluded from the primitive baseline unless a concrete product workflow requires Radix toolbar semantics.
 - Sonner as the toast implementation.
@@ -266,8 +266,8 @@ These are current approved choices and may evolve with ADR:
 - Tailwind through PostCSS in `apps/web`.
 - CSS Modules in Tailwind-owned UI surfaces.
 - `tailwindcss-animate` (the v3 JS-config plugin; use `tw-animate-css` instead).
-- New `@base-ui/react` primitives in `packages/ui` other than the approved `Combobox` exception.
-- Adding speculative primitives to `packages/ui/src/components/ui/` without a concrete reuse case or approved baseline decision.
+- New `@base-ui/react` primitives in `packages/shadcn-ui-deprecated` other than the approved `Combobox` exception.
+- Adding speculative primitives to `packages/shadcn-ui-deprecated/src/components/ui/` without a concrete reuse case or approved baseline decision.
 - A separate `.light` class block that duplicates `:root` tokens.
 - Subtraction-based radius formulas (`calc(var(--radius) - Npx)`).
 - Mixed color formats (e.g. `hsl()` in `:root` alongside `oklch()`).
@@ -299,9 +299,9 @@ Runs three checkers in sequence:
 
 | Layer | Script | Scope | What it catches |
 |-------|--------|-------|-----------------|
-| **0** | `check-ui-drift.ts` | `packages/ui/`, `packages/shadcn-ui/` | Raw color classes, arbitrary Tailwind values, inline style violations |
+| **0** | `check-ui-drift.ts` | `packages/shadcn-ui-deprecated/` | Raw color classes, arbitrary Tailwind values, inline style violations |
 | **1** | `check-ui-drift-ast.ts` | `apps/web/src/features/`, `apps/web/src/share/` | Raw Tailwind in feature code, ungoverned element + className combos, local wrapper factories |
-| **2** | `check-ui-wrapper-contracts.ts` | `packages/shadcn-ui/src`, `packages/ui/src` | Swallowed props/ref, Radix primitive replacement, `asChild` drift, suspicious local state |
+| **2** | `check-ui-wrapper-contracts.ts` | `packages/shadcn-ui-deprecated/src` | Swallowed props/ref, Radix primitive replacement, `asChild` drift, suspicious local state |
 
 Feature code should use `ui-*` CSS utilities and governed components (`Card`, `Button`, `Badge`, etc.) instead of raw `<div className="flex gap-4 p-6">`. The layer-1 checker recognizes `ui-*` class tokens as governed and does not flag them.
 
@@ -315,13 +315,13 @@ Validates OKLCH token stem consistency, color variable alignment, and ESLint col
 
 ### Governed component contracts
 
-Each UI primitive in `packages/shadcn-ui/src/lib/constant/component/<name>.ts` defines a three-part contract:
+Each UI primitive in `packages/shadcn-ui-deprecated/src/lib/constant/component/<name>.ts` defines a three-part contract:
 
 1. **Vocabularies** -- legal value tuples for each dimension (variant, size, etc.)
 2. **Defaults** -- Zod-validated fallback props the `.tsx` file imports
 3. **Policy** -- boolean flags controlling what feature code is allowed to extend
 
-When adding a new UI primitive or extending an existing one, update the contract file first, then wire the `.tsx` component to import from it. See [`component/_TEMPLATE.ts`](../packages/shadcn-ui/src/lib/constant/component/_TEMPLATE.ts).
+When adding a new UI primitive or extending an existing one, update the contract file first, then wire the `.tsx` component to import from it. See [`component/_TEMPLATE.ts`](../packages/shadcn-ui-deprecated/src/lib/constant/component/_TEMPLATE.ts).
 
 ### Adding a new ERP module
 
@@ -336,7 +336,7 @@ See [Architecture: Adding a new ERP module](./ARCHITECTURE.md#4-adding-a-new-erp
 5. Tokens are semantic, in OKLCH, and mapped via `@theme inline`.
 6. Radius tokens use multiplication formulas (`calc(var(--radius) * N)`).
 7. No `.light` class block -- `:root` is the light default.
-8. Generated UI primitives in `packages/ui` use `@afenda/ui/*` aliases; app components use `@/share/*`. No `'use client'` directives.
+8. Generated UI primitives in `packages/shadcn-ui-deprecated` use `@afenda/shadcn-ui-deprecated/*` aliases; app components use `@/share/*`. No `'use client'` directives.
 9. UI code uses semantic classes, not raw color classes.
 10. Feature code uses `ui-*` vocabulary and governed components, not raw HTML + Tailwind.
 11. `pnpm run script:ui-drift-governance` exits with 0 errors.

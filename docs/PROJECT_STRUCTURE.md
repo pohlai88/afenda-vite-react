@@ -13,16 +13,16 @@ Unless noted otherwise, paths below are relative to **`apps/web/src`** (shorthan
 Three top-level buckets under **`src/`**:
 
 1. **`features/`** — ERP and product capability modules (auth UI, dashboard, finance, …). This is the **primary source** for application behavior and screens.
-2. **`share/`** — Shared **client** infrastructure: routing tables, global providers, cross-feature state, and (as you add them) shared components, hooks, contexts, services, actions. Nothing cross-cutting should sprawl at `src/` root.
+2. **`share/`** — Shared **client** infrastructure: routing tables, global providers, cross-feature state, and shared components (shell, navigation, theme), hooks, contexts, services, actions. Nothing cross-cutting should sprawl at `src/` root.
 3. **`pages/`** — **Marketing / landing only** (e.g. public homepage). The authenticated ERP shell is routed from **`share/routing`** directly to **`features/*`** views.
+
+App-local composition that is not feature-specific belongs under **`share/components/`** (or a feature folder), not a fourth top-level `src/components/` tree.
 
 **Backend data and Drizzle** live in **separate packages** (e.g. `apps/api`, `packages/database`)—not under `apps/web/src`. See [Database](./DATABASE.md) and [Architecture](./ARCHITECTURE.md).
 
-**UI primitives** (shadcn/ui copy-in components, `cn()` utility) live in [`packages/ui/`](../packages/ui/) (`@afenda/ui`). The shadcn CLI deposits primitives here; `apps/web` depends on `@afenda/ui` and imports them as `@afenda/ui/components/<name>`. Both workspaces have a `components.json` with matching `style`, `iconLibrary`, and `baseColor` per [shadcn monorepo requirements](https://ui.shadcn.com/docs/monorepo).
+**Governed UI** (shadcn/ui copy-in primitives, `cn()`, governance constants, semantic adapters) lives in [`packages/shadcn-ui-deprecated/`](../packages/shadcn-ui-deprecated/) (`@afenda/shadcn-ui-deprecated`). The shadcn CLI targets this package and `apps/web`; both have a `components.json` with matching `style`, `iconLibrary`, and `baseColor` per [shadcn monorepo requirements](https://ui.shadcn.com/docs/monorepo). The package owns the **constant layer** (per-component contracts, governance policies, domain-to-UI adapters), the **semantic adapter layer** (tone, emphasis, surface primitives and domain-specific mappers), and **semantic wrapper components** (`SemanticAlert`, `SemanticBadge`, etc.). See [Architecture](./ARCHITECTURE.md#3-governed-ui-architecture-packagesshadcn-ui) for topology and dependency flow. For adding new modules, see [Architecture: Adding a new ERP module](./ARCHITECTURE.md#4-adding-a-new-erp-module).
 
-**Governed UI and semantic layer** live in [`packages/shadcn-ui/`](../packages/shadcn-ui/) (`@afenda/shadcn-ui`). This package owns the **constant layer** (59 per-component contracts, 12 governance policies, domain-to-UI adapters), the **semantic adapter layer** (tone, emphasis, surface primitives and domain-specific mappers like `allocation.ts`, `settlement.ts`), and **semantic wrapper components** (`SemanticAlert`, `SemanticBadge`, etc.). See [Architecture](./ARCHITECTURE.md#3-governed-ui-architecture-packagesshadcn-ui) for the full topology and dependency flow. For adding new modules, see [Architecture: Adding a new ERP module](./ARCHITECTURE.md#4-adding-a-new-erp-module).
-
-**Workspace testing** (unit, future E2E, Storybook, UI/a11y glue) is centered on [`packages/testing/`](../packages/testing/) (`@afenda/testing`); Vitest **`setupFiles`** in **`apps/web/vite.config.ts`** points at **`@afenda/testing/vitest/setup`**—see [Testing](./TESTING.md).
+**Workspace testing** (unit tests today; future E2E, Storybook, UI/a11y glue as needed) uses shared defaults from [`packages/vitest-config/`](../packages/vitest-config/) (`@afenda/vitest-config`); **`apps/web/vite.config.ts`** uses **`getAfendaVitestTestOptions()`**, which includes **`@afenda/vitest-config/vitest/setup`** (jest-dom matchers)—see [Testing](./TESTING.md).
 
 ---
 
@@ -32,7 +32,7 @@ Top-level **directories** under `src/` are **exactly** `features`, `pages`, and 
 
 ```text
 apps/web/
-├── vite.config.ts        # Vite + Vitest (`test` block); setupFiles → @afenda/testing/vitest/setup
+├── vite.config.ts        # Vite + Vitest (`test` block); defaults from @afenda/vitest-config
 └── src/
     ├── main.tsx          # React root
     ├── App.tsx           # Shell: QueryProvider + RouterProvider
@@ -46,10 +46,12 @@ apps/web/
     │   └── Landing.tsx
     └── share/            # Shared client infrastructure (expand here, not at src root)
         ├── routing/      # createBrowserRouter, marketing + /app/* feature routes
-        ├── providers/    # e.g. TanStack Query client + QueryClientProvider
-        ├── state/        # e.g. Zustand app shell store
-        └── i18n/         # i18next bootstrap, locales, glossary, audit artifacts (SEA i18n)
-        # (future) components/, contexts/, hooks/, services/, actions/, utils/
+        ├── api/          # cross-feature API helpers / stubs
+        ├── client-store/ # global/shell Zustand stores
+        ├── components/   # app shell/navigation shared UI composition
+        ├── i18n/         # i18next bootstrap, locales, glossary, audit artifacts (SEA i18n)
+        ├── query/        # TanStack Query defaults and helpers
+        └── react-hooks/  # cross-feature reusable React hooks
 ```
 
 ### Routing model
@@ -96,7 +98,7 @@ Place shared building blocks **under `share/`**, not at `src/` root:
 | TanStack Query client (defaults, not fetch)     | `share/query/`                                                  |
 | Global / shell Zustand stores (SPA client)      | `share/client-store/`                                           |
 | **i18n** runtime, locale JSON, glossary & audit | **`share/i18n/`** ([i18n dependencies](./dependencies/i18n.md)) |
-| UI primitives (shadcn/ui)                       | `packages/ui/src/components/ui/` (`@afenda/ui`)                 |
+| UI primitives (shadcn/ui)                       | `packages/shadcn-ui-deprecated/src/components/ui/` (`@afenda/shadcn-ui-deprecated`)   |
 | App shell layout, composed widgets              | `share/components/layout/` (when added)                         |
 | Shared React context                            | `share/contexts/` (when added)                                  |
 | Reusable hooks (React, non-store)               | `share/react-hooks/`                                            |
@@ -112,8 +114,8 @@ When you add a new **`share/`** subdirectory that must always exist, list it und
 | Drizzle schema, SQL migrations                               | `packages/database` or `apps/api` ([Database](./DATABASE.md)) |
 | OAuth token exchange, webhooks                               | Backend API ([Integrations](./INTEGRATIONS.md))               |
 | Long-running sync jobs                                       | Workers / queue consumers, not the Vite bundle                |
-| Dumping-ground `src/lib` or extra top-level `src/components` | Use **`share/`** (enforced topology)                          |
-| shadcn/ui primitive components in `apps/web`                 | Use **`packages/ui`** (`@afenda/ui`)                          |
+| Duplicated primitives under ad-hoc app `components/ui` trees | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`) instead      |
+| shadcn/ui primitive components in `apps/web`                 | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`)            |
 
 ---
 

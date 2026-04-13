@@ -30,13 +30,13 @@ const FIXTURES: readonly FixtureExpectation[] = [
   {
     kind: "valid",
     fixturePath:
-      "scripts/fixtures/policy-manifests/metadata-ui/inline-metadata-to-token-mapping.valid.md",
+      "scripts/fixtures/metadata-ui-inline-metadata-to-token-mapping.valid.md",
     expectedRuleId: RULE_ID,
   },
   {
     kind: "invalid",
     fixturePath:
-      "scripts/fixtures/policy-manifests/metadata-ui/inline-metadata-to-token-mapping.invalid.md",
+      "scripts/fixtures/metadata-ui-inline-metadata-to-token-mapping.invalid.md",
     expectedRuleId: RULE_ID,
   },
 ] as const

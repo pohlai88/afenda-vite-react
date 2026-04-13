@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "generator": {
+    "package": "@afenda/design-system",
+    "packageVersion": "0.0.0"
+  },
+  "css": {
+    "fileName": "generated-theme.css",
+    "sha256": "b5a12250668563c0d375c9ae93cbfcb234a92680031132ff6537dcff932134df",
+    "byteLength": 16100,
+    "lineCount": 387
+  },
+  "tokenization": {
+    "themeStaticDeclarationCount": 110,
+    "darkModeDeclarationCount": 74,
+    "runtimeParameterDeclarationCount": 10,
+    "keyframeCount": 6,
+    "totalCssDeclarationCount": 194,
+    "shadcnRegistrySemanticColorCount": 20,
+    "shadcnRegistryChartColorCount": 5,
+    "shadcnRegistrySidebarColorCount": 8,
+    "shadcnRegistryColorCount": 33,
+    "shadcnRegistryRadiusCount": 7,
+    "shadcnRegistryFontCount": 4,
+    "shadcnRegistryTextSizeCount": 9,
+    "shadcnRegistryShadowCount": 8,
+    "shadcnRegistryRequiredAliasCount": 33,
+    "shadcnRegistryExtraRuntimeAliasCount": 4,
+    "shadcnRegistryWrappedAliasCount": 2,
+    "shadcnRegistryTotalAliasCount": 39
+  },
+  "sections": {
+    "themeStaticLineCount": 112,
+    "darkModeLineCount": 76,
+    "runtimeParameterLineCount": 12,
+    "keyframesLineCount": 61,
+    "combinedLineCount": 264,
+    "emittedLineCount": 387
+  }
+}

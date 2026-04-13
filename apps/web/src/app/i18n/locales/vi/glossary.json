@@ -1,0 +1,16 @@
+{
+  "truth": {
+    "scope": {
+      "label": "Phạm vi truth"
+    },
+    "alert": {
+      "label": "Cảnh báo truth"
+    },
+    "resolution": {
+      "label": "Giải pháp"
+    },
+    "integrity_score": {
+      "label": "Điểm toàn vẹn"
+    }
+  }
+}

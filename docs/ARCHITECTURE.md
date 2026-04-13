@@ -16,7 +16,7 @@ Afenda is delivered as a **pnpm** + **Turborepo** monorepo. The **primary surfac
 - **Task runner:** [Turborepo](https://turborepo.com/) (`turbo.json`) runs `build`, `lint`, `typecheck`, `test`, and other tasks across `apps/*` and `packages/*` with caching and dependency ordering.
 - **Primary application:** the **React + Vite** app under **`apps/web`** (see [`apps/web/package.json`](../apps/web/package.json)). Production output is static assets under `apps/web/dist/` (served like any Vite build).
 - **Shared TypeScript:** [`packages/typescript-config/`](../packages/typescript-config/) holds shared `tsconfig` presets consumed by apps and packages.
-- **Workspace testing:** [`packages/testing/`](../packages/testing/) (`@afenda/testing`) holds **shared test infrastructure** (Vitest global setup today; reserved layout for E2E, Storybook, and UI test glue as the repo grows).
+- **Workspace testing:** [`packages/vitest-config/`](../packages/vitest-config/) (`@afenda/vitest-config`) holds **shared Vitest defaults** (global setup, `getAfendaVitestTestOptions()`, coverage presets). Future E2E, Storybook, and broader UI test glue may live in additional packages as the repo grows.
 - **Persistent data:** ERP state belongs in **PostgreSQL** (and related services), accessed from **API or workers** -- see [Database](./DATABASE.md). The Vite app talks to HTTP APIs, not the DB directly.
 
 ```text
@@ -24,11 +24,10 @@ afenda-monorepo/
 ├── apps/
 │   └── web/                 # ERP web client (Vite + React)
 ├── packages/
-│   ├── shadcn-ui/           # Governed semantic UI + constant layer (@afenda/shadcn-ui)
-│   ├── ui/                  # shadcn/ui copy-in primitives (@afenda/ui)
+│   ├── shadcn-ui/           # Governed shadcn/ui primitives + semantic layer (@afenda/shadcn-ui-deprecated)
 │   ├── features/core/       # Shared feature domain types (@afenda/core)
 │   ├── typescript-config/   # Shared tsconfig presets
-│   ├── testing/             # Workspace testing strategy (Vitest setup; E2E / Storybook stubs)
+│   ├── vitest-config/       # Shared Vitest defaults (@afenda/vitest-config)
 │   └── shared/              # Cross-app shared modules (public API via package root)
 ├── docs/                    # Repo-wide guides (including this file)
 ├── tools/ui-drift/          # Shared utilities for governance scripts
@@ -65,14 +64,14 @@ No second "source of truth" for folder names lives here -- always align with [Pr
 
 ---
 
-## 3. Governed UI architecture (`packages/shadcn-ui`)
+## 3. Governed UI architecture (`packages/shadcn-ui-deprecated`)
 
-The `@afenda/shadcn-ui` package (`packages/shadcn-ui/`) is the **semantic governance layer** for the entire UI stack. It sits between raw business domain types (from `@afenda/core`) and the visual primitives (`@afenda/ui`), enforcing that all UI decisions flow through validated, schema-checked contracts.
+The `@afenda/shadcn-ui-deprecated` package (`packages/shadcn-ui-deprecated/`) is the **governed UI stack**: shadcn/ui primitives and the constant and policy layer. It sits between raw business domain types (from `@afenda/core`) and feature code in `apps/web`, so UI decisions flow through validated, schema-checked contracts.
 
 ### 3.1 Package topology
 
 ```text
-packages/shadcn-ui/src/
+packages/shadcn-ui-deprecated/src/
 ├── index.ts                        # Package entry
 ├── index.css                       # Package styles
 │
@@ -80,8 +79,6 @@ packages/shadcn-ui/src/
 │   ├── button.tsx                  #   consumes buttonDefaults from constant layer
 │   ├── card.tsx                    #   consumes cardDefaults, CardSurface, CardPadding
 │   └── ...
-│
-├── hooks/                          # Shared React hooks (use-mobile.ts)
 │
 ├── lib/
 │   ├── utils.ts                    # cn() merge utility
@@ -99,26 +96,9 @@ packages/shadcn-ui/src/
 │       ├── policy/                 #   Governance policies (12 files): ownership, tailwind, radix, shadcn, import, etc.
 │       ├── registry/               #   Component and semantic registries
 │       └── pattern/                #   Reusable layout patterns (page-header)
-│
-└── semantic/                       # THE SEMANTIC ADAPTER LAYER
-    ├── index.ts                    #   Public API barrel (@afenda/shadcn-ui/semantic)
-    ├── primitives/                 #   Shared vocabulary: tone, emphasis, surface, density, size, state
-    ├── domain/                     #   Business-state to UI-model adapters
-    │   ├── allocation.ts           #     AllocationState -> tone, icon, badgeLabel
-    │   ├── settlement.ts           #     SettlementState -> tone, icon, badgeLabel
-    │   ├── reconciliation.ts       #     ReconciliationStatus -> tone, icon, badgeLabel
-    │   ├── invariant.ts            #     InvariantSeverity -> tone, icon, role
-    │   ├── evidence.ts             #     Evidence domain mapping
-    │   └── truth-severity.ts       #     Truth severity presentation
-    ├── internal/
-    │   └── presentation.ts         #   getAlertClasses(), renderSemanticIcon()
-    └── components/                 #   Semantic wrappers that consume the adapter layer
-        ├── semantic-alert.tsx
-        ├── semantic-badge.tsx
-        ├── semantic-field.tsx
-        ├── semantic-panel.tsx
-        └── semantic-section.tsx
 ```
+
+The former top-level `semantic/` adapter (`@afenda/shadcn-ui-deprecated/semantic`) was removed; migrate ERP semantic UI to the canonical design system / new repo. `lib/constant/` remains the governed vocabulary layer.
 
 ### 3.2 Dependency flow
 
@@ -151,7 +131,7 @@ Every governed UI component has a three-part contract defined in `src/lib/consta
 2. **Defaults** -- Zod-validated fallback prop values
 3. **Policy** -- boolean governance flags that prevent feature-level drift
 
-The `.tsx` component file imports its defaults and types from the contract, never repeating literal values. See [`component/_TEMPLATE.ts`](../packages/shadcn-ui/src/lib/constant/component/_TEMPLATE.ts) for the full pattern.
+The `.tsx` component file imports its defaults and types from the contract, never repeating literal values. See [`component/_TEMPLATE.ts`](../packages/shadcn-ui-deprecated/src/lib/constant/component/_TEMPLATE.ts) for the full pattern.
 
 ### 3.4 Governance pipeline
 
@@ -199,7 +179,7 @@ Add domain state types to `packages/features/core/src/` if they need to be share
 
 ### Step 4 -- Semantic adapter (when domain states need visual mapping)
 
-Create `packages/shadcn-ui/src/semantic/domain/<module>.ts`:
+Create `packages/shadcn-ui-deprecated/src/semantic/domain/<module>.ts`:
 
 ```ts
 import type { Tone } from '../primitives/tone'
@@ -217,11 +197,11 @@ export function getPurchaseOrderTone(status: PurchaseOrderStatus): Tone {
 }
 ```
 
-Export from `packages/shadcn-ui/src/semantic/index.ts`.
+Export from `packages/shadcn-ui-deprecated/src/semantic/index.ts`.
 
 ### Step 5 -- Domain constants (when governed status/variant mappings are needed)
 
-Create `packages/shadcn-ui/src/lib/constant/domain/<module>.ts` and register the export in `packages/shadcn-ui/src/lib/constant/index.ts` (alphabetical order).
+Create `packages/shadcn-ui-deprecated/src/lib/constant/domain/<module>.ts` and register the export in `packages/shadcn-ui-deprecated/src/lib/constant/index.ts` (alphabetical order).
 
 ### Step 6 -- Action bar hook
 

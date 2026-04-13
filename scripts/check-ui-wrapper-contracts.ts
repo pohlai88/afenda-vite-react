@@ -14,7 +14,7 @@
  *   - asChild contract drift                 → UIX-RADIX-005
  *   - shadcn primitive substructure drift    → UIX-SHADCN-002
  *
- * Scan scope: packages/shadcn-ui/src only (wrapperContractScanRoots).
+ * Scan scope: packages/shadcn-ui-deprecated/src only (wrapperContractScanRoots).
  *
  * Usage:
  *   pnpm run script:check-ui-wrapper-contracts

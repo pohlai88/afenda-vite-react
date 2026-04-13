@@ -1,0 +1,33 @@
+{
+  "extends": "../typescript-config/react-library.json",
+  "compilerOptions": {
+    "composite": true,
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "paths": {
+      "@afenda/design-system": ["./index.ts"],
+      "@afenda/design-system/utils": ["./utils/index.ts"],
+      "@afenda/design-system/ui-primitives/*": ["./ui-primitives/*"],
+      "@afenda/design-system/lib/*": ["./lib/*"]
+    }
+  },
+  "include": [
+    "index.ts",
+    "vitest.config.ts",
+    "utils/**/*.ts",
+    "hooks/**/*.ts",
+    "ui-primitives/**/*.ts",
+    "ui-primitives/**/*.tsx",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "lib/**/*.d.ts",
+    "design-architecture/**/*.ts",
+    "design-architecture/**/*.tsx",
+    "icons/**/*.ts",
+    "icons/**/*.tsx"
+  ],
+  "exclude": [
+    "**/z_archive/**",
+    "lib/newyork-v4/examples/**"
+  ]
+}

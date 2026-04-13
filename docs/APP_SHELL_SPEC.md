@@ -162,7 +162,7 @@ Extend `shell.json` in all supported locales (`en`, `ms`, `id`, `vi`) with:
 Expected component structure across two workspaces:
 
 ```text
-packages/ui/src/
+packages/shadcn-ui-deprecated/src/
   components/ui/
     sidebar.tsx          # shadcn primitive
     breadcrumb.tsx       # shadcn primitive
@@ -178,8 +178,7 @@ packages/ui/src/
   lib/
     utils.ts             # cn() helper
   hooks/
-  styles/
-    globals.css
+  index.css              # package entry CSS (see components.json)
 
 apps/web/src/share/components/
   layout/
@@ -238,7 +237,7 @@ Required shadcn components for shell:
 3. Sidebar entries hide when permission keys are missing.
 4. Header remains sticky and includes toggle + breadcrumb + controls.
 5. Shell i18n labels resolve in all supported locales.
-6. Layout code lives under `share/components/layout` and UI primitives under `packages/ui/src/components/ui`.
+6. Layout code lives under `share/components/layout` and UI primitives under `packages/shadcn-ui-deprecated/src/components/ui`.
 
 ## Related Documents
 

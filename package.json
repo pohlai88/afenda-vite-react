@@ -20,7 +20,10 @@
     "build:analyze": "turbo run build:analyze --filter=@afenda/web",
     "format": "turbo run format",
     "format:check": "turbo run format:check",
-    "check": "pnpm run script:check-afenda-config && pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit && pnpm run script:validate-i18n && pnpm run script:i18n-check && turbo run lint typecheck test:run build",
+    "tokens:check": "pnpm --filter @afenda/design-system run tokens:check",
+    "icons:generate": "pnpm --filter @afenda/design-system run icons:generate",
+    "icons:check": "pnpm --filter @afenda/design-system run icons:check",
+    "check": "pnpm run script:check-afenda-config && pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit && pnpm run script:validate-i18n && pnpm run script:i18n-check && pnpm run tokens:check && turbo run lint typecheck test:run build",
     "preview": "turbo run preview",
     "script:node-info": "tsx scripts/node-info.ts",
     "script:generate-docs-readme": "tsx scripts/generate-docs-readme.ts",
@@ -46,11 +49,13 @@
     "script:ast-grep-scan": "ast-grep scan --config sgconfig.yml",
     "script:ui-drift-governance": "pnpm run script:check-ui-drift && pnpm run script:check-ui-drift:ast && pnpm run script:check-ui-wrapper-contracts && pnpm run script:check-runtime-providers && pnpm run script:check-shell-governance-report && pnpm run script:check-policy-manifests && pnpm run script:check-metadata-ui-fixtures && pnpm run script:check-style-binding-fixtures && pnpm run script:ast-grep-scan",
     "script:check-stem-sync": "tsx scripts/check-stem-sync.ts",
-    "script:ui-color-governance": "pnpm run script:check-stem-sync && pnpm run script:check-color-consistency && pnpm exec eslint packages/shadcn-ui/src/components apps/web/src/features apps/web/src/share/components --max-warnings 0 --cache --cache-location .eslintcache --concurrency auto"
+    "script:ui-color-governance": "pnpm run script:check-stem-sync && pnpm run script:check-color-consistency && pnpm exec eslint packages/shadcn-ui-deprecated/src/components apps/web/src/features apps/web/src/share/components --max-warnings 0 --cache --cache-location .eslintcache --concurrency auto",
+    "script:vitest-diagnostics": "tsx scripts/vitest-diagnostics.ts"
   },
   "devDependencies": {
     "@afenda/eslint-config": "workspace:*",
     "@ast-grep/cli": "^0.42.1",
+    "@tailwindcss/cli": "^4.2.2",
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "lint-staged": "^16.4.0",
@@ -62,7 +67,8 @@
     "ts-morph": "^27.0.2",
     "tsx": "^4.21.0",
     "turbo": "^2.9.4",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"

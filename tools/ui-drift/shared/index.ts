@@ -264,7 +264,7 @@ export const EXCLUDE_FILE_PATTERNS = [
   /\.stories\./,
 ] as const
 
-export const ALLOWED_UI_OWNERS_RELATIVE = ["packages/shadcn-ui/src"] as const
+export const ALLOWED_UI_OWNERS_RELATIVE = ["packages/shadcn-ui-deprecated/src"] as const
 
 export const PRODUCT_UI_PATH_HINTS_RELATIVE = ["apps", "packages"] as const
 
@@ -327,8 +327,7 @@ export function isValidInlineStyleException(
  * Semantic style maps in feature code must trace to one of these.
  */
 export const GOVERNED_DOMAIN_UI_SPECIFIERS = [
-  "@afenda/shadcn-ui/semantic",
-  "@afenda/shadcn-ui/lib/constant",
+  "@afenda/shadcn-ui-deprecated/lib/constant",
 ] as const
 
 /**
@@ -417,8 +416,7 @@ export const TAILWIND_UTILITY_RE =
 export const FEATURE_PATH_PATTERN = /[/\\]features?[/\\]/i
 
 export const GOVERNED_UI_IMPORT_SOURCES = [
-  "@afenda/shadcn-ui",
-  "@afenda/shadcn-ui/semantic",
+  "@afenda/shadcn-ui-deprecated",
   "@/components/ui",
   "~/components/ui",
   "../components/ui",
@@ -426,10 +424,9 @@ export const GOVERNED_UI_IMPORT_SOURCES = [
 ] as const
 
 export const TRUTH_MAPPING_IMPORT_SOURCES = [
-  "@afenda/shadcn-ui/semantic",
-  "@afenda/shadcn-ui/truth-mapping",
-  "@afenda/shadcn-ui/lib/constant",
-  "packages/shadcn-ui/src/lib/constant",
+  "@afenda/shadcn-ui-deprecated/truth-mapping",
+  "@afenda/shadcn-ui-deprecated/lib/constant",
+  "packages/shadcn-ui-deprecated/src/lib/constant",
 ] as const
 
 export function normalizePath(value: string): string {
@@ -690,12 +687,12 @@ export async function loadGovernanceModules<RuleCode extends string>(
   rootDir: string
 ): Promise<GovernanceModules<RuleCode>> {
   const constantLayerUrl = pathToFileURL(
-    path.join(rootDir, "packages/shadcn-ui/src/lib/constant/index.ts")
+    path.join(rootDir, "packages/shadcn-ui-deprecated/src/lib/constant/index.ts")
   ).href
   const validatorUrl = pathToFileURL(
     path.join(
       rootDir,
-      "packages/shadcn-ui/src/lib/constant/validate-constants.ts"
+      "packages/shadcn-ui-deprecated/src/lib/constant/validate-constants.ts"
     )
   ).href
 

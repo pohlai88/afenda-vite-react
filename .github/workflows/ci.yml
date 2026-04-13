@@ -33,7 +33,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: '.nvmrc'
           cache: pnpm
 
       - name: Install dependencies
@@ -47,6 +47,9 @@ jobs:
 
       - name: Validate Afenda config
         run: pnpm run script:check-afenda-config
+
+      - name: Design system generated theme + manifest (drift check)
+        run: pnpm --filter @afenda/design-system run test:update-generated-check
 
       - name: Validate i18n policy and conflicts
         run: pnpm run script:validate-i18n
@@ -69,3 +72,6 @@ jobs:
 
       - name: Lint, typecheck, test, build
         run: pnpm exec turbo run lint typecheck test:run build --summarize
+
+      - name: Design system coverage gate
+        run: pnpm --filter @afenda/design-system test:coverage

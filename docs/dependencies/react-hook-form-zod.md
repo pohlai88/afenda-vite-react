@@ -67,7 +67,7 @@ No Server Actions — submit via **`fetch`** or your API client; server must sti
 ```typescript
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),

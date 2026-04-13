@@ -44,7 +44,7 @@ Prefer **`z.infer<typeof schema>`** (or **`z.output` / `z.input`** where you mod
 - **`schema.safeParse(data)`** — returns **`{ success: true, data }`** or **`{ success: false, error }`**; prefer at HTTP/UI boundaries for user-facing errors.
 
 ```typescript
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const userSchema = z.object({
   id: z.uuid(),

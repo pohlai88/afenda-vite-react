@@ -17,7 +17,7 @@ Use this dependency page as ecosystem/reference context and keep implementation 
 
 This document describes how **Afenda** intends to use **[shadcn/ui](https://ui.shadcn.com)**—reusable, accessible components built on **[Radix UI](https://www.radix-ui.com/)** primitives and styled with **[Tailwind CSS](https://tailwindcss.com/)**—inside **`apps/web`** (Vite + React, **not** Next.js).
 
-Repo note: Afenda treats `packages/ui` as a Radix-first primitive library. The only approved exception today is `Combobox`, which upstream shadcn still implements with `@base-ui/react` even under the Radix docs path. `AccessibleIcon` and `VisuallyHidden` are part of the approved Radix utility baseline. `Toolbar` is intentionally excluded until a concrete workflow requires it. See `docs/COMPONENTS_AND_STYLING.md` for the normative rule.
+Repo note: Afenda keeps Radix-first primitives in `packages/shadcn-ui-deprecated` (`@afenda/shadcn-ui-deprecated`). The only approved exception today is `Combobox`, which upstream shadcn still implements with `@base-ui/react` even under the Radix docs path. `AccessibleIcon` and `VisuallyHidden` are part of the approved Radix utility baseline. `Toolbar` is intentionally excluded until a concrete workflow requires it. See `docs/COMPONENTS_AND_STYLING.md` for the normative rule.
 
 **Status:** Adopted for `apps/web`. Use [Components and styling](../COMPONENTS_AND_STYLING.md) as the canonical ruleset, and this page for dependency-level references.
 
@@ -212,7 +212,7 @@ Use **React Hook Form** with **Zod** (`@hookform/resolvers`) and the shadcn **Fo
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import {
   Button,

@@ -24,8 +24,8 @@ import {
 import {
   resolveEffectiveClassPolicyTokenThresholds,
   type EffectiveClassPolicyTokenThresholds,
-} from "../packages/shadcn-ui/src/lib/constant/policy/class-governance-scope.ts"
-import { styleBindingPolicy } from "../packages/shadcn-ui/src/lib/constant/policy/style-binding.ts"
+} from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/class-governance-scope.ts"
+import { styleBindingPolicy } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/style-binding.ts"
 import {
   type AstFinding,
   type GovernanceModules,
@@ -614,7 +614,7 @@ function checkImports(
           sourceFile,
           decl,
           "UIX-AST-IMPORT-004",
-          "Semantic adapter imported from a local feature/shared file. Import governed mappings from @afenda/shadcn-ui/semantic or the constant layer instead."
+          "Semantic adapter imported from a local feature/shared file. Import governed mappings from @afenda/shadcn-ui-deprecated/semantic or the constant layer instead."
         )
       }
     }
@@ -1711,7 +1711,7 @@ function checkTruthMappingSources(sourceFile: SourceFile) {
           sourceFile,
           declaration,
           matchedTruthRule,
-          "Domain-to-UI mapping defined locally. Import from governed constant layer (@afenda/shadcn-ui/lib/constant) instead."
+          "Domain-to-UI mapping defined locally. Import from governed constant layer (@afenda/shadcn-ui-deprecated/lib/constant) instead."
         )
       }
     }

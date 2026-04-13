@@ -1,0 +1,16 @@
+{
+  "truth": {
+    "scope": {
+      "label": "Skop kebenaran"
+    },
+    "alert": {
+      "label": "Amaran kebenaran"
+    },
+    "resolution": {
+      "label": "Penyelesaian"
+    },
+    "integrity_score": {
+      "label": "Skor integriti"
+    }
+  }
+}

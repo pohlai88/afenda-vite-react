@@ -1,0 +1,16 @@
+{
+  "truth": {
+    "scope": {
+      "label": "Truth scope"
+    },
+    "alert": {
+      "label": "Truth alert"
+    },
+    "resolution": {
+      "label": "Resolution"
+    },
+    "integrity_score": {
+      "label": "Integrity score"
+    }
+  }
+}

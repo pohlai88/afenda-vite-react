@@ -5,6 +5,9 @@
 
 This index is generated from markdown files in `docs/__idea__`.
 
-| Document                                                         | Description |
-| ---------------------------------------------------------------- | ----------- |
-| [1. README — App Shell Architecture Structure](./working_ref.md) | Absolutely. |
+| Document                                                                                                           | Description                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Plan: Global default token policy (canon doc + optional code enforcement)](./PLAN-global-default-token-policy.md) | This plan supersedes / extends the earlier “thin token-key authority” sketch by adding your paste-ready Global Default Token Policy as repo canon and aligning implementat |
+| [Tailwind Shadcn](./tailwind-shadcn.md)                                                                            | Here is a consolidated reference.                                                                                                                                          |
+| [Truth operating: stub, remove globally, reintegrate with ERP terms](./truth-operating-delivery-program.md)        | This is a separate program. It starts only after the global removal is complete and the codebase compiles with the truth-shaped hole visible.                              |
+| [Working Ref](./working_ref.md)                                                                                    | This is a good implementation pass. The important part is that you did not force doc-pure theory into the constant layer and break the live shell model.                   |

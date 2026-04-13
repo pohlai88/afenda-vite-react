@@ -13,7 +13,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs"
 import path from "node:path"
 
 const SCAN_PATHS = [
-  "packages/shadcn-ui/src/components",
+  "packages/shadcn-ui-deprecated/src/components",
   "apps/web/src/features",
   "apps/web/src/share/components",
 ] as const

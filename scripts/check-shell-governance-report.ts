@@ -89,7 +89,7 @@ async function loadSerializeShellDoctrineManifest(): Promise<
     `file://${path
       .join(
         ROOT_DIR,
-        "packages/shadcn-ui/src/lib/constant/policy/shell/shell-doctrine-manifest.ts"
+        "packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/shell-doctrine-manifest.ts"
       )
       .replace(/\\/g, "/")}`
   ).href
@@ -112,7 +112,7 @@ async function loadShellRegistryValidator() {
     `file://${path
       .join(
         ROOT_DIR,
-        "packages/shadcn-ui/src/lib/constant/policy/shell/validation/validate-shell-registry.ts"
+        "packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/validation/validate-shell-registry.ts"
       )
       .replace(/\\/g, "/")}`
   ).href
@@ -147,7 +147,7 @@ async function loadShellComponentRegistryForReport(): Promise<
     `file://${path
       .join(
         ROOT_DIR,
-        "packages/shadcn-ui/src/lib/constant/policy/shell/registry/shell-component-registry.ts"
+        "packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/registry/shell-component-registry.ts"
       )
       .replace(/\\/g, "/")}`
   ).href
@@ -190,7 +190,7 @@ async function loadSlotDoctrineForReport(): Promise<{
     `file://${path
       .join(
         ROOT_DIR,
-        "packages/shadcn-ui/src/lib/constant/policy/shell/registry/shell-slot-registry.ts"
+        "packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/registry/shell-slot-registry.ts"
       )
       .replace(/\\/g, "/")}`
   ).href
@@ -198,7 +198,7 @@ async function loadSlotDoctrineForReport(): Promise<{
     `file://${path
       .join(
         ROOT_DIR,
-        "packages/shadcn-ui/src/lib/constant/policy/shell/policy/shell-slot-policy.ts"
+        "packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/policy/shell-slot-policy.ts"
       )
       .replace(/\\/g, "/")}`
   ).href

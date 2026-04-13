@@ -8,7 +8,7 @@
     "D": 0
   },
   "files": {
-    "packages/shadcn-ui/src/lib/constant/component/accordion.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/accordion.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -21,7 +21,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/alert-dialog.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/alert-dialog.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -34,7 +34,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/alert.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/alert.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -47,7 +47,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/aspect-ratio.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/aspect-ratio.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -60,7 +60,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/avatar.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/avatar.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -73,7 +73,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/badge.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/badge.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -86,7 +86,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/breadcrumb.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/breadcrumb.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -99,7 +99,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/button-group.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/button-group.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -112,7 +112,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/button.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/button.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -125,7 +125,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/calendar.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/calendar.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -138,7 +138,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/card.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/card.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -151,7 +151,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/carousel.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/carousel.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -164,7 +164,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/chart.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/chart.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -177,7 +177,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/checkbox.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/checkbox.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -190,7 +190,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/collapsible.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/collapsible.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -203,7 +203,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/combobox.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/combobox.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -216,7 +216,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/command.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/command.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -229,7 +229,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/context-menu.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/context-menu.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -242,7 +242,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/dialog.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/dialog.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -255,7 +255,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/direction.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/direction.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -268,7 +268,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/drawer.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/drawer.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -281,7 +281,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/dropdown-menu.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/dropdown-menu.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -294,7 +294,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/empty.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/empty.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -307,7 +307,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/field.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/field.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -320,7 +320,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/form.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/form.ts": {
       "tier": "C",
       "checks": {
         "structuralPresent": true,
@@ -333,7 +333,7 @@
       "reason": "Tier C: alignment unavailable (no component alignment facts).",
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/hover-card.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/hover-card.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -346,7 +346,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/input-group.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/input-group.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -359,7 +359,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/input-otp.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/input-otp.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -372,7 +372,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/input.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/input.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -385,7 +385,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/item.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/item.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -398,7 +398,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/kbd.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/kbd.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -411,7 +411,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/label.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/label.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -424,7 +424,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/menubar.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/menubar.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -437,7 +437,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/native-select.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/native-select.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -450,7 +450,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/navigation-menu.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/navigation-menu.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -463,7 +463,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/pagination.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/pagination.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -476,7 +476,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/popover.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/popover.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -489,7 +489,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/progress.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/progress.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -502,7 +502,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/radio-group.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/radio-group.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -515,7 +515,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/resizable.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/resizable.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -528,7 +528,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/scroll-area.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/scroll-area.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -541,7 +541,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/select.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/select.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -554,7 +554,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/separator.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/separator.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -567,7 +567,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/sheet.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/sheet.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -580,7 +580,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/sidebar.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/sidebar.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -593,7 +593,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/skeleton.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/skeleton.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -606,7 +606,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/slider.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/slider.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -619,7 +619,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/sonner-progress.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/sonner-progress.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -632,7 +632,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/sonner.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/sonner.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -645,7 +645,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/spinner.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/spinner.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -658,7 +658,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/status-icon.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/status-icon.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -671,7 +671,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/switch.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/switch.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -684,7 +684,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/table.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/table.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -697,7 +697,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/tabs.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/tabs.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -710,7 +710,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/textarea.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/textarea.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -723,7 +723,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/theme-provider.constant.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/theme-provider.constant.ts": {
       "tier": "C",
       "checks": {
         "structuralPresent": true,
@@ -736,7 +736,7 @@
       "reason": "Tier C: alignment unavailable (no component alignment facts).",
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/toast.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/toast.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -749,7 +749,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/toggle-group.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/toggle-group.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -762,7 +762,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/toggle.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/toggle.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,
@@ -775,7 +775,7 @@
       "reason": null,
       "findings": []
     },
-    "packages/shadcn-ui/src/lib/constant/component/tooltip.ts": {
+    "packages/shadcn-ui-deprecated/src/lib/constant/component/tooltip.ts": {
       "tier": "A",
       "checks": {
         "structuralPresent": true,

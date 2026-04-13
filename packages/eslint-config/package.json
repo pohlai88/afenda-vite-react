@@ -1,36 +1,19 @@
 {
   "name": "@afenda/eslint-config",
-  "version": "0.0.0",
   "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "files": [
-    "index.js",
-    "afenda-ui-plugin"
-  ],
-  "scripts": {
-    "format": "prettier --write \"**/*.{js,cjs,json,md}\"",
-    "format:check": "prettier --check \"**/*.{js,cjs,json,md}\"",
-    "test": "node --test afenda-ui-plugin/utils/class-governance-scope.test.cjs afenda-ui-plugin/plugin-rule-registry.test.cjs"
+  "exports": {
+    ".": "./src/index.js"
   },
   "dependencies": {
     "@eslint/js": "catalog:",
+    "@vitest/eslint-plugin": "catalog:",
     "eslint": "catalog:",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.4.0",
-    "typescript-eslint": "^8.57.0"
-  },
-  "devDependencies": {
-    "prettier": "catalog:"
-  },
-  "exports": {
-    ".": "./index.js",
-    "./package.json": "./package.json",
-    "./afenda-ui-plugin": "./afenda-ui-plugin/index.cjs",
-    "./afenda-ui-plugin/semantic-color-stems": "./afenda-ui-plugin/semantic-color-stems.cjs",
-    "./afenda-ui-plugin/semantic-token-allowlist-rule": "./afenda-ui-plugin/semantic-token-allowlist-rule.cjs"
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-react-hooks": "catalog:",
+    "eslint-plugin-react-refresh": "catalog:",
+    "globals": "catalog:",
+    "typescript-eslint": "^8.46.0"
   }
 }

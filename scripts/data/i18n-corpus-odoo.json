@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source": "odoo",
-  "generatedAt": "2026-04-05T23:19:41.172Z",
+  "generatedAt": "2026-04-10T18:34:24.842Z",
   "fetchedFrom": [
     "https://raw.githubusercontent.com/odoo/odoo/master/addons/account/i18n/account.pot",
     "https://raw.githubusercontent.com/odoo/odoo/master/addons/stock/i18n/stock.pot",

@@ -15,24 +15,30 @@
  *
  * Run: pnpm run script:i18n-corpus-ingest
  */
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
 
-import { parseDolibarrLang, parsePo } from './i18n-parse-po.js'
+import { parseDolibarrLang, parsePo } from "./i18n-parse-po.js"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const repoRoot = join(__dirname, '..')
-const dataDir = join(repoRoot, 'scripts/data')
-const i18nLocalesDir = join(repoRoot, 'apps/web/src/share/i18n/locales')
+const repoRoot = join(__dirname, "..")
+const dataDir = join(repoRoot, "scripts/data")
+const i18nLocalesDir = join(repoRoot, "apps/web/src/share/i18n/locales")
+
+/** Diagnostics for CLI (stderr); keeps stdout free for any piped output. */
+function corpusIngestLog(message: string, detail?: string): void {
+  const suffix = detail ? ` ${detail}` : ""
+  process.stderr.write(`[i18n-corpus-ingest] ${message}${suffix}\n`)
+}
 
 // Load .env.tolgee if present (fills TOLGEE_* env vars for local runs)
-const envTolgeePath = join(repoRoot, '.env.tolgee')
+const envTolgeePath = join(repoRoot, ".env.tolgee")
 if (existsSync(envTolgeePath)) {
-  for (const line of readFileSync(envTolgeePath, 'utf8').split('\n')) {
+  for (const line of readFileSync(envTolgeePath, "utf8").split("\n")) {
     const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
-    const eq = trimmed.indexOf('=')
+    if (!trimmed || trimmed.startsWith("#")) continue
+    const eq = trimmed.indexOf("=")
     if (eq <= 0) continue
     const key = trimmed.slice(0, eq).trim()
     if (!process.env[key]) {
@@ -41,15 +47,15 @@ if (existsSync(envTolgeePath)) {
   }
 }
 
-const SUPPORTED_LOCALES = ['en', 'ms', 'id', 'vi'] as const
+const SUPPORTED_LOCALES = ["en", "ms", "id", "vi"] as const
 
 const FRAPPE_BASE =
-  'https://raw.githubusercontent.com/frappe/frappe/develop/frappe/locale'
+  "https://raw.githubusercontent.com/frappe/frappe/develop/frappe/locale"
 const ERPNEXT_BASE =
-  'https://raw.githubusercontent.com/frappe/erpnext/develop/erpnext/locale'
-const ODOO_BASE = 'https://raw.githubusercontent.com/odoo/odoo/master/addons'
+  "https://raw.githubusercontent.com/frappe/erpnext/develop/erpnext/locale"
+const ODOO_BASE = "https://raw.githubusercontent.com/odoo/odoo/master/addons"
 const DOLIBARR_MS_DIR_API =
-  'https://api.github.com/repos/Dolibarr/dolibarr/contents/htdocs/langs/ms_MY'
+  "https://api.github.com/repos/Dolibarr/dolibarr/contents/htdocs/langs/ms_MY"
 
 type KeyMapping = {
   version: number
@@ -81,7 +87,7 @@ type DolibarrMsCandidate = {
 }
 
 type DolibarrDirectoryItem = {
-  type: 'file' | 'dir'
+  type: "file" | "dir"
   name: string
   download_url: string | null
 }
@@ -108,14 +114,14 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
-function flattenLeaves(obj: unknown, prefix = ''): FlatMap {
-  if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) {
+function flattenLeaves(obj: unknown, prefix = ""): FlatMap {
+  if (obj === null || typeof obj !== "object" || Array.isArray(obj)) {
     return {}
   }
   const out: FlatMap = {}
   for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
     const next = prefix ? `${prefix}.${k}` : k
-    if (typeof v === 'string') {
+    if (typeof v === "string") {
       out[next] = v
     } else {
       Object.assign(out, flattenLeaves(v, next))
@@ -126,8 +132,8 @@ function flattenLeaves(obj: unknown, prefix = ''): FlatMap {
 
 function getLocaleNamespaces(locale: string): string[] {
   return readdirSync(join(i18nLocalesDir, locale))
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => f.replace(/\.json$/, ''))
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => f.replace(/\.json$/, ""))
     .sort((a, b) => a.localeCompare(b))
 }
 
@@ -137,7 +143,7 @@ function loadLocalTolgeeEntries(): CorpusEntry[] {
     const namespaces = getLocaleNamespaces(locale)
     for (const ns of namespaces) {
       const filePath = join(i18nLocalesDir, locale, `${ns}.json`)
-      const raw = JSON.parse(readFileSync(filePath, 'utf8')) as unknown
+      const raw = JSON.parse(readFileSync(filePath, "utf8")) as unknown
       const flat = flattenLeaves(raw)
       for (const [leaf, value] of Object.entries(flat)) {
         entries.push({
@@ -155,24 +161,24 @@ function loadLocalTolgeeEntries(): CorpusEntry[] {
 async function loadTolgeeApiEntries(
   baseUrl: string,
   projectId: string,
-  apiKey: string,
+  apiKey: string
 ): Promise<{ entries: CorpusEntry[]; fetchedFrom: string[] }> {
   const entries: CorpusEntry[] = []
   const fetchedFrom: string[] = []
-  const base = baseUrl.replace(/\/$/, '')
-  const headers: Record<string, string> = apiKey.startsWith('tgpat_')
-    ? { 'X-API-Key': apiKey }
+  const base = baseUrl.replace(/\/$/, "")
+  const headers: Record<string, string> = apiKey.startsWith("tgpat_")
+    ? { "X-API-Key": apiKey }
     : { Authorization: `Bearer ${apiKey}` }
 
   let page = 0
   let hasMore = true
 
   while (hasMore) {
-    const endpoint = `${base}/v2/projects/${projectId}/translations?size=200&page=${page}&languages=${SUPPORTED_LOCALES.join(',')}`
+    const endpoint = `${base}/v2/projects/${projectId}/translations?size=200&page=${page}&languages=${SUPPORTED_LOCALES.join(",")}`
     const res = await fetch(endpoint, { headers })
     if (!res.ok) {
       throw new Error(
-        `Tolgee translations API failed (${res.status} ${res.statusText})`,
+        `Tolgee translations API failed (${res.status} ${res.statusText})`
       )
     }
 
@@ -192,7 +198,7 @@ async function loadTolgeeApiEntries(
 
     const keys = body._embedded?.keys ?? []
     for (const key of keys) {
-      const ns = key.keyNamespace ?? 'common'
+      const ns = key.keyNamespace ?? "common"
       const afendaKey = `${ns}.${key.keyName}`
       for (const [locale, translation] of Object.entries(key.translations)) {
         if (translation.text) {
@@ -220,30 +226,38 @@ async function ingestTolgee(): Promise<CorpusFile> {
   const apiKey = process.env.TOLGEE_API_KEY
 
   if (apiUrl && projectId && apiKey) {
-    const result = await loadTolgeeApiEntries(apiUrl, projectId, apiKey)
-    return {
-      version: 2,
-      source: 'tolgee',
-      generatedAt: now,
-      fetchedFrom: [...new Set(result.fetchedFrom)],
-      entries: result.entries.sort(
-        (a, b) =>
-          a.afendaKey.localeCompare(b.afendaKey) ||
-          a.locale.localeCompare(b.locale),
-      ),
+    try {
+      const result = await loadTolgeeApiEntries(apiUrl, projectId, apiKey)
+      return {
+        version: 2,
+        source: "tolgee",
+        generatedAt: now,
+        fetchedFrom: [...new Set(result.fetchedFrom)],
+        entries: result.entries.sort(
+          (a, b) =>
+            a.afendaKey.localeCompare(b.afendaKey) ||
+            a.locale.localeCompare(b.locale)
+        ),
+      }
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : String(err)
+      corpusIngestLog(
+        "Tolgee API not used (unreachable or error); corpus will be built from local locale files.",
+        `(${detail})`
+      )
     }
   }
 
   const localEntries = loadLocalTolgeeEntries()
   return {
     version: 2,
-    source: 'tolgee',
+    source: "tolgee",
     generatedAt: now,
-    fetchedFrom: ['local-fallback:apps/web/src/share/i18n/locales'],
+    fetchedFrom: ["local-fallback:apps/web/src/share/i18n/locales"],
     entries: localEntries.sort(
       (a, b) =>
         a.afendaKey.localeCompare(b.afendaKey) ||
-        a.locale.localeCompare(b.locale),
+        a.locale.localeCompare(b.locale)
     ),
   }
 }
@@ -260,22 +274,20 @@ function buildPoLookup(content: string): Map<string, string> {
 
 function buildDolibarrPriorityOrder(name: string): number {
   const priorities = [
-    'main.lang',
-    'commercial.lang',
-    'accountancy.lang',
-    'bills.lang',
-    'products.lang',
-    'companies.lang',
-    'hrm.lang',
-    'errors.lang',
+    "main.lang",
+    "commercial.lang",
+    "accountancy.lang",
+    "bills.lang",
+    "products.lang",
+    "companies.lang",
+    "hrm.lang",
+    "errors.lang",
   ]
   const idx = priorities.indexOf(name)
   return idx >= 0 ? idx : Number.MAX_SAFE_INTEGER
 }
 
-async function loadDolibarrMalayLookup(
-  sourceIds: Set<string>,
-): Promise<{
+async function loadDolibarrMalayLookup(sourceIds: Set<string>): Promise<{
   lookup: Map<string, DolibarrMsCandidate>
   fetchedUrls: string[]
 }> {
@@ -295,9 +307,7 @@ async function loadDolibarrMalayLookup(
   const files = listing
     .filter(
       (item) =>
-        item.type === 'file' &&
-        item.name.endsWith('.lang') &&
-        item.download_url,
+        item.type === "file" && item.name.endsWith(".lang") && item.download_url
     )
     .sort((a, b) => {
       const pa = buildDolibarrPriorityOrder(a.name)
@@ -310,7 +320,7 @@ async function loadDolibarrMalayLookup(
     if (lookup.size >= sourceIds.size) break
 
     const msUrl = file.download_url
-    const enUrl = msUrl.replace('/ms_MY/', '/en_US/')
+    const enUrl = msUrl.replace("/ms_MY/", "/en_US/")
 
     const [msContent, enContent] = await Promise.all([
       fetchText(msUrl),
@@ -360,7 +370,7 @@ async function ingestFrappe(mapping: KeyMapping): Promise<CorpusFile> {
   for (const m of frappeMappings) {
     entries.push({
       afendaKey: m.afendaKey,
-      locale: 'en',
+      locale: "en",
       sourcePath: `frappe/locale/main.pot + erpnext/locale/main.pot`,
       value: m.frappe!.sourceId,
     })
@@ -393,12 +403,12 @@ async function ingestFrappe(mapping: KeyMapping): Promise<CorpusFile> {
     }
   }
   console.log(
-    `  Frappe POT verification: ${verified}/${frappeMappings.length} sourceIds found upstream`,
+    `  Frappe POT verification: ${verified}/${frappeMappings.length} sourceIds found upstream`
   )
 
   // Non-English: fetch locale PO files and look up translations
   for (const locale of SUPPORTED_LOCALES) {
-    if (locale === 'en') continue
+    if (locale === "en") continue
 
     const frappePoUrl = `${FRAPPE_BASE}/${locale}.po`
     const erpnextPoUrl = `${ERPNEXT_BASE}/${locale}.po`
@@ -419,14 +429,14 @@ async function ingestFrappe(mapping: KeyMapping): Promise<CorpusFile> {
       : new Map<string, string>()
 
     const dolibarrMs =
-      locale === 'ms'
+      locale === "ms"
         ? await dolibarrMsLookupPromise
         : { lookup: new Map<string, DolibarrMsCandidate>(), fetchedUrls: [] }
 
-    if (locale === 'ms') {
+    if (locale === "ms") {
       fetchedUrls.push(...dolibarrMs.fetchedUrls)
       console.log(
-        `  Dolibarr ms fallback candidates: ${dolibarrMs.lookup.size}/${frappeMappings.length} sourceIds`,
+        `  Dolibarr ms fallback candidates: ${dolibarrMs.lookup.size}/${frappeMappings.length} sourceIds`
       )
     }
 
@@ -444,7 +454,7 @@ async function ingestFrappe(mapping: KeyMapping): Promise<CorpusFile> {
             : `frappe/locale/${locale}.po`,
           value: translated,
         })
-      } else if (locale === 'ms') {
+      } else if (locale === "ms") {
         const fallback = dolibarrMs.lookup.get(sourceId)
         if (fallback) {
           entries.push({
@@ -460,13 +470,13 @@ async function ingestFrappe(mapping: KeyMapping): Promise<CorpusFile> {
 
   return {
     version: 2,
-    source: 'frappe',
+    source: "frappe",
     generatedAt: now,
     fetchedFrom: [...new Set(fetchedUrls)],
     entries: entries.sort(
       (a, b) =>
         a.afendaKey.localeCompare(b.afendaKey) ||
-        a.locale.localeCompare(b.locale),
+        a.locale.localeCompare(b.locale)
     ),
   }
 }
@@ -480,7 +490,7 @@ async function ingestOdoo(mapping: KeyMapping): Promise<CorpusFile> {
   const addonsTouched = [...new Set(odooMappings.map((m) => m.odoo!.addon))]
 
   for (const locale of SUPPORTED_LOCALES) {
-    const isEnglish = locale === 'en'
+    const isEnglish = locale === "en"
 
     for (const addon of addonsTouched) {
       let url: string
@@ -504,7 +514,7 @@ async function ingestOdoo(mapping: KeyMapping): Promise<CorpusFile> {
           if (lookup.has(sourceId)) {
             entries.push({
               afendaKey: m.afendaKey,
-              locale: 'en',
+              locale: "en",
               sourcePath: `odoo/addons/${addon}/i18n/${addon}.pot`,
               value: sourceId,
             })
@@ -526,24 +536,24 @@ async function ingestOdoo(mapping: KeyMapping): Promise<CorpusFile> {
 
   return {
     version: 2,
-    source: 'odoo',
+    source: "odoo",
     generatedAt: now,
     fetchedFrom: [...new Set(fetchedUrls)],
     entries: entries.sort(
       (a, b) =>
         a.afendaKey.localeCompare(b.afendaKey) ||
-        a.locale.localeCompare(b.locale),
+        a.locale.localeCompare(b.locale)
     ),
   }
 }
 
 async function main(): Promise<void> {
-  const mappingPath = join(dataDir, 'i18n-key-mapping.json')
-  const mapping = JSON.parse(readFileSync(mappingPath, 'utf8')) as KeyMapping
+  const mappingPath = join(dataDir, "i18n-key-mapping.json")
+  const mapping = JSON.parse(readFileSync(mappingPath, "utf8")) as KeyMapping
 
   console.log(`Loaded ${mapping.mappings.length} key mappings.`)
   console.log(
-    'Fetching translation corpora (Tolgee primary + Frappe/Odoo references)...\n',
+    "Fetching translation corpora (Tolgee primary + Frappe/Odoo references)...\n"
   )
 
   const [tolgeeCorpus, frappeCorpus, odooCorpus] = await Promise.all([
@@ -552,30 +562,30 @@ async function main(): Promise<void> {
     ingestOdoo(mapping),
   ])
 
-  const tolgeeOutPath = join(dataDir, 'i18n-corpus-tolgee.json')
-  const frappeOutPath = join(dataDir, 'i18n-corpus-frappe.json')
-  const odooOutPath = join(dataDir, 'i18n-corpus-odoo.json')
+  const tolgeeOutPath = join(dataDir, "i18n-corpus-tolgee.json")
+  const frappeOutPath = join(dataDir, "i18n-corpus-frappe.json")
+  const odooOutPath = join(dataDir, "i18n-corpus-odoo.json")
 
   writeFileSync(
     tolgeeOutPath,
     `${JSON.stringify(tolgeeCorpus, null, 2)}\n`,
-    'utf8',
+    "utf8"
   )
   writeFileSync(
     frappeOutPath,
     `${JSON.stringify(frappeCorpus, null, 2)}\n`,
-    'utf8',
+    "utf8"
   )
-  writeFileSync(odooOutPath, `${JSON.stringify(odooCorpus, null, 2)}\n`, 'utf8')
+  writeFileSync(odooOutPath, `${JSON.stringify(odooCorpus, null, 2)}\n`, "utf8")
 
   console.log(
-    `Tolgee corpus: ${tolgeeCorpus.entries.length} entries from ${tolgeeCorpus.fetchedFrom.length} source(s)`,
+    `Tolgee corpus: ${tolgeeCorpus.entries.length} entries from ${tolgeeCorpus.fetchedFrom.length} source(s)`
   )
   console.log(
-    `\nFrappe corpus: ${frappeCorpus.entries.length} entries from ${frappeCorpus.fetchedFrom.length} remote files`,
+    `\nFrappe corpus: ${frappeCorpus.entries.length} entries from ${frappeCorpus.fetchedFrom.length} remote files`
   )
   console.log(
-    `Odoo corpus:   ${odooCorpus.entries.length} entries from ${odooCorpus.fetchedFrom.length} remote files`,
+    `Odoo corpus:   ${odooCorpus.entries.length} entries from ${odooCorpus.fetchedFrom.length} remote files`
   )
   console.log(`\nWrote: ${tolgeeOutPath}`)
   console.log(`\nWrote: ${frappeOutPath}`)
@@ -583,6 +593,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((err) => {
-  console.error('Corpus ingestion failed:', err)
+  console.error("Corpus ingestion failed:", err)
   process.exit(1)
 })

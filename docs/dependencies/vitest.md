@@ -56,7 +56,7 @@ See [Turborepo](./turborepo.md).
 | Topic | Convention |
 | --- | --- |
 | **Config** | [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) → **`test`**: **`globals: true`**, **`environment: 'jsdom'`**, **`setupFiles`**, **`include`**, **`coverage`** (**`provider: 'v8'`**, reporters, **`exclude`**) |
-| **Setup** | Workspace: [`packages/testing/src/vitest/setup.ts`](../../packages/testing/src/vitest/setup.ts), consumed as **`@afenda/testing/vitest/setup`** via **`apps/web/vite.config.ts`** **`test.setupFiles`** (no app-local **`vitest.setup.ts`**). |
+| **Setup** | Workspace: [`packages/vitest-config/src/vitest/setup.ts`](../../packages/vitest-config/src/vitest/setup.ts), consumed as **`@afenda/vitest-config/vitest/setup`** via **`getAfendaVitestTestOptions()`** in **`apps/web/vite.config.ts`** (no app-local **`vitest.setup.ts`** unless you add one). |
 | **Globals** | **`globals: true`** — **`describe` / `it` / `expect`** without imports; **`vi`** still used for mocks ([globals](https://vitest.dev/config/globals)) |
 | **Mocking** | **`vi.mock`** (hoisted), **`vi.fn`**, **`vi.spyOn`** — [Mocking](https://vitest.dev/guide/mocking); optional [MSW](./msw.md) for HTTP |
 | **ESLint** | Test globals / patterns — [ESLint](./eslint.md) |

@@ -1,5 +1,0 @@
-/*
- * Governed global style owner (see style-binding policy: allowedGlobalStyleOwners).
- * Next-style entry name; Vite primary surface remains index.css — forward to avoid dual token sources.
- */
-@import "./index.css";

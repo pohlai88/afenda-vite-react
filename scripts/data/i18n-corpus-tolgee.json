@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source": "tolgee",
-  "generatedAt": "2026-04-05T23:19:41.070Z",
+  "generatedAt": "2026-04-10T18:34:24.778Z",
   "fetchedFrom": [
     "http://localhost:8085/v2/projects/2/translations?size=200&page=0&languages=en,ms,id,vi"
   ],

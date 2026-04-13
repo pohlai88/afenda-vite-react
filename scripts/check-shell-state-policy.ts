@@ -8,7 +8,7 @@
  * Usage:
  *   pnpm run script:check-shell-state-policy
  */
-import { validateShellStatePolicy } from "../packages/shadcn-ui/src/lib/constant/policy/shell/validation/validate-shell-state-policy.ts"
+import { validateShellStatePolicy } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/validation/validate-shell-state-policy.ts"
 
 const report = validateShellStatePolicy({ scanRepo: true })
 

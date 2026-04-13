@@ -34,7 +34,7 @@ This document describes **optional** **[MSW (Mock Service Worker)](https://mswjs
 | Topic | Convention |
 | --- | --- |
 | **Handlers** | Central module e.g. **`apps/web/test/mocks/handlers.ts`** (or `src/mocks/handlers.ts`) exporting an array of **`http.*`** handlers |
-| **Node (Vitest)** | **`setupServer`** from **`msw/node`**; **`server.listen()`** / **`server.resetHandlers()`** / **`server.close()`** via Vitest lifecycle hooks — add lifecycle imports to **[`packages/testing/src/vitest/setup.ts`](../../packages/testing/src/vitest/setup.ts)** (or a file it imports); **`apps/web/vite.config.ts`** keeps **`setupFiles: ['@afenda/testing/vitest/setup']`** |
+| **Node (Vitest)** | **`setupServer`** from **`msw/node`**; **`server.listen()`** / **`server.resetHandlers()`** / **`server.close()`** via Vitest lifecycle hooks — add lifecycle imports to **[`packages/vitest-config/src/vitest/setup.ts`](../../packages/vitest-config/src/vitest/setup.ts)** (or a file it imports); **`apps/web/vite.config.ts`** keeps **`getAfendaVitestTestOptions()`** so **`setupFiles`** still includes **`@afenda/vitest-config/vitest/setup`** |
 | **Browser / Storybook** | **`setupWorker`** from **`msw/browser`**; call **`await worker.start()`** before rendering (often **dev-only** for a Vite SPA — see below) |
 | **Contract** | Match **Zod** + [API](../API.md); drift gives **false confidence** |
 | **Safety** | **Never** point default handlers at **production** URLs; scope paths to **`/api`** or your test base URL |
@@ -52,7 +52,7 @@ export const server = setupServer(...handlers);
 ```
 
 ```typescript
-// e.g. packages/testing/src/vitest/msw.ts (imported from setup.ts)
+// e.g. packages/vitest-config/src/vitest/msw.ts (imported from setup.ts)
 import { beforeAll, afterEach, afterAll } from 'vitest';
 import { server } from '../mocks/node';
 

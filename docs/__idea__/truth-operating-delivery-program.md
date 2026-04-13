@@ -58,15 +58,15 @@ Optional "truth-aware" UI layer that surfaces business-rule violations and syste
 | Artifact | Location | What it does |
 |----------|----------|--------------|
 | Governed import specifiers | `tools/ui-drift/shared/index.ts` | `@afenda/core/truth`, `@afenda/core/truth-ui` in allowed list |
-| Ownership roots | `packages/shadcn-ui/src/lib/constant/policy/ownership-policy.ts` | `packages/features/core/src/truth-ui` in `semanticOwnerRoots` |
-| Semantic domain adapters | `packages/shadcn-ui/src/semantic/domain/truth-severity.ts` | Maps `TruthSeverity` to semantic badge/alert variants |
-| Component policy | `packages/shadcn-ui/src/lib/constant/policy/component-policy.ts` | `truthMappingFromGovernedSource` field |
-| Metadata UI policy | `packages/shadcn-ui/src/lib/constant/policy/metadata-ui.ts` | `"truth"` in allowed semantic sources |
+| Ownership roots | `packages/shadcn-ui-deprecated/src/lib/constant/policy/ownership-policy.ts` | `packages/features/core/src/truth-ui` in `semanticOwnerRoots` |
+| Semantic domain adapters | `packages/shadcn-ui-deprecated/src/semantic/domain/truth-severity.ts` | Maps `TruthSeverity` to semantic badge/alert variants |
+| Component policy | `packages/shadcn-ui-deprecated/src/lib/constant/policy/component-policy.ts` | `truthMappingFromGovernedSource` field |
+| Metadata UI policy | `packages/shadcn-ui-deprecated/src/lib/constant/policy/metadata-ui.ts` | `"truth"` in allowed semantic sources |
 | Glossary | `docs/GLOSSARY.md` | Section 10: "Truth operating UI" |
 | i18n keys | `apps/web/src/share/i18n/` | `truth_alerts.*`, `user_menu.truth_status` |
 | `@afenda/core` package exports | `packages/features/core/package.json` | `"./truth"`, `"./truth-ui"` exports |
 | `@afenda/core` barrel | `packages/features/core/src/index.ts` | Re-exports both `truth` and `truth-ui` |
-| Domain constant barrel | `packages/shadcn-ui/src/lib/constant/index.ts` | `export * from "./domain/truth-ui"` |
+| Domain constant barrel | `packages/shadcn-ui-deprecated/src/lib/constant/index.ts` | `export * from "./domain/truth-ui"` |
 | `TopNavFeatures` | `apps/web/src/share/components/navigation/top-nav/top-nav-bar.tsx` | `truthAlerts`, `resolutions` feature flags |
 
 **The stub is not runtime code.** It is a single README inside `apps/web/src/features/truth/` that captures this knowledge so it survives the global removal.
@@ -115,7 +115,7 @@ Delete or strip **all** truth-related code, types, stores, components, imports, 
 
 - `catalog/finance-action-bar.catalog.ts` — strip `TruthActionBarTab` import
 
-**`packages/shadcn-ui/`:**
+**`packages/shadcn-ui-deprecated/`:**
 
 - `src/semantic/domain/truth-severity.ts` — delete (or replace with generic severity)
 - `src/semantic/components/semantic-badge.tsx` — strip `TruthSeverity` import

@@ -58,11 +58,15 @@
   "search.exclude": {
     "**/node_modules": true,
     "**/dist": true,
-    "**/.vite": true
+    "**/.vite": true,
+    "**/packages/vitest-config/_vitest-github": true
   },
   "files.watcherExclude": {
     "**/node_modules/**": true,
     "**/dist/**": true,
-    "**/.vite/**": true
-  }
+    "**/.vite/**": true,
+    "**/packages/vitest-config/_vitest-github/**": true
+  },
+
+  "vitest.configSearchPatternExclude": "{**/node_modules/**,**/vendor/**,**/.*/**,**/*.d.ts,**/packages/vitest-config/_vitest-github/**}"
 }

@@ -1,21 +1,17 @@
 {
   "name": "@afenda/tsconfig",
-  "version": "0.0.0",
   "private": true,
-  "files": [
-    "*.json"
-  ],
-  "scripts": {
-    "format": "prettier --write \"**/*.json\"",
-    "format:check": "prettier --check \"**/*.json\""
-  },
-  "devDependencies": {
-    "prettier": "catalog:"
-  },
+  "version": "0.0.0",
   "exports": {
     "./base.json": "./base.json",
+    "./node.json": "./node.json",
     "./react-app.json": "./react-app.json",
-    "./react-library.json": "./react-library.json",
-    "./node.json": "./node.json"
-  }
+    "./react-library.json": "./react-library.json"
+  },
+  "files": [
+    "base.json",
+    "node.json",
+    "react-app.json",
+    "react-library.json"
+  ]
 }

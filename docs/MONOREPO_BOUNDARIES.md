@@ -53,16 +53,16 @@ Configuration lives in **`scripts/afenda.config.json`** under **`workspaceGovern
 | --- | --- |
 | **`srcRoot`** | Workspace-relative path to the web client source root (typically `apps/web/src`). |
 | **`allowedTopLevelDirectories`** | **Exhaustive** list of directory names allowed directly under `src/` (today: `features`, `pages`, `share`). CI fails if any other top-level directory appears or if any listed folder is missing. |
-| **`requiredShareSubdirectories`** | Subfolders that must exist under `src/share/` (today: `routing`, `providers`, `state`). Add entries when you introduce required shared buckets (e.g. `components`). |
+| **`requiredShareSubdirectories`** | Subfolders that must exist under `src/share/` (today: `api`, `client-store`, `components`, `i18n`, `query`, `react-hooks`, `routing`). Add entries when you introduce required shared buckets. |
 | **`enforce`** | When `true`, `pnpm run script:check-afenda-config` runs filesystem checks. Set `false` only for exceptional migration windows. |
 
-Cross-cutting client code belongs under **`src/share/`**, not a root-level `lib/`, `hooks/`, or `components/`. Updating **`allowedTopLevelDirectories`** or **`requiredShareSubdirectories`** without changing the tree (or the reverse) will fail the config check—by design.
+Cross-cutting client code belongs under **`src/share/`**. Avoid a separate top-level `src/components/`; compose shared UI under **`src/share/components/`** and keep primitives in **`packages/shadcn-ui-deprecated`**. Updating **`allowedTopLevelDirectories`** or **`requiredShareSubdirectories`** without changing the tree (or the reverse) will fail the config check—by design.
 
 ---
 
-## Workspace testing package (`packages/testing`)
+## Shared Vitest configuration (`packages/vitest-config`)
 
-Cross-app **test infrastructure** (shared Vitest setup, and reserved layout for E2E, Storybook, and UI test helpers) belongs in **`packages/testing`** (`@afenda/testing`), not scattered under `apps/*/src`. Apps depend on it and keep **runner config** locally (e.g. `vite.config.ts` `test` block). See [Testing](./TESTING.md) and [`packages/testing/README.md`](../packages/testing/README.md).
+Cross-app **Vitest defaults** (shared setup entry, `getAfendaVitestTestOptions()`, coverage presets) belong in **`packages/vitest-config`** (`@afenda/vitest-config`), not scattered under `apps/*/src`. Apps depend on it and keep **runner wiring** locally (e.g. `vite.config.ts` `test` block). See [Testing](./TESTING.md).
 
 ---
 

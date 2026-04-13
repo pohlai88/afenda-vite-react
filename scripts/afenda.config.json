@@ -12,7 +12,7 @@
   },
   "paths": {
     "webApp": "apps/web",
-    "uiPackage": "packages/shadcn-ui",
+    "uiPackage": "packages/shadcn-ui-deprecated",
     "typescriptSharedConfig": "packages/typescript-config"
   },
   "readmeTargets": [
@@ -39,10 +39,10 @@
       "includeChildDirectories": true
     },
     {
-      "path": "packages/shadcn-ui",
+      "path": "packages/shadcn-ui-deprecated",
       "mode": "packages-ui",
       "title": "Afenda UI package",
-      "description": "Governed shadcn-style primitives, semantic layer, and utilities for the web client (`@afenda/shadcn-ui`)."
+      "description": "Governed shadcn-style primitives, semantic layer, and utilities for the web client (`@afenda/shadcn-ui-deprecated`)."
     }
   ],
   "workspaceGovernance": {
@@ -50,11 +50,13 @@
       "primaryProductDirectories": ["apps", "packages"],
       "allowedRootDirectories": [
         "apps",
-        "packages",
-        "docs",
-        "scripts",
         "dist",
-        "node_modules"
+        "docs",
+        "node_modules",
+        "packages",
+        "rules",
+        "scripts",
+        "tools"
       ],
       "requiredRootFiles": [
         "package.json",
@@ -93,19 +95,14 @@
       "requireDirectoriesWhenPackageExists": true
     },
     "uiPackageTemplate": {
-      "packagePath": "packages/shadcn-ui",
+      "packagePath": "packages/shadcn-ui-deprecated",
       "requiredDirectories": ["src/components/ui", "src/hooks", "src/lib"],
       "requiredFiles": ["components.json", "package.json", "tsconfig.json"],
       "requireDirectoriesWhenPackageExists": true
     },
     "webClientSrc": {
       "srcRoot": "apps/web/src",
-      "allowedTopLevelDirectories": [
-        "components",
-        "features",
-        "pages",
-        "share"
-      ],
+      "allowedTopLevelDirectories": ["features", "pages", "share"],
       "requiredShareSubdirectories": [
         "api",
         "client-store",

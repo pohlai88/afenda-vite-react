@@ -1,5 +1,5 @@
 /// <reference types="vitest/config" />
-import { getAfendaVitestTestOptions } from '@afenda/testing/vitest/defaults'
+import { getAfendaVitestTestOptions } from '@afenda/vitest-config/vitest/defaults'
 import { DevTools } from '@vitejs/devtools'
 import {
   defineConfig,
@@ -32,9 +32,20 @@ async function resolveUserConfig({
     // Base configuration
     base: env.VITE_BASE_URL || '/',
 
-    // Environment variables
+    // Environment variables + Vue feature flags (transitive via @vitejs/devtools UI).
+    // See https://vuejs.org/api/compile-time-flags.html — required for vue `esm-bundler` builds.
     define: {
       __DEV__: command === 'serve',
+      __VUE_OPTIONS_API__: JSON.stringify(true),
+      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+    },
+
+    // Tailwind v4 ships its own CSS pipeline (Lightning CSS / Oxide internals).
+    // Do not add lightningcss, magic-string, or source-map-js as app deps—Vite +
+    // @tailwindcss/vite handle integration. Dev CSS sourcemaps help trace utilities in DevTools.
+    css: {
+      devSourcemap: true,
     },
 
     // Plugin configuration
@@ -257,7 +268,7 @@ async function resolveUserConfig({
       hmrPartialAccept: true,
     },
 
-    // Vitest — shared defaults from @afenda/testing (see packages/testing/src/vitest/defaults.ts)
+    // Vitest — shared defaults from @afenda/vitest-config (see packages/vitest-config/src/vitest/defaults.ts)
     test: getAfendaVitestTestOptions(),
   }
 }

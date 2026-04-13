@@ -1,0 +1,140 @@
+{
+  "name": "@afenda/design-system",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Canonical design system: tokens, UI primitives, icon infrastructure, and shadcn-compatible runtime artifacts.",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "validate-tokens": "pnpm exec vitest run design-architecture/__tests__",
+    "tokens:check": "pnpm run validate-tokens",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "format": "prettier --write \"utils/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/src/governance/**/*.ts\" \"design-architecture/src/tokenization/**/*.ts\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.ts\" \"prettier.config.js\"",
+    "format:check": "prettier --check \"utils/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/src/governance/**/*.ts\" \"design-architecture/src/tokenization/**/*.ts\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.ts\" \"prettier.config.js\"",
+    "icons:generate": "tsx icons/script/build-icons.ts",
+    "icons:check": "tsx icons/script/build-icons.ts && git diff --exit-code -- icons",
+    "generate-design-system": "tsx design-architecture/scripts/generate-design-system.ts",
+    "check:imports": "tsx design-architecture/scripts/check-design-system-imports.ts",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:generated-drift-check": "pnpm exec tsx design-architecture/scripts/generate-design-system.ts && git diff --exit-code -- design-architecture/src/generated/generated-theme.css design-architecture/src/generated/generated-theme.manifest.json",
+    "test:update-generated-check": "pnpm run test:generated-drift-check",
+    "test": "vitest"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "import": "./index.ts",
+      "default": "./index.ts"
+    },
+    "./utils": {
+      "types": "./utils/index.ts",
+      "import": "./utils/index.ts",
+      "default": "./utils/index.ts"
+    },
+    "./utils/*": "./utils/*.ts",
+    "./ui-primitives": {
+      "types": "./ui-primitives/index.ts",
+      "import": "./ui-primitives/index.ts",
+      "default": "./ui-primitives/index.ts"
+    },
+    "./ui-primitives/_registry": {
+      "types": "./ui-primitives/_registry.ts",
+      "import": "./ui-primitives/_registry.ts",
+      "default": "./ui-primitives/_registry.ts"
+    },
+    "./ui-primitives/*": "./ui-primitives/*.tsx",
+    "./governance": {
+      "types": "./design-architecture/src/governance/index.ts",
+      "import": "./design-architecture/src/governance/index.ts",
+      "default": "./design-architecture/src/governance/index.ts"
+    },
+    "./tokenization": {
+      "types": "./design-architecture/src/tokenization/index.ts",
+      "import": "./design-architecture/src/tokenization/index.ts",
+      "default": "./design-architecture/src/tokenization/index.ts"
+    },
+    "./tokenization/index": {
+      "types": "./design-architecture/src/tokenization/index.ts",
+      "import": "./design-architecture/src/tokenization/index.ts",
+      "default": "./design-architecture/src/tokenization/index.ts"
+    },
+    "./tokens": {
+      "types": "./design-architecture/src/tokenization/index.ts",
+      "import": "./design-architecture/src/tokenization/index.ts",
+      "default": "./design-architecture/src/tokenization/index.ts"
+    },
+    "./tokenization/public-api": {
+      "types": "./design-architecture/src/tokenization/index.ts",
+      "import": "./design-architecture/src/tokenization/index.ts",
+      "default": "./design-architecture/src/tokenization/index.ts"
+    },
+    "./scripts": {
+      "types": "./design-architecture/scripts/index.ts",
+      "import": "./design-architecture/scripts/index.ts",
+      "default": "./design-architecture/scripts/index.ts"
+    },
+    "./icons": {
+      "types": "./icons/index.ts",
+      "import": "./icons/index.ts",
+      "default": "./icons/index.ts"
+    },
+    "./lib/*": "./lib/*",
+    "./lib/newyork-v4/*": "./lib/newyork-v4/*",
+    "./design-architecture/local.css": "./design-architecture/src/local.css"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-form": "^1.27.7",
+    "@tanstack/react-table": "^8.21.3",
+    "@base-ui/react": "^1.3.0",
+    "@hugeicons/core-free-icons": "catalog:",
+    "@hugeicons/react": "catalog:",
+    "@phosphor-icons/react": "catalog:",
+    "@remixicon/react": "catalog:",
+    "@tabler/icons-react": "catalog:",
+    "class-variance-authority": "catalog:",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "catalog:",
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
+    "input-otp": "^1.4.2",
+    "lucide-react": "catalog:",
+    "next-themes": "^0.4.6",
+    "radix-ui": "^1.4.3",
+    "react-day-picker": "^9.14.0",
+    "react-hook-form": "^7.66.0",
+    "react-textarea-autosize": "^8.5.9",
+    "react-resizable-panels": "^4.9.0",
+    "recharts": "catalog:",
+    "sonner": "catalog:",
+    "tailwind-merge": "^3.3.1",
+    "vaul": "catalog:",
+    "zod": "^4.3.6"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@afenda/tsconfig": "workspace:*",
+    "@afenda/vitest-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "fast-glob": "^3.3.3",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -1,0 +1,119 @@
+/**
+ * LOCAL CSS ENTRY — design-system preview / consumer stylesheet entry
+ *
+ * Order follows Tailwind v4 guidance: import the framework, then shared theme CSS
+ * (so @theme variables drive utilities), then @source / @plugin / variants.
+ * See: https://tailwindcss.com/docs/theme (shared theme via @import)
+ * and https://tailwindcss.com/docs/detecting-classes-in-source-files (@source)
+ *
+ * Run `pnpm --filter @afenda/design-system run generate-design-system` when tokens change.
+ *
+ * Package export: `@import "@afenda/design-system/design-architecture/local.css";`
+ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./generated/generated-theme.css";
+
+/**
+ * Content paths for class detection (relative to this file).
+ * - ../../ui-primitives — shadcn/ui-style components (Radix + Tailwind classes)
+ * - ../../icons — icon wrappers and loaders (Tailwind className usage)
+ */
+@source "../../ui-primitives";
+@source "../../icons";
+
+@plugin "@tailwindcss/forms" {
+  strategy: class;
+}
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Full-bleed hairline; use aria-hidden on decorative chrome where it has no accessible name. */
+@utility line-t {
+  @apply relative before:absolute before:top-0 before:-left-[100vw] before:h-px before:w-[200vw] before:bg-foreground/10;
+}
+
+@utility focus-ring {
+  @apply outline-none ring-offset-background;
+
+  &:focus-visible {
+    @apply ring-2 ring-ring ring-offset-2;
+  }
+}
+
+@utility text-gradient {
+  @apply bg-linear-to-r from-primary to-accent bg-clip-text text-transparent;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Base                                                                       */
+/* -------------------------------------------------------------------------- */
+
+@layer base {
+  *,
+  ::before,
+  ::after,
+  ::backdrop,
+  ::file-selector-button {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Components                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@layer components {
+  @supports selector([popover]:popover-open) {
+    [data-advance-popover] {
+      transition:
+        opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        display 0.2s allow-discrete;
+      opacity: 0;
+      transform: scale(0.96);
+      transform-origin: center;
+      overscroll-behavior: contain;
+      -webkit-tap-highlight-color: transparent;
+      contain: layout;
+    }
+
+    [data-advance-popover]:popover-open {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @starting-style {
+      [data-advance-popover]:popover-open {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+    }
+  }
+}

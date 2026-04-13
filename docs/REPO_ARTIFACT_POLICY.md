@@ -76,7 +76,7 @@ Use this when moving machines or old branches:
 - [x] **CI:** `.github/workflows/ci.yml` uploads `.artifacts/reports/shell-governance/*.json`.
 - [x] **Git:** `.gitignore` ignores generated JSON under `.artifacts/` and turbo cache under `.artifacts/cache/turbo/`, not legacy `reports/`.
 - [x] **Drift scans:** `tools/ui-drift/shared` excludes `/.artifacts/` from traversal.
-- [x] **Docs:** `docs/SHELL_ARCHITECTURE.md` and shell policy docs under `packages/shadcn-ui` reference `.artifacts/reports/...`.
+- [x] **Docs:** `docs/SHELL_ARCHITECTURE.md` and shell policy docs under `packages/shadcn-ui-deprecated` reference `.artifacts/reports/...`.
 
 **Manual cleanup:** If you still have an old `reports/` directory at the repo root from before this policy, delete it after verifying CI and local scripts use `.artifacts/` only.
 

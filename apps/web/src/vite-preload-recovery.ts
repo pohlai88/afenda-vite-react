@@ -39,7 +39,6 @@ function mountRecoveryBanner(): void {
   btn.focus()
 
   if (import.meta.env.DEV) {
-    // eslint-disable-next-line no-console -- dev-only stale-chunk diagnostics
     console.error('[vite:preloadError] recovery banner shown; user can reload.')
   }
 }
@@ -49,7 +48,6 @@ function registerVitePreloadRecovery(): void {
 
   window.addEventListener('vite:preloadError', (event) => {
     if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console -- dev-only preload failure diagnostics
       console.error(event.payload)
     }
     mountRecoveryBanner()

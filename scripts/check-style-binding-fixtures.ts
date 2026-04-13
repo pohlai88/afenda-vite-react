@@ -26,21 +26,21 @@ const FIXTURES: readonly FixtureExpectation[] = [
   {
     kind: "valid",
     fixturePath:
-      "scripts/fixtures/policy-manifests/style-binding/global-style-owner-import.valid.md",
+      "scripts/fixtures/style-binding-global-style-owner-import.valid.md",
     fixtureFileName: "style-binding-valid.fixture.tsx",
     expectedRuleId: RULE_ID,
   },
   {
     kind: "valid",
     fixturePath:
-      "scripts/fixtures/policy-manifests/style-binding/global-style-owner-import.valid-globals.md",
+      "scripts/fixtures/style-binding-global-style-owner-import.valid-globals.md",
     fixtureFileName: "style-binding-valid-globals.fixture.tsx",
     expectedRuleId: RULE_ID,
   },
   {
     kind: "invalid",
     fixturePath:
-      "scripts/fixtures/policy-manifests/style-binding/global-style-owner-import.invalid.md",
+      "scripts/fixtures/style-binding-global-style-owner-import.invalid.md",
     fixtureFileName: "style-binding-invalid.fixture.tsx",
     expectedRuleId: RULE_ID,
     setup: (fixtureDir) => {

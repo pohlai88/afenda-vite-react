@@ -275,7 +275,7 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
   "SHELL_COMPONENTS_GUARDRAILS.md": {
     title: "Shell Components Guardrails (moved)",
     description:
-      "Redirects to the live guardrails document under `packages/shadcn-ui/src/lib/constant/policy/shell/`.",
+      "Redirects to the live guardrails document under `packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/`.",
     order: 171,
   },
 }
@@ -303,7 +303,7 @@ const SCRIPT_FILE_OVERRIDES: Record<string, ScriptOverride> = {
   "generate-docs-readme.ts": {
     title: "Generate docs README",
     description:
-      "Generates stable `README.md` indexes for `docs/`, `packages/shadcn-ui`, and other supported repo directories.",
+      "Generates stable `README.md` indexes for `docs/`, `packages/shadcn-ui-deprecated`, and other supported repo directories.",
     order: 10,
     runCommand: "pnpm run script:generate-docs-readme",
   },
@@ -535,27 +535,16 @@ const DEPENDENCY_CATEGORY_ORDER = [
   "optional",
 ] as const
 
-/** Governed `packages/shadcn-ui` source areas that receive an auto-generated `README.md`. */
+/** Governed `packages/shadcn-ui-deprecated` source areas that receive an auto-generated `README.md`. */
 const PACKAGES_UI_SOURCE_SUBDIRS: ReadonlyArray<{
   relativeDir: string
   heading: string
   blurb: string
 }> = [
   {
-    relativeDir: "src/components/ui",
-    heading: "Components",
-    blurb:
-      "Radix-based primitives and copy-in components (shadcn-style), exported as `@afenda/shadcn-ui/components/*`.",
-  },
-  {
-    relativeDir: "src/hooks",
-    heading: "Hooks",
-    blurb: "React hooks exported from `@afenda/shadcn-ui/hooks`.",
-  },
-  {
     relativeDir: "src/lib",
     heading: "Utilities",
-    blurb: "Helper functions exported from `@afenda/shadcn-ui/lib`.",
+    blurb: "Helper functions exported from `@afenda/shadcn-ui-deprecated/lib`.",
   },
   {
     relativeDir: "src/styles",
@@ -1180,7 +1169,7 @@ async function renderUiPackageRootReadme(
   const title = target.title ?? "Afenda UI package"
   const description =
     target.description ??
-    `Shared UI package for \`${afendaConfig.paths.webApp}\` and consumers of \`@afenda/shadcn-ui\`.`
+    `Shared UI package for \`${afendaConfig.paths.webApp}\` and consumers of \`@afenda/shadcn-ui-deprecated\`.`
 
   const indexRows: string[][] = []
 
@@ -1208,7 +1197,7 @@ async function renderUiPackageRootReadme(
     "",
     description,
     "",
-    `This package is consumed by \`${afendaConfig.paths.webApp}\` via \`@afenda/shadcn-ui\` (see \`package.json\` \`exports\`).`,
+    `This package is consumed by \`${afendaConfig.paths.webApp}\` via \`@afenda/shadcn-ui-deprecated\` (see \`package.json\` \`exports\`).`,
     "",
     "## Source index",
     "",
@@ -1233,10 +1222,10 @@ async function renderUiPackageSubdirectoryReadme(
   const sectionDir = path.join(packageRoot, section.relativeDir)
   const entries = await getUiSourceModuleEntries(sectionDir, packageRoot)
 
-  assertUniqueTitles(entries, `packages/shadcn-ui/${section.relativeDir}`)
+  assertUniqueTitles(entries, `packages/shadcn-ui-deprecated/${section.relativeDir}`)
   assertNonEmptyUiDescriptions(
     entries,
-    `packages/shadcn-ui/${section.relativeDir}`
+    `packages/shadcn-ui-deprecated/${section.relativeDir}`
   )
 
   const sections = [
@@ -1412,10 +1401,10 @@ function extractSourceModuleDescription(content: string, title: string) {
 
 function buildUiSourceFallbackDescription(title: string) {
   if (title === "Public exports") {
-    return "Barrel file that re-exports symbols from sibling modules for this subpath of `@afenda/shadcn-ui`."
+    return "Barrel file that re-exports symbols from sibling modules for this subpath of `@afenda/shadcn-ui-deprecated`."
   }
 
-  return `Shared \`${title}\` source in \`@afenda/shadcn-ui\`; open the file for implementation details.`
+  return `Shared \`${title}\` source in \`@afenda/shadcn-ui-deprecated\`; open the file for implementation details.`
 }
 
 async function getDirectoryEntries(

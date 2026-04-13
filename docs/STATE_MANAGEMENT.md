@@ -88,7 +88,7 @@ Tracks user input and validation.
 ```typescript
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),

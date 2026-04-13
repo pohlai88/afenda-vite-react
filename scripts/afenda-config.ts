@@ -271,8 +271,8 @@ export function assertReadmeTargetDefinition(
     assertNonEmptyString(value.title, `${label}.title`)
     assertNonEmptyString(value.description, `${label}.description`)
     assert(
-      value.path === "packages/shadcn-ui",
-      `${label}.path must be "packages/shadcn-ui" for packages-ui mode.`
+      value.path === "packages/shadcn-ui-deprecated",
+      `${label}.path must be "packages/shadcn-ui-deprecated" for packages-ui mode.`
     )
   }
 }

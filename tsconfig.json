@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "./apps/web" },
-    { "path": "./packages/shadcn-ui" }
+    { "path": "./packages/design-system" },
+    { "path": "./packages/shadcn-ui-deprecated" }
   ]
 }

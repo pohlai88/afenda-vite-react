@@ -12,14 +12,13 @@ date_added: "2026-02-27"
 
 For this workspace, this skill must be applied with the following constraints:
 
-- Canonical package: `packages/radix-ui-themes`
-- Deprecated references only: `packages/ui`, `packages/design-system`
-- Component architecture: Radix Primitives (`@radix-ui/react-*`) + Tailwind v4 + CVA
-- Theme shell: `@radix-ui/themes` provider for token variable context only
+- Canonical package: `packages/shadcn-ui-deprecated` (`@afenda/shadcn-ui-deprecated`)
+- Component architecture: Radix Primitives (`@radix-ui/react-*`) + Tailwind v4 + CVA inside the governed package
+- Theme: app-level CSS variables and providers wired through `apps/web` consuming `@afenda/shadcn-ui-deprecated`
 - Class merging: `cn()` from `clsx` + `tailwind-merge`
-- Styling source of truth: semantic tokens from `docs/DESIGN_SYSTEM.md` and runtime class map in `src/lib/theme/defaultTheme.ts`
+- Styling source of truth: `docs/DESIGN_SYSTEM.md` and `packages/shadcn-ui-deprecated/src`
 
-Do not copy components from deprecated packages. Build components from primitives and token truth.
+Author new UI only under `@afenda/shadcn-ui-deprecated`; build from primitives and documented tokens.
 
 Build production-ready, accessible design systems using Radix UI primitives with full customization control and zero style opinions.
 

@@ -291,7 +291,7 @@ function checkLocalSemanticMaps(file: string, content: string) {
 
 /**
  * UIX-SEMANTIC-002: a semantic/status map exists in feature code AND the file has no
- * import from a governed semantic/constant source (e.g. @afenda/shadcn-ui/semantic).
+ * import from a governed semantic/constant source (e.g. @afenda/shadcn-ui-deprecated/semantic).
  */
 function checkGovernedDomainUiMapping(file: string, content: string) {
   if (isGovernedUiOwner(file, ROOT_DIR)) return

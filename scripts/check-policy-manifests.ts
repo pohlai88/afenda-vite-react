@@ -10,17 +10,17 @@
 import path from "node:path"
 import { existsSync } from "node:fs"
 
-import { classPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/class-policy-manifest.ts"
-import { componentPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/component-policy-manifest.ts"
-import { importPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/import-policy-manifest.ts"
-import { metadataUiPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/metadata-ui-policy-manifest.ts"
-import { ownershipPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/ownership-policy-manifest.ts"
-import { radixContractPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/radix-contract-policy-manifest.ts"
-import { radixPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/radix-policy-manifest.ts"
-import { reactPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/react-policy-manifest.ts"
-import { shadcnPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/shadcn-policy-manifest.ts"
-import { tailwindPolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/tailwind-policy-manifest.ts"
-import { validatePolicyManifest } from "../packages/shadcn-ui/src/lib/constant/policy/validate-policy-manifest.ts"
+import { classPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/class-policy-manifest.ts"
+import { componentPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/component-policy-manifest.ts"
+import { importPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/import-policy-manifest.ts"
+import { metadataUiPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/metadata-ui-policy-manifest.ts"
+import { ownershipPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/ownership-policy-manifest.ts"
+import { radixContractPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/radix-contract-policy-manifest.ts"
+import { radixPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/radix-policy-manifest.ts"
+import { reactPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/react-policy-manifest.ts"
+import { shadcnPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/shadcn-policy-manifest.ts"
+import { tailwindPolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/tailwind-policy-manifest.ts"
+import { validatePolicyManifest } from "../packages/shadcn-ui-deprecated/src/lib/constant/policy/validate-policy-manifest.ts"
 
 const report = validatePolicyManifest()
 const cwd = process.cwd()

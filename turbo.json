@@ -36,7 +36,11 @@
     },
     "lint": {
       "dependsOn": ["^transit"],
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/eslint.config.js"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/eslint.config.js",
+        "$TURBO_ROOT$/packages/eslint-config/src/**"
+      ]
     },
     "test": {
       "cache": false,
@@ -75,6 +79,10 @@
       "cache": false
     },
     "format:check": {
+      "cache": false
+    },
+    "tokens:check": {
+      "dependsOn": ["^transit"],
       "cache": false
     }
   }

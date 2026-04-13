@@ -4,7 +4,7 @@ ERP-style web client for Afenda. Bootstraps from `src/main.tsx`, builds with Vit
 
 ## Global stylesheet architecture (dual entrypoint)
 
-The app keeps **two governed filenames** for the same global token/theme system. This matches common ecosystem habits and stays aligned with **style-binding** policy (`packages/shadcn-ui/src/lib/constant/policy/style-binding.ts`).
+The app keeps **two governed filenames** for the same global token/theme system. This matches common ecosystem habits and stays aligned with **style-binding** policy (`packages/shadcn-ui-deprecated/src/lib/constant/policy/style-binding.ts`).
 
 | Entry | Role | Typical stack association |
 | ----- | ---- | ------------------------- |
@@ -17,9 +17,9 @@ The app keeps **two governed filenames** for the same global token/theme system.
 - Use **`globals.css`** when you need parity with Next-style paths, docs, or tooling that expects that filename — imports must resolve to the **canonical paths** listed in `styleBindingPolicy.allowedGlobalStyleOwners`.
 - Do **not** add ad-hoc `globals.css` / `index.css` copies under feature trees; governance and AST checks (`UIX-AST-IMPORT-006` in `scripts/check-ui-drift-ast.ts`) treat those names as global-style owners.
 
-**Fixtures** for valid/invalid import behavior: `scripts/fixtures/policy-manifests/style-binding/` and `pnpm run script:check-style-binding-fixtures`.
+**Fixtures** for valid/invalid import behavior: `scripts/fixtures/style-binding-*.md` (flat filenames) and `pnpm run script:check-style-binding-fixtures`.
 
 ## Related
 
 - Monorepo docs: `docs/README.md`, `docs/COMPONENTS_AND_STYLING.md`
-- UI package (`@afenda/ui`): `packages/ui/README.md`
+- UI package (`@afenda/shadcn-ui-deprecated`): `packages/shadcn-ui-deprecated/README.md` (if present) and `docs/COMPONENTS_AND_STYLING.md`

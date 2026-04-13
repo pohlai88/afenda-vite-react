@@ -14,7 +14,7 @@ This is an execution document, not a permanent standard.
 | 0 | Cleanup | ✅ Done |
 | 1 | Install Tailwind v4 | ✅ Done |
 | 2 | CSS Foundation | ✅ Done |
-| 3 | shadcn Bootstrap | ✅ Done — `packages/ui/components.json` + 50+ primitives; `apps/web/components.json` created |
+| 3 | shadcn Bootstrap | ✅ Done — `packages/shadcn-ui-deprecated/components.json` + 50+ primitives; `apps/web/components.json` created |
 | 4 | Hardening + Governance | ✅ Done — ThemeProvider, Toaster, lint warning fixed; `afenda.config.json` up to date |
 | 5 | App Shell Implementation | ✅ Done — icon-sizing, prop-composition, spacing, raw-color violations all resolved |
 | 6 | Validation + Sign-off | ✅ Done — typecheck ✅ lint ✅ format ✅ tests (66/66) ✅ |
@@ -23,7 +23,7 @@ This is an execution document, not a permanent standard.
 
 - `apps/web` uses `@tailwindcss/vite` (Phase 1 complete).
 - `apps/web/src/index.css` follows eight-step CSS-first architecture (Phase 2 complete).
-- `packages/ui/components.json` present with `style: "radix-luma"`, 50+ primitives installed.
+- `packages/shadcn-ui-deprecated/components.json` present with `style: "radix-luma"`, 50+ primitives installed.
 - `apps/web/components.json` created with correct Afenda alias mapping (Phase 3 complete).
 - `App.tsx` mounts `ThemeProvider` → `QueryProvider` → `RouterProvider` + `Suspense` + `<Toaster />` (Phase 4 complete).
 - `ErpLayout`, `SideNavBar`, `TopNavBar`, action-bar, search, and provider hierarchy implemented.
@@ -64,7 +64,7 @@ Completed. `@tailwindcss/vite` active in `apps/web/vite.config.ts`.
 
 Completed. `apps/web/src/index.css` follows the eight-step architecture with:
 - `@import "tailwindcss"`, `@plugin`, `tw-animate-css`, `shadcn/tailwind.css`, `@fontsource-variable/geist`
-- `@source "../../../packages/ui/src"`
+- `@source "../../../packages/shadcn-ui-deprecated/src"`
 - `@custom-variant dark`
 - `:root` / `.dark` in OKLCH
 - `@theme inline`
@@ -74,7 +74,7 @@ Completed. `apps/web/src/index.css` follows the eight-step architecture with:
 
 ## Phase 3: shadcn Bootstrap 🔶
 
-`packages/ui` is complete. **One remaining item for `apps/web`.**
+`packages/shadcn-ui-deprecated` is complete. **One remaining item for `apps/web`.**
 
 ### Remaining Task
 
@@ -103,27 +103,27 @@ pnpm dlx shadcn@latest init -c apps/web --defaults --skip-preflight
   "rtl": false,
   "aliases": {
     "components": "@/share/components",
-    "utils": "@afenda/ui/lib/utils",
+    "utils": "@afenda/shadcn-ui-deprecated/lib/utils",
     "hooks": "@/share/react-hooks",
     "lib": "@/share/lib",
-    "ui": "@afenda/ui/components/ui"
+    "ui": "@afenda/shadcn-ui-deprecated/components/ui"
   }
 }
 ```
 
 **Key alias rules** (from `docs/COMPONENTS_AND_STYLING.md`):
-- `aliases.ui` → `@afenda/ui/components/ui` (primitives come from `packages/ui`)
-- `aliases.utils` → `@afenda/ui/lib/utils`
+- `aliases.ui` → `@afenda/shadcn-ui-deprecated/components/ui` (primitives come from `packages/shadcn-ui-deprecated`)
+- `aliases.utils` → `@afenda/shadcn-ui-deprecated/lib/utils`
 - `aliases.components` → `@/share/components` (app-level composed components)
 - `aliases.hooks` → `@/share/react-hooks`
 
 ### shadcn CLI Rules for This Project
 
 - Always run `pnpm dlx shadcn@latest` (not `npx`) — project uses pnpm.
-- Pass `-c apps/web` when targeting the app layer; `-c packages/ui` for primitives.
+- Pass `-c apps/web` when targeting the app layer; `-c packages/shadcn-ui-deprecated` for primitives.
 - After any CLI `add`: strip `'use client'` directives (Vite SPA, no RSC).
-- Do not re-add primitives that already exist in `packages/ui/src/components/ui/`.
-- Verify all non-UI imports use `@afenda/ui/*` for primitives and `@/share/*` for app components.
+- Do not re-add primitives that already exist in `packages/shadcn-ui-deprecated/src/components/ui/`.
+- Verify all non-UI imports use `@afenda/shadcn-ui-deprecated/*` for primitives and `@/share/*` for app components.
 
 ---
 
@@ -157,10 +157,10 @@ function App() {
 
 #### 4b — Add `<Toaster />` to `App.tsx`
 
-Sonner is already installed (`packages/ui/src/components/ui/sonner.tsx`). Wire it at app level:
+Sonner is already installed (`packages/shadcn-ui-deprecated/src/components/ui/sonner.tsx`). Wire it at app level:
 
 ```tsx
-import { Toaster } from '@afenda/ui/components/ui/sonner'
+import { Toaster } from '@afenda/shadcn-ui-deprecated/components/ui/sonner'
 
 function AppShell() {
   return (
@@ -371,7 +371,7 @@ pnpm --filter @afenda/web build -- --mode analyze
 | ESLint errors | 0 |
 | ESLint warnings | 0 |
 | `any` type usage (unvetted) | 0 new instances |
-| `'use client'` directives in `packages/ui` | 0 |
+| `'use client'` directives in `packages/shadcn-ui-deprecated` | 0 |
 | `tailwindcss-animate` imports | 0 (use `tw-animate-css`) |
 | Raw color classes in ERP UI | 0 |
 | CSS Modules in `apps/web` | 0 |
@@ -385,7 +385,7 @@ pnpm --filter @afenda/web build -- --mode analyze
 3. ✅ No `postcss.config.js` remains in `apps/web`.
 4. ✅ `index.css` follows eight-step architecture and `@theme inline` mapping.
 5. ✅ `apps/web/components.json` exists with correct Afenda aliases.
-6. ✅ Generated components use `@afenda/ui/*` and `@/share/*` aliases; no `'use client'` directives.
+6. ✅ Generated components use `@afenda/shadcn-ui-deprecated/*` and `@/share/*` aliases; no `'use client'` directives.
 7. ✅ `ThemeProvider` (dark mode) mounted at app level; `Toaster` wired.
 8. ✅ Sidebar collapse state persists across reload (via `useAppShellStore`).
 9. ✅ All authenticated `/app/*` routes render inside `ErpLayout`.
@@ -422,8 +422,8 @@ None — all required dependencies are installed.
 ## shadcn CLI Quick Reference for This Repo
 
 ```bash
-# Add primitives to packages/ui
-pnpm dlx shadcn@latest add <component> -c packages/ui
+# Add primitives to packages/shadcn-ui-deprecated
+pnpm dlx shadcn@latest add <component> -c packages/shadcn-ui-deprecated
 
 # Add app-level blocks to apps/web
 pnpm dlx shadcn@latest add <component> -c apps/web
@@ -436,7 +436,7 @@ pnpm dlx shadcn@latest add <component> -c apps/web --diff <file>
 pnpm dlx shadcn@latest docs <component>
 
 # Audit installed components
-pnpm dlx shadcn@latest info --json -c packages/ui
+pnpm dlx shadcn@latest info --json -c packages/shadcn-ui-deprecated
 pnpm dlx shadcn@latest info --json -c apps/web
 
 # Search registry
@@ -446,7 +446,7 @@ pnpm dlx shadcn@latest search @shadcn -q "<query>"
 ### Post-CLI Cleanup Checklist (mandatory after every `add`)
 
 - [ ] Strip `'use client'` directives (Vite SPA — no RSC)
-- [ ] Verify UI primitives use `@afenda/ui/components/ui/*` imports
+- [ ] Verify UI primitives use `@afenda/shadcn-ui-deprecated/components/ui/*` imports
 - [ ] Verify app-layer components use `@/share/*` imports
 - [ ] Remove duplicate `@layer base` blocks if generated
 - [ ] Confirm no `tailwind.config.ts` was created

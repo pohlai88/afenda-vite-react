@@ -1,6 +1,6 @@
 /**
  * Regenerates the "Current Status" table in
- * packages/shadcn-ui/shell/SHELL_COMPONENTS_GUARDRAILS.md
+ * packages/shadcn-ui-deprecated/shell/SHELL_COMPONENTS_GUARDRAILS.md
  * from shell-component-registry.ts (live contract + registry truth).
  *
  * Usage:
@@ -15,7 +15,7 @@ const MARKER_BEGIN = "<!-- shell-components-current-status:begin -->"
 const MARKER_END = "<!-- shell-components-current-status:end -->"
 
 const GUARDRAILS_REL =
-  "packages/shadcn-ui/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md"
+  "packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md"
 const SHELL_UI_RUNTIME_PREFIX = "apps/web/src/share/components/shell-ui"
 
 const ROOT_DIR = normalizePath(findRepoRoot())
@@ -34,7 +34,7 @@ async function loadShellComponentRegistry(): Promise<
     `file://${path
       .join(
         ROOT_DIR,
-        "packages/shadcn-ui/src/lib/constant/policy/shell/registry/shell-component-registry.ts"
+        "packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/registry/shell-component-registry.ts"
       )
       .replace(/\\/g, "/")}`
   ).href

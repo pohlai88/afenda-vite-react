@@ -1,8 +1,8 @@
 id: no-classname-string-map
 language: TypeScript
 severity: warning
-message: "Variable named '*ClassMap', '*ToneMap', '*StyleMap', or '*SeverityMap' containing Tailwind class values detected outside the governed package. Semantic class mappings belong in @afenda/shadcn-ui."
-note: "Move this to packages/shadcn-ui/src/semantic/domain/ and expose it via a getter function. See packages/shadcn-ui/RULES.md."
+message: "Variable named '*ClassMap', '*ToneMap', '*StyleMap', or '*SeverityMap' containing Tailwind class values detected outside the governed package. Semantic class mappings belong in @afenda/shadcn-ui-deprecated."
+note: "Move this to packages/shadcn-ui-deprecated/src/semantic/domain/ and expose it via a getter function. See packages/shadcn-ui-deprecated/RULES.md."
 files:
   - "apps/**/*.{ts,tsx}"
 rule:

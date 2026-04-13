@@ -1,8 +1,8 @@
 id: no-cva-outside-governed
 language: TypeScript
 severity: error
-message: "`cva()` must only be called inside packages/shadcn-ui. Define variants in the governed UI package and expose them through the semantic layer."
-note: "Governed path: packages/shadcn-ui/src/components/ui/ or packages/shadcn-ui/src/lib/constant/component/. See packages/shadcn-ui/RULES.md."
+message: "`cva()` must only be called inside packages/shadcn-ui-deprecated. Define variants in the governed UI package and expose them through the semantic layer."
+note: "Governed path: packages/shadcn-ui-deprecated/src/components/ui/ or packages/shadcn-ui-deprecated/src/lib/constant/component/. See packages/shadcn-ui-deprecated/RULES.md."
 files:
   - "apps/**/*.{ts,tsx}"
 rule:

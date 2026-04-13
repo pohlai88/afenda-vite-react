@@ -1,0 +1,16 @@
+{
+  "truth": {
+    "scope": {
+      "label": "Ruang lingkup truth"
+    },
+    "alert": {
+      "label": "Peringatan truth"
+    },
+    "resolution": {
+      "label": "Resolusi"
+    },
+    "integrity_score": {
+      "label": "Skor integritas"
+    }
+  }
+}

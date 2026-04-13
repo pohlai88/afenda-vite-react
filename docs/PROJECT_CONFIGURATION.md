@@ -111,7 +111,7 @@ Prefer **path aliases** so files can move without deep relative imports.
 
 ```typescript
 // Prefer
-import { Button } from '@/components/Button'
+import { Button } from '@afenda/shadcn-ui-deprecated/components/ui/button'
 
 // Avoid
 import { Button } from '../../../components/Button'

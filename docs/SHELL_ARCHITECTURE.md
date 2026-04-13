@@ -2,11 +2,11 @@
 
 ## Purpose
 
-This document defines the canonical shell architecture for the governed constant layer in `packages/shadcn-ui`.
+This document defines the canonical shell architecture for the governed constant layer in `packages/shadcn-ui-deprecated`.
 
 It translates shell guidance into the repository's current naming convention and module layout, so runtime and static governance stay aligned as the shell expands.
 
-**Enterprise matrix source:** The full multi-tenant shell component matrix and phased build plan live in [`packages/shadcn-ui/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md`](../packages/shadcn-ui/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md). Normative exploration and churn for that matrix may also appear in [`docs/__idea__/working_ref.md`](./__idea__/working_ref.md) before it is promoted into the guardrails doc.
+**Enterprise matrix source:** The full multi-tenant shell component matrix and phased build plan live in [`packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md`](../packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md). Normative exploration and churn for that matrix may also appear in [`docs/__idea__/working_ref.md`](./__idea__/working_ref.md) before it is promoted into the guardrails doc.
 
 ## Scope Boundary
 
@@ -46,7 +46,7 @@ Use these file classes:
 - `use-*.ts`: governed hook surfaces
 - runtime helper names remain explicit (`shell-provider.tsx`, `shell-selectors.ts`)
 
-Current shell modules (see [`packages/shadcn-ui/src/lib/constant/policy/shell/README.md`](../packages/shadcn-ui/src/lib/constant/policy/shell/README.md) for the full list):
+Current shell modules (see [`packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/README.md`](../packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/README.md) for the full list):
 
 - **P0 doctrine:** `shell-slot-policy`, `shell-layout-policy`, `shell-metadata-policy`, `shell-tenant-context-policy`, `shell-workspace-context-policy`, `shell-state-policy`, `shell-overlay-policy`, `shell-search-policy`
 - **P1 / P2 doctrine:** `shell-navigation-policy`, `shell-access-policy`, `shell-command-policy`, `shell-failure-policy`, `shell-responsiveness-policy`, `shell-observability-policy`
@@ -159,7 +159,7 @@ When changed, update both docs and governance scripts in the same change set.
 
 ## Related
 
-- [`packages/shadcn-ui/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md`](../packages/shadcn-ui/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md) — live enterprise matrix, phased plan, DoD, auto-generated Current Status.
+- [`packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md`](../packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md) — live enterprise matrix, phased plan, DoD, auto-generated Current Status.
 - Stub pointer: [`docs/SHELL_COMPONENTS_GUARDRAILS.md`](./SHELL_COMPONENTS_GUARDRAILS.md) (redirects to the package-local doc).
 - [`docs/__idea__/working_ref.md`](./__idea__/working_ref.md) — idea-stage matrix churn; promote into guardrails when stable.
 - Refresh the guardrails “Current Status” table from registry truth: `pnpm run script:generate-shell-components-guardrails`.

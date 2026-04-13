@@ -4,13 +4,13 @@
 
 Apply this skill with these project rules:
 
-- Canonical design system package: `packages/radix-ui-themes`
+- Canonical design system package: `packages/shadcn-ui-deprecated` (`@afenda/shadcn-ui-deprecated`)
 - Build components from Radix primitives + Tailwind v4 + CVA
 - Use semantic token classes and `data-[state=*]` variants
 - Use `cn()` (`clsx` + `tailwind-merge`) for class composition
 - Keep `@radix-ui/themes` limited to theme-provider context, not pre-styled component usage
 
-Do not migrate or copy from deprecated `packages/ui` or `packages/design-system`.
+Implement UI only in `packages/shadcn-ui-deprecated` (`@afenda/shadcn-ui-deprecated`); do not revive old ad-hoc UI package trees.
 
 Unstyled, accessible React components for building high-quality design systems.
 
