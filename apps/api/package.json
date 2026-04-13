@@ -1,0 +1,32 @@
+{
+  "name": "@afenda/api",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "dependencies": {
+    "@afenda/database": "workspace:*",
+    "@hono/node-server": "^1.14.1",
+    "hono": "^4.7.4"
+  },
+  "devDependencies": {
+    "@afenda/tsconfig": "workspace:*",
+    "@afenda/vitest-config": "workspace:*",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

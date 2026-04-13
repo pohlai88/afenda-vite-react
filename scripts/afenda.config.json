@@ -12,7 +12,6 @@
   },
   "paths": {
     "webApp": "apps/web",
-    "uiPackage": "packages/shadcn-ui-deprecated",
     "typescriptSharedConfig": "packages/typescript-config"
   },
   "readmeTargets": [
@@ -37,12 +36,6 @@
       "title": "Shadcn skill docs",
       "description": "Generate an index for the in-repo shadcn skill guidance and companion markdown references.",
       "includeChildDirectories": true
-    },
-    {
-      "path": "packages/shadcn-ui-deprecated",
-      "mode": "packages-ui",
-      "title": "Afenda UI package",
-      "description": "Governed shadcn-style primitives, semantic layer, and utilities for the web client (`@afenda/shadcn-ui-deprecated`)."
     }
   ],
   "workspaceGovernance": {
@@ -55,8 +48,7 @@
         "node_modules",
         "packages",
         "rules",
-        "scripts",
-        "tools"
+        "scripts"
       ],
       "requiredRootFiles": [
         "package.json",

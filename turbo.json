@@ -1,7 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
-  "globalDependencies": ["pnpm-workspace.yaml", "turbo.json", "eslint.config.js"],
+  "globalDependencies": [
+    "pnpm-workspace.yaml",
+    "turbo.json",
+    "eslint.config.js"
+  ],
   "globalEnv": ["NODE_ENV", "CI"],
   "tasks": {
     "transit": {
@@ -32,7 +36,10 @@
     "typecheck": {
       "dependsOn": ["^build", "^transit"],
       "outputs": ["node_modules/.tmp/**"],
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/typescript-config/**/*.json"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/packages/typescript-config/**/*.json"
+      ]
     },
     "lint": {
       "dependsOn": ["^transit"],
@@ -68,7 +75,15 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "env": ["NODE_ENV", "VITE_*"]
+      "env": ["NODE_ENV", "VITE_*"],
+      "passThroughEnv": [
+        "VITE_*",
+        "DATABASE_URL",
+        "PORT",
+        "DB_POOL_MAX",
+        "DB_IDLE_TIMEOUT_MS",
+        "DB_CONNECTION_TIMEOUT_MS"
+      ]
     },
     "preview": {
       "dependsOn": ["build"],

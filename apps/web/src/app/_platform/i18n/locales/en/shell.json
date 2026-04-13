@@ -6,7 +6,14 @@
     "landing": {
       "brand_name": "Afenda",
       "title": "Afenda ERP Platform",
-      "subtitle": "Marketing and product entry page for the ERP web platform.",
+      "subtitle": "Run finance, events, and partner workflows from one tenant-aware workspace—built for operators who need clarity at scale.",
+      "skip_to_main": "Skip to main content",
+      "section_start_heading": "Get Started",
+      "section_highlights_heading": "What You Can Do Now",
+      "cta_workspace": "Open Workspace",
+      "feature_1": "Navigate enabled modules with shell chrome that stays consistent from overview to detail.",
+      "feature_2": "Use breadcrumbs and structure that stay audit-friendly as your footprint grows.",
+      "feature_3": "Jump into the workspace today—formal authentication flows arrive incrementally.",
       "placeholder_primary": "Use this area for product messaging, pricing, and onboarding flows.",
       "sign_in": "Sign in",
       "sign_in_or": "or",
@@ -14,11 +21,18 @@
       "sentence_end": "."
     }
   },
+  "login": {
+    "placeholder": {
+      "title": "Sign in",
+      "body": "Authentication is not wired yet. This screen is a transitional route outside the ERP shell.",
+      "continue": "Continue to the ERP app"
+    }
+  },
   "error": {
     "not_found": {
       "title": "404 — Page not found",
       "description": "The page you're looking for doesn't exist.",
-      "link_dashboard": "Go back to Dashboard"
+      "link_dashboard": "Back to workspace"
     }
   },
   "language": {
@@ -29,6 +43,19 @@
     "option_vi": "Tiếng Việt"
   },
   "nav": {
+    "groups": {
+      "workspace": "Workspace"
+    },
+    "items": {
+      "events": "Event log",
+      "audit": "Audit trail",
+      "partners": "Partner integrations"
+    },
+    "lifecycle": {
+      "beta": "Beta",
+      "coming_soon": "Coming soon",
+      "deprecated": "Deprecated"
+    },
     "group_main": "Main",
     "group_finance": "Finance",
     "group_management": "Management",
@@ -244,6 +271,10 @@
     "tab_message": "Messages"
   },
   "breadcrumb": {
+    "app": "App",
+    "events": "Event log",
+    "audit": "Audit trail",
+    "partners": "Partner integrations",
     "aria_label": "Scope navigation",
     "home": "Home",
     "org": "Organization",
@@ -252,6 +283,14 @@
     "search_subsidiary": "Search subsidiaries...",
     "scope_search_default": "Search...",
     "scope_no_results": "No results found."
+  },
+  "actions": {
+    "refresh": "Refresh",
+    "createInvoice": "Create invoice",
+    "reload": "Reload",
+    "create": "Create",
+    "help": "Help",
+    "newOrder": "New order"
   },
   "erp_module": {
     "inventory": {

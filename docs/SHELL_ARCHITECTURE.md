@@ -85,12 +85,9 @@ Current shell modules (see [`packages/shadcn-ui-deprecated/src/lib/constant/poli
 
 ## Governance Flow
 
-1. Define doctrine in policy/contract modules.
-2. Register shell-aware components in `shell-component-registry.ts`.
-3. Validate with `validate-shell-registry.ts` and `validate-constants.ts`.
-4. Run governance scripts for static/runtime evidence.
-5. Persist CI JSON reports for audit history.
-6. Refresh the guardrails matrix “Current Status” table after registry changes (`pnpm run script:generate-shell-components-guardrails`).
+1. Define doctrine in policy/contract modules under the web app’s platform shell (`apps/web/src/app/_platform/shell/`).
+2. Keep registry and navigation contracts aligned with [`apps/web/src/app/_platform/shell/README.md`](../apps/web/src/app/_platform/shell/README.md).
+3. Run repo quality gates (`pnpm run lint`, `pnpm run typecheck`, `pnpm run test:run`) and any CI workflows that apply to `apps/web`.
 
 ## Phased delivery (aligned with enterprise matrix)
 
@@ -103,26 +100,9 @@ High-level sequencing (detail and full component lists: guardrails doc):
 
 Phases 2–4 are **sequenced in the matrix**, not all implemented at once; each addition updates contract, registry, runtime, tests, and governance artifacts per DoD-G1–G6.
 
-## CLI and Report Workflow
+## CLI and reports
 
-Primary command:
-
-- `pnpm run script:check-shell-governance-report`
-
-JSON mode for CI:
-
-- `pnpm run script:check-shell-governance-report -- --format=json`
-
-Integrated governance command:
-
-- `pnpm run script:ui-drift-governance`
-
-Generated artifacts:
-
-- `.artifacts/reports/shell-governance/shell-governance-report.vNNNN.json`
-- `.artifacts/reports/shell-governance/shell-governance-report.latest.json`
-
-Versioning is incremental (`v0001`, `v0002`, ...), enabling governance snapshots across builds.
+Legacy shell governance CLIs that produced JSON under `.artifacts/reports/shell-governance/` have been removed. Prefer shell module docs and tests under `apps/web/src/app/_platform/shell/` and the repo [artifact policy](./REPO_ARTIFACT_POLICY.md) if you reintroduce snapshot reports.
 
 ## Non-Negotiable Rules
 
@@ -137,12 +117,9 @@ Versioning is incremental (`v0001`, `v0002`, ...), enabling governance snapshots
 
 When adding a new shell-aware component:
 
-1. Add contract key and contract entry in `shell-component-contract.ts`.
-2. Register it in `shell-component-registry.ts`.
-3. Ensure validator pass in `validate-shell-registry.ts`.
-4. Run `pnpm run script:check-shell-governance-report -- --format=json`.
-5. Confirm report has no missing registrations and no stale entries.
-6. Run `pnpm run script:generate-shell-components-guardrails` and align the enterprise matrix row if the component was planned there.
+1. Follow the contracts and patterns documented in [`apps/web/src/app/_platform/shell/README.md`](../apps/web/src/app/_platform/shell/README.md).
+2. Add or update tests next to the shell module (`__tests__` where applicable).
+3. Run `pnpm run lint` and `pnpm run typecheck` for `apps/web`.
 
 ## Decision Record Guidance
 
@@ -159,7 +136,6 @@ When changed, update both docs and governance scripts in the same change set.
 
 ## Related
 
-- [`packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md`](../packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/SHELL_COMPONENTS_GUARDRAILS.md) — live enterprise matrix, phased plan, DoD, auto-generated Current Status.
-- Stub pointer: [`docs/SHELL_COMPONENTS_GUARDRAILS.md`](./SHELL_COMPONENTS_GUARDRAILS.md) (redirects to the package-local doc).
-- [`docs/__idea__/working_ref.md`](./__idea__/working_ref.md) — idea-stage matrix churn; promote into guardrails when stable.
-- Refresh the guardrails “Current Status” table from registry truth: `pnpm run script:generate-shell-components-guardrails`.
+- [`apps/web/src/app/_platform/shell/README.md`](../apps/web/src/app/_platform/shell/README.md) — shell module layout and contracts in this repo.
+- Stub pointer: [`docs/SHELL_COMPONENTS_GUARDRAILS.md`](./SHELL_COMPONENTS_GUARDRAILS.md) (historical; see shell README for current guidance).
+- [`docs/__idea__/working_ref.md`](./__idea__/working_ref.md) — idea-stage notes.

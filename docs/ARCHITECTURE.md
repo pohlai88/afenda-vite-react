@@ -30,11 +30,7 @@ afenda-monorepo/
 │   ├── vitest-config/       # Shared Vitest defaults (@afenda/vitest-config)
 │   └── shared/              # Cross-app shared modules (public API via package root)
 ├── docs/                    # Repo-wide guides (including this file)
-├── tools/ui-drift/          # Shared utilities for governance scripts
-├── scripts/                 # Governance checkers and workspace scripts
-│   ├── check-ui-drift.ts           # Layer 0: token-level drift scan
-│   ├── check-ui-drift-ast.ts       # Layer 1: AST feature-code drift checker
-│   ├── check-ui-wrapper-contracts.ts # Layer 2: Radix/shadcn wrapper contract checker
+├── scripts/                 # Workspace scripts (i18n, docs index, color checks, afenda config, etc.)
 │   ├── afenda.config.json           # Product/workspace path metadata
 │   └── afenda.config.schema.json    # Schema for the workspace manifest
 ├── eslint.config.js         # Flat ESLint, workspace-wide
@@ -135,15 +131,11 @@ The `.tsx` component file imports its defaults and types from the contract, neve
 
 ### 3.4 Governance pipeline
 
-Three governance scripts run in sequence via `pnpm run script:ui-drift-governance`:
+Automated checks include:
 
-| Layer | Script | What it catches |
-|-------|--------|-----------------|
-| **0 -- Token drift** | `check-ui-drift.ts` | Raw color classes, arbitrary values, inline style violations in UI packages |
-| **1 -- Feature drift** | `check-ui-drift-ast.ts` | Raw Tailwind in feature code, ungoverned imports, local wrapper factories |
-| **2 -- Wrapper contracts** | `check-ui-wrapper-contracts.ts` | Swallowed props/ref, primitive replacement, asChild drift, local state takeover |
-
-Additional pipeline: `pnpm run script:ui-color-governance` validates OKLCH stem sync and color consistency.
+- `pnpm run script:ui-color-governance` — OKLCH stem sync, color consistency scan, and ESLint over `packages/design-system` and `apps/web/src`.
+- `pnpm run script:ast-grep-scan` — [ast-grep](https://ast-grep.github.io/) structural rules from `sgconfig.yml`.
+- ESLint `governed-ui/import-fence` (see `eslint.config.js`) restricts direct Radix and `class-variance-authority` imports outside the governed UI surface.
 
 ---
 
@@ -182,16 +174,20 @@ Add domain state types to `packages/features/core/src/` if they need to be share
 Create `packages/shadcn-ui-deprecated/src/semantic/domain/<module>.ts`:
 
 ```ts
-import type { Tone } from '../primitives/tone'
+import type { Tone } from "../primitives/tone"
 
-export type PurchaseOrderStatus = 'draft' | 'submitted' | 'approved' | 'received'
+export type PurchaseOrderStatus =
+  | "draft"
+  | "submitted"
+  | "approved"
+  | "received"
 
 export function getPurchaseOrderTone(status: PurchaseOrderStatus): Tone {
   const map: Record<PurchaseOrderStatus, Tone> = {
-    draft: 'neutral',
-    submitted: 'info',
-    approved: 'positive',
-    received: 'positive',
+    draft: "neutral",
+    submitted: "info",
+    approved: "positive",
+    received: "positive",
   }
   return map[status]
 }
@@ -216,7 +212,8 @@ Add translation files under `apps/web/src/share/i18n/locales/{en,id,ms,vi}/<modu
 Run the governance pipeline to confirm zero new violations:
 
 ```sh
-pnpm run script:ui-drift-governance    # token + AST + wrapper contract checks
+pnpm run script:ui-color-governance    # stems + color scan + ESLint on design-system + web src
+pnpm run script:ast-grep-scan          # structural rules
 pnpm run script:check-afenda-config    # workspace structure validation
 pnpm run typecheck                     # TypeScript
 pnpm run lint                          # ESLint

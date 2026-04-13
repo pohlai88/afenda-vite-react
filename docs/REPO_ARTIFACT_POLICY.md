@@ -52,13 +52,7 @@ These are **not** package build outputs.
 
 ## Shell governance reports
 
-JSON snapshots from `pnpm run script:check-shell-governance-report` are written to:
-
-- `.artifacts/reports/shell-governance/shell-governance-report.vNNNN.json`
-- `.artifacts/reports/shell-governance/shell-governance-report.latest.json`
-- Related doctrine manifest files with the same prefix pattern
-
-CI uploads these paths from `.github/workflows/ci.yml`.
+Historical JSON snapshots lived under `.artifacts/reports/shell-governance/`. The generator CLI was removed; if you reintroduce snapshots, restore a writer script and CI upload together.
 
 ## Allowed vs. not allowed at repo root
 
@@ -72,11 +66,11 @@ CI uploads these paths from `.github/workflows/ci.yml`.
 
 Use this when moving machines or old branches:
 
-- [x] **Scripts:** `scripts/check-shell-governance-report.ts` writes under `.artifacts/reports/shell-governance/` via `scripts/lib/artifact-paths.ts`.
-- [x] **CI:** `.github/workflows/ci.yml` uploads `.artifacts/reports/shell-governance/*.json`.
+- [ ] **Shell governance JSON:** legacy `scripts/check-shell-governance-report.ts` was removed; reintroduce writers here only if you add a replacement script.
+- [ ] **CI:** shell governance JSON upload removed from `.github/workflows/ci.yml` (no generator script).
 - [x] **Git:** `.gitignore` ignores generated JSON under `.artifacts/` and turbo cache under `.artifacts/cache/turbo/`, not legacy `reports/`.
-- [x] **Drift scans:** `tools/ui-drift/shared` excludes `/.artifacts/` from traversal.
-- [x] **Docs:** `docs/SHELL_ARCHITECTURE.md` and shell policy docs under `packages/shadcn-ui-deprecated` reference `.artifacts/reports/...`.
+- [x] **Drift scans:** removed with `tools/ui-drift`; keep `.artifacts/` out of ad-hoc file walkers when adding new tooling.
+- [x] **Docs:** `docs/SHELL_ARCHITECTURE.md` references artifact layout when snapshots exist.
 
 **Manual cleanup:** If you still have an old `reports/` directory at the repo root from before this policy, delete it after verifying CI and local scripts use `.artifacts/` only.
 

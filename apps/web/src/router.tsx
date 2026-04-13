@@ -1,14 +1,10 @@
 import { createBrowserRouter } from "react-router-dom"
 
-import Home from "@/pages/Home"
+import "@/app/_platform/shell/types/shell-route-handle"
+
+import { browserRoutes } from "@/routes/route-browser"
 
 /**
- * Top-level browser routes for the Vite SPA entry.
- * Add feature entry routes here; keep feature implementation under `src/app/_features/*`.
+ * Top-level router factory only — route definitions live under `src/routes/`.
  */
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-])
+export const router = createBrowserRouter(browserRoutes)

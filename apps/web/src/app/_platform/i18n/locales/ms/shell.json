@@ -6,7 +6,14 @@
     "landing": {
       "brand_name": "Afenda",
       "title": "Platform ERP Afenda",
-      "subtitle": "Halaman pemasaran dan kemasukan produk untuk platform ERP web.",
+      "subtitle": "Urus kewangan, acara, dan alur rakan kongsi dari satu ruang kerja yang peka penyewa—untuk pengendali yang memerlukan kejelasan pada skala besar.",
+      "skip_to_main": "Langkau ke kandungan utama",
+      "section_start_heading": "Mulakan",
+      "section_highlights_heading": "Apa Yang Anda Boleh Lakukan Sekarang",
+      "cta_workspace": "Buka Ruang Kerja",
+      "feature_1": "Navigasi modul yang didayakan dengan kulit konsisten dari gambaran keseluruhan hingga perincian.",
+      "feature_2": "Gunakan breadcrumb dan struktur yang kekal mesra audit apabila jejak anda berkembang.",
+      "feature_3": "Masuk ke ruang kerja hari ini—aliran pengesahan formal akan menyusul secara berperingkat.",
       "placeholder_primary": "Gunakan ruang ini untuk mesej produk, harga, dan alur onboarding.",
       "sign_in": "Log masuk",
       "sign_in_or": "atau",
@@ -14,11 +21,18 @@
       "sentence_end": "."
     }
   },
+  "login": {
+    "placeholder": {
+      "title": "Log masuk",
+      "body": "Pengesahan belum disambungkan. Skrin ini ialah laluan peralihan di luar kulit ERP.",
+      "continue": "Teruskan ke aplikasi ERP"
+    }
+  },
   "error": {
     "not_found": {
       "title": "404 — Halaman tidak dijumpai",
       "description": "Halaman yang anda cari tidak wujud.",
-      "link_dashboard": "Kembali ke Papan Pemuka"
+      "link_dashboard": "Kembali ke ruang kerja"
     }
   },
   "language": {
@@ -29,6 +43,19 @@
     "option_vi": "Tiếng Việt"
   },
   "nav": {
+    "groups": {
+      "workspace": "Ruang kerja"
+    },
+    "items": {
+      "events": "Log peristiwa",
+      "audit": "Jejak audit",
+      "partners": "Integrasi rakan kongsi"
+    },
+    "lifecycle": {
+      "beta": "Beta",
+      "coming_soon": "Akan datang",
+      "deprecated": "Tidak digalakkan"
+    },
     "group_main": "Utama",
     "group_finance": "Kewangan",
     "group_management": "Pengurusan",
@@ -244,6 +271,10 @@
     "tab_message": "Mesej"
   },
   "breadcrumb": {
+    "app": "Aplikasi",
+    "events": "Log peristiwa",
+    "audit": "Jejak audit",
+    "partners": "Integrasi rakan kongsi",
     "aria_label": "Navigasi skop",
     "home": "Utama",
     "org": "Organisasi",
@@ -252,6 +283,14 @@
     "search_subsidiary": "Cari subsidiari...",
     "scope_search_default": "Cari...",
     "scope_no_results": "Tiada hasil."
+  },
+  "actions": {
+    "refresh": "Segar semula",
+    "createInvoice": "Cipta invois",
+    "reload": "Muat semula",
+    "create": "Cipta",
+    "help": "Bantuan",
+    "newOrder": "Pesanan baharu"
   },
   "erp_module": {
     "inventory": {

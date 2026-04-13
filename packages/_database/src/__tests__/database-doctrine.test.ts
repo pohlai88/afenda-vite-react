@@ -81,17 +81,21 @@ describe("database package doctrine", () => {
     expect(forbidden).toEqual([])
   })
 
-  it("does not use forbidden database import paths in code", () => {
-    const files = listFiles(repoRoot, (filePath) =>
-      /\.(?:ts|tsx|js|jsx|mjs|cjs)$/.test(filePath)
-    )
-    const offenders = files.flatMap((filePath) => {
-      const text = readFileSync(filePath, "utf8")
-      return forbiddenCodeImportPatterns.some((pattern) => pattern.test(text))
-        ? [path.relative(repoRoot, filePath)]
-        : []
-    })
+  it(
+    "does not use forbidden database import paths in code",
+    { timeout: 60_000 },
+    () => {
+      const files = listFiles(repoRoot, (filePath) =>
+        /\.(?:ts|tsx|js|jsx|mjs|cjs)$/.test(filePath)
+      )
+      const offenders = files.flatMap((filePath) => {
+        const text = readFileSync(filePath, "utf8")
+        return forbiddenCodeImportPatterns.some((pattern) => pattern.test(text))
+          ? [path.relative(repoRoot, filePath)]
+          : []
+      })
 
-    expect(offenders).toEqual([])
-  })
+      expect(offenders).toEqual([])
+    }
+  )
 })

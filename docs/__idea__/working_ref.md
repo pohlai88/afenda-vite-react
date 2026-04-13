@@ -4,12 +4,12 @@ This is a **good implementation pass**. The important part is that you did **not
 
 You implemented the **highest-value, lowest-risk** subset:
 
-* doc alignment instead of doc literalism
-* explicit `parentFrameSlot`
-* safe slot-contract strengthening
-* doctrine README
-* no destructive reserved-slot rule
-* no unnecessary naming churn
+- doc alignment instead of doc literalism
+- explicit `parentFrameSlot`
+- safe slot-contract strengthening
+- doctrine README
+- no destructive reserved-slot rule
+- no unnecessary naming churn
 
 That is the correct enterprise move.
 
@@ -21,16 +21,16 @@ Adding `parentFrameSlot` is the biggest architectural win in this round.
 
 Before, the system depended too much on:
 
-* slot naming
-* zone inference
-* convention memory
+- slot naming
+- zone inference
+- convention memory
 
 Now, each occupant slot can explicitly declare which structural frame owns it. That makes the shell easier to:
 
-* validate
-* document
-* reason about
-* evolve safely across phases
+- validate
+- document
+- reason about
+- evolve safely across phases
 
 This is a real doctrine upgrade, not cosmetic cleanup.
 
@@ -38,11 +38,11 @@ This is a real doctrine upgrade, not cosmetic cleanup.
 
 The rules you added are the right kind of rules:
 
-* frame rows require `parentFrameSlot: null`
-* frame rows cannot be `multiEntry`
-* frame rows must have exactly one allowed kind
-* required slots must be active
-* occupant rows must point to the correct frame for their zone
+- frame rows require `parentFrameSlot: null`
+- frame rows cannot be `multiEntry`
+- frame rows must have exactly one allowed kind
+- required slots must be active
+- occupant rows must point to the correct frame for their zone
 
 Those are structural truths, not speculative preferences. Good.
 
@@ -50,9 +50,9 @@ Those are structural truths, not speculative preferences. Good.
 
 Keeping:
 
-* `content.main` active
-* `overlay.global` active
-* `overlay.command` reserved
+- `content.main` active
+- `overlay.global` active
+- `overlay.command` reserved
 
 was the correct decision.
 
@@ -62,11 +62,11 @@ That preserves shipping truth while still allowing doctrine to express future in
 
 The doctrine map is not paperwork. It reduces future drift by giving contributors a human-readable model of:
 
-* zones
-* frames
-* occupants
-* active vs reserved state
-* validator expectations
+- zones
+- frames
+- occupants
+- active vs reserved state
+- validator expectations
 
 That is exactly the kind of artifact that keeps shell policy from becoming tribal knowledge.
 
@@ -80,15 +80,15 @@ You already validate it in the contract, which is good. I would still add an exp
 
 Why:
 
-* contract errors catch malformed rows
-* registry validator should explain architecture failures in shell language
+- contract errors catch malformed rows
+- registry validator should explain architecture failures in shell language
 
 Examples:
 
-* occupant slot points at missing frame slot
-* occupant slot parent frame zone mismatch
-* frame slot has non-null parent
-* occupant slot declared under a frame that is not active
+- occupant slot points at missing frame slot
+- occupant slot parent frame zone mismatch
+- frame slot has non-null parent
+- occupant slot declared under a frame that is not active
 
 This gives better CI messages than relying only on schema refinement.
 
@@ -98,13 +98,13 @@ Right now `slotStatus` is carrying a lot.
 
 You may later want two ideas:
 
-* slot exists and is doctrinally active
-* slot currently has live occupants or not
+- slot exists and is doctrinally active
+- slot currently has live occupants or not
 
 Not urgent now, but eventually you may want:
 
-* `slotStatus: active | reserved`
-* plus derived runtime signals like `isPopulated`, not authored policy
+- `slotStatus: active | reserved`
+- plus derived runtime signals like `isPopulated`, not authored policy
 
 Do **not** add another authored field yet unless you truly need it.
 
@@ -123,8 +123,8 @@ Using `null` for frame rows is fine, but be deliberate.
 
 I would keep it if:
 
-* you want authored explicitness
-* you want the contract to force a conscious declaration
+- you want authored explicitness
+- you want the contract to force a conscious declaration
 
 I would avoid making it optional. `null` is better than “missing” here.
 
@@ -156,12 +156,12 @@ The main thing still missing is probably not another constant. It is likely **cr
 
 You now have:
 
-* policy
-* contract
-* registry
-* helper
-* README
-* validator
+- policy
+- contract
+- registry
+- helper
+- README
+- validator
 
 What you want next is a stronger answer to:
 
@@ -173,15 +173,15 @@ So my next recommendation is:
 
 Build a **shell governance matrix/report** that outputs:
 
-* slot id
-* zone
-* slot role
-* slot status
-* parent frame slot
-* required
-* multi-entry
-* allowed component kinds
-* registered component owners
+- slot id
+- zone
+- slot role
+- slot status
+- parent frame slot
+- required
+- multi-entry
+- allowed component kinds
+- registered component owners
 
 That would turn your shell doctrine into something inspectable, not just encoded.
 
@@ -193,16 +193,16 @@ This was a **strong and mature implementation pass**.
 
 You improved:
 
-* structural clarity
-* validation integrity
-* documentation quality
-* shell hierarchy explicitness
+- structural clarity
+- validation integrity
+- documentation quality
+- shell hierarchy explicitness
 
 without:
 
-* breaking the live model
-* importing unsafe pseudo-code
-* over-abstracting the constant layer
+- breaking the live model
+- importing unsafe pseudo-code
+- over-abstracting the constant layer
 
 That is exactly the right way to evolve this system.
 
@@ -210,4 +210,4 @@ That is exactly the right way to evolve this system.
 
 ## Implementation status (repo)
 
-Following this note, the codebase adds **registry-level `parentFrameSlot` validation** (`validate-shell-registry.ts`: `frame_parent_frame_slot_must_be_null`, `occupant_parent_frame_*`, etc.) and extends **`pnpm run script:check-shell-governance-report`** with a **`slotDoctrineMatrix`** in the JSON report plus a **Slot doctrine matrix** section in the default text output.
+Following this note, the codebase was expected to add **registry-level `parentFrameSlot` validation** and extend shell governance JSON with a **`slotDoctrineMatrix`**. The `pnpm run script:check-shell-governance-report` CLI that produced those reports has since been removed; reintroduce together with a snapshot writer if this direction is revived.

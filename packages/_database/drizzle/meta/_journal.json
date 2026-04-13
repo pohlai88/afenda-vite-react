@@ -8,6 +8,48 @@
       "when": 1776069637734,
       "tag": "0000_secret_leo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776076160120,
+      "tag": "0001_audit_evidence_v1",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776077610540,
+      "tag": "0002_audit_risk_resolution",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776077820120,
+      "tag": "0003_audit_second_wave",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1776078000000,
+      "tag": "0004_audit_append_only_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1776078100000,
+      "tag": "0005_audit_delete_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1776087151100,
+      "tag": "0006_audit_tenant_subject_recorded_idx",
+      "breakpoints": true
     }
   ]
 }

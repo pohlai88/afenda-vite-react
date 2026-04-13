@@ -67,17 +67,17 @@ pnpm --filter @afenda/web dev
 
 Most day-to-day work uses `pnpm dev`. Other root scripts (via Turborepo):
 
-| `pnpm <script>` | Description                                         |
-| --------------- | --------------------------------------------------- |
-| `dev`           | Dev tasks for the workspace (includes the Vite app) |
-| `format`        | Format with Prettier                                |
-| `format:check`  | Check formatting                                    |
-| `lint`          | ESLint across workspace packages                    |
-| `typecheck`     | TypeScript project references                       |
-| `test`          | Vitest (watch, where configured)                    |
-| `test:run`      | Vitest single run                                   |
-| `check`         | `lint`, `typecheck`, `test:run`, and `build`        |
-| `build`         | Production builds                                   |
+| `pnpm <script>` | Description                                                                                                                       |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `dev`           | Dev tasks for the workspace (includes the Vite app)                                                                               |
+| `format`        | Format with Prettier                                                                                                              |
+| `format:check`  | Check formatting                                                                                                                  |
+| `lint`          | ESLint across workspace packages                                                                                                  |
+| `typecheck`     | TypeScript project references                                                                                                     |
+| `test`          | Vitest (watch, where configured)                                                                                                  |
+| `test:run`      | Vitest single run                                                                                                                 |
+| `check`         | Afenda config + i18n ingest/crossref/validate + web `i18n:check` + `tokens:check`, then `turbo run lint typecheck test:run build` |
+| `build`         | Production builds                                                                                                                 |
 
 Package-specific scripts (for example extra lint or test targets) live in each `package.json`; run them with `pnpm --filter <package-name> <script>`.
 

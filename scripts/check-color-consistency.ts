@@ -12,11 +12,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs"
 import path from "node:path"
 
-const SCAN_PATHS = [
-  "packages/shadcn-ui-deprecated/src/components",
-  "apps/web/src/features",
-  "apps/web/src/share/components",
-] as const
+const SCAN_PATHS = ["packages/design-system", "apps/web/src"] as const
 
 const EXCLUDE_DIR_NAMES = new Set(["__tests__", "__test__"])
 

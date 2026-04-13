@@ -22,7 +22,8 @@
     "i18n:check:unused": "tsx src/app/_platform/i18n/scripts/check-i18n-policy.ts --unused",
     "i18n:policy": "tsx src/app/_platform/i18n/scripts/check-i18n-policy.ts",
     "format": "prettier --write \"src\" \"public\" \"index.html\" \"*.config.*\"",
-    "format:check": "prettier --check \"src\" \"public\" \"index.html\" \"*.config.*\""
+    "format:check": "prettier --check \"src\" \"public\" \"index.html\" \"*.config.*\"",
+    "shell:validation-report": "tsx --tsconfig tsconfig.app.json src/app/_platform/shell/scripts/write-shell-metadata-validation-report.ts"
   },
   "dependencies": {
     "@afenda/design-system": "workspace:*",

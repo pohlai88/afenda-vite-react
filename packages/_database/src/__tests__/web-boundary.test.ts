@@ -21,6 +21,9 @@ function listFiles(root: string, predicate: (filePath: string) => boolean) {
       if (ignoredDirectoryNames.has(entry)) {
         continue
       }
+      if (entry === "__tests__" || entry === "__test__") {
+        continue
+      }
       const fullPath = path.join(current, entry)
       const stat = statSync(fullPath)
       if (stat.isDirectory()) {

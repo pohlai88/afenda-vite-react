@@ -43,11 +43,17 @@
       "types": "./src/seeds/index.ts",
       "import": "./src/seeds/index.ts",
       "default": "./src/seeds/index.ts"
+    },
+    "./audit": {
+      "types": "./src/audit/index.ts",
+      "import": "./src/audit/index.ts",
+      "default": "./src/audit/index.ts"
     }
   },
   "dependencies": {
     "drizzle-orm": "catalog:",
-    "pg": "catalog:"
+    "pg": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@afenda/tsconfig": "workspace:*",

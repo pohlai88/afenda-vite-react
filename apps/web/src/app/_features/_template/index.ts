@@ -1,4 +1,5 @@
 export { FeatureTemplateView } from "./components/FeatureTemplateView"
+export type { FeatureTemplateViewProps } from "./components/FeatureTemplateView"
 export { featureTemplateCommands } from "./actions/feature-template-actions"
 export { useFeatureTemplate } from "./hooks/use-feature-template"
 export { createFeatureTemplateReport } from "./scripts/feature-template-report"

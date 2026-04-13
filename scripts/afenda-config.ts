@@ -9,7 +9,6 @@ export type ReadmeTargetMode =
   | "docs-collections"
   | "scripts"
   | "generic-formal-directory"
-  | "packages-ui"
 
 export interface ReadmeTargetDefinition {
   path: string
@@ -266,15 +265,6 @@ export function assertReadmeTargetDefinition(
     assertNonEmptyString(value.title, `${label}.title`)
     assertNonEmptyString(value.description, `${label}.description`)
   }
-
-  if (value.mode === "packages-ui") {
-    assertNonEmptyString(value.title, `${label}.title`)
-    assertNonEmptyString(value.description, `${label}.description`)
-    assert(
-      value.path === "packages/shadcn-ui-deprecated",
-      `${label}.path must be "packages/shadcn-ui-deprecated" for packages-ui mode.`
-    )
-  }
 }
 
 export function assertReadmeTargetMode(
@@ -285,9 +275,8 @@ export function assertReadmeTargetMode(
     value === "docs-root" ||
       value === "docs-collections" ||
       value === "scripts" ||
-      value === "generic-formal-directory" ||
-      value === "packages-ui",
-    `${label} must be one of: docs-root, docs-collections, scripts, generic-formal-directory, packages-ui.`
+      value === "generic-formal-directory",
+    `${label} must be one of: docs-root, docs-collections, scripts, generic-formal-directory.`
   )
 }
 

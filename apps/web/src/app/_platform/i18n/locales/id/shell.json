@@ -6,7 +6,14 @@
     "landing": {
       "brand_name": "Afenda",
       "title": "Platform ERP Afenda",
-      "subtitle": "Halaman pemasaran dan pintu masuk produk untuk platform ERP web.",
+      "subtitle": "Kelola keuangan, acara, dan alur mitra dari satu ruang kerja yang menyadari tenant—untuk operator yang membutuhkan kejelasan dalam skala besar.",
+      "skip_to_main": "Lewati ke konten utama",
+      "section_start_heading": "Memulai",
+      "section_highlights_heading": "Yang Bisa Anda Lakukan Sekarang",
+      "cta_workspace": "Buka Ruang Kerja",
+      "feature_1": "Menavigasi modul yang diaktifkan dengan kulit aplikasi yang konsisten dari ringkasan hingga detail.",
+      "feature_2": "Memakai breadcrumb dan struktur yang tetap ramah audit seiring pertumbuhan jejak Anda.",
+      "feature_3": "Langsung masuk ruang kerja hari ini—alur autentikasi formal menyusul secara bertahap.",
       "placeholder_primary": "Gunakan area ini untuk pesan produk, harga, dan alur onboarding.",
       "sign_in": "Masuk",
       "sign_in_or": "atau",
@@ -14,11 +21,18 @@
       "sentence_end": "."
     }
   },
+  "login": {
+    "placeholder": {
+      "title": "Masuk",
+      "body": "Autentikasi belum terhubung. Layar ini adalah rute sementara di luar shell ERP.",
+      "continue": "Lanjut ke aplikasi ERP"
+    }
+  },
   "error": {
     "not_found": {
       "title": "404 — Halaman tidak ditemukan",
       "description": "Halaman yang Anda cari tidak ada.",
-      "link_dashboard": "Kembali ke Dasbor"
+      "link_dashboard": "Kembali ke ruang kerja"
     }
   },
   "language": {
@@ -29,6 +43,19 @@
     "option_vi": "Tiếng Việt"
   },
   "nav": {
+    "groups": {
+      "workspace": "Ruang kerja"
+    },
+    "items": {
+      "events": "Log peristiwa",
+      "audit": "Jejak audit",
+      "partners": "Integrasi mitra"
+    },
+    "lifecycle": {
+      "beta": "Beta",
+      "coming_soon": "Segera hadir",
+      "deprecated": "Usang"
+    },
     "group_main": "Utama",
     "group_finance": "Keuangan",
     "group_management": "Manajemen",
@@ -244,6 +271,10 @@
     "tab_message": "Pesan"
   },
   "breadcrumb": {
+    "app": "Aplikasi",
+    "events": "Log peristiwa",
+    "audit": "Jejak audit",
+    "partners": "Integrasi mitra",
     "aria_label": "Navigasi cakupan",
     "home": "Beranda",
     "org": "Organisasi",
@@ -252,6 +283,14 @@
     "search_subsidiary": "Cari anak perusahaan...",
     "scope_search_default": "Cari...",
     "scope_no_results": "Tidak ada hasil."
+  },
+  "actions": {
+    "refresh": "Segarkan",
+    "createInvoice": "Buat faktur",
+    "reload": "Muat ulang",
+    "create": "Buat",
+    "help": "Bantuan",
+    "newOrder": "Pesanan baru"
   },
   "erp_module": {
     "inventory": {

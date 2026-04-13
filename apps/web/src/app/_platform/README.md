@@ -52,6 +52,15 @@ _platform/<capability>/
 
 If users work inside it as an ERP module, put it in `_features`. If it makes the app runtime work for many modules, put it in `_platform`.
 
+## HTTP surfaces (Afenda)
+
+| Location                                  | Role                                                                                                                             | Capability id (web)                                                                          |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| [apps/api](../../../api/) (`@afenda/api`) | **Node HTTP server** — Postgres, Drizzle, governed audit writes, future REST. Not bundled in Vite.                               | N/A (server package)                                                                         |
+| `_platform/api-client`                    | **Browser HTTP client** — `fetch` wrapper, env `VITE_API_BASE_URL`, hooks. Calls whatever backend `apps/api` or a proxy exposes. | **`api-client`** (`apiClientCapabilityContract` in `api-client/policy/api-client-policy.ts`) |
+
+**Verification:** If it lives under `apps/web/.../_platform/`, the SPA HTTP stack is **`api-client`**. If it lives under **`apps/api`**, it is the **server**. Do not name the platform folder `api` — use **`api-client`** so reviews and logs never blur the two.
+
 ## Naming
 
 - capability folders: `kebab-case`

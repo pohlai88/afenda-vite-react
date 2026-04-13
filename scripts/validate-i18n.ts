@@ -3,9 +3,9 @@
  * unresolved audit conflicts, and hardcoded JSX string literals. Run from repo root:
  * `pnpm run script:validate-i18n`
  */
-import { readFileSync, readdirSync, existsSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { readFileSync, readdirSync, existsSync } from "node:fs"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
 
 import {
   GLOSSARY_IDENTICAL_OK_KEYS,
@@ -13,34 +13,34 @@ import {
   NON_EN_APPROVED_RATIO_THRESHOLD,
   RELEASE_NAMESPACES,
   SUPPORTED_LOCALES,
-} from '../apps/web/src/share/i18n/policy.js'
+} from "../apps/web/src/app/_platform/i18n/policy/i18n-policy.js"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const repoRoot = join(__dirname, '..')
-const localesRoot = join(repoRoot, 'apps/web/src/share/i18n/locales')
+const repoRoot = join(__dirname, "..")
+const localesRoot = join(repoRoot, "apps/web/src/app/_platform/i18n/locales")
 const glossaryPath = join(
   repoRoot,
-  'apps/web/src/share/i18n/glossary/canonical-terms.json',
+  "apps/web/src/app/_platform/i18n/glossary/canonical-terms.json"
 )
 const conflictsPath = join(
   repoRoot,
-  'apps/web/src/share/i18n/audit/conflicts.json',
+  "apps/web/src/app/_platform/i18n/audit/conflicts.json"
 )
 const provenancePath = join(
   repoRoot,
-  'apps/web/src/share/i18n/audit/provenance.json',
+  "apps/web/src/app/_platform/i18n/audit/provenance.json"
 )
 
 type FlatMap = Record<string, string>
 
-function flattenLeaves(obj: unknown, prefix = ''): FlatMap {
-  if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) {
+function flattenLeaves(obj: unknown, prefix = ""): FlatMap {
+  if (obj === null || typeof obj !== "object" || Array.isArray(obj)) {
     return {}
   }
   const out: FlatMap = {}
   for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
     const next = prefix ? `${prefix}.${k}` : k
-    if (typeof v === 'string') {
+    if (typeof v === "string") {
       out[next] = v
     } else {
       Object.assign(out, flattenLeaves(v, next))
@@ -51,7 +51,7 @@ function flattenLeaves(obj: unknown, prefix = ''): FlatMap {
 
 function loadNamespaceLocale(locale: string, ns: string): FlatMap {
   const path = join(localesRoot, locale, `${ns}.json`)
-  const raw = JSON.parse(readFileSync(path, 'utf8')) as unknown
+  const raw = JSON.parse(readFileSync(path, "utf8")) as unknown
   return flattenLeaves(raw)
 }
 
@@ -61,7 +61,9 @@ function fullKey(ns: string, leaf: string): string {
 
 function isExcludedFromNonEnRatio(fk: string): boolean {
   if (GLOSSARY_IDENTICAL_OK_KEYS.includes(fk)) return true
-  return IDENTICAL_RATIO_EXCLUDED_PREFIXES.some((p) => fk.startsWith(p))
+  return IDENTICAL_RATIO_EXCLUDED_PREFIXES.some((prefix: string) =>
+    fk.startsWith(prefix)
+  )
 }
 
 type GlossaryFile = {
@@ -96,18 +98,18 @@ type ProvenanceFile = {
 function main(): void {
   const errors: string[] = []
   const canonical = SUPPORTED_LOCALES[0]
-  if (canonical !== 'en') {
-    errors.push('Expected first supported locale to be canonical `en`.')
+  if (canonical !== "en") {
+    errors.push("Expected first supported locale to be canonical `en`.")
   }
 
   const locales = [...SUPPORTED_LOCALES]
-  const namespaces = readdirSync(join(localesRoot, 'en'))
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => f.replace(/\.json$/, ''))
+  const namespaces = readdirSync(join(localesRoot, "en"))
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => f.replace(/\.json$/, ""))
 
   const enMaps: Record<string, FlatMap> = {}
   for (const ns of namespaces) {
-    enMaps[ns] = loadNamespaceLocale('en', ns)
+    enMaps[ns] = loadNamespaceLocale("en", ns)
   }
 
   /** ns -> leaf -> value per locale */
@@ -132,15 +134,15 @@ function main(): void {
       for (const k of locKeys) {
         if (!enKeys.has(k)) {
           errors.push(
-            `Extra key \`${fullKey(ns, k)}\` in locale "${loc}" vs English.`,
+            `Extra key \`${fullKey(ns, k)}\` in locale "${loc}" vs English.`
           )
         }
       }
       for (const k of enKeys) {
-        const v = m[k] ?? ''
-        if (v.trim() === '') {
+        const v = m[k] ?? ""
+        if (v.trim() === "") {
           errors.push(
-            `Empty value for \`${fullKey(ns, k)}\` in locale "${loc}".`,
+            `Empty value for \`${fullKey(ns, k)}\` in locale "${loc}".`
           )
         }
       }
@@ -155,7 +157,7 @@ function main(): void {
     const enFlat = enMaps[ns]
     const enKeys = Object.keys(enFlat)
     for (const loc of locales) {
-      if (loc === 'en') continue
+      if (loc === "en") continue
       const m = byLocale[loc][ns]
       let identical = 0
       let total = 0
@@ -169,86 +171,86 @@ function main(): void {
       const ratioDifferent = (total - identical) / total
       if (ratioDifferent < NON_EN_APPROVED_RATIO_THRESHOLD) {
         errors.push(
-          `Locale "${loc}" namespace "${ns}": localized ratio ${(ratioDifferent * 100).toFixed(1)}% differs from English; require ≥ ${(NON_EN_APPROVED_RATIO_THRESHOLD * 100).toFixed(0)}% (non-identical to en, allowlist excluded).`,
+          `Locale "${loc}" namespace "${ns}": localized ratio ${(ratioDifferent * 100).toFixed(1)}% differs from English; require ≥ ${(NON_EN_APPROVED_RATIO_THRESHOLD * 100).toFixed(0)}% (non-identical to en, allowlist excluded).`
         )
       }
     }
   }
 
   const glossary = JSON.parse(
-    readFileSync(glossaryPath, 'utf8'),
+    readFileSync(glossaryPath, "utf8")
   ) as GlossaryFile
   for (const term of glossary.terms) {
-    const parts = term.canonicalKey.split('.')
+    const parts = term.canonicalKey.split(".")
     if (parts.length < 2) {
       errors.push(`Invalid glossary canonicalKey "${term.canonicalKey}".`)
       continue
     }
     const [gNs, ...rest] = parts
-    const leaf = rest.join('.')
+    const leaf = rest.join(".")
     const enNs = enMaps[gNs]
     if (!enNs) {
       errors.push(
-        `Glossary key "${term.canonicalKey}" references unknown namespace "${gNs}".`,
+        `Glossary key "${term.canonicalKey}" references unknown namespace "${gNs}".`
       )
       continue
     }
     if (!(leaf in enNs)) {
       errors.push(
-        `Glossary canonicalKey "${term.canonicalKey}" not found in English namespace "${gNs}".`,
+        `Glossary canonicalKey "${term.canonicalKey}" not found in English namespace "${gNs}".`
       )
       continue
     }
     if (enNs[leaf] !== term.en) {
       errors.push(
-        `Glossary English for "${term.canonicalKey}" (${JSON.stringify(term.en)}) does not match locale file (${JSON.stringify(enNs[leaf])}).`,
+        `Glossary English for "${term.canonicalKey}" (${JSON.stringify(term.en)}) does not match locale file (${JSON.stringify(enNs[leaf])}).`
       )
     }
   }
 
   const conflicts = JSON.parse(
-    readFileSync(conflictsPath, 'utf8'),
+    readFileSync(conflictsPath, "utf8")
   ) as ConflictsFile
   for (const row of conflicts.items) {
-    const ns = row.afendaKey.split('.')[0] ?? ''
+    const ns = row.afendaKey.split(".")[0] ?? ""
     const isReleaseNs = (RELEASE_NAMESPACES as readonly string[]).includes(ns)
     if (!isReleaseNs) continue
 
-    if (row.status === 'review') {
+    if (row.status === "review") {
       errors.push(
-        `Unresolved audit conflict (review) for release namespace: ${row.afendaKey}`,
+        `Unresolved audit conflict (review) for release namespace: ${row.afendaKey}`
       )
     }
-    if (row.resolutionSource === 'platform_conflict') {
+    if (row.resolutionSource === "platform_conflict") {
       errors.push(
-        `Primary platform conflict for release namespace key ${row.afendaKey}: platform=${JSON.stringify(row.tolgeeCandidate)} glossary=${JSON.stringify(row.glossaryValue)}`,
+        `Primary platform conflict for release namespace key ${row.afendaKey}: platform=${JSON.stringify(row.tolgeeCandidate)} glossary=${JSON.stringify(row.glossaryValue)}`
       )
     }
     if (row.glossaryValue && !row.tolgeeCandidate) {
       errors.push(
-        `Primary platform missing candidate for release namespace key ${row.afendaKey}`,
+        `Primary platform missing candidate for release namespace key ${row.afendaKey}`
       )
     }
   }
 
   const prov = JSON.parse(
-    readFileSync(provenancePath, 'utf8'),
+    readFileSync(provenancePath, "utf8")
   ) as ProvenanceFile
   if (!prov.entries || prov.entries.length === 0) {
     errors.push(
-      'Provenance file has no entries; corpus ingestion may not have run.',
+      "Provenance file has no entries; corpus ingestion may not have run."
     )
   }
   for (const entry of prov.entries) {
     if (!entry.afendaKey || !entry.sourceSystem || !entry.sourcePath) {
       errors.push(`Incomplete provenance entry: ${JSON.stringify(entry)}`)
     }
-    if (!['tolgee', 'frappe', 'odoo'].includes(entry.sourceSystem)) {
+    if (!["tolgee", "frappe", "odoo"].includes(entry.sourceSystem)) {
       errors.push(`Unknown provenance source system: ${entry.sourceSystem}`)
     }
     if (
       entry.sourceTier &&
-      !['primary', 'reference'].includes(entry.sourceTier)
+      !["primary", "reference"].includes(entry.sourceTier)
     ) {
       errors.push(`Unknown provenance source tier: ${entry.sourceTier}`)
     }
@@ -261,12 +263,12 @@ function main(): void {
   }
 
   if (errors.length) {
-    console.error('i18n validation failed:\n')
+    console.error("i18n validation failed:\n")
     for (const e of errors) console.error(`- ${e}`)
     process.exit(1)
   }
 
-  console.log('i18n validation passed.')
+  console.log("i18n validation passed.")
 }
 
 const HARDCODED_ALLOWED_PATTERNS = [
@@ -276,17 +278,13 @@ const HARDCODED_ALLOWED_PATTERNS = [
   /^(className|id|htmlFor|data-testid|to|href|key|name|type|value|method|action|src)$/,
 ]
 
-const HARDCODED_SCAN_DIRS = [
-  'apps/web/src/pages',
-  'apps/web/src/features',
-  'apps/web/src/share/i18n/components',
-]
+const HARDCODED_SCAN_DIRS = ["apps/web/src/pages", "apps/web/src/app"]
 
 const HARDCODED_SKIP_FILES = [
-  'router.tsx',
-  'feature-routes.tsx',
-  'marketing-routes.tsx',
-  'query-provider.tsx',
+  "router.tsx",
+  "feature-routes.tsx",
+  "marketing-routes.tsx",
+  "query-provider.tsx",
 ]
 
 function collectTsxFiles(dir: string): string[] {
@@ -297,7 +295,7 @@ function collectTsxFiles(dir: string): string[] {
     if (entry.isDirectory()) {
       out.push(...collectTsxFiles(full))
     } else if (
-      entry.name.endsWith('.tsx') &&
+      entry.name.endsWith(".tsx") &&
       !HARDCODED_SKIP_FILES.includes(entry.name)
     ) {
       out.push(full)
@@ -309,7 +307,7 @@ function collectTsxFiles(dir: string): string[] {
 function scanForHardcodedJsxStrings(root: string): string[] {
   const warnings: string[] = []
   const tsxFiles = HARDCODED_SCAN_DIRS.flatMap((d) =>
-    collectTsxFiles(join(root, d)),
+    collectTsxFiles(join(root, d))
   )
 
   // Match: >SomeText< (text nodes between JSX tags)
@@ -318,15 +316,15 @@ function scanForHardcodedJsxStrings(root: string): string[] {
   const attrPattern = /\b(aria-label|title|alt|placeholder)\s*=\s*"([^"]+)"/g
 
   for (const file of tsxFiles) {
-    const content = readFileSync(file, 'utf8')
-    const relPath = file.replace(root, '').replace(/\\/g, '/')
-    const lines = content.split('\n')
+    const content = readFileSync(file, "utf8")
+    const relPath = file.replace(root, "").replace(/\\/g, "/")
+    const lines = content.split("\n")
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]
 
       // Skip lines that use t() or template literals with t()
-      if (line.includes('t(') || line.includes('{t(')) continue
+      if (line.includes("t(") || line.includes("{t(")) continue
       // Skip import/export lines
       if (/^\s*(import|export)\s/.test(line)) continue
       // Skip comments
@@ -340,9 +338,9 @@ function scanForHardcodedJsxStrings(root: string): string[] {
         if (HARDCODED_ALLOWED_PATTERNS.some((p) => p.test(text))) continue
         if (text.length < 3) continue
         // Skip JSX expressions (contains { or })
-        if (text.includes('{') || text.includes('}')) continue
+        if (text.includes("{") || text.includes("}")) continue
         warnings.push(
-          `Hardcoded JSX text in ${relPath}:${i + 1}: "${text.slice(0, 60)}"`,
+          `Hardcoded JSX text in ${relPath}:${i + 1}: "${text.slice(0, 60)}"`
         )
       }
 
@@ -351,7 +349,7 @@ function scanForHardcodedJsxStrings(root: string): string[] {
         const attrValue = match[2].trim()
         if (HARDCODED_ALLOWED_PATTERNS.some((p) => p.test(attrValue))) continue
         warnings.push(
-          `Hardcoded a11y attribute "${match[1]}" in ${relPath}:${i + 1}: "${attrValue.slice(0, 60)}"`,
+          `Hardcoded a11y attribute "${match[1]}" in ${relPath}:${i + 1}: "${attrValue.slice(0, 60)}"`
         )
       }
     }

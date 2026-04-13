@@ -6,7 +6,14 @@
     "landing": {
       "brand_name": "Afenda",
       "title": "Nền tảng ERP Afenda",
-      "subtitle": "Trang tiếp thị và điểm vào sản phẩm cho nền tảng ERP web.",
+      "subtitle": "Vận hành tài chính, sự kiện và quy trình đối tác trong một không gian làm việc theo tenant—dành cho đội vận hành cần sự rõ ràng ở quy mô lớn.",
+      "skip_to_main": "Bỏ qua đến nội dung chính",
+      "section_start_heading": "Bắt Đầu",
+      "section_highlights_heading": "Bạn Có Thể Làm Gì Ngay",
+      "cta_workspace": "Mở Không Gian Làm Việc",
+      "feature_1": "Điều hướng các module được bật với lớp vỏ ứng dụng nhất quán từ tổng quan đến chi tiết.",
+      "feature_2": "Dùng breadcrumb và cấu trúc thân thiện kiểm toán khi phạm vi của bạn mở rộng.",
+      "feature_3": "Vào không gian làm việc ngay hôm nay—luồng xác thực chính thức sẽ bổ sung dần.",
       "placeholder_primary": "Dùng khu vực này cho thông điệp sản phẩm, giá và luồng onboarding.",
       "sign_in": "Đăng nhập",
       "sign_in_or": "hoặc",
@@ -14,11 +21,18 @@
       "sentence_end": "."
     }
   },
+  "login": {
+    "placeholder": {
+      "title": "Đăng nhập",
+      "body": "Xác thực chưa được kết nối. Màn hình này là tuyến tạm thời ngoài vỏ ERP.",
+      "continue": "Tiếp tục đến ứng dụng ERP"
+    }
+  },
   "error": {
     "not_found": {
       "title": "404 — Không tìm thấy trang",
       "description": "Trang bạn tìm không tồn tại.",
-      "link_dashboard": "Quay lại Bảng điều khiển"
+      "link_dashboard": "Quay lại không gian làm việc"
     }
   },
   "language": {
@@ -29,6 +43,19 @@
     "option_vi": "Tiếng Việt"
   },
   "nav": {
+    "groups": {
+      "workspace": "Không gian làm việc"
+    },
+    "items": {
+      "events": "Nhật ký sự kiện",
+      "audit": "Nhật ký kiểm toán",
+      "partners": "Tích hợp đối tác"
+    },
+    "lifecycle": {
+      "beta": "Beta",
+      "coming_soon": "Sắp ra mắt",
+      "deprecated": "Không khuyến nghị"
+    },
     "group_main": "Chính",
     "group_finance": "Tài chính",
     "group_management": "Quản lý",
@@ -244,6 +271,10 @@
     "tab_message": "Tin nhắn"
   },
   "breadcrumb": {
+    "app": "Ứng dụng",
+    "events": "Nhật ký sự kiện",
+    "audit": "Nhật ký kiểm toán",
+    "partners": "Tích hợp đối tác",
     "aria_label": "Điều hướng phạm vi",
     "home": "Trang chủ",
     "org": "Tổ chức",
@@ -252,6 +283,14 @@
     "search_subsidiary": "Tìm công ty con...",
     "scope_search_default": "Tìm...",
     "scope_no_results": "Không có kết quả."
+  },
+  "actions": {
+    "refresh": "Làm mới",
+    "createInvoice": "Tạo hóa đơn",
+    "reload": "Tải lại",
+    "create": "Tạo",
+    "help": "Trợ giúp",
+    "newOrder": "Đơn hàng mới"
   },
   "erp_module": {
     "inventory": {

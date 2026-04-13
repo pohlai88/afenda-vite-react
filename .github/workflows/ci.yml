@@ -33,7 +33,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
           cache: pnpm
 
       - name: Install dependencies
@@ -54,24 +54,17 @@ jobs:
       - name: Validate i18n policy and conflicts
         run: pnpm run script:validate-i18n
 
-      - name: Run shell governance report
-        run: pnpm run script:check-shell-governance-report -- --format=json
-
-      - name: Shell state policy (doctrine + narrow scan)
-        run: pnpm run script:check-shell-state-policy
-
-      - name: Upload shell governance report artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: shell-governance-report
-          path: .artifacts/reports/shell-governance/*.json
-          if-no-files-found: error
-
       - name: Format check
         run: pnpm run format:check
 
+      - name: Audit writer boundary (no direct audit_logs inserts)
+        run: pnpm run script:check-audit-writer-boundary
+
       - name: Lint, typecheck, test, build
         run: pnpm exec turbo run lint typecheck test:run build --summarize
+
+      - name: Shell metadata governance report
+        run: pnpm --filter @afenda/web shell:validation-report
 
       - name: Design system coverage gate
         run: pnpm --filter @afenda/design-system test:coverage

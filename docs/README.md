@@ -13,38 +13,39 @@ These guides describe Afenda, Vite, and ERP concerns for this repository. They a
 
 ## Core documentation
 
-| Document                                                                   | Description                                                                                                                      |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| [Architecture](./ARCHITECTURE.md)                                          | Monorepo + ERP systems view, governed UI layer, semantic adapter flow, and adding new modules.                                   |
-| [API reference](./API.md)                                                  | REST contract: `/api/tenants/{tenant}/...`, errors, and tenant-scoped routes.                                                    |
-| [Documentation scope](./DOCUMENTATION_SCOPE.md)                            | Normative vs optional docs; what blocks implementation and what does not.                                                        |
-| [Project structure](./PROJECT_STRUCTURE.md)                                | `apps/web` layout, routes, features, and migration toward `features/*`.                                                          |
-| [Design system](./DESIGN_SYSTEM.md)                                        | Tokens, layout, motion, typography, and accessibility rules.                                                                     |
-| [Brand guidelines](./BRAND_GUIDELINES.md)                                  | Logo, palette, gradient rules, and Afenda visual identity guidance.                                                              |
-| [Components and styling](./COMPONENTS_AND_STYLING.md)                      | React component patterns, colocation rules, and UI implementation guidance.                                                      |
-| [Database](./DATABASE.md)                                                  | PostgreSQL, Drizzle, migrations, and tenant-oriented schema notes.                                                               |
-| [Authentication](./AUTHENTICATION.md)                                      | Vite SPA + backend auth flow, sessions, guards, and Auth0 integration notes.                                                     |
-| [Roles and permissions](./ROLES_AND_PERMISSIONS.md)                        | RBAC roles, PBAC permission keys, and API vs UI enforcement.                                                                     |
-| [State management](./STATE_MANAGEMENT.md)                                  | Local state, Zustand, TanStack Query, forms, and Context boundaries.                                                             |
-| [Performance](./PERFORMANCE.md)                                            | Bundle, list, memoization, and loading-state guidance for the web app.                                                           |
-| [Vite enterprise practices (workspace)](./VITE_ENTERPRISE_WORKSPACE.md)    | Vite 8 + Rolldown quality baseline, apps/web wiring, DevTools/Vitest guards, and review checklist.                               |
-| [Project configuration](./PROJECT_CONFIGURATION.md)                        | ESLint, Prettier, TypeScript, Turborepo, and repo tooling conventions.                                                           |
-| [Repository artifact policy](./REPO_ARTIFACT_POLICY.md)                    | Where build outputs, `.artifacts/` reports, caches, and temp files belong; root anti-patterns.                                   |
-| [Testing](./TESTING.md)                                                    | Vitest + React Testing Library guidance for `apps/web`.                                                                          |
-| [Integrations](./INTEGRATIONS.md)                                          | Third-party APIs, OAuth flows, webhooks, and sync patterns.                                                                      |
-| [Deployment](./DEPLOYMENT.md)                                              | Vercel static deployment, environment variables, and SPA rewrites.                                                               |
-| [Glossary](./GLOSSARY.md)                                                  | ERP and platform vocabulary used across the repository.                                                                          |
-| [Shell Components Guardrails (moved)](./SHELL_COMPONENTS_GUARDRAILS.md)    | Redirects to the live guardrails document under `packages/shadcn-ui-deprecated/src/lib/constant/policy/shell/`.                  |
-| [Architecture evolution](./ARCHITECTURE_EVOLUTION.md)                      | Decision policy for when to upgrade architecture now vs later, with measurable triggers and ownership.                           |
-| [CI Quality Gates (Scaffold)](./VITE_FRONTEND_CI_GATES.md)                 | Use this checklist as non-negotiable CI policy for Vite frontend release readiness.                                              |
-| [ERP App Shell Specification](./APP_SHELL_SPEC.md)                         | Architecture specification for the authenticated ERP shell in apps/web.                                                          |
-| [Feature Module Template (Scaffold)](./VITE_FRONTEND_FEATURE_TEMPLATE.md)  | Export only stable surfaces from feature root index.ts.                                                                          |
-| [Monorepo boundaries](./MONOREPO_BOUNDARIES.md)                            | Cross-cutting client code belongs under src/share/.                                                                              |
-| [Performance Defaults (Scaffold)](./VITE_FRONTEND_PERFORMANCE_DEFAULTS.md) | These defaults are the baseline for scalable Vite SPA performance.                                                               |
-| [Shell Architecture](./SHELL_ARCHITECTURE.md)                              | This document defines the canonical shell architecture for the governed constant layer in packages/shadcn-ui-deprecated.         |
-| [Tailwind + shadcn Migration Plan](./TAILWIND_SHADCN_MIGRATION_PLAN.md)    | Add the new share subdirectories (react-hooks, client-store, api, query) to the shareSubdirectories field if not already listed. |
-| [Vite Config Template (Scaffold)](./VITE_FRONTEND_CONFIG_TEMPLATE.md)      | Create src/vite-preload-recovery.ts and import it from main.tsx:                                                                 |
-| [Vite Frontend Blueprint](./VITE_FRONTEND_BLUEPRINT.md)                    | Use this when creating a new app or resetting architecture drift.                                                                |
+| Document                                                                    | Description                                                                                                                      |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| [Architecture](./ARCHITECTURE.md)                                           | Monorepo + ERP systems view, governed UI layer, semantic adapter flow, and adding new modules.                                   |
+| [API reference](./API.md)                                                   | REST contract: `/api/tenants/{tenant}/...`, errors, and tenant-scoped routes.                                                    |
+| [Documentation scope](./DOCUMENTATION_SCOPE.md)                             | Normative vs optional docs; what blocks implementation and what does not.                                                        |
+| [Project structure](./PROJECT_STRUCTURE.md)                                 | `apps/web` layout, routes, features, and migration toward `features/*`.                                                          |
+| [Design system](./DESIGN_SYSTEM.md)                                         | Tokens, layout, motion, typography, and accessibility rules.                                                                     |
+| [Brand guidelines](./BRAND_GUIDELINES.md)                                   | Logo, palette, gradient rules, and Afenda visual identity guidance.                                                              |
+| [Components and styling](./COMPONENTS_AND_STYLING.md)                       | React component patterns, colocation rules, and UI implementation guidance.                                                      |
+| [Database](./DATABASE.md)                                                   | PostgreSQL, Drizzle, migrations, and tenant-oriented schema notes.                                                               |
+| [Authentication](./AUTHENTICATION.md)                                       | Vite SPA + backend auth flow, sessions, guards, and Auth0 integration notes.                                                     |
+| [Roles and permissions](./ROLES_AND_PERMISSIONS.md)                         | RBAC roles, PBAC permission keys, and API vs UI enforcement.                                                                     |
+| [State management](./STATE_MANAGEMENT.md)                                   | Local state, Zustand, TanStack Query, forms, and Context boundaries.                                                             |
+| [Performance](./PERFORMANCE.md)                                             | Bundle, list, memoization, and loading-state guidance for the web app.                                                           |
+| [Vite enterprise practices (workspace)](./VITE_ENTERPRISE_WORKSPACE.md)     | Vite 8 + Rolldown quality baseline, apps/web wiring, DevTools/Vitest guards, and review checklist.                               |
+| [Project configuration](./PROJECT_CONFIGURATION.md)                         | ESLint, Prettier, TypeScript, Turborepo, and repo tooling conventions.                                                           |
+| [Repository artifact policy](./REPO_ARTIFACT_POLICY.md)                     | Where build outputs, `.artifacts/` reports, caches, and temp files belong; root anti-patterns.                                   |
+| [Testing](./TESTING.md)                                                     | Vitest + React Testing Library guidance for `apps/web`.                                                                          |
+| [Integrations](./INTEGRATIONS.md)                                           | Third-party APIs, OAuth flows, webhooks, and sync patterns.                                                                      |
+| [Deployment](./DEPLOYMENT.md)                                               | Vercel static deployment, environment variables, and SPA rewrites.                                                               |
+| [Glossary](./GLOSSARY.md)                                                   | ERP and platform vocabulary used across the repository.                                                                          |
+| [Shell Components Guardrails (moved)](./SHELL_COMPONENTS_GUARDRAILS.md)     | Live shell module docs live under `apps/web/src/app/_platform/shell/` (see `README.md` there).                                   |
+| [Architecture evolution](./ARCHITECTURE_EVOLUTION.md)                       | Decision policy for when to upgrade architecture now vs later, with measurable triggers and ownership.                           |
+| [Audit architecture (doctrine and evidence model)](./AUDIT_ARCHITECTURE.md) | The following is a contract sketch for discussion and schema evolution—not a mandate to add every column at once:                |
+| [CI Quality Gates (Scaffold)](./VITE_FRONTEND_CI_GATES.md)                  | Use this checklist as non-negotiable CI policy for Vite frontend release readiness.                                              |
+| [ERP App Shell Specification](./APP_SHELL_SPEC.md)                          | Architecture specification for the authenticated ERP shell in apps/web.                                                          |
+| [Feature Module Template (Scaffold)](./VITE_FRONTEND_FEATURE_TEMPLATE.md)   | Export only stable surfaces from feature root index.ts.                                                                          |
+| [Monorepo boundaries](./MONOREPO_BOUNDARIES.md)                             | Cross-cutting client code belongs under src/share/.                                                                              |
+| [Performance Defaults (Scaffold)](./VITE_FRONTEND_PERFORMANCE_DEFAULTS.md)  | These defaults are the baseline for scalable Vite SPA performance.                                                               |
+| [Shell Architecture](./SHELL_ARCHITECTURE.md)                               | This document defines the canonical shell architecture for the governed constant layer in packages/shadcn-ui-deprecated.         |
+| [Tailwind + shadcn Migration Plan](./TAILWIND_SHADCN_MIGRATION_PLAN.md)     | Add the new share subdirectories (react-hooks, client-store, api, query) to the shareSubdirectories field if not already listed. |
+| [Vite Config Template (Scaffold)](./VITE_FRONTEND_CONFIG_TEMPLATE.md)       | Create src/vite-preload-recovery.ts and import it from main.tsx:                                                                 |
+| [Vite Frontend Blueprint](./VITE_FRONTEND_BLUEPRINT.md)                     | Use this when creating a new app or resetting architecture drift.                                                                |
 
 ## Documentation collections
 

@@ -1,12 +1,12 @@
 # Components and Styling Standard
 
-Normative standard for UI implementation in `apps/web` and `packages/shadcn-ui-deprecated`.
+Normative standard for UI implementation in `apps/web` and the canonical design system package (`packages/design-system`).
 
 This document defines the stable rules for Tailwind CSS v4 + shadcn/ui in Afenda. It does not define one-time migration sequencing; use `docs/TAILWIND_SHADCN_MIGRATION_PLAN.md` for execution steps and `docs/APP_SHELL_SPEC.md` for shell architecture decisions.
 
 ## Scope and Authority
 
-- Applies to all ERP UI code in `apps/web/src/features/*`, shared client UI in `apps/web/src/share/*`, and UI primitives in `packages/shadcn-ui-deprecated/`.
+- Applies to ERP UI in `apps/web/src/app/_features/*`, platform runtime UI in `apps/web/src/app/_platform/*` (including the **app shell** under `_platform/shell`), and UI primitives in **`packages/design-system`** (published imports such as `@afenda/design-system/ui-primitives`). Legacy `packages/shadcn-ui-deprecated` references may remain in historical migration notes only.
 - Supersedes older styling guidance that assumed pre-Tailwind CSS-only setup.
 - Pair with `docs/DESIGN_SYSTEM.md` for token intent and `docs/BRAND_GUIDELINES.md` for brand usage constraints.
 
@@ -50,7 +50,7 @@ This document defines the stable rules for Tailwind CSS v4 + shadcn/ui in Afenda
 Use this structure in `apps/web/src/index.css`:
 
 1. **Imports**: `@import "tailwindcss"`, then `@plugin` directives (`@tailwindcss/forms`, `@tailwindcss/typography`), then `@import "tw-animate-css"`, `@import "shadcn/tailwind.css"`, `@import "@fontsource-variable/geist"`.
-2. **Source**: `@source` directive to scan `packages/shadcn-ui-deprecated/src` for class usage.
+2. **Source**: `@source` directive to scan `packages/design-system` (and any legacy paths still listed during migration) for class usage.
 3. **Custom variant**: `@custom-variant dark (&:where(.dark, .dark *))`.
 4. **Tokens**: Root-level `:root` (light) and `.dark` variable blocks in OKLCH. No separate `.light` class block.
 5. **Theme mapping**: `@theme inline` variable-to-utility mapping with multiplication-based radius formulas.
@@ -98,7 +98,7 @@ Feature code in `apps/web` should prefer this vocabulary:
 - Titles and text: `ui-title`, `ui-title-page`, `ui-title-hero`, `ui-title-section`, `ui-title-card`, `ui-lede`, `ui-copy`, `ui-fine`, `heading-*`, `text-*`
 - Surfaces: `ui-surface`, `ui-surface-raised`, `ui-surface-hero`, `ui-empty-state`
 - State helpers: `ui-truth-row-*`
-- Search/overlay shell: shared React wrappers in `apps/web/src/share/components/search/` rather than repeated overlay class strings
+- Search/overlay shell: prefer shared React wrappers under `apps/web/src/share/components/search/` when present; new work should follow `_platform` + design-system patterns in `docs/APP_SHELL_SPEC.md`.
 
 When a new screen cannot be expressed with this vocabulary, either:
 
@@ -146,23 +146,22 @@ Two `components.json` files exist — one per workspace that the CLI targets:
 
 Three-tier component topology:
 
-1. **`packages/shadcn-ui-deprecated/src/components/ui/`** — shadcn/ui primitives (Button, Card, Sidebar, etc.). Imported as `@afenda/shadcn-ui-deprecated/components/<name>`.
-2. **`apps/web/src/share/components/`** — App-level shared components (app shell layout, composed widgets). Imported as `@/share/components/<name>`.
-3. **`apps/web/src/features/*/components/`** — Feature-specific components. Imported via feature public API.
+1. **`packages/design-system/ui-primitives/`** — Canonical shadcn-compatible primitives (Button, Card, Sidebar, etc.). Imported as `@afenda/design-system/ui-primitives` (see `packages/design-system/package.json` `exports`).
+2. **`apps/web/src/app/_platform/shell/`** — Authenticated app shell (layout, sidebar, header, breadcrumbs). Imported as `@/app/_platform/shell` / `@/app/_platform`. Optional legacy shared UI may still live under `apps/web/src/share/components/` during migration.
+3. **`apps/web/src/app/_features/*/components/`** — Feature-specific components. Imported via each feature’s public `index.ts` only from outside the feature.
 
 Supporting locations:
 
-- `cn()` utility lives at `packages/shadcn-ui-deprecated/src/lib/utils.ts`. Imported as `@afenda/shadcn-ui-deprecated/lib/utils`.
-- Reusable hooks live under `packages/shadcn-ui-deprecated/src/hooks/` (UI-level) or `apps/web/src/share/react-hooks/` (app-level DOM/media/shortcut hooks; not Zustand — see `share/client-store/`).
-- Do not place shared UI in `apps/web/src/components/` root.
+- `cn()` for design-system code: `packages/design-system/utils` (`@afenda/design-system/utils`).
+- App-level hooks: colocate with features or `_platform` capabilities; avoid new global singletons (see `docs/STATE_MANAGEMENT.md`).
 
 ### `cn()` Rule
 
 `cn()` is the required helper for merged/conditional class names, living in `packages/shadcn-ui-deprecated/src/lib/utils.ts`:
 
 ```ts
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -172,7 +171,7 @@ export function cn(...inputs: ClassValue[]) {
 Import in both `packages/shadcn-ui-deprecated` and `apps/web` as:
 
 ```ts
-import { cn } from '@afenda/shadcn-ui-deprecated/lib/utils'
+import { cn } from "@afenda/shadcn-ui-deprecated/lib/utils"
 ```
 
 ### Post-CLI Cleanup Rules
@@ -289,21 +288,10 @@ This standard does not define:
 
 Automated governance scripts enforce the standards above. Run them from the repo root.
 
-### UI drift governance
+### Structural and color governance
 
-```sh
-pnpm run script:ui-drift-governance
-```
-
-Runs three checkers in sequence:
-
-| Layer | Script | Scope | What it catches |
-|-------|--------|-------|-----------------|
-| **0** | `check-ui-drift.ts` | `packages/shadcn-ui-deprecated/` | Raw color classes, arbitrary Tailwind values, inline style violations |
-| **1** | `check-ui-drift-ast.ts` | `apps/web/src/features/`, `apps/web/src/share/` | Raw Tailwind in feature code, ungoverned element + className combos, local wrapper factories |
-| **2** | `check-ui-wrapper-contracts.ts` | `packages/shadcn-ui-deprecated/src` | Swallowed props/ref, Radix primitive replacement, `asChild` drift, suspicious local state |
-
-Feature code should use `ui-*` CSS utilities and governed components (`Card`, `Button`, `Badge`, etc.) instead of raw `<div className="flex gap-4 p-6">`. The layer-1 checker recognizes `ui-*` class tokens as governed and does not flag them.
+- **`pnpm run script:ast-grep-scan`** — ast-grep rules from `sgconfig.yml` for patterns that are awkward to express in ESLint alone.
+- **ESLint** — flat config includes `governed-ui/import-fence` (Radix / CVA import boundaries); see `eslint.config.js`.
 
 ### UI color governance
 
@@ -339,7 +327,7 @@ See [Architecture: Adding a new ERP module](./ARCHITECTURE.md#4-adding-a-new-erp
 8. Generated UI primitives in `packages/shadcn-ui-deprecated` use `@afenda/shadcn-ui-deprecated/*` aliases; app components use `@/share/*`. No `'use client'` directives.
 9. UI code uses semantic classes, not raw color classes.
 10. Feature code uses `ui-*` vocabulary and governed components, not raw HTML + Tailwind.
-11. `pnpm run script:ui-drift-governance` exits with 0 errors.
+11. `pnpm run script:ui-color-governance` and `pnpm run script:ast-grep-scan` exit with 0 errors (when you run them locally or in CI).
 
 ## Related Documents
 

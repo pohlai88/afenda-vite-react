@@ -1,16 +1,25 @@
 import { useParams } from "react-router-dom"
 
 import { useFeatureTemplate } from "../hooks/use-feature-template"
+import type { FeatureTemplateSlug } from "../types/feature-template"
 import {
   formatFeatureTemplateStatus,
   getFeatureTemplateStatusClassName,
 } from "../utils/feature-template-utils"
 
+export interface FeatureTemplateViewProps {
+  /** When routes use static paths (e.g. `/app/events`), pass slug explicitly. */
+  readonly slug?: FeatureTemplateSlug
+}
+
 /**
  * Copyable ERP feature template: route input -> hook -> service/action model -> view.
  */
-export function FeatureTemplateView() {
-  const { slug = "" } = useParams<{ slug: string }>()
+export function FeatureTemplateView({
+  slug: slugProp,
+}: FeatureTemplateViewProps) {
+  const { slug: paramSlug = "" } = useParams<{ slug: string }>()
+  const slug = slugProp ?? paramSlug
   const { actionResult, commands, feature, isLoading, runCommand } =
     useFeatureTemplate(slug)
 

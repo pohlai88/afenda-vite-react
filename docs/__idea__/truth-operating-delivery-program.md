@@ -22,12 +22,12 @@ The "truth" system in the existing codebase covers two distinct concerns under o
 
 Core ERP navigation context that determines what data the user is working with.
 
-| Artifact | Location | What it does |
-|----------|----------|--------------|
-| `TruthScope` type | `packages/features/core/src/truth/truth-scope.ts` | Defines `tenantId`, `legalEntityId`, `accountingPeriodId`, `reportingCurrency` |
-| `useTruthScopeStore` | `apps/web/src/share/client-store/truth-scope-store.ts` | Zustand store: org/subsidiary/period switching, persisted to localStorage |
-| Scope switcher UI | `top-nav-bar.tsx`, `nav-breadcrumb-bar.tsx`, `scope-switcher.tsx` | Renders org/subsidiary pickers in the shell chrome |
-| `ScopeOrg`, `ScopeSubsidiary`, `ScopeAccountingPeriod` | `truth-scope-store.ts` | Entity types for scope switching dropdowns |
+| Artifact                                               | Location                                                          | What it does                                                                   |
+| ------------------------------------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `TruthScope` type                                      | `packages/features/core/src/truth/truth-scope.ts`                 | Defines `tenantId`, `legalEntityId`, `accountingPeriodId`, `reportingCurrency` |
+| `useTruthScopeStore`                                   | `apps/web/src/share/client-store/truth-scope-store.ts`            | Zustand store: org/subsidiary/period switching, persisted to localStorage      |
+| Scope switcher UI                                      | `top-nav-bar.tsx`, `nav-breadcrumb-bar.tsx`, `scope-switcher.tsx` | Renders org/subsidiary pickers in the shell chrome                             |
+| `ScopeOrg`, `ScopeSubsidiary`, `ScopeAccountingPeriod` | `truth-scope-store.ts`                                            | Entity types for scope switching dropdowns                                     |
 
 **ERP equivalent terms:** Operational context, working scope, active entity context, current posting context.
 
@@ -35,39 +35,39 @@ Core ERP navigation context that determines what data the user is working with.
 
 Optional "truth-aware" UI layer that surfaces business-rule violations and system health.
 
-| Artifact | Location | What it does |
-|----------|----------|--------------|
-| `TruthStatus`, `TruthHealthSummary` types | `packages/features/core/src/truth/truth-status.ts` | Invariant state, severity, scope impact, resolution spec |
-| `TruthResolution` | `packages/features/core/src/truth/truth-resolution.ts` | How to fix an issue: key, type, action path |
-| `TruthAlertItem`, `TruthActionBarTab`, `TruthBadge` | `packages/features/core/src/truth-ui/` | UI interpretation types for alerts, action bar, badges |
-| Selectors (`getHighestSeverity`, `sortByPriorityAndSeverity`, etc.) | `packages/features/core/src/truth-ui/truth-selectors.ts` | Filtering/sorting helpers for alert lists |
-| `TruthSeverity` + CSS variable mapping | `packages/features/core/src/truth-ui/truth-severity.ts` | `ok`, `info`, `warning`, `critical` mapped to `--color-truth-*` tokens |
-| `useTruthHealthStore` | `apps/web/src/share/client-store/truth-health-store.ts` | Zustand store: health summary + alert list + read state |
-| `useTruthNavProps` | `apps/web/src/share/client-store/truth-nav-props.ts` | Composes scope + health stores into `TopNavBar` props |
-| `useTruthShellBootstrap` | `apps/web/src/share/client-store/truth-shell-bootstrap.ts` | One-time demo seed when no API has populated stores |
-| Demo seed data | `apps/web/src/share/client-store/truth-demo-seed.ts` | Fake orgs, subsidiaries, health, alerts for dev mode |
-| `TruthAlertPanel` | `apps/web/src/share/components/block-ui/panel/truth-alert-panel.tsx` | Panel UI listing alerts grouped by severity |
-| `TruthAlertTrigger` | `apps/web/src/share/components/block-ui/trigger/truth-alert-trigger.tsx` | Bell icon trigger with unread badge |
-| `ResolutionPanel` | `apps/web/src/share/components/block-ui/panel/resolution-panel.tsx` | Panel showing resolution suggestions |
-| Command palette truth commands | `apps/web/src/share/components/search/use-palette-commands.ts` | Truth-related Cmd+K commands |
+| Artifact                                                            | Location                                                                 | What it does                                                           |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| `TruthStatus`, `TruthHealthSummary` types                           | `packages/features/core/src/truth/truth-status.ts`                       | Invariant state, severity, scope impact, resolution spec               |
+| `TruthResolution`                                                   | `packages/features/core/src/truth/truth-resolution.ts`                   | How to fix an issue: key, type, action path                            |
+| `TruthAlertItem`, `TruthActionBarTab`, `TruthBadge`                 | `packages/features/core/src/truth-ui/`                                   | UI interpretation types for alerts, action bar, badges                 |
+| Selectors (`getHighestSeverity`, `sortByPriorityAndSeverity`, etc.) | `packages/features/core/src/truth-ui/truth-selectors.ts`                 | Filtering/sorting helpers for alert lists                              |
+| `TruthSeverity` + CSS variable mapping                              | `packages/features/core/src/truth-ui/truth-severity.ts`                  | `ok`, `info`, `warning`, `critical` mapped to `--color-truth-*` tokens |
+| `useTruthHealthStore`                                               | `apps/web/src/share/client-store/truth-health-store.ts`                  | Zustand store: health summary + alert list + read state                |
+| `useTruthNavProps`                                                  | `apps/web/src/share/client-store/truth-nav-props.ts`                     | Composes scope + health stores into `TopNavBar` props                  |
+| `useTruthShellBootstrap`                                            | `apps/web/src/share/client-store/truth-shell-bootstrap.ts`               | One-time demo seed when no API has populated stores                    |
+| Demo seed data                                                      | `apps/web/src/share/client-store/truth-demo-seed.ts`                     | Fake orgs, subsidiaries, health, alerts for dev mode                   |
+| `TruthAlertPanel`                                                   | `apps/web/src/share/components/block-ui/panel/truth-alert-panel.tsx`     | Panel UI listing alerts grouped by severity                            |
+| `TruthAlertTrigger`                                                 | `apps/web/src/share/components/block-ui/trigger/truth-alert-trigger.tsx` | Bell icon trigger with unread badge                                    |
+| `ResolutionPanel`                                                   | `apps/web/src/share/components/block-ui/panel/resolution-panel.tsx`      | Panel showing resolution suggestions                                   |
+| Command palette truth commands                                      | `apps/web/src/share/components/search/use-palette-commands.ts`           | Truth-related Cmd+K commands                                           |
 
 **ERP equivalent terms:** Integrity monitor, system health dashboard, business rule violations, reconciliation alerts, invariant checks.
 
 #### Concern C — Governance / policy / tooling references
 
-| Artifact | Location | What it does |
-|----------|----------|--------------|
-| Governed import specifiers | `tools/ui-drift/shared/index.ts` | `@afenda/core/truth`, `@afenda/core/truth-ui` in allowed list |
-| Ownership roots | `packages/shadcn-ui-deprecated/src/lib/constant/policy/ownership-policy.ts` | `packages/features/core/src/truth-ui` in `semanticOwnerRoots` |
-| Semantic domain adapters | `packages/shadcn-ui-deprecated/src/semantic/domain/truth-severity.ts` | Maps `TruthSeverity` to semantic badge/alert variants |
-| Component policy | `packages/shadcn-ui-deprecated/src/lib/constant/policy/component-policy.ts` | `truthMappingFromGovernedSource` field |
-| Metadata UI policy | `packages/shadcn-ui-deprecated/src/lib/constant/policy/metadata-ui.ts` | `"truth"` in allowed semantic sources |
-| Glossary | `docs/GLOSSARY.md` | Section 10: "Truth operating UI" |
-| i18n keys | `apps/web/src/share/i18n/` | `truth_alerts.*`, `user_menu.truth_status` |
-| `@afenda/core` package exports | `packages/features/core/package.json` | `"./truth"`, `"./truth-ui"` exports |
-| `@afenda/core` barrel | `packages/features/core/src/index.ts` | Re-exports both `truth` and `truth-ui` |
-| Domain constant barrel | `packages/shadcn-ui-deprecated/src/lib/constant/index.ts` | `export * from "./domain/truth-ui"` |
-| `TopNavFeatures` | `apps/web/src/share/components/navigation/top-nav/top-nav-bar.tsx` | `truthAlerts`, `resolutions` feature flags |
+| Artifact                       | Location                                                                    | What it does                                                  |
+| ------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Governed import specifiers     | _(historical; `tools/ui-drift` removed)_                                    | Re-home in ESLint / ast-grep when reintroducing truth UI      |
+| Ownership roots                | `packages/shadcn-ui-deprecated/src/lib/constant/policy/ownership-policy.ts` | `packages/features/core/src/truth-ui` in `semanticOwnerRoots` |
+| Semantic domain adapters       | `packages/shadcn-ui-deprecated/src/semantic/domain/truth-severity.ts`       | Maps `TruthSeverity` to semantic badge/alert variants         |
+| Component policy               | `packages/shadcn-ui-deprecated/src/lib/constant/policy/component-policy.ts` | `truthMappingFromGovernedSource` field                        |
+| Metadata UI policy             | `packages/shadcn-ui-deprecated/src/lib/constant/policy/metadata-ui.ts`      | `"truth"` in allowed semantic sources                         |
+| Glossary                       | `docs/GLOSSARY.md`                                                          | Section 10: "Truth operating UI"                              |
+| i18n keys                      | `apps/web/src/share/i18n/`                                                  | `truth_alerts.*`, `user_menu.truth_status`                    |
+| `@afenda/core` package exports | `packages/features/core/package.json`                                       | `"./truth"`, `"./truth-ui"` exports                           |
+| `@afenda/core` barrel          | `packages/features/core/src/index.ts`                                       | Re-exports both `truth` and `truth-ui`                        |
+| Domain constant barrel         | `packages/shadcn-ui-deprecated/src/lib/constant/index.ts`                   | `export * from "./domain/truth-ui"`                           |
+| `TopNavFeatures`               | `apps/web/src/share/components/navigation/top-nav/top-nav-bar.tsx`          | `truthAlerts`, `resolutions` feature flags                    |
 
 **The stub is not runtime code.** It is a single README inside `apps/web/src/features/truth/` that captures this knowledge so it survives the global removal.
 
@@ -127,9 +127,7 @@ Delete or strip **all** truth-related code, types, stores, components, imports, 
 
 **Governance / tooling:**
 
-- `tools/ui-drift/shared/index.ts` — remove truth specifiers and regex patterns
-- `scripts/check-ui-drift.ts` — strip truth-UI import check
-- `scripts/check-ui-drift-ast.ts` — strip truth-related AST rules
+- _(Repo no longer ships `tools/ui-drift` or the old drift CLI scripts; use ESLint + ast-grep for import fences.)_
 
 **Docs / i18n:**
 
@@ -149,7 +147,7 @@ After removal, the following will fail:
 - **TypeScript:** Every file that imported from `@afenda/core/truth` or `@afenda/core/truth-ui` — dozens of red squiggles.
 - **Runtime:** `TopNavBar` will lose scope switching, org/subsidiary pickers, health display, alert panels.
 - **Tests:** Truth-related test assertions will fail or be missing imports.
-- **Governance scripts:** `check-ui-drift` may reference removed specifiers.
+- **Governance scripts:** drift CLIs were removed; re-add checks under `scripts/` if needed.
 
 **This is intentional.** The breakage surface is the exact map of what needs reintegration under proper ERP terms.
 

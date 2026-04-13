@@ -23,13 +23,15 @@ Do not import `@afenda/_database`, do not deep-import from `packages/_database/s
 
 The package is domain-first, not function-first:
 
-| Domain          | Owns                                                                                                          |
-| --------------- | ------------------------------------------------------------------------------------------------------------- |
-| `tenancy`       | Tenants, tenant memberships, tenant-scope repository and policy helpers                                       |
-| `identity`      | Users and provider-neutral identity links                                                                     |
-| `authorization` | Permissions, roles, role assignment, membership access scopes, permission evaluation, and authorization seeds |
-| `organization`  | Legal entities, org units, and structural hierarchy                                                           |
-| `audit`         | Append-only audit evidence contracts                                                                          |
+| Domain          | Owns                                                                                                                                                                                                                                                |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tenancy`       | Tenants, tenant memberships, tenant-scope repository and policy helpers                                                                                                                                                                             |
+| `identity`      | Users and provider-neutral identity links                                                                                                                                                                                                           |
+| `authorization` | Permissions, roles, role assignment, membership access scopes, permission evaluation, and authorization seeds                                                                                                                                       |
+| `organization`  | Legal entities, org units, and structural hierarchy                                                                                                                                                                                                 |
+| `audit`         | `audit_logs`, catalogs, `read-model/` (admin view + investigation summary), retention policy + disposition + retention query, query/investigation services, serialization utils (`docs/AUDIT_ARCHITECTURE.md`; local notes under `src/audit/docs/`) |
+
+Import: `import { ... } from "@afenda/database"` or `@afenda/database/audit`.
 
 Package-wide `_shared`, `shared`, `common`, and `utils` folders are forbidden. Cross-domain DRY belongs only in `constants` and `helpers`, and those folders must remain infrastructure-only: no tenant, role, permission, org, or audit business semantics.
 

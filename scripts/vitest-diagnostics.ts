@@ -6,7 +6,7 @@
  *
  * Usage (from repo root):
  *   pnpm run script:vitest-diagnostics
- *   pnpm run script:vitest-diagnostics -- shadcn-ui
+ *   pnpm run script:vitest-diagnostics -- design-system
  *   pnpm run script:vitest-diagnostics -- web src/share/__test__/shell-registry.test.ts
  *   pnpm run script:vitest-diagnostics -- --all --json
  */
@@ -18,14 +18,14 @@ import { startVitest } from "vitest/node"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.join(__dirname, "..")
 
-type TargetKey = "shadcn-ui" | "vitest-config" | "web"
+type TargetKey = "design-system" | "vitest-config" | "web"
 
 const TARGETS: Record<
   TargetKey,
   { readonly relativeDir: string; readonly configFile: string }
 > = {
-  "shadcn-ui": {
-    relativeDir: "packages/shadcn-ui-deprecated",
+  "design-system": {
+    relativeDir: "packages/design-system",
     configFile: "vitest.config.ts",
   },
   "vitest-config": {
@@ -95,7 +95,7 @@ function parseArgs(argv: readonly string[]): {
     filters = positional
   } else if (first !== undefined) {
     console.warn(
-      `First argument "${first}" is not a known package key (${Object.keys(TARGETS).join(", ")}); treating as Vitest CLI filter.`,
+      `First argument "${first}" is not a known package key (${Object.keys(TARGETS).join(", ")}); treating as Vitest CLI filter.`
     )
     filters = positional
   }
@@ -105,7 +105,7 @@ function parseArgs(argv: readonly string[]): {
 
 async function diagnoseOne(
   key: TargetKey,
-  cliFilters: readonly string[],
+  cliFilters: readonly string[]
 ): Promise<RunDiag> {
   const meta = TARGETS[key]
   const packageRoot = path.join(repoRoot, meta.relativeDir)
@@ -120,7 +120,7 @@ async function diagnoseOne(
       // typings may not list it in some versions.
       { configFile: meta.configFile } as Record<string, unknown> as Parameters<
         typeof startVitest
-      >[3],
+      >[3]
     )
     const raw = vitest.state.getTestModules()
     const modules: ModuleDiag[] = raw.map((m) => ({
@@ -147,12 +147,14 @@ async function main(): Promise<void> {
   const { json, all, target, filters } = parseArgs(process.argv.slice(2))
   const keys: TargetKey[] = all
     ? (Object.keys(TARGETS) as TargetKey[])
-    : [target ?? "shadcn-ui"]
+    : [target ?? "design-system"]
 
   const results: RunDiag[] = []
   for (const k of keys) {
     if (!(k in TARGETS)) {
-      throw new Error(`Unknown target "${k}". Use: ${Object.keys(TARGETS).join(", ")}`)
+      throw new Error(
+        `Unknown target "${k}". Use: ${Object.keys(TARGETS).join(", ")}`
+      )
     }
     results.push(await diagnoseOne(k, filters))
   }
@@ -170,7 +172,9 @@ async function main(): Promise<void> {
       console.log(`— Vitest diagnostics: ${r.target}`)
       console.log(`  root:   ${r.packageRoot}`)
       console.log(`  config: ${r.configFile}`)
-      console.log(`  filters: ${r.cliFilters.length ? r.cliFilters.join(" ") : "(none)"}`)
+      console.log(
+        `  filters: ${r.cliFilters.length ? r.cliFilters.join(" ") : "(none)"}`
+      )
       console.log(`  files: ${r.testFiles}  failed files: ${r.failedFiles}`)
       if (r.failedFiles > 0) {
         for (const m of r.modules) {

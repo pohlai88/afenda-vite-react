@@ -84,10 +84,10 @@ pnpm --filter @afenda/database db:migrate
 tenants                 # Organizations (companies)
 ├── memberships         # User ↔ tenant ↔ roles
 ├── persons / users     # People (may link to auth subject)
-└── audit_logs          # Change history for compliance
+└── audit_events        # Durable audit evidence (see Audit architecture)
 ```
 
-**Roles and permissions (RBAC + PBAC):** model `permissions`, `roles`, `role_permissions`, and **many-to-many** `tenant_membership_roles` (RBAC assignment). Effective grants are the **union** of role permissions; APIs enforce **permission keys** (PBAC). See [Roles and permissions](./ROLES_AND_PERMISSIONS.md).
+**Audit:** schema and writer patterns follow [Audit architecture](./AUDIT_ARCHITECTURE.md) (evidence model, append-only doctrine, correlation, PII). **Roles and permissions (RBAC + PBAC):** model `permissions`, `roles`, `role_permissions`, and **many-to-many** `tenant_membership_roles` (RBAC assignment). Effective grants are the **union** of role permissions; APIs enforce **permission keys** (PBAC). See [Roles and permissions](./ROLES_AND_PERMISSIONS.md).
 
 Module-specific tables (finance, inventory, HR, etc.) should **reference `tenant_id`** (or equivalent) and live under their owning domain in **`packages/_database/src/<domain>/`**, with aggregate exports from **`packages/_database/src/schema/`**.
 
@@ -226,6 +226,7 @@ Automate URL retrieval in **your** infra scripts; do not commit secrets. If you 
 
 ## Related docs
 
+- [Audit architecture](./AUDIT_ARCHITECTURE.md) — audit doctrine, evidence dimensions, and governance expectations
 - [Architecture](./ARCHITECTURE.md) — where the API and DB sit in the monorepo
 - [Deployment](./DEPLOYMENT.md) — Vercel web client vs hosted Postgres (Neon, etc.)
 - [Integrations](./INTEGRATIONS.md) — storing OAuth tokens and sync control tables

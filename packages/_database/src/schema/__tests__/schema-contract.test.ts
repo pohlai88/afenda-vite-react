@@ -49,7 +49,9 @@ describe("domain schema contract", () => {
   })
 
   it("keeps audit append-only by omitting update and delete lifecycle columns", () => {
-    expect(auditLogs.createdAt.name).toBe("created_at")
+    expect(auditLogs.recordedAt.name).toBe("created_at")
+    expect(auditLogs.subjectType.name).toBe("entity_type")
+    expect(auditLogs.occurredAt.name).toBe("occurred_at")
     expect("updatedAt" in auditLogs).toBe(false)
     expect("deletedAt" in auditLogs).toBe(false)
   })

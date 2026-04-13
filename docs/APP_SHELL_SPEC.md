@@ -7,243 +7,118 @@ This document defines the app-shell structure and behavioral rules. Styling law 
 ## Scope
 
 - Covers authenticated ERP routes under `/app/*`.
-- Does not cover marketing/public pages.
-- Does not define backend authorization policy; it only defines UI navigation behavior.
+- Does not cover marketing/public pages (`/`).
+- Does not define backend authorization policy; shell navigation filtering is **advisory UX only**.
 
-## Current Baseline
+## Ownership (normative)
 
-- `apps/web/src/App.tsx` currently mounts providers and `RouterProvider`.
-- `apps/web/src/share/routing/feature-routes.tsx` is currently a flat route list.
-- `apps/web/src/share/client-store/app-shell-store.ts` already has shell-ready state:
-  - `sidebarOpen`
-  - `theme`
-  - `language`
-  - `currentUser.permissions`
+| Concern                                             | Owner                                                                            |
+| --------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Runtime frame (sidebar, header, breadcrumbs, slots) | [`apps/web/src/app/_platform/shell/`](../apps/web/src/app/_platform/shell/)      |
+| Navigation **shape** (types, IDs)                   | `shell/contract/`, `shell/constants/`                                            |
+| Navigation **config** (items, groups)               | `shell/policy/`                                                                  |
+| Pure visibility filtering                           | `shell/services/` (`filterShellNavigationItems`)                                 |
+| Authoritative authorization                         | Server / API / features — **not** the shell                                      |
+| UI primitives                                       | [`@afenda/design-system`](../packages/design-system/) (`ui-primitives`, `icons`) |
 
-## Shell Geometry (Normative)
+## Current baseline
 
-From `docs/DESIGN_SYSTEM.md`:
+- **Router:** [`apps/web/src/router.tsx`](../apps/web/src/router.tsx) calls `createBrowserRouter` with [`browserRoutes` from `src/routes/route-browser.tsx`](../apps/web/src/routes/route-browser.tsx) — marketing at `/`, authenticated shell at `/app/*`, transitional **`/app/login`** **outside** the shell layout.
+- **Shell layout:** `AppShellLayout` from `_platform/shell` composes `SidebarProvider`, sidebar, header, `Outlet`.
+- **Features:** Route targets use **public** feature exports only (e.g. `@/app/_features/_template`); shell does not import feature internals.
 
-- Sticky app header around `56px` (`h-14` baseline).
-- Sidebar supports expanded and collapsed modes.
-- Main content uses consistent padding around `24px` (`p-6` baseline).
-
-## Route Architecture
+## Route architecture
 
 ### Mandatory
 
-- Use a parent layout route for `/app/*` and render children through `Outlet`.
-- Keep `/app/login` outside the shell layout.
-- Use relative child paths inside the `/app` route node.
+- Parent layout route for `/app/*` with `Outlet`.
+- **`/app/login`** stays **outside** `AppShellLayout` until a formal auth runtime replaces the transitional placeholder.
+- Child routes under `/app` use relative paths (`events`, `audit`, `partners`, …).
+- Route **`handle.shell`** carries [`ShellMetadata`](../apps/web/src/app/_platform/shell/contract/shell-metadata-contract.ts) (from [`ShellRouteMetadata`](../apps/web/src/app/_platform/shell/contract/shell-route-metadata-contract.ts) in route definitions — see [`shell-route-definitions.ts`](../apps/web/src/app/_platform/shell/routes/shell-route-definitions.ts)).
 
-### Approved Initial Implementation
+### Reference shape (illustrative)
+
+The live router is the source of truth; it follows this structure:
 
 ```tsx
-export const featureRoutes: RouteObject[] = [
-  { path: '/app/login', element: <LoginView /> },
+// Illustrative — see apps/web/src/routes/route-browser.tsx
+;[
+  { path: "/", element: <Home /> },
+  { path: "/app/login", element: <AppLogin /> },
   {
-    path: '/app',
-    element: <ErpLayout />,
+    path: "/app",
+    element: <AppShellLayout />,
+    handle: {
+      shell: {
+        /* ShellMetadata */
+      },
+    },
     children: [
-      { index: true, element: <Navigate to="dashboard" replace /> },
-      { path: 'dashboard', element: <DashboardView /> },
-      { path: 'inventory', element: <InventoryView /> },
-      { path: 'sales', element: <SalesView /> },
-      { path: 'customers', element: <CustomersView /> },
-      { path: 'employees', element: <EmployeesView /> },
-      { path: 'finance', element: <FinanceView /> },
-      { path: 'invoices', element: <InvoiceView /> },
-      { path: 'allocations', element: <AllocationView /> },
-      { path: 'settlements', element: <SettlementView /> },
-      { path: 'reports', element: <ReportsView /> },
-      { path: 'settings', element: <SettingsView /> },
-      { path: '*', element: <NotFoundView /> },
+      { index: true, element: <Navigate to="events" replace /> },
+      {
+        path: "events",
+        element: <FeatureTemplateView slug="events" />,
+        handle: {
+          shell: {
+            /* … */
+          },
+        },
+      },
+      { path: "*", element: <AppShellNotFound /> },
     ],
   },
 ]
 ```
 
-## Provider Hierarchy
+## Provider hierarchy
 
-### Mandatory
+- **`SidebarProvider`** is scoped to the `/app` layout route only (not app-wide `App.tsx`).
+- **`App.tsx`** remains minimal: `Suspense` + `RouterProvider` (add theme/query providers when adopted).
 
-- `SidebarProvider` must be scoped to ERP layout routes, not app-wide.
-- Theme and data providers remain app-level.
+## Design system consumption
 
-### Approved Initial Implementation
+- Shell chrome is built from **`@afenda/design-system/ui-primitives`** (e.g. `Sidebar*`, `Breadcrumb*`, `Button`, `Separator`) and **`@afenda/design-system/icons`** via a small shell icon map.
+- Do **not** import `packages/design-system/.idea/*` or `@afenda/design-system/lib/newyork-v4/*` from app code.
 
-`App.tsx` (app-level):
+## Sidebar / header / breadcrumb
 
-- `ThemeProvider`
-- `QueryProvider`
-- `RouterProvider`
-- `Toaster`
+- **Sidebar:** Data-driven from `shellNavigationItems` in `shell/policy/`; advisory filtering via `filterShellNavigationItems`.
+- **Header:** `SidebarTrigger`, `AppShellBreadcrumb`, `LanguageSwitcher` (`_platform/i18n`), optional slot placeholders.
+- **Breadcrumbs:** `ShellRouteMetadata` / `handle.shell` (`ShellMetadata.breadcrumbs`) → `resolveShellBreadcrumbs` → `useShellBreadcrumbs` → `AppShellBreadcrumb` (see `shell/README.md`, `shell/routes/shell-route-definitions.ts`).
 
-`ErpLayout.tsx` (ERP-only):
+## Permission gating
 
-- `SidebarProvider`
-- `AppSidebar`
-- `SidebarInset`
-- `AppHeader`
-- `Outlet`
+Per `docs/ROLES_AND_PERMISSIONS.md`:
 
-## Sidebar Architecture
+- Hide sidebar entries when optional `permissionKeys` are not satisfied (shell service) — **UX only**.
+- Server/API authorization remains authoritative.
 
-Use shadcn Sidebar primitives:
+## i18n
 
-- `Sidebar`
-- `SidebarHeader`
-- `SidebarContent`
-- `SidebarGroup`
-- `SidebarFooter`
-- `SidebarRail`
-- `SidebarTrigger`
+- Shell chrome strings live in the **`shell`** namespace: [`apps/web/src/app/_platform/i18n/locales/*/shell.json`](../apps/web/src/app/_platform/i18n/locales/en/shell.json).
+- Keys such as `nav.groups.*`, `nav.items.*`, `breadcrumb.*` are used by route metadata and navigation policy.
 
-### Mandatory
-
-- Sidebar uses controlled `open` state from `useAppShellStore`.
-- Active route state is reflected via `isActive`.
-- Use `Link` from `react-router-dom` with `asChild` composition.
-- Permission-gate menu visibility by user permissions.
-
-### Approved Initial Navigation Groups
-
-- Main: Dashboard, Inventory, Sales, Customers
-- Finance: Finance, Invoices, Allocations, Settlements
-- Management: Employees, Reports, Settings
-
-### Permission Gating
-
-Per `docs/ROLES_AND_PERMISSIONS.md` section on UI navigation:
-
-- Hide sidebar entries if the user lacks required permission keys.
-- Treat this as UX mirroring only; server authorization remains authoritative.
-
-## Header Architecture
-
-### Mandatory
-
-- Sticky header in shell inset area.
-- Include sidebar toggle trigger.
-- Include breadcrumb context for route depth.
-
-### Approved Initial Composition
-
-- `SidebarTrigger`
-- Vertical `Separator`
-- `AppBreadcrumb`
-- Right controls: `LanguageSwitcher`, `ThemeToggle`, `UserMenu`
-
-## Breadcrumb Behavior
-
-### Mandatory
-
-- Breadcrumb labels are route-aware and i18n-backed.
-- Use breadcrumb context for deeper navigation paths.
-
-### Approved Initial Behavior
-
-- Derive segments from router location/matches.
-- Map route keys to `shell` namespace labels.
-- Use shadcn `Breadcrumb` primitives.
-
-## i18n Requirements
-
-### Mandatory
-
-Extend `shell.json` in all supported locales (`en`, `ms`, `id`, `vi`) with:
-
-- `nav.*` labels for sidebar groups and links
-- user-menu action labels
-- breadcrumb root labels where needed
-
-## File Topology
-
-Expected component structure across two workspaces:
+## File topology (current)
 
 ```text
-packages/shadcn-ui-deprecated/src/
-  components/ui/
-    sidebar.tsx          # shadcn primitive
-    breadcrumb.tsx       # shadcn primitive
-    avatar.tsx           # shadcn primitive
-    dropdown-menu.tsx    # shadcn primitive
-    collapsible.tsx      # shadcn primitive
-    sheet.tsx            # shadcn primitive
-    tooltip.tsx          # shadcn primitive
-    skeleton.tsx         # shadcn primitive
-    button.tsx           # shadcn primitive
-    separator.tsx        # shadcn primitive
-    badge.tsx            # shadcn primitive
-  lib/
-    utils.ts             # cn() helper
-  hooks/
-  index.css              # package entry CSS (see components.json)
-
-apps/web/src/share/components/
-  layout/
-    ErpLayout.tsx        # app shell layout (app-specific)
-    AppSidebar.tsx       # composed sidebar (app-specific)
-    AppHeader.tsx        # composed header (app-specific)
-    AppBreadcrumb.tsx    # composed breadcrumb (app-specific)
-    ThemeToggle.tsx      # theme toggle (app-specific)
-    UserMenu.tsx         # user menu (app-specific)
-    nav-data.ts          # navigation config (app-specific)
-    index.ts
+apps/web/src/app/_platform/shell/
+├── components/       # AppShellLayout, AppShellSidebar, AppShellHeader, AppShellBreadcrumb
+├── contract/         # ShellRouteMetadata, ShellMetadata, navigation contracts, slot IDs
+├── constants/        # Group/item IDs, lifecycle, icon names
+├── hooks/            # useShellNavigation, useShellBreadcrumbs, …
+├── policy/           # shellNavigationItems, slot flags
+├── services/         # Pure filter + breadcrumb resolution
+├── types/            # Route handle augmentation, i18n key unions
+├── __tests__/
+├── README.md
+└── index.ts          # Public API
 ```
 
-## Decision Classification
-
-### Mandatory (stable)
-
-- Parent `/app` layout route with `Outlet`
-- Login route outside shell layout
-- Sidebar state controlled by shell store
-- Permission-filtered nav rendering
-- i18n-backed nav labels in all locales
-
-### Approved Initial Implementation (can evolve)
-
-- Current group taxonomy (Main/Finance/Management)
-- Specific icon mapping per route
-- Exact header control order
-- Use of collapsed icon sidebar mode
-- Specific breadcrumb label strategy
-
-### Can Evolve with ADR
-
-- Server-driven nav configuration
-- Multi-tenant nav personalization model
-- Advanced shell responsiveness and mobile patterns
-- Cross-module breadcrumb metadata system
-
-## Required Component Dependencies
-
-Required shadcn components for shell:
-
-- `sidebar`
-- `breadcrumb`
-- `dropdown-menu`
-- `avatar`
-- `collapsible`
-- `sheet`
-- `tooltip`
-- `skeleton`
-
-## Acceptance Criteria
-
-1. Every `/app/*` route (except `/app/login`) renders inside `ErpLayout`.
-2. Sidebar collapse state persists across reload.
-3. Sidebar entries hide when permission keys are missing.
-4. Header remains sticky and includes toggle + breadcrumb + controls.
-5. Shell i18n labels resolve in all supported locales.
-6. Layout code lives under `share/components/layout` and UI primitives under `packages/shadcn-ui-deprecated/src/components/ui`.
-
-## Related Documents
+## Related documents
 
 - `docs/COMPONENTS_AND_STYLING.md`
 - `docs/TAILWIND_SHADCN_MIGRATION_PLAN.md`
 - `docs/DESIGN_SYSTEM.md`
-- `docs/BRAND_GUIDELINES.md`
 - `docs/ROLES_AND_PERMISSIONS.md`
 - `docs/PROJECT_STRUCTURE.md`
+- [`apps/web/src/app/_platform/shell/README.md`](../apps/web/src/app/_platform/shell/README.md)

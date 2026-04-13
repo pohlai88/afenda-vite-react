@@ -18,6 +18,7 @@ Monorepo guides live under repo-root **`docs/`** (human-readable index: [`docs/R
 | Roles and permissions (RBAC + PBAC)                            | [`docs/ROLES_AND_PERMISSIONS.md`](docs/ROLES_AND_PERMISSIONS.md)         |
 | Third-party integrations (OAuth APIs, webhooks)                | [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md)                           |
 | Database (PostgreSQL + Drizzle, server-side)                   | [`docs/DATABASE.md`](docs/DATABASE.md)                                   |
+| Audit evidence model (doctrine, governance)                    | [`docs/AUDIT_ARCHITECTURE.md`](docs/AUDIT_ARCHITECTURE.md)               |
 | HTTP API (REST contract, tenant routes)                        | [`docs/API.md`](docs/API.md)                                             |
 | Documentation scope (normative vs optional; OpenAPI)           | [`docs/DOCUMENTATION_SCOPE.md`](docs/DOCUMENTATION_SCOPE.md)             |
 | Dependency stack guides (tooling, UI, infra, planned packages) | [`docs/dependencies/README.md`](docs/dependencies/README.md)             |

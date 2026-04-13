@@ -5,7 +5,7 @@ const baseConfig = createConfig({ rootDir: import.meta.dirname })
 export default [
   ...baseConfig,
   {
-    name: "ui-drift/import-fence",
+    name: "governed-ui/import-fence",
     files: ["apps/**/*.{js,jsx,ts,tsx}", "packages/**/*.{js,jsx,ts,tsx}"],
     ignores: [
       "packages/design-system/**/*.{js,jsx,ts,tsx}",
