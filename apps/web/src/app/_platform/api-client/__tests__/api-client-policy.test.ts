@@ -30,7 +30,7 @@ describe("_platform/api-client", () => {
     expect(apiClientCapabilityContract.mayImportFeatureRoots).toBe(true)
     expect(apiClientCapabilityContract.mayImportFeatureInternals).toBe(false)
     expect(apiClientPlatformPolicy.featureInternalImportPattern).toBe(
-      "@/app/_features/*/*"
+      "app/_features/*/*"
     )
   })
 

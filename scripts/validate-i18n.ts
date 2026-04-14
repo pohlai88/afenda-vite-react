@@ -283,7 +283,7 @@ const HARDCODED_SCAN_DIRS = ["apps/web/src/pages", "apps/web/src/app"]
 const HARDCODED_SKIP_FILES = [
   "router.tsx",
   "feature-routes.tsx",
-  "marketing-routes.tsx",
+  "route-marketing.tsx",
   "query-provider.tsx",
 ]
 

@@ -26,6 +26,6 @@ export const platformCapabilityPolicy = {
   ],
   dependencyDirection:
     "_features may import _platform public APIs; _platform must not import _features internals.",
-  featureInternalImportPattern: "@/app/_features/*/*",
-  featureRootImportPattern: "@/app/_features/*",
+  featureInternalImportPattern: "app/_features/*/*",
+  featureRootImportPattern: "app/_features/*",
 } as const

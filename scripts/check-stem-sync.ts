@@ -1,7 +1,7 @@
 /**
  * Stem Synchronization Check
  *
- * Parses `@theme inline { ... }` from `apps/web/src/index.css` to extract all
+ * Parses `@theme static { ... }` from `theme-tokens-light.css` to extract all
  * `--color-*` variable declarations and compares them against the
  * `SEMANTIC_COLOR_STEMS` allowlist in the ESLint plugin.
  *
@@ -28,22 +28,30 @@ const { SEMANTIC_COLOR_STEMS } = require(
   '../packages/eslint-config/afenda-ui-plugin/semantic-color-stems.cjs'
 ) as { SEMANTIC_COLOR_STEMS: Set<string> }
 
-// ── Parse @theme inline from index.css ────────────────────────────────────────
+// ── Parse @theme static from theme-tokens-light.css ───────────────────────────
 
-const cssPath = join(repoRoot, 'apps', 'web', 'src', 'index.css')
+const cssPath = join(
+  repoRoot,
+  'packages',
+  'design-system',
+  'design-architecture',
+  'src',
+  'theme',
+  'theme-tokens-light.css',
+)
 const css = readFileSync(cssPath, 'utf8')
 
 /**
- * Extracts all `--color-*` stems from the first `@theme inline { ... }` block.
+ * Extracts all `--color-*` stems from the first `@theme static { ... }` block.
  * Handles nested braces (e.g. Tailwind font definitions within @theme).
  */
 function extractThemeInlineStems(source: string): Set<string> {
   const stems = new Set<string>()
 
-  // Find the @theme inline block
-  const themeStart = source.indexOf('@theme inline {')
+  // Find the @theme static block (canonical light `--color-*` keys)
+  const themeStart = source.indexOf('@theme static {')
   if (themeStart === -1) {
-    console.error('ERROR: Could not find "@theme inline {" in index.css')
+    console.error('ERROR: Could not find "@theme static {" in theme-tokens-light.css')
     process.exit(1)
   }
 
@@ -98,17 +106,18 @@ let hasErrors = false
 
 if (unguarded.length > 0) {
   hasErrors = true
-  console.error(`\n[UNGUARDED] ${unguarded.length} color stem(s) in @theme inline but missing from SEMANTIC_COLOR_STEMS:`)
+  console.error(`\n[UNGUARDED] ${unguarded.length} color stem(s) in @theme static but missing from SEMANTIC_COLOR_STEMS:`)
   console.error('  These stems have no lint coverage — the semantic-token-allowlist rule will not')
   console.error('  catch misuse of these tokens. Add them to:')
-  console.error('  packages/eslint-config/afenda-ui-plugin/semantic-color-stems.cjs\n')
+  console.error('  packages/eslint-config/afenda-ui-plugin/semantic-color-stems.cjs')
+  console.error('  (or add --color-* to theme-tokens-light.css @theme static if intentional)\n')
   for (const stem of unguarded.sort()) {
     console.error(`  UNGUARDED  '${stem}'`)
   }
 }
 
 if (stale.length > 0) {
-  console.warn(`\n[STALE] ${stale.length} color stem(s) in SEMANTIC_COLOR_STEMS but missing from @theme inline:`)
+  console.warn(`\n[STALE] ${stale.length} color stem(s) in SEMANTIC_COLOR_STEMS but missing from @theme static:`)
   console.warn('  These stems will cause false positives in the semantic-token-allowlist rule.')
   console.warn('  If the token was removed from the theme, remove it from the allowlist too:')
   console.warn('  packages/eslint-config/afenda-ui-plugin/semantic-color-stems.cjs\n')
@@ -118,7 +127,7 @@ if (stale.length > 0) {
 }
 
 if (!hasErrors && stale.length === 0) {
-  console.log(`[OK] ${themeStems.size} @theme inline stems — all accounted for in SEMANTIC_COLOR_STEMS (${allowlistStems.size} total)`)
+  console.log(`[OK] ${themeStems.size} @theme static stems — all accounted for in SEMANTIC_COLOR_STEMS (${allowlistStems.size} total)`)
 }
 
 if (hasErrors) {

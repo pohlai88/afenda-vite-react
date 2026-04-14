@@ -108,7 +108,7 @@ export function FeatureTemplateView({
           <div className="mt-3 grid gap-2">
             {commands.map((command) => (
               <button
-                className="rounded-md border border-border px-3 py-2 text-left text-sm focus-ring hover:bg-accent hover:text-accent-foreground"
+                className="group rounded-md border border-border px-3 py-2 text-left text-sm focus-ring hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground"
                 key={command.id}
                 onClick={() => {
                   runCommand(command.id)
@@ -116,7 +116,7 @@ export function FeatureTemplateView({
                 type="button"
               >
                 <span className="block font-medium">{command.label}</span>
-                <span className="mt-1 block text-xs text-muted-foreground">
+                <span className="mt-1 block text-xs text-muted-foreground group-hover:text-accent-foreground/80 group-focus-visible:text-accent-foreground/80">
                   {command.description}
                 </span>
               </button>

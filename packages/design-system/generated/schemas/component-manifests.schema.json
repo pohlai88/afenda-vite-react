@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Component Manifests Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "package", "scope", "components"],
+  "properties": {
+    "version": { "const": 1 },
+    "package": { "const": "@afenda/design-system" },
+    "scope": { "const": "ui-primitives" },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "component",
+          "sourceFile",
+          "manifestFile",
+          "owner",
+          "lifecycle",
+          "purpose",
+          "fixtures",
+          "exports",
+          "dataSlots",
+          "forwardRef",
+          "classSignals",
+          "cvaDefinitionCount"
+        ],
+        "properties": {
+          "component": { "type": "string" },
+          "sourceFile": { "type": "string" },
+          "manifestFile": { "type": "string" },
+          "owner": { "type": "string" },
+          "lifecycle": {
+            "type": "string",
+            "enum": ["draft", "beta", "stable", "deprecated"]
+          },
+          "purpose": { "type": "string" },
+          "fixtures": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "a11y": {
+            "type": "object",
+            "additionalProperties": { "type": "boolean" }
+          },
+          "requiredCoverage": {
+            "type": "object",
+            "additionalProperties": { "type": "boolean" }
+          },
+          "policy": {
+            "type": "object",
+            "additionalProperties": { "type": "boolean" }
+          },
+          "deprecation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "replacement": { "type": "string" },
+              "since": { "type": "string" },
+              "removeAfter": { "type": "string" },
+              "allowlist": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          "notes": { "type": "string" },
+          "exports": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "dataSlots": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "forwardRef": { "type": "boolean" },
+          "classSignals": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "usesCva",
+              "usesCn",
+              "hasTokenClasses",
+              "hasRawPaletteClasses",
+              "hasArbitraryColorClasses",
+              "hasInlineStyleAttribute"
+            ],
+            "properties": {
+              "usesCva": { "type": "boolean" },
+              "usesCn": { "type": "boolean" },
+              "hasTokenClasses": { "type": "boolean" },
+              "hasRawPaletteClasses": { "type": "boolean" },
+              "hasArbitraryColorClasses": { "type": "boolean" },
+              "hasInlineStyleAttribute": { "type": "boolean" }
+            }
+          },
+          "cvaDefinitionCount": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}
+

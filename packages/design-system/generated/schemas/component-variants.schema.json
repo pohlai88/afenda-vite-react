@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Component Variants Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "package", "scope", "components"],
+  "properties": {
+    "version": { "const": 1 },
+    "package": { "const": "@afenda/design-system" },
+    "scope": { "const": "ui-primitives" },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["component", "sourceFile", "cvaDefinitions"],
+        "properties": {
+          "component": { "type": "string" },
+          "sourceFile": { "type": "string" },
+          "cvaDefinitions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["variableName", "variants", "defaultVariants"],
+              "properties": {
+                "variableName": {
+                  "oneOf": [{ "type": "string" }, { "type": "null" }]
+                },
+                "variants": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                },
+                "defaultVariants": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

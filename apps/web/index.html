@@ -14,18 +14,23 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Default until React syncs from resolved theme (see AppThemeProvider ThemeColorMeta). -->
+    <!-- Default until React syncs from resolved theme (see ThemeColorMeta on each route branch). -->
     <meta name="theme-color" content="#0a0a0a" />
     <title>afenda-react-vite</title>
-    <!-- Sync theme class before paint — must match ThemeProvider + App defaultTheme + storageKey. -->
+    <!--
+      Sync theme class before paint. Key must match the active route:
+      - `/app/*` → vite-ui-theme (AppThemeProvider)
+      - public marketing → vite-ui-marketing-theme (MarketingThemeProvider)
+    -->
     <script>
       ;(function () {
-        var key = "vite-ui-theme"
+        var isApp = /^\/app(\/|$)/.test(location.pathname)
+        var key = isApp ? "vite-ui-theme" : "vite-ui-marketing-theme"
         var stored = localStorage.getItem(key)
         var theme =
           stored === "dark" || stored === "light" || stored === "system"
             ? stored
-            : "dark"
+            : "system"
         var root = document.documentElement
         root.classList.remove("light", "dark")
         if (theme === "system") {

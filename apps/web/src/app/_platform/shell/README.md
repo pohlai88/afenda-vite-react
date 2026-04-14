@@ -9,7 +9,7 @@ Authenticated **runtime frame** for `/app/*`: sidebar, header, breadcrumbs, and 
 - Shell **renders** platform chrome and **composes** routes via `Outlet`. It does **not** own business logic, authoritative authorization, or feature-internal modules.
 - Shell consumes **`@afenda/design-system`** public APIs only (`ui-primitives`, `icons`). External UI examples are **non-authoritative** inspiration.
 - **Navigation visibility** filtering in the shell is **advisory only**. API/server authorization remains authoritative.
-- Shell **must not** import `packages/design-system/.idea/*`, `@afenda/design-system/lib/newyork-v4/*`, `@afenda/database`, `drizzle-orm`, `pg`, feature internals, or feature domain services. Compose features **only** through public package roots or explicit route adapters.
+- Shell **must not** import `packages/design-system/.idea/*`, `@afenda/database`, `drizzle-orm`, `pg`, feature internals, or feature domain services. Compose features **only** through public package roots or explicit route adapters.
 
 ## `contract/` vs `policy/`
 

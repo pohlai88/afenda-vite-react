@@ -1,0 +1,399 @@
+{
+  "version": 1,
+  "package": "@afenda/design-system",
+  "scope": "ui-primitives",
+  "components": [
+    {
+      "component": "accordion",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "alert",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "alert-dialog",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "aspect-ratio",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "avatar",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "badge",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "breadcrumb",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "button",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "button-group",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "calendar",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "card",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "carousel",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "chart",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "checkbox",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "collapsible",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "combobox",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "command",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "context-menu",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "dialog",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "direction",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "drawer",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "dropdown-menu",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "empty",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "field",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "form",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "hover-card",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "input",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "input-group",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "input-otp",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "item",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "kbd",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "label",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "menubar",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "native-select",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "navigation-menu",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "pagination",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "popover",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "progress",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "radio-group",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "resizable",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "scroll-area",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "select",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "separator",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "sheet",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "sidebar",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "skeleton",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "slider",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "sonner",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "spinner",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "switch",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "table",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "tabs",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "textarea",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "toggle",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "toggle-group",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    },
+    {
+      "component": "tooltip",
+      "lifecycle": "stable",
+      "owner": "design-system",
+      "fixtureCount": 0,
+      "fixtures": []
+    }
+  ]
+}

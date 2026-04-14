@@ -22,7 +22,8 @@ const coverageInclude = [
   "icons/icon-policy.ts",
   "icons/libraries.ts",
   "utils/cn.ts",
-  "design-architecture/src/tokenization/**/*.ts",
+  "design-architecture/scripts/lib/design-system-import-allowlist.ts",
+  "design-architecture/scripts/lib/design-system-deprecated-surfaces.ts",
 ] as const
 
 const coverageExclude = [

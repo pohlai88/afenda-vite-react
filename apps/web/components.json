@@ -12,10 +12,10 @@
   "iconLibrary": "lucide",
   "rtl": false,
   "aliases": {
-    "components": "@/share/components",
+    "components": "src/share/components",
     "utils": "@afenda/shadcn-ui-deprecated/lib/utils",
-    "hooks": "@/share/react-hooks",
-    "lib": "@/share/lib",
+    "hooks": "src/share/react-hooks",
+    "lib": "src/share/lib",
     "ui": "@afenda/shadcn-ui-deprecated/components/ui"
   }
 }

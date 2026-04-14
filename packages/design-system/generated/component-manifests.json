@@ -1,0 +1,1914 @@
+{
+  "version": 1,
+  "package": "@afenda/design-system",
+  "scope": "ui-primitives",
+  "components": [
+    {
+      "component": "accordion",
+      "sourceFile": "ui-primitives/accordion.tsx",
+      "manifestFile": "ui-primitives/accordion.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the accordion primitive.",
+      "fixtures": [],
+      "exports": [
+        "Accordion",
+        "AccordionContent",
+        "AccordionItem",
+        "AccordionTrigger"
+      ],
+      "dataSlots": [
+        "accordion",
+        "accordion-content",
+        "accordion-item",
+        "accordion-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "alert",
+      "sourceFile": "ui-primitives/alert.tsx",
+      "manifestFile": "ui-primitives/alert.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the alert primitive.",
+      "fixtures": [],
+      "exports": [
+        "Alert",
+        "AlertDescription",
+        "AlertTitle"
+      ],
+      "dataSlots": [
+        "alert",
+        "alert-description",
+        "alert-title"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "alert-dialog",
+      "sourceFile": "ui-primitives/alert-dialog.tsx",
+      "manifestFile": "ui-primitives/alert-dialog.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the alert-dialog primitive.",
+      "fixtures": [],
+      "exports": [
+        "AlertDialog",
+        "AlertDialogAction",
+        "AlertDialogCancel",
+        "AlertDialogContent",
+        "AlertDialogDescription",
+        "AlertDialogFooter",
+        "AlertDialogHeader",
+        "AlertDialogMedia",
+        "AlertDialogOverlay",
+        "AlertDialogPortal",
+        "AlertDialogTitle",
+        "AlertDialogTrigger"
+      ],
+      "dataSlots": [
+        "alert-dialog",
+        "alert-dialog-action",
+        "alert-dialog-cancel",
+        "alert-dialog-content",
+        "alert-dialog-description",
+        "alert-dialog-footer",
+        "alert-dialog-header",
+        "alert-dialog-media",
+        "alert-dialog-overlay",
+        "alert-dialog-portal",
+        "alert-dialog-title",
+        "alert-dialog-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "aspect-ratio",
+      "sourceFile": "ui-primitives/aspect-ratio.tsx",
+      "manifestFile": "ui-primitives/aspect-ratio.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the aspect-ratio primitive.",
+      "fixtures": [],
+      "exports": [
+        "AspectRatio"
+      ],
+      "dataSlots": [
+        "aspect-ratio"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": false,
+        "hasTokenClasses": false,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "avatar",
+      "sourceFile": "ui-primitives/avatar.tsx",
+      "manifestFile": "ui-primitives/avatar.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the avatar primitive.",
+      "fixtures": [],
+      "exports": [
+        "Avatar",
+        "AvatarBadge",
+        "AvatarFallback",
+        "AvatarGroup",
+        "AvatarGroupCount",
+        "AvatarImage"
+      ],
+      "dataSlots": [
+        "avatar",
+        "avatar-badge",
+        "avatar-fallback",
+        "avatar-group",
+        "avatar-group-count",
+        "avatar-image"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "badge",
+      "sourceFile": "ui-primitives/badge.tsx",
+      "manifestFile": "ui-primitives/badge.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the badge primitive.",
+      "fixtures": [],
+      "exports": [
+        "Badge",
+        "badgeVariants"
+      ],
+      "dataSlots": [
+        "badge"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "breadcrumb",
+      "sourceFile": "ui-primitives/breadcrumb.tsx",
+      "manifestFile": "ui-primitives/breadcrumb.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the breadcrumb primitive.",
+      "fixtures": [],
+      "exports": [
+        "Breadcrumb",
+        "BreadcrumbEllipsis",
+        "BreadcrumbItem",
+        "BreadcrumbLink",
+        "BreadcrumbList",
+        "BreadcrumbPage",
+        "BreadcrumbSeparator"
+      ],
+      "dataSlots": [
+        "breadcrumb",
+        "breadcrumb-ellipsis",
+        "breadcrumb-item",
+        "breadcrumb-link",
+        "breadcrumb-list",
+        "breadcrumb-page",
+        "breadcrumb-separator"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "button",
+      "sourceFile": "ui-primitives/button.tsx",
+      "manifestFile": "ui-primitives/button.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the button primitive.",
+      "fixtures": [],
+      "exports": [
+        "Button",
+        "buttonVariants"
+      ],
+      "dataSlots": [
+        "button"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "button-group",
+      "sourceFile": "ui-primitives/button-group.tsx",
+      "manifestFile": "ui-primitives/button-group.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the button-group primitive.",
+      "fixtures": [],
+      "exports": [
+        "ButtonGroup",
+        "ButtonGroupSeparator",
+        "ButtonGroupText",
+        "buttonGroupVariants"
+      ],
+      "dataSlots": [
+        "button-group",
+        "button-group-separator"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "calendar",
+      "sourceFile": "ui-primitives/calendar.tsx",
+      "manifestFile": "ui-primitives/calendar.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the calendar primitive.",
+      "fixtures": [],
+      "exports": [
+        "Calendar",
+        "CalendarDayButton"
+      ],
+      "dataSlots": [
+        "calendar"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "card",
+      "sourceFile": "ui-primitives/card.tsx",
+      "manifestFile": "ui-primitives/card.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the card primitive.",
+      "fixtures": [],
+      "exports": [
+        "Card",
+        "CardAction",
+        "CardContent",
+        "CardDescription",
+        "CardFooter",
+        "CardHeader",
+        "CardTitle"
+      ],
+      "dataSlots": [
+        "card",
+        "card-action",
+        "card-content",
+        "card-description",
+        "card-footer",
+        "card-header",
+        "card-title"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "carousel",
+      "sourceFile": "ui-primitives/carousel.tsx",
+      "manifestFile": "ui-primitives/carousel.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the carousel primitive.",
+      "fixtures": [],
+      "exports": [
+        "Carousel",
+        "CarouselApi",
+        "CarouselContent",
+        "CarouselItem",
+        "CarouselNext",
+        "CarouselPrevious"
+      ],
+      "dataSlots": [
+        "carousel",
+        "carousel-content",
+        "carousel-item",
+        "carousel-next",
+        "carousel-previous"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": false,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "chart",
+      "sourceFile": "ui-primitives/chart.tsx",
+      "manifestFile": "ui-primitives/chart.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the chart primitive.",
+      "fixtures": [],
+      "exports": [
+        "ChartContainer",
+        "ChartLegend",
+        "ChartLegendContent",
+        "ChartStyle",
+        "ChartTooltip",
+        "ChartTooltipContent"
+      ],
+      "dataSlots": [
+        "chart"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": true
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "checkbox",
+      "sourceFile": "ui-primitives/checkbox.tsx",
+      "manifestFile": "ui-primitives/checkbox.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the checkbox primitive.",
+      "fixtures": [],
+      "exports": [
+        "Checkbox"
+      ],
+      "dataSlots": [
+        "checkbox",
+        "checkbox-indicator"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "collapsible",
+      "sourceFile": "ui-primitives/collapsible.tsx",
+      "manifestFile": "ui-primitives/collapsible.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the collapsible primitive.",
+      "fixtures": [],
+      "exports": [
+        "Collapsible",
+        "CollapsibleContent",
+        "CollapsibleTrigger"
+      ],
+      "dataSlots": [
+        "collapsible",
+        "collapsible-content",
+        "collapsible-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": false,
+        "hasTokenClasses": false,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "combobox",
+      "sourceFile": "ui-primitives/combobox.tsx",
+      "manifestFile": "ui-primitives/combobox.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the combobox primitive.",
+      "fixtures": [],
+      "exports": [
+        "Combobox",
+        "ComboboxChip",
+        "ComboboxChips",
+        "ComboboxChipsInput",
+        "ComboboxCollection",
+        "ComboboxContent",
+        "ComboboxEmpty",
+        "ComboboxGroup",
+        "ComboboxInput",
+        "ComboboxItem",
+        "ComboboxLabel",
+        "ComboboxList",
+        "ComboboxSeparator",
+        "ComboboxTrigger",
+        "ComboboxValue",
+        "useComboboxAnchor"
+      ],
+      "dataSlots": [
+        "combobox-chip",
+        "combobox-chip-input",
+        "combobox-chip-remove",
+        "combobox-chips",
+        "combobox-clear",
+        "combobox-collection",
+        "combobox-content",
+        "combobox-empty",
+        "combobox-group",
+        "combobox-item",
+        "combobox-item-indicator",
+        "combobox-label",
+        "combobox-list",
+        "combobox-separator",
+        "combobox-trigger",
+        "combobox-trigger-icon",
+        "combobox-value",
+        "input-group-button"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "command",
+      "sourceFile": "ui-primitives/command.tsx",
+      "manifestFile": "ui-primitives/command.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the command primitive.",
+      "fixtures": [],
+      "exports": [
+        "Command",
+        "CommandDialog",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "CommandSeparator",
+        "CommandShortcut"
+      ],
+      "dataSlots": [
+        "command",
+        "command-empty",
+        "command-group",
+        "command-input",
+        "command-input-wrapper",
+        "command-item",
+        "command-list",
+        "command-separator",
+        "command-shortcut"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "context-menu",
+      "sourceFile": "ui-primitives/context-menu.tsx",
+      "manifestFile": "ui-primitives/context-menu.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the context-menu primitive.",
+      "fixtures": [],
+      "exports": [
+        "ContextMenu",
+        "ContextMenuCheckboxItem",
+        "ContextMenuContent",
+        "ContextMenuGroup",
+        "ContextMenuItem",
+        "ContextMenuLabel",
+        "ContextMenuPortal",
+        "ContextMenuRadioGroup",
+        "ContextMenuRadioItem",
+        "ContextMenuSeparator",
+        "ContextMenuShortcut",
+        "ContextMenuSub",
+        "ContextMenuSubContent",
+        "ContextMenuSubTrigger",
+        "ContextMenuTrigger"
+      ],
+      "dataSlots": [
+        "context-menu",
+        "context-menu-checkbox-item",
+        "context-menu-content",
+        "context-menu-group",
+        "context-menu-item",
+        "context-menu-label",
+        "context-menu-portal",
+        "context-menu-radio-group",
+        "context-menu-radio-item",
+        "context-menu-separator",
+        "context-menu-shortcut",
+        "context-menu-sub",
+        "context-menu-sub-content",
+        "context-menu-sub-trigger",
+        "context-menu-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "dialog",
+      "sourceFile": "ui-primitives/dialog.tsx",
+      "manifestFile": "ui-primitives/dialog.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the dialog primitive.",
+      "fixtures": [],
+      "exports": [
+        "Dialog",
+        "DialogClose",
+        "DialogContent",
+        "DialogDescription",
+        "DialogFooter",
+        "DialogHeader",
+        "DialogOverlay",
+        "DialogPortal",
+        "DialogTitle",
+        "DialogTrigger"
+      ],
+      "dataSlots": [
+        "dialog",
+        "dialog-close",
+        "dialog-content",
+        "dialog-description",
+        "dialog-footer",
+        "dialog-header",
+        "dialog-overlay",
+        "dialog-portal",
+        "dialog-title",
+        "dialog-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "direction",
+      "sourceFile": "ui-primitives/direction.tsx",
+      "manifestFile": "ui-primitives/direction.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the direction primitive.",
+      "fixtures": [],
+      "exports": [
+        "DirectionProvider",
+        "useDirection"
+      ],
+      "dataSlots": [],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": false,
+        "hasTokenClasses": false,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "drawer",
+      "sourceFile": "ui-primitives/drawer.tsx",
+      "manifestFile": "ui-primitives/drawer.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the drawer primitive.",
+      "fixtures": [],
+      "exports": [
+        "Drawer",
+        "DrawerClose",
+        "DrawerContent",
+        "DrawerDescription",
+        "DrawerFooter",
+        "DrawerHeader",
+        "DrawerOverlay",
+        "DrawerPortal",
+        "DrawerTitle",
+        "DrawerTrigger"
+      ],
+      "dataSlots": [
+        "drawer",
+        "drawer-close",
+        "drawer-content",
+        "drawer-description",
+        "drawer-footer",
+        "drawer-header",
+        "drawer-overlay",
+        "drawer-portal",
+        "drawer-title",
+        "drawer-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "dropdown-menu",
+      "sourceFile": "ui-primitives/dropdown-menu.tsx",
+      "manifestFile": "ui-primitives/dropdown-menu.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the dropdown-menu primitive.",
+      "fixtures": [],
+      "exports": [
+        "DropdownMenu",
+        "DropdownMenuCheckboxItem",
+        "DropdownMenuContent",
+        "DropdownMenuGroup",
+        "DropdownMenuItem",
+        "DropdownMenuLabel",
+        "DropdownMenuPortal",
+        "DropdownMenuRadioGroup",
+        "DropdownMenuRadioItem",
+        "DropdownMenuSeparator",
+        "DropdownMenuShortcut",
+        "DropdownMenuSub",
+        "DropdownMenuSubContent",
+        "DropdownMenuSubTrigger",
+        "DropdownMenuTrigger"
+      ],
+      "dataSlots": [
+        "dropdown-menu",
+        "dropdown-menu-checkbox-item",
+        "dropdown-menu-content",
+        "dropdown-menu-group",
+        "dropdown-menu-item",
+        "dropdown-menu-label",
+        "dropdown-menu-portal",
+        "dropdown-menu-radio-group",
+        "dropdown-menu-radio-item",
+        "dropdown-menu-separator",
+        "dropdown-menu-shortcut",
+        "dropdown-menu-sub",
+        "dropdown-menu-sub-content",
+        "dropdown-menu-sub-trigger",
+        "dropdown-menu-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "empty",
+      "sourceFile": "ui-primitives/empty.tsx",
+      "manifestFile": "ui-primitives/empty.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the empty primitive.",
+      "fixtures": [],
+      "exports": [
+        "Empty",
+        "EmptyContent",
+        "EmptyDescription",
+        "EmptyHeader",
+        "EmptyMedia",
+        "EmptyTitle"
+      ],
+      "dataSlots": [
+        "empty",
+        "empty-content",
+        "empty-description",
+        "empty-header",
+        "empty-icon",
+        "empty-title"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "field",
+      "sourceFile": "ui-primitives/field.tsx",
+      "manifestFile": "ui-primitives/field.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the field primitive.",
+      "fixtures": [],
+      "exports": [
+        "Field",
+        "FieldContent",
+        "FieldDescription",
+        "FieldError",
+        "FieldGroup",
+        "FieldLabel",
+        "FieldLegend",
+        "FieldSeparator",
+        "FieldSet",
+        "FieldTitle"
+      ],
+      "dataSlots": [
+        "field",
+        "field-content",
+        "field-description",
+        "field-error",
+        "field-group",
+        "field-label",
+        "field-legend",
+        "field-separator",
+        "field-separator-content",
+        "field-set"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "form",
+      "sourceFile": "ui-primitives/form.tsx",
+      "manifestFile": "ui-primitives/form.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the form primitive.",
+      "fixtures": [],
+      "exports": [
+        "Form",
+        "FormControl",
+        "FormDescription",
+        "FormField",
+        "FormItem",
+        "FormLabel",
+        "FormMessage",
+        "useFormField"
+      ],
+      "dataSlots": [
+        "form-control",
+        "form-description",
+        "form-item",
+        "form-label",
+        "form-message"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "hover-card",
+      "sourceFile": "ui-primitives/hover-card.tsx",
+      "manifestFile": "ui-primitives/hover-card.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the hover-card primitive.",
+      "fixtures": [],
+      "exports": [
+        "HoverCard",
+        "HoverCardContent",
+        "HoverCardTrigger"
+      ],
+      "dataSlots": [
+        "hover-card",
+        "hover-card-content",
+        "hover-card-portal",
+        "hover-card-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "input",
+      "sourceFile": "ui-primitives/input.tsx",
+      "manifestFile": "ui-primitives/input.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the input primitive.",
+      "fixtures": [],
+      "exports": [
+        "Input"
+      ],
+      "dataSlots": [
+        "input"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "input-group",
+      "sourceFile": "ui-primitives/input-group.tsx",
+      "manifestFile": "ui-primitives/input-group.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the input-group primitive.",
+      "fixtures": [],
+      "exports": [
+        "InputGroup",
+        "InputGroupAddon",
+        "InputGroupButton",
+        "InputGroupInput",
+        "InputGroupText",
+        "InputGroupTextarea"
+      ],
+      "dataSlots": [
+        "input-group",
+        "input-group-addon",
+        "input-group-control"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 2
+    },
+    {
+      "component": "input-otp",
+      "sourceFile": "ui-primitives/input-otp.tsx",
+      "manifestFile": "ui-primitives/input-otp.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the input-otp primitive.",
+      "fixtures": [],
+      "exports": [
+        "InputOTP",
+        "InputOTPGroup",
+        "InputOTPSeparator",
+        "InputOTPSlot"
+      ],
+      "dataSlots": [
+        "input-otp",
+        "input-otp-group",
+        "input-otp-separator",
+        "input-otp-slot"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "item",
+      "sourceFile": "ui-primitives/item.tsx",
+      "manifestFile": "ui-primitives/item.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the item primitive.",
+      "fixtures": [],
+      "exports": [
+        "Item",
+        "ItemActions",
+        "ItemContent",
+        "ItemDescription",
+        "ItemFooter",
+        "ItemGroup",
+        "ItemHeader",
+        "ItemMedia",
+        "ItemSeparator",
+        "ItemTitle"
+      ],
+      "dataSlots": [
+        "item",
+        "item-actions",
+        "item-content",
+        "item-description",
+        "item-footer",
+        "item-group",
+        "item-header",
+        "item-media",
+        "item-separator",
+        "item-title"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 2
+    },
+    {
+      "component": "kbd",
+      "sourceFile": "ui-primitives/kbd.tsx",
+      "manifestFile": "ui-primitives/kbd.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the kbd primitive.",
+      "fixtures": [],
+      "exports": [
+        "Kbd",
+        "KbdGroup"
+      ],
+      "dataSlots": [
+        "kbd",
+        "kbd-group"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "label",
+      "sourceFile": "ui-primitives/label.tsx",
+      "manifestFile": "ui-primitives/label.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the label primitive.",
+      "fixtures": [],
+      "exports": [
+        "Label"
+      ],
+      "dataSlots": [
+        "label"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": false,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "menubar",
+      "sourceFile": "ui-primitives/menubar.tsx",
+      "manifestFile": "ui-primitives/menubar.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the menubar primitive.",
+      "fixtures": [],
+      "exports": [
+        "Menubar",
+        "MenubarCheckboxItem",
+        "MenubarContent",
+        "MenubarGroup",
+        "MenubarItem",
+        "MenubarLabel",
+        "MenubarMenu",
+        "MenubarPortal",
+        "MenubarRadioGroup",
+        "MenubarRadioItem",
+        "MenubarSeparator",
+        "MenubarShortcut",
+        "MenubarSub",
+        "MenubarSubContent",
+        "MenubarSubTrigger",
+        "MenubarTrigger"
+      ],
+      "dataSlots": [
+        "menubar",
+        "menubar-checkbox-item",
+        "menubar-content",
+        "menubar-group",
+        "menubar-item",
+        "menubar-label",
+        "menubar-menu",
+        "menubar-portal",
+        "menubar-radio-group",
+        "menubar-radio-item",
+        "menubar-separator",
+        "menubar-shortcut",
+        "menubar-sub",
+        "menubar-sub-content",
+        "menubar-sub-trigger",
+        "menubar-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "native-select",
+      "sourceFile": "ui-primitives/native-select.tsx",
+      "manifestFile": "ui-primitives/native-select.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the native-select primitive.",
+      "fixtures": [],
+      "exports": [
+        "NativeSelect",
+        "NativeSelectOptGroup",
+        "NativeSelectOption"
+      ],
+      "dataSlots": [
+        "native-select",
+        "native-select-icon",
+        "native-select-optgroup",
+        "native-select-option",
+        "native-select-wrapper"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "navigation-menu",
+      "sourceFile": "ui-primitives/navigation-menu.tsx",
+      "manifestFile": "ui-primitives/navigation-menu.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the navigation-menu primitive.",
+      "fixtures": [],
+      "exports": [
+        "NavigationMenu",
+        "NavigationMenuContent",
+        "NavigationMenuIndicator",
+        "NavigationMenuItem",
+        "NavigationMenuLink",
+        "NavigationMenuList",
+        "NavigationMenuTrigger",
+        "NavigationMenuViewport",
+        "navigationMenuTriggerStyle"
+      ],
+      "dataSlots": [
+        "navigation-menu",
+        "navigation-menu-content",
+        "navigation-menu-indicator",
+        "navigation-menu-item",
+        "navigation-menu-link",
+        "navigation-menu-list",
+        "navigation-menu-trigger",
+        "navigation-menu-viewport"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "pagination",
+      "sourceFile": "ui-primitives/pagination.tsx",
+      "manifestFile": "ui-primitives/pagination.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the pagination primitive.",
+      "fixtures": [],
+      "exports": [
+        "Pagination",
+        "PaginationContent",
+        "PaginationEllipsis",
+        "PaginationItem",
+        "PaginationLink",
+        "PaginationNext",
+        "PaginationPrevious"
+      ],
+      "dataSlots": [
+        "pagination",
+        "pagination-content",
+        "pagination-ellipsis",
+        "pagination-item",
+        "pagination-link"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": false,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "popover",
+      "sourceFile": "ui-primitives/popover.tsx",
+      "manifestFile": "ui-primitives/popover.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the popover primitive.",
+      "fixtures": [],
+      "exports": [
+        "Popover",
+        "PopoverAnchor",
+        "PopoverContent",
+        "PopoverDescription",
+        "PopoverHeader",
+        "PopoverTitle",
+        "PopoverTrigger"
+      ],
+      "dataSlots": [
+        "popover",
+        "popover-anchor",
+        "popover-content",
+        "popover-description",
+        "popover-header",
+        "popover-title",
+        "popover-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "progress",
+      "sourceFile": "ui-primitives/progress.tsx",
+      "manifestFile": "ui-primitives/progress.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the progress primitive.",
+      "fixtures": [],
+      "exports": [
+        "Progress"
+      ],
+      "dataSlots": [
+        "progress",
+        "progress-indicator"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": true
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "radio-group",
+      "sourceFile": "ui-primitives/radio-group.tsx",
+      "manifestFile": "ui-primitives/radio-group.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the radio-group primitive.",
+      "fixtures": [],
+      "exports": [
+        "RadioGroup",
+        "RadioGroupItem"
+      ],
+      "dataSlots": [
+        "radio-group",
+        "radio-group-indicator",
+        "radio-group-item"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "resizable",
+      "sourceFile": "ui-primitives/resizable.tsx",
+      "manifestFile": "ui-primitives/resizable.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the resizable primitive.",
+      "fixtures": [],
+      "exports": [
+        "ResizableHandle",
+        "ResizablePanel",
+        "ResizablePanelGroup"
+      ],
+      "dataSlots": [
+        "resizable-handle",
+        "resizable-panel",
+        "resizable-panel-group"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "scroll-area",
+      "sourceFile": "ui-primitives/scroll-area.tsx",
+      "manifestFile": "ui-primitives/scroll-area.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the scroll-area primitive.",
+      "fixtures": [],
+      "exports": [
+        "ScrollArea",
+        "ScrollBar"
+      ],
+      "dataSlots": [
+        "scroll-area",
+        "scroll-area-scrollbar",
+        "scroll-area-thumb",
+        "scroll-area-viewport"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "select",
+      "sourceFile": "ui-primitives/select.tsx",
+      "manifestFile": "ui-primitives/select.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the select primitive.",
+      "fixtures": [],
+      "exports": [
+        "Select",
+        "SelectContent",
+        "SelectGroup",
+        "SelectItem",
+        "SelectLabel",
+        "SelectScrollDownButton",
+        "SelectScrollUpButton",
+        "SelectSeparator",
+        "SelectTrigger",
+        "SelectValue"
+      ],
+      "dataSlots": [
+        "select",
+        "select-content",
+        "select-group",
+        "select-item",
+        "select-item-indicator",
+        "select-label",
+        "select-scroll-down-button",
+        "select-scroll-up-button",
+        "select-separator",
+        "select-trigger",
+        "select-value"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "separator",
+      "sourceFile": "ui-primitives/separator.tsx",
+      "manifestFile": "ui-primitives/separator.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the separator primitive.",
+      "fixtures": [],
+      "exports": [
+        "Separator"
+      ],
+      "dataSlots": [
+        "separator"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "sheet",
+      "sourceFile": "ui-primitives/sheet.tsx",
+      "manifestFile": "ui-primitives/sheet.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the sheet primitive.",
+      "fixtures": [],
+      "exports": [
+        "Sheet",
+        "SheetClose",
+        "SheetContent",
+        "SheetDescription",
+        "SheetFooter",
+        "SheetHeader",
+        "SheetTitle",
+        "SheetTrigger"
+      ],
+      "dataSlots": [
+        "sheet",
+        "sheet-close",
+        "sheet-content",
+        "sheet-description",
+        "sheet-footer",
+        "sheet-header",
+        "sheet-overlay",
+        "sheet-portal",
+        "sheet-title",
+        "sheet-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "sidebar",
+      "sourceFile": "ui-primitives/sidebar.tsx",
+      "manifestFile": "ui-primitives/sidebar.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the sidebar primitive.",
+      "fixtures": [],
+      "exports": [
+        "Sidebar",
+        "SidebarContent",
+        "SidebarFooter",
+        "SidebarGroup",
+        "SidebarGroupAction",
+        "SidebarGroupContent",
+        "SidebarGroupLabel",
+        "SidebarHeader",
+        "SidebarInput",
+        "SidebarInset",
+        "SidebarMenu",
+        "SidebarMenuAction",
+        "SidebarMenuBadge",
+        "SidebarMenuButton",
+        "SidebarMenuItem",
+        "SidebarMenuSkeleton",
+        "SidebarMenuSub",
+        "SidebarMenuSubButton",
+        "SidebarMenuSubItem",
+        "SidebarProvider",
+        "SidebarRail",
+        "SidebarSeparator",
+        "SidebarTrigger",
+        "useSidebar"
+      ],
+      "dataSlots": [
+        "sidebar",
+        "sidebar-container",
+        "sidebar-content",
+        "sidebar-footer",
+        "sidebar-gap",
+        "sidebar-group",
+        "sidebar-group-action",
+        "sidebar-group-content",
+        "sidebar-group-label",
+        "sidebar-header",
+        "sidebar-inner",
+        "sidebar-input",
+        "sidebar-inset",
+        "sidebar-menu",
+        "sidebar-menu-action",
+        "sidebar-menu-badge",
+        "sidebar-menu-button",
+        "sidebar-menu-item",
+        "sidebar-menu-skeleton",
+        "sidebar-menu-sub",
+        "sidebar-menu-sub-button",
+        "sidebar-menu-sub-item",
+        "sidebar-rail",
+        "sidebar-separator",
+        "sidebar-trigger",
+        "sidebar-wrapper"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": true
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "skeleton",
+      "sourceFile": "ui-primitives/skeleton.tsx",
+      "manifestFile": "ui-primitives/skeleton.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the skeleton primitive.",
+      "fixtures": [],
+      "exports": [
+        "Skeleton"
+      ],
+      "dataSlots": [
+        "skeleton"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "slider",
+      "sourceFile": "ui-primitives/slider.tsx",
+      "manifestFile": "ui-primitives/slider.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the slider primitive.",
+      "fixtures": [],
+      "exports": [
+        "Slider"
+      ],
+      "dataSlots": [
+        "slider",
+        "slider-range",
+        "slider-thumb",
+        "slider-track"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "sonner",
+      "sourceFile": "ui-primitives/sonner.tsx",
+      "manifestFile": "ui-primitives/sonner.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the sonner primitive.",
+      "fixtures": [],
+      "exports": [
+        "Toaster"
+      ],
+      "dataSlots": [],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": false,
+        "hasTokenClasses": false,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": true
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "spinner",
+      "sourceFile": "ui-primitives/spinner.tsx",
+      "manifestFile": "ui-primitives/spinner.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the spinner primitive.",
+      "fixtures": [],
+      "exports": [
+        "Spinner"
+      ],
+      "dataSlots": [],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": false,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "switch",
+      "sourceFile": "ui-primitives/switch.tsx",
+      "manifestFile": "ui-primitives/switch.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the switch primitive.",
+      "fixtures": [],
+      "exports": [
+        "Switch"
+      ],
+      "dataSlots": [
+        "switch",
+        "switch-thumb"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "table",
+      "sourceFile": "ui-primitives/table.tsx",
+      "manifestFile": "ui-primitives/table.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the table primitive.",
+      "fixtures": [],
+      "exports": [
+        "Table",
+        "TableBody",
+        "TableCaption",
+        "TableCell",
+        "TableFooter",
+        "TableHead",
+        "TableHeader",
+        "TableRow"
+      ],
+      "dataSlots": [
+        "table",
+        "table-body",
+        "table-caption",
+        "table-cell",
+        "table-container",
+        "table-footer",
+        "table-head",
+        "table-header",
+        "table-row"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "tabs",
+      "sourceFile": "ui-primitives/tabs.tsx",
+      "manifestFile": "ui-primitives/tabs.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the tabs primitive.",
+      "fixtures": [],
+      "exports": [
+        "Tabs",
+        "TabsContent",
+        "TabsList",
+        "TabsTrigger",
+        "tabsListVariants"
+      ],
+      "dataSlots": [
+        "tabs",
+        "tabs-content",
+        "tabs-list",
+        "tabs-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "textarea",
+      "sourceFile": "ui-primitives/textarea.tsx",
+      "manifestFile": "ui-primitives/textarea.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the textarea primitive.",
+      "fixtures": [],
+      "exports": [
+        "Textarea"
+      ],
+      "dataSlots": [
+        "textarea"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "toggle",
+      "sourceFile": "ui-primitives/toggle.tsx",
+      "manifestFile": "ui-primitives/toggle.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the toggle primitive.",
+      "fixtures": [],
+      "exports": [
+        "Toggle",
+        "toggleVariants"
+      ],
+      "dataSlots": [
+        "toggle"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": true,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 1
+    },
+    {
+      "component": "toggle-group",
+      "sourceFile": "ui-primitives/toggle-group.tsx",
+      "manifestFile": "ui-primitives/toggle-group.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the toggle-group primitive.",
+      "fixtures": [],
+      "exports": [
+        "ToggleGroup",
+        "ToggleGroupItem"
+      ],
+      "dataSlots": [
+        "toggle-group",
+        "toggle-group-item"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": false,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": true
+      },
+      "cvaDefinitionCount": 0
+    },
+    {
+      "component": "tooltip",
+      "sourceFile": "ui-primitives/tooltip.tsx",
+      "manifestFile": "ui-primitives/tooltip.manifest.ts",
+      "owner": "design-system",
+      "lifecycle": "stable",
+      "purpose": "Canonical governance metadata for the tooltip primitive.",
+      "fixtures": [],
+      "exports": [
+        "Tooltip",
+        "TooltipContent",
+        "TooltipProvider",
+        "TooltipTrigger"
+      ],
+      "dataSlots": [
+        "tooltip",
+        "tooltip-content",
+        "tooltip-provider",
+        "tooltip-trigger"
+      ],
+      "forwardRef": false,
+      "classSignals": {
+        "usesCva": false,
+        "usesCn": true,
+        "hasTokenClasses": true,
+        "hasRawPaletteClasses": false,
+        "hasArbitraryColorClasses": false,
+        "hasInlineStyleAttribute": false
+      },
+      "cvaDefinitionCount": 0
+    }
+  ]
+}

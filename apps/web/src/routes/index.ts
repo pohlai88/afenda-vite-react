@@ -3,4 +3,7 @@
  */
 export { appShellRouteObject } from "./route-app-shell"
 export { browserRoutes } from "./route-browser"
-export { rootRouteObjects } from "./route-root"
+export {
+  marketingRouteObjects,
+  marketingRouteObjects as rootRouteObjects,
+} from "../pages/route/route-marketing"

@@ -43,6 +43,46 @@ export const shellNavigationItems: readonly ShellNavigationItem[] = [
     order: 2,
     lifecycle: "active",
   },
+  {
+    id: "my_project",
+    routeId: "my_project",
+    href: "/app/events",
+    labelKey: "nav.items.my_project",
+    iconName: "LayoutGridIcon",
+    groupId: "workspace",
+    order: 3,
+    lifecycle: "comingSoon",
+  },
+  {
+    id: "my_team",
+    routeId: "my_team",
+    href: "/app/events",
+    labelKey: "nav.items.my_team",
+    iconName: "UsersIcon",
+    groupId: "workspace",
+    order: 4,
+    lifecycle: "comingSoon",
+  },
+  {
+    id: "my_report",
+    routeId: "my_report",
+    href: "/app/events",
+    labelKey: "nav.items.my_report",
+    iconName: "FileBarChartIcon",
+    groupId: "workspace",
+    order: 5,
+    lifecycle: "comingSoon",
+  },
+  {
+    id: "my_claim",
+    routeId: "my_claim",
+    href: "/app/events",
+    labelKey: "nav.items.my_claim",
+    iconName: "FileTextIcon",
+    groupId: "workspace",
+    order: 6,
+    lifecycle: "comingSoon",
+  },
 ]
 
 /**
@@ -51,7 +91,7 @@ export const shellNavigationItems: readonly ShellNavigationItem[] = [
 export const shellSlotActivationV1: Readonly<Record<string, boolean>> = {
   "shell.header.leading": false,
   "shell.header.trailing": true,
-  "shell.sidebar.footer": false,
+  "shell.sidebar.footer": true,
   "shell.content.top": false,
   "shell.overlay.global": false,
 }

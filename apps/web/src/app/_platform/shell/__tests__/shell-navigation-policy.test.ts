@@ -9,7 +9,15 @@ describe("filterShellNavigationItems", () => {
     const result = filterShellNavigationItems(shellNavigationItems, {
       permissions: [],
     })
-    expect(result.map((i) => i.id)).toEqual(["events", "audit", "partners"])
+    expect(result.map((i) => i.id)).toEqual([
+      "events",
+      "audit",
+      "partners",
+      "my_project",
+      "my_team",
+      "my_report",
+      "my_claim",
+    ])
   })
 
   it("hides items when required permission keys are missing", () => {

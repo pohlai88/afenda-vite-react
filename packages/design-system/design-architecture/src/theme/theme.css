@@ -1,0 +1,15 @@
+/**
+ * Afenda design-system theme — Tailwind-facing tokens.
+ * Order: light base → dark overrides → keyframes → layout (@theme static) → density (:root overrides) → shadcn aliases → bridge (docs only; no color remap).
+ *
+ * Density must follow layout so `--size-control-*`, toolbar/shell heights, and dialog header min-height
+ * keep Tailwind registration from layout while runtime `--density-scale` overrides win on :root.
+ */
+
+ @import "./theme-tokens-light.css";
+ @import "./theme-dark.css";
+ @import "./theme-keyframes.css";
+ @import "./theme-tokens-layout.css";
+ @import "./theme-density.css";
+ @import "./theme-shadcn-compat.css";
+ @import "./theme-tailwind-bridge.css";

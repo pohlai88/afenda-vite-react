@@ -49,5 +49,5 @@ export const apiClientPlatformPolicy = {
   ],
   dependencyDirection:
     "_features may import `_platform/api-client` public APIs; `_platform/api-client` must not import `_features` internals.",
-  featureInternalImportPattern: "@/app/_features/*/*",
+  featureInternalImportPattern: "app/_features/*/*",
 } as const

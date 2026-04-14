@@ -1,0 +1,105 @@
+/**
+ * RUNTIME DENSITY SYSTEM
+ *
+ * AFENDA Director Density Layer — refined final.
+ *
+ * Intent:
+ * - density modifies canonical layout scale
+ * - no raw duplication of semantic sizing intent
+ * - compact / comfortable / spacious support
+ * - tables remain ERP-controlled, not globally inflated
+ */
+
+ :root {
+  /* ------------------------------------------------------------------
+   * Density multipliers
+   * ------------------------------------------------------------------ */
+  --density-scale: 1;
+
+  --density-compact: 0.9;
+  --density-comfortable: 1;
+  --density-spacious: 1.1;
+
+  /* ------------------------------------------------------------------
+   * Base aliases from canonical layout scale
+   * Keep these as density-owned runtime outputs.
+   * ------------------------------------------------------------------ */
+  --size-control-2xs-runtime: calc(var(--size-control-2xs) * var(--density-scale));
+  --size-control-xs-runtime: calc(var(--size-control-xs) * var(--density-scale));
+  --size-control-sm-runtime: calc(var(--size-control-sm) * var(--density-scale));
+  --size-control-md-runtime: calc(var(--size-control-md) * var(--density-scale));
+  --size-control-lg-runtime: calc(var(--size-control-lg) * var(--density-scale));
+  --size-control-xl-runtime: calc(var(--size-control-xl) * var(--density-scale));
+
+  /* ------------------------------------------------------------------
+   * Runtime control sizes
+   * These are the tokens components should consume at runtime.
+   * ------------------------------------------------------------------ */
+  --size-control-xs: var(--size-control-xs-runtime);
+  --size-control-sm: var(--size-control-sm-runtime);
+  --size-control-md: var(--size-control-md-runtime);
+  --size-control-lg: var(--size-control-lg-runtime);
+  --size-control-xl: var(--size-control-xl-runtime);
+
+  --size-input-height: var(--size-control-md-runtime);
+  --size-button-height: var(--size-control-md-runtime);
+
+  /* ------------------------------------------------------------------
+   * Toolbar / shell
+   * ------------------------------------------------------------------ */
+  --size-toolbar-height: calc(2.75rem * var(--density-scale));
+  --size-filter-bar-height: calc(2.5rem * var(--density-scale));
+  --size-shell-header-height: calc(3.5rem * var(--density-scale));
+
+  /* ------------------------------------------------------------------
+   * Table sizing
+   * ERP rule: keep table scaling constrained.
+   * ------------------------------------------------------------------ */
+  --size-table-row-height: 2.25rem;
+  --size-table-row-height-compact: 2rem;
+  --size-table-header-height: 2.5rem;
+
+  /* ------------------------------------------------------------------
+   * Sidebar / navigation
+   * ------------------------------------------------------------------ */
+  --size-sidebar-item-height: calc(2.25rem * var(--density-scale));
+  --size-tab-height: calc(2.125rem * var(--density-scale));
+
+  /* ------------------------------------------------------------------
+   * Dialog / panels
+   * ------------------------------------------------------------------ */
+  --size-dialog-header-min-height: calc(3rem * var(--density-scale));
+
+  /* ------------------------------------------------------------------
+   * Density-aware spacing
+   * Keep light-touch only; do not over-scale layout rhythm.
+   * ------------------------------------------------------------------ */
+  --spacing-panel-padding-runtime: calc(var(--spacing-panel-padding) * var(--density-scale));
+  --spacing-panel-padding-lg-runtime: calc(var(--spacing-panel-padding-lg) * var(--density-scale));
+  --spacing-form-gap-runtime: calc(var(--spacing-form-gap) * var(--density-scale));
+  --spacing-form-gap-tight-runtime: calc(var(--spacing-form-gap-tight) * var(--density-scale));
+}
+
+/* ------------------------------------------------------------------
+ * Density modes
+ * ------------------------------------------------------------------ */
+
+[data-density="compact"] {
+  --density-scale: var(--density-compact);
+
+  /* tables slightly tighter */
+  --size-table-row-height: 2rem;
+  --size-table-header-height: 2.375rem;
+}
+
+[data-density="comfortable"] {
+  --density-scale: var(--density-comfortable);
+}
+
+[data-density="spacious"] {
+  --density-scale: var(--density-spacious);
+
+  /* tables slightly taller but still controlled */
+  --size-table-row-height: 2.5rem;
+  --size-table-header-height: 2.625rem;
+}

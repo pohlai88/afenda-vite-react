@@ -78,7 +78,7 @@ The live router is the source of truth; it follows this structure:
 ## Design system consumption
 
 - Shell chrome is built from **`@afenda/design-system/ui-primitives`** (e.g. `Sidebar*`, `Breadcrumb*`, `Button`, `Separator`) and **`@afenda/design-system/icons`** via a small shell icon map.
-- Do **not** import `packages/design-system/.idea/*` or `@afenda/design-system/lib/newyork-v4/*` from app code.
+- Do **not** import `packages/design-system/.idea/*` from app code.
 
 ## Sidebar / header / breadcrumb
 

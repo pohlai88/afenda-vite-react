@@ -15,7 +15,7 @@ describe("platform capability template", () => {
       false
     )
     expect(platformCapabilityPolicy.featureInternalImportPattern).toBe(
-      "@/app/_features/*/*"
+      "app/_features/*/*"
     )
   })
 

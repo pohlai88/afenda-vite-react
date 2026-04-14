@@ -118,12 +118,8 @@ async function resolveUserConfig({
       ...devToolsPlugins,
     ],
 
-    // Path resolution
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-      },
-    },
+    // Path resolution — same-package imports use relative paths; workspace
+    // packages use `package.json` names (`@afenda/*`). See `tsconfig.app.json`.
 
     // Development server configuration
     server: {

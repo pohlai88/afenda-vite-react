@@ -1,0 +1,17 @@
+/**
+ * TAILWIND V4 — bridge (colors)
+ *
+ * Historical note: an @theme inline block here previously mapped
+ * `--color-*` → `var(--background)` / shadcn aliases. Together with
+ * `theme-shadcn-compat.css` (`--background: var(--color-background)` on :root)
+ * that created a circular dependency. `.dark { --color-*: … }` broke the cycle
+ * for dark mode only, so light mode could resolve to invalid / wrong colors.
+ *
+ * Canonical runtime colors:
+ * - Light: `theme-tokens-light.css` → `@theme static { --color-*: … }`
+ * - Dark: `theme-dark.css` → `.dark { --color-*: … }`
+ * - shadcn names: `theme-shadcn-compat.css` → `:root { --background: var(--color-background); … }`
+ *
+ * Tailwind color utilities use the `--color-*` theme keys from @theme static.
+ * Stem sync for ESLint: `scripts/check-stem-sync.ts` reads `theme-tokens-light.css`.
+ */

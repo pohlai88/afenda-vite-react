@@ -1,9 +1,9 @@
 'use client'
 
-import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { PanelLeftIcon } from 'lucide-react'
 import { Slot } from 'radix-ui'
+import * as React from 'react'
 
 import { useIsMobile } from '../hooks/use-mobile'
 import { cn } from '../utils/cn'
@@ -165,21 +165,6 @@ function Sidebar({
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
-  if (collapsible === 'none') {
-    return (
-      <div
-        data-slot="sidebar"
-        className={cn(
-          'flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground',
-          className,
-        )}
-        {...props}
-      >
-        {children}
-      </div>
-    )
-  }
-
   if (isMobile) {
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
@@ -202,6 +187,21 @@ function Sidebar({
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
       </Sheet>
+    )
+  }
+
+  if (collapsible === 'none') {
+    return (
+      <div
+        data-slot="sidebar"
+        className={cn(
+          'flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground',
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </div>
     )
   }
 
@@ -722,5 +722,6 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar,
+  useSidebar
 }
+

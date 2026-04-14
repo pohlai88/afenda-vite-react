@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Component Coverage Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "package", "scope", "components"],
+  "properties": {
+    "version": { "const": 1 },
+    "package": { "const": "@afenda/design-system" },
+    "scope": { "const": "ui-primitives" },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["component", "lifecycle", "owner", "fixtureCount", "fixtures"],
+        "properties": {
+          "component": { "type": "string" },
+          "lifecycle": {
+            "type": "string",
+            "enum": ["draft", "beta", "stable", "deprecated"]
+          },
+          "owner": { "type": "string" },
+          "fixtureCount": { "type": "integer", "minimum": 0 },
+          "fixtures": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "requiredCoverage": {
+            "type": "object",
+            "additionalProperties": { "type": "boolean" }
+          },
+          "a11y": {
+            "type": "object",
+            "additionalProperties": { "type": "boolean" }
+          },
+          "policy": {
+            "type": "object",
+            "additionalProperties": { "type": "boolean" }
+          }
+        }
+      }
+    }
+  }
+}
+

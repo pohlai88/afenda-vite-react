@@ -24,7 +24,6 @@ function walkTsFiles(dir: string, skipTests: boolean): string[] {
 
 const forbiddenSubstrings = [
   "packages/design-system/.idea",
-  "@afenda/design-system/lib/newyork-v4",
   "@afenda/database",
   "drizzle-orm",
   'from "pg"',

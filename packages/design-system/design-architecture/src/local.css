@@ -1,119 +1,383 @@
 /**
- * LOCAL CSS ENTRY — design-system preview / consumer stylesheet entry
+ * APP CSS ENTRY — DESIGN-ARCHITECTURE THEME CONSUMER
  *
- * Order follows Tailwind v4 guidance: import the framework, then shared theme CSS
- * (so @theme variables drive utilities), then @source / @plugin / variants.
- * See: https://tailwindcss.com/docs/theme (shared theme via @import)
- * and https://tailwindcss.com/docs/detecting-classes-in-source-files (@source)
+ * Purpose:
+ * - import canonical theme split
+ * - register Tailwind v4 sources/plugins/variants
+ * - define approved app-level utilities
+ * - keep semantic colors on canonical CSS variables
  *
- * Run `pnpm --filter @afenda/design-system run generate-design-system` when tokens change.
- *
- * Package export: `@import "@afenda/design-system/design-architecture/local.css";`
+ * Rules:
+ * - do not use Tailwind semantic color utilities for core surfaces/text/borders
+ * - use `var(--color-*)` directly for semantic color ownership
+ * - use `@apply` for layout/spacing/typography structure only
  */
 
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "./generated/generated-theme.css";
+ @import "tailwindcss";
+ @import "tw-animate-css";
 
-/**
- * Content paths for class detection (relative to this file).
- * - ../../ui-primitives — shadcn/ui-style components (Radix + Tailwind classes)
- * - ../../icons — icon wrappers and loaders (Tailwind className usage)
- */
-@source "../../ui-primitives";
-@source "../../icons";
+ @import "./theme/theme-tokens-light.css";
+ @import "./theme/theme-dark.css";
+ @import "./theme/theme-keyframes.css";
+ @import "./theme/theme-tokens-layout.css";
+ @import "./theme/theme-density.css";
+ @import "./theme/theme-shadcn-compat.css";
+ @import "./theme/theme-tailwind-bridge.css";
 
-@plugin "@tailwindcss/forms" {
-  strategy: class;
-}
+ /* -------------------------------------------------------------------------- */
+ /* Tailwind setup                                                             */
+ /* -------------------------------------------------------------------------- */
 
-@plugin "@tailwindcss/typography";
+ @source "./";
+ @source "../../ui-primitives";
+ @source "../../icons";
 
-@custom-variant dark (&:where(.dark, .dark *));
+ @plugin "@tailwindcss/forms" {
+   strategy: class;
+ }
 
-/* Full-bleed hairline; use aria-hidden on decorative chrome where it has no accessible name. */
-@utility line-t {
-  @apply relative before:absolute before:top-0 before:-left-[100vw] before:h-px before:w-[200vw] before:bg-foreground/10;
-}
+ @plugin "@tailwindcss/typography";
 
-@utility focus-ring {
-  @apply outline-none ring-offset-background;
+ @custom-variant dark (&:where(.dark, .dark *));
 
-  &:focus-visible {
-    @apply ring-2 ring-ring ring-offset-2;
-  }
-}
+ /* -------------------------------------------------------------------------- */
+ /* Utilities                                                                  */
+ /* -------------------------------------------------------------------------- */
 
-@utility text-gradient {
-  @apply bg-linear-to-r from-primary to-accent bg-clip-text text-transparent;
-}
+ /* Decorative full-bleed top hairline */
+ @utility line-t {
+   position: relative;
 
-/* -------------------------------------------------------------------------- */
-/* Base                                                                       */
-/* -------------------------------------------------------------------------- */
+   &::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: -100vw;
+     height: 1px;
+     width: 200vw;
+     background-color: color-mix(
+       in oklab,
+       var(--color-foreground) 10%,
+       transparent
+     );
+   }
+ }
 
-@layer base {
+ /* Canonical focus ring */
+ @utility focus-ring {
+   outline: none;
+
+   &:focus-visible {
+     box-shadow:
+       0 0 0 2px var(--color-ring),
+       0 0 0 4px var(--color-ring-offset);
+   }
+ }
+
+ /* Controlled text gradient for hero/marketing moments only */
+ @utility text-gradient {
+   background-image: linear-gradient(
+     to right,
+     var(--color-primary),
+     var(--color-accent)
+   );
+   -webkit-background-clip: text;
+   background-clip: text;
+   color: transparent;
+ }
+
+ /* -------------------------------------------------------------------------- */
+ /* Approved layout vocabulary                                                 */
+ /* -------------------------------------------------------------------------- */
+
+ @utility ui-page {
+   @apply mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8;
+ }
+
+ @utility ui-stack-relaxed {
+   @apply flex min-w-0 flex-col gap-8 md:gap-10;
+ }
+
+ @utility ui-stack-tight {
+   @apply flex min-w-0 flex-col gap-3;
+ }
+
+ @utility ui-header {
+   @apply space-y-3;
+ }
+
+ @utility ui-title-hero {
+   @apply text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl;
+ }
+
+ @utility ui-title-page {
+   @apply text-2xl font-semibold tracking-tight sm:text-3xl;
+ }
+
+ @utility ui-title-section {
+   @apply text-lg font-semibold tracking-tight sm:text-xl;
+ }
+
+ @utility ui-lede {
+   @apply text-base leading-relaxed sm:text-lg;
+ }
+
+ /* -------------------------------------------------------------------------- */
+ /* Shell / frame utilities                                                    */
+ /* -------------------------------------------------------------------------- */
+
+ @utility ui-shell-header-strip {
+   @apply flex h-14 shrink-0 items-center gap-2 px-4;
+   border-bottom: 1px solid var(--color-border);
+   background-color: var(--color-card);
+ }
+
+ @utility ui-shell-content {
+   @apply flex flex-1 flex-col p-6;
+   background-color: var(--color-background);
+ }
+
+ @utility ui-shell-sidebar-brand {
+   @apply flex min-w-0 items-center gap-2 px-2 py-1.5;
+ }
+
+ @utility ui-shell-slot-top {
+   @apply px-6 py-2;
+   border-bottom: 1px solid var(--color-border);
+   background-color: var(--color-card);
+ }
+
+ @utility ui-shell-overlay {
+   @apply pointer-events-none fixed inset-0 z-50;
+ }
+
+ @utility ui-shell-header-actions-row {
+   @apply flex shrink-0 items-center gap-2;
+ }
+
+ @utility ui-shell-trailing-slot {
+   @apply min-w-8;
+ }
+
+ @utility ui-shell-sidebar-footer-slot {
+   @apply p-2;
+ }
+
+ @utility ui-visible-desktop-only {
+   @apply hidden md:inline-flex;
+ }
+
+ @utility ui-shell-nav-disabled {
+   cursor: not-allowed;
+   opacity: 0.6;
+ }
+
+ /* -------------------------------------------------------------------------- */
+ /* Reusable semantic UI blocks                                                */
+ /* -------------------------------------------------------------------------- */
+
+ @utility ui-surface-card {
+   background-color: var(--color-card);
+   color: var(--color-card-foreground);
+   border: 1px solid var(--color-border);
+   border-radius: var(--radius-lg);
+ }
+
+ @utility ui-surface-panel {
+   background-color: var(--color-secondary);
+   color: var(--color-secondary-foreground);
+   border: 1px solid var(--color-border);
+   border-radius: var(--radius-md);
+ }
+
+ @utility ui-empty-state {
+   border-radius: var(--radius-lg);
+   border: 1px dashed var(--color-border);
+   background-color: color-mix(
+     in oklab,
+     var(--color-muted) 30%,
+     transparent
+   );
+   padding: 3rem 1.5rem;
+   text-align: center;
+   font-size: var(--text-table);
+   color: var(--color-muted-foreground);
+ }
+
+ /* -------------------------------------------------------------------------- */
+ /* Base                                                                       */
+ /* -------------------------------------------------------------------------- */
+
+ @layer base {
+   *,
+   ::before,
+   ::after,
+   ::backdrop,
+   ::file-selector-button {
+     border-color: var(--color-border);
+   }
+
+   html {
+     color-scheme: light;
+   }
+
+   html.light {
+     color-scheme: light;
+   }
+
+   html.dark {
+     color-scheme: dark;
+   }
+
+   body {
+     background-color: var(--color-background);
+     color: var(--color-foreground);
+     font-family: var(--font-sans);
+     text-rendering: optimizeLegibility;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+   }
+
+   ::selection {
+     background-color: var(--color-selection);
+     color: var(--color-selection-foreground);
+   }
+
+   code,
+   kbd,
+   pre,
+   samp {
+     font-family: var(--font-mono);
+   }
+
+/* ------------------------------------------------------------------
+ * Reduced Motion — AFENDA Safe Mode
+ * ------------------------------------------------------------------ */
+ @media (prefers-reduced-motion: reduce) {
   *,
-  ::before,
-  ::after,
-  ::backdrop,
-  ::file-selector-button {
-    @apply border-border;
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+
+    scroll-behavior: auto !important;
   }
 
-  html {
-    color-scheme: light;
+  /* Prevent transform-based motion artifacts */
+  * {
+    transform: none !important;
   }
 
-  html.dark {
-    color-scheme: dark;
-  }
-
-  body {
-    @apply bg-background font-sans text-foreground antialiased;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    ::before,
-    ::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
+  /* Keep opacity changes allowed (no flicker) */
+  [data-allow-opacity] {
+    transition: opacity 120ms linear !important;
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Components                                                                 */
-/* -------------------------------------------------------------------------- */
 
-@layer components {
-  @supports selector([popover]:popover-open) {
-    [data-advance-popover] {
-      transition:
-        opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-        display 0.2s allow-discrete;
-      opacity: 0;
-      transform: scale(0.96);
-      transform-origin: center;
-      overscroll-behavior: contain;
-      -webkit-tap-highlight-color: transparent;
-      contain: layout;
-    }
+ /* -------------------------------------------------------------------------- */
+ /* Components                                                                 */
+ /* -------------------------------------------------------------------------- */
 
-    [data-advance-popover]:popover-open {
-      opacity: 1;
-      transform: scale(1);
-    }
+ @layer components {
+   /* Popover transition */
+   @supports selector([popover]:popover-open) {
+     [data-advance-popover] {
+       transition:
+         opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+         transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+         display 0.2s allow-discrete;
+       opacity: 0;
+       transform: scale(0.96);
+       transform-origin: center;
+       overscroll-behavior: contain;
+       -webkit-tap-highlight-color: transparent;
+       contain: layout;
+       background-color: var(--color-popover);
+       color: var(--color-popover-foreground);
+       border: 1px solid var(--color-border);
+       border-radius: var(--radius-lg);
+     }
 
-    @starting-style {
-      [data-advance-popover]:popover-open {
-        opacity: 0;
-        transform: scale(0.96);
-      }
-    }
+     [data-advance-popover]:popover-open {
+       opacity: 1;
+       transform: scale(1);
+     }
+
+     @starting-style {
+       [data-advance-popover]:popover-open {
+         opacity: 0;
+         transform: scale(0.96);
+       }
+     }
+   }
+
+   /* Dense table defaults for business screens */
+   .ui-table {
+     width: 100%;
+     border-collapse: separate;
+     border-spacing: 0;
+     font-size: var(--text-table);
+     color: var(--color-foreground);
+   }
+
+   .ui-table thead th {
+     background-color: var(--color-table-header);
+     color: var(--color-foreground);
+     height: var(--size-table-header-height);
+     padding: 0 0.875rem;
+     text-align: left;
+     font-weight: 600;
+     border-bottom: 1px solid var(--color-border-grid);
+     white-space: nowrap;
+   }
+
+   .ui-table tbody td {
+     height: var(--size-table-row-height);
+     padding: 0 0.875rem;
+     border-bottom: 1px solid var(--color-border-muted);
+     vertical-align: middle;
+   }
+
+   .ui-table tbody tr:nth-child(even) {
+     background-color: var(--color-table-row-stripe);
+   }
+
+   .ui-table tbody tr:hover {
+     background-color: var(--color-table-row-hover);
+   }
+
+   .ui-table tbody tr[aria-selected="true"] {
+     background-color: var(--color-table-row-selected);
+   }
+
+   /* Inputs / fields */
+   .ui-field {
+     background-color: var(--color-background);
+     color: var(--color-foreground);
+     border: 1px solid var(--color-input);
+     border-radius: var(--radius-md);
+   }
+
+   .ui-field:focus-visible {
+     outline: none;
+     border-color: var(--color-ring);
+     box-shadow:
+       0 0 0 1px var(--color-ring),
+       0 0 0 3px color-mix(in oklab, var(--color-ring) 20%, transparent);
+   }
+
+   /* Code blocks */
+   .ui-code-block {
+     background-color: var(--color-code);
+     color: var(--color-code-foreground);
+     border: 1px solid var(--color-border-muted);
+     border-radius: var(--radius-md);
+     font-family: var(--font-mono);
+   }
   }
-}
+ }

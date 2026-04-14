@@ -48,8 +48,8 @@ jobs:
       - name: Validate Afenda config
         run: pnpm run script:check-afenda-config
 
-      - name: Design system generated theme + manifest (drift check)
-        run: pnpm --filter @afenda/design-system run test:update-generated-check
+      - name: Design system component governance check
+        run: pnpm --filter @afenda/design-system run component-governance:check
 
       - name: Validate i18n policy and conflicts
         run: pnpm run script:validate-i18n

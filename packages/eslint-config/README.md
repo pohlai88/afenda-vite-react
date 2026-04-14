@@ -19,6 +19,21 @@ export default [
 
 Workspace packages run `eslint .` from their directory; ESLint walks up and loads the root flat config.
 
+## Commands (repo root)
+
+Run these from **`c:\NexusCanon\afenda-react-vite`** (or your clone root) so the root `eslint.config.js` loads.
+
+| Command | Explanation |
+|--------|---------------|
+| `pnpm run lint` | Runs **`turbo run lint`** — lints all packages that define a `lint` script (matches CI). |
+| `pnpm exec eslint . --max-warnings 0 --cache --cache-location .eslintcache` | Lints **the whole repo** the same way ESLint resolves files from the root config. |
+| `pnpm exec eslint apps/web/src --max-warnings 0 --cache --cache-location .eslintcache` | Lints **only the web app** tree (faster than `eslint .`). |
+| `pnpm exec eslint "apps/web/src/app/_platform/shell/components" --max-warnings 0 --cache --cache-location .eslintcache` | Lints **only** the platform shell `components` folder (path you asked about). |
+| `pnpm exec eslint "**/components/**/*.{tsx,jsx}" --max-warnings 0 --cache --cache-location .eslintcache` | Lints **every** `**/components/**` file (matches the `afenda-ui/components-folders` scope in `src/index.js`). |
+| `pnpm exec eslint <path> --fix --cache --cache-location .eslintcache` | Same as above paths, but applies **auto-fixes** where rules support them. |
+
+**UI governance (`afenda-ui` plugin):** `token-only-tailwind` (palette drift / `driftOnly`), `no-inline-styles`, and `no-direct-radix` apply to `**/components/**/*.{tsx,jsx}` (excluding `*.test.*`, `*.stories.*`, and `components/**/__tests__/**`). Use the `**/components/**` command to scan all of those at once.
+
 ## What this config includes
 
 | Layer | Notes |

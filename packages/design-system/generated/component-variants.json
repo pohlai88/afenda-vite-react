@@ -1,0 +1,503 @@
+{
+  "version": 1,
+  "package": "@afenda/design-system",
+  "scope": "ui-primitives",
+  "components": [
+    {
+      "component": "accordion",
+      "sourceFile": "ui-primitives/accordion.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "alert",
+      "sourceFile": "ui-primitives/alert.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "alertVariants",
+          "variants": {
+            "variant": [
+              "default",
+              "destructive"
+            ]
+          },
+          "defaultVariants": {
+            "variant": "default"
+          }
+        }
+      ]
+    },
+    {
+      "component": "alert-dialog",
+      "sourceFile": "ui-primitives/alert-dialog.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "aspect-ratio",
+      "sourceFile": "ui-primitives/aspect-ratio.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "avatar",
+      "sourceFile": "ui-primitives/avatar.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "badge",
+      "sourceFile": "ui-primitives/badge.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "badgeVariants",
+          "variants": {
+            "variant": [
+              "default",
+              "destructive",
+              "ghost",
+              "link",
+              "outline",
+              "secondary"
+            ]
+          },
+          "defaultVariants": {
+            "variant": "default"
+          }
+        }
+      ]
+    },
+    {
+      "component": "breadcrumb",
+      "sourceFile": "ui-primitives/breadcrumb.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "button",
+      "sourceFile": "ui-primitives/button.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "buttonVariants",
+          "variants": {
+            "variant": [
+              "default",
+              "destructive",
+              "ghost",
+              "link",
+              "outline",
+              "secondary"
+            ],
+            "size": [
+              "default",
+              "icon",
+              "icon-lg",
+              "icon-sm",
+              "icon-xs",
+              "lg",
+              "sm",
+              "xs"
+            ]
+          },
+          "defaultVariants": {
+            "variant": "default",
+            "size": "default"
+          }
+        }
+      ]
+    },
+    {
+      "component": "button-group",
+      "sourceFile": "ui-primitives/button-group.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "buttonGroupVariants",
+          "variants": {
+            "orientation": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "defaultVariants": {
+            "orientation": "horizontal"
+          }
+        }
+      ]
+    },
+    {
+      "component": "calendar",
+      "sourceFile": "ui-primitives/calendar.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "card",
+      "sourceFile": "ui-primitives/card.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "carousel",
+      "sourceFile": "ui-primitives/carousel.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "chart",
+      "sourceFile": "ui-primitives/chart.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "checkbox",
+      "sourceFile": "ui-primitives/checkbox.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "collapsible",
+      "sourceFile": "ui-primitives/collapsible.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "combobox",
+      "sourceFile": "ui-primitives/combobox.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "command",
+      "sourceFile": "ui-primitives/command.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "context-menu",
+      "sourceFile": "ui-primitives/context-menu.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "dialog",
+      "sourceFile": "ui-primitives/dialog.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "direction",
+      "sourceFile": "ui-primitives/direction.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "drawer",
+      "sourceFile": "ui-primitives/drawer.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "dropdown-menu",
+      "sourceFile": "ui-primitives/dropdown-menu.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "empty",
+      "sourceFile": "ui-primitives/empty.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "emptyMediaVariants",
+          "variants": {
+            "variant": [
+              "default",
+              "icon"
+            ]
+          },
+          "defaultVariants": {
+            "variant": "default"
+          }
+        }
+      ]
+    },
+    {
+      "component": "field",
+      "sourceFile": "ui-primitives/field.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "fieldVariants",
+          "variants": {
+            "orientation": [
+              "horizontal",
+              "responsive",
+              "vertical"
+            ]
+          },
+          "defaultVariants": {
+            "orientation": "vertical"
+          }
+        }
+      ]
+    },
+    {
+      "component": "form",
+      "sourceFile": "ui-primitives/form.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "hover-card",
+      "sourceFile": "ui-primitives/hover-card.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "input",
+      "sourceFile": "ui-primitives/input.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "input-group",
+      "sourceFile": "ui-primitives/input-group.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "inputGroupAddonVariants",
+          "variants": {
+            "align": [
+              "block-end",
+              "block-start",
+              "inline-end",
+              "inline-start"
+            ]
+          },
+          "defaultVariants": {
+            "align": "inline-start"
+          }
+        },
+        {
+          "variableName": "inputGroupButtonVariants",
+          "variants": {
+            "size": [
+              "icon-sm",
+              "icon-xs",
+              "sm",
+              "xs"
+            ]
+          },
+          "defaultVariants": {
+            "size": "xs"
+          }
+        }
+      ]
+    },
+    {
+      "component": "input-otp",
+      "sourceFile": "ui-primitives/input-otp.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "item",
+      "sourceFile": "ui-primitives/item.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "itemMediaVariants",
+          "variants": {
+            "variant": [
+              "default",
+              "icon",
+              "image"
+            ]
+          },
+          "defaultVariants": {
+            "variant": "default"
+          }
+        },
+        {
+          "variableName": "itemVariants",
+          "variants": {
+            "variant": [
+              "default",
+              "muted",
+              "outline"
+            ],
+            "size": [
+              "default",
+              "sm"
+            ]
+          },
+          "defaultVariants": {
+            "variant": "default",
+            "size": "default"
+          }
+        }
+      ]
+    },
+    {
+      "component": "kbd",
+      "sourceFile": "ui-primitives/kbd.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "label",
+      "sourceFile": "ui-primitives/label.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "menubar",
+      "sourceFile": "ui-primitives/menubar.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "native-select",
+      "sourceFile": "ui-primitives/native-select.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "navigation-menu",
+      "sourceFile": "ui-primitives/navigation-menu.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "navigationMenuTriggerStyle",
+          "variants": {},
+          "defaultVariants": {}
+        }
+      ]
+    },
+    {
+      "component": "pagination",
+      "sourceFile": "ui-primitives/pagination.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "popover",
+      "sourceFile": "ui-primitives/popover.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "progress",
+      "sourceFile": "ui-primitives/progress.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "radio-group",
+      "sourceFile": "ui-primitives/radio-group.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "resizable",
+      "sourceFile": "ui-primitives/resizable.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "scroll-area",
+      "sourceFile": "ui-primitives/scroll-area.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "select",
+      "sourceFile": "ui-primitives/select.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "separator",
+      "sourceFile": "ui-primitives/separator.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "sheet",
+      "sourceFile": "ui-primitives/sheet.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "sidebar",
+      "sourceFile": "ui-primitives/sidebar.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "sidebarMenuButtonVariants",
+          "variants": {
+            "variant": [
+              "default",
+              "outline"
+            ],
+            "size": [
+              "default",
+              "lg",
+              "sm"
+            ]
+          },
+          "defaultVariants": {
+            "variant": "default",
+            "size": "default"
+          }
+        }
+      ]
+    },
+    {
+      "component": "skeleton",
+      "sourceFile": "ui-primitives/skeleton.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "slider",
+      "sourceFile": "ui-primitives/slider.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "sonner",
+      "sourceFile": "ui-primitives/sonner.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "spinner",
+      "sourceFile": "ui-primitives/spinner.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "switch",
+      "sourceFile": "ui-primitives/switch.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "table",
+      "sourceFile": "ui-primitives/table.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "tabs",
+      "sourceFile": "ui-primitives/tabs.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "tabsListVariants",
+          "variants": {
+            "variant": [
+              "default",
+              "line"
+            ]
+          },
+          "defaultVariants": {
+            "variant": "default"
+          }
+        }
+      ]
+    },
+    {
+      "component": "textarea",
+      "sourceFile": "ui-primitives/textarea.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "toggle",
+      "sourceFile": "ui-primitives/toggle.tsx",
+      "cvaDefinitions": [
+        {
+          "variableName": "toggleVariants",
+          "variants": {
+            "variant": [
+              "default",
+              "outline"
+            ],
+            "size": [
+              "default",
+              "lg",
+              "sm"
+            ]
+          },
+          "defaultVariants": {
+            "variant": "default",
+            "size": "default"
+          }
+        }
+      ]
+    },
+    {
+      "component": "toggle-group",
+      "sourceFile": "ui-primitives/toggle-group.tsx",
+      "cvaDefinitions": []
+    },
+    {
+      "component": "tooltip",
+      "sourceFile": "ui-primitives/tooltip.tsx",
+      "cvaDefinitions": []
+    }
+  ]
+}

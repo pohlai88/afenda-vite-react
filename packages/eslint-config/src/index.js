@@ -6,6 +6,8 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import vitestPlugin from '@vitest/eslint-plugin'
 
+import afendaUiPlugin from './plugin.js'
+
 /** @typedef {{ rootDir: string }} CreateConfigOptions */
 
 /**
@@ -131,6 +133,27 @@ export function createConfig(opts = {}) {
         'vitest/no-conditional-expect': 'off',
       },
     },
+    {
+      name: 'afenda-ui/components-folders',
+      files: ['**/components/**/*.{tsx,jsx}'],
+      ignores: [
+        '**/*.{test,spec}.{tsx,jsx}',
+        '**/*.stories.{tsx,jsx}',
+        '**/components/**/__tests__/**',
+      ],
+      plugins: {
+        'afenda-ui': afendaUiPlugin,
+      },
+      rules: {
+        // Any directory named `components/` at any depth (app or package): drift + no inline + no direct Radix.
+        // driftOnly: block default palette scales (bg-blue-500, etc.) without a full token allowlist.
+        'afenda-ui/token-only-tailwind': ['error', { driftOnly: true }],
+        'afenda-ui/no-inline-styles': 'error',
+        'afenda-ui/no-direct-radix': 'error',
+      },
+    },
     prettier,
   )
 }
+
+export { afendaUiPlugin }

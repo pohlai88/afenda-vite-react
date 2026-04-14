@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest"
 import {
   shellAppChildPathSegments,
   shellAppChildRouteDefinitions,
-} from "@/app/_platform/shell"
-import { appShellRouteObject } from "@/routes/route-app-shell"
+} from ".."
+import { appShellRouteObject } from "../../../../routes/route-app-shell"
 
 function isPlainChildRoute(value: unknown): value is {
   path?: string

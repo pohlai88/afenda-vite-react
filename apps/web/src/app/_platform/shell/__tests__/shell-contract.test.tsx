@@ -2,12 +2,13 @@ import { act, render, screen } from "@testing-library/react"
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
 import { beforeAll, describe, expect, it, vi } from "vitest"
 
-import { initI18n } from "@/app/_platform/i18n"
-import "@/app/_platform/shell/types/shell-route-handle"
-import { AppThemeProvider } from "@/app/_platform/theme/app-theme-provider"
+import { initI18n } from "../../i18n"
+import "../types/shell-route-handle"
+import { AppThemeProvider } from "../../theme/app-theme-provider"
+import { MarketingThemeProvider } from "../../../../pages/provider/marketing-theme-provider"
 
-import { AppShellLayout } from "../components/app-shell-layout"
-import Landing from "@/pages/Landing"
+import MarketingLandingPage from "../../../../pages/components/marketing-landing-page"
+import { ShellLeftSidebarLayout } from "../components/shell-left-sidebar-block"
 
 describe("App shell layout contract", () => {
   beforeAll(async () => {
@@ -27,15 +28,18 @@ describe("App shell layout contract", () => {
   })
 
   it("renders marketing home without the shell sidebar wrapper", async () => {
-    const router = createMemoryRouter([{ path: "/", element: <Landing /> }], {
-      initialEntries: ["/"],
-    })
+    const router = createMemoryRouter(
+      [{ path: "/", element: <MarketingLandingPage /> }],
+      {
+        initialEntries: ["/"],
+      }
+    )
 
     const { container } = await act(async () =>
       render(
-        <AppThemeProvider>
+        <MarketingThemeProvider>
           <RouterProvider router={router} />
-        </AppThemeProvider>
+        </MarketingThemeProvider>
       )
     )
 
@@ -47,7 +51,7 @@ describe("App shell layout contract", () => {
       [
         {
           path: "/app",
-          element: <AppShellLayout />,
+          element: <ShellLeftSidebarLayout />,
           handle: {
             shell: {
               titleKey: "breadcrumb.app",

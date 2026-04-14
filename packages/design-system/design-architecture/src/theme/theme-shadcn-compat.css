@@ -1,0 +1,96 @@
+/**
+ * SHADCN COMPATIBILITY ALIASES
+ *
+ * AFENDA Governance Layer
+ *
+ * Purpose:
+ * - bridge canonical tokens to shadcn-compatible aliases
+ * - remain pure alias-only, with zero logic or transformation
+ * - provide a stable runtime surface for @theme inline bridging
+ *
+ * Rules:
+ * - never use these as source of truth
+ * - always map from canonical --color-* / --font-* / --radius-* tokens
+ */
+
+ :root {
+  /* ------------------------------------------------------------------
+   * Core surfaces
+   * ------------------------------------------------------------------ */
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+
+  --card: var(--color-card);
+  --card-foreground: var(--color-card-foreground);
+
+  --popover: var(--color-popover);
+  --popover-foreground: var(--color-popover-foreground);
+
+  /* ------------------------------------------------------------------
+   * Semantic colors
+   * ------------------------------------------------------------------ */
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-secondary-foreground);
+
+  --muted: var(--color-muted);
+  --muted-foreground: var(--color-muted-foreground);
+
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-accent-foreground);
+
+  --destructive: var(--color-destructive);
+  --destructive-foreground: var(--color-destructive-foreground);
+
+  /* ------------------------------------------------------------------
+   * Structural
+   * ------------------------------------------------------------------ */
+  --border: var(--color-border);
+  --input: var(--color-input);
+  --ring: var(--color-ring);
+  --ring-offset: var(--color-ring-offset);
+
+  /* ------------------------------------------------------------------
+   * Charts
+   * ------------------------------------------------------------------ */
+  --chart-1: var(--color-chart-1);
+  --chart-2: var(--color-chart-2);
+  --chart-3: var(--color-chart-3);
+  --chart-4: var(--color-chart-4);
+  --chart-5: var(--color-chart-5);
+
+  /* ------------------------------------------------------------------
+   * Sidebar
+   * ------------------------------------------------------------------ */
+  --sidebar: var(--color-sidebar);
+  --sidebar-foreground: var(--color-sidebar-foreground);
+  --sidebar-primary: var(--color-sidebar-primary);
+  --sidebar-primary-foreground: var(--color-sidebar-primary-foreground);
+  --sidebar-accent: var(--color-sidebar-accent);
+  --sidebar-accent-foreground: var(--color-sidebar-accent-foreground);
+  --sidebar-border: var(--color-sidebar-border);
+  --sidebar-ring: var(--color-sidebar-ring);
+
+  /* ------------------------------------------------------------------
+   * AFENDA extended surfaces
+   * ------------------------------------------------------------------ */
+  --surface: var(--color-surface);
+  --surface-foreground: var(--color-surface-foreground);
+
+  --selection-bg: var(--color-selection);
+  --selection-foreground: var(--color-selection-foreground);
+
+  /* ------------------------------------------------------------------
+   * Typography
+   * ------------------------------------------------------------------ */
+  --font-family-sans: var(--font-sans);
+  --font-family-mono: var(--font-mono);
+
+  /* ------------------------------------------------------------------
+   * Radius
+   * Shadcn expects a single default radius token.
+   * ------------------------------------------------------------------ */
+  --radius: var(--radius-md);
+}

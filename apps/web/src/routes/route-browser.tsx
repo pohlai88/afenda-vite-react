@@ -1,14 +1,15 @@
 import type { RouteObject } from "react-router-dom"
 
+import { marketingRouteObjects } from "../pages/route/route-marketing"
+
 import { appShellRouteObject } from "./route-app-shell"
-import { rootRouteObjects } from "./route-root"
 
 /**
  * Single exported route tree for `createBrowserRouter` — order is significant for matching.
- * - {@link rootRouteObjects}: `/` (marketing landing)
- * - {@link appShellRouteObject}: `/app/*` (shell + features)
+ * - {@link marketingRouteObjects}: `/` (`marketing-landing-page`; layout + theme in `src/pages/provider`)
+ * - {@link appShellRouteObject}: `/app/*` (AppThemeProvider + shell + features)
  */
 export const browserRoutes: RouteObject[] = [
-  ...rootRouteObjects,
+  ...marketingRouteObjects,
   appShellRouteObject,
 ]

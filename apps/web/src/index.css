@@ -1,239 +1,516 @@
 /**
- * APP CSS ENTRY — FINAL (TOKEN-SAFE, NO OVERRIDES)
+ * APP CSS ENTRY — DESIGN-ARCHITECTURE THEME CONSUMER
+ *
+ * Purpose:
+ * - import canonical theme split
+ * - register Tailwind v4 sources/plugins/variants
+ * - define approved app-level utilities
+ * - keep semantic colors on canonical CSS variables
  *
  * Rules:
- * - NO Tailwind color utilities (@apply bg-*, text-*, border-*)
- * - ALL colors use canonical tokens: var(--color-*)
- * - Tailwind only for layout, spacing, typography scale
+ * - this file is the approved vocabulary layer
+ * - semantic color ownership stays on canonical CSS variables
+ * - use motion/spacing/size tokens where practical
+ * - avoid ad hoc feature-level utility invention elsewhere
  */
 
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "../../../packages/design-system/design-architecture/src/generated/generated-theme.css";
+ @import "tailwindcss";
+ @import "tw-animate-css";
 
-/* -------------------------------------------------------------------------- */
-/* Tailwind Setup                                                             */
-/* -------------------------------------------------------------------------- */
+ @import "../../../packages/design-system/design-architecture/src/theme/theme-tokens-light.css";
+ @import "../../../packages/design-system/design-architecture/src/theme/theme-dark.css";
+ @import "../../../packages/design-system/design-architecture/src/theme/theme-keyframes.css";
+ @import "../../../packages/design-system/design-architecture/src/theme/theme-tokens-layout.css";
+ @import "../../../packages/design-system/design-architecture/src/theme/theme-density.css";
+ @import "../../../packages/design-system/design-architecture/src/theme/theme-shadcn-compat.css";
+ @import "../../../packages/design-system/design-architecture/src/theme/theme-tailwind-bridge.css";
 
-@source "./";
-@source "../../../packages/design-system/ui-primitives";
-@source "../../../packages/design-system/icons";
+ /* -------------------------------------------------------------------------- */
+ /* Tailwind setup                                                             */
+ /* -------------------------------------------------------------------------- */
 
-@plugin "@tailwindcss/forms" {
-  strategy: class;
+ @source "./";
+ @source "../../../packages/design-system/ui-primitives";
+ @source "../../../packages/design-system/icons";
+
+ @plugin "@tailwindcss/forms" {
+   strategy: class;
+ }
+
+ @plugin "@tailwindcss/typography";
+
+ @custom-variant dark (&:where(.dark, .dark *));
+
+ /* -------------------------------------------------------------------------- */
+ /* Utilities                                                                  */
+ /* -------------------------------------------------------------------------- */
+
+ @utility line-t {
+   position: relative;
+
+   &::before {
+     content: "";
+     position: absolute;
+     inset-inline-start: -100vw;
+     top: 0;
+     width: 200vw;
+     height: 1px;
+     background-color: color-mix(
+       in oklab,
+       var(--color-foreground) 10%,
+       transparent
+     );
+   }
+ }
+
+ @utility focus-ring {
+   outline: none;
+
+   &:focus-visible {
+     box-shadow:
+       0 0 0 2px var(--color-ring),
+       0 0 0 4px var(--color-ring-offset);
+   }
+ }
+
+ @utility text-gradient {
+   background-image: linear-gradient(
+     to right,
+     var(--color-primary),
+     var(--color-accent)
+   );
+   -webkit-background-clip: text;
+   background-clip: text;
+   color: transparent;
+ }
+
+ /* Marketing / token playground — sizes from theme-tokens-layout (avoid ad hoc rem) */
+ @utility ui-marketing-eyebrow {
+   font-size: var(--text-helper);
+   font-weight: 600;
+   text-transform: uppercase;
+   letter-spacing: 0.2em;
+   color: var(--color-muted-foreground);
+ }
+
+ @utility ui-marketing-path {
+   font-family: var(--font-mono);
+   font-size: var(--text-helper);
+   text-transform: uppercase;
+   letter-spacing: 0.2em;
+   color: var(--color-muted-foreground);
+ }
+
+ @utility ui-mono-token {
+   font-family: var(--font-mono);
+   font-size: var(--text-ui-2xs);
+   line-height: var(--leading-helper);
+ }
+
+ @utility ui-mono-token-sm {
+   font-family: var(--font-mono);
+   font-size: var(--text-ui-sm);
+   line-height: var(--leading-helper);
+ }
+
+ /* -------------------------------------------------------------------------- */
+ /* Approved layout vocabulary                                                 */
+ /* -------------------------------------------------------------------------- */
+
+ @utility ui-page {
+   margin-inline: auto;
+   width: 100%;
+   max-width: var(--container-lg);
+   padding-inline: var(--spacing-compact-4);
+   padding-block: calc(var(--spacing-compact-6) * 2);
+ }
+
+ @utility ui-stack-relaxed {
+   display: flex;
+   min-width: 0;
+   flex-direction: column;
+   gap: calc(var(--spacing-section-gap) * 1.1);
+ }
+
+ @utility ui-stack-tight {
+   display: flex;
+   min-width: 0;
+   flex-direction: column;
+   gap: var(--spacing-compact-3);
+ }
+
+ @utility ui-header {
+   display: flex;
+   flex-direction: column;
+   gap: var(--spacing-compact-3);
+ }
+
+ @utility ui-title-hero {
+   font-size: var(--text-ui-2xl);
+   line-height: var(--leading-heading);
+   letter-spacing: var(--tracking-heading);
+   font-weight: 700;
+ }
+
+ @utility ui-title-page {
+   font-size: var(--text-page-title);
+   line-height: var(--leading-heading);
+   letter-spacing: var(--tracking-heading);
+   font-weight: 600;
+ }
+
+ @utility ui-title-section {
+   font-size: var(--text-section-title);
+   line-height: var(--leading-heading);
+   letter-spacing: var(--tracking-heading);
+   font-weight: 600;
+ }
+
+ @utility ui-lede {
+   font-size: var(--text-ui-md);
+   line-height: var(--leading-body);
+   color: var(--color-muted-foreground);
+ }
+
+ /* -------------------------------------------------------------------------- */
+ /* Shell / frame utilities                                                    */
+ /* -------------------------------------------------------------------------- */
+
+ @utility ui-shell-header-strip {
+   display: flex;
+   height: var(--size-shell-header-height);
+   flex-shrink: 0;
+   align-items: center;
+   gap: var(--spacing-toolbar-gap);
+   padding-inline: var(--spacing-panel-padding);
+   border-bottom: 1px solid var(--color-border);
+   background-color: var(--color-card);
+ }
+
+ @utility ui-shell-content {
+   display: flex;
+   flex: 1;
+   flex-direction: column;
+   padding: calc(var(--spacing-panel-padding-lg) * 1.5);
+   background-color: var(--color-background);
+ }
+
+ @utility ui-shell-sidebar-brand {
+   display: flex;
+   min-width: 0;
+   align-items: center;
+   gap: var(--spacing-inline-control-gap);
+   padding-inline: var(--spacing-compact-2);
+   padding-block: var(--spacing-compact-2);
+ }
+
+ /** Icon-rail brand tile: slight upward nudge vs. default SidebarMenu vertical rhythm. */
+ @utility ui-shell-brand-rail-menu {
+   transform: translateY(-0.125rem);
+ }
+
+ @utility ui-shell-slot-top {
+   padding-inline: calc(var(--spacing-panel-padding-lg) * 1.5);
+   padding-block: var(--spacing-compact-2);
+   border-bottom: 1px solid var(--color-border);
+   background-color: var(--color-card);
+ }
+
+ @utility ui-shell-overlay {
+   position: fixed;
+   inset: 0;
+   z-index: 50;
+   pointer-events: none;
+ }
+
+ @utility ui-shell-header-actions-row {
+   display: flex;
+   flex-shrink: 0;
+   align-items: center;
+   gap: var(--spacing-inline-control-gap);
+ }
+
+ @utility ui-shell-trailing-slot {
+   min-width: var(--size-control-xs);
+ }
+
+ @utility ui-shell-sidebar-footer-slot {
+   padding: var(--spacing-compact-2);
+ }
+
+ @utility ui-visible-desktop-only {
+   display: none;
+ }
+
+ @utility ui-shell-nav-disabled {
+   cursor: not-allowed;
+   opacity: 0.6;
+ }
+
+/* ==========================================================================
+   App shell — icon rail (unlayered: wins over @layer base `body` smoothing).
+   Strong sidebar-foreground on glyphs; disabled tiles use lower opacity vs default 50%.
+   ========================================================================== */
+
+
+@utility ui-shell-rail-emoji {
+  font-family:
+    "Segoe UI Emoji",
+    "Apple Color Emoji",
+    "Noto Color Emoji",
+    "Twemoji Mozilla",
+    sans-serif;
+  font-size: 1.25rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  min-height: 1.25rem;
+  transform: translateZ(0);
+  color: var(--color-sidebar-foreground);
+  opacity: 1;
 }
 
-@plugin "@tailwindcss/typography";
 
-@custom-variant dark (&:where(.dark, .dark *));
+ /* -------------------------------------------------------------------------- */
+ /* Reusable semantic UI blocks                                                */
+ /* -------------------------------------------------------------------------- */
 
-/* -------------------------------------------------------------------------- */
-/* Utilities (TOKEN-SAFE)                                                     */
-/* -------------------------------------------------------------------------- */
+ @utility ui-surface-card {
+   background-color: var(--color-card);
+   color: var(--color-card-foreground);
+   border: 1px solid var(--color-border);
+   border-radius: var(--radius-lg);
+ }
 
-@utility line-t {
-  position: relative;
+ @utility ui-surface-panel {
+   background-color: var(--color-secondary);
+   color: var(--color-secondary-foreground);
+   border: 1px solid var(--color-border);
+   border-radius: var(--radius-md);
+ }
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100vw;
-    height: 1px;
-    width: 200vw;
-    background-color: color-mix(
-      in oklab,
-      var(--color-foreground) 10%,
-      transparent
-    );
-  }
-}
+ @utility ui-empty-state {
+   border-radius: var(--radius-lg);
+   border: 1px dashed var(--color-border);
+   background-color: color-mix(
+     in oklab,
+     var(--color-muted) 30%,
+     transparent
+   );
+   padding: calc(var(--spacing-panel-padding-lg) * 3) calc(var(--spacing-panel-padding-lg) * 1.5);
+   text-align: center;
+   font-size: var(--text-table);
+   line-height: var(--leading-body);
+   color: var(--color-muted-foreground);
+ }
 
-@utility focus-ring {
-  outline: none;
+ /* -------------------------------------------------------------------------- */
+ /* Base                                                                       */
+ /* -------------------------------------------------------------------------- */
 
-  &:focus-visible {
-    box-shadow:
-      0 0 0 2px var(--color-ring),
-      0 0 0 4px var(--color-background);
-  }
-}
+ @layer base {
+   *,
+   ::before,
+   ::after,
+   ::backdrop,
+   ::file-selector-button {
+     border-color: var(--color-border);
+   }
 
-@utility text-gradient {
-  background-image: linear-gradient(
-    to right,
-    var(--color-primary),
-    var(--color-accent)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+   html {
+     color-scheme: light;
+   }
 
-/* Layout utilities (safe) */
+   html.light {
+     color-scheme: light;
+   }
 
-@utility ui-page {
-  @apply mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8;
-}
+   html.dark {
+     color-scheme: dark;
+   }
 
-@utility ui-stack-relaxed {
-  @apply flex min-w-0 flex-col gap-8 md:gap-10;
-}
+   html,
+   body {
+     min-height: 100%;
+   }
 
-@utility ui-stack-tight {
-  @apply flex min-w-0 flex-col gap-3;
-}
+   body {
+     background-color: var(--color-background);
+     color: var(--color-foreground);
+     font-family: var(--font-sans);
+     line-height: var(--leading-body);
+     text-rendering: optimizeLegibility;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+   }
 
-@utility ui-header {
-  @apply space-y-3;
-}
+   ::selection {
+     background-color: var(--color-selection);
+     color: var(--color-selection-foreground);
+   }
 
-@utility ui-title-hero {
-  @apply text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl;
-}
+   code,
+   kbd,
+   pre,
+   samp {
+     font-family: var(--font-mono);
+   }
+ }
 
-@utility ui-title-page {
-  @apply text-2xl font-semibold tracking-tight sm:text-3xl;
-}
+ /* -------------------------------------------------------------------------- */
+ /* Reduced Motion                                                             */
+ /* -------------------------------------------------------------------------- */
 
-@utility ui-title-section {
-  @apply text-lg font-semibold tracking-tight sm:text-xl;
-}
+ @media (prefers-reduced-motion: reduce) {
+   *,
+   *::before,
+   *::after {
+     animation-duration: 0.01ms !important;
+     animation-delay: 0ms !important;
+     animation-iteration-count: 1 !important;
+     transition-duration: 0.01ms !important;
+     transition-delay: 0ms !important;
+     scroll-behavior: auto !important;
+   }
 
-@utility ui-lede {
-  @apply text-base leading-relaxed sm:text-lg;
-}
+   [data-allow-opacity] {
+     transition: opacity 120ms linear !important;
+   }
+ }
 
-/* TOKEN-SAFE components */
+ /* -------------------------------------------------------------------------- */
+ /* Components                                                                 */
+ /* -------------------------------------------------------------------------- */
 
-@utility ui-empty-state {
-  border-radius: var(--radius-lg);
-  border: 1px dashed var(--color-border);
-  background-color: color-mix(in oklab, var(--color-muted) 30%, transparent);
-  padding: 3rem 1.5rem;
-  text-align: center;
-  font-size: 0.875rem;
-  color: var(--color-muted-foreground);
-}
+ @layer components {
+   @supports selector([popover]:popover-open) {
+     [data-advance-popover] {
+       transition:
+         opacity 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+         transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+         display 140ms allow-discrete;
+       opacity: 0;
+       transform: translateY(-0.18rem);
+       transform-origin: center;
+       overscroll-behavior: contain;
+       -webkit-tap-highlight-color: transparent;
+       contain: layout;
+       background-color: var(--color-popover);
+       color: var(--color-popover-foreground);
+       border: 1px solid var(--color-border);
+       border-radius: var(--radius-lg);
+     }
 
-/* Shell layout (safe) */
+     [data-advance-popover]:popover-open {
+       opacity: 1;
+       transform: translateY(0);
+     }
 
-@utility ui-shell-header-strip {
-  @apply flex h-14 shrink-0 items-center gap-2 px-4;
-  border-bottom: 1px solid var(--color-border);
-}
+     @starting-style {
+       [data-advance-popover]:popover-open {
+         opacity: 0;
+         transform: translateY(-0.18rem);
+       }
+     }
+   }
 
-@utility ui-shell-content {
-  @apply flex flex-1 flex-col p-6;
-}
+   .ui-table {
+     width: 100%;
+     border-collapse: separate;
+     border-spacing: 0;
+     font-size: var(--text-table);
+     line-height: var(--leading-table);
+     color: var(--color-foreground);
+   }
 
-@utility ui-shell-sidebar-brand {
-  @apply flex min-w-0 items-center gap-2 px-2 py-1.5;
-}
+   .ui-table thead th {
+     height: var(--size-table-header-height);
+     padding-inline: var(--spacing-panel-padding);
+     background-color: var(--color-table-header);
+     color: var(--color-foreground);
+     text-align: left;
+     font-size: var(--text-label);
+     letter-spacing: var(--tracking-label);
+     font-weight: 600;
+     border-bottom: 1px solid var(--color-border-grid);
+     white-space: nowrap;
+   }
 
-@utility ui-shell-slot-top {
-  @apply px-6 py-2;
-  border-bottom: 1px solid var(--color-border);
-}
+   .ui-table tbody td {
+     height: var(--size-table-row-height);
+     padding-inline: var(--spacing-panel-padding);
+     border-bottom: 1px solid var(--color-border-muted);
+     vertical-align: middle;
+   }
 
-@utility ui-shell-overlay {
-  @apply pointer-events-none fixed inset-0 z-50;
-}
+   .ui-table tbody tr:nth-child(even) {
+     background-color: var(--color-table-row-stripe);
+   }
 
-@utility ui-shell-header-actions-row {
-  @apply flex shrink-0 items-center gap-2;
-}
+   .ui-table tbody tr:hover {
+     background-color: var(--color-table-row-hover);
+   }
 
-@utility ui-shell-trailing-slot {
-  @apply min-w-8;
-}
+   .ui-table tbody tr[aria-selected="true"] {
+     background-color: var(--color-table-row-selected);
+   }
 
-@utility ui-shell-sidebar-footer-slot {
-  @apply p-2;
-}
+   .ui-field {
+     background-color: var(--color-background);
+     color: var(--color-foreground);
+     border: 1px solid var(--color-input);
+     border-radius: var(--radius-md);
+   }
 
-@utility ui-visible-desktop-only {
-  @apply hidden md:inline-flex;
-}
+   .ui-field:focus-visible {
+     outline: none;
+     border-color: var(--color-ring);
+     box-shadow:
+       0 0 0 1px var(--color-ring),
+       0 0 0 3px color-mix(in oklab, var(--color-ring) 20%, transparent);
+   }
 
-@utility ui-shell-nav-disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
+   .ui-code-block {
+     background-color: var(--color-code);
+     color: var(--color-code-foreground);
+     border: 1px solid var(--color-border-muted);
+     border-radius: var(--radius-md);
+     font-family: var(--font-mono);
+   }
+ }
 
-/* -------------------------------------------------------------------------- */
-/* Base                                                                       */
-/* -------------------------------------------------------------------------- */
+ /* -------------------------------------------------------------------------- */
+ /* Responsive vocabulary adjustments                                          */
+ /* -------------------------------------------------------------------------- */
 
-@layer base {
-  *,
-  ::before,
-  ::after,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-border);
-  }
+ @media (width >= 48rem) {
+   .ui-visible-desktop-only {
+     display: inline-flex;
+   }
 
-  html {
-    color-scheme: light;
-  }
+   .ui-page {
+     padding-inline: calc(var(--spacing-compact-6) * 1.5);
+   }
 
-  html.light {
-    color-scheme: light;
-  }
+   .ui-stack-relaxed {
+     gap: calc(var(--spacing-section-gap) * 1.25);
+   }
 
-  html.dark {
-    color-scheme: dark;
-  }
+   .ui-title-hero {
+     font-size: calc(var(--text-ui-2xl) * 1.18);
+   }
+ }
 
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-  }
+ @media (width >= 64rem) {
+   .ui-page {
+     padding-inline: calc(var(--spacing-panel-padding-lg) * 2);
+   }
 
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    ::before,
-    ::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-}
+   .ui-title-hero {
+     font-size: calc(var(--text-ui-2xl) * 1.35);
+   }
+ }
 
-/* -------------------------------------------------------------------------- */
-/* Components                                                                 */
-/* -------------------------------------------------------------------------- */
 
-@layer components {
-  @supports selector([popover]:popover-open) {
-    [data-advance-popover] {
-      transition:
-        opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-        display 0.2s allow-discrete;
-      opacity: 0;
-      transform: scale(0.96);
-      transform-origin: center;
-      overscroll-behavior: contain;
-      -webkit-tap-highlight-color: transparent;
-      contain: layout;
-    }
-
-    [data-advance-popover]:popover-open {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    @starting-style {
-      [data-advance-popover]:popover-open {
-        opacity: 0;
-        transform: scale(0.96);
-      }
-    }
-  }
-}

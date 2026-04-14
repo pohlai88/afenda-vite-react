@@ -97,7 +97,6 @@ function collectIconUsage(): IconUsage {
 
   const scanRoots = [
     path.join(packageRoot, 'ui-primitives'),
-    path.join(packageRoot, 'design-architecture', 'src', 'tokenization'),
     path.join(packageRoot, 'utils'),
   ]
 

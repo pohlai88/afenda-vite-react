@@ -1,0 +1,219 @@
+/**
+ * KEYFRAMES — AFENDA Motion System
+ *
+ * Context-aware, production-grade motion.
+ * Refined final version.
+ */
+
+/* ------------------------------------------------------------------
+ * Fade (state change)
+ * ------------------------------------------------------------------ */
+ @keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* ------------------------------------------------------------------
+ * Origin-aware slide (vertical)
+ * ------------------------------------------------------------------ */
+@keyframes slide-in-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-0.18rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-top {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.16rem);
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(0.18rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-bottom {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(0.16rem);
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Origin-aware slide (horizontal)
+ * ------------------------------------------------------------------ */
+@keyframes slide-in-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-0.22rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-to-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-0.2rem);
+  }
+}
+
+@keyframes slide-in-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(0.22rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-to-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(0.2rem);
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Elevation (dialogs / modals)
+ * ------------------------------------------------------------------ */
+@keyframes elevation-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985) translateY(-0.16rem);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes elevation-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.985) translateY(-0.14rem);
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Spatial (layout / shell)
+ * ------------------------------------------------------------------ */
+@keyframes sidebar-in {
+  from {
+    opacity: 0.9;
+    transform: translateX(-0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes sidebar-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0.92;
+    transform: translateX(-0.45rem);
+  }
+}
+
+@keyframes panel-in-right {
+  from {
+    opacity: 0.92;
+    transform: translateX(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes panel-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0.94;
+    transform: translateX(0.75rem);
+  }
+}
+
+@keyframes panel-in-left {
+  from {
+    opacity: 0.92;
+    transform: translateX(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes panel-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0.94;
+    transform: translateX(-0.75rem);
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Micro interaction
+ * ------------------------------------------------------------------ */
+@keyframes micro-lift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-1px);
+  }
+}

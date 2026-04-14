@@ -91,14 +91,17 @@ export { ShellCommandSystemError } from "./errors/shell-command-system-error"
 export { ShellCommandUnauthorizedError } from "./errors/shell-command-unauthorized-error"
 export { ShellCommandValidationError } from "./errors/shell-command-validation-error"
 
-export { AppShellBreadcrumb } from "./components/app-shell-breadcrumb"
-export { AppShellHeaderActions } from "./components/app-shell-header-actions"
-export { AppShellHeader } from "./components/app-shell-header"
-export { AppShellLayout } from "./components/app-shell-layout"
+export { AppShellLayout, ShellLeftSidebarLayout } from "./components/shell-left-sidebar-block"
+export { ShellTopNav, type ShellTopNavProps } from "./components/shell-top-nav-block"
 export { AppShellNotFound } from "./components/app-shell-not-found"
-export { AppShellSidebar } from "./components/app-shell-sidebar"
-export { AppShellThemeToggle } from "./components/app-shell-theme-toggle"
-export { ShellDocumentTitle } from "./components/shell-document-title"
+export {
+  AppShellSidebar,
+  ShellLeftSidebar,
+} from "./components/shell-left-sidebar-block"
+export { ShellIcon, ShellNavIcon } from "./components/shell-icon"
+export type { ShellIconProps, ShellNavIconProps } from "./components/shell-icon"
+export { shellIconNames, shellNavIconNames } from "./constants/shell-icon-names"
+export type { ShellIconName, ShellNavIconName } from "./constants/shell-icon-names"
 
 export { useCurrentShellRoute } from "./hooks/use-current-shell-route"
 export { useShellBreadcrumbs } from "./hooks/use-shell-breadcrumbs"
@@ -146,6 +149,11 @@ export {
   shellAppNotFoundRoute,
   shellRouteMetadataList,
 } from "./routes/shell-route-definitions"
+export { shellWorkspaceHomeHref } from "./routes/shell-route-constants"
+export {
+  shellUserMenuFallbackLinks,
+  type ShellUserMenuLinkKey,
+} from "./routes/shell-user-menu-route-map"
 
 export {
   assertShellRouteCatalog,

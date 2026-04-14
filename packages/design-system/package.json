@@ -13,16 +13,16 @@
     "tokens:check": "pnpm run validate-tokens",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
-    "format": "prettier --write \"utils/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/src/governance/**/*.ts\" \"design-architecture/src/tokenization/**/*.ts\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.{ts,tsx}\" \"prettier.config.js\"",
-    "format:check": "prettier --check \"utils/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/src/governance/**/*.ts\" \"design-architecture/src/tokenization/**/*.ts\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.{ts,tsx}\" \"prettier.config.js\"",
+    "format": "prettier --write \"utils/**/*.ts\" \"scripts/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.{ts,tsx}\" \"prettier.config.js\"",
+    "format:check": "prettier --check \"utils/**/*.ts\" \"scripts/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"design-architecture/scripts/**/*.ts\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.{ts,tsx}\" \"prettier.config.js\"",
     "icons:generate": "tsx icons/script/build-icons.ts",
     "icons:check": "tsx icons/script/build-icons.ts && git diff --exit-code -- icons",
-    "generate-design-system": "tsx design-architecture/scripts/generate-design-system.ts",
     "check:imports": "tsx design-architecture/scripts/check-design-system-imports.ts",
+    "check:tw": "tsx scripts/check-tailwind-tokens.ts",
+    "component-governance:generate": "tsx scripts/component-governance/generate.ts",
+    "component-governance:check": "tsx scripts/component-governance/check.ts",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:generated-drift-check": "pnpm exec tsx design-architecture/scripts/run-generated-theme-drift-check.ts",
-    "test:update-generated-check": "pnpm run test:generated-drift-check",
     "test": "vitest"
   },
   "exports": {
@@ -48,31 +48,6 @@
       "default": "./ui-primitives/_registry.ts"
     },
     "./ui-primitives/*": "./ui-primitives/*",
-    "./governance": {
-      "types": "./design-architecture/src/governance/index.ts",
-      "import": "./design-architecture/src/governance/index.ts",
-      "default": "./design-architecture/src/governance/index.ts"
-    },
-    "./tokenization": {
-      "types": "./design-architecture/src/tokenization/index.ts",
-      "import": "./design-architecture/src/tokenization/index.ts",
-      "default": "./design-architecture/src/tokenization/index.ts"
-    },
-    "./tokenization/index": {
-      "types": "./design-architecture/src/tokenization/index.ts",
-      "import": "./design-architecture/src/tokenization/index.ts",
-      "default": "./design-architecture/src/tokenization/index.ts"
-    },
-    "./tokens": {
-      "types": "./design-architecture/src/tokenization/index.ts",
-      "import": "./design-architecture/src/tokenization/index.ts",
-      "default": "./design-architecture/src/tokenization/index.ts"
-    },
-    "./tokenization/public-api": {
-      "types": "./design-architecture/src/tokenization/index.ts",
-      "import": "./design-architecture/src/tokenization/index.ts",
-      "default": "./design-architecture/src/tokenization/index.ts"
-    },
     "./scripts": {
       "types": "./design-architecture/scripts/index.ts",
       "import": "./design-architecture/scripts/index.ts",
@@ -89,8 +64,6 @@
       "default": "./hooks/index.ts"
     },
     "./hooks/*": "./hooks/*",
-    "./lib/*": "./lib/*",
-    "./lib/newyork-v4/*": "./lib/newyork-v4/*",
     "./design-architecture/local.css": "./design-architecture/src/local.css"
   },
   "dependencies": {

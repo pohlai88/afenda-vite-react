@@ -1,43 +1,21 @@
-import { ThemeProvider, useTheme } from "next-themes"
-import { useEffect, type ReactNode } from "react"
+import { ThemeProvider } from "next-themes"
+import type { ReactNode } from "react"
 
-/** Must match `apps/web/index.html` inline script and `meta[name="theme-color"]` sync. */
+import { ThemeColorMeta } from "./theme-color-meta"
+
+/**
+ * Signed-in app (`/app/*`) theme — separate storage from public marketing routes.
+ * Must match `apps/web/index.html` path-based key selection for `/app` loads.
+ */
 export const VITE_UI_THEME_STORAGE_KEY = "vite-ui-theme"
-
-const THEME_COLOR_LIGHT = "#ffffff"
-const THEME_COLOR_DARK = "#0a0a0a"
-
-function ThemeColorMeta() {
-  const { resolvedTheme } = useTheme()
-
-  useEffect(() => {
-    if (!resolvedTheme) {
-      return
-    }
-    let meta = document.querySelector(
-      'meta[name="theme-color"]'
-    ) as HTMLMetaElement | null
-    if (!meta) {
-      meta = document.createElement("meta")
-      meta.setAttribute("name", "theme-color")
-      document.head.appendChild(meta)
-    }
-    meta.setAttribute(
-      "content",
-      resolvedTheme === "dark" ? THEME_COLOR_DARK : THEME_COLOR_LIGHT
-    )
-  }, [resolvedTheme])
-
-  return null
-}
 
 export interface AppThemeProviderProps {
   readonly children: ReactNode
 }
 
 /**
- * Global color scheme: `class` on `document.documentElement`, shared with the
- * blocking script in `index.html` via {@link VITE_UI_THEME_STORAGE_KEY}.
+ * App shell color scheme: `class` on `document.documentElement`, aligned with
+ * the `/app` branch of the blocking script in `index.html`.
  */
 export function AppThemeProvider(props: AppThemeProviderProps) {
   const { children } = props
@@ -45,7 +23,7 @@ export function AppThemeProvider(props: AppThemeProviderProps) {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="dark"
+      defaultTheme="system"
       disableTransitionOnChange
       enableSystem
       storageKey={VITE_UI_THEME_STORAGE_KEY}

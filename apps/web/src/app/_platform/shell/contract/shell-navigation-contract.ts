@@ -1,7 +1,7 @@
 import type { ShellNavigationLifecycleStatus } from "../constants/shell-lifecycle"
 import type { ShellNavigationGroupId } from "../constants/shell-navigation-group-ids"
 import type { ShellNavigationItemId } from "../constants/shell-navigation-item-ids"
-import type { ShellNavIconName } from "../constants/shell-nav-icon-names"
+import type { ShellIconName } from "../constants/shell-icon-names"
 import type {
   ShellNavGroupLabelKey,
   ShellNavItemLabelKey,
@@ -13,7 +13,7 @@ export interface ShellNavigationItem {
   readonly routeId: ShellNavigationItemId
   readonly href: string
   readonly labelKey: ShellNavItemLabelKey
-  readonly iconName: ShellNavIconName
+  readonly iconName: ShellIconName
   readonly groupId: ShellNavigationGroupId
   readonly order: number
   readonly permissionKeys?: readonly string[]
