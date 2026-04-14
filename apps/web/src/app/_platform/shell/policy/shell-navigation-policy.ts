@@ -1,10 +1,12 @@
-import type { ShellNavigationGroup } from "../contract/shell-navigation-contract"
-import type { ShellNavigationItem } from "../contract/shell-navigation-contract"
+import type {
+  ShellNavigationGroup,
+  ShellNavigationItem,
+} from "../contract/shell-navigation-contract"
 
 export const shellNavigationGroups: readonly ShellNavigationGroup[] = [
   {
     id: "workspace",
-    labelKey: "nav.groups.workspace",
+    labelKey: "nav.workspace.placeholder_title",
     order: 0,
   },
 ]

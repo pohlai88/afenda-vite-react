@@ -136,12 +136,40 @@
       "link_dashboard": "Kembali ke ruang kerja"
     }
   },
+  "states": {
+    "route_error": {
+      "title": "Terjadi kesalahan",
+      "description": "Layar ini mengalami error. Coba lagi atau kembali ke ruang kerja.",
+      "retry": "Coba lagi",
+      "home": "Kembali ke ruang kerja"
+    },
+    "outlet_error": {
+      "title": "Bagian ini gagal dimuat",
+      "description": "Coba lagi atau kembali ke ruang kerja. Jika berlanjut, hubungi dukungan.",
+      "retry": "Coba lagi",
+      "home": "Kembali ke ruang kerja"
+    },
+    "empty": {
+      "default_title": "Belum ada data",
+      "default_description": "Tidak ada item untuk ditampilkan. Ubah filter atau coba lagi nanti."
+    }
+  },
   "language": {
     "label": "Bahasa",
     "option_en": "English",
     "option_ms": "Bahasa Melayu",
     "option_id": "Bahasa Indonesia",
     "option_vi": "Tiếng Việt"
+  },
+  "scope_lineage": {
+    "switch_dimension": "Ganti {{dimension}}: {{value}}",
+    "switcher_placeholder": "Opsi yang diizinkan akan muncul di sini setelah ruang lingkup terhubung ke API.",
+    "slot": {
+      "level_1": "Lingkup 1",
+      "level_2": "Lingkup 2",
+      "level_3": "Lingkup 3",
+      "level_4": "Lingkup 4"
+    }
   },
   "nav": {
     "groups": {
@@ -232,6 +260,33 @@
     "customize_hint": "Pilih pintasan yang ditampilkan. Secara default, semua ditampilkan.",
     "show_all": "Tampilkan semua"
   },
+  "context_bar": {
+    "navigation_aria": "Navigasi konteks fitur",
+    "customize_aria": "Sesuaikan aksi bilah konteks",
+    "customize_title": "Aksi konteks",
+    "show_all_actions": "Tampilkan semua aksi",
+    "more_aria": "Opsi konteks lainnya",
+    "sections_title": "Bagian",
+    "actions_title": "Aksi",
+    "inline_visible_hint": "Sebagian opsi konteks sudah terlihat.",
+    "events": {
+      "tabs": {
+        "overview": "Ringkasan",
+        "audit": "Audit",
+        "partners": "Mitra"
+      },
+      "actions": {
+        "refresh": "Segarkan",
+        "open_audit": "Buka audit",
+        "more": "Lainnya",
+        "menu": {
+          "audit": "Buka jejak audit",
+          "partners": "Buka integrasi mitra",
+          "refresh": "Segarkan tampilan saat ini"
+        }
+      }
+    }
+  },
   "user_menu": {
     "truth_status": "Kesehatan Sistem",
     "integrity_score": "Integritas",
@@ -242,7 +297,7 @@
     "upgrade_pro": "Tingkatkan ke Pro",
     "billing": "Tagihan",
     "notifications": "Notifikasi",
-    "notification_settings": "Notifikasi",
+    "notification_settings": "Pengaturan notifikasi",
     "audit_log": "Log Audit",
     "status": "Status pengguna",
     "status_available": "Tersedia",
@@ -253,6 +308,19 @@
     "theme_light": "Terang",
     "theme_dark": "Gelap",
     "theme_system": "Sistem",
+    "density": "Kepadatan",
+    "density_compact": "Padat",
+    "density_comfortable": "Nyaman",
+    "density_spacious": "Luas",
+    "accessibility_motion": "Gerakan",
+    "motion_system": "Ikuti sistem",
+    "motion_reduce": "Kurangi gerakan",
+    "motion_allow": "Izinkan gerakan penuh",
+    "command_palette": "Palet perintah",
+    "help_docs": "Bantuan & dokumentasi",
+    "changelog": "Catatan rilis",
+    "keyboard_shortcuts": "Pintasan keyboard",
+    "version": "Versi {{version}}",
     "language": "Bahasa",
     "logout": "Keluar"
   },
@@ -329,7 +397,7 @@
     "brand": "Afenda",
     "brand_tagline": "Ruang kerja",
     "brand_nav_aria": "Ke beranda ruang kerja",
-    "control_title": "Bilah samping",
+    "control_title": "Modul ruang kerja",
     "mode_expanded": "Diperluas",
     "mode_collapsed": "Diciutkan",
     "mode_hover": "Perluas saat hover"
@@ -435,7 +503,9 @@
     "connect_description": "Gunakan detail ini untuk menghubungkan klien dan alat ke workspace Anda.",
     "connect_details": "String koneksi",
     "connect_placeholder_url": "https://api.example.com/v1",
-    "read_only_hint": "Pratinjau hanya-baca"
+    "read_only_hint": "Pratinjau hanya-baca",
+    "tooltip_command": "Buka palet perintah ({{shortcut}})",
+    "tooltip_connect": "Detail koneksi dan endpoint API"
   },
   "actions": {
     "command_running": "Memuat…",

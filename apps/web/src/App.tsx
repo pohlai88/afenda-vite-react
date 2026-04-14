@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import { RouterProvider } from "react-router-dom"
 
+import { AppBootstrapLoading } from "./app/_components"
 import { router } from "./router"
 
 /**
@@ -9,11 +10,7 @@ import { router } from "./router"
  */
 export default function App() {
   return (
-    <Suspense
-      fallback={
-        <div className="p-4 text-sm text-muted-foreground">Loading…</div>
-      }
-    >
+    <Suspense fallback={<AppBootstrapLoading />}>
       <RouterProvider router={router} />
     </Suspense>
   )

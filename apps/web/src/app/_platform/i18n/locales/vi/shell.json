@@ -136,12 +136,40 @@
       "link_dashboard": "Quay lại không gian làm việc"
     }
   },
+  "states": {
+    "route_error": {
+      "title": "Đã xảy ra lỗi",
+      "description": "Màn hình này gặp lỗi. Thử lại hoặc quay về không gian làm việc.",
+      "retry": "Thử lại",
+      "home": "Quay lại không gian làm việc"
+    },
+    "outlet_error": {
+      "title": "Phần này không hiển thị được",
+      "description": "Thử lại hoặc quay về không gian làm việc. Nếu vẫn lỗi, hãy liên hệ hỗ trợ.",
+      "retry": "Thử lại",
+      "home": "Quay lại không gian làm việc"
+    },
+    "empty": {
+      "default_title": "Chưa có dữ liệu",
+      "default_description": "Không có mục nào để hiển thị. Điều chỉnh bộ lọc hoặc thử lại sau."
+    }
+  },
   "language": {
     "label": "Ngôn ngữ",
     "option_en": "English",
     "option_ms": "Bahasa Melayu",
     "option_id": "Bahasa Indonesia",
     "option_vi": "Tiếng Việt"
+  },
+  "scope_lineage": {
+    "switch_dimension": "Chuyển {{dimension}}: {{value}}",
+    "switcher_placeholder": "Các lựa chọn được phép sẽ hiển thị ở đây khi phạm vi được kết nối API.",
+    "slot": {
+      "level_1": "Phạm vi 1",
+      "level_2": "Phạm vi 2",
+      "level_3": "Phạm vi 3",
+      "level_4": "Phạm vi 4"
+    }
   },
   "nav": {
     "groups": {
@@ -232,6 +260,33 @@
     "customize_hint": "Chọn lối tắt hiển thị. Mặc định hiển thị tất cả.",
     "show_all": "Hiện tất cả"
   },
+  "context_bar": {
+    "navigation_aria": "Điều hướng ngữ cảnh tính năng",
+    "customize_aria": "Tùy chỉnh thao tác thanh ngữ cảnh",
+    "customize_title": "Thao tác ngữ cảnh",
+    "show_all_actions": "Hiện tất cả thao tác",
+    "more_aria": "Thêm tùy chọn ngữ cảnh",
+    "sections_title": "Mục",
+    "actions_title": "Thao tác",
+    "inline_visible_hint": "Một số tùy chọn ngữ cảnh đã hiển thị.",
+    "events": {
+      "tabs": {
+        "overview": "Tổng quan",
+        "audit": "Kiểm toán",
+        "partners": "Đối tác"
+      },
+      "actions": {
+        "refresh": "Làm mới",
+        "open_audit": "Mở kiểm toán",
+        "more": "Thêm",
+        "menu": {
+          "audit": "Mở nhật ký kiểm toán",
+          "partners": "Mở tích hợp đối tác",
+          "refresh": "Làm mới chế độ xem hiện tại"
+        }
+      }
+    }
+  },
   "user_menu": {
     "truth_status": "Sức khỏe hệ thống",
     "integrity_score": "Tính toàn vẹn",
@@ -242,7 +297,7 @@
     "upgrade_pro": "Nâng cấp lên Pro",
     "billing": "Thanh toán",
     "notifications": "Thông báo",
-    "notification_settings": "Thông báo",
+    "notification_settings": "Cài đặt thông báo",
     "audit_log": "Nhật ký kiểm toán",
     "status": "Trạng thái",
     "status_available": "Sẵn sàng",
@@ -253,6 +308,19 @@
     "theme_light": "Sáng",
     "theme_dark": "Tối",
     "theme_system": "Hệ thống",
+    "density": "Mật độ giao diện",
+    "density_compact": "Thu gọn",
+    "density_comfortable": "Vừa phải",
+    "density_spacious": "Thoáng",
+    "accessibility_motion": "Chuyển động",
+    "motion_system": "Theo hệ thống",
+    "motion_reduce": "Giảm chuyển động",
+    "motion_allow": "Cho phép hiệu ứng đầy đủ",
+    "command_palette": "Bảng lệnh",
+    "help_docs": "Trợ giúp & tài liệu",
+    "changelog": "Ghi chú phát hành",
+    "keyboard_shortcuts": "Phím tắt",
+    "version": "Phiên bản {{version}}",
     "language": "Ngôn ngữ",
     "logout": "Đăng xuất"
   },
@@ -329,7 +397,7 @@
     "brand": "Afenda",
     "brand_tagline": "Không gian làm việc",
     "brand_nav_aria": "Về trang chủ không gian làm việc",
-    "control_title": "Thanh bên",
+    "control_title": "Mô-đun không gian làm việc",
     "mode_expanded": "Mở rộng",
     "mode_collapsed": "Thu gọn",
     "mode_hover": "Mở rộng khi di chuột"
@@ -435,7 +503,9 @@
     "connect_description": "Dùng thông tin này để kết nối ứng dụng và công cụ với workspace.",
     "connect_details": "Chuỗi kết nối",
     "connect_placeholder_url": "https://api.example.com/v1",
-    "read_only_hint": "Xem trước chỉ đọc"
+    "read_only_hint": "Xem trước chỉ đọc",
+    "tooltip_command": "Mở bảng lệnh ({{shortcut}})",
+    "tooltip_connect": "Chi tiết kết nối và endpoint API"
   },
   "actions": {
     "command_running": "Đang tải…",

@@ -136,12 +136,40 @@
       "link_dashboard": "Back to workspace"
     }
   },
+  "states": {
+    "route_error": {
+      "title": "Something went wrong",
+      "description": "This screen hit an error. You can try again or return to the workspace.",
+      "retry": "Try again",
+      "home": "Back to workspace"
+    },
+    "outlet_error": {
+      "title": "This section failed to render",
+      "description": "Try again or return to the workspace. If this keeps happening, contact support.",
+      "retry": "Try again",
+      "home": "Back to workspace"
+    },
+    "empty": {
+      "default_title": "Nothing here yet",
+      "default_description": "There are no items to show. Adjust filters or check back later."
+    }
+  },
   "language": {
     "label": "Language",
     "option_en": "English",
     "option_ms": "Bahasa Melayu",
     "option_id": "Bahasa Indonesia",
     "option_vi": "Tiếng Việt"
+  },
+  "scope_lineage": {
+    "switch_dimension": "Switch {{dimension}}: {{value}}",
+    "switcher_placeholder": "Your allowed options will appear here when scope is connected to the API.",
+    "slot": {
+      "level_1": "Scope 1",
+      "level_2": "Scope 2",
+      "level_3": "Scope 3",
+      "level_4": "Scope 4"
+    }
   },
   "nav": {
     "groups": {
@@ -232,6 +260,33 @@
     "customize_hint": "Choose which shortcuts appear. By default, all are shown.",
     "show_all": "Show all"
   },
+  "context_bar": {
+    "navigation_aria": "Feature context navigation",
+    "customize_aria": "Customize context bar actions",
+    "customize_title": "Context actions",
+    "show_all_actions": "Show all actions",
+    "more_aria": "More context options",
+    "sections_title": "Sections",
+    "actions_title": "Actions",
+    "inline_visible_hint": "Some context options are already visible.",
+    "events": {
+      "tabs": {
+        "overview": "Overview",
+        "audit": "Audit",
+        "partners": "Partners"
+      },
+      "actions": {
+        "refresh": "Refresh",
+        "open_audit": "Open audit",
+        "more": "More",
+        "menu": {
+          "audit": "Open audit trail",
+          "partners": "Open partner integrations",
+          "refresh": "Refresh current view"
+        }
+      }
+    }
+  },
   "user_menu": {
     "truth_status": "System Health",
     "integrity_score": "Integrity",
@@ -242,7 +297,7 @@
     "upgrade_pro": "Upgrade to Pro",
     "billing": "Billing",
     "notifications": "Notifications",
-    "notification_settings": "Notifications",
+    "notification_settings": "Notification settings",
     "audit_log": "Audit Log",
     "status": "Status",
     "status_available": "Available",
@@ -253,6 +308,19 @@
     "theme_light": "Light",
     "theme_dark": "Dark",
     "theme_system": "System",
+    "density": "Density",
+    "density_compact": "Compact",
+    "density_comfortable": "Comfortable",
+    "density_spacious": "Spacious",
+    "accessibility_motion": "Motion",
+    "motion_system": "Match system",
+    "motion_reduce": "Reduce motion",
+    "motion_allow": "Allow full motion",
+    "command_palette": "Command palette",
+    "help_docs": "Help & documentation",
+    "changelog": "Release notes",
+    "keyboard_shortcuts": "Keyboard shortcuts",
+    "version": "Version {{version}}",
     "language": "Language",
     "logout": "Log out"
   },
@@ -329,7 +397,7 @@
     "brand": "Afenda",
     "brand_tagline": "Workspace",
     "brand_nav_aria": "Go to workspace home",
-    "control_title": "Sidebar",
+    "control_title": "Workspace Module",
     "mode_expanded": "Expanded",
     "mode_collapsed": "Collapsed",
     "mode_hover": "Expand on hover"
@@ -435,7 +503,9 @@
     "connect_description": "Use these details to connect clients and tools to your workspace.",
     "connect_details": "Connection strings",
     "connect_placeholder_url": "https://api.example.com/v1",
-    "read_only_hint": "Read-only preview"
+    "read_only_hint": "Read-only preview",
+    "tooltip_command": "Open command palette ({{shortcut}})",
+    "tooltip_connect": "Connection details and API endpoints"
   },
   "actions": {
     "command_running": "Loading…",

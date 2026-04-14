@@ -100,6 +100,59 @@ function mapShellHeaderActionValidationMessageToInvariantCode(
   }
 }
 
+/**
+ * Maps `validateShellContextBar` subcodes embedded in
+ * `SHELL_METADATA_INVALID_CONTEXT_BAR` messages to stable `SHELL_INV_ACTION_*` codes.
+ */
+function mapShellContextBarValidationMessageToInvariantCode(
+  message: string
+): ShellInvariantCode {
+  const match = /^\[([A-Z0-9_]+)\]/.exec(message)
+  const sub = match?.[1]
+
+  switch (sub) {
+    case "SHELL_CONTEXT_BAR_TABS_REQUIRED":
+    case "SHELL_CONTEXT_BAR_TAB_INVALID_ID":
+    case "SHELL_CONTEXT_BAR_TAB_DUPLICATE_ID":
+    case "SHELL_CONTEXT_BAR_ACTION_INVALID_ID":
+    case "SHELL_CONTEXT_BAR_ACTION_DUPLICATE_ID":
+    case "SHELL_CONTEXT_BAR_MENU_ITEM_INVALID_ID":
+    case "SHELL_CONTEXT_BAR_MENU_ITEM_DUPLICATE_ID":
+      return "SHELL_INV_ACTION_001"
+    case "SHELL_CONTEXT_BAR_TAB_INVALID_LABEL_KEY":
+    case "SHELL_CONTEXT_BAR_ACTION_INVALID_LABEL_KEY":
+    case "SHELL_CONTEXT_BAR_MENU_ITEM_INVALID_LABEL_KEY":
+      return "SHELL_INV_ACTION_002"
+    case "SHELL_CONTEXT_BAR_TAB_INVALID_KIND":
+    case "SHELL_CONTEXT_BAR_ACTION_INVALID_PRESENTATION":
+    case "SHELL_CONTEXT_BAR_ACTION_INVALID_KIND":
+    case "SHELL_CONTEXT_BAR_MENU_ITEM_INVALID_KIND":
+      return "SHELL_INV_ACTION_003"
+    case "SHELL_CONTEXT_BAR_TAB_MISSING_LINK_TARGET":
+    case "SHELL_CONTEXT_BAR_ACTION_MISSING_LINK_TARGET":
+    case "SHELL_CONTEXT_BAR_MENU_ITEM_MISSING_LINK_TARGET":
+      return "SHELL_INV_ACTION_004"
+    case "SHELL_CONTEXT_BAR_TAB_MISSING_COMMAND_ID":
+    case "SHELL_CONTEXT_BAR_ACTION_MISSING_COMMAND_ID":
+    case "SHELL_CONTEXT_BAR_MENU_ITEM_MISSING_COMMAND_ID":
+      return "SHELL_INV_ACTION_005"
+    case "SHELL_CONTEXT_BAR_TAB_INVALID_LINK_CONFIGURATION":
+    case "SHELL_CONTEXT_BAR_TAB_INVALID_COMMAND_CONFIGURATION":
+    case "SHELL_CONTEXT_BAR_TAB_INVALID_BADGE":
+    case "SHELL_CONTEXT_BAR_ACTION_INVALID_LINK_CONFIGURATION":
+    case "SHELL_CONTEXT_BAR_ACTION_INVALID_COMMAND_CONFIGURATION":
+    case "SHELL_CONTEXT_BAR_ACTION_ICON_REQUIRED":
+    case "SHELL_CONTEXT_BAR_ACTION_ICON_INVALID":
+    case "SHELL_CONTEXT_BAR_ACTION_MENU_ITEMS_REQUIRED":
+    case "SHELL_CONTEXT_BAR_ACTION_MENU_INVALID_CONFIGURATION":
+    case "SHELL_CONTEXT_BAR_MENU_ITEM_INVALID_LINK_CONFIGURATION":
+    case "SHELL_CONTEXT_BAR_MENU_ITEM_INVALID_COMMAND_CONFIGURATION":
+      return "SHELL_INV_ACTION_006"
+    default:
+      return "SHELL_INV_ACTION_001"
+  }
+}
+
 function mapValidationIssue(
   route: ShellRouteMetadata,
   issue: ShellMetadataValidationIssue
@@ -155,6 +208,15 @@ function mapValidationIssue(
         code: mapShellHeaderActionValidationMessageToInvariantCode(
           issue.message
         ),
+        severity: "high",
+        routeId: route.routeId,
+        path: issue.path,
+        message: issue.message,
+      }
+
+    case shellMetadataValidationCodes.INVALID_CONTEXT_BAR:
+      return {
+        code: mapShellContextBarValidationMessageToInvariantCode(issue.message),
         severity: "high",
         routeId: route.routeId,
         path: issue.path,

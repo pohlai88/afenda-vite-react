@@ -21,10 +21,14 @@ import type { LucideIcon } from "lucide-react"
 import {
   BadgeCheck,
   Bell,
+  BookOpen,
   ChevronsUpDown,
   CreditCard,
+  ExternalLink,
   LogOut,
   Plus,
+  ScrollText,
+  SlidersHorizontal,
   Sparkles,
   Zap,
 } from "lucide-react"
@@ -50,6 +54,12 @@ import {
   TooltipTrigger,
   useSidebar,
 } from "@afenda/design-system/ui-primitives"
+
+import { APP_PACKAGE_VERSION } from "../../constants/app-version"
+import { ShellUserMenuAccessibility } from "../shell-user-menu-accessibility"
+import { ShellUserMenuAppearance } from "../shell-user-menu-appearance"
+import { ShellUserMenuLanguage } from "../shell-user-menu-language"
+import { ShellUserMenuQuickActions } from "../shell-user-menu-quick-actions"
 import { cn } from "@afenda/design-system/utils"
 
 import { useCloseMobileSidebar } from "../../hooks/use-close-mobile-sidebar"
@@ -75,7 +85,7 @@ const SHELL_USER_TRIGGER_STATE_CLASS =
 export const SHELL_USER_MENU_CONTENT_CLASS =
   "w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
 
-const SHELL_AVATAR_CLASS = "size-8 rounded-lg"
+const SHELL_AVATAR_CLASS = "size-8 rounded-full"
 
 /** Dropdown panel positioning shared across shell user menu instances. */
 export const SHELL_USER_MENU_DROPDOWN_CONTENT_PROPS = {
@@ -96,6 +106,10 @@ type ShellUserMenuItemDefinition = {
     | "user_menu.account"
     | "user_menu.billing"
     | "user_menu.notifications"
+    | "user_menu.notification_settings"
+    | "user_menu.help_docs"
+    | "user_menu.changelog"
+    | "user_menu.keyboard_shortcuts"
   icon: LucideIcon
 }
 
@@ -115,7 +129,31 @@ const SHELL_USER_MENU_ITEM_DEFINITIONS = [
     labelKey: "user_menu.notifications",
     icon: Bell,
   },
+  {
+    key: "notification_settings",
+    labelKey: "user_menu.notification_settings",
+    icon: SlidersHorizontal,
+  },
+  {
+    key: "help",
+    labelKey: "user_menu.help_docs",
+    icon: BookOpen,
+  },
+  {
+    key: "changelog",
+    labelKey: "user_menu.changelog",
+    icon: ScrollText,
+  },
+  {
+    key: "keyboard_shortcuts",
+    labelKey: "user_menu.keyboard_shortcuts",
+    icon: ExternalLink,
+  },
 ] as const satisfies readonly ShellUserMenuItemDefinition[]
+
+function shellUserMenuHrefIsExternal(href: string): boolean {
+  return /^https?:\/\//i.test(href)
+}
 
 /**
  * When the widget picker closes, dismiss the mobile sheet so the rail does not stay “open” underneath.
@@ -136,23 +174,26 @@ type ShellUserIdentityProps = {
 }
 
 /** Avatar + image; empty avatar URL shows initials (no placeholder icon). */
-export function ShellUserAvatar({ user }: { user: AppShellSidebarUserProfile }) {
+export function ShellUserAvatar({
+  user,
+  className,
+}: {
+  user: AppShellSidebarUserProfile
+  className?: string
+}) {
   const initials = initialsFromName(user.name)
 
   return (
-    <Avatar className={SHELL_AVATAR_CLASS}>
-      <AvatarImage src={user.avatar} alt="" />
-      <AvatarFallback className="rounded-lg text-xs font-medium tabular-nums">
+    <Avatar className={cn(SHELL_AVATAR_CLASS, className)}>
+      <AvatarImage src={user.avatar} alt="" className="object-cover" />
+      <AvatarFallback className="rounded-full text-xs font-medium tabular-nums">
         {initials}
       </AvatarFallback>
     </Avatar>
   )
 }
 
-function ShellUserIdentity({
-  user,
-  compact = false,
-}: ShellUserIdentityProps) {
+function ShellUserIdentity({ user, compact = false }: ShellUserIdentityProps) {
   return (
     <>
       <ShellUserAvatar user={user} />
@@ -232,14 +273,39 @@ export function ShellUserMenuDropdownPanel({
         </>
       ) : null}
 
+      <ShellUserMenuAppearance />
+      <ShellUserMenuLanguage />
+      <ShellUserMenuAccessibility />
+      <DropdownMenuSeparator />
+
+      <ShellUserMenuQuickActions />
+
       <DropdownMenuGroup>
         {SHELL_USER_MENU_ITEM_DEFINITIONS.map((item) => {
           const Icon = item.icon
+          const href = links[item.key]
+
+          if (shellUserMenuHrefIsExternal(href)) {
+            return (
+              <DropdownMenuItem key={item.key} asChild>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex cursor-pointer items-center gap-2"
+                  onClick={closeMobileSidebar}
+                >
+                  <Icon className="size-4" />
+                  {t(item.labelKey)}
+                </a>
+              </DropdownMenuItem>
+            )
+          }
 
           return (
             <DropdownMenuItem key={item.key} asChild>
               <NavLink
-                to={links[item.key]}
+                to={href}
                 className="flex items-center gap-2"
                 onClick={closeMobileSidebar}
               >
@@ -250,6 +316,17 @@ export function ShellUserMenuDropdownPanel({
           )
         })}
       </DropdownMenuGroup>
+
+      <DropdownMenuSeparator />
+
+      <DropdownMenuItem
+        disabled
+        className="pointer-events-none cursor-default opacity-100 focus:bg-transparent"
+      >
+        <span className="text-xs text-muted-foreground">
+          {t("user_menu.version", { version: APP_PACKAGE_VERSION })}
+        </span>
+      </DropdownMenuItem>
 
       <DropdownMenuSeparator />
 
@@ -284,7 +361,7 @@ export function AppShellSidebarBrandRail() {
             onClick={closeMobileSidebar}
             className={cn(
               "flex size-8 items-center justify-center",
-              SHELL_FOCUS_RING_CLASS,
+              SHELL_FOCUS_RING_CLASS
             )}
           >
             <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
@@ -331,7 +408,7 @@ export function AppShellSidebarUser({
               tooltip={isRail ? tooltipLabel : undefined}
               className={cn(
                 SHELL_USER_TRIGGER_STATE_CLASS,
-                isRail && "justify-center",
+                isRail && "justify-center"
               )}
             >
               <ShellUserIdentity user={user} compact={isRail} />
@@ -395,7 +472,7 @@ export function AppShellSidebarRailNavLink({
               onClick={closeMobileSidebar}
               className={cn(
                 "flex size-full items-center justify-center [&>svg]:m-0",
-                SHELL_FOCUS_RING_CLASS,
+                SHELL_FOCUS_RING_CLASS
               )}
             >
               {icon}
@@ -486,7 +563,7 @@ export function AppShellSidebarRailWidgetPicker({
   const closeMobileSidebar = useCloseMobileSidebar()
 
   const pickable = features.filter((feature) =>
-    allowedFeatureIds.has(feature.featureId),
+    allowedFeatureIds.has(feature.featureId)
   )
 
   return (

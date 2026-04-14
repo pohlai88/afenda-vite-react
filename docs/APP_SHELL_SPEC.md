@@ -86,6 +86,14 @@ The live router is the source of truth; it follows this structure:
 - **Header:** `SidebarTrigger`, `AppShellBreadcrumb`, `LanguageSwitcher` (`_platform/i18n`), optional slot placeholders.
 - **Breadcrumbs:** `ShellRouteMetadata` / `handle.shell` (`ShellMetadata.breadcrumbs`) → `resolveShellBreadcrumbs` → `useShellBreadcrumbs` → `AppShellBreadcrumb` (see `shell/README.md`, `shell/routes/shell-route-definitions.ts`).
 
+### Scope lineage (multi-tenant ERP)
+
+- **Purpose:** Up to **four positional scope filters** in the top bar. They are **not** one shared product hierarchy: each tenant configures what each slot means (magic filter). Example: slot 1 = company, slot 2 = company again, slot 3 = finance, slot 4 = AP — or slots 1–4 can all filter **company** (e.g. treasury) with different values.
+- **Contract:** [`shell-scope-lineage.contract.ts`](../apps/web/src/app/_platform/shell/contract/shell-scope-lineage.contract.ts) — `ShellScopeSlotId`: `level_1` … `level_4` (chrome positions). **`dimensionLabel`** = what that slot filters; **`label`** = current selection. Dimensions may repeat across slots.
+- **UI:** `ShellScopeLineageBar` (left cluster in `ShellTopNav`), slash-separated segments with switchers when `switchable` is true.
+- **Data:** `useShellScopeLineage()` supplies the model (placeholder until API/session).
+- **Authorization:** Switcher options are **server-authoritative**; shell only renders UX.
+
 ## Permission gating
 
 Per `docs/ROLES_AND_PERMISSIONS.md`:
@@ -103,7 +111,7 @@ Per `docs/ROLES_AND_PERMISSIONS.md`:
 ```text
 apps/web/src/app/_platform/shell/
 ├── components/       # AppShellLayout, AppShellSidebar, AppShellHeader, AppShellBreadcrumb
-├── contract/         # ShellRouteMetadata, ShellMetadata, navigation contracts, slot IDs
+├── contract/         # ShellRouteMetadata, ShellMetadata, breadcrumb + scope lineage contracts, slot IDs
 ├── constants/        # Group/item IDs, lifecycle, icon names
 ├── hooks/            # useShellNavigation, useShellBreadcrumbs, …
 ├── policy/           # shellNavigationItems, slot flags

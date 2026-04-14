@@ -67,6 +67,71 @@ export const shellAppChildRouteDefinitions = [
             commandId: "refresh-events-view",
           },
         ],
+        contextBar: {
+          tabs: [
+            {
+              id: "events-overview",
+              labelKey: "context_bar.events.tabs.overview",
+              kind: "link",
+              to: shellAppChildPath("events"),
+            },
+            {
+              id: "events-audit",
+              labelKey: "context_bar.events.tabs.audit",
+              kind: "link",
+              to: shellAppChildPath("audit"),
+            },
+            {
+              id: "events-partners",
+              labelKey: "context_bar.events.tabs.partners",
+              kind: "link",
+              to: shellAppChildPath("partners"),
+              badgeCount: 2,
+            },
+          ],
+          actions: [
+            {
+              id: "events-refresh",
+              labelKey: "context_bar.events.actions.refresh",
+              presentation: "button",
+              kind: "command",
+              commandId: "refresh-events-view",
+            },
+            {
+              id: "events-audit-action",
+              labelKey: "context_bar.events.actions.open_audit",
+              presentation: "icon",
+              kind: "link",
+              to: shellAppChildPath("audit"),
+              iconName: "ShieldIcon",
+            },
+            {
+              id: "events-open-menu",
+              labelKey: "context_bar.events.actions.more",
+              presentation: "menu",
+              menuItems: [
+                {
+                  id: "events-open-audit",
+                  labelKey: "context_bar.events.actions.menu.audit",
+                  kind: "link",
+                  to: shellAppChildPath("audit"),
+                },
+                {
+                  id: "events-open-partners",
+                  labelKey: "context_bar.events.actions.menu.partners",
+                  kind: "link",
+                  to: shellAppChildPath("partners"),
+                },
+                {
+                  id: "events-refresh-menu",
+                  labelKey: "context_bar.events.actions.menu.refresh",
+                  kind: "command",
+                  commandId: "refresh-events-view",
+                },
+              ],
+            },
+          ],
+        },
       },
       coverage: {
         descendantSamplePaths: ["/app/events/123"],

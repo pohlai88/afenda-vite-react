@@ -42,3 +42,4 @@ catalog:
   vite: ^8.0.8
   vitest: ^4.1.4
   zod: ^4.3.6
+  dotenv: ^16.6.1

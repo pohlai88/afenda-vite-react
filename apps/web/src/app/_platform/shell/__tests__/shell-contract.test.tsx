@@ -75,6 +75,25 @@ describe("App shell layout contract", () => {
                       to: "/app/events",
                     },
                   ],
+                  contextBar: {
+                    tabs: [
+                      {
+                        id: "overview",
+                        labelKey: "context_bar.events.tabs.overview",
+                        kind: "link",
+                        to: "/app/events",
+                      },
+                    ],
+                    actions: [
+                      {
+                        id: "refresh",
+                        labelKey: "context_bar.events.actions.refresh",
+                        presentation: "button",
+                        kind: "command",
+                        commandId: "refresh-events-view",
+                      },
+                    ],
+                  },
                 },
               },
             },
@@ -96,5 +115,60 @@ describe("App shell layout contract", () => {
       container.querySelector('[data-slot="sidebar-wrapper"]')
     ).not.toBeNull()
     expect(screen.getByTestId("shell-outlet-child")).toBeInTheDocument()
+    expect(
+      container.querySelector('[data-slot="shell.context-bar"]')
+    ).not.toBeNull()
+  })
+
+  it("does not render L2 context bar when route metadata omits contextBar", async () => {
+    const router = createMemoryRouter(
+      [
+        {
+          path: "/app",
+          element: <ShellLeftSidebarLayout />,
+          handle: {
+            shell: {
+              titleKey: "breadcrumb.app",
+              breadcrumbs: [
+                { id: "app", labelKey: "breadcrumb.app", to: "/app" },
+              ],
+            },
+          },
+          children: [
+            {
+              path: "audit",
+              element: <div data-testid="shell-audit-child">ok</div>,
+              handle: {
+                shell: {
+                  titleKey: "breadcrumb.audit",
+                  breadcrumbs: [
+                    { id: "app", labelKey: "breadcrumb.app", to: "/app" },
+                    {
+                      id: "audit",
+                      labelKey: "breadcrumb.audit",
+                      to: "/app/audit",
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      ],
+      { initialEntries: ["/app/audit"] }
+    )
+
+    const { container } = await act(async () =>
+      render(
+        <AppThemeProvider>
+          <RouterProvider router={router} />
+        </AppThemeProvider>
+      )
+    )
+
+    expect(screen.getByTestId("shell-audit-child")).toBeInTheDocument()
+    expect(
+      container.querySelector('[data-slot="shell.context-bar"]')
+    ).toBeNull()
   })
 })

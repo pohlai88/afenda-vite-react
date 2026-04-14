@@ -1,13 +1,14 @@
 import { Navigate, type RouteObject } from "react-router-dom"
 
+import { AppRouteErrorFallback } from "../app/_components"
 import { FeatureTemplateView } from "../app/_features/_template"
 import {
-  ShellLeftSidebarLayout,
   AppShellNotFound,
   shellAppChildRouteDefinitions,
   shellAppDefaultChildSegment,
   shellAppLayoutRoute,
   shellAppNotFoundRoute,
+  ShellLeftSidebarLayout,
 } from "../app/_platform/shell"
 import { AppThemeProvider } from "../app/_platform/theme/app-theme-provider"
 
@@ -22,6 +23,11 @@ export const appShellRouteObject: RouteObject = {
   element: (
     <AppThemeProvider>
       <ShellLeftSidebarLayout />
+    </AppThemeProvider>
+  ),
+  errorElement: (
+    <AppThemeProvider>
+      <AppRouteErrorFallback />
     </AppThemeProvider>
   ),
   handle: { shell: shellAppLayoutRoute.shell },

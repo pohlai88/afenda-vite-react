@@ -16,6 +16,8 @@
     "test:run": "vitest run"
   },
   "dependencies": {
+    "@afenda/env-loader": "workspace:*",
+    "@afenda/better-auth": "workspace:*",
     "@afenda/database": "workspace:*",
     "@hono/node-server": "^1.14.1",
     "hono": "^4.7.4"

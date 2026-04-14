@@ -10,7 +10,6 @@ import type { ShellNavigationItemId } from "../../constants/shell-navigation-ite
 import type { ShellNavigationItem } from "../../contract/shell-navigation-contract"
 import { useShellNavigationForChrome } from "../../hooks/use-shell-navigation-for-chrome"
 import { useShellRailWidgetPreferences } from "../../hooks/use-shell-rail-widget-preferences"
-import { shellNavigationItems } from "../../policy/shell-navigation-policy"
 import {
   shellRailWidgetSlots,
   type ShellRailWidgetSlot,
@@ -20,24 +19,12 @@ import {
   AppShellSidebarRailPlaceholder,
   AppShellSidebarRailWidgetPicker,
 } from "../shell-rail-sidebar-block/shell-rail-mini-sidebar"
+import {
+  buildShellLeftSidebarNavigationModel,
+  type ShellLeftSidebarNavigationModel,
+} from "./shell-left-sidebar-topology"
 
-function groupItemsByGroup(
-  items: readonly ShellNavigationItem[],
-): Map<string, ShellNavigationItem[]> {
-  const map = new Map<string, ShellNavigationItem[]>()
-
-  for (const item of items) {
-    const list = map.get(item.groupId) ?? []
-    list.push(item)
-    map.set(item.groupId, list)
-  }
-
-  for (const [, list] of map) {
-    list.sort((a, b) => a.order - b.order)
-  }
-
-  return map
-}
+export type { ShellLeftSidebarNavigationModel } from "./shell-left-sidebar-topology"
 
 function renderRailWidgetSlots(
   slots: readonly ShellRailWidgetSlot[],
@@ -50,7 +37,7 @@ function renderRailWidgetSlots(
   >[],
   pathname: string,
   t: TFunction<"shell">,
-  onToggleFeature: (id: ShellNavigationItemId) => void,
+  onToggleFeature: (id: ShellNavigationItemId) => void
 ): ReactNode[] {
   const out: ReactNode[] = []
 
@@ -65,7 +52,7 @@ function renderRailWidgetSlots(
           allowedFeatureIds={allowedIds}
           enabledFeatureIds={enabledIds}
           onToggleFeature={onToggleFeature}
-        />,
+        />
       )
       continue
     }
@@ -88,7 +75,7 @@ function renderRailWidgetSlots(
           emoji={slot.emoji}
           label={label}
           tooltip={`${label} — ${t("nav.lifecycle.coming_soon")}`}
-        />,
+        />
       )
       continue
     }
@@ -105,76 +92,83 @@ function renderRailWidgetSlots(
           </span>
         }
         label={label}
-      />,
+      />
     )
   }
 
   return out
 }
 
-export type ShellLeftSidebarNavigationModel = {
-  readonly grouped: ReadonlyMap<string, ShellNavigationItem[]>
-  readonly enabledSet: ReadonlySet<ShellNavigationItemId>
-  readonly railWidgets: ReactNode[]
-}
+export type ShellLeftSidebarNavigationModelResult =
+  ShellLeftSidebarNavigationModel & { readonly railWidgets: ReactNode[] }
 
-export function useShellLeftSidebarNavigationModel(): ShellLeftSidebarNavigationModel {
+export function useShellLeftSidebarNavigationModel(): ShellLeftSidebarNavigationModelResult {
   const { t } = useTranslation("shell")
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
 
   const items = useShellNavigationForChrome()
   const { enabledSet, toggleFeature } = useShellRailWidgetPreferences()
 
-  const fullPolicyById = useMemo(
-    () => new Map(shellNavigationItems.map((item) => [item.id, item])),
-    [],
+  const allowedById = useMemo(
+    () => new Map(items.map((item) => [item.id, item] as const)),
+    [items]
   )
 
   const allowedIds = useMemo(
     () => new Set(items.map((item) => item.id)),
-    [items],
+    [items]
   )
-
-  const grouped = useMemo(() => groupItemsByGroup(items), [items])
 
   const featureSlotsForPicker = useMemo(
     (): ReadonlyArray<Extract<ShellRailWidgetSlot, { kind: "feature" }>> =>
       shellRailWidgetSlots.filter(
         (slot): slot is Extract<ShellRailWidgetSlot, { kind: "feature" }> =>
-          slot.kind === "feature",
+          slot.kind === "feature"
       ),
-    [],
+    []
   )
 
   const railWidgets = useMemo(
     () =>
       renderRailWidgetSlots(
         shellRailWidgetSlots,
-        fullPolicyById,
+        allowedById,
         allowedIds,
         enabledSet,
         featureSlotsForPicker,
         pathname,
         t,
-        toggleFeature,
+        toggleFeature
       ),
     [
       allowedIds,
       enabledSet,
       featureSlotsForPicker,
-      fullPolicyById,
+      allowedById,
       pathname,
       t,
       toggleFeature,
-    ],
+    ]
+  )
+
+  const explorerModel = useMemo(
+    () =>
+      buildShellLeftSidebarNavigationModel({
+        t,
+        pathname,
+        search,
+        allowedItems: items,
+        enabledWidgetIds: enabledSet,
+        toggleWidget: toggleFeature,
+      }),
+    [enabledSet, items, pathname, search, t, toggleFeature]
   )
 
   return useMemo(
     () => ({
-      grouped,
-      enabledSet,
+      ...explorerModel,
       railWidgets,
     }),
-    [enabledSet, grouped, railWidgets],
+    [explorerModel, railWidgets]
   )
 }

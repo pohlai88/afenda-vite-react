@@ -51,6 +51,7 @@
     }
   },
   "dependencies": {
+    "@afenda/env-loader": "workspace:*",
     "drizzle-orm": "catalog:",
     "pg": "catalog:",
     "zod": "catalog:"

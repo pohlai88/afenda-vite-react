@@ -6,8 +6,14 @@ import { handleShellInteractionAudit } from "./shell-interaction-audit.js"
 
 const DEMO_SESSION_SUBJECT = "api.demo.session"
 
-export function createApp(db: DatabaseClient) {
+export type BetterAuthHandler = {
+  handler: (request: Request) => Response | Promise<Response>
+}
+
+export function createApp(db: DatabaseClient, auth: BetterAuthHandler) {
   const app = new Hono()
+
+  app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw))
 
   app.get("/health", (c) => c.json({ ok: true, service: "@afenda/api" }))
 

@@ -36,9 +36,7 @@ export function ShellTopNavBreadcrumbs({
 
   if (items.length === 0) {
     return (
-      <span
-        className={cn("truncate text-sm text-muted-foreground", className)}
-      >
+      <span className={cn("truncate text-sm text-muted-foreground", className)}>
         {t("nav.breadcrumb_root")}
       </span>
     )
@@ -60,7 +58,7 @@ export function ShellTopNavBreadcrumbs({
               <BreadcrumbItem className="max-w-40 sm:max-w-48">
                 {isLast ? (
                   <span className="flex min-w-0 items-center gap-1.5">
-                    <BreadcrumbPage className="truncate text-base/none font-medium">
+                    <BreadcrumbPage className="truncate text-sm/none font-medium">
                       {item.label}
                     </BreadcrumbPage>
                     {showEnv ? <ShellTopNavEnvironmentMenu /> : null}
@@ -78,6 +76,7 @@ export function ShellTopNavBreadcrumbs({
                         <span className="truncate text-sm">{item.label}</span>
                         <ChevronsUpDown
                           className="size-3 shrink-0 opacity-60"
+                          strokeWidth={1.5}
                           aria-hidden
                         />
                       </Button>

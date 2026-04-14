@@ -5,6 +5,26 @@ export type {
   ShellBreadcrumbResolvedItem,
 } from "./contract/shell-breadcrumb-contract"
 export type {
+  ResolveShellContextBarOptions,
+  ShellContextBarActionDescriptor,
+  ShellContextBarActionPresentation,
+  ShellContextBarDescriptor,
+  ShellContextBarMenuItemDescriptor,
+  ShellContextBarResolvedAction,
+  ShellContextBarResolvedMenuItem,
+  ShellContextBarResolvedModel,
+  ShellContextBarResolvedTab,
+  ShellContextBarTabDescriptor,
+  ShellContextBarTargetKind,
+  ShellContextBarVisibility,
+} from "./contract/shell-context-bar-contract"
+export type {
+  ShellScopeLineageModel,
+  ShellScopeLineageSegment,
+  ShellScopeLineageSegmentBadge,
+  ShellScopeSlotId,
+} from "./contract/shell-scope-lineage.contract"
+export type {
   ResolveShellHeaderActionsOptions,
   ShellHeaderActionDescriptor,
   ShellHeaderActionKind,
@@ -91,8 +111,19 @@ export { ShellCommandSystemError } from "./errors/shell-command-system-error"
 export { ShellCommandUnauthorizedError } from "./errors/shell-command-unauthorized-error"
 export { ShellCommandValidationError } from "./errors/shell-command-validation-error"
 
-export { AppShellLayout, ShellLeftSidebarLayout } from "./components/shell-left-sidebar-block"
-export { ShellTopNav, type ShellTopNavProps } from "./components/shell-top-nav-block"
+export {
+  AppShellLayout,
+  ShellLeftSidebarLayout,
+} from "./components/shell-left-sidebar-block"
+export {
+  ShellContentBlock,
+  type ShellContentBlockProps,
+} from "./components/shell-content-block"
+export {
+  ShellScopeLineageBar,
+  ShellTopNav,
+  type ShellTopNavProps,
+} from "./components/shell-top-nav-block"
 export { AppShellNotFound } from "./components/app-shell-not-found"
 export {
   AppShellSidebar,
@@ -101,10 +132,15 @@ export {
 export { ShellIcon, ShellNavIcon } from "./components/shell-icon"
 export type { ShellIconProps, ShellNavIconProps } from "./components/shell-icon"
 export { shellIconNames, shellNavIconNames } from "./constants/shell-icon-names"
-export type { ShellIconName, ShellNavIconName } from "./constants/shell-icon-names"
+export type {
+  ShellIconName,
+  ShellNavIconName,
+} from "./constants/shell-icon-names"
 
 export { useCurrentShellRoute } from "./hooks/use-current-shell-route"
 export { useShellBreadcrumbs } from "./hooks/use-shell-breadcrumbs"
+export { useShellContextBar } from "./hooks/use-shell-context-bar"
+export { useShellScopeLineage } from "./hooks/use-shell-scope-lineage"
 export { useShellMetadata } from "./hooks/use-shell-metadata"
 export {
   useShellRouteMeta,
@@ -151,6 +187,7 @@ export {
 } from "./routes/shell-route-definitions"
 export { shellWorkspaceHomeHref } from "./routes/shell-route-constants"
 export {
+  shellUserMenuDocsBase,
   shellUserMenuFallbackLinks,
   type ShellUserMenuLinkKey,
 } from "./routes/shell-user-menu-route-map"
@@ -237,12 +274,21 @@ export {
 export { filterShellNavigationItems } from "./services/filter-shell-navigation-items"
 export { resolveShellBreadcrumbs } from "./services/resolve-shell-breadcrumbs"
 export { resolveShellHeaderActions } from "./services/resolve-shell-header-actions"
+export { resolveShellContextBar } from "./services/resolve-shell-context-bar"
 export type { ResolveShellMetadataOptions } from "./services/resolve-shell-metadata"
 export { resolveShellMetadata } from "./services/resolve-shell-metadata"
 export type { ResolveShellTitleOptions } from "./services/resolve-shell-title"
 export { resolveShellTitle } from "./services/resolve-shell-title"
 export type { ShellMetadataValidationIssue } from "./services/validate-shell-metadata"
 export { validateShellMetadata } from "./services/validate-shell-metadata"
+export {
+  normalizeHiddenContextBarActionIds,
+  parseShellContextBarPreferences,
+  serializeShellContextBarPreferences,
+  shellContextBarPreferencesSchemaVersion,
+  shellContextBarPreferencesStorageKey,
+} from "./services/shell-context-bar-preferences"
+export { validateShellContextBar } from "./services/validate-shell-context-bar"
 
 export type { ShellCommandRegistry } from "./registry/shell-command-registry"
 export { createShellCommandRegistry } from "./registry/shell-command-registry"

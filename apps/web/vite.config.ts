@@ -1,19 +1,37 @@
 /// <reference types="vitest/config" />
-import { getAfendaVitestTestOptions } from '@afenda/vitest-config/vitest/defaults'
-import { DevTools } from '@vitejs/devtools'
+import { getAfendaVitestTestOptions } from "@afenda/vitest-config/vitest/defaults"
+import { DevTools } from "@vitejs/devtools"
 import {
   defineConfig,
   loadEnv,
   type ConfigEnv,
   type PluginOption,
   type UserConfig,
-} from 'vite'
-import { visualizer } from 'rollup-plugin-visualizer'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import babel from '@rolldown/plugin-babel'
-import legacy from '@vitejs/plugin-legacy'
-import path from 'path'
+} from "vite"
+import { visualizer } from "rollup-plugin-visualizer"
+import react, { reactCompilerPreset } from "@vitejs/plugin-react"
+import tailwindcss from "@tailwindcss/vite"
+import babel from "@rolldown/plugin-babel"
+import legacy from "@vitejs/plugin-legacy"
+import path from "path"
+import { existsSync } from "node:fs"
+import { fileURLToPath } from "node:url"
+import { config as loadDotenv } from "dotenv"
+
+/** Directory containing `vite.config.ts` — explicit `root` avoids mis-resolution with `--configLoader native`. */
+const configDir = path.dirname(fileURLToPath(import.meta.url))
+
+// Repo-root `.env.neon` (process.cwd() candidates; safe for native + Rolldown config bundling)
+for (const envPath of [
+  path.join(process.cwd(), ".env.neon"),
+  path.join(process.cwd(), "..", ".env.neon"),
+  path.join(process.cwd(), "..", "..", ".env.neon"),
+]) {
+  if (existsSync(envPath)) {
+    loadDotenv({ path: envPath, override: false })
+    break
+  }
+}
 
 // https://vite.dev/config/
 async function resolveUserConfig({
@@ -21,21 +39,23 @@ async function resolveUserConfig({
   mode,
 }: ConfigEnv): Promise<UserConfig> {
   // Load environment variables
-  const env = loadEnv(mode, process.cwd(), '')
-  const analyze = mode === 'analyze'
+  const env = loadEnv(mode, configDir, "")
+  const analyze = mode === "analyze"
   const devToolsPlugins =
-    command === 'serve' && process.env.VITEST !== 'true'
+    command === "serve" && process.env.VITEST !== "true"
       ? await DevTools({ builtinDevTools: true })
       : []
 
   return {
+    root: configDir,
+
     // Base configuration
-    base: env.VITE_BASE_URL || '/',
+    base: env.VITE_BASE_URL || "/",
 
     // Environment variables + Vue feature flags (transitive via @vitejs/devtools UI).
     // See https://vuejs.org/api/compile-time-flags.html — required for vue `esm-bundler` builds.
     define: {
-      __DEV__: command === 'serve',
+      __DEV__: command === "serve",
       __VUE_OPTIONS_API__: JSON.stringify(true),
       __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
@@ -56,15 +76,15 @@ async function resolveUserConfig({
       // React plugin with Fast Refresh
       react({
         // JSX runtime (automatic is recommended for React 17+)
-        jsxRuntime: 'automatic',
+        jsxRuntime: "automatic",
         // JSX import source (can be customized for emotion, styled-components, etc.)
         // jsxImportSource: '@emotion/react', // Change this based on your needs
       }),
 
       // Legacy browser support (after @vitejs/plugin-react; see plugin-legacy docs)
       legacy({
-        targets: ['defaults', 'not IE 11'],
-        additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+        targets: ["defaults", "not IE 11"],
+        additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
         renderLegacyChunks: true,
         polyfills: [
           // Add custom polyfills if needed
@@ -76,8 +96,8 @@ async function resolveUserConfig({
       babel({
         presets: [
           reactCompilerPreset({
-            compilationMode: 'infer', // 'infer' | 'annotation' | 'all'
-            target: '19', // React 19 runtime
+            compilationMode: "infer", // 'infer' | 'annotation' | 'all'
+            target: "19", // React 19 runtime
           }),
         ],
         // Additional Babel plugins can be added here
@@ -90,13 +110,13 @@ async function resolveUserConfig({
       // Custom plugins can be added here
       // Example: custom plugin for environment-specific behavior
       {
-        name: 'custom-env-plugin',
+        name: "custom-env-plugin",
         config() {
           return {
             // Environment-specific configuration
             define: {
-              'import.meta.env.__BUILD_TIME__': JSON.stringify(
-                new Date().toISOString(),
+              "import.meta.env.__BUILD_TIME__": JSON.stringify(
+                new Date().toISOString()
               ),
             },
           }
@@ -106,10 +126,10 @@ async function resolveUserConfig({
       ...(analyze
         ? [
             visualizer({
-              filename: path.resolve(__dirname, 'dist/stats.html'),
+              filename: path.resolve(configDir, "dist/stats.html"),
               gzipSize: true,
               brotliSize: true,
-              template: 'treemap',
+              template: "treemap",
               open: false,
             }) as PluginOption,
           ]
@@ -124,16 +144,16 @@ async function resolveUserConfig({
     // Development server configuration
     server: {
       port: parseInt(env.VITE_PORT) || 5173,
-      host: env.VITE_HOST || 'localhost',
-      open: env.VITE_OPEN_BROWSER === 'true',
+      host: env.VITE_HOST || "localhost",
+      open: env.VITE_OPEN_BROWSER === "true",
       warmup: {
-        clientFiles: ['./src/main.tsx', './src/App.tsx', './src/index.css'],
+        clientFiles: ["./src/main.tsx", "./src/App.tsx", "./src/index.css"],
       },
       cors: true,
       // Proxy configuration for API calls
       proxy: {
-        '/api': {
-          target: env.VITE_API_URL || 'http://localhost:3000',
+        "/api": {
+          target: env.VITE_API_URL || "http://localhost:3001",
           changeOrigin: true,
           secure: false,
         },
@@ -147,21 +167,21 @@ async function resolveUserConfig({
     // Preview server configuration (for production preview)
     preview: {
       port: parseInt(env.VITE_PREVIEW_PORT) || 4173,
-      host: env.VITE_PREVIEW_HOST || 'localhost',
+      host: env.VITE_PREVIEW_HOST || "localhost",
     },
 
     // Build configuration
     build: {
       // Output directory
-      outDir: 'dist',
+      outDir: "dist",
       // Asset directory
-      assetsDir: 'assets',
+      assetsDir: "assets",
       // Source maps
-      sourcemap: mode === 'development',
+      sourcemap: mode === "development",
       // Minification
-      minify: mode === 'production' ? 'esbuild' : false,
+      minify: mode === "production" ? "esbuild" : false,
       // Target environments
-      target: 'esnext',
+      target: "esnext",
       // Chunk size warnings
       chunkSizeWarningLimit: 1000,
       // Rollup options
@@ -169,46 +189,46 @@ async function resolveUserConfig({
         output: {
           // Manual chunks for better caching
           manualChunks: (id: string) => {
-            if (!id.includes('node_modules')) return
-            if (id.includes('react-router')) {
-              return 'router'
+            if (!id.includes("node_modules")) return
+            if (id.includes("react-router")) {
+              return "router"
             }
-            if (id.includes('@radix-ui')) {
-              return 'ui'
+            if (id.includes("@radix-ui")) {
+              return "ui"
             }
-            if (id.includes('core-js') || id.includes('regenerator-runtime')) {
-              return 'polyfills'
+            if (id.includes("core-js") || id.includes("regenerator-runtime")) {
+              return "polyfills"
             }
-            if (id.includes('node_modules/react-dom/')) {
-              return 'vendor-react-dom'
+            if (id.includes("node_modules/react-dom/")) {
+              return "vendor-react-dom"
             }
-            if (id.includes('node_modules/react/')) {
-              return 'vendor-react'
+            if (id.includes("node_modules/react/")) {
+              return "vendor-react"
             }
-            return 'vendor'
+            return "vendor"
           },
           // Asset file naming
           assetFileNames: (assetInfo: { name?: string | null }) => {
             if (
-              /\.(png|jpe?g|svg|gif|tiff|bmp|ico)$/i.test(assetInfo.name ?? '')
+              /\.(png|jpe?g|svg|gif|tiff|bmp|ico)$/i.test(assetInfo.name ?? "")
             ) {
               return `assets/images/[name]-[hash][extname]`
             }
-            if (/\.(woff2?|eot|ttf|otf)$/i.test(assetInfo.name ?? '')) {
+            if (/\.(woff2?|eot|ttf|otf)$/i.test(assetInfo.name ?? "")) {
               return `assets/fonts/[name]-[hash][extname]`
             }
             return `assets/[name]-[hash][extname]`
           },
           // Chunk file naming (legacy plugin will add -legacy suffix automatically)
-          chunkFileNames: 'assets/js/[name]-[hash].js',
+          chunkFileNames: "assets/js/[name]-[hash].js",
           // Entry file naming (legacy plugin will add -legacy suffix automatically)
-          entryFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: "assets/js/[name]-[hash].js",
         },
       },
       // CSS code splitting
       cssCodeSplit: true,
       // CSS minification
-      cssMinify: mode === 'production',
+      cssMinify: mode === "production",
 
       // Rolldown DevTools data: enable only for `vite build --mode analyze` so
       // default production keeps `rollupOptions.output` manual chunking intact.
@@ -225,17 +245,17 @@ async function resolveUserConfig({
     optimizeDeps: {
       // Include dependencies that should be pre-bundled
       include: [
-        'react',
-        'react-dom',
-        'react-router-dom',
-        '@tanstack/react-query',
-        'zustand',
-        'react-hook-form',
-        'zod',
-        'date-fns',
-        'i18next',
-        'react-i18next',
-        'i18next-browser-languagedetector',
+        "react",
+        "react-dom",
+        "react-router-dom",
+        "@tanstack/react-query",
+        "zustand",
+        "react-hook-form",
+        "zod",
+        "date-fns",
+        "i18next",
+        "react-i18next",
+        "i18next-browser-languagedetector",
         // Add other large dependencies here
       ],
       // Exclude dependencies from pre-bundling
@@ -244,15 +264,15 @@ async function resolveUserConfig({
         // 'some-large-library',
       ],
       // Force include dependencies
-      force: command === 'build',
+      force: command === "build",
     },
 
     // Environment variables
-    envPrefix: 'VITE_',
+    envPrefix: "VITE_",
 
     // Worker configuration
     worker: {
-      format: 'es',
+      format: "es",
       plugins: () => [
         // Worker-specific plugins
       ],
@@ -270,5 +290,5 @@ async function resolveUserConfig({
 }
 
 export default defineConfig(
-  resolveUserConfig as (env: ConfigEnv) => UserConfig | Promise<UserConfig>,
+  resolveUserConfig as (env: ConfigEnv) => UserConfig | Promise<UserConfig>
 )

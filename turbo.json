@@ -4,7 +4,8 @@
   "globalDependencies": [
     "pnpm-workspace.yaml",
     "turbo.json",
-    "eslint.config.js"
+    "eslint.config.js",
+    ".env.neon"
   ],
   "globalEnv": ["NODE_ENV", "CI"],
   "tasks": {
@@ -19,6 +20,7 @@
         "$TURBO_DEFAULT$",
         "$TURBO_ROOT$/apps/web/.env",
         "$TURBO_ROOT$/apps/web/.env.*",
+        "$TURBO_ROOT$/.env.neon",
         "$TURBO_ROOT$/packages/typescript-config/**/*.json"
       ]
     },
@@ -30,6 +32,7 @@
         "$TURBO_DEFAULT$",
         "$TURBO_ROOT$/apps/web/.env",
         "$TURBO_ROOT$/apps/web/.env.*",
+        "$TURBO_ROOT$/.env.neon",
         "$TURBO_ROOT$/packages/typescript-config/**/*.json"
       ]
     },
@@ -82,7 +85,16 @@
         "PORT",
         "DB_POOL_MAX",
         "DB_IDLE_TIMEOUT_MS",
-        "DB_CONNECTION_TIMEOUT_MS"
+        "DB_CONNECTION_TIMEOUT_MS",
+        "BETTER_AUTH_SECRET",
+        "BETTER_AUTH_URL",
+        "BETTER_AUTH_SECRETS",
+        "DEMO_TENANT_ID",
+        "NEON_PROJECT_ID",
+        "NEON_BRANCH_ID",
+        "NEON_DATABASE",
+        "NEON_AUTH_BASE_URL",
+        "NEON_AUTH_JWKS_URL"
       ]
     },
     "preview": {

@@ -43,6 +43,28 @@
           root.classList.add(theme)
         }
       })()
+      ;(function () {
+        if (!/^\/app(\/|$)/.test(location.pathname)) return
+        var key = "vite-ui-density"
+        var stored = localStorage.getItem(key)
+        var density =
+          stored === "compact" ||
+          stored === "comfortable" ||
+          stored === "spacious"
+            ? stored
+            : "comfortable"
+        document.documentElement.setAttribute("data-density", density)
+      })()
+      ;(function () {
+        if (!/^\/app(\/|$)/.test(location.pathname)) return
+        var key = "vite-ui-motion-preference"
+        var stored = localStorage.getItem(key)
+        var motion =
+          stored === "system" || stored === "reduce" || stored === "allow"
+            ? stored
+            : "system"
+        document.documentElement.setAttribute("data-motion-preference", motion)
+      })()
     </script>
   </head>
   <body>

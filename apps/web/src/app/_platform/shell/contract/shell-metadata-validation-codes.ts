@@ -14,6 +14,11 @@ export const shellMetadataValidationCodes = {
    * Header action field failures; see `validateShellHeaderActions` subcodes in the message prefix.
    */
   INVALID_HEADER_ACTION: "SHELL_METADATA_INVALID_HEADER_ACTION",
+
+  /**
+   * Context bar field failures; see `validateShellContextBar` subcodes in the message prefix.
+   */
+  INVALID_CONTEXT_BAR: "SHELL_METADATA_INVALID_CONTEXT_BAR",
 } as const
 
 export type ShellMetadataValidationCode =

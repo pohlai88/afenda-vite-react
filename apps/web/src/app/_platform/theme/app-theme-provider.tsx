@@ -1,6 +1,8 @@
 import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
+import { ShellDensityRoot } from "./shell-density-root"
+import { ShellMotionRoot } from "./shell-motion-root"
 import { ThemeColorMeta } from "./theme-color-meta"
 
 /**
@@ -28,6 +30,8 @@ export function AppThemeProvider(props: AppThemeProviderProps) {
       enableSystem
       storageKey={VITE_UI_THEME_STORAGE_KEY}
     >
+      <ShellDensityRoot />
+      <ShellMotionRoot />
       {children}
       <ThemeColorMeta />
     </ThemeProvider>

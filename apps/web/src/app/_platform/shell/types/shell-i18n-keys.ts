@@ -7,9 +7,14 @@ export type ShellBreadcrumbLabelKey =
   | "breadcrumb.audit"
   | "breadcrumb.partners"
 
-export type ShellNavGroupLabelKey = "nav.groups.workspace"
+export type ShellNavGroupLabelKey =
+  | "nav.workspace.placeholder_title"
+  | "nav.workspace.section_primary"
+  | "nav.workspace.section_operations"
+  | "nav.workspace.section_insights"
+  | "nav.workspace.section_app"
 
-/** Sub-link labels under a feature (see `shell-rail-sidebar-block/shell-left-sidebar-nav-config.ts`). */
+/** Sub-link labels (route metadata / i18n; labels column nav removed). */
 export type ShellNavSidebarSubLabelKey =
   | "nav.sub.events.overview"
   | "nav.sub.events.activity"

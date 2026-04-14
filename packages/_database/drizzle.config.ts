@@ -1,4 +1,7 @@
+import { loadMonorepoEnv } from "@afenda/env-loader"
 import { defineConfig } from "drizzle-kit"
+
+loadMonorepoEnv()
 
 export default defineConfig({
   dialect: "postgresql",

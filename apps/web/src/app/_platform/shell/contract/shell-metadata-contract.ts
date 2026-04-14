@@ -14,6 +14,7 @@
  */
 
 import type { ShellBreadcrumbDescriptor } from "./shell-breadcrumb-contract"
+import type { ShellContextBarDescriptor } from "./shell-context-bar-contract"
 import type { ShellHeaderActionDescriptor } from "./shell-header-action-contract"
 
 export interface ShellMetadata {
@@ -32,4 +33,9 @@ export interface ShellMetadata {
    * Declarative header actions for the shell chrome.
    */
   readonly headerActions?: readonly ShellHeaderActionDescriptor[]
+
+  /**
+   * Optional L2 domain context bar (tabs + quick actions) shown under top nav.
+   */
+  readonly contextBar?: ShellContextBarDescriptor
 }

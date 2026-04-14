@@ -1,3 +1,5 @@
+export { ShellScopeLineageBar } from "./shell-scope-lineage-bar"
+export type { ShellScopeLineageBarProps } from "./shell-scope-lineage-bar"
 export { ShellTopNav } from "./shell-top-nav"
 export type { ShellTopNavProps } from "./shell-top-nav-types"
 export { ShellTopNavBreadcrumbs } from "./shell-top-nav-breadcrumbs"

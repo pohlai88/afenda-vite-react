@@ -50,6 +50,13 @@
       "when": 1776087151100,
       "tag": "0006_audit_tenant_subject_recorded_idx",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1776196298276,
+      "tag": "0007_workspace_demo_items",
+      "breakpoints": true
     }
   ]
 }

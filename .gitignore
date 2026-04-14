@@ -17,6 +17,8 @@ coverage
 apps/*/.eslintcache
 dist-ssr
 *.local
+.env
+.env.neon
 .env.turbo
 .env.tolgee
 

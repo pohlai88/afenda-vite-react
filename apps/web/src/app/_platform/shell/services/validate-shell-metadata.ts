@@ -7,6 +7,7 @@
 import type { ShellMetadata } from "../contract/shell-metadata-contract"
 import type { ShellMetadataValidationCode } from "../contract/shell-metadata-validation-codes"
 import { shellMetadataValidationCodes } from "../contract/shell-metadata-validation-codes"
+import { validateShellContextBar } from "./validate-shell-context-bar"
 import { validateShellHeaderActions } from "./validate-shell-header-actions"
 
 export interface ShellMetadataValidationIssue {
@@ -78,6 +79,16 @@ export function validateShellMetadata(
       message: `[${issue.code}] ${issue.message}`,
       path: issue.path,
     })
+  }
+
+  if (metadata.contextBar !== undefined) {
+    for (const issue of validateShellContextBar(metadata.contextBar)) {
+      issues.push({
+        code: shellMetadataValidationCodes.INVALID_CONTEXT_BAR,
+        message: `[${issue.code}] ${issue.message}`,
+        path: issue.path,
+      })
+    }
   }
 
   return issues

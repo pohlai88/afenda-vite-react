@@ -136,12 +136,40 @@
       "link_dashboard": "Kembali ke ruang kerja"
     }
   },
+  "states": {
+    "route_error": {
+      "title": "Ralat berlaku",
+      "description": "Skrin ini mengalami ralat. Cuba lagi atau kembali ke ruang kerja.",
+      "retry": "Cuba lagi",
+      "home": "Kembali ke ruang kerja"
+    },
+    "outlet_error": {
+      "title": "Bahagian ini gagal dipaparkan",
+      "description": "Cuba lagi atau kembali ke ruang kerja. Jika berterusan, hubungi sokongan.",
+      "retry": "Cuba lagi",
+      "home": "Kembali ke ruang kerja"
+    },
+    "empty": {
+      "default_title": "Tiada data lagi",
+      "default_description": "Tiada item untuk dipaparkan. Laraskan penapis atau cuba lagi kemudian."
+    }
+  },
   "language": {
     "label": "Bahasa",
     "option_en": "English",
     "option_ms": "Bahasa Melayu",
     "option_id": "Bahasa Indonesia",
     "option_vi": "Tiếng Việt"
+  },
+  "scope_lineage": {
+    "switch_dimension": "Tukar {{dimension}}: {{value}}",
+    "switcher_placeholder": "Pilihan yang dibenarkan akan dipaparkan di sini apabila skop disambungkan ke API.",
+    "slot": {
+      "level_1": "Skop 1",
+      "level_2": "Skop 2",
+      "level_3": "Skop 3",
+      "level_4": "Skop 4"
+    }
   },
   "nav": {
     "groups": {
@@ -232,6 +260,33 @@
     "customize_hint": "Pilih pintasan yang dipaparkan. Secara lalai, semua dipaparkan.",
     "show_all": "Tunjuk semua"
   },
+  "context_bar": {
+    "navigation_aria": "Navigasi konteks ciri",
+    "customize_aria": "Sesuaikan tindakan bar konteks",
+    "customize_title": "Tindakan konteks",
+    "show_all_actions": "Tunjuk semua tindakan",
+    "more_aria": "Pilihan konteks lain",
+    "sections_title": "Bahagian",
+    "actions_title": "Tindakan",
+    "inline_visible_hint": "Sebahagian pilihan konteks sudah dipaparkan.",
+    "events": {
+      "tabs": {
+        "overview": "Gambaran",
+        "audit": "Audit",
+        "partners": "Rakan kongsi"
+      },
+      "actions": {
+        "refresh": "Segar semula",
+        "open_audit": "Buka audit",
+        "more": "Lagi",
+        "menu": {
+          "audit": "Buka jejak audit",
+          "partners": "Buka integrasi rakan kongsi",
+          "refresh": "Segar semula paparan semasa"
+        }
+      }
+    }
+  },
   "user_menu": {
     "truth_status": "Kesihatan Sistem",
     "integrity_score": "Integriti",
@@ -242,7 +297,7 @@
     "upgrade_pro": "Tingkatkan ke Pro",
     "billing": "Pengebilan",
     "notifications": "Pemberitahuan",
-    "notification_settings": "Pemberitahuan",
+    "notification_settings": "Tetapan pemberitahuan",
     "audit_log": "Log Audit",
     "status": "Status pengguna",
     "status_available": "Tersedia",
@@ -253,6 +308,19 @@
     "theme_light": "Cerah",
     "theme_dark": "Gelap",
     "theme_system": "Sistem",
+    "density": "Ketumpatan",
+    "density_compact": "Padat",
+    "density_comfortable": "Selesa",
+    "density_spacious": "Luas",
+    "accessibility_motion": "Gerakan",
+    "motion_system": "Ikut sistem",
+    "motion_reduce": "Kurangkan gerakan",
+    "motion_allow": "Benarkan gerakan penuh",
+    "command_palette": "Palet arahan",
+    "help_docs": "Bantuan & dokumentasi",
+    "changelog": "Nota keluaran",
+    "keyboard_shortcuts": "Pintasan papan kekunci",
+    "version": "Versi {{version}}",
     "language": "Bahasa",
     "logout": "Log keluar"
   },
@@ -329,7 +397,7 @@
     "brand": "Afenda",
     "brand_tagline": "Ruang kerja",
     "brand_nav_aria": "Ke laman utama ruang kerja",
-    "control_title": "Bar sisi",
+    "control_title": "Modul ruang kerja",
     "mode_expanded": "Dikembangkan",
     "mode_collapsed": "Diruntuhkan",
     "mode_hover": "Kembang semasa hover"
@@ -435,7 +503,9 @@
     "connect_description": "Gunakan butiran ini untuk menyambung klien dan alat ke ruang kerja anda.",
     "connect_details": "Rentetan sambungan",
     "connect_placeholder_url": "https://api.example.com/v1",
-    "read_only_hint": "Pratonton baca sahaja"
+    "read_only_hint": "Pratonton baca sahaja",
+    "tooltip_command": "Buka palet arahan ({{shortcut}})",
+    "tooltip_connect": "Butiran sambungan dan endpoint API"
   },
   "actions": {
     "command_running": "Memuatkan…",
