@@ -195,6 +195,13 @@
       "retry": "Try again",
       "home": "Back to workspace"
     },
+    "root_error": {
+      "title": "Something went wrong",
+      "description": "The app hit an error. You can try again, go home, or reload the page.",
+      "retry": "Try again",
+      "home": "Back to home",
+      "reload": "Reload page"
+    },
     "empty": {
       "default_title": "Nothing here yet",
       "default_description": "There are no items to show. Adjust filters or check back later."

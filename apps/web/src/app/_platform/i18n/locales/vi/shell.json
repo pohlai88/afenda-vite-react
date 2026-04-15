@@ -195,6 +195,13 @@
       "retry": "Thử lại",
       "home": "Quay lại không gian làm việc"
     },
+    "root_error": {
+      "title": "Đã xảy ra lỗi",
+      "description": "Ứng dụng gặp lỗi. Bạn có thể thử lại, về trang chủ hoặc tải lại trang.",
+      "retry": "Thử lại",
+      "home": "Về trang chủ",
+      "reload": "Tải lại trang"
+    },
     "empty": {
       "default_title": "Chưa có dữ liệu",
       "default_description": "Không có mục nào để hiển thị. Điều chỉnh bộ lọc hoặc thử lại sau."

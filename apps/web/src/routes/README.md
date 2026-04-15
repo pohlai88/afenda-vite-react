@@ -1,19 +1,30 @@
 # `src/routes`
 
-**Single place** for React Router **route objects** in this Vite app. The factory that calls `createBrowserRouter` stays next to the app root in [`src/router.tsx`](../router.tsx); it only imports [`browserRoutes`](./route-browser.tsx) and applies global router concerns (for example shell `RouteHandle` typing).
+**Route modules** (`route-*.tsx`) define React Router **`RouteObject`** trees for this Vite app. **Page UI** (screens, layouts) lives under `src/pages/` and `src/app/`; this folder only **wires** those components into the router.
+
+## Router usage (definition)
+
+| Piece                                 | Role                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **[`src/router.tsx`](../router.tsx)** | **Single** place that calls `createBrowserRouter`. Exports **`router`** (pass to `RouterProvider`) and **`browserRoutes`** (full `RouteObject[]` for tests or tooling). Imports [`./app/_platform/shell/types/shell-route-handle`](../app/_platform/shell/types/shell-route-handle) **once** for `RouteHandle` / match typing. Computes **`basename`** from `import.meta.env.BASE_URL` so client routes match Vite [`base`](https://vite.dev/config/shared-options.html#base). |
+| **`route-*.tsx` in this folder**      | Export **arrays or objects** only (`marketingRouteObjects`, `appShellRouteObject`). No second `createBrowserRouter`.                                                                                                                                                                                                                                                                                                                                                           |
+| **[`src/App.tsx`](../App.tsx)**       | Renders `<RouterProvider router={router} />` (from `../router`) inside `Suspense` / error boundary.                                                                                                                                                                                                                                                                                                                                                                            |
+| **[`src/main.tsx`](../main.tsx)**     | Bootstraps React; does **not** import route modules directly—only mounts `<App />`.                                                                                                                                                                                                                                                                                                                                                                                            |
+| **[`index.ts`](./index.ts)**          | Optional **barrel**: re-exports `router`, `browserRoutes`, and individual route modules for consumers that prefer a single import path.                                                                                                                                                                                                                                                                                                                                        |
+
+**Flow:** `main` → `App` → `RouterProvider(router)` → URL matches a child of `browserRoutes` (marketing at `/` or ERP shell at `/app/*`).
 
 ## Naming
 
-Filenames use the **`route-*.tsx`** prefix so route modules group clearly in the tree and stay distinct from [`router.tsx`](../router.tsx) (the orchestrator only).
+Filenames use the **`route-*.tsx`** prefix so route modules group clearly in the tree and stay distinct from [`router.tsx`](../router.tsx) (the app root orchestrator).
 
 ## Files
 
-| File                                           | Role                                                                                                                 |
-| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| [`route-browser.tsx`](./route-browser.tsx)     | **Aggregated tree** passed to `createBrowserRouter` — composes root routes + app shell.                              |
-| [`route-root.tsx`](./route-root.tsx)           | Top-level routes **outside** the authenticated shell: `/` (marketing), `/app/login` (transitional auth placeholder). |
-| [`route-app-shell.tsx`](./route-app-shell.tsx) | Subtree for **`/app/*`**: `AppShellLayout`, feature pages, splat not-found.                                          |
-| [`index.ts`](./index.ts)                       | Re-exports for consumers that prefer a barrel (`browserRoutes`, `rootRouteObjects`, `appShellRouteObject`).          |
+| File                                           | Role                                                                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [`route-marketing.tsx`](./route-marketing.tsx) | Public marketing + auth routes under `/` (no ERP shell).                                                     |
+| [`route-app-shell.tsx`](./route-app-shell.tsx) | Subtree for **`/app/*`**: `AppShellLayout`, feature pages, splat not-found.                                  |
+| [`index.ts`](./index.ts)                       | Re-exports route modules and [`router` / `browserRoutes`](../router.tsx) for consumers that prefer a barrel. |
 
 ## Shell metadata
 
@@ -25,7 +36,7 @@ Filenames use the **`route-*.tsx`** prefix so route modules group clearly in the
 
 **In-app shell:** Layout, feature children, and the `/app/*` splat not-found must carry governed `handle.shell` from definitions.
 
-**Outside shell:** Marketing and auth entry routes do not mount `AppShellLayout`; they declare `handle: { shell: null }` so policy is explicit. See [`route-root.tsx`](./route-root.tsx).
+**Outside shell:** Marketing and auth entry routes do not mount `AppShellLayout`; they declare `handle: { shell: null }` so policy is explicit. See [`route-marketing.tsx`](./route-marketing.tsx).
 
 Shell metadata ownership applies to the governed `/app/*` runtime, not to every route in the app.
 
@@ -35,10 +46,10 @@ Shell metadata ownership applies to the governed `/app/*` runtime, not to every 
 
 ## Adding routes
 
-1. **Marketing or auth-only path** (no shell): extend [`route-root.tsx`](./route-root.tsx) with `handle: { shell: null }` unless the route participates in shell chrome (it should not for these).
+1. **Marketing or auth-only path** (no shell): extend [`route-marketing.tsx`](./route-marketing.tsx) with `handle: { shell: null }` unless the route participates in shell chrome (it should not for these).
 2. **Authenticated ERP area under `/app`**:
    - Update [`shell-route-definitions.ts`](../app/_platform/shell/routes/shell-route-definitions.ts) and wire the page in [`route-app-shell.tsx`](./route-app-shell.tsx) (often via the shared child-route map there).
-3. **New top-level segment** (e.g. a second product shell): add a dedicated `route-*.tsx` module, then import and compose it inside [`route-browser.tsx`](./route-browser.tsx) in the right order.
+3. **New top-level segment** (e.g. a second product shell): add a dedicated `route-*.tsx` module, import it from [`router.tsx`](../router.tsx), and append it to the `browserRoutes` array in the right order.
 
 ## Normative docs
 

@@ -1,3 +1,14 @@
+/**
+ * Authenticated ERP shell route subtree under `/app/*`.
+ *
+ * - Layout and `handle.shell` are driven by `shell-route-definitions` / `_platform/shell`—keep parity with Vitest shell tests.
+ * - Wraps shell UI in `AppThemeProvider`; theme is intentionally separate from public marketing routes.
+ * - Exports a single `RouteObject` consumed by `browserRoutes` in `../router.tsx` (no extra `createBrowserRouter`).
+ * - Uses `errorElement` with `AppRouteErrorFallback` for loader/render errors in this subtree.
+ *
+ * @see ./README.md — router usage, shell metadata, governance, and how to add `/app` child routes.
+ */
+
 import { Navigate, type RouteObject } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../app/_components"
@@ -12,12 +23,7 @@ import {
 } from "../app/_platform/shell"
 import { AppThemeProvider } from "../app/_platform/theme/app-theme-provider"
 
-/**
- * Browser router subtree for `/app/*`: layout, index redirect, child feature routes, splat 404.
- * Route paths and `handle.shell` come from {@link shellAppChildRouteDefinitions} /
- * {@link shellAppLayoutRoute} in `shell-route-definitions.ts` (re-exported from `../app/_platform/shell`).
- * Theme is isolated from public marketing routes via {@link AppThemeProvider}.
- */
+/** `/app/*` route object: layout, index redirect, feature children, splat 404. Paths and `handle.shell` from shell definitions. */
 export const appShellRouteObject: RouteObject = {
   path: "/app",
   element: (

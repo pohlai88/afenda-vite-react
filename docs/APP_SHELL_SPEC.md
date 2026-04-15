@@ -23,7 +23,7 @@ This document defines the app-shell structure and behavioral rules. Styling law 
 
 ## Current baseline
 
-- **Router:** [`apps/web/src/router.tsx`](../apps/web/src/router.tsx) calls `createBrowserRouter` with [`browserRoutes` from `src/routes/route-browser.tsx`](../apps/web/src/routes/route-browser.tsx) — marketing at `/`, authenticated shell at `/app/*`, transitional **`/app/login`** **outside** the shell layout.
+- **Router:** [`apps/web/src/router.tsx`](../apps/web/src/router.tsx) defines `browserRoutes` and calls `createBrowserRouter` — marketing at `/`, authenticated shell at `/app/*`, transitional **`/app/login`** **outside** the shell layout.
 - **Shell layout:** `AppShellLayout` from `_platform/shell` composes `SidebarProvider`, sidebar, header, `Outlet`.
 - **Features:** Route targets use **public** feature exports only (e.g. `@/app/_features/_template`); shell does not import feature internals.
 
@@ -41,7 +41,7 @@ This document defines the app-shell structure and behavioral rules. Styling law 
 The live router is the source of truth; it follows this structure:
 
 ```tsx
-// Illustrative — see apps/web/src/routes/route-browser.tsx
+// Illustrative — see apps/web/src/router.tsx and route modules under apps/web/src/routes/
 ;[
   { path: "/", element: <Home /> },
   { path: "/app/login", element: <AppLogin /> },

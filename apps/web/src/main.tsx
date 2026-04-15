@@ -7,10 +7,29 @@ import "./index.css"
 import App from "./App"
 import { initI18n } from "./app/_platform/i18n"
 
-const queryClient = new QueryClient()
+function getRootContainer(): HTMLElement {
+  const el = document.getElementById("root")
+  if (!el) {
+    throw new Error(
+      'Afenda web: missing #root element. Ensure apps/web/index.html defines <div id="root"></div>.'
+    )
+  }
+  return el
+}
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      gcTime: 5 * 60_000,
+      retry: 1,
+      refetchOnWindowFocus: import.meta.env.PROD,
+    },
+  },
+})
 
 void initI18n().then(() => {
-  createRoot(document.getElementById("root")!).render(
+  createRoot(getRootContainer()).render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <App />

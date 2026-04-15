@@ -12,6 +12,7 @@ import {
   defineConfig,
   loadEnv,
   type ConfigEnv,
+  type Plugin,
   type PluginOption,
   type UserConfig,
 } from "vite"
@@ -25,6 +26,27 @@ import { config as loadDotenv } from "dotenv"
 
 /** Directory containing `vite.config.ts` — explicit `root` avoids mis-resolution with `--configLoader native`. */
 const configDir = path.dirname(fileURLToPath(import.meta.url))
+
+/**
+ * Injects Vite `config.base` into `index.html` so the blocking theme script strips the public path
+ * before `/app/*` detection (aligned with React Router `basename`). Must match
+ * `theme-inline-path.ts` semantics — see `transformIndexHtml` + `__VITE_RESOLVED_BASE_JSON__`.
+ */
+function injectViteBaseForThemeScript(): Plugin {
+  let resolvedBase = "/"
+  return {
+    name: "inject-vite-base-for-theme-script",
+    configResolved(config) {
+      resolvedBase = config.base
+    },
+    transformIndexHtml(html) {
+      return html.replace(
+        /__VITE_RESOLVED_BASE_JSON__/g,
+        JSON.stringify(resolvedBase)
+      )
+    },
+  }
+}
 
 // Repo-root `.env.neon` (process.cwd() candidates; safe for `--configLoader native` bundling)
 for (const envPath of [
@@ -75,6 +97,7 @@ async function resolveUserConfig({
 
     // Plugin configuration
     plugins: [
+      injectViteBaseForThemeScript(),
       // Tailwind CSS v4 plugin (must be before React)
       tailwindcss(),
 

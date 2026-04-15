@@ -195,6 +195,13 @@
       "retry": "Cuba lagi",
       "home": "Kembali ke ruang kerja"
     },
+    "root_error": {
+      "title": "Ralat berlaku",
+      "description": "Aplikasi mengalami ralat. Cuba lagi, kembali ke laman utama, atau muat semula halaman.",
+      "retry": "Cuba lagi",
+      "home": "Kembali ke laman utama",
+      "reload": "Muat semula halaman"
+    },
     "empty": {
       "default_title": "Tiada data lagi",
       "default_description": "Tiada item untuk dipaparkan. Laraskan penapis atau cuba lagi kemudian."

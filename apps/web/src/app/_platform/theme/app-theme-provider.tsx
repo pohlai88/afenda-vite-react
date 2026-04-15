@@ -7,7 +7,7 @@ import { ThemeColorMeta } from "./theme-color-meta"
 
 /**
  * Signed-in app (`/app/*`) theme — separate storage from public marketing routes.
- * Must match `apps/web/index.html` path-based key selection for `/app` loads.
+ * Must match `apps/web/index.html` blocking script (same keys + `isApp` via `pathAfterViteBase` + Vite `base`).
  */
 export const VITE_UI_THEME_STORAGE_KEY = "vite-ui-theme"
 

@@ -7,9 +7,11 @@
       Owns: document shell, head metadata, favicon, viewport, root mount node.
       Must not own: app logic, route UI, design-system rules, feature scripts.
       Safe edits: title, meta tags, static document-level assets.
-      Unsafe edits: React startup logic, providers, route markup.
+      Unsafe edits: app route markup (React owns routes).
       Architecture rule: keep this as the browser document boundary only.
       Related files: src/main.tsx, src/App.tsx.
+      Theme script: `viteBase` is replaced at dev/build with Vite `config.base` (must match
+      `import.meta.env.BASE_URL`). Path logic mirrors `src/app/_platform/theme/theme-inline-path.ts`.
     -->
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -18,13 +20,27 @@
     <meta name="theme-color" content="#0a0a0a" />
     <title>Afenda</title>
     <!--
-      Sync theme class before paint. Key must match the active route:
-      - `/app/*` → vite-ui-theme (AppThemeProvider)
-      - public marketing → vite-ui-marketing-theme (MarketingThemeProvider)
+      Blocking theme/density/motion: localStorage keys must match next-themes / shell prefs.
+      App vs marketing: vite-ui-theme vs vite-ui-marketing-theme (see AppThemeProvider,
+      MarketingThemeProvider). `routePath` strips Vite base so subpath deploys match React Router.
     -->
     <script>
       ;(function () {
-        var isApp = /^\/app(\/|$)/.test(location.pathname)
+        var viteBase = __VITE_RESOLVED_BASE_JSON__
+        function pathAfterViteBase(pathname, base) {
+          var raw = (base || "").trim()
+          if (!raw || raw === "/") return pathname
+          var prefix =
+            raw.charAt(raw.length - 1) === "/" ? raw.slice(0, -1) : raw
+          if (!prefix) return pathname
+          if (pathname === prefix || pathname === prefix + "/") return "/"
+          if (pathname.indexOf(prefix + "/") === 0)
+            return pathname.slice(prefix.length)
+          return pathname
+        }
+        var routePath = pathAfterViteBase(location.pathname, viteBase)
+        var isApp = /^\/app(\/|$)/.test(routePath)
+
         var key = isApp ? "vite-ui-theme" : "vite-ui-marketing-theme"
         var stored = localStorage.getItem(key)
         var theme =
@@ -42,26 +58,24 @@
         } else {
           root.classList.add(theme)
         }
-      })()
-      ;(function () {
-        if (!/^\/app(\/|$)/.test(location.pathname)) return
-        var key = "vite-ui-density"
-        var stored = localStorage.getItem(key)
+
+        if (!isApp) return
+
+        var dKey = "vite-ui-density"
+        var dStored = localStorage.getItem(dKey)
         var density =
-          stored === "compact" ||
-          stored === "comfortable" ||
-          stored === "spacious"
-            ? stored
+          dStored === "compact" ||
+          dStored === "comfortable" ||
+          dStored === "spacious"
+            ? dStored
             : "comfortable"
         document.documentElement.setAttribute("data-density", density)
-      })()
-      ;(function () {
-        if (!/^\/app(\/|$)/.test(location.pathname)) return
-        var key = "vite-ui-motion-preference"
-        var stored = localStorage.getItem(key)
+
+        var mKey = "vite-ui-motion-preference"
+        var mStored = localStorage.getItem(mKey)
         var motion =
-          stored === "system" || stored === "reduce" || stored === "allow"
-            ? stored
+          mStored === "system" || mStored === "reduce" || mStored === "allow"
+            ? mStored
             : "system"
         document.documentElement.setAttribute("data-motion-preference", motion)
       })()

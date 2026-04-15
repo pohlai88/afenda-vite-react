@@ -1,4 +1,5 @@
 export { AppBootstrapLoading } from "./app-bootstrap-loading"
+export { RootErrorBoundary } from "./root-error-boundary"
 export { AppEmptyState, type AppEmptyStateProps } from "./app-empty-state"
 export {
   APP_SHELL_DEFAULT_HOME_HREF,
