@@ -9,15 +9,15 @@ This is an execution document, not a permanent standard.
 
 ## Phase Status (as of last update)
 
-| Phase | Title | Status |
-| ----- | ----- | ------ |
-| 0 | Cleanup | ✅ Done |
-| 1 | Install Tailwind v4 | ✅ Done |
-| 2 | CSS Foundation | ✅ Done |
-| 3 | shadcn Bootstrap | ✅ Done — `packages/shadcn-ui-deprecated/components.json` + 50+ primitives; `apps/web/components.json` created |
-| 4 | Hardening + Governance | ✅ Done — ThemeProvider, Toaster, lint warning fixed; `afenda.config.json` up to date |
-| 5 | App Shell Implementation | ✅ Done — icon-sizing, prop-composition, spacing, raw-color violations all resolved |
-| 6 | Validation + Sign-off | ✅ Done — typecheck ✅ lint ✅ format ✅ tests (66/66) ✅ |
+| Phase | Title                    | Status                                                                                                         |
+| ----- | ------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| 0     | Cleanup                  | ✅ Done                                                                                                        |
+| 1     | Install Tailwind v4      | ✅ Done                                                                                                        |
+| 2     | CSS Foundation           | ✅ Done                                                                                                        |
+| 3     | shadcn Bootstrap         | ✅ Done — `packages/shadcn-ui-deprecated/components.json` + 50+ primitives; `apps/web/components.json` created |
+| 4     | Hardening + Governance   | ✅ Done — ThemeProvider, Toaster, lint warning fixed; `afenda.config.json` up to date                          |
+| 5     | App Shell Implementation | ✅ Done — icon-sizing, prop-composition, spacing, raw-color violations all resolved                            |
+| 6     | Validation + Sign-off    | ✅ Done — typecheck ✅ lint ✅ format ✅ tests (66/66) ✅                                                      |
 
 ## Current State Snapshot
 
@@ -63,6 +63,7 @@ Completed. `@tailwindcss/vite` active in `apps/web/vite.config.ts`.
 ## Phase 2: CSS Foundation ✅
 
 Completed. `apps/web/src/index.css` follows the eight-step architecture with:
+
 - `@import "tailwindcss"`, `@plugin`, `tw-animate-css`, `shadcn/tailwind.css`, `@fontsource-variable/geist`
 - `@source "../../../packages/shadcn-ui-deprecated/src"`
 - `@custom-variant dark`
@@ -112,6 +113,7 @@ pnpm dlx shadcn@latest init -c apps/web --defaults --skip-preflight
 ```
 
 **Key alias rules** (from `docs/COMPONENTS_AND_STYLING.md`):
+
 - `aliases.ui` → `@afenda/shadcn-ui-deprecated/components/ui` (primitives come from `packages/shadcn-ui-deprecated`)
 - `aliases.utils` → `@afenda/shadcn-ui-deprecated/lib/utils`
 - `aliases.components` → `@/share/components` (app-level composed components)
@@ -144,11 +146,16 @@ pnpm --filter @afenda/web add next-themes
 2. Add `ThemeProvider` to `App.tsx` wrapping the whole app:
 
 ```tsx
-import { ThemeProvider } from 'next-themes'
+import { ThemeProvider } from "next-themes"
 
 function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
       <AppShell />
     </ThemeProvider>
   )
@@ -186,12 +193,12 @@ Add the new share subdirectories (`react-hooks`, `client-store`, `api`, `query`)
 
 ### Enterprise Quality Gate: Phase 4
 
-| Check | Command | Pass criteria |
-| ----- | ------- | ------------- |
-| TypeScript | `pnpm --filter @afenda/web exec tsc --noEmit` | 0 errors |
-| Lint | `pnpm run lint` | 0 errors, 0 warnings |
-| Format | `pnpm run format:check` | 0 violations |
-| Build | `pnpm --filter @afenda/web build` | Exits 0, no `error TS` in output |
+| Check      | Command                                       | Pass criteria                    |
+| ---------- | --------------------------------------------- | -------------------------------- |
+| TypeScript | `pnpm --filter @afenda/web exec tsc --noEmit` | 0 errors                         |
+| Lint       | `pnpm run lint`                               | 0 errors, 0 warnings             |
+| Format     | `pnpm run format:check`                       | 0 violations                     |
+| Build      | `pnpm --filter @afenda/web build`             | Exits 0, no `error TS` in output |
 
 ---
 
@@ -207,13 +214,14 @@ The shadcn skill rule: **No sizing classes on icons inside components.** Compone
 
 Files to fix:
 
-| File | Line(s) | Violation | Fix |
-| ---- | ------- | --------- | --- |
-| `navigation/side-nav/side-nav-bar.tsx` | ~58 | `<LayoutDashboardIcon className="size-4" />` inside `SidebarMenuButton` | Remove `className="size-4"` |
-| `navigation/top-nav/top-nav-bar.tsx` | ~284 | `<SquareTerminalIcon className="size-4" aria-hidden />` inside `Button` | Remove `className="size-4"` |
-| Any `block-ui/trigger/*.tsx` | Varies | Icon sizing classes inside `Button` | Audit and remove |
+| File                                   | Line(s) | Violation                                                               | Fix                         |
+| -------------------------------------- | ------- | ----------------------------------------------------------------------- | --------------------------- |
+| `navigation/side-nav/side-nav-bar.tsx` | ~58     | `<LayoutDashboardIcon className="size-4" />` inside `SidebarMenuButton` | Remove `className="size-4"` |
+| `navigation/top-nav/top-nav-bar.tsx`   | ~284    | `<SquareTerminalIcon className="size-4" aria-hidden />` inside `Button` | Remove `className="size-4"` |
+| Any `block-ui/trigger/*.tsx`           | Varies  | Icon sizing classes inside `Button`                                     | Audit and remove            |
 
 Correct pattern:
+
 ```tsx
 // ✅ Icon inside Button — no size class, use data-icon
 <Button size="icon" aria-label="Open command palette">
@@ -258,7 +266,7 @@ export interface TopNavBarProps {
 }
 
 // Usage — explicit opt-outs only:
-<TopNavBar features={{ mobileDrawer: false, sidebarTrigger: true }} />
+;<TopNavBar features={{ mobileDrawer: false, sidebarTrigger: true }} />
 ```
 
 This reduces the API surface, preserves defaults, and satisfies the shadcn composition-over-configuration principle. Implement incrementally — the existing prop API is still valid while refactoring.
@@ -270,14 +278,37 @@ The create-action list (invoice, customer, sale, employee) is hard-coded inside 
 ```tsx
 // apps/web/src/share/components/navigation/nav-catalog/use-create-actions.ts
 export function useCreateActions(): CreateAction[] {
-  const { t } = useTranslation('shell')
-  return useMemo(() => [
-    { id: 'create-invoice', label: t('create.invoice'), to: '/app/invoices/new', icon: FileTextIcon },
-    { id: 'create-customer', label: t('create.customer'), to: '/app/customers/new', icon: UsersIcon },
-    { id: 'create-sale', label: t('create.sale'), to: '/app/sales/new', icon: ShoppingCartIcon },
-    { id: 'create-sep-after-sales', separator: true },
-    { id: 'create-employee', label: t('create.employee'), to: '/app/employees/new', icon: UserCogIcon },
-  ], [t])
+  const { t } = useTranslation("shell")
+  return useMemo(
+    () => [
+      {
+        id: "create-invoice",
+        label: t("create.invoice"),
+        to: "/app/invoices/new",
+        icon: FileTextIcon,
+      },
+      {
+        id: "create-customer",
+        label: t("create.customer"),
+        to: "/app/customers/new",
+        icon: UsersIcon,
+      },
+      {
+        id: "create-sale",
+        label: t("create.sale"),
+        to: "/app/sales/new",
+        icon: ShoppingCartIcon,
+      },
+      { id: "create-sep-after-sales", separator: true },
+      {
+        id: "create-employee",
+        label: t("create.employee"),
+        to: "/app/employees/new",
+        icon: UserCogIcon,
+      },
+    ],
+    [t]
+  )
 }
 ```
 
@@ -301,14 +332,14 @@ All hits must be replaced with semantic tokens (`bg-primary`, `bg-destructive`, 
 
 ### Enterprise Quality Gate: Phase 5
 
-| Check | Criterion |
-| ----- | --------- |
-| shadcn icon rule | Zero `className="size-*"` on icons inside shadcn primitives |
-| shadcn color rule | Zero raw color utilities (`bg-blue-*`, `text-gray-*`, etc.) in product UI |
-| shadcn spacing rule | Zero `space-y-*` / `space-x-*` in component files |
-| `TopNavBar` API surface | ≤ 8 distinct props; feature toggles behind `features?: TopNavFeatures` |
-| Accessibility | All `Button` icon-only triggers have `aria-label`; all Dialog/Sheet/Drawer have title |
-| Tests | Navigation smoke tests + `useNavItems` / `useActionBar` hook tests passing |
+| Check                   | Criterion                                                                             |
+| ----------------------- | ------------------------------------------------------------------------------------- |
+| shadcn icon rule        | Zero `className="size-*"` on icons inside shadcn primitives                           |
+| shadcn color rule       | Zero raw color utilities (`bg-blue-*`, `text-gray-*`, etc.) in product UI             |
+| shadcn spacing rule     | Zero `space-y-*` / `space-x-*` in component files                                     |
+| `TopNavBar` API surface | ≤ 8 distinct props; feature toggles behind `features?: TopNavFeatures`                |
+| Accessibility           | All `Button` icon-only triggers have `aria-label`; all Dialog/Sheet/Drawer have title |
+| Tests                   | Navigation smoke tests + `useNavItems` / `useActionBar` hook tests passing            |
 
 ---
 
@@ -328,17 +359,17 @@ pnpm run build
 
 Run `pnpm --filter @afenda/web build` with `mode=analyze` or inspect `dist/stats.html`:
 
-| Chunk | Target | Notes |
-| ----- | ------ | ----- |
-| `vendor-react` | < 160 KB gzip | `react` + `react-dom` |
-| `vendor-react-dom` | included above | split by `manualChunks` |
-| `ui` (Radix) | < 150 KB gzip | `@radix-ui/*` |
-| `router` | < 30 KB gzip | `react-router-dom` |
-| `polyfills` | < 60 KB gzip | `core-js` + `regenerator-runtime` |
-| `vendor` (catch-all) | < 200 KB gzip | remaining `node_modules` |
-| Total initial JS (non-polyfill) | **< 400 KB gzip** | hard gate |
+| Chunk                           | Target            | Notes                                                                                   |
+| ------------------------------- | ----------------- | --------------------------------------------------------------------------------------- |
+| `vendor-react`                  | < 200 KB gzip     | `react` + `react-dom` + `scheduler` (single manual chunk)                               |
+| `vendor`                        | (see stats)       | Radix and other `node_modules` (no separate Radix chunk — avoids circular chunk graphs) |
+| `router`                        | < 30 KB gzip      | `react-router-dom`                                                                      |
+| `polyfills`                     | < 60 KB gzip      | `core-js` + `regenerator-runtime`                                                       |
+| `vendor` (catch-all)            | < 200 KB gzip     | remaining `node_modules`                                                                |
+| Total initial JS (non-polyfill) | **< 400 KB gzip** | hard gate                                                                               |
 
 Measure with:
+
 ```bash
 pnpm --filter @afenda/web build -- --mode analyze
 # Then open apps/web/dist/stats.html
@@ -346,37 +377,37 @@ pnpm --filter @afenda/web build -- --mode analyze
 
 ### Performance Benchmarks
 
-| Metric | Target | Tool |
-| ------ | ------ | ---- |
-| First Contentful Paint (prod) | < 1.5 s on fast 3G | Lighthouse |
-| Largest Contentful Paint (prod) | < 2.5 s on fast 3G | Lighthouse |
-| Total Blocking Time | < 200 ms | Lighthouse |
-| Cumulative Layout Shift | < 0.1 | Lighthouse |
-| Sidebar open/close frame budget | < 16 ms (60 fps) | React DevTools Profiler |
+| Metric                          | Target             | Tool                    |
+| ------------------------------- | ------------------ | ----------------------- |
+| First Contentful Paint (prod)   | < 1.5 s on fast 3G | Lighthouse              |
+| Largest Contentful Paint (prod) | < 2.5 s on fast 3G | Lighthouse              |
+| Total Blocking Time             | < 200 ms           | Lighthouse              |
+| Cumulative Layout Shift         | < 0.1              | Lighthouse              |
+| Sidebar open/close frame budget | < 16 ms (60 fps)   | React DevTools Profiler |
 
 ### Accessibility Benchmarks
 
-| Check | Target | Tool |
-| ----- | ------ | ---- |
-| WCAG 2.1 AA violations | 0 | Axe / Lighthouse |
-| Keyboard navigation | All interactive elements reachable | Manual + `@testing-library/user-event` |
-| Screen reader announcements | Live regions for alerts / notifications | Manual |
-| Colour contrast ratio | ≥ 4.5:1 for normal text | Lighthouse / Browser DevTools |
+| Check                       | Target                                  | Tool                                   |
+| --------------------------- | --------------------------------------- | -------------------------------------- |
+| WCAG 2.1 AA violations      | 0                                       | Axe / Lighthouse                       |
+| Keyboard navigation         | All interactive elements reachable      | Manual + `@testing-library/user-event` |
+| Screen reader announcements | Live regions for alerts / notifications | Manual                                 |
+| Colour contrast ratio       | ≥ 4.5:1 for normal text                 | Lighthouse / Browser DevTools          |
 
 ### Code Quality Benchmarks
 
-| Metric | Gate |
-| ------ | ---- |
-| TypeScript errors | 0 |
-| ESLint errors | 0 |
-| ESLint warnings | 0 |
-| `any` type usage (unvetted) | 0 new instances |
-| `'use client'` directives in `packages/shadcn-ui-deprecated` | 0 |
-| `tailwindcss-animate` imports | 0 (use `tw-animate-css`) |
-| Raw color classes in ERP UI | 0 |
-| CSS Modules in `apps/web` | 0 |
-| `tailwind.config.ts` present | Must not exist |
-| `postcss.config.js` in `apps/web` | Must not exist |
+| Metric                                                       | Gate                     |
+| ------------------------------------------------------------ | ------------------------ |
+| TypeScript errors                                            | 0                        |
+| ESLint errors                                                | 0                        |
+| ESLint warnings                                              | 0                        |
+| `any` type usage (unvetted)                                  | 0 new instances          |
+| `'use client'` directives in `packages/shadcn-ui-deprecated` | 0                        |
+| `tailwindcss-animate` imports                                | 0 (use `tw-animate-css`) |
+| Raw color classes in ERP UI                                  | 0                        |
+| CSS Modules in `apps/web`                                    | 0                        |
+| `tailwind.config.ts` present                                 | Must not exist           |
+| `postcss.config.js` in `apps/web`                            | Must not exist           |
 
 ### Acceptance Criteria (Full Sign-off)
 

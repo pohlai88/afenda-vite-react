@@ -1,4 +1,11 @@
 /// <reference types="vitest/config" />
+/**
+ * Build hygiene (see also `package.json` scripts):
+ * - **Rollup circular chunk warnings** — avoided by not splitting `@radix-ui` into its own chunk and by
+ *   keeping `react`, `react-dom`, and `scheduler` in one `vendor-react` manual chunk.
+ * - **Node `ExperimentalWarning` (WASI)** — Tailwind/Lightning CSS can load WASM; Node 22 prints a harmless
+ *   warning. Scripts invoke Vite/Vitest via `node --disable-warning=ExperimentalWarning …` so CI logs stay clean.
+ */
 import { getAfendaVitestTestOptions } from "@afenda/vitest-config/vitest/defaults"
 import { DevTools } from "@vitejs/devtools"
 import {
@@ -165,22 +172,23 @@ async function resolveUserConfig({
       // Rollup options
       rollupOptions: {
         output: {
-          // Manual chunks for better caching
+          // Manual chunks: keep splits that rarely change together (router, polyfills, React core).
+          // Do not isolate @radix-ui into its own chunk — it shares edges with react/react-dom and
+          // the catch-all vendor bucket, which produced Rollup "Circular chunk" warnings.
+          // Merge react + react-dom + scheduler into one chunk to avoid react <-> react-dom cycles.
           manualChunks: (id: string) => {
             if (!id.includes("node_modules")) return
             if (id.includes("react-router")) {
               return "router"
             }
-            if (id.includes("@radix-ui")) {
-              return "ui"
-            }
             if (id.includes("core-js") || id.includes("regenerator-runtime")) {
               return "polyfills"
             }
-            if (id.includes("node_modules/react-dom/")) {
-              return "vendor-react-dom"
-            }
-            if (id.includes("node_modules/react/")) {
+            if (
+              id.includes("node_modules/react-dom") ||
+              id.includes("node_modules/react/") ||
+              id.includes("node_modules/scheduler")
+            ) {
               return "vendor-react"
             }
             return "vendor"
