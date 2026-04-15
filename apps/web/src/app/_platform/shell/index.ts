@@ -119,6 +119,7 @@ export {
   ShellContentBlock,
   type ShellContentBlockProps,
 } from "./components/shell-content-block"
+export { ShellTenantScopeBanner } from "./components/shell-tenant-scope-banner"
 export {
   ShellScopeLineageBar,
   ShellTopNav,

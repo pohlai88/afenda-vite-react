@@ -30,14 +30,14 @@ export function OperationalSignalGrid({ feature }: OperationalSignalGridProps) {
   return (
     <section
       aria-label="Operational assurance"
-      className="grid gap-3 lg:grid-cols-3"
+      className="grid gap-[0.75rem] lg:grid-cols-3"
     >
       {SIGNALS.map((signal) => {
         const Icon = signal.icon
 
         return (
-          <article className="ui-density-panel p-4" key={signal.title}>
-            <div className="flex min-w-0 items-start gap-3">
+          <article className="ui-density-panel p-[1rem]" key={signal.title}>
+            <div className="flex min-w-0 items-start gap-[0.75rem]">
               <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-info/35 bg-info/10 text-info">
                 <Icon className="size-4" aria-hidden />
               </span>

@@ -1,14 +1,14 @@
 import type { DatabaseClient } from "../../client"
 
-import { resolveAfendaMeContext } from "./resolve-afenda-me-context"
+import { resolveAfendaMeContextFromBetterAuthUserId } from "./resolve-afenda-me-context"
 
-/** Returns whether the Afenda user for `email` has an active membership in `tenantId`. */
+/** Returns whether the bridged Afenda user has an active membership in `tenantId`. */
 export async function assertUserHasTenantAccess(
   db: DatabaseClient,
-  email: string | null | undefined,
+  betterAuthUserId: string,
   tenantId: string
 ): Promise<boolean> {
-  const ctx = await resolveAfendaMeContext(db, email)
+  const ctx = await resolveAfendaMeContextFromBetterAuthUserId(db, betterAuthUserId)
   if (!ctx) {
     return false
   }

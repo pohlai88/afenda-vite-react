@@ -79,14 +79,14 @@ export function ShellTopNavTools({
 }: ShellTopNavToolsProps) {
   return (
     <div
-      className={cn("flex shrink-0 items-center gap-1.5 sm:gap-2", className)}
+      className={cn("flex shrink-0 items-center gap-[0.375rem] sm:gap-[0.5rem]", className)}
     >
-      <div className="flex items-center gap-1.5">{connectSlot}</div>
+      <div className="flex items-center gap-[0.375rem]">{connectSlot}</div>
       {trustBeacon ? (
-        <div className="flex items-center gap-1.5">{trustBeacon}</div>
+        <div className="flex items-center gap-[0.375rem]">{trustBeacon}</div>
       ) : null}
-      <span className="h-5 w-px shrink-0 bg-border-muted" aria-hidden />
-      <div className="flex items-center gap-1.5">
+      <span className="h-[1.25rem] w-px shrink-0 bg-border-muted" aria-hidden />
+      <div className="flex items-center gap-[0.375rem]">
         <ShellTopNavIconTool label={feedbackLabel}>
           <MessageSquareMore className="size-4" strokeWidth={1.5} />
         </ShellTopNavIconTool>
@@ -103,8 +103,8 @@ export function ShellTopNavTools({
           </>
         </ShellTopNavIconTool>
       </div>
-      <span className="h-5 w-px shrink-0 bg-border-muted" aria-hidden />
-      <div className="flex items-center gap-1.5">
+      <span className="h-[1.25rem] w-px shrink-0 bg-border-muted" aria-hidden />
+      <div className="flex items-center gap-[0.375rem]">
         <ShellTopNavIconTool label={terminalLabel}>
           <SquareTerminal className="size-4" strokeWidth={1.5} />
         </ShellTopNavIconTool>
@@ -114,11 +114,11 @@ export function ShellTopNavTools({
       </div>
       {workspaceSlot ? (
         <>
-          <span className="h-5 w-px shrink-0 bg-border-muted" aria-hidden />
-          <div className="flex items-center gap-1.5">{workspaceSlot}</div>
+          <span className="h-[1.25rem] w-px shrink-0 bg-border-muted" aria-hidden />
+          <div className="flex items-center gap-[0.375rem]">{workspaceSlot}</div>
         </>
       ) : null}
-      <span className="h-5 w-px shrink-0 bg-border-muted" aria-hidden />
+      <span className="h-[1.25rem] w-px shrink-0 bg-border-muted" aria-hidden />
       {userMenu}
     </div>
   )

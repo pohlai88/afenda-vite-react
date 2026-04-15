@@ -20,7 +20,7 @@ export function PlatformCapabilityBoundary({
     return (
       <section
         aria-live="polite"
-        className="rounded-md border border-border p-4"
+        className="rounded-md border border-border p-[1rem]"
       >
         <h2 className="text-base font-semibold">{capability.contract.title}</h2>
         <p className="text-sm text-muted-foreground">{capability.message}</p>
@@ -31,10 +31,10 @@ export function PlatformCapabilityBoundary({
   return (
     <section
       aria-label={capability.contract.title}
-      className="rounded-md border border-border p-4"
+      className="rounded-md border border-border p-[1rem]"
       data-platform-capability={capability.contract.id}
     >
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-[0.5rem]">
         <h2 className="text-base font-semibold">{capability.contract.title}</h2>
         <span className="rounded-md border border-border px-2 py-1 text-xs text-muted-foreground">
           {formatPlatformCapabilityStatus(capability.contract.status)}

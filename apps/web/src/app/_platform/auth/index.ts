@@ -1,49 +1,54 @@
-import { authClient } from "./auth-client"
-
-export { AuthChallengeCanvas } from "./auth-challenge-canvas"
-export { AuthCommandShell } from "./auth-command-shell"
-export { IdentityIntelligenceHud } from "./identity-intelligence-hud"
-export { MarketingAuthShell } from "./marketing-auth-shell"
-export { RequireAuth } from "./require-auth"
-export { SessionContinuityPanel } from "./session-continuity-panel"
-
-export { authClient }
+export { authClient, useAfendaSession } from "./auth-client"
 export {
   authAppCallbackUrl,
   authPasswordResetRedirectUrl,
   authPostLoginPath,
 } from "./auth-redirect-urls"
+
+export { AUTH_ROUTES } from "./auth-paths"
+
+export { RequireAuth } from "./guards/require-auth"
+export { RequireGuest } from "./guards/require-guest"
+
+export { RouteAuthLogin } from "./routes/route-auth-login"
+export { RouteAuthRegister } from "./routes/route-auth-register"
+export { RouteAuthForgotPassword } from "./routes/route-auth-forgot-password"
+export { RouteAuthResetPassword } from "./routes/route-auth-reset-password"
+export { RouteAuthCallback } from "./routes/route-auth-callback"
+
 export { useAuthIntelligence } from "./hooks/use-auth-intelligence"
 export { useAuthSessions } from "./hooks/use-auth-sessions"
-export {
-  authFlowQueryToString,
-  authFlowReducer,
-  authFlowStateToQuery,
-  createInitialAuthFlowState,
-} from "./services/auth-flow-orchestrator"
-export {
-  fetchAuthIntelligenceSnapshot,
-  fetchAuthSessionsPayload,
-  resolveAuthErrorCode,
-  revokeAuthSession,
-  verifyAuthChallenge,
-} from "./services/auth-ecosystem-service"
+
 export type {
-  AuthApiEnvelope,
-  AuthApiErrorEnvelope,
+  AuthTrustLevel,
+  AuthRiskReasonSeverity,
+  AuthRiskReason,
+  AuthRecommendedMethod,
+  AuthIntelligenceSnapshot,
+  AuthChallengeType,
+  AuthSessionRisk,
+  AuthSessionItem,
+  AuthSessionsPayload,
+} from "./contracts/auth-domain"
+
+export type {
   AuthApiMeta,
   AuthApiSuccessEnvelope,
-  AuthChallengeState,
-  AuthChallengeType,
-  AuthIntelligenceSnapshot,
-  AuthRecommendedMethod,
-  AuthRiskReason,
-  AuthRiskReasonSeverity,
-  AuthSessionItem,
-  AuthSessionRisk,
-  AuthSessionsPayload,
-  AuthTrustLevel,
-} from "./types/auth-ecosystem"
+  AuthApiErrorEnvelope,
+  AuthApiEnvelope,
+} from "./contracts/auth-api"
 
-/** Same reactive session hook as `authClient.useSession` — stable export for route guards and chrome. */
-export const useAfendaSession = authClient.useSession
+export type { AuthReturnTarget } from "./contracts/auth-return-target"
+export type {
+  AuthChallengeMethod,
+  AuthChallengeTicket,
+  AuthChallengePrompt,
+  AuthChallengeStartPayload,
+  AuthChallengeVerifyPayload,
+} from "./contracts/auth-challenge-ticket"
+export type {
+  AuthContinuityViewModel,
+  AuthIntelligenceResource,
+  AuthMessageTone,
+  AuthStatusMessageViewModel,
+} from "./contracts/auth-view-model"

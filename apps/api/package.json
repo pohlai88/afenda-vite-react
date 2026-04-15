@@ -19,12 +19,16 @@
     "@afenda/env-loader": "workspace:*",
     "@afenda/better-auth": "workspace:*",
     "@afenda/database": "workspace:*",
+    "drizzle-orm": "catalog:",
     "@hono/node-server": "^1.14.1",
-    "hono": "^4.7.4"
+    "hono": "^4.7.4",
+    "pg": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@afenda/tsconfig": "workspace:*",
     "@afenda/vitest-config": "workspace:*",
+    "@types/pg": "catalog:",
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "tsx": "catalog:",

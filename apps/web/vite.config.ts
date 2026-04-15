@@ -147,8 +147,14 @@ async function resolveUserConfig({
       ...devToolsPlugins,
     ],
 
-    // Path resolution — same-package imports use relative paths; workspace
-    // packages use `package.json` names (`@afenda/*`). See `tsconfig.app.json`.
+    resolve: {
+      alias: {
+        "@": path.join(configDir, "src"),
+      },
+    },
+
+    // Path resolution — `@/*` maps to `src/*` (see `tsconfig.app.json`); workspace
+    // packages use `package.json` names (`@afenda/*`).
 
     // Development server configuration
     server: {
@@ -298,8 +304,14 @@ async function resolveUserConfig({
       hmrPartialAccept: true,
     },
 
-    // Vitest — shared defaults from @afenda/vitest-config (see packages/vitest-config/src/vitest/defaults.ts)
-    test: getAfendaVitestTestOptions(),
+    // Vitest — extend shared defaults with apps/web setup (jest-dom + RTL cleanup + browser shims)
+    test: {
+      ...getAfendaVitestTestOptions(),
+      environment: "jsdom",
+      setupFiles: [path.join(configDir, "vitest.setup.ts")],
+      globals: true,
+      css: true,
+    },
   }
 }
 

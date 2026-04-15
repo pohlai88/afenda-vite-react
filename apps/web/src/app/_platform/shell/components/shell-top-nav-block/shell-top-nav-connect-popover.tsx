@@ -50,8 +50,8 @@ export function ShellTopNavConnectPopover() {
           {connectTooltip}
         </TooltipContent>
       </Tooltip>
-      <PopoverContent className="w-80 p-0" align="end">
-        <PopoverHeader className="border-b border-border p-3">
+      <PopoverContent className="w-[20rem] p-[0]" align="end">
+        <PopoverHeader className="border-b border-border p-[0.75rem]">
           <PopoverTitle>{t("top_nav.connect_title")}</PopoverTitle>
           <PopoverDescription>
             {t("top_nav.connect_description")}
@@ -73,7 +73,7 @@ export function ShellTopNavConnectPopover() {
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <div className="flex flex-col gap-2 px-3 pb-3">
+            <div className="flex flex-col gap-[0.5rem] px-3 pb-3">
               <p className="font-mono text-xs break-all text-muted-foreground">
                 {t("top_nav.connect_placeholder_url")}
               </p>

@@ -1,9 +1,9 @@
-import { eq, sql } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
+import { identityLinks } from "../../identity/schema/identity-links"
 import { tenantMemberships } from "../schema/tenant-memberships"
 import { tenants } from "../schema/tenants"
-import { users } from "../../identity/schema/users"
 
 export type AfendaMeContext = {
   afendaUserId: string
@@ -11,24 +11,22 @@ export type AfendaMeContext = {
   defaultTenantId: string | null
 }
 
-/**
- * Resolves Afenda domain user + tenant memberships from Better Auth email (same as users.email).
- */
-export async function resolveAfendaMeContext(
+export class IdentityLinkMissingError extends Error {
+  readonly code = "IDENTITY_LINK_REQUIRED" as const
+
+  constructor(
+    message: string,
+    readonly details: { betterAuthUserId: string; authProvider: string }
+  ) {
+    super(message)
+    this.name = "IdentityLinkMissingError"
+  }
+}
+
+async function loadTenantMembershipSlice(
   db: DatabaseClient,
-  email: string | null | undefined
-): Promise<AfendaMeContext | null> {
-  const normalized = email?.trim().toLowerCase()
-  if (!normalized) return null
-
-  const [row] = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(sql`lower(${users.email}) = ${normalized}`)
-    .limit(1)
-
-  if (!row) return null
-
+  afendaUserId: string
+): Promise<Pick<AfendaMeContext, "tenantIds" | "defaultTenantId">> {
   const memberships = await db
     .select({
       tenantId: tenantMemberships.tenantId,
@@ -37,15 +35,71 @@ export async function resolveAfendaMeContext(
     })
     .from(tenantMemberships)
     .innerJoin(tenants, eq(tenantMemberships.tenantId, tenants.id))
-    .where(eq(tenantMemberships.userId, row.id))
+    .where(eq(tenantMemberships.userId, afendaUserId))
 
   const tenantIds = memberships
     .filter((m) => m.status === "active" && m.tenantStatus === "active")
     .map((m) => m.tenantId)
 
   return {
-    afendaUserId: row.id,
     tenantIds,
     defaultTenantId: tenantIds[0] ?? null,
   }
+}
+
+/**
+ * Runtime resolution: **`better_auth_user_id` → `identity_links` → Afenda user → memberships** (ADR-0004).
+ * No email fallback — missing link is invalid for authenticated API use.
+ */
+export async function resolveAfendaMeContextFromBetterAuthUserId(
+  db: DatabaseClient,
+  betterAuthUserId: string,
+  authProvider: string = "better-auth"
+): Promise<AfendaMeContext | null> {
+  const [link] = await db
+    .select({ afendaUserId: identityLinks.afendaUserId })
+    .from(identityLinks)
+    .where(
+      and(
+        eq(identityLinks.authProvider, authProvider),
+        eq(identityLinks.betterAuthUserId, betterAuthUserId)
+      )
+    )
+    .limit(1)
+
+  if (!link) return null
+
+  const { tenantIds, defaultTenantId } = await loadTenantMembershipSlice(
+    db,
+    link.afendaUserId
+  )
+
+  return {
+    afendaUserId: link.afendaUserId,
+    tenantIds,
+    defaultTenantId,
+  }
+}
+
+/**
+ * Same as {@link resolveAfendaMeContextFromBetterAuthUserId} but **throws** {@link IdentityLinkMissingError}
+ * when no `identity_links` row exists — use on protected routes that require a bridged principal.
+ */
+export async function requireAfendaMeContextFromBetterAuthUserId(
+  db: DatabaseClient,
+  betterAuthUserId: string,
+  authProvider: string = "better-auth"
+): Promise<AfendaMeContext> {
+  const ctx = await resolveAfendaMeContextFromBetterAuthUserId(
+    db,
+    betterAuthUserId,
+    authProvider
+  )
+  if (!ctx) {
+    throw new IdentityLinkMissingError(
+      "No identity_links row for this Better Auth user; bootstrap or sign-up must create the bridge.",
+      { betterAuthUserId, authProvider }
+    )
+  }
+  return ctx
 }

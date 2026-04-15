@@ -47,7 +47,7 @@ export function ShellUserMenuSecurityPanel() {
   return (
     <>
       <DropdownMenuItem
-        className="gap-2"
+        className="gap-[0.5rem]"
         onSelect={(event) => {
           event.preventDefault()
           closeMobileSidebar()
@@ -71,7 +71,7 @@ export function ShellUserMenuSecurityPanel() {
           </SheetHeader>
 
           <div className="space-y-4 px-4 pb-4">
-            <section className="rounded-xl border border-border-muted bg-card/55 p-3">
+            <section className="rounded-xl border border-border-muted bg-card/55 p-[0.75rem]">
               <p className="text-xs text-muted-foreground">
                 {t("auth_security.trust_label")}
               </p>
@@ -84,7 +84,7 @@ export function ShellUserMenuSecurityPanel() {
             </section>
 
             <section className="space-y-2">
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-[0.5rem]">
                 <p className="text-sm font-semibold">
                   {t("auth_security.sessions_title")}
                 </p>
@@ -103,9 +103,9 @@ export function ShellUserMenuSecurityPanel() {
                 {(sessions.data?.sessions ?? []).map((session) => (
                   <article
                     key={session.id}
-                    className="rounded-lg border border-border-muted bg-card/60 p-3"
+                    className="rounded-lg border border-border-muted bg-card/60 p-[0.75rem]"
                   >
-                    <div className="mb-1 flex items-center justify-between gap-3">
+                    <div className="mb-1 flex items-center justify-between gap-[0.75rem]">
                       <p className="truncate text-sm font-medium">
                         {session.device}
                       </p>
@@ -138,7 +138,7 @@ export function ShellUserMenuSecurityPanel() {
               </div>
             </section>
 
-            <section className="space-y-2 rounded-xl border border-border-muted bg-card/55 p-3">
+            <section className="space-y-2 rounded-xl border border-border-muted bg-card/55 p-[0.75rem]">
               <p className="text-sm font-semibold">
                 {t("auth_security.factors_title")}
               </p>
@@ -170,8 +170,8 @@ export function ShellUserMenuSecurityPanel() {
               </ul>
             </section>
 
-            <section className="space-y-2 rounded-xl border border-border-muted bg-card/55 p-3">
-              <p className="flex items-center gap-2 text-sm font-semibold">
+            <section className="space-y-2 rounded-xl border border-border-muted bg-card/55 p-[0.75rem]">
+              <p className="flex items-center gap-[0.5rem] text-sm font-semibold">
                 <ShieldAlert
                   className="size-4 text-muted-foreground"
                   aria-hidden

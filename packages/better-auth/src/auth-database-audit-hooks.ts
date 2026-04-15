@@ -1,6 +1,7 @@
 import {
+  ensureIdentityLinkForBetterAuthUser,
   insertGovernedAuditLog,
-  resolveAfendaMeContext,
+  resolveAfendaMeContextFromBetterAuthUserId,
   type AuditActionKey,
   type DatabaseClient,
 } from "@afenda/database"
@@ -28,42 +29,35 @@ function resolveAuditDeploymentEnvironment(): "production" | "dev" {
   return process.env.NODE_ENV === "production" ? "production" : "dev"
 }
 
-/**
- * Loads Better Auth `user.email` by primary key so we can match Afenda `users.email`
- * (see {@link resolveAfendaMeContext}).
- */
-export async function loadBetterAuthUserEmail(
-  pool: Pool,
-  betterAuthUserId: string
-): Promise<string | null> {
-  const r = await pool.query<{ email: string }>(
-    `select "email" from "user" where "id" = $1 limit 1`,
-    [betterAuthUserId]
-  )
-  const email = r.rows[0]?.email?.trim()
-  return email && email.length > 0 ? email : null
-}
-
 async function resolveTenantAndActor(
-  pool: Pool,
+  _pool: Pool,
   db: DatabaseClient,
   betterAuthUserId: string | null
 ): Promise<{ tenantId: string | null; actorUserId: string | null }> {
   if (!betterAuthUserId) {
     return { tenantId: resolveAuthAuditFallbackTenantId(), actorUserId: null }
   }
-  const email = await loadBetterAuthUserEmail(pool, betterAuthUserId)
-  if (!email) {
+
+  const bridge = await resolveAfendaMeContextFromBetterAuthUserId(
+    db,
+    betterAuthUserId
+  )
+  if (bridge) {
     return {
-      tenantId: resolveAuthAuditFallbackTenantId(),
-      actorUserId: null,
+      tenantId:
+        bridge.defaultTenantId ?? resolveAuthAuditFallbackTenantId(),
+      actorUserId: bridge.afendaUserId,
     }
   }
-  const ctx = await resolveAfendaMeContext(db, email)
-  const tenantId = ctx?.defaultTenantId ?? resolveAuthAuditFallbackTenantId()
+
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(
+      "[afenda/auth] Security audit skipped: no identity_links row for Better Auth user (actor unknown). Sign-up bootstrap must create the bridge."
+    )
+  }
   return {
-    tenantId,
-    actorUserId: ctx?.afendaUserId ?? null,
+    tenantId: resolveAuthAuditFallbackTenantId(),
+    actorUserId: null,
   }
 }
 
@@ -102,6 +96,8 @@ export async function emitAfendaAuthSecurityAudit(
       tenantId,
       actorType: input.betterAuthUserId ? "person" : "system",
       actorUserId: actorUserId ?? undefined,
+      /** Governed column for Better Auth user id; keeps `metadata.betterAuthUserId` during transition. */
+      authUserId: input.betterAuthUserId ?? undefined,
       action: input.action,
       subjectType: input.subjectType,
       subjectId: input.subjectId ?? undefined,
@@ -166,6 +162,27 @@ export function createAfendaDatabaseAuthHooks(
       },
     },
     user: {
+      create: {
+        after: async (created: UserRow) => {
+          const email = created.email?.trim()
+          if (!email) {
+            if (process.env.NODE_ENV !== "production") {
+              console.warn(
+                "[afenda/auth] identity bootstrap skipped: Better Auth user has no email"
+              )
+            }
+            return
+          }
+          try {
+            await ensureIdentityLinkForBetterAuthUser(db, {
+              betterAuthUserId: created.id,
+              email,
+            })
+          } catch (e) {
+            console.error("[afenda/auth] identity bootstrap failed", e)
+          }
+        },
+      },
       update: {
         after: async (updated: UserRow) => {
           await emitAfendaAuthSecurityAudit(pool, db, {

@@ -1,10 +1,13 @@
 export {
   createAfendaDatabaseAuthHooks,
   emitAfendaAuthSecurityAudit,
-  loadBetterAuthUserEmail,
 } from "./auth-database-audit-hooks.js"
 export type { AfendaAuthSecurityAuditAction } from "./auth-database-audit-hooks.js"
 export { createAfendaAuth } from "./create-afenda-auth.js"
+export {
+  setSessionOperatingContext,
+  type SetSessionOperatingContextInput,
+} from "./set-session-operating-context.js"
 export { resolveAfendaAuthCapabilityHooks } from "./create-afenda-auth.js"
 export type { AfendaAuthCapabilityHooks } from "./create-afenda-auth.js"
 

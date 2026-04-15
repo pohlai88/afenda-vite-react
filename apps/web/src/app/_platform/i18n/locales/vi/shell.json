@@ -205,6 +205,35 @@
     "empty": {
       "default_title": "Chưa có dữ liệu",
       "default_description": "Không có mục nào để hiển thị. Điều chỉnh bộ lọc hoặc thử lại sau."
+    },
+    "tenant_scope": {
+      "hint_status": "HTTP {{status}}",
+      "retry": "Thử lại",
+      "sign_out": "Đăng xuất",
+      "api_session": {
+        "title": "Phiên API không được chấp nhận",
+        "body": "Phiên trình duyệt không khớp với API (HTTP {{status}}). Khi dev cục bộ, hãy để trống VITE_BETTER_AUTH_BASE_URL để Better Auth dùng /api/auth cùng origin, và chạy pnpm --filter @afenda/api dev. Cookie Neon Auth từ xa không gửi tới localhost."
+      },
+      "identity_bridge": {
+        "title": "Thiếu cầu nối định danh",
+        "body": "Không có identity link Afenda cho tài khoản này (HTTP {{status}}). Hook đăng ký phải dùng cùng DATABASE_URL với apps/api và phải có identity_links (ADR-0004)."
+      },
+      "forbidden": {
+        "title": "Truy cập bị từ chối",
+        "body": "API từ chối yêu cầu này (HTTP {{status}}) vì lý do khác cầu nối định danh. Kiểm tra vai trò, quyền tenant, hoặc nhật ký máy chủ."
+      },
+      "api_unavailable": {
+        "title": "API không khả dụng",
+        "body": "BFF trả về HTTP {{status}}. Hãy chạy @afenda/api trên cổng Vite proxy (mặc định 3001). Nếu terminal Vite báo ECONNREFUSED, tiến trình API không chạy."
+      },
+      "network": {
+        "title": "Không kết nối được API",
+        "body": "Lỗi mạng hoặc hết thời gian — API có thể đã dừng, không tới được hoặc chậm. Chạy pnpm --filter @afenda/api dev và kiểm tra mục tiêu proxy của dev server (VITE_API_URL)."
+      },
+      "unknown": {
+        "title": "Không tải được phạm vi workspace",
+        "body": "Không thể tải phạm vi tenant (HTTP {{status}}). Thử lại, đăng xuất, hoặc kiểm tra DATABASE_URL và cấu hình Better Auth."
+      }
     }
   },
   "language": {

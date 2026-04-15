@@ -44,11 +44,13 @@
   "css.lint.unknownAtRules": "ignore",
 
   "tailwindCSS.experimental.configFile": {
-    "apps/web/src/index.css": "apps/web/**"
+    "apps/web/src/index.css": "apps/web/**",
+    "packages/design-system/design-architecture/src/local.css": "packages/design-system/**"
   },
 
   "files.associations": {
-    "**/apps/web/src/index.css": "tailwindcss"
+    "**/apps/web/src/index.css": "tailwindcss",
+    "**/packages/design-system/design-architecture/src/**/*.css": "tailwindcss"
   },
 
   "files.eol": "\n",

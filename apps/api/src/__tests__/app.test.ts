@@ -66,10 +66,65 @@ describe("createApp", () => {
     const body = (await res.json()) as {
       error: { code: string }
     }
-    expect(body.error.code).toBe("auth.sessions.invalid_id")
+    expect(body.error.code).toBe("auth.sessions.revoke.invalid_body")
   })
 
-  it("POST /v1/auth/challenge/verify rejects disabled passkey challenge", async () => {
+  it("POST /v1/auth/challenge/start rejects passkey when disabled", async () => {
+    const prev = process.env.AFENDA_AUTH_PASSKEY_ENABLED
+    process.env.AFENDA_AUTH_PASSKEY_ENABLED = "false"
+    try {
+      const app = createApp({} as never, authStub)
+      const res = await app.request("/v1/auth/challenge/start", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          method: "passkey",
+        }),
+        headers: { "content-type": "application/json" },
+      })
+      expect(res.status).toBe(400)
+      const body = (await res.json()) as {
+        error: { code: string }
+      }
+      expect(body.error.code).toBe("auth.challenge.passkey_disabled")
+    } finally {
+      process.env.AFENDA_AUTH_PASSKEY_ENABLED = prev
+    }
+  })
+
+  it("POST /v1/auth/challenge/start then verify succeeds for totp (opaque ticket)", async () => {
+    const app = createApp({} as never, authStub)
+    const start = await app.request("/v1/auth/challenge/start", {
+      method: "POST",
+      body: JSON.stringify({
+        email: "user@example.com",
+        method: "totp",
+      }),
+      headers: { "content-type": "application/json" },
+    })
+    expect(start.status).toBe(200)
+    const started = (await start.json()) as {
+      data: {
+        ticket: { challengeId: string; method: string }
+      }
+    }
+    const verify = await app.request("/v1/auth/challenge/verify", {
+      method: "POST",
+      body: JSON.stringify({
+        challengeId: started.data.ticket.challengeId,
+        method: "totp",
+      }),
+      headers: { "content-type": "application/json" },
+    })
+    expect(verify.status).toBe(200)
+    const out = (await verify.json()) as {
+      data: { verified: boolean; receipt: string[] }
+    }
+    expect(out.data.verified).toBe(true)
+    expect(out.data.receipt.length).toBeGreaterThan(0)
+  })
+
+  it("POST /v1/auth/challenge/verify rejects passkey when disabled", async () => {
     const prev = process.env.AFENDA_AUTH_PASSKEY_ENABLED
     process.env.AFENDA_AUTH_PASSKEY_ENABLED = "false"
     try {
@@ -77,10 +132,8 @@ describe("createApp", () => {
       const res = await app.request("/v1/auth/challenge/verify", {
         method: "POST",
         body: JSON.stringify({
-          challengeId: "pk_test",
-          type: "passkey_assertion",
-          expiresAt: new Date(Date.now() + 60_000).toISOString(),
-          attemptsRemaining: 3,
+          challengeId: "chlg_nonexistent",
+          method: "passkey",
         }),
         headers: { "content-type": "application/json" },
       })

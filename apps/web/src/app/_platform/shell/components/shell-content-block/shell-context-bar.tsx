@@ -47,10 +47,10 @@ function ShellContextBarTab({
   onCommandAction: (commandId: string) => void
 }) {
   const baseClassName = cn(
-    "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border-b-2 border-transparent px-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/45 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none",
+    "inline-flex h-[2rem] shrink-0 items-center gap-[0.375rem] rounded-md border-b-2 border-transparent px-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/45 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none",
     tab.isActive && "border-primary text-foreground",
     tab.disabled && "pointer-events-none opacity-50",
-    compact && "h-7 px-2 text-xs"
+    compact && "h-[1.75rem] px-2 text-xs"
   )
 
   if (tab.kind === "link" && tab.to) {
@@ -64,7 +64,7 @@ function ShellContextBarTab({
         {tab.badgeCount !== undefined ? (
           <Badge
             variant="outline"
-            className="h-4 rounded-full px-1.5 text-[10px] leading-none"
+            className="h-[1rem] rounded-full px-1.5 text-[10px] leading-none"
           >
             {tab.badgeCount}
           </Badge>
@@ -88,7 +88,7 @@ function ShellContextBarTab({
       {tab.badgeCount !== undefined ? (
         <Badge
           variant="outline"
-          className="h-4 rounded-full px-1.5 text-[10px] leading-none"
+          className="h-[1rem] rounded-full px-1.5 text-[10px] leading-none"
         >
           {tab.badgeCount}
         </Badge>
@@ -113,7 +113,7 @@ function ShellContextBarActionMenu({
           type="button"
           variant="outline"
           size="sm"
-          className={cn("gap-1.5", compact ? "h-7" : "h-8")}
+          className={cn("gap-[0.375rem]", compact ? "h-[1.75rem]" : "h-[2rem]")}
           disabled={action.disabled}
         >
           <span className="truncate">{action.label}</span>
@@ -206,10 +206,10 @@ function ShellContextBarAction({
           action.presentation === "icon"
             ? compact
               ? "size-7 min-h-7 min-w-7"
-              : "h-8"
+              : "h-[2rem]"
             : compact
-              ? "h-7 gap-1.5"
-              : "h-8 gap-1.5"
+              ? "h-[1.75rem] gap-[0.375rem]"
+              : "h-[2rem] gap-[0.375rem]"
         )}
         disabled={action.disabled}
       >
@@ -229,10 +229,10 @@ function ShellContextBarAction({
         action.presentation === "icon"
           ? compact
             ? "size-7 min-h-7 min-w-7"
-            : "h-8"
+            : "h-[2rem]"
           : compact
-            ? "h-7 gap-1.5"
-            : "h-8 gap-1.5"
+            ? "h-[1.75rem] gap-[0.375rem]"
+            : "h-[2rem] gap-[0.375rem]"
       )}
       disabled={action.disabled || !action.commandId}
       aria-label={action.label}
@@ -280,7 +280,7 @@ function ShellContextBarFocusTabs({
           type="button"
           variant="outline"
           size="sm"
-          className="h-7 max-w-[min(100%,14rem)] gap-1 px-2"
+          className="h-[1.75rem] max-w-[min(100%,14rem)] gap-[0.25rem] px-2"
           aria-label={t("context_bar.sections_title")}
         >
           <span className="min-w-0 truncate">{activeTab.label}</span>
@@ -448,8 +448,8 @@ export function ShellContextBar({
       data-slot="shell.context-bar"
       data-focus-mode={focusMode ? "true" : undefined}
       className={cn(
-        "flex ui-shell-context-bar min-w-0 items-center justify-between gap-2 md:gap-3",
-        focusMode && "min-h-8 gap-1.5 py-0.5 md:gap-2",
+        "flex ui-shell-context-bar min-w-0 items-center justify-between gap-[0.5rem] md:gap-[0.75rem]",
+        focusMode && "min-h-8 gap-[0.375rem] py-0.5 md:gap-[0.5rem]",
         className
       )}
     >
@@ -463,7 +463,7 @@ export function ShellContextBar({
       ) : (
         <nav
           aria-label={t("context_bar.navigation_aria")}
-          className="ui-scrollbar-hidden flex min-w-0 flex-1 items-center gap-1 overflow-x-auto"
+          className="ui-scrollbar-hidden flex min-w-0 flex-1 items-center gap-[0.25rem] overflow-x-auto"
         >
           {model.tabs.map((tab, index) => {
             const showOnMobile = index < SHELL_CONTEXT_BAR_MOBILE_VISIBLE_TABS
@@ -488,7 +488,7 @@ export function ShellContextBar({
 
       <div
         className={cn(
-          "flex shrink-0 items-center gap-1.5",
+          "flex shrink-0 items-center gap-[0.375rem]",
           focusMode && "min-w-0"
         )}
       >
@@ -519,7 +519,7 @@ export function ShellContextBar({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
-                className="hidden h-8 w-8 md:inline-flex"
+                className="hidden h-[2rem] w-[2rem] md:inline-flex"
                 aria-label={t("context_bar.customize_aria")}
               >
                 <SlidersHorizontal className="size-3.5" />
@@ -566,7 +566,7 @@ export function ShellContextBar({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                className="h-8 w-8 md:hidden"
+                className="h-[2rem] w-[2rem] md:hidden"
                 aria-label={t("context_bar.more_aria")}
               >
                 <MoreHorizontal className="size-3.5" />
@@ -648,7 +648,7 @@ export function ShellContextBar({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                className="h-7 w-7 md:hidden"
+                className="h-[1.75rem] w-[1.75rem] md:hidden"
                 aria-label={t("context_bar.more_aria")}
               >
                 <MoreHorizontal className="size-3.5" />

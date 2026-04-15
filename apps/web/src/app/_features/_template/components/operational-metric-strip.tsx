@@ -49,11 +49,11 @@ export function OperationalMetricStrip({
   return (
     <section
       aria-label="Operational intelligence"
-      className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-5"
+      className="grid min-w-0 gap-[0.75rem] sm:grid-cols-2 xl:grid-cols-5"
     >
       {metrics.map((metric) => (
         <article className="ui-metric-card" key={metric.id}>
-          <div className="flex min-w-0 items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center justify-between gap-[0.75rem]">
             <p className="truncate text-sm text-muted-foreground">
               {metric.label}
             </p>

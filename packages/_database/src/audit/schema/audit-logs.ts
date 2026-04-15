@@ -25,8 +25,14 @@ import {
 } from "./audit-enums"
 
 /**
- * Append-only audit evidence (`docs/AUDIT_ARCHITECTURE.md`).
- * No `updated_at` / `deleted_at` — corrections are new rows.
+ * Audit logs — tenant-bounded evidence for human, delegated, and system actions.
+ *
+ * - **`tenantId`** is mandatory for every governed business event.
+ * - **`membershipId`** should be set for session/human-initiated mutations when known (composite FK with `tenantId` enforces tenant alignment).
+ * - **`authUserId`** / **`sessionId`** retain Better Auth boundary metadata; **ERP authority** flows from `actorUserId` / `identity_links` → `users`, not from auth ids alone.
+ * - Sketches that name **`category`** map to **`actionCategory`**; **`result`** maps to governed **`outcome`**; a single **`payload`** maps to **`changes`** / **`metadata`** JSONB; **`auth_session_id`** maps to **`session_id`**.
+ *
+ * Append-only (`docs/AUDIT_ARCHITECTURE.md`). No `updated_at` / `deleted_at` — corrections are new rows.
  */
 export const auditLogs = pgTable(
   "audit_logs",
@@ -103,7 +109,7 @@ export const auditLogs = pgTable(
     correlationId: text("correlation_id"),
     causationId: text("causation_id"),
     commandId: text("command_id"),
-    /** Auth or app session id (some specs label this `auth_session_id`). */
+    /** Better Auth / app session id (`auth_session_id` in some specs). */
     sessionId: text("session_id"),
     jobId: text("job_id"),
     batchId: text("batch_id"),
@@ -165,6 +171,21 @@ export const auditLogs = pgTable(
     index("audit_logs_tenant_created_at_idx").on(
       table.tenantId,
       table.recordedAt
+    ),
+    /** Business-time ordering (when the action occurred). */
+    index("audit_logs_tenant_occurred_at_idx").on(
+      table.tenantId,
+      table.occurredAt
+    ),
+    index("audit_logs_tenant_actor_occurred_at_idx").on(
+      table.tenantId,
+      table.actorUserId,
+      table.occurredAt
+    ),
+    index("audit_logs_tenant_membership_occurred_at_idx").on(
+      table.tenantId,
+      table.membershipId,
+      table.occurredAt
     ),
     index("audit_logs_subject_idx").on(table.subjectType, table.subjectId),
     /** Tenant-scoped subject history (time-ordered) for investigation queries. */

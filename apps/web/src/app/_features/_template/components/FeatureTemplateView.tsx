@@ -55,7 +55,7 @@ export function FeatureTemplateView({
           onOpenRecord={handleOpenRecord}
         />
         <EventTimelinePanel records={feature.records} />
-        <div className="grid min-w-0 gap-4">
+        <div className="grid min-w-0 gap-[1rem]">
           <EvidenceActionPanel
             feature={feature}
             commands={commands}

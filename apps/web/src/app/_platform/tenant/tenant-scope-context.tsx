@@ -10,13 +10,67 @@ import {
   useState,
 } from "react"
 
-import { getSharedApiClient } from "../api-client/services/api-client-service"
+import {
+  ApiClientHttpError,
+  getSharedApiClient,
+} from "../api-client/services/api-client-service"
 import { resolveApiV1Path } from "../api-client/utils/api-client-utils"
 import { useAfendaSession } from "../auth"
 
 import type { AfendaMeResponse } from "./tenant-scope-types"
 
 const STORAGE_KEY = "afenda.selectedTenantId"
+
+/** Classifies `GET /v1/me` failures for UI + i18n (`states.tenant_scope.*`). */
+export type TenantScopeErrorKind =
+  | "api_session"
+  | "identity_bridge"
+  | "forbidden"
+  | "api_unavailable"
+  | "network"
+  | "unknown"
+
+/**
+ * Maps `GET /v1/me` failures to a stable kind (and optional HTTP status for copy).
+ * @see apps/api `GET /v1/me` — 401 session, 403 `IDENTITY_LINK_REQUIRED`, 5xx proxy/API.
+ */
+function resolveTenantScopeLoadError(error: unknown): {
+  readonly kind: TenantScopeErrorKind
+  readonly httpStatus?: number
+} {
+  if (error instanceof ApiClientHttpError) {
+    const body =
+      error.body && typeof error.body === "object"
+        ? (error.body as { code?: unknown })
+        : null
+    const code = body?.code
+    if (error.status === 401) {
+      return { kind: "api_session", httpStatus: 401 }
+    }
+    if (error.status === 403 && code === "IDENTITY_LINK_REQUIRED") {
+      return { kind: "identity_bridge", httpStatus: 403 }
+    }
+    if (error.status === 403) {
+      return { kind: "forbidden", httpStatus: 403 }
+    }
+    if (error.status >= 500 || error.status === 429 || error.status === 408) {
+      return { kind: "api_unavailable", httpStatus: error.status }
+    }
+    return { kind: "unknown", httpStatus: error.status }
+  }
+  if (error instanceof Error) {
+    if (error.name === "AbortError" || /aborted|timeout/i.test(error.message)) {
+      return { kind: "network" }
+    }
+    if (
+      error.message === "Failed to fetch" ||
+      (error.name === "TypeError" && /fetch|network/i.test(error.message))
+    ) {
+      return { kind: "network" }
+    }
+  }
+  return { kind: "unknown" }
+}
 
 export type TenantScopeState =
   | { readonly status: "idle" }
@@ -27,7 +81,12 @@ export type TenantScopeState =
       readonly selectedTenantId: string | null
       readonly setSelectedTenantId: (id: string | null) => void
     }
-  | { readonly status: "error"; readonly message: string }
+  | {
+      readonly status: "error"
+      readonly kind: TenantScopeErrorKind
+      readonly httpStatus?: number
+      readonly retry: () => void
+    }
 
 const TenantScopeContext = createContext<TenantScopeState | null>(null)
 
@@ -45,7 +104,15 @@ export function TenantScopeProvider(props: { readonly children: ReactNode }) {
   const [phase, setPhase] = useState<"idle" | "loading" | "error" | "ready">(
     "idle"
   )
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState<{
+    readonly kind: TenantScopeErrorKind
+    readonly httpStatus?: number
+  } | null>(null)
+  const [retryEpoch, setRetryEpoch] = useState(0)
+
+  const retryLoad = useCallback(() => {
+    setRetryEpoch((n) => n + 1)
+  }, [])
 
   const setSelectedTenantId = useCallback((id: string | null) => {
     setSnapshot((prev) => {
@@ -70,13 +137,13 @@ export function TenantScopeProvider(props: { readonly children: ReactNode }) {
     if (!data?.session) {
       setSnapshot(null)
       setPhase("idle")
-      setErrorMessage(null)
+      setLoadError(null)
       return
     }
 
     let cancelled = false
     setPhase("loading")
-    setErrorMessage(null)
+    setLoadError(null)
 
     void (async () => {
       try {
@@ -101,25 +168,28 @@ export function TenantScopeProvider(props: { readonly children: ReactNode }) {
         if (cancelled) {
           return
         }
-        const message =
-          e instanceof Error ? e.message : "Failed to load tenant scope"
         setSnapshot(null)
         setPhase("error")
-        setErrorMessage(message)
+        setLoadError(resolveTenantScopeLoadError(e))
       }
     })()
 
     return () => {
       cancelled = true
     }
-  }, [data?.session, isPending])
+  }, [data?.session, isPending, retryEpoch])
 
   const value: TenantScopeState = useMemo(() => {
     if (phase === "loading" || (data?.session && phase === "idle")) {
       return { status: "loading" }
     }
-    if (phase === "error" && errorMessage !== null) {
-      return { status: "error", message: errorMessage }
+    if (phase === "error" && loadError !== null) {
+      return {
+        status: "error",
+        kind: loadError.kind,
+        httpStatus: loadError.httpStatus,
+        retry: retryLoad,
+      }
     }
     if (phase === "ready" && snapshot !== null) {
       return {
@@ -130,8 +200,24 @@ export function TenantScopeProvider(props: { readonly children: ReactNode }) {
       }
     }
     return { status: "idle" }
-  }, [data?.session, phase, errorMessage, snapshot, setSelectedTenantId])
+  }, [data?.session, phase, loadError, snapshot, setSelectedTenantId, retryLoad])
 
+  return (
+    <TenantScopeContext.Provider value={value}>
+      {children}
+    </TenantScopeContext.Provider>
+  )
+}
+
+/**
+ * Supplies a fixed {@link TenantScopeState} for tests and Storybook without Better Auth or `GET /v1/me`.
+ * Do not use in production routes.
+ */
+export function TenantScopeTestDoubleProvider(props: {
+  readonly value: TenantScopeState
+  readonly children: ReactNode
+}) {
+  const { value, children } = props
   return (
     <TenantScopeContext.Provider value={value}>
       {children}
@@ -145,6 +231,11 @@ export function useTenantScope(): TenantScopeState {
     throw new Error("useTenantScope must be used within TenantScopeProvider")
   }
   return ctx
+}
+
+/** Returns `null` when no {@link TenantScopeProvider} ancestor (e.g. shell tests without auth tree). */
+export function useOptionalTenantScope(): TenantScopeState | null {
+  return useContext(TenantScopeContext)
 }
 
 /**

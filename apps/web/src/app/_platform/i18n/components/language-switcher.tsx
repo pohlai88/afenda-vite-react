@@ -31,7 +31,7 @@ export function LanguageSwitcher() {
     >
       <SelectTrigger
         size="sm"
-        className="gap-1.5 border-none bg-transparent shadow-none"
+        className="gap-[0.375rem] border-none bg-transparent shadow-none"
         aria-label={t("language.label")}
       >
         <GlobeIcon className="size-4 text-muted-foreground" />

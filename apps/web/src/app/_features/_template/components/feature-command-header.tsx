@@ -53,9 +53,9 @@ export function FeatureCommandHeader({
 
   return (
     <header className="ui-command-surface px-4 py-4 md:px-5">
-      <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div className="flex min-w-0 flex-col gap-[1rem] lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-[0.625rem]">
             <p className="ui-mono-token tracking-widest text-muted-foreground uppercase">
               Workspace Command Surface
             </p>
@@ -76,7 +76,7 @@ export function FeatureCommandHeader({
             {feature.description}
           </p>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          <div className="mt-4 flex flex-wrap items-center gap-[0.5rem] text-xs text-muted-foreground">
             <span translate="no">Acme Treasury Ltd</span>
             <span aria-hidden>/</span>
             <span>Finance / Accounts payable</span>
@@ -85,13 +85,13 @@ export function FeatureCommandHeader({
           </div>
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-[0.5rem]">
           {refreshCommand ? (
             <Button
               type="button"
               size="sm"
               variant="outline"
-              className="gap-2 rounded-full border-border-muted bg-card/70 focus-visible:ring-2 focus-visible:ring-ring"
+              className="gap-[0.5rem] rounded-full border-border-muted bg-card/70 focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => onRunCommand(refreshCommand.id)}
             >
               <RefreshCw className="size-3.5" aria-hidden />
@@ -103,7 +103,7 @@ export function FeatureCommandHeader({
             <Button
               type="button"
               size="sm"
-              className="gap-2 rounded-full focus-visible:ring-2 focus-visible:ring-ring"
+              className="gap-[0.5rem] rounded-full focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => onRunCommand(exportCommand.id)}
             >
               <ArrowUpRight className="size-3.5" aria-hidden />
@@ -116,7 +116,7 @@ export function FeatureCommandHeader({
               type="button"
               size="sm"
               variant="ghost"
-              className="gap-2 rounded-full text-muted-foreground hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              className="gap-[0.5rem] rounded-full text-muted-foreground hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => onRunCommand(reviewCommand.id)}
             >
               <MoreHorizontal className="size-3.5" aria-hidden />

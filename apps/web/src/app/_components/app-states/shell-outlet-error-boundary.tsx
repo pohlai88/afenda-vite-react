@@ -69,7 +69,7 @@ export function ShellOutletErrorFallback({
       role="alert"
       aria-live="assertive"
     >
-      <div className="flex max-w-md flex-col items-center gap-4 text-center">
+      <div className="flex max-w-md flex-col items-center gap-[1rem] text-center">
         <div className="flex justify-center" aria-hidden>
           <AlertTriangle className="size-11 text-destructive" />
         </div>
@@ -81,13 +81,13 @@ export function ShellOutletErrorFallback({
         </p>
         {import.meta.env.DEV && error?.message ? (
           <pre
-            className="max-h-32 w-full overflow-auto rounded-md border border-border bg-muted p-3 text-left font-mono text-xs text-muted-foreground"
+            className="max-h-32 w-full overflow-auto rounded-md border border-border bg-muted p-[0.75rem] text-left font-mono text-xs text-muted-foreground"
             data-testid="shell-outlet-error-detail"
           >
             {error.message}
           </pre>
         ) : null}
-        <div className="flex flex-wrap justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-[0.5rem]">
           <Button type="button" onClick={onRetry}>
             {t("states.outlet_error.retry")}
           </Button>

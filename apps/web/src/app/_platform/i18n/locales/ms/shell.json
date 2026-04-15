@@ -205,6 +205,35 @@
     "empty": {
       "default_title": "Tiada data lagi",
       "default_description": "Tiada item untuk dipaparkan. Laraskan penapis atau cuba lagi kemudian."
+    },
+    "tenant_scope": {
+      "hint_status": "HTTP {{status}}",
+      "retry": "Cuba lagi",
+      "sign_out": "Log keluar",
+      "api_session": {
+        "title": "Sesi API tidak dikenali",
+        "body": "Sesi pelayar tidak sepadan dengan API (HTTP {{status}}). Untuk pembangunan tempatan, kosongkan VITE_BETTER_AUTH_BASE_URL supaya Better Auth menggunakan /api/auth pada origin yang sama, dan jalankan pnpm --filter @afenda/api dev. Kuki Neon Auth jauh tidak dihantar ke localhost."
+      },
+      "identity_bridge": {
+        "title": "Jambatan identiti tiada",
+        "body": "Tiada identity link Afenda untuk akaun ini (HTTP {{status}}). Hook pendaftaran mesti menggunakan DATABASE_URL yang sama dengan apps/api, dan identity_links mesti wujud (ADR-0004)."
+      },
+      "forbidden": {
+        "title": "Akses ditolak",
+        "body": "API menolak permintaan ini (HTTP {{status}}) selain isu jambatan identiti. Semak peranan, akses penyewa, atau log pelayan."
+      },
+      "api_unavailable": {
+        "title": "API tidak tersedia",
+        "body": "BFF mengembalikan HTTP {{status}}. Jalankan @afenda/api pada port yang Vite proksi (lalai 3001). Jika terminal Vite menunjukkan ECONNREFUSED, proses API tidak berjalan."
+      },
+      "network": {
+        "title": "Tidak dapat capai API",
+        "body": "Rangkaian atau tamat masa — API mungkin dihentikan, tidak dapat dicapai, atau perlahan. Jalankan pnpm --filter @afenda/api dev dan sahkan sasaran proksi pelayan dev (VITE_API_URL)."
+      },
+      "unknown": {
+        "title": "Skop ruang kerja gagal dimuatkan",
+        "body": "Tidak dapat memuat skop penyewa (HTTP {{status}}). Cuba lagi, log keluar, atau sahkan DATABASE_URL dan konfigurasi Better Auth."
+      }
     }
   },
   "language": {

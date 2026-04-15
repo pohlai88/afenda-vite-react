@@ -1,6 +1,6 @@
 ---
 title: "ADR-0005: Auth schema authority — public (self-hosted Better Auth) vs neon_auth"
-description: "public Better Auth tables are the live runtime auth store; neon_auth is non-authoritative for ERP and must not gain new workspace truth."
+description: "public Better Auth tables are the live runtime auth store; neon_auth has no runtime authority — no reads, no writes, no workspace semantics in app code."
 order: 5
 status: accepted
 ---
@@ -26,16 +26,13 @@ Two live writers or two “current session” truths create **schema drift**, co
 
 For this monorepo’s **runtime path** (`apps/api` + `createAfendaAuth` + `DATABASE_URL`), **`public`** Better Auth tables are the **operational** authentication store. **`neon_auth`** is **not** part of that write path unless explicitly integrated; it must not be treated as a parallel authority for product features.
 
-**Deprecation stance:** `neon_auth.organization`, `neon_auth.member`, and session fields that encode **Better Auth workspace** (e.g. `activeOrganizationId`) are **not** Afenda tenancy (ADR-0003). They may remain in the database for Neon Auth / compatibility, but **must not** be authoritative for ERP.
+**Architectural stance:** `neon_auth.organization`, `neon_auth.member`, and session fields such as **`activeOrganizationId`** are **not** Afenda tenancy (ADR-0003). For this codebase, **`neon_auth` is dead at runtime**: application code **must not** read or write it or rely on it for workspace, sessions, or RBAC. Physical schema drops are an **operational** follow-up only.
 
 ## Decision
 
 1. **Single writer for app authentication** in production: **`public.user`**, **`public.session`**, **`public.account`**, **`public.verification`** (as created/maintained by Better Auth migrate + runtime).
-2. **`neon_auth.*`** is **non-authoritative** for Afenda ERP features. Allowed states:
-   - **Deprecated** (documented, no new dependencies), or
-   - **Compatibility-only / read-only** for a defined integration, or
-   - **Removed** after backup and validation (separate cutover plan).
-3. **No new product feature** may read or write **`neon_auth.organization`** / **`neon_auth.member`** as workspace truth without an ADR that supersedes this one.
+2. **`neon_auth.*`** — **no runtime dependency.** No service reads `neon_auth.organization`, `neon_auth.member`, or similar; no feature uses Neon Auth workspace semantics. ERP workspace is **`tenants`** / **`tenant_memberships`** only (ADR-0003).
+3. **No ADR** may describe `neon_auth` as a valid workspace authority without superseding this decision.
 
 ## Alternatives considered
 
@@ -63,7 +60,7 @@ For this monorepo’s **runtime path** (`apps/api` + `createAfendaAuth` + `DATAB
 
 ## Validation
 
-- Inventory queries / scripts that reference `neon_auth` (grep / Neon SQL).
+- `grep` / CI: **no** `neon_auth` references in `apps/**` or `packages/**` TypeScript (operational SQL tools excluded).
 - Confirm production `DATABASE_URL` points to the database where **`public`** auth is written.
 
 ## References

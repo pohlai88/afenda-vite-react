@@ -41,7 +41,6 @@
     "script:vitest-diagnostics": "tsx scripts/vitest-diagnostics.ts",
     "script:check-audit-writer-boundary": "tsx scripts/check-audit-writer-boundary.ts",
     "script:audit-api-smoke": "tsx scripts/audit-api-smoke.ts",
-    "script:dev-login-api-smoke": "tsx scripts/dev-login-api-smoke.ts",
     "auth:migrate": "pnpm --filter @afenda/better-auth auth:migrate"
   },
   "devDependencies": {

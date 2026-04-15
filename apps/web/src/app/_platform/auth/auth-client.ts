@@ -22,3 +22,6 @@ export const authClient = createAuthClient({
     credentials: "include",
   },
 })
+
+/** Same reactive session hook as `authClient.useSession` — stable export for route guards and chrome. */
+export const useAfendaSession = authClient.useSession

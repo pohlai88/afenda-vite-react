@@ -15,7 +15,7 @@
 | Layout, type, motion, spacing (static) | `theme-tokens-layout.css` — `@theme static`                                                             |
 | Density (runtime)                      | `theme-density.css` — `:root`, `[data-density=*]`                                                       |
 | shadcn variable names                  | `theme-shadcn-compat.css` — aliases into `--color-*`                                                    |
-| AFENDA extensions (`--af-*`)           | `theme-afenda-extensions.css` — shell/status/density/motion aliases only (not mixed into shadcn compat) |
+| AFENDA extensions (`--af-*`)           | `theme-afenda-extensions.css` — shell, borders, status, table, selection, code, density, motion (not mixed into shadcn compat). App / `local.css` **SHOULD** use `--af-table-*`, `--af-border-*`, `--af-code-*`, `--af-selection-*` in component utilities instead of raw `--color-table-*` where extensions define an alias. |
 
 Semantic UI **MUST** use these tokens (or Tailwind theme keys bound to them). **MUST NOT** introduce ad hoc hex, raw `px` spacing scales, or one-off control heights for shell-grade UI.
 
@@ -29,11 +29,11 @@ Cross-checked **2026-04-14**: every `--*` name referenced in sections 1–10 exi
 | Radii, type, spacing, static sizes, motion names | `theme-tokens-layout.css` (`@theme static`)       |
 | Density / runtime scale                          | `theme-density.css` (`:root`, `[data-density=*]`) |
 
-**Import order (canonical):** `theme-tokens-light.css` → `theme-dark.css` → `theme-keyframes.css` → `theme-reduced-motion.css` (`.motion-safe` / `prefers-reduced-motion` only; keyframes stay pure) → `theme-tokens-layout.css` → `theme-density.css` → `theme-shadcn-compat.css` (shadcn + semantic bridge only) → `theme-afenda-extensions.css` (`--af-*` only) (see `src/theme/theme.css` and app `index.css` / `local.css`). Density is loaded **before** AFENDA extensions so `--size-*` / `--spacing-*` resolve to effective runtime values inside `--af-*` aliases.
+**Import order (canonical):** `theme-tokens-light.css` → `theme-dark.css` → `theme-keyframes.css` → `theme-reduced-motion.css` (`.motion-safe` / `prefers-reduced-motion` only; keyframes stay pure) → `theme-tokens-layout.css` → `theme-density.css` → `theme-shadcn-compat.css` (shadcn + semantic bridge only) → `theme-afenda-extensions.css` (`--af-*` only). **App and package entries MUST import this chain once via [`src/theme/theme.css`](src/theme/theme.css)** (do not duplicate individual `@import` lines). Shared `:root` app knobs, `@utility`, and `@layer` blocks live in **[`src/app-theme-vocabulary.css`](src/app-theme-vocabulary.css)** and are pulled in after the theme barrel from [`apps/web/src/index.css`](../../../apps/web/src/index.css) and [`src/local.css`](src/local.css). Density is loaded **before** AFENDA extensions so `--size-*` / `--spacing-*` resolve to effective runtime values inside `--af-*` aliases.
 
 **Layering rule:** `theme-shadcn-compat.css` MUST NOT define `--af-*`. `theme-afenda-extensions.css` MUST NOT redefine shadcn names (`--background`, `--card`, …). See file headers for recommended use and cautions.
 
-**Bridge architecture:** The shadcn compatibility layer stays a minimal, honest mapping to canonical `--color-*`. AFENDA extension aliases (`--af-*`) live in `theme-afenda-extensions.css` so richer product semantics do not pollute the compatibility contract. Extension aliases that mirror selection/code **MUST** stay in sync with canonical tokens: if `--color-selection`, `--color-selection-foreground`, `--color-code`, `--color-code-foreground`, `--color-code-highlight`, or `--color-code-number` are removed from `theme-tokens-light.css` / `theme-dark.css`, the corresponding `--af-selection-*` / `--af-code-*` lines MUST be removed from extensions.
+**Bridge architecture:** The shadcn compatibility layer stays a minimal, honest mapping to canonical `--color-*`. AFENDA extension aliases (`--af-*`) live in `theme-afenda-extensions.css` so richer product semantics do not pollute the compatibility contract. Extension aliases **MUST** stay in sync with canonical tokens: if underlying `--color-*` names are removed from `theme-tokens-light.css` / `theme-dark.css`, the corresponding `--af-*` lines MUST be removed from extensions (see `theme-afenda-extensions.css` header for the dependency list, including selection, code, table, and border tokens).
 
 ---
 
@@ -273,10 +273,12 @@ This contract is **authoritative** for code review. Automated enforcement **SHOU
 
 ## 12. Reference implementation
 
-- Theme assembly: [`src/theme/theme.css`](src/theme/theme.css)
+- Theme assembly (barrel): [`src/theme/theme.css`](src/theme/theme.css)
+- Shared app vocabulary (`:root` knobs, utilities, layers): [`src/app-theme-vocabulary.css`](src/app-theme-vocabulary.css)
 - Layout tokens: [`src/theme/theme-tokens-layout.css`](src/theme/theme-tokens-layout.css)
 - Density: [`src/theme/theme-density.css`](src/theme/theme-density.css)
-- App stylesheet entry: [`apps/web/src/index.css`](../../../apps/web/src/index.css)
+- Web stylesheet entry: [`apps/web/src/index.css`](../../../apps/web/src/index.css)
+- Package export (mirrors web vocabulary; different `@source`): [`src/local.css`](src/local.css)
 
 ---
 
@@ -284,5 +286,6 @@ This contract is **authoritative** for code review. Automated enforcement **SHOU
 
 | Date       | Change                                                                                                                                                        |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-15 | Workspace theme stabilization: single `theme/theme.css` import; shared `app-theme-vocabulary.css`; `local.css` uses package-scoped `@source` + same vocabulary. |
 | 2026-04-14 | Initial Director contract aligned to `theme-tokens-layout.css` / `theme-density.css`.                                                                         |
 | 2026-04-14 | QA pass: token inventory table; table compact token; documented canonical theme import order; theme entry files reordered so density overrides follow layout. |

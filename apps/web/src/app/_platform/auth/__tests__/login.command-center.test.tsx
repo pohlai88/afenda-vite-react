@@ -4,7 +4,8 @@ import { beforeAll, describe, expect, it, vi } from "vitest"
 
 import { initI18n } from "../../i18n"
 
-import LoginPage from "../login"
+import { AUTH_ROUTES } from "../auth-paths"
+import { RouteAuthLogin } from "../routes/route-auth-login"
 
 vi.mock("../hooks/use-auth-intelligence", () => ({
   useAuthIntelligence: () => ({
@@ -29,11 +30,14 @@ vi.mock("../hooks/use-auth-intelligence", () => ({
   }),
 }))
 
-vi.mock("..", async () => {
-  const actual = await vi.importActual<typeof import("..")>("..")
+vi.mock("../auth-client", async () => {
+  const actual = await vi.importActual<typeof import("../auth-client")>(
+    "../auth-client"
+  )
   return {
     ...actual,
     authClient: {
+      ...actual.authClient,
       signIn: {
         email: vi.fn(async () => ({ error: null })),
         social: vi.fn(async () => ({ error: null })),
@@ -64,8 +68,8 @@ describe("LoginPage command center", () => {
   it("renders intelligence HUD, challenge canvas, and continuity panel", async () => {
     await act(async () => {
       render(
-        <MemoryRouter initialEntries={["/login"]}>
-          <LoginPage />
+        <MemoryRouter initialEntries={[AUTH_ROUTES.login]}>
+          <RouteAuthLogin />
         </MemoryRouter>
       )
     })

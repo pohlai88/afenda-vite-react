@@ -46,10 +46,10 @@ export function EventTimelinePanel({ records }: EventTimelinePanelProps) {
       </div>
 
       {records.length > 0 ? (
-        <ol className="grid gap-0">
+        <ol className="grid gap-[0]">
           {records.map((record, index) => (
             <li
-              className="relative grid min-w-0 grid-cols-[2.5rem_minmax(0,1fr)] gap-3 px-4 py-4"
+              className="relative grid min-w-0 grid-cols-[2.5rem_minmax(0,1fr)] gap-[0.75rem] px-4 py-4"
               key={record.id}
             >
               {index < records.length - 1 ? (
@@ -63,7 +63,7 @@ export function EventTimelinePanel({ records }: EventTimelinePanelProps) {
               </span>
 
               <article className="min-w-0">
-                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <div className="flex min-w-0 flex-wrap items-center gap-[0.5rem]">
                   <time
                     className="rounded-full border border-border-muted bg-muted/45 px-2 py-1 ui-mono-token text-muted-foreground"
                     dateTime={record.updatedAt}
@@ -97,7 +97,7 @@ export function EventTimelinePanel({ records }: EventTimelinePanelProps) {
           ))}
         </ol>
       ) : (
-        <div className="p-4">
+        <div className="p-[1rem]">
           <p className="ui-empty-state">No timeline events were found.</p>
         </div>
       )}

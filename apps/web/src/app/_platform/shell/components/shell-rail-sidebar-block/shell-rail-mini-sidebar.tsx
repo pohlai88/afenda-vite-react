@@ -81,7 +81,7 @@ const SHELL_FOCUS_RING_CLASS =
   "outline-none ring-sidebar-ring focus-visible:ring-2"
 
 const SHELL_USER_TRIGGER_STATE_CLASS =
-  "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground md:h-8 md:p-0"
+  "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground md:h-[2rem] md:p-[0]"
 
 export const SHELL_USER_MENU_CONTENT_CLASS =
   "w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
@@ -254,8 +254,8 @@ export function ShellUserMenuDropdownPanel({
 
   return (
     <>
-      <DropdownMenuLabel className="p-0 font-normal">
-        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+      <DropdownMenuLabel className="p-[0] font-normal">
+        <div className="flex items-center gap-[0.5rem] px-1 py-1.5 text-left text-sm">
           <ShellUserIdentity user={user} />
         </div>
       </DropdownMenuLabel>
@@ -265,7 +265,7 @@ export function ShellUserMenuDropdownPanel({
       {showUpgrade ? (
         <>
           <DropdownMenuGroup>
-            <DropdownMenuItem disabled className="gap-2">
+            <DropdownMenuItem disabled className="gap-[0.5rem]">
               <Sparkles className="size-4" />
               {t("user_menu.upgrade_pro")}
             </DropdownMenuItem>
@@ -294,7 +294,7 @@ export function ShellUserMenuDropdownPanel({
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex cursor-pointer items-center gap-2"
+                  className="flex cursor-pointer items-center gap-[0.5rem]"
                   onClick={closeMobileSidebar}
                 >
                   <Icon className="size-4" />
@@ -308,7 +308,7 @@ export function ShellUserMenuDropdownPanel({
             <DropdownMenuItem key={item.key} asChild>
               <NavLink
                 to={href}
-                className="flex items-center gap-2"
+                className="flex items-center gap-[0.5rem]"
                 onClick={closeMobileSidebar}
               >
                 <Icon className="size-4" />
@@ -334,7 +334,7 @@ export function ShellUserMenuDropdownPanel({
 
       <DropdownMenuItem
         variant="destructive"
-        className="gap-2"
+        className="gap-[0.5rem]"
         onSelect={(event) => {
           event.preventDefault()
           closeMobileSidebar()

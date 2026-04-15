@@ -33,10 +33,10 @@ const HEALTH_ROWS = [
 export function SystemHealthPanel({ feature }: SystemHealthPanelProps) {
   return (
     <section
-      className="max-w-full ui-density-panel min-w-0 overflow-hidden p-4"
+      className="max-w-full ui-density-panel min-w-0 overflow-hidden p-[1rem]"
       aria-labelledby="system-health-title"
     >
-      <div className="flex min-w-0 items-start justify-between gap-3">
+      <div className="flex min-w-0 items-start justify-between gap-[0.75rem]">
         <div className="min-w-0">
           <h2 id="system-health-title" className="ui-title-section">
             System Health
@@ -55,16 +55,16 @@ export function SystemHealthPanel({ feature }: SystemHealthPanelProps) {
         </span>
       </div>
 
-      <div className="mt-4 grid gap-2">
+      <div className="mt-4 grid gap-[0.5rem]">
         {HEALTH_ROWS.map((row) => {
           const Icon = row.icon
 
           return (
             <div
-              className="flex min-w-0 items-center justify-between gap-3 rounded-xl border border-border-muted bg-muted/30 px-3 py-2.5"
+              className="flex min-w-0 items-center justify-between gap-[0.75rem] rounded-xl border border-border-muted bg-muted/30 px-3 py-2.5"
               key={row.label}
             >
-              <span className="inline-flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
+              <span className="inline-flex min-w-0 items-center gap-[0.5rem] text-sm text-muted-foreground">
                 <Icon className="size-4 shrink-0" aria-hidden />
                 <span className="truncate">{row.label}</span>
               </span>
@@ -77,7 +77,7 @@ export function SystemHealthPanel({ feature }: SystemHealthPanelProps) {
       </div>
 
       <div className="mt-4 min-w-0 overflow-hidden rounded-xl border border-border-muted bg-card/55 px-3 py-2.5">
-        <div className="flex min-w-0 items-center gap-2 text-sm font-medium text-foreground">
+        <div className="flex min-w-0 items-center gap-[0.5rem] text-sm font-medium text-foreground">
           <Activity className="size-4 shrink-0 text-info" aria-hidden />
           <span className="min-w-0 truncate">Control coverage</span>
         </div>

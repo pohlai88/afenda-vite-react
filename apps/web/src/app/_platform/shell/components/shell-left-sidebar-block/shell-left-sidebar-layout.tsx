@@ -12,6 +12,7 @@ import {
 import { cn } from "@afenda/design-system/utils"
 
 import { ShellOutletErrorBoundary } from "../../../../_components"
+import { ShellTenantScopeBanner } from "../shell-tenant-scope-banner"
 import { useShellContextBar } from "../../hooks/use-shell-context-bar"
 import { shellSlotActivationV1 } from "../../policy/shell-navigation-policy"
 import { ShellContentBlock } from "../shell-content-block"
@@ -92,7 +93,7 @@ export function ShellLeftSidebarLayout() {
                 <ShellLabelsColumn
                   model={navModel}
                   className={cn(
-                    "absolute top-0 bottom-0 left-0 z-10 hidden min-h-0 w-80 shrink-0 overflow-hidden border-r border-sidebar-border bg-sidebar transition-[transform,opacity] duration-150 ease-out md:flex",
+                    "absolute top-0 bottom-0 left-0 z-10 hidden min-h-0 w-[20rem] shrink-0 overflow-hidden border-r border-sidebar-border bg-sidebar transition-[transform,opacity] duration-150 ease-out md:flex",
                     sidebarDisplay.expanded
                       ? "translate-x-0 opacity-100"
                       : "pointer-events-none -translate-x-full opacity-0"
@@ -119,20 +120,23 @@ export function ShellLeftSidebarLayout() {
                 <ShellContentBlock
                   focusMode={isFocusMode}
                   topSlot={
-                    contextBar ? (
-                      <div
-                        data-slot="shell.content.top"
-                        className={cn(
-                          "ui-shell-slot-top",
-                          isFocusMode && "px-3 py-1.5 sm:px-4"
-                        )}
-                      >
-                        <ShellContextBar
-                          model={contextBar}
-                          focusMode={isFocusMode}
-                        />
-                      </div>
-                    ) : null
+                    <>
+                      <ShellTenantScopeBanner focusMode={isFocusMode} />
+                      {contextBar ? (
+                        <div
+                          data-slot="shell.content.top"
+                          className={cn(
+                            "ui-shell-slot-top",
+                            isFocusMode && "px-3 py-1.5 sm:px-4"
+                          )}
+                        >
+                          <ShellContextBar
+                            model={contextBar}
+                            focusMode={isFocusMode}
+                          />
+                        </div>
+                      ) : null}
+                    </>
                   }
                 >
                   <ShellOutletErrorBoundary>

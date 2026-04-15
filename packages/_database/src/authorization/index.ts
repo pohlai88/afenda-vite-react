@@ -1,3 +1,4 @@
+export * from "./services/assert-membership-scope-access"
 export * from "./policy/permission-policy"
 export * from "./relations/authorization-relations"
 export * from "./schema/membership-scope-enums"

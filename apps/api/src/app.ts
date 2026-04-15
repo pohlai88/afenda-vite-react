@@ -1,22 +1,22 @@
 import type { AfendaAuth } from "@afenda/better-auth"
+import type { Pool } from "pg"
 import {
   assertUserHasTenantAccess,
+  IdentityLinkMissingError,
   insertGovernedAuditLog,
-  resolveAfendaMeContext,
+  requireAfendaMeContextFromBetterAuthUserId,
   type DatabaseClient,
 } from "@afenda/database"
+import { setSessionOperatingContext } from "@afenda/better-auth"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 
+import { createAuthCompanionModuleForApp } from "./auth-companion-bootstrap.js"
 import {
-  authErrorEnvelope,
-  authSuccessEnvelope,
-  buildAuthIntelligenceSnapshot,
-  buildAuthSessionsPayload,
-  verifyAuthChallengeInput,
-} from "./auth-ecosystem.js"
+  registerAuthCompanionProtectedRoutes,
+  registerAuthCompanionPublicRoutes,
+} from "./modules/auth-companion/routes/register-auth-companion-routes.js"
 import { auditContextMiddleware } from "./audit-context.js"
-import { registerDevQuickLogin } from "./dev-quick-login.js"
 import { handleShellInteractionAudit } from "./shell-interaction-audit.js"
 import { trustedBrowserOrigins } from "./trusted-browser-origins.js"
 
@@ -31,8 +31,9 @@ declare module "hono" {
 
 const DEMO_SESSION_SUBJECT = "api.demo.session"
 
-export function createApp(db: DatabaseClient, auth: AfendaAuth) {
+export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
   const app = new Hono()
+  const authCompanion = createAuthCompanionModuleForApp(db, pool)
 
   app.use(
     "/api/auth/*",
@@ -57,62 +58,16 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth) {
       service: "@afenda/api",
       health: "/health",
       betterAuth: "/api/auth",
-      devLogin: "POST /api/dev/login (non-production; see docs/DEV_LOGIN.md)",
-      v1: "session required — e.g. GET /v1/me",
+      v1:
+        "session required — e.g. GET /v1/me, POST /v1/session/operating-context",
     })
   )
 
   app.get("/health", (c) => c.json({ ok: true, service: "@afenda/api" }))
 
-  registerDevQuickLogin(app, auth)
-
   app.use(auditContextMiddleware)
 
-  app.get("/v1/auth/intelligence", async (c) => {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers })
-    const snapshot = buildAuthIntelligenceSnapshot({
-      session,
-      userAgent: c.req.header("user-agent") ?? "",
-      forwardedFor: c.req.header("x-forwarded-for") ?? null,
-    })
-    return c.json(authSuccessEnvelope(snapshot))
-  })
-
-  app.post("/v1/auth/challenge/verify", async (c) => {
-    let body: unknown = null
-    try {
-      body = await c.req.json()
-    } catch {
-      body = null
-    }
-
-    const validation = verifyAuthChallengeInput(body)
-    if (!validation.ok) {
-      return c.json(authErrorEnvelope(validation.code, validation.message), 400)
-    }
-
-    const expiresAt = new Date(validation.value.expiresAt)
-    if (Number.isNaN(expiresAt.valueOf()) || expiresAt.valueOf() < Date.now()) {
-      return c.json(
-        authErrorEnvelope(
-          "auth.challenge.expired",
-          "Challenge has expired. Request a new verification challenge."
-        ),
-        400
-      )
-    }
-
-    return c.json(
-      authSuccessEnvelope({
-        verified: true,
-        receipt: [
-          "Challenge integrity check passed.",
-          "Risk policy threshold satisfied.",
-          "Session continuation approved.",
-        ],
-      })
-    )
-  })
+  registerAuthCompanionPublicRoutes(app, { auth, authCompanion })
 
   app.use("/v1/*", async (c, next) => {
     const session = await auth.api.getSession({ headers: c.req.raw.headers })
@@ -123,75 +78,77 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth) {
     await next()
   })
 
+  registerAuthCompanionProtectedRoutes(app, { authCompanion })
+
   /**
-   * BFF: Better Auth session + Afenda tenant scope (by email → `users` → `tenant_memberships`).
-   * Use this to populate `X-Tenant-Id` on API calls; does not replace `authClient.useSession()` for UX.
+   * BFF: Better Auth session + Afenda context via **`identity_links`** (no email resolution).
    */
   app.get("/v1/me", async (c) => {
     const session = c.get("authSession")
-    const afenda = await resolveAfendaMeContext(db, session.user.email)
-    return c.json({
-      betterAuth: {
-        user: session.user,
-        session: session.session,
-      },
-      afenda,
-    })
-  })
-
-  app.get("/v1/auth/sessions", async (c) => {
-    const session = c.get("authSession")
-    const payload = buildAuthSessionsPayload({
-      session,
-      userAgent: c.req.header("user-agent") ?? "",
-      forwardedFor: c.req.header("x-forwarded-for") ?? null,
-    })
-    return c.json(authSuccessEnvelope(payload))
-  })
-
-  app.post("/v1/auth/sessions/revoke", async (c) => {
-    const session = c.get("authSession")
-    let body: unknown = null
     try {
-      body = await c.req.json()
-    } catch {
-      body = null
-    }
-
-    if (
-      !body ||
-      typeof body !== "object" ||
-      typeof (body as { sessionId?: unknown }).sessionId !== "string" ||
-      (body as { sessionId: string }).sessionId.trim().length === 0
-    ) {
-      return c.json(
-        authErrorEnvelope(
-          "auth.sessions.invalid_id",
-          "Session id is required to revoke a session."
-        ),
-        400
+      const afenda = await requireAfendaMeContextFromBetterAuthUserId(
+        db,
+        session.user.id
       )
-    }
-
-    const sessionId = (body as { sessionId: string }).sessionId.trim()
-    const archivedSessionId = `archive_${session.session.id.slice(0, 8)}`
-    const allowed =
-      sessionId === session.session.id || sessionId === archivedSessionId
-    if (!allowed) {
-      return c.json(
-        authErrorEnvelope(
-          "auth.sessions.not_found",
-          "Session was not found in the current tenant scope."
-        ),
-        404
-      )
-    }
-
-    return c.json(
-      authSuccessEnvelope({
-        revokedSessionId: sessionId,
+      return c.json({
+        betterAuth: {
+          user: session.user,
+          session: session.session,
+        },
+        afenda,
       })
-    )
+    } catch (e) {
+      if (e instanceof IdentityLinkMissingError) {
+        return c.json(
+          {
+            error: "Identity bridge required",
+            code: e.code,
+            details: e.details,
+          },
+          403
+        )
+      }
+      throw e
+    }
+  })
+
+  /**
+   * Server-owned operating context (ADR-0006): validates membership, scopes, and alignment, then updates session.
+   */
+  app.post("/v1/session/operating-context", async (c) => {
+    let body: Record<string, unknown> = {}
+    try {
+      body = (await c.req.json()) as Record<string, unknown>
+    } catch {
+      body = {}
+    }
+    const opt = (k: string) => {
+      const v = body[k]
+      if (v === null) return null
+      if (typeof v === "string") return v
+      return undefined
+    }
+
+    try {
+      const ctx = await setSessionOperatingContext(auth, db, {
+        headers: c.req.raw.headers,
+        activeTenantId: opt("activeTenantId"),
+        activeLegalEntityId: opt("activeLegalEntityId"),
+        activeBusinessUnitId: opt("activeBusinessUnitId"),
+        activeLocationId: opt("activeLocationId"),
+        activeOrgUnitId: opt("activeOrgUnitId"),
+      })
+      return c.json({ ok: true, context: ctx })
+    } catch (e) {
+      if (e instanceof IdentityLinkMissingError) {
+        return c.json({ error: "Identity bridge required", code: e.code }, 403)
+      }
+      const msg = e instanceof Error ? e.message : "Bad request"
+      if (msg.includes("unauthenticated")) {
+        return c.json({ error: "Unauthorized" }, 401)
+      }
+      return c.json({ error: msg }, 400)
+    }
   })
 
   /**
@@ -208,7 +165,7 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth) {
 
     const allowed = await assertUserHasTenantAccess(
       db,
-      session.user.email,
+      session.user.id,
       tenantId
     )
     if (!allowed) {
@@ -247,7 +204,7 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth) {
 
   app.post("/v1/audit/shell-interaction", (c) => {
     const session = c.get("authSession")
-    return handleShellInteractionAudit(c, db, session.user.email)
+    return handleShellInteractionAudit(c, db, session.user.id)
   })
 
   return app

@@ -2,39 +2,32 @@
  * AFENDA EXTENSIONS (`--af-*`)
  *
  * Recommended use for:
- * - Shell layout semantics and AFENDA-specific surface doctrine
- * - Status surface aliases (success / warning / info)
- * - Density-aware semantic sizing and spacing (aliases to effective runtime tokens)
- * - AFENDA motion / runtime animation aliases (`--animate-*` indirection)
+ * - Shell / surface / border / status semantics outside strict shadcn names
+ * - Table, selection, and code aliases (canonical `--color-*` stay source of truth)
+ * - Density-aware size/spacing and motion token indirection
  *
  * Doctrine:
- * - alias-only; zero logic; canonical tokens remain source of truth
- * - do not duplicate shadcn compatibility names (`--background`, `--card`, …)
- * - do not transform values; do not reference raw palette ramps
+ * - alias-only; zero logic; canonical `--color-*` / layout tokens remain source of truth
+ * - do not duplicate shadcn names (`--background`, `--card`, …) — those live in
+ *   `theme-shadcn-compat.css`
  *
- * Architecture (why this file exists):
- * - `theme-shadcn-compat.css` = strict compatibility bridge (small, stable, honest).
- * - This file = AFENDA extension bridge (richer semantics without polluting shadcn).
- *
- * Important caution — canonical dependencies:
- * - Selection/code blocks below assume these exist in `theme-tokens-light.css` and
- *   `theme-dark.css`. If you drop any from the canonical color theme, remove the
- *   matching `--af-selection-*` / `--af-code-*` lines here:
- *   `--color-selection`, `--color-selection-foreground`,
- *   `--color-code`, `--color-code-foreground`, `--color-code-highlight`,
+ * Canonical dependencies (if removed from `theme-tokens-light.css` / `theme-dark.css`,
+ * remove the matching `--af-*` lines here):
+ * - Borders: `--color-border-muted`, `--color-border-strong`, `--color-border-grid`,
+ *   `--color-border-focus`
+ * - Selection: `--color-selection`, `--color-selection-foreground`
+ * - Code: `--color-code`, `--color-code-foreground`, `--color-code-highlight`,
  *   `--color-code-number`
+ * - Table: `--color-table-header`, `--color-table-row-hover`, `--color-table-row-selected`,
+ *   `--color-table-row-stripe`, `--color-table-cell-focus`, `--color-table-pinned`
  *
- * Important caution — load order:
- * - This file MUST load after `theme-density.css` so `--size-*` / `--spacing-*`
- *   references resolve to density-aware effective values. Never add non-alias
- *   rules here; keep keyframes in `theme-keyframes.css` and preference handling
- *   in `theme-reduced-motion.css`.
+ * App entry CSS should consume `--af-*` for these concerns, not raw `--color-table-*`
+ * mixed with shadcn bridge names.
  */
 
 :root {
   /* ------------------------------------------------------------------
    * Surface doctrine
-   * Shell / chrome / canvas / panel / elevated
    * ------------------------------------------------------------------ */
   --af-surface-shell: var(--color-surface-shell);
   --af-surface-chrome: var(--color-surface-chrome);
@@ -78,13 +71,13 @@
   --af-info-surface: var(--color-info-surface);
 
   /* ------------------------------------------------------------------
-   * Selection semantics (requires canonical `--color-selection*` — see header)
+   * Selection semantics
    * ------------------------------------------------------------------ */
   --af-selection-bg: var(--color-selection);
   --af-selection-foreground: var(--color-selection-foreground);
 
   /* ------------------------------------------------------------------
-   * Code / content semantics (requires canonical `--color-code*` — see header)
+   * Code / content semantics
    * ------------------------------------------------------------------ */
   --af-code-bg: var(--color-code);
   --af-code-foreground: var(--color-code-foreground);
@@ -92,12 +85,22 @@
   --af-code-number: var(--color-code-number);
 
   /* ------------------------------------------------------------------
+   * Table semantics
+   * ------------------------------------------------------------------ */
+  --af-table-header: var(--color-table-header);
+  --af-table-row-hover: var(--color-table-row-hover);
+  --af-table-row-selected: var(--color-table-row-selected);
+  --af-table-row-stripe: var(--color-table-row-stripe);
+  --af-table-cell-focus: var(--color-table-cell-focus);
+  --af-table-pinned: var(--color-table-pinned);
+
+  /* ------------------------------------------------------------------
    * Text role aliases
-   * Product teams may consume these instead of inventing ad hoc names.
    * ------------------------------------------------------------------ */
   --af-text-strong: var(--color-foreground);
   --af-text-body: var(--color-foreground);
   --af-text-muted: var(--color-muted-foreground);
+
   --af-text-caption: var(--text-helper);
   --af-text-label: var(--text-label);
   --af-text-table: var(--text-table);
@@ -109,7 +112,7 @@
 
   /* ------------------------------------------------------------------
    * Density-aware semantic sizing aliases
-   * These point to effective runtime outputs, not base tokens.
+   * These should point to runtime/effective outputs.
    * ------------------------------------------------------------------ */
   --af-size-control-2xs: var(--size-control-2xs);
   --af-size-control-xs: var(--size-control-xs);
@@ -146,7 +149,6 @@
 
   /* ------------------------------------------------------------------
    * Motion aliases
-   * Product infra may use these without touching raw keyframe names.
    * ------------------------------------------------------------------ */
   --af-animate-fade-in: var(--animate-fade-in);
   --af-animate-fade-out: var(--animate-fade-out);

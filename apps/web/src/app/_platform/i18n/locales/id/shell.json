@@ -205,6 +205,35 @@
     "empty": {
       "default_title": "Belum ada data",
       "default_description": "Tidak ada item untuk ditampilkan. Ubah filter atau coba lagi nanti."
+    },
+    "tenant_scope": {
+      "hint_status": "HTTP {{status}}",
+      "retry": "Coba lagi",
+      "sign_out": "Keluar",
+      "api_session": {
+        "title": "Sesi API tidak dikenali",
+        "body": "Sesi browser tidak cocok dengan API (HTTP {{status}}). Untuk pengembangan lokal, kosongkan VITE_BETTER_AUTH_BASE_URL agar Better Auth memakai /api/auth pada origin yang sama, dan jalankan pnpm --filter @afenda/api dev. Cookie Neon Auth jarak jauh tidak dikirim ke localhost."
+      },
+      "identity_bridge": {
+        "title": "Jembatan identitas tidak ada",
+        "body": "Tidak ada identity link Afenda untuk akun ini (HTTP {{status}}). Hook sign-up harus memakai DATABASE_URL yang sama dengan apps/api, dan identity_links harus ada (ADR-0004)."
+      },
+      "forbidden": {
+        "title": "Akses ditolak",
+        "body": "API menolak permintaan ini (HTTP {{status}}) selain karena jembatan identitas. Periksa peran, akses penyewa, atau log server."
+      },
+      "api_unavailable": {
+        "title": "API tidak tersedia",
+        "body": "BFF mengembalikan HTTP {{status}}. Jalankan @afenda/api pada port yang diproksi Vite (default 3001). Jika terminal Vite menampilkan ECONNREFUSED, proses API tidak berjalan."
+      },
+      "network": {
+        "title": "Tidak dapat menjangkau API",
+        "body": "Jaringan atau timeout — API mungkin berhenti, tidak terjangkau, atau lambat. Jalankan pnpm --filter @afenda/api dev dan periksa target proxy server dev (VITE_API_URL)."
+      },
+      "unknown": {
+        "title": "Ruang kerja gagal dimuat",
+        "body": "Tidak dapat memuat cakupan tenant (HTTP {{status}}). Coba lagi, keluar, atau periksa DATABASE_URL dan konfigurasi Better Auth."
+      }
     }
   },
   "language": {

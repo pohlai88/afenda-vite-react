@@ -39,7 +39,7 @@ export function PriorityQueuePanel({
       aria-labelledby="priority-queue-title"
     >
       <div className="border-b border-border-muted px-4 py-3">
-        <div className="flex min-w-0 items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center justify-between gap-[0.75rem]">
           <div className="min-w-0">
             <h2 id="priority-queue-title" className="ui-title-section">
               Priority Queue
@@ -55,21 +55,21 @@ export function PriorityQueuePanel({
       </div>
 
       {records.length > 0 ? (
-        <div className="grid min-w-0 gap-0 divide-y divide-border-muted">
+        <div className="grid min-w-0 gap-[0] divide-y divide-border-muted">
           {records.map((record, index) => (
             <button
               type="button"
               className={cn(
-                "group grid min-w-0 grid-cols-1 gap-3 px-4 py-4 text-left transition-colors duration-150 hover:bg-accent/35 focus-visible:bg-accent/45 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+                "group grid min-w-0 grid-cols-1 gap-[0.75rem] px-4 py-4 text-left transition-colors duration-150 hover:bg-accent/35 focus-visible:bg-accent/45 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
                 index === 0 && "bg-accent/25"
               )}
               aria-label={`Open ${record.title}`}
               key={record.id}
               onClick={() => onOpenRecord(record)}
             >
-              <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+              <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-[0.75rem]">
                 <div className="min-w-0 overflow-hidden">
-                  <div className="flex min-w-0 flex-wrap items-center gap-2">
+                  <div className="flex min-w-0 flex-wrap items-center gap-[0.5rem]">
                     {record.category ? (
                       <span className="max-w-full min-w-0 truncate rounded-full border border-border-muted bg-muted/45 px-2 py-1 ui-mono-token text-muted-foreground">
                         {record.category}
@@ -104,11 +104,11 @@ export function PriorityQueuePanel({
               </div>
 
               <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
-                <span className="inline-flex max-w-full min-w-0 items-center gap-1.5">
+                <span className="inline-flex max-w-full min-w-0 items-center gap-[0.375rem]">
                   <UserRound className="size-3.5 shrink-0" aria-hidden />
                   <span className="truncate">{record.owner}</span>
                 </span>
-                <span className="inline-flex min-w-0 shrink-0 items-center gap-1.5">
+                <span className="inline-flex min-w-0 shrink-0 items-center gap-[0.375rem]">
                   <Clock3 className="size-3.5 shrink-0" aria-hidden />
                   <span className="truncate">{formatRecordTime(record)}</span>
                 </span>
@@ -122,7 +122,7 @@ export function PriorityQueuePanel({
           ))}
         </div>
       ) : (
-        <div className="p-4">
+        <div className="p-[1rem]">
           <p className="ui-empty-state">
             No records require operator attention in this scope.
           </p>

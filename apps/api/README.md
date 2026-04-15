@@ -37,7 +37,6 @@ Default port **3001** (override with `PORT`).
 - `GET /health` — liveness
 - `GET /api/auth/ok` — Better Auth health check (requires Better Auth schema migrated; see below)
 - `GET|POST /api/auth/*` — [Better Auth](https://www.better-auth.com/) routes (email/password, OAuth when configured). The SPA calls these via the Vite dev proxy (`/api` → this server) or through `VITE_BETTER_AUTH_BASE_URL` when using a remote auth origin.
-- `POST /api/dev/login` — **development only** (`NODE_ENV !== production`): registered whenever the API is not in production mode. If dev-login env is incomplete, responds **`503`** with JSON explaining required vars; when configured (`AFENDA_DEV_LOGIN_ENABLED=true`, email, password), uses Better Auth `signInEmail` server-side; optional `AFENDA_DEV_LOGIN_SECRET` requires header `X-Afenda-Dev-Login-Secret`. See `docs/DEV_LOGIN.md` and repo-root `.env.database.example`.
 - `GET /v1/me` — BFF: requires session cookie; returns Better Auth `user`/`session` plus Afenda `afendaUserId`, `tenantIds`, and `defaultTenantId` (from `users` + `tenant_memberships` via email). The Vite app calls this through `/api/v1/me` (proxy rewrites to `/v1/me`).
 - `POST /v1/audit/demo` — writes one governed `auth.login.succeeded` row (demo). JSON body optional: `{ "subjectId": string }`. `X-Tenant-Id` must match an active tenant membership for the signed-in user (403 otherwise).
 

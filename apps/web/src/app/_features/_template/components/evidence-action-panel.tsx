@@ -29,7 +29,7 @@ export function EvidenceActionPanel({
       aria-labelledby="evidence-actions-title"
     >
       <div className="border-b border-border-muted px-4 py-3">
-        <div className="flex min-w-0 items-start gap-3">
+        <div className="flex min-w-0 items-start gap-[0.75rem]">
           <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-success/35 bg-success/10 text-success">
             <ShieldCheck className="size-4" aria-hidden />
           </span>
@@ -44,9 +44,9 @@ export function EvidenceActionPanel({
         </div>
       </div>
 
-      <div className="grid min-w-0 gap-3 p-4">
-        <div className="min-w-0 overflow-hidden rounded-xl border border-border-muted bg-muted/35 p-3">
-          <div className="flex min-w-0 items-center gap-2">
+      <div className="grid min-w-0 gap-[0.75rem] p-[1rem]">
+        <div className="min-w-0 overflow-hidden rounded-xl border border-border-muted bg-muted/35 p-[0.75rem]">
+          <div className="flex min-w-0 items-center gap-[0.5rem]">
             <FileCheck2 className="size-4 shrink-0 text-success" aria-hidden />
             <p className="min-w-0 truncate text-sm font-medium text-foreground">
               Audit packet status
@@ -58,7 +58,7 @@ export function EvidenceActionPanel({
           </p>
         </div>
 
-        <div className="grid min-w-0 gap-2">
+        <div className="grid min-w-0 gap-[0.5rem]">
           {commands.map((command) => (
             <Button
               type="button"
@@ -67,7 +67,7 @@ export function EvidenceActionPanel({
               }
               className={cn(
                 "h-auto max-w-full min-w-0 shrink whitespace-normal",
-                "w-full items-stretch justify-start rounded-xl p-0 text-left focus-visible:ring-2 focus-visible:ring-ring",
+                "w-full items-stretch justify-start rounded-xl p-[0] text-left focus-visible:ring-2 focus-visible:ring-ring",
                 command.id !== "export-audit-pack" &&
                   "border-border-muted bg-card/55 hover:bg-accent/45"
               )}
@@ -88,7 +88,7 @@ export function EvidenceActionPanel({
 
         {actionResult ? (
           <p
-            className="min-w-0 overflow-hidden rounded-xl border border-info/35 bg-info/10 p-3 text-sm leading-relaxed wrap-break-word text-info"
+            className="min-w-0 overflow-hidden rounded-xl border border-info/35 bg-info/10 p-[0.75rem] text-sm leading-relaxed wrap-break-word text-info"
             role="status"
             aria-live="polite"
           >

@@ -38,7 +38,7 @@ export function AppEmptyState({
 
   return (
     <Empty
-      className={cn("min-h-48 border-border/80", className)}
+      className={cn("min-h-[12rem] border-border/80", className)}
       data-slot="app.empty-state"
     >
       <EmptyContent>

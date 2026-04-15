@@ -8,7 +8,8 @@ import { userIdentities } from "../schema/user-identities"
 import { users } from "../schema/users"
 
 export const usersRelations = relations(users, ({ many }) => ({
-  auditLogs: many(auditLogs),
+  auditLogsAsActor: many(auditLogs, { relationName: "audit_actor_user" }),
+  auditLogsAsActingAs: many(auditLogs, { relationName: "audit_acting_as_user" }),
   /** @deprecated Prefer `identityLinks`; see deprecated `user_identities` schema. */
   legacyUserIdentities: many(userIdentities),
   identityLinks: many(identityLinks),

@@ -1,13 +1,13 @@
 ---
 title: "ADR-0004: Identity authority — Better Auth user vs Afenda principal (identity_links)"
-description: "Bridge authentication (public.user) and ERP principal (users) with identity_links; email match is migration-only fallback."
+description: "Mandatory identity_links bridge from Better Auth user to Afenda users; bootstrap on sign-up; no email fallback for runtime resolution."
 order: 4
 status: accepted
 ---
 
 # ADR-0004: Identity authority — Better Auth user vs Afenda principal (`identity_links`)
 
-- **Status:** Accepted
+- **Status:** Accepted (implementation hardening in progress)
 - **Date:** 2026-04-15
 - **Owner:** Platform / identity
 - **Review by:** 2026-10-01
@@ -15,26 +15,21 @@ status: accepted
 
 ## Context
 
-Runtime uses **Better Auth** tables in **`public`**: `"user"` with **text** `id` (authentication identity). Afenda uses **`users`** with **uuid** `id` (ERP principal). Today the practical link is **email convention**, which is not FK-enforced, breaks under email change, and makes **audit `actor_user_id`** and background jobs non-deterministic.
+Runtime uses **Better Auth** tables in **`public`**: `"user"` with **text** `id` (authentication identity). Afenda uses **`users`** with **uuid** `id` (ERP principal). Email-only matching is not FK-enforced, breaks under email change, and makes **audit `actor_user_id`** non-deterministic.
 
 ## Evaluation
 
-A dedicated **bridge table** is the enterprise-stable pattern: authentication id and principal id are both first-class; the bridge carries provenance and lifecycle (`linked_at`, `verified_at`, `source`). This matches the gap analysis: email-only resolution is acceptable **during migration**, not as the finished state (see ADR-0006 for audit).
+A dedicated **bridge table** is the enterprise-stable pattern: authentication id and principal id are both first-class.
 
-**Uniqueness:** enforce **`better_auth_user_id` UNIQUE** and **`afenda_user_id` UNIQUE** (one active link per side) unless a documented multi-link model is required (generally avoid).
+**Uniqueness:** enforce **`better_auth_user_id` UNIQUE** per auth provider and **`afenda_user_id`** linkage per provider unless a documented multi-link model is required (generally avoid).
 
 ## Decision
 
 1. **Authentication truth** remains Better Auth **`public.user`** (via `apps/api` + `createAfendaAuth`).
 2. **ERP principal truth** remains Afenda **`public.users`**.
-3. Introduce **`identity_links`** with at least:
-   - `id` (uuid PK)
-   - `afenda_user_id` uuid **NOT NULL** → FK **`users.id`**
-   - `better_auth_user_id` text **NOT NULL** → logical reference to **`public.user.id`** (FK optional if ORM constraints differ; uniqueness required)
-   - `linked_at`, `verified_at` (timestamptz)
-   - `source` (text enum or constrained text: e.g. `signup`, `import`, `admin_repair`)
-
-4. All server paths that today resolve “Afenda user from session” should **prefer `identity_links`** once backfilled; **email match** is a **fallback only** until migration completes.
+3. **`identity_links`** carries the bridge (see Drizzle schema in `packages/_database`).
+4. **Runtime resolution order is fixed:** `better_auth_user_id` → **`identity_links`** → **Afenda `users.id`** → memberships / tenant. **No email fallback** for authenticated API or auth security audit actor resolution.
+5. **Bootstrap:** on Better Auth user creation, the server **creates** Afenda `users` (when needed) and **`identity_links`** (`ensureIdentityLinkForBetterAuthUser`, `user.create` database hook). No “backfill” story for an empty greenfield database.
 
 ## Alternatives considered
 
@@ -52,23 +47,25 @@ A dedicated **bridge table** is the enterprise-stable pattern: authentication id
 
 ### Positive
 
-- Deterministic resolution: session → Better Auth user → **Afenda user** → memberships.
-- Audit `actor_user_id` can always target **`users.id`**.
-- Email changes do not break the link if the bridge is updated with discipline.
+- Deterministic resolution: session → Better Auth user → **`identity_links`** → **Afenda user** → memberships.
+- Audit `actor_user_id` targets **`users.id`** via the bridge only.
 
 ### Negative
 
-- Requires backfill and monitoring for orphaned or duplicate rows.
-- Operational discipline on `verified_at` / reconciliation jobs.
+- Sign-up and hook ordering must succeed for identity bootstrap; failures must be monitored.
 
-## Rollout (summary)
+## Implementation status
 
-1. Add table + constraints + Drizzle schema.
-2. Backfill from existing email matches where safe.
-3. Switch API resolution order: **bridge → email fallback → log debt**.
-4. Remove fallback after metrics show zero reliance (see ADR-0006).
+| Item | State |
+|------|--------|
+| `identity_links` schema | Done |
+| Bootstrap on `user.create` (`ensureIdentityLinkForBetterAuthUser`) | Done |
+| Remove email fallback (`resolveAfendaMeContext` removed; `requireAfendaMeContextFromBetterAuthUserId` for strict paths) | Done |
+| Protected BFF routes requiring bridge (`GET /v1/me`) | Done |
 
 ## References
 
-- `packages/_database/src/identity/schema/users.ts`
-- `packages/_database/src/tenancy/services/resolve-afenda-me-context.ts` (current email-based path)
+- `packages/_database/src/identity/schema/users.ts`, `identity-links.ts`
+- `packages/_database/src/identity/services/ensure-identity-link-for-better-auth-user.ts`
+- `packages/_database/src/tenancy/services/resolve-afenda-me-context.ts`
+- `packages/better-auth/src/auth-database-audit-hooks.ts`

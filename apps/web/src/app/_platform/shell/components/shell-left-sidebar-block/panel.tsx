@@ -222,14 +222,14 @@ function ShellLabelsColumnWidgetCard({
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="flex min-w-0 items-center gap-1.5">
+        <span className="flex min-w-0 items-center gap-[0.375rem]">
           <span className="truncate text-xs leading-tight font-medium tracking-normal">
             {item.label}
           </span>
           {item.lifecycle === "comingSoon" ? (
             <Badge
               variant="outline"
-              className="h-4 max-w-16 rounded-full px-1.5 text-[8px]"
+              className="h-[1rem] max-w-16 rounded-full px-1.5 text-[8px]"
             >
               {t("nav.lifecycle.coming_soon")}
             </Badge>
@@ -242,7 +242,7 @@ function ShellLabelsColumnWidgetCard({
 
       <Badge
         variant={item.isEnabled ? "secondary" : "outline"}
-        className="h-4 max-w-[4.2rem] shrink-0 truncate rounded-full px-1.5 text-[8px]"
+        className="h-[1rem] max-w-[4.2rem] shrink-0 truncate rounded-full px-1.5 text-[8px]"
       >
         {item.isEnabled ? "On rail" : "Hidden"}
       </Badge>
@@ -269,14 +269,14 @@ function ShellLabelsColumnModuleGroup({
 
   return (
     <SidebarGroup className="ui-shell-sidebar-section-card">
-      <SidebarGroupLabel className="h-6 px-0">
-        <span className="flex min-w-0 flex-1 items-center justify-between gap-2">
+      <SidebarGroupLabel className="h-[1.5rem] px-0">
+        <span className="flex min-w-0 flex-1 items-center justify-between gap-[0.5rem]">
           <span className="truncate text-[10px] font-semibold tracking-normal uppercase">
             {section.label}
           </span>
           <Badge
             variant="outline"
-            className="h-4 rounded-full px-1.5 text-[8px]"
+            className="h-[1rem] rounded-full px-1.5 text-[8px]"
           >
             {section.items.length}
           </Badge>
@@ -284,7 +284,7 @@ function ShellLabelsColumnModuleGroup({
       </SidebarGroupLabel>
 
       <SidebarGroupContent>
-        <SidebarMenu className="gap-1">
+        <SidebarMenu className="gap-[0.25rem]">
           {visibleItems.map((module) => {
             const isExpanded =
               expandedModuleIds.has(module.id) || module.isActive
@@ -299,7 +299,7 @@ function ShellLabelsColumnModuleGroup({
                 }}
               >
                 <SidebarMenuItem className="space-y-1">
-                  <div className="flex items-start gap-1">
+                  <div className="flex items-start gap-[0.25rem]">
                     <SidebarMenuButton
                       asChild
                       variant="outline"
@@ -319,13 +319,13 @@ function ShellLabelsColumnModuleGroup({
                         </span>
 
                         <span className="min-w-0 flex-1">
-                          <span className="flex min-w-0 items-center gap-1.5">
+                          <span className="flex min-w-0 items-center gap-[0.375rem]">
                             <span className="truncate text-xs leading-tight font-medium tracking-normal">
                               {module.label}
                             </span>
                             <Badge
                               variant="outline"
-                              className="h-4 rounded-full px-1.5 text-[8px]"
+                              className="h-[1rem] rounded-full px-1.5 text-[8px]"
                             >
                               {module.submoduleCount}
                             </Badge>
@@ -417,7 +417,7 @@ function ShellLabelsColumnModuleGroup({
               variant="ghost"
               size="sm"
               onClick={onLoadMore}
-              className="h-6 w-full rounded-sm text-[10px] tracking-normal text-muted-foreground uppercase hover:text-foreground"
+              className="h-[1.5rem] w-full rounded-sm text-[10px] tracking-normal text-muted-foreground uppercase hover:text-foreground"
             >
               Load more
             </Button>
@@ -615,7 +615,7 @@ export function ShellLabelsColumn({
           }}
         />
 
-        <div className="mt-2 flex items-center justify-between gap-2 px-1">
+        <div className="mt-2 flex items-center justify-between gap-[0.5rem] px-1">
           <div className="min-w-0">
             <p className="text-[10px] font-medium tracking-normal text-muted-foreground uppercase">
               Module explorer
@@ -627,17 +627,17 @@ export function ShellLabelsColumn({
 
           <Badge
             variant="outline"
-            className="h-5 rounded-full border-border/70 bg-background/70 px-1.5 text-[8px] tracking-normal uppercase"
+            className="h-[1.25rem] rounded-full border-border/70 bg-background/70 px-1.5 text-[8px] tracking-normal uppercase"
           >
             ERP · {renderedModuleCount}/{visibleModuleCount}
           </Badge>
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-2 px-1">
+        <div className="mt-2 flex items-center justify-between gap-[0.5rem] px-1">
           <span className="text-[10px] font-medium tracking-normal text-muted-foreground uppercase">
             Modules
           </span>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-[0.25rem]">
             <ShellLabelsColumnCompactAction
               ariaLabel="Expand all modules"
               icon={<UnfoldVertical className="size-3.5" />}
@@ -660,7 +660,7 @@ export function ShellLabelsColumn({
         </div>
       </div>
 
-      <div className="ui-scrollbar-hidden flex min-h-0 ui-shell-sidebar-fit flex-1 flex-col gap-2 overflow-y-auto px-2 py-2">
+      <div className="ui-scrollbar-hidden flex min-h-0 ui-shell-sidebar-fit flex-1 flex-col gap-[0.5rem] overflow-y-auto px-2 py-2">
         {hasResults ? (
           <>
             {sectionRenderData.map((section) => (
@@ -698,15 +698,15 @@ export function ShellLabelsColumn({
               onOpenChange={setIsWidgetShelfOpen}
             >
               <SidebarGroup className="ui-shell-sidebar-section-card">
-                <SidebarGroupLabel className="h-6 px-0">
-                  <span className="flex min-w-0 flex-1 items-center justify-between gap-2">
+                <SidebarGroupLabel className="h-[1.5rem] px-0">
+                  <span className="flex min-w-0 flex-1 items-center justify-between gap-[0.5rem]">
                     <span className="truncate text-[10px] font-semibold tracking-normal uppercase">
                       {model.widgetShelf.label}
                     </span>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-[0.25rem]">
                       <Badge
                         variant="outline"
-                        className="h-4 rounded-full px-1.5 text-[8px]"
+                        className="h-[1rem] rounded-full px-1.5 text-[8px]"
                       >
                         {widgetShelfItems.length}
                       </Badge>
@@ -752,7 +752,7 @@ export function ShellLabelsColumn({
 
                 <CollapsibleContent>
                   <SidebarGroupContent>
-                    <div className="grid gap-1">
+                    <div className="grid gap-[0.25rem]">
                       {widgetShelfItems.length > 0 ? (
                         widgetShelfItems.map((item) => (
                           <ShellLabelsColumnWidgetCard

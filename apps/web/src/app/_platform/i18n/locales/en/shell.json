@@ -204,6 +204,7 @@
     "social_prompt": "Choose a federated provider to continue.",
     "receipt_title": "Security receipt",
     "receipt_generating": "Generating security receipt…",
+    "challenge_preparing": "Preparing secure challenge…",
     "challenge_verifying": "Verifying challenge…",
     "redirecting": "Verification complete. Redirecting to workspace…",
     "menu_item": "Security & sessions",
@@ -264,6 +265,35 @@
     "empty": {
       "default_title": "Nothing here yet",
       "default_description": "There are no items to show. Adjust filters or check back later."
+    },
+    "tenant_scope": {
+      "hint_status": "HTTP {{status}}",
+      "retry": "Retry",
+      "sign_out": "Sign out",
+      "api_session": {
+        "title": "API session not recognized",
+        "body": "The browser session does not match the API (HTTP {{status}}). For local development, leave VITE_BETTER_AUTH_BASE_URL unset so Better Auth uses /api/auth on the same origin, and run pnpm --filter @afenda/api dev. Cookies from remote Neon Auth are not sent to localhost."
+      },
+      "identity_bridge": {
+        "title": "Identity bridge missing",
+        "body": "No Afenda identity link for this account (HTTP {{status}}). Sign-up hooks must use the same DATABASE_URL as apps/api, and identity_links must exist (ADR-0004)."
+      },
+      "forbidden": {
+        "title": "Access denied",
+        "body": "The API refused this request (HTTP {{status}}) for a reason other than the identity bridge. Check roles, tenant access, or server logs."
+      },
+      "api_unavailable": {
+        "title": "API unavailable",
+        "body": "The BFF returned HTTP {{status}}. Start @afenda/api on the port Vite proxies to (default 3001). If the Vite terminal shows ECONNREFUSED, the API process is not running."
+      },
+      "network": {
+        "title": "Cannot reach API",
+        "body": "Network or timeout error — the API may be stopped, unreachable, or slow. Start pnpm --filter @afenda/api dev and confirm the dev server proxy target (VITE_API_URL)."
+      },
+      "unknown": {
+        "title": "Workspace scope failed to load",
+        "body": "Could not load tenant scope (HTTP {{status}}). Retry, sign out, or verify DATABASE_URL and Better Auth configuration."
+      }
     }
   },
   "language": {

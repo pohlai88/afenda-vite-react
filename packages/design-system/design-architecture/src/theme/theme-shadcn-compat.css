@@ -1,25 +1,24 @@
 /**
  * SHADCN COMPATIBILITY ALIASES
  *
- * Recommended use ONLY for:
- * - shadcn/ui primitives (expected CSS variable names)
- * - generic Tailwind semantic bridge (`--background`, `--foreground`, …)
- * - `@theme inline` / theme bridge output that expects shadcn names
- *
- * Do NOT use this file for:
- * - AFENDA shell layout semantics, surface doctrine, or `--af-*` names
- * - status surface extensions, density-aware sizing, or motion aliases
- *   (use `theme-afenda-extensions.css`)
+ * AFENDA Governance Layer
  *
  * Doctrine:
- * - alias-only; zero logic; canonical `--color-*` remains source of truth
+ * - alias-only
+ * - zero logic
+ * - zero transformation
+ * - canonical tokens remain source of truth
+ * - expose only stable shadcn-facing aliases here
  *
- * Important caution:
- * - Mixing AFENDA-only names here breaks the split with extensions and confuses
- *   shadcn/Tailwind bridge consumers. Keep this layer strictly shadcn-facing.
+ * Load-order rule:
+ * - load after canonical theme tokens and runtime density
+ * - load before app vocabulary / app-local CSS consumers
  *
- * Architecture: strict compatibility bridge here; AFENDA-specific semantics live in
- * `theme-afenda-extensions.css` so this file stays small, stable, and honest.
+ * Rules:
+ * - do not add AFENDA-only aliases here
+ * - do not reference raw palette ramps here
+ * - do not make this file a second source of truth
+ * - keep shadcn compatibility small and predictable
  */
 
 :root {
@@ -84,14 +83,15 @@
 
   /* ------------------------------------------------------------------
    * Typography compatibility
-   * Keep only if bridge consumers need explicit aliases.
+   * Keep only while bridge consumers still expect explicit aliases.
+   * Safe to delete after repo-wide confirmation of zero usage.
    * ------------------------------------------------------------------ */
   --font-sans-compat: var(--font-sans);
   --font-mono-compat: var(--font-mono);
 
   /* ------------------------------------------------------------------
    * Radius
-   * Shadcn expects a single default radius token.
+   * Shadcn expects one default radius token.
    * ------------------------------------------------------------------ */
   --radius: var(--radius-md);
 }

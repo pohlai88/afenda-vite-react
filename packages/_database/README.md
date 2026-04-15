@@ -57,6 +57,50 @@ The additive “first wave” from schema review (identity bridge, operating dim
 
 Drizzle here models **Afenda domain** tables (`users`, `tenants`, `identity_links`, …). The same Postgres database may also contain **Better Auth** tables (`public.user`, `public.session`, …) and, on Neon, a **`neon_auth`** schema. **Authoritative ERP tenancy and identity bridging** are documented in [`docs/DATABASE.md`](../docs/DATABASE.md) §5.2 and ADRs **0003–0006** under [`docs/decisions/`](../docs/decisions/README.md). Do not implement features against `neon_auth` workspace tables without a new ADR.
 
+## Protected API handlers (tenant context + audit)
+
+Server routes that mutate tenant data should resolve **one** Afenda context per request, then use it for filters, authorization, and audit.
+
+```ts
+import { db, resolveActiveTenantContext } from "@afenda/database"
+
+const context = await resolveActiveTenantContext({
+  db,
+  authUserId: session.user.id,
+  authProvider: "better-auth",
+  authSessionId: session.session.id,
+  activeTenantId: session.session.activeTenantId,
+  activeLegalEntityId: session.session.activeLegalEntityId,
+  activeBusinessUnitId: session.session.activeBusinessUnitId,
+  activeLocationId: session.session.activeLocationId,
+  activeOrgUnitId: session.session.activeOrgUnitId,
+})
+```
+
+Use **`context.tenantId`** for tenant-scoped queries / RLS parameters, **`context.membershipId`** for authorization checks and audit membership binding, and **`context.afendaUserId`** as the Afenda actor (not the Better Auth user id).
+
+`resolveActiveTenantContext` runs membership scope checks, then **`assertContextAlignment`** so optional legal entity, business unit, location, and org unit ids (when present) agree with each row’s bindings; null FKs on a row do not force rejection.
+
+Session fields such as **`activeTenantId`** and operating dimensions must be populated server-side (e.g. Better Auth `session` additional fields) per [`docs/decisions/ADR-0006-session-operating-context.md`](../docs/decisions/ADR-0006-session-operating-context.md).
+
+**Audit row assembly** (map to `audit_logs` columns; `session_id` holds the auth session in DB):
+
+```ts
+const auditPayload = {
+  tenantId: context.tenantId,
+  actorUserId: context.afendaUserId,
+  membershipId: context.membershipId,
+  legalEntityId: context.activeLegalEntityId,
+  businessUnitId: context.activeBusinessUnitId,
+  locationId: context.activeLocationId,
+  orgUnitId: context.activeOrgUnitId,
+  authUserId: context.authUserId,
+  sessionId: context.authSessionId,
+}
+```
+
+Prefer governed writers (`insertGovernedAuditLog` / catalog merge) where the audit package exposes them so actions and payloads stay doctrine-aligned.
+
 ## Web relationship
 
 `apps/web` must never import this package. Browser features may keep `db-schema` notes as upstream persistence intent, but executable Drizzle schema and migrations live here and are consumed by future server/API code through `@afenda/database`.

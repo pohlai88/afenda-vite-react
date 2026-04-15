@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react"
 
+import type { AuthSessionsPayload } from "../contracts/auth-domain"
+import { normalizeAuthServiceErrorCode } from "../services/auth-error-service"
 import {
   fetchAuthSessionsPayload,
-  resolveAuthErrorCode,
   revokeAuthSession,
-} from "../services/auth-ecosystem-service"
-import type { AuthSessionsPayload } from "../types/auth-ecosystem"
+} from "../services/auth-session-service"
 
 export function useAuthSessions(enabled: boolean) {
   const [data, setData] = useState<AuthSessionsPayload | null>(null)
@@ -15,11 +15,12 @@ export function useAuthSessions(enabled: boolean) {
   const reload = useCallback(async () => {
     setLoading(true)
     setErrorCode(null)
+
     try {
       const payload = await fetchAuthSessionsPayload()
       setData(payload)
     } catch (error) {
-      setErrorCode(resolveAuthErrorCode(error))
+      setErrorCode(normalizeAuthServiceErrorCode(error))
     } finally {
       setLoading(false)
     }
@@ -29,6 +30,7 @@ export function useAuthSessions(enabled: boolean) {
     if (!enabled) {
       return
     }
+
     void reload()
   }, [enabled, reload])
 

@@ -36,6 +36,7 @@ export const tenantsRelations = relations(tenants, ({ many, one }) => ({
 export const tenantMembershipsRelations = relations(
   tenantMemberships,
   ({ many, one }) => ({
+    auditLogs: many(auditLogs),
     roles: many(tenantMembershipRoles),
     membershipScopes: many(membershipScopes),
     /** @deprecated Prefer `membershipScopes` with appropriate `scope_type`. */

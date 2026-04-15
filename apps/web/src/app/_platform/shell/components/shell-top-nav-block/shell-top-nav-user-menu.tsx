@@ -28,7 +28,7 @@ export type ShellTopNavUserMenuProps = {
 }
 
 const SHELL_TOP_NAV_USER_TRIGGER_CLASS =
-  "group relative size-9 rounded-full border border-border/70 bg-background/70 p-0 shadow-sm transition-[border-color,background-color,box-shadow,transform] duration-150 hover:border-border hover:bg-accent/15 hover:shadow-[0_0_0_1px_hsl(var(--border)/0.45)] data-[state=open]:border-border data-[state=open]:bg-accent/15"
+  "group relative size-9 rounded-full border border-border/70 bg-background/70 p-[0] shadow-sm transition-[border-color,background-color,box-shadow,transform] duration-150 hover:border-border hover:bg-accent/15 hover:shadow-[0_0_0_1px_hsl(var(--border)/0.45)] data-[state=open]:border-border data-[state=open]:bg-accent/15"
 
 export function ShellTopNavUserMenu({
   user,

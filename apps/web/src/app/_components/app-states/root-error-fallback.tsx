@@ -21,7 +21,7 @@ export function RootErrorFallback({
 
   return (
     <div
-      className="flex min-h-svh flex-col items-center justify-center bg-background p-6"
+      className="flex min-h-svh flex-col items-center justify-center bg-background p-[1.5rem]"
       role="alert"
       aria-live="assertive"
     >
@@ -40,13 +40,13 @@ export function RootErrorFallback({
         </p>
         {import.meta.env.DEV && error?.message ? (
           <pre
-            className="max-h-40 overflow-auto rounded-md border border-border bg-muted p-3 text-left font-mono text-xs text-muted-foreground"
+            className="max-h-[10rem] overflow-auto rounded-md border border-border bg-muted p-[0.75rem] text-left font-mono text-xs text-muted-foreground"
             data-testid="root-error-detail"
           >
             {error.message}
           </pre>
         ) : null}
-        <div className="flex flex-wrap justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-[0.5rem]">
           <Button type="button" onClick={onRetry}>
             {t("states.root_error.retry")}
           </Button>

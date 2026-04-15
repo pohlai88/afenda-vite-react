@@ -44,7 +44,7 @@ export function ShellTopNavBreadcrumbs({
 
   return (
     <Breadcrumb className={cn("min-w-0", className)}>
-      <BreadcrumbList className="flex-nowrap items-center gap-0.5 sm:gap-0.5">
+      <BreadcrumbList className="flex-nowrap items-center gap-[0.125rem] sm:gap-[0.125rem]">
         {items.map((item, index) => {
           const isLast = index === items.length - 1
           const showEnv = isLast
@@ -57,7 +57,7 @@ export function ShellTopNavBreadcrumbs({
               ) : null}
               <BreadcrumbItem className="max-w-40 sm:max-w-48">
                 {isLast ? (
-                  <span className="flex min-w-0 items-center gap-1.5">
+                  <span className="flex min-w-0 items-center gap-[0.375rem]">
                     <BreadcrumbPage className="truncate text-sm/none font-medium">
                       {item.label}
                     </BreadcrumbPage>
@@ -70,7 +70,7 @@ export function ShellTopNavBreadcrumbs({
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="h-8 max-w-full gap-1 rounded-md px-2 font-normal text-muted-foreground hover:bg-accent/30 hover:text-foreground"
+                        className="h-[2rem] max-w-full gap-[0.25rem] rounded-md px-2 font-normal text-muted-foreground hover:bg-accent/30 hover:text-foreground"
                         aria-label={t("breadcrumb.aria_label")}
                       >
                         <span className="truncate text-sm">{item.label}</span>
@@ -81,7 +81,7 @@ export function ShellTopNavBreadcrumbs({
                         />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-56">
+                    <DropdownMenuContent align="start" className="w-[14rem]">
                       <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
                         {item.label}
                       </DropdownMenuLabel>
@@ -118,7 +118,7 @@ function ShellTopNavEnvironmentMenu() {
   return (
     <Badge
       variant="outline"
-      className="h-6 rounded-full border-border/70 bg-background/60 px-2 text-[10px] font-semibold tracking-[0.04em] text-foreground/80 uppercase"
+      className="h-[1.5rem] rounded-full border-border/70 bg-background/60 px-2 text-[10px] font-semibold tracking-[0.04em] text-foreground/80 uppercase"
     >
       {envLabel}
     </Badge>

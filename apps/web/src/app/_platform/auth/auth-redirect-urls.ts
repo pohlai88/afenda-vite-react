@@ -2,6 +2,8 @@
  * Absolute URLs for Better Auth redirects (OAuth, email verification, password reset).
  * Honors Vite `base` / `import.meta.env.BASE_URL` when the app is not served at `/`.
  */
+import { resolveAuthPostLoginDestination } from "./contracts/auth-return-target"
+
 function viteBasePath(): string {
   const base = import.meta.env.BASE_URL
   if (base === "/" || base === "") return ""
@@ -14,9 +16,9 @@ export function authAppCallbackUrl(): string {
   return `${window.location.origin}${path}`
 }
 
-/** Where the user lands after clicking the password-reset link in email. */
+/** Where the user lands after clicking the password-reset link in email (canonical route). */
 export function authPasswordResetRedirectUrl(): string {
-  const path = `${viteBasePath()}/reset-password`
+  const path = `${viteBasePath()}/auth/reset-password`
   return `${window.location.origin}${path}`
 }
 
@@ -25,16 +27,7 @@ export function authPasswordResetRedirectUrl(): string {
  * (set by {@link RequireAuth}) so deep links return to the intended `/app/...` route.
  */
 export function authPostLoginPath(state: unknown): string {
-  if (
-    state &&
-    typeof state === "object" &&
-    "from" in state &&
-    typeof (state as { from: unknown }).from === "string"
-  ) {
-    const from = (state as { from: string }).from.trim()
-    if (from.startsWith("/") && !from.startsWith("//")) {
-      return from
-    }
-  }
-  return `${viteBasePath()}/app`
+  return resolveAuthPostLoginDestination(state, `${viteBasePath()}/app`)
 }
+
+export { viteBasePath }

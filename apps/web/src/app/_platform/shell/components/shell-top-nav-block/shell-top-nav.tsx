@@ -15,7 +15,7 @@ import {
 } from "@afenda/design-system/ui-primitives"
 import { cn } from "@afenda/design-system/utils"
 
-import { authClient, useAfendaSession } from "../../../auth"
+import { AUTH_ROUTES, authClient, useAfendaSession } from "../../../auth"
 import { SHELL_OPEN_COMMAND_PALETTE_EVENT } from "../../services/shell-command-palette-events"
 import { useShellBreadcrumbs } from "../../hooks/use-shell-breadcrumbs"
 import { useShellScopeLineage } from "../../hooks/use-shell-scope-lineage"
@@ -64,7 +64,7 @@ function profileFromSessionData(
  * Pass `leadingSlot` from the shell layout (e.g. mobile `SidebarTrigger`) so sidebar primitives stay in the layout layer.
  *
  * **Content sizing:** Strip height comes from `--size-shell-header-height` (see `index.css`) and `min-h-12`.
- * Toolbar controls use **36px** vertical rhythm (`h-9`, `Button` `size="icon"`, user trigger `size-9`) so icons and search stay aligned with room under the 3rem bar.
+ * Toolbar controls use **36px** vertical rhythm (`h-[2.25rem]`, `Button` `size="icon"`, user trigger `size-9`) so icons and search stay aligned with room under the 3rem bar.
  */
 export function ShellTopNav({
   className,
@@ -83,7 +83,7 @@ export function ShellTopNav({
   const handleLogout = useCallback(() => {
     void (async () => {
       await authClient.signOut()
-      navigate("/login", { replace: true })
+      navigate(AUTH_ROUTES.login, { replace: true })
     })()
   }, [navigate])
   const breadcrumbs = useShellBreadcrumbs()
@@ -185,7 +185,7 @@ export function ShellTopNav({
               "flex w-full shrink-0 border-b border-border-muted",
               focusMode
                 ? cn(
-                    "flex-col items-stretch justify-end gap-0 py-0",
+                    "flex-col items-stretch justify-end gap-[0] py-0",
                     "min-h-2 border-border-muted/35 bg-linear-to-b from-border/45 to-transparent shadow-none",
                     "backdrop-blur-none transition-[min-height,background-color,box-shadow,border-color] duration-200 ease-out",
                     "motion-safe:transition-[min-height,background-color,box-shadow,border-color]",
@@ -194,7 +194,7 @@ export function ShellTopNav({
                     "motion-reduce:min-h-12! motion-reduce:border-border-muted motion-reduce:bg-[color-mix(in_oklab,var(--color-sidebar)_92%,transparent)] motion-reduce:shadow-sm motion-reduce:backdrop-blur-[18px]",
                     "[@media(hover:none)]:min-h-12! [@media(hover:none)]:border-border-muted [@media(hover:none)]:bg-[color-mix(in_oklab,var(--color-sidebar)_92%,transparent)] [@media(hover:none)]:shadow-sm [@media(hover:none)]:backdrop-blur-[18px]"
                   )
-                : "ui-shell-header-strip min-h-12 items-center gap-2 px-3 md:gap-3 md:px-4 lg:px-5",
+                : "ui-shell-header-strip min-h-12 items-center gap-[0.5rem] px-3 md:gap-[0.75rem] md:px-4 lg:px-5",
               className
             )}
             {...headerProps}
@@ -202,7 +202,7 @@ export function ShellTopNav({
             {focusMode ? (
               <div
                 className={cn(
-                  "flex min-h-12 w-full items-center gap-2 px-3 md:gap-2.5 md:px-4 lg:px-5",
+                  "flex min-h-12 w-full items-center gap-[0.5rem] px-3 md:gap-[0.625rem] md:px-4 lg:px-5",
                   "max-h-0 min-h-0 overflow-hidden opacity-0 transition-[max-height,opacity,min-height] duration-200 ease-out",
                   "group-hover/nav:max-h-24! group-hover/nav:min-h-12! group-hover/nav:overflow-visible group-hover/nav:opacity-100",
                   "group-focus-within/nav:max-h-24! group-focus-within/nav:min-h-12! group-focus-within/nav:overflow-visible group-focus-within/nav:opacity-100",
@@ -210,7 +210,7 @@ export function ShellTopNav({
                   "[@media(hover:none)]:max-h-24! [@media(hover:none)]:overflow-visible [@media(hover:none)]:opacity-100"
                 )}
               >
-                <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-2.5">
+                <div className="flex min-w-0 flex-1 items-center gap-[0.5rem] md:gap-[0.625rem]">
                   {leadingSlot}
                   {scopeLineage.segments.length > 0 ? (
                     <ShellScopeLineageBar
@@ -222,7 +222,7 @@ export function ShellTopNav({
                   )}
                 </div>
 
-                <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+                <div className="flex shrink-0 items-center gap-[0.5rem] sm:gap-[0.625rem]">
                   <div className="hidden sm:flex">
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -231,7 +231,7 @@ export function ShellTopNav({
                           variant="outline"
                           size="sm"
                           className={cn(
-                            "h-9 max-w-30 shrink-0 rounded-full border-border-muted bg-card/70 px-2.5 text-left text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring lg:max-w-36"
+                            "h-[2.25rem] max-w-30 shrink-0 rounded-full border-border-muted bg-card/70 px-2.5 text-left text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring lg:max-w-36"
                           )}
                           aria-label={commandTooltip}
                           onClick={openCommand}
@@ -245,7 +245,7 @@ export function ShellTopNav({
                             {t("semantic_search.placeholder")}
                           </span>
                           <Kbd
-                            className="ml-auto hidden h-5 min-w-0 shrink-0 px-1.5 font-sans text-[10px] tracking-tight tabular-nums sm:inline-flex"
+                            className="ml-auto hidden h-[1.25rem] min-w-0 shrink-0 px-1.5 font-sans text-[10px] tracking-tight tabular-nums sm:inline-flex"
                             aria-hidden
                           >
                             {`${mod}+K`}
@@ -303,7 +303,7 @@ export function ShellTopNav({
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="h-9 rounded-full border-border-muted bg-card/70 px-3 text-xs text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                          className="h-[2.25rem] rounded-full border-border-muted bg-card/70 px-3 text-xs text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                           onClick={exitFocusMode}
                         >
                           {focusExitModeLabel}
@@ -326,7 +326,7 @@ export function ShellTopNav({
               </div>
             ) : (
               <>
-                <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-2.5">
+                <div className="flex min-w-0 flex-1 items-center gap-[0.5rem] md:gap-[0.625rem]">
                   {leadingSlot}
                   {scopeLineage.segments.length > 0 ? (
                     <ShellScopeLineageBar
@@ -338,7 +338,7 @@ export function ShellTopNav({
                   )}
                 </div>
 
-                <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+                <div className="flex shrink-0 items-center gap-[0.5rem] sm:gap-[0.625rem]">
                   <div className="hidden sm:flex">
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -347,7 +347,7 @@ export function ShellTopNav({
                           variant="outline"
                           size="sm"
                           className={cn(
-                            "h-9 max-w-30 shrink-0 rounded-full border-border-muted bg-card/70 px-2.5 text-left text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring lg:max-w-36"
+                            "h-[2.25rem] max-w-30 shrink-0 rounded-full border-border-muted bg-card/70 px-2.5 text-left text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring lg:max-w-36"
                           )}
                           aria-label={commandTooltip}
                           onClick={openCommand}
@@ -361,7 +361,7 @@ export function ShellTopNav({
                             {t("semantic_search.placeholder")}
                           </span>
                           <Kbd
-                            className="ml-auto hidden h-5 min-w-0 shrink-0 px-1.5 font-sans text-[10px] tracking-tight tabular-nums sm:inline-flex"
+                            className="ml-auto hidden h-[1.25rem] min-w-0 shrink-0 px-1.5 font-sans text-[10px] tracking-tight tabular-nums sm:inline-flex"
                             aria-hidden
                           >
                             {`${mod}+K`}

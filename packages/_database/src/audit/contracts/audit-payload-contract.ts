@@ -31,6 +31,12 @@ export const auditMetadataSchema = z
     clientVersion: z.string().min(1).optional(),
     flags: z.record(z.string(), z.unknown()).optional(),
     extra: z.record(z.string(), z.unknown()).optional(),
+    /** Better Auth `user.id` (text); duplicated in `audit_logs.auth_user_id` during transition. */
+    betterAuthUserId: z.string().min(1).nullable().optional(),
+    /** OAuth / account provider id for `auth.account.*` rows. */
+    providerId: z.string().min(1).optional(),
+    /** Snapshot for `auth.user.updated` (may be redacted at write time). */
+    email: z.string().optional(),
   })
   .strict()
 

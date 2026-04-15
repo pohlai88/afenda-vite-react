@@ -132,7 +132,7 @@ function mapInteractionToAuditOutcome(
 export async function handleShellInteractionAudit(
   c: Context,
   db: DatabaseClient,
-  sessionEmail: string | null | undefined
+  betterAuthUserId: string
 ): Promise<Response> {
   const auditCtx = c.get("audit")
   const tenantHeader = auditCtx.tenantId
@@ -156,7 +156,7 @@ export async function handleShellInteractionAudit(
     )
   }
 
-  const allowed = await assertUserHasTenantAccess(db, sessionEmail, tenantId)
+  const allowed = await assertUserHasTenantAccess(db, betterAuthUserId, tenantId)
   if (!allowed) {
     return c.json({ error: "Tenant not allowed for this session" }, 403)
   }

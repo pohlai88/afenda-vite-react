@@ -1,3 +1,4 @@
+export * from "../auth-companion/schema/auth-challenges"
 export * from "../audit/schema/audit-enums"
 export * from "../audit/schema/audit-logs"
 export * from "../authorization/schema/membership-legal-entity-scopes"

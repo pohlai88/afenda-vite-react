@@ -51,6 +51,12 @@ jobs:
       - name: Design system component governance check
         run: pnpm --filter @afenda/design-system run component-governance:check
 
+      - name: Design system theme contract (validate-tokens)
+        run: pnpm --filter @afenda/design-system run validate-tokens
+
+      - name: Design system Tailwind token policy (check:tw)
+        run: pnpm --filter @afenda/design-system run check:tw
+
       - name: Validate i18n policy and conflicts
         run: pnpm run script:validate-i18n
 

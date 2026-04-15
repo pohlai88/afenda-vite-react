@@ -49,31 +49,10 @@ export interface AuthSessionsPayload {
   }[]
 }
 
-export interface AuthChallengeVerifyInput {
-  readonly challengeId: string
-  readonly type: "password" | "totp" | "email_otp" | "passkey_assertion"
-  readonly expiresAt: string
-  readonly attemptsRemaining: number
-}
-
-export function authSuccessEnvelope<T>(data: T, requestId?: string) {
-  return {
-    data,
-    meta: {
-      timestamp: new Date().toISOString(),
-      ...(requestId ? { requestId } : {}),
-    },
-  }
-}
-
-export function authErrorEnvelope(code: string, message: string) {
-  return {
-    error: {
-      code,
-      message,
-    },
-  }
-}
+export {
+  authFail as authErrorEnvelope,
+  authOk as authSuccessEnvelope,
+} from "./modules/auth-companion/contracts/auth-api.contract.js"
 
 function passkeyFeatureEnabled(): boolean {
   return process.env.AFENDA_AUTH_PASSKEY_ENABLED === "true"
@@ -208,65 +187,3 @@ export function buildAuthSessionsPayload(input: {
   }
 }
 
-export function verifyAuthChallengeInput(payload: unknown):
-  | { readonly ok: true; readonly value: AuthChallengeVerifyInput }
-  | {
-      readonly ok: false
-      readonly code: string
-      readonly message: string
-    } {
-  if (!payload || typeof payload !== "object") {
-    return {
-      ok: false,
-      code: "auth.challenge.invalid_payload",
-      message: "Challenge payload is invalid.",
-    }
-  }
-
-  const candidate = payload as Partial<AuthChallengeVerifyInput>
-  if (
-    typeof candidate.challengeId !== "string" ||
-    candidate.challengeId.trim().length === 0
-  ) {
-    return {
-      ok: false,
-      code: "auth.challenge.missing_id",
-      message: "Challenge id is required.",
-    }
-  }
-  if (
-    candidate.type !== "password" &&
-    candidate.type !== "totp" &&
-    candidate.type !== "email_otp" &&
-    candidate.type !== "passkey_assertion"
-  ) {
-    return {
-      ok: false,
-      code: "auth.challenge.invalid_type",
-      message: "Unsupported challenge type.",
-    }
-  }
-  if (candidate.type === "passkey_assertion" && !passkeyFeatureEnabled()) {
-    return {
-      ok: false,
-      code: "auth.challenge.passkey_disabled",
-      message: "Passkey verification is not enabled for this tenant.",
-    }
-  }
-
-  return {
-    ok: true,
-    value: {
-      challengeId: candidate.challengeId,
-      type: candidate.type,
-      expiresAt:
-        typeof candidate.expiresAt === "string"
-          ? candidate.expiresAt
-          : new Date(Date.now() + 2 * 60 * 1000).toISOString(),
-      attemptsRemaining:
-        typeof candidate.attemptsRemaining === "number"
-          ? candidate.attemptsRemaining
-          : 3,
-    },
-  }
-}

@@ -1,31 +1,12 @@
 import { useEffect, useState } from "react"
 
-import type { AuthIntelligenceSnapshot } from "../types/auth-ecosystem"
-import {
-  fetchAuthIntelligenceSnapshot,
-  resolveAuthErrorCode,
-} from "../services/auth-ecosystem-service"
-
-const fallbackIntelligenceSnapshot: AuthIntelligenceSnapshot = {
-  trustLevel: "medium",
-  score: 72,
-  deviceLabel: "Unknown browser",
-  regionLabel: "Unverified region",
-  lastSeenLabel: "No previous trusted session",
-  reasons: [
-    {
-      code: "auth.risk.new_device",
-      label: "New device detected for this account.",
-      severity: "warning",
-    },
-  ],
-  passkeyAvailable: false,
-  recommendedMethod: "password",
-}
+import { createUnavailableAuthIntelligenceSnapshot } from "../mappers/map-auth-intelligence-to-view-model"
+import { normalizeAuthServiceErrorCode } from "../services/auth-error-service"
+import { fetchAuthIntelligenceSnapshot } from "../services/auth-intelligence-service"
 
 export function useAuthIntelligence() {
-  const [data, setData] = useState<AuthIntelligenceSnapshot>(
-    fallbackIntelligenceSnapshot
+  const [data, setData] = useState(
+    createUnavailableAuthIntelligenceSnapshot()
   )
   const [isLoading, setLoading] = useState(true)
   const [errorCode, setErrorCode] = useState<string | null>(null)
@@ -46,7 +27,8 @@ export function useAuthIntelligence() {
         if (cancelled) {
           return
         }
-        setErrorCode(resolveAuthErrorCode(error))
+        setErrorCode(normalizeAuthServiceErrorCode(error))
+        setData(createUnavailableAuthIntelligenceSnapshot())
       } finally {
         if (!cancelled) {
           setLoading(false)

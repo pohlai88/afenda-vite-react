@@ -28,7 +28,7 @@ export function ShellUserMenuQuickActions() {
     <>
       <DropdownMenuGroup>
         <DropdownMenuItem
-          className="gap-2"
+          className="gap-[0.5rem]"
           onSelect={(e) => {
             e.preventDefault()
             openPalette()

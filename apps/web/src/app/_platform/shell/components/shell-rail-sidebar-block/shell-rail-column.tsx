@@ -76,7 +76,7 @@ function AppShellSidebarRailDisplayModeFooter({
         <DropdownMenuContent
           align="center"
           side="right"
-          className="w-48"
+          className="w-[12rem]"
           data-slot="shell.sidebar.mode-menu"
         >
           <DropdownMenuLabel>{t("sidebar.control_title")}</DropdownMenuLabel>
@@ -144,14 +144,14 @@ export function AppShellSidebarRailColumn({
         handleBlurIntent(event, onDisplayModeHoverIntentChange)
       }
     >
-      <SidebarHeader className="shrink-0 gap-0 border-0 p-2">
+      <SidebarHeader className="shrink-0 gap-[0] border-0 p-[0.5rem]">
         <div className="flex justify-center">
           <AppShellSidebarBrandRail />
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="flex flex-1 flex-col gap-1 overflow-auto px-1 py-2">
-        <SidebarGroup className="p-0">
+      <SidebarContent className="flex flex-1 flex-col gap-[0.25rem] overflow-auto px-1 py-2">
+        <SidebarGroup className="p-[0]">
           <SidebarGroupContent>
             <SidebarMenu>{railWidgets}</SidebarMenu>
           </SidebarGroupContent>

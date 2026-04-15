@@ -7,14 +7,21 @@ const repoRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../
 
 const ROOT = path.join(repoRoot, "apps/web/src")
 
+/**
+ * Bare numeric scale utilities (e.g. `p-4`, `h-9`) are forbidden in favor of token-backed
+ * or arbitrary values. Compound utilities like `min-h-48` embed `h-48` as a substring — exclude
+ * those via lookbehind so we flag real `h-*` / `w-*` usage, not `min-*` / `max-*` modifiers.
+ *
+ * Border: palette `border-{color}-{shade}` only — exclude side widths (`border-b-2`, etc.).
+ */
 const FORBIDDEN = [
   /bg-\w+-\d+/,
   /text-\w+-\d+/,
-  /border-\w+-\d+/,
+  /border-(?![tblrxy]-)\w+-\d+/,
   /\bp-\d+/,
   /\bgap-\d+/,
-  /\bh-\d+/,
-  /\bw-\d+/,
+  /(?<!min-)(?<!max-)h-\d+/,
+  /(?<!min-)(?<!max-)w-\d+/,
 ]
 
 function scan(file: string) {

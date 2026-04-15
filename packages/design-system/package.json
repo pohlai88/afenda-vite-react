@@ -64,7 +64,8 @@
       "default": "./hooks/index.ts"
     },
     "./hooks/*": "./hooks/*",
-    "./design-architecture/local.css": "./design-architecture/src/local.css"
+    "./design-architecture/local.css": "./design-architecture/src/local.css",
+    "./design-architecture/app-theme-vocabulary.css": "./design-architecture/src/app-theme-vocabulary.css"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

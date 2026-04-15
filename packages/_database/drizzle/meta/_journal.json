@@ -78,6 +78,41 @@
       "when": 1776265000000,
       "tag": "0010_org_units_governance_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1776266000000,
+      "tag": "0011_audit_logs_occurred_at_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1776270000000,
+      "tag": "0012_auth_challenges",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1776271000000,
+      "tag": "0013_auth_challenges_pg_enums",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1776280000000,
+      "tag": "0014_better_auth_core_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1776281000000,
+      "tag": "0015_audit_backfill_auth_user_id_from_metadata",
+      "breakpoints": true
     }
   ]
 }

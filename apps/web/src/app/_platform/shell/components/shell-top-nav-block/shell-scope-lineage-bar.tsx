@@ -78,7 +78,7 @@ function ScopeSegmentControl({
 
   if (!segment.switchable) {
     return (
-      <span className="inline-flex w-full min-w-0 items-center gap-0.5">
+      <span className="inline-flex w-full min-w-0 items-center gap-[0.125rem]">
         <span className={SCOPE_SEGMENT_VALUE_CLASS}>{segment.label}</span>
         {badge ? (
           <Badge
@@ -89,7 +89,7 @@ function ScopeSegmentControl({
                   ? "default"
                   : "outline"
             }
-            className="h-5 shrink-0 rounded-full px-0.5 text-[10px] font-semibold tracking-wide uppercase"
+            className="h-[1.25rem] shrink-0 rounded-full px-0.5 text-[10px] font-semibold tracking-wide uppercase"
           >
             {badge.label}
           </Badge>
@@ -105,7 +105,7 @@ function ScopeSegmentControl({
           type="button"
           variant="ghost"
           size="sm"
-          className="inline-flex h-7 w-full min-w-0 items-center gap-0.5 rounded-md px-0.5 py-0 font-normal hover:bg-accent/40"
+          className="inline-flex h-[1.75rem] w-full min-w-0 items-center gap-[0.125rem] rounded-md px-0.5 py-0 font-normal hover:bg-accent/40"
           aria-label={t("scope_lineage.switch_dimension", {
             dimension: dimensionTitle,
             value: segment.label,
@@ -121,7 +121,7 @@ function ScopeSegmentControl({
                     ? "default"
                     : "outline"
               }
-              className="h-5 shrink-0 rounded-full px-0.5 text-[10px] font-semibold tracking-wide uppercase"
+              className="h-[1.25rem] shrink-0 rounded-full px-0.5 text-[10px] font-semibold tracking-wide uppercase"
             >
               {badge.label}
             </Badge>
@@ -133,7 +133,7 @@ function ScopeSegmentControl({
           />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className="w-56" sideOffset={4}>
+      <DropdownMenuContent align="center" className="w-[14rem]" sideOffset={4}>
         <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
           {dimensionTitle}
         </DropdownMenuLabel>
@@ -168,7 +168,7 @@ export function ShellScopeLineageBar({
       data-slot="shell.scope-lineage"
       data-placeholder={model.isPlaceholder ? "true" : undefined}
       className={cn(
-        "grid max-w-full min-w-0 flex-1 items-stretch gap-0",
+        "grid max-w-full min-w-0 flex-1 items-stretch gap-[0]",
         scopeLineageGridColsClass(segmentCount),
         "divide-x divide-border/45",
         className
