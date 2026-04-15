@@ -1,9 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Search } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { ExternalLink, Maximize2, Minimize2, Search } from "lucide-react"
+import { useLocation, useNavigate } from "react-router-dom"
 
 import {
   Button,
@@ -15,6 +15,7 @@ import {
 } from "@afenda/design-system/ui-primitives"
 import { cn } from "@afenda/design-system/utils"
 
+import { authClient, useAfendaSession } from "../../../auth"
 import { SHELL_OPEN_COMMAND_PALETTE_EVENT } from "../../services/shell-command-palette-events"
 import { useShellBreadcrumbs } from "../../hooks/use-shell-breadcrumbs"
 import { useShellScopeLineage } from "../../hooks/use-shell-scope-lineage"
@@ -27,13 +28,36 @@ import type { AppShellSidebarUserProfile } from "../shell-rail-sidebar-block/she
 import { ShellTopNavTools } from "./shell-top-nav-tools"
 import { ShellTopNavUserMenu } from "./shell-top-nav-user-menu"
 import { useShellTopNavModKey } from "./use-shell-top-nav-mod-key"
+import { ShellAuthTrustBeacon } from "../shell-auth-trust-beacon"
 
-/** Placeholder until shell auth/user context is wired (keep in sync with `ShellLeftSidebar`). */
+function createFocusWindowFeatures() {
+  const width = Math.max(1280, window.screen.availWidth)
+  const height = Math.max(760, window.screen.availHeight)
+  const left = 0
+  const top = 0
+  return `popup=yes,noopener,noreferrer,width=${width},height=${height},left=${left},top=${top}`
+}
+
+/** Fallback only if session is missing (should not occur when `/app` is wrapped in `RequireAuth`). */
 const SHELL_TOP_NAV_FALLBACK_USER = {
   name: "Demo User",
   email: "demo@afenda.local",
   avatar: "",
 } as const satisfies AppShellSidebarUserProfile
+
+function profileFromSessionData(
+  data: ReturnType<typeof useAfendaSession>["data"]
+): AppShellSidebarUserProfile {
+  const u = data?.user
+  if (!u) {
+    return SHELL_TOP_NAV_FALLBACK_USER
+  }
+  return {
+    name: (u.name ?? u.email ?? "User").trim() || "User",
+    email: (u.email ?? "").trim(),
+    avatar: ("image" in u && typeof u.image === "string" ? u.image : "").trim(),
+  }
+}
 
 /**
  * Sticky workspace header: scope breadcrumbs, command palette (⌘K; Ctrl+K also opens on Windows), utilities, Connect (icon in the tool row).
@@ -45,17 +69,44 @@ const SHELL_TOP_NAV_FALLBACK_USER = {
 export function ShellTopNav({
   className,
   leadingSlot,
+  focusMode = false,
   ...headerProps
 }: ShellTopNavProps) {
   const { t } = useTranslation("shell")
   const navigate = useNavigate()
+  const location = useLocation()
+  const { data: sessionData } = useAfendaSession()
+  const shellUser = useMemo(
+    () => profileFromSessionData(sessionData),
+    [sessionData]
+  )
+  const handleLogout = useCallback(() => {
+    void (async () => {
+      await authClient.signOut()
+      navigate("/login", { replace: true })
+    })()
+  }, [navigate])
   const breadcrumbs = useShellBreadcrumbs()
   const scopeLineage = useShellScopeLineage()
   const mod = useShellTopNavModKey()
   const [commandOpen, setCommandOpen] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(
+    typeof document !== "undefined" && document.fullscreenElement !== null
+  )
   const commandTooltip = t("top_nav.tooltip_command", {
     shortcut: `${mod}+K`,
   })
+  const focusWindowLabel = t("top_nav.open_focus_window")
+  const focusEnterFullscreenLabel = t("top_nav.enter_fullscreen")
+  const focusExitFullscreenLabel = t("top_nav.exit_fullscreen")
+  const focusExitModeLabel = t("top_nav.exit_focus_mode")
+  const focusWindowHref = useMemo(() => {
+    const params = new URLSearchParams(location.search)
+    params.set("view", "focus")
+    params.set("focusWindow", "1")
+    const search = params.toString()
+    return `${location.pathname}${search ? `?${search}` : ""}${location.hash}`
+  }, [location.hash, location.pathname, location.search])
 
   const openCommand = useCallback(() => setCommandOpen(true), [])
   const closeCommand = useCallback(() => setCommandOpen(false), [])
@@ -78,13 +129,55 @@ export function ShellTopNav({
       window.removeEventListener(SHELL_OPEN_COMMAND_PALETTE_EVENT, onOpen)
   }, [])
 
+  useEffect(() => {
+    const onFullscreenChange = () =>
+      setIsFullscreen(document.fullscreenElement !== null)
+    document.addEventListener("fullscreenchange", onFullscreenChange)
+    return () =>
+      document.removeEventListener("fullscreenchange", onFullscreenChange)
+  }, [])
+
+  const openFocusWindow = useCallback(() => {
+    window.open(
+      focusWindowHref,
+      "afenda-focus-window",
+      createFocusWindowFeatures()
+    )
+  }, [focusWindowHref])
+
+  const toggleFullscreen = useCallback(() => {
+    if (!focusMode) {
+      return
+    }
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => undefined)
+      return
+    }
+    void document.documentElement.requestFullscreen().catch(() => undefined)
+  }, [focusMode])
+
+  const exitFocusMode = useCallback(() => {
+    const params = new URLSearchParams(location.search)
+    params.delete("view")
+    params.delete("focusWindow")
+    const search = params.toString()
+    navigate(
+      {
+        pathname: location.pathname,
+        search: search ? `?${search}` : "",
+        hash: location.hash,
+      },
+      { replace: true }
+    )
+  }, [location.hash, location.pathname, location.search, navigate])
+
   return (
     <TooltipProvider delayDuration={300}>
       <>
         <header
           data-slot="shell.top-nav"
           className={cn(
-            "sticky top-0 z-40 ui-shell-header-strip flex min-h-12 w-full shrink-0 items-center gap-2 border-b border-border/80 bg-background/92 px-3 backdrop-blur supports-backdrop-filter:bg-background/80 md:gap-3 md:px-4 lg:px-5",
+            "sticky top-0 z-40 ui-shell-header-strip flex min-h-12 w-full shrink-0 items-center gap-2 border-b border-border-muted px-3 md:gap-3 md:px-4 lg:px-5",
             className
           )}
           {...headerProps}
@@ -110,7 +203,7 @@ export function ShellTopNav({
                     variant="outline"
                     size="sm"
                     className={cn(
-                      "h-9 max-w-30 shrink-0 rounded-full border-border/70 bg-background/70 px-2.5 text-left text-muted-foreground transition-colors hover:border-border hover:bg-accent/30 lg:max-w-36"
+                      "h-9 max-w-30 shrink-0 rounded-full border-border-muted bg-card/70 px-2.5 text-left text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring lg:max-w-36"
                     )}
                     aria-label={commandTooltip}
                     onClick={openCommand}
@@ -140,13 +233,86 @@ export function ShellTopNav({
             <ShellTopNavTools
               className="hidden sm:flex"
               connectSlot={<ShellTopNavConnectPopover />}
+              trustBeacon={<ShellAuthTrustBeacon />}
+              workspaceSlot={
+                focusMode ? (
+                  <>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                          aria-label={
+                            isFullscreen
+                              ? focusExitFullscreenLabel
+                              : focusEnterFullscreenLabel
+                          }
+                          onClick={toggleFullscreen}
+                        >
+                          {isFullscreen ? (
+                            <Minimize2
+                              className="size-4"
+                              strokeWidth={1.5}
+                              aria-hidden
+                            />
+                          ) : (
+                            <Maximize2
+                              className="size-4"
+                              strokeWidth={1.5}
+                              aria-hidden
+                            />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-xs">
+                        {isFullscreen
+                          ? focusExitFullscreenLabel
+                          : focusEnterFullscreenLabel}
+                      </TooltipContent>
+                    </Tooltip>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-9 rounded-full border-border-muted bg-card/70 px-3 text-xs text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                      onClick={exitFocusMode}
+                    >
+                      {focusExitModeLabel}
+                    </Button>
+                  </>
+                ) : (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                        aria-label={focusWindowLabel}
+                        onClick={openFocusWindow}
+                      >
+                        <ExternalLink
+                          className="size-4"
+                          strokeWidth={1.5}
+                          aria-hidden
+                        />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs">
+                      {focusWindowLabel}
+                    </TooltipContent>
+                  </Tooltip>
+                )
+              }
               feedbackLabel={t("feedback.aria_label")}
               helpLabel={t("help.tooltip")}
               insightsLabel={t("resolution.title")}
               terminalLabel={t("top_nav.terminal_aria")}
               appSwitcherLabel={t("top_nav.app_switcher_aria")}
               userMenu={
-                <ShellTopNavUserMenu user={SHELL_TOP_NAV_FALLBACK_USER} />
+                <ShellTopNavUserMenu user={shellUser} onLogout={handleLogout} />
               }
             />
           </div>

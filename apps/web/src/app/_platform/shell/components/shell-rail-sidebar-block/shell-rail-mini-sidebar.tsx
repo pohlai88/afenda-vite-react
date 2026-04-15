@@ -60,6 +60,7 @@ import { ShellUserMenuAccessibility } from "../shell-user-menu-accessibility"
 import { ShellUserMenuAppearance } from "../shell-user-menu-appearance"
 import { ShellUserMenuLanguage } from "../shell-user-menu-language"
 import { ShellUserMenuQuickActions } from "../shell-user-menu-quick-actions"
+import { ShellUserMenuSecurityPanel } from "../shell-user-menu-security-panel"
 import { cn } from "@afenda/design-system/utils"
 
 import { useCloseMobileSidebar } from "../../hooks/use-close-mobile-sidebar"
@@ -281,6 +282,7 @@ export function ShellUserMenuDropdownPanel({
       <ShellUserMenuQuickActions />
 
       <DropdownMenuGroup>
+        <ShellUserMenuSecurityPanel />
         {SHELL_USER_MENU_ITEM_DEFINITIONS.map((item) => {
           const Icon = item.icon
           const href = links[item.key]

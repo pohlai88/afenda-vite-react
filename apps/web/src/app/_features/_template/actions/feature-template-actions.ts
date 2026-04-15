@@ -8,6 +8,12 @@ import { getPrimaryFeatureTemplateRecord } from "../utils/feature-template-utils
 
 export const featureTemplateCommands = [
   {
+    id: "refresh-view",
+    label: "Refresh",
+    description:
+      "Reconcile the current workspace stream with the latest scope.",
+  },
+  {
     id: "open-primary-record",
     label: "Open priority record",
     description: "Navigate to the first record that needs operator context.",
@@ -31,6 +37,12 @@ export function executeFeatureTemplateCommand(
   const primaryRecord = getPrimaryFeatureTemplateRecord(feature.records)
 
   switch (commandId) {
+    case "refresh-view":
+      return {
+        commandId,
+        featureSlug: feature.slug,
+        message: `${feature.title} refreshed for the active workspace scope.`,
+      }
     case "open-primary-record":
       return {
         commandId,

@@ -167,6 +167,7 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
       url,
       init: {
         ...rest,
+        credentials: rest.credentials ?? "include",
         method,
         headers: mergedHeaders,
         body:

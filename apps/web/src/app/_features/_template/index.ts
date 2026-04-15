@@ -14,4 +14,5 @@ export type {
   FeatureTemplateRecord,
   FeatureTemplateSlug,
   FeatureTemplateStatus,
+  FeatureTemplateTone,
 } from "./types/feature-template"

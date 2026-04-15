@@ -4,8 +4,7 @@
  * Fire-and-forget POST to the audit API. Does not block UX on failure.
  */
 
-import { joinApiClientUrl } from "../../api-client/utils/api-client-utils"
-import { normalizeApiClientBaseUrl } from "../../api-client/utils/api-client-utils"
+import { resolveApiV1Path } from "../../api-client/utils/api-client-utils"
 
 import type { ShellInteractionAuditEnvelope } from "../contract/shell-interaction-audit-contract"
 import {
@@ -25,11 +24,7 @@ export interface EmitShellInteractionAuditOptions {
 }
 
 function resolveShellInteractionAuditUrl(): string {
-  const base = normalizeApiClientBaseUrl(import.meta.env.VITE_API_BASE_URL)
-  if (base === "") {
-    return "/api/v1/audit/shell-interaction"
-  }
-  return joinApiClientUrl(base, "/v1/audit/shell-interaction")
+  return resolveApiV1Path("/audit/shell-interaction")
 }
 
 function buildRequestHeaders(

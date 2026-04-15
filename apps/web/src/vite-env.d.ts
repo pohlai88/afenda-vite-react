@@ -11,6 +11,12 @@ interface ImportMetaEnv {
    * Optional Better Auth client base (e.g. Neon Auth). When unset, uses same-origin `/api` proxy.
    */
   readonly VITE_BETTER_AUTH_BASE_URL?: string
+  /** @deprecated No longer required; dev one-click is shown whenever `import.meta.env.DEV`. */
+  readonly VITE_AFENDA_DEV_QUICK_LOGIN?: string
+  /** Optional: same email as your seeded Better Auth user — prefill link only (not a secret). */
+  readonly VITE_AFENDA_DEV_LOGIN_EMAIL?: string
+  /** Optional label for the dev quick-login button. */
+  readonly VITE_AFENDA_DEV_LOGIN_LABEL?: string
 }
 
 interface ImportMeta {

@@ -133,6 +133,7 @@ describe("_platform/api-client", () => {
 
     await client.post("/api/json", { name: "Afenda" })
     const jsonInit = fetchMock.mock.calls[0]?.[1] as RequestInit
+    expect(jsonInit.credentials).toBe("include")
     expect(jsonInit.body).toBe(JSON.stringify({ name: "Afenda" }))
     expect(new Headers(jsonInit.headers).get("Content-Type")).toBe(
       "application/json"
@@ -141,6 +142,7 @@ describe("_platform/api-client", () => {
     const params = new URLSearchParams({ q: "ledger" })
     await client.post("/api/search", params)
     const paramsInit = fetchMock.mock.calls[1]?.[1] as RequestInit
+    expect(paramsInit.credentials).toBe("include")
     expect(paramsInit.body).toBe(params)
     expect(new Headers(paramsInit.headers).has("Content-Type")).toBe(false)
   })

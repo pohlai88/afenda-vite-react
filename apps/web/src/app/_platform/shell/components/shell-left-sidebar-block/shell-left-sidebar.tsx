@@ -1,6 +1,6 @@
 "use client"
 
-import { Sidebar, TooltipProvider } from "@afenda/design-system/ui-primitives"
+import { Sidebar } from "@afenda/design-system/ui-primitives"
 import { cn } from "@afenda/design-system/utils"
 
 import { AppShellSidebarRailColumn } from "../shell-rail-sidebar-block/shell-rail-column"
@@ -32,22 +32,20 @@ export function ShellLeftSidebar({
   isDisplayExpanded = true,
 }: ShellLeftSidebarProps) {
   return (
-    <TooltipProvider delayDuration={200}>
-      <Sidebar
-        collapsible="none"
-        variant="sidebar"
-        className={cn(SHELL_LEFT_SIDEBAR_CLASS)}
-      >
-        <AppShellSidebarRailColumn
-          railWidgets={model.railWidgets}
-          displayMode={displayMode}
-          onDisplayModeChange={onDisplayModeChange}
-          onDisplayModeHoverIntentChange={onDisplayModeHoverIntentChange}
-          isDisplayExpanded={isDisplayExpanded}
-        />
-        <ShellLabelsColumn model={model} className="min-w-0 flex-1 md:hidden" />
-      </Sidebar>
-    </TooltipProvider>
+    <Sidebar
+      collapsible="none"
+      variant="sidebar"
+      className={cn(SHELL_LEFT_SIDEBAR_CLASS)}
+    >
+      <AppShellSidebarRailColumn
+        railWidgets={model.railWidgets}
+        displayMode={displayMode}
+        onDisplayModeChange={onDisplayModeChange}
+        onDisplayModeHoverIntentChange={onDisplayModeHoverIntentChange}
+        isDisplayExpanded={isDisplayExpanded}
+      />
+      <ShellLabelsColumn model={model} className="min-w-0 flex-1 md:hidden" />
+    </Sidebar>
   )
 }
 

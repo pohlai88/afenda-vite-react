@@ -16,6 +16,8 @@ describe("feature template contract", () => {
     expect(feature.slug).toBe("audit")
     expect(feature.metrics.length).toBeGreaterThan(0)
     expect(feature.records.length).toBeGreaterThan(0)
+    expect(feature.metrics.some((metric) => metric.trendLabel)).toBe(true)
+    expect(feature.records.some((record) => record.severity)).toBe(true)
   })
 
   it("keeps commands executable through the action boundary", async () => {

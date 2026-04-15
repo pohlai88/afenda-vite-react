@@ -1,6 +1,6 @@
-import { loadMonorepoEnv } from "@afenda/env-loader"
+import { loadMonorepoEnvLayered } from "@afenda/env-loader"
 
-loadMonorepoEnv()
+loadMonorepoEnvLayered()
 
 import { createAfendaAuth } from "@afenda/better-auth"
 import { closeDbPool, createDbClient, createPgPool } from "@afenda/database"

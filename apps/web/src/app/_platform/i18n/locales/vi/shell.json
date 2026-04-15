@@ -457,7 +457,11 @@
     "labels_column": {
       "expand_all_title": "Mở rộng tất cả mô-đun (Ctrl+Shift+E)",
       "collapse_all_title": "Thu gọn tất cả mô-đun (Ctrl+Shift+C)",
-      "focus_active_title": "Tập trung mô-đun đang hoạt động (Ctrl+Shift+O)"
+      "focus_active_title": "Tập trung mô-đun đang hoạt động (Ctrl+Shift+O)",
+      "toggle_nesting_expand": "Mở rộng chế độ xem lồng nhau cho {{module}}",
+      "toggle_nesting_collapse": "Thu gọn chế độ xem lồng nhau cho {{module}}",
+      "widget_shelf_expand": "Mở rộng widget",
+      "widget_shelf_collapse": "Thu gọn widget"
     }
   },
   "feedback": {
@@ -563,7 +567,11 @@
     "connect_placeholder_url": "https://api.example.com/v1",
     "read_only_hint": "Xem trước chỉ đọc",
     "tooltip_command": "Mở bảng lệnh ({{shortcut}})",
-    "tooltip_connect": "Chi tiết kết nối và endpoint API"
+    "tooltip_connect": "Chi tiết kết nối và endpoint API",
+    "open_focus_window": "Mở cửa sổ tập trung",
+    "enter_fullscreen": "Vào toàn màn hình",
+    "exit_fullscreen": "Thoát toàn màn hình",
+    "exit_focus_mode": "Thoát chế độ tập trung"
   },
   "actions": {
     "command_running": "Đang tải…",

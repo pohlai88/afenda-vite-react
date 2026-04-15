@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "Loads monorepo-root `.env.neon` into process.env for API, Drizzle, and Vite.",
+  "description": "Loads monorepo-root `.env.neon` and `.env` into process.env for API, Drizzle, and CLI.",
   "exports": {
     ".": {
       "types": "./src/index.ts",

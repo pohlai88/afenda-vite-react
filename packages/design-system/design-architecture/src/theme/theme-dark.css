@@ -4,18 +4,26 @@
  * AFENDA final dark — refined noir-luxury + precision control-plane.
  */
 
- .dark {
+.dark {
   /* ------------------------------------------------------------------
    * Foundation
    * ------------------------------------------------------------------ */
+  --color-black-0: oklch(0.055 0.004 250);
+  --color-black-1: oklch(0.075 0.004 250);
+  --color-black-2: oklch(0.095 0.005 252);
+  --color-black-3: oklch(0.118 0.006 252);
+  --color-black-4: oklch(0.145 0.006 252);
+  --color-black-5: oklch(0.175 0.007 252);
+  --color-black-6: oklch(0.215 0.008 252);
+
   /* foundation */
-  --color-background: oklch(0.101 0.004 250);
+  --color-background: var(--color-black-1);
   --color-foreground: oklch(0.92 0.007 255);
 
-  --color-card: oklch(0.139 0.005 252);
+  --color-card: var(--color-black-4);
   --color-card-foreground: var(--color-foreground);
 
-  --color-popover: oklch(0.166 0.006 252);
+  --color-popover: var(--color-black-5);
   --color-popover-foreground: var(--color-foreground);
 
   /* ------------------------------------------------------------------
@@ -24,28 +32,28 @@
   --color-primary: oklch(0.6 0.102 286);
   --color-primary-foreground: oklch(0.972 0.004 286);
 
-  --color-secondary: oklch(0.194 0.006 252);
+  --color-secondary: var(--color-black-5);
   --color-secondary-foreground: oklch(0.88 0.008 255);
 
-  --color-muted: oklch(0.174 0.005 252);
+  --color-muted: var(--color-black-5);
   --color-muted-foreground: oklch(0.694 0.009 255);
 
   /* accent restraint */
-  --color-accent: oklch(0.272 0.019 235);
+  --color-accent: var(--color-black-6);
   --color-accent-foreground: oklch(0.944 0.004 235);
 
   --color-destructive: oklch(0.61 0.16 24);
   --color-destructive-foreground: oklch(0.14 0.008 24);
 
-  --color-border: oklch(0.248 0.006 252);
-  --color-input: oklch(0.248 0.006 252);
+  --color-border: oklch(0.255 0.006 252);
+  --color-input: oklch(0.255 0.006 252);
   --color-ring: var(--color-primary);
   --color-ring-offset: var(--color-background);
 
   /* ------------------------------------------------------------------
    * Primary scale
    * ------------------------------------------------------------------ */
-  --color-primary-50: oklch(0.17 0.010 286);
+  --color-primary-50: oklch(0.17 0.01 286);
   --color-primary-100: oklch(0.206 0.016 286);
   --color-primary-200: oklch(0.258 0.026 286);
   --color-primary-300: oklch(0.33 0.04 286);
@@ -69,13 +77,17 @@
   /* ------------------------------------------------------------------
    * Sidebar — frame
    * ------------------------------------------------------------------ */
-  --color-sidebar: oklch(0.120 0.004 250);
+  --color-sidebar: var(--color-black-2);
   --color-sidebar-foreground: oklch(0.88 0.008 255);
   --color-sidebar-primary: var(--color-primary);
   --color-sidebar-primary-foreground: var(--color-primary-foreground);
-  --color-sidebar-accent: oklch(0.184 0.006 252);
+  --color-sidebar-accent: var(--color-black-4);
   --color-sidebar-accent-foreground: oklch(0.868 0.008 255);
-  --color-sidebar-border: oklch(0.212 0.005 252);
+  --color-sidebar-border: color-mix(
+    in oklab,
+    var(--color-foreground) 8%,
+    transparent
+  );
   --color-sidebar-ring: var(--color-ring);
 
   /* ------------------------------------------------------------------
@@ -87,31 +99,79 @@
   /* ------------------------------------------------------------------
    * Code / selection
    * ------------------------------------------------------------------ */
-  --color-code: color-mix(in oklab, var(--color-muted) 86%, var(--color-background));
+  --color-code: color-mix(
+    in oklab,
+    var(--color-muted) 86%,
+    var(--color-background)
+  );
   --color-code-foreground: var(--color-foreground);
-  --color-code-highlight: color-mix(in oklab, var(--color-primary) 10%, var(--color-background));
+  --color-code-highlight: color-mix(
+    in oklab,
+    var(--color-primary) 10%,
+    var(--color-background)
+  );
   --color-code-number: var(--color-muted-foreground);
 
   /* selection */
-  --color-selection: color-mix(in oklab, var(--color-primary) 17%, var(--color-background));
+  --color-selection: color-mix(
+    in oklab,
+    var(--color-primary) 17%,
+    var(--color-background)
+  );
   --color-selection-foreground: var(--color-foreground);
 
   /* ------------------------------------------------------------------
    * Interactive surfaces
    * ------------------------------------------------------------------ */
-  --color-surface-hover: color-mix(in oklab, var(--color-foreground) 4%, var(--color-background));
-  --color-surface-active: color-mix(in oklab, var(--color-foreground) 6%, var(--color-background));
-  --color-surface-selected: color-mix(in oklab, var(--color-primary) 13%, var(--color-background));
-  --color-surface-disabled: color-mix(in oklab, var(--color-foreground) 1.8%, var(--color-background));
-  --color-surface-readonly: color-mix(in oklab, var(--color-muted) 80%, var(--color-background));
-  --color-surface-focus: color-mix(in oklab, var(--color-primary) 15%, var(--color-background));
+  --color-surface-hover: color-mix(
+    in oklab,
+    var(--color-foreground) 5%,
+    var(--color-black-4)
+  );
+  --color-surface-active: color-mix(
+    in oklab,
+    var(--color-foreground) 7%,
+    var(--color-black-4)
+  );
+  --color-surface-selected: color-mix(
+    in oklab,
+    var(--color-primary) 13%,
+    var(--color-background)
+  );
+  --color-surface-disabled: color-mix(
+    in oklab,
+    var(--color-foreground) 1.8%,
+    var(--color-background)
+  );
+  --color-surface-readonly: color-mix(
+    in oklab,
+    var(--color-muted) 80%,
+    var(--color-background)
+  );
+  --color-surface-focus: color-mix(
+    in oklab,
+    var(--color-primary) 15%,
+    var(--color-background)
+  );
 
   /* ------------------------------------------------------------------
    * Border system
    * ------------------------------------------------------------------ */
-  --color-border-muted: color-mix(in oklab, var(--color-border) 70%, var(--color-background));
-  --color-border-strong: color-mix(in oklab, var(--color-foreground) 16%, var(--color-background));
-  --color-border-grid: color-mix(in oklab, var(--color-border) 90%, var(--color-background));
+  --color-border-muted: color-mix(
+    in oklab,
+    var(--color-foreground) 7%,
+    transparent
+  );
+  --color-border-strong: color-mix(
+    in oklab,
+    var(--color-foreground) 14%,
+    transparent
+  );
+  --color-border-grid: color-mix(
+    in oklab,
+    var(--color-border) 90%,
+    var(--color-background)
+  );
   --color-border-focus: var(--color-ring);
 
   /* ------------------------------------------------------------------
@@ -129,10 +189,22 @@
   /* ------------------------------------------------------------------
    * Table system
    * ------------------------------------------------------------------ */
-  --color-table-header: color-mix(in oklab, var(--color-foreground) 4.6%, var(--color-background));
+  --color-table-header: color-mix(
+    in oklab,
+    var(--color-foreground) 4.6%,
+    var(--color-background)
+  );
   --color-table-row-hover: var(--color-surface-hover);
   --color-table-row-selected: var(--color-surface-selected);
-  --color-table-row-stripe: color-mix(in oklab, var(--color-foreground) 1.55%, var(--color-background));
+  --color-table-row-stripe: color-mix(
+    in oklab,
+    var(--color-foreground) 1.55%,
+    var(--color-background)
+  );
   --color-table-cell-focus: var(--color-surface-focus);
-  --color-table-pinned: color-mix(in oklab, var(--color-card) 93%, var(--color-background));
+  --color-table-pinned: color-mix(
+    in oklab,
+    var(--color-card) 93%,
+    var(--color-background)
+  );
 }

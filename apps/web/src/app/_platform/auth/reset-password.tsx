@@ -5,7 +5,10 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
 import { authClient } from "."
-import { MarketingAuthShell } from "./marketing-auth-shell"
+import { AuthCommandShell } from "./auth-command-shell"
+import { useAuthIntelligence } from "./hooks/use-auth-intelligence"
+import { IdentityIntelligenceHud } from "./identity-intelligence-hud"
+import { SessionContinuityPanel } from "./session-continuity-panel"
 
 /**
  * Set a new password from email link (`/reset-password?token=…`).
@@ -21,6 +24,7 @@ export default function ResetPasswordPage() {
   const [confirm, setConfirm] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+  const intelligence = useAuthIntelligence()
 
   const tokenInvalid =
     queryError === "INVALID_TOKEN" || queryError === "invalid_token"
@@ -58,7 +62,44 @@ export default function ResetPasswordPage() {
   const showForm = Boolean(token) && !tokenInvalid
 
   return (
-    <MarketingAuthShell title={t("marketing.reset_password.title")}>
+    <AuthCommandShell
+      title={t("marketing.reset_password.title")}
+      leftPanel={
+        <IdentityIntelligenceHud
+          snapshot={intelligence.data}
+          loading={intelligence.isLoading}
+        />
+      }
+      rightPanel={
+        <SessionContinuityPanel
+          snapshot={intelligence.data}
+          currentMethod="password"
+          currentStep="challenge"
+          challenge={null}
+          onResetChallenge={() => undefined}
+        />
+      }
+      footer={
+        <>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            <Link
+              className="font-medium text-primary underline-offset-4 hover:underline"
+              to="/forgot-password"
+            >
+              {t("marketing.reset_password.request_new_link")}
+            </Link>
+          </p>
+          <p className="mt-3 text-center text-sm text-muted-foreground">
+            <Link
+              className="font-medium text-primary underline-offset-4 hover:underline"
+              to="/login"
+            >
+              {t("marketing.reset_password.back_login")}
+            </Link>
+          </p>
+        </>
+      }
+    >
       {!showForm ? (
         <p className="text-sm text-destructive" role="alert">
           {t("marketing.reset_password.error_token")}
@@ -110,22 +151,6 @@ export default function ResetPasswordPage() {
           </Button>
         </form>
       )}
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        <Link
-          className="font-medium text-primary underline-offset-4 hover:underline"
-          to="/forgot-password"
-        >
-          {t("marketing.reset_password.request_new_link")}
-        </Link>
-      </p>
-      <p className="mt-3 text-center text-sm text-muted-foreground">
-        <Link
-          className="font-medium text-primary underline-offset-4 hover:underline"
-          to="/login"
-        >
-          {t("marketing.reset_password.back_login")}
-        </Link>
-      </p>
-    </MarketingAuthShell>
+    </AuthCommandShell>
   )
 }

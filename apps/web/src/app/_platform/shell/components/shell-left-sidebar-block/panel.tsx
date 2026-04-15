@@ -27,6 +27,9 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "@afenda/design-system/ui-primitives"
 import { cn } from "@afenda/design-system/utils"
 
@@ -41,6 +44,12 @@ import type {
 
 const SHELL_LABELS_COLUMN_CLASS =
   "bg-sidebar text-sidebar-foreground flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
+
+const SHELL_LABELS_COLUMN_TOOLTIP_PROPS = {
+  side: "bottom" as const,
+  align: "center" as const,
+  sideOffset: 6,
+}
 
 const SHELL_LEFT_SIDEBAR_SHORTCUTS = {
   expandAll: "E",
@@ -68,25 +77,34 @@ function ShellLabelsColumnCompactAction({
   ariaLabel,
   icon,
   onClick,
-  title,
+  tooltip,
 }: {
   ariaLabel: string
   icon: ReactNode
   onClick: () => void
-  title: string
+  tooltip: string
 }) {
   return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon-sm"
-      onClick={onClick}
-      aria-label={ariaLabel}
-      title={title}
-      className="size-7 rounded-md text-muted-foreground hover:bg-accent/20 hover:text-foreground"
-    >
-      <span className="size-4">{icon}</span>
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          onClick={onClick}
+          aria-label={ariaLabel}
+          className="size-7 rounded-md text-muted-foreground hover:bg-accent/20 hover:text-foreground"
+        >
+          <span className="size-4">{icon}</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent
+        {...SHELL_LABELS_COLUMN_TOOLTIP_PROPS}
+        className="max-w-xs"
+      >
+        {tooltip}
+      </TooltipContent>
+    </Tooltip>
   )
 }
 
@@ -247,6 +265,8 @@ function ShellLabelsColumnModuleGroup({
   expandedModuleIds: ReadonlySet<ShellLeftSidebarModuleModel["id"]>
   onToggleModuleExpanded: (moduleId: ShellLeftSidebarModuleModel["id"]) => void
 }) {
+  const { t } = useTranslation("shell")
+
   return (
     <SidebarGroup className="ui-shell-sidebar-section-card">
       <SidebarGroupLabel className="h-6 px-0">
@@ -318,23 +338,50 @@ function ShellLabelsColumnModuleGroup({
                     </SidebarMenuButton>
 
                     {canToggle ? (
-                      <CollapsibleTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          className="mt-0.5 size-6 shrink-0 rounded-md text-muted-foreground hover:bg-accent/15 hover:text-foreground"
-                          aria-label={`${isExpanded ? "Collapse" : "Expand"} nested views for ${module.label}`}
-                          aria-expanded={isExpanded}
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <CollapsibleTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              className="mt-0.5 size-6 shrink-0 rounded-md text-muted-foreground hover:bg-accent/15 hover:text-foreground"
+                              aria-label={
+                                isExpanded
+                                  ? t(
+                                      "sidebar.labels_column.toggle_nesting_collapse",
+                                      { module: module.label }
+                                    )
+                                  : t(
+                                      "sidebar.labels_column.toggle_nesting_expand",
+                                      { module: module.label }
+                                    )
+                              }
+                              aria-expanded={isExpanded}
+                            >
+                              <ChevronDown
+                                className={cn(
+                                  "size-3.5 transition-transform duration-150",
+                                  isExpanded && "rotate-180"
+                                )}
+                              />
+                            </Button>
+                          </CollapsibleTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent
+                          {...SHELL_LABELS_COLUMN_TOOLTIP_PROPS}
+                          className="max-w-xs"
                         >
-                          <ChevronDown
-                            className={cn(
-                              "size-3.5 transition-transform duration-150",
-                              isExpanded && "rotate-180"
-                            )}
-                          />
-                        </Button>
-                      </CollapsibleTrigger>
+                          {isExpanded
+                            ? t(
+                                "sidebar.labels_column.toggle_nesting_collapse",
+                                { module: module.label }
+                              )
+                            : t("sidebar.labels_column.toggle_nesting_expand", {
+                                module: module.label,
+                              })}
+                        </TooltipContent>
+                      </Tooltip>
                     ) : null}
                   </div>
 
@@ -595,19 +642,19 @@ export function ShellLabelsColumn({
               ariaLabel="Expand all modules"
               icon={<UnfoldVertical className="size-3.5" />}
               onClick={setAllExpanded}
-              title={t("sidebar.labels_column.expand_all_title")}
+              tooltip={t("sidebar.labels_column.expand_all_title")}
             />
             <ShellLabelsColumnCompactAction
               ariaLabel="Collapse all modules"
               icon={<FoldVertical className="size-3.5" />}
               onClick={setAllCollapsed}
-              title={t("sidebar.labels_column.collapse_all_title")}
+              tooltip={t("sidebar.labels_column.collapse_all_title")}
             />
             <ShellLabelsColumnCompactAction
               ariaLabel="Focus active module"
               icon={<LocateFixed className="size-3.5" />}
               onClick={setCollapseOthers}
-              title={t("sidebar.labels_column.focus_active_title")}
+              tooltip={t("sidebar.labels_column.focus_active_title")}
             />
           </div>
         </div>
@@ -663,26 +710,42 @@ export function ShellLabelsColumn({
                       >
                         {widgetShelfItems.length}
                       </Badge>
-                      <CollapsibleTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          aria-label={
-                            isWidgetShelfOpen
-                              ? "Collapse widgets"
-                              : "Expand widgets"
-                          }
-                          className="size-5 rounded-sm text-muted-foreground hover:bg-accent/15 hover:text-foreground"
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <CollapsibleTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label={
+                                isWidgetShelfOpen
+                                  ? t(
+                                      "sidebar.labels_column.widget_shelf_collapse"
+                                    )
+                                  : t(
+                                      "sidebar.labels_column.widget_shelf_expand"
+                                    )
+                              }
+                              className="size-5 rounded-sm text-muted-foreground hover:bg-accent/15 hover:text-foreground"
+                            >
+                              <ChevronDown
+                                className={cn(
+                                  "size-3 transition-transform duration-150",
+                                  isWidgetShelfOpen && "rotate-180"
+                                )}
+                              />
+                            </Button>
+                          </CollapsibleTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent
+                          {...SHELL_LABELS_COLUMN_TOOLTIP_PROPS}
+                          className="max-w-xs"
                         >
-                          <ChevronDown
-                            className={cn(
-                              "size-3 transition-transform duration-150",
-                              isWidgetShelfOpen && "rotate-180"
-                            )}
-                          />
-                        </Button>
-                      </CollapsibleTrigger>
+                          {isWidgetShelfOpen
+                            ? t("sidebar.labels_column.widget_shelf_collapse")
+                            : t("sidebar.labels_column.widget_shelf_expand")}
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                   </span>
                 </SidebarGroupLabel>

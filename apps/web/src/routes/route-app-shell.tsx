@@ -13,6 +13,8 @@ import { Navigate, type RouteObject } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../app/_components"
 import { FeatureTemplateView } from "../app/_features/_template"
+import { RequireAuth } from "../app/_platform/auth"
+import { TenantScopeProvider } from "../app/_platform/tenant"
 import {
   AppShellNotFound,
   shellAppChildRouteDefinitions,
@@ -28,7 +30,11 @@ export const appShellRouteObject: RouteObject = {
   path: "/app",
   element: (
     <AppThemeProvider>
-      <ShellLeftSidebarLayout />
+      <RequireAuth>
+        <TenantScopeProvider>
+          <ShellLeftSidebarLayout />
+        </TenantScopeProvider>
+      </RequireAuth>
     </AppThemeProvider>
   ),
   errorElement: (

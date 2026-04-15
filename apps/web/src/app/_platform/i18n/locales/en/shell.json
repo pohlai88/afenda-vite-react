@@ -168,6 +168,65 @@
       "table_selected_status": "Active"
     }
   },
+  "auth_security": {
+    "shell_subtitle": "Adaptive command-center authentication with explainable trust and challenge continuity.",
+    "register_subtitle": "Create an account with the same trust-aware flow used in operations-grade authentication.",
+    "hud_title": "Identity intelligence",
+    "trust": {
+      "low": "Low trust",
+      "medium": "Medium trust",
+      "high": "High trust",
+      "verified": "Verified"
+    },
+    "trust_score": "Trust score",
+    "device": "Device posture",
+    "region": "Region profile",
+    "fast_lane": "Fast lane",
+    "passkey_ready": "Passkey fast lane ready",
+    "passkey_not_ready": "Passkey fast lane not enabled",
+    "risk_reasons": "Risk rationale",
+    "continuity_title": "Session continuity",
+    "last_trusted_session": "Last trusted session",
+    "current_flow": "Current flow",
+    "flow_label": "Step: {{step}} / Method: {{method}}",
+    "challenge_expires": "Challenge expires at {{time}}",
+    "resume_reset": "Reset challenge state",
+    "recovery_action": "Open recovery options",
+    "identify_continue": "Continue to method selection",
+    "method": {
+      "password": "Password",
+      "social": "Social",
+      "passkey": "Passkey"
+    },
+    "passkey_prompt": "Passkey assertion challenge is ready. Continue to verify device-bound credentials.",
+    "passkey_action": "Verify passkey challenge",
+    "challenge_use_another": "Use another method",
+    "social_prompt": "Choose a federated provider to continue.",
+    "receipt_title": "Security receipt",
+    "receipt_generating": "Generating security receipt…",
+    "challenge_verifying": "Verifying challenge…",
+    "redirecting": "Verification complete. Redirecting to workspace…",
+    "menu_item": "Security & sessions",
+    "panel_title": "Security & Sessions",
+    "panel_description": "Review trust posture, active sessions, and authentication factors.",
+    "trust_label": "Current trust posture",
+    "sessions_title": "Active sessions",
+    "revoke_action": "Revoke session",
+    "revoke_success": "Session revoked successfully.",
+    "revoke_failed": "Could not revoke this session.",
+    "factors_title": "Authentication factors",
+    "factor": {
+      "password": "Password",
+      "social": "Social sign-in",
+      "passkey": "Passkey",
+      "mfa": "MFA"
+    },
+    "factor_enabled": "Enabled",
+    "factor_disabled": "Disabled",
+    "timeline_title": "Recent auth timeline",
+    "panel_error": "Security data could not be loaded.",
+    "beacon_tooltip": "Trust: {{trust}} / Score: {{score}}"
+  },
   "login": {
     "placeholder": {
       "title": "Sign in",
@@ -457,7 +516,11 @@
     "labels_column": {
       "expand_all_title": "Expand all modules (Ctrl+Shift+E)",
       "collapse_all_title": "Collapse all modules (Ctrl+Shift+C)",
-      "focus_active_title": "Focus active module (Ctrl+Shift+O)"
+      "focus_active_title": "Focus active module (Ctrl+Shift+O)",
+      "toggle_nesting_expand": "Expand nested views for {{module}}",
+      "toggle_nesting_collapse": "Collapse nested views for {{module}}",
+      "widget_shelf_expand": "Expand widgets",
+      "widget_shelf_collapse": "Collapse widgets"
     }
   },
   "feedback": {
@@ -563,7 +626,11 @@
     "connect_placeholder_url": "https://api.example.com/v1",
     "read_only_hint": "Read-only preview",
     "tooltip_command": "Open command palette ({{shortcut}})",
-    "tooltip_connect": "Connection details and API endpoints"
+    "tooltip_connect": "Connection details and API endpoints",
+    "open_focus_window": "Open focus window",
+    "enter_fullscreen": "Enter fullscreen",
+    "exit_fullscreen": "Exit fullscreen",
+    "exit_focus_mode": "Exit focus mode"
   },
   "actions": {
     "command_running": "Loading…",

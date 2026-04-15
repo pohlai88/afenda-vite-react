@@ -457,7 +457,11 @@
     "labels_column": {
       "expand_all_title": "Perluas semua modul (Ctrl+Shift+E)",
       "collapse_all_title": "Ciutkan semua modul (Ctrl+Shift+C)",
-      "focus_active_title": "Fokus modul aktif (Ctrl+Shift+O)"
+      "focus_active_title": "Fokus modul aktif (Ctrl+Shift+O)",
+      "toggle_nesting_expand": "Perluas tampilan bersarang untuk {{module}}",
+      "toggle_nesting_collapse": "Ciutkan tampilan bersarang untuk {{module}}",
+      "widget_shelf_expand": "Perluas widget",
+      "widget_shelf_collapse": "Ciutkan widget"
     }
   },
   "feedback": {
@@ -563,7 +567,11 @@
     "connect_placeholder_url": "https://api.example.com/v1",
     "read_only_hint": "Pratinjau hanya-baca",
     "tooltip_command": "Buka palet perintah ({{shortcut}})",
-    "tooltip_connect": "Detail koneksi dan endpoint API"
+    "tooltip_connect": "Detail koneksi dan endpoint API",
+    "open_focus_window": "Buka jendela fokus",
+    "enter_fullscreen": "Masuk layar penuh",
+    "exit_fullscreen": "Keluar layar penuh",
+    "exit_focus_mode": "Keluar mode fokus"
   },
   "actions": {
     "command_running": "Memuat…",

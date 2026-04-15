@@ -161,6 +161,13 @@ async function resolveUserConfig({
       cors: true,
       // Proxy configuration for API calls
       proxy: {
+        // Better Auth and other `/api/*` routes (except `/api/v1`) forward as-is — Hono serves `/api/auth/*` on the API host.
+        "/api/v1": {
+          target: env.VITE_API_URL || "http://localhost:3001",
+          changeOrigin: true,
+          secure: false,
+          rewrite: (p) => p.replace(/^\/api/, ""),
+        },
         "/api": {
           target: env.VITE_API_URL || "http://localhost:3001",
           changeOrigin: true,

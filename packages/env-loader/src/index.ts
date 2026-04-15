@@ -28,3 +28,12 @@ export function loadMonorepoEnv(
   }
   config({ path, override: false })
 }
+
+/**
+ * Loads repo-root `.env.neon` then `.env` (each with `override: false`).
+ * Use this for local tooling so secrets can live in either file (`.env` is common for generic local vars).
+ */
+export function loadMonorepoEnvLayered(): void {
+  loadMonorepoEnv({ filename: ".env.neon" })
+  loadMonorepoEnv({ filename: ".env" })
+}

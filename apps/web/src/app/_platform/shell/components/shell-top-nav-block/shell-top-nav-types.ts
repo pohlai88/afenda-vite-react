@@ -6,4 +6,6 @@ export type ShellTopNavProps = ComponentProps<"header"> & {
    * Keeps sidebar/rail primitives out of top-nav implementation files.
    */
   leadingSlot?: ReactNode
+  /** Focus workspace mode (`?view=focus`) hides shell chrome and enables dedicated controls. */
+  focusMode?: boolean
 }

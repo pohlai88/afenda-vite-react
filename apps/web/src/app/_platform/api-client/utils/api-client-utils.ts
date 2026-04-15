@@ -64,3 +64,19 @@ export function parseApiClientTimeoutMs(
 }
 
 export const defaultApiClientTimeoutMs = 30_000
+
+/**
+ * Same-origin dev: `/api/v1/*` is proxied to `@afenda/api` `/v1/*` (see `apps/web/vite.config.ts`).
+ * With an absolute `VITE_API_BASE_URL`, paths are joined to that origin’s `/v1/*`.
+ */
+export function resolveApiV1Path(
+  path: string,
+  env: ImportMetaEnv = import.meta.env
+): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`
+  const base = normalizeApiClientBaseUrl(env.VITE_API_BASE_URL)
+  if (base === "") {
+    return `/api/v1${normalized}`
+  }
+  return joinApiClientUrl(base, `/v1${normalized}`)
+}

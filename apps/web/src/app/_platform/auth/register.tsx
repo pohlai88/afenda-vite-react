@@ -1,23 +1,28 @@
 import { type FormEvent, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
-import { authAppCallbackUrl, authClient } from "."
-import { MarketingAuthShell } from "./marketing-auth-shell"
+import { authAppCallbackUrl, authClient, authPostLoginPath } from "."
+import { AuthCommandShell } from "./auth-command-shell"
+import { useAuthIntelligence } from "./hooks/use-auth-intelligence"
+import { IdentityIntelligenceHud } from "./identity-intelligence-hud"
+import { SessionContinuityPanel } from "./session-continuity-panel"
 
 /**
- * Email/password sign-up (`/register`). Same-origin `/api` proxy to Better Auth.
+ * Email/password sign-up (`/register`) in the auth command-center shell.
  */
 export default function RegisterPage() {
   const { t } = useTranslation("shell")
   const navigate = useNavigate()
+  const location = useLocation()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+  const intelligence = useAuthIntelligence()
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
@@ -36,14 +41,53 @@ export default function RegisterPage() {
         )
         return
       }
-      void navigate("/app", { replace: true })
+      void navigate(authPostLoginPath(location.state), { replace: true })
     } finally {
       setPending(false)
     }
   }
 
   return (
-    <MarketingAuthShell title={t("marketing.register.title")}>
+    <AuthCommandShell
+      title={t("marketing.register.title")}
+      description={t("auth_security.register_subtitle")}
+      leftPanel={
+        <IdentityIntelligenceHud
+          snapshot={intelligence.data}
+          loading={intelligence.isLoading}
+        />
+      }
+      rightPanel={
+        <SessionContinuityPanel
+          snapshot={intelligence.data}
+          currentMethod="password"
+          currentStep="method"
+          challenge={null}
+          onResetChallenge={() => undefined}
+        />
+      }
+      footer={
+        <>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            <span>{t("marketing.register.have_account")} </span>
+            <Link
+              className="font-medium text-primary underline-offset-4 hover:underline"
+              to="/login"
+            >
+              {t("marketing.register.sign_in_link")}
+            </Link>
+          </p>
+          <p className="mt-3 text-center text-sm text-muted-foreground">
+            <Link
+              className="font-medium text-primary underline-offset-4 hover:underline"
+              to="/"
+            >
+              {t("marketing.register.back")}
+            </Link>
+          </p>
+        </>
+      }
+    >
       <form className="space-y-4" onSubmit={(e) => void onSubmit(e)}>
         <div className="space-y-2">
           <Label htmlFor="register-name">
@@ -102,23 +146,6 @@ export default function RegisterPage() {
           {t("marketing.register.submit")}
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        <span>{t("marketing.register.have_account")} </span>
-        <Link
-          className="font-medium text-primary underline-offset-4 hover:underline"
-          to="/login"
-        >
-          {t("marketing.register.sign_in_link")}
-        </Link>
-      </p>
-      <p className="mt-3 text-center text-sm text-muted-foreground">
-        <Link
-          className="font-medium text-primary underline-offset-4 hover:underline"
-          to="/"
-        >
-          {t("marketing.register.back")}
-        </Link>
-      </p>
-    </MarketingAuthShell>
+    </AuthCommandShell>
   )
 }

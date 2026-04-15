@@ -24,12 +24,16 @@ import {
 
 export type ShellTopNavUserMenuProps = {
   user: AppShellSidebarUserProfile
+  onLogout?: () => void
 }
 
 const SHELL_TOP_NAV_USER_TRIGGER_CLASS =
   "group relative size-9 rounded-full border border-border/70 bg-background/70 p-0 shadow-sm transition-[border-color,background-color,box-shadow,transform] duration-150 hover:border-border hover:bg-accent/15 hover:shadow-[0_0_0_1px_hsl(var(--border)/0.45)] data-[state=open]:border-border data-[state=open]:bg-accent/15"
 
-export function ShellTopNavUserMenu({ user }: ShellTopNavUserMenuProps) {
+export function ShellTopNavUserMenu({
+  user,
+  onLogout,
+}: ShellTopNavUserMenuProps) {
   const { t } = useTranslation("shell")
   const hasAvatar = user.avatar.trim().length > 0
   const menuLabel = t("top_nav.user_menu_aria")
@@ -71,7 +75,7 @@ export function ShellTopNavUserMenu({ user }: ShellTopNavUserMenuProps) {
         side="bottom"
         {...SHELL_USER_MENU_DROPDOWN_CONTENT_PROPS}
       >
-        <ShellUserMenuDropdownPanel user={user} />
+        <ShellUserMenuDropdownPanel user={user} onLogout={onLogout} />
       </DropdownMenuContent>
     </DropdownMenu>
   )

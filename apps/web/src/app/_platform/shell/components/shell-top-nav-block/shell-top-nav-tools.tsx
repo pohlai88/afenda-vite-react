@@ -21,6 +21,10 @@ import { cn } from "@afenda/design-system/utils"
 export type ShellTopNavToolsProps = {
   /** Optional leading control (e.g. Connect) using the same circular icon chrome as the tool row. */
   connectSlot?: ReactNode
+  /** Optional trust indicator shown before utilities. */
+  trustBeacon?: ReactNode
+  /** Optional workspace controls (e.g. open focus window / fullscreen). */
+  workspaceSlot?: ReactNode
   feedbackLabel: string
   helpLabel: string
   insightsLabel: string
@@ -33,7 +37,7 @@ export type ShellTopNavToolsProps = {
 
 /** Shared with `ShellTopNavConnectPopover` so Connect matches the tool icons. */
 export const SHELL_TOP_NAV_ICON_BUTTON_CLASS =
-  "relative rounded-full border border-border/70 bg-background/70 text-muted-foreground transition-colors hover:border-border hover:bg-accent/40 hover:text-foreground"
+  "relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
 
 type IconToolProps = {
   label: string
@@ -63,6 +67,8 @@ function ShellTopNavIconTool({ label, children }: IconToolProps) {
 
 export function ShellTopNavTools({
   connectSlot,
+  trustBeacon,
+  workspaceSlot,
   feedbackLabel,
   helpLabel,
   insightsLabel,
@@ -73,31 +79,46 @@ export function ShellTopNavTools({
 }: ShellTopNavToolsProps) {
   return (
     <div
-      className={cn("flex shrink-0 items-center gap-2 sm:gap-2.5", className)}
+      className={cn("flex shrink-0 items-center gap-1.5 sm:gap-2", className)}
     >
-      {connectSlot}
-      <ShellTopNavIconTool label={feedbackLabel}>
-        <MessageSquareMore className="size-4" strokeWidth={1.5} />
-      </ShellTopNavIconTool>
-      <ShellTopNavIconTool label={helpLabel}>
-        <CircleHelp className="size-4" strokeWidth={1.5} />
-      </ShellTopNavIconTool>
-      <ShellTopNavIconTool label={insightsLabel}>
+      <div className="flex items-center gap-1.5">{connectSlot}</div>
+      {trustBeacon ? (
+        <div className="flex items-center gap-1.5">{trustBeacon}</div>
+      ) : null}
+      <span className="h-5 w-px shrink-0 bg-border-muted" aria-hidden />
+      <div className="flex items-center gap-1.5">
+        <ShellTopNavIconTool label={feedbackLabel}>
+          <MessageSquareMore className="size-4" strokeWidth={1.5} />
+        </ShellTopNavIconTool>
+        <ShellTopNavIconTool label={helpLabel}>
+          <CircleHelp className="size-4" strokeWidth={1.5} />
+        </ShellTopNavIconTool>
+        <ShellTopNavIconTool label={insightsLabel}>
+          <>
+            <Bell className="size-4" strokeWidth={1.5} />
+            <span
+              className="absolute top-1 right-1 size-1.5 rounded-full bg-destructive"
+              aria-hidden
+            />
+          </>
+        </ShellTopNavIconTool>
+      </div>
+      <span className="h-5 w-px shrink-0 bg-border-muted" aria-hidden />
+      <div className="flex items-center gap-1.5">
+        <ShellTopNavIconTool label={terminalLabel}>
+          <SquareTerminal className="size-4" strokeWidth={1.5} />
+        </ShellTopNavIconTool>
+        <ShellTopNavIconTool label={appSwitcherLabel}>
+          <LayoutGrid className="size-4" strokeWidth={1.5} />
+        </ShellTopNavIconTool>
+      </div>
+      {workspaceSlot ? (
         <>
-          <Bell className="size-4" strokeWidth={1.5} />
-          <span
-            className="absolute top-1 right-1 size-1.5 rounded-full bg-destructive"
-            aria-hidden
-          />
+          <span className="h-5 w-px shrink-0 bg-border-muted" aria-hidden />
+          <div className="flex items-center gap-1.5">{workspaceSlot}</div>
         </>
-      </ShellTopNavIconTool>
-      <ShellTopNavIconTool label={terminalLabel}>
-        <SquareTerminal className="size-4" strokeWidth={1.5} />
-      </ShellTopNavIconTool>
-      <ShellTopNavIconTool label={appSwitcherLabel}>
-        <LayoutGrid className="size-4" strokeWidth={1.5} />
-      </ShellTopNavIconTool>
-      <span className="h-5 w-px shrink-0 bg-border/70" aria-hidden />
+      ) : null}
+      <span className="h-5 w-px shrink-0 bg-border-muted" aria-hidden />
       {userMenu}
     </div>
   )

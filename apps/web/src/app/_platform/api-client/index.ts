@@ -26,6 +26,7 @@ export {
   joinApiClientUrl,
   normalizeApiClientBaseUrl,
   parseApiClientTimeoutMs,
+  resolveApiV1Path,
 } from "./utils/api-client-utils"
 export type {
   ApiClient,

@@ -5,10 +5,13 @@ import { Link } from "react-router-dom"
 import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
 import { authClient, authPasswordResetRedirectUrl } from "."
-import { MarketingAuthShell } from "./marketing-auth-shell"
+import { AuthCommandShell } from "./auth-command-shell"
+import { useAuthIntelligence } from "./hooks/use-auth-intelligence"
+import { IdentityIntelligenceHud } from "./identity-intelligence-hud"
+import { SessionContinuityPanel } from "./session-continuity-panel"
 
 /**
- * Request password reset email (`/forgot-password`). Requires `sendResetPassword` on the API.
+ * Request password reset email (`/forgot-password`) in command-center auth shell.
  */
 export default function ForgotPasswordPage() {
   const { t } = useTranslation("shell")
@@ -16,6 +19,7 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const intelligence = useAuthIntelligence()
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
@@ -40,12 +44,41 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <MarketingAuthShell
-      description={t("marketing.forgot_password.description")}
+    <AuthCommandShell
       title={t("marketing.forgot_password.title")}
+      description={t("marketing.forgot_password.description")}
+      leftPanel={
+        <IdentityIntelligenceHud
+          snapshot={intelligence.data}
+          loading={intelligence.isLoading}
+        />
+      }
+      rightPanel={
+        <SessionContinuityPanel
+          snapshot={intelligence.data}
+          currentMethod="password"
+          currentStep="identify"
+          challenge={null}
+          onResetChallenge={() => undefined}
+        />
+      }
+      footer={
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          <Link
+            className="font-medium text-primary underline-offset-4 hover:underline"
+            to="/login"
+          >
+            {t("marketing.forgot_password.back_login")}
+          </Link>
+        </p>
+      }
     >
       {submitted ? (
-        <p className="text-sm leading-relaxed text-muted-foreground">
+        <p
+          className="text-sm leading-relaxed text-muted-foreground"
+          role="status"
+          aria-live="polite"
+        >
           {t("marketing.forgot_password.success")}
         </p>
       ) : (
@@ -79,14 +112,6 @@ export default function ForgotPasswordPage() {
           </Button>
         </form>
       )}
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        <Link
-          className="font-medium text-primary underline-offset-4 hover:underline"
-          to="/login"
-        >
-          {t("marketing.forgot_password.back_login")}
-        </Link>
-      </p>
-    </MarketingAuthShell>
+    </AuthCommandShell>
   )
 }

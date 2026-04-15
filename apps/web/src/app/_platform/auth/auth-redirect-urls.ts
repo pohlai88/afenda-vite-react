@@ -19,3 +19,22 @@ export function authPasswordResetRedirectUrl(): string {
   const path = `${viteBasePath()}/reset-password`
   return `${window.location.origin}${path}`
 }
+
+/**
+ * After email/password sign-in or sign-up, navigate here. Prefer `location.state.from`
+ * (set by {@link RequireAuth}) so deep links return to the intended `/app/...` route.
+ */
+export function authPostLoginPath(state: unknown): string {
+  if (
+    state &&
+    typeof state === "object" &&
+    "from" in state &&
+    typeof (state as { from: unknown }).from === "string"
+  ) {
+    const from = (state as { from: string }).from.trim()
+    if (from.startsWith("/") && !from.startsWith("//")) {
+      return from
+    }
+  }
+  return `${viteBasePath()}/app`
+}

@@ -26,7 +26,7 @@ import type { ShellLeftSidebarDisplayMode } from "../shell-left-sidebar-block/sh
 import { AppShellSidebarBrandRail } from "./shell-rail-mini-sidebar"
 
 const SHELL_ICON_RAIL_CLASS =
-  "ui-shell-icon-rail bg-sidebar text-sidebar-foreground hidden h-full w-(--sidebar-width-icon) shrink-0 flex-col border-r border-sidebar-border md:flex"
+  "ui-shell-icon-rail hidden h-full w-(--sidebar-width-icon) shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-sm md:flex"
 
 const isSidebarFooterEnabled = shellSlotActivationV1["shell.sidebar.footer"]
 
@@ -65,7 +65,7 @@ function AppShellSidebarRailDisplayModeFooter({
             data-slot="shell.sidebar.rail-toggle"
             variant="ghost"
             size="icon-sm"
-            className="mx-auto flex w-full max-w-10"
+            className="mx-auto flex w-full max-w-10 rounded-lg hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring"
             aria-label={t("sidebar.control_title")}
             aria-expanded={isDisplayExpanded}
           >
@@ -84,7 +84,11 @@ function AppShellSidebarRailDisplayModeFooter({
           <DropdownMenuRadioGroup
             value={displayMode}
             onValueChange={(value) => {
-              if (value === "expanded" || value === "collapsed" || value === "hover") {
+              if (
+                value === "expanded" ||
+                value === "collapsed" ||
+                value === "hover"
+              ) {
                 onDisplayModeChange(value)
               }
             }}
@@ -136,7 +140,9 @@ export function AppShellSidebarRailColumn({
       onPointerEnter={() => onDisplayModeHoverIntentChange(true)}
       onPointerLeave={() => onDisplayModeHoverIntentChange(false)}
       onFocusCapture={() => onDisplayModeHoverIntentChange(true)}
-      onBlurCapture={(event) => handleBlurIntent(event, onDisplayModeHoverIntentChange)}
+      onBlurCapture={(event) =>
+        handleBlurIntent(event, onDisplayModeHoverIntentChange)
+      }
     >
       <SidebarHeader className="shrink-0 gap-0 border-0 p-2">
         <div className="flex justify-center">

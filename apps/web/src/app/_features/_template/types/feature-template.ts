@@ -10,11 +10,20 @@ export const featureTemplateSlugs = ["events", "audit", "partners"] as const
 
 export type FeatureTemplateSlug = (typeof featureTemplateSlugs)[number]
 
+export type FeatureTemplateTone =
+  | "neutral"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+
 export interface FeatureTemplateMetric {
   readonly id: string
   readonly label: string
   readonly value: string
   readonly helper: string
+  readonly trendLabel?: string
+  readonly tone?: FeatureTemplateTone
 }
 
 export interface FeatureTemplateRecord {
@@ -24,6 +33,10 @@ export interface FeatureTemplateRecord {
   readonly status: FeatureTemplateStatus
   readonly owner: string
   readonly updatedAt: string
+  readonly severity?: "low" | "medium" | "high"
+  readonly category?: string
+  readonly slaLabel?: string
+  readonly eventTimeLabel?: string
 }
 
 export interface FeatureTemplateDefinition {
@@ -37,6 +50,7 @@ export interface FeatureTemplateDefinition {
 }
 
 export type FeatureTemplateCommandId =
+  | "refresh-view"
   | "open-primary-record"
   | "review-queue"
   | "export-audit-pack"

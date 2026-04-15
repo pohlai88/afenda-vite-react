@@ -2,7 +2,11 @@
  * POST /v1/audit/shell-interaction — shell UI interaction evidence (not business audit).
  */
 
-import { insertGovernedAuditLog, type DatabaseClient } from "@afenda/database"
+import {
+  assertUserHasTenantAccess,
+  insertGovernedAuditLog,
+  type DatabaseClient,
+} from "@afenda/database"
 import type { Context } from "hono"
 
 export interface ShellInteractionAuditRequestBody {
@@ -127,7 +131,8 @@ function mapInteractionToAuditOutcome(
 
 export async function handleShellInteractionAudit(
   c: Context,
-  db: DatabaseClient
+  db: DatabaseClient,
+  sessionEmail: string | null | undefined
 ): Promise<Response> {
   const auditCtx = c.get("audit")
   const tenantHeader = auditCtx.tenantId
@@ -149,6 +154,11 @@ export async function handleShellInteractionAudit(
       { error: "Missing X-Tenant-Id header or tenantId in body" },
       400
     )
+  }
+
+  const allowed = await assertUserHasTenantAccess(db, sessionEmail, tenantId)
+  if (!allowed) {
+    return c.json({ error: "Tenant not allowed for this session" }, 403)
   }
 
   const seven = body.metadata.extra.sevenW1H

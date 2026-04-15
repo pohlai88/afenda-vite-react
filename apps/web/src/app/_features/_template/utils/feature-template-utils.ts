@@ -3,6 +3,7 @@ import {
   type FeatureTemplateRecord,
   type FeatureTemplateSlug,
   type FeatureTemplateStatus,
+  type FeatureTemplateTone,
 } from "../types/feature-template"
 
 const slugSet = new Set<string>(featureTemplateSlugs)
@@ -41,11 +42,58 @@ export function getFeatureTemplateStatusClassName(
 ): string {
   switch (status) {
     case "healthy":
-      return "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+      return "border-success/40 bg-success/10 text-success"
     case "attention":
-      return "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+      return "border-warning/40 bg-warning/10 text-warning"
     case "blocked":
       return "border-destructive/40 bg-destructive/10 text-destructive"
+  }
+}
+
+export function getFeatureTemplateToneClassName(
+  tone: FeatureTemplateTone = "neutral"
+): string {
+  switch (tone) {
+    case "success":
+      return "border-success/35 bg-success/10 text-success"
+    case "warning":
+      return "border-warning/35 bg-warning/10 text-warning"
+    case "danger":
+      return "border-destructive/35 bg-destructive/10 text-destructive"
+    case "info":
+      return "border-info/35 bg-info/10 text-info"
+    case "neutral":
+      return "border-border-muted bg-muted/45 text-muted-foreground"
+  }
+}
+
+export function formatFeatureTemplateSeverity(
+  severity: FeatureTemplateRecord["severity"]
+): string {
+  switch (severity) {
+    case "high":
+      return "High"
+    case "medium":
+      return "Medium"
+    case "low":
+      return "Low"
+    default:
+      return "Normal"
+  }
+}
+
+export function getFeatureTemplateSeverityClassName(
+  severity: FeatureTemplateRecord["severity"]
+): string {
+  switch (severity) {
+    case "high":
+      return "border-destructive/35 bg-destructive/10 text-destructive"
+    case "medium":
+      return "border-warning/35 bg-warning/10 text-warning"
+    case "low":
+      return "border-success/35 bg-success/10 text-success"
+    default:
+      return "border-border-muted bg-muted/45 text-muted-foreground"
   }
 }
 

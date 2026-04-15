@@ -5,6 +5,7 @@ import { cn } from "@afenda/design-system/utils"
 export interface ShellContentBlockProps extends ComponentProps<"section"> {
   readonly topSlot?: ReactNode
   readonly scrollAreaClassName?: string
+  readonly focusMode?: boolean
 }
 
 /**
@@ -16,13 +17,19 @@ export function ShellContentBlock({
   className,
   topSlot,
   scrollAreaClassName,
+  focusMode = false,
   children,
   ...sectionProps
 }: ShellContentBlockProps) {
   return (
     <section
       data-slot="shell.content-block"
-      className={cn("ui-shell-content-frame", className)}
+      data-shell-focus-mode={focusMode ? "true" : undefined}
+      className={cn(
+        "ui-shell-content-frame ui-shell-canvas",
+        focusMode && "ui-shell-content-frame-focus",
+        className
+      )}
       {...sectionProps}
     >
       {topSlot ? <div className="shrink-0">{topSlot}</div> : null}
