@@ -61,7 +61,7 @@
       ]
     },
     "featureTemplate": {
-      "featuresRoot": "apps/web/src/features",
+      "featuresRoot": "apps/web/src/app/_features",
       "requiredDirectories": [
         "components",
         "hooks",
@@ -94,16 +94,8 @@
     },
     "webClientSrc": {
       "srcRoot": "apps/web/src",
-      "allowedTopLevelDirectories": ["features", "pages", "share"],
-      "requiredShareSubdirectories": [
-        "api",
-        "client-store",
-        "components",
-        "i18n",
-        "query",
-        "react-hooks",
-        "routing"
-      ],
+      "allowedTopLevelDirectories": ["app", "pages", "routes", "worker"],
+      "requiredShareSubdirectories": [],
       "enforce": true
     }
   }

@@ -1,18 +1,16 @@
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 
-import type { UserConfig } from 'vite'
+/** Augments `vite` `UserConfig` with `test` (Vitest). */
+import "vitest/config"
+import type { UserConfig } from "vite"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** Resolved path to the shared jest-dom setup (for `setupFiles` overrides or tooling). */
-export const afendaVitestSetupFile = path.join(__dirname, 'setup.ts')
+export const afendaVitestSetupFile = path.join(__dirname, "setup.ts")
 
-export type VitestEnvironment =
-  | 'jsdom'
-  | 'node'
-  | 'happy-dom'
-  | 'edge-runtime'
+export type VitestEnvironment = "jsdom" | "node" | "happy-dom" | "edge-runtime"
 
 export interface AfendaVitestOptions {
   /** Test environment. Default `jsdom` for UI-style apps. */
@@ -32,7 +30,10 @@ type ThresholdPreset = {
 }
 
 /** Default vs strict coverage floors (see packages/vitest-config/TESTING.md). */
-export const COVERAGE_PRESETS: { default: ThresholdPreset; strict: ThresholdPreset } = {
+export const COVERAGE_PRESETS: {
+  default: ThresholdPreset
+  strict: ThresholdPreset
+} = {
   default: {
     lines: 5,
     statements: 5,
@@ -47,7 +48,7 @@ export const COVERAGE_PRESETS: { default: ThresholdPreset; strict: ThresholdPres
   },
 }
 
-const VALID_POOLS = new Set(['forks', 'threads', 'vmThreads'])
+const VALID_POOLS = new Set(["forks", "threads", "vmThreads"])
 
 function parseEnvNumber(name: string): number | undefined {
   const raw = process.env[name]
@@ -56,20 +57,22 @@ function parseEnvNumber(name: string): number | undefined {
   return Number.isFinite(n) ? n : undefined
 }
 
-function resolvePool(): 'forks' | 'threads' | 'vmThreads' | undefined {
+function resolvePool(): "forks" | "threads" | "vmThreads" | undefined {
   const raw = process.env.VITEST_POOL
   if (!raw) return undefined
-  return VALID_POOLS.has(raw) ? (raw as 'forks' | 'threads' | 'vmThreads') : undefined
+  return VALID_POOLS.has(raw)
+    ? (raw as "forks" | "threads" | "vmThreads")
+    : undefined
 }
 
 function activeThresholds(): ThresholdPreset {
-  const strict = process.env.VITEST_COVERAGE_STRICT === '1'
+  const strict = process.env.VITEST_COVERAGE_STRICT === "1"
   const base = strict ? COVERAGE_PRESETS.strict : COVERAGE_PRESETS.default
   return {
-    lines: parseEnvNumber('VITEST_COVERAGE_LINES') ?? base.lines,
-    statements: parseEnvNumber('VITEST_COVERAGE_STATEMENTS') ?? base.statements,
-    functions: parseEnvNumber('VITEST_COVERAGE_FUNCTIONS') ?? base.functions,
-    branches: parseEnvNumber('VITEST_COVERAGE_BRANCHES') ?? base.branches,
+    lines: parseEnvNumber("VITEST_COVERAGE_LINES") ?? base.lines,
+    statements: parseEnvNumber("VITEST_COVERAGE_STATEMENTS") ?? base.statements,
+    functions: parseEnvNumber("VITEST_COVERAGE_FUNCTIONS") ?? base.functions,
+    branches: parseEnvNumber("VITEST_COVERAGE_BRANCHES") ?? base.branches,
   }
 }
 
@@ -78,14 +81,14 @@ function activeThresholds(): ThresholdPreset {
  * Reads `process.env` for pool and coverage overrides (see packages/vitest-config/TESTING.md).
  */
 export function getAfendaVitestTestOptions(
-  options: AfendaVitestOptions = {},
-): NonNullable<UserConfig['test']> {
-  const environment: VitestEnvironment = options.environment ?? 'jsdom'
+  options: AfendaVitestOptions = {}
+): NonNullable<UserConfig["test"]> {
+  const environment: VitestEnvironment = options.environment ?? "jsdom"
   const setupFilesOption = options.setupFiles
 
   const setupFiles: string[] | undefined =
     setupFilesOption === undefined
-      ? environment === 'node'
+      ? environment === "node"
         ? []
         : [afendaVitestSetupFile]
       : setupFilesOption
@@ -98,14 +101,14 @@ export function getAfendaVitestTestOptions(
     globals: true,
     environment,
     include: [
-      'src/**/__test__/**/*.{test,spec}.{ts,tsx}',
-      '**/__tests__/**/*.{test,spec}.{ts,tsx}',
+      "src/**/__test__/**/*.{test,spec}.{ts,tsx}",
+      "**/__tests__/**/*.{test,spec}.{ts,tsx}",
     ],
     setupFiles,
-    pool: pool ?? 'threads',
+    pool: pool ?? "threads",
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      provider: "v8",
+      reporter: ["text", "json", "html"],
       thresholds: {
         lines: thresholds.lines,
         statements: thresholds.statements,
@@ -122,10 +125,10 @@ export function getAfendaVitestTestOptions(
  * Node-environment defaults without jest-dom setup (pure packages).
  */
 export function getAfendaVitestNodeTestOptions(
-  options: Pick<AfendaVitestOptions, 'setupFiles'> = {},
-): NonNullable<UserConfig['test']> {
+  options: Pick<AfendaVitestOptions, "setupFiles"> = {}
+): NonNullable<UserConfig["test"]> {
   return getAfendaVitestTestOptions({
-    environment: 'node',
+    environment: "node",
     setupFiles: options.setupFiles ?? [],
   })
 }

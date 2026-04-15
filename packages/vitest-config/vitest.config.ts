@@ -1,11 +1,13 @@
 /// <reference types="vitest/config" />
-import { defineConfig } from 'vite'
+import { defineConfig } from "vite"
 
-import { getAfendaVitestTestOptions } from './src/vitest/defaults'
+import { getAfendaVitestTestOptions } from "@afenda/vitest-config/vitest/defaults"
+import { vitestModuleResolutionPlugin } from "@afenda/vitest-config/vitest/vite-module-resolution-plugin"
 
 export default defineConfig({
+  plugins: [vitestModuleResolutionPlugin()],
   test: {
-    ...getAfendaVitestTestOptions({ environment: 'node', setupFiles: [] }),
-    name: '@afenda/vitest-config',
+    ...getAfendaVitestTestOptions({ environment: "node", setupFiles: [] }),
+    name: "@afenda/vitest-config",
   },
 })

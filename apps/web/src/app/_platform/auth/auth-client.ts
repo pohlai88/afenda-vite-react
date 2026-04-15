@@ -16,6 +16,9 @@ const betterAuthBaseUrl = resolveBetterAuthBaseUrl()
  *
  * Type-only imports above satisfy TS2742 (portable declarations) for `composite` projects.
  */
-export const authClient = createAuthClient(
-  betterAuthBaseUrl ? { baseURL: betterAuthBaseUrl } : undefined
-)
+export const authClient = createAuthClient({
+  ...(betterAuthBaseUrl ? { baseURL: betterAuthBaseUrl } : {}),
+  fetchOptions: {
+    credentials: "include",
+  },
+})

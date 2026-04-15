@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 import { z } from 'zod'
 
@@ -15,6 +15,12 @@ export const DESIGN_SYSTEM_ROOT = path.resolve(__dirname, '..', '..')
 export const UI_PRIMITIVES_DIR = path.join(DESIGN_SYSTEM_ROOT, 'ui-primitives')
 export const REGISTRY_FILE = path.join(UI_PRIMITIVES_DIR, '_registry.ts')
 export const GENERATED_DIR = path.join(DESIGN_SYSTEM_ROOT, 'generated')
+
+/** Pre-register manifests so Vitest/Vite transform `.ts`; runtime `import(file://…/*.ts)` does not. */
+const manifestModuleLoaders = import.meta.glob<{
+  default?: PrimitiveGovernanceManifest
+  manifest?: PrimitiveGovernanceManifest
+}>('../../ui-primitives/**/*.manifest.ts')
 
 const VARIANT_TOKEN_REGEX =
   /\b(?:bg|text|border|ring|outline|fill|stroke)-(?:background|foreground|card|popover|primary|secondary|muted|accent|destructive|input|border|ring|sidebar(?:-[a-z-]+)?|success|warning|info)\b/
@@ -214,7 +220,10 @@ function resolveRegistryFilePath(
   registryFilePath: string,
   rawFilePath: string,
 ): string {
-  const directResolution = path.resolve(path.dirname(registryFilePath), rawFilePath)
+  const directResolution = path.resolve(
+    path.dirname(registryFilePath),
+    rawFilePath,
+  )
   if (fs.existsSync(directResolution)) return directResolution
 
   const normalizedRawPath = normalizePathForJson(rawFilePath)
@@ -325,19 +334,28 @@ function parseCvaConfiguration(
   const variantsProperty = getObjectProperty(secondArgument, 'variants')
   if (variantsProperty) {
     if (!ts.isPropertyAssignment(variantsProperty)) {
-      throw new Error(`${sourceFile.fileName} cva().variants must be a property assignment.`)
+      throw new Error(
+        `${sourceFile.fileName} cva().variants must be a property assignment.`,
+      )
     }
     if (!ts.isObjectLiteralExpression(variantsProperty.initializer)) {
-      throw new Error(`${sourceFile.fileName} cva().variants must be an object literal.`)
+      throw new Error(
+        `${sourceFile.fileName} cva().variants must be an object literal.`,
+      )
     }
 
-    for (const variantGroupProperty of variantsProperty.initializer.properties) {
+    for (const variantGroupProperty of variantsProperty.initializer
+      .properties) {
       if (!ts.isPropertyAssignment(variantGroupProperty)) {
-        throw new Error(`${sourceFile.fileName} cva().variants entries must be properties.`)
+        throw new Error(
+          `${sourceFile.fileName} cva().variants entries must be properties.`,
+        )
       }
       const groupName = getPropertyName(variantGroupProperty.name)
       if (!groupName) {
-        throw new Error(`${sourceFile.fileName} cva().variants group name must be static.`)
+        throw new Error(
+          `${sourceFile.fileName} cva().variants group name must be static.`,
+        )
       }
       if (!ts.isObjectLiteralExpression(variantGroupProperty.initializer)) {
         throw new Error(
@@ -346,7 +364,8 @@ function parseCvaConfiguration(
       }
 
       const values: string[] = []
-      for (const variantProperty of variantGroupProperty.initializer.properties) {
+      for (const variantProperty of variantGroupProperty.initializer
+        .properties) {
         if (!ts.isPropertyAssignment(variantProperty)) {
           throw new Error(
             `${sourceFile.fileName} cva().variants.${groupName} entries must be properties.`,
@@ -364,7 +383,10 @@ function parseCvaConfiguration(
     }
   }
 
-  const defaultVariantsProperty = getObjectProperty(secondArgument, 'defaultVariants')
+  const defaultVariantsProperty = getObjectProperty(
+    secondArgument,
+    'defaultVariants',
+  )
   if (defaultVariantsProperty) {
     if (!ts.isPropertyAssignment(defaultVariantsProperty)) {
       throw new Error(
@@ -388,10 +410,7 @@ function parseCvaConfiguration(
 function collectStringLiterals(sourceFile: ts.SourceFile): string[] {
   const values: string[] = []
   const visit = (node: ts.Node): void => {
-    if (
-      ts.isStringLiteral(node) ||
-      ts.isNoSubstitutionTemplateLiteral(node)
-    ) {
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
       values.push(node.text)
     }
     ts.forEachChild(node, visit)
@@ -416,7 +435,10 @@ function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
     for (const declaration of statement.declarationList.declarations) {
       if (!ts.isIdentifier(declaration.name)) continue
       if (declaration.name.text !== 'ui') continue
-      if (!declaration.initializer || !ts.isArrayLiteralExpression(declaration.initializer)) {
+      if (
+        !declaration.initializer ||
+        !ts.isArrayLiteralExpression(declaration.initializer)
+      ) {
         continue
       }
       registryArray = declaration.initializer
@@ -448,14 +470,20 @@ function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
       throw new Error(`Registry entry "${component}" has non-array "files".`)
     }
 
-    const firstFile = filesProperty.initializer.elements.find(ts.isObjectLiteralExpression)
+    const firstFile = filesProperty.initializer.elements.find(
+      ts.isObjectLiteralExpression,
+    )
     if (!firstFile) {
-      throw new Error(`Registry entry "${component}" has no file object in "files".`)
+      throw new Error(
+        `Registry entry "${component}" has no file object in "files".`,
+      )
     }
 
     const sourcePathFromRegistry = getObjectPropertyString(firstFile, 'path')
     if (!sourcePathFromRegistry) {
-      throw new Error(`Registry entry "${component}" is missing file path string.`)
+      throw new Error(
+        `Registry entry "${component}" is missing file path string.`,
+      )
     }
 
     const sourceFileAbsolute = resolveRegistryFilePath(
@@ -473,7 +501,10 @@ function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
       )
     }
 
-    const manifestFileAbsolute = sourceFileAbsolute.replace(/\.tsx$/, '.manifest.ts')
+    const manifestFileAbsolute = sourceFileAbsolute.replace(
+      /\.tsx$/,
+      '.manifest.ts',
+    )
 
     primitives.push({
       component,
@@ -484,7 +515,9 @@ function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
     })
   }
 
-  return primitives.sort((left, right) => left.component.localeCompare(right.component))
+  return primitives.sort((left, right) =>
+    left.component.localeCompare(right.component),
+  )
 }
 
 export function extractPrimitiveFacts(
@@ -508,7 +541,11 @@ export function extractPrimitiveFacts(
   let hasInlineStyleAttribute = false
 
   const visit = (node: ts.Node): void => {
-    if (ts.isExportDeclaration(node) && node.exportClause && ts.isNamedExports(node.exportClause)) {
+    if (
+      ts.isExportDeclaration(node) &&
+      node.exportClause &&
+      ts.isNamedExports(node.exportClause)
+    ) {
       for (const element of node.exportClause.elements) {
         exportedNames.add(element.name.text)
       }
@@ -516,7 +553,9 @@ export function extractPrimitiveFacts(
 
     if (
       ts.isFunctionDeclaration(node) &&
-      node.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword) &&
+      node.modifiers?.some(
+        (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword,
+      ) &&
       node.name
     ) {
       exportedNames.add(node.name.text)
@@ -524,7 +563,9 @@ export function extractPrimitiveFacts(
 
     if (
       ts.isVariableStatement(node) &&
-      node.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)
+      node.modifiers?.some(
+        (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword,
+      )
     ) {
       for (const declaration of node.declarationList.declarations) {
         if (ts.isIdentifier(declaration.name)) {
@@ -543,7 +584,10 @@ export function extractPrimitiveFacts(
         hasCnCall = true
       }
 
-      if (ts.isIdentifier(node.expression) && node.expression.text === 'forwardRef') {
+      if (
+        ts.isIdentifier(node.expression) &&
+        node.expression.text === 'forwardRef'
+      ) {
         hasForwardRef = true
       }
 
@@ -612,8 +656,18 @@ export function extractPrimitiveFacts(
 async function loadManifestModule(
   manifestAbsolutePath: string,
 ): Promise<PrimitiveGovernanceManifest> {
-  const moduleUrl = pathToFileURL(manifestAbsolutePath).href
-  const moduleValue = await import(moduleUrl)
+  const abs = path.resolve(manifestAbsolutePath)
+  const relFromRoot = toRelativeFromDesignSystem(abs)
+    .replace(/\\/g, '/')
+    .replace(/^\/+/, '')
+  const key = `../../${relFromRoot}`
+  const loader = manifestModuleLoaders[key]
+  if (!loader) {
+    throw new Error(
+      `No manifest module registered for ${key} (resolved from ${manifestAbsolutePath}).`,
+    )
+  }
+  const moduleValue = await loader()
   const candidate = moduleValue.default ?? moduleValue.manifest
   if (!candidate) {
     throw new Error(
@@ -744,9 +798,18 @@ export function serializeArtifacts(payloads: ArtifactPayloads): ArtifactTexts {
 
 export function writeArtifacts(texts: ArtifactTexts): void {
   fs.mkdirSync(GENERATED_DIR, { recursive: true })
-  fs.writeFileSync(path.join(GENERATED_DIR, 'component-manifests.json'), texts.manifests)
-  fs.writeFileSync(path.join(GENERATED_DIR, 'component-variants.json'), texts.variants)
-  fs.writeFileSync(path.join(GENERATED_DIR, 'component-coverage.json'), texts.coverage)
+  fs.writeFileSync(
+    path.join(GENERATED_DIR, 'component-manifests.json'),
+    texts.manifests,
+  )
+  fs.writeFileSync(
+    path.join(GENERATED_DIR, 'component-variants.json'),
+    texts.variants,
+  )
+  fs.writeFileSync(
+    path.join(GENERATED_DIR, 'component-coverage.json'),
+    texts.coverage,
+  )
 }
 
 export function detectArtifactDrift(

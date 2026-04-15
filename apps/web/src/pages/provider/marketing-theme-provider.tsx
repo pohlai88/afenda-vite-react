@@ -3,11 +3,7 @@ import type { ReactNode } from "react"
 
 import { ThemeColorMeta } from "../../app/_platform/theme/theme-color-meta"
 
-/**
- * Public marketing routes only — separate storage from the signed-in app so
- * theme choice on `/` does not affect `/app/*` and vice versa.
- * Must match `index.html` path-based key selection for FOUC.
- */
+/** localStorage key — must match `index.html` inline script for marketing routes. */
 export const VITE_MARKETING_THEME_STORAGE_KEY = "vite-ui-marketing-theme"
 
 export interface MarketingThemeProviderProps {

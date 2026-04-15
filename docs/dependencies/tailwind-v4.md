@@ -70,19 +70,19 @@ This document describes how **Afenda** plans to adopt **[Tailwind CSS v4](https:
 
 ### Minimal plugin shape (illustrative)
 
-Upstream pattern — **merge** into the real config (keep **`react()`**, **legacy**, compiler Babel, etc.):
+Upstream pattern — **merge** into the real config (keep **`react()`**, Tailwind, React Compiler Babel options, etc.):
 
 ```typescript
-import path from 'path'
-import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import path from "path"
+import tailwindcss from "@tailwindcss/vite"
+import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 })
@@ -97,10 +97,10 @@ This repo **already** defines the **`@`** alias in **`vite.config.ts`** (same **
 v4 encourages defining design tokens in CSS with **`@theme`**, which generates matching utilities ([theme docs](https://tailwindcss.com/docs/theme)):
 
 ```css
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
-  --font-display: 'Satoshi', sans-serif;
+  --font-display: "Satoshi", sans-serif;
   --color-mint-500: oklch(0.72 0.11 178);
 }
 ```

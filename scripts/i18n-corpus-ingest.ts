@@ -24,7 +24,7 @@ import { parseDolibarrLang, parsePo } from "./i18n-parse-po.js"
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(__dirname, "..")
 const dataDir = join(repoRoot, "scripts/data")
-const i18nLocalesDir = join(repoRoot, "apps/web/src/share/i18n/locales")
+const i18nLocalesDir = join(repoRoot, "apps/web/src/app/_platform/i18n/locales")
 
 /** Diagnostics for CLI (stderr); keeps stdout free for any piped output. */
 function corpusIngestLog(message: string, detail?: string): void {
@@ -149,7 +149,7 @@ function loadLocalTolgeeEntries(): CorpusEntry[] {
         entries.push({
           afendaKey: `${ns}.${leaf}`,
           locale,
-          sourcePath: `apps/web/src/share/i18n/locales/${locale}/${ns}.json`,
+          sourcePath: `apps/web/src/app/_platform/i18n/locales/${locale}/${ns}.json`,
           value,
         })
       }
@@ -253,7 +253,7 @@ async function ingestTolgee(): Promise<CorpusFile> {
     version: 2,
     source: "tolgee",
     generatedAt: now,
-    fetchedFrom: ["local-fallback:apps/web/src/share/i18n/locales"],
+    fetchedFrom: ["local-fallback:apps/web/src/app/_platform/i18n/locales"],
     entries: localEntries.sort(
       (a, b) =>
         a.afendaKey.localeCompare(b.afendaKey) ||

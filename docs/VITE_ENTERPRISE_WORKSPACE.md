@@ -1,6 +1,6 @@
 ---
 title: Vite enterprise practices (workspace)
-description: Normative Vite 8 + Rolldown baseline, apps/web wiring, and periodic review checklist for this monorepo.
+description: Normative Vite baseline for apps/web (pinned Vite 7.x, evergreen browsers), wiring, and periodic review checklist for this monorepo.
 order: 125
 ---
 
@@ -8,7 +8,7 @@ order: 125
 
 This document is the **repo-level checklist** for **Vite** in Afenda: good practice, **enterprise-quality** expectations, and **how this workspace implements them**. It does not replace upstream docs; it maps them to **`apps/web`** and **Turborepo**.
 
-**When to re-read:** before major Vite/Rolldown upgrades, when changing `vite.config.ts`, when CI build time or chunk sizes regress, or when onboarding senior frontend owners.
+**When to re-read:** before major Vite upgrades (including future Vite 8 / Rolldown), when changing `vite.config.ts`, when CI build time or chunk sizes regress, or when onboarding senior frontend owners.
 
 **Canonical detail** for package versions and plugin list: [`docs/dependencies/vite.md`](./dependencies/vite.md).
 
@@ -23,14 +23,14 @@ This document is the **repo-level checklist** for **Vite** in Afenda: good pract
 
 ## 1. Role of Vite in this monorepo
 
-| Concern | Where it lives |
-| --- | --- |
-| **ERP web client (SPA)** | [`apps/web`](../apps/web/) — React 19, React Router, TanStack Query, etc. |
-| **Vite config** | [`apps/web/vite.config.ts`](../apps/web/vite.config.ts) |
-| **HTML entry** | [`apps/web/index.html`](../apps/web/index.html) → `src/main.tsx` |
-| **Orchestration** | Root [`turbo.json`](../turbo.json), [`pnpm-workspace.yaml`](../pnpm-workspace.yaml) |
-| **CI gate** | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) — format, lint, typecheck, tests, build |
-| **TypeScript presets** | [`packages/typescript-config/`](../packages/typescript-config/) (`vite/client` types for `import.meta.env`) |
+| Concern                  | Where it lives                                                                                              |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| **ERP web client (SPA)** | [`apps/web`](../apps/web/) — React 19, React Router, TanStack Query, etc.                                   |
+| **Vite config**          | [`apps/web/vite.config.ts`](../apps/web/vite.config.ts)                                                     |
+| **HTML entry**           | [`apps/web/index.html`](../apps/web/index.html) → `src/main.tsx`                                            |
+| **Orchestration**        | Root [`turbo.json`](../turbo.json), [`pnpm-workspace.yaml`](../pnpm-workspace.yaml)                         |
+| **CI gate**              | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) — format, lint, typecheck, tests, build           |
+| **TypeScript presets**   | [`packages/typescript-config/`](../packages/typescript-config/) (`vite/client` types for `import.meta.env`) |
 
 Vite is **framework-agnostic** at core; this repo uses the **official React plugin** and ships a **static** client build (see [Deployment](./DEPLOYMENT.md)).
 
@@ -46,8 +46,9 @@ These are **non-negotiable** for a production SPA in this repo:
 4. **Explicit `base`** — driven by `VITE_BASE_URL` where non-root hosting applies ([Deployment](./DEPLOYMENT.md)).
 5. **Stale chunk / dynamic import failures** — listen for `vite:preloadError` and offer user-visible recovery ([load error handling](https://vite.dev/guide/build#load-error-handling)); implemented in [`apps/web/src/vite-preload-recovery.ts`](../apps/web/src/vite-preload-recovery.ts), imported from `main.tsx`.
 6. **Plugin cost awareness** — watch `[PLUGIN_TIMINGS]` and use `vite --debug plugin-transform` / `vite --profile` when transforms regress ([Performance guide](https://vite.dev/guide/performance)).
-7. **Legacy only when required** — `@vitejs/plugin-legacy` has a real cost; align `targets` with product requirements and expect `build.target` interaction warnings until tuned ([plugin-legacy](https://vite.dev/plugins/#vitejs-plugin-legacy)).
-8. **Tests reuse Vite** — Vitest uses the same config surface; do not load dev-only tooling in Vitest when it keeps Node alive (see §4).
+7. **Tests reuse Vite** — Vitest uses the same config surface; do not load dev-only tooling in Vitest when it keeps Node alive (see §4).
+
+**Browser baseline:** the web client targets **evergreen** browsers (native ESM + `import.meta`). **`@vitejs/plugin-legacy`** is **not** used; add it only if the product explicitly supports older engines ([plugin-legacy](https://vite.dev/plugins/#vitejs-plugin-legacy)).
 
 **Product UI performance** (lists, memoization, routing) is covered in [Performance](./PERFORMANCE.md); this doc focuses on **tooling and build pipeline**.
 
@@ -55,17 +56,16 @@ These are **non-negotiable** for a production SPA in this repo:
 
 ## 3. What this workspace implements (concise map)
 
-| Topic | Implementation |
-| --- | --- |
-| **React + Fast Refresh** | `@vitejs/plugin-react`, automatic JSX runtime |
-| **Tailwind v4** | `@tailwindcss/vite` (before React in plugin order per internal guide) |
-| **Legacy browsers** | `@vitejs/plugin-legacy` after React plugin |
-| **React Compiler** | `@rolldown/plugin-babel` + `reactCompilerPreset` (build cost visible in timings) |
-| **Path alias** | `@` → `apps/web/src` |
-| **Dev server** | `server.proxy` for `/api`, optional HMR port, **`server.warmup`** for shell entry files |
-| **Chunk strategy** | `build.rollupOptions.output.manualChunks` for router / UI / react / vendor splits |
-| **Bundle reports** | `pnpm --filter @afenda/web build:analyze` — `rollup-plugin-visualizer` + `--mode analyze` |
-| **Vitest UI** | `pnpm test:ui` (root) / `pnpm --filter @afenda/web test:ui` |
+| Topic                      | Implementation                                                                                                                                                                                                       |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **React + Fast Refresh**   | `@vitejs/plugin-react`, automatic JSX runtime                                                                                                                                                                        |
+| **Tailwind v4**            | `@tailwindcss/vite` (before React in plugin order per internal guide)                                                                                                                                                |
+| **React Compiler**         | `babel-plugin-react-compiler` via `react({ babel: { plugins: [...] } })` in `@vitejs/plugin-react` (build cost visible in timings)                                                                                   |
+| **Path alias**             | `@` → `apps/web/src`                                                                                                                                                                                                 |
+| **Dev server**             | `server.proxy` for `/api`, optional HMR port, **`server.warmup`** for shell entry files                                                                                                                              |
+| **Chunk strategy**         | `build.rollupOptions.output.manualChunks` for router / UI / react / vendor splits                                                                                                                                    |
+| **Bundle reports**         | `pnpm --filter @afenda/web build:analyze` — `rollup-plugin-visualizer` + `--mode analyze`                                                                                                                            |
+| **Vitest UI**              | `pnpm test:ui` (root) / `pnpm --filter @afenda/web test:ui`                                                                                                                                                          |
 | **Official Vite DevTools** | `@vitejs/devtools`: `DevTools()` in **dev serve only**, disabled when `process.env.VITEST === 'true'`; **Rolldown `devtools`** only in **`analyze`** mode so default production builds keep manual chunking behavior |
 
 **Scripts (from `apps/web/package.json`):** `dev`, `build`, `build:analyze`, `preview`, `typecheck`, `test`, `test:ui`, `test:run`, `test:coverage`.
@@ -105,14 +105,14 @@ Keep **Turbo** `env` / `passThroughEnv` aware when adding `VITE_*` or Vitest env
 
 ## 7. Related documentation
 
-| Document | Purpose |
-| --- | --- |
-| [`docs/dependencies/vite.md`](./dependencies/vite.md) | Package-level Vite guide and official links |
-| [`docs/PERFORMANCE.md`](./PERFORMANCE.md) | UI and runtime performance |
-| [`docs/TESTING.md`](./TESTING.md) | Vitest + RTL strategy |
-| [`docs/DEPLOYMENT.md`](./DEPLOYMENT.md) | Static deploy, env, rewrites |
-| [`docs/PROJECT_CONFIGURATION.md`](./PROJECT_CONFIGURATION.md) | ESLint, Prettier, TS, Turbo |
-| [`AGENTS.md`](../AGENTS.md) | AI-oriented doc map and execution protocol |
+| Document                                                      | Purpose                                     |
+| ------------------------------------------------------------- | ------------------------------------------- |
+| [`docs/dependencies/vite.md`](./dependencies/vite.md)         | Package-level Vite guide and official links |
+| [`docs/PERFORMANCE.md`](./PERFORMANCE.md)                     | UI and runtime performance                  |
+| [`docs/TESTING.md`](./TESTING.md)                             | Vitest + RTL strategy                       |
+| [`docs/DEPLOYMENT.md`](./DEPLOYMENT.md)                       | Static deploy, env, rewrites                |
+| [`docs/PROJECT_CONFIGURATION.md`](./PROJECT_CONFIGURATION.md) | ESLint, Prettier, TS, Turbo                 |
+| [`AGENTS.md`](../AGENTS.md)                                   | AI-oriented doc map and execution protocol  |
 
 ---
 

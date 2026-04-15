@@ -1,6 +1,7 @@
 /// <reference types="vitest/config" />
-import { getAfendaVitestNodeTestOptions } from "@afenda/vitest-config/vitest/defaults"
-import { defineConfig } from "vite"
+import { getAfendaVitestNodeTestOptions } from '@afenda/vitest-config/vitest/defaults'
+import { vitestModuleResolutionPlugin } from '@afenda/vitest-config/vitest/vite-module-resolution-plugin'
+import { defineConfig } from 'vite'
 
 /** Minimum coverage for lines / statements / functions on included surfaces. See VITEST.md. */
 const COVERAGE_MIN_PCT = 90
@@ -19,20 +20,20 @@ const baseTest = getAfendaVitestNodeTestOptions()
  * See VITEST.md: correctness/determinism/artifact gates first; coverage is a guardrail.
  */
 const coverageInclude = [
-  "icons/icon-policy.ts",
-  "icons/libraries.ts",
-  "utils/cn.ts",
-  "design-architecture/scripts/lib/design-system-import-allowlist.ts",
-  "design-architecture/scripts/lib/design-system-deprecated-surfaces.ts",
+  'icons/icon-policy.ts',
+  'icons/libraries.ts',
+  'utils/cn.ts',
+  'design-architecture/scripts/lib/design-system-import-allowlist.ts',
+  'design-architecture/scripts/lib/design-system-deprecated-surfaces.ts',
 ] as const
 
 const coverageExclude = [
-  "**/__tests__/**",
-  "**/*.d.ts",
-  "**/node_modules/**",
-  "**/dist/**",
-  "icons/__*.ts",
-  "icons/__*.tsx",
+  '**/__tests__/**',
+  '**/*.d.ts',
+  '**/node_modules/**',
+  '**/dist/**',
+  'icons/__*.ts',
+  'icons/__*.tsx',
 ] as const
 
 /**
@@ -40,10 +41,11 @@ const coverageExclude = [
  * Policy: do not lower thresholds or gut tests to “go green” — fix or test real behavior (VITEST.md).
  */
 export default defineConfig({
+  plugins: [vitestModuleResolutionPlugin({ bare: false })],
   test: {
     ...baseTest,
-    name: "@afenda/design-system",
-    include: ["**/__tests__/**/*.{test,spec}.{ts,tsx}"],
+    name: '@afenda/design-system',
+    include: ['**/__tests__/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
       ...baseTest.coverage,
       include: [...coverageInclude],

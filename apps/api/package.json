@@ -12,8 +12,8 @@
     "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
-    "test": "vitest",
-    "test:run": "vitest run"
+    "test": "vitest --configLoader native",
+    "test:run": "vitest run --configLoader native"
   },
   "dependencies": {
     "@afenda/env-loader": "workspace:*",

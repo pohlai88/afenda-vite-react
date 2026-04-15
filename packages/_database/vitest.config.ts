@@ -1,4 +1,5 @@
 import { getAfendaVitestNodeTestOptions } from "@afenda/vitest-config/vitest/defaults"
+import { vitestModuleResolutionPlugin } from "@afenda/vitest-config/vitest/vite-module-resolution-plugin"
 import { defineConfig } from "vitest/config"
 
 const base = getAfendaVitestNodeTestOptions()
@@ -11,6 +12,7 @@ const base = getAfendaVitestNodeTestOptions()
  * Vitest migration guide). Thresholds below apply to that included set.
  */
 export default defineConfig({
+  plugins: [vitestModuleResolutionPlugin()],
   test: {
     ...base,
     coverage: {

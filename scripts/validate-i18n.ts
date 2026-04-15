@@ -293,10 +293,17 @@ function collectTsxFiles(dir: string): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name)
     if (entry.isDirectory()) {
+      const seg = entry.name
+      // Tests use literal strings by design; marketing previews are English-only demos.
+      if (seg === "__tests__" || seg === "__test__" || seg === "_template") {
+        continue
+      }
       out.push(...collectTsxFiles(full))
     } else if (
       entry.name.endsWith(".tsx") &&
-      !HARDCODED_SKIP_FILES.includes(entry.name)
+      !entry.name.endsWith(".test.tsx") &&
+      !HARDCODED_SKIP_FILES.includes(entry.name) &&
+      !entry.name.startsWith("marketing-")
     ) {
       out.push(full)
     }

@@ -1,6 +1,6 @@
 # React guide (Afenda)
 
-This document describes how **`apps/web`** uses **React 19** as a **Vite SPA** (no React Server Components): **React Router** in **data-router** style with **`createBrowserRouter`** + **`RouterProvider`**, **TanStack Query** for server state, and the **React Compiler** via **`@vitejs/plugin-react`**’s **`reactCompilerPreset`** and **`@rolldown/plugin-babel`**.
+This document describes how **`apps/web`** uses **React 19** as a **Vite SPA** (no React Server Components): **React Router** in **data-router** style with **`createBrowserRouter`** + **`RouterProvider`**, **TanStack Query** for server state, and the **React Compiler** via **`babel-plugin-react-compiler`** inside **`@vitejs/plugin-react`** (`react({ babel: { plugins: [...] } })`).
 
 **Status:** **Adopted** — **`react`** / **`react-dom`** **`^19.2.4`**, **`react-router-dom`** **`^7.14.0`** in [`apps/web/package.json`](../../apps/web/package.json).
 
@@ -18,12 +18,12 @@ This document describes how **`apps/web`** uses **React 19** as a **Vite SPA** (
 
 ## Stack
 
-| Package / tool                                                                        | Role                                                                                                                                                                                     |
-| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`react`** / **`react-dom`**                                                         | UI runtime (React 19)                                                                                                                                                                    |
-| **`react-router-dom`**                                                                | Client **data router**: **`createBrowserRouter`**, **`RouterProvider`**, **`Navigate`**, **`lazy`** route chunks                                                                         |
-| **`@vitejs/plugin-react`** + **`reactCompilerPreset`** + **`@rolldown/plugin-babel`** | [React Compiler](https://react.dev/learn/react-compiler) in Vite — e.g. **`compilationMode: 'infer'`**, **`target: '19'`** in [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) |
-| **`babel-plugin-react-compiler`**                                                     | Compiler Babel plugin (pulled in for the preset/toolchain; see web `package.json`)                                                                                                       |
+| Package / tool                                                 | Role                                                                                                                                                                 |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`react`** / **`react-dom`**                                  | UI runtime (React 19)                                                                                                                                                |
+| **`react-router-dom`**                                         | Client **data router**: **`createBrowserRouter`**, **`RouterProvider`**, **`Navigate`**, **`lazy`** route chunks                                                     |
+| **`@vitejs/plugin-react`** + **`babel-plugin-react-compiler`** | [React Compiler](https://react.dev/learn/react-compiler) in Vite — e.g. **`compilationMode: 'infer'`** in [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) |
+| **`babel-plugin-react-compiler`**                              | Declared in [`apps/web/package.json`](../../apps/web/package.json) (`devDependencies`)                                                                               |
 
 ---
 
@@ -58,7 +58,7 @@ This document describes how **`apps/web`** uses **React 19** as a **Vite SPA** (
 ## Deeper reference
 
 - Router and app shell: [`apps/web/src/routes/`](../../apps/web/src/routes/) (central route tree), [`apps/web/src/router.tsx`](../../apps/web/src/router.tsx), [`apps/web/src/app/_platform/shell/`](../../apps/web/src/app/_platform/shell/), [`apps/web/src/App.tsx`](../../apps/web/src/App.tsx).
-- Build: [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) — **`react()`**, **`reactCompilerPreset`**, **`@rolldown/plugin-babel`**.
+- Build: [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) — **`react()`** with **`babel-plugin-react-compiler`** in the **`babel.plugins`** array.
 - Skill (optional): [vercel-react-best-practices](../../.agents/skills/vercel-react-best-practices/SKILL.md).
 
 ---

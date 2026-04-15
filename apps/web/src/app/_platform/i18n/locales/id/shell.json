@@ -16,9 +16,55 @@
       "feature_3": "Langsung masuk ruang kerja hari ini—alur autentikasi formal menyusul secara bertahap.",
       "placeholder_primary": "Gunakan area ini untuk pesan produk, harga, dan alur onboarding.",
       "sign_in": "Masuk",
+      "create_account": "Buat akun",
       "sign_in_or": "atau",
       "open_erp": "buka aplikasi ERP",
       "sentence_end": "."
+    },
+    "login": {
+      "title": "Masuk",
+      "email_label": "Email",
+      "password_label": "Kata sandi",
+      "submit": "Lanjut",
+      "back": "Kembali ke beranda",
+      "forgot_password": "Lupa kata sandi?",
+      "no_account": "Belum punya akun?",
+      "register_link": "Buat akun",
+      "divider": "atau",
+      "google": "Lanjutkan dengan Google",
+      "github": "Lanjutkan dengan GitHub",
+      "error_generic": "Gagal masuk. Periksa kredensial Anda dan coba lagi."
+    },
+    "register": {
+      "title": "Buat akun",
+      "name_label": "Nama lengkap",
+      "email_label": "Email",
+      "password_label": "Kata sandi",
+      "submit": "Buat akun",
+      "error_generic": "Tidak dapat membuat akun. Coba lagi.",
+      "have_account": "Sudah punya akun?",
+      "sign_in_link": "Masuk",
+      "back": "Kembali ke beranda"
+    },
+    "forgot_password": {
+      "title": "Reset kata sandi",
+      "description": "Masukkan alamat email Anda. Jika ada akun, kami akan mengirim instruksi reset.",
+      "email_label": "Email",
+      "submit": "Kirim tautan reset",
+      "success": "Jika ada akun untuk email tersebut, Anda akan segera menerima instruksi reset.",
+      "back_login": "Kembali ke masuk",
+      "error_generic": "Tidak dapat memulai reset kata sandi. Coba lagi."
+    },
+    "reset_password": {
+      "title": "Pilih kata sandi baru",
+      "new_password_label": "Kata sandi baru",
+      "confirm_label": "Konfirmasi kata sandi",
+      "submit": "Perbarui kata sandi",
+      "error_mismatch": "Kata sandi tidak cocok.",
+      "error_token": "Tautan reset tidak ada, tidak valid, atau kadaluarsa.",
+      "error_generic": "Tidak dapat mengatur ulang kata sandi. Coba lagi.",
+      "back_login": "Kembali ke masuk",
+      "request_new_link": "Minta tautan baru"
     },
     "token_playground": {
       "title": "Playground token desain",
@@ -400,7 +446,12 @@
     "control_title": "Modul ruang kerja",
     "mode_expanded": "Diperluas",
     "mode_collapsed": "Diciutkan",
-    "mode_hover": "Perluas saat hover"
+    "mode_hover": "Perluas saat hover",
+    "labels_column": {
+      "expand_all_title": "Perluas semua modul (Ctrl+Shift+E)",
+      "collapse_all_title": "Ciutkan semua modul (Ctrl+Shift+C)",
+      "focus_active_title": "Fokus modul aktif (Ctrl+Shift+O)"
+    }
   },
   "feedback": {
     "label": "Umpan balik",

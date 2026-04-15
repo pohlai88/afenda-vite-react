@@ -16,9 +16,55 @@
       "feature_3": "Masuk ke ruang kerja hari ini—aliran pengesahan formal akan menyusul secara berperingkat.",
       "placeholder_primary": "Gunakan ruang ini untuk mesej produk, harga, dan alur onboarding.",
       "sign_in": "Log masuk",
+      "create_account": "Cipta akaun",
       "sign_in_or": "atau",
       "open_erp": "buka aplikasi ERP",
       "sentence_end": "."
+    },
+    "login": {
+      "title": "Log masuk",
+      "email_label": "E-mel",
+      "password_label": "Kata laluan",
+      "submit": "Teruskan",
+      "back": "Kembali ke laman utama",
+      "forgot_password": "Lupa kata laluan?",
+      "no_account": "Belum ada akaun?",
+      "register_link": "Cipta akaun",
+      "divider": "atau",
+      "google": "Teruskan dengan Google",
+      "github": "Teruskan dengan GitHub",
+      "error_generic": "Log masuk gagal. Semak kelayakan anda dan cuba lagi."
+    },
+    "register": {
+      "title": "Cipta akaun",
+      "name_label": "Nama penuh",
+      "email_label": "E-mel",
+      "password_label": "Kata laluan",
+      "submit": "Cipta akaun",
+      "error_generic": "Tidak dapat mencipta akaun. Cuba lagi.",
+      "have_account": "Sudah ada akaun?",
+      "sign_in_link": "Log masuk",
+      "back": "Kembali ke laman utama"
+    },
+    "forgot_password": {
+      "title": "Set semula kata laluan",
+      "description": "Masukkan alamat e-mel anda. Jika akaun wujud, kami akan menghantar arahan set semula.",
+      "email_label": "E-mel",
+      "submit": "Hantar pautan set semula",
+      "success": "Jika akaun wujud untuk e-mel tersebut, anda akan menerima arahan set semula tidak lama lagi.",
+      "back_login": "Kembali ke log masuk",
+      "error_generic": "Tidak dapat memulakan set semula kata laluan. Cuba lagi."
+    },
+    "reset_password": {
+      "title": "Pilih kata laluan baharu",
+      "new_password_label": "Kata laluan baharu",
+      "confirm_label": "Sahkan kata laluan",
+      "submit": "Kemas kini kata laluan",
+      "error_mismatch": "Kata laluan tidak sepadan.",
+      "error_token": "Pautan set semula tiada, tidak sah atau telah tamat tempoh.",
+      "error_generic": "Tidak dapat menetapkan semula kata laluan. Cuba lagi.",
+      "back_login": "Kembali ke log masuk",
+      "request_new_link": "Minta pautan baharu"
     },
     "token_playground": {
       "title": "Taman permainan token reka bentuk",
@@ -400,7 +446,12 @@
     "control_title": "Modul ruang kerja",
     "mode_expanded": "Dikembangkan",
     "mode_collapsed": "Diruntuhkan",
-    "mode_hover": "Kembang semasa hover"
+    "mode_hover": "Kembang semasa hover",
+    "labels_column": {
+      "expand_all_title": "Kembangkan semua modul (Ctrl+Shift+E)",
+      "collapse_all_title": "Runtuhkan semua modul (Ctrl+Shift+C)",
+      "focus_active_title": "Fokus modul aktif (Ctrl+Shift+O)"
+    }
   },
   "feedback": {
     "label": "Maklum balas",

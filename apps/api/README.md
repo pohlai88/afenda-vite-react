@@ -34,7 +34,25 @@ Default port **3001** (override with `PORT`).
 ## Endpoints
 
 - `GET /health` — liveness
+- `GET /api/auth/ok` — Better Auth health check (requires Better Auth schema migrated; see below)
+- `GET|POST /api/auth/*` — [Better Auth](https://www.better-auth.com/) routes (email/password, OAuth when configured). The SPA calls these via the Vite dev proxy (`/api` → this server) or through `VITE_BETTER_AUTH_BASE_URL` when using a remote auth origin.
 - `POST /v1/audit/demo` — writes one governed `auth.login.succeeded` row (demo). JSON body optional: `{ "subjectId": string }`.
+
+## Better Auth (self-hosted)
+
+Server config lives in `@afenda/better-auth` (`createAfendaAuth`). Required env (see repo-root `.env.database.example` and `.env.neon.example`):
+
+- `DATABASE_URL` — same Postgres as `@afenda/database`
+- `BETTER_AUTH_SECRET` — strong secret (e.g. `openssl rand -base64 32`)
+- `BETTER_AUTH_URL` — **browser-visible** origin for cookies and redirects; for local Vite + proxy use `http://localhost:5173` (not only `http://localhost:3001`)
+
+Apply Better Auth tables with the CLI (from repo root, with `.env.neon` or env loaded so `DATABASE_URL` and `BETTER_AUTH_SECRET` are set):
+
+```bash
+pnpm --filter @afenda/better-auth auth:migrate
+```
+
+Re-run after enabling new Better Auth plugins. Drizzle migrations under `packages/_database` are separate; run both as needed.
 
 ## Local smoke (full stack)
 

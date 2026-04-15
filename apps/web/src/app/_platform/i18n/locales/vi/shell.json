@@ -16,9 +16,55 @@
       "feature_3": "Vào không gian làm việc ngay hôm nay—luồng xác thực chính thức sẽ bổ sung dần.",
       "placeholder_primary": "Dùng khu vực này cho thông điệp sản phẩm, giá và luồng onboarding.",
       "sign_in": "Đăng nhập",
+      "create_account": "Tạo tài khoản",
       "sign_in_or": "hoặc",
       "open_erp": "mở ứng dụng ERP",
       "sentence_end": "."
+    },
+    "login": {
+      "title": "Đăng nhập",
+      "email_label": "Email",
+      "password_label": "Mật khẩu",
+      "submit": "Tiếp tục",
+      "back": "Về trang chủ",
+      "forgot_password": "Quên mật khẩu?",
+      "no_account": "Chưa có tài khoản?",
+      "register_link": "Tạo tài khoản",
+      "divider": "hoặc",
+      "google": "Tiếp tục với Google",
+      "github": "Tiếp tục với GitHub",
+      "error_generic": "Đăng nhập thất bại. Kiểm tra thông tin đăng nhập và thử lại."
+    },
+    "register": {
+      "title": "Tạo tài khoản",
+      "name_label": "Họ và tên",
+      "email_label": "Email",
+      "password_label": "Mật khẩu",
+      "submit": "Tạo tài khoản",
+      "error_generic": "Không thể tạo tài khoản. Thử lại.",
+      "have_account": "Đã có tài khoản?",
+      "sign_in_link": "Đăng nhập",
+      "back": "Về trang chủ"
+    },
+    "forgot_password": {
+      "title": "Đặt lại mật khẩu",
+      "description": "Nhập địa chỉ email. Nếu có tài khoản, chúng tôi sẽ gửi hướng dẫn đặt lại.",
+      "email_label": "Email",
+      "submit": "Gửi liên kết đặt lại",
+      "success": "Nếu có tài khoản với email đó, bạn sẽ nhận hướng dẫn đặt lại trong thời gian ngắn.",
+      "back_login": "Quay lại đăng nhập",
+      "error_generic": "Không thể bắt đầu đặt lại mật khẩu. Thử lại."
+    },
+    "reset_password": {
+      "title": "Chọn mật khẩu mới",
+      "new_password_label": "Mật khẩu mới",
+      "confirm_label": "Xác nhận mật khẩu",
+      "submit": "Cập nhật mật khẩu",
+      "error_mismatch": "Mật khẩu không khớp.",
+      "error_token": "Liên kết đặt lại bị thiếu, không hợp lệ hoặc đã hết hạn.",
+      "error_generic": "Không thể đặt lại mật khẩu. Thử lại.",
+      "back_login": "Quay lại đăng nhập",
+      "request_new_link": "Yêu cầu liên kết mới"
     },
     "token_playground": {
       "title": "Sân chơi token thiết kế",
@@ -400,7 +446,12 @@
     "control_title": "Mô-đun không gian làm việc",
     "mode_expanded": "Mở rộng",
     "mode_collapsed": "Thu gọn",
-    "mode_hover": "Mở rộng khi di chuột"
+    "mode_hover": "Mở rộng khi di chuột",
+    "labels_column": {
+      "expand_all_title": "Mở rộng tất cả mô-đun (Ctrl+Shift+E)",
+      "collapse_all_title": "Thu gọn tất cả mô-đun (Ctrl+Shift+C)",
+      "focus_active_title": "Tập trung mô-đun đang hoạt động (Ctrl+Shift+O)"
+    }
   },
   "feedback": {
     "label": "Phản hồi",

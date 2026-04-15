@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test": "vitest --configLoader native",
+    "test:run": "vitest run --configLoader native",
+    "test:coverage": "vitest run --coverage --configLoader native"
   },
   "exports": {
     "./vitest/defaults": {
@@ -23,11 +23,16 @@
       "types": "./src/vitest/setup.ts",
       "import": "./src/vitest/setup.ts",
       "default": "./src/vitest/setup.ts"
+    },
+    "./vitest/vite-module-resolution-plugin": {
+      "types": "./src/vitest/vite-module-resolution-plugin.ts",
+      "import": "./src/vitest/vite-module-resolution-plugin.ts",
+      "default": "./src/vitest/vite-module-resolution-plugin.ts"
     }
   },
   "peerDependencies": {
     "@testing-library/jest-dom": "^6.0.0",
-    "vite": "^8.0.0",
+    "vite": "^7.3.2",
     "vitest": "^4.0.0"
   },
   "devDependencies": {

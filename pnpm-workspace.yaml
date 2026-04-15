@@ -39,7 +39,9 @@ catalog:
   vaul: ^1.1.2
   typescript: ~5.9.3
   tsx: ^4.21.0
-  vite: ^8.0.8
+  # Vite 8 (Rolldown): UNRESOLVED_ENTRY for index.html on Windows (absolute paths) — stay on Vite 7 until fixed upstream.
+  # Exact catalog pin (no ^) keeps resolution stable without package.json overrides.
+  vite: 7.3.2
   vitest: ^4.1.4
   zod: ^4.3.6
   dotenv: ^16.6.1

@@ -9,10 +9,8 @@ import {
   type UserConfig,
 } from "vite"
 import { visualizer } from "rollup-plugin-visualizer"
-import react, { reactCompilerPreset } from "@vitejs/plugin-react"
+import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
-import babel from "@rolldown/plugin-babel"
-import legacy from "@vitejs/plugin-legacy"
 import path from "path"
 import { existsSync } from "node:fs"
 import { fileURLToPath } from "node:url"
@@ -21,7 +19,7 @@ import { config as loadDotenv } from "dotenv"
 /** Directory containing `vite.config.ts` — explicit `root` avoids mis-resolution with `--configLoader native`. */
 const configDir = path.dirname(fileURLToPath(import.meta.url))
 
-// Repo-root `.env.neon` (process.cwd() candidates; safe for native + Rolldown config bundling)
+// Repo-root `.env.neon` (process.cwd() candidates; safe for `--configLoader native` bundling)
 for (const envPath of [
   path.join(process.cwd(), ".env.neon"),
   path.join(process.cwd(), "..", ".env.neon"),
@@ -73,38 +71,19 @@ async function resolveUserConfig({
       // Tailwind CSS v4 plugin (must be before React)
       tailwindcss(),
 
-      // React plugin with Fast Refresh
+      // React Fast Refresh + React Compiler (`babel-plugin-react-compiler` via `react({ babel })`).
       react({
-        // JSX runtime (automatic is recommended for React 17+)
         jsxRuntime: "automatic",
-        // JSX import source (can be customized for emotion, styled-components, etc.)
-        // jsxImportSource: '@emotion/react', // Change this based on your needs
-      }),
-
-      // Legacy browser support (after @vitejs/plugin-react; see plugin-legacy docs)
-      legacy({
-        targets: ["defaults", "not IE 11"],
-        additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
-        renderLegacyChunks: true,
-        polyfills: [
-          // Add custom polyfills if needed
-        ],
-        modernPolyfills: [],
-      }),
-
-      // React Compiler with Babel
-      babel({
-        presets: [
-          reactCompilerPreset({
-            compilationMode: "infer", // 'infer' | 'annotation' | 'all'
-            target: "19", // React 19 runtime
-          }),
-        ],
-        // Additional Babel plugins can be added here
-        plugins: [
-          // Add any additional Babel plugins you need
-          // ['@babel/plugin-proposal-decorators', { legacy: true }],
-        ],
+        babel: {
+          plugins: [
+            [
+              "babel-plugin-react-compiler",
+              {
+                compilationMode: "infer",
+              },
+            ],
+          ],
+        },
       }),
 
       // Custom plugins can be added here
@@ -178,7 +157,6 @@ async function resolveUserConfig({
       assetsDir: "assets",
       // Source maps
       sourcemap: mode === "development",
-      // Minification
       minify: mode === "production" ? "esbuild" : false,
       // Target environments
       target: "esnext",
@@ -219,9 +197,7 @@ async function resolveUserConfig({
             }
             return `assets/[name]-[hash][extname]`
           },
-          // Chunk file naming (legacy plugin will add -legacy suffix automatically)
           chunkFileNames: "assets/js/[name]-[hash].js",
-          // Entry file naming (legacy plugin will add -legacy suffix automatically)
           entryFileNames: "assets/js/[name]-[hash].js",
         },
       },

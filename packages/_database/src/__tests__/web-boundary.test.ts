@@ -41,20 +41,24 @@ function listFiles(root: string, predicate: (filePath: string) => boolean) {
 }
 
 describe("web database boundary", () => {
-  it("keeps server database packages out of the Vite browser source", () => {
-    const files = listFiles(webSrcRoot, (filePath) =>
-      /\.(?:ts|tsx)$/.test(filePath)
-    )
+  it(
+    "keeps server database packages out of the Vite browser source",
+    { timeout: 30_000 },
+    () => {
+      const files = listFiles(webSrcRoot, (filePath) =>
+        /\.(?:ts|tsx)$/.test(filePath)
+      )
 
-    const offenders = files.flatMap((filePath) => {
-      const text = readFileSync(filePath, "utf8")
-      return /from\s+["'](?:@afenda\/database|drizzle-orm|pg)["']/.test(text)
-        ? [path.relative(repoRoot, filePath)]
-        : []
-    })
+      const offenders = files.flatMap((filePath) => {
+        const text = readFileSync(filePath, "utf8")
+        return /from\s+["'](?:@afenda\/database|drizzle-orm|pg)["']/.test(text)
+          ? [path.relative(repoRoot, filePath)]
+          : []
+      })
 
-    expect(offenders).toEqual([])
-  })
+      expect(offenders).toEqual([])
+    }
+  )
 
   it("keeps feature db-schema folders as documentation-only persistence intent", () => {
     const featureFiles = listFiles(

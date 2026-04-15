@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@afenda/database": "workspace:*",
+    "@afenda/env-loader": "workspace:*",
     "better-auth": "^1.6.3",
     "pg": "catalog:"
   },
@@ -23,6 +24,9 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto"
+    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "auth:migrate": "pnpm dlx auth@latest migrate --config ./src/better-auth-cli-config.ts --yes",
+    "auth:generate": "pnpm dlx auth@latest generate --config ./src/better-auth-cli-config.ts --yes",
+    "auth:info": "pnpm dlx auth@latest info --config ./src/better-auth-cli-config.ts"
   }
 }

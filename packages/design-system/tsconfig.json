@@ -20,6 +20,7 @@
     }
   },
   "include": [
+    "vite-env.d.ts",
     "index.ts",
     "vitest.config.ts",
     "scripts/**/*.ts",

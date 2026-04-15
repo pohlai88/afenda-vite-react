@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source": "frappe",
-  "generatedAt": "2026-04-10T18:34:24.824Z",
+  "generatedAt": "2026-04-14T22:39:40.543Z",
   "fetchedFrom": [
     "https://raw.githubusercontent.com/frappe/frappe/develop/frappe/locale/main.pot",
     "https://raw.githubusercontent.com/frappe/erpnext/develop/erpnext/locale/main.pot",

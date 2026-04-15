@@ -595,19 +595,19 @@ export function ShellLabelsColumn({
               ariaLabel="Expand all modules"
               icon={<UnfoldVertical className="size-3.5" />}
               onClick={setAllExpanded}
-              title="Expand all modules (Ctrl+Shift+E)"
+              title={t("sidebar.labels_column.expand_all_title")}
             />
             <ShellLabelsColumnCompactAction
               ariaLabel="Collapse all modules"
               icon={<FoldVertical className="size-3.5" />}
               onClick={setAllCollapsed}
-              title="Collapse all modules (Ctrl+Shift+C)"
+              title={t("sidebar.labels_column.collapse_all_title")}
             />
             <ShellLabelsColumnCompactAction
               ariaLabel="Focus active module"
               icon={<LocateFixed className="size-3.5" />}
               onClick={setCollapseOthers}
-              title="Focus active module (Ctrl+Shift+O)"
+              title={t("sidebar.labels_column.focus_active_title")}
             />
           </div>
         </div>

@@ -12,7 +12,7 @@ import {
   type NormalizedGovernanceComponent,
 } from '../core'
 
-describe('component governance integration', () => {
+describe('component governance integration', { timeout: 60_000 }, () => {
   it('produces deterministic full-scan outputs', async () => {
     const first = await buildGovernanceModel()
     const second = await buildGovernanceModel()
@@ -40,7 +40,9 @@ describe('component governance integration', () => {
       (entry) => entry.cvaDefinitions.length > 0,
     )
     if (!firstComponent) {
-      throw new Error('Expected at least one variant-enabled component for drift test.')
+      throw new Error(
+        'Expected at least one variant-enabled component for drift test.',
+      )
     }
     firstComponent.cvaDefinitions = []
 

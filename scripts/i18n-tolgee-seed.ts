@@ -9,25 +9,25 @@
  *
  * Run: pnpm run script:i18n-tolgee-seed
  */
-import { readFileSync, readdirSync, existsSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { readFileSync, readdirSync, existsSync } from "node:fs"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const repoRoot = join(__dirname, '..')
-const localesDir = join(repoRoot, 'apps/web/src/share/i18n/locales')
-const envPath = join(repoRoot, '.env.tolgee')
+const repoRoot = join(__dirname, "..")
+const localesDir = join(repoRoot, "apps/web/src/app/_platform/i18n/locales")
+const envPath = join(repoRoot, ".env.tolgee")
 
 type FlatMap = Record<string, string>
 
-function flattenLeaves(obj: unknown, prefix = ''): FlatMap {
-  if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) {
+function flattenLeaves(obj: unknown, prefix = ""): FlatMap {
+  if (obj === null || typeof obj !== "object" || Array.isArray(obj)) {
     return {}
   }
   const out: FlatMap = {}
   for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
     const next = prefix ? `${prefix}.${k}` : k
-    if (typeof v === 'string') {
+    if (typeof v === "string") {
       out[next] = v
     } else {
       Object.assign(out, flattenLeaves(v, next))
@@ -39,15 +39,15 @@ function flattenLeaves(obj: unknown, prefix = ''): FlatMap {
 function loadEnv(): { apiUrl: string; projectId: string; apiKey: string } {
   if (!existsSync(envPath)) {
     throw new Error(
-      `Missing ${envPath}. Copy .env.tolgee.example to .env.tolgee and fill in values.`,
+      `Missing ${envPath}. Copy .env.tolgee.example to .env.tolgee and fill in values.`
     )
   }
-  const lines = readFileSync(envPath, 'utf8').split('\n')
+  const lines = readFileSync(envPath, "utf8").split("\n")
   const vars: Record<string, string> = {}
   for (const line of lines) {
     const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
-    const eq = trimmed.indexOf('=')
+    if (!trimmed || trimmed.startsWith("#")) continue
+    const eq = trimmed.indexOf("=")
     if (eq <= 0) continue
     vars[trimmed.slice(0, eq).trim()] = trimmed.slice(eq + 1).trim()
   }
@@ -58,16 +58,16 @@ function loadEnv(): { apiUrl: string; projectId: string; apiKey: string } {
 
   if (!apiUrl || !projectId || !apiKey) {
     throw new Error(
-      'TOLGEE_API_URL, TOLGEE_PROJECT_ID, and TOLGEE_API_KEY must all be set in .env.tolgee',
+      "TOLGEE_API_URL, TOLGEE_PROJECT_ID, and TOLGEE_API_KEY must all be set in .env.tolgee"
     )
   }
 
-  return { apiUrl: apiUrl.replace(/\/$/, ''), projectId, apiKey }
+  return { apiUrl: apiUrl.replace(/\/$/, ""), projectId, apiKey }
 }
 
 function authHeaders(apiKey: string): Record<string, string> {
-  if (apiKey.startsWith('tgpat_')) {
-    return { 'X-API-Key': apiKey }
+  if (apiKey.startsWith("tgpat_")) {
+    return { "X-API-Key": apiKey }
   }
   return { Authorization: `Bearer ${apiKey}` }
 }
@@ -85,9 +85,9 @@ function buildKeyImports(): KeyImport[] {
     return stat.length > 0
   })
 
-  const namespaces = readdirSync(join(localesDir, 'en'))
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => f.replace(/\.json$/, ''))
+  const namespaces = readdirSync(join(localesDir, "en"))
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => f.replace(/\.json$/, ""))
 
   const keyMap = new Map<
     string,
@@ -98,7 +98,7 @@ function buildKeyImports(): KeyImport[] {
     for (const ns of namespaces) {
       const filePath = join(localesDir, locale, `${ns}.json`)
       if (!existsSync(filePath)) continue
-      const raw = JSON.parse(readFileSync(filePath, 'utf8')) as unknown
+      const raw = JSON.parse(readFileSync(filePath, "utf8")) as unknown
       const flat = flattenLeaves(raw)
       for (const [leaf, value] of Object.entries(flat)) {
         const compositeKey = `${ns}.${leaf}`
@@ -118,13 +118,13 @@ function buildKeyImports(): KeyImport[] {
       name: entry.leaf,
       namespace: entry.ns,
       translations: entry.translations,
-      tags: ['seed'],
+      tags: ["seed"],
     })
   }
 
   return imports.sort(
     (a, b) =>
-      a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name),
+      a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name)
   )
 }
 
@@ -132,13 +132,13 @@ async function ensureLanguages(
   apiUrl: string,
   projectId: string,
   apiKey: string,
-  tags: string[],
+  tags: string[]
 ): Promise<void> {
   const res = await fetch(
     `${apiUrl}/v2/projects/${projectId}/languages?size=100`,
     {
       headers: authHeaders(apiKey),
-    },
+    }
   )
   if (!res.ok) {
     throw new Error(`Failed to list languages: ${res.status} ${res.statusText}`)
@@ -149,10 +149,10 @@ async function ensureLanguages(
   const existing = new Set(body._embedded?.languages?.map((l) => l.tag) ?? [])
 
   const languageMeta: Record<string, { name: string; originalName: string }> = {
-    en: { name: 'English', originalName: 'English' },
-    ms: { name: 'Malay', originalName: 'Bahasa Melayu' },
-    id: { name: 'Indonesian', originalName: 'Bahasa Indonesia' },
-    vi: { name: 'Vietnamese', originalName: 'Tiếng Việt' },
+    en: { name: "English", originalName: "English" },
+    ms: { name: "Malay", originalName: "Bahasa Melayu" },
+    id: { name: "Indonesian", originalName: "Bahasa Indonesia" },
+    vi: { name: "Vietnamese", originalName: "Tiếng Việt" },
   }
 
   for (const tag of tags) {
@@ -161,19 +161,19 @@ async function ensureLanguages(
     const createRes = await fetch(
       `${apiUrl}/v2/projects/${projectId}/languages`,
       {
-        method: 'POST',
-        headers: { ...authHeaders(apiKey), 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { ...authHeaders(apiKey), "Content-Type": "application/json" },
         body: JSON.stringify({
           tag,
           name: meta.name,
           originalName: meta.originalName,
         }),
-      },
+      }
     )
     if (!createRes.ok) {
       const text = await createRes.text()
       throw new Error(
-        `Failed to create language "${tag}": ${createRes.status} ${text}`,
+        `Failed to create language "${tag}": ${createRes.status} ${text}`
       )
     }
     console.log(`  Created language: ${tag} (${meta.name})`)
@@ -184,11 +184,11 @@ async function importBatch(
   apiUrl: string,
   projectId: string,
   apiKey: string,
-  keys: KeyImport[],
+  keys: KeyImport[]
 ): Promise<void> {
   const res = await fetch(`${apiUrl}/v2/projects/${projectId}/keys/import`, {
-    method: 'POST',
-    headers: { ...authHeaders(apiKey), 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { ...authHeaders(apiKey), "Content-Type": "application/json" },
     body: JSON.stringify({ keys }),
   })
   if (!res.ok) {
@@ -209,7 +209,7 @@ async function main(): Promise<void> {
   const allLocales = [
     ...new Set(keys.flatMap((k) => Object.keys(k.translations))),
   ]
-  console.log(`Ensuring languages exist: ${allLocales.join(', ')}`)
+  console.log(`Ensuring languages exist: ${allLocales.join(", ")}`)
   await ensureLanguages(apiUrl, projectId, apiKey, allLocales)
 
   console.log(`\nImporting ${keys.length} keys in batches of ${BATCH_SIZE}...`)
@@ -222,12 +222,12 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `\nSeed complete. ${imported} keys across ${allLocales.length} languages.`,
+    `\nSeed complete. ${imported} keys across ${allLocales.length} languages.`
   )
   console.log(`View at: ${apiUrl}`)
 }
 
 main().catch((err) => {
-  console.error('Tolgee seed failed:', err)
+  console.error("Tolgee seed failed:", err)
   process.exit(1)
 })

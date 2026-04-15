@@ -36,7 +36,7 @@ Use this skill to enforce production-grade Vite standards for reliability, secur
 ## Production Build Best Practices
 
 - Prefer default modern browser baseline unless business needs older support.
-- If older browsers are required, use `@vitejs/plugin-legacy`.
+- If older browsers are required, evaluate `@vitejs/plugin-legacy` (not used for the Afenda web client’s evergreen baseline).
 - For libraries, use `build.lib` and externalize framework dependencies.
 - Configure chunking intentionally (avoid accidental oversized entry chunks).
 - Use `build.license` when legal/license disclosure is needed.

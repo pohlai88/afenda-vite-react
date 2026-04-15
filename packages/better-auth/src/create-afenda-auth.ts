@@ -40,7 +40,17 @@ export function createAfendaAuth(pool: Pool) {
     database: pool,
     secret,
     baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:5173",
-    emailAndPassword: { enabled: true },
+    emailAndPassword: {
+      enabled: true,
+      // Replace with your mailer in production (Resend, SES, …). Dev: log the link for manual testing.
+      sendResetPassword: async ({ user, url }) => {
+        if (process.env.NODE_ENV !== "production") {
+          console.info(
+            `[afenda/auth] Password reset link for ${user.email}: ${url}`
+          )
+        }
+      },
+    },
     ...(Object.keys(socialProviders).length > 0 ? { socialProviders } : {}),
   })
 }

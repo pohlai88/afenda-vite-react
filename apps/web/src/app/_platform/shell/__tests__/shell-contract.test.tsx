@@ -7,7 +7,7 @@ import "../types/shell-route-handle"
 import { AppThemeProvider } from "../../theme/app-theme-provider"
 import { MarketingThemeProvider } from "../../../../pages/provider/marketing-theme-provider"
 
-import MarketingLandingPage from "../../../../pages/components/marketing-landing-page"
+import LandingPage from "../../../../pages/landing"
 import { ShellLeftSidebarLayout } from "../components/shell-left-sidebar-block"
 
 describe("App shell layout contract", () => {
@@ -29,7 +29,7 @@ describe("App shell layout contract", () => {
 
   it("renders marketing home without the shell sidebar wrapper", async () => {
     const router = createMemoryRouter(
-      [{ path: "/", element: <MarketingLandingPage /> }],
+      [{ path: "/", element: <LandingPage /> }],
       {
         initialEntries: ["/"],
       }

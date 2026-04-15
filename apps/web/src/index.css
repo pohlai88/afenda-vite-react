@@ -17,6 +17,27 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/*
+ * Tailwind v4: `@source "./"` only registers the `src/` directory itself — nested trees
+ * (`pages/landing.tsx`, `app/...`) are not scanned, so standard utilities never reach
+ * `@layer utilities` and marketing `/` looks unstyled. Register each top-level `src/*`
+ * tree explicitly, before theme imports (order matters for the pipeline).
+ */
+@source "./app";
+@source "./pages";
+@source "./routes";
+@source "./worker";
+@source "../../../packages/design-system/ui-primitives";
+@source "../../../packages/design-system/icons";
+
+@plugin "@tailwindcss/forms" {
+  strategy: class;
+}
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 @import "../../../packages/design-system/design-architecture/src/theme/theme-tokens-light.css";
 @import "../../../packages/design-system/design-architecture/src/theme/theme-dark.css";
 @import "../../../packages/design-system/design-architecture/src/theme/theme-keyframes.css";
@@ -36,22 +57,6 @@
   --shell-content-gutter-inline: calc(var(--spacing-panel-padding-lg) * 1.2);
   --shell-content-gutter-block: calc(var(--spacing-panel-padding-lg) * 1.15);
 }
-
-/* -------------------------------------------------------------------------- */
-/* Tailwind setup                                                             */
-/* -------------------------------------------------------------------------- */
-
-@source "./";
-@source "../../../packages/design-system/ui-primitives";
-@source "../../../packages/design-system/icons";
-
-@plugin "@tailwindcss/forms" {
-  strategy: class;
-}
-
-@plugin "@tailwindcss/typography";
-
-@custom-variant dark (&:where(.dark, .dark *));
 
 /* -------------------------------------------------------------------------- */
 /* Utilities                                                                  */

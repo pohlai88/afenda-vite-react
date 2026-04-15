@@ -16,7 +16,7 @@ export function AppBootstrapLoading({
   return (
     <div
       className={cn(
-        "flex min-h-svh flex-col items-center justify-center gap-3 bg-background p-6 text-muted-foreground",
+        "ui-stack-tight min-h-svh items-center justify-center bg-background px-6 py-6 text-muted-foreground",
         className
       )}
       role="status"

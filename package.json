@@ -40,7 +40,8 @@
     "script:ui-color-governance": "pnpm run script:check-stem-sync && pnpm run script:check-color-consistency && pnpm exec eslint packages/design-system apps/web/src --max-warnings 0 --cache --cache-location .eslintcache --concurrency auto",
     "script:vitest-diagnostics": "tsx scripts/vitest-diagnostics.ts",
     "script:check-audit-writer-boundary": "tsx scripts/check-audit-writer-boundary.ts",
-    "script:audit-api-smoke": "tsx scripts/audit-api-smoke.ts"
+    "script:audit-api-smoke": "tsx scripts/audit-api-smoke.ts",
+    "auth:migrate": "pnpm --filter @afenda/better-auth auth:migrate"
   },
   "devDependencies": {
     "@afenda/eslint-config": "workspace:*",

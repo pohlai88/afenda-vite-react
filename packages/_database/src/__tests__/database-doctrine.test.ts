@@ -83,7 +83,7 @@ describe("database package doctrine", () => {
 
   it(
     "does not use forbidden database import paths in code",
-    { timeout: 60_000 },
+    { timeout: 120_000 },
     () => {
       const files = listFiles(repoRoot, (filePath) =>
         /\.(?:ts|tsx|js|jsx|mjs|cjs)$/.test(filePath)

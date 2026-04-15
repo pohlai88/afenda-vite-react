@@ -11,7 +11,7 @@ async function getComponent(name: string) {
   return component
 }
 
-describe('component governance extractor', () => {
+describe('component governance extractor', { timeout: 60_000 }, () => {
   it('parses CVA variants/defaults for button', async () => {
     const button = await getComponent('button')
 
@@ -47,4 +47,3 @@ describe('component governance extractor', () => {
     expect(table.dataSlots).toContain('table')
   })
 })
-

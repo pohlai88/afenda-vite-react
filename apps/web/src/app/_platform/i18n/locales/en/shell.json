@@ -16,9 +16,55 @@
       "feature_3": "Jump into the workspace today—formal authentication flows arrive incrementally.",
       "placeholder_primary": "Use this area for product messaging, pricing, and onboarding flows.",
       "sign_in": "Sign in",
+      "create_account": "Create account",
       "sign_in_or": "or",
       "open_erp": "open the ERP app",
       "sentence_end": "."
+    },
+    "login": {
+      "title": "Sign in",
+      "email_label": "Email",
+      "password_label": "Password",
+      "submit": "Continue",
+      "back": "Back to home",
+      "forgot_password": "Forgot password?",
+      "no_account": "No account yet?",
+      "register_link": "Create account",
+      "divider": "or",
+      "google": "Continue with Google",
+      "github": "Continue with GitHub",
+      "error_generic": "Sign-in failed. Check your credentials and try again."
+    },
+    "register": {
+      "title": "Create account",
+      "name_label": "Full name",
+      "email_label": "Email",
+      "password_label": "Password",
+      "submit": "Create account",
+      "error_generic": "Could not create your account. Try again.",
+      "have_account": "Already have an account?",
+      "sign_in_link": "Sign in",
+      "back": "Back to home"
+    },
+    "forgot_password": {
+      "title": "Reset password",
+      "description": "Enter your email address. If an account exists, we will send reset instructions.",
+      "email_label": "Email",
+      "submit": "Send reset link",
+      "success": "If an account exists for that email, you will receive reset instructions shortly.",
+      "back_login": "Back to sign in",
+      "error_generic": "Could not start password reset. Try again."
+    },
+    "reset_password": {
+      "title": "Choose a new password",
+      "new_password_label": "New password",
+      "confirm_label": "Confirm password",
+      "submit": "Update password",
+      "error_mismatch": "Passwords do not match.",
+      "error_token": "This reset link is missing, invalid, or expired.",
+      "error_generic": "Could not reset your password. Try again.",
+      "back_login": "Back to sign in",
+      "request_new_link": "Request a new link"
     },
     "token_playground": {
       "title": "Design token playground",
@@ -400,7 +446,12 @@
     "control_title": "Workspace Module",
     "mode_expanded": "Expanded",
     "mode_collapsed": "Collapsed",
-    "mode_hover": "Expand on hover"
+    "mode_hover": "Expand on hover",
+    "labels_column": {
+      "expand_all_title": "Expand all modules (Ctrl+Shift+E)",
+      "collapse_all_title": "Collapse all modules (Ctrl+Shift+C)",
+      "focus_active_title": "Focus active module (Ctrl+Shift+O)"
+    }
   },
   "feedback": {
     "label": "Feedback",
