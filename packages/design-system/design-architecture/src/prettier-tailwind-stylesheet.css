@@ -1,24 +1,22 @@
 /**
  * Minimal Tailwind v4 entry for prettier-plugin-tailwindcss only.
  *
- * Theme matches `local.css`: canonical cascade via `./theme/theme.css` (same six
- * partials as the app). Full app parity still lives in `local.css` (plugins,
+ * Theme matches `local.css`: canonical cascade via `./theme/theme.css` (same
+ * `@import` chain as the app, including `theme-reduced-motion.css`). Full app parity still lives in `local.css` (plugins,
  * `@utility`, etc.). Prettier only needs resolvable `@import` chains + `@source`
  * for class detection; optional packages are omitted so `format:check` works
  * without extra deps.
  */
 
- @import "tailwindcss";
- @import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
- @import "./theme/theme.css";
+@import './theme/theme.css';
 
- /* -------------------------------------------------------------------------- */
- /* Tailwind setup                                                             */
- /* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+/* Tailwind setup                                                             */
+/* -------------------------------------------------------------------------- */
 
- @source "./";
- @source "../../ui-primitives";
- @source "../../icons";
-
- 
+@source './';
+@source '../../ui-primitives';
+@source '../../icons';

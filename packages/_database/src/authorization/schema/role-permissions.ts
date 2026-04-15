@@ -1,6 +1,7 @@
 import { index, pgTable, primaryKey, uuid } from "drizzle-orm/pg-core"
 
 import { permissions } from "./permissions"
+import { rolePermissionEffectEnum } from "./membership-scope-enums"
 import { roles } from "./roles"
 
 export const rolePermissions = pgTable(
@@ -18,6 +19,7 @@ export const rolePermissions = pgTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
+    effect: rolePermissionEffectEnum("effect").notNull().default("allow"),
   },
   (table) => [
     primaryKey({

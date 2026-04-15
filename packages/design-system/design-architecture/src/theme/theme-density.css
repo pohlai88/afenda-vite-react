@@ -1,16 +1,21 @@
 /**
  * RUNTIME DENSITY SYSTEM
  *
- * AFENDA Director Density Layer — refined final.
+ * AFENDA Director Density Layer — canonical runtime contract.
  *
- * Intent:
- * - density modifies canonical layout scale
- * - no raw duplication of semantic sizing intent
- * - compact / comfortable / spacious support
- * - tables remain ERP-controlled, not globally inflated
+ * Doctrine:
+ * - derives only from immutable `*-base` tokens
+ * - never overwrites base tokens
+ * - exposes runtime/effective aliases for component consumption
+ * - keeps ERP table density explicitly governed
+ * - scales layout rhythm lightly, not aggressively
+ *
+ * Optional hardening:
+ * - `sm` / `md` control runtimes use max() floors so compact density does not
+ *   shrink primary hit targets below a mixed mouse/touch-safe minimum.
  */
 
- :root {
+:root {
   /* ------------------------------------------------------------------
    * Density multipliers
    * ------------------------------------------------------------------ */
@@ -21,85 +26,206 @@
   --density-spacious: 1.1;
 
   /* ------------------------------------------------------------------
-   * Base aliases from canonical layout scale
-   * Keep these as density-owned runtime outputs.
-   * ------------------------------------------------------------------ */
-  --size-control-2xs-runtime: calc(var(--size-control-2xs) * var(--density-scale));
-  --size-control-xs-runtime: calc(var(--size-control-xs) * var(--density-scale));
-  --size-control-sm-runtime: calc(var(--size-control-sm) * var(--density-scale));
-  --size-control-md-runtime: calc(var(--size-control-md) * var(--density-scale));
-  --size-control-lg-runtime: calc(var(--size-control-lg) * var(--density-scale));
-  --size-control-xl-runtime: calc(var(--size-control-xl) * var(--density-scale));
-
-  /* ------------------------------------------------------------------
    * Runtime control sizes
-   * These are the tokens components should consume at runtime.
+   * Derived only from immutable base tokens.
+   * sm/md: max() floors — compact (0.9) would otherwise dip below comfortable
+   * mixed pointer/touch targets; see file header.
    * ------------------------------------------------------------------ */
-  --size-control-xs: var(--size-control-xs-runtime);
-  --size-control-sm: var(--size-control-sm-runtime);
-  --size-control-md: var(--size-control-md-runtime);
-  --size-control-lg: var(--size-control-lg-runtime);
-  --size-control-xl: var(--size-control-xl-runtime);
-
-  --size-input-height: var(--size-control-md-runtime);
-  --size-button-height: var(--size-control-md-runtime);
+  --size-control-2xs-runtime: calc(
+    var(--size-control-2xs-base) * var(--density-scale)
+  );
+  --size-control-xs-runtime: calc(
+    var(--size-control-xs-base) * var(--density-scale)
+  );
+  --size-control-sm-runtime: max(
+    2rem,
+    calc(var(--size-control-sm-base) * var(--density-scale))
+  );
+  --size-control-md-runtime: max(
+    2.25rem,
+    calc(var(--size-control-md-base) * var(--density-scale))
+  );
+  --size-control-lg-runtime: calc(
+    var(--size-control-lg-base) * var(--density-scale)
+  );
+  --size-control-xl-runtime: calc(
+    var(--size-control-xl-base) * var(--density-scale)
+  );
 
   /* ------------------------------------------------------------------
-   * Toolbar / shell
+   * Effective control aliases
+   * Components should consume these semantic outputs.
    * ------------------------------------------------------------------ */
-  --size-toolbar-height: calc(2.75rem * var(--density-scale));
-  --size-filter-bar-height: calc(2.5rem * var(--density-scale));
-  --size-shell-header-height: calc(3.5rem * var(--density-scale));
+  --size-control-2xs-effective: var(--size-control-2xs-runtime);
+  --size-control-xs-effective: var(--size-control-xs-runtime);
+  --size-control-sm-effective: var(--size-control-sm-runtime);
+  --size-control-md-effective: var(--size-control-md-runtime);
+  --size-control-lg-effective: var(--size-control-lg-runtime);
+  --size-control-xl-effective: var(--size-control-xl-runtime);
+
+  /* Optional compatibility aliases */
+  --size-control-2xs: var(--size-control-2xs-effective);
+  --size-control-xs: var(--size-control-xs-effective);
+  --size-control-sm: var(--size-control-sm-effective);
+  --size-control-md: var(--size-control-md-effective);
+  --size-control-lg: var(--size-control-lg-effective);
+  --size-control-xl: var(--size-control-xl-effective);
+
+  /* ------------------------------------------------------------------
+   * Runtime component heights
+   * Default controls use md base — keep same floor as --size-control-md-runtime.
+   * ------------------------------------------------------------------ */
+  --size-input-height-runtime: max(
+    2.25rem,
+    calc(var(--size-input-height-base) * var(--density-scale))
+  );
+  --size-button-height-runtime: max(
+    2.25rem,
+    calc(var(--size-button-height-base) * var(--density-scale))
+  );
+  --size-filter-bar-height-runtime: calc(
+    var(--size-filter-bar-height-base) * var(--density-scale)
+  );
+  --size-toolbar-height-runtime: calc(
+    var(--size-toolbar-height-base) * var(--density-scale)
+  );
+
+  --size-input-height-effective: var(--size-input-height-runtime);
+  --size-button-height-effective: var(--size-button-height-runtime);
+  --size-filter-bar-height-effective: var(--size-filter-bar-height-runtime);
+  --size-toolbar-height-effective: var(--size-toolbar-height-runtime);
+
+  /* Optional compatibility aliases */
+  --size-input-height: var(--size-input-height-effective);
+  --size-button-height: var(--size-button-height-effective);
+  --size-filter-bar-height: var(--size-filter-bar-height-effective);
+  --size-toolbar-height: var(--size-toolbar-height-effective);
+
+  /* ------------------------------------------------------------------
+   * Shell / navigation runtime heights
+   * ------------------------------------------------------------------ */
+  --size-sidebar-item-height-runtime: calc(
+    var(--size-sidebar-item-height-base) * var(--density-scale)
+  );
+  --size-tab-height-runtime: calc(
+    var(--size-tab-height-base) * var(--density-scale)
+  );
+  --size-dialog-header-min-height-runtime: calc(
+    var(--size-dialog-header-min-height-base) * var(--density-scale)
+  );
+  --size-shell-header-height-runtime: calc(
+    var(--size-shell-header-height-base) * var(--density-scale)
+  );
+
+  --size-sidebar-item-height-effective: var(--size-sidebar-item-height-runtime);
+  --size-tab-height-effective: var(--size-tab-height-runtime);
+  --size-dialog-header-min-height-effective: var(
+    --size-dialog-header-min-height-runtime
+  );
+  --size-shell-header-height-effective: var(--size-shell-header-height-runtime);
+
+  /* Optional compatibility aliases */
+  --size-sidebar-item-height: var(--size-sidebar-item-height-effective);
+  --size-tab-height: var(--size-tab-height-effective);
+  --size-dialog-header-min-height: var(
+    --size-dialog-header-min-height-effective
+  );
+  --size-shell-header-height: var(--size-shell-header-height-effective);
 
   /* ------------------------------------------------------------------
    * Table sizing
-   * ERP rule: keep table scaling constrained.
+   * ERP doctrine:
+   * - do not blindly scale table density with the global multiplier
+   * - keep explicit controlled values per mode
    * ------------------------------------------------------------------ */
-  --size-table-row-height: 2.25rem;
-  --size-table-row-height-compact: 2rem;
-  --size-table-header-height: 2.5rem;
+  --size-table-row-height-runtime: var(--size-table-row-height-base);
+  --size-table-header-height-runtime: var(--size-table-header-height-base);
 
-  /* ------------------------------------------------------------------
-   * Sidebar / navigation
-   * ------------------------------------------------------------------ */
-  --size-sidebar-item-height: calc(2.25rem * var(--density-scale));
-  --size-tab-height: calc(2.125rem * var(--density-scale));
+  --size-table-row-height-effective: var(--size-table-row-height-runtime);
+  --size-table-header-height-effective: var(--size-table-header-height-runtime);
 
-  /* ------------------------------------------------------------------
-   * Dialog / panels
-   * ------------------------------------------------------------------ */
-  --size-dialog-header-min-height: calc(3rem * var(--density-scale));
+  /* Optional compatibility aliases */
+  --size-table-row-height: var(--size-table-row-height-effective);
+  --size-table-header-height: var(--size-table-header-height-effective);
 
   /* ------------------------------------------------------------------
    * Density-aware spacing
-   * Keep light-touch only; do not over-scale layout rhythm.
+   * Light-touch scaling only.
    * ------------------------------------------------------------------ */
-  --spacing-panel-padding-runtime: calc(var(--spacing-panel-padding) * var(--density-scale));
-  --spacing-panel-padding-lg-runtime: calc(var(--spacing-panel-padding-lg) * var(--density-scale));
-  --spacing-form-gap-runtime: calc(var(--spacing-form-gap) * var(--density-scale));
-  --spacing-form-gap-tight-runtime: calc(var(--spacing-form-gap-tight) * var(--density-scale));
+  --spacing-panel-padding-sm-runtime: calc(
+    var(--spacing-panel-padding-sm-base) * var(--density-scale)
+  );
+  --spacing-panel-padding-runtime: calc(
+    var(--spacing-panel-padding-base) * var(--density-scale)
+  );
+  --spacing-panel-padding-lg-runtime: calc(
+    var(--spacing-panel-padding-lg-base) * var(--density-scale)
+  );
+
+  --spacing-form-gap-tight-runtime: calc(
+    var(--spacing-form-gap-tight-base) * var(--density-scale)
+  );
+  --spacing-form-gap-runtime: calc(
+    var(--spacing-form-gap-base) * var(--density-scale)
+  );
+  --spacing-inline-control-gap-runtime: calc(
+    var(--spacing-inline-control-gap-base) * var(--density-scale)
+  );
+  --spacing-toolbar-gap-runtime: calc(
+    var(--spacing-toolbar-gap-base) * var(--density-scale)
+  );
+  --spacing-section-gap-runtime: calc(
+    var(--spacing-section-gap-base) * var(--density-scale)
+  );
+
+  --spacing-panel-padding-sm-effective: var(--spacing-panel-padding-sm-runtime);
+  --spacing-panel-padding-effective: var(--spacing-panel-padding-runtime);
+  --spacing-panel-padding-lg-effective: var(--spacing-panel-padding-lg-runtime);
+
+  --spacing-form-gap-tight-effective: var(--spacing-form-gap-tight-runtime);
+  --spacing-form-gap-effective: var(--spacing-form-gap-runtime);
+  --spacing-inline-control-gap-effective: var(
+    --spacing-inline-control-gap-runtime
+  );
+  --spacing-toolbar-gap-effective: var(--spacing-toolbar-gap-runtime);
+  --spacing-section-gap-effective: var(--spacing-section-gap-runtime);
+
+  /* Optional compatibility aliases */
+  --spacing-panel-padding-sm: var(--spacing-panel-padding-sm-effective);
+  --spacing-panel-padding: var(--spacing-panel-padding-effective);
+  --spacing-panel-padding-lg: var(--spacing-panel-padding-lg-effective);
+
+  --spacing-form-gap-tight: var(--spacing-form-gap-tight-effective);
+  --spacing-form-gap: var(--spacing-form-gap-effective);
+  --spacing-inline-control-gap: var(--spacing-inline-control-gap-effective);
+  --spacing-toolbar-gap: var(--spacing-toolbar-gap-effective);
+  --spacing-section-gap: var(--spacing-section-gap-effective);
 }
 
 /* ------------------------------------------------------------------
  * Density modes
  * ------------------------------------------------------------------ */
 
-[data-density="compact"] {
+[data-density='compact'] {
   --density-scale: var(--density-compact);
 
-  /* tables slightly tighter */
-  --size-table-row-height: 2rem;
-  --size-table-header-height: 2.375rem;
+  /* tables intentionally tighter, but not proportionally shrunk */
+  --size-table-row-height-runtime: 2rem;
+  --size-table-header-height-runtime: 2.375rem;
 }
 
-[data-density="comfortable"] {
+[data-density='comfortable'] {
   --density-scale: var(--density-comfortable);
+
+  /* canonical table baseline */
+  --size-table-row-height-runtime: var(--size-table-row-height-base);
+  --size-table-header-height-runtime: var(--size-table-header-height-base);
 }
 
-[data-density="spacious"] {
+[data-density='spacious'] {
   --density-scale: var(--density-spacious);
 
-  /* tables slightly taller but still controlled */
-  --size-table-row-height: 2.5rem;
-  --size-table-header-height: 2.625rem;
+  /* tables slightly taller, still governed */
+  --size-table-row-height-runtime: 2.5rem;
+  --size-table-header-height-runtime: 2.625rem;
 }

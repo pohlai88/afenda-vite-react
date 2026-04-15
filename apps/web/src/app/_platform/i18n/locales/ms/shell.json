@@ -571,7 +571,8 @@
     "open_focus_window": "Buka tetingkap fokus",
     "enter_fullscreen": "Masuk skrin penuh",
     "exit_fullscreen": "Keluar skrin penuh",
-    "exit_focus_mode": "Keluar mod fokus"
+    "exit_focus_mode": "Keluar mod fokus",
+    "focus_hover_expand_hint": "Leret ke tepi atas untuk kembangkan pengepala ruang kerja."
   },
   "actions": {
     "command_running": "Memuatkan…",

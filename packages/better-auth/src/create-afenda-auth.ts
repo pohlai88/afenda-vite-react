@@ -1,5 +1,8 @@
+import { createDbClient, type DatabaseClient } from "@afenda/database"
 import { betterAuth } from "better-auth"
 import type { Pool } from "pg"
+
+import { createAfendaDatabaseAuthHooks } from "./auth-database-audit-hooks.js"
 
 export interface AfendaAuthCapabilityHooks {
   readonly passkeyEnabled: boolean
@@ -75,12 +78,16 @@ function buildSocialProviders(): Record<
 /**
  * Better Auth instance sharing the API process Postgres pool with `@afenda/database`.
  * Requires `DATABASE_URL`, `BETTER_AUTH_SECRET`, and `BETTER_AUTH_URL` at runtime.
+ *
+ * Pass the same Drizzle client as the API (`createDbClient(pool)`) so Better Auth
+ * `databaseHooks` can emit `audit_logs` via `insertGovernedAuditLog`.
  */
-export function createAfendaAuth(pool: Pool) {
+export function createAfendaAuth(pool: Pool, db?: DatabaseClient) {
   const secret = process.env.BETTER_AUTH_SECRET
   if (!secret) {
     throw new Error("BETTER_AUTH_SECRET is required")
   }
+  const databaseClient = db ?? createDbClient(pool)
   const capabilityHooks = resolveAfendaAuthCapabilityHooks()
 
   const socialProviders = buildSocialProviders()
@@ -100,6 +107,7 @@ export function createAfendaAuth(pool: Pool) {
     secret,
     baseURL: resolveBaseURL(),
     trustedOrigins: resolveTrustedOrigins(),
+    databaseHooks: createAfendaDatabaseAuthHooks(pool, databaseClient),
     emailAndPassword: {
       enabled: true,
       // Replace with your mailer in production (Resend, SES, …). Dev: log the link for manual testing.

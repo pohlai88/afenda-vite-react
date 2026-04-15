@@ -59,6 +59,8 @@ import {
 describe("audit contracts — catalogs & parsers", () => {
   it("classifies known action keys", () => {
     expect(isAuditActionKey("invoice.created")).toBe(true)
+    expect(isAuditActionKey("auth.session.created")).toBe(true)
+    expect(isAuditActionKey("auth.session.revoked")).toBe(true)
     expect(isAuditActionKey("not.a.real.action")).toBe(false)
   })
 
@@ -282,6 +284,11 @@ describe("read model & serialize", () => {
     id: "00000000-0000-4000-8000-000000000010",
     tenantId: "00000000-0000-4000-8000-000000000001",
     legalEntityId: null,
+    membershipId: null,
+    businessUnitId: null,
+    locationId: null,
+    orgUnitId: null,
+    authUserId: null,
     actorType: "person" as const,
     actorUserId: null,
     actorDisplay: null,

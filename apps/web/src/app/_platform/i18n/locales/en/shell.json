@@ -630,7 +630,8 @@
     "open_focus_window": "Open focus window",
     "enter_fullscreen": "Enter fullscreen",
     "exit_fullscreen": "Exit fullscreen",
-    "exit_focus_mode": "Exit focus mode"
+    "exit_focus_mode": "Exit focus mode",
+    "focus_hover_expand_hint": "Hover the top edge to show the full workspace header."
   },
   "actions": {
     "command_running": "Loading…",

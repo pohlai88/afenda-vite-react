@@ -571,7 +571,8 @@
     "open_focus_window": "Buka jendela fokus",
     "enter_fullscreen": "Masuk layar penuh",
     "exit_fullscreen": "Keluar layar penuh",
-    "exit_focus_mode": "Keluar mode fokus"
+    "exit_focus_mode": "Keluar mode fokus",
+    "focus_hover_expand_hint": "Arahkan kursor ke tepi atas untuk memperluas bilah header ruang kerja."
   },
   "actions": {
     "command_running": "Memuat…",

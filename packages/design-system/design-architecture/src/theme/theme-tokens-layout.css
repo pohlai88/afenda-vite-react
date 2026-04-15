@@ -1,19 +1,20 @@
 /**
- * STATIC LAYOUT / TYPOGRAPHY / ANIMATION TOKENS
+ * STATIC LAYOUT / TYPOGRAPHY / MOTION TOKENS
  *
- * AFENDA Director System — refined final.
+ * AFENDA Director System — canonical base layer.
  *
- * Intent:
- * - enterprise density first
- * - long-hour readability
- * - stronger semantic aliases for product teams
- * - complete motion token surface
- * - premium "soft industrial" geometry
+ * Doctrine:
+ * - this file owns immutable static inputs
+ * - runtime density derives from `*-base` tokens only
+ * - product UI may consume semantic aliases, but must not mutate base tokens
+ * - typography remains independent from density
+ * - motion is split into primitive timing/ease + composed named animations
  */
 
- @theme static {
+@theme static {
   /* ------------------------------------------------------------------
    * Radius system
+   * Static and immutable.
    * ------------------------------------------------------------------ */
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
@@ -25,6 +26,7 @@
 
   /* ------------------------------------------------------------------
    * Container system
+   * Static and immutable.
    * ------------------------------------------------------------------ */
   --container-xs: 22rem;
   --container-sm: 26rem;
@@ -35,20 +37,27 @@
 
   /* ------------------------------------------------------------------
    * Breakpoints
+   * Static and immutable.
    * ------------------------------------------------------------------ */
   --breakpoint-3xl: 1680px;
   --breakpoint-4xl: 2200px;
 
   /* ------------------------------------------------------------------
    * Typography families
+   * Static and immutable.
    * ------------------------------------------------------------------ */
-  --font-sans: Geist, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans:
+    Geist, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji';
+  --font-mono:
+    'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
   --font-heading: var(--font-sans);
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
 
   /* ------------------------------------------------------------------
    * Text scale
+   * Static and immutable.
    * ------------------------------------------------------------------ */
   --text-ui-2xs: 0.6875rem;
   --text-ui-xs: 0.75rem;
@@ -69,6 +78,7 @@
 
   /* ------------------------------------------------------------------
    * Line-height rhythm
+   * Static and immutable.
    * ------------------------------------------------------------------ */
   --leading-tight: 1.2;
   --leading-ui: 1.35;
@@ -80,13 +90,15 @@
 
   /* ------------------------------------------------------------------
    * Letter spacing
+   * Static and immutable.
    * ------------------------------------------------------------------ */
   --tracking-label: 0.01em;
   --tracking-metric: -0.015em;
   --tracking-heading: -0.01em;
 
   /* ------------------------------------------------------------------
-   * Spacing rhythm
+   * Spacing rhythm — immutable base
+   * Density layer derives from these.
    * ------------------------------------------------------------------ */
   --spacing-compact-1: 0.25rem;
   --spacing-compact-2: 0.375rem;
@@ -96,76 +108,147 @@
   --spacing-compact-6: 1rem;
   --spacing-compact-7: 1.25rem;
 
-  --spacing-panel-padding-sm: 0.75rem;
-  --spacing-panel-padding: 0.875rem;
-  --spacing-panel-padding-lg: 1rem;
+  --spacing-panel-padding-sm-base: 0.75rem;
+  --spacing-panel-padding-base: 0.875rem;
+  --spacing-panel-padding-lg-base: 1rem;
 
-  --spacing-form-gap-tight: 0.625rem;
-  --spacing-form-gap: 0.75rem;
-  --spacing-inline-control-gap: 0.5rem;
-  --spacing-toolbar-gap: 0.5rem;
-  --spacing-section-gap: 1.25rem;
+  --spacing-form-gap-tight-base: 0.625rem;
+  --spacing-form-gap-base: 0.75rem;
+  --spacing-inline-control-gap-base: 0.5rem;
+  --spacing-toolbar-gap-base: 0.5rem;
+  --spacing-section-gap-base: 1.25rem;
 
   /* ------------------------------------------------------------------
-   * Control sizing
+   * Control sizing — immutable base
+   * Density layer derives from these.
    * ------------------------------------------------------------------ */
-  --size-control-2xs: 1.625rem;
-  --size-control-xs: 1.875rem;
-  --size-control-sm: 2.125rem;
-  --size-control-md: 2.375rem;
-  --size-control-lg: 2.75rem;
-  --size-control-xl: 3.125rem;
+  --size-control-2xs-base: 1.625rem;
+  --size-control-xs-base: 1.875rem;
+  --size-control-sm-base: 2.125rem;
+  --size-control-md-base: 2.375rem;
+  --size-control-lg-base: 2.75rem;
+  --size-control-xl-base: 3.125rem;
 
-  --size-input-height: var(--size-control-md);
-  --size-button-height: var(--size-control-md);
-  --size-filter-bar-height: 2.5rem;
-  --size-toolbar-height: 2.75rem;
+  --size-input-height-base: var(--size-control-md-base);
+  --size-button-height-base: var(--size-control-md-base);
+  --size-filter-bar-height-base: 2.5rem;
+  --size-toolbar-height-base: 2.75rem;
 
+  --size-table-row-height-base: 2.25rem;
+  --size-table-header-height-base: 2.5rem;
+
+  --size-sidebar-item-height-base: 2.25rem;
+  --size-tab-height-base: 2.125rem;
+  --size-dialog-header-min-height-base: 3rem;
+  --size-shell-header-height-base: 3.5rem;
+
+  /* ------------------------------------------------------------------
+   * Icon sizing
+   * Keep static unless there is an explicit icon-density policy.
+   * ------------------------------------------------------------------ */
   --size-icon-xs: 0.75rem;
   --size-icon-sm: 0.875rem;
   --size-icon-md: 1rem;
   --size-icon-lg: 1.125rem;
   --size-icon-xl: 1.25rem;
 
-  --size-table-row-height: 2.25rem;
-  --size-table-row-height-compact: 2rem;
-  --size-table-header-height: 2.5rem;
+  /* ------------------------------------------------------------------
+   * Static fallback semantic aliases
+   * These are safe defaults when no runtime density layer is mounted.
+   * Runtime density may override these aliases, but never the `*-base` inputs.
+   * ------------------------------------------------------------------ */
+  --spacing-panel-padding-sm: var(--spacing-panel-padding-sm-base);
+  --spacing-panel-padding: var(--spacing-panel-padding-base);
+  --spacing-panel-padding-lg: var(--spacing-panel-padding-lg-base);
 
-  --size-sidebar-item-height: 2.25rem;
-  --size-tab-height: 2.125rem;
-  --size-dialog-header-min-height: 3rem;
-  --size-shell-header-height: 3.5rem;
+  --spacing-form-gap-tight: var(--spacing-form-gap-tight-base);
+  --spacing-form-gap: var(--spacing-form-gap-base);
+  --spacing-inline-control-gap: var(--spacing-inline-control-gap-base);
+  --spacing-toolbar-gap: var(--spacing-toolbar-gap-base);
+  --spacing-section-gap: var(--spacing-section-gap-base);
+
+  --size-control-2xs: var(--size-control-2xs-base);
+  --size-control-xs: var(--size-control-xs-base);
+  --size-control-sm: var(--size-control-sm-base);
+  --size-control-md: var(--size-control-md-base);
+  --size-control-lg: var(--size-control-lg-base);
+  --size-control-xl: var(--size-control-xl-base);
+
+  --size-input-height: var(--size-input-height-base);
+  --size-button-height: var(--size-button-height-base);
+  --size-filter-bar-height: var(--size-filter-bar-height-base);
+  --size-toolbar-height: var(--size-toolbar-height-base);
+
+  --size-table-row-height: var(--size-table-row-height-base);
+  --size-table-header-height: var(--size-table-header-height-base);
+
+  --size-sidebar-item-height: var(--size-sidebar-item-height-base);
+  --size-tab-height: var(--size-tab-height-base);
+  --size-dialog-header-min-height: var(--size-dialog-header-min-height-base);
+  --size-shell-header-height: var(--size-shell-header-height-base);
 
   /* ------------------------------------------------------------------
-   * Motion tokens — AFENDA context-aware
+   * Motion primitives
+   * Static and governable.
    * ------------------------------------------------------------------ */
-  --animate-fade-in: fade-in 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-fade-out: fade-out 90ms cubic-bezier(0.4, 0, 1, 1);
+  --duration-instant: 90ms;
+  --duration-fast: 120ms;
+  --duration-normal: 140ms;
+  --duration-moderate: 160ms;
+  --duration-slow: 180ms;
 
-  --animate-slide-top-in: slide-in-from-top 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-slide-top-out: slide-out-to-top 110ms cubic-bezier(0.4, 0, 1, 1);
+  --ease-enter: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-micro: ease-out;
 
-  --animate-slide-bottom-in: slide-in-from-bottom 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-slide-bottom-out: slide-out-to-bottom 110ms cubic-bezier(0.4, 0, 1, 1);
+  /* ------------------------------------------------------------------
+   * Motion tokens — composed named animations
+   * Product/UI infra should consume these, not raw keyframe names.
+   * ------------------------------------------------------------------ */
+  --animate-fade-in: fade-in var(--duration-fast) var(--ease-enter);
+  --animate-fade-out: fade-out var(--duration-instant) var(--ease-exit);
 
-  --animate-slide-left-in: slide-in-from-left 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-slide-left-out: slide-out-to-left 120ms cubic-bezier(0.4, 0, 1, 1);
+  --animate-slide-top-in: slide-in-from-top var(--duration-normal)
+    var(--ease-enter);
+  --animate-slide-top-out: slide-out-to-top 110ms var(--ease-exit);
 
-  --animate-slide-right-in: slide-in-from-right 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-slide-right-out: slide-out-to-right 120ms cubic-bezier(0.4, 0, 1, 1);
+  --animate-slide-bottom-in: slide-in-from-bottom var(--duration-normal)
+    var(--ease-enter);
+  --animate-slide-bottom-out: slide-out-to-bottom 110ms var(--ease-exit);
 
-  --animate-elevation-in: elevation-in 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-elevation-out: elevation-out 110ms cubic-bezier(0.4, 0, 1, 1);
+  --animate-slide-left-in: slide-in-from-left 150ms var(--ease-enter);
+  --animate-slide-left-out: slide-out-to-left var(--duration-fast)
+    var(--ease-exit);
 
-  --animate-sidebar-in: sidebar-in 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-sidebar-out: sidebar-out 120ms cubic-bezier(0.4, 0, 1, 1);
+  --animate-slide-right-in: slide-in-from-right 150ms var(--ease-enter);
+  --animate-slide-right-out: slide-out-to-right var(--duration-fast)
+    var(--ease-exit);
 
-  --animate-panel-in: panel-in-right 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-panel-out: slide-out-to-right 130ms cubic-bezier(0.4, 0, 1, 1);
+  --animate-elevation-in: elevation-in var(--duration-normal)
+    var(--ease-emphasis);
+  --animate-elevation-out: elevation-out 110ms var(--ease-exit);
 
-  --animate-panel-out-right: panel-out-right 130ms cubic-bezier(0.4, 0, 1, 1);
-  --animate-panel-in-left: panel-in-left 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-panel-out-left: panel-out-left 130ms cubic-bezier(0.4, 0, 1, 1);
+  --animate-sidebar-in: sidebar-in var(--duration-moderate) var(--ease-enter);
+  --animate-sidebar-out: sidebar-out var(--duration-fast) var(--ease-exit);
 
-  --animate-micro-lift: micro-lift 120ms ease-out;
+  --animate-panel-in: panel-in-right var(--duration-slow) var(--ease-enter);
+  --animate-panel-out: slide-out-to-right 130ms var(--ease-exit);
+
+  --animate-panel-out-right: panel-out-right 130ms var(--ease-exit);
+  --animate-panel-in-left: panel-in-left var(--duration-slow) var(--ease-enter);
+  --animate-panel-out-left: panel-out-left 130ms var(--ease-exit);
+
+  --animate-micro-lift: micro-lift var(--duration-fast) var(--ease-micro);
+
+  /* ------------------------------------------------------------------
+   * Optional semantic text aliases
+   * Helpful for product teams without redefining type intent.
+   * ------------------------------------------------------------------ */
+  --text-body-ui: var(--text-ui-md);
+  --text-body-ui-sm: var(--text-ui-sm);
+  --text-caption: var(--text-helper);
+  --text-title-section: var(--text-section-title);
+  --text-title-page: var(--text-page-title);
+  --text-title-dialog: var(--text-dialog-title);
 }

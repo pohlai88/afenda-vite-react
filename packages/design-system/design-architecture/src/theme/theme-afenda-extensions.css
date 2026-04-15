@@ -1,0 +1,177 @@
+/**
+ * AFENDA EXTENSIONS (`--af-*`)
+ *
+ * Recommended use for:
+ * - Shell layout semantics and AFENDA-specific surface doctrine
+ * - Status surface aliases (success / warning / info)
+ * - Density-aware semantic sizing and spacing (aliases to effective runtime tokens)
+ * - AFENDA motion / runtime animation aliases (`--animate-*` indirection)
+ *
+ * Doctrine:
+ * - alias-only; zero logic; canonical tokens remain source of truth
+ * - do not duplicate shadcn compatibility names (`--background`, `--card`, …)
+ * - do not transform values; do not reference raw palette ramps
+ *
+ * Architecture (why this file exists):
+ * - `theme-shadcn-compat.css` = strict compatibility bridge (small, stable, honest).
+ * - This file = AFENDA extension bridge (richer semantics without polluting shadcn).
+ *
+ * Important caution — canonical dependencies:
+ * - Selection/code blocks below assume these exist in `theme-tokens-light.css` and
+ *   `theme-dark.css`. If you drop any from the canonical color theme, remove the
+ *   matching `--af-selection-*` / `--af-code-*` lines here:
+ *   `--color-selection`, `--color-selection-foreground`,
+ *   `--color-code`, `--color-code-foreground`, `--color-code-highlight`,
+ *   `--color-code-number`
+ *
+ * Important caution — load order:
+ * - This file MUST load after `theme-density.css` so `--size-*` / `--spacing-*`
+ *   references resolve to density-aware effective values. Never add non-alias
+ *   rules here; keep keyframes in `theme-keyframes.css` and preference handling
+ *   in `theme-reduced-motion.css`.
+ */
+
+:root {
+  /* ------------------------------------------------------------------
+   * Surface doctrine
+   * Shell / chrome / canvas / panel / elevated
+   * ------------------------------------------------------------------ */
+  --af-surface-shell: var(--color-surface-shell);
+  --af-surface-chrome: var(--color-surface-chrome);
+  --af-surface-canvas: var(--color-surface-canvas);
+  --af-surface-panel: var(--color-surface-panel);
+  --af-surface-elevated: var(--color-surface-elevated);
+
+  --af-surface-foreground: var(--color-foreground);
+
+  /* ------------------------------------------------------------------
+   * Interactive surfaces
+   * ------------------------------------------------------------------ */
+  --af-surface-hover: var(--color-surface-hover);
+  --af-surface-active: var(--color-surface-active);
+  --af-surface-selected: var(--color-surface-selected);
+  --af-surface-disabled: var(--color-surface-disabled);
+  --af-surface-readonly: var(--color-surface-readonly);
+  --af-surface-focus: var(--color-surface-focus);
+
+  /* ------------------------------------------------------------------
+   * Border extensions
+   * ------------------------------------------------------------------ */
+  --af-border-muted: var(--color-border-muted);
+  --af-border-strong: var(--color-border-strong);
+  --af-border-grid: var(--color-border-grid);
+  --af-border-focus: var(--color-border-focus);
+
+  /* ------------------------------------------------------------------
+   * Status semantics
+   * ------------------------------------------------------------------ */
+  --af-success: var(--color-success);
+  --af-success-foreground: var(--color-success-foreground);
+  --af-success-surface: var(--color-success-surface);
+
+  --af-warning: var(--color-warning);
+  --af-warning-foreground: var(--color-warning-foreground);
+  --af-warning-surface: var(--color-warning-surface);
+
+  --af-info: var(--color-info);
+  --af-info-foreground: var(--color-info-foreground);
+  --af-info-surface: var(--color-info-surface);
+
+  /* ------------------------------------------------------------------
+   * Selection semantics (requires canonical `--color-selection*` — see header)
+   * ------------------------------------------------------------------ */
+  --af-selection-bg: var(--color-selection);
+  --af-selection-foreground: var(--color-selection-foreground);
+
+  /* ------------------------------------------------------------------
+   * Code / content semantics (requires canonical `--color-code*` — see header)
+   * ------------------------------------------------------------------ */
+  --af-code-bg: var(--color-code);
+  --af-code-foreground: var(--color-code-foreground);
+  --af-code-highlight: var(--color-code-highlight);
+  --af-code-number: var(--color-code-number);
+
+  /* ------------------------------------------------------------------
+   * Text role aliases
+   * Product teams may consume these instead of inventing ad hoc names.
+   * ------------------------------------------------------------------ */
+  --af-text-strong: var(--color-foreground);
+  --af-text-body: var(--color-foreground);
+  --af-text-muted: var(--color-muted-foreground);
+  --af-text-caption: var(--text-helper);
+  --af-text-label: var(--text-label);
+  --af-text-table: var(--text-table);
+  --af-text-section-title: var(--text-section-title);
+  --af-text-page-title: var(--text-page-title);
+  --af-text-dialog-title: var(--text-dialog-title);
+  --af-text-metric: var(--text-metric);
+  --af-text-metric-lg: var(--text-metric-lg);
+
+  /* ------------------------------------------------------------------
+   * Density-aware semantic sizing aliases
+   * These point to effective runtime outputs, not base tokens.
+   * ------------------------------------------------------------------ */
+  --af-size-control-2xs: var(--size-control-2xs);
+  --af-size-control-xs: var(--size-control-xs);
+  --af-size-control-sm: var(--size-control-sm);
+  --af-size-control-md: var(--size-control-md);
+  --af-size-control-lg: var(--size-control-lg);
+  --af-size-control-xl: var(--size-control-xl);
+
+  --af-size-input-height: var(--size-input-height);
+  --af-size-button-height: var(--size-button-height);
+  --af-size-toolbar-height: var(--size-toolbar-height);
+  --af-size-filter-bar-height: var(--size-filter-bar-height);
+  --af-size-shell-header-height: var(--size-shell-header-height);
+
+  --af-size-table-row-height: var(--size-table-row-height);
+  --af-size-table-header-height: var(--size-table-header-height);
+
+  --af-size-sidebar-item-height: var(--size-sidebar-item-height);
+  --af-size-tab-height: var(--size-tab-height);
+  --af-size-dialog-header-min-height: var(--size-dialog-header-min-height);
+
+  /* ------------------------------------------------------------------
+   * Density-aware spacing aliases
+   * ------------------------------------------------------------------ */
+  --af-spacing-panel-padding-sm: var(--spacing-panel-padding-sm);
+  --af-spacing-panel-padding: var(--spacing-panel-padding);
+  --af-spacing-panel-padding-lg: var(--spacing-panel-padding-lg);
+
+  --af-spacing-form-gap-tight: var(--spacing-form-gap-tight);
+  --af-spacing-form-gap: var(--spacing-form-gap);
+  --af-spacing-inline-control-gap: var(--spacing-inline-control-gap);
+  --af-spacing-toolbar-gap: var(--spacing-toolbar-gap);
+  --af-spacing-section-gap: var(--spacing-section-gap);
+
+  /* ------------------------------------------------------------------
+   * Motion aliases
+   * Product infra may use these without touching raw keyframe names.
+   * ------------------------------------------------------------------ */
+  --af-animate-fade-in: var(--animate-fade-in);
+  --af-animate-fade-out: var(--animate-fade-out);
+
+  --af-animate-slide-top-in: var(--animate-slide-top-in);
+  --af-animate-slide-top-out: var(--animate-slide-top-out);
+  --af-animate-slide-bottom-in: var(--animate-slide-bottom-in);
+  --af-animate-slide-bottom-out: var(--animate-slide-bottom-out);
+
+  --af-animate-slide-left-in: var(--animate-slide-left-in);
+  --af-animate-slide-left-out: var(--animate-slide-left-out);
+  --af-animate-slide-right-in: var(--animate-slide-right-in);
+  --af-animate-slide-right-out: var(--animate-slide-right-out);
+
+  --af-animate-elevation-in: var(--animate-elevation-in);
+  --af-animate-elevation-out: var(--animate-elevation-out);
+
+  --af-animate-sidebar-in: var(--animate-sidebar-in);
+  --af-animate-sidebar-out: var(--animate-sidebar-out);
+
+  --af-animate-panel-in: var(--animate-panel-in);
+  --af-animate-panel-out: var(--animate-panel-out);
+  --af-animate-panel-in-left: var(--animate-panel-in-left);
+  --af-animate-panel-out-left: var(--animate-panel-out-left);
+  --af-animate-panel-out-right: var(--animate-panel-out-right);
+
+  --af-animate-micro-lift: var(--animate-micro-lift);
+}

@@ -35,7 +35,7 @@ export function PriorityQueuePanel({
 }: PriorityQueuePanelProps) {
   return (
     <section
-      className="ui-density-panel overflow-hidden"
+      className="ui-density-panel min-w-0 overflow-hidden"
       aria-labelledby="priority-queue-title"
     >
       <div className="border-b border-border-muted px-4 py-3">
@@ -55,29 +55,29 @@ export function PriorityQueuePanel({
       </div>
 
       {records.length > 0 ? (
-        <div className="divide-y divide-border-muted">
+        <div className="grid min-w-0 gap-0 divide-y divide-border-muted">
           {records.map((record, index) => (
             <button
               type="button"
               className={cn(
-                "group flex w-full min-w-0 flex-col gap-3 px-4 py-4 text-left transition-colors duration-150 hover:bg-accent/35 focus-visible:bg-accent/45 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+                "group grid min-w-0 grid-cols-1 gap-3 px-4 py-4 text-left transition-colors duration-150 hover:bg-accent/35 focus-visible:bg-accent/45 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
                 index === 0 && "bg-accent/25"
               )}
               aria-label={`Open ${record.title}`}
               key={record.id}
               onClick={() => onOpenRecord(record)}
             >
-              <div className="flex min-w-0 items-start justify-between gap-3">
-                <div className="min-w-0">
+              <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+                <div className="min-w-0 overflow-hidden">
                   <div className="flex min-w-0 flex-wrap items-center gap-2">
                     {record.category ? (
-                      <span className="rounded-full border border-border-muted bg-muted/45 px-2 py-1 ui-mono-token text-muted-foreground">
+                      <span className="max-w-full min-w-0 truncate rounded-full border border-border-muted bg-muted/45 px-2 py-1 ui-mono-token text-muted-foreground">
                         {record.category}
                       </span>
                     ) : null}
                     <span
                       className={cn(
-                        "ui-status-pill px-2 py-1",
+                        "ui-status-pill shrink-0 px-2 py-1",
                         getFeatureTemplateSeverityClassName(record.severity)
                       )}
                     >
@@ -85,7 +85,7 @@ export function PriorityQueuePanel({
                     </span>
                   </div>
 
-                  <h3 className="mt-3 line-clamp-2 font-semibold text-foreground">
+                  <h3 className="mt-3 line-clamp-2 font-semibold wrap-break-word text-foreground">
                     {record.title}
                   </h3>
                   <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
@@ -95,7 +95,7 @@ export function PriorityQueuePanel({
 
                 <span
                   className={cn(
-                    "ui-status-pill shrink-0",
+                    "ui-status-pill shrink-0 self-start",
                     getFeatureTemplateStatusClassName(record.status)
                   )}
                 >
@@ -104,16 +104,18 @@ export function PriorityQueuePanel({
               </div>
 
               <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
-                <span className="inline-flex min-w-0 items-center gap-1.5">
+                <span className="inline-flex max-w-full min-w-0 items-center gap-1.5">
                   <UserRound className="size-3.5 shrink-0" aria-hidden />
                   <span className="truncate">{record.owner}</span>
                 </span>
-                <span className="inline-flex items-center gap-1.5">
+                <span className="inline-flex min-w-0 shrink-0 items-center gap-1.5">
                   <Clock3 className="size-3.5 shrink-0" aria-hidden />
-                  {formatRecordTime(record)}
+                  <span className="truncate">{formatRecordTime(record)}</span>
                 </span>
                 {record.slaLabel ? (
-                  <span className="truncate">SLA: {record.slaLabel}</span>
+                  <span className="max-w-full min-w-0 truncate">
+                    SLA: {record.slaLabel}
+                  </span>
                 ) : null}
               </div>
             </button>

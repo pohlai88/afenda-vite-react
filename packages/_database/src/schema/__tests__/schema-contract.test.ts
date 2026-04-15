@@ -6,6 +6,7 @@ import { permissions } from "../../authorization/schema/permissions"
 import { rolePermissions } from "../../authorization/schema/role-permissions"
 import { roles } from "../../authorization/schema/roles"
 import { tenantMembershipRoles } from "../../authorization/schema/tenant-membership-roles"
+import { identityLinks } from "../../identity/schema/identity-links"
 import { userIdentities } from "../../identity/schema/user-identities"
 import { users } from "../../identity/schema/users"
 import { legalEntities } from "../../organization/schema/legal-entities"
@@ -42,8 +43,11 @@ describe("domain schema contract", () => {
     expect(rolePermissions.permissionId.name).toBe("permission_id")
   })
 
-  it("keeps identity provider links separate from users", () => {
+  it("keeps the canonical auth bridge on identity_links (legacy user_identities is deprecated)", () => {
     expect(users.email.name).toBe("email")
+    expect(identityLinks.afendaUserId.name).toBe("afenda_user_id")
+    expect(identityLinks.betterAuthUserId.name).toBe("better_auth_user_id")
+    expect(identityLinks.authProvider.name).toBe("auth_provider")
     expect(userIdentities.provider.name).toBe("provider")
     expect(userIdentities.providerSubject.name).toBe("provider_subject")
   })

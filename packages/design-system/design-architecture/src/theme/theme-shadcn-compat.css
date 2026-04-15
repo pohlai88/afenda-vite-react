@@ -1,19 +1,28 @@
 /**
  * SHADCN COMPATIBILITY ALIASES
  *
- * AFENDA Governance Layer
+ * Recommended use ONLY for:
+ * - shadcn/ui primitives (expected CSS variable names)
+ * - generic Tailwind semantic bridge (`--background`, `--foreground`, …)
+ * - `@theme inline` / theme bridge output that expects shadcn names
  *
- * Purpose:
- * - bridge canonical tokens to shadcn-compatible aliases
- * - remain pure alias-only, with zero logic or transformation
- * - provide a stable runtime surface for @theme inline bridging
+ * Do NOT use this file for:
+ * - AFENDA shell layout semantics, surface doctrine, or `--af-*` names
+ * - status surface extensions, density-aware sizing, or motion aliases
+ *   (use `theme-afenda-extensions.css`)
  *
- * Rules:
- * - never use these as source of truth
- * - always map from canonical --color-* / --font-* / --radius-* tokens
+ * Doctrine:
+ * - alias-only; zero logic; canonical `--color-*` remains source of truth
+ *
+ * Important caution:
+ * - Mixing AFENDA-only names here breaks the split with extensions and confuses
+ *   shadcn/Tailwind bridge consumers. Keep this layer strictly shadcn-facing.
+ *
+ * Architecture: strict compatibility bridge here; AFENDA-specific semantics live in
+ * `theme-afenda-extensions.css` so this file stays small, stable, and honest.
  */
 
- :root {
+:root {
   /* ------------------------------------------------------------------
    * Core surfaces
    * ------------------------------------------------------------------ */
@@ -74,19 +83,11 @@
   --sidebar-ring: var(--color-sidebar-ring);
 
   /* ------------------------------------------------------------------
-   * AFENDA extended surfaces
+   * Typography compatibility
+   * Keep only if bridge consumers need explicit aliases.
    * ------------------------------------------------------------------ */
-  --surface: var(--color-surface);
-  --surface-foreground: var(--color-surface-foreground);
-
-  --selection-bg: var(--color-selection);
-  --selection-foreground: var(--color-selection-foreground);
-
-  /* ------------------------------------------------------------------
-   * Typography
-   * ------------------------------------------------------------------ */
-  --font-family-sans: var(--font-sans);
-  --font-family-mono: var(--font-mono);
+  --font-sans-compat: var(--font-sans);
+  --font-mono-compat: var(--font-mono);
 
   /* ------------------------------------------------------------------
    * Radius

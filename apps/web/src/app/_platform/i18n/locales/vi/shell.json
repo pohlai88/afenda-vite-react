@@ -571,7 +571,8 @@
     "open_focus_window": "Mở cửa sổ tập trung",
     "enter_fullscreen": "Vào toàn màn hình",
     "exit_fullscreen": "Thoát toàn màn hình",
-    "exit_focus_mode": "Thoát chế độ tập trung"
+    "exit_focus_mode": "Thoát chế độ tập trung",
+    "focus_hover_expand_hint": "Di chuyển chuột tới cạnh trên để mở rộng thanh tiêu đề không gian làm việc."
   },
   "actions": {
     "command_running": "Đang tải…",

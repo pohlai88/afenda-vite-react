@@ -33,7 +33,7 @@ const HEALTH_ROWS = [
 export function SystemHealthPanel({ feature }: SystemHealthPanelProps) {
   return (
     <section
-      className="ui-density-panel p-4"
+      className="max-w-full ui-density-panel min-w-0 overflow-hidden p-4"
       aria-labelledby="system-health-title"
     >
       <div className="flex min-w-0 items-start justify-between gap-3">
@@ -76,12 +76,12 @@ export function SystemHealthPanel({ feature }: SystemHealthPanelProps) {
         })}
       </div>
 
-      <div className="mt-4 rounded-xl border border-border-muted bg-card/55 p-3">
-        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Activity className="size-4 text-info" aria-hidden />
-          Control coverage
+      <div className="mt-4 min-w-0 overflow-hidden rounded-xl border border-border-muted bg-card/55 px-3 py-2.5">
+        <div className="flex min-w-0 items-center gap-2 text-sm font-medium text-foreground">
+          <Activity className="size-4 shrink-0 text-info" aria-hidden />
+          <span className="min-w-0 truncate">Control coverage</span>
         </div>
-        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-2 text-xs leading-relaxed wrap-break-word text-muted-foreground">
           Scope, command, and evidence metadata are visible before operator
           action, reducing audit reconstruction work.
         </p>

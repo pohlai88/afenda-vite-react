@@ -119,12 +119,18 @@ export function ShellLeftSidebarLayout() {
                 <ShellContentBlock
                   focusMode={isFocusMode}
                   topSlot={
-                    contextBar && !isFocusMode ? (
+                    contextBar ? (
                       <div
                         data-slot="shell.content.top"
-                        className="ui-shell-slot-top"
+                        className={cn(
+                          "ui-shell-slot-top",
+                          isFocusMode && "px-3 py-1.5 sm:px-4"
+                        )}
                       >
-                        <ShellContextBar model={contextBar} />
+                        <ShellContextBar
+                          model={contextBar}
+                          focusMode={isFocusMode}
+                        />
                       </div>
                     ) : null
                   }

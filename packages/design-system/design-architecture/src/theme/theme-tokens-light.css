@@ -1,37 +1,68 @@
 /**
- * LIGHT THEME TOKENS
+ * AFENDA CANONICAL LIGHT THEME TOKENS
  *
- * AFENDA final light — executive light paired to noir-luxury dark.
+ * Tailwind v4 `@theme static` — paired with `theme-dark.css` (`.dark`).
+ *
+ * Consumption:
+ * - Product UI uses semantic `--color-*` roles only (listed in TOKEN_COMPONENT_CONTRACT).
+ * - Foundation ramps (`--color-white-*`) and `--color-surface-*` doctrine aliases are architecture-only.
+ *
+ * Dark overrides: `theme-dark.css` (same token names).
  */
 
- @theme static {
+@theme static {
   /* ------------------------------------------------------------------
-   * Foundation
+   * FOUNDATION SCALE
+   * Internal only. Do not consume directly in product UI.
    * ------------------------------------------------------------------ */
-  /* foundation lift */
-  --color-background: oklch(0.972 0.004 250);
+  --color-white-0: oklch(0.995 0.002 250); /* brightest elevated */
+  --color-white-1: oklch(0.988 0.003 250); /* panel */
+  --color-white-2: oklch(0.978 0.004 250); /* canvas */
+  --color-white-3: oklch(0.962 0.005 252); /* chrome */
+  --color-white-4: oklch(0.944 0.006 252); /* shell */
+  --color-white-5: oklch(0.922 0.008 252); /* strong chrome / quiet fills */
+  --color-white-6: oklch(0.888 0.01 252); /* accent-neutral */
+
+  /* ------------------------------------------------------------------
+   * AFENDA SURFACE DOCTRINE
+   * Architecture-only aliases.
+   * ------------------------------------------------------------------ */
+  --color-surface-shell: var(--color-white-4);
+  --color-surface-chrome: var(--color-white-3);
+  --color-surface-canvas: var(--color-white-2);
+  --color-surface-panel: var(--color-white-1);
+  --color-surface-elevated: var(--color-white-0);
+
+  /* ------------------------------------------------------------------
+   * CORE SEMANTIC TOKENS
+   * ------------------------------------------------------------------ */
+  --color-background: var(--color-surface-canvas);
   --color-foreground: oklch(0.248 0.014 255);
 
-  --color-card: oklch(0.952 0.006 252);
+  --color-card: var(--color-surface-panel);
   --color-card-foreground: var(--color-foreground);
 
-  --color-popover: oklch(0.934 0.007 252);
+  --color-popover: var(--color-surface-elevated);
   --color-popover-foreground: var(--color-foreground);
 
-  /* ------------------------------------------------------------------
-   * Semantic core
-   * ------------------------------------------------------------------ */
   --color-primary: oklch(0.548 0.112 286);
   --color-primary-foreground: oklch(0.986 0.003 286);
 
-  --color-secondary: oklch(0.924 0.009 252);
+  --color-secondary: color-mix(
+    in oklab,
+    var(--color-foreground) 4.2%,
+    var(--color-surface-panel)
+  );
   --color-secondary-foreground: oklch(0.312 0.014 255);
 
-  --color-muted: oklch(0.938 0.007 252);
+  --color-muted: color-mix(
+    in oklab,
+    var(--color-foreground) 2.2%,
+    var(--color-surface-canvas)
+  );
   --color-muted-foreground: oklch(0.49 0.013 255);
 
-  /* accent confidence */
-  --color-accent: oklch(0.858 0.026 235);
+  --color-accent: oklch(0.892 0.02 235);
   --color-accent-foreground: oklch(0.338 0.024 235);
 
   --color-destructive: oklch(0.575 0.18 24);
@@ -43,9 +74,109 @@
   --color-ring-offset: var(--color-background);
 
   /* ------------------------------------------------------------------
-   * Primary scale
+   * SIDEBAR SEMANTICS
    * ------------------------------------------------------------------ */
-  --color-primary-50: oklch(0.972 0.010 286);
+  --color-sidebar: var(--color-surface-chrome);
+  --color-sidebar-foreground: oklch(0.274 0.014 255);
+
+  --color-sidebar-primary: var(--color-primary);
+  --color-sidebar-primary-foreground: var(--color-primary-foreground);
+
+  --color-sidebar-accent: color-mix(
+    in oklab,
+    var(--color-primary) 6.5%,
+    var(--color-surface-panel)
+  );
+  --color-sidebar-accent-foreground: oklch(0.322 0.014 255);
+
+  --color-sidebar-border: oklch(0.828 0.01 252);
+  --color-sidebar-ring: var(--color-ring);
+
+  /* ------------------------------------------------------------------
+   * SYSTEM SURFACES (shared infra)
+   * ------------------------------------------------------------------ */
+  --color-surface-hover: color-mix(
+    in oklab,
+    var(--color-foreground) 3.2%,
+    var(--color-surface-panel)
+  );
+  --color-surface-active: color-mix(
+    in oklab,
+    var(--color-foreground) 5.2%,
+    var(--color-surface-panel)
+  );
+  --color-surface-selected: color-mix(
+    in oklab,
+    var(--color-primary) 10%,
+    var(--color-surface-canvas)
+  );
+  --color-surface-disabled: color-mix(
+    in oklab,
+    var(--color-foreground) 1.5%,
+    var(--color-surface-canvas)
+  );
+  --color-surface-readonly: color-mix(
+    in oklab,
+    var(--color-muted) 78%,
+    var(--color-surface-canvas)
+  );
+  --color-surface-focus: color-mix(
+    in oklab,
+    var(--color-primary) 12%,
+    var(--color-surface-canvas)
+  );
+
+  /* ------------------------------------------------------------------
+   * BORDER SYSTEM
+   * ------------------------------------------------------------------ */
+  --color-border-muted: color-mix(
+    in oklab,
+    var(--color-border) 72%,
+    var(--color-surface-canvas)
+  );
+  --color-border-strong: color-mix(
+    in oklab,
+    var(--color-foreground) 14%,
+    var(--color-surface-canvas)
+  );
+  --color-border-grid: color-mix(
+    in oklab,
+    var(--color-border) 88%,
+    var(--color-surface-canvas)
+  );
+  --color-border-focus: var(--color-ring);
+
+  /* ------------------------------------------------------------------
+   * STATUS
+   * ------------------------------------------------------------------ */
+  --color-success: oklch(0.622 0.095 154);
+  --color-success-foreground: oklch(0.985 0.003 154);
+  --color-success-surface: color-mix(
+    in oklab,
+    var(--color-success) 12%,
+    var(--color-surface-panel)
+  );
+
+  --color-warning: oklch(0.75 0.1 82);
+  --color-warning-foreground: oklch(0.258 0.02 82);
+  --color-warning-surface: color-mix(
+    in oklab,
+    var(--color-warning) 14%,
+    var(--color-surface-panel)
+  );
+
+  --color-info: oklch(0.622 0.07 232);
+  --color-info-foreground: oklch(0.985 0.003 232);
+  --color-info-surface: color-mix(
+    in oklab,
+    var(--color-info) 12%,
+    var(--color-surface-panel)
+  );
+
+  /* ------------------------------------------------------------------
+   * PRIMARY SCALE (light ramp — paired to dark `.dark` ramp)
+   * ------------------------------------------------------------------ */
+  --color-primary-50: oklch(0.972 0.01 286);
   --color-primary-100: oklch(0.942 0.018 286);
   --color-primary-200: oklch(0.892 0.034 286);
   --color-primary-300: oklch(0.818 0.058 286);
@@ -58,7 +189,7 @@
   --color-primary-950: oklch(0.226 0.022 286);
 
   /* ------------------------------------------------------------------
-   * Charts
+   * CHARTS
    * ------------------------------------------------------------------ */
   --color-chart-1: oklch(0.548 0.112 286);
   --color-chart-2: oklch(0.602 0.06 222);
@@ -67,86 +198,53 @@
   --color-chart-5: oklch(0.604 0.064 336);
 
   /* ------------------------------------------------------------------
-   * Sidebar — frame
+   * SURFACE ALIASES
    * ------------------------------------------------------------------ */
-  --color-sidebar: oklch(0.934 0.007 252);
-  --color-sidebar-foreground: oklch(0.274 0.014 255);
-  --color-sidebar-primary: var(--color-primary);
-  --color-sidebar-primary-foreground: var(--color-primary-foreground);
-  --color-sidebar-accent: oklch(0.910 0.009 252);
-  --color-sidebar-accent-foreground: oklch(0.322 0.014 255);
-  --color-sidebar-border: oklch(0.828 0.010 252);
-  --color-sidebar-ring: var(--color-ring);
-
-  /* ------------------------------------------------------------------
-   * Surface aliases
-   * ------------------------------------------------------------------ */
-  --color-surface: var(--color-background);
+  --color-surface: var(--color-surface-canvas);
   --color-surface-foreground: var(--color-foreground);
 
   /* ------------------------------------------------------------------
-   * Code / selection
+   * CODE / SELECTION
    * ------------------------------------------------------------------ */
-  --color-code: color-mix(in oklab, var(--color-muted) 86%, var(--color-background));
+  --color-code: color-mix(
+    in oklab,
+    var(--color-muted) 86%,
+    var(--color-surface-canvas)
+  );
   --color-code-foreground: var(--color-foreground);
-  --color-code-highlight: color-mix(in oklab, var(--color-primary) 10%, var(--color-background));
+  --color-code-highlight: color-mix(
+    in oklab,
+    var(--color-primary) 10%,
+    var(--color-surface-canvas)
+  );
   --color-code-number: var(--color-muted-foreground);
 
-  --color-selection: color-mix(in oklab, var(--color-primary) 18%, var(--color-background));
+  --color-selection: color-mix(
+    in oklab,
+    var(--color-primary) 18%,
+    var(--color-surface-canvas)
+  );
   --color-selection-foreground: oklch(0.228 0.014 255);
 
   /* ------------------------------------------------------------------
-   * Interactive surfaces
+   * TABLE SYSTEM
    * ------------------------------------------------------------------ */
-  --color-surface-hover: color-mix(in oklab, var(--color-foreground) 3.8%, var(--color-background));
-  --color-surface-active: color-mix(in oklab, var(--color-foreground) 5.8%, var(--color-background));
-  --color-surface-selected: color-mix(in oklab, var(--color-primary) 13%, var(--color-background));
-  --color-surface-disabled: color-mix(in oklab, var(--color-foreground) 1.8%, var(--color-background));
-  --color-surface-readonly: color-mix(in oklab, var(--color-muted) 80%, var(--color-background));
-  --color-surface-focus: color-mix(in oklab, var(--color-primary) 15%, var(--color-background));
-
-  /* ------------------------------------------------------------------
-   * Border system
-   * ------------------------------------------------------------------ */
-  --color-border-muted: color-mix(in oklab, var(--color-border) 70%, var(--color-background));
-  --color-border-strong: color-mix(in oklab, var(--color-foreground) 16%, var(--color-background));
-  --color-border-grid: color-mix(in oklab, var(--color-border) 90%, var(--color-background));
-  --color-border-focus: var(--color-ring);
-
-  /* ------------------------------------------------------------------
-   * Status colors
-   * ------------------------------------------------------------------ */
-  --color-success: oklch(0.622 0.095 154);
-  --color-success-foreground: oklch(0.985 0.003 154);
-
-  --color-warning: oklch(0.75 0.10 82);
-  --color-warning-foreground: oklch(0.258 0.02 82);
-
-  --color-info: oklch(0.622 0.07 232);
-  --color-info-foreground: oklch(0.985 0.003 232);
-
-  /* ------------------------------------------------------------------
-   * Table system
-   * ------------------------------------------------------------------ */
-  --color-table-header: color-mix(in oklab, var(--color-foreground) 4.4%, var(--color-background));
+  --color-table-header: color-mix(
+    in oklab,
+    var(--color-foreground) 4.4%,
+    var(--color-surface-canvas)
+  );
   --color-table-row-hover: var(--color-surface-hover);
   --color-table-row-selected: var(--color-surface-selected);
-  --color-table-row-stripe: color-mix(in oklab, var(--color-foreground) 1.5%, var(--color-background));
+  --color-table-row-stripe: color-mix(
+    in oklab,
+    var(--color-foreground) 1.35%,
+    var(--color-surface-canvas)
+  );
   --color-table-cell-focus: var(--color-surface-focus);
-  --color-table-pinned: color-mix(in oklab, var(--color-card) 93%, var(--color-background));
-
-  /* ------------------------------------------------------------------
-   * Optional accent ramp
-   * ------------------------------------------------------------------ */
-  --color-accent-50: oklch(0.984 0.006 235);
-  --color-accent-100: oklch(0.968 0.010 235);
-  --color-accent-200: oklch(0.940 0.016 235);
-  --color-accent-300: oklch(0.906 0.022 235);
-  --color-accent-400: oklch(0.852 0.028 235);
-  --color-accent-500: oklch(0.764 0.036 235);
-  --color-accent-600: oklch(0.654 0.042 235);
-  --color-accent-700: oklch(0.548 0.038 235);
-  --color-accent-800: oklch(0.444 0.030 235);
-  --color-accent-900: oklch(0.346 0.022 235);
-  --color-accent-950: oklch(0.254 0.014 235);
+  --color-table-pinned: color-mix(
+    in oklab,
+    var(--color-card) 93%,
+    var(--color-surface-canvas)
+  );
 }

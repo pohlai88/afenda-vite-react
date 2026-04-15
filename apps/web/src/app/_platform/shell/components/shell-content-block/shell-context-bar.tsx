@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { MoreHorizontal, SlidersHorizontal } from "lucide-react"
+import { ChevronDown, MoreHorizontal, SlidersHorizontal } from "lucide-react"
 import { NavLink } from "react-router-dom"
 
 import {
@@ -32,6 +32,8 @@ const SHELL_CONTEXT_BAR_MOBILE_VISIBLE_ACTIONS = 1
 
 export interface ShellContextBarProps extends ComponentProps<"div"> {
   readonly model: ShellContextBarResolvedModel
+  /** Compact presentation for focus / canvas modes: sections collapse to a menu; actions shrink. */
+  readonly focusMode?: boolean
   readonly onCommandAction?: (commandId: string) => void
 }
 
@@ -110,8 +112,8 @@ function ShellContextBarActionMenu({
         <Button
           type="button"
           variant="outline"
-          size={compact ? "sm" : "sm"}
-          className="h-8 gap-1.5"
+          size="sm"
+          className={cn("gap-1.5", compact ? "h-7" : "h-8")}
           disabled={action.disabled}
         >
           <span className="truncate">{action.label}</span>
@@ -200,7 +202,15 @@ function ShellContextBarAction({
         type="button"
         variant={action.presentation === "icon" ? "outline" : "secondary"}
         size={action.presentation === "icon" ? "icon-sm" : "sm"}
-        className={cn("h-8", action.presentation !== "icon" && "gap-1.5")}
+        className={cn(
+          action.presentation === "icon"
+            ? compact
+              ? "size-7 min-h-7 min-w-7"
+              : "h-8"
+            : compact
+              ? "h-7 gap-1.5"
+              : "h-8 gap-1.5"
+        )}
         disabled={action.disabled}
       >
         <NavLink to={action.to} aria-label={action.label}>
@@ -215,7 +225,15 @@ function ShellContextBarAction({
       type="button"
       variant={action.presentation === "icon" ? "outline" : "secondary"}
       size={action.presentation === "icon" ? "icon-sm" : "sm"}
-      className={cn("h-8", action.presentation !== "icon" && "gap-1.5")}
+      className={cn(
+        action.presentation === "icon"
+          ? compact
+            ? "size-7 min-h-7 min-w-7"
+            : "h-8"
+          : compact
+            ? "h-7 gap-1.5"
+            : "h-8 gap-1.5"
+      )}
       disabled={action.disabled || !action.commandId}
       aria-label={action.label}
       onClick={() => {
@@ -229,8 +247,142 @@ function ShellContextBarAction({
   )
 }
 
+function ShellContextBarFocusTabs({
+  model,
+  onCommandAction,
+}: {
+  readonly model: ShellContextBarResolvedModel
+  readonly onCommandAction: (commandId: string) => void
+}) {
+  const { t } = useTranslation("shell")
+
+  if (model.tabs.length === 0) {
+    return null
+  }
+
+  const activeTab = model.tabs.find((tab) => tab.isActive) ?? model.tabs[0]
+
+  if (model.tabs.length === 1) {
+    return (
+      <div
+        className="min-w-0 truncate text-sm font-medium text-foreground"
+        title={activeTab.label}
+      >
+        {activeTab.label}
+      </div>
+    )
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-7 max-w-[min(100%,14rem)] gap-1 px-2"
+          aria-label={t("context_bar.sections_title")}
+        >
+          <span className="min-w-0 truncate">{activeTab.label}</span>
+          <ChevronDown className="size-3.5 shrink-0 opacity-70" aria-hidden />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="min-w-48">
+        <DropdownMenuLabel>{t("context_bar.sections_title")}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          {model.tabs.map((tab) =>
+            tab.kind === "link" && tab.to ? (
+              <DropdownMenuItem key={tab.id} asChild disabled={tab.disabled}>
+                <NavLink to={tab.to}>{tab.label}</NavLink>
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                key={tab.id}
+                disabled={tab.disabled || !tab.commandId}
+                onSelect={(event) => {
+                  event.preventDefault()
+                  if (tab.commandId) {
+                    onCommandAction(tab.commandId)
+                  }
+                }}
+              >
+                {tab.label}
+              </DropdownMenuItem>
+            )
+          )}
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+function ShellContextBarOverflowActionsList({
+  actions,
+  onCommandAction,
+}: {
+  readonly actions: readonly ShellContextBarResolvedAction[]
+  readonly onCommandAction: (commandId: string) => void
+}) {
+  return actions.map((action) => {
+    if (action.presentation === "menu") {
+      return (
+        <div key={action.id}>
+          <DropdownMenuLabel className="px-2 py-1.5 text-xs text-muted-foreground">
+            {action.label}
+          </DropdownMenuLabel>
+          {action.menuItems.map((item) =>
+            item.kind === "link" && item.to ? (
+              <DropdownMenuItem key={item.id} asChild disabled={item.disabled}>
+                <NavLink to={item.to}>{item.label}</NavLink>
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                key={item.id}
+                disabled={item.disabled || !item.commandId}
+                onSelect={(event) => {
+                  event.preventDefault()
+                  if (item.commandId) {
+                    onCommandAction(item.commandId)
+                  }
+                }}
+              >
+                {item.label}
+              </DropdownMenuItem>
+            )
+          )}
+        </div>
+      )
+    }
+
+    if (action.kind === "link" && action.to) {
+      return (
+        <DropdownMenuItem key={action.id} asChild disabled={action.disabled}>
+          <NavLink to={action.to}>{action.label}</NavLink>
+        </DropdownMenuItem>
+      )
+    }
+
+    return (
+      <DropdownMenuItem
+        key={action.id}
+        disabled={action.disabled || !action.commandId}
+        onSelect={(event) => {
+          event.preventDefault()
+          if (action.commandId) {
+            onCommandAction(action.commandId)
+          }
+        }}
+      >
+        {action.label}
+      </DropdownMenuItem>
+    )
+  })
+}
+
 export function ShellContextBar({
   model,
+  focusMode = false,
   onCommandAction: onCommandActionProp,
   className,
   ...divProps
@@ -294,33 +446,52 @@ export function ShellContextBar({
     <div
       {...divProps}
       data-slot="shell.context-bar"
+      data-focus-mode={focusMode ? "true" : undefined}
       className={cn(
         "flex ui-shell-context-bar min-w-0 items-center justify-between gap-2 md:gap-3",
+        focusMode && "min-h-8 gap-1.5 py-0.5 md:gap-2",
         className
       )}
     >
-      <nav
-        aria-label={t("context_bar.navigation_aria")}
-        className="ui-scrollbar-hidden flex min-w-0 flex-1 items-center gap-1 overflow-x-auto"
+      {focusMode ? (
+        <div className="flex min-h-0 min-w-0 flex-1 items-center">
+          <ShellContextBarFocusTabs
+            model={model}
+            onCommandAction={onCommandAction}
+          />
+        </div>
+      ) : (
+        <nav
+          aria-label={t("context_bar.navigation_aria")}
+          className="ui-scrollbar-hidden flex min-w-0 flex-1 items-center gap-1 overflow-x-auto"
+        >
+          {model.tabs.map((tab, index) => {
+            const showOnMobile = index < SHELL_CONTEXT_BAR_MOBILE_VISIBLE_TABS
+            const mobileClassName =
+              tab.visibility === "desktop-only"
+                ? "hidden md:inline-flex"
+                : showOnMobile
+                  ? "inline-flex"
+                  : "hidden md:inline-flex"
+
+            return (
+              <div key={tab.id} className={mobileClassName}>
+                <ShellContextBarTab
+                  tab={tab}
+                  onCommandAction={onCommandAction}
+                />
+              </div>
+            )
+          })}
+        </nav>
+      )}
+
+      <div
+        className={cn(
+          "flex shrink-0 items-center gap-1.5",
+          focusMode && "min-w-0"
+        )}
       >
-        {model.tabs.map((tab, index) => {
-          const showOnMobile = index < SHELL_CONTEXT_BAR_MOBILE_VISIBLE_TABS
-          const mobileClassName =
-            tab.visibility === "desktop-only"
-              ? "hidden md:inline-flex"
-              : showOnMobile
-                ? "inline-flex"
-                : "hidden md:inline-flex"
-
-          return (
-            <div key={tab.id} className={mobileClassName}>
-              <ShellContextBarTab tab={tab} onCommandAction={onCommandAction} />
-            </div>
-          )
-        })}
-      </nav>
-
-      <div className="flex shrink-0 items-center gap-1.5">
         {visibleActions.map((action, index) => {
           const showOnMobile = index < SHELL_CONTEXT_BAR_MOBILE_VISIBLE_ACTIONS
           const mobileClassName =
@@ -334,13 +505,14 @@ export function ShellContextBar({
             <div key={action.id} className={mobileClassName}>
               <ShellContextBarAction
                 action={action}
+                compact={focusMode}
                 onCommandAction={onCommandAction}
               />
             </div>
           )
         })}
 
-        {model.actions.length > 1 ? (
+        {model.actions.length > 1 && !focusMode ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -387,7 +559,7 @@ export function ShellContextBar({
           </DropdownMenu>
         ) : null}
 
-        {hasMobileOverflow ? (
+        {hasMobileOverflow && !focusMode ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -444,68 +616,10 @@ export function ShellContextBar({
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    {mobileOverflowActions.map((action) => {
-                      if (action.presentation === "menu") {
-                        return (
-                          <div key={action.id}>
-                            <DropdownMenuLabel className="px-2 py-1.5 text-xs text-muted-foreground">
-                              {action.label}
-                            </DropdownMenuLabel>
-                            {action.menuItems.map((item) =>
-                              item.kind === "link" && item.to ? (
-                                <DropdownMenuItem
-                                  key={item.id}
-                                  asChild
-                                  disabled={item.disabled}
-                                >
-                                  <NavLink to={item.to}>{item.label}</NavLink>
-                                </DropdownMenuItem>
-                              ) : (
-                                <DropdownMenuItem
-                                  key={item.id}
-                                  disabled={item.disabled || !item.commandId}
-                                  onSelect={(event) => {
-                                    event.preventDefault()
-                                    if (item.commandId) {
-                                      onCommandAction(item.commandId)
-                                    }
-                                  }}
-                                >
-                                  {item.label}
-                                </DropdownMenuItem>
-                              )
-                            )}
-                          </div>
-                        )
-                      }
-
-                      if (action.kind === "link" && action.to) {
-                        return (
-                          <DropdownMenuItem
-                            key={action.id}
-                            asChild
-                            disabled={action.disabled}
-                          >
-                            <NavLink to={action.to}>{action.label}</NavLink>
-                          </DropdownMenuItem>
-                        )
-                      }
-
-                      return (
-                        <DropdownMenuItem
-                          key={action.id}
-                          disabled={action.disabled || !action.commandId}
-                          onSelect={(event) => {
-                            event.preventDefault()
-                            if (action.commandId) {
-                              onCommandAction(action.commandId)
-                            }
-                          }}
-                        >
-                          {action.label}
-                        </DropdownMenuItem>
-                      )
-                    })}
+                    <ShellContextBarOverflowActionsList
+                      actions={mobileOverflowActions}
+                      onCommandAction={onCommandAction}
+                    />
                   </DropdownMenuGroup>
                 </>
               ) : null}
@@ -523,6 +637,34 @@ export function ShellContextBar({
                   </DropdownMenuItem>
                 </>
               ) : null}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : null}
+
+        {focusMode && mobileOverflowActions.length > 0 ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                className="h-7 w-7 md:hidden"
+                aria-label={t("context_bar.more_aria")}
+              >
+                <MoreHorizontal className="size-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-56 md:hidden">
+              <DropdownMenuLabel>
+                {t("context_bar.actions_title")}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <ShellContextBarOverflowActionsList
+                  actions={mobileOverflowActions}
+                  onCommandAction={onCommandAction}
+                />
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : null}

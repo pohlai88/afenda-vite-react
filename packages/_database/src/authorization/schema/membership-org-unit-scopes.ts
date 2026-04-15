@@ -10,6 +10,10 @@ import { orgUnits } from "../../organization/schema/org-units"
 import { tenantMemberships } from "../../tenancy/schema/tenant-memberships"
 import { tenants } from "../../tenancy/schema/tenants"
 
+/**
+ * @deprecated Prefer unified `membership_scopes` (`scope_type = 'org_unit'`).
+ * Kept for backward compatibility until data is migrated off this table.
+ */
 export const membershipOrgUnitScopes = pgTable(
   "membership_org_unit_scopes",
   {

@@ -91,19 +91,21 @@ tenants                 # Organizations (companies)
 
 Module-specific tables (finance, inventory, HR, etc.) should **reference `tenant_id`** (or equivalent) and live under their owning domain in **`packages/_database/src/<domain>/`**, with aggregate exports from **`packages/_database/src/schema/`**.
 
-### 5.2 Auth-related tables
+### 5.2 Auth-related tables (Afenda + Better Auth)
 
-If you use **Auth.js** with a database adapter or your own session store, you will typically have tables such as:
+Neon may show **two** user/session stories in the same database. That is expected; the split below is **normative** so we do not treat parallel roots as “bugs” or duplicate product models.
 
-```
-users
-├── accounts            # OAuth / IdP links
-├── sessions
-├── verification_tokens
-└── authenticators      # WebAuthn / passkeys (optional)
-```
+| Surface                                                                                  | Role                                                                                                                                                | Drizzle in `@afenda/database`                                 |
+| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **`public.user`**, **`public.session`**, **`public.account`**, **`public.verification`** | **Better Auth** runtime store (credentials, OAuth accounts, sessions). Writer: **`apps/api`** via **`createAfendaAuth`**.                           | Not modeled here (owned by Better Auth migrations / adapter). |
+| **`public.users`**                                                                       | **Afenda ERP principal** (email, display name, tenant memberships, audit actor FKs).                                                                | Modeled (`identity/schema/users.ts`).                         |
+| **`public.identity_links`**                                                              | **Hard bridge** from Better Auth `public.user.id` (text) → Afenda `users.id` (uuid).                                                                | Modeled (`identity/schema/identity-links.ts`).                |
+| **`public.user_identities`**                                                             | **Legacy** generic provider links; **do not** use for new features. Prefer **`identity_links`**.                                                    | Modeled but deprecated in code.                               |
+| **`neon_auth.*`** (e.g. `neon_auth.user`, `neon_auth.organization`, `neon_auth.session`) | **Non-authoritative** for ERP tenancy and workspace truth. May exist from Neon Auth / console; **must not** drive product RBAC or tenant selection. | Not modeled in this package.                                  |
 
-Align this with [Authentication](./AUTHENTICATION.md); the **Vite app** never queries these tables directly.
+**Tenancy authority** (tenants, memberships, scopes) lives only in **Afenda** tables such as **`tenants`**, **`tenant_memberships`**, **`membership_scopes`** — not in `neon_auth.organization`. See [ADR-0003](./decisions/ADR-0003-afenda-tenancy-authority.md), [ADR-0004](./decisions/ADR-0004-identity-bridge-and-principals.md), [ADR-0005](./decisions/ADR-0005-auth-schema-authority-public-vs-neon-auth.md), [ADR-0006](./decisions/ADR-0006-session-operating-context.md).
+
+Align runtime behavior with [Authentication](./AUTHENTICATION.md). The **Vite app** never queries these tables directly.
 
 ### 5.3 Optional: vectors (pgvector)
 

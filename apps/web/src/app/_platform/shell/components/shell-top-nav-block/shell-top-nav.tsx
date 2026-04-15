@@ -171,152 +171,253 @@ export function ShellTopNav({
     )
   }, [location.hash, location.pathname, location.search, navigate])
 
+  const focusHoverExpandHint = t("top_nav.focus_hover_expand_hint")
+
   return (
     <TooltipProvider delayDuration={300}>
       <>
-        <header
-          data-slot="shell.top-nav"
-          className={cn(
-            "sticky top-0 z-40 ui-shell-header-strip flex min-h-12 w-full shrink-0 items-center gap-2 border-b border-border-muted px-3 md:gap-3 md:px-4 lg:px-5",
-            className
-          )}
-          {...headerProps}
-        >
-          <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-2.5">
-            {leadingSlot}
-            {scopeLineage.segments.length > 0 ? (
-              <ShellScopeLineageBar
-                model={scopeLineage}
-                className="min-w-0 flex-1"
-              />
-            ) : (
-              <ShellTopNavBreadcrumbs items={breadcrumbs} />
+        <div className={cn("sticky top-0 z-40", focusMode && "group/nav")}>
+          <header
+            data-slot="shell.top-nav"
+            data-shell-focus-hover-header={focusMode ? "true" : undefined}
+            title={focusMode ? focusHoverExpandHint : undefined}
+            className={cn(
+              "flex w-full shrink-0 border-b border-border-muted",
+              focusMode
+                ? cn(
+                    "flex-col items-stretch justify-end gap-0 py-0",
+                    "min-h-2 border-border-muted/35 bg-linear-to-b from-border/45 to-transparent shadow-none",
+                    "backdrop-blur-none transition-[min-height,background-color,box-shadow,border-color] duration-200 ease-out",
+                    "motion-safe:transition-[min-height,background-color,box-shadow,border-color]",
+                    "group-hover/nav:min-h-12! group-hover/nav:border-border-muted group-hover/nav:bg-[color-mix(in_oklab,var(--color-sidebar)_92%,transparent)] group-hover/nav:shadow-sm group-hover/nav:backdrop-blur-[18px]",
+                    "group-focus-within/nav:min-h-12! group-focus-within/nav:border-border-muted group-focus-within/nav:bg-[color-mix(in_oklab,var(--color-sidebar)_92%,transparent)] group-focus-within/nav:shadow-sm group-focus-within/nav:backdrop-blur-[18px]",
+                    "motion-reduce:min-h-12! motion-reduce:border-border-muted motion-reduce:bg-[color-mix(in_oklab,var(--color-sidebar)_92%,transparent)] motion-reduce:shadow-sm motion-reduce:backdrop-blur-[18px]",
+                    "[@media(hover:none)]:min-h-12! [@media(hover:none)]:border-border-muted [@media(hover:none)]:bg-[color-mix(in_oklab,var(--color-sidebar)_92%,transparent)] [@media(hover:none)]:shadow-sm [@media(hover:none)]:backdrop-blur-[18px]"
+                  )
+                : "ui-shell-header-strip min-h-12 items-center gap-2 px-3 md:gap-3 md:px-4 lg:px-5",
+              className
             )}
-          </div>
-
-          <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
-            <div className="hidden sm:flex">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className={cn(
-                      "h-9 max-w-30 shrink-0 rounded-full border-border-muted bg-card/70 px-2.5 text-left text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring lg:max-w-36"
-                    )}
-                    aria-label={commandTooltip}
-                    onClick={openCommand}
-                  >
-                    <Search
-                      className="size-3 shrink-0 opacity-75"
-                      strokeWidth={1.5}
-                      aria-hidden
+            {...headerProps}
+          >
+            {focusMode ? (
+              <div
+                className={cn(
+                  "flex min-h-12 w-full items-center gap-2 px-3 md:gap-2.5 md:px-4 lg:px-5",
+                  "max-h-0 min-h-0 overflow-hidden opacity-0 transition-[max-height,opacity,min-height] duration-200 ease-out",
+                  "group-hover/nav:max-h-24! group-hover/nav:min-h-12! group-hover/nav:overflow-visible group-hover/nav:opacity-100",
+                  "group-focus-within/nav:max-h-24! group-focus-within/nav:min-h-12! group-focus-within/nav:overflow-visible group-focus-within/nav:opacity-100",
+                  "motion-reduce:max-h-24! motion-reduce:overflow-visible motion-reduce:opacity-100",
+                  "[@media(hover:none)]:max-h-24! [@media(hover:none)]:overflow-visible [@media(hover:none)]:opacity-100"
+                )}
+              >
+                <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-2.5">
+                  {leadingSlot}
+                  {scopeLineage.segments.length > 0 ? (
+                    <ShellScopeLineageBar
+                      model={scopeLineage}
+                      className="min-w-0 flex-1"
                     />
-                    <span className="min-w-0 flex-1 truncate text-xs">
-                      {t("semantic_search.placeholder")}
-                    </span>
-                    <Kbd
-                      className="ml-auto hidden h-5 min-w-0 shrink-0 px-1.5 font-sans text-[10px] tracking-tight tabular-nums sm:inline-flex"
-                      aria-hidden
-                    >
-                      {`${mod}+K`}
-                    </Kbd>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="max-w-xs">
-                  {commandTooltip}
-                </TooltipContent>
-              </Tooltip>
-            </div>
+                  ) : (
+                    <ShellTopNavBreadcrumbs items={breadcrumbs} />
+                  )}
+                </div>
 
-            <ShellTopNavTools
-              className="hidden sm:flex"
-              connectSlot={<ShellTopNavConnectPopover />}
-              trustBeacon={<ShellAuthTrustBeacon />}
-              workspaceSlot={
-                focusMode ? (
-                  <>
+                <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+                  <div className="hidden sm:flex">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
                           type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                          aria-label={
-                            isFullscreen
-                              ? focusExitFullscreenLabel
-                              : focusEnterFullscreenLabel
-                          }
-                          onClick={toggleFullscreen}
-                        >
-                          {isFullscreen ? (
-                            <Minimize2
-                              className="size-4"
-                              strokeWidth={1.5}
-                              aria-hidden
-                            />
-                          ) : (
-                            <Maximize2
-                              className="size-4"
-                              strokeWidth={1.5}
-                              aria-hidden
-                            />
+                          variant="outline"
+                          size="sm"
+                          className={cn(
+                            "h-9 max-w-30 shrink-0 rounded-full border-border-muted bg-card/70 px-2.5 text-left text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring lg:max-w-36"
                           )}
+                          aria-label={commandTooltip}
+                          onClick={openCommand}
+                        >
+                          <Search
+                            className="size-3 shrink-0 opacity-75"
+                            strokeWidth={1.5}
+                            aria-hidden
+                          />
+                          <span className="min-w-0 flex-1 truncate text-xs">
+                            {t("semantic_search.placeholder")}
+                          </span>
+                          <Kbd
+                            className="ml-auto hidden h-5 min-w-0 shrink-0 px-1.5 font-sans text-[10px] tracking-tight tabular-nums sm:inline-flex"
+                            aria-hidden
+                          >
+                            {`${mod}+K`}
+                          </Kbd>
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side="bottom" className="max-w-xs">
-                        {isFullscreen
-                          ? focusExitFullscreenLabel
-                          : focusEnterFullscreenLabel}
+                        {commandTooltip}
                       </TooltipContent>
                     </Tooltip>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-9 rounded-full border-border-muted bg-card/70 px-3 text-xs text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                      onClick={exitFocusMode}
-                    >
-                      {focusExitModeLabel}
-                    </Button>
-                  </>
-                ) : (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                        aria-label={focusWindowLabel}
-                        onClick={openFocusWindow}
-                      >
-                        <ExternalLink
-                          className="size-4"
-                          strokeWidth={1.5}
-                          aria-hidden
-                        />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="max-w-xs">
-                      {focusWindowLabel}
-                    </TooltipContent>
-                  </Tooltip>
-                )
-              }
-              feedbackLabel={t("feedback.aria_label")}
-              helpLabel={t("help.tooltip")}
-              insightsLabel={t("resolution.title")}
-              terminalLabel={t("top_nav.terminal_aria")}
-              appSwitcherLabel={t("top_nav.app_switcher_aria")}
-              userMenu={
-                <ShellTopNavUserMenu user={shellUser} onLogout={handleLogout} />
-              }
-            />
-          </div>
-        </header>
+                  </div>
+
+                  <ShellTopNavTools
+                    className="hidden sm:flex"
+                    connectSlot={<ShellTopNavConnectPopover />}
+                    trustBeacon={<ShellAuthTrustBeacon />}
+                    workspaceSlot={
+                      <>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                              aria-label={
+                                isFullscreen
+                                  ? focusExitFullscreenLabel
+                                  : focusEnterFullscreenLabel
+                              }
+                              onClick={toggleFullscreen}
+                            >
+                              {isFullscreen ? (
+                                <Minimize2
+                                  className="size-4"
+                                  strokeWidth={1.5}
+                                  aria-hidden
+                                />
+                              ) : (
+                                <Maximize2
+                                  className="size-4"
+                                  strokeWidth={1.5}
+                                  aria-hidden
+                                />
+                              )}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="max-w-xs">
+                            {isFullscreen
+                              ? focusExitFullscreenLabel
+                              : focusEnterFullscreenLabel}
+                          </TooltipContent>
+                        </Tooltip>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-9 rounded-full border-border-muted bg-card/70 px-3 text-xs text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                          onClick={exitFocusMode}
+                        >
+                          {focusExitModeLabel}
+                        </Button>
+                      </>
+                    }
+                    feedbackLabel={t("feedback.aria_label")}
+                    helpLabel={t("help.tooltip")}
+                    insightsLabel={t("resolution.title")}
+                    terminalLabel={t("top_nav.terminal_aria")}
+                    appSwitcherLabel={t("top_nav.app_switcher_aria")}
+                    userMenu={
+                      <ShellTopNavUserMenu
+                        user={shellUser}
+                        onLogout={handleLogout}
+                      />
+                    }
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-2.5">
+                  {leadingSlot}
+                  {scopeLineage.segments.length > 0 ? (
+                    <ShellScopeLineageBar
+                      model={scopeLineage}
+                      className="min-w-0 flex-1"
+                    />
+                  ) : (
+                    <ShellTopNavBreadcrumbs items={breadcrumbs} />
+                  )}
+                </div>
+
+                <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+                  <div className="hidden sm:flex">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className={cn(
+                            "h-9 max-w-30 shrink-0 rounded-full border-border-muted bg-card/70 px-2.5 text-left text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring lg:max-w-36"
+                          )}
+                          aria-label={commandTooltip}
+                          onClick={openCommand}
+                        >
+                          <Search
+                            className="size-3 shrink-0 opacity-75"
+                            strokeWidth={1.5}
+                            aria-hidden
+                          />
+                          <span className="min-w-0 flex-1 truncate text-xs">
+                            {t("semantic_search.placeholder")}
+                          </span>
+                          <Kbd
+                            className="ml-auto hidden h-5 min-w-0 shrink-0 px-1.5 font-sans text-[10px] tracking-tight tabular-nums sm:inline-flex"
+                            aria-hidden
+                          >
+                            {`${mod}+K`}
+                          </Kbd>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-xs">
+                        {commandTooltip}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+
+                  <ShellTopNavTools
+                    className="hidden sm:flex"
+                    connectSlot={<ShellTopNavConnectPopover />}
+                    trustBeacon={<ShellAuthTrustBeacon />}
+                    workspaceSlot={
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                            aria-label={focusWindowLabel}
+                            onClick={openFocusWindow}
+                          >
+                            <ExternalLink
+                              className="size-4"
+                              strokeWidth={1.5}
+                              aria-hidden
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs">
+                          {focusWindowLabel}
+                        </TooltipContent>
+                      </Tooltip>
+                    }
+                    feedbackLabel={t("feedback.aria_label")}
+                    helpLabel={t("help.tooltip")}
+                    insightsLabel={t("resolution.title")}
+                    terminalLabel={t("top_nav.terminal_aria")}
+                    appSwitcherLabel={t("top_nav.app_switcher_aria")}
+                    userMenu={
+                      <ShellTopNavUserMenu
+                        user={shellUser}
+                        onLogout={handleLogout}
+                      />
+                    }
+                  />
+                </div>
+              </>
+            )}
+          </header>
+        </div>
 
         <ShellTopNavCommandDialog
           open={commandOpen}

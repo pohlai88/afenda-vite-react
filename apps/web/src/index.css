@@ -41,9 +41,11 @@
 @import "../../../packages/design-system/design-architecture/src/theme/theme-tokens-light.css";
 @import "../../../packages/design-system/design-architecture/src/theme/theme-dark.css";
 @import "../../../packages/design-system/design-architecture/src/theme/theme-keyframes.css";
+@import "../../../packages/design-system/design-architecture/src/theme/theme-reduced-motion.css";
 @import "../../../packages/design-system/design-architecture/src/theme/theme-tokens-layout.css";
 @import "../../../packages/design-system/design-architecture/src/theme/theme-density.css";
 @import "../../../packages/design-system/design-architecture/src/theme/theme-shadcn-compat.css";
+@import "../../../packages/design-system/design-architecture/src/theme/theme-afenda-extensions.css";
 @import "../../../packages/design-system/design-architecture/src/theme/theme-tailwind-bridge.css";
 
 /*

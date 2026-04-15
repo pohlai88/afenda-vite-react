@@ -1,7 +1,11 @@
 import { relations } from "drizzle-orm"
 
 import { users } from "../../identity/schema/users"
+import { businessUnits } from "../../organization/schema/business-units"
 import { legalEntities } from "../../organization/schema/legal-entities"
+import { locations } from "../../organization/schema/locations"
+import { orgUnits } from "../../organization/schema/org-units"
+import { tenantMemberships } from "../../tenancy/schema/tenant-memberships"
 import { tenants } from "../../tenancy/schema/tenants"
 import { auditLogs } from "../schema/audit-logs"
 
@@ -20,9 +24,25 @@ export const auditLogsRelations = relations(auditLogs, ({ one, many }) => ({
     references: [users.id],
     relationName: "audit_acting_as_user",
   }),
+  membership: one(tenantMemberships, {
+    fields: [auditLogs.membershipId, auditLogs.tenantId],
+    references: [tenantMemberships.id, tenantMemberships.tenantId],
+  }),
   legalEntity: one(legalEntities, {
-    fields: [auditLogs.legalEntityId],
-    references: [legalEntities.id],
+    fields: [auditLogs.legalEntityId, auditLogs.tenantId],
+    references: [legalEntities.id, legalEntities.tenantId],
+  }),
+  businessUnit: one(businessUnits, {
+    fields: [auditLogs.businessUnitId, auditLogs.tenantId],
+    references: [businessUnits.id, businessUnits.tenantId],
+  }),
+  location: one(locations, {
+    fields: [auditLogs.locationId, auditLogs.tenantId],
+    references: [locations.id, locations.tenantId],
+  }),
+  orgUnit: one(orgUnits, {
+    fields: [auditLogs.orgUnitId, auditLogs.tenantId],
+    references: [orgUnits.id, orgUnits.tenantId],
   }),
   parent: one(auditLogs, {
     fields: [auditLogs.parentAuditId],

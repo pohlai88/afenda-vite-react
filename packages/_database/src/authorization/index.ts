@@ -1,5 +1,7 @@
 export * from "./policy/permission-policy"
 export * from "./relations/authorization-relations"
+export * from "./schema/membership-scope-enums"
+export * from "./schema/membership-scopes"
 export * from "./schema/membership-legal-entity-scopes"
 export * from "./schema/membership-org-unit-scopes"
 export * from "./schema/permissions"

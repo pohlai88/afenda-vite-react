@@ -10,7 +10,11 @@ import {
 } from "drizzle-orm/pg-core"
 
 import { users } from "../../identity/schema/users"
+import { businessUnits } from "../../organization/schema/business-units"
 import { legalEntities } from "../../organization/schema/legal-entities"
+import { locations } from "../../organization/schema/locations"
+import { orgUnits } from "../../organization/schema/org-units"
+import { tenantMemberships } from "../../tenancy/schema/tenant-memberships"
 import { tenants } from "../../tenancy/schema/tenants"
 import {
   auditActorTypeEnum,
@@ -44,6 +48,13 @@ export const auditLogs = pgTable(
       onDelete: "set null",
       onUpdate: "cascade",
     }),
+
+    membershipId: uuid("membership_id"),
+    businessUnitId: uuid("business_unit_id"),
+    locationId: uuid("location_id"),
+    orgUnitId: uuid("org_unit_id"),
+    /** Better Auth `public.user.id` (text); distinct from `actor_user_id` (Afenda users). */
+    authUserId: text("auth_user_id"),
 
     actorType: auditActorTypeEnum("actor_type").default("unknown").notNull(),
     actorUserId: uuid("actor_user_id").references(() => users.id, {
@@ -92,6 +103,7 @@ export const auditLogs = pgTable(
     correlationId: text("correlation_id"),
     causationId: text("causation_id"),
     commandId: text("command_id"),
+    /** Auth or app session id (some specs label this `auth_session_id`). */
     sessionId: text("session_id"),
     jobId: text("job_id"),
     batchId: text("batch_id"),
@@ -172,6 +184,35 @@ export const auditLogs = pgTable(
       table.tenantId,
       table.legalEntityId
     ),
+    foreignKey({
+      name: "audit_logs_membership_tenant_fk",
+      columns: [table.membershipId, table.tenantId],
+      foreignColumns: [tenantMemberships.id, tenantMemberships.tenantId],
+    })
+      .onDelete("set null")
+      .onUpdate("cascade"),
+    foreignKey({
+      name: "audit_logs_business_unit_tenant_fk",
+      columns: [table.businessUnitId, table.tenantId],
+      foreignColumns: [businessUnits.id, businessUnits.tenantId],
+    })
+      .onDelete("set null")
+      .onUpdate("cascade"),
+    foreignKey({
+      name: "audit_logs_location_tenant_fk",
+      columns: [table.locationId, table.tenantId],
+      foreignColumns: [locations.id, locations.tenantId],
+    })
+      .onDelete("set null")
+      .onUpdate("cascade"),
+    foreignKey({
+      name: "audit_logs_org_unit_tenant_fk",
+      columns: [table.orgUnitId, table.tenantId],
+      foreignColumns: [orgUnits.id, orgUnits.tenantId],
+    })
+      .onDelete("set null")
+      .onUpdate("cascade"),
+    index("audit_logs_membership_idx").on(table.membershipId),
     index("audit_logs_risk_recorded_idx").on(table.riskLevel, table.recordedAt),
     index("audit_logs_outcome_recorded_idx").on(
       table.outcome,

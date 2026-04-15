@@ -1,17 +1,31 @@
 /**
- * TAILWIND V4 — bridge (colors)
+ * TAILWIND V4 — color bridge contract
  *
- * Historical note: an @theme inline block here previously mapped
- * `--color-*` → `var(--background)` / shadcn aliases. Together with
- * `theme-shadcn-compat.css` (`--background: var(--color-background)` on :root)
- * that created a circular dependency. `.dark { --color-*: … }` broke the cycle
- * for dark mode only, so light mode could resolve to invalid / wrong colors.
+ * Purpose:
+ * - document how Tailwind v4 color theme keys are sourced
+ * - prevent reintroduction of circular alias mapping
+ * - keep runtime color ownership explicit
  *
- * Canonical runtime colors:
- * - Light: `theme-tokens-light.css` → `@theme static { --color-*: … }`
- * - Dark: `theme-dark.css` → `.dark { --color-*: … }`
- * - shadcn names: `theme-shadcn-compat.css` → `:root { --background: var(--color-background); … }`
+ * Canonical ownership:
+ * - Light runtime colors come from `theme-tokens-light.css`
+ *   via `@theme static { --color-*: ... }`
+ * - Dark runtime colors come from `theme-dark.css`
+ *   via `.dark { --color-*: ... }`
+ * - shadcn-compatible aliases come from `theme-shadcn-compat.css`
+ *   via `:root { --background: var(--color-background); ... }`
  *
- * Tailwind color utilities use the `--color-*` theme keys from @theme static.
- * Stem sync for ESLint: `scripts/check-stem-sync.ts` reads `theme-tokens-light.css`.
+ * Tailwind integration rule:
+ * - Tailwind color utilities consume canonical `--color-*` theme keys
+ * - this bridge must never remap `--color-*` from shadcn aliases
+ *   such as `--background`, `--card`, or `--popover`
+ *
+ * Forbidden pattern:
+ * - never define `--color-*` in terms of shadcn aliases
+ * - never create `--color-* -> --background`
+ *   while `--background -> --color-background`
+ * - that creates a circular dependency and can break light mode resolution
+ *
+ * Tooling note:
+ * - `scripts/check-stem-sync.ts` reads `theme-tokens-light.css`
+ *   as the canonical source for Tailwind color stem synchronization
  */

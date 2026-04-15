@@ -6,6 +6,7 @@ import { tenantMemberships } from "../../tenancy/schema/tenant-memberships"
 import { tenants } from "../../tenancy/schema/tenants"
 import { membershipLegalEntityScopes } from "../schema/membership-legal-entity-scopes"
 import { membershipOrgUnitScopes } from "../schema/membership-org-unit-scopes"
+import { membershipScopes } from "../schema/membership-scopes"
 import { permissions } from "../schema/permissions"
 import { rolePermissions } from "../schema/role-permissions"
 import { roles } from "../schema/roles"
@@ -91,6 +92,20 @@ export const membershipOrgUnitScopesRelations = relations(
     orgUnit: one(orgUnits, {
       fields: [membershipOrgUnitScopes.orgUnitId],
       references: [orgUnits.id],
+    }),
+  })
+)
+
+export const membershipScopesRelations = relations(
+  membershipScopes,
+  ({ one }) => ({
+    membership: one(tenantMemberships, {
+      fields: [membershipScopes.membershipId, membershipScopes.tenantId],
+      references: [tenantMemberships.id, tenantMemberships.tenantId],
+    }),
+    tenant: one(tenants, {
+      fields: [membershipScopes.tenantId],
+      references: [tenants.id],
     }),
   })
 )

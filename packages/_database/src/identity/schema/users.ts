@@ -3,6 +3,7 @@ import {
   index,
   pgTable,
   text,
+  timestamp,
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core"
@@ -15,7 +16,16 @@ export const users = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     email: text("email").notNull(),
     displayName: text("display_name"),
+    givenName: text("given_name"),
+    familyName: text("family_name"),
+    avatarUrl: text("avatar_url"),
     isActive: boolean("is_active").default(true).notNull(),
+    /** Synthetic / break-glass principals only. */
+    isSystem: boolean("is_system").default(false).notNull(),
+    deactivatedAt: timestamp("deactivated_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
     ...timestampColumns,
   },
   (table) => [

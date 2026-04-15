@@ -10,6 +10,10 @@ import { legalEntities } from "../../organization/schema/legal-entities"
 import { tenantMemberships } from "../../tenancy/schema/tenant-memberships"
 import { tenants } from "../../tenancy/schema/tenants"
 
+/**
+ * @deprecated Prefer unified `membership_scopes` (`scope_type = 'legal_entity'`).
+ * Kept for backward compatibility until data is migrated off this table.
+ */
 export const membershipLegalEntityScopes = pgTable(
   "membership_legal_entity_scopes",
   {

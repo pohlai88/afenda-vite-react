@@ -1,4 +1,5 @@
 import {
+  foreignKey,
   index,
   pgTable,
   text,
@@ -26,9 +27,12 @@ export const legalEntities = pgTable(
       }),
     code: varchar("code", { length: 32 }).notNull(),
     name: text("name").notNull(),
+    registrationNumber: text("registration_number"),
+    countryCode: varchar("country_code", { length: 2 }),
     taxId: text("tax_id"),
     baseCurrency: varchar("base_currency", { length: 3 }),
     status: text("status").default("active").notNull(),
+    parentLegalEntityId: uuid("parent_legal_entity_id"),
     ...timestampColumns,
     ...optionalDeletedAtColumn,
   },
@@ -39,6 +43,14 @@ export const legalEntities = pgTable(
     ),
     unique("legal_entities_id_tenant_unique").on(table.id, table.tenantId),
     index("legal_entities_tenant_status_idx").on(table.tenantId, table.status),
+    index("legal_entities_parent_idx").on(table.parentLegalEntityId),
+    foreignKey({
+      name: "legal_entities_parent_tenant_fk",
+      columns: [table.parentLegalEntityId, table.tenantId],
+      foreignColumns: [table.id, table.tenantId],
+    })
+      .onDelete("restrict")
+      .onUpdate("cascade"),
   ]
 )
 

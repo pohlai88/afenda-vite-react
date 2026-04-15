@@ -11,4 +11,6 @@ export const tenantMembershipStatus = pgEnum("tenant_membership_status", [
   "active",
   "suspended",
   "left",
+  /** Ended by admin/policy; distinct from voluntary `left`. */
+  "revoked",
 ])

@@ -24,9 +24,24 @@ import type {
 /** Max scope filters in the chrome (product rule). */
 export const SHELL_SCOPE_LINEAGE_MAX_SEGMENTS = 4 as const
 
-/** Shared typography; no `flex-1` so labels don’t stretch across the full column width. */
+/** Value text: truncates within the equal-width column; tabular-nums keeps numeric labels aligned. */
 const SCOPE_SEGMENT_VALUE_CLASS =
-  "min-w-0 max-w-full shrink truncate text-start font-medium leading-tight tabular-nums text-foreground text-[13px]"
+  "min-w-0 flex-1 truncate text-start font-medium leading-tight tabular-nums text-foreground text-[13px]"
+
+function scopeLineageGridColsClass(
+  segmentCount: number
+): "grid-cols-1" | "grid-cols-2" | "grid-cols-3" | "grid-cols-4" {
+  if (segmentCount <= 1) {
+    return "grid-cols-1"
+  }
+  if (segmentCount === 2) {
+    return "grid-cols-2"
+  }
+  if (segmentCount === 3) {
+    return "grid-cols-3"
+  }
+  return "grid-cols-4"
+}
 
 export type ShellScopeLineageBarProps = {
   model: ShellScopeLineageModel
@@ -63,7 +78,7 @@ function ScopeSegmentControl({
 
   if (!segment.switchable) {
     return (
-      <span className="inline-flex max-w-full min-w-0 items-center gap-1 px-0">
+      <span className="inline-flex w-full min-w-0 items-center gap-0.5">
         <span className={SCOPE_SEGMENT_VALUE_CLASS}>{segment.label}</span>
         {badge ? (
           <Badge
@@ -74,7 +89,7 @@ function ScopeSegmentControl({
                   ? "default"
                   : "outline"
             }
-            className="h-5 shrink-0 rounded-full px-1.5 text-[10px] font-semibold tracking-wide uppercase"
+            className="h-5 shrink-0 rounded-full px-0.5 text-[10px] font-semibold tracking-wide uppercase"
           >
             {badge.label}
           </Badge>
@@ -90,7 +105,7 @@ function ScopeSegmentControl({
           type="button"
           variant="ghost"
           size="sm"
-          className="inline-flex h-7 max-w-full min-w-0 items-center gap-1 rounded-md px-1.5 py-0 font-normal hover:bg-accent/40"
+          className="inline-flex h-7 w-full min-w-0 items-center gap-0.5 rounded-md px-0.5 py-0 font-normal hover:bg-accent/40"
           aria-label={t("scope_lineage.switch_dimension", {
             dimension: dimensionTitle,
             value: segment.label,
@@ -106,7 +121,7 @@ function ScopeSegmentControl({
                     ? "default"
                     : "outline"
               }
-              className="h-5 shrink-0 rounded-full px-1.5 text-[10px] font-semibold tracking-wide uppercase"
+              className="h-5 shrink-0 rounded-full px-0.5 text-[10px] font-semibold tracking-wide uppercase"
             >
               {badge.label}
             </Badge>
@@ -132,17 +147,19 @@ function ScopeSegmentControl({
 }
 
 /**
- * Up to four positional scope filters (`level_1`…`level_4`), equal grid on `md+`,
- * horizontal scroll on small viewports. Route breadcrumbs are hidden when this renders
- * (see `ShellTopNav`).
+ * Up to four positional scope filters (`level_1`…`level_4`).
+ * **Compact equal columns:** each slot gets the same width (`minmax(0, 1fr)`), matching a
+ * short entity label (e.g. “Acme Holdings”); longer text truncates. Tight horizontal
+ * padding on outer edges. Route breadcrumbs are hidden when this renders (`ShellTopNav`).
  */
 export function ShellScopeLineageBar({
   model,
   className,
 }: ShellScopeLineageBarProps) {
   const segments = model.segments.slice(0, SHELL_SCOPE_LINEAGE_MAX_SEGMENTS)
+  const segmentCount = segments.length
 
-  if (segments.length === 0) {
+  if (segmentCount === 0) {
     return null
   }
 
@@ -151,7 +168,8 @@ export function ShellScopeLineageBar({
       data-slot="shell.scope-lineage"
       data-placeholder={model.isPlaceholder ? "true" : undefined}
       className={cn(
-        "flex max-w-full min-w-0 flex-1 items-stretch overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        "grid max-w-full min-w-0 flex-1 items-stretch gap-0",
+        scopeLineageGridColsClass(segmentCount),
         "divide-x divide-border/45",
         className
       )}
@@ -159,7 +177,7 @@ export function ShellScopeLineageBar({
       {segments.map((segment) => (
         <div
           key={segment.id}
-          className="flex min-h-8 min-w-0 shrink-0 items-center px-1.5 sm:px-2"
+          className="flex min-h-7 min-w-0 items-center px-0.5 first:pl-px last:pr-px sm:first:pl-0.5 sm:last:pr-0.5"
         >
           <ScopeSegmentControl segment={segment} />
         </div>

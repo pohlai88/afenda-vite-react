@@ -52,6 +52,25 @@ const MODEL: ShellContextBarResolvedModel = {
   ],
 }
 
+const MULTI_TAB_MODEL: ShellContextBarResolvedModel = {
+  ...MODEL,
+  tabs: [
+    MODEL.tabs[0]!,
+    {
+      id: "audit",
+      labelKey: "context_bar.events.tabs.audit",
+      label: "Audit",
+      kind: "link",
+      to: "/app/events/audit",
+      commandId: undefined,
+      badgeCount: undefined,
+      visibility: "always",
+      disabled: false,
+      isActive: false,
+    },
+  ],
+}
+
 describe("ShellContextBar", () => {
   beforeAll(async () => {
     await initI18n()
@@ -100,5 +119,45 @@ describe("ShellContextBar", () => {
     await user.click(screen.getByRole("button", { name: "Refresh" }))
 
     expect(onCommandAction).toHaveBeenCalledWith("refresh-events-view")
+  })
+
+  it("focus mode sets data-focus-mode and keeps a single tab as inline title", () => {
+    const router = createMemoryRouter(
+      [
+        {
+          path: "/app/events",
+          element: <ShellContextBar model={MODEL} focusMode />,
+        },
+      ],
+      { initialEntries: ["/app/events"] }
+    )
+
+    const { container } = render(<RouterProvider router={router} />)
+
+    expect(container.querySelector('[data-focus-mode="true"]')).toBeTruthy()
+    expect(screen.getByText("Overview")).toBeInTheDocument()
+    expect(
+      screen.queryByRole("button", { name: "Sections" })
+    ).not.toBeInTheDocument()
+  })
+
+  it("focus mode uses a sections menu when multiple tabs exist", async () => {
+    const user = userEvent.setup()
+    const router = createMemoryRouter(
+      [
+        {
+          path: "/app/events",
+          element: <ShellContextBar model={MULTI_TAB_MODEL} focusMode />,
+        },
+      ],
+      { initialEntries: ["/app/events"] }
+    )
+
+    render(<RouterProvider router={router} />)
+
+    const sectionsTrigger = screen.getByRole("button", { name: "Sections" })
+    await user.click(sectionsTrigger)
+
+    expect(screen.getByRole("menuitem", { name: "Audit" })).toBeInTheDocument()
   })
 })

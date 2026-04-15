@@ -7,6 +7,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core"
 
+import { tenantMembershipTypeEnum } from "../../authorization/schema/membership-scope-enums"
 import { users } from "../../identity/schema/users"
 import { timestampColumns } from "../../helpers/columns"
 import { tenantMembershipStatus } from "./tenant-status"
@@ -28,9 +29,19 @@ export const tenantMemberships = pgTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
+    membershipType: tenantMembershipTypeEnum("membership_type")
+      .notNull()
+      .default("internal"),
     status: tenantMembershipStatus("status").default("invited").notNull(),
     invitedAt: timestamp("invited_at", { withTimezone: true }),
     acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+    joinedAt: timestamp("joined_at", { withTimezone: true }),
+    suspendedAt: timestamp("suspended_at", { withTimezone: true }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    invitedByUserId: uuid("invited_by_user_id").references(() => users.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
     ...timestampColumns,
   },
   (table) => [

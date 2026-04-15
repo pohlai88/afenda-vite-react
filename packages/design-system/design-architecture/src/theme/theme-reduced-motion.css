@@ -1,0 +1,17 @@
+/**
+ * REDUCED MOTION — consumer layer
+ *
+ * Doctrine:
+ * - `theme-keyframes.css` stays pure: keyframes only, no `prefers-reduced-motion`.
+ * - Import this file after keyframes; animated surfaces opt in with the class
+ *   `.motion-safe` (element hook — not the Tailwind `motion-safe:` variant).
+ * - When the user prefers reduced motion, durations on those surfaces collapse;
+ *   keyframe definitions are unchanged; only the applied timing is constrained.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}

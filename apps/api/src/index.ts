@@ -10,7 +10,7 @@ import { createApp } from "./app.js"
 
 const pool = createPgPool()
 const db = createDbClient(pool)
-const auth = createAfendaAuth(pool)
+const auth = createAfendaAuth(pool, db)
 const app = createApp(db, auth)
 
 const port = Number(process.env.PORT) || 3001
