@@ -7,6 +7,7 @@ describe("AuthIntelligenceService", () => {
     const svc = new AuthIntelligenceService()
     const snap = await svc.getSnapshot({
       actorUserId: null,
+      session: null,
       ipAddress: null,
       userAgent: "Mozilla/5.0",
     })

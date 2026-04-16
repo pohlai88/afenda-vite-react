@@ -8,6 +8,6 @@
  * `libraries.ts` is generator input; `icon-policy.ts` + ESLint govern dynamic use.
  * Public API: `@afenda/design-system/icons`.
  */
-import { createIconLoader } from './create-icon-loader'
+import { createIconLoader } from "./create-icon-loader"
 
-export const IconHugeicons = createIconLoader('hugeicons')
+export const IconHugeicons = createIconLoader("hugeicons")

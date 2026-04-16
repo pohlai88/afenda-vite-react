@@ -63,8 +63,8 @@ describe("usePlatformPreviewState", () => {
     expect(result.current.bridgeTargets.length).toBeGreaterThan(0)
     expect(
       result.current.bridgeTargets.some(
-        (item) => item.targetRoleCard.id === "executive",
-      ),
+        (item) => item.targetRoleCard.id === "executive"
+      )
     ).toBe(true)
   })
 })

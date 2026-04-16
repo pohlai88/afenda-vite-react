@@ -9,7 +9,13 @@
 export const DEFAULT_BETTER_AUTH_PG_TABLES = {
   sessionTable: "session",
   accountTable: "account",
-  passkeyTable: undefined as string | undefined,
+  /** Set when `AFENDA_AUTH_PASSKEY_ENABLED` — aligns with Better Auth passkey plugin (`auth:migrate`). */
+  passkeyTable:
+    process.env.AFENDA_AUTH_PASSKEY_ENABLED === "true"
+      ? ("passkey" as const)
+      : (undefined as string | undefined),
+  /** Better Auth core `user` table (2FA fields after `twoFactor` plugin migrate). */
+  userTable: "user",
   auditTable: "audit_logs",
 } as const
 

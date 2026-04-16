@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from "react"
 
 export const useMutationObserver = (
   ref: React.RefObject<HTMLElement | null>,
@@ -8,7 +8,7 @@ export const useMutationObserver = (
     characterData: true,
     childList: true,
     subtree: true,
-  },
+  }
 ) => {
   React.useEffect(() => {
     if (ref.current) {

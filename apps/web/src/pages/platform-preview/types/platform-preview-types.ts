@@ -47,11 +47,7 @@ export type PreviewStoryKind =
   | "integration"
   | "evidence"
 
-export type PreviewRole =
-  | "controller"
-  | "executive"
-  | "owner"
-  | "operator"
+export type PreviewRole = "controller" | "executive" | "owner" | "operator"
 
 export type PreviewScenario =
   | "payment-release"

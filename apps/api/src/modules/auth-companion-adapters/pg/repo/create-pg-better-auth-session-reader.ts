@@ -1,6 +1,7 @@
 import type { Pool } from "pg"
 
 import { authSecurityRecentEventActionsInSql } from "../../../auth-companion/constants/auth-security-recent-event-actions.js"
+import { mapAuthRecentEventTitle } from "../../../auth-companion/mappers/map-auth-recent-event-title.js"
 import type { AuthSessionReader } from "../../../auth-companion/repo/auth-session.repo.js"
 import { qident, tcol } from "./sql-ident.js"
 
@@ -8,6 +9,7 @@ export type BetterAuthPgTableMap = {
   readonly sessionTable: string
   readonly accountTable: string
   readonly passkeyTable?: string
+  readonly userTable?: string
   readonly auditTable: string
 }
 
@@ -51,9 +53,7 @@ export function createPgBetterAuthSessionReader(
       const S = tables.sessionTable
       const c = columns.session
 
-      const uaExpr = c.userAgent
-        ? tcol(S, c.userAgent)
-        : `'Unknown device'`
+      const uaExpr = c.userAgent ? tcol(S, c.userAgent) : `'Unknown device'`
       const ipExpr = c.ipAddress ? tcol(S, c.ipAddress) : `'Unknown location'`
 
       const sessionSql = `
@@ -110,15 +110,34 @@ export function createPgBetterAuthSessionReader(
         hasPasskey = Number(passkeyResult.rowCount ?? 0) > 0
       }
 
+      let mfaEnabled = false
+      if (process.env.AFENDA_AUTH_MFA_ENABLED === "true" && tables.userTable) {
+        const U = tables.userTable
+        try {
+          const mfaSql = `
+            SELECT "twoFactorEnabled" AS two_factor_enabled
+            FROM ${qident(U)}
+            WHERE ${tcol(U, "id")} = $1
+            LIMIT 1
+          `
+          const mfaResult = await pool.query(mfaSql, [userId])
+          const row = mfaResult.rows[0] as
+            | { two_factor_enabled?: boolean }
+            | undefined
+          mfaEnabled = Boolean(row?.two_factor_enabled)
+        } catch {
+          mfaEnabled = false
+        }
+      }
+
       return {
         password:
           providerIds.includes("credential") || providerIds.includes("email"),
         social: providerIds.some(
-          (providerId) =>
-            providerId !== "credential" && providerId !== "email"
+          (providerId) => providerId !== "credential" && providerId !== "email"
         ),
         passkey: hasPasskey,
-        mfa: false,
+        mfa: mfaEnabled,
       }
     },
 
@@ -126,9 +145,7 @@ export function createPgBetterAuthSessionReader(
       const T = tables.auditTable
       const a = columns.audit
 
-      const authCol = a.authUserId
-        ? `${tcol(T, a.authUserId)} = $1`
-        : "FALSE"
+      const authCol = a.authUserId ? `${tcol(T, a.authUserId)} = $1` : "FALSE"
       const metaCol =
         a.metadata && a.metadata.length > 0
           ? `${qident(T)}.${qident(a.metadata)}->>'betterAuthUserId' = $1`
@@ -149,13 +166,16 @@ export function createPgBetterAuthSessionReader(
 
       const result = await pool.query(recentSql, [userId])
 
-      return result.rows.map((row) => ({
-        id: String((row as { id: unknown }).id),
-        title: String((row as { action: unknown }).action),
-        timeLabel: new Date(
-          String((row as { recorded_at: unknown }).recorded_at)
-        ).toISOString(),
-      }))
+      return result.rows.map((row) => {
+        const action = String((row as { action: unknown }).action)
+        return {
+          id: String((row as { id: unknown }).id),
+          title: mapAuthRecentEventTitle(action),
+          timeLabel: new Date(
+            String((row as { recorded_at: unknown }).recorded_at)
+          ).toISOString(),
+        }
+      })
     },
   }
 }

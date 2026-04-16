@@ -11,6 +11,10 @@ interface ImportMetaEnv {
    * Optional Better Auth client base (e.g. Neon Auth). When unset, uses same-origin `/api` proxy.
    */
   readonly VITE_BETTER_AUTH_BASE_URL?: string
+  /** Mirror server `AFENDA_AUTH_PASSKEY_ENABLED` so client loads `passkeyClient` when the API registers the passkey plugin. */
+  readonly VITE_AFENDA_AUTH_PASSKEY_ENABLED?: string
+  /** Mirror server `AFENDA_AUTH_MFA_ENABLED` for `twoFactorClient`. */
+  readonly VITE_AFENDA_AUTH_MFA_ENABLED?: string
 }
 
 interface ImportMeta {

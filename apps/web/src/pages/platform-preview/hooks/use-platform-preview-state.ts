@@ -45,29 +45,31 @@ export function usePlatformPreviewState() {
   const role = useMemo(() => getPreviewRoleCard(activeRole), [activeRole])
   const scenario = useMemo(
     () => getPreviewScenarioDefinition(activeScenario),
-    [activeScenario],
+    [activeScenario]
   )
 
   const roleIntro = useMemo(() => getRoleIntroContent(activeRole), [activeRole])
   const roleClosing = useMemo(
     () => getRoleClosingContent(activeRole),
-    [activeRole],
+    [activeRole]
   )
   const roleFooterStrip = useMemo(
     () => getRoleFooterStripContent(activeRole),
-    [activeRole],
+    [activeRole]
   )
 
-  const bridgeTargets = useMemo<ReadonlyArray<PlatformPreviewBridgeTarget>>(() => {
+  const bridgeTargets = useMemo<
+    ReadonlyArray<PlatformPreviewBridgeTarget>
+  >(() => {
     const bridges = [role.bridgeUp, role.bridgeDown].filter(
-      (value): value is PreviewRoleBridge => Boolean(value),
+      (value): value is PreviewRoleBridge => Boolean(value)
     )
 
     return bridges.map((bridge) => ({
       bridge,
       targetRoleCard: getPreviewRoleCard(bridge.targetRole),
       targetScenarioDef: getPreviewScenarioDefinition(
-        bridge.targetScenario ?? activeScenario,
+        bridge.targetScenario ?? activeScenario
       ),
     }))
   }, [activeScenario, role])
@@ -82,7 +84,7 @@ export function usePlatformPreviewState() {
 
   const jumpToRoleAndScenario = (
     targetRole: PreviewRole,
-    targetScenario?: PreviewScenario,
+    targetScenario?: PreviewScenario
   ) => {
     setActiveRole(targetRole)
 

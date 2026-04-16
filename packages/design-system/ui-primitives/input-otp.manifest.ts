@@ -1,7 +1,7 @@
-import { definePrimitiveManifest } from './manifest-contract'
+import { definePrimitiveManifest } from "./manifest-contract"
 
 export default definePrimitiveManifest({
-  owner: 'design-system',
-  lifecycle: 'stable',
-  purpose: 'Canonical governance metadata for the input-otp primitive.',
+  owner: "design-system",
+  lifecycle: "stable",
+  purpose: "Canonical governance metadata for the input-otp primitive.",
 })

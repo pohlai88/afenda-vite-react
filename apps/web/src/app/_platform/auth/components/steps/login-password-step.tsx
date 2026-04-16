@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom"
 
-import {
-  Button,
-  Input,
-  Label,
-} from "@afenda/design-system/ui-primitives"
+import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
 import { AUTH_ROUTES } from "../../auth-paths"
 

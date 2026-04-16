@@ -82,61 +82,10 @@ function resolveRegionLabel(forwardedFor: string | null): string {
   return `IP scope ${forwardedFor.split(",")[0]?.trim() ?? "unknown"}`
 }
 
-function trustFromSession(session: AuthSession | null): {
-  readonly trustLevel: AuthTrustLevel
-  readonly score: number
-} {
-  if (!session) {
-    return { trustLevel: "medium", score: 72 }
-  }
-  if (session.user.emailVerified) {
-    return { trustLevel: "high", score: 88 }
-  }
-  return { trustLevel: "medium", score: 75 }
-}
+export { buildAuthIntelligenceSnapshot } from "./modules/auth-companion/services/build-auth-intelligence-snapshot.js"
 
-export function buildAuthIntelligenceSnapshot(input: {
-  readonly session: AuthSession | null
-  readonly userAgent: string
-  readonly forwardedFor: string | null
-}): AuthIntelligenceSnapshot {
-  const trust = trustFromSession(input.session)
-  const passkey = passkeyFeatureEnabled()
-  const reasons: AuthRiskReason[] = [
-    {
-      code: "auth.risk.device-posture",
-      label: "Device posture evaluated against recent secure sessions.",
-      severity: "info",
-    },
-    {
-      code: "auth.risk.geo-consistency",
-      label: "Location history is within expected organization boundaries.",
-      severity: trust.score >= 85 ? "info" : "warning",
-    },
-  ]
-  if (!passkey) {
-    reasons.push({
-      code: "auth.risk.passkey-pilot-disabled",
-      label: "Passkey fast lane is not enabled for this tenant policy.",
-      severity: "warning",
-    })
-  }
-
-  return {
-    trustLevel: trust.trustLevel,
-    score: trust.score,
-    deviceLabel: resolveDeviceLabel(input.userAgent),
-    regionLabel: resolveRegionLabel(input.forwardedFor),
-    lastSeenLabel: input.session
-      ? "Trusted session observed in the last 30 minutes."
-      : "No active trusted session is attached to this browser.",
-    reasons,
-    passkeyAvailable: passkey,
-    recommendedMethod: passkey ? "passkey" : "password",
-  }
-}
-
-export function buildAuthSessionsPayload(input: {
+/** Demo-only session list payload for ALS / non-pool auth companion — not production data. */
+export function buildDemoAuthSessionsPayload(input: {
   readonly session: AuthSession
   readonly userAgent: string
   readonly forwardedFor: string | null
@@ -186,4 +135,3 @@ export function buildAuthSessionsPayload(input: {
     ],
   }
 }
-

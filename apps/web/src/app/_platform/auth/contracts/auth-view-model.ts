@@ -1,4 +1,7 @@
-import type { AuthIntelligenceSnapshot, AuthRecommendedMethod } from "./auth-domain"
+import type {
+  AuthIntelligenceSnapshot,
+  AuthRecommendedMethod,
+} from "./auth-domain"
 
 export type AuthMessageTone = "muted" | "success" | "warning" | "destructive"
 

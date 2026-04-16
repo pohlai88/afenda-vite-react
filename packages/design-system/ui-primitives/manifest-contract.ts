@@ -1,27 +1,27 @@
 const ALLOWED_MANIFEST_KEYS = [
-  'owner',
-  'lifecycle',
-  'purpose',
-  'fixtures',
-  'a11y',
-  'requiredCoverage',
-  'policy',
-  'deprecation',
-  'notes',
+  "owner",
+  "lifecycle",
+  "purpose",
+  "fixtures",
+  "a11y",
+  "requiredCoverage",
+  "policy",
+  "deprecation",
+  "notes",
 ] as const
 
 const DISALLOWED_IMPLEMENTATION_DUPLICATE_KEYS = [
-  'variants',
-  'sizes',
-  'defaultVariants',
-  'slots',
+  "variants",
+  "sizes",
+  "defaultVariants",
+  "slots",
 ] as const
 
 export const PRIMITIVE_LIFECYCLES = [
-  'draft',
-  'beta',
-  'stable',
-  'deprecated',
+  "draft",
+  "beta",
+  "stable",
+  "deprecated",
 ] as const
 
 export type PrimitiveLifecycle = (typeof PRIMITIVE_LIFECYCLES)[number]
@@ -66,17 +66,17 @@ export interface PrimitiveGovernanceManifest {
 }
 
 function formatContext(context?: string): string {
-  return context ? `[${context}] ` : ''
+  return context ? `[${context}] ` : ""
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
+  return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
 function assertOptionalBooleanRecord(
   value: unknown,
   context: string,
-  fieldName: string,
+  fieldName: string
 ): void {
   if (value === undefined) return
   if (!isPlainObject(value)) {
@@ -84,9 +84,9 @@ function assertOptionalBooleanRecord(
   }
 
   for (const [key, nestedValue] of Object.entries(value)) {
-    if (nestedValue !== undefined && typeof nestedValue !== 'boolean') {
+    if (nestedValue !== undefined && typeof nestedValue !== "boolean") {
       throw new Error(
-        `${context}"${fieldName}.${key}" must be a boolean when provided.`,
+        `${context}"${fieldName}.${key}" must be a boolean when provided.`
       )
     }
   }
@@ -95,7 +95,7 @@ function assertOptionalBooleanRecord(
 function assertOptionalStringRecord(
   value: unknown,
   context: string,
-  fieldName: string,
+  fieldName: string
 ): void {
   if (value === undefined) return
   if (!isPlainObject(value)) {
@@ -103,10 +103,10 @@ function assertOptionalStringRecord(
   }
 
   for (const [key, nestedValue] of Object.entries(value)) {
-    if (key === 'allowlist') continue
-    if (nestedValue !== undefined && typeof nestedValue !== 'string') {
+    if (key === "allowlist") continue
+    if (nestedValue !== undefined && typeof nestedValue !== "string") {
       throw new Error(
-        `${context}"${fieldName}.${key}" must be a string when provided.`,
+        `${context}"${fieldName}.${key}" must be a string when provided.`
       )
     }
   }
@@ -114,7 +114,7 @@ function assertOptionalStringRecord(
 
 export function validatePrimitiveManifest(
   input: unknown,
-  contextLabel?: string,
+  contextLabel?: string
 ): asserts input is PrimitiveGovernanceManifest {
   const context = formatContext(contextLabel)
 
@@ -126,7 +126,7 @@ export function validatePrimitiveManifest(
     if (Object.prototype.hasOwnProperty.call(input, duplicateKey)) {
       throw new Error(
         `${context}"${duplicateKey}" is not allowed in manifest. ` +
-          'Implementation facts must be extracted from primitive source.',
+          "Implementation facts must be extracted from primitive source."
       )
     }
   }
@@ -135,30 +135,29 @@ export function validatePrimitiveManifest(
   for (const key of Object.keys(input)) {
     if (!allowedKeySet.has(key)) {
       throw new Error(
-        `${context}"${key}" is not an allowed manifest key. Allowed keys: ${ALLOWED_MANIFEST_KEYS.join(', ')}`,
+        `${context}"${key}" is not an allowed manifest key. Allowed keys: ${ALLOWED_MANIFEST_KEYS.join(", ")}`
       )
     }
   }
 
-  if (typeof input.owner !== 'string' || input.owner.trim().length === 0) {
-    throw new Error(`${context}"owner" is required and must be a non-empty string.`)
+  if (typeof input.owner !== "string" || input.owner.trim().length === 0) {
+    throw new Error(
+      `${context}"owner" is required and must be a non-empty string.`
+    )
   }
 
-  if (
-    typeof input.purpose !== 'string' ||
-    input.purpose.trim().length === 0
-  ) {
+  if (typeof input.purpose !== "string" || input.purpose.trim().length === 0) {
     throw new Error(
-      `${context}"purpose" is required and must be a non-empty string.`,
+      `${context}"purpose" is required and must be a non-empty string.`
     )
   }
 
   if (
-    typeof input.lifecycle !== 'string' ||
+    typeof input.lifecycle !== "string" ||
     !PRIMITIVE_LIFECYCLES.includes(input.lifecycle as PrimitiveLifecycle)
   ) {
     throw new Error(
-      `${context}"lifecycle" must be one of: ${PRIMITIVE_LIFECYCLES.join(', ')}`,
+      `${context}"lifecycle" must be one of: ${PRIMITIVE_LIFECYCLES.join(", ")}`
     )
   }
 
@@ -167,26 +166,26 @@ export function validatePrimitiveManifest(
       throw new Error(`${context}"fixtures" must be an array when provided.`)
     }
     for (const fixture of input.fixtures) {
-      if (typeof fixture !== 'string' || fixture.trim().length === 0) {
+      if (typeof fixture !== "string" || fixture.trim().length === 0) {
         throw new Error(
-          `${context}"fixtures" entries must be non-empty strings.`,
+          `${context}"fixtures" entries must be non-empty strings.`
         )
       }
     }
   }
 
-  if (input.notes !== undefined && typeof input.notes !== 'string') {
+  if (input.notes !== undefined && typeof input.notes !== "string") {
     throw new Error(`${context}"notes" must be a string when provided.`)
   }
 
-  assertOptionalBooleanRecord(input.a11y, context, 'a11y')
+  assertOptionalBooleanRecord(input.a11y, context, "a11y")
   assertOptionalBooleanRecord(
     input.requiredCoverage,
     context,
-    'requiredCoverage',
+    "requiredCoverage"
   )
-  assertOptionalBooleanRecord(input.policy, context, 'policy')
-  assertOptionalStringRecord(input.deprecation, context, 'deprecation')
+  assertOptionalBooleanRecord(input.policy, context, "policy")
+  assertOptionalStringRecord(input.deprecation, context, "deprecation")
 
   const deprecationValue = input.deprecation
   if (deprecationValue !== undefined) {
@@ -195,13 +194,13 @@ export function validatePrimitiveManifest(
     if (allowlistValue !== undefined) {
       if (!Array.isArray(allowlistValue)) {
         throw new Error(
-          `${context}"deprecation.allowlist" must be an array when provided.`,
+          `${context}"deprecation.allowlist" must be an array when provided.`
         )
       }
       for (const item of allowlistValue) {
-        if (typeof item !== 'string' || item.trim().length === 0) {
+        if (typeof item !== "string" || item.trim().length === 0) {
           throw new Error(
-            `${context}"deprecation.allowlist" entries must be non-empty strings.`,
+            `${context}"deprecation.allowlist" entries must be non-empty strings.`
           )
         }
       }
@@ -209,9 +208,9 @@ export function validatePrimitiveManifest(
   }
 }
 
-export function definePrimitiveManifest<const T extends PrimitiveGovernanceManifest>(
-  manifest: T,
-): T {
+export function definePrimitiveManifest<
+  const T extends PrimitiveGovernanceManifest,
+>(manifest: T): T {
   validatePrimitiveManifest(manifest)
   return manifest
 }

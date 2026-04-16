@@ -13,6 +13,7 @@
   "dependencies": {
     "@afenda/database": "workspace:*",
     "@afenda/env-loader": "workspace:*",
+    "@better-auth/passkey": "1.6.3",
     "better-auth": "^1.6.3",
     "pg": "catalog:"
   },

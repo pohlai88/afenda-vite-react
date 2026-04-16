@@ -28,10 +28,38 @@ export const StartAuthChallengeResponseSchema = z.object({
   prompt: AuthChallengePromptSchema,
 })
 
-export const VerifyAuthChallengeBodySchema = z.object({
-  challengeId: z.string().min(1),
-  method: AuthChallengeMethodSchema,
+/** WebAuthn assertion payload (client-serialized credential). */
+export const PasskeyCredentialProofSchema = z.object({
+  id: z.string().min(1),
+  response: z.object({
+    clientDataJSON: z.string().min(1),
+    authenticatorData: z.string().min(1),
+    signature: z.string().min(1),
+    userHandle: z.union([z.string(), z.null()]).optional(),
+  }),
 })
+
+export const VerifyAuthChallengeBodySchema = z.discriminatedUnion("method", [
+  z.object({
+    challengeId: z.string().min(1),
+    method: z.literal("passkey"),
+    credential: PasskeyCredentialProofSchema,
+  }),
+  z.object({
+    challengeId: z.string().min(1),
+    method: z.literal("totp"),
+    proof: z.object({
+      code: z.string().regex(/^[0-9]{6}$/),
+    }),
+  }),
+  z.object({
+    challengeId: z.string().min(1),
+    method: z.literal("email_otp"),
+    proof: z.object({
+      code: z.string().regex(/^[0-9]{6}$/),
+    }),
+  }),
+])
 
 export const VerifyAuthChallengeResponseSchema = z.object({
   verified: z.boolean(),
@@ -41,11 +69,18 @@ export const VerifyAuthChallengeResponseSchema = z.object({
 export type AuthChallengeMethod = z.infer<typeof AuthChallengeMethodSchema>
 export type AuthChallengeTicket = z.infer<typeof AuthChallengeTicketSchema>
 export type AuthChallengePrompt = z.infer<typeof AuthChallengePromptSchema>
-export type StartAuthChallengeBody = z.infer<typeof StartAuthChallengeBodySchema>
+export type StartAuthChallengeBody = z.infer<
+  typeof StartAuthChallengeBodySchema
+>
 export type StartAuthChallengeResponse = z.infer<
   typeof StartAuthChallengeResponseSchema
 >
-export type VerifyAuthChallengeBody = z.infer<typeof VerifyAuthChallengeBodySchema>
+export type VerifyAuthChallengeBody = z.infer<
+  typeof VerifyAuthChallengeBodySchema
+>
 export type VerifyAuthChallengeResponse = z.infer<
   typeof VerifyAuthChallengeResponseSchema
+>
+export type PasskeyCredentialProof = z.infer<
+  typeof PasskeyCredentialProofSchema
 >

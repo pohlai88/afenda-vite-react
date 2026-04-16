@@ -6,7 +6,7 @@ import { Button } from "@afenda/design-system/ui-primitives"
 
 import type { AuthRecommendedMethod } from "../../contracts/auth-domain"
 
-type LegacyAuthChallengeCanvasProps = {
+type LoginFlowMethodSurfaceProps = {
   readonly method: AuthRecommendedMethod
   readonly onMethodChange: (next: AuthRecommendedMethod) => void
   readonly children: ReactNode
@@ -23,17 +23,8 @@ function methodIcon(method: AuthRecommendedMethod) {
   return KeyRound
 }
 
-/**
- * Transitional composition surface for login challenge/render branches.
- *
- * This remains intentionally isolated while the auth module moves toward:
- * - dedicated method switch primitive
- * - dedicated receipt panel
- * - dedicated challenge step surface
- */
-export function LegacyAuthChallengeCanvas(
-  props: LegacyAuthChallengeCanvasProps
-) {
+/** Method switcher, primary step panel, and optional continuity receipt for the login flow. */
+export function LoginFlowMethodSurface(props: LoginFlowMethodSurfaceProps) {
   const { method, onMethodChange, children, receipt = [] } = props
   const { t } = useTranslation("shell")
 

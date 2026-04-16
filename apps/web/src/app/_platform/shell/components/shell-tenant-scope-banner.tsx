@@ -41,6 +41,7 @@ export function ShellTenantScopeBanner(props: ShellTenantScopeBannerProps) {
    * Static `t("…")` references for the i18n policy scanner (keys are also composed at runtime from `kind`).
    * Dead branch — never executed.
    */
+  /* eslint-disable no-constant-condition -- intentional unreachable block for i18n key discovery */
   if (false) {
     t("states.tenant_scope.hint_status", { status: "0" })
     t("states.tenant_scope.retry")
@@ -58,6 +59,7 @@ export function ShellTenantScopeBanner(props: ShellTenantScopeBannerProps) {
     t("states.tenant_scope.unknown.title")
     t("states.tenant_scope.unknown.body", { status: "0" })
   }
+  /* eslint-enable no-constant-condition */
 
   if (scope === null || scope.status !== "error") {
     return null
@@ -68,9 +70,7 @@ export function ShellTenantScopeBanner(props: ShellTenantScopeBannerProps) {
   const titleKey = `states.tenant_scope.${kind}.title` as const
   const bodyKey = `states.tenant_scope.${kind}.body` as const
   const bodyParams =
-    kind === "network"
-      ? {}
-      : { status: String(httpStatus ?? "—") }
+    kind === "network" ? {} : { status: String(httpStatus ?? "—") }
 
   return (
     <div

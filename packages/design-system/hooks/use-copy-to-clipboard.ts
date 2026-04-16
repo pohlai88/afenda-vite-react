@@ -1,12 +1,12 @@
-import * as React from 'react'
+import * as React from "react"
 
 function legacyCopyToClipboard(value: string) {
-  const textArea = document.createElement('textarea')
+  const textArea = document.createElement("textarea")
   textArea.value = value
-  textArea.setAttribute('readonly', '')
-  textArea.style.position = 'fixed'
-  textArea.style.opacity = '0'
-  textArea.style.pointerEvents = 'none'
+  textArea.setAttribute("readonly", "")
+  textArea.style.position = "fixed"
+  textArea.style.opacity = "0"
+  textArea.style.pointerEvents = "none"
 
   document.body.appendChild(textArea)
   textArea.focus()
@@ -15,7 +15,7 @@ function legacyCopyToClipboard(value: string) {
 
   let hasCopied = false
   try {
-    hasCopied = document.execCommand('copy')
+    hasCopied = document.execCommand("copy")
   } catch {
     hasCopied = false
   }
@@ -34,7 +34,7 @@ export function useCopyToClipboard({
   const [isCopied, setIsCopied] = React.useState(false)
 
   const copyToClipboard = async (value: string) => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return false
     }
 

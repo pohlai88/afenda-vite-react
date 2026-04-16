@@ -3,7 +3,10 @@ import path from "path"
 import { fileURLToPath } from "node:url"
 
 /** Monorepo root (`packages/design-system/scripts` → design-system → packages → root). */
-const repoRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../..")
+const repoRoot = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../.."
+)
 
 const ROOT = path.join(repoRoot, "apps/web/src")
 

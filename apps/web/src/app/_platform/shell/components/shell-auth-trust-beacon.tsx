@@ -40,7 +40,10 @@ export function ShellAuthTrustBeacon() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Badge variant="outline" className={`h-[2rem] rounded-full px-2.5 ${tone}`}>
+        <Badge
+          variant="outline"
+          className={`h-[2rem] rounded-full px-2.5 ${tone}`}
+        >
           <ShieldCheck className="mr-1.5 size-3.5" aria-hidden />
           <span className="text-xs tabular-nums">{data.score}</span>
         </Badge>

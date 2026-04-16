@@ -8,23 +8,23 @@
  * `libraries.ts` is generator input; `icon-policy.ts` + ESLint govern dynamic use.
  * Public API: `@afenda/design-system/icons`.
  */
-import type { ComponentProps, ComponentType } from 'react'
-import { use } from 'react'
-import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
+import type { ComponentProps, ComponentType } from "react"
+import { use } from "react"
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 
-import type { IconLibraryName } from './libraries'
+import type { IconLibraryName } from "./libraries"
 
-type SvgProps = ComponentProps<'svg'>
+type SvgProps = ComponentProps<"svg">
 
 const libraryLoaders: Record<
   IconLibraryName,
   () => Promise<Record<string, unknown>>
 > = {
-  lucide: () => import('./__lucide__'),
-  tabler: () => import('./__tabler__'),
-  hugeicons: () => import('./__hugeicons__'),
-  phosphor: () => import('./__phosphor__'),
-  remixicon: () => import('./__remixicon__'),
+  lucide: () => import("./__lucide__"),
+  tabler: () => import("./__tabler__"),
+  hugeicons: () => import("./__hugeicons__"),
+  phosphor: () => import("./__phosphor__"),
+  remixicon: () => import("./__remixicon__"),
 }
 
 const iconPromiseCaches = new Map<
@@ -70,7 +70,7 @@ export function createIconLoader(libraryName: IconLibraryName) {
 
     if (isIconData(iconData)) {
       const hugeStroke =
-        typeof strokeWidth === 'number'
+        typeof strokeWidth === "number"
           ? strokeWidth
           : Number.parseFloat(String(strokeWidth)) || 2
       return (

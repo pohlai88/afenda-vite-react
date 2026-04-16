@@ -9,8 +9,12 @@ const STORAGE_KEY = "afenda.shell.railWidgets.v2"
 const shellRailFeatureSlotOrder: readonly ShellNavigationItemId[] =
   shellRailWidgetSlots
     .filter(
-      (s): s is Extract<(typeof shellRailWidgetSlots)[number], { kind: "feature" }> =>
-        s.kind === "feature"
+      (
+        s
+      ): s is Extract<
+        (typeof shellRailWidgetSlots)[number],
+        { kind: "feature" }
+      > => s.kind === "feature"
     )
     .map((s) => s.featureId)
 
@@ -18,7 +22,9 @@ function defaultEnabledIds(): ShellNavigationItemId[] {
   return [...shellRailFeatureSlotOrder]
 }
 
-function normalizeEnabledIds(ids: ReadonlySet<ShellNavigationItemId>): ShellNavigationItemId[] {
+function normalizeEnabledIds(
+  ids: ReadonlySet<ShellNavigationItemId>
+): ShellNavigationItemId[] {
   return shellRailFeatureSlotOrder.filter((id) => ids.has(id))
 }
 

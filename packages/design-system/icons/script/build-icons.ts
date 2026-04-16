@@ -7,25 +7,25 @@
  *
  * Adapted from upstream: https://github.com/shadcn-ui/ui/blob/main/apps/v4/scripts/build-icons.ts
  */
-import * as fs from 'node:fs'
-import * as path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import * as fs from "node:fs"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
 
-import { iconLibraries, type IconLibraryName } from '../libraries'
+import { iconLibraries, type IconLibraryName } from "../libraries"
 
 type IconUsage = Record<IconLibraryName, Set<string>>
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const packageRoot = path.resolve(__dirname, '../..')
-const outputDir = path.join(packageRoot, 'icons')
+const packageRoot = path.resolve(__dirname, "../..")
+const outputDir = path.join(packageRoot, "icons")
 
 const COMPONENT_TO_LIB = {
-  IconLucide: 'lucide',
-  IconTabler: 'tabler',
-  IconHugeicons: 'hugeicons',
-  IconPhosphor: 'phosphor',
-  IconRemixicon: 'remixicon',
+  IconLucide: "lucide",
+  IconTabler: "tabler",
+  IconHugeicons: "hugeicons",
+  IconPhosphor: "phosphor",
+  IconRemixicon: "remixicon",
 } as const satisfies Record<string, IconLibraryName>
 
 function findTsxFiles(dir: string): string[] {
@@ -36,11 +36,11 @@ function findTsxFiles(dir: string): string[] {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (entry.name === 'node_modules' || entry.name === 'dist') continue
+      if (entry.name === "node_modules" || entry.name === "dist") continue
       files.push(...findTsxFiles(fullPath))
     } else if (
       entry.isFile() &&
-      (entry.name.endsWith('.tsx') || entry.name.endsWith('.ts'))
+      (entry.name.endsWith(".tsx") || entry.name.endsWith(".ts"))
     ) {
       files.push(fullPath)
     }
@@ -51,13 +51,13 @@ function findTsxFiles(dir: string): string[] {
 
 function parseExistingExportNames(filePath: string): string[] {
   if (!fs.existsSync(filePath)) return []
-  const content = fs.readFileSync(filePath, 'utf-8')
+  const content = fs.readFileSync(filePath, "utf-8")
   const names: string[] = []
   const re = /export\s*\{\s*([^}]+)\s*\}/g
   let m: RegExpExecArray | null
   while ((m = re.exec(content)) !== null) {
     const parts = m[1]
-      .split(',')
+      .split(",")
       .map((s) => s.trim())
       .filter(Boolean)
     for (const p of parts) {
@@ -72,7 +72,7 @@ function scanDynamicIconUsage(content: string, iconUsage: IconUsage): void {
   for (const [component, lib] of Object.entries(COMPONENT_TO_LIB)) {
     const re = new RegExp(
       `<${component}[\\s\\S]*?\\sname=["']([^"']+)["']`,
-      'g',
+      "g"
     )
     let match: RegExpExecArray | null
     while ((match = re.exec(content)) !== null) {
@@ -96,8 +96,8 @@ function collectIconUsage(): IconUsage {
   }
 
   const scanRoots = [
-    path.join(packageRoot, 'ui-primitives'),
-    path.join(packageRoot, 'utils'),
+    path.join(packageRoot, "ui-primitives"),
+    path.join(packageRoot, "utils"),
   ]
 
   const files: string[] = []
@@ -106,14 +106,14 @@ function collectIconUsage(): IconUsage {
   }
 
   for (const file of files) {
-    const norm = file.replace(/\\/g, '/')
-    if (norm.includes('/icons/__') && path.basename(file).startsWith('__')) {
+    const norm = file.replace(/\\/g, "/")
+    if (norm.includes("/icons/__") && path.basename(file).startsWith("__")) {
       continue
     }
-    if (path.basename(file).startsWith('__')) {
+    if (path.basename(file).startsWith("__")) {
       continue
     }
-    const content = fs.readFileSync(file, 'utf-8')
+    const content = fs.readFileSync(file, "utf-8")
     scanDynamicIconUsage(content, iconUsage)
   }
 
@@ -123,7 +123,7 @@ function collectIconUsage(): IconUsage {
 function generateIconFiles(iconUsage: IconUsage): void {
   fs.mkdirSync(outputDir, { recursive: true })
 
-  console.log('Generated icon barrels:')
+  console.log("Generated icon barrels:")
 
   for (const [libraryName, config] of Object.entries(iconLibraries)) {
     const icons = Array.from(iconUsage[libraryName as IconLibraryName]).sort()
@@ -136,7 +136,7 @@ function generateIconFiles(iconUsage: IconUsage): void {
 
     const body = icons
       .map((icon) => `export { ${icon} } from '${config.export}'`)
-      .join('\n')
+      .join("\n")
 
     const filename = `__${libraryName}__.ts`
     fs.writeFileSync(path.join(outputDir, filename), `${header}\n${body}\n`)

@@ -74,7 +74,10 @@ export function useShellLeftSidebarDisplayMode(): UseShellLeftSidebarDisplayMode
     if (typeof window === "undefined") {
       return
     }
-    window.localStorage.setItem(SHELL_LEFT_SIDEBAR_DISPLAY_MODE_STORAGE_KEY, mode)
+    window.localStorage.setItem(
+      SHELL_LEFT_SIDEBAR_DISPLAY_MODE_STORAGE_KEY,
+      mode
+    )
   }, [mode])
 
   useEffect(() => {

@@ -1,4 +1,7 @@
-import type { AuthMessageTone, AuthStatusMessageViewModel } from "../../contracts/auth-view-model"
+import type {
+  AuthMessageTone,
+  AuthStatusMessageViewModel,
+} from "../../contracts/auth-view-model"
 
 type AuthStatusMessageProps = {
   readonly message: AuthStatusMessageViewModel | null
@@ -27,7 +30,11 @@ export function AuthStatusMessage(props: AuthStatusMessageProps) {
   const role = message.tone === "destructive" ? "alert" : "status"
 
   return (
-    <p className={`text-sm ${toneClassName(message.tone)}`} role={role} aria-live="polite">
+    <p
+      className={`text-sm ${toneClassName(message.tone)}`}
+      role={role}
+      aria-live="polite"
+    >
       {message.text}
     </p>
   )

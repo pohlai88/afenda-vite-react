@@ -296,7 +296,8 @@ export const platformPreviewFixture: PlatformPreviewFixture = {
       id: "signal-ingestion",
       label: "Ingestion",
       status: "live",
-      description: "Inbound connector activity is flowing into governed event intake.",
+      description:
+        "Inbound connector activity is flowing into governed event intake.",
       value: "12 active feeds",
       trend: "up",
       tone: "success",
@@ -305,7 +306,8 @@ export const platformPreviewFixture: PlatformPreviewFixture = {
       id: "signal-audit-writer",
       label: "Audit writer",
       status: "synced",
-      description: "Control and operator evidence remain attached at write time.",
+      description:
+        "Control and operator evidence remain attached at write time.",
       value: "No drift detected",
       trend: "flat",
       tone: "info",
@@ -314,7 +316,8 @@ export const platformPreviewFixture: PlatformPreviewFixture = {
       id: "signal-workflow-bus",
       label: "Workflow bus",
       status: "nominal",
-      description: "State transitions are progressing without unresolved conflicts.",
+      description:
+        "State transitions are progressing without unresolved conflicts.",
       value: "4 governed lanes",
       trend: "flat",
       tone: "default",
@@ -323,7 +326,8 @@ export const platformPreviewFixture: PlatformPreviewFixture = {
       id: "signal-reconciliation",
       label: "Reconciliation",
       status: "healthy",
-      description: "Business-visible state remains aligned with connector activity.",
+      description:
+        "Business-visible state remains aligned with connector activity.",
       value: "98.7% aligned",
       trend: "up",
       tone: "accent",
@@ -372,7 +376,8 @@ export const platformPreviewFixture: PlatformPreviewFixture = {
     {
       id: "proof-1",
       label: "Structured active scope",
-      description: "Tenant, entity, role, and module remain visible during work.",
+      description:
+        "Tenant, entity, role, and module remain visible during work.",
       tone: "default",
     },
     {
@@ -384,7 +389,8 @@ export const platformPreviewFixture: PlatformPreviewFixture = {
     {
       id: "proof-3",
       label: "Operator-visible controls",
-      description: "Teams can see the posture before they act, not after incidents.",
+      description:
+        "Teams can see the posture before they act, not after incidents.",
       tone: "info",
     },
     {

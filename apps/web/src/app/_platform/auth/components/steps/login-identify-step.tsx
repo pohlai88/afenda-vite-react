@@ -9,13 +9,8 @@ type LoginIdentifyStepProps = {
 }
 
 export function LoginIdentifyStep(props: LoginIdentifyStepProps) {
-  const {
-    emailInput,
-    onEmailInputChange,
-    onSubmit,
-    submitLabel,
-    emailLabel,
-  } = props
+  const { emailInput, onEmailInputChange, onSubmit, submitLabel, emailLabel } =
+    props
 
   return (
     <form

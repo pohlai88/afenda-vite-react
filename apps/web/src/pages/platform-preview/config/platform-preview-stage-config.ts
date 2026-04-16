@@ -66,9 +66,21 @@ const roleStageMap = {
       "This is the decision surface: whether evidence, actor context, and control posture justify moving forward now.",
     continuityFocusLabel: "Continuity focus for approval",
     summaryCards: [
-      { id: "controller-1", label: "Release confidence", value: "Ready with trace" },
-      { id: "controller-2", label: "Blocking exceptions", value: "1 review note" },
-      { id: "controller-3", label: "Approval context", value: "Entity + operator preserved" },
+      {
+        id: "controller-1",
+        label: "Release confidence",
+        value: "Ready with trace",
+      },
+      {
+        id: "controller-2",
+        label: "Blocking exceptions",
+        value: "1 review note",
+      },
+      {
+        id: "controller-3",
+        label: "Approval context",
+        value: "Entity + operator preserved",
+      },
     ],
   },
   executive: {
@@ -90,8 +102,16 @@ const roleStageMap = {
       "This event is the best executive proof point because it shows whether the system preserves meaning before it becomes a summary.",
     continuityFocusLabel: "Continuity focus for command",
     summaryCards: [
-      { id: "executive-1", label: "Operating confidence", value: "High, trace intact" },
-      { id: "executive-2", label: "Entity exposure", value: "Contained to AP lane" },
+      {
+        id: "executive-1",
+        label: "Operating confidence",
+        value: "High, trace intact",
+      },
+      {
+        id: "executive-2",
+        label: "Entity exposure",
+        value: "Contained to AP lane",
+      },
       { id: "executive-3", label: "Reconstruction burden", value: "Reduced" },
     ],
   },
@@ -114,9 +134,21 @@ const roleStageMap = {
       "This event gives the clearest owner-level answer: something moved, the business stayed protected, and the decision path is understandable.",
     continuityFocusLabel: "Continuity focus for confidence",
     summaryCards: [
-      { id: "owner-1", label: "Business impact", value: "Release path protected" },
-      { id: "owner-2", label: "Decision clarity", value: "Yes, with visible trace" },
-      { id: "owner-3", label: "What changed", value: "Payment cleared for handoff" },
+      {
+        id: "owner-1",
+        label: "Business impact",
+        value: "Release path protected",
+      },
+      {
+        id: "owner-2",
+        label: "Decision clarity",
+        value: "Yes, with visible trace",
+      },
+      {
+        id: "owner-3",
+        label: "What changed",
+        value: "Payment cleared for handoff",
+      },
     ],
   },
   operator: {
@@ -140,7 +172,11 @@ const roleStageMap = {
     summaryCards: [
       { id: "operator-1", label: "Current task", value: "Resolve review note" },
       { id: "operator-2", label: "Next handoff", value: "Controller review" },
-      { id: "operator-3", label: "Why it matters", value: "Trace rolls upward" },
+      {
+        id: "operator-3",
+        label: "Why it matters",
+        value: "Trace rolls upward",
+      },
     ],
   },
 } as const satisfies Record<PreviewRole, RoleStageDefinition>
@@ -148,7 +184,12 @@ const roleStageMap = {
 const scenarioStageMap = {
   "payment-release": {
     label: "Payment release",
-    topBand: ["AP lane", "Treasury handoff", "release-ready", "trace preserved"],
+    topBand: [
+      "AP lane",
+      "Treasury handoff",
+      "release-ready",
+      "trace preserved",
+    ],
     stageTitle: "A payment is about to move under close pressure",
     stageDescription:
       "This is the same business movement, seen from different levels of responsibility.",
@@ -163,7 +204,12 @@ const scenarioStageMap = {
   },
   "month-end-close": {
     label: "Month-end close",
-    topBand: ["multi-entity", "exception review", "close posture", "executive confidence"],
+    topBand: [
+      "multi-entity",
+      "exception review",
+      "close posture",
+      "executive confidence",
+    ],
     stageTitle: "Close activities stay visible as they roll across teams",
     stageDescription:
       "The system should hold context, posture, and evidence even when the pace gets dense.",
@@ -178,7 +224,12 @@ const scenarioStageMap = {
   },
   "audit-review": {
     label: "Audit review",
-    topBand: ["trace inspection", "actor proof", "control posture", "commentary retained"],
+    topBand: [
+      "trace inspection",
+      "actor proof",
+      "control posture",
+      "commentary retained",
+    ],
     stageTitle: "An auditor inspects the path without reconstructing it",
     stageDescription:
       "Truth should still be visible after the event, not hidden in disconnected fragments.",
@@ -193,8 +244,14 @@ const scenarioStageMap = {
   },
   "integration-exception": {
     label: "Integration exception",
-    topBand: ["connector degraded", "business meaning retained", "guided action", "clean escalation"],
-    stageTitle: "A connector degrades, but the business truth does not disappear",
+    topBand: [
+      "connector degraded",
+      "business meaning retained",
+      "guided action",
+      "clean escalation",
+    ],
+    stageTitle:
+      "A connector degrades, but the business truth does not disappear",
     stageDescription:
       "Even when the plumbing gets noisy, the operational meaning should remain readable.",
     riskLabel: "Elevated signal risk",
@@ -213,7 +270,7 @@ export function getRoleStage(role: PreviewRole): RoleStageDefinition {
 }
 
 export function getScenarioStage(
-  scenario: PreviewScenario,
+  scenario: PreviewScenario
 ): ScenarioStageDefinition {
   return scenarioStageMap[scenario]
 }
@@ -299,9 +356,12 @@ export function getInsightHeading(role: PreviewRole) {
 
 export function getTopBandPriority(
   role: PreviewRole,
-  scenario: PreviewScenario,
+  scenario: PreviewScenario
 ) {
-  const priority: Record<PreviewRole, Record<PreviewScenario, readonly string[]>> = {
+  const priority: Record<
+    PreviewRole,
+    Record<PreviewScenario, readonly string[]>
+  > = {
     controller: {
       "payment-release": [
         "release-ready",
@@ -547,7 +607,7 @@ export function getSignalHeading(role: PreviewRole) {
 export function getScenarioBridgeContext(
   scenario: PreviewScenario,
   targetRoleShortLabel: string,
-  targetScenarioLabel: string,
+  targetScenarioLabel: string
 ) {
   switch (scenario) {
     case "payment-release":
@@ -575,18 +635,23 @@ export function getScenarioBridgeContext(
 
 export function getPerspectiveBridgeNarrative(
   role: PreviewRole,
-  scenario: PreviewScenario,
+  scenario: PreviewScenario
 ) {
   const matrix: Record<
     PreviewRole,
     Record<
       PreviewScenario,
-      { readonly title: string; readonly description: string; readonly actionLabel: string }
+      {
+        readonly title: string
+        readonly description: string
+        readonly actionLabel: string
+      }
     >
   > = {
     controller: {
       "payment-release": {
-        title: "This release should still make sense above and below the approval desk.",
+        title:
+          "This release should still make sense above and below the approval desk.",
         description:
           "A controller view is valuable only if the same movement remains readable to the operator doing the work and the executive trusting the outcome.",
         actionLabel: "Follow this release upward",
@@ -624,7 +689,8 @@ export function getPerspectiveBridgeNarrative(
         actionLabel: "See what creates this confidence",
       },
       "audit-review": {
-        title: "The trace should remain coherent when you step out of summary mode.",
+        title:
+          "The trace should remain coherent when you step out of summary mode.",
         description:
           "An executive should be able to move from roll-up confidence into the detailed trace without finding a different reality underneath.",
         actionLabel: "Drop into the detailed view",
@@ -638,7 +704,8 @@ export function getPerspectiveBridgeNarrative(
     },
     owner: {
       "payment-release": {
-        title: "Business confidence should still connect back to the desks doing the work.",
+        title:
+          "Business confidence should still connect back to the desks doing the work.",
         description:
           "This movement should feel safe and understandable to you without breaking when you look up or down the chain.",
         actionLabel: "See the other desk",
@@ -682,7 +749,8 @@ export function getPerspectiveBridgeNarrative(
         actionLabel: "See who reads this later",
       },
       "integration-exception": {
-        title: "Signal problems should still leave you with a clear next action.",
+        title:
+          "Signal problems should still leave you with a clear next action.",
         description:
           "Even when the connector is noisy, your task should remain visible and then roll upward into cleaner decision surfaces.",
         actionLabel: "See how this rolls upward",

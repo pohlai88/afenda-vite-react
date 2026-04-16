@@ -49,7 +49,7 @@ type RoleCardPreviewTarget = {
 }
 
 function getRoleCardPreviewTargets(
-  role: ReturnType<typeof getPreviewRoleCard>,
+  role: ReturnType<typeof getPreviewRoleCard>
 ): ReadonlyArray<RoleCardPreviewTarget> {
   const targets: RoleCardPreviewTarget[] = []
 
@@ -131,21 +131,30 @@ export function PlatformPreviewPage() {
             >
               <div className="max-w-4xl">
                 <div className="flex flex-wrap items-center gap-[0.625rem]">
-                  <span className="inline-flex items-center rounded-full border border-border/70 bg-background/80 px-[0.85rem] py-[0.45rem] text-[0.72rem] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                  <span className="inline-flex items-center rounded-full border border-border/70 bg-background/80 px-[0.85rem] py-[0.45rem] text-[0.72rem] font-medium tracking-[0.14em] text-muted-foreground uppercase">
                     AFENDA role-play showcase
                   </span>
-                  <Badge variant="outline" className="rounded-full px-[0.75rem] py-[0.2rem]">
+                  <Badge
+                    variant="outline"
+                    className="rounded-full px-[0.75rem] py-[0.2rem]"
+                  >
                     {roleIntro.eyebrow}
                   </Badge>
-                  <Badge variant="outline" className="rounded-full px-[0.75rem] py-[0.2rem]">
+                  <Badge
+                    variant="outline"
+                    className="rounded-full px-[0.75rem] py-[0.2rem]"
+                  >
                     same truth, different eyes
                   </Badge>
-                  <Badge variant="outline" className="rounded-full px-[0.75rem] py-[0.2rem]">
+                  <Badge
+                    variant="outline"
+                    className="rounded-full px-[0.75rem] py-[0.2rem]"
+                  >
                     preview + supervision
                   </Badge>
                 </div>
 
-                <h1 className="mt-[0.875rem] text-[2rem] font-semibold leading-[1.02] tracking-[-0.03em] md:text-[3rem]">
+                <h1 className="mt-[0.875rem] text-[2rem] leading-[1.02] font-semibold tracking-[-0.03em] md:text-[3rem]">
                   {roleIntro.title}
                 </h1>
 
@@ -154,7 +163,7 @@ export function PlatformPreviewPage() {
                 </p>
 
                 <div className="mt-[0.95rem] rounded-[1.1rem] border border-border/60 bg-background/75 px-[0.9rem] py-[0.8rem]">
-                  <div className="text-[0.68rem] uppercase tracking-[0.11em] text-muted-foreground">
+                  <div className="text-[0.68rem] tracking-[0.11em] text-muted-foreground uppercase">
                     {roleIntro.curiosityLabel}
                   </div>
                   <p className="mt-[0.35rem] text-sm leading-6 text-muted-foreground">
@@ -165,7 +174,7 @@ export function PlatformPreviewPage() {
 
               <div className="grid gap-[0.75rem]">
                 <div className="rounded-[1rem] border border-border/60 bg-background/75 px-[0.9rem] py-[0.8rem]">
-                  <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                  <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                     {roleIntro.quickLabel}
                   </div>
 
@@ -183,7 +192,7 @@ export function PlatformPreviewPage() {
 
                 <div className="grid gap-[0.5rem] sm:grid-cols-2 xl:grid-cols-1">
                   <div className="rounded-[1rem] border border-border/60 bg-background/75 px-[0.9rem] py-[0.8rem]">
-                    <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                    <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                       Fast visitor path
                     </div>
                     <div className="mt-[0.3rem] text-sm font-medium tracking-tight">
@@ -192,11 +201,12 @@ export function PlatformPreviewPage() {
                   </div>
 
                   <div className="rounded-[1rem] border border-border/60 bg-background/75 px-[0.9rem] py-[0.8rem]">
-                    <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                    <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                       Internal supervision
                     </div>
                     <div className="mt-[0.3rem] text-sm font-medium tracking-tight">
-                      Open inspect mode to pressure-test density, state, and perspective shifts.
+                      Open inspect mode to pressure-test density, state, and
+                      perspective shifts.
                     </div>
                   </div>
                 </div>
@@ -268,7 +278,9 @@ export function PlatformPreviewPage() {
                     }
                   >
                     <div>
-                      <div className="text-[1rem] font-semibold tracking-tight">{item.label}</div>
+                      <div className="text-[1rem] font-semibold tracking-tight">
+                        {item.label}
+                      </div>
 
                       <p className="mt-[0.35rem] text-sm leading-6 text-muted-foreground">
                         {item.summary}
@@ -288,7 +300,7 @@ export function PlatformPreviewPage() {
                         transition={previewMotion.content}
                         className="rounded-[1rem] border border-border/60 bg-background/75 p-[0.95rem]"
                       >
-                        <div className="text-[0.7rem] uppercase tracking-[0.12em] text-muted-foreground">
+                        <div className="text-[0.7rem] tracking-[0.12em] text-muted-foreground uppercase">
                           Current role unlocks
                         </div>
 
@@ -313,7 +325,7 @@ export function PlatformPreviewPage() {
                     layout
                     className="mt-[0.95rem] rounded-[1rem] border border-border/60 bg-background/75 p-[0.8rem]"
                   >
-                    <div className="text-[0.7rem] uppercase tracking-[0.12em] text-muted-foreground">
+                    <div className="text-[0.7rem] tracking-[0.12em] text-muted-foreground uppercase">
                       Peek next
                     </div>
 
@@ -338,14 +350,18 @@ export function PlatformPreviewPage() {
                             <div className="text-[0.8rem] font-semibold tracking-tight">
                               {target.targetRoleLabel}
                             </div>
-                            <div className="flex items-center gap-[0.35rem] text-[0.68rem] uppercase tracking-[0.11em] text-muted-foreground">
-                              <span>{target.direction === "up" ? "above you" : "below you"}</span>
+                            <div className="flex items-center gap-[0.35rem] text-[0.68rem] tracking-[0.11em] text-muted-foreground uppercase">
+                              <span>
+                                {target.direction === "up"
+                                  ? "above you"
+                                  : "below you"}
+                              </span>
                               <ArrowRight className="size-3.5" />
                             </div>
                           </div>
 
                           {target.targetScenarioLabel ? (
-                            <div className="mt-[0.25rem] text-[0.72rem] uppercase tracking-[0.11em] text-muted-foreground">
+                            <div className="mt-[0.25rem] text-[0.72rem] tracking-[0.11em] text-muted-foreground uppercase">
                               {target.targetScenarioLabel}
                             </div>
                           ) : null}
@@ -367,13 +383,22 @@ export function PlatformPreviewPage() {
           <div className="grid gap-[1rem] xl:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
             <div>
               <div className="flex flex-wrap items-center gap-[0.625rem]">
-                <Badge variant="outline" className="rounded-full px-[0.75rem] py-[0.2rem]">
+                <Badge
+                  variant="outline"
+                  className="rounded-full px-[0.75rem] py-[0.2rem]"
+                >
                   {role.shortLabel} lens
                 </Badge>
-                <Badge variant="outline" className="rounded-full px-[0.75rem] py-[0.2rem]">
+                <Badge
+                  variant="outline"
+                  className="rounded-full px-[0.75rem] py-[0.2rem]"
+                >
                   {scenario.label}
                 </Badge>
-                <Badge variant="outline" className="rounded-full px-[0.75rem] py-[0.2rem]">
+                <Badge
+                  variant="outline"
+                  className="rounded-full px-[0.75rem] py-[0.2rem]"
+                >
                   {inspectState.mode}
                 </Badge>
               </div>
@@ -394,7 +419,7 @@ export function PlatformPreviewPage() {
                   const continuityPreview = getScenarioContinuityPreview(
                     activeRole,
                     item.id,
-                    item.continuity,
+                    item.continuity
                   )
 
                   return (
@@ -426,7 +451,9 @@ export function PlatformPreviewPage() {
                           </div>
 
                           <div>
-                            <div className="text-sm font-semibold tracking-tight">{item.label}</div>
+                            <div className="text-sm font-semibold tracking-tight">
+                              {item.label}
+                            </div>
                             <p className="mt-[0.3rem] text-[0.8rem] leading-5 text-muted-foreground">
                               {item.summary}
                             </p>
@@ -469,8 +496,9 @@ export function PlatformPreviewPage() {
                             exit={{ opacity: 0, y: -6 }}
                             transition={previewMotion.content}
                           >
-                            <div className="text-[0.68rem] uppercase tracking-[0.11em] text-muted-foreground">
-                              Why this matters to {role.shortLabel.toLowerCase()}
+                            <div className="text-[0.68rem] tracking-[0.11em] text-muted-foreground uppercase">
+                              Why this matters to{" "}
+                              {role.shortLabel.toLowerCase()}
                             </div>
                             <p className="mt-[0.35rem] text-[0.78rem] leading-5 text-muted-foreground">
                               {teaser}
@@ -480,7 +508,7 @@ export function PlatformPreviewPage() {
                       </div>
 
                       <div className="mt-[0.8rem]">
-                        <div className="mb-[0.35rem] text-[0.68rem] uppercase tracking-[0.11em] text-muted-foreground">
+                        <div className="mb-[0.35rem] text-[0.68rem] tracking-[0.11em] text-muted-foreground uppercase">
                           Continuity focus for {role.shortLabel.toLowerCase()}
                         </div>
 
@@ -519,7 +547,9 @@ export function PlatformPreviewPage() {
                     key={point}
                     className="rounded-[1rem] border border-border/60 bg-background/75 px-[0.95rem] py-[0.85rem]"
                   >
-                    <div className="text-sm font-medium tracking-tight">{point}</div>
+                    <div className="text-sm font-medium tracking-tight">
+                      {point}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -527,19 +557,21 @@ export function PlatformPreviewPage() {
 
             <aside className="grid gap-[0.75rem]">
               <div className="rounded-[1.5rem] border border-border/60 bg-background/75 p-[1rem]">
-                <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                   Role curiosity
                 </div>
                 <div className="mt-[0.35rem] text-[1.1rem] font-semibold tracking-tight">
-                  People want their view — and a believable read of everyone else’s.
+                  People want their view — and a believable read of everyone
+                  else’s.
                 </div>
                 <p className="mt-[0.35rem] text-sm leading-6 text-muted-foreground">
-                  One event moves up and down the chain so comparisons stay fair.
+                  One event moves up and down the chain so comparisons stay
+                  fair.
                 </p>
               </div>
 
               <div className="rounded-[1.5rem] border border-border/60 bg-background/75 p-[1rem]">
-                <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                   Same event, different eyes
                 </div>
                 <div className="mt-[0.75rem] flex flex-wrap gap-[0.5rem]">
@@ -561,7 +593,7 @@ export function PlatformPreviewPage() {
           <div className="rounded-[1.75rem] border border-border/60 bg-card/35 p-[0.75rem] shadow-sm">
             <div className="mb-[0.75rem] flex items-center justify-between gap-[0.75rem] px-[0.35rem]">
               <div>
-                <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                   Live role stage
                 </div>
                 <div className="mt-[0.2rem] text-[1rem] font-semibold tracking-tight">
@@ -592,7 +624,7 @@ export function PlatformPreviewPage() {
 
           <aside className="grid gap-[0.875rem]">
             <section className="rounded-[1.75rem] border border-border/60 bg-card/45 p-[1rem] shadow-sm">
-              <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+              <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                 What this role cares about
               </div>
               <div className="mt-[0.4rem] text-[1.2rem] font-semibold tracking-tight">
@@ -606,72 +638,78 @@ export function PlatformPreviewPage() {
             <section className="rounded-[1.75rem] border border-border/60 bg-card/45 p-[1rem] shadow-sm">
               <div className="flex items-center gap-[0.5rem]">
                 <Eye className="size-4" />
-                <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                   Curious what others see?
                 </div>
               </div>
 
               <div className="mt-[0.875rem] grid gap-[0.75rem]">
-                {bridgeTargets.map(({ bridge, targetRoleCard, targetScenarioDef }) => {
-                  const TargetIcon = getRoleIcon(targetRoleCard.iconKey)
+                {bridgeTargets.map(
+                  ({ bridge, targetRoleCard, targetScenarioDef }) => {
+                    const TargetIcon = getRoleIcon(targetRoleCard.iconKey)
 
-                  return (
-                    <button
-                      key={`${targetRoleCard.id}-${targetScenarioDef.id}`}
-                      type="button"
-                      data-testid={`preview-bridge-aside-${bridge.targetRole}`}
-                      aria-label={`Jump to ${targetRoleCard.label} in ${targetScenarioDef.label}`}
-                      onClick={() => jumpToBridge(bridge)}
-                      className="rounded-[1.25rem] border border-border bg-background/75 p-[0.95rem] text-left transition-colors hover:bg-background"
-                    >
-                      <div className="flex items-start justify-between gap-[0.75rem]">
-                        <div className="flex items-start gap-[0.75rem]">
-                          <div className="rounded-[0.9rem] border border-border/60 bg-card/60 p-[0.6rem]">
-                            <TargetIcon className="size-4" />
-                          </div>
-
-                          <div>
-                            <div className="text-sm font-semibold tracking-tight">
-                              {targetRoleCard.label}
-                            </div>
-                            <p className="mt-[0.3rem] text-xs leading-5 text-muted-foreground">
-                              {bridge.label}
-                            </p>
-
-                            <div className="mt-[0.5rem] flex flex-wrap items-center gap-[0.45rem]">
-                              <Badge variant="outline" className="rounded-full">
-                                {targetScenarioDef.label}
-                              </Badge>
-                              <span className="text-[0.72rem] uppercase tracking-[0.11em] text-muted-foreground">
-                                switch role + scenario
-                              </span>
+                    return (
+                      <button
+                        key={`${targetRoleCard.id}-${targetScenarioDef.id}`}
+                        type="button"
+                        data-testid={`preview-bridge-aside-${bridge.targetRole}`}
+                        aria-label={`Jump to ${targetRoleCard.label} in ${targetScenarioDef.label}`}
+                        onClick={() => jumpToBridge(bridge)}
+                        className="rounded-[1.25rem] border border-border bg-background/75 p-[0.95rem] text-left transition-colors hover:bg-background"
+                      >
+                        <div className="flex items-start justify-between gap-[0.75rem]">
+                          <div className="flex items-start gap-[0.75rem]">
+                            <div className="rounded-[0.9rem] border border-border/60 bg-card/60 p-[0.6rem]">
+                              <TargetIcon className="size-4" />
                             </div>
 
-                            {bridge.teaser ? (
-                              <p className="mt-[0.5rem] text-xs leading-5 text-muted-foreground">
-                                {bridge.teaser}
+                            <div>
+                              <div className="text-sm font-semibold tracking-tight">
+                                {targetRoleCard.label}
+                              </div>
+                              <p className="mt-[0.3rem] text-xs leading-5 text-muted-foreground">
+                                {bridge.label}
                               </p>
-                            ) : null}
-                          </div>
-                        </div>
 
-                        <ArrowRight className="mt-[0.1rem] size-4 shrink-0" />
-                      </div>
-                    </button>
-                  )
-                })}
+                              <div className="mt-[0.5rem] flex flex-wrap items-center gap-[0.45rem]">
+                                <Badge
+                                  variant="outline"
+                                  className="rounded-full"
+                                >
+                                  {targetScenarioDef.label}
+                                </Badge>
+                                <span className="text-[0.72rem] tracking-[0.11em] text-muted-foreground uppercase">
+                                  switch role + scenario
+                                </span>
+                              </div>
+
+                              {bridge.teaser ? (
+                                <p className="mt-[0.5rem] text-xs leading-5 text-muted-foreground">
+                                  {bridge.teaser}
+                                </p>
+                              ) : null}
+                            </div>
+                          </div>
+
+                          <ArrowRight className="mt-[0.1rem] size-4 shrink-0" />
+                        </div>
+                      </button>
+                    )
+                  }
+                )}
               </div>
             </section>
 
             <section className="rounded-[1.75rem] border border-border/60 bg-card/45 p-[1rem] shadow-sm">
-              <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+              <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                 Shared truth
               </div>
               <div className="mt-[0.35rem] text-[1.05rem] font-semibold tracking-tight">
                 Different roles do not need different realities.
               </div>
               <p className="mt-[0.35rem] text-sm leading-6 text-muted-foreground">
-                Same movement, evidence path, and control posture — different surfaces.
+                Same movement, evidence path, and control posture — different
+                surfaces.
               </p>
             </section>
           </aside>
@@ -680,14 +718,16 @@ export function PlatformPreviewPage() {
         <section className="rounded-[1.75rem] border border-border/60 bg-card/40 p-[1rem] shadow-sm md:p-[1.25rem]">
           <div className="flex flex-col gap-[1rem] lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
-              <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+              <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                 Inspect dock
               </div>
               <div className="mt-[0.35rem] text-[1.25rem] font-semibold tracking-tight">
-                Stress the surface when you need QA, not when visitors are watching.
+                Stress the surface when you need QA, not when visitors are
+                watching.
               </div>
               <p className="mt-[0.35rem] text-sm leading-6 text-muted-foreground">
-                Preview stays clean; inspect adds density, theme, and state controls for regression review.
+                Preview stays clean; inspect adds density, theme, and state
+                controls for regression review.
               </p>
             </div>
 
@@ -712,7 +752,7 @@ export function PlatformPreviewPage() {
               className="mt-[0.75rem] grid gap-[0.75rem] xl:grid-cols-4"
             >
               <div className="rounded-[1rem] border border-border/60 bg-background/75 p-[0.9rem]">
-                <div className="mb-[0.55rem] text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="mb-[0.55rem] text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                   Mode
                 </div>
                 <div className="flex flex-wrap gap-[0.5rem]">
@@ -721,7 +761,9 @@ export function PlatformPreviewPage() {
                       key={mode}
                       type="button"
                       size="sm"
-                      variant={inspectState.mode === mode ? "default" : "outline"}
+                      variant={
+                        inspectState.mode === mode ? "default" : "outline"
+                      }
                       onClick={() =>
                         setInspectState((current) => ({ ...current, mode }))
                       }
@@ -735,7 +777,7 @@ export function PlatformPreviewPage() {
               </div>
 
               <div className="rounded-[1rem] border border-border/60 bg-background/75 p-[0.9rem]">
-                <div className="mb-[0.55rem] text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="mb-[0.55rem] text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                   Theme
                 </div>
                 <div className="flex flex-wrap gap-[0.5rem]">
@@ -744,7 +786,9 @@ export function PlatformPreviewPage() {
                       key={theme}
                       type="button"
                       size="sm"
-                      variant={inspectState.theme === theme ? "default" : "outline"}
+                      variant={
+                        inspectState.theme === theme ? "default" : "outline"
+                      }
                       onClick={() =>
                         setInspectState((current) => ({ ...current, theme }))
                       }
@@ -758,7 +802,7 @@ export function PlatformPreviewPage() {
               </div>
 
               <div className="rounded-[1rem] border border-border/60 bg-background/75 p-[0.9rem]">
-                <div className="mb-[0.55rem] text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="mb-[0.55rem] text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                   Density
                 </div>
                 <div className="flex flex-wrap gap-[0.5rem]">
@@ -767,7 +811,9 @@ export function PlatformPreviewPage() {
                       key={density}
                       type="button"
                       size="sm"
-                      variant={inspectState.density === density ? "default" : "outline"}
+                      variant={
+                        inspectState.density === density ? "default" : "outline"
+                      }
                       onClick={() =>
                         setInspectState((current) => ({ ...current, density }))
                       }
@@ -781,7 +827,7 @@ export function PlatformPreviewPage() {
               </div>
 
               <div className="rounded-[1rem] border border-border/60 bg-background/75 p-[0.9rem]">
-                <div className="mb-[0.55rem] text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="mb-[0.55rem] text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                   Stress state
                 </div>
                 <div className="flex flex-wrap gap-[0.5rem]">
@@ -790,7 +836,9 @@ export function PlatformPreviewPage() {
                       key={stress}
                       type="button"
                       size="sm"
-                      variant={inspectState.stress === stress ? "default" : "outline"}
+                      variant={
+                        inspectState.stress === stress ? "default" : "outline"
+                      }
                       onClick={() =>
                         setInspectState((current) => ({ ...current, stress }))
                       }
@@ -817,7 +865,7 @@ export function PlatformPreviewPage() {
               className="grid gap-[1rem] xl:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.9fr)] xl:items-center"
             >
               <div>
-                <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                   {roleClosing.eyebrow}
                 </div>
                 <div className="mt-[0.45rem] text-[1.5rem] font-semibold tracking-tight md:text-[1.85rem]">
@@ -828,7 +876,7 @@ export function PlatformPreviewPage() {
                 </p>
 
                 <div className="mt-[0.9rem] rounded-[1rem] border border-border/60 bg-background/75 px-[0.9rem] py-[0.8rem]">
-                  <div className="text-[0.68rem] uppercase tracking-[0.11em] text-muted-foreground">
+                  <div className="text-[0.68rem] tracking-[0.11em] text-muted-foreground uppercase">
                     Final prompt
                   </div>
                   <p className="mt-[0.35rem] text-sm leading-6 text-muted-foreground">
@@ -846,12 +894,13 @@ export function PlatformPreviewPage() {
                 </div>
 
                 <div className="rounded-[1rem] border border-border/60 bg-background/75 px-[0.9rem] py-[0.8rem]">
-                  <div className="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+                  <div className="text-[0.72rem] tracking-[0.12em] text-muted-foreground uppercase">
                     Why end here
                   </div>
                   <p className="mt-[0.35rem] text-sm leading-6 text-muted-foreground">
-                    The point is not only to admire one screen. It is to understand how the same
-                    truth survives across the whole chain of responsibility.
+                    The point is not only to admire one screen. It is to
+                    understand how the same truth survives across the whole
+                    chain of responsibility.
                   </p>
                 </div>
               </div>

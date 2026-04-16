@@ -32,6 +32,12 @@ function toRecord(row: {
   status: string
   expiresAt: Date
   attemptsRemaining: number
+  riskSnapshot: {
+    trustLevel: "low" | "medium" | "high" | "verified"
+    recommendedMethod: "passkey" | "password" | "social"
+    reasons: readonly string[]
+    otpDigest?: string
+  }
 }): StoredAuthChallengeRecord | null {
   if (!isAuthChallengeMethod(row.method) || !isStoredStatus(row.status)) {
     return null
@@ -44,6 +50,7 @@ function toRecord(row: {
     status: row.status,
     expiresAt: row.expiresAt,
     attemptsRemaining: row.attemptsRemaining,
+    otpDigest: row.riskSnapshot.otpDigest ?? null,
   }
 }
 
@@ -69,6 +76,9 @@ export function createDrizzleAuthChallengeRepo(
           trustLevel: input.riskSnapshot.trustLevel,
           recommendedMethod: input.riskSnapshot.recommendedMethod,
           reasons: [...input.riskSnapshot.reasons],
+          ...(input.riskSnapshot.otpDigest !== undefined
+            ? { otpDigest: input.riskSnapshot.otpDigest }
+            : {}),
         },
         deviceContextHash: input.deviceContextHash,
         issuedAt: now,
@@ -91,6 +101,7 @@ export function createDrizzleAuthChallengeRepo(
           status: authChallenges.status,
           expiresAt: authChallenges.expiresAt,
           attemptsRemaining: authChallenges.attemptsRemaining,
+          riskSnapshot: authChallenges.riskSnapshot,
         })
         .from(authChallenges)
         .where(eq(authChallenges.challengeId, challengeId))
@@ -100,10 +111,26 @@ export function createDrizzleAuthChallengeRepo(
       if (!row) {
         return null
       }
+      const rs = row.riskSnapshot as {
+        trustLevel: "low" | "medium" | "high" | "verified"
+        recommendedMethod: "passkey" | "password" | "social"
+        reasons: readonly string[]
+        otpDigest?: string
+      }
       return toRecord({
-        ...row,
+        challengeId: row.challengeId,
+        subjectUserId: row.subjectUserId,
+        subjectEmail: row.subjectEmail,
         method: String(row.method),
         status: String(row.status),
+        expiresAt: row.expiresAt,
+        attemptsRemaining: row.attemptsRemaining,
+        riskSnapshot: {
+          trustLevel: rs.trustLevel,
+          recommendedMethod: rs.recommendedMethod,
+          reasons: [...rs.reasons],
+          ...(rs.otpDigest !== undefined ? { otpDigest: rs.otpDigest } : {}),
+        },
       })
     },
 

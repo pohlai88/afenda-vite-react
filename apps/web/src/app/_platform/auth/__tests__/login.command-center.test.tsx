@@ -31,9 +31,8 @@ vi.mock("../hooks/use-auth-intelligence", () => ({
 }))
 
 vi.mock("../auth-client", async () => {
-  const actual = await vi.importActual<typeof import("../auth-client")>(
-    "../auth-client"
-  )
+  const actual =
+    await vi.importActual<typeof import("../auth-client")>("../auth-client")
   return {
     ...actual,
     authClient: {

@@ -57,11 +57,11 @@ export function ShellLabelsColumnSearch({
               placeholder={t("nav.search_placeholder")}
               autoComplete="off"
               {...inputProps}
-              className={cn("pl-8 pr-2", inputProps?.className)}
+              className={cn("pr-2 pl-8", inputProps?.className)}
             />
 
             <Search
-              className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 select-none opacity-50"
+              className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none"
               aria-hidden
             />
           </div>

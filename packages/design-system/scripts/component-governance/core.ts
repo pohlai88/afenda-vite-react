@@ -1,26 +1,26 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import ts from 'typescript'
-import { z } from 'zod'
+import fs from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+import ts from "typescript"
+import { z } from "zod"
 
 import {
   validatePrimitiveManifest,
   type PrimitiveGovernanceManifest,
-} from '../../ui-primitives/manifest-contract'
+} from "../../ui-primitives/manifest-contract"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-export const DESIGN_SYSTEM_ROOT = path.resolve(__dirname, '..', '..')
-export const UI_PRIMITIVES_DIR = path.join(DESIGN_SYSTEM_ROOT, 'ui-primitives')
-export const REGISTRY_FILE = path.join(UI_PRIMITIVES_DIR, '_registry.ts')
-export const GENERATED_DIR = path.join(DESIGN_SYSTEM_ROOT, 'generated')
+export const DESIGN_SYSTEM_ROOT = path.resolve(__dirname, "..", "..")
+export const UI_PRIMITIVES_DIR = path.join(DESIGN_SYSTEM_ROOT, "ui-primitives")
+export const REGISTRY_FILE = path.join(UI_PRIMITIVES_DIR, "_registry.ts")
+export const GENERATED_DIR = path.join(DESIGN_SYSTEM_ROOT, "generated")
 
 /** Pre-register manifests so Vitest/Vite transform `.ts`; runtime `import(file://…/*.ts)` does not. */
 const manifestModuleLoaders = import.meta.glob<{
   default?: PrimitiveGovernanceManifest
   manifest?: PrimitiveGovernanceManifest
-}>('../../ui-primitives/**/*.manifest.ts')
+}>("../../ui-primitives/**/*.manifest.ts")
 
 const VARIANT_TOKEN_REGEX =
   /\b(?:bg|text|border|ring|outline|fill|stroke)-(?:background|foreground|card|popover|primary|secondary|muted|accent|destructive|input|border|ring|sidebar(?:-[a-z-]+)?|success|warning|info)\b/
@@ -69,13 +69,13 @@ export interface NormalizedGovernanceComponent {
   sourceFile: string
   manifestFile: string
   owner: string
-  lifecycle: PrimitiveGovernanceManifest['lifecycle']
+  lifecycle: PrimitiveGovernanceManifest["lifecycle"]
   purpose: string
   fixtures: string[]
-  a11y?: PrimitiveGovernanceManifest['a11y']
-  requiredCoverage?: PrimitiveGovernanceManifest['requiredCoverage']
-  policy?: PrimitiveGovernanceManifest['policy']
-  deprecation?: PrimitiveGovernanceManifest['deprecation']
+  a11y?: PrimitiveGovernanceManifest["a11y"]
+  requiredCoverage?: PrimitiveGovernanceManifest["requiredCoverage"]
+  policy?: PrimitiveGovernanceManifest["policy"]
+  deprecation?: PrimitiveGovernanceManifest["deprecation"]
   notes?: string
   exports: string[]
   dataSlots: string[]
@@ -86,10 +86,10 @@ export interface NormalizedGovernanceComponent {
 
 export interface ComponentManifestsArtifact {
   version: 1
-  package: '@afenda/design-system'
-  scope: 'ui-primitives'
+  package: "@afenda/design-system"
+  scope: "ui-primitives"
   components: Array<
-    Omit<NormalizedGovernanceComponent, 'cvaDefinitions'> & {
+    Omit<NormalizedGovernanceComponent, "cvaDefinitions"> & {
       cvaDefinitionCount: number
     }
   >
@@ -97,8 +97,8 @@ export interface ComponentManifestsArtifact {
 
 export interface ComponentVariantsArtifact {
   version: 1
-  package: '@afenda/design-system'
-  scope: 'ui-primitives'
+  package: "@afenda/design-system"
+  scope: "ui-primitives"
   components: Array<{
     component: string
     sourceFile: string
@@ -108,17 +108,17 @@ export interface ComponentVariantsArtifact {
 
 export interface ComponentCoverageArtifact {
   version: 1
-  package: '@afenda/design-system'
-  scope: 'ui-primitives'
+  package: "@afenda/design-system"
+  scope: "ui-primitives"
   components: Array<{
     component: string
-    lifecycle: PrimitiveGovernanceManifest['lifecycle']
+    lifecycle: PrimitiveGovernanceManifest["lifecycle"]
     owner: string
     fixtureCount: number
     fixtures: string[]
-    requiredCoverage?: PrimitiveGovernanceManifest['requiredCoverage']
-    a11y?: PrimitiveGovernanceManifest['a11y']
-    policy?: PrimitiveGovernanceManifest['policy']
+    requiredCoverage?: PrimitiveGovernanceManifest["requiredCoverage"]
+    a11y?: PrimitiveGovernanceManifest["a11y"]
+    policy?: PrimitiveGovernanceManifest["policy"]
   }>
 }
 
@@ -145,15 +145,15 @@ const classSignalsSchema = z.object({
 
 const manifestsSchema = z.object({
   version: z.literal(1),
-  package: z.literal('@afenda/design-system'),
-  scope: z.literal('ui-primitives'),
+  package: z.literal("@afenda/design-system"),
+  scope: z.literal("ui-primitives"),
   components: z.array(
     z.object({
       component: z.string(),
       sourceFile: z.string(),
       manifestFile: z.string(),
       owner: z.string(),
-      lifecycle: z.enum(['draft', 'beta', 'stable', 'deprecated']),
+      lifecycle: z.enum(["draft", "beta", "stable", "deprecated"]),
       purpose: z.string(),
       fixtures: z.array(z.string()),
       a11y: z.record(z.string(), z.boolean()).optional(),
@@ -173,43 +173,43 @@ const manifestsSchema = z.object({
       forwardRef: z.boolean(),
       classSignals: classSignalsSchema,
       cvaDefinitionCount: z.number().int().min(0),
-    }),
+    })
   ),
 })
 
 const variantsSchema = z.object({
   version: z.literal(1),
-  package: z.literal('@afenda/design-system'),
-  scope: z.literal('ui-primitives'),
+  package: z.literal("@afenda/design-system"),
+  scope: z.literal("ui-primitives"),
   components: z.array(
     z.object({
       component: z.string(),
       sourceFile: z.string(),
       cvaDefinitions: z.array(cvaDefinitionSchema),
-    }),
+    })
   ),
 })
 
 const coverageSchema = z.object({
   version: z.literal(1),
-  package: z.literal('@afenda/design-system'),
-  scope: z.literal('ui-primitives'),
+  package: z.literal("@afenda/design-system"),
+  scope: z.literal("ui-primitives"),
   components: z.array(
     z.object({
       component: z.string(),
-      lifecycle: z.enum(['draft', 'beta', 'stable', 'deprecated']),
+      lifecycle: z.enum(["draft", "beta", "stable", "deprecated"]),
       owner: z.string(),
       fixtureCount: z.number().int().min(0),
       fixtures: z.array(z.string()),
       requiredCoverage: z.record(z.string(), z.boolean()).optional(),
       a11y: z.record(z.string(), z.boolean()).optional(),
       policy: z.record(z.string(), z.boolean()).optional(),
-    }),
+    })
   ),
 })
 
 function normalizePathForJson(filePath: string): string {
-  return filePath.split(path.sep).join('/')
+  return filePath.split(path.sep).join("/")
 }
 
 function toRelativeFromDesignSystem(absolutePath: string): string {
@@ -218,16 +218,16 @@ function toRelativeFromDesignSystem(absolutePath: string): string {
 
 function resolveRegistryFilePath(
   registryFilePath: string,
-  rawFilePath: string,
+  rawFilePath: string
 ): string {
   const directResolution = path.resolve(
     path.dirname(registryFilePath),
-    rawFilePath,
+    rawFilePath
   )
   if (fs.existsSync(directResolution)) return directResolution
 
   const normalizedRawPath = normalizePathForJson(rawFilePath)
-  const marker = '/design-system/'
+  const marker = "/design-system/"
   const markerIndex = normalizedRawPath.lastIndexOf(marker)
 
   if (markerIndex !== -1) {
@@ -250,7 +250,7 @@ function getLiteralString(node: ts.Expression): string | null {
 
 function getObjectProperty(
   objectNode: ts.ObjectLiteralExpression,
-  key: string,
+  key: string
 ): ts.ObjectLiteralElementLike | undefined {
   return objectNode.properties.find((property) => {
     if (!ts.isPropertyAssignment(property)) return false
@@ -262,7 +262,7 @@ function getObjectProperty(
 
 function getObjectPropertyString(
   objectNode: ts.ObjectLiteralExpression,
-  key: string,
+  key: string
 ): string | null {
   const property = getObjectProperty(objectNode, key)
   if (!property || !ts.isPropertyAssignment(property)) return null
@@ -283,7 +283,7 @@ function getPropertyName(node: ts.PropertyName): string | null {
 
 function parseObjectLiteralStringMap(
   node: ts.ObjectLiteralExpression,
-  context: string,
+  context: string
 ): Record<string, string> {
   const output: Record<string, string> = {}
   for (const property of node.properties) {
@@ -305,7 +305,7 @@ function parseObjectLiteralStringMap(
 
 function parseCvaConfiguration(
   callExpression: ts.CallExpression,
-  sourceFile: ts.SourceFile,
+  sourceFile: ts.SourceFile
 ): ExtractedCvaDefinition {
   const definition: ExtractedCvaDefinition = {
     variableName: null,
@@ -324,23 +324,23 @@ function parseCvaConfiguration(
   if (!secondArgument) return definition
   if (!ts.isObjectLiteralExpression(secondArgument)) {
     const location = sourceFile.getLineAndCharacterOfPosition(
-      secondArgument.getStart(sourceFile),
+      secondArgument.getStart(sourceFile)
     )
     throw new Error(
-      `${sourceFile.fileName}:${location.line + 1}:${location.character + 1} cva() second argument must be an object literal.`,
+      `${sourceFile.fileName}:${location.line + 1}:${location.character + 1} cva() second argument must be an object literal.`
     )
   }
 
-  const variantsProperty = getObjectProperty(secondArgument, 'variants')
+  const variantsProperty = getObjectProperty(secondArgument, "variants")
   if (variantsProperty) {
     if (!ts.isPropertyAssignment(variantsProperty)) {
       throw new Error(
-        `${sourceFile.fileName} cva().variants must be a property assignment.`,
+        `${sourceFile.fileName} cva().variants must be a property assignment.`
       )
     }
     if (!ts.isObjectLiteralExpression(variantsProperty.initializer)) {
       throw new Error(
-        `${sourceFile.fileName} cva().variants must be an object literal.`,
+        `${sourceFile.fileName} cva().variants must be an object literal.`
       )
     }
 
@@ -348,18 +348,18 @@ function parseCvaConfiguration(
       .properties) {
       if (!ts.isPropertyAssignment(variantGroupProperty)) {
         throw new Error(
-          `${sourceFile.fileName} cva().variants entries must be properties.`,
+          `${sourceFile.fileName} cva().variants entries must be properties.`
         )
       }
       const groupName = getPropertyName(variantGroupProperty.name)
       if (!groupName) {
         throw new Error(
-          `${sourceFile.fileName} cva().variants group name must be static.`,
+          `${sourceFile.fileName} cva().variants group name must be static.`
         )
       }
       if (!ts.isObjectLiteralExpression(variantGroupProperty.initializer)) {
         throw new Error(
-          `${sourceFile.fileName} cva().variants.${groupName} must be an object literal.`,
+          `${sourceFile.fileName} cva().variants.${groupName} must be an object literal.`
         )
       }
 
@@ -368,13 +368,13 @@ function parseCvaConfiguration(
         .properties) {
         if (!ts.isPropertyAssignment(variantProperty)) {
           throw new Error(
-            `${sourceFile.fileName} cva().variants.${groupName} entries must be properties.`,
+            `${sourceFile.fileName} cva().variants.${groupName} entries must be properties.`
           )
         }
         const variantName = getPropertyName(variantProperty.name)
         if (!variantName) {
           throw new Error(
-            `${sourceFile.fileName} cva().variants.${groupName} variant name must be static.`,
+            `${sourceFile.fileName} cva().variants.${groupName} variant name must be static.`
           )
         }
         values.push(variantName)
@@ -385,22 +385,22 @@ function parseCvaConfiguration(
 
   const defaultVariantsProperty = getObjectProperty(
     secondArgument,
-    'defaultVariants',
+    "defaultVariants"
   )
   if (defaultVariantsProperty) {
     if (!ts.isPropertyAssignment(defaultVariantsProperty)) {
       throw new Error(
-        `${sourceFile.fileName} cva().defaultVariants must be a property assignment.`,
+        `${sourceFile.fileName} cva().defaultVariants must be a property assignment.`
       )
     }
     if (!ts.isObjectLiteralExpression(defaultVariantsProperty.initializer)) {
       throw new Error(
-        `${sourceFile.fileName} cva().defaultVariants must be an object literal.`,
+        `${sourceFile.fileName} cva().defaultVariants must be an object literal.`
       )
     }
     definition.defaultVariants = parseObjectLiteralStringMap(
       defaultVariantsProperty.initializer,
-      `${sourceFile.fileName} cva().defaultVariants`,
+      `${sourceFile.fileName} cva().defaultVariants`
     )
   }
 
@@ -420,13 +420,13 @@ function collectStringLiterals(sourceFile: ts.SourceFile): string[] {
 }
 
 function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
-  const sourceText = fs.readFileSync(registryFilePath, 'utf8')
+  const sourceText = fs.readFileSync(registryFilePath, "utf8")
   const sourceFile = ts.createSourceFile(
     registryFilePath,
     sourceText,
     ts.ScriptTarget.Latest,
     true,
-    ts.ScriptKind.TS,
+    ts.ScriptKind.TS
   )
 
   let registryArray: ts.ArrayLiteralExpression | undefined
@@ -434,7 +434,7 @@ function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
     if (!ts.isVariableStatement(statement)) continue
     for (const declaration of statement.declarationList.declarations) {
       if (!ts.isIdentifier(declaration.name)) continue
-      if (declaration.name.text !== 'ui') continue
+      if (declaration.name.text !== "ui") continue
       if (
         !declaration.initializer ||
         !ts.isArrayLiteralExpression(declaration.initializer)
@@ -454,7 +454,7 @@ function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
 
   for (const element of registryArray.elements) {
     if (!ts.isObjectLiteralExpression(element)) continue
-    const component = getObjectPropertyString(element, 'name')
+    const component = getObjectPropertyString(element, "name")
     if (!component) continue
 
     if (seenComponentNames.has(component)) {
@@ -462,7 +462,7 @@ function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
     }
     seenComponentNames.add(component)
 
-    const filesProperty = getObjectProperty(element, 'files')
+    const filesProperty = getObjectProperty(element, "files")
     if (!filesProperty || !ts.isPropertyAssignment(filesProperty)) {
       throw new Error(`Registry entry "${component}" is missing "files".`)
     }
@@ -471,39 +471,39 @@ function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
     }
 
     const firstFile = filesProperty.initializer.elements.find(
-      ts.isObjectLiteralExpression,
+      ts.isObjectLiteralExpression
     )
     if (!firstFile) {
       throw new Error(
-        `Registry entry "${component}" has no file object in "files".`,
+        `Registry entry "${component}" has no file object in "files".`
       )
     }
 
-    const sourcePathFromRegistry = getObjectPropertyString(firstFile, 'path')
+    const sourcePathFromRegistry = getObjectPropertyString(firstFile, "path")
     if (!sourcePathFromRegistry) {
       throw new Error(
-        `Registry entry "${component}" is missing file path string.`,
+        `Registry entry "${component}" is missing file path string.`
       )
     }
 
     const sourceFileAbsolute = resolveRegistryFilePath(
       registryFilePath,
-      sourcePathFromRegistry,
+      sourcePathFromRegistry
     )
     if (!fs.existsSync(sourceFileAbsolute)) {
       throw new Error(
-        `Registry entry "${component}" points to missing source file: ${sourceFileAbsolute}`,
+        `Registry entry "${component}" points to missing source file: ${sourceFileAbsolute}`
       )
     }
-    if (!sourceFileAbsolute.endsWith('.tsx')) {
+    if (!sourceFileAbsolute.endsWith(".tsx")) {
       throw new Error(
-        `Registry entry "${component}" must point to a .tsx primitive file.`,
+        `Registry entry "${component}" must point to a .tsx primitive file.`
       )
     }
 
     const manifestFileAbsolute = sourceFileAbsolute.replace(
       /\.tsx$/,
-      '.manifest.ts',
+      ".manifest.ts"
     )
 
     primitives.push({
@@ -516,20 +516,20 @@ function readRegistryPrimitives(registryFilePath: string): RegistryPrimitive[] {
   }
 
   return primitives.sort((left, right) =>
-    left.component.localeCompare(right.component),
+    left.component.localeCompare(right.component)
   )
 }
 
 export function extractPrimitiveFacts(
-  primitive: RegistryPrimitive,
+  primitive: RegistryPrimitive
 ): ExtractedPrimitiveFacts {
-  const sourceText = fs.readFileSync(primitive.sourceFileAbsolute, 'utf8')
+  const sourceText = fs.readFileSync(primitive.sourceFileAbsolute, "utf8")
   const sourceFile = ts.createSourceFile(
     primitive.sourceFileAbsolute,
     sourceText,
     ts.ScriptTarget.Latest,
     true,
-    ts.ScriptKind.TSX,
+    ts.ScriptKind.TSX
   )
 
   const exportedNames = new Set<string>()
@@ -554,7 +554,7 @@ export function extractPrimitiveFacts(
     if (
       ts.isFunctionDeclaration(node) &&
       node.modifiers?.some(
-        (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword,
+        (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword
       ) &&
       node.name
     ) {
@@ -564,7 +564,7 @@ export function extractPrimitiveFacts(
     if (
       ts.isVariableStatement(node) &&
       node.modifiers?.some(
-        (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword,
+        (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword
       )
     ) {
       for (const declaration of node.declarationList.declarations) {
@@ -575,25 +575,25 @@ export function extractPrimitiveFacts(
     }
 
     if (ts.isCallExpression(node)) {
-      if (ts.isIdentifier(node.expression) && node.expression.text === 'cva') {
+      if (ts.isIdentifier(node.expression) && node.expression.text === "cva") {
         hasCva = true
         cvaDefinitions.push(parseCvaConfiguration(node, sourceFile))
       }
 
-      if (ts.isIdentifier(node.expression) && node.expression.text === 'cn') {
+      if (ts.isIdentifier(node.expression) && node.expression.text === "cn") {
         hasCnCall = true
       }
 
       if (
         ts.isIdentifier(node.expression) &&
-        node.expression.text === 'forwardRef'
+        node.expression.text === "forwardRef"
       ) {
         hasForwardRef = true
       }
 
       if (
         ts.isPropertyAccessExpression(node.expression) &&
-        node.expression.name.text === 'forwardRef'
+        node.expression.name.text === "forwardRef"
       ) {
         hasForwardRef = true
       }
@@ -601,10 +601,10 @@ export function extractPrimitiveFacts(
 
     if (ts.isJsxAttribute(node)) {
       const attributeName = getJsxAttributeName(node.name)
-      if (attributeName === 'style') {
+      if (attributeName === "style") {
         hasInlineStyleAttribute = true
       }
-      if (attributeName === 'data-slot' && node.initializer) {
+      if (attributeName === "data-slot" && node.initializer) {
         if (ts.isStringLiteral(node.initializer)) {
           dataSlots.add(node.initializer.text)
         } else if (
@@ -622,16 +622,16 @@ export function extractPrimitiveFacts(
 
   visit(sourceFile)
 
-  const signalBuffer = collectStringLiterals(sourceFile).join(' ')
+  const signalBuffer = collectStringLiterals(sourceFile).join(" ")
   if (hasCva && cvaDefinitions.length === 0) {
     throw new Error(
-      `cva() usage detected but no definitions parsed for ${primitive.sourceFileRelative}`,
+      `cva() usage detected but no definitions parsed for ${primitive.sourceFileRelative}`
     )
   }
 
   cvaDefinitions.sort((left, right) => {
-    const leftName = left.variableName ?? ''
-    const rightName = right.variableName ?? ''
+    const leftName = left.variableName ?? ""
+    const rightName = right.variableName ?? ""
     return leftName.localeCompare(rightName)
   })
 
@@ -654,29 +654,29 @@ export function extractPrimitiveFacts(
 }
 
 async function loadManifestModule(
-  manifestAbsolutePath: string,
+  manifestAbsolutePath: string
 ): Promise<PrimitiveGovernanceManifest> {
   const abs = path.resolve(manifestAbsolutePath)
   const relFromRoot = toRelativeFromDesignSystem(abs)
-    .replace(/\\/g, '/')
-    .replace(/^\/+/, '')
+    .replace(/\\/g, "/")
+    .replace(/^\/+/, "")
   const key = `../../${relFromRoot}`
   const loader = manifestModuleLoaders[key]
   if (!loader) {
     throw new Error(
-      `No manifest module registered for ${key} (resolved from ${manifestAbsolutePath}).`,
+      `No manifest module registered for ${key} (resolved from ${manifestAbsolutePath}).`
     )
   }
   const moduleValue = await loader()
   const candidate = moduleValue.default ?? moduleValue.manifest
   if (!candidate) {
     throw new Error(
-      `Manifest module ${manifestAbsolutePath} must export default manifest or named "manifest".`,
+      `Manifest module ${manifestAbsolutePath} must export default manifest or named "manifest".`
     )
   }
   validatePrimitiveManifest(
     candidate,
-    toRelativeFromDesignSystem(manifestAbsolutePath),
+    toRelativeFromDesignSystem(manifestAbsolutePath)
   )
   return candidate
 }
@@ -684,7 +684,7 @@ async function loadManifestModule(
 function normalizeComponent(
   primitive: RegistryPrimitive,
   extracted: ExtractedPrimitiveFacts,
-  manifest: PrimitiveGovernanceManifest,
+  manifest: PrimitiveGovernanceManifest
 ): NormalizedGovernanceComponent {
   return {
     component: primitive.component,
@@ -708,16 +708,16 @@ function normalizeComponent(
 }
 
 export function createArtifactPayloads(
-  components: NormalizedGovernanceComponent[],
+  components: NormalizedGovernanceComponent[]
 ): ArtifactPayloads {
   const sorted = [...components].sort((left, right) =>
-    left.component.localeCompare(right.component),
+    left.component.localeCompare(right.component)
   )
 
   const manifests: ComponentManifestsArtifact = {
     version: 1,
-    package: '@afenda/design-system',
-    scope: 'ui-primitives',
+    package: "@afenda/design-system",
+    scope: "ui-primitives",
     components: sorted.map((component) => ({
       component: component.component,
       sourceFile: component.sourceFile,
@@ -741,8 +741,8 @@ export function createArtifactPayloads(
 
   const variants: ComponentVariantsArtifact = {
     version: 1,
-    package: '@afenda/design-system',
-    scope: 'ui-primitives',
+    package: "@afenda/design-system",
+    scope: "ui-primitives",
     components: sorted.map((component) => ({
       component: component.component,
       sourceFile: component.sourceFile,
@@ -752,8 +752,8 @@ export function createArtifactPayloads(
 
   const coverage: ComponentCoverageArtifact = {
     version: 1,
-    package: '@afenda/design-system',
-    scope: 'ui-primitives',
+    package: "@afenda/design-system",
+    scope: "ui-primitives",
     components: sorted.map((component) => ({
       component: component.component,
       lifecycle: component.lifecycle,
@@ -774,12 +774,12 @@ export function createArtifactPayloads(
 }
 
 export const GENERATED_RELATIVE_PATHS = [
-  'generated/component-manifests.json',
-  'generated/component-variants.json',
-  'generated/component-coverage.json',
-  'generated/schemas/component-manifests.schema.json',
-  'generated/schemas/component-variants.schema.json',
-  'generated/schemas/component-coverage.schema.json',
+  "generated/component-manifests.json",
+  "generated/component-variants.json",
+  "generated/component-coverage.json",
+  "generated/schemas/component-manifests.schema.json",
+  "generated/schemas/component-variants.schema.json",
+  "generated/schemas/component-coverage.schema.json",
 ] as const
 
 export interface ArtifactTexts {
@@ -799,27 +799,27 @@ export function serializeArtifacts(payloads: ArtifactPayloads): ArtifactTexts {
 export function writeArtifacts(texts: ArtifactTexts): void {
   fs.mkdirSync(GENERATED_DIR, { recursive: true })
   fs.writeFileSync(
-    path.join(GENERATED_DIR, 'component-manifests.json'),
-    texts.manifests,
+    path.join(GENERATED_DIR, "component-manifests.json"),
+    texts.manifests
   )
   fs.writeFileSync(
-    path.join(GENERATED_DIR, 'component-variants.json'),
-    texts.variants,
+    path.join(GENERATED_DIR, "component-variants.json"),
+    texts.variants
   )
   fs.writeFileSync(
-    path.join(GENERATED_DIR, 'component-coverage.json'),
-    texts.coverage,
+    path.join(GENERATED_DIR, "component-coverage.json"),
+    texts.coverage
   )
 }
 
 export function detectArtifactDrift(
   texts: ArtifactTexts,
-  baseDirectory = GENERATED_DIR,
+  baseDirectory = GENERATED_DIR
 ): string[] {
   const checks: Array<{ name: keyof ArtifactTexts; file: string }> = [
-    { name: 'manifests', file: 'component-manifests.json' },
-    { name: 'variants', file: 'component-variants.json' },
-    { name: 'coverage', file: 'component-coverage.json' },
+    { name: "manifests", file: "component-manifests.json" },
+    { name: "variants", file: "component-variants.json" },
+    { name: "coverage", file: "component-coverage.json" },
   ]
 
   const drifted: string[] = []
@@ -830,7 +830,7 @@ export function detectArtifactDrift(
       drifted.push(check.file)
       continue
     }
-    const existing = fs.readFileSync(absolutePath, 'utf8')
+    const existing = fs.readFileSync(absolutePath, "utf8")
     if (existing !== texts[check.name]) {
       drifted.push(check.file)
     }
@@ -856,7 +856,7 @@ export async function buildGovernanceModel(): Promise<{
   for (const primitive of registryPrimitives) {
     if (!fs.existsSync(primitive.manifestFileAbsolute)) {
       throw new Error(
-        `Missing colocated manifest for "${primitive.component}": ${primitive.manifestFileRelative}`,
+        `Missing colocated manifest for "${primitive.component}": ${primitive.manifestFileRelative}`
       )
     }
     const manifest = await loadManifestModule(primitive.manifestFileAbsolute)
@@ -867,7 +867,7 @@ export async function buildGovernanceModel(): Promise<{
   return {
     registryPrimitives,
     components: components.sort((left, right) =>
-      left.component.localeCompare(right.component),
+      left.component.localeCompare(right.component)
     ),
   }
 }

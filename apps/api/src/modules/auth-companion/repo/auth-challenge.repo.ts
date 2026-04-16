@@ -5,14 +5,11 @@ export interface StoredAuthChallengeRecord {
   readonly subjectUserId: string | null
   readonly subjectEmail: string
   readonly method: AuthChallengeMethod
-  readonly status:
-    | "issued"
-    | "verified"
-    | "consumed"
-    | "expired"
-    | "cancelled"
+  readonly status: "issued" | "verified" | "consumed" | "expired" | "cancelled"
   readonly expiresAt: Date
   readonly attemptsRemaining: number
+  /** Present for `totp` / `email_otp` challenges (server-only digest, never sent to client). */
+  readonly otpDigest?: string | null
 }
 
 type InternalChallengeRow = StoredAuthChallengeRecord & {
@@ -20,8 +17,16 @@ type InternalChallengeRow = StoredAuthChallengeRecord & {
     readonly trustLevel: "low" | "medium" | "high" | "verified"
     readonly recommendedMethod: "passkey" | "password" | "social"
     readonly reasons: readonly string[]
+    readonly otpDigest?: string
   }
   readonly deviceContextHash: string | null
+}
+
+export type AuthChallengeRiskSnapshotInput = {
+  trustLevel: "low" | "medium" | "high" | "verified"
+  recommendedMethod: "passkey" | "password" | "social"
+  reasons: readonly string[]
+  otpDigest?: string
 }
 
 export interface AuthChallengeRepo {
@@ -31,11 +36,7 @@ export interface AuthChallengeRepo {
     method: AuthChallengeMethod
     expiresAt: Date
     attemptsRemaining: number
-    riskSnapshot: {
-      trustLevel: "low" | "medium" | "high" | "verified"
-      recommendedMethod: "passkey" | "password" | "social"
-      reasons: readonly string[]
-    }
+    riskSnapshot: AuthChallengeRiskSnapshotInput
     deviceContextHash: string | null
   }): Promise<{
     challengeId: string
@@ -62,6 +63,7 @@ function toRecord(row: InternalChallengeRow): StoredAuthChallengeRecord {
     status: row.status,
     expiresAt: row.expiresAt,
     attemptsRemaining: row.attemptsRemaining,
+    otpDigest: row.riskSnapshot.otpDigest ?? null,
   }
 }
 
@@ -74,11 +76,7 @@ export class InMemoryAuthChallengeRepo implements AuthChallengeRepo {
     method: AuthChallengeMethod
     expiresAt: Date
     attemptsRemaining: number
-    riskSnapshot: {
-      trustLevel: "low" | "medium" | "high" | "verified"
-      recommendedMethod: "passkey" | "password" | "social"
-      reasons: readonly string[]
-    }
+    riskSnapshot: AuthChallengeRiskSnapshotInput
     deviceContextHash: string | null
   }): Promise<{
     challengeId: string
@@ -98,6 +96,9 @@ export class InMemoryAuthChallengeRepo implements AuthChallengeRepo {
         trustLevel: input.riskSnapshot.trustLevel,
         recommendedMethod: input.riskSnapshot.recommendedMethod,
         reasons: [...input.riskSnapshot.reasons],
+        ...(input.riskSnapshot.otpDigest !== undefined
+          ? { otpDigest: input.riskSnapshot.otpDigest }
+          : {}),
       },
       deviceContextHash: input.deviceContextHash,
     }

@@ -257,7 +257,10 @@ export function loginFlowChallengeSummary(
       description: "Requesting a server-issued challenge for this sign-in.",
     }
   }
-  if (state.kind === "challenge-ready" || state.kind === "challenge-verifying") {
+  if (
+    state.kind === "challenge-ready" ||
+    state.kind === "challenge-verifying"
+  ) {
     return {
       title: state.prompt.title,
       description: state.prompt.description,

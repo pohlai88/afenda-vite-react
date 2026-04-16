@@ -6,13 +6,7 @@
  * so the page feels product-serious rather than slogan-heavy.
  */
 
-import {
-  Activity,
-  Eye,
-  Gauge,
-  ShieldCheck,
-  Waypoints,
-} from "lucide-react"
+import { Activity, Eye, Gauge, ShieldCheck, Waypoints } from "lucide-react"
 
 import { platformPreviewFixture } from "../data/platform-preview-fixtures"
 

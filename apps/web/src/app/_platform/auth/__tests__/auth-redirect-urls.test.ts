@@ -31,9 +31,9 @@ describe("authPostLoginPath", () => {
   })
 
   it("parses search and hash from legacy combined string", () => {
-    expect(
-      authPostLoginPath({ from: "/app/workspace-demo?tab=1#pane" })
-    ).toBe("/app/workspace-demo?tab=1#pane")
+    expect(authPostLoginPath({ from: "/app/workspace-demo?tab=1#pane" })).toBe(
+      "/app/workspace-demo?tab=1#pane"
+    )
   })
 
   it("ignores open redirects", () => {

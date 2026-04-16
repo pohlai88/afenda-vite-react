@@ -15,9 +15,9 @@ export const iconPolicy = {
   allowDynamicIconsInProductUI: false,
   requireStaticImports: true,
   allowedDynamicPathFragments: [
-    'packages/design-system/icons',
-    '/registry/',
-    '/cms/',
-    '/studio/',
+    "packages/design-system/icons",
+    "/registry/",
+    "/cms/",
+    "/studio/",
   ],
 } as const

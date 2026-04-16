@@ -12,7 +12,10 @@
  * - role-aware continuity emphasis
  */
 
-import type { PreviewRole, PreviewScenario } from "../types/platform-preview-types"
+import type {
+  PreviewRole,
+  PreviewScenario,
+} from "../types/platform-preview-types"
 
 export function getRoleIntroContent(role: PreviewRole) {
   const matrix: Record<
@@ -59,7 +62,8 @@ export function getRoleIntroContent(role: PreviewRole) {
     },
     owner: {
       eyebrow: "Business Owner lens",
-      title: "See what changed, who acted, and whether the business stayed protected.",
+      title:
+        "See what changed, who acted, and whether the business stayed protected.",
       description:
         "For owners who want clarity and confidence without wading through system detail.",
       quickLabel: "What you want in 30 seconds",
@@ -74,7 +78,8 @@ export function getRoleIntroContent(role: PreviewRole) {
     },
     operator: {
       eyebrow: "Operator / Staff lens",
-      title: "See the next action, the missing context, and what happens after you finish.",
+      title:
+        "See the next action, the missing context, and what happens after you finish.",
       description:
         "For people doing the work who need the next step obvious under pressure.",
       quickLabel: "What you want in 30 seconds",
@@ -126,7 +131,8 @@ export function getRoleClosingContent(role: PreviewRole) {
     },
     owner: {
       eyebrow: "Owner next step",
-      title: "See whether AFENDA makes business change understandable without overload.",
+      title:
+        "See whether AFENDA makes business change understandable without overload.",
       description:
         "Walk the system as the person who needs clarity, protection, and confidence without becoming buried in system detail.",
       primaryActionLabel: "Book an owner walkthrough",
@@ -136,7 +142,8 @@ export function getRoleClosingContent(role: PreviewRole) {
     },
     operator: {
       eyebrow: "Operator next step",
-      title: "See whether AFENDA makes the work clearer while preserving what matters upstream.",
+      title:
+        "See whether AFENDA makes the work clearer while preserving what matters upstream.",
       description:
         "Walk the next action, the missing context, and the handoff path as the person doing the work under real operational pressure.",
       primaryActionLabel: "Book an operator walkthrough",
@@ -245,7 +252,7 @@ export function getRoleFooterStripContent(role: PreviewRole) {
 
 export function getScenarioRoleTeaser(
   role: PreviewRole,
-  scenario: PreviewScenario,
+  scenario: PreviewScenario
 ) {
   const matrix: Record<PreviewRole, Record<PreviewScenario, string>> = {
     controller: {
@@ -296,32 +303,99 @@ export function getScenarioRoleTeaser(
 export function getScenarioContinuityPreview(
   role: PreviewRole,
   scenario: PreviewScenario,
-  continuity: ReadonlyArray<string>,
+  continuity: ReadonlyArray<string>
 ) {
-  const priority: Record<PreviewRole, Record<PreviewScenario, readonly string[]>> = {
+  const priority: Record<
+    PreviewRole,
+    Record<PreviewScenario, readonly string[]>
+  > = {
     controller: {
-      "payment-release": ["Control checks passed", "Ready for release", "Audit trace preserved"],
-      "month-end-close": ["Exceptions reviewed", "Approvals aligned", "Close movement verified"],
-      "audit-review": ["Control posture inspected", "Actor trace confirmed", "Lineage accepted"],
-      "integration-exception": ["Mismatch identified", "Risk escalated cleanly", "Business meaning retained"],
+      "payment-release": [
+        "Control checks passed",
+        "Ready for release",
+        "Audit trace preserved",
+      ],
+      "month-end-close": [
+        "Exceptions reviewed",
+        "Approvals aligned",
+        "Close movement verified",
+      ],
+      "audit-review": [
+        "Control posture inspected",
+        "Actor trace confirmed",
+        "Lineage accepted",
+      ],
+      "integration-exception": [
+        "Mismatch identified",
+        "Risk escalated cleanly",
+        "Business meaning retained",
+      ],
     },
     executive: {
-      "payment-release": ["Ready for release", "Audit trace preserved", "Control checks passed"],
-      "month-end-close": ["Executive confidence updated", "Close movement verified", "Approvals aligned"],
-      "audit-review": ["Lineage accepted", "Control posture inspected", "Actor trace confirmed"],
-      "integration-exception": ["Business meaning retained", "Risk escalated cleanly", "Signal degraded"],
+      "payment-release": [
+        "Ready for release",
+        "Audit trace preserved",
+        "Control checks passed",
+      ],
+      "month-end-close": [
+        "Executive confidence updated",
+        "Close movement verified",
+        "Approvals aligned",
+      ],
+      "audit-review": [
+        "Lineage accepted",
+        "Control posture inspected",
+        "Actor trace confirmed",
+      ],
+      "integration-exception": [
+        "Business meaning retained",
+        "Risk escalated cleanly",
+        "Signal degraded",
+      ],
     },
     owner: {
-      "payment-release": ["Ready for release", "Audit trace preserved", "Normalized"],
-      "month-end-close": ["Close movement verified", "Executive confidence updated", "Exceptions reviewed"],
-      "audit-review": ["Commentary preserved", "Lineage accepted", "Actor trace confirmed"],
-      "integration-exception": ["Business meaning retained", "Operator action guided", "Risk escalated cleanly"],
+      "payment-release": [
+        "Ready for release",
+        "Audit trace preserved",
+        "Normalized",
+      ],
+      "month-end-close": [
+        "Close movement verified",
+        "Executive confidence updated",
+        "Exceptions reviewed",
+      ],
+      "audit-review": [
+        "Commentary preserved",
+        "Lineage accepted",
+        "Actor trace confirmed",
+      ],
+      "integration-exception": [
+        "Business meaning retained",
+        "Operator action guided",
+        "Risk escalated cleanly",
+      ],
     },
     operator: {
-      "payment-release": ["Webhook received", "Normalized", "Ready for release"],
-      "month-end-close": ["Entity scope set", "Exceptions reviewed", "Approvals aligned"],
-      "audit-review": ["Source event located", "Commentary preserved", "Actor trace confirmed"],
-      "integration-exception": ["Signal degraded", "Operator action guided", "Mismatch identified"],
+      "payment-release": [
+        "Webhook received",
+        "Normalized",
+        "Ready for release",
+      ],
+      "month-end-close": [
+        "Entity scope set",
+        "Exceptions reviewed",
+        "Approvals aligned",
+      ],
+      "audit-review": [
+        "Source event located",
+        "Commentary preserved",
+        "Actor trace confirmed",
+      ],
+      "integration-exception": [
+        "Signal degraded",
+        "Operator action guided",
+        "Mismatch identified",
+      ],
     },
   }
 

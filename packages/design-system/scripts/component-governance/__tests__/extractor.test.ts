@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from "vitest"
 
-import { buildGovernanceModel } from '../core'
+import { buildGovernanceModel } from "../core"
 
 async function getComponent(name: string) {
   const { components } = await buildGovernanceModel()
@@ -11,39 +11,39 @@ async function getComponent(name: string) {
   return component
 }
 
-describe('component governance extractor', { timeout: 60_000 }, () => {
-  it('parses CVA variants/defaults for button', async () => {
-    const button = await getComponent('button')
+describe("component governance extractor", { timeout: 60_000 }, () => {
+  it("parses CVA variants/defaults for button", async () => {
+    const button = await getComponent("button")
 
     expect(button.cvaDefinitions.length).toBe(1)
-    expect(button.cvaDefinitions[0]?.variants.variant).toContain('default')
-    expect(button.cvaDefinitions[0]?.variants.size).toContain('lg')
-    expect(button.cvaDefinitions[0]?.defaultVariants.variant).toBe('default')
-    expect(button.cvaDefinitions[0]?.defaultVariants.size).toBe('default')
+    expect(button.cvaDefinitions[0]?.variants.variant).toContain("default")
+    expect(button.cvaDefinitions[0]?.variants.size).toContain("lg")
+    expect(button.cvaDefinitions[0]?.defaultVariants.variant).toBe("default")
+    expect(button.cvaDefinitions[0]?.defaultVariants.size).toBe("default")
   })
 
-  it('parses multiple CVA definitions for input-group and item', async () => {
-    const inputGroup = await getComponent('input-group')
-    const item = await getComponent('item')
+  it("parses multiple CVA definitions for input-group and item", async () => {
+    const inputGroup = await getComponent("input-group")
+    const item = await getComponent("item")
 
     expect(inputGroup.cvaDefinitions.length).toBeGreaterThanOrEqual(2)
     expect(item.cvaDefinitions.length).toBeGreaterThanOrEqual(2)
   })
 
-  it('supports CVA definitions without explicit defaults', async () => {
-    const navigationMenu = await getComponent('navigation-menu')
+  it("supports CVA definitions without explicit defaults", async () => {
+    const navigationMenu = await getComponent("navigation-menu")
 
     expect(navigationMenu.cvaDefinitions.length).toBe(1)
     expect(navigationMenu.cvaDefinitions[0]?.defaultVariants).toEqual({})
   })
 
-  it('supports non-CVA primitives', async () => {
-    const input = await getComponent('input')
-    const table = await getComponent('table')
+  it("supports non-CVA primitives", async () => {
+    const input = await getComponent("input")
+    const table = await getComponent("table")
 
     expect(input.cvaDefinitions).toEqual([])
     expect(table.cvaDefinitions).toEqual([])
-    expect(input.dataSlots).toContain('input')
-    expect(table.dataSlots).toContain('table')
+    expect(input.dataSlots).toContain("input")
+    expect(table.dataSlots).toContain("table")
   })
 })

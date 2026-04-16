@@ -50,6 +50,8 @@ export const authChallenges = pgTable(
         trustLevel: "low" | "medium" | "high" | "verified"
         recommendedMethod: "passkey" | "password" | "social"
         reasons: readonly string[]
+        /** HMAC-SHA256 hex digest of the issued OTP (totp / email_otp only). Server-only. */
+        otpDigest?: string
       }>()
       .notNull(),
 

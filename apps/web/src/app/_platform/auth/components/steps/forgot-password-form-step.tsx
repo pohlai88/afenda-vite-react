@@ -1,8 +1,4 @@
-import {
-  Button,
-  Input,
-  Label,
-} from "@afenda/design-system/ui-primitives"
+import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
 type ForgotPasswordFormStepProps = {
   readonly email: string
@@ -14,14 +10,8 @@ type ForgotPasswordFormStepProps = {
 }
 
 export function ForgotPasswordFormStep(props: ForgotPasswordFormStepProps) {
-  const {
-    email,
-    pending,
-    emailLabel,
-    submitLabel,
-    onEmailChange,
-    onSubmit,
-  } = props
+  const { email, pending, emailLabel, submitLabel, onEmailChange, onSubmit } =
+    props
 
   return (
     <form

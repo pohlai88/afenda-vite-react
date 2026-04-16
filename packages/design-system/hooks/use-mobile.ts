@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from "react"
 
 const DEFAULT_MOBILE_BREAKPOINT = 768
 
@@ -10,9 +10,9 @@ export function useIsMobile(mobileBreakpoint = DEFAULT_MOBILE_BREAKPOINT) {
     const onChange = () => {
       setIsMobile(window.innerWidth < mobileBreakpoint)
     }
-    mql.addEventListener('change', onChange)
+    mql.addEventListener("change", onChange)
     setIsMobile(window.innerWidth < mobileBreakpoint)
-    return () => mql.removeEventListener('change', onChange)
+    return () => mql.removeEventListener("change", onChange)
   }, [mobileBreakpoint])
 
   return !!isMobile

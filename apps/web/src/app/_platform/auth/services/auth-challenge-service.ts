@@ -4,12 +4,17 @@ import {
   resolveApiV1Path,
 } from "../../api-client"
 
-import type { AuthApiEnvelope, AuthApiSuccessEnvelope } from "../contracts/auth-api"
+import type {
+  AuthApiEnvelope,
+  AuthApiSuccessEnvelope,
+} from "../contracts/auth-api"
 import type {
   AuthChallengeMethod,
   AuthChallengeStartPayload,
   AuthChallengeTicket,
   AuthChallengeVerifyPayload,
+  AuthChallengeVerifyProof,
+  PasskeyCredentialProof,
 } from "../contracts/auth-challenge-ticket"
 import { isAuthApiErrorEnvelope } from "../contracts/auth-api"
 import { normalizeAuthServiceErrorCode } from "./auth-error-service"
@@ -59,7 +64,10 @@ async function postEnvelope<T>(
   body: Record<string, unknown>
 ): Promise<AuthApiSuccessEnvelope<T>> {
   const client = getSharedApiClient()
-  const payload = await client.post<AuthApiEnvelope<T>>(resolveApiV1Path(path), body)
+  const payload = await client.post<AuthApiEnvelope<T>>(
+    resolveApiV1Path(path),
+    body
+  )
 
   if (isAuthApiErrorEnvelope(payload)) {
     throw new Error(payload.error.code)
@@ -92,16 +100,37 @@ export async function requestAuthChallenge(
   }
 }
 
+function buildVerifyBody(
+  ticket: AuthChallengeTicket,
+  proof: AuthChallengeVerifyProof
+): Record<string, unknown> {
+  const challengeId = ticket.challengeId
+
+  if (proof.kind === "passkey") {
+    return {
+      challengeId,
+      method: "passkey",
+      credential: proof.credential,
+    }
+  }
+
+  const code = proof.code.trim()
+  return {
+    challengeId,
+    method: ticket.method,
+    proof: { code },
+  }
+}
+
 export async function verifyAuthChallengeTicket(
-  ticket: AuthChallengeTicket
+  ticket: AuthChallengeTicket,
+  proof: AuthChallengeVerifyProof
 ): Promise<VerifyAuthChallengeTicketResult> {
   try {
+    const body = buildVerifyBody(ticket, proof)
     const envelope = await postEnvelope<AuthChallengeVerifyPayload>(
       "/auth/challenge/verify",
-      {
-        challengeId: ticket.challengeId,
-        method: ticket.method,
-      }
+      body
     )
 
     return {

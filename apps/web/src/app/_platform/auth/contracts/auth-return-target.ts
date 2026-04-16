@@ -153,9 +153,7 @@ export function resolveAuthPostLoginDestination(
   state: unknown,
   fallbackPath: string
 ): string {
-  return authReturnTargetToPath(
-    normalizeAuthReturnTarget(state, fallbackPath)
-  )
+  return authReturnTargetToPath(normalizeAuthReturnTarget(state, fallbackPath))
 }
 
 /** @deprecated Use {@link resolveAuthPostLoginDestination} */

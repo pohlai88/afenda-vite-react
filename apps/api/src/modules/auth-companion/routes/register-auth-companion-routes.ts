@@ -42,10 +42,13 @@ export function registerAuthCompanionPublicRoutes(
   const { intelligenceRoutes, challengeRoutes } = deps.authCompanion.routes
 
   app.get("/v1/auth/intelligence", async (c) => {
-    const session = await deps.auth.api.getSession({ headers: c.req.raw.headers })
+    const session = await deps.auth.api.getSession({
+      headers: c.req.raw.headers,
+    })
     const result = await intelligenceRoutes.getSnapshot({
       requestId: c.req.header("x-request-id") ?? undefined,
       actorUserId: session?.user.id ?? null,
+      session: session ?? null,
       ipAddress: c.req.header("x-forwarded-for") ?? null,
       userAgent: c.req.header("user-agent") ?? null,
     })
@@ -53,7 +56,9 @@ export function registerAuthCompanionPublicRoutes(
   })
 
   app.post("/v1/auth/challenge/start", async (c) => {
-    const session = await deps.auth.api.getSession({ headers: c.req.raw.headers })
+    const session = await deps.auth.api.getSession({
+      headers: c.req.raw.headers,
+    })
     let body: unknown = null
     try {
       body = await c.req.json()

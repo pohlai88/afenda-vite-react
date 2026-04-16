@@ -1,4 +1,4 @@
-import { buildAuthSessionsPayload } from "../../../auth-ecosystem.js"
+import { buildDemoAuthSessionsPayload } from "../../../auth-ecosystem.js"
 import { AuthCompanionError } from "../errors/auth-companion-error.js"
 import {
   getAuthSessionRequestContext,
@@ -49,7 +49,8 @@ export interface AuthSessionRevoker {
 }
 
 /** ALS demo + legacy combined adapter. */
-export interface AuthSessionRepo extends AuthSessionReader, AuthSessionRevoker {}
+export interface AuthSessionRepo
+  extends AuthSessionReader, AuthSessionRevoker {}
 
 export type { AuthSessionRequestContext } from "../utils/auth-request-context.js"
 
@@ -72,7 +73,7 @@ export class AlsBackedDemoAuthSessionRepo implements AuthSessionRepo {
 
   private payload() {
     const { session, userAgent, forwardedFor } = this.requireContext()
-    return buildAuthSessionsPayload({
+    return buildDemoAuthSessionsPayload({
       session,
       userAgent,
       forwardedFor,
@@ -91,8 +92,7 @@ export class AlsBackedDemoAuthSessionRepo implements AuthSessionRepo {
       location: s.location,
       createdAt: new Date(s.createdAt),
       lastActiveAt: new Date(s.lastActiveAt),
-      isCurrent:
-        currentId !== undefined ? s.id === currentId : s.isCurrent,
+      isCurrent: currentId !== undefined ? s.id === currentId : s.isCurrent,
       risk: s.risk,
     }))
   }

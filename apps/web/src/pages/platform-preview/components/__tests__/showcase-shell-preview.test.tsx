@@ -1,3 +1,4 @@
+import type { HTMLAttributes, PropsWithChildren } from "react"
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
@@ -6,13 +7,17 @@ import { ShowcaseShellPreview } from "../showcase-shell-preview"
 vi.mock("framer-motion", async () => {
   const React = await import("react")
 
+  type PassthroughProps = PropsWithChildren<Record<string, unknown>>
+
   const passthrough =
     (tag: string) =>
-    ({ children, ...props }: any) =>
-      React.createElement(tag, props, children)
+    ({ children, ...props }: PassthroughProps) =>
+      React.createElement(tag, props as HTMLAttributes<HTMLElement>, children)
 
   return {
-    AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => (
+      <>{children}</>
+    ),
     motion: {
       div: passthrough("div"),
       article: passthrough("article"),
@@ -35,10 +40,12 @@ describe("ShowcaseShellPreview", () => {
           density: "compact",
           stress: "default",
         }}
-      />,
+      />
     )
 
-    expect(screen.getByText("Control posture before approval")).toBeInTheDocument()
+    expect(
+      screen.getByText("Control posture before approval")
+    ).toBeInTheDocument()
     expect(screen.getByText("Evidence focus for approval")).toBeInTheDocument()
   })
 
@@ -53,13 +60,15 @@ describe("ShowcaseShellPreview", () => {
           density: "compact",
           stress: "default",
         }}
-      />,
+      />
     )
 
     expect(
-      screen.getByText("Roll-up confidence without losing the business truth"),
+      screen.getByText("Roll-up confidence without losing the business truth")
     ).toBeInTheDocument()
-    expect(screen.getAllByText("Signal focus for command").length).toBeGreaterThan(0)
+    expect(
+      screen.getAllByText("Signal focus for command").length
+    ).toBeGreaterThan(0)
   })
 
   it("renders empty-state copy when stress is empty", () => {
@@ -73,10 +82,12 @@ describe("ShowcaseShellPreview", () => {
           density: "compact",
           stress: "empty",
         }}
-      />,
+      />
     )
 
-    expect(screen.getByText("Quiet surface, still readable")).toBeInTheDocument()
+    expect(
+      screen.getByText("Quiet surface, still readable")
+    ).toBeInTheDocument()
   })
 
   it("degrades ingestion signal when stress is degraded", () => {
@@ -90,7 +101,7 @@ describe("ShowcaseShellPreview", () => {
           density: "compact",
           stress: "degraded",
         }}
-      />,
+      />
     )
 
     expect(screen.getByText("Degraded")).toBeInTheDocument()
@@ -110,13 +121,13 @@ describe("ShowcaseShellPreview", () => {
           stress: "default",
         }}
         onRoleJump={onRoleJump}
-      />,
+      />
     )
 
     fireEvent.click(
       screen.getByRole("button", {
         name: /see how this release looks to executive/i,
-      }),
+      })
     )
 
     expect(onRoleJump).toHaveBeenCalled()

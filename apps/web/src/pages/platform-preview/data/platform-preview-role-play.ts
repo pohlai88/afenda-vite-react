@@ -35,13 +35,15 @@ export const previewRoleCards: ReadonlyArray<PreviewRoleCard> = [
       label: "Curious what your CFO sees from this same release?",
       targetRole: "executive",
       targetScenario: "month-end-close",
-      teaser: "See how one release becomes entity-level confidence and exception posture.",
+      teaser:
+        "See how one release becomes entity-level confidence and exception posture.",
     },
     bridgeDown: {
       label: "See what your operator must resolve before you approve.",
       targetRole: "operator",
       targetScenario: "payment-release",
-      teaser: "Drop into the working surface where the next action and missing context appear.",
+      teaser:
+        "Drop into the working surface where the next action and missing context appear.",
     },
   },
   {
@@ -62,7 +64,8 @@ export const previewRoleCards: ReadonlyArray<PreviewRoleCard> = [
       label: "See the controller’s decision surface beneath this summary.",
       targetRole: "controller",
       targetScenario: "payment-release",
-      teaser: "Move from roll-up confidence into the actual approval posture that creates it.",
+      teaser:
+        "Move from roll-up confidence into the actual approval posture that creates it.",
     },
   },
   {
@@ -70,9 +73,11 @@ export const previewRoleCards: ReadonlyArray<PreviewRoleCard> = [
     label: "Business Owner",
     shortLabel: "Owner",
     iconKey: "briefcase-business",
-    summary: "See what changed, who acted, and whether the business is protected.",
+    summary:
+      "See what changed, who acted, and whether the business is protected.",
     hook: "You care about clarity, confidence, and knowing the business is not drifting into blind spots.",
-    question: "Can I understand what matters without learning the whole system?",
+    question:
+      "Can I understand what matters without learning the whole system?",
     whatYouSee: [
       "business impact without system overload",
       "who acted and whether controls held",
@@ -83,13 +88,15 @@ export const previewRoleCards: ReadonlyArray<PreviewRoleCard> = [
       label: "See the executive roll-up this operating truth becomes.",
       targetRole: "executive",
       targetScenario: "month-end-close",
-      teaser: "Jump from business clarity into the broader confidence and exposure view.",
+      teaser:
+        "Jump from business clarity into the broader confidence and exposure view.",
     },
     bridgeDown: {
       label: "See what your finance lead checks before sign-off.",
       targetRole: "controller",
       targetScenario: "payment-release",
-      teaser: "Reveal the control surface that sits between work completion and approval.",
+      teaser:
+        "Reveal the control surface that sits between work completion and approval.",
     },
   },
   {
@@ -97,7 +104,8 @@ export const previewRoleCards: ReadonlyArray<PreviewRoleCard> = [
     label: "Operator / Staff",
     shortLabel: "Operator",
     iconKey: "users",
-    summary: "See the next action, the context, and what happens after you complete it.",
+    summary:
+      "See the next action, the context, and what happens after you complete it.",
     hook: "You care about doing the work clearly, resolving exceptions quickly, and not getting lost in system noise.",
     question: "What do I do next, and does the system help me do it right?",
     whatYouSee: [
@@ -110,78 +118,83 @@ export const previewRoleCards: ReadonlyArray<PreviewRoleCard> = [
       label: "See what your controller reviews before approval.",
       targetRole: "controller",
       targetScenario: "payment-release",
-      teaser: "Move upward into readiness, evidence continuity, and release posture.",
+      teaser:
+        "Move upward into readiness, evidence continuity, and release posture.",
     },
     bridgeDown: {
       label: "See the business owner’s simplified confidence view.",
       targetRole: "owner",
       targetScenario: "audit-review",
-      teaser: "Switch to the simpler business-facing view of what changed and why it is safe.",
+      teaser:
+        "Switch to the simpler business-facing view of what changed and why it is safe.",
     },
   },
 ] as const
 
-export const previewScenarioDefinitions: ReadonlyArray<PreviewScenarioDefinition> = [
-  {
-    id: "payment-release",
-    label: "Payment release",
-    summary:
-      "A payment moves through readiness, control, and treasury handoff under close pressure.",
-    continuity: [
-      "Webhook received",
-      "Normalized",
-      "Control checks passed",
-      "Ready for release",
-      "Audit trace preserved",
-    ],
-  },
-  {
-    id: "month-end-close",
-    label: "Month-end close",
-    summary:
-      "Close activities roll across teams while scope, posture, and evidence remain visible.",
-    continuity: [
-      "Entity scope set",
-      "Exceptions reviewed",
-      "Approvals aligned",
-      "Close movement verified",
-      "Executive confidence updated",
-    ],
-  },
-  {
-    id: "audit-review",
-    label: "Audit review",
-    summary:
-      "An auditor inspects the event path without reconstructing scattered fragments from other tools.",
-    continuity: [
-      "Source event located",
-      "Actor trace confirmed",
-      "Control posture inspected",
-      "Commentary preserved",
-      "Lineage accepted",
-    ],
-  },
-  {
-    id: "integration-exception",
-    label: "Integration exception",
-    summary:
-      "A connector degrades, but business continuity and traceability still remain visible.",
-    continuity: [
-      "Signal degraded",
-      "Mismatch identified",
-      "Business meaning retained",
-      "Operator action guided",
-      "Risk escalated cleanly",
-    ],
-  },
-] as const
+export const previewScenarioDefinitions: ReadonlyArray<PreviewScenarioDefinition> =
+  [
+    {
+      id: "payment-release",
+      label: "Payment release",
+      summary:
+        "A payment moves through readiness, control, and treasury handoff under close pressure.",
+      continuity: [
+        "Webhook received",
+        "Normalized",
+        "Control checks passed",
+        "Ready for release",
+        "Audit trace preserved",
+      ],
+    },
+    {
+      id: "month-end-close",
+      label: "Month-end close",
+      summary:
+        "Close activities roll across teams while scope, posture, and evidence remain visible.",
+      continuity: [
+        "Entity scope set",
+        "Exceptions reviewed",
+        "Approvals aligned",
+        "Close movement verified",
+        "Executive confidence updated",
+      ],
+    },
+    {
+      id: "audit-review",
+      label: "Audit review",
+      summary:
+        "An auditor inspects the event path without reconstructing scattered fragments from other tools.",
+      continuity: [
+        "Source event located",
+        "Actor trace confirmed",
+        "Control posture inspected",
+        "Commentary preserved",
+        "Lineage accepted",
+      ],
+    },
+    {
+      id: "integration-exception",
+      label: "Integration exception",
+      summary:
+        "A connector degrades, but business continuity and traceability still remain visible.",
+      continuity: [
+        "Signal degraded",
+        "Mismatch identified",
+        "Business meaning retained",
+        "Operator action guided",
+        "Risk escalated cleanly",
+      ],
+    },
+  ] as const
 
 export function getPreviewRoleCard(role: PreviewRole): PreviewRoleCard {
-  return previewRoleCards.find((item) => item.id === role) ?? previewRoleCards[0]
+  return (
+    previewRoleCards.find((item) => item.id === role) ?? previewRoleCards[0]
+  )
 }
 
 export function getPreviewScenarioDefinition(
-  scenario: PreviewScenario,
+  scenario: PreviewScenario
 ): PreviewScenarioDefinition {
   return (
     previewScenarioDefinitions.find((item) => item.id === scenario) ??

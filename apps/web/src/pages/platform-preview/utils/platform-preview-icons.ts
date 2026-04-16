@@ -22,7 +22,10 @@ import {
   Wallet,
 } from "lucide-react"
 
-import type { PreviewRole, PreviewScenario } from "../types/platform-preview-types"
+import type {
+  PreviewRole,
+  PreviewScenario,
+} from "../types/platform-preview-types"
 
 type IconComponent = ComponentType<{ className?: string }>
 

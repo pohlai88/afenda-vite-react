@@ -61,7 +61,9 @@ export function SessionContinuityPanel(props: SessionContinuityPanelProps) {
 
         {model.challenge ? (
           <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-            <p className="font-medium text-foreground">{model.challenge.title}</p>
+            <p className="font-medium text-foreground">
+              {model.challenge.title}
+            </p>
             <p>{model.challenge.description}</p>
 
             {model.challenge.expiresAtIso ? (

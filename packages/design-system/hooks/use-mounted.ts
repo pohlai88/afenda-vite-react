@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from "react"
 
 /**
  * Returns `true` after the first client commit. Use for `next-themes` and other

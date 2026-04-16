@@ -7,7 +7,10 @@ import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "node:url"
 
-const repoRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../..")
+const repoRoot = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../.."
+)
 const ROOT = path.join(repoRoot, "apps/web/src")
 
 /** Default Tailwind spacing scale → rem (spacing unit = 0.25rem). */
@@ -69,7 +72,11 @@ function replacePrefix(
         ? `(?<!min-)(?<!max-)\\b((?:[a-z]+:)+)?${prefix}-${esc}\\b`
         : `\\b((?:[a-z]+:)+)?${prefix}-${esc}\\b`
     const re = new RegExp(base, "g")
-    c = c.replace(re, (_m, variants: string | undefined) => `${variants ?? ""}${prefix}-[${rem}]`)
+    c = c.replace(
+      re,
+      (_m, variants: string | undefined) =>
+        `${variants ?? ""}${prefix}-[${rem}]`
+    )
   }
   return c
 }

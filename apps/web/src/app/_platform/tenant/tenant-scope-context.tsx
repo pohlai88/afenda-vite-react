@@ -200,7 +200,14 @@ export function TenantScopeProvider(props: { readonly children: ReactNode }) {
       }
     }
     return { status: "idle" }
-  }, [data?.session, phase, loadError, snapshot, setSelectedTenantId, retryLoad])
+  }, [
+    data?.session,
+    phase,
+    loadError,
+    snapshot,
+    setSelectedTenantId,
+    retryLoad,
+  ])
 
   return (
     <TenantScopeContext.Provider value={value}>

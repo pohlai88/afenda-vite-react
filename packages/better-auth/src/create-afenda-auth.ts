@@ -1,5 +1,7 @@
+import { passkey } from "@better-auth/passkey"
 import { createDbClient, type DatabaseClient } from "@afenda/database"
 import { betterAuth } from "better-auth"
+import { twoFactor } from "better-auth/plugins"
 import type { Pool } from "pg"
 
 import { createAfendaDatabaseAuthHooks } from "./auth-database-audit-hooks.js"
@@ -36,6 +38,18 @@ function resolveBaseURL(): string {
 }
 
 /** Extra allowed `Origin` values (CSRF). Defaults cover local Vite + direct API calls. */
+function resolvePasskeyRpId(): string {
+  const fromEnv = process.env.AFENDA_AUTH_PASSKEY_RP_ID?.trim()
+  if (fromEnv) {
+    return fromEnv
+  }
+  try {
+    return new URL(resolveBaseURL()).hostname
+  } catch {
+    return "localhost"
+  }
+}
+
 function resolveTrustedOrigins(): string[] {
   const raw = process.env.BETTER_AUTH_TRUSTED_ORIGINS?.trim()
   if (raw) {
@@ -101,6 +115,25 @@ export function createAfendaAuth(pool: Pool, db?: DatabaseClient) {
     console.info(`[afenda/auth] capability hooks: ${summary}`)
   }
 
+  const plugins = [
+    ...(capabilityHooks.passkeyEnabled
+      ? [
+          passkey({
+            rpID: resolvePasskeyRpId(),
+            rpName: process.env.AFENDA_AUTH_PASSKEY_RP_NAME?.trim() || "Afenda",
+            origin: resolveBaseURL(),
+          }),
+        ]
+      : []),
+    ...(capabilityHooks.mfaEnabled
+      ? [
+          twoFactor({
+            issuer: process.env.AFENDA_AUTH_MFA_ISSUER?.trim() || "Afenda",
+          }),
+        ]
+      : []),
+  ]
+
   return betterAuth({
     appName: "Afenda",
     database: pool,
@@ -158,5 +191,6 @@ export function createAfendaAuth(pool: Pool, db?: DatabaseClient) {
       },
     },
     ...(Object.keys(socialProviders).length > 0 ? { socialProviders } : {}),
+    ...(plugins.length > 0 ? { plugins } : {}),
   })
 }

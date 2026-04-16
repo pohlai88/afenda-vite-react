@@ -5,7 +5,7 @@ import { createAuthChallengeRoutes } from "../routes/auth-challenge.route.js"
 import type { AuthChallengeService } from "../services/auth-challenge.service.js"
 
 describe("createAuthChallengeRoutes", () => {
-  it("maps invalid body to 400", async () => {
+  it("maps invalid start body to 400", async () => {
     const challengeService = {
       startChallenge: vi.fn(),
       verifyChallenge: vi.fn(),
@@ -19,9 +19,25 @@ describe("createAuthChallengeRoutes", () => {
       userAgent: null,
     })
     expect(res.status).toBe(400)
-    expect(
-      "error" in res.body ? res.body.error.code : ""
-    ).toBe("auth.challenge.start.invalid_body")
+    expect("error" in res.body ? res.body.error.code : "").toBe(
+      "auth.challenge.start.invalid_body"
+    )
+  })
+
+  it("maps invalid verify body to 400 (missing proof for totp)", async () => {
+    const challengeService = {
+      startChallenge: vi.fn(),
+      verifyChallenge: vi.fn(),
+    } as unknown as AuthChallengeService
+    const routes = createAuthChallengeRoutes({ challengeService })
+    const res = await routes.verify({
+      body: { challengeId: "x", method: "totp" },
+      requestId: undefined,
+    })
+    expect(res.status).toBe(400)
+    expect("error" in res.body ? res.body.error.code : "").toBe(
+      "auth.challenge.verify.invalid_body"
+    )
   })
 
   it("maps service not_found to 404", async () => {
@@ -37,7 +53,7 @@ describe("createAuthChallengeRoutes", () => {
     } as unknown as AuthChallengeService
     const routes = createAuthChallengeRoutes({ challengeService })
     const res = await routes.verify({
-      body: { challengeId: "x", method: "totp" },
+      body: { challengeId: "x", method: "totp", proof: { code: "123456" } },
       requestId: undefined,
     })
     expect(res.status).toBe(404)
@@ -53,7 +69,7 @@ describe("createAuthChallengeRoutes", () => {
     } as unknown as AuthChallengeService
     const routes = createAuthChallengeRoutes({ challengeService })
     const res = await routes.verify({
-      body: { challengeId: "c1", method: "totp" },
+      body: { challengeId: "c1", method: "totp", proof: { code: "123456" } },
       requestId: undefined,
     })
     expect(res.status).toBe(200)

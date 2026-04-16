@@ -1,55 +1,54 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from "vitest"
 
 import {
   validatePrimitiveManifest,
   type PrimitiveGovernanceManifest,
-} from '../../../ui-primitives/manifest-contract'
+} from "../../../ui-primitives/manifest-contract"
 
-describe('manifest contract', () => {
-  it('accepts minimal required governance fields', () => {
+describe("manifest contract", () => {
+  it("accepts minimal required governance fields", () => {
     const manifest: PrimitiveGovernanceManifest = {
-      owner: 'design-system',
-      lifecycle: 'stable',
-      purpose: 'Canonical governance metadata for testing.',
+      owner: "design-system",
+      lifecycle: "stable",
+      purpose: "Canonical governance metadata for testing.",
     }
 
-    expect(() => validatePrimitiveManifest(manifest, 'test')).not.toThrow()
+    expect(() => validatePrimitiveManifest(manifest, "test")).not.toThrow()
   })
 
-  it('rejects duplicate implementation fields', () => {
+  it("rejects duplicate implementation fields", () => {
     expect(() =>
       validatePrimitiveManifest(
         {
-          owner: 'design-system',
-          lifecycle: 'stable',
-          purpose: 'invalid',
-          variants: ['default'],
+          owner: "design-system",
+          lifecycle: "stable",
+          purpose: "invalid",
+          variants: ["default"],
         },
-        'test',
-      ),
+        "test"
+      )
     ).toThrow(/not allowed in manifest/i)
   })
 
-  it('rejects missing required fields', () => {
+  it("rejects missing required fields", () => {
     expect(() =>
       validatePrimitiveManifest(
         {
-          lifecycle: 'stable',
-          purpose: 'invalid',
+          lifecycle: "stable",
+          purpose: "invalid",
         },
-        'test',
-      ),
+        "test"
+      )
     ).toThrow(/owner/i)
 
     expect(() =>
       validatePrimitiveManifest(
         {
-          owner: 'design-system',
-          lifecycle: 'stable',
+          owner: "design-system",
+          lifecycle: "stable",
         },
-        'test',
-      ),
+        "test"
+      )
     ).toThrow(/purpose/i)
   })
 })
-

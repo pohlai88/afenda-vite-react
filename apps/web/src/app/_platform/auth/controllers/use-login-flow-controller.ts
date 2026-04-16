@@ -2,10 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import { authClient } from "../auth-client"
-import {
-  authAppCallbackUrl,
-  authPostLoginPath,
-} from "../auth-redirect-urls"
+import { authAppCallbackUrl, authPostLoginPath } from "../auth-redirect-urls"
 import type {
   AuthChallengeMethod,
   AuthChallengeTicket,
@@ -96,7 +93,10 @@ function continuityFromState(state: LoginFlowState): AuthContinuityViewModel {
     }
   }
 
-  if (state.kind === "challenge-ready" || state.kind === "challenge-verifying") {
+  if (
+    state.kind === "challenge-ready" ||
+    state.kind === "challenge-verifying"
+  ) {
     return {
       currentMethod: loginMethodToRecommended(state.selectedMethod),
       currentStep: "challenge",
@@ -132,7 +132,9 @@ export type LoginFlowViewKind =
   | "challenge"
   | "complete"
 
-export function loginViewKindFromState(flow: LoginFlowState): LoginFlowViewKind {
+export function loginViewKindFromState(
+  flow: LoginFlowState
+): LoginFlowViewKind {
   switch (flow.kind) {
     case "identify":
       return "identify"
@@ -163,6 +165,8 @@ export function useLoginFlowController() {
     createInitialLoginFlowState()
   )
   const [password, setPassword] = useState("")
+  /** Six-digit OTP for `totp` / `email_otp` companion challenges (server-issued; check dev server log). */
+  const [challengeOtpCode, setChallengeOtpCode] = useState("")
   const [pending, setPending] = useState(false)
   const [statusMessage, setStatusMessage] =
     useState<AuthStatusMessageViewModel | null>(null)
@@ -263,6 +267,7 @@ export function useLoginFlowController() {
 
   function resetFlow() {
     setPassword("")
+    setChallengeOtpCode("")
     setStatusMessage(null)
     setState(createInitialLoginFlowState(currentEmail(state)))
   }
@@ -306,6 +311,7 @@ export function useLoginFlowController() {
       }
 
       setStatusMessage(null)
+      setChallengeOtpCode("")
       setState({
         kind: "challenge-ready",
         email,
@@ -318,6 +324,16 @@ export function useLoginFlowController() {
     } finally {
       setPending(false)
     }
+  }
+
+  async function switchToTotpChallenge() {
+    clearMessage()
+    if (state.kind !== "challenge-ready") {
+      return
+    }
+    const email = currentEmail(state)
+    const receipt = currentReceipt(state)
+    await startChallenge(email, "totp", receipt)
   }
 
   function selectMethod(next: AuthLoginMethod) {
@@ -497,6 +513,25 @@ export function useLoginFlowController() {
       return
     }
 
+    const { challengeMethod, ticket } = state
+
+    if (challengeMethod === "passkey") {
+      setStatusMessage({
+        tone: "warning",
+        text: "Continue with a one-time code to verify this challenge.",
+      })
+      return
+    }
+
+    const code = challengeOtpCode.trim()
+    if (!/^[0-9]{6}$/.test(code)) {
+      setStatusMessage({
+        tone: "destructive",
+        text: "Enter the 6-digit code from your authenticator or email flow.",
+      })
+      return
+    }
+
     setStatusMessage({
       tone: "muted",
       text: "Verifying challenge…",
@@ -509,7 +544,10 @@ export function useLoginFlowController() {
 
     setPending(true)
     try {
-      const result = await verifyAuthChallengeTicket(state.ticket)
+      const result = await verifyAuthChallengeTicket(ticket, {
+        kind: "otp",
+        code,
+      })
 
       if (!result.ok) {
         setStatusMessage({
@@ -556,6 +594,7 @@ export function useLoginFlowController() {
     }
 
     clearMessage()
+    setChallengeOtpCode("")
     setState(enterCredentialMethod(state.email, "password", state.receipt))
   }
 
@@ -578,6 +617,9 @@ export function useLoginFlowController() {
     submitPassword,
     signInWithProvider,
     verifyChallenge,
+    switchToTotpChallenge,
+    challengeOtpCode,
+    setChallengeOtpCode,
     clearChallenge,
     resetFlow,
   } as const

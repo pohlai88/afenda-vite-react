@@ -1,8 +1,4 @@
-import {
-  Button,
-  Input,
-  Label,
-} from "@afenda/design-system/ui-primitives"
+import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
 type ResetPasswordFormStepProps = {
   readonly password: string

@@ -5,9 +5,7 @@ import { normalizeAuthServiceErrorCode } from "../services/auth-error-service"
 import { fetchAuthIntelligenceSnapshot } from "../services/auth-intelligence-service"
 
 export function useAuthIntelligence() {
-  const [data, setData] = useState(
-    createUnavailableAuthIntelligenceSnapshot()
-  )
+  const [data, setData] = useState(createUnavailableAuthIntelligenceSnapshot())
   const [isLoading, setLoading] = useState(true)
   const [errorCode, setErrorCode] = useState<string | null>(null)
 

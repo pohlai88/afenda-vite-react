@@ -4,7 +4,10 @@ import {
   resolveApiV1Path,
 } from "../../api-client"
 
-import type { AuthApiEnvelope, AuthApiSuccessEnvelope } from "../contracts/auth-api"
+import type {
+  AuthApiEnvelope,
+  AuthApiSuccessEnvelope,
+} from "../contracts/auth-api"
 import type { AuthIntelligenceSnapshot } from "../contracts/auth-domain"
 import { isAuthApiErrorEnvelope } from "../contracts/auth-api"
 import {

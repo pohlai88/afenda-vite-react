@@ -8,7 +8,15 @@ import type {
 } from "../contracts/auth-challenge.contract.js"
 import { AuthCompanionError } from "../errors/auth-companion-error.js"
 import type { AuthChallengePolicy } from "../policy/auth-challenge-policy.js"
-import type { AuthChallengeRepo } from "../repo/auth-challenge.repo.js"
+import type {
+  AuthChallengeRepo,
+  AuthChallengeRiskSnapshotInput,
+} from "../repo/auth-challenge.repo.js"
+import {
+  generateChallengeOtpCode,
+  hashChallengeOtpCode,
+  verifyChallengeOtpDigest,
+} from "../utils/auth-challenge-otp.js"
 
 function passkeyFeatureEnabled(): boolean {
   return process.env.AFENDA_AUTH_PASSKEY_ENABLED === "true"
@@ -24,11 +32,7 @@ export class AuthChallengeService {
     input: StartAuthChallengeBody,
     deps: {
       subjectUserId: string | null
-      riskSnapshot: {
-        trustLevel: "low" | "medium" | "high" | "verified"
-        recommendedMethod: "passkey" | "password" | "social"
-        reasons: readonly string[]
-      }
+      riskSnapshot: Omit<AuthChallengeRiskSnapshotInput, "otpDigest">
       deviceContextHash: string | null
     }
   ): Promise<StartAuthChallengeResponse> {
@@ -36,13 +40,29 @@ export class AuthChallengeService {
       Date.now() + this.policy.defaultExpirySeconds * 1000
     )
 
+    let riskSnapshot: AuthChallengeRiskSnapshotInput = {
+      ...deps.riskSnapshot,
+    }
+    if (input.method === "totp" || input.method === "email_otp") {
+      const code = generateChallengeOtpCode()
+      riskSnapshot = {
+        ...deps.riskSnapshot,
+        otpDigest: hashChallengeOtpCode(code),
+      }
+      if (process.env.NODE_ENV !== "production") {
+        console.info(
+          `[afenda/auth-challenge] OTP for ${input.email.trim()} (${input.method}): ${code}`
+        )
+      }
+    }
+
     const created = await this.repo.createIssuedChallenge({
       email: input.email,
       subjectUserId: deps.subjectUserId,
       method: input.method,
       expiresAt,
       attemptsRemaining: this.policy.defaultAttemptsRemaining,
-      riskSnapshot: deps.riskSnapshot,
+      riskSnapshot,
       deviceContextHash: deps.deviceContextHash,
     })
 
@@ -120,15 +140,25 @@ export class AuthChallengeService {
       )
     }
 
-    /**
-     * Replace this stub with:
-     * - passkey assertion verification
-     * - TOTP verification
-     * - email OTP verification
-     */
-    const verified = true
+    let proofOk = false
 
-    if (!verified) {
+    if (input.method === "passkey") {
+      void input.credential
+      throw new AuthCompanionError(
+        "auth.challenge.passkey_verify_pending",
+        "Passkey cryptographic verification is wired in Wave 2 (Better Auth passkey plugin). Use TOTP or email OTP challenge, or password login.",
+        501
+      )
+    }
+
+    if (input.method === "totp" || input.method === "email_otp") {
+      proofOk = verifyChallengeOtpDigest(
+        input.proof.code,
+        record.otpDigest ?? null
+      )
+    }
+
+    if (!proofOk) {
       await this.repo.decrementAttempts(record.challengeId)
       throw new AuthCompanionError(
         "auth.challenge.invalid",
