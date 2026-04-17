@@ -144,7 +144,7 @@ export function createAfendaAuth(pool: Pool, db?: DatabaseClient) {
     baseURL: resolveBaseURL(),
     trustedOrigins: resolveTrustedOrigins(),
     /**
-     * Persisted operating lens (ADR-0006). Populate only server-side after membership validation;
+     * Persisted operating lens. Populate only server-side after tenant membership validation;
      * run `pnpm --filter @afenda/better-auth run auth:migrate` after changing this shape.
      */
     session: {
@@ -155,26 +155,6 @@ export function createAfendaAuth(pool: Pool, db?: DatabaseClient) {
           input: false,
         },
         activeMembershipId: {
-          type: "string",
-          required: false,
-          input: false,
-        },
-        activeLegalEntityId: {
-          type: "string",
-          required: false,
-          input: false,
-        },
-        activeBusinessUnitId: {
-          type: "string",
-          required: false,
-          input: false,
-        },
-        activeLocationId: {
-          type: "string",
-          required: false,
-          input: false,
-        },
-        activeOrgUnitId: {
           type: "string",
           required: false,
           input: false,

@@ -1,5 +1,3 @@
 export * from "../audit/relations/audit-relations"
-export * from "../authorization/relations/authorization-relations"
 export * from "../identity/relations/identity-relations"
-export * from "../organization/relations/organization-relations"
 export * from "../tenancy/relations/tenancy-relations"

@@ -9,17 +9,12 @@ type AfendaAuth = ReturnType<
 >
 
 /**
- * Server-owned operating context (ADR-0006). Validates identity → membership → scope → alignment,
- * then persists the lens on the Better Auth session (`session.additionalFields`). Not authority:
- * protected routes must still call {@link resolveActiveTenantContext} (or this) — never trust client-authored IDs alone.
+ * Server-owned operating context (restart baseline). Validates identity → active tenant membership,
+ * then persists the tenant lens on the Better Auth session (`session.additionalFields`).
  */
 export type SetSessionOperatingContextInput = {
   headers: Headers
   activeTenantId?: string | null
-  activeLegalEntityId?: string | null
-  activeBusinessUnitId?: string | null
-  activeLocationId?: string | null
-  activeOrgUnitId?: string | null
 }
 
 export async function setSessionOperatingContext(
@@ -37,10 +32,6 @@ export async function setSessionOperatingContext(
     authUserId: session.user.id,
     authSessionId: session.session.id,
     activeTenantId: params.activeTenantId ?? undefined,
-    activeLegalEntityId: params.activeLegalEntityId ?? undefined,
-    activeBusinessUnitId: params.activeBusinessUnitId ?? undefined,
-    activeLocationId: params.activeLocationId ?? undefined,
-    activeOrgUnitId: params.activeOrgUnitId ?? undefined,
   })
 
   await auth.api.updateSession({
@@ -48,10 +39,6 @@ export async function setSessionOperatingContext(
     body: {
       activeTenantId: ctx.tenantId,
       activeMembershipId: ctx.membershipId,
-      activeLegalEntityId: ctx.activeLegalEntityId,
-      activeBusinessUnitId: ctx.activeBusinessUnitId,
-      activeLocationId: ctx.activeLocationId,
-      activeOrgUnitId: ctx.activeOrgUnitId,
     },
   })
 

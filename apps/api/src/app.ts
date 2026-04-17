@@ -60,8 +60,7 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
       service: "@afenda/api",
       health: "/health",
       betterAuth: "/api/auth",
-      v1:
-        "session required — e.g. GET /v1/me, POST /v1/session/operating-context",
+      v1: "session required — e.g. GET /v1/me, POST /v1/session/operating-context",
       studio:
         "session required — GET /v1/studio/glossary | /v1/studio/glossary/matrix | /v1/studio/truth-governance | /v1/studio/enums | /v1/studio/audit/recent (needs X-Tenant-Id)",
     })
@@ -116,9 +115,7 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
     }
   })
 
-  /**
-   * Server-owned operating context (ADR-0006): validates membership, scopes, and alignment, then updates session.
-   */
+  /** Server-owned operating context: validates active tenant membership, then updates session. */
   app.post("/v1/session/operating-context", async (c) => {
     let body: Record<string, unknown> = {}
     try {
@@ -137,10 +134,6 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
       const ctx = await setSessionOperatingContext(auth, db, {
         headers: c.req.raw.headers,
         activeTenantId: opt("activeTenantId"),
-        activeLegalEntityId: opt("activeLegalEntityId"),
-        activeBusinessUnitId: opt("activeBusinessUnitId"),
-        activeLocationId: opt("activeLocationId"),
-        activeOrgUnitId: opt("activeOrgUnitId"),
       })
       return c.json({ ok: true, context: ctx })
     } catch (e) {

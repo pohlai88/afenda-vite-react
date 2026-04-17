@@ -22,11 +22,6 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
-    "db:seed": "tsx scripts/seed.ts",
-    "db:seed:reference": "tsx scripts/seed.ts --stage=reference",
-    "db:seed:demo": "tsx scripts/seed.ts --stage=tenant-fixture",
-    "db:seed:volume": "tsx scripts/seed.ts --stage=volume",
-    "db:reset:local": "tsx scripts/reset-local-db.ts",
     "studio:sync": "tsx scripts/sync-studio-snapshots.ts",
     "studio:check": "tsx scripts/assert-studio-snapshots-synced.ts",
     "glossary:sync": "pnpm run studio:sync"
@@ -51,11 +46,6 @@
       "types": "./src/tenancy/index.ts",
       "import": "./src/tenancy/index.ts",
       "default": "./src/tenancy/index.ts"
-    },
-    "./seeds": {
-      "types": "./src/seeds/index.ts",
-      "import": "./src/seeds/index.ts",
-      "default": "./src/seeds/index.ts"
     },
     "./audit": {
       "types": "./src/audit/index.ts",

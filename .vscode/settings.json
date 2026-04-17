@@ -55,6 +55,7 @@
   },
 
   "files.associations": {
+    ".cursorignore": "ignore",
     "**/apps/web/src/index.css": "tailwindcss",
     "**/packages/design-system/design-architecture/src/**/*.css": "tailwindcss"
   },

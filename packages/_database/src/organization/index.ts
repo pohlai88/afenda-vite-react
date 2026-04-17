@@ -1,5 +1,0 @@
-export * from "./relations/organization-relations"
-export * from "./schema/business-units.schema"
-export * from "./schema/legal-entities.schema"
-export * from "./schema/locations.schema"
-export * from "./schema/org-units.schema"

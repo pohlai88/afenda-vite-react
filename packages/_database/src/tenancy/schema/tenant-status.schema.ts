@@ -14,3 +14,9 @@ export const tenantMembershipStatus = pgEnum("tenant_membership_status", [
   /** Ended by admin/policy; distinct from voluntary `left`. */
   "revoked",
 ])
+
+export const tenantMembershipTypeEnum = pgEnum("tenant_membership_type", [
+  "internal",
+  "external",
+  "service",
+])

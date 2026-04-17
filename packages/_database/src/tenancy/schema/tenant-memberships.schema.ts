@@ -7,10 +7,12 @@ import {
   uuid,
 } from "drizzle-orm/pg-core"
 
-import { tenantMembershipTypeEnum } from "../../authorization/schema/membership-scope-enums.schema"
 import { users } from "../../identity/schema/users.schema"
 import { timestampColumns } from "../../helpers/columns"
-import { tenantMembershipStatus } from "./tenant-status.schema"
+import {
+  tenantMembershipStatus,
+  tenantMembershipTypeEnum,
+} from "./tenant-status.schema"
 import { tenants } from "./tenants.schema"
 
 export const tenantMemberships = pgTable(

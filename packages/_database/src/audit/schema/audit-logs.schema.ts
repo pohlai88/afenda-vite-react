@@ -10,10 +10,6 @@ import {
 } from "drizzle-orm/pg-core"
 
 import { users } from "../../identity/schema/users.schema"
-import { businessUnits } from "../../organization/schema/business-units.schema"
-import { legalEntities } from "../../organization/schema/legal-entities.schema"
-import { locations } from "../../organization/schema/locations.schema"
-import { orgUnits } from "../../organization/schema/org-units.schema"
 import { tenantMemberships } from "../../tenancy/schema/tenant-memberships.schema"
 import { tenants } from "../../tenancy/schema/tenants.schema"
 import {
@@ -28,7 +24,7 @@ import {
  * Audit logs — tenant-bounded evidence for human, delegated, and system actions.
  *
  * - **`tenantId`** is mandatory for every governed business event.
- * - **`membershipId`** should be set for session/human-initiated mutations when known (composite FK with `tenantId` enforces tenant alignment).
+ * - **`membershipId`** should be set for session/human-initiated mutations when known.
  * - **`authUserId`** / **`sessionId`** retain Better Auth boundary metadata; **ERP authority** flows from `actorUserId` / `identity_links` → `users`, not from auth ids alone.
  * - Sketches that name **`category`** map to **`actionCategory`**; **`result`** maps to governed **`outcome`**; a single **`payload`** maps to **`changes`** / **`metadata`** JSONB; **`auth_session_id`** maps to **`session_id`**.
  *
@@ -46,19 +42,10 @@ export const auditLogs = pgTable(
         onUpdate: "cascade",
       }),
 
-    /**
-     * Optional finance / statutory boundary. FK is to `legal_entities.id` (PK);
-     * callers must ensure the entity belongs to `tenant_id`.
-     */
-    legalEntityId: uuid("legal_entity_id").references(() => legalEntities.id, {
-      onDelete: "set null",
-      onUpdate: "cascade",
-    }),
+    /** Optional domain-enrichment field retained without an FK during the clean restart. */
+    legalEntityId: uuid("legal_entity_id"),
 
     membershipId: uuid("membership_id"),
-    businessUnitId: uuid("business_unit_id"),
-    locationId: uuid("location_id"),
-    orgUnitId: uuid("org_unit_id"),
     /** Better Auth `public.user.id` (text); distinct from `actor_user_id` (Afenda users). */
     authUserId: text("auth_user_id"),
 
@@ -209,27 +196,6 @@ export const auditLogs = pgTable(
       name: "audit_logs_membership_tenant_fk",
       columns: [table.membershipId, table.tenantId],
       foreignColumns: [tenantMemberships.id, tenantMemberships.tenantId],
-    })
-      .onDelete("set null")
-      .onUpdate("cascade"),
-    foreignKey({
-      name: "audit_logs_business_unit_tenant_fk",
-      columns: [table.businessUnitId, table.tenantId],
-      foreignColumns: [businessUnits.id, businessUnits.tenantId],
-    })
-      .onDelete("set null")
-      .onUpdate("cascade"),
-    foreignKey({
-      name: "audit_logs_location_tenant_fk",
-      columns: [table.locationId, table.tenantId],
-      foreignColumns: [locations.id, locations.tenantId],
-    })
-      .onDelete("set null")
-      .onUpdate("cascade"),
-    foreignKey({
-      name: "audit_logs_org_unit_tenant_fk",
-      columns: [table.orgUnitId, table.tenantId],
-      foreignColumns: [orgUnits.id, orgUnits.tenantId],
     })
       .onDelete("set null")
       .onUpdate("cascade"),

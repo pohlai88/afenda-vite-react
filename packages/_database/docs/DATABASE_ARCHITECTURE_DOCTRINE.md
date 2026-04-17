@@ -1,90 +1,369 @@
-# Database architecture doctrine
+# Database Architecture Doctrine
 
-This document defines **how Afenda reasons about PostgreSQL data**: what “truth” means, how multi-tenancy and identity interact with ERP facts, and how **business language** relates to **technical identifiers** (tables, columns, Drizzle modules). It complements operational guidance in [Database](../../../docs/DATABASE.md) and the machine-readable [business ↔ technical glossary](./data/business-technical-glossary.yaml).
+This document defines the **enduring architectural rules** for `@afenda/database`.
 
-**Audience:** product, backend, data, and anyone authoring migrations or seeds. **Normative detail for audit evidence** remains in the audit module—see [Audit architecture](../../../docs/AUDIT_ARCHITECTURE.md).
+It is intentionally **not** a dump of whichever tables happen to exist today, and it is **not** a speculative full-ERP schema. Its job is to answer:
 
----
+- what this database package is for
+- what kinds of truth belong here
+- how tenant, identity, and business data must relate
+- what modeling rules are non-negotiable as the schema grows
 
-## 1. Purposes
-
-1. **Shared vocabulary** — The same business term should map to the same tables and columns across services, docs, and scripts (see glossary).
-2. **Tenant safety** — Data that belongs to a customer organization is **scoped** so it cannot leak across tenants by accident.
-3. **Traceability** — Prefer explicit foreign keys and named constraints; align with `@afenda/database` governance (`*.schema.ts`, migration naming).
-4. **Evolvable schema** — New domains extend the model without collapsing unrelated concepts into one table.
+If a reader needs to know the exact tables currently implemented, that belongs in a separate baseline/inventory document. Doctrine is the layer above that: the rules that remain valid while the implementation grows in phases.
 
 ---
 
-## 2. Layers of truth
+## 1. Purpose
 
-| Layer | Meaning | Examples |
-| ----- | ------- | -------- |
-| **Authentication subject** | Who can sign in and hold sessions | User identity, OAuth links, challenge tokens (auth companion) |
-| **Authorization** | What they may do in which tenant | Memberships, roles, permissions, invitations, scoped grants |
-| **Organization structure** | How the company models itself | Legal entities, org units, locations, business units |
-| **Transactional / ERP facts** | Day-to-day business operations | Orders, inventory movements, postings (as modules land) |
-| **Evidence** | Durable, append-oriented records for governance | Audit logs (see audit doctrine) |
+`@afenda/database` exists to be the **canonical PostgreSQL and Drizzle persistence boundary** for Afenda.
 
-**Doctrine:** do not store long-lived ERP truth only inside auth-only tables. **Identity** answers *who*; **tenant membership and roles** answer *where* and *what they may do*; **domain tables** answer *business state*.
+That means:
 
----
+- it owns the durable relational model
+- it defines the authoritative Drizzle schema and migrations
+- it encodes invariants that should not depend only on app code
+- it gives the rest of the system one stable place to reason about data truth
 
-## 3. Multi-tenancy
+It does **not** exist to be:
 
-- A **tenant** is an **organization** (customer) whose data is isolated from others.
-- **Tenant-scoped rows** carry a stable tenant key (for example `tenant_id`) where the row belongs to one org. Queries and repositories **default to filtering by that key** unless the operation is explicitly cross-tenant and governed.
-- **Platform-only** data (no tenant) is rare and must be justified and documented.
+- a random bucket of convenience tables
+- a mirror of every product idea before the idea is implemented
+- a place where future ERP design and present runtime truth are mixed without labels
 
 ---
 
-## 4. Identity vs domain party
+## 2. What Doctrine Means
 
-- **User** (and linked **identities**) describe sign-in and account linkage.
-- **Employees, customers, suppliers** as business actors may be modeled as **domain parties** or module-specific profiles—not as duplicates of the auth user row. Link with explicit keys when a person both signs in and appears in HR or CRM data.
+In this package, **doctrine** means architectural rules that should survive multiple implementation phases.
 
----
+Examples:
 
-## 5. Master vs transactional data (ERP orientation)
+- tenant is the primary business isolation boundary
+- identity and business actors are related but not identical concepts
+- migrations are the only production-safe schema contract
+- relational invariants belong in the database when PostgreSQL can enforce them safely
 
-- **Master data** — Relatively stable definitions used across transactions (items, UoM, calendars, org structure). Prefer **normalized** tables and clear ownership.
-- **Transactional data** — Events and balances that reference master keys. **Measurements** (quantity, money, time) belong on transactions or dependent rows; attach **units and currency** explicitly when the business meaning requires it.
+Doctrine is different from:
 
-When in doubt, name and model the **business operation** first, then map to tables; use the glossary to record the mapping.
+- **baseline**: what exists right now
+- **proposal**: what we might build next
+- **reference/source material**: exploratory or source-of-truth design input
 
----
-
-## 6. Naming and documentation split
-
-| Concern | Convention |
-| ------- | ------------ |
-| **Postgres identifiers** | `snake_case` tables/columns; stable, searchable names; follow repo governance and `sql-identifiers` patterns in `@afenda/database`. |
-| **Drizzle modules** | One concern per `*.schema.ts` file; barrel exports under `packages/_database/src/schema/`. |
-| **Human / product docs** | Lead with **business terms**; link to technical names via the glossary. |
-| **Scripts and codegen** | May read [business-technical-glossary.yaml](./data/business-technical-glossary.yaml) for stable keys and paths. |
+Those three can change quickly. Doctrine should change only when the architecture changes.
 
 ---
 
-## 7. Migrations and seeds
+## 3. Core Truth Boundaries
 
-- **Migrations** are the versioned contract with production; generate from schema changes, review SQL, apply with the governed workflow ([Database](../../../docs/DATABASE.md)).
-- **Seeds** are classified (bootstrap, reference, tenant fixtures, volume); they **do not replace** migrations. See §4.1 in [Database](../../../docs/DATABASE.md).
+Afenda must keep different kinds of truth separate.
+
+### 3.1 Authentication truth
+
+Authentication answers:
+
+- who signed in
+- how they authenticated
+- what external auth identity they came from
+
+This includes things like:
+
+- auth companion challenge state
+- Better Auth identity bridge data
+- session-related identifiers when persisted for audit correlation
+
+Authentication truth is **not** ERP truth.
+
+### 3.2 Principal truth
+
+A database principal is the internal actor Afenda reasons about.
+
+This includes:
+
+- internal user records
+- identity linkage between auth provider users and Afenda principals
+- tenant membership tying a principal to a tenant
+
+Principals are where the system starts to move from “who authenticated” to “who can act inside Afenda”.
+
+### 3.3 Tenant truth
+
+Tenant truth answers:
+
+- which organization owns the data
+- which rows belong inside the same isolation boundary
+- which membership links a principal into that boundary
+
+Tenant is not a convenience tag. It is the first business governance boundary in the model.
+
+### 3.4 Business truth
+
+Business truth is the domain state Afenda ultimately exists to manage.
+
+Examples in future phases may include:
+
+- organization structure
+- master data
+- finance structures
+- transactional records
+
+Business truth must not be collapsed into auth-only or session-only tables.
+
+### 3.5 Evidence truth
+
+Evidence truth is append-oriented governance data used to explain or investigate actions after the fact.
+
+Audit data is not the same thing as transactional truth. It is a durable evidence layer around system behavior.
 
 ---
 
-## 8. Relationship to other docs
+## 4. Tenant-First Rule
 
-| Topic | Where |
-| ----- | ----- |
-| Connection strings, layout, scripts | [Database](../../../docs/DATABASE.md) |
-| Business ↔ table/column mapping (machine-readable) | [data/business-technical-glossary.yaml](./data/business-technical-glossary.yaml) |
-| ERP vocabulary (product language) | [Glossary](../../../docs/GLOSSARY.md) |
-| Audit evidence rules | [Audit architecture](../../../docs/AUDIT_ARCHITECTURE.md) and `packages/_database/src/audit/` |
-| API tenancy and routes | [API reference](../../../docs/API.md) |
-| Roles and permissions | [Roles and permissions](../../../docs/ROLES_AND_PERMISSIONS.md) |
+Afenda is tenant-first.
+
+That means:
+
+- business data belongs inside a tenant boundary unless explicitly justified otherwise
+- tenant-scoped rows should carry a stable tenant key
+- repositories and queries should default to tenant-scoped access
+- cross-tenant operations are exceptional and must be explicit
+
+The tenant boundary exists to prevent accidental leakage, not merely to help filtering.
+
+When a table belongs to one organization, `tenant_id` should be part of the model. If a table has no tenant dimension, that absence should be intentional and explainable.
 
 ---
 
-## 9. Maintenance
+## 5. Identity Is Not Domain Party
 
-- When you add or rename a **user-visible business concept** with a database footprint, update **this doctrine** if rules change, and add or adjust an entry in **business-technical-glossary.yaml**.
-- Breaking renames across environments go through **migrations** and coordinated API/doc updates—not ad hoc data fixes in production without a runbook.
+The architecture must keep this distinction clear:
+
+- **identity/principal** is the authenticated or linked actor inside Afenda
+- **domain party** is a business actor such as a customer, supplier, employee, or contact
+
+Sometimes the same real-world human appears in both roles. That does **not** mean the tables should be merged.
+
+Correct approach:
+
+- model identity/principal separately
+- link to business entities explicitly when needed
+- do not overload auth tables to represent business entities
+
+This avoids coupling ERP truth to authentication lifecycle.
+
+---
+
+## 6. Database-First Invariants
+
+If PostgreSQL can safely enforce an invariant that must always hold, prefer enforcing it in the database.
+
+Typical examples:
+
+- primary keys
+- foreign keys
+- uniqueness
+- check constraints
+- not-null guarantees
+- append-only posture where required
+
+Application code still matters, but app-only enforcement is not enough for structural truths.
+
+The rule is:
+
+- database enforces invariants
+- application orchestrates workflows
+
+Do not push all correctness into service code when the database can carry the rule more reliably.
+
+---
+
+## 7. Surrogate Keys and Business Meaning
+
+The default identity rule is:
+
+- use stable surrogate primary keys for joins and references
+- preserve business identifiers separately when they matter
+
+Do not confuse row identity with business identity.
+
+A row’s PK exists to make the data model stable. Business keys exist to make the model meaningful. Mature designs often need both.
+
+---
+
+## 8. Migrations Are the Contract
+
+Production schema evolution must go through migrations.
+
+Doctrine here is strict:
+
+- schema changes are not “just TypeScript changes”
+- generated SQL must be reviewed
+- production truth is the applied migration history, not an informal local state
+
+This package may use Drizzle to define schema, but the contract with the real database is still the migration stream.
+
+No ad hoc production edits without a documented migration or an explicit emergency runbook.
+
+---
+
+## 9. Drizzle and PostgreSQL Responsibilities
+
+Drizzle is the schema and query layer. PostgreSQL is the data engine.
+
+Use Drizzle for:
+
+- table definitions
+- type-safe queries
+- shared schema exports
+- migration generation workflow
+
+Use PostgreSQL itself for:
+
+- integrity guarantees
+- indexes and performance features
+- transactional safety
+- advanced constraint behavior
+- append-only or audit-sensitive patterns
+
+Do not pretend the ORM is the architecture. The ORM is one implementation tool inside the architecture.
+
+---
+
+## 10. Present Truth vs Planned Truth
+
+One of the main doctrine failures in this repo was mixing these two ideas:
+
+- what the package currently implements
+- what the package is expected to implement later
+
+That must stop.
+
+Going forward:
+
+- current-state docs must describe only active package truth
+- growth-sequence docs must describe the approved future order
+- source/reference docs must be clearly marked as non-normative
+
+A document must not silently slide between current truth and future design.
+
+If it does, it becomes unreliable.
+
+---
+
+## 11. Documentation Rules
+
+Documentation under `packages/_database/docs` must follow these rules:
+
+### 11.1 Current-state docs
+
+These describe only what exists in the active package.
+
+If a table, module, export, or workflow has been removed, it must not remain documented as active.
+
+### 11.2 Doctrine docs
+
+These describe enduring principles and architecture constraints.
+
+They should outlive one particular table set.
+
+### 11.3 Growth docs
+
+These describe sequence and direction:
+
+- what comes next
+- in what order
+- under what assumptions
+
+They must be labeled as future-oriented.
+
+### 11.4 Source/reference docs
+
+These are allowed, but they must be clearly marked as:
+
+- source material
+- exploration
+- non-normative reference
+
+They are not the same as package doctrine.
+
+---
+
+## 12. Rebuild Sequence Principle
+
+The package should grow in intentional layers.
+
+The approved architectural sequence is:
+
+1. identity and tenant root
+2. tenant membership and minimal principal context
+3. business organization structure
+4. authorization model
+5. MDM and business master structures
+6. stewardship and governance extensions
+7. richer audit enrichment around stabilized business workflows
+
+This order matters because it prevents upstream concepts from being built on unstable foundations.
+
+---
+
+## 13. Non-Negotiable Quality Bar
+
+This package should reject low-standard database work.
+
+That includes:
+
+- documenting removed schema as current truth
+- introducing broad future-state structures without clear need
+- mixing auth truth and ERP truth
+- relying on app code for invariants that PostgreSQL should enforce
+- adding tables without a clear tenant and truth-boundary story
+
+Any schema growth should be explainable in terms of:
+
+- truth boundary
+- tenant boundary
+- migration safety
+- downstream consumer impact
+- long-term architectural fit
+
+---
+
+## 14. Decision Rule for Future Changes
+
+When evaluating a new schema change, ask:
+
+1. Which truth boundary does this belong to?
+2. Is it tenant-scoped?
+3. Is it current truth or future design?
+4. What invariants belong in PostgreSQL?
+5. Does it belong in the current phase, or is it being added too early?
+
+If those questions are not answered clearly, the design is not ready.
+
+---
+
+## 15. Relationship to Other Docs
+
+This doctrine should be read alongside:
+
+- the current baseline doc for active package truth
+- growth-sequence docs for phased rebuild direction
+- glossary governance docs for naming and mapping discipline
+- audit module docs for evidence-specific rules
+
+Doctrine does not replace those documents. It constrains them.
+
+---
+
+## 16. Maintenance
+
+Update this doctrine only when the architecture changes.
+
+Do **not** update it merely because:
+
+- one table was added
+- one migration landed
+- a short-term implementation detail changed
+
+If the change is really a baseline or inventory change, update the baseline doc instead.
+
+If the change is a future direction change, update the growth doc instead.
