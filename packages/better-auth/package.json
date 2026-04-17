@@ -27,6 +27,7 @@
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
     "auth:migrate": "pnpm dlx auth@latest migrate --config ./src/better-auth-cli-config.ts --yes",
+    "auth:migrate:plugins": "node ./scripts/run-auth-migrate-with-plugins.mjs",
     "auth:generate": "pnpm dlx auth@latest generate --config ./src/better-auth-cli-config.ts --yes",
     "auth:info": "pnpm dlx auth@latest info --config ./src/better-auth-cli-config.ts"
   }

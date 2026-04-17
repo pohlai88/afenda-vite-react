@@ -2,7 +2,7 @@ import {
   getAuditRetentionDefinition,
   type AuditRetentionClass,
 } from "../contracts/audit-retention-policy"
-import type { AuditLog } from "../schema/audit-logs"
+import type { AuditLog } from "../schema/audit-logs.schema"
 
 export interface AuditRetentionDisposition {
   retentionClass: AuditRetentionClass

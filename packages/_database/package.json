@@ -13,10 +13,23 @@
     "test": "vitest --configLoader native",
     "test:run": "vitest run --configLoader native",
     "test:coverage": "vitest run --coverage --configLoader native",
-    "db:generate": "drizzle-kit generate",
+    "db:guard": "pnpm run typecheck && tsx scripts/guard-schema-modules.ts && vitest run src/governance/__tests__ src/schema/__tests__/schema-contract.test.ts",
+    "db:guard:ci": "tsx scripts/guard-schema-modules.ts && vitest run src/governance/__tests__ src/schema/__tests__/schema-contract.test.ts",
+    "db:generate": "pnpm run db:guard && drizzle-kit generate",
+    "db:check-migrations": "tsx scripts/check-migrations.ts",
+    "db:verify-migrations-sync": "tsx scripts/verify-migrations-sync.ts",
+    "db:ci": "pnpm run studio:check && pnpm run db:guard:ci && pnpm run db:check-migrations && pnpm run db:verify-migrations-sync",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:seed:reference": "tsx scripts/seed.ts --stage=reference",
+    "db:seed:demo": "tsx scripts/seed.ts --stage=tenant-fixture",
+    "db:seed:volume": "tsx scripts/seed.ts --stage=volume",
+    "db:reset:local": "tsx scripts/reset-local-db.ts",
+    "studio:sync": "tsx scripts/sync-studio-snapshots.ts",
+    "studio:check": "tsx scripts/assert-studio-snapshots-synced.ts",
+    "glossary:sync": "pnpm run studio:sync"
   },
   "exports": {
     ".": {
@@ -48,11 +61,28 @@
       "types": "./src/audit/index.ts",
       "import": "./src/audit/index.ts",
       "default": "./src/audit/index.ts"
+    },
+    "./governance": {
+      "types": "./src/governance/index.ts",
+      "import": "./src/governance/index.ts",
+      "default": "./src/governance/index.ts"
+    },
+    "./studio": {
+      "types": "./src/studio/index.ts",
+      "import": "./src/studio/index.ts",
+      "default": "./src/studio/index.ts"
+    },
+    "./studio/snapshots": {
+      "types": "./src/studio/studio-snapshots-public.ts",
+      "import": "./src/studio/studio-snapshots-public.ts",
+      "default": "./src/studio/studio-snapshots-public.ts"
     }
   },
   "dependencies": {
     "@afenda/env-loader": "workspace:*",
+    "@faker-js/faker": "^10.4.0",
     "drizzle-orm": "catalog:",
+    "drizzle-seed": "^0.3.1",
     "pg": "catalog:",
     "zod": "catalog:"
   },
@@ -64,6 +94,7 @@
     "drizzle-kit": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "yaml": "^2.8.3"
   }
 }

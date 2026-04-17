@@ -1,13 +1,13 @@
 import { relations } from "drizzle-orm"
 
-import { membershipLegalEntityScopes } from "../../authorization/schema/membership-legal-entity-scopes"
-import { membershipOrgUnitScopes } from "../../authorization/schema/membership-org-unit-scopes"
-import { users } from "../../identity/schema/users"
-import { tenants } from "../../tenancy/schema/tenants"
-import { businessUnits } from "../schema/business-units"
-import { legalEntities } from "../schema/legal-entities"
-import { locations } from "../schema/locations"
-import { orgUnits } from "../schema/org-units"
+import { membershipLegalEntityScopes } from "../../authorization/schema/membership-legal-entity-scopes.schema"
+import { membershipOrgUnitScopes } from "../../authorization/schema/membership-org-unit-scopes.schema"
+import { users } from "../../identity/schema/users.schema"
+import { tenants } from "../../tenancy/schema/tenants.schema"
+import { businessUnits } from "../schema/business-units.schema"
+import { legalEntities } from "../schema/legal-entities.schema"
+import { locations } from "../schema/locations.schema"
+import { orgUnits } from "../schema/org-units.schema"
 
 export const legalEntitiesRelations = relations(
   legalEntities,

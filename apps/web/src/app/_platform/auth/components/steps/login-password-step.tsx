@@ -3,13 +3,14 @@ import { Link } from "react-router-dom"
 import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
 import { AUTH_ROUTES } from "../../auth-paths"
+import type { AsyncOrSyncVoid } from "../../types/async-or-sync-void"
 
 type LoginPasswordStepProps = {
   readonly email: string
   readonly password: string
   readonly pending: boolean
   readonly onPasswordChange: (next: string) => void
-  readonly onSubmit: () => Promise<void> | void
+  readonly onSubmit: () => AsyncOrSyncVoid
   readonly passwordLabel: string
   readonly forgotPasswordLabel: string
   readonly submitLabel: string

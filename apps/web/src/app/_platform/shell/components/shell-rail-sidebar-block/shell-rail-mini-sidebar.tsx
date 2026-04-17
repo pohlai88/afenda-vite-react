@@ -12,7 +12,9 @@
  * - user menu rows are descriptor-driven instead of duplicated JSX
  */
 
+import { useQueryClient } from "@tanstack/react-query"
 import type { ReactNode } from "react"
+import { useCallback } from "react"
 import { useTranslation } from "react-i18next"
 
 import type { ShellNavigationItemId } from "../../constants/shell-navigation-item-ids"
@@ -63,6 +65,7 @@ import { ShellUserMenuQuickActions } from "../shell-user-menu-quick-actions"
 import { ShellUserMenuSecurityPanel } from "../shell-user-menu-security-panel"
 import { cn } from "@afenda/design-system/utils"
 
+import { prefetchDbStudioCatalog } from "../../../../_features/db-studio/db-studio-queries"
 import { useCloseMobileSidebar } from "../../hooks/use-close-mobile-sidebar"
 import { shellWorkspaceHomeHref } from "../../routes/shell-route-constants"
 import {
@@ -458,6 +461,12 @@ export function AppShellSidebarRailNavLink({
   label,
 }: AppShellSidebarRailNavLinkProps) {
   const closeMobileSidebar = useCloseMobileSidebar()
+  const queryClient = useQueryClient()
+  const prefetchDbStudio = useCallback(() => {
+    if (href === "/app/db-studio") {
+      void prefetchDbStudioCatalog(queryClient)
+    }
+  }, [href, queryClient])
 
   return (
     <SidebarMenuItem>
@@ -472,6 +481,8 @@ export function AppShellSidebarRailNavLink({
               to={href}
               aria-label={label}
               onClick={closeMobileSidebar}
+              onPointerEnter={prefetchDbStudio}
+              onFocus={prefetchDbStudio}
               className={cn(
                 "flex size-full items-center justify-center [&>svg]:m-0",
                 SHELL_FOCUS_RING_CLASS

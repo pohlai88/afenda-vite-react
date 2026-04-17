@@ -1,5 +1,5 @@
 import type { DatabaseClient } from "../../client"
-import type { AuditLog } from "../schema/audit-logs"
+import type { AuditLog } from "../schema/audit-logs.schema"
 import { queryAuditLogs } from "./audit-query-service"
 
 const DEFAULT_LIMIT = 100

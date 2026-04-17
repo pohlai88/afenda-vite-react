@@ -6,6 +6,8 @@ Afenda ERP data lives in **PostgreSQL**, accessed from **server-side** code (API
 
 This repo’s **`apps/web`** package does not embed a database client. The canonical database package is **`packages/_database`** and its public import name is **`@afenda/database`**. Place **Drizzle schema**, **migrations**, and **`drizzle.config.ts`** there; backend/API code imports from `@afenda/database`.
 
+**Architecture doctrine (business-first):** [Database architecture doctrine](../packages/_database/docs/DATABASE_ARCHITECTURE_DOCTRINE.md). **Business ↔ table mapping (YAML):** [business-technical-glossary.yaml](../packages/_database/docs/data/business-technical-glossary.yaml).
+
 ---
 
 ## 1. Prerequisites
@@ -66,6 +68,11 @@ Define scripts in the database/API **`package.json`** and run them via the works
 | `db:migrate`     | `drizzle-kit migrate` — apply pending migrations                      |
 | `db:push`        | `drizzle-kit push` — **dev only**; quick sync without migration files |
 | `db:studio`      | `drizzle-kit studio` — inspect data locally                           |
+| `db:seed`        | Governed seed runtime (`tsx scripts/seed.ts`) — see §4.1              |
+| `db:seed:reference` | `--stage=reference` only                                           |
+| `db:seed:demo`   | `--stage=tenant-fixture` only                                         |
+| `db:seed:volume` | `--stage=volume` only (local / CI policy)                               |
+| `db:reset:local` | Destructive `drizzle-seed` reset — `SEED_RESET_LOCAL=true`, local only |
 
 ```bash
 pnpm --filter @afenda/database db:generate
@@ -73,6 +80,32 @@ pnpm --filter @afenda/database db:migrate
 ```
 
 **Production:** always use **versioned migrations** (`db:migrate`). Avoid `db:push` against production—it can cause data loss or drift.
+
+---
+
+## 4.1 Governed database seeding (Afenda seed runtime)
+
+Seeding is **server-only** and lives in **`@afenda/database`** (`packages/_database/src/seeds/`). The Vite app must never import seed modules or call the DB for fixtures.
+
+**Order:** apply **migrations first**, then seeds (`pnpm db:migrate` then `pnpm db:seed`). If PostgreSQL is unavailable, the seed CLI **fails fast** (no alternate stores).
+
+**Taxonomy:** modules declare a **stage** (`tenant-fixture`, `reference`, `bootstrap`, `volume`, `backfill`). **Policy gates** in code restrict which stages may run in each environment (for example, **volume** is only allowed in `local` / `ci`; **tenant-fixture** is blocked in production unless `SEED_ALLOW_PRODUCTION_FIXTURES=true` or `--allow-production-fixtures`).
+
+**Canonical vs synthetic:** **Canonical** seeds are authored, idempotent business fixtures (permissions, roles, reference rows). **Synthetic** seeds use `@faker-js/faker` / `drizzle-seed` for disposable volume or load data and are not authoritative. A **single orchestrator** runs all modules and emits a **`SeedRunReport`** (console + optional `--report-json=` path for CI).
+
+**CLI (from repo root):** `pnpm db:seed`, `pnpm db:seed:demo`, `pnpm db:seed:volume`, etc. Use `--tenant=<uuid>` or `SEED_TENANT_ID` when targeting a specific tenant in **production**. For **local / CI / preview / staging**, the CLI defaults `tenantScope` to the canonical demo tenant id (`DEMO_TENANT_ID` in `@afenda/database/seeds`).
+
+**Neon / hosted Postgres**
+
+- **Preview / CI:** set `DATABASE_URL` to the **branch** connection string (Neon GitHub integration or Console). Run `pnpm db:migrate` then `pnpm db:seed` against that URL—same workflow as local Postgres.
+- **Pooling:** for serverless or high-concurrency runners, use Neon’s **pooler** hostname (host contains `-pooler`). Direct endpoints suit long-lived API processes; see Neon [connection pooling](https://neon.com/docs/connect/connection-pooling) guidance.
+- **Cold start:** the first query after compute **suspend** may be slower; the seed script **probes** the DB with `SELECT 1` before modules so failures are immediate (no partial alternate store).
+
+**Local reset (destructive):** `pnpm db:reset:local` runs `drizzle-seed` `reset()` on the Afenda schema bundle only when `SEED_RESET_LOCAL=true` and `SEED_ENV=local`. It does not replace migrations—run `db:migrate` and `db:seed` afterward if you need fixtures again.
+
+| Script (example)   | Description                                      |
+| ------------------ | ------------------------------------------------ |
+| `db:reset:local`   | Truncate Afenda Drizzle tables (local + env gate) |
 
 ---
 
@@ -228,6 +261,8 @@ Automate URL retrieval in **your** infra scripts; do not commit secrets. If you 
 
 ## Related docs
 
+- [Database architecture doctrine](../packages/_database/docs/DATABASE_ARCHITECTURE_DOCTRINE.md) — tenant scope, layers of truth, master vs transactional orientation
+- [Business ↔ technical glossary](../packages/_database/docs/data/business-technical-glossary.yaml) — machine-readable term mapping for `@afenda/database`
 - [Audit architecture](./AUDIT_ARCHITECTURE.md) — audit doctrine, evidence dimensions, and governance expectations
 - [Architecture](./ARCHITECTURE.md) — where the API and DB sit in the monorepo
 - [Deployment](./DEPLOYMENT.md) — Vercel web client vs hosted Postgres (Neon, etc.)

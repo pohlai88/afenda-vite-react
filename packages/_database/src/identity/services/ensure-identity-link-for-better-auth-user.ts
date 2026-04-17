@@ -1,8 +1,8 @@
 import { and, eq, sql } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
-import { identityLinks } from "../schema/identity-links"
-import { users } from "../schema/users"
+import { identityLinks } from "../schema/identity-links.schema"
+import { users } from "../schema/users.schema"
 
 export type EnsureIdentityLinkResult = {
   afendaUserId: string

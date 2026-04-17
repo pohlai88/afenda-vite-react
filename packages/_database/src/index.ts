@@ -1,4 +1,5 @@
 export {
+  afendaDrizzleSchema,
   closeDbPool,
   createDbClient,
   createPgPool,
@@ -12,3 +13,4 @@ export * from "./authorization"
 export * from "./identity"
 export * from "./tenancy"
 export * from "./seeds"
+export * from "./governance"

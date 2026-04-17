@@ -1,4 +1,8 @@
 {
+  "yaml.schemas": {
+    "https://json.schemastore.org/pnpm-workspace.json": "pnpm-workspace.yaml"
+  },
+
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
 
@@ -42,6 +46,8 @@
   },
 
   "css.lint.unknownAtRules": "ignore",
+
+  "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
 
   "tailwindCSS.experimental.configFile": {
     "apps/web/src/index.css": "apps/web/**",

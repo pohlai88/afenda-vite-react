@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import type { AuditLog } from "../schema/audit-logs"
+import type { AuditLog } from "../schema/audit-logs.schema"
 import { toAuditAdminView } from "../read-model/audit-read-model"
 import { jsonWithIsoDates } from "../utils/audit-json"
 import {

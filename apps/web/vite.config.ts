@@ -306,11 +306,20 @@ async function resolveUserConfig({
 
     // Vitest — extend shared defaults with apps/web setup (jest-dom + RTL cleanup + browser shims)
     test: {
-      ...getAfendaVitestTestOptions(),
+      ...(() => {
+        const base = getAfendaVitestTestOptions()
+        // Default `threads` pool can time out spawning workers on some Windows setups; forks is more stable.
+        if (!process.env.VITEST_POOL && process.platform === "win32") {
+          return { ...base, pool: "forks" as const }
+        }
+        return base
+      })(),
       environment: "jsdom",
       setupFiles: [path.join(configDir, "vitest.setup.ts")],
       globals: true,
       css: true,
+      /** Heavy RTL suites + Windows CI can exceed Vitest’s 5s default under parallel load. */
+      testTimeout: 15_000,
     },
   }
 }

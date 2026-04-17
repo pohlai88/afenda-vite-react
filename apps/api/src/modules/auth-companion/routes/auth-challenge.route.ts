@@ -10,6 +10,14 @@ function passkeyFeatureEnabled(): boolean {
   return process.env.AFENDA_AUTH_PASSKEY_ENABLED === "true"
 }
 
+function readChallengeMethodFromBody(body: unknown): string | undefined {
+  if (!body || typeof body !== "object") {
+    return undefined
+  }
+  const m = (body as { method?: unknown }).method
+  return typeof m === "string" ? m : undefined
+}
+
 export function createAuthChallengeRoutes(deps: {
   challengeService: AuthChallengeService
 }) {
@@ -60,6 +68,17 @@ export function createAuthChallengeRoutes(deps: {
       requestId?: string
     }) {
       try {
+        if (
+          readChallengeMethodFromBody(request.body) === "passkey" &&
+          !passkeyFeatureEnabled()
+        ) {
+          throw new AuthCompanionError(
+            "auth.challenge.passkey_disabled",
+            "Passkey verification is not enabled for this tenant.",
+            400
+          )
+        }
+
         const parsed = VerifyAuthChallengeBodySchema.safeParse(request.body)
         if (!parsed.success) {
           throw new AuthCompanionError(

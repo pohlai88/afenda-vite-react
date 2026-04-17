@@ -32,10 +32,10 @@ import {
 } from "../../authorization/services/assert-membership-scope-access"
 import type { DatabaseClient } from "../../client"
 import { assertContextAlignment } from "./assert-context-alignment"
-import { identityLinks } from "../../identity/schema/identity-links"
-import { users } from "../../identity/schema/users"
-import { tenantMemberships } from "../schema/tenant-memberships"
-import { tenants } from "../schema/tenants"
+import { identityLinks } from "../../identity/schema/identity-links.schema"
+import { users } from "../../identity/schema/users.schema"
+import { tenantMemberships } from "../schema/tenant-memberships.schema"
+import { tenants } from "../schema/tenants.schema"
 
 export type ResolveActiveTenantContextInput = {
   db: DatabaseClient

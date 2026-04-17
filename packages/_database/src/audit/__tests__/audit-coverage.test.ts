@@ -27,7 +27,7 @@ import {
 } from "../contracts/audit-retention-policy"
 import { summarizeAuditViews } from "../read-model/audit-investigation-summary"
 import { toAuditAdminView } from "../read-model/audit-read-model"
-import type { AuditLog } from "../schema/audit-logs"
+import type { AuditLog } from "../schema/audit-logs.schema"
 import {
   getActorAuditHistory,
   getCorrelationAuditHistory,

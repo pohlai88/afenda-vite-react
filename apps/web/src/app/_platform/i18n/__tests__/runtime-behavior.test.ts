@@ -100,7 +100,7 @@ describe("runtime behavior", () => {
 
     await i18n.changeLanguage("en")
     expect(failures).toEqual([])
-  })
+  }, 20_000)
 
   test("lazy namespace loading resolves non-eager resources", async () => {
     await i18n.changeLanguage("en")

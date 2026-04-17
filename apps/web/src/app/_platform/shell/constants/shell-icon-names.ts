@@ -6,6 +6,7 @@ export const shellIconNames = [
   "ListIcon",
   "ShieldIcon",
   "LinkIcon",
+  "DatabaseIcon",
   "LayoutGridIcon",
   "UsersIcon",
   "FileBarChartIcon",

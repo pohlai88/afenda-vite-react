@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import type { NewAuditLog } from "../schema/audit-logs"
+import type { NewAuditLog } from "../schema/audit-logs.schema"
 import { validateAuditLog } from "../services/validate-audit-log"
 
 function baseRow(

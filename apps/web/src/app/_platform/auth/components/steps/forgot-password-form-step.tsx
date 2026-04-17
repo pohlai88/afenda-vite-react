@@ -1,12 +1,14 @@
 import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
+import type { AsyncOrSyncVoid } from "../../types/async-or-sync-void"
+
 type ForgotPasswordFormStepProps = {
   readonly email: string
   readonly pending: boolean
   readonly emailLabel: string
   readonly submitLabel: string
   readonly onEmailChange: (next: string) => void
-  readonly onSubmit: () => Promise<void> | void
+  readonly onSubmit: () => AsyncOrSyncVoid
 }
 
 export function ForgotPasswordFormStep(props: ForgotPasswordFormStepProps) {

@@ -2,6 +2,7 @@ export const shellNavigationItemIds = [
   "events",
   "audit",
   "partners",
+  "db_studio",
   "my_project",
   "my_team",
   "my_report",

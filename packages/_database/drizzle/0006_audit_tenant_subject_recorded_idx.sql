@@ -1,1 +1,0 @@
-CREATE INDEX "audit_logs_tenant_subject_recorded_idx" ON "audit_logs" USING btree ("tenant_id","entity_type","entity_id","created_at");

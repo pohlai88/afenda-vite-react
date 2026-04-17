@@ -1,9 +1,9 @@
 import { inArray } from "drizzle-orm"
 
 import { db, type DatabaseClient } from "../../client"
-import { permissions } from "../schema/permissions"
-import { rolePermissions } from "../schema/role-permissions"
-import { roles } from "../schema/roles"
+import { permissions } from "../schema/permissions.schema"
+import { rolePermissions } from "../schema/role-permissions.schema"
+import { roles } from "../schema/roles.schema"
 
 export const defaultPermissions = [
   {

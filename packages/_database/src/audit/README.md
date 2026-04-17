@@ -18,7 +18,7 @@ Server-side **append-only audit evidence** for Afenda: governed action keys, val
 | Folder        | Contents                                                                                                                    |
 | ------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `contracts/`  | Action catalog, doctrine/invariant/resolution registries, payload and query contracts, redaction and retention policy types |
-| `schema/`     | Drizzle tables (`audit-logs`) and enums                                                                                     |
+| `schema/`     | Drizzle tables (`audit-logs.schema.ts`) and enums                                                                                     |
 | `relations/`  | Drizzle relations for audit tables                                                                                          |
 | `services/`   | Build/validate/insert pipeline, invariant assertions, query/investigation/read-model/retention services                     |
 | `read-model/` | Admin-facing and investigation summary shapes                                                                               |

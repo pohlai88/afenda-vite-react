@@ -3,10 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 
 import { authClient } from "../auth-client"
 import { authAppCallbackUrl, authPostLoginPath } from "../auth-redirect-urls"
-import type {
-  AuthChallengeMethod,
-  AuthChallengeTicket,
-} from "../contracts/auth-challenge-ticket"
+import type { AuthChallengeMethod } from "../contracts/auth-challenge-ticket"
 import {
   createInitialLoginFlowState,
   type AuthLoginMethod,

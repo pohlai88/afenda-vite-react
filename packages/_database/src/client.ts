@@ -7,12 +7,15 @@ import {
 } from "./constants/runtime"
 import { readOptionalInteger } from "./helpers/env"
 import * as schema from "./schema"
-import * as relations from "./schema/relations"
+import * as relations from "./schema/relations.schema"
 
-const databaseSchema = {
+/** Merged schema + relations for Drizzle client and drizzle-seed `reset()`. */
+export const afendaDrizzleSchema = {
   ...schema,
   ...relations,
 }
+
+const databaseSchema = afendaDrizzleSchema
 
 export function createPgPool(config: PoolConfig = {}): Pool {
   return new Pool({

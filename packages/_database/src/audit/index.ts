@@ -13,8 +13,8 @@
 export * from "./contracts"
 export * from "./read-model"
 export * from "./relations/audit-relations"
-export * from "./schema/audit-enums"
-export * from "./schema/audit-logs"
+export * from "./schema/audit-enums.schema"
+export * from "./schema/audit-logs.schema"
 
 export * from "./services/assert-audit-invariants"
 export * from "./services/audit-invariant-error-map"

@@ -5,6 +5,10 @@
  *
  * `pnpm dlx auth@latest migrate --config packages/better-auth/src/better-auth-cli-config.ts --yes`
  *
+ * Organization plugin tables are included whenever you run `auth:migrate`.
+ * For passkey + twoFactor plugin tables, enable env flags and run:
+ * `pnpm --filter @afenda/better-auth run auth:migrate:plugins`
+ *
  * Loads repo-root `.env.neon` then `.env` (see `loadMonorepoEnvLayered`).
  */
 import { createDbClient, createPgPool } from "@afenda/database"

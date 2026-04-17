@@ -1,9 +1,9 @@
 import { and, eq } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
-import { identityLinks } from "../../identity/schema/identity-links"
-import { tenantMemberships } from "../schema/tenant-memberships"
-import { tenants } from "../schema/tenants"
+import { identityLinks } from "../../identity/schema/identity-links.schema"
+import { tenantMemberships } from "../schema/tenant-memberships.schema"
+import { tenants } from "../schema/tenants.schema"
 
 export type AfendaMeContext = {
   afendaUserId: string

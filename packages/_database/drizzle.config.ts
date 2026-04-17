@@ -1,6 +1,8 @@
 import { loadMonorepoEnvLayered } from "@afenda/env-loader"
 import { defineConfig } from "drizzle-kit"
 
+import { DRIZZLE_MIGRATIONS_SCHEMA } from "./src/governance/constants.js"
+
 loadMonorepoEnvLayered()
 
 export default defineConfig({
@@ -11,6 +13,6 @@ export default defineConfig({
     url: process.env.DATABASE_URL ?? "",
   },
   migrations: {
-    schema: "drizzle",
+    schema: DRIZZLE_MIGRATIONS_SCHEMA,
   },
 })

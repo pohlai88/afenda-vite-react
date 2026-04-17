@@ -1,4 +1,3 @@
-import type { DatabaseClient } from "@afenda/database"
 import type { Pool } from "pg"
 
 import { createDrizzleAuthChallengeRepo } from "./modules/auth-companion-adapters/drizzle/index.js"
@@ -13,31 +12,31 @@ import {
 import { isDatabaseClient } from "./modules/auth-companion-adapters/is-database-client.js"
 import { createAuthCompanionModule } from "./modules/auth-companion/create-auth-companion-module.js"
 import { InMemoryAuthChallengeRepo } from "./modules/auth-companion/repo/auth-challenge.repo.js"
-import { AlsBackedDemoAuthSessionRepo } from "./modules/auth-companion/repo/auth-session.repo.js"
+import { UnavailableAuthSessionStorageRepo } from "./modules/auth-companion/repo/auth-session.repo.js"
 
 /**
- * Wires auth-companion repos for the current runtime: Drizzle-backed when
- * `db` is a {@link DatabaseClient}, otherwise in-memory challenge + ALS session demo.
+ * Wires auth-companion repos for the current runtime: Drizzle-backed challenges when
+ * `db` is a {@link DatabaseClient}; otherwise in-memory challenge + unavailable session storage.
  *
  * Session list/revoke use a **raw `pg.Pool` seam** against Better Auth tables (CLI-managed
  * schema), not Drizzle models. Pass the same pool Better Auth uses (`createAfendaAuth(pool)`).
  */
 export function createAuthCompanionModuleForApp(db: unknown, pool?: Pool) {
+  const noSessionStorage = new UnavailableAuthSessionStorageRepo()
+
   if (!isDatabaseClient(db)) {
-    const demo = new AlsBackedDemoAuthSessionRepo()
     return createAuthCompanionModule({
       challengeRepo: new InMemoryAuthChallengeRepo(),
-      sessionReader: demo,
-      sessionRevoker: demo,
+      sessionReader: noSessionStorage,
+      sessionRevoker: noSessionStorage,
     })
   }
 
   if (!pool) {
-    const demo = new AlsBackedDemoAuthSessionRepo()
     return createAuthCompanionModule({
       challengeRepo: createDrizzleAuthChallengeRepo(db),
-      sessionReader: demo,
-      sessionRevoker: demo,
+      sessionReader: noSessionStorage,
+      sessionRevoker: noSessionStorage,
     })
   }
 

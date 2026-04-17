@@ -41,7 +41,15 @@
     "script:vitest-diagnostics": "tsx scripts/vitest-diagnostics.ts",
     "script:check-audit-writer-boundary": "tsx scripts/check-audit-writer-boundary.ts",
     "script:audit-api-smoke": "tsx scripts/audit-api-smoke.ts",
-    "auth:migrate": "pnpm --filter @afenda/better-auth auth:migrate"
+    "auth:migrate": "pnpm --filter @afenda/better-auth run auth:migrate",
+    "auth:migrate:plugins": "pnpm --filter @afenda/better-auth run auth:migrate:plugins",
+    "smoke:auth": "pnpm --filter @afenda/api run smoke:auth",
+    "db:migrate": "pnpm --filter @afenda/database run db:migrate",
+    "db:seed": "pnpm --filter @afenda/database run db:seed",
+    "db:seed:reference": "pnpm --filter @afenda/database run db:seed:reference",
+    "db:seed:demo": "pnpm --filter @afenda/database run db:seed:demo",
+    "db:seed:volume": "pnpm --filter @afenda/database run db:seed:volume",
+    "db:reset:local": "pnpm --filter @afenda/database run db:reset:local"
   },
   "devDependencies": {
     "@afenda/eslint-config": "workspace:*",

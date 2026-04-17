@@ -46,13 +46,23 @@ export const shellNavigationItems: readonly ShellNavigationItem[] = [
     lifecycle: "active",
   },
   {
+    id: "db_studio",
+    routeId: "db_studio",
+    href: "/app/db-studio",
+    labelKey: "nav.items.db_studio",
+    iconName: "DatabaseIcon",
+    groupId: "workspace",
+    order: 3,
+    lifecycle: "active",
+  },
+  {
     id: "my_project",
     routeId: "my_project",
     href: "/app/events",
     labelKey: "nav.items.my_project",
     iconName: "LayoutGridIcon",
     groupId: "workspace",
-    order: 3,
+    order: 4,
     lifecycle: "comingSoon",
   },
   {
@@ -62,7 +72,7 @@ export const shellNavigationItems: readonly ShellNavigationItem[] = [
     labelKey: "nav.items.my_team",
     iconName: "UsersIcon",
     groupId: "workspace",
-    order: 4,
+    order: 5,
     lifecycle: "comingSoon",
   },
   {
@@ -72,7 +82,7 @@ export const shellNavigationItems: readonly ShellNavigationItem[] = [
     labelKey: "nav.items.my_report",
     iconName: "FileBarChartIcon",
     groupId: "workspace",
-    order: 5,
+    order: 6,
     lifecycle: "comingSoon",
   },
   {
@@ -82,7 +92,7 @@ export const shellNavigationItems: readonly ShellNavigationItem[] = [
     labelKey: "nav.items.my_claim",
     iconName: "FileTextIcon",
     groupId: "workspace",
-    order: 6,
+    order: 7,
     lifecycle: "comingSoon",
   },
 ]

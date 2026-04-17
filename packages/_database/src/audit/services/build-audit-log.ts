@@ -7,7 +7,7 @@ import {
   parseAuditMetadata,
 } from "../contracts/audit-payload-contract"
 import { redactAuditPayload } from "../contracts/audit-redaction-policy"
-import type { NewAuditLog } from "../schema/audit-logs"
+import type { NewAuditLog } from "../schema/audit-logs.schema"
 import { AuditValidationError } from "../utils/audit-errors"
 import { validateAuditLog } from "./validate-audit-log"
 

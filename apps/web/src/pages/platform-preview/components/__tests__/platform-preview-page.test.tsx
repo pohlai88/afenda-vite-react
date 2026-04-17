@@ -1,105 +1,87 @@
-import type { HTMLAttributes, PropsWithChildren } from "react"
-import { fireEvent, render, screen } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
+import { act, render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { RouterProvider, createMemoryRouter } from "react-router-dom"
+import { describe, expect, it } from "vitest"
 
-import { PlatformPreviewPage } from "../platform-preview-page"
+import {
+  RoutePlatformPreview,
+  RoutePlatformPreviewChamber,
+  RoutePlatformPreviewFallbackRedirect,
+  RoutePlatformPreviewThreshold,
+} from "../../route-platform-preview"
 
-vi.mock("framer-motion", async () => {
-  const React = await import("react")
+function createJourneyRouter(initialEntries: string[]) {
+  return createMemoryRouter(
+    [
+      {
+        path: "/platform-preview",
+        element: <RoutePlatformPreview />,
+        children: [
+          { index: true, element: <RoutePlatformPreviewThreshold /> },
+          { path: ":chamber", element: <RoutePlatformPreviewChamber /> },
+          { path: "*", element: <RoutePlatformPreviewFallbackRedirect /> },
+        ],
+      },
+    ],
+    { initialEntries }
+  )
+}
 
-  type PassthroughProps = PropsWithChildren<Record<string, unknown>>
+describe("Platform preview chamber routes", () => {
+  it("navigates threshold -> chamber and preserves back continuity", async () => {
+    const user = userEvent.setup()
+    const router = createJourneyRouter(["/platform-preview"])
 
-  const passthrough =
-    (tag: string) =>
-    ({ children, ...props }: PassthroughProps) =>
-      React.createElement(tag, props as HTMLAttributes<HTMLElement>, children)
+    render(<RouterProvider router={router} />)
 
-  return {
-    AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-      <>{children}</>
-    ),
-    motion: {
-      div: passthrough("div"),
-      article: passthrough("article"),
-      button: passthrough("button"),
-      section: passthrough("section"),
-      main: passthrough("main"),
-    },
-  }
-})
+    await user.click(screen.getAllByRole("link", { name: /enter chamber/i })[1]!)
+    expect(router.state.location.pathname).toBe("/platform-preview/controller")
+    expect(screen.getByRole("heading", { name: "Controller" })).toBeInTheDocument()
+    expect(screen.getByText("Controller guards reporting truth.")).toBeInTheDocument()
 
-describe("PlatformPreviewPage", () => {
-  it("renders the controller intro by default", () => {
-    render(<PlatformPreviewPage />)
+    await act(async () => {
+      await router.navigate(-1)
+    })
 
+    expect(router.state.location.pathname).toBe("/platform-preview")
     expect(
       screen.getByText(
-        "See whether this process deserves approval before it moves."
-      )
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText(/controller \/ finance manager lens/i)
-    ).toBeInTheDocument()
-  })
-
-  it("switches role when clicking a role card", () => {
-    render(<PlatformPreviewPage />)
-
-    fireEvent.click(
-      screen.getByRole("button", { name: /switch to cfo \/ cto view/i })
-    )
-
-    expect(
-      screen.getByText(
-        "See whether this business movement rolls up into real command."
+        "Truth does not fail at the boardroom first. It fails when posting, reporting, and governance drift apart."
       )
     ).toBeInTheDocument()
   })
 
-  it("switches scenario when clicking a scenario card", () => {
-    render(<PlatformPreviewPage />)
+  it("redirects legacy seat slugs to their chamber destinations without rendering legacy vocabulary", () => {
+    const router = createJourneyRouter(["/platform-preview/operator"])
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /switch scenario to integration exception/i,
-      })
-    )
+    render(<RouterProvider router={router} />)
 
-    expect(
-      screen.getByTestId("preview-scenario-card-integration-exception")
-    ).toHaveTextContent(/degraded signals/i)
+    expect(router.state.location.pathname).toBe("/platform-preview/accountant")
+    expect(screen.getByRole("heading", { name: "Accountant" })).toBeInTheDocument()
+    expect(screen.queryByText(/operator/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/seat/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/session/i)).not.toBeInTheDocument()
   })
 
-  it("peek-next can jump role and scenario together", () => {
-    render(<PlatformPreviewPage />)
+  it("redirects legacy preview URLs to default chamber without rendering legacy vocabulary", () => {
+    const router = createJourneyRouter([
+      "/platform-preview/journal/operator/payment-release",
+    ])
 
-    fireEvent.click(
-      screen.getByTestId("preview-role-peek-controller-executive")
-    )
+    render(<RouterProvider router={router} />)
 
-    const pageRoot = document.getElementById("platform-preview-page")
-    expect(pageRoot).not.toBeNull()
-    expect(pageRoot).toHaveAttribute("data-role", "executive")
-    expect(pageRoot).toHaveAttribute("data-scenario", "month-end-close")
+    expect(router.state.location.pathname).toBe("/platform-preview/controller")
+    expect(screen.queryByText(/choose your seat/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/journal/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/executive bi/i)).not.toBeInTheDocument()
   })
 
-  it("can open inspect controls", () => {
-    render(<PlatformPreviewPage />)
+  it("redirects invalid preview paths to the default controller chamber", () => {
+    const router = createJourneyRouter(["/platform-preview/journal"])
 
-    fireEvent.click(screen.getByTestId("preview-inspect-toggle"))
+    render(<RouterProvider router={router} />)
 
-    expect(screen.getByText("Stress state")).toBeInTheDocument()
-    expect(screen.getByText("Density")).toBeInTheDocument()
-    expect(screen.getByText("Theme")).toBeInTheDocument()
-  })
-
-  it("announces the current role and scenario in the live region", () => {
-    render(<PlatformPreviewPage />)
-
-    expect(
-      screen.getByText(
-        /viewing controller \/ finance manager in payment release/i
-      )
-    ).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe("/platform-preview/controller")
+    expect(screen.getByRole("heading", { name: "Controller" })).toBeInTheDocument()
   })
 })

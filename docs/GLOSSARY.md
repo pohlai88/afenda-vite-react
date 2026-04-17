@@ -2,7 +2,7 @@
 
 This document defines **key terms** used in the **Afenda** monorepo so product, engineering, and support share the same vocabulary. Definitions are **Afenda / ERP–centric**; they are not tied to a specific database schema until your migrations exist ([Database](./DATABASE.md)).
 
-**Related:** [Architecture](./ARCHITECTURE.md) · [Authentication](./AUTHENTICATION.md) · [Project structure](./PROJECT_STRUCTURE.md)
+**Related:** [Architecture](./ARCHITECTURE.md) · [Authentication](./AUTHENTICATION.md) · [Project structure](./PROJECT_STRUCTURE.md) · [Database architecture doctrine](../packages/_database/docs/DATABASE_ARCHITECTURE_DOCTRINE.md) (data modeling principles)
 
 ---
 

@@ -1,9 +1,4 @@
-import { buildDemoAuthSessionsPayload } from "../../../auth-ecosystem.js"
 import { AuthCompanionError } from "../errors/auth-companion-error.js"
-import {
-  getAuthSessionRequestContext,
-  type AuthSessionRequestContext,
-} from "../utils/auth-request-context.js"
 
 export type AuthSessionListOptions = {
   /** Better Auth session id for the active cookie — marks matching row as current. */
@@ -48,85 +43,46 @@ export interface AuthSessionRevoker {
   revokeSession(userId: string, sessionId: string): Promise<void>
 }
 
-/** ALS demo + legacy combined adapter. */
 export interface AuthSessionRepo
   extends AuthSessionReader, AuthSessionRevoker {}
 
-export type { AuthSessionRequestContext } from "../utils/auth-request-context.js"
+function throwSessionStorageUnavailable(): never {
+  throw new AuthCompanionError(
+    "auth.sessions.storage_unavailable",
+    "Session list and revoke require a PostgreSQL pool and Better Auth tables. Configure DATABASE_URL and pass the same pool as Better Auth.",
+    503
+  )
+}
 
 /**
- * Request-scoped session repo: requires {@link runWithAuthSessionContext} around
- * route handlers (see Hono registration).
+ * Used when the API is bootstrapped without a {@link Pool} (or without a Drizzle client).
+ * Session-backed routes return 503 until storage is wired; seeding applies on top of tenant scope.
  */
-export class AlsBackedDemoAuthSessionRepo implements AuthSessionRepo {
-  private requireContext(): AuthSessionRequestContext {
-    const ctx = getAuthSessionRequestContext()
-    if (!ctx) {
-      throw new AuthCompanionError(
-        "auth.sessions.no_request_context",
-        "Session request context is missing.",
-        500
-      )
-    }
-    return ctx
+export class UnavailableAuthSessionStorageRepo implements AuthSessionRepo {
+  async listSessionsForUser(): Promise<readonly AuthSessionRow[]> {
+    throwSessionStorageUnavailable()
   }
 
-  private payload() {
-    const { session, userAgent, forwardedFor } = this.requireContext()
-    return buildDemoAuthSessionsPayload({
-      session,
-      userAgent,
-      forwardedFor,
-    })
+  async revokeSession(): Promise<void> {
+    throwSessionStorageUnavailable()
   }
 
-  async listSessionsForUser(
-    _userId: string,
-    options?: AuthSessionListOptions
-  ): Promise<readonly AuthSessionRow[]> {
-    const p = this.payload()
-    const currentId = options?.currentSessionId
-    return p.sessions.map((s) => ({
-      id: s.id,
-      device: s.device,
-      location: s.location,
-      createdAt: new Date(s.createdAt),
-      lastActiveAt: new Date(s.lastActiveAt),
-      isCurrent: currentId !== undefined ? s.id === currentId : s.isCurrent,
-      risk: s.risk,
-    }))
-  }
-
-  async revokeSession(_userId: string, sessionId: string): Promise<void> {
-    const { session } = this.requireContext()
-    const archivedSessionId = `archive_${session.session.id.slice(0, 8)}`
-    const allowed =
-      sessionId === session.session.id || sessionId === archivedSessionId
-    if (!allowed) {
-      throw new AuthCompanionError(
-        "auth.sessions.not_found",
-        "Session was not found in the current tenant scope.",
-        404
-      )
-    }
-  }
-
-  async listRecentAuthEvents(_userId: string): Promise<
+  async listRecentAuthEvents(): Promise<
     readonly {
       id: string
       title: string
       timeLabel: string
     }[]
   > {
-    return this.payload().recentEvents
+    throwSessionStorageUnavailable()
   }
 
-  async readAuthFactors(_userId: string): Promise<{
+  async readAuthFactors(): Promise<{
     password: boolean
     social: boolean
     passkey: boolean
     mfa: boolean
   }> {
-    return this.payload().factors
+    throwSessionStorageUnavailable()
   }
 }

@@ -5,7 +5,7 @@ import {
   auditLogs,
   type AuditLog,
   type NewAuditLog,
-} from "../schema/audit-logs"
+} from "../schema/audit-logs.schema"
 import { validateAuditLog } from "./validate-audit-log"
 
 export type InsertAuditLogInput = Omit<

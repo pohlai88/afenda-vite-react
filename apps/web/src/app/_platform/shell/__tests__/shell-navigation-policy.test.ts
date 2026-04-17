@@ -13,6 +13,7 @@ describe("filterShellNavigationItems", () => {
       "events",
       "audit",
       "partners",
+      "db_studio",
       "my_project",
       "my_team",
       "my_report",

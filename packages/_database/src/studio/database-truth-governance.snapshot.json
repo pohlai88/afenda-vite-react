@@ -1,0 +1,14 @@
+{
+  "document_kind": "database_truth_governance_snapshot",
+  "generated_at": "2026-04-16T16:43:12.464Z",
+  "source_commit": "0062580664e97f8be118980cdf2c69b64d40075b",
+  "source_content_sha256": "7dcc5da6fd21d2f529dfcc6ef4c3e05b1fc1cb9b9c8b5ed67c0721af7d8ad2b9",
+  "schema_version": 1,
+  "document": "database-truth-governance",
+  "description": "Declarative registry for truth class, scope model, and time model (Afenda governance).\nNot a substitute for the business ↔ technical glossary snapshot.\n",
+  "package": "@afenda/database",
+  "truth_classes": [],
+  "scope_models": [],
+  "time_models": [],
+  "artifact_bindings": []
+}

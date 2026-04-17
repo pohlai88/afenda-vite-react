@@ -19,10 +19,10 @@
 import { eq } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
-import { businessUnits } from "../../organization/schema/business-units"
-import { legalEntities } from "../../organization/schema/legal-entities"
-import { locations } from "../../organization/schema/locations"
-import { orgUnits } from "../../organization/schema/org-units"
+import { businessUnits } from "../../organization/schema/business-units.schema"
+import { legalEntities } from "../../organization/schema/legal-entities.schema"
+import { locations } from "../../organization/schema/locations.schema"
+import { orgUnits } from "../../organization/schema/org-units.schema"
 
 export type AssertContextAlignmentInput = {
   db: DatabaseClient

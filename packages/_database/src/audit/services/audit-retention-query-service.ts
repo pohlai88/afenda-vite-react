@@ -1,7 +1,7 @@
 import { and, eq, isNotNull, lte } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
-import { auditLogs, type AuditLog } from "../schema/audit-logs"
+import { auditLogs, type AuditLog } from "../schema/audit-logs.schema"
 
 export async function queryAuditRowsForRetentionReview(
   database: DatabaseClient,

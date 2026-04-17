@@ -1,0 +1,18 @@
+# Truth / scope / time governance overlay — separate from business-technical-glossary.yaml
+# Sync: pnpm --filter @afenda/database run studio:sync
+# Registries start empty; add truth_classes, scope_models, time_models, then artifact_bindings.
+
+schema_version: 1
+document: database-truth-governance
+description: |
+  Declarative registry for truth class, scope model, and time model (Afenda governance).
+  Not a substitute for the business ↔ technical glossary snapshot.
+package: "@afenda/database"
+
+truth_classes: []
+
+scope_models: []
+
+time_models: []
+
+artifact_bindings: []

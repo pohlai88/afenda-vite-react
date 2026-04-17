@@ -60,7 +60,7 @@ function profileFromSessionData(
 }
 
 /**
- * Sticky workspace header: scope breadcrumbs, command palette (⌘K; Ctrl+K also opens on Windows), utilities, Connect (icon in the tool row).
+ * Sticky workspace header: scope breadcrumbs, command palette (⌘K; Ctrl+K also opens on Windows), utilities, Connect (beside breadcrumbs on md+).
  * Pass `leadingSlot` from the shell layout (e.g. mobile `SidebarTrigger`) so sidebar primitives stay in the layout layer.
  *
  * **Content sizing:** Strip height comes from `--size-shell-header-height` (see `index.css`) and `min-h-12`.
@@ -220,6 +220,9 @@ export function ShellTopNav({
                   ) : (
                     <ShellTopNavBreadcrumbs items={breadcrumbs} />
                   )}
+                  <div className="hidden shrink-0 items-center md:flex">
+                    <ShellTopNavConnectPopover />
+                  </div>
                 </div>
 
                 <div className="flex shrink-0 items-center gap-[0.5rem] sm:gap-[0.625rem]">
@@ -260,7 +263,6 @@ export function ShellTopNav({
 
                   <ShellTopNavTools
                     className="hidden sm:flex"
-                    connectSlot={<ShellTopNavConnectPopover />}
                     trustBeacon={<ShellAuthTrustBeacon />}
                     workspaceSlot={
                       <>
@@ -336,6 +338,9 @@ export function ShellTopNav({
                   ) : (
                     <ShellTopNavBreadcrumbs items={breadcrumbs} />
                   )}
+                  <div className="hidden shrink-0 items-center md:flex">
+                    <ShellTopNavConnectPopover />
+                  </div>
                 </div>
 
                 <div className="flex shrink-0 items-center gap-[0.5rem] sm:gap-[0.625rem]">
@@ -376,7 +381,6 @@ export function ShellTopNav({
 
                   <ShellTopNavTools
                     className="hidden sm:flex"
-                    connectSlot={<ShellTopNavConnectPopover />}
                     trustBeacon={<ShellAuthTrustBeacon />}
                     workspaceSlot={
                       <Tooltip>

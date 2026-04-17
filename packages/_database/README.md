@@ -19,6 +19,10 @@ import { db } from "@afenda/database"
 
 Do not import `@afenda/_database`, do not deep-import from `packages/_database/src/*`, and do not create a sibling database package without explicit architecture approval.
 
+**Package docs** (database architecture doctrine, business ↔ technical YAML glossary, Drizzle seed notes): [`docs/README.md`](docs/README.md).
+
+**DB Studio snapshots:** after editing [`docs/data/business-technical-glossary.yaml`](docs/data/business-technical-glossary.yaml) or [`docs/data/database-truth-governance.yaml`](docs/data/database-truth-governance.yaml), run `pnpm --filter @afenda/database studio:sync` to refresh validated JSON under `src/studio/` (Zod + metadata). Runtime API/UI import [`@afenda/database/studio`](src/studio/index.ts).
+
 ## Domain-first structure
 
 The package is domain-first, not function-first:
@@ -41,13 +45,13 @@ The additive “first wave” from schema review (identity bridge, operating dim
 
 | Sketch / mental model (`packages/db/…`)                               | This repo (`packages/_database/src/…`)                                         |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `core/users.ts`                                                       | `identity/schema/users.ts`                                                     |
-| `tenancy/tenants.ts`                                                  | `tenancy/schema/tenants.ts`                                                    |
-| `security/*` (memberships, roles, scopes)                             | `authorization/schema/*` and `tenancy/schema/tenant-memberships.ts`            |
-| `identity/identity-links.ts`                                          | `identity/schema/identity-links.ts`                                            |
-| `organization/{business-units,locations,legal-entities,org-units}.ts` | `organization/schema/*.ts`                                                     |
-| `audit/audit-logs.ts`                                                 | `audit/schema/audit-logs.ts`                                                   |
-| Per-file `*.relations.ts`                                             | Centralized under `*/relations/*-relations.ts` (see `src/schema/relations.ts`) |
+| `core/users.ts`                                                       | `identity/schema/users.schema.ts`                                                     |
+| `tenancy/tenants.ts`                                                  | `tenancy/schema/tenants.schema.ts`                                                    |
+| `security/*` (memberships, roles, scopes)                             | `authorization/schema/*.schema.ts` and `tenancy/schema/tenant-memberships.schema.ts`            |
+| `identity/identity-links.ts`                                          | `identity/schema/identity-links.schema.ts`                                            |
+| `organization/{business-units,locations,legal-entities,org-units}.ts` | `organization/schema/*.schema.ts`                                                     |
+| `audit/audit-logs.ts`                                                 | `audit/schema/audit-logs.schema.ts`                                                   |
+| Per-file `*.relations.ts`                                             | Centralized under `*/relations/*-relations.ts` (see `src/schema/relations.schema.ts`) |
 
 **Naming deltas (intentional):** `identity_links.better_auth_user_id` is the Better Auth subject id (your sketch may say `auth_user_id`). `audit_logs.session_id` is the auth/app session identifier (your sketch may say `auth_session_id`). `membership_scopes` uses a **composite FK** `(membership_id, tenant_id)` for tenant-safe joins.
 
@@ -110,7 +114,18 @@ Prefer governed writers (`insertGovernedAuditLog` / catalog merge) where the aud
 - `pnpm --filter @afenda/database typecheck`
 - `pnpm --filter @afenda/database lint`
 - `pnpm --filter @afenda/database test:run`
+- **`db:guard`** — `typecheck`, `guard-schema-modules.ts` (`*.schema.ts` under each `schema/` folder), and contract + governance Vitest files. Runs automatically before **`db:generate`**.
+- **`db:guard:ci`** — same as `db:guard` without `typecheck` (for CI when Turbo already typechecked).
+- **`db:check-migrations`** — `drizzle-kit check` when `drizzle/meta/_journal.json` exists; otherwise skips.
+- **`db:verify-migrations-sync`** — runs `drizzle-kit generate` then fails if `git diff` shows uncommitted changes under `drizzle/`; skips when no journal yet.
+- **`db:ci`** — `db:guard:ci` + `db:check-migrations` + `db:verify-migrations-sync` (used in GitHub Actions).
 - `pnpm --filter @afenda/database db:generate`
 - `pnpm --filter @afenda/database db:migrate`
+- `pnpm --filter @afenda/database db:seed` — governed seed runtime ([`docs/DATABASE.md`](../docs/DATABASE.md) §4.1). Run **`db:migrate` before `db:seed`**. From repo root: `pnpm db:seed`.
+- `pnpm --filter @afenda/database db:reset:local` — **destructive** truncate of Afenda Drizzle tables via `drizzle-seed` `reset()`; requires `SEED_RESET_LOCAL=true` and `SEED_ENV=local` only. Does not touch Better Auth tables outside this schema bundle. Follow with `db:migrate` and `db:seed` if you need a clean fixture set.
+
+**Neon / serverless Postgres:** use the branch `DATABASE_URL` from the Neon console or CI (preview branches). Prefer the **pooler** endpoint (`-pooler` in the hostname) for short-lived or bursty clients; expect possible **cold start** latency on first query after compute suspend. The seed CLI probes the connection with `SELECT 1` before running modules so unreachable databases fail fast.
+
+**drizzle-seed + Faker:** see [`docs/DRIZZLE_SEED_AND_FAKER.md`](docs/DRIZZLE_SEED_AND_FAKER.md) for options, `refine`, `reset`, and generator reference links.
 
 Use `db:push` only for local disposable development databases. Production uses reviewed migrations.

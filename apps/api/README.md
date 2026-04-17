@@ -40,6 +40,16 @@ Default port **3001** (override with `PORT`).
 - `GET /v1/me` — BFF: requires session cookie; returns Better Auth `user`/`session` plus Afenda `afendaUserId`, `tenantIds`, and `defaultTenantId` (from `users` + `tenant_memberships` via email). The Vite app calls this through `/api/v1/me` (proxy rewrites to `/v1/me`).
 - `POST /v1/audit/demo` — writes one governed `auth.login.succeeded` row (demo). JSON body optional: `{ "subjectId": string }`. `X-Tenant-Id` must match an active tenant membership for the signed-in user (403 otherwise).
 
+### DB Studio (read-only, session required)
+
+| Method | Path | Notes |
+| ------ | ---- | ----- |
+| `GET` | `/v1/studio/glossary` | Business ↔ technical glossary JSON (from [`@afenda/database/studio`](../../packages/_database/src/studio/index.ts) snapshot). |
+| `GET` | `/v1/studio/glossary/matrix` | `domain_modules` labels + `entry_counts_by_domain_module` (optional; DB Studio derives the same counts client-side from `/glossary`). |
+| `GET` | `/v1/studio/truth-governance` | Truth / scope / time governance snapshot (`database-truth-governance.snapshot.json`). |
+| `GET` | `/v1/studio/enums` | Allowlisted `pg_enum` values (public schema). |
+| `GET` | `/v1/studio/audit/recent?limit=` | Recent `audit_logs` for tenant; requires `X-Tenant-Id` and membership (403 if not allowed). |
+
 ## Better Auth (self-hosted)
 
 Server config lives in `@afenda/better-auth` (`createAfendaAuth`). Required env (see repo-root `.env.database.example` and `.env.neon.example`):

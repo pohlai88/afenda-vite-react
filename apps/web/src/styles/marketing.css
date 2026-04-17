@@ -1,0 +1,136 @@
+/**
+ * MARKETING ART DIRECTION
+ *
+ * Loaded only via `MarketingLayout` — public routes (`/`, auth, platform-preview).
+ * Uses design-system CSS variables; no parallel token system.
+ */
+
+.marketing-root {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+}
+
+/* Ambient depth: fixed layer so scroll feels cinematic, not “flat sheet”. */
+.marketing-root::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 90% 55% at 50% -15%,
+      color-mix(in oklab, var(--color-primary) 14%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 50% 45% at 100% 30%,
+      color-mix(in oklab, var(--color-ring) 10%, transparent),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 45% 40% at 0% 70%,
+      color-mix(in oklab, var(--color-muted) 18%, transparent),
+      transparent 45%
+    );
+  opacity: 0.85;
+}
+
+.dark .marketing-root::before {
+  opacity: 0.55;
+}
+
+/* Platform preview is a statutory reading room; keep the background disciplined. */
+.marketing-root--platform-preview::before {
+  background: none;
+  opacity: 0;
+}
+
+/* Content sits above the ambient layer */
+.marketing-root > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero typography — restraint + presence */
+.marketing-display {
+  font-size: clamp(2.25rem, 5vw + 1rem, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.marketing-lede {
+  font-size: clamp(1.05rem, 0.5vw + 1rem, 1.25rem);
+  line-height: 1.65;
+  color: var(--color-muted-foreground);
+  max-width: 42rem;
+}
+
+/* Subtle entrance — GPU-friendly */
+@keyframes marketing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.marketing-animate-in {
+  animation: marketing-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+.marketing-animate-delay-1 {
+  animation-delay: 0.08s;
+}
+.marketing-animate-delay-2 {
+  animation-delay: 0.16s;
+}
+.marketing-animate-delay-3 {
+  animation-delay: 0.24s;
+}
+
+/* Glass panels — marketing + platform-preview cohesion */
+.marketing-glass-panel {
+  border: 1px solid color-mix(in oklab, var(--color-border) 85%, transparent);
+  background: color-mix(in oklab, var(--color-card) 72%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--color-foreground) 6%, transparent),
+    0 24px 48px -24px color-mix(in oklab, var(--color-foreground) 12%, transparent);
+}
+
+.dark .marketing-glass-panel {
+  background: color-mix(in oklab, var(--color-card) 55%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--color-foreground) 8%, transparent),
+    0 28px 56px -28px #00000066;
+}
+
+/* Skip link: visible on focus */
+.marketing-skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 50;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transform: translateY(-120%);
+  transition: transform 0.2s ease;
+}
+
+.marketing-skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}

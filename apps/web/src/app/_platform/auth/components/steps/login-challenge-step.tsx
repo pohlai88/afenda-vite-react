@@ -1,6 +1,7 @@
 import { Button } from "@afenda/design-system/ui-primitives"
 
 import type { AuthChallengeMethod } from "../../contracts/auth-challenge-ticket"
+import type { AsyncOrSyncVoid } from "../../types/async-or-sync-void"
 
 type LoginChallengeStepProps = {
   readonly challengeMethod: AuthChallengeMethod
@@ -16,10 +17,10 @@ type LoginChallengeStepProps = {
   readonly switchToTotpLabel: string
   readonly passkeyPassageLabel: string
   readonly otpPlaceholder: string
-  readonly onVerify: () => Promise<void> | void
+  readonly onVerify: () => AsyncOrSyncVoid
   readonly onUseAnother: () => void
   /** When the current challenge is passkey, start a TOTP challenge instead (Wave 1: passkey verify is deferred). */
-  readonly onSwitchToTotp: () => Promise<void> | void
+  readonly onSwitchToTotp: () => AsyncOrSyncVoid
 }
 
 export function LoginChallengeStep(props: LoginChallengeStepProps) {

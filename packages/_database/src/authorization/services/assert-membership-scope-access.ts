@@ -11,13 +11,13 @@
 import { and, eq, inArray } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
-import { businessUnits } from "../../organization/schema/business-units"
-import { legalEntities } from "../../organization/schema/legal-entities"
-import { locations } from "../../organization/schema/locations"
-import { orgUnits } from "../../organization/schema/org-units"
-import { tenantMemberships } from "../../tenancy/schema/tenant-memberships"
-import { tenants } from "../../tenancy/schema/tenants"
-import { membershipScopes } from "../schema/membership-scopes"
+import { businessUnits } from "../../organization/schema/business-units.schema"
+import { legalEntities } from "../../organization/schema/legal-entities.schema"
+import { locations } from "../../organization/schema/locations.schema"
+import { orgUnits } from "../../organization/schema/org-units.schema"
+import { tenantMemberships } from "../../tenancy/schema/tenant-memberships.schema"
+import { tenants } from "../../tenancy/schema/tenants.schema"
+import { membershipScopes } from "../schema/membership-scopes.schema"
 
 export type MembershipScopeType =
   | "tenant"

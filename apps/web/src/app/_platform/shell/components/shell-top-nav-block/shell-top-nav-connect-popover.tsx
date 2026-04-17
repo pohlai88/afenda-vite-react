@@ -20,8 +20,6 @@ import {
   TooltipTrigger,
 } from "@afenda/design-system/ui-primitives"
 
-import { SHELL_TOP_NAV_ICON_BUTTON_CLASS } from "./shell-top-nav-tools"
-
 export function ShellTopNavConnectPopover() {
   const { t } = useTranslation("shell")
   const connectTooltip = t("top_nav.tooltip_connect")
@@ -30,21 +28,24 @@ export function ShellTopNavConnectPopover() {
     <Popover>
       <Tooltip>
         <TooltipTrigger asChild>
-          <PopoverTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className={SHELL_TOP_NAV_ICON_BUTTON_CLASS}
-              aria-label={t("top_nav.connect_title")}
-            >
-              <Plug
-                className="size-4 opacity-90"
-                strokeWidth={1.5}
-                aria-hidden
-              />
-            </Button>
-          </PopoverTrigger>
+          <span className="inline-flex items-center">
+            <PopoverTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-[2.25rem] gap-2 rounded-full border-border-muted bg-card/70 px-3.5 text-foreground shadow-sm transition-colors has-[>svg]:px-3.5 hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label={t("top_nav.connect_title")}
+              >
+                <Plug
+                  className="size-4 shrink-0 opacity-80"
+                  strokeWidth={1.5}
+                  aria-hidden
+                />
+                <span className="text-sm leading-none">{t("top_nav.connect")}</span>
+              </Button>
+            </PopoverTrigger>
+          </span>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="max-w-xs">
           {connectTooltip}

@@ -19,8 +19,6 @@ import {
 import { cn } from "@afenda/design-system/utils"
 
 export type ShellTopNavToolsProps = {
-  /** Optional leading control (e.g. Connect) using the same circular icon chrome as the tool row. */
-  connectSlot?: ReactNode
   /** Optional trust indicator shown before utilities. */
   trustBeacon?: ReactNode
   /** Optional workspace controls (e.g. open focus window / fullscreen). */
@@ -35,8 +33,7 @@ export type ShellTopNavToolsProps = {
   className?: string
 }
 
-/** Shared with `ShellTopNavConnectPopover` so Connect matches the tool icons. */
-export const SHELL_TOP_NAV_ICON_BUTTON_CLASS =
+const SHELL_TOP_NAV_ICON_BUTTON_CLASS =
   "relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
 
 type IconToolProps = {
@@ -66,7 +63,6 @@ function ShellTopNavIconTool({ label, children }: IconToolProps) {
 }
 
 export function ShellTopNavTools({
-  connectSlot,
   trustBeacon,
   workspaceSlot,
   feedbackLabel,
@@ -84,7 +80,6 @@ export function ShellTopNavTools({
         className
       )}
     >
-      <div className="flex items-center gap-[0.375rem]">{connectSlot}</div>
       {trustBeacon ? (
         <div className="flex items-center gap-[0.375rem]">{trustBeacon}</div>
       ) : null}

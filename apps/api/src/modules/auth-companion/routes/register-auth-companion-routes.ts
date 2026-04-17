@@ -3,7 +3,6 @@ import type { Hono } from "hono"
 import type { ContentfulStatusCode } from "hono/utils/http-status"
 
 import type { AuthCompanionModule } from "../create-auth-companion-module.js"
-import { runWithAuthSessionContext } from "../utils/auth-request-context.js"
 
 type HttpApp = {
   get: (path: string, handler: unknown) => void
@@ -102,21 +101,12 @@ export function registerAuthCompanionProtectedRoutes(
 
   app.get("/v1/auth/sessions", async (c) => {
     const session = c.get("authSession")
-    return await runWithAuthSessionContext(
-      {
-        session,
-        userAgent: c.req.header("user-agent") ?? "",
-        forwardedFor: c.req.header("x-forwarded-for") ?? null,
-      },
-      async () => {
-        const result = await sessionRoutes.list({
-          requestId: c.req.header("x-request-id") ?? undefined,
-          actorUserId: session.user.id,
-          currentSessionId: session.session.id,
-        })
-        return c.json(result.body, result.status as ContentfulStatusCode)
-      }
-    )
+    const result = await sessionRoutes.list({
+      requestId: c.req.header("x-request-id") ?? undefined,
+      actorUserId: session.user.id,
+      currentSessionId: session.session.id,
+    })
+    return c.json(result.body, result.status as ContentfulStatusCode)
   })
 
   app.post("/v1/auth/sessions/revoke", async (c) => {
@@ -127,20 +117,11 @@ export function registerAuthCompanionProtectedRoutes(
     } catch {
       body = null
     }
-    return await runWithAuthSessionContext(
-      {
-        session,
-        userAgent: c.req.header("user-agent") ?? "",
-        forwardedFor: c.req.header("x-forwarded-for") ?? null,
-      },
-      async () => {
-        const result = await sessionRoutes.revoke({
-          body,
-          requestId: c.req.header("x-request-id") ?? undefined,
-          actorUserId: session.user.id,
-        })
-        return c.json(result.body, result.status as ContentfulStatusCode)
-      }
-    )
+    const result = await sessionRoutes.revoke({
+      body,
+      requestId: c.req.header("x-request-id") ?? undefined,
+      actorUserId: session.user.id,
+    })
+    return c.json(result.body, result.status as ContentfulStatusCode)
   })
 }

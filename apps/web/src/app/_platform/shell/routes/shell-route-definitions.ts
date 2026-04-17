@@ -177,6 +177,24 @@ export const shellAppChildRouteDefinitions = [
       },
     } satisfies ShellRouteMetadata,
   },
+  {
+    pathSegment: "db-studio",
+    metadata: {
+      routeId: "db-studio",
+      path: shellAppChildPath("db-studio"),
+      shell: {
+        titleKey: "breadcrumb.db_studio",
+        breadcrumbs: [
+          { id: "app", labelKey: "breadcrumb.app", to: APP_BASE },
+          {
+            id: "db-studio",
+            labelKey: "breadcrumb.db_studio",
+            to: shellAppChildPath("db-studio"),
+          },
+        ],
+      },
+    } satisfies ShellRouteMetadata,
+  },
 ] as const
 
 /** Canonical child path segments (single source for router parity and tooling). */

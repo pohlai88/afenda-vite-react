@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import type { AuditLog } from "../schema/audit-logs"
+import type { AuditLog } from "../schema/audit-logs.schema"
 import { buildAuditLog } from "../services/build-audit-log"
 import { validateAuditLog } from "../services/validate-audit-log"
 import { serializeAuditLog } from "../utils/serialize-audit-log"

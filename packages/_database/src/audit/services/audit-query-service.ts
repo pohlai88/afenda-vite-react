@@ -1,7 +1,7 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
-import { auditLogs, type AuditLog } from "../schema/audit-logs"
+import { auditLogs, type AuditLog } from "../schema/audit-logs.schema"
 import {
   parseAuditQueryInput,
   type AuditQueryInput,

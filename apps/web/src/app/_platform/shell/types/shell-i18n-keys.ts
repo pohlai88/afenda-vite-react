@@ -6,6 +6,7 @@ export type ShellBreadcrumbLabelKey =
   | "breadcrumb.events"
   | "breadcrumb.audit"
   | "breadcrumb.partners"
+  | "breadcrumb.db_studio"
 
 export type ShellNavGroupLabelKey =
   | "nav.workspace.placeholder_title"
@@ -27,6 +28,7 @@ export type ShellNavItemLabelKey =
   | "nav.items.events"
   | "nav.items.audit"
   | "nav.items.partners"
+  | "nav.items.db_studio"
   | "nav.items.my_project"
   | "nav.items.my_team"
   | "nav.items.my_report"
@@ -37,6 +39,7 @@ export type ShellNavWidgetLabelKey =
   | "nav.widgets.my_erp"
   | "nav.widgets.my_portal"
   | "nav.widgets.my_task"
+  | "nav.widgets.db_studio"
   | "nav.widgets.my_project"
   | "nav.widgets.my_team"
   | "nav.widgets.my_report"

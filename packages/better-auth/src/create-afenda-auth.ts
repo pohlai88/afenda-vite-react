@@ -1,7 +1,7 @@
 import { passkey } from "@better-auth/passkey"
 import { createDbClient, type DatabaseClient } from "@afenda/database"
 import { betterAuth } from "better-auth"
-import { twoFactor } from "better-auth/plugins"
+import { organization, twoFactor } from "better-auth/plugins"
 import type { Pool } from "pg"
 
 import { createAfendaDatabaseAuthHooks } from "./auth-database-audit-hooks.js"
@@ -116,6 +116,9 @@ export function createAfendaAuth(pool: Pool, db?: DatabaseClient) {
   }
 
   const plugins = [
+    organization({
+      allowUserToCreateOrganization: true,
+    }),
     ...(capabilityHooks.passkeyEnabled
       ? [
           passkey({
@@ -191,6 +194,6 @@ export function createAfendaAuth(pool: Pool, db?: DatabaseClient) {
       },
     },
     ...(Object.keys(socialProviders).length > 0 ? { socialProviders } : {}),
-    ...(plugins.length > 0 ? { plugins } : {}),
+    plugins,
   })
 }

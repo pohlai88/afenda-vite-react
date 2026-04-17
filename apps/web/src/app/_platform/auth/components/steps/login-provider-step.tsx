@@ -1,13 +1,15 @@
 import { Button } from "@afenda/design-system/ui-primitives"
 
+import type { AsyncOrSyncVoid } from "../../types/async-or-sync-void"
+
 type LoginProviderStepProps = {
   readonly redirectingProvider: "google" | "github" | null
   readonly disabled: boolean
   readonly prompt: string
   readonly googleLabel: string
   readonly githubLabel: string
-  readonly onGoogle: () => Promise<void> | void
-  readonly onGithub: () => Promise<void> | void
+  readonly onGoogle: () => AsyncOrSyncVoid
+  readonly onGithub: () => AsyncOrSyncVoid
 }
 
 export function LoginProviderStep(props: LoginProviderStepProps) {

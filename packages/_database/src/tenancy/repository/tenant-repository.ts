@@ -1,9 +1,9 @@
 import { and, eq } from "drizzle-orm"
 
 import { db, type DatabaseClient } from "../../client"
-import { users } from "../../identity/schema/users"
-import { tenantMemberships } from "../schema/tenant-memberships"
-import { tenants } from "../schema/tenants"
+import { users } from "../../identity/schema/users.schema"
+import { tenantMemberships } from "../schema/tenant-memberships.schema"
+import { tenants } from "../schema/tenants.schema"
 import { requireTenantId } from "../policy/tenant-scope"
 
 export async function findTenantBySlug(

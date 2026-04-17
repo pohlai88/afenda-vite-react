@@ -18,6 +18,7 @@ import {
 } from "./modules/auth-companion/routes/register-auth-companion-routes.js"
 import { auditContextMiddleware } from "./audit-context.js"
 import { handleShellInteractionAudit } from "./shell-interaction-audit.js"
+import { registerStudioRoutes } from "./modules/studio/register-studio-routes.js"
 import { trustedBrowserOrigins } from "./trusted-browser-origins.js"
 
 declare module "hono" {
@@ -29,7 +30,8 @@ declare module "hono" {
   }
 }
 
-const DEMO_SESSION_SUBJECT = "api.demo.session"
+/** Default `subjectId` for the exploratory `/v1/audit/demo` route when the body omits one. */
+const DEFAULT_AUDIT_DEMO_SUBJECT_ID = "api.audit.demo.default-subject"
 
 export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
   const app = new Hono()
@@ -60,6 +62,8 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
       betterAuth: "/api/auth",
       v1:
         "session required — e.g. GET /v1/me, POST /v1/session/operating-context",
+      studio:
+        "session required — GET /v1/studio/glossary | /v1/studio/glossary/matrix | /v1/studio/truth-governance | /v1/studio/enums | /v1/studio/audit/recent (needs X-Tenant-Id)",
     })
   )
 
@@ -153,7 +157,7 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
 
   /**
    * Demo audit write: requires `X-Tenant-Id` (UUID). Optional JSON body:
-   * `{ "subjectId"?: string }` defaults to a stable demo id.
+   * `{ "subjectId"?: string }` may be omitted; a built-in default subject id is used.
    */
   app.post("/v1/audit/demo", async (c) => {
     const audit = c.get("audit")
@@ -172,7 +176,7 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
       return c.json({ error: "Tenant not allowed for this session" }, 403)
     }
 
-    let subjectId = DEMO_SESSION_SUBJECT
+    let subjectId = DEFAULT_AUDIT_DEMO_SUBJECT_ID
     try {
       const body = await c.req.json<{ subjectId?: string }>()
       if (typeof body?.subjectId === "string" && body.subjectId.length > 0) {
@@ -206,6 +210,8 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
     const session = c.get("authSession")
     return handleShellInteractionAudit(c, db, session.user.id)
   })
+
+  registerStudioRoutes(app, { db })
 
   return app
 }

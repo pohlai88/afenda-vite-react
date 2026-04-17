@@ -12,6 +12,7 @@
 import { Navigate, type RouteObject } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../app/_components"
+import { DbStudioPage } from "../app/_features/db-studio"
 import { FeatureTemplateView } from "../app/_features/_template"
 import { RequireAuth } from "../app/_platform/auth"
 import { TenantScopeProvider } from "../app/_platform/tenant"
@@ -50,7 +51,12 @@ export const appShellRouteObject: RouteObject = {
     },
     ...shellAppChildRouteDefinitions.map(({ pathSegment, metadata }) => ({
       path: pathSegment,
-      element: <FeatureTemplateView slug={pathSegment} />,
+      element:
+        pathSegment === "db-studio" ? (
+          <DbStudioPage />
+        ) : (
+          <FeatureTemplateView slug={pathSegment} />
+        ),
       handle: { shell: metadata.shell },
     })),
     {

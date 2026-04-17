@@ -13,8 +13,15 @@
 import type { RouteObject } from "react-router-dom"
 import { Navigate } from "react-router-dom"
 
+import InfiniteTopologyPage from "../pages/marketing/InfiniteTopology"
 import LandingPage from "../pages/landing"
-import { RoutePlatformPreview } from "@/pages/platform-preview"
+import SingularityPage from "../pages/marketing/singularity"
+import {
+  RoutePlatformPreviewChamber,
+  RoutePlatformPreview,
+  RoutePlatformPreviewFallbackRedirect,
+  RoutePlatformPreviewThreshold,
+} from "@/pages/platform-preview"
 import {
   RouteAuthCallback,
   RouteAuthForgotPassword,
@@ -32,9 +39,42 @@ export const marketingRouteObjects: RouteObject[] = [
     children: [
       { index: true, element: <LandingPage />, handle: { shell: null } },
       {
+        path: "marketing",
+        element: <LandingPage />,
+        handle: { shell: null },
+      },
+      {
+        path: "infinite-topology",
+        element: <InfiniteTopologyPage />,
+        handle: { shell: null },
+      },
+      {
+        path: "infinitetopology",
+        element: <Navigate to="/infinite-topology" replace />,
+        handle: { shell: null },
+      },
+      { path: "singularity", element: <SingularityPage />, handle: { shell: null } },
+      {
         path: "platform-preview",
         element: <RoutePlatformPreview />,
         handle: { shell: null },
+        children: [
+          {
+            index: true,
+            element: <RoutePlatformPreviewThreshold />,
+            handle: { shell: null },
+          },
+          {
+            path: ":chamber",
+            element: <RoutePlatformPreviewChamber />,
+            handle: { shell: null },
+          },
+          {
+            path: "*",
+            element: <RoutePlatformPreviewFallbackRedirect />,
+            handle: { shell: null },
+          },
+        ],
       },
       {
         path: "auth/login",

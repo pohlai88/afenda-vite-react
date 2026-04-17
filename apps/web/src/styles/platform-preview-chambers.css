@@ -1,0 +1,330 @@
+.platform-truth-preview {
+  margin: 0 auto;
+  width: min(1180px, calc(100% - 32px));
+  color: var(--color-foreground);
+}
+
+.platform-truth-preview--threshold,
+.platform-truth-preview--chamber {
+  min-height: calc(100vh - 48px);
+  padding: 32px 0 48px;
+}
+
+.platform-truth-preview--threshold {
+  display: grid;
+  align-content: center;
+  gap: 32px;
+}
+
+.platform-truth-preview__threshold-copy {
+  display: grid;
+  gap: 12px;
+  max-width: 68rem;
+}
+
+.platform-truth-preview__eyebrow {
+  margin: 0;
+  color: var(--color-muted-foreground);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.platform-truth-preview h1,
+.platform-truth-preview h2,
+.platform-truth-preview h3,
+.platform-truth-preview p,
+.platform-truth-preview ul,
+.platform-truth-preview dl {
+  margin: 0;
+}
+
+.platform-truth-preview--threshold h1 {
+  max-width: 20ch;
+  font-size: 3.4rem;
+  line-height: 1.05;
+}
+
+.platform-truth-preview--threshold
+  > .platform-truth-preview__threshold-copy
+  > p:last-child {
+  max-width: 54rem;
+  color: var(--color-muted-foreground);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.platform-truth-preview__door-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.platform-truth-preview__door {
+  display: grid;
+  gap: 18px;
+  min-height: 24rem;
+  padding: 24px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-card) 98%, transparent),
+      color-mix(in srgb, var(--color-muted) 18%, var(--color-card))
+    );
+  box-shadow:
+    0 24px 80px color-mix(in srgb, var(--color-foreground) 8%, transparent);
+}
+
+.platform-truth-preview__door h2 {
+  font-size: 1.85rem;
+}
+
+.platform-truth-preview__door ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+  color: var(--color-muted-foreground);
+}
+
+.platform-truth-preview__door li {
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  font-size: 0.98rem;
+}
+
+.platform-truth-preview__door > p {
+  color: var(--color-foreground);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.platform-truth-preview__door-action,
+.platform-truth-preview__back-link {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  color: var(--color-foreground);
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.platform-truth-preview__door-action {
+  margin-top: auto;
+  padding: 0.72rem 1rem;
+  font-weight: 600;
+}
+
+.platform-truth-preview--chamber {
+  display: grid;
+  gap: 18px;
+}
+
+.platform-truth-preview__mast,
+.platform-truth-preview__case-selector button,
+.platform-truth-preview__risk-band,
+.platform-truth-preview__rail,
+.platform-truth-preview__consequence {
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  background: var(--color-card);
+}
+
+.platform-truth-preview__mast {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) 16rem;
+  padding: 24px;
+}
+
+.platform-truth-preview__mast-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.platform-truth-preview__mast-copy h1 {
+  font-size: 3.1rem;
+  line-height: 1.05;
+}
+
+.platform-truth-preview__mast-copy > p:last-child,
+.platform-truth-preview__risk-posture,
+.platform-truth-preview__rail > p,
+.platform-truth-preview__consequence p {
+  color: var(--color-muted-foreground);
+  line-height: 1.7;
+}
+
+.platform-truth-preview__back-link {
+  padding: 0.45rem 0.7rem;
+  font-size: 0.82rem;
+}
+
+.platform-truth-preview__mast-meta {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding-top: 32px;
+  text-align: right;
+}
+
+.platform-truth-preview__meta-label {
+  color: var(--color-muted-foreground);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.platform-truth-preview__mast-meta strong {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.platform-truth-preview__case-selector {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.platform-truth-preview__case-selector button {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.platform-truth-preview__case-selector button:focus-visible,
+.platform-truth-preview__door-action:focus-visible,
+.platform-truth-preview__back-link:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.platform-truth-preview__case-selector button[data-active="true"] {
+  border-color: var(--color-foreground);
+}
+
+.platform-truth-preview__case-selector strong {
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+
+.platform-truth-preview__case-selector span {
+  color: var(--color-muted-foreground);
+  line-height: 1.55;
+}
+
+.platform-truth-preview__risk-band {
+  display: grid;
+  gap: 10px;
+  padding: 18px 20px;
+}
+
+.platform-truth-preview__risk-line {
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.platform-truth-preview__rails {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.platform-truth-preview__rail {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+
+.platform-truth-preview__rail[data-severity="critical"] {
+  border-left: 3px solid var(--color-destructive);
+}
+
+.platform-truth-preview__rail[data-severity="elevated"] {
+  border-left: 3px solid var(--color-warning);
+}
+
+.platform-truth-preview__rail[data-severity="contained"] {
+  border-left: 3px solid var(--color-success);
+}
+
+.platform-truth-preview__rail header {
+  display: grid;
+  gap: 6px;
+}
+
+.platform-truth-preview__rail h2 {
+  max-width: 28ch;
+  font-size: 1.38rem;
+  line-height: 1.15;
+}
+
+.platform-truth-preview__rail dl {
+  display: grid;
+  gap: 12px;
+}
+
+.platform-truth-preview__rail dl div {
+  display: grid;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+}
+
+.platform-truth-preview__rail dt {
+  color: var(--color-muted-foreground);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.platform-truth-preview__rail dd {
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.platform-truth-preview__consequence {
+  padding: 18px 20px;
+}
+
+.platform-truth-preview__consequence p {
+  max-width: 72rem;
+  font-size: 1rem;
+}
+
+@media (max-width: 1080px) {
+  .platform-truth-preview__door-grid,
+  .platform-truth-preview__case-selector,
+  .platform-truth-preview__rails {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-truth-preview__mast {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-truth-preview__mast-meta {
+    padding-top: 0;
+    text-align: left;
+  }
+}
+
+@media (max-width: 720px) {
+  .platform-truth-preview--threshold h1 {
+    font-size: 2.35rem;
+  }
+
+  .platform-truth-preview__mast-copy h1 {
+    font-size: 2.35rem;
+  }
+
+  .platform-truth-preview__door {
+    min-height: auto;
+  }
+}

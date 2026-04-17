@@ -1,4 +1,4 @@
-import type { AuditLog } from "../schema/audit-logs"
+import type { AuditLog } from "../schema/audit-logs.schema"
 import {
   auditAdminViewSchema,
   type AuditAdminView,

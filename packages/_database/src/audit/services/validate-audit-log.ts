@@ -4,7 +4,7 @@ import {
   isAuditInvariantKey,
 } from "../contracts/audit-doctrine-registry"
 import { isAuditResolutionKey } from "../contracts/audit-resolution-catalog"
-import type { NewAuditLog } from "../schema/audit-logs"
+import type { NewAuditLog } from "../schema/audit-logs.schema"
 import { AuditValidationError } from "../utils/audit-errors"
 
 export function validateAuditLog(row: NewAuditLog): NewAuditLog {

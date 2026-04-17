@@ -1,5 +1,7 @@
 import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
+import type { AsyncOrSyncVoid } from "../../types/async-or-sync-void"
+
 type ResetPasswordFormStepProps = {
   readonly password: string
   readonly confirm: string
@@ -9,7 +11,7 @@ type ResetPasswordFormStepProps = {
   readonly submitLabel: string
   readonly onPasswordChange: (next: string) => void
   readonly onConfirmChange: (next: string) => void
-  readonly onSubmit: () => Promise<void> | void
+  readonly onSubmit: () => AsyncOrSyncVoid
 }
 
 export function ResetPasswordFormStep(props: ResetPasswordFormStepProps) {

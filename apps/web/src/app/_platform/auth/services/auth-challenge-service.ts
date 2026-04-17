@@ -14,7 +14,6 @@ import type {
   AuthChallengeTicket,
   AuthChallengeVerifyPayload,
   AuthChallengeVerifyProof,
-  PasskeyCredentialProof,
 } from "../contracts/auth-challenge-ticket"
 import { isAuthApiErrorEnvelope } from "../contracts/auth-api"
 import { normalizeAuthServiceErrorCode } from "./auth-error-service"

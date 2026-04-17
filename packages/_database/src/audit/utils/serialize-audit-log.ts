@@ -1,5 +1,5 @@
 import type { AuditAdminView } from "../contracts/audit-admin-view-contract"
-import type { AuditLog } from "../schema/audit-logs"
+import type { AuditLog } from "../schema/audit-logs.schema"
 
 import { jsonWithIsoDates } from "./audit-json"
 

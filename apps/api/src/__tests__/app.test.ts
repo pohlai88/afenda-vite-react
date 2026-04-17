@@ -1,4 +1,11 @@
+import { beforeEach, vi } from "vitest"
+
 import { createApp } from "../app.js"
+
+beforeEach(() => {
+  process.env.BETTER_AUTH_SECRET =
+    "test-secret-for-challenge-tests-min-32-chars!!"
+})
 
 const authStub = {
   handler: async () => new Response("not found", { status: 404 }),
@@ -45,14 +52,14 @@ describe("createApp", () => {
     expect(typeof body.meta.timestamp).toBe("string")
   })
 
-  it("GET /v1/auth/sessions returns session payload", async () => {
+  it("GET /v1/auth/sessions returns 503 without PostgreSQL session storage", async () => {
     const app = createApp({} as never, authStub)
     const res = await app.request("/v1/auth/sessions")
-    expect(res.status).toBe(200)
+    expect(res.status).toBe(503)
     const body = (await res.json()) as {
-      data: { sessions: Array<{ id: string }> }
+      error: { code: string }
     }
-    expect(body.data.sessions.length).toBeGreaterThan(0)
+    expect(body.error.code).toBe("auth.sessions.storage_unavailable")
   })
 
   it("POST /v1/auth/sessions/revoke validates session id", async () => {
@@ -93,6 +100,10 @@ describe("createApp", () => {
   })
 
   it("POST /v1/auth/challenge/start then verify succeeds for totp (opaque ticket)", async () => {
+    let otpLogLine = ""
+    const infoSpy = vi.spyOn(console, "info").mockImplementation((msg) => {
+      otpLogLine = String(msg)
+    })
     const app = createApp({} as never, authStub)
     const start = await app.request("/v1/auth/challenge/start", {
       method: "POST",
@@ -102,17 +113,22 @@ describe("createApp", () => {
       }),
       headers: { "content-type": "application/json" },
     })
+    infoSpy.mockRestore()
     expect(start.status).toBe(200)
     const started = (await start.json()) as {
       data: {
         ticket: { challengeId: string; method: string }
       }
     }
+    const otpMatch = otpLogLine.match(/: (\d{6})\s*$/)
+    const otpCode = otpMatch?.[1]
+    expect(otpCode).toBeDefined()
     const verify = await app.request("/v1/auth/challenge/verify", {
       method: "POST",
       body: JSON.stringify({
         challengeId: started.data.ticket.challengeId,
         method: "totp",
+        proof: { code: otpCode },
       }),
       headers: { "content-type": "application/json" },
     })
@@ -122,6 +138,27 @@ describe("createApp", () => {
     }
     expect(out.data.verified).toBe(true)
     expect(out.data.receipt.length).toBeGreaterThan(0)
+  })
+
+  it("GET /v1/studio/glossary returns glossary snapshot with ETag", async () => {
+    const app = createApp({} as never, authStub)
+    const res = await app.request("/v1/studio/glossary")
+    expect(res.status).toBe(200)
+    const etag = res.headers.get("etag")
+    expect(etag).toMatch(/^"[a-f0-9]{64}"$/)
+    const body = (await res.json()) as {
+      document_kind: string
+      entries: unknown[]
+      source_content_sha256: string
+    }
+    expect(body.document_kind).toBe("business_glossary_snapshot")
+    expect(Array.isArray(body.entries)).toBe(true)
+    expect(body.source_content_sha256).toBe(etag?.replace(/^"|"$/g, ""))
+
+    const notModified = await app.request("/v1/studio/glossary", {
+      headers: { "if-none-match": etag ?? "" },
+    })
+    expect(notModified.status).toBe(304)
   })
 
   it("POST /v1/auth/challenge/verify rejects passkey when disabled", async () => {

@@ -1,12 +1,12 @@
 import { and, eq } from "drizzle-orm"
 
 import { db, type DatabaseClient } from "../../client"
-import { tenantMemberships } from "../../tenancy/schema/tenant-memberships"
+import { tenantMemberships } from "../../tenancy/schema/tenant-memberships.schema"
 import { requireTenantId } from "../../tenancy/policy/tenant-scope"
-import { permissions } from "../schema/permissions"
-import { rolePermissions } from "../schema/role-permissions"
-import { roles } from "../schema/roles"
-import { tenantMembershipRoles } from "../schema/tenant-membership-roles"
+import { permissions } from "../schema/permissions.schema"
+import { rolePermissions } from "../schema/role-permissions.schema"
+import { roles } from "../schema/roles.schema"
+import { tenantMembershipRoles } from "../schema/tenant-membership-roles.schema"
 
 export class PermissionDeniedError extends Error {
   constructor(permissionKey: string) {

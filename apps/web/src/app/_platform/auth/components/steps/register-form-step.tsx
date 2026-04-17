@@ -1,5 +1,7 @@
 import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
+import type { AsyncOrSyncVoid } from "../../types/async-or-sync-void"
+
 type RegisterFormStepProps = {
   readonly name: string
   readonly email: string
@@ -12,7 +14,7 @@ type RegisterFormStepProps = {
   readonly onNameChange: (next: string) => void
   readonly onEmailChange: (next: string) => void
   readonly onPasswordChange: (next: string) => void
-  readonly onSubmit: () => Promise<void> | void
+  readonly onSubmit: () => AsyncOrSyncVoid
 }
 
 export function RegisterFormStep(props: RegisterFormStepProps) {
