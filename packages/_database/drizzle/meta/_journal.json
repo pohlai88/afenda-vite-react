@@ -5,8 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1776428382793,
-      "tag": "0000_living_toro",
+      "when": 1776435057490,
+      "tag": "0000_init",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776435057491,
+      "tag": "0001_hardening",
       "breakpoints": true
     }
   ]

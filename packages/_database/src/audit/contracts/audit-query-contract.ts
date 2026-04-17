@@ -11,8 +11,6 @@ export const auditQueryInputSchema = z
     requestId: z.string().min(1).optional(),
     traceId: z.string().min(1).optional(),
     correlationId: z.string().min(1).optional(),
-    parentAuditId: z.string().uuid().optional(),
-    legalEntityId: z.string().uuid().optional(),
     fromRecordedAt: z.date().optional(),
     toRecordedAt: z.date().optional(),
     limit: z.number().int().positive().max(500).default(100),

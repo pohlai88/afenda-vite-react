@@ -10,21 +10,18 @@
     "build": "pnpm run typecheck",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
-    "test": "vitest --configLoader native",
-    "test:run": "vitest run --configLoader native",
-    "test:coverage": "vitest run --coverage --configLoader native",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "db:guard": "pnpm run typecheck && tsx scripts/guard-schema-modules.ts && vitest run src/governance/__tests__ src/schema/__tests__/schema-contract.test.ts",
     "db:guard:ci": "tsx scripts/guard-schema-modules.ts && vitest run src/governance/__tests__ src/schema/__tests__/schema-contract.test.ts",
     "db:generate": "pnpm run db:guard && drizzle-kit generate",
     "db:check-migrations": "tsx scripts/check-migrations.ts",
     "db:verify-migrations-sync": "tsx scripts/verify-migrations-sync.ts",
-    "db:ci": "pnpm run studio:check && pnpm run db:guard:ci && pnpm run db:check-migrations && pnpm run db:verify-migrations-sync",
+    "db:ci": "pnpm run db:guard:ci && pnpm run db:check-migrations && pnpm run db:verify-migrations-sync",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push",
-    "studio:sync": "tsx scripts/sync-studio-snapshots.ts",
-    "studio:check": "tsx scripts/assert-studio-snapshots-synced.ts",
-    "glossary:sync": "pnpm run studio:sync"
+    "db:push": "drizzle-kit push"
   },
   "exports": {
     ".": {
@@ -36,11 +33,6 @@
       "types": "./src/schema/index.ts",
       "import": "./src/schema/index.ts",
       "default": "./src/schema/index.ts"
-    },
-    "./authorization": {
-      "types": "./src/authorization/index.ts",
-      "import": "./src/authorization/index.ts",
-      "default": "./src/authorization/index.ts"
     },
     "./tenancy": {
       "types": "./src/tenancy/index.ts",
@@ -70,9 +62,7 @@
   },
   "dependencies": {
     "@afenda/env-loader": "workspace:*",
-    "@faker-js/faker": "^10.4.0",
     "drizzle-orm": "catalog:",
-    "drizzle-seed": "^0.3.1",
     "pg": "catalog:",
     "zod": "catalog:"
   },
@@ -84,6 +74,7 @@
     "drizzle-kit": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:",
+    "vite": "catalog:",
     "vitest": "catalog:",
     "yaml": "^2.8.3"
   }

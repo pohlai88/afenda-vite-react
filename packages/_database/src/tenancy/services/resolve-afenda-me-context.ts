@@ -1,9 +1,9 @@
 import { and, eq } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
-import { identityLinks } from "../../identity/schema/identity-links.schema"
-import { tenantMemberships } from "../schema/tenant-memberships.schema"
-import { tenants } from "../schema/tenants.schema"
+import { identityLinks } from "../../schema/iam/identity-links.schema"
+import { tenantMemberships } from "../../schema/iam/tenant-memberships.schema"
+import { tenants } from "../../schema/mdm/tenants.schema"
 
 export type AfendaMeContext = {
   afendaUserId: string
@@ -30,7 +30,7 @@ async function loadTenantMembershipSlice(
   const memberships = await db
     .select({
       tenantId: tenantMemberships.tenantId,
-      status: tenantMemberships.status,
+      membershipStatus: tenantMemberships.status,
       tenantStatus: tenants.status,
     })
     .from(tenantMemberships)
@@ -38,8 +38,11 @@ async function loadTenantMembershipSlice(
     .where(eq(tenantMemberships.userId, afendaUserId))
 
   const tenantIds = memberships
-    .filter((m) => m.status === "active" && m.tenantStatus === "active")
-    .map((m) => m.tenantId)
+    .filter(
+      (row) =>
+        row.membershipStatus === "active" && row.tenantStatus === "active"
+    )
+    .map((row) => row.tenantId)
 
   return {
     tenantIds,
@@ -47,10 +50,6 @@ async function loadTenantMembershipSlice(
   }
 }
 
-/**
- * Runtime resolution: **`better_auth_user_id` → `identity_links` → Afenda user → memberships** (ADR-0004).
- * No email fallback — missing link is invalid for authenticated API use.
- */
 export async function resolveAfendaMeContextFromBetterAuthUserId(
   db: DatabaseClient,
   betterAuthUserId: string,
@@ -81,10 +80,6 @@ export async function resolveAfendaMeContextFromBetterAuthUserId(
   }
 }
 
-/**
- * Same as {@link resolveAfendaMeContextFromBetterAuthUserId} but **throws** {@link IdentityLinkMissingError}
- * when no `identity_links` row exists — use on protected routes that require a bridged principal.
- */
 export async function requireAfendaMeContextFromBetterAuthUserId(
   db: DatabaseClient,
   betterAuthUserId: string,
@@ -97,7 +92,7 @@ export async function requireAfendaMeContextFromBetterAuthUserId(
   )
   if (!ctx) {
     throw new IdentityLinkMissingError(
-      "No identity_links row for this Better Auth user; bootstrap or sign-up must create the bridge.",
+      "No identity_links row exists for this Better Auth user.",
       { betterAuthUserId, authProvider }
     )
   }

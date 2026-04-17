@@ -1,33 +1,36 @@
-import { getAfendaVitestNodeTestOptions } from "@afenda/vitest-config/vitest/defaults"
-import { vitestModuleResolutionPlugin } from "@afenda/vitest-config/vitest/vite-module-resolution-plugin"
 import { defineConfig } from "vitest/config"
 
-const base = getAfendaVitestNodeTestOptions()
-
 /**
- * Audit package coverage (Vitest 4+).
+ * Self-contained Vitest config (no `@afenda/vitest-config` import) so Node/Vitest
+ * does not load workspace `.ts` packages via bare ESM on Windows.
  *
- * `coverage.all` was removed upstream; use an explicit `coverage.include` glob so
- * matched sources appear in the report even when not imported by a test (see
- * Vitest migration guide). Thresholds below apply to that included set.
+ * Audit package coverage (Vitest 4+): explicit `coverage.include` for audit sources.
  */
 export default defineConfig({
-  plugins: [vitestModuleResolutionPlugin()],
   test: {
-    ...base,
+    globals: true,
+    environment: "node",
+    include: [
+      "src/**/__test__/**/*.{test,spec}.{ts,tsx}",
+      "**/__tests__/**/*.{test,spec}.{ts,tsx}",
+    ],
+    setupFiles: [],
+    pool: "threads",
+    mockReset: true,
     coverage: {
-      ...base.coverage,
+      provider: "v8",
+      reporter: ["text", "json", "html"],
       reportOnFailure: true,
       include: ["src/audit/**/*.ts"],
       exclude: [
         "node_modules/**",
         "src/audit/**/__tests__/**",
         "src/audit/docs/**",
-        "src/audit/schema/**",
+        "src/schema/governance/**",
         "src/audit/relations/**",
         "src/audit/index.ts",
         "src/audit/contracts/index.ts",
-        "src/audit/read-model/index.ts",
+        "src/audit/read-model/**",
         "**/*.d.ts",
       ],
       thresholds: {

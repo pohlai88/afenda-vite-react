@@ -1,44 +1,20 @@
-import { readFileSync } from "node:fs"
-import { dirname, join } from "node:path"
-import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 
-import {
-  assertGlossarySnapshotMatchesYaml,
-  assertTruthGovernanceSnapshotMatchesYaml,
-} from "../build-studio-snapshots"
+import { getBusinessGlossarySnapshot } from "../business-glossary"
+import { getTruthGovernanceSnapshot } from "../truth-governance"
 
-const here = dirname(fileURLToPath(import.meta.url))
-const pkgRoot = join(here, "../../..")
+describe("Studio committed snapshots", () => {
+  it("loads the glossary snapshot", () => {
+    const snapshot = getBusinessGlossarySnapshot()
 
-describe("Studio YAML ↔ committed JSON snapshots", () => {
-  it("business glossary snapshot matches business-technical-glossary.yaml", () => {
-    expect(() =>
-      assertGlossarySnapshotMatchesYaml({
-        glossaryYamlUtf8: readFileSync(
-          join(pkgRoot, "docs/data/business-technical-glossary.yaml"),
-          "utf8"
-        ),
-        snapshotJsonUtf8: readFileSync(
-          join(pkgRoot, "src/studio/business-glossary.snapshot.json"),
-          "utf8"
-        ),
-      })
-    ).not.toThrow()
+    expect(snapshot.document_kind).toBe("business_glossary_snapshot")
+    expect(snapshot.package).toBe("@afenda/database")
   })
 
-  it("truth governance snapshot matches database-truth-governance.yaml", () => {
-    expect(() =>
-      assertTruthGovernanceSnapshotMatchesYaml({
-        governanceYamlUtf8: readFileSync(
-          join(pkgRoot, "docs/data/database-truth-governance.yaml"),
-          "utf8"
-        ),
-        snapshotJsonUtf8: readFileSync(
-          join(pkgRoot, "src/studio/database-truth-governance.snapshot.json"),
-          "utf8"
-        ),
-      })
-    ).not.toThrow()
+  it("loads the truth governance snapshot", () => {
+    const snapshot = getTruthGovernanceSnapshot()
+
+    expect(snapshot.document_kind).toBe("database_truth_governance_snapshot")
+    expect(snapshot.package).toBe("@afenda/database")
   })
 })

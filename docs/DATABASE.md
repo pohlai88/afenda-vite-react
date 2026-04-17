@@ -27,10 +27,10 @@ CREATE EXTENSION IF NOT EXISTS vector;
 Use a **server-only** `DATABASE_URL` (do **not** prefix with `VITE_`). Example with a dedicated schema search path:
 
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/afenda?options=--search_path%3Dafenda,public,drizzle"
+DATABASE_URL="postgresql://user:password@localhost:5432/afenda?options=--search_path%3Dmdm,iam,ref,finance,governance,public,drizzle"
 ```
 
-Adjust schema names (`afenda`, `drizzle`) to match your project. **`public`** is the usual default for extensions; keep **`drizzle`** (or your chosen name) for Drizzle’s migration metadata if you use a separate schema.
+Adjust schema names to match your project. Domain tables live under **`mdm`**, **`iam`**, **`ref`**, **`finance`**, **`governance`** (see `packages/_database/docs/guideline/`). **`public`** holds shared enum types and extensions; keep **`drizzle`** for Drizzle’s migration metadata ([`DRIZZLE_MIGRATIONS_SCHEMA`](packages/_database/src/governance/constants.ts)).
 
 ---
 
@@ -62,17 +62,17 @@ The **`apps/web`** client calls **HTTP APIs** only. It must not import `@afenda/
 
 Define scripts in the database/API **`package.json`** and run them via the workspace filter:
 
-| Script (example) | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `db:generate`    | `drizzle-kit generate` — create migration SQL from schema changes     |
-| `db:migrate`     | `drizzle-kit migrate` — apply pending migrations                      |
-| `db:push`        | `drizzle-kit push` — **dev only**; quick sync without migration files |
-| `db:studio`      | `drizzle-kit studio` — inspect data locally                           |
-| `db:seed`        | Governed seed runtime (`tsx scripts/seed.ts`) — see §4.1              |
-| `db:seed:reference` | `--stage=reference` only                                           |
-| `db:seed:demo`   | `--stage=tenant-fixture` only                                         |
-| `db:seed:volume` | `--stage=volume` only (local / CI policy)                               |
-| `db:reset:local` | Destructive `drizzle-seed` reset — `SEED_RESET_LOCAL=true`, local only |
+| Script (example)    | Description                                                            |
+| ------------------- | ---------------------------------------------------------------------- |
+| `db:generate`       | `drizzle-kit generate` — create migration SQL from schema changes      |
+| `db:migrate`        | `drizzle-kit migrate` — apply pending migrations                       |
+| `db:push`           | `drizzle-kit push` — **dev only**; quick sync without migration files  |
+| `db:studio`         | `drizzle-kit studio` — inspect data locally                            |
+| `db:seed`           | Governed seed runtime (`tsx scripts/seed.ts`) — see §4.1               |
+| `db:seed:reference` | `--stage=reference` only                                               |
+| `db:seed:demo`      | `--stage=tenant-fixture` only                                          |
+| `db:seed:volume`    | `--stage=volume` only (local / CI policy)                              |
+| `db:reset:local`    | Destructive `drizzle-seed` reset — `SEED_RESET_LOCAL=true`, local only |
 
 ```bash
 pnpm --filter @afenda/database db:generate
@@ -103,9 +103,9 @@ Seeding is **server-only** and lives in **`@afenda/database`** (`packages/_datab
 
 **Local reset (destructive):** `pnpm db:reset:local` runs `drizzle-seed` `reset()` on the Afenda schema bundle only when `SEED_RESET_LOCAL=true` and `SEED_ENV=local`. It does not replace migrations—run `db:migrate` and `db:seed` afterward if you need fixtures again.
 
-| Script (example)   | Description                                      |
-| ------------------ | ------------------------------------------------ |
-| `db:reset:local`   | Truncate Afenda Drizzle tables (local + env gate) |
+| Script (example) | Description                                       |
+| ---------------- | ------------------------------------------------- |
+| `db:reset:local` | Truncate Afenda Drizzle tables (local + env gate) |
 
 ---
 
@@ -131,9 +131,9 @@ Neon may show **two** user/session stories in the same database. That is expecte
 | Surface                                                                                  | Role                                                                                                                                                | Drizzle in `@afenda/database`                                 |
 | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
 | **`public.user`**, **`public.session`**, **`public.account`**, **`public.verification`** | **Better Auth** runtime store (credentials, OAuth accounts, sessions). Writer: **`apps/api`** via **`createAfendaAuth`**.                           | Not modeled here (owned by Better Auth migrations / adapter). |
-| **`public.users`**                                                                       | **Afenda ERP principal** (email, display name, tenant memberships, audit actor FKs).                                                                | Modeled (`identity/schema/users.ts`).                         |
-| **`public.identity_links`**                                                              | **Hard bridge** from Better Auth `public.user.id` (text) → Afenda `users.id` (uuid).                                                                | Modeled (`identity/schema/identity-links.ts`).                |
-| **`public.user_identities`**                                                             | **Legacy** generic provider links; **do not** use for new features. Prefer **`identity_links`**.                                                    | Modeled but deprecated in code.                               |
+| **`iam.user_accounts`**                                                                  | **Afenda ERP principal** (email, display name, tenant memberships, audit actor FKs).                                                                | Modeled (`schema/iam/user-accounts.schema.ts`).               |
+| **`iam.identity_links`**                                                                 | **Hard bridge** from Better Auth `public.user.id` (text) → Afenda `user_accounts.id` (uuid).                                                        | Modeled (`schema/iam/identity-links.schema.ts`).              |
+| **`iam.user_identities`**                                                                | **Legacy** generic provider links; **do not** use for new features. Prefer **`identity_links`**.                                                    | Modeled but deprecated in code.                               |
 | **`neon_auth.*`** (e.g. `neon_auth.user`, `neon_auth.organization`, `neon_auth.session`) | **Non-authoritative** for ERP tenancy and workspace truth. May exist from Neon Auth / console; **must not** drive product RBAC or tenant selection. | Not modeled in this package.                                  |
 
 **Tenancy authority** (tenants, memberships, scopes) lives only in **Afenda** tables such as **`tenants`**, **`tenant_memberships`**, **`membership_scopes`** — not in `neon_auth.organization`. See [ADR-0003](./decisions/ADR-0003-afenda-tenancy-authority.md), [ADR-0004](./decisions/ADR-0004-identity-bridge-and-principals.md), [ADR-0005](./decisions/ADR-0005-auth-schema-authority-public-vs-neon-auth.md), [ADR-0006](./decisions/ADR-0006-session-operating-context.md).
@@ -158,7 +158,7 @@ Query with **cosine distance** (`<=>`) or **inner product** per [pgvector](https
 ### 6.1 Tenants
 
 ```typescript
-// packages/_database/src/tenancy/schema/tenants.ts (illustrative)
+// packages/_database/src/schema/mdm/tenants.schema.ts (illustrative; real code uses pgSchema("mdm"))
 import { pgTable, uuid, varchar, text, timestamp } from "drizzle-orm/pg-core"
 
 export const tenants = pgTable("tenants", {

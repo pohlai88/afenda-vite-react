@@ -5,9 +5,9 @@
 export const STUDIO_PG_ENUM_ALLOWLIST: readonly string[] = [
   "tenant_status",
   "tenant_membership_status",
+  "tenant_membership_type",
   "auth_challenge_method",
   "auth_challenge_status",
-  "audit_risk_level",
   "audit_actor_type",
   "audit_outcome",
   "audit_source_channel",

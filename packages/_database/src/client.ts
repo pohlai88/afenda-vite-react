@@ -9,7 +9,7 @@ import { readOptionalInteger } from "./helpers/env"
 import * as schema from "./schema"
 import * as relations from "./schema/relations.schema"
 
-/** Merged schema + relations for Drizzle client and drizzle-seed `reset()`. */
+/** Merged schema + relations for the canonical Drizzle client surface. */
 export const afendaDrizzleSchema = {
   ...schema,
   ...relations,

@@ -1,18 +1,16 @@
 import { and, eq } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
-import { identityLinks } from "../../identity/schema/identity-links.schema"
-import { users } from "../../identity/schema/users.schema"
-import { tenantMemberships } from "../schema/tenant-memberships.schema"
-import { tenants } from "../schema/tenants.schema"
+import { identityLinks } from "../../schema/iam/identity-links.schema"
+import { tenantMemberships } from "../../schema/iam/tenant-memberships.schema"
+import { userAccounts } from "../../schema/iam/user-accounts.schema"
+import { tenants } from "../../schema/mdm/tenants.schema"
 
 export type ResolveActiveTenantContextInput = {
   db: DatabaseClient
-  /** Better Auth user id (`public.user.id`); maps to `identity_links.better_auth_user_id`. */
   authUserId: string
   authProvider?: string
   authSessionId?: string | null
-
   activeTenantId?: string | null
 }
 
@@ -20,7 +18,6 @@ export type ActiveTenantContext = {
   authProvider: string
   authUserId: string
   authSessionId: string | null
-
   afendaUserId: string
   tenantId: string
   membershipId: string
@@ -52,10 +49,10 @@ export async function resolveActiveTenantContext(
   const [identity] = await db
     .select({
       afendaUserId: identityLinks.afendaUserId,
-      userIsActive: users.isActive,
+      userIsActive: userAccounts.isActive,
     })
     .from(identityLinks)
-    .innerJoin(users, eq(users.id, identityLinks.afendaUserId))
+    .innerJoin(userAccounts, eq(userAccounts.id, identityLinks.afendaUserId))
     .where(
       and(
         eq(identityLinks.authProvider, authProvider),
@@ -67,10 +64,7 @@ export async function resolveActiveTenantContext(
   if (!identity) {
     throw new TenantContextResolutionError(
       "Authentication identity is not linked to an Afenda user.",
-      {
-        authProvider,
-        authUserId,
-      }
+      { authProvider, authUserId }
     )
   }
 
@@ -94,7 +88,7 @@ export async function resolveActiveTenantContext(
     .where(eq(tenantMemberships.userId, identity.afendaUserId))
 
   const activeMemberships = memberships.filter(
-    (row) => row.membershipStatus === "active"
+    (row) => row.membershipStatus === "active" && row.tenantStatus === "active"
   )
 
   if (activeMemberships.length === 0) {
@@ -119,7 +113,7 @@ export async function resolveActiveTenantContext(
   if (!selectedMembership) {
     throw new TenantContextResolutionError(
       activeTenantId == null
-        ? "Active tenant is required because user has multiple active memberships."
+        ? "Active tenant is required because the user has multiple active memberships."
         : "Requested active tenant is not an active membership for this user.",
       {
         afendaUserId: identity.afendaUserId,
@@ -131,18 +125,10 @@ export async function resolveActiveTenantContext(
     )
   }
 
-  if (selectedMembership.tenantStatus !== "active") {
-    throw new TenantContextResolutionError("Selected tenant is not active.", {
-      tenantId: selectedMembership.tenantId,
-      tenantStatus: selectedMembership.tenantStatus,
-    })
-  }
-
   return {
     authProvider,
     authUserId,
     authSessionId,
-
     afendaUserId: identity.afendaUserId,
     tenantId: selectedMembership.tenantId,
     membershipId: selectedMembership.membershipId,

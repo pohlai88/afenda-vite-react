@@ -11,7 +11,7 @@
     {
       "id": "audit",
       "label": "Audit evidence",
-      "summary": "Append-oriented evidence rows; see docs/AUDIT_ARCHITECTURE.md and packages/_database/src/audit/"
+      "summary": "Append-oriented evidence rows; see docs/AUDIT_ARCHITECTURE.md and packages/_database/src/schema/governance/"
     },
     {
       "id": "authorization",
@@ -38,29 +38,24 @@
     {
       "id": "audit_log",
       "business_primary_term": "Audit log",
-      "aliases": [
-        "Audit evidence row"
-      ],
+      "aliases": ["Audit evidence row"],
       "domain_module": "audit",
       "related_doc_anchor": "AUDIT_ARCHITECTURE.md",
       "technical": {
         "artifact_kind": "table",
         "table": "audit_logs",
-        "drizzle_schema_file": "packages/_database/src/audit/schema/audit-logs.schema.ts"
+        "drizzle_schema_file": "packages/_database/src/schema/governance/audit-logs.schema.ts"
       }
     },
     {
       "id": "auth_challenge",
       "business_primary_term": "Auth challenge",
-      "aliases": [
-        "Login challenge",
-        "Step-up challenge"
-      ],
+      "aliases": ["Login challenge", "Step-up challenge"],
       "domain_module": "identity",
       "technical": {
         "artifact_kind": "table",
         "table": "auth_challenges",
-        "drizzle_schema_file": "packages/_database/src/auth-companion/schema/auth-challenges.schema.ts"
+        "drizzle_schema_file": "packages/_database/src/schema/iam/auth-challenges.schema.ts"
       }
     },
     {
@@ -76,23 +71,18 @@
     {
       "id": "identity_link",
       "business_primary_term": "Identity link",
-      "aliases": [
-        "Account linking record"
-      ],
+      "aliases": ["Account linking record"],
       "domain_module": "identity",
       "technical": {
         "artifact_kind": "table",
         "table": "identity_links",
-        "drizzle_schema_file": "packages/_database/src/identity/schema/identity-links.schema.ts"
+        "drizzle_schema_file": "packages/_database/src/schema/iam/identity-links.schema.ts"
       }
     },
     {
       "id": "legal_entity",
       "business_primary_term": "Legal entity",
-      "aliases": [
-        "LE",
-        "Company (legal)"
-      ],
+      "aliases": ["LE", "Company (legal)"],
       "domain_module": "organization",
       "technical": {
         "artifact_kind": "table",
@@ -103,10 +93,7 @@
     {
       "id": "location",
       "business_primary_term": "Location",
-      "aliases": [
-        "Site",
-        "Address node"
-      ],
+      "aliases": ["Site", "Address node"],
       "domain_module": "organization",
       "technical": {
         "artifact_kind": "table",
@@ -137,9 +124,7 @@
     {
       "id": "membership_scope",
       "business_primary_term": "Membership scope",
-      "aliases": [
-        "Scoped access grant"
-      ],
+      "aliases": ["Scoped access grant"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -150,9 +135,7 @@
     {
       "id": "org_unit",
       "business_primary_term": "Organization unit",
-      "aliases": [
-        "Org hierarchy node"
-      ],
+      "aliases": ["Org hierarchy node"],
       "domain_module": "organization",
       "technical": {
         "artifact_kind": "table",
@@ -163,9 +146,7 @@
     {
       "id": "permission",
       "business_primary_term": "Permission",
-      "aliases": [
-        "PBAC key"
-      ],
+      "aliases": ["PBAC key"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -197,24 +178,19 @@
     {
       "id": "tenant",
       "business_primary_term": "Tenant",
-      "aliases": [
-        "Organization",
-        "Customer organization"
-      ],
+      "aliases": ["Organization", "Customer organization"],
       "domain_module": "tenancy",
       "related_doc_anchor": "GLOSSARY.md#2-tenant-and-organization",
       "technical": {
         "artifact_kind": "table",
         "table": "tenants",
-        "drizzle_schema_file": "packages/_database/src/tenancy/schema/tenants.schema.ts"
+        "drizzle_schema_file": "packages/_database/src/schema/mdm/tenants.schema.ts"
       }
     },
     {
       "id": "tenant_invitation",
       "business_primary_term": "Tenant invitation",
-      "aliases": [
-        "Invite"
-      ],
+      "aliases": ["Invite"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -225,23 +201,18 @@
     {
       "id": "tenant_membership",
       "business_primary_term": "Tenant membership",
-      "aliases": [
-        "Membership",
-        "User–tenant link"
-      ],
+      "aliases": ["Membership", "User–tenant link"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
         "table": "tenant_memberships",
-        "drizzle_schema_file": "packages/_database/src/tenancy/schema/tenant-memberships.schema.ts"
+        "drizzle_schema_file": "packages/_database/src/schema/iam/tenant-memberships.schema.ts"
       }
     },
     {
       "id": "tenant_membership_role",
       "business_primary_term": "Membership role assignment",
-      "aliases": [
-        "User role in tenant"
-      ],
+      "aliases": ["User role in tenant"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -252,9 +223,7 @@
     {
       "id": "tenant_settings",
       "business_primary_term": "Tenant settings",
-      "aliases": [
-        "Organization settings"
-      ],
+      "aliases": ["Organization settings"],
       "domain_module": "tenancy",
       "technical": {
         "artifact_kind": "table",
@@ -265,43 +234,36 @@
     {
       "id": "tenant_status",
       "business_primary_term": "Tenant lifecycle status",
-      "aliases": [
-        "Organization status"
-      ],
+      "aliases": ["Organization status"],
       "domain_module": "tenancy",
       "technical": {
         "artifact_kind": "postgres_enum",
         "enum_name": "tenant_status",
-        "drizzle_schema_file": "packages/_database/src/tenancy/schema/tenant-status.schema.ts"
+        "drizzle_schema_file": "packages/_database/src/schema/mdm/tenant-status.schema.ts"
       },
       "notes": "Values are defined in Drizzle as tenantStatus; there is no tenant_status table in this module.\n"
     },
     {
       "id": "user",
       "business_primary_term": "User",
-      "aliases": [
-        "End user account"
-      ],
+      "aliases": ["End user account"],
       "domain_module": "identity",
       "related_doc_anchor": "GLOSSARY.md#3-identity-user-vs-employee-or-party",
       "technical": {
         "artifact_kind": "table",
-        "table": "users",
-        "drizzle_schema_file": "packages/_database/src/identity/schema/users.schema.ts"
+        "table": "user_accounts",
+        "drizzle_schema_file": "packages/_database/src/schema/iam/user-accounts.schema.ts"
       }
     },
     {
       "id": "user_identity",
       "business_primary_term": "Linked identity",
-      "aliases": [
-        "IdP identity",
-        "External identity"
-      ],
+      "aliases": ["IdP identity", "External identity"],
       "domain_module": "identity",
       "technical": {
         "artifact_kind": "table",
         "table": "user_identities",
-        "drizzle_schema_file": "packages/_database/src/identity/schema/user-identities.schema.ts"
+        "drizzle_schema_file": "packages/_database/src/schema/iam/user-identities.schema.ts"
       }
     }
   ]
