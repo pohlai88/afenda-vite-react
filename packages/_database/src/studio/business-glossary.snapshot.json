@@ -43,9 +43,7 @@
     {
       "id": "audit_log",
       "business_primary_term": "Audit log",
-      "aliases": [
-        "Audit evidence row"
-      ],
+      "aliases": ["Audit evidence row"],
       "domain_module": "audit",
       "related_doc_anchor": "packages/_database/docs",
       "technical": {
@@ -57,10 +55,7 @@
     {
       "id": "auth_challenge",
       "business_primary_term": "Auth challenge",
-      "aliases": [
-        "Login challenge",
-        "Step-up challenge"
-      ],
+      "aliases": ["Login challenge", "Step-up challenge"],
       "domain_module": "identity",
       "technical": {
         "artifact_kind": "table",
@@ -81,9 +76,7 @@
     {
       "id": "identity_link",
       "business_primary_term": "Identity link",
-      "aliases": [
-        "Account linking record"
-      ],
+      "aliases": ["Account linking record"],
       "domain_module": "identity",
       "technical": {
         "artifact_kind": "table",
@@ -94,10 +87,7 @@
     {
       "id": "legal_entity",
       "business_primary_term": "Legal entity",
-      "aliases": [
-        "LE",
-        "Company (legal)"
-      ],
+      "aliases": ["LE", "Company (legal)"],
       "domain_module": "organization",
       "technical": {
         "artifact_kind": "table",
@@ -108,10 +98,7 @@
     {
       "id": "location",
       "business_primary_term": "Location",
-      "aliases": [
-        "Site",
-        "Address node"
-      ],
+      "aliases": ["Site", "Address node"],
       "domain_module": "organization",
       "technical": {
         "artifact_kind": "table",
@@ -142,9 +129,7 @@
     {
       "id": "membership_scope",
       "business_primary_term": "Membership scope",
-      "aliases": [
-        "Scoped access grant"
-      ],
+      "aliases": ["Scoped access grant"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -155,9 +140,7 @@
     {
       "id": "org_unit",
       "business_primary_term": "Organization unit",
-      "aliases": [
-        "Org hierarchy node"
-      ],
+      "aliases": ["Org hierarchy node"],
       "domain_module": "organization",
       "technical": {
         "artifact_kind": "table",
@@ -168,9 +151,7 @@
     {
       "id": "permission",
       "business_primary_term": "Permission",
-      "aliases": [
-        "PBAC key"
-      ],
+      "aliases": ["PBAC key"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -202,10 +183,7 @@
     {
       "id": "tenant",
       "business_primary_term": "Tenant",
-      "aliases": [
-        "Organization",
-        "Customer organization"
-      ],
+      "aliases": ["Organization", "Customer organization"],
       "domain_module": "tenancy",
       "related_doc_anchor": "GLOSSARY.md#2-tenant-and-organization",
       "technical": {
@@ -217,9 +195,7 @@
     {
       "id": "tenant_invitation",
       "business_primary_term": "Tenant invitation",
-      "aliases": [
-        "Invite"
-      ],
+      "aliases": ["Invite"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -230,10 +206,7 @@
     {
       "id": "tenant_membership",
       "business_primary_term": "Tenant membership",
-      "aliases": [
-        "Membership",
-        "User–tenant link"
-      ],
+      "aliases": ["Membership", "User–tenant link"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -244,9 +217,7 @@
     {
       "id": "tenant_membership_role",
       "business_primary_term": "Membership role assignment",
-      "aliases": [
-        "User role in tenant"
-      ],
+      "aliases": ["User role in tenant"],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -257,9 +228,7 @@
     {
       "id": "tenant_settings",
       "business_primary_term": "Tenant settings",
-      "aliases": [
-        "Organization settings"
-      ],
+      "aliases": ["Organization settings"],
       "domain_module": "tenancy",
       "technical": {
         "artifact_kind": "table",
@@ -270,10 +239,7 @@
     {
       "id": "generic_status",
       "business_primary_term": "Tenant lifecycle status",
-      "aliases": [
-        "Organization status",
-        "Row status"
-      ],
+      "aliases": ["Organization status", "Row status"],
       "domain_module": "tenancy",
       "technical": {
         "artifact_kind": "postgres_enum",
@@ -285,9 +251,7 @@
     {
       "id": "user",
       "business_primary_term": "User",
-      "aliases": [
-        "End user account"
-      ],
+      "aliases": ["End user account"],
       "domain_module": "identity",
       "related_doc_anchor": "GLOSSARY.md#3-identity-user-vs-employee-or-party",
       "technical": {
@@ -299,10 +263,7 @@
     {
       "id": "user_identity",
       "business_primary_term": "Linked identity",
-      "aliases": [
-        "IdP identity",
-        "External identity"
-      ],
+      "aliases": ["IdP identity", "External identity"],
       "domain_module": "identity",
       "technical": {
         "artifact_kind": "table",

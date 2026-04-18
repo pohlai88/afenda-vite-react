@@ -94,10 +94,7 @@ export const items = mdm.table(
       table.tenantId,
       table.itemCode
     ),
-    uqTenantIdId: unique("uq_items_tenant_id_id").on(
-      table.tenantId,
-      table.id
-    ),
+    uqTenantIdId: unique("uq_items_tenant_id_id").on(table.tenantId, table.id),
     idxTenantStatus: index("idx_items_tenant_status").on(
       table.tenantId,
       table.status

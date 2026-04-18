@@ -70,5 +70,7 @@ export type AfendaMeContextValidated = z.infer<typeof afendaMeContextSchema>
 
 export type TenancyTenantStatus = z.infer<typeof tenancyTenantStatusSchema>
 export type TenancyTenantType = z.infer<typeof tenancyTenantTypeSchema>
-export type TenancyMembershipStatus = z.infer<typeof tenancyMembershipStatusSchema>
+export type TenancyMembershipStatus = z.infer<
+  typeof tenancyMembershipStatusSchema
+>
 export type TenancyMembershipType = z.infer<typeof tenancyMembershipTypeSchema>

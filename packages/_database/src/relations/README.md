@@ -1,6 +1,6 @@
 # Relations (`@afenda/database/relations`)
 
-Drizzle **`relations()`** graphs for **`db.query.*` with `with:`** — **not** DDL. Table definitions stay in **`src/schema/**`**. This folder mirrors **foreign keys and composite keys** as navigable edges; keep it aligned when DDL changes.
+Drizzle **`relations()`** graphs for **`db.query.*` with `with:`** — **not** DDL. Table definitions stay in **`src/schema/**`**. This folder mirrors **foreign keys and composite keys\*\* as navigable edges; keep it aligned when DDL changes.
 
 **Imports:** `@afenda/database/relations` or the merged **`afendaDrizzleSchema`** in **`client.ts`**. Prefer package exports; do not deep-import `src/` from apps.
 
@@ -10,15 +10,15 @@ Charter: [`001-postgreSQL-DDL.md`](../../docs/guideline/001-postgreSQL-DDL.md), 
 
 ## Layout
 
-| File | Role |
-| ---- | ---- |
-| `relations.schema.ts` | Barrel — re-exports domain graphs + **`auditLogsRelations`** + **`DRIZZLE_RELATION_NAME`** |
-| `relation-names.ts` | Stable **`relationName`** strings when two FKs hit the same table (e.g. tenant → currency base vs reporting) |
-| `ref-relations.ts` | Inverse **`many()`** from `ref` masters (countries, currencies, locales, …) to MDM/IAM children |
-| `iam-relations.ts` | IAM graph (users, memberships, roles, assignments; reverse edge to audit logs) |
-| `mdm-relations.ts` | MDM graph (tenants, LE/BU/location, parties, items, org units, item settings, …) |
-| `finance-relations.ts` | Finance graph (COA, accounts, fiscal calendars/periods; account ↔ item-settings **`relationName`** pairing with MDM) |
-| `governance-relations.ts` | **`data_sources`** inverse edges (global registry referenced by MDM) |
+| File                      | Role                                                                                                                 |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `relations.schema.ts`     | Barrel — re-exports domain graphs + **`auditLogsRelations`** + **`DRIZZLE_RELATION_NAME`**                           |
+| `relation-names.ts`       | Stable **`relationName`** strings when two FKs hit the same table (e.g. tenant → currency base vs reporting)         |
+| `ref-relations.ts`        | Inverse **`many()`** from `ref` masters (countries, currencies, locales, …) to MDM/IAM children                      |
+| `iam-relations.ts`        | IAM graph (users, memberships, roles, assignments; reverse edge to audit logs)                                       |
+| `mdm-relations.ts`        | MDM graph (tenants, LE/BU/location, parties, items, org units, item settings, …)                                     |
+| `finance-relations.ts`    | Finance graph (COA, accounts, fiscal calendars/periods; account ↔ item-settings **`relationName`** pairing with MDM) |
+| `governance-relations.ts` | **`data_sources`** inverse edges (global registry referenced by MDM)                                                 |
 
 ---
 

@@ -79,5 +79,7 @@ export const legalEntityCoaAssignments = finance.table(
   })
 )
 
-export type LegalEntityCoaAssignment = typeof legalEntityCoaAssignments.$inferSelect
-export type NewLegalEntityCoaAssignment = typeof legalEntityCoaAssignments.$inferInsert
+export type LegalEntityCoaAssignment =
+  typeof legalEntityCoaAssignments.$inferSelect
+export type NewLegalEntityCoaAssignment =
+  typeof legalEntityCoaAssignments.$inferInsert

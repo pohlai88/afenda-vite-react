@@ -13,7 +13,9 @@ describe("sql/hardening patch set", () => {
       "patch_b_parties_canonical_name_normalized.sql"
     )
     const iC = HARDENING_PATCH_FILENAMES.indexOf("patch_c_gin_trgm_indexes.sql")
-    const iD = HARDENING_PATCH_FILENAMES.indexOf("patch_d_partial_unique_indexes.sql")
+    const iD = HARDENING_PATCH_FILENAMES.indexOf(
+      "patch_d_partial_unique_indexes.sql"
+    )
     expect(iB).toBeLessThan(iD)
     expect(iD).toBeLessThan(iC)
   })

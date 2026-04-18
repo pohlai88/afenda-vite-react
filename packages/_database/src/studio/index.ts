@@ -15,9 +15,7 @@ export {
   buildSemanticClassMatrix,
   getBusinessGlossarySnapshot,
 } from "./business-glossary"
-export {
-  getTruthGovernanceSnapshot,
-} from "./truth-governance"
+export { getTruthGovernanceSnapshot } from "./truth-governance"
 export {
   truthGovernanceBodySchema,
   truthGovernanceSnapshotSchema,

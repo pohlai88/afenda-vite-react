@@ -8,6 +8,8 @@ import { VIEW_EXPORT_NAMES } from "./views-inventory"
 
 describe("views/index barrel manifest", () => {
   it("runtime export keys equal the view inventory exactly", () => {
-    expect(new Set(Object.keys(ViewsBarrel))).toEqual(new Set(VIEW_EXPORT_NAMES))
+    expect(new Set(Object.keys(ViewsBarrel))).toEqual(
+      new Set(VIEW_EXPORT_NAMES)
+    )
   })
 })

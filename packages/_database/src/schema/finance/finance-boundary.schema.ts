@@ -26,7 +26,11 @@ export const financePostingTypeSchema = z.enum(["posting", "heading"])
 
 export const financeNormalBalanceSchema = z.enum(["debit", "credit"])
 
-export const financeFiscalCalendarTypeSchema = z.enum(["monthly", "4-4-5", "custom"])
+export const financeFiscalCalendarTypeSchema = z.enum([
+  "monthly",
+  "4-4-5",
+  "custom",
+])
 
 export const financeFiscalPeriodStatusSchema = z.enum([
   "open",
@@ -46,14 +50,7 @@ export const financeAccountInsertSchema = z.object({
   normalBalance: financeNormalBalanceSchema,
   isControlAccount: z.boolean().optional(),
   status: z
-    .enum([
-      "draft",
-      "active",
-      "inactive",
-      "blocked",
-      "suspended",
-      "archived",
-    ])
+    .enum(["draft", "active", "inactive", "blocked", "suspended", "archived"])
     .optional(),
   aliases: z.array(z.string()).optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
@@ -88,4 +85,6 @@ export const financeFiscalPeriodInsertSchema = z
   })
 
 export type FinanceAccountInsert = z.infer<typeof financeAccountInsertSchema>
-export type FinanceFiscalPeriodInsert = z.infer<typeof financeFiscalPeriodInsertSchema>
+export type FinanceFiscalPeriodInsert = z.infer<
+  typeof financeFiscalPeriodInsertSchema
+>

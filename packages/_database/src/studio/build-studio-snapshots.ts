@@ -74,9 +74,7 @@ export function canonicalizeTruthGovernanceBody(
     scope_models: [...body.scope_models].sort((a, b) =>
       a.id.localeCompare(b.id)
     ),
-    time_models: [...body.time_models].sort((a, b) =>
-      a.id.localeCompare(b.id)
-    ),
+    time_models: [...body.time_models].sort((a, b) => a.id.localeCompare(b.id)),
     artifact_bindings: [...body.artifact_bindings].sort((a, b) =>
       a.id.localeCompare(b.id)
     ),
@@ -126,7 +124,9 @@ function glossaryBodyFromSnapshot(
   }
 }
 
-function truthBodyFromSnapshot(s: TruthGovernanceSnapshot): TruthGovernanceBody {
+function truthBodyFromSnapshot(
+  s: TruthGovernanceSnapshot
+): TruthGovernanceBody {
   return {
     schema_version: s.schema_version,
     document: s.document,
@@ -145,9 +145,7 @@ export function assertGlossarySnapshotMatchesYaml(args: {
   readonly snapshotJsonUtf8: string
 }): void {
   const expectedBody = canonicalizeBusinessGlossaryBody(
-    businessGlossaryBodySchema.parse(
-      parse(args.glossaryYamlUtf8) as unknown
-    )
+    businessGlossaryBodySchema.parse(parse(args.glossaryYamlUtf8) as unknown)
   )
   const snapshot = businessGlossarySnapshotSchema.parse(
     JSON.parse(args.snapshotJsonUtf8) as unknown
@@ -174,9 +172,7 @@ export function assertTruthGovernanceSnapshotMatchesYaml(args: {
   readonly snapshotJsonUtf8: string
 }): void {
   const expectedBody = canonicalizeTruthGovernanceBody(
-    truthGovernanceBodySchema.parse(
-      parse(args.governanceYamlUtf8) as unknown
-    )
+    truthGovernanceBodySchema.parse(parse(args.governanceYamlUtf8) as unknown)
   )
   const snapshot = truthGovernanceSnapshotSchema.parse(
     JSON.parse(args.snapshotJsonUtf8) as unknown

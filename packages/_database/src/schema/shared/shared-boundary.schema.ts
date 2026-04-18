@@ -84,7 +84,9 @@ export const sharedMdmStatusSchema = zodFromPgEnum(mdmStatusEnum)
 
 export const sharedLegalEntityTypeSchema = zodFromPgEnum(legalEntityTypeEnum)
 
-export const sharedTaxRegistrationTypeSchema = zodFromPgEnum(taxRegistrationTypeEnum)
+export const sharedTaxRegistrationTypeSchema = zodFromPgEnum(
+  taxRegistrationTypeEnum
+)
 
 export const sharedBusinessUnitTypeSchema = zodFromPgEnum(businessUnitTypeEnum)
 
@@ -104,11 +106,17 @@ export const sharedRoleScopeTypeSchema = zodFromPgEnum(roleScopeTypeEnum)
 
 export const sharedPolicyEffectSchema = zodFromPgEnum(policyEffectEnum)
 
-export const sharedFiscalCalendarTypeSchema = zodFromPgEnum(fiscalCalendarTypeEnum)
+export const sharedFiscalCalendarTypeSchema = zodFromPgEnum(
+  fiscalCalendarTypeEnum
+)
 
-export const sharedFiscalPeriodStatusSchema = zodFromPgEnum(fiscalPeriodStatusEnum)
+export const sharedFiscalPeriodStatusSchema = zodFromPgEnum(
+  fiscalPeriodStatusEnum
+)
 
-export const sharedSequenceResetRuleSchema = zodFromPgEnum(sequenceResetRuleEnum)
+export const sharedSequenceResetRuleSchema = zodFromPgEnum(
+  sequenceResetRuleEnum
+)
 
 export const sharedAccountTypeSchema = zodFromPgEnum(accountTypeEnum)
 
@@ -129,7 +137,9 @@ export const sharedSourceTypeSchema = zodFromPgEnum(sourceTypeEnum)
 /** `custom_data_type` (MDM / generic typing) */
 export const sharedDataTypeSchema = zodFromPgEnum(dataTypeEnum)
 
-export const sharedCustomFieldDataTypeSchema = zodFromPgEnum(customFieldDataTypeEnum)
+export const sharedCustomFieldDataTypeSchema = zodFromPgEnum(
+  customFieldDataTypeEnum
+)
 
 /** Example inferred types — same pattern applies to every `shared*Schema` export. */
 export type SharedGenericStatus = z.infer<typeof sharedGenericStatusSchema>

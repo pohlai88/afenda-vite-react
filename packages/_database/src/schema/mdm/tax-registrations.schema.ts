@@ -50,7 +50,9 @@ export const taxRegistrations = mdm.table(
     partyId: uuid("party_id"),
     registrationType: taxRegistrationTypeEnum("registration_type").notNull(),
     taxTypeCode: varchar("tax_type_code", { length: 50 }).notNull(),
-    registrationNumber: varchar("registration_number", { length: 120 }).notNull(),
+    registrationNumber: varchar("registration_number", {
+      length: 120,
+    }).notNull(),
     countryCode: countryCodeColumn("country_code")
       .notNull()
       .references(() => countries.code, {
@@ -66,11 +68,7 @@ export const taxRegistrations = mdm.table(
   (table) => ({
     uqTenantRegistration: uniqueIndex(
       "uq_tax_registrations_tenant_registration"
-    ).on(
-      table.tenantId,
-      table.registrationType,
-      table.registrationNumber
-    ),
+    ).on(table.tenantId, table.registrationType, table.registrationNumber),
     idxTenantLookup: index("idx_tax_registrations_lookup").on(
       table.tenantId,
       table.legalEntityId,

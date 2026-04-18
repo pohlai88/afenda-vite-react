@@ -12,23 +12,20 @@
  */
 import { z } from "zod"
 
-const tokenOrEmpty = z
-  .string()
-  .refine((s) => s === "" || /^-?\d+$/u.test(s), {
-    error: "Must be a base-10 integer",
-  })
+const tokenOrEmpty = z.string().refine((s) => s === "" || /^-?\d+$/u.test(s), {
+  error: "Must be a base-10 integer",
+})
 
-export const optionalCoercedIntegerSchema = z.preprocess(
-  (v) => {
+export const optionalCoercedIntegerSchema = z
+  .preprocess((v) => {
     if (v === undefined || v === null) return ""
     return String(v).trim()
-  },
-  tokenOrEmpty
-).transform((s) => {
-  if (s === "") return undefined
-  const n = Number.parseInt(s, 10)
-  return Number.isSafeInteger(n) ? n : undefined
-})
+  }, tokenOrEmpty)
+  .transform((s) => {
+    if (s === "") return undefined
+    const n = Number.parseInt(s, 10)
+    return Number.isSafeInteger(n) ? n : undefined
+  })
 
 /**
  * Like {@link optionalCoercedIntegerSchema} but supplies `fallback` when the value is absent or invalid.

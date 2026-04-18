@@ -120,10 +120,9 @@ export const auditLogs = governance.table(
       table.tenantId,
       table.recordedAt
     ),
-    tenantMembershipIdx: index("idx_governance_audit_logs_tenant_membership").on(
-      table.tenantId,
-      table.membershipId
-    ),
+    tenantMembershipIdx: index(
+      "idx_governance_audit_logs_tenant_membership"
+    ).on(table.tenantId, table.membershipId),
     tenantActionRecordedIdx: index(
       "idx_governance_audit_logs_tenant_action_recorded"
     ).on(table.tenantId, table.action, table.recordedAt),

@@ -15,9 +15,11 @@ export const AUDIT_RUNTIME_FUNCTION_NAMES = [
   "queryAuditLogs",
 ] as const
 
-export type AuditRuntimeFunctionName = (typeof AUDIT_RUNTIME_FUNCTION_NAMES)[number]
+export type AuditRuntimeFunctionName =
+  (typeof AUDIT_RUNTIME_FUNCTION_NAMES)[number]
 
-export const EXPECTED_RUNTIME_FUNCTION_COUNT = AUDIT_RUNTIME_FUNCTION_NAMES.length
+export const EXPECTED_RUNTIME_FUNCTION_COUNT =
+  AUDIT_RUNTIME_FUNCTION_NAMES.length
 
 /**
  * ## Product features (9) — behaviors covered by tests

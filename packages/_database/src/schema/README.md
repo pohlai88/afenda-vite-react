@@ -16,15 +16,15 @@ import { … } from "@afenda/database/schema"
 
 [`index.ts`](./index.ts) re-exports, in order:
 
-| Export | PostgreSQL / role |
-| --- | --- |
-| [`finance/`](./finance/) | `finance.*` — COA, GL, fiscal calendars / periods, LE↔COA |
+| Export                         | PostgreSQL / role                                                                                                          |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| [`finance/`](./finance/)       | `finance.*` — COA, GL, fiscal calendars / periods, LE↔COA                                                                  |
 | [`governance/`](./governance/) | `governance.*` — data sources; **also** re-exports 7W1H audit DDL from [`src/7w1h-audit/`](../7w1h-audit/) for Drizzle Kit |
-| [`iam/`](./iam/) | `iam.*` — accounts, identities, memberships, roles, policies, auth challenges |
-| [`mdm/`](./mdm/) | `mdm.*` — tenants, parties, items, org graph, sequences, … |
-| [`ref/`](./ref/) | `ref.*` — countries, currencies, locales, timezones, UoM |
-| [`shared/`](./shared/) | Cross-domain `pgEnum`, column fragments, Zod (`shared-boundary`) |
-| [`../views/`](../views/) | `mdm.*` **views** (`pgView`) — canonical read models |
+| [`iam/`](./iam/)               | `iam.*` — accounts, identities, memberships, roles, policies, auth challenges                                              |
+| [`mdm/`](./mdm/)               | `mdm.*` — tenants, parties, items, org graph, sequences, …                                                                 |
+| [`ref/`](./ref/)               | `ref.*` — countries, currencies, locales, timezones, UoM                                                                   |
+| [`shared/`](./shared/)         | Cross-domain `pgEnum`, column fragments, Zod (`shared-boundary`)                                                           |
+| [`../views/`](../views/)       | `mdm.*` **views** (`pgView`) — canonical read models                                                                       |
 
 New **domain tables** must be added under the right `pgSchema` folder, exported from that domain’s `index.ts`, and included in **`schema/index.ts`** so Drizzle Kit sees them.
 
@@ -34,13 +34,13 @@ New **domain tables** must be added under the right `pgSchema` folder, exported 
 
 These are **supporting** surfaces; some are re-exported from the **package root** [`src/index.ts`](../index.ts) or dedicated export paths:
 
-| Folder | Role |
-| --- | --- |
-| [`constants/`](./constants/) | `DATABASE_URL` / pool env key names + defaults (`runtime.ts`) — used by [`client.ts`](../client.ts) |
-| [`helpers/`](./helpers/) | `readOptionalInteger`, optional integer Zod — env/config boundaries |
-| [`identity/`](./identity/) | Better Auth ↔ Afenda **bootstrap**; re-exports IAM tables + `ensureIdentityLinkForBetterAuthUser` |
-| [`tenancy/`](./tenancy/) | Active-tenant / “me” **services** + Zod; re-exports `tenant_memberships` + `tenants` — **`@afenda/database/tenancy`** |
-| [`pkg-governance/`](./pkg-governance/) | Migration filenames, PG identifier helpers, `*.schema.ts` convention — **`@afenda/database/governance`** |
+| Folder                                 | Role                                                                                                                  |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| [`constants/`](./constants/)           | `DATABASE_URL` / pool env key names + defaults (`runtime.ts`) — used by [`client.ts`](../client.ts)                   |
+| [`helpers/`](./helpers/)               | `readOptionalInteger`, optional integer Zod — env/config boundaries                                                   |
+| [`identity/`](./identity/)             | Better Auth ↔ Afenda **bootstrap**; re-exports IAM tables + `ensureIdentityLinkForBetterAuthUser`                     |
+| [`tenancy/`](./tenancy/)               | Active-tenant / “me” **services** + Zod; re-exports `tenant_memberships` + `tenants` — **`@afenda/database/tenancy`** |
+| [`pkg-governance/`](./pkg-governance/) | Migration filenames, PG identifier helpers, `*.schema.ts` convention — **`@afenda/database/governance`**              |
 
 Do **not** add new **DDL tables** under `identity/`, `tenancy/`, `helpers`, or `constants` unless the charter explicitly allows it — those folders are barrels, env helpers, or tooling (see practical discipline).
 
@@ -62,11 +62,11 @@ Registered list: [`pkg-governance/constants.ts`](./pkg-governance/constants.ts) 
 
 ## Related paths (sibling of `schema/`)
 
-| Path | Role |
-| --- | --- |
-| [`src/7w1h-audit/`](../7w1h-audit/) | 7W1H audit DDL + services — **`@afenda/database/7w1h-audit`** |
-| [`src/relations/`](../relations/) | Drizzle `relations()` graph — **`@afenda/database/relations`** |
-| [`src/queries/`](../queries/) | Query helpers |
+| Path                                | Role                                                           |
+| ----------------------------------- | -------------------------------------------------------------- |
+| [`src/7w1h-audit/`](../7w1h-audit/) | 7W1H audit DDL + services — **`@afenda/database/7w1h-audit`**  |
+| [`src/relations/`](../relations/)   | Drizzle `relations()` graph — **`@afenda/database/relations`** |
+| [`src/queries/`](../queries/)       | Query helpers                                                  |
 
 ---
 

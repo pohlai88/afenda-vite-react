@@ -66,7 +66,10 @@ export const vGoldenParties = mdm.view("v_golden_parties").as((qb) =>
         eq(parties.isDeleted, false),
         eq(parties.status, "active"),
         eq(parties.mdmStatus, "golden"),
-        whereEffectiveRangeIncludesToday(parties.effectiveFrom, parties.effectiveTo)
+        whereEffectiveRangeIncludesToday(
+          parties.effectiveFrom,
+          parties.effectiveTo
+        )
       )
     )
 )

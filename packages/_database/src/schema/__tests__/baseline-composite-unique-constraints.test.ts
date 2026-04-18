@@ -19,7 +19,9 @@ describe("baseline migration: UNIQUE(tenant_id,id) for composite FK parents", ()
   const sql = readFileSync(migrationPath, "utf8")
 
   it("declares uq_custom_field_definitions_tenant_id_id (fk_custom_field_values_definition)", () => {
-    expect(sql).toContain(uqTenantId("uq_custom_field_definitions_tenant_id_id"))
+    expect(sql).toContain(
+      uqTenantId("uq_custom_field_definitions_tenant_id_id")
+    )
   })
 
   it("declares uq_chart_of_account_sets_tenant_id_id (fk_accounts_coa_set)", () => {

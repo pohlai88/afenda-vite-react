@@ -59,7 +59,9 @@ export const userAccounts = iam.table(
       "ck_iam_user_accounts_account_status",
       sql`${t.accountStatus} in ('invited','active','suspended','locked','archived')`
     ),
-    statusIdx: index("idx_iam_user_accounts_account_status").on(t.accountStatus),
+    statusIdx: index("idx_iam_user_accounts_account_status").on(
+      t.accountStatus
+    ),
   })
 )
 

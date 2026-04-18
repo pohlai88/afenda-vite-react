@@ -98,9 +98,9 @@ describe("afendaMeContextSchema", () => {
 describe("governance level (tenants DDL)", () => {
   it("accepts every governance level value", () => {
     for (const v of governanceLevelEnum.enumValues) {
-      expect.soft(tenancyMdmGovernanceLevelSchema.safeParse(v).success).toBe(
-        true
-      )
+      expect
+        .soft(tenancyMdmGovernanceLevelSchema.safeParse(v).success)
+        .toBe(true)
     }
   })
 })

@@ -52,7 +52,9 @@ describe("composite-fk-unique-guard", () => {
     const m = new Map([["accounts", "/a.ts"]])
     expect(resolveTargetFileForCompositeFk("table", "/b.ts", m)).toBe("/b.ts")
     expect(resolveTargetFileForCompositeFk("t", "/b.ts", m)).toBe("/b.ts")
-    expect(resolveTargetFileForCompositeFk("accounts", "/b.ts", m)).toBe("/a.ts")
+    expect(resolveTargetFileForCompositeFk("accounts", "/b.ts", m)).toBe(
+      "/a.ts"
+    )
   })
 
   it("audit passes on current repo schema tree", () => {

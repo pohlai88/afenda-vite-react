@@ -12,13 +12,7 @@
  */
 
 import { sql } from "drizzle-orm"
-import {
-  check,
-  date,
-  index,
-  uniqueIndex,
-  varchar,
-} from "drizzle-orm/pg-core"
+import { check, date, index, uniqueIndex, varchar } from "drizzle-orm/pg-core"
 
 import { countries } from "../ref/countries.schema"
 import { currencies } from "../ref/currencies.schema"

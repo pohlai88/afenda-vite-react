@@ -71,7 +71,10 @@ export const customFieldValues = mdm.table(
     ),
     fkDefinition: foreignKey({
       columns: [table.tenantId, table.customFieldDefinitionId],
-      foreignColumns: [customFieldDefinitions.tenantId, customFieldDefinitions.id],
+      foreignColumns: [
+        customFieldDefinitions.tenantId,
+        customFieldDefinitions.id,
+      ],
       name: "fk_custom_field_values_definition",
     }),
   })

@@ -75,11 +75,17 @@ export const tenantMembershipsRelations = relations(
       references: [persons.id],
     }),
     defaultLegalEntity: one(legalEntities, {
-      fields: [tenantMemberships.tenantId, tenantMemberships.defaultLegalEntityId],
+      fields: [
+        tenantMemberships.tenantId,
+        tenantMemberships.defaultLegalEntityId,
+      ],
       references: [legalEntities.tenantId, legalEntities.id],
     }),
     defaultBusinessUnit: one(businessUnits, {
-      fields: [tenantMemberships.tenantId, tenantMemberships.defaultBusinessUnitId],
+      fields: [
+        tenantMemberships.tenantId,
+        tenantMemberships.defaultBusinessUnitId,
+      ],
       references: [businessUnits.tenantId, businessUnits.id],
     }),
     defaultLocation: one(locations, {
@@ -100,16 +106,19 @@ export const tenantRolesRelations = relations(tenantRoles, ({ one, many }) => ({
   authorityPolicies: many(authorityPolicies),
 }))
 
-export const authorityPoliciesRelations = relations(authorityPolicies, ({ one }) => ({
-  tenant: one(tenants, {
-    fields: [authorityPolicies.tenantId],
-    references: [tenants.id],
-  }),
-  role: one(tenantRoles, {
-    fields: [authorityPolicies.tenantId, authorityPolicies.tenantRoleId],
-    references: [tenantRoles.tenantId, tenantRoles.id],
-  }),
-}))
+export const authorityPoliciesRelations = relations(
+  authorityPolicies,
+  ({ one }) => ({
+    tenant: one(tenants, {
+      fields: [authorityPolicies.tenantId],
+      references: [tenants.id],
+    }),
+    role: one(tenantRoles, {
+      fields: [authorityPolicies.tenantId, authorityPolicies.tenantRoleId],
+      references: [tenantRoles.tenantId, tenantRoles.id],
+    }),
+  })
+)
 
 export const tenantRoleAssignmentsRelations = relations(
   tenantRoleAssignments,
@@ -126,7 +135,10 @@ export const tenantRoleAssignmentsRelations = relations(
       references: [tenantMemberships.tenantId, tenantMemberships.id],
     }),
     role: one(tenantRoles, {
-      fields: [tenantRoleAssignments.tenantId, tenantRoleAssignments.tenantRoleId],
+      fields: [
+        tenantRoleAssignments.tenantId,
+        tenantRoleAssignments.tenantRoleId,
+      ],
       references: [tenantRoles.tenantId, tenantRoles.id],
     }),
   })

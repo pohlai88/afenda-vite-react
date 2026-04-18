@@ -14,7 +14,9 @@ import {
 
 describe("relations barrel (F2–F5)", () => {
   it(`exports ${EXPECTED_RELATIONS_GRAPH_COUNT} relation graphs`, () => {
-    expect(RELATIONS_GRAPH_EXPORT_NAMES.length).toBe(EXPECTED_RELATIONS_GRAPH_COUNT)
+    expect(RELATIONS_GRAPH_EXPORT_NAMES.length).toBe(
+      EXPECTED_RELATIONS_GRAPH_COUNT
+    )
   })
 
   it("documents five feature areas", () => {

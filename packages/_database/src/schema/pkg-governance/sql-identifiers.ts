@@ -17,7 +17,11 @@ import { PG_IDENTIFIER_MAX_LENGTH } from "./constants.js"
 const SEG = /[^a-z0-9_]+/gu
 
 function segment(raw: string): string {
-  return raw.trim().toLowerCase().replace(SEG, "_").replace(/^_+|_+$/gu, "")
+  return raw
+    .trim()
+    .toLowerCase()
+    .replace(SEG, "_")
+    .replace(/^_+|_+$/gu, "")
 }
 
 function join(parts: string[]): string {
@@ -36,7 +40,10 @@ export function pgIdentifierUtf8ByteLength(name: string): number {
  * Asserts PostgreSQL identifier byte length; throws if exceeded.
  * Production code should still prefer shorter, stable names.
  */
-export function assertPgIdentifierLength(name: string, label = "identifier"): void {
+export function assertPgIdentifierLength(
+  name: string,
+  label = "identifier"
+): void {
   const bytes = pgIdentifierUtf8ByteLength(name)
   if (bytes > PG_IDENTIFIER_MAX_LENGTH) {
     throw new Error(
@@ -61,7 +68,11 @@ export function compositePkName(table: string): string {
  * Foreign key: `{child_table}_{column}_fk` (single column).
  * For multi-column FKs, pass a stable descriptor, e.g. `fkName("orders", "tenant_ref", "composite")`.
  */
-export function fkName(childTable: string, columnOrDescriptor: string, suffix = "fk"): string {
+export function fkName(
+  childTable: string,
+  columnOrDescriptor: string,
+  suffix = "fk"
+): string {
   const n = join([childTable, columnOrDescriptor, suffix])
   assertPgIdentifierLength(n, "fkName")
   return n
@@ -91,7 +102,11 @@ export function checkName(table: string, purpose: string): string {
 /**
  * RLS policy: `{table}_{operation}_{purpose}` — operations often `read` | `write` | `all` | `select` | `insert` | `update` | `delete`.
  */
-export function rlsPolicyName(table: string, operation: string, purpose: string): string {
+export function rlsPolicyName(
+  table: string,
+  operation: string,
+  purpose: string
+): string {
   const n = join([table, operation, purpose])
   assertPgIdentifierLength(n, "rlsPolicyName")
   return n

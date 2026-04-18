@@ -30,7 +30,11 @@ describe("whereEffectiveRangeIncludesToday", () => {
   const currentDate = sql`current_date`
 
   it.each([
-    ["tenant_policies", tenantPolicies.effectiveFrom, tenantPolicies.effectiveTo],
+    [
+      "tenant_policies",
+      tenantPolicies.effectiveFrom,
+      tenantPolicies.effectiveTo,
+    ],
     ["parties", parties.effectiveFrom, parties.effectiveTo],
     ["items", items.effectiveFrom, items.effectiveTo],
   ] as const)(
@@ -40,9 +44,9 @@ describe("whereEffectiveRangeIncludesToday", () => {
         lte(effectiveFrom, currentDate),
         or(isNull(effectiveTo), gte(effectiveTo, currentDate))
       )
-      expect(String(whereEffectiveRangeIncludesToday(effectiveFrom, effectiveTo))).toBe(
-        String(expected)
-      )
+      expect(
+        String(whereEffectiveRangeIncludesToday(effectiveFrom, effectiveTo))
+      ).toBe(String(expected))
     }
   )
 })
@@ -58,16 +62,19 @@ describe("pgView read models (F1–F3)", () => {
     vGoldenParties,
   } as const
 
-  it.each(VIEW_EXPORT_NAMES)("%s maps to the expected PostgreSQL name and mdm schema", (exportName) => {
-    const view = viewsByExport[exportName]
+  it.each(VIEW_EXPORT_NAMES)(
+    "%s maps to the expected PostgreSQL name and mdm schema",
+    (exportName) => {
+      const view = viewsByExport[exportName]
 
-    expect(getViewName(view)).toBe(PG_VIEW_NAME_BY_EXPORT[exportName])
+      expect(getViewName(view)).toBe(PG_VIEW_NAME_BY_EXPORT[exportName])
 
-    const meta = readDrizzlePgViewMeta(view)
-    expect(meta.name).toBe(PG_VIEW_NAME_BY_EXPORT[exportName])
-    expect(meta.originalName).toBe(PG_VIEW_NAME_BY_EXPORT[exportName])
-    expect(meta.schema).toBe(MDM_PG_SCHEMA)
-  })
+      const meta = readDrizzlePgViewMeta(view)
+      expect(meta.name).toBe(PG_VIEW_NAME_BY_EXPORT[exportName])
+      expect(meta.originalName).toBe(PG_VIEW_NAME_BY_EXPORT[exportName])
+      expect(meta.schema).toBe(MDM_PG_SCHEMA)
+    }
+  )
 })
 
 describe("v_current_tenant_policies (F1)", () => {
@@ -76,7 +83,9 @@ describe("v_current_tenant_policies (F1)", () => {
       "v_current_tenant_policies"
     )
     expect(readDrizzlePgViewSelectedFieldKeys(vCurrentTenantPolicies)).toEqual(
-      pgTableDataColumnKeys(tenantPolicies as unknown as Record<string, unknown>)
+      pgTableDataColumnKeys(
+        tenantPolicies as unknown as Record<string, unknown>
+      )
     )
   })
 })

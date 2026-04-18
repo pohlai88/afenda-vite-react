@@ -11,10 +11,10 @@ Drizzle **`pgView`** definitions on the **`mdm`** PostgreSQL schema (`mdm.view(.
 
 ## Layout
 
-| File | Role |
-| --- | --- |
+| File                     | Role                                                              |
+| ------------------------ | ----------------------------------------------------------------- |
 | `mdm-canonical-views.ts` | `v_current_tenant_policies`, `v_golden_parties`, `v_golden_items` |
-| `index.ts` | Re-exports (imported by `src/schema/index.ts`) |
+| `index.ts`               | Re-exports (imported by `src/schema/index.ts`)                    |
 
 ## Operations
 

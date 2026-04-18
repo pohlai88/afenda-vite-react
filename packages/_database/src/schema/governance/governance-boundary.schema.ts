@@ -31,14 +31,7 @@ export const governanceDataSourceInsertSchema = z.object({
   priorityRank: z.number().int().positive().optional(),
   isAuthoritative: z.boolean().optional(),
   status: z
-    .enum([
-      "draft",
-      "active",
-      "inactive",
-      "blocked",
-      "suspended",
-      "archived",
-    ])
+    .enum(["draft", "active", "inactive", "blocked", "suspended", "archived"])
     .optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
 })

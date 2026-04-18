@@ -6,7 +6,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { DatabaseClient } from "../../client"
 import { auditActionKeys } from "../contracts/audit-action-catalog"
 import { queryAuditLogs } from "../services/audit-query-service"
-import { buildAuditLog, type BuildAuditLogInput } from "../services/build-audit-log"
+import {
+  buildAuditLog,
+  type BuildAuditLogInput,
+} from "../services/build-audit-log"
 import {
   insertAuditLog,
   insertGovernedAuditLog,
@@ -40,9 +43,9 @@ describe("validateAuditLog", () => {
   })
 
   it("throws when tenantId missing", () => {
-    expect(() =>
-      validateAuditLog(minimalValidRow({ tenantId: "" }))
-    ).toThrow("tenantId is required")
+    expect(() => validateAuditLog(minimalValidRow({ tenantId: "" }))).toThrow(
+      "tenantId is required"
+    )
   })
 
   it("throws when subjectType missing", () => {
@@ -124,8 +127,13 @@ describe("insertAuditLog", () => {
     const db = { insert } as unknown as DatabaseClient
 
     const base = minimalValidRow()
-    const { metadata: _m, sevenW1h: _s, occurredAt: _o, recordedAt: _r, ...rest } =
-      base
+    const {
+      metadata: _m,
+      sevenW1h: _s,
+      occurredAt: _o,
+      recordedAt: _r,
+      ...rest
+    } = base
     await insertAuditLog(db, {
       ...rest,
       metadata: undefined,

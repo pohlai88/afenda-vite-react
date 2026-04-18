@@ -27,7 +27,9 @@ describe("migration SQL filenames", () => {
       index: "0000",
       slug: "tenancy_tenants_initial",
     })
-    expect(parsedMigrationSqlFilenameSchema.safeParse(parsed).success).toBe(true)
+    expect(parsedMigrationSqlFilenameSchema.safeParse(parsed).success).toBe(
+      true
+    )
     expect(isMigrationSqlFilename("0001_audit_logs_v1.sql")).toBe(true)
     expect(isMigrationSqlFilename("bad.sql")).toBe(false)
   })
@@ -64,7 +66,14 @@ describe("migrations schema constant", () => {
 describe("drizzle managed schema filter", () => {
   it("lists DDL namespaces plus migrations journal schema", () => {
     expect(new Set(DRIZZLE_MANAGED_PG_SCHEMAS)).toEqual(
-      new Set(["iam", "mdm", "ref", "finance", "governance", DRIZZLE_MIGRATIONS_SCHEMA])
+      new Set([
+        "iam",
+        "mdm",
+        "ref",
+        "finance",
+        "governance",
+        DRIZZLE_MIGRATIONS_SCHEMA,
+      ])
     )
     for (const s of DRIZZLE_MANAGED_PG_SCHEMAS) {
       expect(drizzleManagedPgSchemaSchema.safeParse(s).success).toBe(true)
@@ -75,14 +84,18 @@ describe("drizzle managed schema filter", () => {
 describe("database concept vocabulary", () => {
   it("parses every catalogued concept string", () => {
     expect(databaseConceptValueSchema.safeParse("table").success).toBe(true)
-    expect(databaseConceptValueSchema.safeParse("not_a_concept").success).toBe(false)
+    expect(databaseConceptValueSchema.safeParse("not_a_concept").success).toBe(
+      false
+    )
   })
 })
 
 describe("schema module filenames", () => {
   it("detects *.schema.ts for search/glob parity with *.test.ts", () => {
     expect(isDrizzleSchemaModuleFile("tenants.schema.ts")).toBe(true)
-    expect(isDrizzleSchemaModuleFile("authorization/schema/roles.schema.ts")).toBe(true)
+    expect(
+      isDrizzleSchemaModuleFile("authorization/schema/roles.schema.ts")
+    ).toBe(true)
     expect(isDrizzleSchemaModuleFile("roles.ts")).toBe(false)
     expect(isDrizzleSchemaModuleFile("tenant.schema.test.ts")).toBe(false)
   })

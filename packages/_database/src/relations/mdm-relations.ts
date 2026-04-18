@@ -101,16 +101,19 @@ export const customFieldDefinitionsRelations = relations(
   })
 )
 
-export const customFieldValuesRelations = relations(customFieldValues, ({ one }) => ({
-  tenant: one(tenants, {
-    fields: [customFieldValues.tenantId],
-    references: [tenants.id],
-  }),
-  definition: one(customFieldDefinitions, {
-    fields: [customFieldValues.customFieldDefinitionId],
-    references: [customFieldDefinitions.id],
-  }),
-}))
+export const customFieldValuesRelations = relations(
+  customFieldValues,
+  ({ one }) => ({
+    tenant: one(tenants, {
+      fields: [customFieldValues.tenantId],
+      references: [tenants.id],
+    }),
+    definition: one(customFieldDefinitions, {
+      fields: [customFieldValues.customFieldDefinitionId],
+      references: [customFieldDefinitions.id],
+    }),
+  })
+)
 
 export const tenantPoliciesRelations = relations(tenantPolicies, ({ one }) => ({
   tenant: one(tenants, {
@@ -365,13 +368,16 @@ export const suppliersRelations = relations(suppliers, ({ one }) => ({
   }),
 }))
 
-export const itemCategoriesRelations = relations(itemCategories, ({ one, many }) => ({
-  tenant: one(tenants, {
-    fields: [itemCategories.tenantId],
-    references: [tenants.id],
-  }),
-  items: many(items),
-}))
+export const itemCategoriesRelations = relations(
+  itemCategories,
+  ({ one, many }) => ({
+    tenant: one(tenants, {
+      fields: [itemCategories.tenantId],
+      references: [tenants.id],
+    }),
+    items: many(items),
+  })
+)
 
 export const itemsRelations = relations(items, ({ one, many }) => ({
   tenant: one(tenants, {

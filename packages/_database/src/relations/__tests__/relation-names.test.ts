@@ -10,7 +10,9 @@ import {
 
 describe("DRIZZLE_RELATION_NAME (F1)", () => {
   it("defines stable tenant↔currency edge names", () => {
-    expect(DRIZZLE_RELATION_NAME.tenantToCurrencyBase).toBe("tenant_base_currency")
+    expect(DRIZZLE_RELATION_NAME.tenantToCurrencyBase).toBe(
+      "tenant_base_currency"
+    )
     expect(DRIZZLE_RELATION_NAME.tenantToCurrencyReporting).toBe(
       "tenant_reporting_currency"
     )

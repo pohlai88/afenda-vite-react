@@ -70,7 +70,10 @@ export const legalEntityCoaAssignmentsRelations = relations(
       references: [legalEntities.tenantId, legalEntities.id],
     }),
     coaSet: one(chartOfAccountSets, {
-      fields: [legalEntityCoaAssignments.tenantId, legalEntityCoaAssignments.coaSetId],
+      fields: [
+        legalEntityCoaAssignments.tenantId,
+        legalEntityCoaAssignments.coaSetId,
+      ],
       references: [chartOfAccountSets.tenantId, chartOfAccountSets.id],
     }),
   })

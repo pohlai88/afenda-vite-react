@@ -43,7 +43,11 @@ export {
   drizzleManagedPgSchemaSchema,
   parsedMigrationSqlFilenameSchema,
 } from "./pkg-governance-boundary.schema.js"
-export { DatabaseConcept, type DatabaseConceptKey, type DatabaseConceptValue } from "./database-concepts.js"
+export {
+  DatabaseConcept,
+  type DatabaseConceptKey,
+  type DatabaseConceptValue,
+} from "./database-concepts.js"
 export {
   DRIZZLE_SCHEMA_MODULE_GLOB,
   DRIZZLE_SCHEMA_MODULE_SUFFIX,

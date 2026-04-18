@@ -4,17 +4,17 @@ Drizzle tables live under the PostgreSQL schema **`iam`** via `pgSchema("iam")` 
 
 ## Tables (by concern)
 
-| Table | Role |
-| --- | --- |
-| `user_accounts` | Canonical Afenda login row (email/username, locale, lifecycle) |
-| `user_identities` | Generic **provider + provider_subject** → `user_accounts` |
-| `identity_links` | **Better Auth** ↔ Afenda bridge (`better_auth_user_id`, partial unique on primary) |
-| `persons` | Human PII profile; optional on memberships |
-| `tenant_memberships` | User ↔ tenant + optional defaults to MDM org scope |
-| `tenant_roles` | Per-tenant role catalog |
-| `tenant_role_assignments` | Membership ↔ role with `scope_type` / `scope_id` + effective dates |
-| `authority_policies` | ABAC-style allow/deny rows keyed by role + resource + action |
-| `auth_challenges` | Step-up / MFA challenge records (text subjects; no FK to accounts) |
+| Table                     | Role                                                                               |
+| ------------------------- | ---------------------------------------------------------------------------------- |
+| `user_accounts`           | Canonical Afenda login row (email/username, locale, lifecycle)                     |
+| `user_identities`         | Generic **provider + provider_subject** → `user_accounts`                          |
+| `identity_links`          | **Better Auth** ↔ Afenda bridge (`better_auth_user_id`, partial unique on primary) |
+| `persons`                 | Human PII profile; optional on memberships                                         |
+| `tenant_memberships`      | User ↔ tenant + optional defaults to MDM org scope                                 |
+| `tenant_roles`            | Per-tenant role catalog                                                            |
+| `tenant_role_assignments` | Membership ↔ role with `scope_type` / `scope_id` + effective dates                 |
+| `authority_policies`      | ABAC-style allow/deny rows keyed by role + resource + action                       |
+| `auth_challenges`         | Step-up / MFA challenge records (text subjects; no FK to accounts)                 |
 
 ## Overlap, duplication, and drift risks
 

@@ -94,7 +94,13 @@
     },
     "webClientSrc": {
       "srcRoot": "apps/web/src",
-      "allowedTopLevelDirectories": ["app", "pages", "routes", "styles", "worker"],
+      "allowedTopLevelDirectories": [
+        "app",
+        "pages",
+        "routes",
+        "styles",
+        "worker"
+      ],
       "requiredShareSubdirectories": [],
       "enforce": true
     }

@@ -79,7 +79,9 @@ export function auditCompositeFkUniqueConstraints(options: {
   schemaRoot: string
   extraRoots?: string[]
 }): CompositeFkViolation[] {
-  const roots = [options.schemaRoot, ...(options.extraRoots ?? [])].filter(Boolean)
+  const roots = [options.schemaRoot, ...(options.extraRoots ?? [])].filter(
+    Boolean
+  )
   const files: string[] = []
   for (const root of roots) {
     walkSchemaTs(root, files)
@@ -138,7 +140,7 @@ export function auditCompositeFkUniqueConstraints(options: {
           targetSymbol,
           targetFile,
           reason:
-            'missing `unique(...).on(<row>.tenantId, <row>.id)` — PostgreSQL composite FKs cannot reference `uniqueIndex()`-only columns; use `unique()` from drizzle-orm/pg-core',
+            "missing `unique(...).on(<row>.tenantId, <row>.id)` — PostgreSQL composite FKs cannot reference `uniqueIndex()`-only columns; use `unique()` from drizzle-orm/pg-core",
         })
       }
     }

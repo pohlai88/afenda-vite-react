@@ -78,4 +78,5 @@ export const customFieldDefinitions = mdm.table(
 )
 
 export type CustomFieldDefinition = typeof customFieldDefinitions.$inferSelect
-export type NewCustomFieldDefinition = typeof customFieldDefinitions.$inferInsert
+export type NewCustomFieldDefinition =
+  typeof customFieldDefinitions.$inferInsert

@@ -35,7 +35,10 @@ export const chartOfAccountSets = finance.table(
     ...idColumn,
     tenantId: uuid("tenant_id")
       .notNull()
-      .references(() => tenants.id, { onDelete: "cascade", onUpdate: "cascade" }),
+      .references(() => tenants.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     coaCode: varchar("coa_code", { length: 50 }).notNull(),
     coaName: varchar("coa_name", { length: 200 }).notNull(),
     status: statusEnum("status").notNull().default("active"),

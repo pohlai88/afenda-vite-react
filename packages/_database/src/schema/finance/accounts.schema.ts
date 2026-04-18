@@ -48,7 +48,10 @@ export const accounts = finance.table(
     ...idColumn,
     tenantId: uuid("tenant_id")
       .notNull()
-      .references(() => tenants.id, { onDelete: "cascade", onUpdate: "cascade" }),
+      .references(() => tenants.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     coaSetId: uuid("coa_set_id").notNull(),
     parentAccountId: uuid("parent_account_id"),
     accountCode: varchar("account_code", { length: 50 }).notNull(),

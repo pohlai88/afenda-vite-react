@@ -42,7 +42,9 @@ describe("client", { timeout: 30_000 }, () => {
     const { createPgPool } = await import("../client")
     const pool = createPgPool()
     expect(pool).toBeDefined()
-    const call = pgMock.poolConfigs.at(-1) as Record<string, unknown> | undefined
+    const call = pgMock.poolConfigs.at(-1) as
+      | Record<string, unknown>
+      | undefined
     expect(call?.connectionString).toBe("postgres://localhost:5432/testdb")
   })
 
@@ -52,7 +54,9 @@ describe("client", { timeout: 30_000 }, () => {
     process.env.DB_CONNECTION_TIMEOUT_MS = "5000"
     const { createPgPool } = await import("../client")
     createPgPool()
-    const call = pgMock.poolConfigs.at(-1) as Record<string, unknown> | undefined
+    const call = pgMock.poolConfigs.at(-1) as
+      | Record<string, unknown>
+      | undefined
     expect(call?.max).toBe(12)
     expect(call?.idleTimeoutMillis).toBe(60000)
     expect(call?.connectionTimeoutMillis).toBe(5000)

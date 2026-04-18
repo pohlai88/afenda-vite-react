@@ -52,10 +52,12 @@ describe("zodFromPgEnum", () => {
       if (!isPgEnum(exp)) continue
       const schema = zodFromPgEnum(exp)
       for (const v of exp.enumValues) {
-        expect.soft(
-          schema.safeParse(v).success,
-          `${name} should accept ${String(v)}`
-        ).toBe(true)
+        expect
+          .soft(
+            schema.safeParse(v).success,
+            `${name} should accept ${String(v)}`
+          )
+          .toBe(true)
       }
     }
   })

@@ -12,7 +12,10 @@
  */
 import { z } from "zod"
 
-import { DatabaseConcept, type DatabaseConceptValue } from "./database-concepts.js"
+import {
+  DatabaseConcept,
+  type DatabaseConceptValue,
+} from "./database-concepts.js"
 import { DRIZZLE_MANAGED_PG_SCHEMAS } from "./constants.js"
 
 const conceptValues = Object.values(DatabaseConcept) as [
@@ -28,8 +31,10 @@ export const drizzleManagedPgSchemaSchema = z.enum(DRIZZLE_MANAGED_PG_SCHEMAS)
 
 /** Shape produced by `parseMigrationSqlFilename` when parsing succeeds. */
 export const parsedMigrationSqlFilenameSchema = z.object({
-  index: z.string().regex(/^\d{4}$/u, { error: "Expected four-digit migration index" }),
-  slug: z
+  index: z
     .string()
-    .regex(/^[a-z0-9_]+$/u, { error: "Slug must be snake_case alphanumeric segments" }),
+    .regex(/^\d{4}$/u, { error: "Expected four-digit migration index" }),
+  slug: z.string().regex(/^[a-z0-9_]+$/u, {
+    error: "Slug must be snake_case alphanumeric segments",
+  }),
 })

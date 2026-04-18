@@ -14,10 +14,7 @@ import { and, desc, eq, gte, lte, sql } from "drizzle-orm"
 import type { SQL } from "drizzle-orm"
 
 import type { DatabaseClient } from "../../client"
-import {
-  auditLogs,
-  type AuditLog,
-} from "../audit-logs.schema"
+import { auditLogs, type AuditLog } from "../audit-logs.schema"
 import {
   AUDIT_QUERY_W1H_PHASE_FILTER,
   AUDIT_QUERY_W1H_TEXT_FILTERS,
@@ -73,18 +70,14 @@ export async function queryAuditLogs(
   for (const [inputKey, a, b] of AUDIT_QUERY_W1H_TEXT_FILTERS) {
     const value = query[inputKey as keyof AuditQueryInput]
     if (typeof value === "string" && value.length > 0) {
-      filters.push(
-        sevenW1hTextEq(auditSevenW1hPgPathLiteral([a, b]), value)
-      )
+      filters.push(sevenW1hTextEq(auditSevenW1hPgPathLiteral([a, b]), value))
     }
   }
 
   const phase = query[AUDIT_QUERY_W1H_PHASE_FILTER.key]
   if (phase !== undefined) {
     const [pa, pb] = AUDIT_QUERY_W1H_PHASE_FILTER.path
-    filters.push(
-      sevenW1hTextEq(auditSevenW1hPgPathLiteral([pa, pb]), phase)
-    )
+    filters.push(sevenW1hTextEq(auditSevenW1hPgPathLiteral([pa, pb]), phase))
   }
 
   return database

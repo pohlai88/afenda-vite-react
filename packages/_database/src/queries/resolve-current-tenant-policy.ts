@@ -43,12 +43,7 @@ export async function resolveCurrentTenantPolicy(
   db: DatabaseClient,
   params: ResolveCurrentTenantPolicyParams
 ): Promise<TenantPolicyRecord | null> {
-  const {
-    tenantId,
-    policyDomain,
-    policyKey,
-    asOfDate: asOfDateParam,
-  } = params
+  const { tenantId, policyDomain, policyKey, asOfDate: asOfDateParam } = params
 
   const asOfDate = asOfDateParam ?? todayIsoDateUtc()
   assertIsoDateOnly(asOfDate, "asOfDate")

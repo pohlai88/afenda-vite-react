@@ -37,7 +37,10 @@ export const fiscalCalendars = finance.table(
     ...idColumn,
     tenantId: uuid("tenant_id")
       .notNull()
-      .references(() => tenants.id, { onDelete: "cascade", onUpdate: "cascade" }),
+      .references(() => tenants.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     calendarCode: varchar("calendar_code", { length: 50 }).notNull(),
     calendarName: varchar("calendar_name", { length: 200 }).notNull(),
     calendarType: fiscalCalendarTypeEnum("calendar_type").notNull(),

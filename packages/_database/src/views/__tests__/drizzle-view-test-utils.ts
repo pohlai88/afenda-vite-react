@@ -36,7 +36,9 @@ export function readDrizzlePgViewMeta(view: unknown): {
 }
 
 /** Keys of physical columns on a Drizzle `pgTable` (excludes e.g. `enableRLS` on the table proxy). */
-export function pgTableDataColumnKeys(table: Record<string, unknown>): string[] {
+export function pgTableDataColumnKeys(
+  table: Record<string, unknown>
+): string[] {
   return Object.keys(table)
     .filter((k) => k !== "enableRLS")
     .sort()

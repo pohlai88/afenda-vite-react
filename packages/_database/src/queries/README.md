@@ -23,16 +23,16 @@ These modules are the **single place** for that SQL shape and ordering.
 
 ## Layout
 
-| Path | Role |
-| ---- | ---- |
-| `index.ts` | Barrel — re-exports helpers + all resolvers |
-| `helpers/iso-date.ts` | **`todayIsoDateUtc`**, **`assertIsoDateOnly`**, **`isIsoDateOnly`** — resolver `asOfDate` must be **`YYYY-MM-DD`** (UTC day default where documented) |
-| `helpers/effective-row.ts` | **`effectiveOnAsOfDatePredicate`** — one calendar day inside an `effective_from` / `effective_to` bracket (align with [`src/views/mdm-canonical-views.ts`](../views/mdm-canonical-views.ts) where views exist) |
-| `helpers/scope-utils.ts` | **`matchesScope`** — pure check that a role assignment’s `scope_type` / `scope_id` covers runtime LE / BU / location (after you load assignments) |
-| `resolve-current-tenant-policy.ts` | Effective row for **`mdm.tenant_policies`** by domain + key on **`asOfDate`** |
-| `resolve-item-settings.ts` | **`mdm.item_entity_settings`** with effective dating; fallback **location → business unit → legal entity**; **location tier requires both `locationId` and `businessUnitId`** |
-| `resolve-membership-scope.ts` | One round-trip: membership + left-joined role assignments and roles; membership lifecycle vs **`asOfDate`** |
-| `__tests__/` | Vitest for **`iso-date`** and **`scope-utils`** (included in `pnpm run db:guard` in `packages/_database`) |
+| Path                               | Role                                                                                                                                                                                                           |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.ts`                         | Barrel — re-exports helpers + all resolvers                                                                                                                                                                    |
+| `helpers/iso-date.ts`              | **`todayIsoDateUtc`**, **`assertIsoDateOnly`**, **`isIsoDateOnly`** — resolver `asOfDate` must be **`YYYY-MM-DD`** (UTC day default where documented)                                                          |
+| `helpers/effective-row.ts`         | **`effectiveOnAsOfDatePredicate`** — one calendar day inside an `effective_from` / `effective_to` bracket (align with [`src/views/mdm-canonical-views.ts`](../views/mdm-canonical-views.ts) where views exist) |
+| `helpers/scope-utils.ts`           | **`matchesScope`** — pure check that a role assignment’s `scope_type` / `scope_id` covers runtime LE / BU / location (after you load assignments)                                                              |
+| `resolve-current-tenant-policy.ts` | Effective row for **`mdm.tenant_policies`** by domain + key on **`asOfDate`**                                                                                                                                  |
+| `resolve-item-settings.ts`         | **`mdm.item_entity_settings`** with effective dating; fallback **location → business unit → legal entity**; **location tier requires both `locationId` and `businessUnitId`**                                  |
+| `resolve-membership-scope.ts`      | One round-trip: membership + left-joined role assignments and roles; membership lifecycle vs **`asOfDate`**                                                                                                    |
+| `__tests__/`                       | Vitest for **`iso-date`** and **`scope-utils`** (included in `pnpm run db:guard` in `packages/_database`)                                                                                                      |
 
 ---
 

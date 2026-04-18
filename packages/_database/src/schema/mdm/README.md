@@ -4,14 +4,14 @@ Drizzle DDL for **master data** and tenant/org graph under the PostgreSQL schema
 
 ## Layout (by area)
 
-| Area | Tables |
-| --- | --- |
-| Tenant root | `tenants`, `tenant_profiles`, `tenant_policies`, `tenant_label_overrides` |
+| Area               | Tables                                                                                                               |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Tenant root        | `tenants`, `tenant_profiles`, `tenant_policies`, `tenant_label_overrides`                                            |
 | Party / commercial | `parties`, `customers`, `suppliers`, `party_addresses`, `tax_registrations`, `master_aliases`, `external_identities` |
-| Items | `items`, `item_categories`, `item_entity_settings` |
-| Org / geo | `legal_entities`, `business_units`, `locations`, `org_units`, `addresses` |
-| EAV | `custom_field_definitions`, `custom_field_values` |
-| Sequences | `document_sequences` |
+| Items              | `items`, `item_categories`, `item_entity_settings`                                                                   |
+| Org / geo          | `legal_entities`, `business_units`, `locations`, `org_units`, `addresses`                                            |
+| EAV                | `custom_field_definitions`, `custom_field_values`                                                                    |
+| Sequences          | `document_sequences`                                                                                                 |
 
 [`mdm-boundary.schema.ts`](./mdm-boundary.schema.ts) holds **Zod** insert DTOs (not SQL).
 

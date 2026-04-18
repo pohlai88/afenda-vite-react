@@ -3,10 +3,7 @@
  */
 import { describe, expect, it } from "vitest"
 
-import {
-  databaseRuntimeEnvKeys,
-  defaultPoolSettings,
-} from "../runtime"
+import { databaseRuntimeEnvKeys, defaultPoolSettings } from "../runtime"
 
 describe("databaseRuntimeEnvKeys", () => {
   it("uses stable process.env lookup literals", () => {
