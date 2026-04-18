@@ -5,7 +5,7 @@
  *   1. Tolgee running (docker compose -f docker-compose.tolgee.yml up -d)
  *   2. Log in at http://localhost:8085, create a project, note the project ID
  *   3. Generate a PAT (Personal Access Token) or project API key
- *   4. Copy .env.tolgee.example to .env.tolgee and fill in values
+ *   4. Set TOLGEE_* in repo root `.env` (see `.env.example`)
  *
  * Run: pnpm run script:i18n-tolgee-seed
  */
@@ -13,10 +13,13 @@ import { readFileSync, readdirSync, existsSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
+import { loadMonorepoEnvLayered } from "@afenda/env-loader"
+
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(__dirname, "..")
 const localesDir = join(repoRoot, "apps/web/src/app/_platform/i18n/locales")
-const envPath = join(repoRoot, ".env.tolgee")
+
+loadMonorepoEnvLayered()
 
 type FlatMap = Record<string, string>
 
@@ -37,28 +40,13 @@ function flattenLeaves(obj: unknown, prefix = ""): FlatMap {
 }
 
 function loadEnv(): { apiUrl: string; projectId: string; apiKey: string } {
-  if (!existsSync(envPath)) {
-    throw new Error(
-      `Missing ${envPath}. Copy .env.tolgee.example to .env.tolgee and fill in values.`
-    )
-  }
-  const lines = readFileSync(envPath, "utf8").split("\n")
-  const vars: Record<string, string> = {}
-  for (const line of lines) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith("#")) continue
-    const eq = trimmed.indexOf("=")
-    if (eq <= 0) continue
-    vars[trimmed.slice(0, eq).trim()] = trimmed.slice(eq + 1).trim()
-  }
-
-  const apiUrl = vars.TOLGEE_API_URL
-  const projectId = vars.TOLGEE_PROJECT_ID
-  const apiKey = vars.TOLGEE_API_KEY
+  const apiUrl = process.env.TOLGEE_API_URL
+  const projectId = process.env.TOLGEE_PROJECT_ID
+  const apiKey = process.env.TOLGEE_API_KEY
 
   if (!apiUrl || !projectId || !apiKey) {
     throw new Error(
-      "TOLGEE_API_URL, TOLGEE_PROJECT_ID, and TOLGEE_API_KEY must all be set in .env.tolgee"
+      "TOLGEE_API_URL, TOLGEE_PROJECT_ID, and TOLGEE_API_KEY must be set in repo root `.env` (see `.env.example`)."
     )
   }
 

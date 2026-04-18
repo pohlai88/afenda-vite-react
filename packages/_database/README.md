@@ -101,6 +101,7 @@ pnpm -C packages/_database run db:ci
 | ------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | `pnpm run typecheck`                  | `tsc`                                                                                           |
 | `pnpm run test` / `pnpm run test:run` | Vitest                                                                                          |
+| `pnpm run test:live-db`               | Vitest integration: **requires `DATABASE_URL`** (loads repo `.env`); skipped if unset           |
 | `pnpm run db:inventory:sync`          | Regenerate `docs/guideline/schema-inventory.json`                                               |
 | `pnpm run db:inventory:verify`        | Fail if inventory ≠ disk                                                                        |
 | `pnpm run db:guard`                   | typecheck + schema guards + inventory + hardening verify + focused Vitest contract tests        |

@@ -72,8 +72,8 @@ To adjust hooks, edit the `simple-git-hooks` and `lint-staged` sections in the r
 
 [Vite](https://vitejs.dev/guide/env-and-mode.html) exposes only variables prefixed with **`VITE_`** to the client bundle. **Never** put secrets in `VITE_*`—they are visible in shipped JS.
 
-- Copy [`apps/web/.env.example`](../apps/web/.env.example) to **`.env.local`** for local overrides (gitignored).
-- Use `.env`, `.env.development`, `.env.production` as appropriate for non-secret defaults.
+- Copy [`.env.example`](../.env.example) to **`.env`** at the repo root (gitignored); optional **`.env.local`** for overrides.
+- Use `.env.development`, `.env.production`, and matching `*.local` files as appropriate for non-secret defaults.
 
 ```env
 # Example — exposed to client

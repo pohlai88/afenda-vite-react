@@ -4,17 +4,17 @@ This package is the **single source of truth** for shared **Vitest** defaults in
 
 ## Where to look
 
-| Topic | Location |
-| --- | --- |
-| Normative human doc | [`TESTING.md`](./TESTING.md) (see also [`docs/TESTING.md`](../../docs/TESTING.md)) |
-| Defaults factory | [`src/vitest/defaults.ts`](./src/vitest/defaults.ts) |
-| jest-dom + future hooks | [`src/vitest/setup.ts`](./src/vitest/setup.ts) |
-| This package’s own Vitest project | [`vitest.config.ts`](./vitest.config.ts) |
-| Vite + Vitest enterprise notes | [`docs/VITE_ENTERPRISE_WORKSPACE.md`](../../docs/VITE_ENTERPRISE_WORKSPACE.md) |
+| Topic                             | Location                                                                           |
+| --------------------------------- | ---------------------------------------------------------------------------------- |
+| Normative human doc               | [`TESTING.md`](./TESTING.md) (see also [`docs/TESTING.md`](../../docs/TESTING.md)) |
+| Defaults factory                  | [`src/vitest/defaults.ts`](./src/vitest/defaults.ts)                               |
+| jest-dom + future hooks           | [`src/vitest/setup.ts`](./src/vitest/setup.ts)                                     |
+| This package’s own Vitest project | [`vitest.config.ts`](./vitest.config.ts)                                           |
+| Vite + Vitest enterprise notes    | [`docs/VITE_ENTERPRISE_WORKSPACE.md`](../../docs/VITE_ENTERPRISE_WORKSPACE.md)     |
 
 ## Consumption
 
-- **`apps/web`**: `vite.config.ts` imports `getAfendaVitestTestOptions()` from **`@afenda/vitest-config/vitest/defaults`** and sets `test: getAfendaVitestTestOptions()`.
+- **`apps/web`**: `vite.config.ts` imports `getAfendaVitestTestOptions()` from **`@afenda/vitest-config/vitest/defaults`** and sets `test: getAfendaVitestTestOptions()`. Subpath exports resolve to **`dist/`** (built `.js`). **`pnpm install`** runs **`prepare`** → **`build`** for this package. Vite’s **`--configLoader bundle`** externalizes bare imports; shipping **compiled JS** avoids `ERR_UNKNOWN_FILE_EXTENSION` on workspace **`.ts`** sources.
 - **Pure Node packages**: use `getAfendaVitestNodeTestOptions()` or `getAfendaVitestTestOptions({ environment: 'node', setupFiles: [] })`.
 
 Do **not** duplicate include patterns, coverage floors, or pool logic in apps—extend the factory with options instead.

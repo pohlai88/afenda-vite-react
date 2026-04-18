@@ -9,7 +9,7 @@
     "**/*.css"
   ],
   "scripts": {
-    "validate-tokens": "pnpm exec vitest run design-architecture/__tests__ --configLoader native",
+    "validate-tokens": "pnpm exec vitest run design-architecture/__tests__ --configLoader bundle",
     "tokens:check": "pnpm run validate-tokens",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
@@ -21,9 +21,9 @@
     "check:tw": "tsx scripts/check-tailwind-tokens.ts",
     "component-governance:generate": "tsx scripts/component-governance/generate.ts",
     "component-governance:check": "tsx scripts/component-governance/check.ts",
-    "test:run": "vitest run --configLoader native",
-    "test:coverage": "vitest run --coverage --configLoader native",
-    "test": "vitest --configLoader native"
+    "test:run": "vitest run --configLoader bundle",
+    "test:coverage": "vitest run --coverage --configLoader bundle",
+    "test": "vitest --configLoader bundle"
   },
   "exports": {
     ".": {

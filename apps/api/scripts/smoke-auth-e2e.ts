@@ -1,7 +1,7 @@
 /**
  * In-process smoke checks for Better Auth + auth companion (no HTTP server).
  *
- * Requires repo-root env (via loadMonorepoEnvLayered): DATABASE_URL, BETTER_AUTH_SECRET,
+ * Requires repo-root `.env` (via loadMonorepoEnvLayered): DATABASE_URL, BETTER_AUTH_SECRET,
  * BETTER_AUTH_URL (optional).
  *
  * Checks:

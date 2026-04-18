@@ -19,10 +19,14 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
+import { loadMonorepoEnvLayered } from "@afenda/env-loader"
+
 import { parseDolibarrLang, parsePo } from "./i18n-parse-po.js"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(__dirname, "..")
+
+loadMonorepoEnvLayered()
 const dataDir = join(repoRoot, "scripts/data")
 const i18nLocalesDir = join(repoRoot, "apps/web/src/app/_platform/i18n/locales")
 
@@ -30,21 +34,6 @@ const i18nLocalesDir = join(repoRoot, "apps/web/src/app/_platform/i18n/locales")
 function corpusIngestLog(message: string, detail?: string): void {
   const suffix = detail ? ` ${detail}` : ""
   process.stderr.write(`[i18n-corpus-ingest] ${message}${suffix}\n`)
-}
-
-// Load .env.tolgee if present (fills TOLGEE_* env vars for local runs)
-const envTolgeePath = join(repoRoot, ".env.tolgee")
-if (existsSync(envTolgeePath)) {
-  for (const line of readFileSync(envTolgeePath, "utf8").split("\n")) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith("#")) continue
-    const eq = trimmed.indexOf("=")
-    if (eq <= 0) continue
-    const key = trimmed.slice(0, eq).trim()
-    if (!process.env[key]) {
-      process.env[key] = trimmed.slice(eq + 1).trim()
-    }
-  }
 }
 
 const SUPPORTED_LOCALES = ["en", "ms", "id", "vi"] as const

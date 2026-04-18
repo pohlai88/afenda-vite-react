@@ -131,8 +131,10 @@ This starts Postgres 16 + Tolgee on `http://localhost:8085` with default admin c
 
 ### 3. Configure environment
 
+Add Tolgee variables to the repo root `.env` (see [`.env.example`](../../.env.example) — Tolgee section). Copy from the template if needed:
+
 ```bash
-cp .env.tolgee.example .env.tolgee
+cp .env.example .env
 ```
 
 Fill in `TOLGEE_API_URL`, `TOLGEE_PROJECT_ID`, and `TOLGEE_API_KEY` from step 2.
@@ -153,19 +155,19 @@ pnpm run script:i18n-crossref-audit
 pnpm run script:validate-i18n
 ```
 
-The ingest script automatically loads `.env.tolgee` and fetches from the live Tolgee translations API. The audit then cross-references against glossary, and validation enforces CI gates.
+The ingest script loads repo-root env (`.env` then `.env.local` via `@afenda/env-loader`) and fetches from the live Tolgee translations API when `TOLGEE_*` is set. The audit then cross-references against glossary, and validation enforces CI gates.
 
 ### Key files
 
-| File                             | Purpose                                                   |
-| -------------------------------- | --------------------------------------------------------- |
-| `docker-compose.tolgee.yml`      | Self-hosted Tolgee + Postgres                             |
-| `.env.tolgee.example`            | Template for Tolgee connection env vars                   |
-| `.env.tolgee`                    | Local config (git-ignored)                                |
-| `scripts/i18n-tolgee-seed.ts`    | Seeds locale JSON into Tolgee via API                     |
-| `scripts/i18n-corpus-ingest.ts`  | Pulls from Tolgee API (or local fallback)                 |
-| `scripts/i18n-crossref-audit.ts` | Cross-refs Tolgee (primary) + ERP (reference) vs glossary |
-| `scripts/validate-i18n.ts`       | CI gate: fails on unresolved conflicts                    |
+| File                                 | Purpose                                                   |
+| ------------------------------------ | --------------------------------------------------------- |
+| `docker-compose.tolgee.yml`          | Self-hosted Tolgee + Postgres                             |
+| [`.env.example`](../../.env.example) | Tolgee vars (Tolgee section) + rest of monorepo template  |
+| `.env` / `.env.local` at repo root   | Local config (git-ignored)                                |
+| `scripts/i18n-tolgee-seed.ts`        | Seeds locale JSON into Tolgee via API                     |
+| `scripts/i18n-corpus-ingest.ts`      | Pulls from Tolgee API (or local fallback)                 |
+| `scripts/i18n-crossref-audit.ts`     | Cross-refs Tolgee (primary) + ERP (reference) vs glossary |
+| `scripts/validate-i18n.ts`           | CI gate: fails on unresolved conflicts                    |
 
 ### Auth note
 
@@ -179,7 +181,7 @@ Fully operational with deterministic defaults:
 
 - **`scripts/i18n-corpus-ingest.ts`**
   - Generates `scripts/data/i18n-corpus-tolgee.json` (primary), plus Frappe/Odoo reference corpora.
-  - Loads `.env.tolgee` automatically for local runs.
+  - Loads repo-root `.env` / `.env.local` via `@afenda/env-loader` for local runs.
   - Uses Tolgee translations API (`/v2/projects/{id}/translations`) when configured.
   - Falls back to `apps/web/src/share/i18n/locales` when Tolgee env vars are not set (deterministic CI-safe behavior).
 - **`scripts/i18n-tolgee-seed.ts`**

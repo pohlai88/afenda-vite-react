@@ -27,12 +27,12 @@ This document describes how **Afenda** targets **[Vercel](https://vercel.com/doc
 
 [`vercel.json`](../../vercel.json) currently sets:
 
-| Field | Value |
-| --- | --- |
-| **`installCommand`** | **`pnpm install`** |
-| **`buildCommand`** | **`pnpm exec turbo run build --filter=@afenda/web`** |
-| **`outputDirectory`** | **`apps/web/dist`** |
-| **`rewrites`** | **`/(.*)` → `/index.html`** (React Router / SPA) |
+| Field                 | Value                                                |
+| --------------------- | ---------------------------------------------------- |
+| **`installCommand`**  | **`pnpm install`**                                   |
+| **`buildCommand`**    | **`pnpm exec turbo run build --filter=@afenda/web`** |
+| **`outputDirectory`** | **`apps/web/dist`**                                  |
+| **`rewrites`**        | **`/(.*)` → `/index.html`** (React Router / SPA)     |
 
 Align the **Vercel dashboard** with [Deployment §2](../DEPLOYMENT.md) (**Root Directory** = repo root, **Framework** = **Vite** or equivalent). **`packageManager`**: **`pnpm@10.33.0`** at the repo root ([`package.json`](../../package.json)) — match **pnpm** in CI/Vercel.
 
@@ -40,15 +40,15 @@ Align the **Vercel dashboard** with [Deployment §2](../DEPLOYMENT.md) (**Root D
 
 ## How we use Vercel
 
-| Topic | Convention |
-| --- | --- |
-| **Monorepo root** | **Install** from the **repository root** so **`workspace:*`** resolves ([pnpm](./pnpm.md), [Deployment](../DEPLOYMENT.md)) |
-| **Build** | **Scoped** web build via **Turborepo** — same command as **`vercel.json`** **`buildCommand`** |
-| **Output** | **`apps/web/dist`** — [output directory](https://vercel.com/docs/project-configuration/vercel-json) |
-| **SPA routing** | **Rewrites** so direct loads hit **`index.html`** ([Vite SPA note](https://vercel.com/docs/frameworks/frontend/vite)); if you add **`/api`** Functions, order routes so they are **not** captured by the catch-all ([Serverless / Edge](./vercel-serverless-edge.md)) |
-| **Secrets** | **`VITE_*`** only for **non-secret** client config; **server** secrets on **`apps/api`** or **non-`VITE_`** Vercel env ([Deployment](../DEPLOYMENT.md)) |
-| **Previews** | **Preview** deployments per branch/PR; pair with [Neon](./neon.md) preview DB when configured |
-| **Remote cache** | Optional **Turborepo** remote cache on Vercel — [Turborepo doc](./turborepo.md), [`.env.turbo.example`](../../.env.turbo.example) |
+| Topic             | Convention                                                                                                                                                                                                                                                            |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Monorepo root** | **Install** from the **repository root** so **`workspace:*`** resolves ([pnpm](./pnpm.md), [Deployment](../DEPLOYMENT.md))                                                                                                                                            |
+| **Build**         | **Scoped** web build via **Turborepo** — same command as **`vercel.json`** **`buildCommand`**                                                                                                                                                                         |
+| **Output**        | **`apps/web/dist`** — [output directory](https://vercel.com/docs/project-configuration/vercel-json)                                                                                                                                                                   |
+| **SPA routing**   | **Rewrites** so direct loads hit **`index.html`** ([Vite SPA note](https://vercel.com/docs/frameworks/frontend/vite)); if you add **`/api`** Functions, order routes so they are **not** captured by the catch-all ([Serverless / Edge](./vercel-serverless-edge.md)) |
+| **Secrets**       | **`VITE_*`** only for **non-secret** client config; **server** secrets on **`apps/api`** or **non-`VITE_`** Vercel env ([Deployment](../DEPLOYMENT.md))                                                                                                               |
+| **Previews**      | **Preview** deployments per branch/PR; pair with [Neon](./neon.md) preview DB when configured                                                                                                                                                                         |
+| **Remote cache**  | Optional **Turborepo** remote cache on Vercel — [Turborepo doc](./turborepo.md), [`.env.example`](../../.env.example)                                                                                                                                                 |
 
 ---
 

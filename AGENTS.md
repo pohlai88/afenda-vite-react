@@ -101,5 +101,5 @@ Return a bullet summary:
 - **Monorepo:** pnpm workspaces + [Turborepo](https://turborepo.com/docs). Root `package.json` scripts must delegate with `pnpm exec turbo run …` (not inline app builds).
 - **Turborepo skill (local):** `.agents/skills/turborepo/SKILL.md` and `references/`.
 - **Refresh from Vercel:** [Using AI with Turborepo](https://turborepo.com/docs/guides/ai) — run `npx skills add vercel/turborepo --yes` (or without `--yes` to choose agent targets). See `.agents/skills/turborepo/SYNC.md`.
-- **CI / cache:** `.github/workflows/ci.yml`; optional `TURBO_TOKEN` / `TURBO_TEAM` per `.env.turbo.example`.
+- **CI / cache:** `.github/workflows/ci.yml`; optional `TURBO_TOKEN` / `TURBO_TEAM` (see [`.env.example`](.env.example) — Turborepo section).
 - **Repo artifacts:** `.artifacts/` for repo-level reports and optional cache; see [`docs/REPO_ARTIFACT_POLICY.md`](docs/REPO_ARTIFACT_POLICY.md).

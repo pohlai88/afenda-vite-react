@@ -24,4 +24,4 @@ If your CLI version targets a different folder, merge into `.agents/skills/turbo
 ## This workspace
 
 - Root orchestration: `turbo.json`, `pnpm-workspace.yaml`, `package.json` scripts use **`turbo run` only** (see `SKILL.md`).
-- Enterprise defaults: transit-linked `lint` / `typecheck` / `build`, `VITE_*` env hashing, `.env` inputs, GitHub Actions + optional Remote Cache (`.env.turbo.example`, `.github/workflows/ci.yml`).
+- Enterprise defaults: transit-linked `lint` / `typecheck` / `build`, `VITE_*` env hashing, `.env` inputs, GitHub Actions + optional Remote Cache (`.env.example` Turborepo section, `.github/workflows/ci.yml`).

@@ -21,11 +21,11 @@ Turborepo schedules **`package.json`** scripts across the workspace, **caches** 
 
 ## Where it lives
 
-| Path | Role |
-| --- | --- |
-| [`turbo.json`](../../turbo.json) | **`tasks`**, **`dependsOn`**, **`outputs`**, **`inputs`**, **`env`**, **`globalEnv`**, **`globalDependencies`**, **`ui`** |
-| Root [`package.json`](../../package.json) | **`turbo run …`** scripts (**`build`**, **`dev`**, **`lint`**, **`typecheck`**, **`test`**, **`check`**, etc.) |
-| [`.env.turbo.example`](../../.env.turbo.example) | Optional remote cache env vars (see [Deployment](../DEPLOYMENT.md), [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)) |
+| Path                                                     | Role                                                                                                                              |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| [`turbo.json`](../../turbo.json)                         | **`tasks`**, **`dependsOn`**, **`outputs`**, **`inputs`**, **`env`**, **`globalEnv`**, **`globalDependencies`**, **`ui`**         |
+| Root [`package.json`](../../package.json)                | **`turbo run …`** scripts (**`build`**, **`dev`**, **`lint`**, **`typecheck`**, **`test`**, **`check`**, etc.)                    |
+| [`.env.example`](../../.env.example) (Turborepo section) | Optional remote cache env vars (see [Deployment](../DEPLOYMENT.md), [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)) |
 
 ---
 
@@ -33,16 +33,16 @@ Turborepo schedules **`package.json`** scripts across the workspace, **caches** 
 
 [`turbo.json`](../../turbo.json) defines (high level):
 
-| Task | Behavior |
-| --- | --- |
-| **`transit`** | **`dependsOn`: [`^transit`]`** — synthetic dependency edge so other tasks can depend on **upstream packages** without a real script (see [Turborepo skill — transit](../../.agents/skills/turborepo/references/configuration/tasks.md)) |
-| **`build`** | **`^build`**, **`^transit`**; **`outputs`**: **`dist/**`**; **`env`**: **`NODE_ENV`**, **`MODE`**, **`VITE_*`**; extra **`inputs`** for **`apps/web/.env*`** and shared TS config |
-| **`typecheck`** | **`^build`**, **`^transit`**; TS incremental under **`node_modules/.tmp/**`** |
-| **`lint`** | **`^transit`**; **`eslint.config.js`** in **`inputs`** |
-| **`test`** | **`cache: false`**, **`persistent: true`** (watch); Vitest env via **`passThroughEnv`** |
-| **`test:run`** / **`test:coverage`** | Depend on **`^transit`**; coverage **`outputs`** on **`test:coverage`** |
-| **`dev`** / **`preview`** | **`dev`**: uncached, persistent; **`preview`**: **`dependsOn`: [`build`]`** |
-| **`format`** / **`format:check`** | **`cache: false`** |
+| Task                                 | Behavior                                                                                                                                                                                                                                |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`transit`**                        | **`dependsOn`: [`^transit`]`** — synthetic dependency edge so other tasks can depend on **upstream packages** without a real script (see [Turborepo skill — transit](../../.agents/skills/turborepo/references/configuration/tasks.md)) |
+| **`build`**                          | **`^build`**, **`^transit`**; **`outputs`**: **`dist/**`**; **`env`**: **`NODE*ENV`**, **`MODE`**, **`VITE*_`**; extra **`inputs`** for repo-root **`.env`**, **`.env._`\*\*, shared TS config                                          |
+| **`typecheck`**                      | **`^build`**, **`^transit`**; TS incremental under **`node_modules/.tmp/**`\*\*                                                                                                                                                         |
+| **`lint`**                           | **`^transit`**; **`eslint.config.js`** in **`inputs`**                                                                                                                                                                                  |
+| **`test`**                           | **`cache: false`**, **`persistent: true`** (watch); Vitest env via **`passThroughEnv`**                                                                                                                                                 |
+| **`test:run`** / **`test:coverage`** | Depend on **`^transit`**; coverage **`outputs`** on **`test:coverage`**                                                                                                                                                                 |
+| **`dev`** / **`preview`**            | **`dev`**: uncached, persistent; **`preview`**: **`dependsOn`: [`build`]`**                                                                                                                                                             |
+| **`format`** / **`format:check`**    | **`cache: false`**                                                                                                                                                                                                                      |
 
 **Globals:** **`globalDependencies`** include **`pnpm-workspace.yaml`**, **`turbo.json`**, **`eslint.config.js`**; **`globalEnv`**: **`NODE_ENV`**, **`CI`**. Schema: **`$schema`**: `https://turbo.build/schema.json`.
 
@@ -50,13 +50,13 @@ Turborepo schedules **`package.json`** scripts across the workspace, **caches** 
 
 ## How we use Turborepo
 
-| Topic | Convention |
-| --- | --- |
-| **Root commands** | **`pnpm run build`**, **`pnpm run check`**, etc. — each forwards to **`turbo run …`** ([`package.json`](../../package.json)) |
-| **Filter web app** | **`pnpm exec turbo run build --filter=@afenda/web`** (or **`turbo run build --filter=@afenda/web`**) — aligns with [Deployment](../DEPLOYMENT.md) |
-| **Affected / Git** | Use **`--filter=[…]`** or **`--affected`** when scoping PR checks ([filtering](https://turbo.build/repo/docs/crafting-your-repository/running-tasks#using-filters)) |
-| **Remote cache** | Optional **`TURBO_TOKEN`** / **`TURBO_TEAM`** — [`.env.turbo.example`](../../.env.turbo.example); [remote caching](https://turbo.build/repo/docs/core-concepts/remote-caching) |
-| **New packages / apps** | Add matching **`scripts`** in that package’s **`package.json`**, then extend **`turbo.json`** **`tasks`** and **`dependsOn`** so ordering and cache keys stay correct |
+| Topic                    | Convention                                                                                                                                                                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Root commands**        | **`pnpm run build`**, **`pnpm run check`**, etc. — each forwards to **`turbo run …`** ([`package.json`](../../package.json))                                                                                                               |
+| **Filter web app**       | **`pnpm exec turbo run build --filter=@afenda/web`** (or **`turbo run build --filter=@afenda/web`**) — aligns with [Deployment](../DEPLOYMENT.md)                                                                                          |
+| **Affected / Git**       | Use **`--filter=[…]`** or **`--affected`** when scoping PR checks ([filtering](https://turbo.build/repo/docs/crafting-your-repository/running-tasks#using-filters))                                                                        |
+| **Remote cache**         | Optional **`TURBO_TOKEN`** / **`TURBO_TEAM`** — [`.env.example`](../../.env.example); [remote caching](https://turbo.build/repo/docs/core-concepts/remote-caching)                                                                         |
+| **New packages / apps**  | Add matching **`scripts`** in that package’s **`package.json`**, then extend **`turbo.json`** **`tasks`** and **`dependsOn`** so ordering and cache keys stay correct                                                                      |
 | **Env-sensitive builds** | Declare variables in **`env`** / **`globalEnv`** (and **`.env`** paths in **`inputs`** where needed) so caches are not wrong — [environment variables](https://turbo.build/repo/docs/crafting-your-repository/using-environment-variables) |
 
 ---

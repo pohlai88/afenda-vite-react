@@ -20,12 +20,26 @@ import { visualizer } from "rollup-plugin-visualizer"
 import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
 import path from "path"
-import { existsSync } from "node:fs"
 import { fileURLToPath } from "node:url"
-import { config as loadDotenv } from "dotenv"
 
-/** Directory containing `vite.config.ts` — explicit `root` avoids mis-resolution with `--configLoader native`. */
+/** Directory containing `vite.config.ts` — explicit `root` avoids mis-resolution when the config path differs from cwd. */
 const configDir = path.dirname(fileURLToPath(import.meta.url))
+
+/** Monorepo root — single `.env` / `.env.*` source for Vite + Vitest (`envDir`). */
+const repoRoot = path.resolve(configDir, "..", "..")
+
+/**
+ * `BETTER_AUTH_API_KEY` is server-only (no `VITE_` prefix). When it is set in repo-root `.env`,
+ * enable the Infra client plugin unless `VITE_BETTER_AUTH_INFRA=false` explicitly opts out.
+ */
+function resolveBetterAuthInfraClientFlag(
+  env: Record<string, string>
+): "true" | "false" {
+  const explicit = env.VITE_BETTER_AUTH_INFRA
+  if (explicit === "false") return "false"
+  if (explicit === "true") return "true"
+  return env.BETTER_AUTH_API_KEY?.trim() ? "true" : "false"
+}
 
 /**
  * Injects Vite `config.base` into `index.html` so the blocking theme script strips the public path
@@ -48,25 +62,13 @@ function injectViteBaseForThemeScript(): Plugin {
   }
 }
 
-// Repo-root `.env.neon` (process.cwd() candidates; safe for `--configLoader native` bundling)
-for (const envPath of [
-  path.join(process.cwd(), ".env.neon"),
-  path.join(process.cwd(), "..", ".env.neon"),
-  path.join(process.cwd(), "..", "..", ".env.neon"),
-]) {
-  if (existsSync(envPath)) {
-    loadDotenv({ path: envPath, override: false })
-    break
-  }
-}
-
 // https://vite.dev/config/
 async function resolveUserConfig({
   command,
   mode,
 }: ConfigEnv): Promise<UserConfig> {
-  // Load environment variables
-  const env = loadEnv(mode, configDir, "")
+  // Load environment variables (same directory as `envDir` — Vite env + mode files)
+  const env = loadEnv(mode, repoRoot, "")
   const analyze = mode === "analyze"
   const devToolsPlugins =
     command === "serve" && process.env.VITEST !== "true"
@@ -75,6 +77,8 @@ async function resolveUserConfig({
 
   return {
     root: configDir,
+    /** Keep all `.env` / `.env.[mode]` / `*.local` files at repo root — one place to edit. */
+    envDir: repoRoot,
 
     // Base configuration
     base: env.VITE_BASE_URL || "/",
@@ -86,6 +90,9 @@ async function resolveUserConfig({
       __VUE_OPTIONS_API__: JSON.stringify(true),
       __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+      "import.meta.env.VITE_BETTER_AUTH_INFRA": JSON.stringify(
+        resolveBetterAuthInfraClientFlag(env)
+      ),
     },
 
     // Tailwind v4 ships its own CSS pipeline (Lightning CSS / Oxide internals).

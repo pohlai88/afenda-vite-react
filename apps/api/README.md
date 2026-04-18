@@ -52,13 +52,13 @@ Default port **3001** (override with `PORT`).
 
 ## Better Auth (self-hosted)
 
-Server config lives in `@afenda/better-auth` (`createAfendaAuth`). Required env (see repo-root `.env.database.example` and `.env.neon.example`):
+Server config lives in `@afenda/better-auth` (`createAfendaAuth`). Required env (see repo-root [`.env.example`](../../.env.example) — Database / Better Auth sections):
 
 - `DATABASE_URL` — same Postgres as `@afenda/database`
 - `BETTER_AUTH_SECRET` — strong secret (e.g. `openssl rand -base64 32`)
 - `BETTER_AUTH_URL` — **browser-visible** origin for cookies and redirects; for local Vite + proxy use `http://localhost:5173` (not only `http://localhost:3001`)
 
-Apply Better Auth tables with the CLI (from repo root, with `.env.neon` or env loaded so `DATABASE_URL` and `BETTER_AUTH_SECRET` are set):
+Apply Better Auth tables with the CLI (from repo root, with `.env` loaded so `DATABASE_URL` and `BETTER_AUTH_SECRET` are set):
 
 ```bash
 pnpm --filter @afenda/better-auth auth:migrate

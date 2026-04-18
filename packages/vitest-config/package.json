@@ -5,29 +5,31 @@
   "type": "module",
   "description": "Shared Vitest defaults, setup, and types for Afenda workspace packages and apps.",
   "sideEffects": [
-    "./src/vitest/setup.ts"
+    "./dist/vitest/setup.js"
   ],
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepare": "pnpm run build",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest --configLoader native",
-    "test:run": "vitest run --configLoader native",
-    "test:coverage": "vitest run --coverage --configLoader native"
+    "test": "vitest --configLoader bundle",
+    "test:run": "vitest run --configLoader bundle",
+    "test:coverage": "vitest run --coverage --configLoader bundle"
   },
   "exports": {
     "./vitest/defaults": {
-      "types": "./src/vitest/defaults.ts",
-      "import": "./src/vitest/defaults.ts",
-      "default": "./src/vitest/defaults.ts"
+      "types": "./dist/vitest/defaults.d.ts",
+      "import": "./dist/vitest/defaults.js",
+      "default": "./dist/vitest/defaults.js"
     },
     "./vitest/setup": {
-      "types": "./src/vitest/setup.ts",
-      "import": "./src/vitest/setup.ts",
-      "default": "./src/vitest/setup.ts"
+      "types": "./dist/vitest/setup.d.ts",
+      "import": "./dist/vitest/setup.js",
+      "default": "./dist/vitest/setup.js"
     },
     "./vitest/vite-module-resolution-plugin": {
-      "types": "./src/vitest/vite-module-resolution-plugin.ts",
-      "import": "./src/vitest/vite-module-resolution-plugin.ts",
-      "default": "./src/vitest/vite-module-resolution-plugin.ts"
+      "types": "./dist/vitest/vite-module-resolution-plugin.d.ts",
+      "import": "./dist/vitest/vite-module-resolution-plugin.js",
+      "default": "./dist/vitest/vite-module-resolution-plugin.js"
     }
   },
   "peerDependencies": {

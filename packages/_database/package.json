@@ -12,6 +12,7 @@
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
     "test": "vitest",
     "test:run": "vitest run",
+    "test:live-db": "vitest run src/__tests__/live-db.integration.test.ts",
     "test:coverage": "vitest run --coverage",
     "db:inventory:sync": "tsx scripts/sync-schema-inventory.ts",
     "db:inventory:verify": "tsx scripts/verify-schema-inventory.ts",

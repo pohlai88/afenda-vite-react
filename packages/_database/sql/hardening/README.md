@@ -66,6 +66,10 @@ Run each `patch_*.sql` in the **order** in `scripts/hardening-patch-order.ts` (n
 
 `drizzle-kit push` does not apply ad-hoc files under `sql/hardening/` automatically—they are **explicit** follow-up migrations.
 
+**After `patch_b`:** baseline `CREATE VIEW` for `mdm.v_golden_parties` (if it existed) is dropped so the column can be replaced with `GENERATED … STORED`. Recreate that view from the Drizzle source of truth (`src/views/mdm-canonical-views.ts`), e.g. `pnpm run db:push` from `packages/_database` against this database, or a follow-up migration that emits the same `CREATE VIEW` as Kit.
+
+**Patch L (RLS):** policies use `tenant_id = current_setting('app.tenant_id', true)::uuid`. Until the app sets `app.tenant_id` per session (or you use `BYPASSRLS` roles for admin tooling), ordinary roles may see **no rows** on protected tables.
+
 ## Team discipline
 
 Canonical rules (tenant_id, composite FKs, partial uniques, temporal integrity, Drizzle vs SQL): [`../docs/practical-discipline.md`](../docs/practical-discipline.md).

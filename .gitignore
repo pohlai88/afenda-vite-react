@@ -17,10 +17,10 @@ coverage
 apps/*/.eslintcache
 dist-ssr
 *.local
+# Env files (keep `.env.example` committed)
 .env
-.env.neon
-.env.turbo
-.env.tolgee
+.env.*
+!.env.example
 
 # Vite CPU profiling dumps (local only)
 *.cpuprofile

@@ -25,6 +25,7 @@
     "icons:check": "pnpm --filter @afenda/design-system run icons:check",
     "check": "pnpm run script:check-afenda-config && pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit && pnpm run script:validate-i18n && pnpm run script:i18n-check && pnpm run tokens:check && turbo run lint typecheck test:run build",
     "preview": "turbo run preview",
+    "script:env-inspect": "tsx scripts/env-inspect.ts",
     "script:node-info": "tsx scripts/node-info.ts",
     "script:generate-docs-readme": "tsx scripts/generate-docs-readme.ts",
     "script:check-afenda-config": "tsx scripts/check-afenda-config.ts",
@@ -50,6 +51,7 @@
     "db:push:force": "pnpm -C packages/_database run db:push:force"
   },
   "devDependencies": {
+    "@afenda/env-loader": "workspace:*",
     "@afenda/eslint-config": "workspace:*",
     "@ast-grep/cli": "^0.42.1",
     "@tailwindcss/cli": "^4.2.2",

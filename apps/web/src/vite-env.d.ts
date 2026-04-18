@@ -15,6 +15,8 @@ interface ImportMetaEnv {
   readonly VITE_AFENDA_AUTH_PASSKEY_ENABLED?: string
   /** Mirror server `AFENDA_AUTH_MFA_ENABLED` for `twoFactorClient`. */
   readonly VITE_AFENDA_AUTH_MFA_ENABLED?: string
+  /** When `true`, loads `dashClient` (Better Auth Infrastructure). Enable when API has `dash()` and `BETTER_AUTH_API_KEY`. */
+  readonly VITE_BETTER_AUTH_INFRA?: string
 }
 
 interface ImportMeta {

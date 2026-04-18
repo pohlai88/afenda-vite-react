@@ -12,8 +12,8 @@
     "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
-    "test": "vitest --configLoader native",
-    "test:run": "vitest run --configLoader native",
+    "test": "vitest --configLoader bundle",
+    "test:run": "vitest run --configLoader bundle",
     "smoke:auth": "tsx scripts/smoke-auth-e2e.ts"
   },
   "dependencies": {

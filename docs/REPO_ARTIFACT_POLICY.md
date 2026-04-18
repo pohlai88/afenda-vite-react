@@ -48,7 +48,7 @@ These are **not** package build outputs.
 - **Do not** put generic repo exhaust under `packages/*`. Anything under `packages/` is **maintained product code** (or a real workspace package), not a dumping ground for generated evidence.
 - **Root `dist/`** is **disallowed** unless there is an explicit, documented root-level build product. Prefer `apps/*/dist` and `packages/*/dist`.
 - **Root `.tmp/`** is **disallowed** for script output. Use `.artifacts/tmp/` for repo-scoped scratch. TypeScript incremental caches may remain under `node_modules/.tmp` as configured in package `tsconfig` files (tool-internal).
-- **`.turbo/`** at the root is the **default** Turborepo local cache (machine-oriented, disposable). To keep the root listing cleaner, set `TURBO_CACHE_DIR=.artifacts/cache/turbo` (see `.env.turbo.example`).
+- **`.turbo/`** at the root is the **default** Turborepo local cache (machine-oriented, disposable). To keep the root listing cleaner, set `TURBO_CACHE_DIR=.artifacts/cache/turbo` (see [`.env.example`](../.env.example) — Turborepo section).
 
 ## Shell governance reports
 

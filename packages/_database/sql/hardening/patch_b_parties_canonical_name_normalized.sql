@@ -10,9 +10,16 @@
 -- Legacy bug avoided: `add column if not exists … generated` never ran when the plain
 -- column already existed — the column stayed non-generated. We always drop + add.
 -- Idempotent: second run drops generated column and recreates identical definition.
+--
+-- Baseline migrations may define `mdm.v_golden_parties` (Drizzle `pgView` → effectively
+-- `SELECT *` from `mdm.parties`), which pins `canonical_name_normalized` and blocks
+-- `DROP COLUMN`. Drop that view here; recreate it with Drizzle (`drizzle-kit push` /
+-- generate + migrate) after hardening so the view matches the new generated column.
 -- ============================================================
 
 begin;
+
+drop view if exists mdm.v_golden_parties cascade;
 
 drop index if exists mdm.idx_parties_canonical_name_normalized;
 

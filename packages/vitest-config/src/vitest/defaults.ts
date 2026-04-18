@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -8,7 +9,11 @@ import type { UserConfig } from "vite"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** Resolved path to the shared jest-dom setup (for `setupFiles` overrides or tooling). */
-export const afendaVitestSetupFile = path.join(__dirname, "setup.ts")
+export const afendaVitestSetupFile = existsSync(
+  path.join(__dirname, "setup.js")
+)
+  ? path.join(__dirname, "setup.js")
+  : path.join(__dirname, "setup.ts")
 
 export type VitestEnvironment = "jsdom" | "node" | "happy-dom" | "edge-runtime"
 

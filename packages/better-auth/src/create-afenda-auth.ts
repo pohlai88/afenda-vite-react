@@ -1,4 +1,5 @@
 import { passkey } from "@better-auth/passkey"
+import { dash } from "@better-auth/infra"
 import { createDbClient, type DatabaseClient } from "@afenda/database"
 import { betterAuth } from "better-auth"
 import { organization, twoFactor } from "better-auth/plugins"
@@ -106,11 +107,14 @@ export function createAfendaAuth(pool: Pool, db?: DatabaseClient) {
 
   const socialProviders = buildSocialProviders()
 
+  const betterAuthInfraKey = process.env.BETTER_AUTH_API_KEY?.trim()
+
   if (process.env.NODE_ENV !== "production") {
     const summary = [
       `passkey=${capabilityHooks.passkeyEnabled ? "on" : "off"}`,
       `mfa=${capabilityHooks.mfaEnabled ? "on" : "off"}`,
       `step-up=${capabilityHooks.stepUpPolicy}`,
+      `infra-dash=${betterAuthInfraKey ? "on" : "off"}`,
     ].join(", ")
     console.info(`[afenda/auth] capability hooks: ${summary}`)
   }
@@ -132,6 +136,13 @@ export function createAfendaAuth(pool: Pool, db?: DatabaseClient) {
       ? [
           twoFactor({
             issuer: process.env.AFENDA_AUTH_MFA_ISSUER?.trim() || "Afenda",
+          }),
+        ]
+      : []),
+    ...(betterAuthInfraKey
+      ? [
+          dash({
+            apiKey: betterAuthInfraKey,
           }),
         ]
       : []),

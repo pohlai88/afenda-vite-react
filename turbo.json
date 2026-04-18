@@ -4,8 +4,7 @@
   "globalDependencies": [
     "pnpm-workspace.yaml",
     "turbo.json",
-    "eslint.config.js",
-    ".env.neon"
+    "eslint.config.js"
   ],
   "globalEnv": ["NODE_ENV", "CI"],
   "tasks": {
@@ -18,9 +17,8 @@
       "env": ["NODE_ENV", "MODE", "VITE_*"],
       "inputs": [
         "$TURBO_DEFAULT$",
-        "$TURBO_ROOT$/apps/web/.env",
-        "$TURBO_ROOT$/apps/web/.env.*",
-        "$TURBO_ROOT$/.env.neon",
+        "$TURBO_ROOT$/.env",
+        "$TURBO_ROOT$/.env.*",
         "$TURBO_ROOT$/packages/typescript-config/**/*.json"
       ]
     },
@@ -30,9 +28,8 @@
       "env": ["NODE_ENV", "MODE", "VITE_*"],
       "inputs": [
         "$TURBO_DEFAULT$",
-        "$TURBO_ROOT$/apps/web/.env",
-        "$TURBO_ROOT$/apps/web/.env.*",
-        "$TURBO_ROOT$/.env.neon",
+        "$TURBO_ROOT$/.env",
+        "$TURBO_ROOT$/.env.*",
         "$TURBO_ROOT$/packages/typescript-config/**/*.json"
       ]
     },

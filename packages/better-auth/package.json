@@ -8,11 +8,17 @@
       "types": "./src/index.ts",
       "import": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./schema": {
+      "types": "./src/schema/index.ts",
+      "import": "./src/schema/index.ts",
+      "default": "./src/schema/index.ts"
     }
   },
   "dependencies": {
     "@afenda/database": "workspace:*",
     "@afenda/env-loader": "workspace:*",
+    "@better-auth/infra": "0.2.4",
     "@better-auth/passkey": "1.6.3",
     "better-auth": "^1.6.3",
     "pg": "catalog:"
@@ -21,6 +27,7 @@
     "@afenda/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "@types/pg": "catalog:",
+    "drizzle-orm": "catalog:",
     "typescript": "catalog:"
   },
   "scripts": {
@@ -28,7 +35,7 @@
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
     "auth:migrate": "pnpm dlx auth@latest migrate --config ./src/better-auth-cli-config.ts --yes",
     "auth:migrate:plugins": "node ./scripts/run-auth-migrate-with-plugins.mjs",
-    "auth:generate": "pnpm dlx auth@latest generate --config ./src/better-auth-cli-config.ts --yes",
+    "auth:generate": "pnpm dlx auth@latest generate --config ./src/better-auth-cli-config.ts --adapter drizzle --dialect postgresql --output ./src/schema/auth-schema.generated.ts --yes",
     "auth:info": "pnpm dlx auth@latest info --config ./src/better-auth-cli-config.ts"
   }
 }
