@@ -12,6 +12,8 @@
 import { Navigate, type RouteObject } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../app/_components"
+import { AfendaAppAuthUiProvider } from "../app/_platform/auth/better-auth-ui/afenda-app-auth-ui-provider"
+import { BetterAuthSettingsView } from "../app/_features/better-auth-settings/better-auth-settings-view"
 import { DbStudioPage } from "../app/_features/db-studio"
 import { FeatureTemplateView } from "../app/_features/_template"
 import { RequireAuth } from "../app/_platform/auth"
@@ -22,20 +24,27 @@ import {
   shellAppDefaultChildSegment,
   shellAppLayoutRoute,
   shellAppNotFoundRoute,
+  shellAppSettingsAccountRoute,
+  shellAppSettingsSecurityRoute,
+  shellAppSettingsAccountPath,
   ShellLeftSidebarLayout,
 } from "../app/_platform/shell"
 import { AppThemeProvider } from "../app/_platform/theme/app-theme-provider"
+import { Toaster } from "@afenda/design-system/ui-primitives"
 
 /** `/app/*` route object: layout, index redirect, feature children, splat 404. Paths and `handle.shell` from shell definitions. */
 export const appShellRouteObject: RouteObject = {
   path: "/app",
   element: (
     <AppThemeProvider>
-      <RequireAuth>
-        <TenantScopeProvider>
-          <ShellLeftSidebarLayout />
-        </TenantScopeProvider>
-      </RequireAuth>
+      <AfendaAppAuthUiProvider>
+        <RequireAuth>
+          <TenantScopeProvider>
+            <ShellLeftSidebarLayout />
+          </TenantScopeProvider>
+        </RequireAuth>
+        <Toaster />
+      </AfendaAppAuthUiProvider>
     </AppThemeProvider>
   ),
   errorElement: (
@@ -52,13 +61,25 @@ export const appShellRouteObject: RouteObject = {
     ...shellAppChildRouteDefinitions.map(({ pathSegment, metadata }) => ({
       path: pathSegment,
       element:
-        pathSegment === "db-studio" ? (
+        pathSegment === "account" ? (
+          <Navigate replace to={shellAppSettingsAccountPath} />
+        ) : pathSegment === "db-studio" ? (
           <DbStudioPage />
         ) : (
           <FeatureTemplateView slug={pathSegment} />
         ),
       handle: { shell: metadata.shell },
     })),
+    {
+      path: "settings/account",
+      element: <BetterAuthSettingsView view="account" />,
+      handle: { shell: shellAppSettingsAccountRoute.shell },
+    },
+    {
+      path: "settings/security",
+      element: <BetterAuthSettingsView view="security" />,
+      handle: { shell: shellAppSettingsSecurityRoute.shell },
+    },
     {
       path: "*",
       element: <AppShellNotFound />,

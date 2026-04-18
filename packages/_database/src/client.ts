@@ -18,6 +18,14 @@ export const afendaDrizzleSchema = {
 const databaseSchema = afendaDrizzleSchema
 
 export function createPgPool(config: PoolConfig = {}): Pool {
+  const statementRaw = process.env[databaseRuntimeEnvKeys.statementTimeoutMs]
+  const statementTimeoutMs =
+    statementRaw?.trim() !== "" ? readOptionalInteger(statementRaw, 0) : 0
+  const statementOptions =
+    statementTimeoutMs > 0
+      ? `-c statement_timeout=${statementTimeoutMs}`
+      : undefined
+
   return new Pool({
     connectionString: process.env[databaseRuntimeEnvKeys.url],
     max: readOptionalInteger(
@@ -32,6 +40,7 @@ export function createPgPool(config: PoolConfig = {}): Pool {
       process.env[databaseRuntimeEnvKeys.connectionTimeoutMs],
       defaultPoolSettings.connectionTimeoutMs
     ),
+    ...(statementOptions ? { options: statementOptions } : {}),
     ...config,
   })
 }

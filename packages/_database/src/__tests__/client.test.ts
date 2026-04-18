@@ -32,6 +32,7 @@ describe("client", { timeout: 30_000 }, () => {
     delete process.env.DB_POOL_MAX
     delete process.env.DB_IDLE_TIMEOUT_MS
     delete process.env.DB_CONNECTION_TIMEOUT_MS
+    delete process.env.DB_STATEMENT_TIMEOUT_MS
   })
 
   afterEach(() => {
@@ -60,6 +61,16 @@ describe("client", { timeout: 30_000 }, () => {
     expect(call?.max).toBe(12)
     expect(call?.idleTimeoutMillis).toBe(60000)
     expect(call?.connectionTimeoutMillis).toBe(5000)
+  })
+
+  it("createPgPool sets statement_timeout when DB_STATEMENT_TIMEOUT_MS is a positive integer", async () => {
+    process.env.DB_STATEMENT_TIMEOUT_MS = "25000"
+    const { createPgPool } = await import("../client")
+    createPgPool()
+    const call = pgMock.poolConfigs.at(-1) as
+      | Record<string, unknown>
+      | undefined
+    expect(call?.options).toBe("-c statement_timeout=25000")
   })
 
   it("createDbClient wraps drizzle with schema", async () => {

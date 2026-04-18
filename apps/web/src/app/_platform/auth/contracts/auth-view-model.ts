@@ -1,15 +1,8 @@
-import type {
-  AuthIntelligenceSnapshot,
-  AuthRecommendedMethod,
-} from "./auth-domain"
+import type { AuthIntelligenceSnapshot } from "./auth-domain"
 
-export type AuthMessageTone = "muted" | "success" | "warning" | "destructive"
-
-export interface AuthStatusMessageViewModel {
-  readonly tone: AuthMessageTone
-  readonly text: string
-}
-
+/**
+ * View-shaped auth intelligence for hooks (loading / available / unavailable).
+ */
 export type AuthIntelligenceResource =
   | {
       readonly status: "loading"
@@ -26,16 +19,3 @@ export type AuthIntelligenceResource =
       readonly snapshot: AuthIntelligenceSnapshot
       readonly code: string | null
     }
-
-export interface AuthChallengeSummaryViewModel {
-  readonly title: string
-  readonly description: string
-  readonly expiresAtIso?: string
-  readonly attemptsRemaining?: number
-}
-
-export interface AuthContinuityViewModel {
-  readonly currentMethod: AuthRecommendedMethod
-  readonly currentStep: "identify" | "method" | "challenge" | "complete"
-  readonly challenge: AuthChallengeSummaryViewModel | null
-}

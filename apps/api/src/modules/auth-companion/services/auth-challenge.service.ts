@@ -19,7 +19,10 @@ import {
 } from "../utils/auth-challenge-otp.js"
 
 function passkeyFeatureEnabled(): boolean {
-  return process.env.AFENDA_AUTH_PASSKEY_ENABLED === "true"
+  return (
+    process.env.AFENDA_AUTH_ALL_PLUGINS?.trim() !== "false" ||
+    process.env.AFENDA_AUTH_PASSKEY_ENABLED === "true"
+  )
 }
 
 export class AuthChallengeService {

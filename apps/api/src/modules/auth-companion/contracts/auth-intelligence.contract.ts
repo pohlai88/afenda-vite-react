@@ -25,6 +25,8 @@ export const AuthRecommendedMethodSchema = z.enum([
   "social",
 ])
 
+export const AuthStepUpPolicySchema = z.enum(["off", "risk_based"])
+
 export const AuthIntelligenceSnapshotSchema = z.object({
   trustLevel: AuthTrustLevelSchema,
   score: z.number().int().min(0).max(100),
@@ -34,6 +36,8 @@ export const AuthIntelligenceSnapshotSchema = z.object({
   reasons: z.array(AuthRiskReasonSchema),
   passkeyAvailable: z.boolean(),
   recommendedMethod: AuthRecommendedMethodSchema,
+  /** Mirrors `AFENDA_AUTH_STEP_UP_POLICY` / `createAfendaAuth` capability hooks. */
+  stepUpPolicy: AuthStepUpPolicySchema,
 })
 
 export type AuthIntelligenceSnapshot = z.infer<

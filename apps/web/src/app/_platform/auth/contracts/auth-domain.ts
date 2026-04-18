@@ -10,6 +10,19 @@ export interface AuthRiskReason {
 
 export type AuthRecommendedMethod = "passkey" | "password" | "social"
 
+/** Identifiers for tenant-scoped auth method policy (UI); aligns with Better Auth capabilities. */
+export type AuthMethodId =
+  | "password"
+  | "social"
+  | "passkey"
+  | "username"
+  | "magic_link"
+  | "email_otp"
+  | "device_code"
+  | "oauth_generic"
+
+export type AuthStepUpPolicy = "off" | "risk_based"
+
 export interface AuthIntelligenceSnapshot {
   readonly trustLevel: AuthTrustLevel
   readonly score: number
@@ -19,19 +32,7 @@ export interface AuthIntelligenceSnapshot {
   readonly reasons: readonly AuthRiskReason[]
   readonly passkeyAvailable: boolean
   readonly recommendedMethod: AuthRecommendedMethod
-}
-
-export type AuthChallengeType =
-  | "password"
-  | "totp"
-  | "email_otp"
-  | "passkey_assertion"
-
-export interface AuthChallengeState {
-  readonly challengeId: string
-  readonly type: AuthChallengeType
-  readonly expiresAt: string
-  readonly attemptsRemaining: number
+  readonly stepUpPolicy: AuthStepUpPolicy
 }
 
 export type AuthSessionRisk = "low" | "medium" | "high"

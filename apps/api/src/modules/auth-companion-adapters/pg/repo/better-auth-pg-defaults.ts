@@ -9,8 +9,9 @@
 export const DEFAULT_BETTER_AUTH_PG_TABLES = {
   sessionTable: "session",
   accountTable: "account",
-  /** Set when `AFENDA_AUTH_PASSKEY_ENABLED` — aligns with Better Auth passkey plugin (`auth:migrate`). */
+  /** Set when passkey plugin is on (`AFENDA_AUTH_ALL_PLUGINS` default or `AFENDA_AUTH_PASSKEY_ENABLED`). */
   passkeyTable:
+    process.env.AFENDA_AUTH_ALL_PLUGINS?.trim() !== "false" ||
     process.env.AFENDA_AUTH_PASSKEY_ENABLED === "true"
       ? ("passkey" as const)
       : (undefined as string | undefined),

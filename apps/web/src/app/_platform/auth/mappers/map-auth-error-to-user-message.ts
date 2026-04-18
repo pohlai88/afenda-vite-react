@@ -1,8 +1,21 @@
+/** Must match `AFENDA_EMAIL_DELIVERY_FAILED` from `@afenda/better-auth` mail hooks. */
+const AUTH_EMAIL_DELIVERY_FAILED = "AFENDA_EMAIL_DELIVERY_FAILED"
+/** Sync with `AFENDA_EMAIL_DELIVERY_FAILED_MESSAGE` in `@afenda/better-auth` (`APIError` body). */
+const AUTH_EMAIL_DELIVERY_MESSAGE =
+  "Email could not be sent. Try again shortly."
+
 export function mapAuthErrorToUserMessage(
   code: string | null | undefined,
   fallback = "Unable to continue. Please try again."
 ): string {
   const normalized = (code ?? "").trim()
+
+  if (
+    normalized === AUTH_EMAIL_DELIVERY_FAILED ||
+    normalized === AUTH_EMAIL_DELIVERY_MESSAGE
+  ) {
+    return "We could not send email right now. Try again in a moment or contact support if this persists."
+  }
 
   if (normalized === "auth.challenge.invalid") {
     return "Challenge verification failed. Try another method."
@@ -18,6 +31,17 @@ export function mapAuthErrorToUserMessage(
 
   if (normalized === "http_403") {
     return "This sign-in attempt is not allowed."
+  }
+
+  if (normalized === "EMAIL_NOT_VERIFIED") {
+    return "Please verify your email before signing in."
+  }
+
+  if (
+    normalized === "INVALID_CODE" ||
+    normalized === "INVALID_TWO_FACTOR_COOKIE"
+  ) {
+    return "That verification code did not work. Try again or go back and sign in with your password."
   }
 
   if (normalized === "http_404") {

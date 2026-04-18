@@ -13,6 +13,19 @@ export function shellAppChildPath(pathSegment: string): string {
   return `${APP_BASE}/${pathSegment}`
 }
 
+/** Better Auth UI settings (account + security tabs). */
+export const shellAppSettingsAccountPath = `${APP_BASE}/settings/account`
+export const shellAppSettingsSecurityPath = `${APP_BASE}/settings/security`
+
+/**
+ * Compound paths under `/app/*` (not single-segment — see {@link shellAppChildRouteDefinitions}).
+ * Included in router parity tests with flat segment routes.
+ */
+export const shellAppCompoundChildPaths = [
+  "settings/account",
+  "settings/security",
+] as const
+
 /** Default child when visiting `/app` (index redirect). */
 export const shellAppDefaultChildSegment = "events" as const
 
@@ -44,6 +57,24 @@ export const shellAppNotFoundRoute: ShellRouteMetadata = {
  * Order is not significant for resolution; index redirect uses {@link shellAppDefaultChildSegment}.
  */
 export const shellAppChildRouteDefinitions = [
+  {
+    pathSegment: "account",
+    metadata: {
+      routeId: "account",
+      path: shellAppChildPath("account"),
+      shell: {
+        titleKey: "breadcrumb.account",
+        breadcrumbs: [
+          { id: "app", labelKey: "breadcrumb.app", to: APP_BASE },
+          {
+            id: "account",
+            labelKey: "breadcrumb.account",
+            to: shellAppSettingsAccountPath,
+          },
+        ],
+      },
+    } satisfies ShellRouteMetadata,
+  },
   {
     pathSegment: "events",
     metadata: {
@@ -198,16 +229,51 @@ export const shellAppChildRouteDefinitions = [
 ] as const
 
 /** Canonical child path segments (single source for router parity and tooling). */
-export const shellAppChildPathSegments = shellAppChildRouteDefinitions.map(
-  (definition) => definition.pathSegment
-) as readonly string[]
+export const shellAppChildPathSegments = [
+  ...shellAppChildRouteDefinitions.map((definition) => definition.pathSegment),
+  ...shellAppCompoundChildPaths,
+] as readonly string[]
 
 /**
  * All canonical `/app` shell routes (layout + children), for hooks and tooling.
  * Derived from layout + {@link shellAppChildRouteDefinitions}.
  */
+export const shellAppSettingsAccountRoute: ShellRouteMetadata = {
+  routeId: "settings-account",
+  path: shellAppSettingsAccountPath,
+  shell: {
+    titleKey: "breadcrumb.account",
+    breadcrumbs: [
+      { id: "app", labelKey: "breadcrumb.app", to: APP_BASE },
+      {
+        id: "account",
+        labelKey: "breadcrumb.account",
+        to: shellAppSettingsAccountPath,
+      },
+    ],
+  },
+}
+
+export const shellAppSettingsSecurityRoute: ShellRouteMetadata = {
+  routeId: "settings-security",
+  path: shellAppSettingsSecurityPath,
+  shell: {
+    titleKey: "breadcrumb.security",
+    breadcrumbs: [
+      { id: "app", labelKey: "breadcrumb.app", to: APP_BASE },
+      {
+        id: "security",
+        labelKey: "breadcrumb.security",
+        to: shellAppSettingsSecurityPath,
+      },
+    ],
+  },
+}
+
 export const shellRouteMetadataList: readonly ShellRouteMetadata[] = [
   shellAppLayoutRoute,
   ...shellAppChildRouteDefinitions.map((c) => c.metadata),
+  shellAppSettingsAccountRoute,
+  shellAppSettingsSecurityRoute,
   shellAppNotFoundRoute,
 ]

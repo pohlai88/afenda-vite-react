@@ -15,6 +15,7 @@ import {
   getSharedApiClient,
 } from "../api-client/services/api-client-service"
 import { resolveApiV1Path } from "../api-client/utils/api-client-utils"
+import { getDemoTenantId } from "../config/afenda-local-env"
 import { useAfendaSession } from "../auth"
 
 import type { AfendaMeResponse } from "./tenant-scope-types"
@@ -159,8 +160,16 @@ export function TenantScopeProvider(props: { readonly children: ReactNode }) {
             : null
         const fromStorage =
           stored !== null && tenantIds.includes(stored) ? stored : null
+        const demoId = getDemoTenantId()
+        const preferDemo =
+          demoId !== undefined &&
+          tenantIds.includes(demoId) &&
+          fromStorage === null
         const initial =
-          fromStorage ?? me.afenda?.defaultTenantId ?? tenantIds[0] ?? null
+          fromStorage ??
+          (preferDemo ? demoId : me.afenda?.defaultTenantId) ??
+          tenantIds[0] ??
+          null
 
         setSnapshot({ me, selectedTenantId: initial })
         setPhase("ready")

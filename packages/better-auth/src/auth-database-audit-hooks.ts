@@ -44,8 +44,7 @@ async function resolveTenantAndActor(
   )
   if (bridge) {
     return {
-      tenantId:
-        bridge.defaultTenantId ?? resolveAuthAuditFallbackTenantId(),
+      tenantId: bridge.defaultTenantId ?? resolveAuthAuditFallbackTenantId(),
       actorUserId: bridge.afendaUserId,
     }
   }
@@ -134,6 +133,25 @@ export function createAfendaDatabaseAuthHooks(
             subjectId: created.id,
             sessionId: created.id,
           })
+          /**
+           * Lazy identity bridge: users created before `user.create` hooks, failed bootstrap,
+           * or legacy rows — idempotent with `ensureIdentityLinkForBetterAuthUser`.
+           */
+          try {
+            const r = await pool.query<{ email: string }>(
+              `select email from "user" where id = $1 limit 1`,
+              [created.userId]
+            )
+            const email = r.rows[0]?.email?.trim()
+            if (email) {
+              await ensureIdentityLinkForBetterAuthUser(db, {
+                betterAuthUserId: created.userId,
+                email,
+              })
+            }
+          } catch (e) {
+            console.error("[afenda/auth] session identity bridge failed", e)
+          }
         },
       },
       delete: {

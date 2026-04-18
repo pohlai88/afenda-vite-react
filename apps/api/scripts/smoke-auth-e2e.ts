@@ -4,6 +4,9 @@
  * Requires repo-root `.env` (via loadMonorepoEnvLayered): DATABASE_URL, BETTER_AUTH_SECRET,
  * BETTER_AUTH_URL (optional).
  *
+ * Resend: when `NODE_ENV=production`, `createAfendaAuth` enforces `RESEND_*` unless
+ * `AFENDA_AUTH_SKIP_RESEND_ENV_CHECK=true` (use only for air-gapped smoke / CI).
+ *
  * Checks:
  * - GET /health
  * - GET /v1/auth/intelligence (guest snapshot)

@@ -1,3 +1,5 @@
+import { resolveAfendaAuthCapabilityHooks } from "@afenda/better-auth"
+
 import type { AuthIntelligenceSnapshot } from "../contracts/auth-intelligence.contract.js"
 
 export type AuthIntelligenceSessionLike = {
@@ -51,6 +53,7 @@ export function buildAuthIntelligenceSnapshot(input: {
   readonly userAgent: string
   readonly forwardedFor: string | null
 }): AuthIntelligenceSnapshot {
+  const { stepUpPolicy } = resolveAfendaAuthCapabilityHooks()
   const trust = trustFromSession(input.session)
   const passkey = passkeyFeatureEnabled()
   const reasons: AuthIntelligenceSnapshot["reasons"] = [
@@ -72,6 +75,14 @@ export function buildAuthIntelligenceSnapshot(input: {
       severity: "warning",
     })
   }
+  if (stepUpPolicy === "risk_based") {
+    reasons.push({
+      code: "auth.risk.step-up-policy",
+      label:
+        "Risk-based step-up is enabled — sensitive actions may require additional verification.",
+      severity: "info",
+    })
+  }
 
   return {
     trustLevel: trust.trustLevel,
@@ -84,5 +95,6 @@ export function buildAuthIntelligenceSnapshot(input: {
     reasons,
     passkeyAvailable: passkey,
     recommendedMethod: passkey ? "passkey" : "password",
+    stepUpPolicy,
   }
 }

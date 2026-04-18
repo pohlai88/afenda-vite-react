@@ -41,6 +41,14 @@ function resolveBetterAuthInfraClientFlag(
   return env.BETTER_AUTH_API_KEY?.trim() ? "true" : "false"
 }
 
+/** Default on unless `AFENDA_AUTH_ALL_PLUGINS` / `VITE_AFENDA_AUTH_ALL_PLUGINS` is `"false"`. */
+function resolveAfendaAuthAllPluginsFlag(env: Record<string, string>): boolean {
+  const v =
+    env.VITE_AFENDA_AUTH_ALL_PLUGINS?.trim() ??
+    env.AFENDA_AUTH_ALL_PLUGINS?.trim()
+  return v !== "false"
+}
+
 /**
  * Injects Vite `config.base` into `index.html` so the blocking theme script strips the public path
  * before `/app/*` detection (aligned with React Router `basename`). Must match
@@ -71,7 +79,9 @@ async function resolveUserConfig({
   const env = loadEnv(mode, repoRoot, "")
   const analyze = mode === "analyze"
   const devToolsPlugins =
-    command === "serve" && process.env.VITEST !== "true"
+    command === "serve" &&
+    process.env.VITEST !== "true" &&
+    process.env.E2E !== "true"
       ? await DevTools({ builtinDevTools: true })
       : []
 
@@ -92,6 +102,95 @@ async function resolveUserConfig({
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
       "import.meta.env.VITE_BETTER_AUTH_INFRA": JSON.stringify(
         resolveBetterAuthInfraClientFlag(env)
+      ),
+      /** Mirrors `AFENDA_AUTH_ALL_PLUGINS` — when `true`, load full Better Auth client plugin stack. */
+      "import.meta.env.VITE_AFENDA_AUTH_ALL_PLUGINS": JSON.stringify(
+        resolveAfendaAuthAllPluginsFlag(env) ? "true" : "false"
+      ),
+      /** Mirrors server `AFENDA_AUTH_STEP_UP_POLICY` when `VITE_*` override omitted. */
+      "import.meta.env.VITE_AFENDA_AUTH_STEP_UP_POLICY": JSON.stringify(
+        env.VITE_AFENDA_AUTH_STEP_UP_POLICY?.trim() ||
+          env.AFENDA_AUTH_STEP_UP_POLICY?.trim() ||
+          "off"
+      ),
+      /** Mirrors server `AFENDA_AUTH_REQUIRE_EMAIL_VERIFICATION` (strict sign-in / register UX). */
+      "import.meta.env.VITE_AFENDA_AUTH_REQUIRE_EMAIL_VERIFICATION":
+        JSON.stringify(
+          env.VITE_AFENDA_AUTH_REQUIRE_EMAIL_VERIFICATION?.trim() === "true" ||
+            env.AFENDA_AUTH_REQUIRE_EMAIL_VERIFICATION?.trim() === "true"
+            ? "true"
+            : "false"
+        ),
+      /** Pair with `AFENDA_AUTH_PASSKEY_ENABLED` — `passkeyClient` must match `createAfendaAuth` plugin. */
+      "import.meta.env.VITE_AFENDA_AUTH_PASSKEY_ENABLED": JSON.stringify(
+        env.VITE_AFENDA_AUTH_PASSKEY_ENABLED?.trim() === "true" ||
+          env.AFENDA_AUTH_PASSKEY_ENABLED?.trim() === "true"
+          ? "true"
+          : "false"
+      ),
+      /** Pair with `AFENDA_AUTH_MFA_ENABLED` — `twoFactorClient` must match `createAfendaAuth` plugin. */
+      "import.meta.env.VITE_AFENDA_AUTH_MFA_ENABLED": JSON.stringify(
+        env.VITE_AFENDA_AUTH_MFA_ENABLED?.trim() === "true" ||
+          env.AFENDA_AUTH_MFA_ENABLED?.trim() === "true"
+          ? "true"
+          : "false"
+      ),
+      /** Pair with `AFENDA_AUTH_MAGIC_LINK_ENABLED` — `magicLinkClient` must match `magicLink()` plugin. */
+      "import.meta.env.VITE_AFENDA_AUTH_MAGIC_LINK_ENABLED": JSON.stringify(
+        env.VITE_AFENDA_AUTH_MAGIC_LINK_ENABLED?.trim() === "true" ||
+          env.AFENDA_AUTH_MAGIC_LINK_ENABLED?.trim() === "true"
+          ? "true"
+          : "false"
+      ),
+      /** Pair with `AFENDA_AUTH_AGENT_AUTH_ENABLED` — `agentAuthClient` must match `agentAuth()`. */
+      "import.meta.env.VITE_AFENDA_AUTH_AGENT_AUTH_ENABLED": JSON.stringify(
+        env.VITE_AFENDA_AUTH_AGENT_AUTH_ENABLED?.trim() === "true" ||
+          env.AFENDA_AUTH_AGENT_AUTH_ENABLED?.trim() === "true"
+          ? "true"
+          : "false"
+      ),
+      /** Kill-switch mirror — when `true`, `agentAuthClient` is omitted (matches `AFENDA_AUTH_DISABLE_AGENT_AUTH`). */
+      "import.meta.env.VITE_AFENDA_AUTH_DISABLE_AGENT_AUTH": JSON.stringify(
+        env.VITE_AFENDA_AUTH_DISABLE_AGENT_AUTH?.trim() === "true" ||
+          env.AFENDA_AUTH_DISABLE_AGENT_AUTH?.trim() === "true"
+          ? "true"
+          : "false"
+      ),
+      /** Kill-switch mirror for OAuth device grant — matches `AFENDA_AUTH_DISABLE_DEVICE_AUTHORIZATION`. */
+      "import.meta.env.VITE_AFENDA_AUTH_DISABLE_DEVICE_AUTHORIZATION":
+        JSON.stringify(
+          env.VITE_AFENDA_AUTH_DISABLE_DEVICE_AUTHORIZATION?.trim() ===
+            "true" ||
+            env.AFENDA_AUTH_DISABLE_DEVICE_AUTHORIZATION?.trim() === "true"
+            ? "true"
+            : "false"
+        ),
+      /** Pair with `AFENDA_AUTH_GOOGLE_ONE_TAP_ENABLED` — `oneTapClient` must match `oneTap()`. */
+      "import.meta.env.VITE_AFENDA_AUTH_GOOGLE_ONE_TAP_ENABLED": JSON.stringify(
+        env.VITE_AFENDA_AUTH_GOOGLE_ONE_TAP_ENABLED?.trim() === "true" ||
+          env.AFENDA_AUTH_GOOGLE_ONE_TAP_ENABLED?.trim() === "true"
+          ? "true"
+          : "false"
+      ),
+      /** Public web client ID for GIS One Tap (often same as `GOOGLE_CLIENT_ID`). */
+      "import.meta.env.VITE_GOOGLE_CLIENT_ID": JSON.stringify(
+        env.VITE_GOOGLE_CLIENT_ID?.trim() || env.GOOGLE_CLIENT_ID?.trim() || ""
+      ),
+      /** Workspace demo / governed API — same UUID as server `DEMO_TENANT_ID` (turbo passes through). */
+      "import.meta.env.VITE_DEMO_TENANT_ID": JSON.stringify(
+        env.VITE_DEMO_TENANT_ID?.trim() || env.DEMO_TENANT_ID?.trim() || ""
+      ),
+      /** Local dev: prefill login email from `AFENDA_DEV_LOGIN_*` — never embed passwords in the bundle. */
+      "import.meta.env.VITE_AFENDA_DEV_LOGIN_ENABLED": JSON.stringify(
+        env.VITE_AFENDA_DEV_LOGIN_ENABLED === "true" ||
+          env.AFENDA_DEV_LOGIN_ENABLED === "true"
+          ? "true"
+          : "false"
+      ),
+      "import.meta.env.VITE_DEV_LOGIN_EMAIL": JSON.stringify(
+        env.VITE_DEV_LOGIN_EMAIL?.trim() ||
+          env.AFENDA_DEV_LOGIN_EMAIL?.trim() ||
+          ""
       ),
     },
 
@@ -174,6 +273,12 @@ async function resolveUserConfig({
       cors: true,
       // Proxy configuration for API calls
       proxy: {
+        // Agent Auth discovery document (Better Auth plugin) — same origin as SPA in dev.
+        "/.well-known/agent-configuration": {
+          target: env.VITE_API_URL || "http://localhost:3001",
+          changeOrigin: true,
+          secure: false,
+        },
         // Better Auth and other `/api/*` routes (except `/api/v1`) forward as-is — Hono serves `/api/auth/*` on the API host.
         "/api/v1": {
           target: env.VITE_API_URL || "http://localhost:3001",

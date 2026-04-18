@@ -27,7 +27,7 @@ export type DatabaseRuntimeEnvKey =
 /**
  * Defaults when optional pool env vars are unset (`readOptionalInteger` in `src/client.ts`).
  * `createPgPool` applies `max`, `idleTimeoutMs` → `idleTimeoutMillis`, `connectionTimeoutMs` → `connectionTimeoutMillis`.
- * `statementTimeoutMs` / `DB_STATEMENT_TIMEOUT_MS` are catalogued for session-level timeout wiring (not yet passed into `Pool` in `client.ts`).
+ * `statementTimeoutMs` / `DB_STATEMENT_TIMEOUT_MS` — when set to a positive integer, `createPgPool` passes it to PostgreSQL as `statement_timeout` (ms) via the Pool `options` string (`-c statement_timeout=…`). Omit the env var to leave server defaults. If you pass custom `options` into `createPgPool(override)`, that override replaces this (combine manually if you need both).
  */
 export const defaultPoolSettings = {
   max: 10,

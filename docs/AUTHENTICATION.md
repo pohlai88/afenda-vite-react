@@ -179,6 +179,26 @@ Never ship a “login with any password” path to production.
 
 ---
 
+## 10. Better Auth + PostgreSQL (this monorepo)
+
+Production auth is **[Better Auth](https://www.better-auth.com/)** on **`apps/api`**, backed by **PostgreSQL** through a shared **`pg` `Pool`** (`createPgPool()` from `@afenda/database`, `DATABASE_URL`). That matches the upstream **[PostgreSQL adapter](https://better-auth.com/docs/adapters/postgresql)** pattern (`betterAuth({ database: pool })`); the implementation uses **Kysely** with Postgres as documented there.
+
+The **[Drizzle ORM adapter](https://better-auth.com/docs/adapters/drizzle)** is **not** used for runtime queries here (`drizzleAdapter` / `@better-auth/drizzle-adapter`). We only use the CLI with **`--adapter drizzle`** to generate `packages/better-auth/src/schema/auth-schema.generated.ts` (tables + `relations()`). Better Auth table migrations are **`auth:migrate`**, not `drizzle-kit migrate` for those tables.
+
+- **Client (Vite):** `apps/web` uses the Better Auth client against the API base URL (see `apps/web` auth module and env such as `VITE_API_BASE_URL` / Better Auth URL wiring).
+- **Migrations:** two commands target the **same** database for different DDL:
+  - **ERP / Drizzle schema:** `pnpm run db:migrate` (from repo root; see [`packages/_database/README.md`](../packages/_database/README.md)).
+  - **Better Auth core + plugins:** `pnpm --filter @afenda/better-auth run auth:migrate` (config: `packages/better-auth/src/better-auth-cli-config.ts`). Optional plugin tables: `auth:migrate:plugins`.
+- **Schema location:** default is PostgreSQL **`public`**. To use a **non-default schema** for Better Auth tables, set `search_path` on the connection (e.g. append `?options=-c%20search_path%3Dauth` to `DATABASE_URL`), create the schema and privileges, then run both migration flows so CLI and runtime agree.
+
+For generated Drizzle mirror of Better Auth tables, see [`packages/better-auth/src/schema/README.md`](../packages/better-auth/src/schema/README.md).
+
+The **[Email OTP](https://better-auth.com/docs/plugins/email-otp)** plugin is **not** enabled: transactional email uses **links** (and optional **magic link**) via Resend, not code-based Email OTP sign-in or OTP-only password reset. See the schema README for adoption notes if you add it later.
+
+**[Google One Tap](https://better-auth.com/docs/plugins/one-tap)** is also **not** enabled: Google sign-in uses the standard **OAuth** provider when credentials are set, not the One Tap / Google Identity Services client plugin.
+
+---
+
 ## Related docs
 
 - [Architecture](./ARCHITECTURE.md) — monorepo and web client

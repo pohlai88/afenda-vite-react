@@ -181,9 +181,14 @@ export {
   shellAppChildPath,
   shellAppChildPathSegments,
   shellAppChildRouteDefinitions,
+  shellAppCompoundChildPaths,
   shellAppDefaultChildSegment,
   shellAppLayoutRoute,
   shellAppNotFoundRoute,
+  shellAppSettingsAccountPath,
+  shellAppSettingsAccountRoute,
+  shellAppSettingsSecurityPath,
+  shellAppSettingsSecurityRoute,
   shellRouteMetadataList,
 } from "./routes/shell-route-definitions"
 export { shellWorkspaceHomeHref } from "./routes/shell-route-constants"

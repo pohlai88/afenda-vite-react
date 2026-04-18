@@ -33,6 +33,18 @@ describe("createApp", () => {
     expect(body.ok).toBe(true)
   })
 
+  it("GET /api/auth/ok confirms Better Auth route wiring", async () => {
+    const app = createApp({} as never, authStub)
+    const res = await app.request("/api/auth/ok")
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as {
+      ok: boolean
+      betterAuthMounted: boolean
+    }
+    expect(body.ok).toBe(true)
+    expect(body.betterAuthMounted).toBe(true)
+  })
+
   it("POST /v1/audit/demo rejects without tenant header", async () => {
     const app = createApp({} as never, authStub)
     const res = await app.request("/v1/audit/demo", { method: "POST" })

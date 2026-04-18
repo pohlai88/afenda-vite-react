@@ -1,4 +1,7 @@
+import { Toaster } from "@afenda/design-system/ui-primitives"
 import { Outlet, useLocation } from "react-router-dom"
+
+import { AfendaMarketingAuthUiProvider } from "@/app/_platform/auth/better-auth-ui/afenda-marketing-auth-ui-provider"
 
 import "../../styles/marketing.css"
 
@@ -11,16 +14,19 @@ export function MarketingLayout() {
 
   return (
     <MarketingThemeProvider>
-      <div
-        className={[
-          "marketing-root",
-          isPlatformPreview ? "marketing-root--platform-preview" : "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-      >
-        <Outlet />
-      </div>
+      <AfendaMarketingAuthUiProvider>
+        <div
+          className={[
+            "marketing-root",
+            isPlatformPreview ? "marketing-root--platform-preview" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          <Outlet />
+        </div>
+        <Toaster />
+      </AfendaMarketingAuthUiProvider>
     </MarketingThemeProvider>
   )
 }

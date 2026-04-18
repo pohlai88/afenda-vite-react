@@ -13,9 +13,9 @@
   "rtl": false,
   "aliases": {
     "components": "src/share/components",
-    "utils": "@afenda/shadcn-ui-deprecated/lib/utils",
+    "utils": "@afenda/design-system/utils",
     "hooks": "src/share/react-hooks",
     "lib": "src/share/lib",
-    "ui": "@afenda/shadcn-ui-deprecated/components/ui"
+    "ui": "@afenda/design-system/ui-primitives"
   }
 }

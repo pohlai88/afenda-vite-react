@@ -1,7 +1,13 @@
-export { authClient, useAfendaSession } from "./auth-client"
 export {
+  authClient,
+  getAfendaAuthStepUpPolicy,
+  useAfendaSession,
+} from "./auth-client"
+export {
+  authAccountSettingsAbsoluteUrl,
   authAppCallbackUrl,
   authPasswordResetRedirectUrl,
+  authPostAccountDeletionAbsoluteUrl,
   authPostLoginPath,
 } from "./auth-redirect-urls"
 
@@ -10,10 +16,7 @@ export { AUTH_ROUTES } from "./auth-paths"
 export { RequireAuth } from "./guards/require-auth"
 export { RequireGuest } from "./guards/require-guest"
 
-export { RouteAuthLogin } from "./routes/route-auth-login"
-export { RouteAuthRegister } from "./routes/route-auth-register"
-export { RouteAuthForgotPassword } from "./routes/route-auth-forgot-password"
-export { RouteAuthResetPassword } from "./routes/route-auth-reset-password"
+export { RouteAuthUnified } from "./routes/route-auth-unified"
 export { RouteAuthCallback } from "./routes/route-auth-callback"
 
 export { useAuthIntelligence } from "./hooks/use-auth-intelligence"
@@ -24,8 +27,9 @@ export type {
   AuthRiskReasonSeverity,
   AuthRiskReason,
   AuthRecommendedMethod,
+  AuthMethodId,
+  AuthStepUpPolicy,
   AuthIntelligenceSnapshot,
-  AuthChallengeType,
   AuthSessionRisk,
   AuthSessionItem,
   AuthSessionsPayload,
@@ -39,16 +43,5 @@ export type {
 } from "./contracts/auth-api"
 
 export type { AuthReturnTarget } from "./contracts/auth-return-target"
-export type {
-  AuthChallengeMethod,
-  AuthChallengeTicket,
-  AuthChallengePrompt,
-  AuthChallengeStartPayload,
-  AuthChallengeVerifyPayload,
-} from "./contracts/auth-challenge-ticket"
-export type {
-  AuthContinuityViewModel,
-  AuthIntelligenceResource,
-  AuthMessageTone,
-  AuthStatusMessageViewModel,
-} from "./contracts/auth-view-model"
+
+export type { AuthIntelligenceResource } from "./contracts/auth-view-model"

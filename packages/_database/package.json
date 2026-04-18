@@ -30,7 +30,8 @@
     "db:push": "pnpm run db:guard && drizzle-kit push",
     "db:push:force": "pnpm run db:guard && drizzle-kit push --force",
     "db:apply-hardening": "tsx scripts/apply-hardening.ts",
-    "db:sync-glossary-enums": "tsx scripts/sync-glossary-enums.ts"
+    "db:sync-glossary-enums": "tsx scripts/sync-glossary-enums.ts",
+    "db:pick-demo-tenant-id": "tsx scripts/pick-demo-tenant-id.ts"
   },
   "exports": {
     ".": {

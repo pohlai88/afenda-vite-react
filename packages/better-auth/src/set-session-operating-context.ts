@@ -17,11 +17,17 @@ export type SetSessionOperatingContextInput = {
   activeTenantId?: string | null
 }
 
+export type SetSessionOperatingContextResult = {
+  context: ActiveTenantContext
+  /** Response headers from Better Auth (e.g. `Set-Cookie`) — forward onto your HTTP response. */
+  outgoingHeaders: Headers
+}
+
 export async function setSessionOperatingContext(
   auth: AfendaAuth,
   db: DatabaseClient,
   params: SetSessionOperatingContextInput
-): Promise<ActiveTenantContext> {
+): Promise<SetSessionOperatingContextResult> {
   const session = await auth.api.getSession({ headers: params.headers })
   if (!session) {
     throw new Error("setSessionOperatingContext: unauthenticated")
@@ -34,13 +40,14 @@ export async function setSessionOperatingContext(
     activeTenantId: params.activeTenantId ?? undefined,
   })
 
-  await auth.api.updateSession({
+  const { headers: outgoingHeaders } = await auth.api.updateSession({
     headers: params.headers,
     body: {
       activeTenantId: ctx.tenantId,
       activeMembershipId: ctx.membershipId,
     },
+    returnHeaders: true,
   })
 
-  return ctx
+  return { context: ctx, outgoingHeaders }
 }

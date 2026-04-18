@@ -45,10 +45,16 @@
     "auth:migrate": "pnpm --filter @afenda/better-auth run auth:migrate",
     "auth:migrate:plugins": "pnpm --filter @afenda/better-auth run auth:migrate:plugins",
     "smoke:auth": "pnpm --filter @afenda/api run smoke:auth",
+    "test:e2e:auth": "pnpm --filter @afenda/web run test:e2e",
     "db:generate": "pnpm -C packages/_database run db:generate",
     "db:migrate": "pnpm -C packages/_database run db:migrate",
     "db:push": "pnpm -C packages/_database run db:push",
-    "db:push:force": "pnpm -C packages/_database run db:push:force"
+    "db:push:force": "pnpm -C packages/_database run db:push:force",
+    "db:pick-demo-tenant-id": "pnpm -C packages/_database run db:pick-demo-tenant-id",
+    "resend": "dotenv -e .env -- resend",
+    "resend:whoami": "dotenv -e .env -- resend whoami",
+    "resend:doctor": "dotenv -e .env -- resend doctor",
+    "resend:validate": "pnpm run resend:doctor"
   },
   "devDependencies": {
     "@afenda/env-loader": "workspace:*",
@@ -60,7 +66,9 @@
     "lint-staged": "^16.4.0",
     "only-allow": "^1.2.2",
     "prettier": "catalog:",
+    "dotenv-cli": "^11.0.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
+    "resend-cli": "^1.8.0",
     "shadcn": "^4.2.0",
     "simple-git-hooks": "^2.13.1",
     "tsx": "^4.21.0",

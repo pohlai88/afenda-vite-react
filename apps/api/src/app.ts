@@ -8,7 +8,7 @@ import {
   type DatabaseClient,
 } from "@afenda/database"
 import { setSessionOperatingContext } from "@afenda/better-auth"
-import { Hono } from "hono"
+import { Hono, type Context } from "hono"
 import { cors } from "hono/cors"
 
 import { createAuthCompanionModuleForApp } from "./auth-companion-bootstrap.js"
@@ -33,6 +33,31 @@ declare module "hono" {
 /** Default `subjectId` for the exploratory `/v1/audit/demo` route when the body omits one. */
 const DEFAULT_AUDIT_DEMO_SUBJECT_ID = "api.audit.demo.default-subject"
 
+/** Forward Better Auth `auth.api.*` response headers (notably multiple `Set-Cookie`) onto a Hono response. */
+function applyBetterAuthOutgoingHeaders(c: Context, outgoing: Headers): void {
+  const setCookies =
+    typeof outgoing.getSetCookie === "function" ? outgoing.getSetCookie() : null
+
+  outgoing.forEach((value, key) => {
+    if (key.toLowerCase() === "set-cookie") {
+      return
+    }
+    c.header(key, value)
+  })
+
+  if (setCookies && setCookies.length > 0) {
+    for (const cookie of setCookies) {
+      c.header("Set-Cookie", cookie, { append: true })
+    }
+  } else {
+    outgoing.forEach((value, key) => {
+      if (key.toLowerCase() === "set-cookie") {
+        c.header(key, value, { append: true })
+      }
+    })
+  }
+}
+
 export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
   const app = new Hono()
   const authCompanion = createAuthCompanionModuleForApp(db, pool)
@@ -52,6 +77,11 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
     })
   )
 
+  /** Ops probe — not part of Better Auth’s own routes; documents `auth.handler` wiring. */
+  app.get("/api/auth/ok", (c) =>
+    c.json({ ok: true, betterAuthMounted: true, service: "@afenda/api" })
+  )
+
   app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw))
 
   /** Root URL (browser or curl) — avoids a bare 404 when checking the API host. */
@@ -67,6 +97,24 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
   )
 
   app.get("/health", (c) => c.json({ ok: true, service: "@afenda/api" }))
+
+  /**
+   * Agent Auth discovery — https://better-auth.com/docs/plugins/agent-auth
+   * Proxied from Vite dev (`/.well-known/...` → API). Requires `AFENDA_AUTH_AGENT_AUTH_ENABLED=true`.
+   */
+  app.get("/.well-known/agent-configuration", async (c) => {
+    c.header("Access-Control-Allow-Origin", "*")
+    const getConfiguration = (
+      auth.api as {
+        getAgentConfiguration?: () => Promise<unknown>
+      }
+    ).getAgentConfiguration
+    if (typeof getConfiguration !== "function") {
+      return c.json({ error: "Agent Auth is not enabled" }, 404)
+    }
+    const configuration = await getConfiguration()
+    return c.json(configuration)
+  })
 
   app.use(auditContextMiddleware)
 
@@ -131,11 +179,16 @@ export function createApp(db: DatabaseClient, auth: AfendaAuth, pool?: Pool) {
     }
 
     try {
-      const ctx = await setSessionOperatingContext(auth, db, {
-        headers: c.req.raw.headers,
-        activeTenantId: opt("activeTenantId"),
-      })
-      return c.json({ ok: true, context: ctx })
+      const { context, outgoingHeaders } = await setSessionOperatingContext(
+        auth,
+        db,
+        {
+          headers: c.req.raw.headers,
+          activeTenantId: opt("activeTenantId"),
+        }
+      )
+      applyBetterAuthOutgoingHeaders(c, outgoingHeaders)
+      return c.json({ ok: true, context })
     } catch (e) {
       if (e instanceof IdentityLinkMissingError) {
         return c.json({ error: "Identity bridge required", code: e.code }, 403)

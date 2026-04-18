@@ -18,19 +18,25 @@
   "dependencies": {
     "@afenda/database": "workspace:*",
     "@afenda/env-loader": "workspace:*",
+    "@better-auth/agent-auth": "0.4.5",
+    "@better-auth/api-key": "^1.6.5",
     "@better-auth/infra": "0.2.4",
-    "@better-auth/passkey": "1.6.3",
-    "better-auth": "^1.6.3",
-    "pg": "catalog:"
+    "@better-auth/passkey": "1.6.5",
+    "better-auth": "^1.6.5",
+    "pg": "catalog:",
+    "resend": "^6.12.0"
   },
   "devDependencies": {
     "@afenda/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "@types/pg": "catalog:",
     "drizzle-orm": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
     "auth:migrate": "pnpm dlx auth@latest migrate --config ./src/better-auth-cli-config.ts --yes",

@@ -1,3 +1,4 @@
+import { getAfendaAuthStepUpPolicy } from "../auth-client"
 import type { AuthIntelligenceSnapshot } from "../contracts/auth-domain"
 import type { AuthIntelligenceResource } from "../contracts/auth-view-model"
 
@@ -16,6 +17,7 @@ export const fallbackAuthIntelligenceSnapshot: AuthIntelligenceSnapshot = {
   ],
   passkeyAvailable: false,
   recommendedMethod: "password",
+  stepUpPolicy: getAfendaAuthStepUpPolicy(),
 }
 
 export function createUnavailableAuthIntelligenceSnapshot(): AuthIntelligenceSnapshot {

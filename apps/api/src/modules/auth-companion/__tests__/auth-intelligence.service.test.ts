@@ -17,5 +17,6 @@ describe("AuthIntelligenceService", () => {
     expect(["passkey", "password", "social"]).toContain(snap.recommendedMethod)
     expect(snap.reasons.length).toBeGreaterThan(0)
     expect(snap.deviceLabel.length).toBeGreaterThan(0)
+    expect(["off", "risk_based"]).toContain(snap.stepUpPolicy)
   })
 })

@@ -11,6 +11,7 @@
  * This module: `src/schema/identity/index.ts` — convenience surface for identity linking; do not add new `*.schema.ts` tables here (see `docs/practical-discipline.md`).
  */
 export * from "./services/ensure-identity-link-for-better-auth-user"
+export * from "./services/delete-identity-links-for-better-auth-user"
 export * from "../iam/identity-links.schema"
 export * from "../iam/user-identities.schema"
 export * from "../iam/user-accounts.schema"

@@ -36,8 +36,8 @@ Import only through these paths (no deep `src/` imports from apps):
 
 ## Environment
 
-- **`DATABASE_URL`** — PostgreSQL connection string.
-- Optional pool tuning: **`DB_POOL_MAX`**, **`DB_IDLE_TIMEOUT_MS`**, **`DB_CONNECTION_TIMEOUT_MS`**, **`DB_STATEMENT_TIMEOUT_MS`** (see `runtime.ts`).
+- **`DATABASE_URL`** — PostgreSQL connection string (shared by Drizzle and Better Auth via `createPgPool()`).
+- Optional pool tuning: **`DB_POOL_MAX`**, **`DB_IDLE_TIMEOUT_MS`**, **`DB_CONNECTION_TIMEOUT_MS`**, **`DB_STATEMENT_TIMEOUT_MS`** — when set to a positive integer, `DB_STATEMENT_TIMEOUT_MS` is applied as PostgreSQL `statement_timeout` on new connections (see `src/client.ts` and `runtime.ts`).
 
 Never expose these via `VITE_*` or browser bundles.
 

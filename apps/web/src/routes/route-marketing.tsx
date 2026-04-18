@@ -22,13 +22,7 @@ import {
   RoutePlatformPreviewFallbackRedirect,
   RoutePlatformPreviewThreshold,
 } from "@/pages/platform-preview"
-import {
-  RouteAuthCallback,
-  RouteAuthForgotPassword,
-  RouteAuthLogin,
-  RouteAuthRegister,
-  RouteAuthResetPassword,
-} from "../app/_platform/auth"
+import { RouteAuthCallback, RouteAuthUnified } from "../app/_platform/auth"
 import { MarketingLayout } from "../pages/provider/marketing-layout"
 
 /** Public routes under `MarketingLayout`: `/`, auth screens. Does not mount the `/app` shell. */
@@ -53,7 +47,11 @@ export const marketingRouteObjects: RouteObject[] = [
         element: <Navigate to="/infinite-topology" replace />,
         handle: { shell: null },
       },
-      { path: "singularity", element: <SingularityPage />, handle: { shell: null } },
+      {
+        path: "singularity",
+        element: <SingularityPage />,
+        handle: { shell: null },
+      },
       {
         path: "platform-preview",
         element: <RoutePlatformPreview />,
@@ -77,28 +75,13 @@ export const marketingRouteObjects: RouteObject[] = [
         ],
       },
       {
-        path: "auth/login",
-        element: <RouteAuthLogin />,
-        handle: { shell: null },
-      },
-      {
-        path: "auth/register",
-        element: <RouteAuthRegister />,
-        handle: { shell: null },
-      },
-      {
-        path: "auth/forgot-password",
-        element: <RouteAuthForgotPassword />,
-        handle: { shell: null },
-      },
-      {
-        path: "auth/reset-password",
-        element: <RouteAuthResetPassword />,
-        handle: { shell: null },
-      },
-      {
         path: "auth/callback",
         element: <RouteAuthCallback />,
+        handle: { shell: null },
+      },
+      {
+        path: "auth/*",
+        element: <RouteAuthUnified />,
         handle: { shell: null },
       },
       {

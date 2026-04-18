@@ -14,7 +14,7 @@ export function shellUserMenuDocsBase(): string {
  * External URLs use `https?:` so the menu can render `<a target="_blank">`.
  */
 export const shellUserMenuFallbackLinks = {
-  account: shellAppChildPath("events"),
+  account: `${shellAppChildPath("settings")}/account`,
   billing: shellAppChildPath("partners"),
   notifications: shellAppChildPath("audit"),
   notification_settings: shellAppChildPath("audit"),

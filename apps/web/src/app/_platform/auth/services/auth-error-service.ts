@@ -53,5 +53,16 @@ export function throwAuthServiceError(code: string): never {
  * Prefer this at API boundaries; use {@link normalizeAuthServiceErrorCode} when you only handle thrown service errors.
  */
 export function resolveAuthErrorCode(error: unknown): string {
+  if (
+    error &&
+    typeof error === "object" &&
+    "code" in error &&
+    typeof (error as { code: unknown }).code === "string"
+  ) {
+    const code = (error as { code: string }).code.trim()
+    if (code.length > 0) {
+      return code
+    }
+  }
   return normalizeAuthServiceErrorCode(error)
 }

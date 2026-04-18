@@ -31,6 +31,7 @@
 @source "./app";
 @source "./pages";
 @source "./routes";
+@source "./share";
 @source "./worker";
 @source "../../../packages/design-system/ui-primitives";
 @source "../../../packages/design-system/icons";

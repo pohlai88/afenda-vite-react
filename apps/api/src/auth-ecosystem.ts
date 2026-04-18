@@ -16,6 +16,7 @@ export interface AuthIntelligenceSnapshot {
   readonly reasons: readonly AuthRiskReason[]
   readonly passkeyAvailable: boolean
   readonly recommendedMethod: "passkey" | "password" | "social"
+  readonly stepUpPolicy: "off" | "risk_based"
 }
 
 export interface AuthSessionItem {

@@ -30,4 +30,17 @@ export function authPostLoginPath(state: unknown): string {
   return resolveAuthPostLoginDestination(state, `${viteBasePath()}/app`)
 }
 
+/** Absolute URL for `/app/account` (e.g. change-email verification `callbackURL`). */
+export function authAccountSettingsAbsoluteUrl(): string {
+  const path = `${viteBasePath()}/app/account`
+  return `${window.location.origin}${path}`
+}
+
+/** Landing URL after Better Auth completes account deletion (`deleteUser` `callbackURL`). */
+export function authPostAccountDeletionAbsoluteUrl(): string {
+  const base = viteBasePath()
+  const path = base === "" ? "/" : `${base}/`
+  return `${window.location.origin}${path}`
+}
+
 export { viteBasePath }
