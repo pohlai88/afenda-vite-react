@@ -1,10 +1,13 @@
 import { defineConfig } from "vitest/config"
 
 /**
- * Self-contained Vitest config (no `@afenda/vitest-config` import) so Node/Vitest
- * does not load workspace `.ts` packages via bare ESM on Windows.
+ * Self-contained Vitest config (no `@afenda/vitest-import` from workspace) for Windows ESM.
  *
- * Audit package coverage (Vitest 4+): explicit `coverage.include` for audit sources.
+ * Coverage policy:
+ * - **100% thresholds** apply to **executable 7W1H audit code** (contracts + services + boundary),
+ *   not to `audit-logs.schema.ts` / `audit-enums.schema.ts` (pure Drizzle DDL — excluded).
+ * - Full-package line coverage including every `*.schema.ts` table module is not a useful gate:
+ *   those files are declarative; covering them adds little beyond import smoke (`package-modules.smoke.test.ts`).
  */
 export default defineConfig({
   test: {
@@ -21,22 +24,19 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html"],
       reportOnFailure: true,
-      include: ["src/audit/**/*.ts"],
+      include: ["src/7w1h-audit/**/*.ts"],
       exclude: [
         "node_modules/**",
-        "src/audit/**/__tests__/**",
-        "src/audit/docs/**",
-        "src/schema/governance/**",
-        "src/audit/relations/**",
-        "src/audit/index.ts",
-        "src/audit/contracts/index.ts",
-        "src/audit/read-model/**",
+        "src/7w1h-audit/**/__tests__/**",
+        "src/7w1h-audit/audit-logs.schema.ts",
+        "src/7w1h-audit/audit-enums.schema.ts",
         "**/*.d.ts",
       ],
       thresholds: {
-        lines: 95,
-        statements: 95,
-        functions: 95,
+        lines: 100,
+        statements: 100,
+        functions: 100,
+        /** Optional filter combinations in `queryAuditLogs` make 100% branch coverage noisy. */
         branches: 90,
       },
     },

@@ -22,17 +22,17 @@ Prefer **`z.infer<typeof schema>`** (or **`z.output` / `z.input`** where you mod
 
 ## How we use Zod
 
-| Layer | Role |
-| --- | --- |
-| **Client (`apps/web`)** | Form and UI boundaries — UX validation, optimistic shapes; pair with [React Hook Form + Zod](./react-hook-form-zod.md) |
+| Layer                   | Role                                                                                                                              |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Client (`apps/web`)** | Form and UI boundaries — UX validation, optimistic shapes; pair with [React Hook Form + Zod](./react-hook-form-zod.md)            |
 | **Server (`apps/api`)** | **Authoritative** validation for security and data integrity — never rely on the client alone for auth or money-moving operations |
-| **Shared** | When you introduce shared packages, colocate canonical schemas once and import from both client and server where safe |
+| **Shared**              | When you introduce shared packages, colocate canonical schemas once and import from both client and server where safe             |
 
-| Aspect | Afenda convention |
-| --- | --- |
+| Aspect            | Afenda convention                                                                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Major version** | **v4** APIs — older blog posts may use v3; check [zod.dev](https://zod.dev/) and in-repo [`.agents/skills/zod4/SKILL.md`](../../.agents/skills/zod4/SKILL.md) |
-| **Types** | **`type T = z.infer<typeof schema>`** as the single source of truth |
-| **HTTP shapes** | Align parsed objects with [API reference](../API.md) request/response bodies where applicable |
+| **Types**         | **`type T = z.infer<typeof schema>`** as the single source of truth                                                                                           |
+| **HTTP shapes**   | Align parsed objects with [API reference](../API.md) request/response bodies where applicable                                                                 |
 
 ---
 
@@ -44,22 +44,22 @@ Prefer **`z.infer<typeof schema>`** (or **`z.output` / `z.input`** where you mod
 - **`schema.safeParse(data)`** — returns **`{ success: true, data }`** or **`{ success: false, error }`**; prefer at HTTP/UI boundaries for user-facing errors.
 
 ```typescript
-import { z } from 'zod/v4';
+import { z } from "zod/v4"
 
 const userSchema = z.object({
   id: z.uuid(),
   name: z.string().min(1),
-});
+})
 
-type User = z.infer<typeof userSchema>;
+type User = z.infer<typeof userSchema>
 
-const raw: unknown = JSON.parse('{"id":"…","name":"Ada"}');
-const result = userSchema.safeParse(raw);
+const raw: unknown = JSON.parse('{"id":"…","name":"Ada"}')
+const result = userSchema.safeParse(raw)
 if (!result.success) {
   // v4: z.flattenError(result.error) for form-shaped maps;
   // z.treeifyError / z.prettifyError / result.error.issues — see [error formatting](https://zod.dev/error-formatting)
 } else {
-  const user: User = result.data;
+  const user: User = result.data
 }
 ```
 
@@ -87,7 +87,7 @@ Use **`.refine()`** or **`.superRefine()`** for constraints across fields (e.g. 
 ## Related documentation
 
 - [React Hook Form + Zod](./react-hook-form-zod.md) — `zodResolver`, form wiring
-- [Drizzle ORM](./drizzle-orm.md) — `drizzle-orm/zod` on the server
+- [Drizzle ORM](https://orm.drizzle.team/) — `drizzle-orm/zod` on the server
 - [Testing](../TESTING.md) — fixtures and test data
 - [API reference](../API.md) — normative HTTP shapes
 - [State management](../STATE_MANAGEMENT.md) — forms and server state overview

@@ -28,12 +28,12 @@ Prefer **structured JSON** in production; keep **pretty printing** off the hot p
 
 ## How we use Pino
 
-| Aspect | Afenda convention |
-| --- | --- |
-| **Output** | **JSON lines** to stdout in production; one object per line |
-| **Context** | **Child loggers** with `requestId`, `tenantId`, route name—align with [API](../API.md) `requestId` |
-| **Secrets** | **`redact`** paths for tokens, passwords, `Authorization` headers—never log full JWTs |
-| **Cost** | Minimal CPU vs many loggers—important under ERP load ([benchmarks](https://github.com/pinojs/pino/blob/main/docs/benchmarks.md)) |
+| Aspect         | Afenda convention                                                                                                                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Output**     | **JSON lines** to stdout in production; one object per line                                                                                                                                             |
+| **Context**    | **Child loggers** with `requestId`, `tenantId`, route name—align with [API](../API.md) `requestId`                                                                                                      |
+| **Secrets**    | **`redact`** paths for tokens, passwords, `Authorization` headers—never log full JWTs                                                                                                                   |
+| **Cost**       | Minimal CPU vs many loggers—important under ERP load ([benchmarks](https://github.com/pinojs/pino/blob/main/docs/benchmarks.md))                                                                        |
 | **Heavy work** | Use **`pino.transport`** so transports (shipping, alerting, reformatting) run **outside** the main event loop when possible ([Transports](https://github.com/pinojs/pino/blob/main/docs/transports.md)) |
 
 ---
@@ -44,10 +44,13 @@ Pino’s signature is **merging object first**, **message string second** (not W
 
 ```typescript
 // ✅ Correct — merge object, then message
-logger.info({ tenantId, userId, route: '/api/tenants/acme/profile' }, 'profile fetched');
+logger.info(
+  { tenantId, userId, route: "/api/tenants/acme/profile" },
+  "profile fetched"
+)
 
 // ❌ Avoid — wrong argument order for Pino
-logger.info('profile fetched', { tenantId, userId });
+logger.info("profile fetched", { tenantId, userId })
 ```
 
 Reference: [API — logging method parameters](https://github.com/pinojs/pino/blob/main/docs/api.md#logging-method-parameters) and the [README usage](https://github.com/pinojs/pino#usage).
@@ -59,24 +62,24 @@ Reference: [API — logging method parameters](https://github.com/pinojs/pino/bl
 Afenda uses **`"type": "module"`** at the repo root—prefer **`import pino from 'pino'`** in **`apps/api`** when you add it.
 
 ```typescript
-import pino from 'pino';
+import pino from "pino"
 
 export const logger = pino({
-  level: process.env.LOG_LEVEL ?? 'info',
+  level: process.env.LOG_LEVEL ?? "info",
   timestamp: pino.stdTimeFunctions.isoTime,
   redact: {
     paths: [
-      'req.headers.authorization',
-      'password',
-      'token',
-      'accessToken',
-      'refreshToken',
-      '*.password',
-      '*.authorization',
+      "req.headers.authorization",
+      "password",
+      "token",
+      "accessToken",
+      "refreshToken",
+      "*.password",
+      "*.authorization",
     ],
-    censor: '[Redacted]',
+    censor: "[Redacted]",
   },
-});
+})
 ```
 
 - Tune **`redact.paths`** as your merge objects grow ([Redaction](https://github.com/pinojs/pino/blob/main/docs/redaction.md)).
@@ -92,9 +95,9 @@ Bind **stable context** once per request or job so every line carries correlatio
 const child = logger.child({
   requestId: req.id,
   tenantSlug: resolvedTenant.slug,
-});
+})
 
-child.info({ durationMs: 42 }, 'query completed');
+child.info({ durationMs: 42 }, "query completed")
 ```
 
 In **Fastify**, `req.log` is already a child logger—add bindings in **`onRequest`** hooks when tenant and user are resolved. See [Child loggers](https://github.com/pinojs/pino/blob/main/docs/child-loggers.md).
@@ -103,10 +106,10 @@ In **Fastify**, `req.log` is already a child logger—add bindings in **`onReque
 
 ## Development vs production
 
-| Mode | Approach |
-| --- | --- |
-| **Production** | Raw JSON to stdout; ship to your log stack; **no** `pino-pretty` on the hot path |
-| **Local dev** | Optional **`pino-pretty`** via **`pino.transport({ target: 'pino-pretty', ... })`** or the inline **`transport`** option—see [Pretty printing](https://github.com/pinojs/pino/blob/main/docs/pretty.md) |
+| Mode           | Approach                                                                                                                                                                                                |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Production** | Raw JSON to stdout; ship to your log stack; **no** `pino-pretty` on the hot path                                                                                                                        |
+| **Local dev**  | Optional **`pino-pretty`** via **`pino.transport({ target: 'pino-pretty', ... })`** or the inline **`transport`** option—see [Pretty printing](https://github.com/pinojs/pino/blob/main/docs/pretty.md) |
 
 Upstream recommends running **transports** (sending, alerting, pretty-printing) in a **worker** using **`pino.transport`**, so the main thread stays responsive ([Transports](https://github.com/pinojs/pino/blob/main/docs/transports.md), [Asynchronous logging](https://github.com/pinojs/pino/blob/main/docs/asynchronous.md)).
 
@@ -133,7 +136,7 @@ Use **`serializers`** (and **`redact`**) so `req`, `res`, `err`, or domain objec
 
 ## Drizzle / SQL diagnostics
 
-Optional: wrap the **`pg` Pool** or use Drizzle’s logger hook to **warn** on slow queries—correlate **`requestId`** with DB spans. See [Drizzle ORM](./drizzle-orm.md) and the repo [Pino logging skill](../../.agents/skills/pino-logging-setup/SKILL.md).
+Optional: wrap the **`pg` Pool** or use Drizzle’s logger hook to **warn** on slow queries—correlate **`requestId`** with DB spans. See [Drizzle ORM](https://orm.drizzle.team/) and the repo [Pino logging skill](../../.agents/skills/pino-logging-setup/SKILL.md).
 
 ---
 
@@ -150,7 +153,7 @@ Optional: wrap the **`pg` Pool** or use Drizzle’s logger hook to **warn** on s
 
 - [Fastify](./fastify.md) — HTTP server and `req.log`
 - [API reference](../API.md) — `requestId` on errors
-- [Drizzle ORM](./drizzle-orm.md) — optional slow-query logging
+- [Drizzle ORM](https://orm.drizzle.team/) — optional slow-query logging
 - [`.agents/skills/pino-logging-setup/SKILL.md`](../../.agents/skills/pino-logging-setup/SKILL.md) — extended patterns (serializers, transports, request middleware)
 
 **External:** [getpino.io](https://getpino.io/) · [pinojs/pino on GitHub](https://github.com/pinojs/pino)

@@ -70,7 +70,7 @@ jobs:
         run: pnpm exec turbo run lint typecheck test:run build --summarize
 
       - name: Database package Drizzle guardrails
-        run: pnpm --filter @afenda/database run db:ci
+        run: pnpm -C packages/_database run db:ci
 
       - name: Shell metadata governance report
         run: pnpm --filter @afenda/web shell:validation-report

@@ -1,1 +1,1 @@
-export { DbStudioPage } from "./db-studio-page"
+export { DbStudioPage } from "./components/db-studio-page"

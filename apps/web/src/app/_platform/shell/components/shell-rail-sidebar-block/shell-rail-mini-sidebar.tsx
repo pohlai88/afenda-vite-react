@@ -65,7 +65,7 @@ import { ShellUserMenuQuickActions } from "../shell-user-menu-quick-actions"
 import { ShellUserMenuSecurityPanel } from "../shell-user-menu-security-panel"
 import { cn } from "@afenda/design-system/utils"
 
-import { prefetchDbStudioCatalog } from "../../../../_features/db-studio/db-studio-queries"
+import { prefetchDbStudioCatalog } from "../../../../_features/db-studio/services/db-studio-queries"
 import { useCloseMobileSidebar } from "../../hooks/use-close-mobile-sidebar"
 import { shellWorkspaceHomeHref } from "../../routes/shell-route-constants"
 import {

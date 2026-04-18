@@ -1,8 +1,8 @@
 {
   "document_kind": "business_glossary_snapshot",
-  "generated_at": "2026-04-16T16:43:12.133Z",
+  "generated_at": "2026-04-17T19:17:54.422Z",
   "source_commit": "0062580664e97f8be118980cdf2c69b64d40075b",
-  "source_content_sha256": "092bf92f6f1cb67d2ba7cac26b7e8418636795a65316646342879690080f9238",
+  "source_content_sha256": "2313aff3575adf77846f834e2bd911d4a6d189240acd54041d19143c870e6523",
   "schema_version": 2,
   "document": "business-technical-glossary",
   "description": "Maps Afenda business terms to PostgreSQL and Drizzle artifacts in packages/_database",
@@ -11,7 +11,7 @@
     {
       "id": "audit",
       "label": "Audit evidence",
-      "summary": "Append-oriented evidence rows; see docs/AUDIT_ARCHITECTURE.md and packages/_database/src/schema/governance/"
+      "summary": "Append-oriented evidence rows; see packages/_database/docs and schema/governance/"
     },
     {
       "id": "authorization",
@@ -32,25 +32,35 @@
       "id": "tenancy",
       "label": "Multi-tenant isolation",
       "summary": "Data rows that belong to a customer organization are scoped by tenant key."
+    },
+    {
+      "id": "finance",
+      "label": "Finance and inventory",
+      "summary": "Chart of accounts, fiscal periods, posting semantics, valuation, and typed custom fields."
     }
   ],
   "entries": [
     {
       "id": "audit_log",
       "business_primary_term": "Audit log",
-      "aliases": ["Audit evidence row"],
+      "aliases": [
+        "Audit evidence row"
+      ],
       "domain_module": "audit",
-      "related_doc_anchor": "AUDIT_ARCHITECTURE.md",
+      "related_doc_anchor": "packages/_database/docs",
       "technical": {
         "artifact_kind": "table",
         "table": "audit_logs",
-        "drizzle_schema_file": "packages/_database/src/schema/governance/audit-logs.schema.ts"
+        "drizzle_schema_file": "packages/_database/src/7w1h-audit/audit-logs.schema.ts"
       }
     },
     {
       "id": "auth_challenge",
       "business_primary_term": "Auth challenge",
-      "aliases": ["Login challenge", "Step-up challenge"],
+      "aliases": [
+        "Login challenge",
+        "Step-up challenge"
+      ],
       "domain_module": "identity",
       "technical": {
         "artifact_kind": "table",
@@ -71,7 +81,9 @@
     {
       "id": "identity_link",
       "business_primary_term": "Identity link",
-      "aliases": ["Account linking record"],
+      "aliases": [
+        "Account linking record"
+      ],
       "domain_module": "identity",
       "technical": {
         "artifact_kind": "table",
@@ -82,7 +94,10 @@
     {
       "id": "legal_entity",
       "business_primary_term": "Legal entity",
-      "aliases": ["LE", "Company (legal)"],
+      "aliases": [
+        "LE",
+        "Company (legal)"
+      ],
       "domain_module": "organization",
       "technical": {
         "artifact_kind": "table",
@@ -93,7 +108,10 @@
     {
       "id": "location",
       "business_primary_term": "Location",
-      "aliases": ["Site", "Address node"],
+      "aliases": [
+        "Site",
+        "Address node"
+      ],
       "domain_module": "organization",
       "technical": {
         "artifact_kind": "table",
@@ -124,7 +142,9 @@
     {
       "id": "membership_scope",
       "business_primary_term": "Membership scope",
-      "aliases": ["Scoped access grant"],
+      "aliases": [
+        "Scoped access grant"
+      ],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -135,7 +155,9 @@
     {
       "id": "org_unit",
       "business_primary_term": "Organization unit",
-      "aliases": ["Org hierarchy node"],
+      "aliases": [
+        "Org hierarchy node"
+      ],
       "domain_module": "organization",
       "technical": {
         "artifact_kind": "table",
@@ -146,7 +168,9 @@
     {
       "id": "permission",
       "business_primary_term": "Permission",
-      "aliases": ["PBAC key"],
+      "aliases": [
+        "PBAC key"
+      ],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -178,7 +202,10 @@
     {
       "id": "tenant",
       "business_primary_term": "Tenant",
-      "aliases": ["Organization", "Customer organization"],
+      "aliases": [
+        "Organization",
+        "Customer organization"
+      ],
       "domain_module": "tenancy",
       "related_doc_anchor": "GLOSSARY.md#2-tenant-and-organization",
       "technical": {
@@ -190,7 +217,9 @@
     {
       "id": "tenant_invitation",
       "business_primary_term": "Tenant invitation",
-      "aliases": ["Invite"],
+      "aliases": [
+        "Invite"
+      ],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -201,7 +230,10 @@
     {
       "id": "tenant_membership",
       "business_primary_term": "Tenant membership",
-      "aliases": ["Membership", "User–tenant link"],
+      "aliases": [
+        "Membership",
+        "User–tenant link"
+      ],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -212,7 +244,9 @@
     {
       "id": "tenant_membership_role",
       "business_primary_term": "Membership role assignment",
-      "aliases": ["User role in tenant"],
+      "aliases": [
+        "User role in tenant"
+      ],
       "domain_module": "authorization",
       "technical": {
         "artifact_kind": "table",
@@ -223,7 +257,9 @@
     {
       "id": "tenant_settings",
       "business_primary_term": "Tenant settings",
-      "aliases": ["Organization settings"],
+      "aliases": [
+        "Organization settings"
+      ],
       "domain_module": "tenancy",
       "technical": {
         "artifact_kind": "table",
@@ -232,21 +268,26 @@
       }
     },
     {
-      "id": "tenant_status",
+      "id": "generic_status",
       "business_primary_term": "Tenant lifecycle status",
-      "aliases": ["Organization status"],
+      "aliases": [
+        "Organization status",
+        "Row status"
+      ],
       "domain_module": "tenancy",
       "technical": {
         "artifact_kind": "postgres_enum",
-        "enum_name": "tenant_status",
-        "drizzle_schema_file": "packages/_database/src/schema/mdm/tenant-status.schema.ts"
+        "enum_name": "generic_status",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
       },
-      "notes": "Values are defined in Drizzle as tenantStatus; there is no tenant_status table in this module.\n"
+      "notes": "`mdm.tenants.status` uses `statusEnum` (`generic_status`).\n"
     },
     {
       "id": "user",
       "business_primary_term": "User",
-      "aliases": ["End user account"],
+      "aliases": [
+        "End user account"
+      ],
       "domain_module": "identity",
       "related_doc_anchor": "GLOSSARY.md#3-identity-user-vs-employee-or-party",
       "technical": {
@@ -258,12 +299,365 @@
     {
       "id": "user_identity",
       "business_primary_term": "Linked identity",
-      "aliases": ["IdP identity", "External identity"],
+      "aliases": [
+        "IdP identity",
+        "External identity"
+      ],
       "domain_module": "identity",
       "technical": {
         "artifact_kind": "table",
         "table": "user_identities",
         "drizzle_schema_file": "packages/_database/src/schema/iam/user-identities.schema.ts"
+      }
+    },
+    {
+      "id": "tenant_type",
+      "business_primary_term": "Tenant Type",
+      "domain_module": "tenancy",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "tenant_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "mdm_governance_level",
+      "business_primary_term": "Mdm Governance Level",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "mdm_governance_level",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "legal_entity_type",
+      "business_primary_term": "Legal Entity Type",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "legal_entity_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "business_unit_type",
+      "business_primary_term": "Business Unit Type",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "business_unit_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "location_type",
+      "business_primary_term": "Location Type",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "location_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "party_type",
+      "business_primary_term": "Party Type",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "party_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "ownership_level",
+      "business_primary_term": "Ownership Level",
+      "domain_module": "authorization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "ownership_level",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "mdm_status",
+      "business_primary_term": "Mdm Status",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "mdm_status",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "item_type",
+      "business_primary_term": "Item Type",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "item_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "valuation_method",
+      "business_primary_term": "Valuation Method",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "valuation_method",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "fiscal_calendar_type",
+      "business_primary_term": "Fiscal Calendar Type",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "fiscal_calendar_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "account_type",
+      "business_primary_term": "Account Type",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "account_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "posting_type",
+      "business_primary_term": "Posting Type",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "posting_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "normal_balance",
+      "business_primary_term": "Normal Balance",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "normal_balance",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "membership_status",
+      "business_primary_term": "Membership Status",
+      "domain_module": "authorization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "membership_status",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "membership_type",
+      "business_primary_term": "Membership Type",
+      "domain_module": "authorization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "membership_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "auth_challenge_method",
+      "business_primary_term": "Auth Challenge Method",
+      "domain_module": "identity",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "auth_challenge_method",
+        "drizzle_schema_file": "packages/_database/src/schema/iam/auth-challenges.schema.ts"
+      }
+    },
+    {
+      "id": "auth_challenge_status",
+      "business_primary_term": "Auth Challenge Status",
+      "domain_module": "identity",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "auth_challenge_status",
+        "drizzle_schema_file": "packages/_database/src/schema/iam/auth-challenges.schema.ts"
+      }
+    },
+    {
+      "id": "audit_actor_type",
+      "business_primary_term": "Audit Actor Type",
+      "domain_module": "audit",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "audit_actor_type",
+        "drizzle_schema_file": "packages/_database/src/7w1h-audit/audit-enums.schema.ts"
+      }
+    },
+    {
+      "id": "audit_outcome",
+      "business_primary_term": "Audit Outcome",
+      "domain_module": "audit",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "audit_outcome",
+        "drizzle_schema_file": "packages/_database/src/7w1h-audit/audit-enums.schema.ts"
+      }
+    },
+    {
+      "id": "audit_source_channel",
+      "business_primary_term": "Audit Source Channel",
+      "domain_module": "audit",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "audit_source_channel",
+        "drizzle_schema_file": "packages/_database/src/7w1h-audit/audit-enums.schema.ts"
+      }
+    },
+    {
+      "id": "deployment_environment",
+      "business_primary_term": "Deployment Environment",
+      "domain_module": "audit",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "deployment_environment",
+        "drizzle_schema_file": "packages/_database/src/7w1h-audit/audit-enums.schema.ts"
+      }
+    },
+    {
+      "id": "alias_type",
+      "business_primary_term": "Alias Type",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "alias_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "custom_data_type",
+      "business_primary_term": "Custom Data Type",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "custom_data_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "custom_field_data_type",
+      "business_primary_term": "Custom Field Data Type",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "custom_field_data_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "fiscal_period_status",
+      "business_primary_term": "Fiscal Period Status",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "fiscal_period_status",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "master_domain",
+      "business_primary_term": "Master Domain",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "master_domain",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "org_unit_type",
+      "business_primary_term": "Org Unit Type",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "org_unit_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "role_category",
+      "business_primary_term": "Role Category",
+      "domain_module": "authorization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "role_category",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "role_scope_type",
+      "business_primary_term": "Role Scope Type",
+      "domain_module": "authorization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "role_scope_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "source_type",
+      "business_primary_term": "Source Type",
+      "domain_module": "organization",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "source_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "address_type",
+      "business_primary_term": "Address Type",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "address_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "policy_effect",
+      "business_primary_term": "Policy Effect",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "policy_effect",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "sequence_reset_rule",
+      "business_primary_term": "Sequence Reset Rule",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "sequence_reset_rule",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
+      }
+    },
+    {
+      "id": "tax_registration_type",
+      "business_primary_term": "Tax Registration Type",
+      "domain_module": "finance",
+      "technical": {
+        "artifact_kind": "postgres_enum",
+        "enum_name": "tax_registration_type",
+        "drizzle_schema_file": "packages/_database/src/schema/shared/enums.schema.ts"
       }
     }
   ]

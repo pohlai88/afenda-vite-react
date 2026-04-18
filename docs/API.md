@@ -4,11 +4,11 @@ This document is the **contract** for Afenda’s **HTTP API**: tenant-scoped res
 
 ## Implementation and clients
 
-| Concern | Where it lives |
-| --- | --- |
+| Concern                | Where it lives                                                                                                                                             |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **API implementation** | A dedicated Node server (e.g. **`apps/api`** with **Fastify** or Express)—see [Architecture](./ARCHITECTURE.md) and [Authentication](./AUTHENTICATION.md). |
-| **Browser client** | **`apps/web`**: `fetch` / TanStack Query to **`/api/...`** (same origin in production when behind one host, or absolute base URL from env). |
-| **Local development** | Vite **`server.proxy`** in `apps/web` can forward **`/api`** to the API process (e.g. `VITE_API_URL`). |
+| **Browser client**     | **`apps/web`**: `fetch` / TanStack Query to **`/api/...`** (same origin in production when behind one host, or absolute base URL from env).                |
+| **Local development**  | Vite **`server.proxy`** in `apps/web` can forward **`/api`** to the API process (e.g. `VITE_API_URL`).                                                     |
 
 **Auth:** All routes below require a **valid session** unless noted. Authentication is enforced on the **API** (e.g. **Auth.js** without Next, **Auth0**, or your chosen stack)—see [Authentication](./AUTHENTICATION.md). **Authorization** (RBAC / PBAC) is described in [Roles and permissions](./ROLES_AND_PERMISSIONS.md).
 
@@ -414,14 +414,14 @@ All API errors follow a standard format:
 
 ### Common error codes
 
-| Code | HTTP status | Description |
-| --- | --- | --- |
-| `UNAUTHORIZED` | 401 | Authentication required |
-| `FORBIDDEN` | 403 | Insufficient permissions |
-| `NOT_FOUND` | 404 | Resource not found |
-| `BAD_REQUEST` | 400 | Invalid request |
-| `VALIDATION_ERROR` | 400 | Request validation failed |
-| `INTERNAL_ERROR` | 500 | Server error |
+| Code               | HTTP status | Description               |
+| ------------------ | ----------- | ------------------------- |
+| `UNAUTHORIZED`     | 401         | Authentication required   |
+| `FORBIDDEN`        | 403         | Insufficient permissions  |
+| `NOT_FOUND`        | 404         | Resource not found        |
+| `BAD_REQUEST`      | 400         | Invalid request           |
+| `VALIDATION_ERROR` | 400         | Request validation failed |
+| `INTERNAL_ERROR`   | 500         | Server error              |
 
 ---
 
@@ -448,6 +448,6 @@ Add **OpenAPI** (generated from code or hand-maintained) when you want machine-r
 - [Architecture](./ARCHITECTURE.md) — Monorepo; SPA vs API vs database
 - [Authentication](./AUTHENTICATION.md) — Sessions, Auth0, Vite client
 - [Roles and permissions](./ROLES_AND_PERMISSIONS.md) — Permission keys and enforcement
-- [Database](./DATABASE.md) — PostgreSQL, Drizzle (server-side)
+- [Database package](../packages/_database/README.md) — PostgreSQL, Drizzle (server-side)
 - [Deployment](./DEPLOYMENT.md) — Static client + API deployment
 - [Documentation scope](./DOCUMENTATION_SCOPE.md) — Normative vs optional docs (includes OpenAPI)

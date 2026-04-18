@@ -1,16 +1,11 @@
-export * from "./finance/_schema"
-export * from "./governance/_schema"
-export * from "./governance/audit-enums.schema"
-export * from "./governance/audit-logs.schema"
-export * from "./iam/_schema"
-export * from "./iam/auth-challenges.schema"
-export * from "./iam/identity-links.schema"
-export * from "./iam/tenant-memberships.schema"
-export * from "./iam/user-accounts.schema"
-export * from "./iam/user-identities.schema"
-export * from "./mdm/_schema"
-export * from "./mdm/tenant-status.schema"
-export * from "./mdm/tenants.schema"
-export * from "./ref/_schema"
-export * from "./ref/currencies.schema"
-export * from "./shared/columns.schema"
+/**
+ * Public schema barrel: re-exports domain modules via default `index.ts` entrypoints.
+ * On-disk DDL uses `*.schema.ts` (human-readable); import through this barrel or `@afenda/database/schema`.
+ */
+export * from "./finance"
+export * from "./governance"
+export * from "./iam"
+export * from "./mdm"
+export * from "./ref"
+export * from "./shared"
+export * from "../views"

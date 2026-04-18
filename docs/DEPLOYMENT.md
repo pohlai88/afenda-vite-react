@@ -1,6 +1,6 @@
 # Deployment (Vercel)
 
-**Afenda** is a **pnpm + Turborepo** monorepo. The web client is **`apps/web`**: **Vite + React** (static `dist/` output), not a Next.js server. On **Vercel**, you deploy that **static build**; APIs and the database run **elsewhere** (Vercel Serverless/Edge, a separate Node service, or a BaaS)—see [Architecture](./ARCHITECTURE.md), [Authentication](./AUTHENTICATION.md), and [Database](./DATABASE.md).
+**Afenda** is a **pnpm + Turborepo** monorepo. The web client is **`apps/web`**: **Vite + React** (static `dist/` output), not a Next.js server. On **Vercel**, you deploy that **static build**; APIs and the database run **elsewhere** (Vercel Serverless/Edge, a separate Node service, or a BaaS)—see [Architecture](./ARCHITECTURE.md), [Authentication](./AUTHENTICATION.md), and [Database package](../packages/_database/README.md).
 
 This page focuses on **hosting the Vite ERP client on Vercel**.
 
@@ -18,13 +18,13 @@ This page focuses on **hosting the Vite ERP client on Vercel**.
 
 **Install and build from the repository root** so pnpm workspaces resolve (`packages/typescript-config`, etc.).
 
-| Setting | Suggested value |
-| --- | --- |
-| **Root Directory** | Repository root (`.`) |
-| **Framework Preset** | **Vite** (or “Other” with commands below) |
-| **Install Command** | `pnpm install` |
-| **Build Command** | `pnpm exec turbo run build --filter=@afenda/web` |
-| **Output Directory** | `apps/web/dist` |
+| Setting              | Suggested value                                  |
+| -------------------- | ------------------------------------------------ |
+| **Root Directory**   | Repository root (`.`)                            |
+| **Framework Preset** | **Vite** (or “Other” with commands below)        |
+| **Install Command**  | `pnpm install`                                   |
+| **Build Command**    | `pnpm exec turbo run build --filter=@afenda/web` |
+| **Output Directory** | `apps/web/dist`                                  |
 
 If Vercel does not auto-detect Vite when the root is the monorepo root, set **Output Directory** explicitly to **`apps/web/dist`** and ensure the build command runs the web app only.
 
@@ -42,7 +42,7 @@ Client-side routes (`/finance`, `/settings`, …) must resolve to **`index.html`
 
 ### 4.1 Browser-exposed (`VITE_*`)
 
-Set in **Vercel → Project → Settings → Environment Variables** for *Production*, *Preview*, and *Development* as needed.
+Set in **Vercel → Project → Settings → Environment Variables** for _Production_, _Preview_, and _Development_ as needed.
 
 Examples (names must match what `apps/web` reads):
 
@@ -58,7 +58,7 @@ VITE_AUTH0_CLIENT_ID=...
 
 ### 4.2 Server-only (API / serverless)
 
-If you add **Vercel Functions** or a **Route Handler**–style API in this repo, configure `DATABASE_URL`, `AUTH_SECRET`, IdP secrets, and AI keys **only** in Vercel env **without** the `VITE_` prefix. See [Authentication](./AUTHENTICATION.md) and [Database](./DATABASE.md).
+If you add **Vercel Functions** or a **Route Handler**–style API in this repo, configure `DATABASE_URL`, `AUTH_SECRET`, IdP secrets, and AI keys **only** in Vercel env **without** the `VITE_` prefix. See [Authentication](./AUTHENTICATION.md) and [Database package](../packages/_database/README.md).
 
 Illustrative split:
 
@@ -90,7 +90,7 @@ AWS_S3_BUCKET=...
    pnpm exec turbo run db:migrate --filter=@afenda/database
    ```
 
-   (Adjust `--filter` when your database package exists—see [Database](./DATABASE.md).)
+   (Adjust `--filter` when your database package exists—see [Database package](../packages/_database/README.md).)
 
 3. **`CREATE EXTENSION IF NOT EXISTS vector;`** — usually once per database, often via provider UI or migration SQL.
 
@@ -146,7 +146,7 @@ Add a deploy step only if you deploy outside Vercel’s Git integration (e.g. `v
 3. **`VITE_*`** — only non-secret client config; API base URL points to your backend.
 4. **Database** — hosted separately; migrations not run by the static deploy by default.
 5. **Auth** — production/preview origins registered with your IdP.
-6. **pgvector** — enabled on the Postgres instance if you use embeddings ([Database](./DATABASE.md)).
+6. **pgvector** — enabled on the Postgres instance if you use embeddings ([Database package](../packages/_database/README.md)).
 7. **[`vercel.json`](../vercel.json)** — SPA rewrite + monorepo build/output; adjust if you change package name or output path.
 
 ---
@@ -156,7 +156,7 @@ Add a deploy step only if you deploy outside Vercel’s Git integration (e.g. `v
 - [Architecture](./ARCHITECTURE.md)
 - [Authentication](./AUTHENTICATION.md)
 - [Integrations](./INTEGRATIONS.md) — OAuth redirect URLs must match deployed API origin
-- [Database](./DATABASE.md)
+- [Database package](../packages/_database/README.md)
 - [Project configuration](./PROJECT_CONFIGURATION.md)
 
 External: [Vite on Vercel](https://vercel.com/docs/frameworks/vite), [Turborepo on Vercel](https://vercel.com/docs/monorepos/turborepo).

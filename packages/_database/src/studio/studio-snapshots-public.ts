@@ -18,3 +18,8 @@ export {
 export type { TruthGovernanceSnapshot } from "./truth-governance.schema"
 export { studioSnapshotEnvelopeSchema } from "./studio-snapshot-metadata.schema"
 export type { StudioSnapshotEnvelope } from "./studio-snapshot-metadata.schema"
+export {
+  studioEnumsResponseSchema,
+  studioPgEnumRowSchema,
+} from "./studio-enums.schema"
+export type { StudioPgEnumRow } from "./studio-enums.schema"

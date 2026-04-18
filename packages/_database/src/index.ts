@@ -7,8 +7,9 @@ export {
   pool,
   type DatabaseClient,
 } from "./client"
-export * from "./audit"
+export * from "./7w1h-audit"
 export * as schema from "./schema"
-export * from "./identity"
-export * from "./tenancy"
-export * from "./governance"
+export * from "./schema/identity"
+export * from "./schema/tenancy"
+export * from "./schema/pkg-governance"
+export * from "./queries"

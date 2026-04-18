@@ -17,7 +17,7 @@ Afenda is delivered as a **pnpm** + **Turborepo** monorepo. The **primary surfac
 - **Primary application:** the **React + Vite** app under **`apps/web`** (see [`apps/web/package.json`](../apps/web/package.json)). Production output is static assets under `apps/web/dist/` (served like any Vite build).
 - **Shared TypeScript:** [`packages/typescript-config/`](../packages/typescript-config/) holds shared `tsconfig` presets consumed by apps and packages.
 - **Workspace testing:** [`packages/vitest-config/`](../packages/vitest-config/) (`@afenda/vitest-config`) holds **shared Vitest defaults** (global setup, `getAfendaVitestTestOptions()`, coverage presets). Future E2E, Storybook, and broader UI test glue may live in additional packages as the repo grows.
-- **Persistent data:** ERP state belongs in **PostgreSQL** (and related services), accessed from **API or workers** -- see [Database](./DATABASE.md). The Vite app talks to HTTP APIs, not the DB directly.
+- **Persistent data:** ERP state belongs in **PostgreSQL** (and related services), accessed from **API or workers** -- see [Database package](../packages/_database/README.md). The Vite app talks to HTTP APIs, not the DB directly.
 
 ```text
 afenda-monorepo/
@@ -237,7 +237,7 @@ pnpm run lint                          # ESLint
 - [Architecture evolution](./ARCHITECTURE_EVOLUTION.md) -- Trigger-based policy for upgrade timing and ADR ownership
 - [Authentication](./AUTHENTICATION.md) -- Vite SPA patterns, BFF / Auth0, API checks
 - [Roles and permissions](./ROLES_AND_PERMISSIONS.md) -- RBAC + PBAC, DB-backed checks, UI vs API
-- [Database](./DATABASE.md) -- PostgreSQL + Drizzle (API/worker only; not in Vite)
+- [Database package](../packages/_database/README.md) -- PostgreSQL + Drizzle (API/worker only; not in Vite)
 - [Deployment](./DEPLOYMENT.md) -- Vercel static client + external API/DB
 - [Glossary](./GLOSSARY.md) -- shared vocabulary (client vs server, tenant, ERP concepts)
 - [Integrations](./INTEGRATIONS.md) -- OAuth to third-party APIs from the backend

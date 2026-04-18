@@ -12,7 +12,7 @@ const snapshotPath = join(here, "business-glossary.snapshot.json")
 
 let cached: BusinessGlossarySnapshot | null = null
 
-/** Validated business ↔ technical glossary snapshot (from YAML via `studio:sync`). */
+/** Validated business ↔ technical glossary snapshot (committed JSON under src/studio/). */
 export function getBusinessGlossarySnapshot(): BusinessGlossarySnapshot {
   if (!cached) {
     const raw = readFileSync(snapshotPath, "utf8")

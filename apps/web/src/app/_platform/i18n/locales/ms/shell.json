@@ -289,7 +289,7 @@
       },
       "identity_bridge": {
         "title": "Jambatan identiti tiada",
-        "body": "Tiada identity link Afenda untuk akaun ini (HTTP {{status}}). Hook pendaftaran mesti menggunakan DATABASE_URL yang sama dengan apps/api, dan identity_links mesti wujud (ADR-0004)."
+        "body": "Tiada identity link Afenda untuk akaun ini (HTTP {{status}}). Hook pendaftaran mesti menggunakan DATABASE_URL yang sama dengan apps/api, dan identity_links mesti wujud."
       },
       "forbidden": {
         "title": "Akses ditolak",
@@ -673,7 +673,7 @@
     "meta_content_hash": "Hash YAML",
     "truth_heading": "Registri tadbir truth",
     "truth_description": "Truth class, model skop, dan model masa — berasingan daripada glosari perniagaan.",
-    "truth_empty": "Tiada baris registri lagi. Edit database-truth-governance.yaml kemudian jalankan studio:sync.",
+    "truth_empty": "Tiada baris registri truth, scope atau time lagi. Data dimuat daripada snapshot tadbir urus dalam pakej database apabila ada.",
     "truth_column_empty": "Belum ditakrifkan",
     "truth_classes_heading": "Truth class",
     "scope_models_heading": "Model skop",

@@ -1,0 +1,8 @@
+# Drizzle Kit output (SQL migrations, snapshots) — not tracked in git.
+# Run `pnpm exec drizzle-kit generate` locally when needed; do not commit generated files.
+#
+# `_journal.json` is committed empty so `drizzle-kit migrate` / `generate` never hit ENOENT on a fresh clone
+# (Kit reads meta/_journal.json before creating it). Regenerated migrations still stay ignored via `*`.
+*
+!.gitignore
+!meta/_journal.json

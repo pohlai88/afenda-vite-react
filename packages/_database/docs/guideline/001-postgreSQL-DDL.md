@@ -1,112 +1,127 @@
-Excellent. The missing parts are exactly where an ERP database stops being “a set of tables” and becomes a **governed enterprise data platform**.
+# 001-FINAL — Canonical ERP Tenant-MDM PostgreSQL Design Charter
 
-What you need now is not only entities, but the full database discipline around them:
+**File:** `001-postgreSQL-DDL.md` — same content as **001-FINAL**; the filename is the stable path in `docs/guideline/`.
 
-- **PK / FK strategy**
-- **unique constraints**
-- **check constraints**
-- **partial indexes**
-- **effective-dated integrity**
-- **tenant isolation rules**
-- **alias / alternate keys**
-- **MDM golden record support**
-- **JSONB for controlled extensibility**
-- **PostgreSQL functions / triggers / generated columns / views**
-- **Drizzle patterns for strong typing and migration discipline**
-
-So below I will turn the tenant-centered ERP MDM design into a **production-grade PostgreSQL + Drizzle blueprint**.
+> **Charter scope.** This is the reconciled baseline—not another wave, not an implementation guess, and not a partial pack. It is the **strict database charter** distilled from the original 001: internal ambiguities are normalized into one usable standard; wherever 001 gave examples, they are expressed as rules; wherever a concept needs a hard PostgreSQL guardrail, that guardrail is explicit. Authority for architecture, layers, doctrine, and implementation order comes from the original 001.
 
 ---
 
-# 1. What was still missing
+## 1. Authority
 
-From your request, the missing layer is this:
+**001 is the sovereign database baseline.**
 
-## Structural completeness
+Until you explicitly replace it, every later schema, migration, ORM file, resolver, or service must be judged against 001 first. 001 defines the target architecture, the integrity doctrine, the missing-but-mandatory enterprise features, and the correct implementation order: **canonical PostgreSQL DDL first, Drizzle mirror second**.
 
-You asked for:
+## 2. What 001 is really saying
 
-- query
-- constraint
-- PK
-- FK
-- tenant customization
-- alias
-- Drizzle / ORM / PostgreSQL features
-- important missing parts
+001 is not “a set of tables.”
 
-The true missing items are broader:
+It is a rule that your ERP database must be a **governed enterprise data platform** with:
 
-### A. Keys
+- key strategy
+- constraint strategy
+- tenant isolation
+- alias and external identity
+- MDM governance
+- controlled customization
+- canonical query surfaces
+- PostgreSQL-native enforcement
+- Drizzle mirroring rather than weakening the truth
 
-- surrogate PK
-- business key
-- alternate key
-- composite uniqueness
-- external/source key
-- natural key preservation
+---
 
-### B. Constraints
+## 3. Canonical layer model
 
-- not null
-- check
-- unique
-- exclusion-like logic
-- scoped uniqueness
-- soft-delete safe uniqueness
-- temporal consistency constraints
+The database is permanently divided into **6 layers**.
 
-### C. Queryability
+### Layer 1 — Business truth root
 
-- indexing strategy
-- common search paths
-- canonical views
-- RLS-compatible query pattern
-- denormalized read models where needed
+This is the enterprise boundary and customization root:
 
-### D. Tenant customization
+- `tenants`
+- `tenant_profiles`
+- `tenant_policies`
+- `tenant_label_overrides`
+- `document_sequences`
 
-- per-tenant policy
-- per-tenant field extension
-- per-tenant alias
-- per-tenant code generation
-- per-tenant master ownership rules
+### Layer 2 — Enterprise structure
 
-### E. PostgreSQL enterprise features
+This is the structural operating model under a tenant:
 
-- schemas
-- enums vs lookup tables
-- jsonb
+- `legal_entities`
+- `business_units`
+- `locations`
+- `org_units`
+
+### Layer 3 — Security scope
+
+This is access and operating authority:
+
+- `tenant_memberships`
+- `roles`
+- `role_assignments`
+- `authority_policies`
+
+### Layer 4 — MDM business masters
+
+This is the operational and accounting master surface:
+
+- `parties`
+- `customers`
+- `suppliers`
+- `items`
+- `item_entity_settings`
+- `accounts`
+- tax profile / registration surfaces as required by the model
+
+### Layer 5 — MDM governance
+
+This is the truth-reconciliation layer:
+
+- `master_aliases`
+- `external_identities`
+- `survivorship_rules`
+- duplicate/match tables
+- merge history
+- data quality issues
+
+### Layer 6 — Platform-grade mechanics
+
+This is where enterprise integrity is enforced:
+
+- partial indexes
 - GIN indexes
 - generated columns
-- views / materialized views
 - triggers
+- views / materialized views
 - RLS
-- partitioning candidates
-- audit stamping
-- full-text / trigram search candidates
-- advisory locking where appropriate
-
-### F. Drizzle discipline
-
-- domain schemas
-- enums
-- relation declarations
-- composite unique index
-- migration safety
-- typed jsonb
-- reusable columns
-- RLS awareness at app layer
+- audit trail
+- controlled JSONB
+- other PostgreSQL-native mechanics where appropriate
 
 ---
 
-# 2. Foundation design doctrine
+## 4. Non-negotiable design doctrine
 
-For ERP MDM tenant management, every important master table should follow a common shape.
+These are not optional preferences. They are the permanent doctrine of the database:
 
-## 2.1 Recommended standard columns
+- UUID surrogate PK plus business key
+- scoped uniqueness
+- strong FK discipline
+- effective-dated integrity
+- soft-delete-aware uniqueness
+- tenant-safe referential integrity
+- alias and external identity handling
+- controlled extensibility with JSONB
+- canonical query surfaces
+- PostgreSQL as invariant enforcer
+- Drizzle as typed mirror and orchestration aid
 
-For most tenant-owned master tables:
+---
+
+## 5. Standard table contract
+
+For most tenant-owned mutable master tables, 001 establishes a common contract:
 
 ```sql
 id                      uuid primary key
@@ -129,43 +144,29 @@ version_no              integer not null default 1
 metadata                jsonb not null default '{}'::jsonb
 ```
 
-This shape gives you:
+**Implementation note (Afenda `@afenda/database`).** The fragment above is **normative intent**. In Drizzle modules, `status` for shared lifecycles is typically a **`pgEnum`** (see `shared/enums.schema.ts`), bounded codes use `varchar({ length: n })` or project column helpers, and timestamps must remain **`timestamptz`**—never `timestamp` without time zone. See **Appendix B** and `shared/columns.schema.ts`.
 
-- ERP business key (`code`)
-- human display (`name`)
-- flexible synonyms (`aliases`)
-- external system trace (`external_ref`)
-- lifecycle (`status`)
-- temporal governance (`effective_from`, `effective_to`)
-- soft deletion (`is_deleted`)
-- audit trail support (`created_at`, `updated_at`)
-- extensibility (`metadata`)
+For scoped ownership tables, add:
 
----
+- `ownership_level`
+- `legal_entity_id`
+- `business_unit_id`
+- `location_id`
 
-## 2.2 Surrogate key + business key together
+This means every serious master table must carry:
 
-Never choose only one.
-
-### Use:
-
-- **surrogate key**: `id uuid`
-- **business key**: `tenant_id + code`
-- **alternate keys**: registration no, tax no, external ref, alias, etc.
-
-Why:
-
-- surrogate PK is stable for joins
-- business key is meaningful for ERP operations
-- alternate keys support MDM reconciliation and import
+- identity
+- scope
+- lifecycle
+- auditability
+- extensibility
+- temporal validity
 
 ---
 
-# 3. Key strategy
+## 6. Key doctrine
 
-This is one of the most important missing parts.
-
-## 3.1 Primary key strategy
+### Primary key rule
 
 Use:
 
@@ -173,96 +174,76 @@ Use:
 id uuid primary key
 ```
 
-Why not composite PK everywhere?
-Because:
+This is the permanent PK rule. 001 explicitly rejects composite PK everywhere as the default because it makes joins, FKs, ORM relations, refactoring, and API identity heavier.
 
-- foreign keys become large and repetitive
-- ORM relations become noisy
-- refactoring is harder
-- API identity becomes awkward
+### Business key rule
 
-But do **not** stop there.
+Do **not** stop at the surrogate PK.
 
----
+Every important entity also needs scoped business uniqueness:
 
-## 3.2 Business uniqueness strategy
+- `unique (tenant_id, code)`
+- `unique (tenant_id, legal_entity_id, code)`
+- `unique (tenant_id, legal_entity_id, location_id, code)`
 
-For tenant-owned entities:
+### Alternate key rule
 
-```sql
-unique (tenant_id, code)
-```
+Preserve alternate keys when they are part of reconciliation or legal identity, such as:
 
-For legal-entity owned entities:
-
-```sql
-unique (tenant_id, legal_entity_id, code)
-```
-
-For location-scoped entities:
-
-```sql
-unique (tenant_id, legal_entity_id, location_id, code)
-```
-
-This is the ERP-safe uniqueness pattern.
+- registration number
+- tax registration number
+- external ID
+- external code
+- alias value
 
 ---
 
-## 3.3 Alternate key strategy
+## 7. FK doctrine
 
-Examples:
+### Base rule
 
-### Legal entity
+Use ordinary FKs where the reference is simple and tenant leakage is impossible.
 
-```sql
-unique (tenant_id, registration_number)
-unique (tenant_id, tax_registration_number)
-```
+### Tenant-safe rule
 
-Only if not null. Best done via partial unique indexes.
-
-### Party
+Where correctness matters, use **composite tenant-safe FK**:
 
 ```sql
-unique (tenant_id, canonical_name, party_type)
+foreign key (tenant_id, parent_id)
+references parent_table (tenant_id, id)
 ```
 
-Often too strict for production, so instead use:
+001 explicitly identifies this as the safer enterprise pattern, because FK on `id` alone can allow cross-tenant leakage if the wrong ID is referenced.
 
-- match rules
-- duplicate candidate tables
-- optional partial uniqueness on trusted IDs
+### Parent support rule
+
+If a child table must reference `(tenant_id, id)`, the parent must expose that pair as unique when necessary for the FK, even if `id` is already the PK. This is why 001 adds helper uniqueness like:
+
+```sql
+unique (tenant_id, id)
+```
+
+before child composite FK wiring.
 
 ---
 
-# 4. Constraint design
+## 8. Constraint doctrine
 
-This is where correctness lives.
+Every important table must carry explicit constraints, not implied assumptions.
 
----
+### Required checks
 
-## 4.1 Core check constraints
-
-You need hard checks for all master tables.
-
-### Effective date consistency
+At minimum:
 
 ```sql
 check (effective_to is null or effective_to >= effective_from)
 ```
 
-### Status domain
-
-If using text rather than enum:
-
 ```sql
-check (status in ('draft', 'active', 'inactive', 'suspended', 'archived'))
+check (status in (...))
 ```
 
-### Ownership consistency
-
-If you model ownership level:
+If ownership scope is modeled:
 
 ```sql
 check (
@@ -276,1086 +257,211 @@ check (
 )
 ```
 
-This is extremely important.
+For financial values, use positivity checks where appropriate, such as credit limits and controlled period states.
 
-### Currency positive precision
+### Required uniqueness
 
-```sql
-check (credit_limit_amount is null or credit_limit_amount >= 0)
-```
+Uniqueness must be scoped and explicit.
 
-### Closed-open period rule
-
-```sql
-check (period_status in ('open', 'soft_closed', 'hard_closed'))
-```
+Plain `unique(code)` is rarely correct in an ERP; scope it by tenant or sub-scope.
 
 ---
 
-## 4.2 Scoped referential integrity rule
+## 9. Alias and external identity doctrine
 
-A common ERP mistake is this:
+001 gives three identity layers.
 
-- child row references a parent row from another tenant
+### 9.1 Array aliases
 
-Normal FK does not stop all cross-tenant leakage if only `id` is referenced.
+`aliases text[]` may exist for light synonym/search usage. It is acceptable as a helper.
 
-So where correctness matters, use **composite FK with tenant_id**.
+### 9.2 Governed alias table
 
-Example:
+For real MDM, use a dedicated alias registry such as `master_aliases` with:
 
-```sql
-legal_entities (
-  id uuid primary key,
-  tenant_id uuid not null,
-  unique (tenant_id, id)
-)
+- `master_domain`
+- `master_id`
+- `alias_type`
+- `alias_value`
+- source attribution
+- preference marker
+- effective dates
 
-business_units (
-  ...
-  tenant_id uuid not null,
-  legal_entity_id uuid not null,
-  foreign key (tenant_id, legal_entity_id)
-    references legal_entities (tenant_id, id)
-)
-```
+### 9.3 External identity table
 
-This is far safer than `foreign key (legal_entity_id) references legal_entities(id)` alone.
+For source-system mapping, use `external_identities` with:
 
-This is one of the most important missing enterprise-grade patterns.
+- source system
+- external object type
+- external ID
+- external code
+- sync status
+- last synced time
 
----
+#### Final rule (alias / external identity)
 
-# 5. Alias model
+If aliasing is governed, **the alias table is the source of truth**.
 
-You mentioned alias. In MDM, alias is critical.
-
-There are **three types** of alias you should support.
+Array aliases are optional helper/search material, not the authoritative integration surface.
 
 ---
 
-## 5.1 Simple aliases as array
+## 10. Tenant customization doctrine
 
-Useful for search and UI.
+001 requires customization to be governed, not improvised.
 
-```sql
-aliases text[] not null default '{}'
-```
+### Required customization surfaces
 
-Pros:
+- `tenant_policies`
+- `custom_field_definitions`
+- `custom_field_values`
+- `tenant_label_overrides`
+- `document_sequences`
 
-- simple
-- fast for basic use
-- easy GIN indexing
+### Permanent rule
 
-Cons:
+Customization **must not** replace core relational structure.
 
-- weak governance
-- no effective dating
-- no source attribution
+JSONB and custom fields are for true extension, not for avoiding proper master/entity modeling. 001 says this explicitly in spirit and examples.
 
-Good for light aliasing only.
+### Numbering rule
 
----
+ERP numbering rules belong in the database model, not scattered through service code:
 
-## 5.2 Strong alias table
-
-For serious ERP MDM, use a dedicated table.
-
-### Example: `master_aliases`
-
-```sql
-master_aliases
---------------
-id                      uuid pk
-tenant_id               uuid not null
-master_domain           varchar not null
-master_id               uuid not null
-alias_type              varchar not null   -- short_name, external_code, legacy_code, search_synonym
-alias_value             varchar not null
-source_system_id        uuid null
-is_preferred            boolean not null default false
-effective_from          date not null default current_date
-effective_to            date null
-created_at              timestamptz not null default now()
-unique (tenant_id, master_domain, alias_type, alias_value)
-```
-
-This is much better.
-
-Examples:
-
-- customer legacy code
-- supplier old name
-- item barcode
-- tax alias
-- import synonym
+- document type
+- prefix pattern
+- suffix pattern
+- next number
+- padding
+- reset rule
+- scope
+- default selection
 
 ---
 
-## 5.3 External identity table
+## 11. Query doctrine
 
-For source-system mapping, use dedicated external identity mapping.
+001 says the schema is incomplete unless the query model is also designed.
 
-```sql
-external_identities
--------------------
-id                      uuid pk
-tenant_id               uuid not null
-master_domain           varchar not null
-master_id               uuid not null
-source_system_id        uuid not null
-external_object_type    varchar not null
-external_id             varchar not null
-external_code           varchar null
-sync_status             varchar not null
-last_synced_at          timestamptz null
-unique (tenant_id, source_system_id, external_object_type, external_id)
-```
+### Required query surfaces
 
-This is mandatory if you expect integration.
+- canonical master lookup
+- effective-dated current record lookup
+- alias-aware lookup
+- customization resolution
+- scope fallback resolution
 
----
+### Required query characteristics
 
-# 6. Tenant customization model
+- indexed search paths
+- canonical “active/current” filters
+- tenant-scoped reads
+- view-based read surfaces where repetition would drift
+- room for denormalized read models where appropriate
 
-This is a major missing area in many schemas.
+### Canonical example
 
-Tenant customization should not become uncontrolled schema chaos.
+The item-setting resolution rule in 001 is explicit:
 
-You want customization at **three levels**:
+**location → business unit → legal entity** fallback.
 
-- policy
-- extensible attributes
-- display / terminology / numbering
+#### Final rule (query)
+
+Application code must centralize these query surfaces.
+
+Do not let every feature invent its own “active/effective/current” filters.
 
 ---
 
-## 6.1 Tenant policy table
+## 12. PostgreSQL feature doctrine
 
-Already mentioned conceptually, but it needs structure.
+001 is firmly PostgreSQL-first. Use the database engine.
 
-```sql
-tenant_policies
----------------
-id                      uuid pk
-tenant_id               uuid not null
-policy_domain           varchar not null   -- finance, sales, inventory, tax, ui, workflow, master_data
-policy_key              varchar not null
-policy_value            jsonb not null
-data_type               varchar not null   -- boolean, integer, numeric, text, json, enum
-effective_from          date not null
-effective_to            date null
-is_active               boolean generated always as (
-  effective_to is null or effective_to >= current_date
-) stored
-created_at              timestamptz not null default now()
-unique (tenant_id, policy_domain, policy_key, effective_from)
-check (effective_to is null or effective_to >= effective_from)
-```
+### Required PostgreSQL features
 
-Examples:
+- schemas
+- `pgcrypto`
+- `jsonb`
+- GIN indexes
+- partial indexes
+- generated columns
+- triggers
+- views / materialized views
+- RLS
+- trigram/full-text candidates
+- audit stamping
+- partitioning only where justified
 
-- require approval for PO over threshold
-- default fiscal calendar
-- customer code pattern
-- item code prefix
-- per-tenant tax rounding mode
-- period-close enforcement
+### Required schemas
 
----
+At minimum, separate domains such as:
 
-## 6.2 Extensible attribute model
+- `ref` — shared reference data (countries, currencies, locales, timezones, …) consumed by masters
+- `iam` — authentication-adjacent identity, membership, roles, assignments
+- `mdm` — tenants, enterprise structure, MDM masters, customization surfaces
+- `finance` — chart of accounts and finance structures
+- `governance` — governance and policy surfaces as modeled
 
-Do **not** add random columns for every tenant request.
+The **`drizzle`** PostgreSQL schema holds **Drizzle Kit** metadata (journal / migration tracking); it is not business DDL. New business domains (e.g. `sales`, `procurement`, `inventory`) require an explicit architecture decision and `schemaFilter` / config alignment before use.
 
-Use a governed EAV-like extension pattern only for true custom fields.
+**Authoritative tree:** [`008-db-tree.md`](008-db-tree.md) lists registered `*.schema.ts` modules and path rules.
 
-### `custom_field_definitions`
+### JSONB rule
 
-```sql
-custom_field_definitions
-------------------------
-id                      uuid pk
-tenant_id               uuid not null
-entity_name             varchar not null   -- party, item, legal_entity, location
-field_key               varchar not null
-field_label             varchar not null
-data_type               varchar not null   -- text, number, boolean, date, json, select
-is_required             boolean not null default false
-is_unique               boolean not null default false
-validation_rule         jsonb not null default '{}'::jsonb
-options_json            jsonb not null default '{}'::jsonb
-status                  varchar not null
-unique (tenant_id, entity_name, field_key)
-```
+Use JSONB for:
 
-### `custom_field_values`
-
-```sql
-custom_field_values
--------------------
-id                      uuid pk
-tenant_id               uuid not null
-entity_name             varchar not null
-entity_id               uuid not null
-custom_field_definition_id uuid not null
-value_text              text null
-value_number            numeric null
-value_boolean           boolean null
-value_date              date null
-value_json              jsonb null
-updated_at              timestamptz not null default now()
-unique (tenant_id, entity_name, entity_id, custom_field_definition_id)
-```
-
-This should be reserved for **true customization**, not core finance logic.
-
----
-
-## 6.3 Tenant terminology / label overrides
-
-This is underrated but important.
-
-Different tenants may want:
-
-- customer → client
-- business unit → division
-- warehouse → depot
-
-Use:
-
-```sql
-tenant_label_overrides
-----------------------
-id                      uuid pk
-tenant_id               uuid not null
-label_key               varchar not null
-default_label           varchar not null
-override_label          varchar not null
-locale                  varchar not null default 'en'
-unique (tenant_id, label_key, locale)
-```
-
-This is excellent for enterprise localization and white-labeling.
-
----
-
-## 6.4 Tenant document numbering rules
-
-Critical for ERP.
-
-```sql
-document_sequences
-------------------
-id                      uuid pk
-tenant_id               uuid not null
-legal_entity_id         uuid null
-document_type           varchar not null
-sequence_code           varchar not null
-prefix_pattern          varchar not null
-suffix_pattern          varchar null
-next_number             bigint not null
-padding_length          integer not null default 6
-reset_rule              varchar not null   -- never, yearly, monthly
-is_default              boolean not null default false
-status                  varchar not null
-unique (tenant_id, legal_entity_id, document_type, sequence_code)
-check (next_number > 0)
-```
-
----
-
-# 7. PostgreSQL features you should use
-
-Now we go into the engine itself.
-
----
-
-## 7.1 Schemas
-
-Use PostgreSQL schemas to separate domains:
-
-- `iam`
-- `mdm`
-- `finance`
-- `governance`
-- `sales`
-- `procurement`
-- `inventory`
-
-This improves:
-
-- clarity
-- access control
-- migration organization
-- discoverability
-
----
-
-## 7.2 UUID + default generation
-
-Use UUID for PKs. In PostgreSQL:
-
-```sql
-gen_random_uuid()
-```
-
-Requires `pgcrypto`.
-
-Recommended:
-
-```sql
-create extension if not exists pgcrypto;
-```
-
----
-
-## 7.3 JSONB
-
-Use `jsonb` for:
-
-- tenant policy payloads
 - metadata
-- custom validation rules
-- source match rationale
-- workflow configuration
+- policy payloads
+- validation rules
 - audit diffs
+- controlled extension payloads
 
-Do **not** use JSONB for:
-
-- legal entity FK structure
-- finance posting structure
-- transactional line items that need relational integrity
-
-JSONB is for controlled flexibility, not relational laziness.
+Do **not** use JSONB to replace relational structures that require FK integrity or transactional line-item correctness.
 
 ---
 
-## 7.4 GIN indexes
+## 13. Audit and versioning doctrine
 
-For JSONB and aliases:
+Every important mutable master table should carry:
+
+- `created_at`
+- `updated_at`
+- `created_by`
+- `updated_by`
+- `version_no`
+
+And there should also be a separate append-only audit/event history for change history. 001 explicitly calls for that level of enterprise discipline.
+
+### Final rule (audit)
+
+Use `version_no` for optimistic locking where stewardship or concurrent updates matter.
+
+---
+
+## 14. Soft delete doctrine
+
+If soft delete exists, plain uniqueness is not enough.
+
+001 explicitly recommends **partial unique indexes** for optional identifiers and active-state uniqueness.
+
+### Final rule (soft delete)
+
+Whenever a business key may be reused after delete, or may be null, prefer:
 
 ```sql
-create index idx_parties_metadata_gin on mdm.parties using gin (metadata);
-create index idx_parties_aliases_gin on mdm.parties using gin (aliases);
+create unique index ...
+where ... is not null and is_deleted = false;
 ```
 
----
-
-## 7.5 Partial indexes
-
-Very important.
-
-### Example: unique registration number only when not deleted
-
-```sql
-create unique index uq_legal_entities_registration_active
-on mdm.legal_entities (tenant_id, registration_number)
-where registration_number is not null and is_deleted = false;
-```
-
-This is superior to plain unique constraints for soft-delete environments.
+This is not optional in a serious ERP.
 
 ---
 
-## 7.6 Generated columns
+## 15. ORM / Drizzle doctrine
 
-Great for normalized search or active flags.
+001 allows Drizzle, but under discipline.
 
-Example:
-
-```sql
-canonical_name_normalized text generated always as (lower(regexp_replace(canonical_name, '\s+', ' ', 'g'))) stored
-```
-
-Then index it:
-
-```sql
-create index idx_parties_canonical_name_normalized on mdm.parties (tenant_id, canonical_name_normalized);
-```
-
-Very useful for MDM matching and query performance.
-
----
-
-## 7.7 Triggers for updated_at
-
-Common and important.
-
-```sql
-create or replace function governance.set_updated_at()
-returns trigger as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$ language plpgsql;
-```
-
-Then attach to core tables.
-
----
-
-## 7.8 Triggers for tenant consistency
-
-In addition to FK, you can enforce advanced rules via triggers.
-
-Example:
-
-- ensure BU belongs to same legal entity + tenant
-- ensure location belongs to same tenant
-- ensure role scope matches membership tenant
-
-This is useful where plain FK/check cannot express enough.
-
----
-
-## 7.9 Full-text or trigram search
-
-For party and item lookup:
-
-```sql
-create extension if not exists pg_trgm;
-create index idx_parties_name_trgm
-on mdm.parties using gin (canonical_name gin_trgm_ops);
-```
-
-This is excellent for ERP search boxes.
-
----
-
-## 7.10 Views and materialized views
-
-Use views for canonical business read models.
-
-Examples:
-
-- active legal entities
-- active business units
-- golden customers
-- item effective settings resolved
-
-### Example:
-
-```sql
-create view mdm.v_active_legal_entities as
-select *
-from mdm.legal_entities
-where is_deleted = false
-  and status = 'active'
-  and (effective_to is null or effective_to >= current_date);
-```
-
-Materialized views are useful for:
-
-- MDM match candidates
-- financial dimensional rollups
-- tenant master completeness dashboard
-
----
-
-## 7.11 RLS
-
-If you want database-enforced tenant isolation, PostgreSQL RLS is powerful.
-
-Example concept:
-
-```sql
-alter table mdm.parties enable row level security;
-create policy tenant_isolation_policy
-on mdm.parties
-using (tenant_id = current_setting('app.tenant_id')::uuid);
-```
-
-This is strong, but only use if your app session management is mature enough.
-
-For enterprise SaaS ERP, RLS is often worth it.
-
----
-
-## 7.12 Partitioning
-
-Candidates:
-
-- audit logs
-- event logs
-- large transaction headers/lines
-- integration staging tables
-
-Do **not** partition small master tables early.
-
-Partition by:
-
-- time for logs
-- possibly tenant for ultra-large multi-tenant deployments, but only if necessary
-
----
-
-# 8. Query design you asked for
-
-You said include query. Good. A database is useless if the query model is poor.
-
-You need standard query surfaces.
-
----
-
-## 8.1 Canonical master lookup query
-
-### Legal entity lookup
-
-```sql
-select
-  le.id,
-  le.entity_code,
-  le.legal_name,
-  le.tax_registration_number,
-  le.country_code,
-  le.status
-from mdm.legal_entities le
-where le.tenant_id = $1
-  and le.is_deleted = false
-  and le.status = 'active'
-order by le.entity_code;
-```
-
----
-
-## 8.2 Effective-dated current record query
-
-```sql
-select *
-from mdm.business_units bu
-where bu.tenant_id = $1
-  and bu.legal_entity_id = $2
-  and bu.is_deleted = false
-  and bu.effective_from <= current_date
-  and (bu.effective_to is null or bu.effective_to >= current_date);
-```
-
----
-
-## 8.3 Alias lookup query
-
-```sql
-select p.*
-from mdm.parties p
-left join mdm.master_aliases a
-  on a.tenant_id = p.tenant_id
- and a.master_domain = 'party'
- and a.master_id = p.id
-where p.tenant_id = $1
-  and (
-    p.party_code = $2
-    or p.canonical_name ilike '%' || $2 || '%'
-    or a.alias_value ilike '%' || $2 || '%'
-  );
-```
-
----
-
-## 8.4 Tenant customization resolved query
-
-Example: resolve item local settings with fallback.
-
-```sql
-select
-  i.id as item_id,
-  i.item_code,
-  i.item_name,
-  coalesce(ies_loc.sales_account_id, ies_bu.sales_account_id, ies_le.sales_account_id) as sales_account_id
-from mdm.items i
-left join mdm.item_entity_settings ies_loc
-  on ies_loc.item_id = i.id
- and ies_loc.tenant_id = i.tenant_id
- and ies_loc.legal_entity_id = $2
- and ies_loc.business_unit_id = $3
- and ies_loc.location_id = $4
-left join mdm.item_entity_settings ies_bu
-  on ies_bu.item_id = i.id
- and ies_bu.tenant_id = i.tenant_id
- and ies_bu.legal_entity_id = $2
- and ies_bu.business_unit_id = $3
- and ies_bu.location_id is null
-left join mdm.item_entity_settings ies_le
-  on ies_le.item_id = i.id
- and ies_le.tenant_id = i.tenant_id
- and ies_le.legal_entity_id = $2
- and ies_le.business_unit_id is null
- and ies_le.location_id is null
-where i.tenant_id = $1;
-```
-
-This is real ERP logic: local override falls back to broader scope.
-
----
-
-# 9. Missing MDM governance tables
-
-To truly support MDM, you need more than master tables.
-
----
-
-## 9.1 Data stewardship queue
-
-```sql
-data_quality_issues
--------------------
-id                      uuid pk
-tenant_id               uuid not null
-entity_name             varchar not null
-entity_id               uuid not null
-issue_type              varchar not null   -- duplicate_candidate, missing_tax_id, invalid_address
-severity                varchar not null   -- low, medium, high, critical
-issue_payload           jsonb not null
-status                  varchar not null   -- open, reviewed, resolved, ignored
-assigned_to             uuid null
-created_at              timestamptz not null default now()
-resolved_at             timestamptz null
-```
-
----
-
-## 9.2 Survivorship rules
-
-```sql
-survivorship_rules
-------------------
-id                      uuid pk
-tenant_id               uuid not null
-master_domain           varchar not null
-attribute_name          varchar not null
-rule_type               varchar not null   -- source_priority, most_recent, non_null_preferred, manual
-rule_config             jsonb not null
-priority                integer not null
-status                  varchar not null
-unique (tenant_id, master_domain, attribute_name, priority)
-```
-
-This is proper MDM.
-
----
-
-# 10. Concrete PostgreSQL DDL example
-
-Let me show you a production-style example for core tenant tables.
-
----
-
-## 10.1 Extensions
-
-```sql
-create extension if not exists pgcrypto;
-create extension if not exists pg_trgm;
-```
-
----
-
-## 10.2 Tenant table
-
-```sql
-create schema if not exists mdm;
-create schema if not exists governance;
-
-create table mdm.tenants (
-  id uuid primary key default gen_random_uuid(),
-  tenant_code varchar(50) not null,
-  tenant_name varchar(200) not null,
-  tenant_type varchar(30) not null,
-  status varchar(20) not null,
-  base_currency_code char(3) not null,
-  reporting_currency_code char(3),
-  default_locale varchar(20) not null,
-  default_timezone varchar(100) not null,
-  country_code char(2) not null,
-  activation_date date,
-  deactivation_date date,
-  mdm_governance_level varchar(20) not null,
-  aliases text[] not null default '{}',
-  metadata jsonb not null default '{}'::jsonb,
-  is_deleted boolean not null default false,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  created_by uuid,
-  updated_by uuid,
-  version_no integer not null default 1,
-
-  constraint uq_tenants_tenant_code unique (tenant_code),
-
-  constraint ck_tenants_status
-    check (status in ('draft', 'active', 'suspended', 'archived')),
-
-  constraint ck_tenants_type
-    check (tenant_type in ('enterprise', 'group', 'franchise', 'nonprofit', 'holding')),
-
-  constraint ck_tenants_mdm_governance_level
-    check (mdm_governance_level in ('centralized', 'federated', 'decentralized')),
-
-  constraint ck_tenants_deactivation_date
-    check (deactivation_date is null or activation_date is null or deactivation_date >= activation_date)
-);
-
-create index idx_tenants_status on mdm.tenants(status) where is_deleted = false;
-create index idx_tenants_aliases_gin on mdm.tenants using gin (aliases);
-create index idx_tenants_metadata_gin on mdm.tenants using gin (metadata);
-```
-
----
-
-## 10.3 Legal entities
-
-```sql
-create table mdm.legal_entities (
-  id uuid primary key default gen_random_uuid(),
-  tenant_id uuid not null,
-  entity_code varchar(50) not null,
-  legal_name varchar(255) not null,
-  trading_name varchar(255),
-  entity_type varchar(30) not null,
-  registration_number varchar(100),
-  tax_registration_number varchar(100),
-  country_code char(2) not null,
-  base_currency_code char(3) not null,
-  status varchar(20) not null,
-  aliases text[] not null default '{}',
-  external_ref varchar(100),
-  effective_from date not null default current_date,
-  effective_to date,
-  is_deleted boolean not null default false,
-  metadata jsonb not null default '{}'::jsonb,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-
-  constraint fk_legal_entities_tenant
-    foreign key (tenant_id) references mdm.tenants(id),
-
-  constraint uq_legal_entities_tenant_code
-    unique (tenant_id, entity_code),
-
-  constraint ck_legal_entities_status
-    check (status in ('draft', 'active', 'inactive', 'archived')),
-
-  constraint ck_legal_entities_type
-    check (entity_type in ('company', 'subsidiary', 'branch', 'foundation', 'partnership')),
-
-  constraint ck_legal_entities_effective_date
-    check (effective_to is null or effective_to >= effective_from)
-);
-
-create unique index uq_legal_entities_registration_active
-  on mdm.legal_entities (tenant_id, registration_number)
-  where registration_number is not null and is_deleted = false;
-
-create unique index uq_legal_entities_tax_registration_active
-  on mdm.legal_entities (tenant_id, tax_registration_number)
-  where tax_registration_number is not null and is_deleted = false;
-
-create index idx_legal_entities_tenant_status
-  on mdm.legal_entities (tenant_id, status)
-  where is_deleted = false;
-
-create index idx_legal_entities_aliases_gin
-  on mdm.legal_entities using gin (aliases);
-```
-
----
-
-## 10.4 Business units with tenant-safe FK
-
-```sql
-alter table mdm.legal_entities
-  add constraint uq_legal_entities_tenant_id_id unique (tenant_id, id);
-
-create table mdm.business_units (
-  id uuid primary key default gen_random_uuid(),
-  tenant_id uuid not null,
-  legal_entity_id uuid not null,
-  bu_code varchar(50) not null,
-  bu_name varchar(255) not null,
-  bu_type varchar(30) not null,
-  manager_person_id uuid,
-  status varchar(20) not null,
-  effective_from date not null default current_date,
-  effective_to date,
-  aliases text[] not null default '{}',
-  metadata jsonb not null default '{}'::jsonb,
-  is_deleted boolean not null default false,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-
-  constraint uq_business_units_tenant_legal_entity_code
-    unique (tenant_id, legal_entity_id, bu_code),
-
-  constraint fk_business_units_tenant_legal_entity
-    foreign key (tenant_id, legal_entity_id)
-    references mdm.legal_entities (tenant_id, id),
-
-  constraint ck_business_units_type
-    check (bu_type in ('division', 'segment', 'line_of_business', 'function')),
-
-  constraint ck_business_units_status
-    check (status in ('draft', 'active', 'inactive', 'archived')),
-
-  constraint ck_business_units_effective_date
-    check (effective_to is null or effective_to >= effective_from)
-);
-```
-
-This is the correct pattern.
-
----
-
-# 11. Drizzle ORM design pattern
-
-Now the Drizzle side.
-
-I will show the structure style, not just isolated tables.
-
----
-
-## 11.1 Recommended folder structure
-
-```text
-packages/db/src/
-  schema/
-    shared/
-      columns.ts
-      enums.ts
-      helpers.ts
-    mdm/
-      tenants.ts
-      legal-entities.ts
-      business-units.ts
-      locations.ts
-      master-aliases.ts
-    iam/
-      user-accounts.ts
-      tenant-memberships.ts
-      tenant-roles.ts
-    governance/
-      tenant-policies.ts
-      custom-fields.ts
-      data-quality-issues.ts
-  relations/
-    mdm-relations.ts
-    iam-relations.ts
-  functions/
-    sql-functions.ts
-  views/
-    active-legal-entities.ts
-```
-
----
-
-## 11.2 Shared reusable columns
-
-This is very important in Drizzle.
-
-```ts
-import {
-  boolean,
-  date,
-  integer,
-  jsonb,
-  text,
-  timestamp,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
-
-export const idColumn = {
-  id: uuid("id").defaultRandom().primaryKey(),
-}
-
-export const tenantColumn = {
-  tenantId: uuid("tenant_id").notNull(),
-}
-
-export const lifecycleColumns = {
-  status: varchar("status", { length: 20 }).notNull(),
-  effectiveFrom: date("effective_from")
-    .notNull()
-    .default(sql`current_date`),
-  effectiveTo: date("effective_to"),
-  isDeleted: boolean("is_deleted").notNull().default(false),
-}
-
-export const auditColumns = {
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  createdBy: uuid("created_by"),
-  updatedBy: uuid("updated_by"),
-  versionNo: integer("version_no").notNull().default(1),
-}
-
-export const metadataColumn = {
-  metadata: jsonb("metadata")
-    .$type<Record<string, unknown>>()
-    .notNull()
-    .default(sql`'{}'::jsonb`),
-}
-```
-
-This keeps consistency high.
-
----
-
-## 11.3 Enums
-
-Drizzle supports `pgEnum`.
-
-```ts
-import { pgEnum } from "drizzle-orm/pg-core"
-
-export const tenantStatusEnum = pgEnum("tenant_status", [
-  "draft",
-  "active",
-  "suspended",
-  "archived",
-])
-export const governanceLevelEnum = pgEnum("mdm_governance_level", [
-  "centralized",
-  "federated",
-  "decentralized",
-])
-export const legalEntityTypeEnum = pgEnum("legal_entity_type", [
-  "company",
-  "subsidiary",
-  "branch",
-  "foundation",
-  "partnership",
-])
-```
-
-For stable bounded domains, PostgreSQL enums are good.
-
-For rapidly changing business classifications, use lookup tables instead.
-
----
-
-## 11.4 Tenant table in Drizzle
-
-```ts
-import {
-  pgSchema,
-  pgTable,
-  uniqueIndex,
-  index,
-  varchar,
-  uuid,
-  date,
-  text,
-  jsonb,
-} from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
-import { auditColumns, idColumn, metadataColumn } from "../shared/columns"
-import { governanceLevelEnum, tenantStatusEnum } from "../shared/enums"
-
-export const mdm = pgSchema("mdm")
-
-export const tenants = mdm.table(
-  "tenants",
-  {
-    ...idColumn,
-    tenantCode: varchar("tenant_code", { length: 50 }).notNull(),
-    tenantName: varchar("tenant_name", { length: 200 }).notNull(),
-    tenantType: varchar("tenant_type", { length: 30 }).notNull(),
-    status: tenantStatusEnum("status").notNull(),
-    baseCurrencyCode: varchar("base_currency_code", { length: 3 }).notNull(),
-    reportingCurrencyCode: varchar("reporting_currency_code", { length: 3 }),
-    defaultLocale: varchar("default_locale", { length: 20 }).notNull(),
-    defaultTimezone: varchar("default_timezone", { length: 100 }).notNull(),
-    countryCode: varchar("country_code", { length: 2 }).notNull(),
-    activationDate: date("activation_date"),
-    deactivationDate: date("deactivation_date"),
-    mdmGovernanceLevel: governanceLevelEnum("mdm_governance_level").notNull(),
-    aliases: text("aliases")
-      .array()
-      .notNull()
-      .default(sql`'{}'::text[]`),
-    ...metadataColumn,
-    ...auditColumns,
-  },
-  (table) => ({
-    tenantCodeUq: uniqueIndex("uq_tenants_tenant_code").on(table.tenantCode),
-    statusIdx: index("idx_tenants_status").on(table.status),
-  })
-)
-```
-
----
-
-## 11.5 Legal entities with composite FK in Drizzle
-
-```ts
-import {
-  foreignKey,
-  uniqueIndex,
-  index,
-  varchar,
-  uuid,
-  date,
-  text,
-} from "drizzle-orm/pg-core"
-import { tenants } from "./tenants"
-
-export const legalEntities = mdm.table(
-  "legal_entities",
-  {
-    ...idColumn,
-    tenantId: uuid("tenant_id")
-      .notNull()
-      .references(() => tenants.id),
-    entityCode: varchar("entity_code", { length: 50 }).notNull(),
-    legalName: varchar("legal_name", { length: 255 }).notNull(),
-    tradingName: varchar("trading_name", { length: 255 }),
-    entityType: legalEntityTypeEnum("entity_type").notNull(),
-    registrationNumber: varchar("registration_number", { length: 100 }),
-    taxRegistrationNumber: varchar("tax_registration_number", { length: 100 }),
-    countryCode: varchar("country_code", { length: 2 }).notNull(),
-    baseCurrencyCode: varchar("base_currency_code", { length: 3 }).notNull(),
-    status: varchar("status", { length: 20 }).notNull(),
-    aliases: text("aliases")
-      .array()
-      .notNull()
-      .default(sql`'{}'::text[]`),
-    effectiveFrom: date("effective_from")
-      .notNull()
-      .default(sql`current_date`),
-    effectiveTo: date("effective_to"),
-    isDeleted: boolean("is_deleted").notNull().default(false),
-    ...metadataColumn,
-    ...auditColumns,
-  },
-  (table) => ({
-    tenantCodeUq: uniqueIndex("uq_legal_entities_tenant_code").on(
-      table.tenantId,
-      table.entityCode
-    ),
-    tenantStatusIdx: index("idx_legal_entities_tenant_status").on(
-      table.tenantId,
-      table.status
-    ),
-  })
-)
-```
-
-For more advanced composite FK references, you may need raw SQL migration alongside Drizzle schema declarations, depending on exact version and convenience.
-
-That is normal in serious PostgreSQL work.
-
----
-
-# 12. What should be ORM-managed vs database-managed
-
-This matters a lot.
-
-## Let database manage:
+### Database owns
 
 - PK/FK
 - unique constraints
@@ -1363,279 +469,299 @@ This matters a lot.
 - default timestamps
 - generated values
 - indexes
-- row-level security
-- triggers for integrity and audit stamping
-- views/materialized views
+- triggers
+- views
+- RLS
+- invariant enforcement
 
-## Let Drizzle/app manage:
+### App / Drizzle owns
 
 - relation mapping
 - typed query composition
 - migration orchestration
-- transactional services
-- command validation beyond pure DB constraints
-- tenant context propagation
+- transactions
+- workflow orchestration
+- tenant-context propagation
+- higher-level command validation beyond pure DB constraints
 
-Do not put all correctness in app code.
-Do not put all business logic in DB either.
+### Final rule (ORM boundary)
 
-Use **database for invariant enforcement**, app for **workflow orchestration**.
+**Database for invariants. App for orchestration.**
 
----
+That is the permanent boundary.
 
-# 13. Missing but critical enterprise features
+### Serialization boundary (Zod)
 
-These are often forgotten.
+**Zod** (or equivalent) validates and types **untrusted input** and **API payloads** at application boundaries. It must **mirror** PostgreSQL enums and column intent, not replace them:
 
----
+- Shared enum labels are defined once in Drizzle (`shared/enums.schema.ts`) and reflected in `shared-boundary.schema.ts` / domain `*-boundary.schema.ts` using the same value sets.
+- Prefer `safeParse` / `parse` at handlers; keep row-level invariants in **constraints, FKs, and triggers**.
 
-## 13.1 Soft-delete-aware uniqueness
-
-If using soft delete, never rely on plain `unique` alone for optional fields.
-
-Use partial unique indexes:
-
-- active customer codes
-- active registration numbers
-- active aliases
+Zod is **not** a substitute for missing `CHECK`, `UNIQUE`, or tenant-safe composite FKs in the database.
 
 ---
 
-## 13.2 Versioning / optimistic locking
+## 16. Reconciliations required to make 001 safe in real PostgreSQL
 
-Use:
+This section is the important part you asked for: the guardrails that must be made explicit so 001 does not get implemented sloppily.
+
+### 16.1 Do not store “current active” using a generated column tied to `current_date`
+
+001 gives a conceptual example of `is_active` on `tenant_policies` derived from current date. The correct final rule is:
+
+- treat “current/active as of today” as a **query/view concept**
+- do **not** rely on a stored generated column based on moving time
+
+Use canonical views like `v_current_tenant_policies` instead. This preserves 001’s intent while keeping the implementation durable.
+
+### 16.2 Nullable scoped uniqueness needs scope-specific hardening
+
+001’s conceptual uniqueness like:
 
 ```sql
-version_no integer not null default 1
+unique (tenant_id, legal_entity_id, document_type, sequence_code)
 ```
 
-App updates should do:
+is not enough by itself when `legal_entity_id` is nullable, because NULL semantics can let duplicates slip through.
 
-```sql
-update ...
-set ..., version_no = version_no + 1
-where id = $1 and version_no = $2
-```
+#### Final rule (nullable scope)
 
-This is useful for MDM stewardship screens.
+For mixed-scope tables such as `document_sequences`, enforce uniqueness with:
 
----
+- one rule for tenant-wide rows (`legal_entity_id is null`)
+- one rule for legal-entity-scoped rows (`legal_entity_id is not null`)
 
-## 13.3 Temporal integrity
+This is a critical guardrail and should be treated as permanent practice.
 
-At least enforce:
+### 16.3 Soft delete plus alternate keys always needs partial indexing
 
-- `effective_to >= effective_from`
+If you keep `registration_number`, `tax_registration_number`, or alias values, never trust plain unique constraints once `is_deleted` exists.
 
-If you later want no overlapping ranges for same entity key, PostgreSQL can do it with range/exclusion mechanics, but that is a more advanced phase.
+### 16.4 Arrays are helpers, not governance
 
----
+If both `aliases text[]` and `master_aliases` exist, the governed alias table is the source of truth. Arrays are optional helper/search material only.
 
-## 13.4 Canonical “active” views
+### 16.5 Composite tenant-safe FK is the default when tenant leakage is possible
 
-Do not repeat active filters in 500 places.
+Do not simplify it away later “for convenience.”
 
-Create views like:
+### 16.6 RLS is powerful, but only after request/session tenant context is stable
 
-- `v_active_tenants`
-- `v_active_legal_entities`
-- `v_active_business_units`
-- `v_current_tenant_policies`
+001 itself warns that RLS is strong but assumes mature session management. Keep the design ready, but do not enable it blindly.
 
-This reduces drift.
+### 16.7 JSONB is for controlled flexibility, never for relational laziness
 
----
+Do not push finance postings, legal-entity ownership, or core transactional relationships into JSONB blobs.
 
-## 13.5 Audit trail
+### 16.8 Effective-dated no-overlap is an advanced integrity step, not a casual app rule
 
-At minimum, every important master table should have:
+001 requires date validity now. If later you need non-overlapping ranges per scoped key, use PostgreSQL range/exclusion mechanics rather than hand-waving it in app code.
 
-- created_at
-- updated_at
-- created_by
-- updated_by
-- version_no
-
-And a separate append-only audit/event table for change history.
+These are the guardrails that turn 001 from “good blueprint” into “safe baseline.”
 
 ---
 
-## 13.6 Code generation / naming rules
+## 17. Permanent forbidden moves
 
-ERP needs code generation logic:
+These are now disallowed under 001-FINAL.
 
-- customer code
-- supplier code
-- item code
-- journal number
-- invoice number
+- Do **not** replace tenant-safe composite FK with simple `id` FK where tenant correctness matters.
+- Do **not** replace governed alias/external identity surfaces with ad hoc text columns.
+- Do **not** hide document numbering rules only in service code.
+- Do **not** move invariant enforcement out of PostgreSQL into app-only logic.
+- Do **not** use JSONB to avoid real relational design.
+- Do **not** assume plain unique constraints are enough when soft delete or nullable scope exists.
+- Do **not** partition small master tables early.
+- Do **not** let every feature invent its own current/effective filter logic.
 
-Do not bury this in random service code only.
-
-Store rules in DB:
-
-- sequence config
-- prefix pattern
-- scope
-- reset rule
+All of these violate the spirit or explicit doctrine of 001.
 
 ---
 
-# 14. Suggested complete master table template
+## 18. Permanent implementation order
 
-This is my recommended standard template for most tenant MDM tables:
+001 is explicit on the correct order:
 
-```sql
-id uuid primary key default gen_random_uuid(),
-tenant_id uuid not null,
-code varchar(50) not null,
-name varchar(255) not null,
-status varchar(20) not null,
-aliases text[] not null default '{}',
-external_ref varchar(100),
-source_system_id uuid,
-ownership_level varchar(20) not null default 'tenant',
-legal_entity_id uuid,
-business_unit_id uuid,
-location_id uuid,
-effective_from date not null default current_date,
-effective_to date,
-metadata jsonb not null default '{}'::jsonb,
-is_deleted boolean not null default false,
-created_at timestamptz not null default now(),
-updated_at timestamptz not null default now(),
-created_by uuid,
-updated_by uuid,
-version_no integer not null default 1,
+### Step 1
 
-unique (...business scope..., code),
-
-check (effective_to is null or effective_to >= effective_from),
-check (status in (...)),
-check (ownership_level in (...)),
-check (...ownership scope consistency...)
-```
-
-This template is extremely strong for ERP MDM.
-
----
-
-# 15. My final architectural recommendation
-
-For AFENDA-quality enterprise database design, I would formalize the tenant MDM layer as:
-
-## Layer 1 — Business truth root
-
-- tenants
-- tenant_profiles
-- tenant_policies
-- tenant_label_overrides
-- document_sequences
-
-## Layer 2 — Enterprise structure
-
-- legal_entities
-- business_units
-- locations
-- org_units
-
-## Layer 3 — Security scope
-
-- tenant_memberships
-- roles
-- role_assignments
-- authority_policies
-
-## Layer 4 — MDM business masters
-
-- parties
-- customers
-- suppliers
-- items
-- item_entity_settings
-- accounts
-- tax profiles
-
-## Layer 5 — MDM governance
-
-- master_aliases
-- external_identities
-- survivorship_rules
-- duplicate matches
-- merge history
-- data quality issues
-
-## Layer 6 — Platform-grade database mechanics
-
-- partial indexes
-- GIN indexes
-- triggers
-- views
-- RLS
-- audit trail
-- generated columns
-- controlled JSONB
-
-That is no longer a generic database. That is a real ERP backbone.
-
----
-
-# 16. Clear verdict
-
-The missing parts you mentioned should be handled like this:
-
-| Concern             | Recommended approach                                                                                    |
-| ------------------- | ------------------------------------------------------------------------------------------------------- |
-| PK                  | `uuid primary key`                                                                                      |
-| FK                  | composite tenant-safe FK where correctness matters                                                      |
-| Unique              | scoped by tenant / legal entity / location                                                              |
-| Alias               | dedicated alias table, not only array                                                                   |
-| Tenant customize    | policy table + custom field definition/value + label override + sequences                               |
-| Query               | canonical active views + indexed current/effective queries                                              |
-| Constraints         | checks for status, dates, ownership, positive amounts, scope consistency                                |
-| PostgreSQL features | schemas, pgcrypto, jsonb, gin, partial indexes, trigram, triggers, views, RLS                           |
-| Drizzle             | reusable columns, pgEnum, modular schema files, relations, raw SQL for advanced DB features when needed |
-
----
-
-# 17. Best next step
-
-The right next output is no longer just explanation.
-
-It should be one of these two:
-
-## Option A — full PostgreSQL DDL pack
-
-I write:
+Canonical PostgreSQL DDL:
 
 - schemas
 - tables
 - PK/FK
-- indexes
 - checks
+- unique constraints
+- indexes
 - triggers
 - views
 - helper functions
 
-## Option B — full Drizzle schema pack
+### Step 2
 
-I write:
+Drizzle mirror:
 
-- `pgSchema`
-- `pgTable`
+- modular schema files
+- reusable columns
 - enums
-- shared column builders
 - relations
-- indexes
-- migration notes
-- tenant-safe patterns
+- typed JSONB
+- migration coordination
 
-The best order is actually:
+### Step 3
 
-> **PostgreSQL canonical DDL first, then Drizzle mirror second**
+Canonical query layer:
 
-because PostgreSQL is the true source of integrity, and Drizzle should reflect it — not define weaker substitutes.
+- effective/current views
+- lookup queries
+- fallback resolution
+- runtime orchestration
 
-Reply with:
-**“Give me the full canonical PostgreSQL DDL first”**
-and I will draft the full enterprise tenant-MDM schema end to end.
+That order is permanent unless you formally replace the baseline.
+
+---
+
+## 19. Final charter sentence
+
+This is the shortest possible permanent statement of 001-FINAL:
+
+> **AFENDA’s ERP database is a PostgreSQL-first, tenant-centered MDM architecture in six layers, using UUID surrogate PKs plus scoped business keys, tenant-safe composite FKs where correctness matters, effective-dated and soft-delete-aware integrity, governed alias/external identity/customization surfaces, canonical query views, and database-owned invariants mirrored by Drizzle rather than replaced by it.**
+
+---
+
+## 20. Operating rule from today
+
+Use this rule without exception:
+
+- **001-FINAL is doctrine**
+- later files are implementation attempts
+- if later files conflict with 001-FINAL, the later files are wrong until 001 is formally superseded
+
+That is the clean, strict, complete version you asked for.
+
+---
+
+## Appendix A — `@afenda/database` package doctrine
+
+This appendix subsumes the former `docs/DATABASE_ARCHITECTURE_DOCTRINE.md`. It states **package-level** rules that sit above any single table list: what the database package is for, how kinds of truth differ, and how documentation may be classified. The numbered sections above remain the **sovereign ERP/PostgreSQL charter**; where they overlap, those sections win.
+
+### A.1 Purpose
+
+`@afenda/database` is the **canonical PostgreSQL and Drizzle persistence boundary** for Afenda. It owns the durable relational model, authoritative schema and migrations, and invariants that must not rely only on application code. It is **not** a grab-bag of convenience tables, a mirror of every product idea before implementation, or a place where future ERP design and present runtime truth are mixed without labels.
+
+### A.2 Doctrine vs baseline vs proposal
+
+**Doctrine** (this document’s enduring rules) should survive multiple implementation phases. **Baseline** is what exists in the package today. **Proposal** is what might be built next. **Source/reference** material is exploratory or non-normative. Doctrine should change only when architecture changes—not because one migration landed.
+
+### A.3 Core truth boundaries
+
+Keep these separated in the model and in documentation:
+
+| Boundary                 | Answers                                                                                                                             |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Authentication truth** | Who signed in, how, external auth identity, session/challenge state for audit correlation. Not ERP business truth.                  |
+| **Principal truth**      | Internal actors, identity linkage to providers, tenant membership—moving from “who authenticated” to “who can act in Afenda”.       |
+| **Tenant truth**         | Which organization owns data, isolation of rows, membership of principals. Not a mere filter tag.                                   |
+| **Business truth**       | Domain state the product exists to manage (structure, masters, finance, transactions). Must not be collapsed into auth-only tables. |
+| **Evidence truth**       | Append-oriented audit/governance used to explain actions after the fact—distinct from transactional truth.                          |
+
+### A.4 Identity is not domain party
+
+**Identity / principal** (who can act in the system) and **domain party** (customer, supplier, employee, contact) are different concepts. The same person may appear in both; tables must not be merged. Model identity and business entities separately and link explicitly when needed.
+
+### A.5 Present truth vs planned truth
+
+Do not mix, without labels:
+
+- what the package **currently** implements, and
+- what it is **expected** to implement later.
+
+Current-state descriptions must match active code. Growth-sequence content must be labeled future-oriented. Slipping between the two makes docs unreliable.
+
+### A.6 Documentation classes
+
+Under `packages/_database/docs`:
+
+- **Current-state** — only what exists in the active package (e.g. inventory/tree baselines).
+- **Doctrine** — enduring principles (this charter + appendix).
+- **Growth** — phased direction; labeled as future.
+- **Source/reference** — exploration; marked non-normative.
+
+### A.7 Phased package growth (alignment with the six layers)
+
+Intentional build order for the **package** (related to **§3** layers and **§18** implementation order):
+
+1. Identity and tenant root
+2. Tenant membership and minimal principal context
+3. Business organization structure
+4. Authorization model
+5. MDM and business master structures
+6. Stewardship and governance extensions
+7. Richer audit enrichment around stabilized workflows
+
+Skipping order risks upstream concepts on unstable foundations.
+
+### A.8 Decision checklist for schema changes
+
+When evaluating a change, ask:
+
+1. Which truth boundary (**A.3**) does this belong to?
+2. Is it tenant-scoped where it should be?
+3. Is it current truth or future design—and is the doc labeled?
+4. What invariants belong in PostgreSQL?
+5. Does it fit the current phase, or is it premature?
+
+If these are unclear, the design is not ready.
+
+### A.9 Maintenance
+
+Update **this charter** when **architecture or non-negotiable rules** change. Update **baseline/inventory** docs (e.g. `008-db-tree.md`) when tables or exports change. Do not edit the charter only because a single table was added—unless that addition changes doctrine.
+
+---
+
+## Appendix B — `@afenda/database` implementation alignment
+
+This appendix ties **§1–§20** and **Appendix A** to the **current** monorepo package so doctrine and code do not drift. If Appendix B conflicts with numbered charter sections above, the charter wins.
+
+### B.1 Drizzle-managed PostgreSQL schemas
+
+`drizzle.config.ts` and **`DRIZZLE_MANAGED_PG_SCHEMAS`** define what Drizzle Kit may reconcile: **`iam`**, **`mdm`**, **`ref`**, **`finance`**, **`governance`**, plus the **`drizzle`** schema for Kit’s own tables. Adding a new top-level `pgSchema()` domain is an **architecture** change (config, migrations, docs), not a drive-by rename.
+
+### B.2 Enums, columns, and Zod boundaries
+
+| Concern                                  | Location                                                                     |
+| ---------------------------------------- | ---------------------------------------------------------------------------- |
+| Shared `pgEnum` catalog                  | `src/schema/shared/enums.schema.ts`                                          |
+| Zod mirrors derived from enum value sets | `src/schema/shared/shared-boundary.schema.ts`, domain `*-boundary.schema.ts` |
+| Reusable column shapes                   | `src/schema/shared/columns.schema.ts`                                        |
+
+Do not scatter duplicate enum string literals in apps; derive from these sources or import the Zod schemas.
+
+### B.3 Logical `tenancy/` vs physical `mdm` / `iam`
+
+The folder **`src/schema/tenancy/`** is a **logical** module (services, boundary re-exports). Physical tables for tenants and memberships remain under **`mdm`** and **`iam`** as listed in [`008-db-tree.md`](008-db-tree.md).
+
+### B.4 Quality gates (migrations and schema edits)
+
+Before `drizzle-kit generate` / `push`, run **`pnpm run db:guard`** from `packages/_database` (TypeScript, `guard-schema-modules.ts`, hardening verification, contract tests). CI should run **`db:guard:ci`** or equivalent. Filenames under DDL domains must follow `*.schema.ts` / `_schema.ts` / `index.ts` rules—see `scripts/guard-schema-modules.ts`.
+
+### B.5 SQL examples in this charter vs Drizzle DDL
+
+Sections **§5–§8** use illustrative SQL. Production modules express the same invariants through Drizzle **`pgTable`**, **`check`**, **`uniqueIndex`**, **`foreignKey`**, and SQL hardening patches where applicable. When in doubt, compare to an existing table in the same layer and to [`practical-discipline.md`](../practical-discipline.md).
+
+### B.6 Quick compliance checklist (DDL / Drizzle)
+
+Use this when reviewing a migration or schema PR:
+
+1. Tenant-scoped rows have **`tenant_id`** (or equivalent) where required; composite FKs used where cross-tenant mistakes are possible (**§7**).
+2. Effective dates satisfy **`effective_to >= effective_from`** (or null) (**§8**, **§16.1**).
+3. Nullable scope columns do not weaken uniqueness—partial or split uniqueness (**§16.2**).
+4. Soft delete + business keys use **partial unique** indexes where needed (**§14**, **§16.3**).
+5. Status / small closed sets use **`pgEnum`** or explicit checks aligned with **`shared/enums.schema.ts`**.
+6. JSONB is for metadata / extension, not core relational edges (**§12**, **§16.7**).
+7. RLS only when session/tenant context is defined (**§16.6**).
+
+---
+
+**Follow-up:** Extend **B.6** into a separate automation-friendly checklist (e.g. ast-grep rules) if you need CI enforcement beyond `db:guard`.
+
+**Path inventory:** [`008-db-tree.md`](./008-db-tree.md) lists authorised paths under `src/schema/`; update it in the same PR as tree changes. **Machine-verified file list:** [`schema-inventory.json`](./schema-inventory.json) — `pnpm run db:inventory:sync` in `packages/_database` when the tree changes. **Foundation target** (namespaces, modules, must-have table families): [`002-foundation-inventory.md`](./002-foundation-inventory.md). **Architecture & tree** (schema + migrations + raw SQL + relations + queries): [`002A-foundation-inventory-architecture.md`](./002A-foundation-inventory-architecture.md).

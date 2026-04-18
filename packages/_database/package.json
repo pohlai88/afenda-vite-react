@@ -13,15 +13,23 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "db:guard": "pnpm run typecheck && tsx scripts/guard-schema-modules.ts && vitest run src/governance/__tests__ src/schema/__tests__/schema-contract.test.ts",
-    "db:guard:ci": "tsx scripts/guard-schema-modules.ts && vitest run src/governance/__tests__ src/schema/__tests__/schema-contract.test.ts",
-    "db:generate": "pnpm run db:guard && drizzle-kit generate",
+    "db:inventory:sync": "tsx scripts/sync-schema-inventory.ts",
+    "db:inventory:verify": "tsx scripts/verify-schema-inventory.ts",
+    "db:002a:verify": "tsx scripts/verify-002a-guideline.ts",
+    "db:guard": "pnpm run typecheck && tsx scripts/guard-schema-modules.ts && tsx scripts/guard-composite-fk-unique-constraints.ts && tsx scripts/verify-schema-inventory.ts && tsx scripts/verify-002a-guideline.ts && tsx scripts/verify-hardening-patches.ts && vitest run src/schema/pkg-governance/__tests__ src/schema/ref/__tests__ src/schema/shared/__tests__ src/schema/tenancy/__tests__ src/queries/__tests__ src/7w1h-audit/__tests__ src/schema/__tests__ src/schema/constants/__tests__ src/schema/identity/__tests__ src/schema/helpers/__tests__ src/__tests__/hardening-patches.test.ts src/__tests__/002a-physical-inventory.test.ts",
+    "db:guard:ci": "tsx scripts/guard-schema-modules.ts && tsx scripts/guard-composite-fk-unique-constraints.ts && tsx scripts/verify-schema-inventory.ts && tsx scripts/verify-002a-guideline.ts && tsx scripts/verify-hardening-patches.ts && vitest run src/schema/pkg-governance/__tests__ src/schema/ref/__tests__ src/schema/shared/__tests__ src/schema/tenancy/__tests__ src/queries/__tests__ src/7w1h-audit/__tests__ src/schema/__tests__ src/schema/constants/__tests__ src/schema/identity/__tests__ src/schema/helpers/__tests__ src/__tests__/hardening-patches.test.ts src/__tests__/002a-physical-inventory.test.ts",
+    "db:generate": "pnpm run db:guard && drizzle-kit generate && tsx scripts/ensure-public-schema-in-baseline-migration.ts",
+    "db:validate-sql": "tsx scripts/validate-drizzle-sql.ts",
     "db:check-migrations": "tsx scripts/check-migrations.ts",
     "db:verify-migrations-sync": "tsx scripts/verify-migrations-sync.ts",
     "db:ci": "pnpm run db:guard:ci && pnpm run db:check-migrations && pnpm run db:verify-migrations-sync",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "tsx scripts/run-drizzle-migrate.ts",
+    "db:migrate:kit": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push"
+    "db:push": "pnpm run db:guard && drizzle-kit push",
+    "db:push:force": "pnpm run db:guard && drizzle-kit push --force",
+    "db:apply-hardening": "tsx scripts/apply-hardening.ts",
+    "db:sync-glossary-enums": "tsx scripts/sync-glossary-enums.ts"
   },
   "exports": {
     ".": {
@@ -35,19 +43,24 @@
       "default": "./src/schema/index.ts"
     },
     "./tenancy": {
-      "types": "./src/tenancy/index.ts",
-      "import": "./src/tenancy/index.ts",
-      "default": "./src/tenancy/index.ts"
+      "types": "./src/schema/tenancy/index.ts",
+      "import": "./src/schema/tenancy/index.ts",
+      "default": "./src/schema/tenancy/index.ts"
+    },
+    "./7w1h-audit": {
+      "types": "./src/7w1h-audit/index.ts",
+      "import": "./src/7w1h-audit/index.ts",
+      "default": "./src/7w1h-audit/index.ts"
     },
     "./audit": {
-      "types": "./src/audit/index.ts",
-      "import": "./src/audit/index.ts",
-      "default": "./src/audit/index.ts"
+      "types": "./src/7w1h-audit/index.ts",
+      "import": "./src/7w1h-audit/index.ts",
+      "default": "./src/7w1h-audit/index.ts"
     },
     "./governance": {
-      "types": "./src/governance/index.ts",
-      "import": "./src/governance/index.ts",
-      "default": "./src/governance/index.ts"
+      "types": "./src/schema/pkg-governance/index.ts",
+      "import": "./src/schema/pkg-governance/index.ts",
+      "default": "./src/schema/pkg-governance/index.ts"
     },
     "./studio": {
       "types": "./src/studio/index.ts",
@@ -58,6 +71,16 @@
       "types": "./src/studio/studio-snapshots-public.ts",
       "import": "./src/studio/studio-snapshots-public.ts",
       "default": "./src/studio/studio-snapshots-public.ts"
+    },
+    "./queries": {
+      "types": "./src/queries/index.ts",
+      "import": "./src/queries/index.ts",
+      "default": "./src/queries/index.ts"
+    },
+    "./relations": {
+      "types": "./src/relations/relations.schema.ts",
+      "import": "./src/relations/relations.schema.ts",
+      "default": "./src/relations/relations.schema.ts"
     }
   },
   "dependencies": {

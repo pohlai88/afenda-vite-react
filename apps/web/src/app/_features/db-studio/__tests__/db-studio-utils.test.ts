@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { buildDomainModuleEntryCounts } from "../db-studio-utils"
+import { buildDomainModuleEntryCounts } from "../utils/db-studio-utils"
 
 describe("buildDomainModuleEntryCounts", () => {
   it("matches server-side domain_module aggregation", () => {

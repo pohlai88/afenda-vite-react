@@ -289,7 +289,7 @@
       },
       "identity_bridge": {
         "title": "Identity bridge missing",
-        "body": "No Afenda identity link for this account (HTTP {{status}}). Sign-up hooks must use the same DATABASE_URL as apps/api, and identity_links must exist (ADR-0004)."
+        "body": "No Afenda identity link for this account (HTTP {{status}}). Sign-up hooks must use the same DATABASE_URL as apps/api, and identity_links must exist."
       },
       "forbidden": {
         "title": "Access denied",
@@ -673,7 +673,7 @@
     "meta_content_hash": "YAML hash",
     "truth_heading": "Truth governance registry",
     "truth_description": "Truth class, scope model, and time model overlays — distinct from the business glossary.",
-    "truth_empty": "No truth, scope, or time registry rows yet. Edit database-truth-governance.yaml and run studio:sync.",
+    "truth_empty": "No truth, scope, or time registry rows yet. They are loaded from the database package governance snapshot when present.",
     "truth_column_empty": "None defined",
     "truth_classes_heading": "Truth classes",
     "scope_models_heading": "Scope models",

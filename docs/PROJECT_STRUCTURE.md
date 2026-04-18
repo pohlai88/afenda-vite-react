@@ -18,7 +18,7 @@ Three top-level buckets under **`src/`**:
 
 App-local composition that is not feature-specific belongs under **`share/components/`** (or a feature folder), not a fourth top-level `src/components/` tree.
 
-**Backend data and Drizzle** live in **`packages/_database`** (public import `@afenda/database`) and future server/API code—not under `apps/web/src`. See [Database](./DATABASE.md) and [Architecture](./ARCHITECTURE.md).
+**Backend data and Drizzle** live in **`packages/_database`** (public import `@afenda/database`) and future server/API code—not under `apps/web/src`. See [Database package](../packages/_database/README.md) and [Architecture](./ARCHITECTURE.md).
 
 **Governed UI** (shadcn/ui copy-in primitives, `cn()`, governance constants, semantic adapters) lives in [`packages/shadcn-ui-deprecated/`](../packages/shadcn-ui-deprecated/) (`@afenda/shadcn-ui-deprecated`). The shadcn CLI targets this package and `apps/web`; both have a `components.json` with matching `style`, `iconLibrary`, and `baseColor` per [shadcn monorepo requirements](https://ui.shadcn.com/docs/monorepo). The package owns the **constant layer** (per-component contracts, governance policies, domain-to-UI adapters), the **semantic adapter layer** (tone, emphasis, surface primitives and domain-specific mappers), and **semantic wrapper components** (`SemanticAlert`, `SemanticBadge`, etc.). See [Architecture](./ARCHITECTURE.md#3-governed-ui-architecture-packagesshadcn-ui) for topology and dependency flow. For adding new modules, see [Architecture: Adding a new ERP module](./ARCHITECTURE.md#4-adding-a-new-erp-module).
 
@@ -109,13 +109,13 @@ When you add a new **`share/`** subdirectory that must always exist, list it und
 
 ### What we do **not** put in `apps/web`
 
-| Concern                                                      | Location                                                                         |
-| ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| Drizzle schema, SQL migrations                               | `packages/_database` / `@afenda/database` ([Database](./DATABASE.md))            |
-| OAuth token exchange, webhooks                               | Backend API ([Integrations](./INTEGRATIONS.md))                                  |
-| Long-running sync jobs                                       | Workers / queue consumers, not the Vite bundle                                   |
-| Duplicated primitives under ad-hoc app `components/ui` trees | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`) instead |
-| shadcn/ui primitive components in `apps/web`                 | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`)         |
+| Concern                                                      | Location                                                                                        |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| Drizzle schema, SQL migrations                               | `packages/_database` / `@afenda/database` ([Database package](../packages/_database/README.md)) |
+| OAuth token exchange, webhooks                               | Backend API ([Integrations](./INTEGRATIONS.md))                                                 |
+| Long-running sync jobs                                       | Workers / queue consumers, not the Vite bundle                                                  |
+| Duplicated primitives under ad-hoc app `components/ui` trees | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`) instead                |
+| shadcn/ui primitive components in `apps/web`                 | Use **`packages/shadcn-ui-deprecated`** (`@afenda/shadcn-ui-deprecated`)                        |
 
 ---
 
@@ -225,7 +225,7 @@ Register paths only in **`share/routing`**; keep **`LoginView`** implementation 
 - [Authentication](./AUTHENTICATION.md) — where auth features and guards live conceptually
 - [Roles and permissions](./ROLES_AND_PERMISSIONS.md) — RBAC + PBAC; keys for nav vs API enforcement
 - [Integrations](./INTEGRATIONS.md) — connect UI in `apps/web`, OAuth handlers on the API
-- [Database](./DATABASE.md) — PostgreSQL + Drizzle live in API/database packages, not `apps/web`
+- [Database package](../packages/_database/README.md) — PostgreSQL + Drizzle live in API/database packages, not `apps/web`
 - [Glossary](./GLOSSARY.md) — domain and platform terms
 - [Brand guidelines](./BRAND_GUIDELINES.md) and [Design system](./DESIGN_SYSTEM.md) — visual identity and tokens
 - [Project configuration](./PROJECT_CONFIGURATION.md)

@@ -8,12 +8,12 @@ This document maps common ERP auth goals to **Vite-appropriate** patterns.
 
 ## 1. Mental model
 
-| Concern | Where it runs |
-| --- | --- |
+| Concern                           | Where it runs                                   |
+| --------------------------------- | ----------------------------------------------- |
 | Login redirect, callback handling | Browser (SPA) + identity provider (Auth0, etc.) |
-| Session store or token issuance | **Your backend** and/or **IdP** |
-| Authorization for ERP data | **Every API** (never trust the UI alone) |
-| “Am I logged in?” for UX | React state + optional `/api/session` (BFF) |
+| Session store or token issuance   | **Your backend** and/or **IdP**                 |
+| Authorization for ERP data        | **Every API** (never trust the UI alone)        |
+| “Am I logged in?” for UX          | React state + optional `/api/session` (BFF)     |
 
 **Rule:** Anything sensitive is enforced **on the server** (REST/GraphQL/tRPC, server actions on a backend, edge functions). The Vite bundle is **public**.
 
@@ -89,22 +89,22 @@ Colocate auth UI under something like **`apps/web/src/features/auth/`** (see [Pr
 ```tsx
 // Illustrative — adapt to your router API (createBrowserRouter, etc.)
 function RequireAuth({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth()
 
-  if (isLoading) return <Spinner />;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (isLoading) return <Spinner />
+  if (!isAuthenticated) return <Navigate to="/login" replace />
 
-  return <>{children}</>;
+  return <>{children}</>
 }
 ```
 
 ### Feature hook (illustrative API)
 
 ```tsx
-import { useAuth } from '@/features/auth';
+import { useAuth } from "@/features/auth"
 
 function Toolbar() {
-  const { user, isAuthenticated, isLoading, login, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, login, logout } = useAuth()
   // ...
 }
 ```
@@ -125,7 +125,7 @@ For **fine-grained authorization** (RBAC role assignment, permission keys, multi
 ```typescript
 // Pseudocode — shape depends on your framework
 export async function postInvoice(req: Request) {
-  const user = await requireUser(req); // throws 401 if missing
+  const user = await requireUser(req) // throws 401 if missing
   // tenant / role checks for ERP
   // ...
 }
@@ -153,7 +153,7 @@ Official references: [Auth0 SPA](https://auth0.com/docs/get-started/applications
 
 ## 7. Database schema (session / users)
 
-If you use **database sessions** with Auth.js + an adapter, tables such as `users`, `accounts`, `sessions`, `verification_tokens` (and optional WebAuthn) live in **your API’s** schema—not in the Vite app. Define them in the **backend** package (e.g. Drizzle schema next to `apps/api`), and run migrations from CI/CD. See [Database](./DATABASE.md) for Drizzle layout, migrations, and ERP tenant data.
+If you use **database sessions** with Auth.js + an adapter, tables such as `users`, `accounts`, `sessions`, `verification_tokens` (and optional WebAuthn) live in **your API’s** schema—not in the Vite app. Define them in the **backend** package (e.g. Drizzle schema next to `apps/api`), and run migrations from CI/CD. See [Database package](../packages/_database/README.md) for Drizzle layout, migrations, and ERP tenant data.
 
 ---
 

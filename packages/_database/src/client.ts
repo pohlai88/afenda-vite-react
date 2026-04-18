@@ -4,10 +4,10 @@ import { Pool, type PoolConfig } from "pg"
 import {
   databaseRuntimeEnvKeys,
   defaultPoolSettings,
-} from "./constants/runtime"
-import { readOptionalInteger } from "./helpers/env"
+} from "./schema/constants/runtime"
+import { readOptionalInteger } from "./schema/helpers"
 import * as schema from "./schema"
-import * as relations from "./schema/relations.schema"
+import * as relations from "./relations/relations.schema"
 
 /** Merged schema + relations for the canonical Drizzle client surface. */
 export const afendaDrizzleSchema = {

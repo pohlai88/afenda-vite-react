@@ -7,7 +7,7 @@ import { join } from "node:path"
 
 const root = join(import.meta.dirname, "..")
 const databaseSrc = join(root, "packages", "_database", "src")
-const allowedSuffix = join("audit", "services", "insert-audit-log.ts")
+const allowedSuffix = join("7w1h-audit", "services", "insert-audit-log.ts")
 
 function walk(dir: string): string[] {
   const out: string[] = []

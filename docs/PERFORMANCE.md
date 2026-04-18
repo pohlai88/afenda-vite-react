@@ -10,11 +10,11 @@ Guidance for the **`apps/web`** **Vite + React** ERP client and related **server
 
 In Next.js, “Server Components first” reduces client JS. Here, the equivalent habits are:
 
-| Goal | Vite / React approach |
-| --- | --- |
-| Less JS on first paint | **Route-level** code splitting ([`React.lazy`](https://react.dev/reference/react/lazy) + [`Suspense`](https://react.dev/reference/react/Suspense)), trim unused dependencies |
-| Data without duplicating cache in React state | **TanStack Query** for server state ([State management](./STATE_MANAGEMENT.md)) |
-| Work that must stay private or heavy | **API** + database—not in the bundle |
+| Goal                                          | Vite / React approach                                                                                                                                                        |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Less JS on first paint                        | **Route-level** code splitting ([`React.lazy`](https://react.dev/reference/react/lazy) + [`Suspense`](https://react.dev/reference/react/Suspense)), trim unused dependencies |
+| Data without duplicating cache in React state | **TanStack Query** for server state ([State management](./STATE_MANAGEMENT.md))                                                                                              |
+| Work that must stay private or heavy          | **API** + database—not in the bundle                                                                                                                                         |
 
 Do **not** add `'use client'`—that is a Next.js convention. In Vite, components are client components by default; split files when a subtree should load later.
 
@@ -49,7 +49,7 @@ Code splitting breaks production JS into **smaller chunks** so users download on
 - **Expensive initial state** — use the **lazy initializer** for `useState` so work runs once:
 
 ```tsx
-import { useState } from 'react'
+import { useState } from "react"
 
 // Avoid: expensive() runs on every render path that invokes useState setup
 // useState(expensive())
@@ -79,7 +79,7 @@ Large grids and ledger lines need deliberate patterns:
 
 ## 5. Database performance (API / workers)
 
-Client performance depends on **fast APIs**. For PostgreSQL + [**Drizzle**](https://orm.drizzle.team/) ([Database](./DATABASE.md)):
+Client performance depends on **fast APIs**. For PostgreSQL + [**Drizzle**](https://orm.drizzle.team/) ([Database package](../packages/_database/README.md)):
 
 - **Indexes** on foreign keys, `tenant_id`, status columns, and common filters (dates, document numbers).
 - **Pagination** — `limit` / `offset` or keyset pagination for deep lists; avoid unbounded `findMany`.
@@ -121,7 +121,7 @@ ERP users often stay in-session—investigate **INP** (interaction latency) on h
 
 - [Architecture](./ARCHITECTURE.md) — SPA vs API vs database
 - [State management](./STATE_MANAGEMENT.md) — Query vs Zustand vs local state
-- [Database](./DATABASE.md) — indexes, Drizzle, pgvector
+- [Database package](../packages/_database/README.md) — indexes, Drizzle, pgvector
 - [Components and styling](./COMPONENTS_AND_STYLING.md) — colocation, stacks
 - [Project structure](./PROJECT_STRUCTURE.md)
 - [Testing](./TESTING.md) — Vitest + RTL patterns

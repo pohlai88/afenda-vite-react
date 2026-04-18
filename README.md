@@ -29,7 +29,7 @@ For detailed structure and conventions, see repo-root [`docs/PROJECT_STRUCTURE.m
 - [Authentication](docs/AUTHENTICATION.md) — Vite SPA + backend auth (BFF, Auth0, route guards)
 - [Roles and permissions](docs/ROLES_AND_PERMISSIONS.md) — RBAC (role assignment) + PBAC (permission-key checks), API vs UI
 - [Integrations](docs/INTEGRATIONS.md) — OAuth to external APIs (e.g. GitHub), webhooks, sync patterns
-- [Database](docs/DATABASE.md) — PostgreSQL, Drizzle ORM, migrations, tenant data
+- [Database package](packages/_database/README.md) — PostgreSQL, Drizzle, migrations (`packages/_database/docs/`)
 - [Deployment](docs/DEPLOYMENT.md) — Vercel (Turborepo build, env, SPA routing)
 - [Glossary](docs/GLOSSARY.md) — ERP and platform vocabulary (Vite client vs API, tenant, GL, …)
 - [Brand guidelines](docs/BRAND_GUIDELINES.md) — logo, colors, typography, gradient rules

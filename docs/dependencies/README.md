@@ -53,14 +53,13 @@ Long-form guides usually share a common shape: Afenda context, official document
 
 ### Backend, data, and integrations (planned)
 
-| Guide                               | Status                | Scope                                                                                                          |
-| ----------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------- |
-| [Neon](./neon.md)                   | Planned / recommended | Hosted Postgres guidance and `DATABASE_URL` conventions.                                                       |
-| [Drizzle ORM](./drizzle-orm.md)     | Planned               | Schemas, queries, migrations, and validation patterns; see `docs/DATABASE.md` for environment/layout guidance. |
-| [Cloudflare R2](./cloudflare-r2.md) | Planned               | S3-compatible object storage guidance for file-backed workflows.                                               |
-| [Fastify](./fastify.md)             | Planned               | HTTP API implementation guidance for future `apps/api` work.                                                   |
-| [Pino](./pino.md)                   | Planned               | Structured logging patterns for server-side packages and scripts.                                              |
-| [Octokit](./octokit.md)             | Planned               | GitHub API integration guidance for server-side use cases.                                                     |
+| Guide                               | Status                | Scope                                                             |
+| ----------------------------------- | --------------------- | ----------------------------------------------------------------- |
+| [Neon](./neon.md)                   | Planned / recommended | Hosted Postgres guidance and `DATABASE_URL` conventions.          |
+| [Cloudflare R2](./cloudflare-r2.md) | Planned               | S3-compatible object storage guidance for file-backed workflows.  |
+| [Fastify](./fastify.md)             | Planned               | HTTP API implementation guidance for future `apps/api` work.      |
+| [Pino](./pino.md)                   | Planned               | Structured logging patterns for server-side packages and scripts. |
+| [Octokit](./octokit.md)             | Planned               | GitHub API integration guidance for server-side use cases.        |
 
 ### Optional / when you standardize
 
@@ -76,5 +75,5 @@ Long-form guides usually share a common shape: Afenda context, official document
 
 - [Documentation scope](../DOCUMENTATION_SCOPE.md) - Normative vs optional docs.
 - [API reference](../API.md) - HTTP contract.
-- [Database](../DATABASE.md) - PostgreSQL and Drizzle architecture guidance.
+- [Database package](../../packages/_database/README.md) — PostgreSQL, Drizzle, migrations.
 - [shadcn/ui](./shadcn-ui.md) - Example long-form dependency guide.

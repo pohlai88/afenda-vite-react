@@ -41,8 +41,8 @@ function listFiles(root: string): string[] {
 }
 
 describe("root helper and constant boundary", () => {
-  it("keeps root helpers and constants free of domain semantics", () => {
-    const roots = ["constants", "helpers"].map((directory) =>
+  it("keeps schema helpers and constants free of domain semantics", () => {
+    const roots = ["schema/constants", "schema/helpers"].map((directory) =>
       path.join(packageRoot, "src", directory)
     )
     const offenders = roots.flatMap((root) =>

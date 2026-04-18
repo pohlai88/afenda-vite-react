@@ -2,14 +2,14 @@
 
 **Afenda (`apps/web`)** is a **Vite + React SPA**—there are **no React Server Components**. You still **do not need a single centralized store**: combine **local React state**, **Context** where a subtree truly shares data, **TanStack Query** for server-backed cache, optional **Zustand** (or similar) for cross-cutting UI state, and **React Hook Form + Zod** for forms.
 
-| Kind of state | Typical tools in this repo |
-| --- | --- |
-| **Component** | `useState`, `useReducer`; lift only when needed |
+| Kind of state            | Typical tools in this repo                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------- |
+| **Component**            | `useState`, `useReducer`; lift only when needed                                                         |
 | **Application (client)** | Keep local first; **Zustand** for shared UI (modals, layout prefs). Alternatives: **Jotai**, **Recoil** |
-| **Server / cache** | **TanStack Query** (`@tanstack/react-query`) — fetching, cache, invalidation |
-| **Forms** | **React Hook Form** + **Zod** + `@hookform/resolvers` |
-| **Tenant / shell** | **React Context** (e.g. current tenant from route or session) |
-| **Auth (UX)** | Hook backed by Auth0 SPA or BFF session — see [Authentication](./AUTHENTICATION.md) |
+| **Server / cache**       | **TanStack Query** (`@tanstack/react-query`) — fetching, cache, invalidation                            |
+| **Forms**                | **React Hook Form** + **Zod** + `@hookform/resolvers`                                                   |
+| **Tenant / shell**       | **React Context** (e.g. current tenant from route or session)                                           |
+| **Auth (UX)**            | Hook backed by Auth0 SPA or BFF session — see [Authentication](./AUTHENTICATION.md)                     |
 
 Versions: **`apps/web/package.json`**.
 
@@ -22,22 +22,23 @@ Versions: **`apps/web/package.json`**.
 In a SPA, “server state” means **JSON from your API** (or BFF), not `async` React components that query the DB.
 
 - Prefer **TanStack Query** (`useQuery` / `useMutation`) so caching, retries, and invalidation stay consistent.
-- Call your REST/tRPC/etc. endpoints; **never** put database clients in **`apps/web`** (see [Database](./DATABASE.md)).
+- Call your REST/tRPC/etc. endpoints; **never** put database clients in **`apps/web`** (see [Database package](../packages/_database/README.md)).
 
 ```tsx
 // Illustrative — feature hook or route-level component
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query"
 
 function TenantDashboard({ tenantId }: { tenantId: string }) {
   const { data, isPending, error } = useQuery({
-    queryKey: ['dashboard', tenantId],
-    queryFn: () => fetch(`/api/tenants/${tenantId}/dashboard`).then((r) => r.json()),
-  });
+    queryKey: ["dashboard", tenantId],
+    queryFn: () =>
+      fetch(`/api/tenants/${tenantId}/dashboard`).then((r) => r.json()),
+  })
 
-  if (isPending) return <Spinner />;
-  if (error) return <ErrorBanner />;
+  if (isPending) return <Spinner />
+  if (error) return <ErrorBanner />
 
-  return <SummaryCards data={data} />;
+  return <SummaryCards data={data} />
 }
 ```
 
@@ -154,10 +155,10 @@ The SPA should use a **single app-facing hook** (e.g. `useAuth`) implemented wit
 
 ```typescript
 // Illustrative — align with apps/web/src/features/auth when implemented
-import { useAuth } from '@/features/auth';
+import { useAuth } from "@/features/auth"
 
 function Toolbar() {
-  const { user, isAuthenticated, isLoading, login, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, login, logout } = useAuth()
   // ...
 }
 ```

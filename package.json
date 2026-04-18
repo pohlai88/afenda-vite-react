@@ -44,12 +44,10 @@
     "auth:migrate": "pnpm --filter @afenda/better-auth run auth:migrate",
     "auth:migrate:plugins": "pnpm --filter @afenda/better-auth run auth:migrate:plugins",
     "smoke:auth": "pnpm --filter @afenda/api run smoke:auth",
-    "db:migrate": "pnpm --filter @afenda/database run db:migrate",
-    "db:seed": "pnpm --filter @afenda/database run db:seed",
-    "db:seed:reference": "pnpm --filter @afenda/database run db:seed:reference",
-    "db:seed:demo": "pnpm --filter @afenda/database run db:seed:demo",
-    "db:seed:volume": "pnpm --filter @afenda/database run db:seed:volume",
-    "db:reset:local": "pnpm --filter @afenda/database run db:reset:local"
+    "db:generate": "pnpm -C packages/_database run db:generate",
+    "db:migrate": "pnpm -C packages/_database run db:migrate",
+    "db:push": "pnpm -C packages/_database run db:push",
+    "db:push:force": "pnpm -C packages/_database run db:push:force"
   },
   "devDependencies": {
     "@afenda/eslint-config": "workspace:*",

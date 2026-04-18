@@ -289,7 +289,7 @@
       },
       "identity_bridge": {
         "title": "Jembatan identitas tidak ada",
-        "body": "Tidak ada identity link Afenda untuk akun ini (HTTP {{status}}). Hook sign-up harus memakai DATABASE_URL yang sama dengan apps/api, dan identity_links harus ada (ADR-0004)."
+        "body": "Tidak ada identity link Afenda untuk akun ini (HTTP {{status}}). Hook sign-up harus memakai DATABASE_URL yang sama dengan apps/api, dan identity_links harus ada."
       },
       "forbidden": {
         "title": "Akses ditolak",
@@ -673,7 +673,7 @@
     "meta_content_hash": "Hash YAML",
     "truth_heading": "Registri tata kelola truth",
     "truth_description": "Truth class, model cakupan, dan model waktu — terpisah dari glosarium bisnis.",
-    "truth_empty": "Belum ada baris registri. Edit database-truth-governance.yaml lalu jalankan studio:sync.",
+    "truth_empty": "Belum ada baris registri truth, scope, atau time. Data dimuat dari snapshot governance di paket database bila tersedia.",
     "truth_column_empty": "Belum didefinisikan",
     "truth_classes_heading": "Truth class",
     "scope_models_heading": "Model cakupan",

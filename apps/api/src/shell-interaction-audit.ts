@@ -5,6 +5,7 @@
 import {
   assertUserHasTenantAccess,
   insertGovernedAuditLog,
+  type AuditSevenW1H,
   type DatabaseClient,
 } from "@afenda/database"
 import type { Context } from "hono"
@@ -34,6 +35,46 @@ export interface ShellInteractionAuditRequestBody {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+type ShellInteractionPhase = "started" | "succeeded" | "failed" | "cancelled"
+
+function pickStr(r: Record<string, unknown>, key: string): string | undefined {
+  const v = r[key]
+  return typeof v === "string" && v.length > 0 ? v : undefined
+}
+
+/** Maps client `metadata.extra.sevenW1H` (loose record) into typed `seven_w1h` JSON. */
+function shellExtraToSevenW1H(
+  interactionPhase: ShellInteractionPhase,
+  extra: Record<string, unknown>
+): AuditSevenW1H {
+  return {
+    where: {
+      routeId: pickStr(extra, "routeId"),
+      pathname: pickStr(extra, "pathname"),
+      shellRegion: pickStr(extra, "shellRegion"),
+      region: pickStr(extra, "region"),
+    },
+    why: {
+      reasonCategory: pickStr(extra, "reasonCategory"),
+      metadataReasonKey: pickStr(extra, "metadataReasonKey"),
+    },
+    which: {
+      targetModule: pickStr(extra, "targetModule"),
+      targetFeature: pickStr(extra, "targetFeature"),
+      targetEntityRef: pickStr(extra, "targetEntityRef"),
+    },
+    whom: {
+      affectedSubjectRef: pickStr(extra, "affectedSubjectRef"),
+    },
+    how: {
+      mechanism: pickStr(extra, "mechanism"),
+      interactionPhase,
+      commandOutcomeCategory: pickStr(extra, "commandOutcomeCategory"),
+      errorMessage: pickStr(extra, "errorMessage"),
+    },
+  }
 }
 
 export function parseShellInteractionAuditBody(
@@ -156,7 +197,11 @@ export async function handleShellInteractionAudit(
     )
   }
 
-  const allowed = await assertUserHasTenantAccess(db, betterAuthUserId, tenantId)
+  const allowed = await assertUserHasTenantAccess(
+    db,
+    betterAuthUserId,
+    tenantId
+  )
   if (!allowed) {
     return c.json({ error: "Tenant not allowed for this session" }, 403)
   }
@@ -186,6 +231,10 @@ export async function handleShellInteractionAudit(
     subjectId: body.subject.id,
     sourceChannel: "ui",
     outcome,
+    sevenW1h: shellExtraToSevenW1H(
+      body.interactionPhase as ShellInteractionPhase,
+      seven
+    ),
     ...(body.commandId !== undefined && { commandId: body.commandId }),
     requestId: auditCtx.requestId,
     traceId: auditCtx.traceId,

@@ -10,12 +10,12 @@ It is **not** the same as **product sign-in** (Auth0, credentials, sessions for 
 
 ## 1. Mental model
 
-| Concern | Where it runs |
-| --- | --- |
-| “Connect GitHub” button, return UX | `apps/web` |
+| Concern                                           | Where it runs                                                                                             |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| “Connect GitHub” button, return UX                | `apps/web`                                                                                                |
 | OAuth redirect URI (authorization `redirect_uri`) | **HTTPS origin of your API** (or dev server for the API—not the Vite port, unless you proxy `/api` to it) |
-| Token exchange, refresh, storage | **Server + database** ([Database](./DATABASE.md)) |
-| Calling GitHub/Slack/etc. | **Server** using stored tokens |
+| Token exchange, refresh, storage                  | **Server + database** ([Database package](../packages/_database/README.md))                               |
+| Calling GitHub/Slack/etc.                         | **Server** using stored tokens                                                                            |
 
 ---
 
@@ -57,10 +57,10 @@ It is **not** the same as **product sign-in** (Auth0, credentials, sessions for 
 
 Implement on your **backend** (paths are examples):
 
-| Route | Method | Description |
-| --- | --- | --- |
-| `/api/integrations/github/connect` | GET | Session required. Redirects to GitHub. Query: `returnUrl` (optional, validated allowlist). |
-| `/api/integrations/github/callback` | GET | Exchanges `code` for tokens; stores tokens; redirects to `returnUrl` or default. |
+| Route                               | Method | Description                                                                                |
+| ----------------------------------- | ------ | ------------------------------------------------------------------------------------------ |
+| `/api/integrations/github/connect`  | GET    | Session required. Redirects to GitHub. Query: `returnUrl` (optional, validated allowlist). |
+| `/api/integrations/github/callback` | GET    | Exchanges `code` for tokens; stores tokens; redirects to `returnUrl` or default.           |
 
 The **`apps/web`** app might use:
 
@@ -87,11 +87,11 @@ async function githubFetch(path: string, accessToken: string) {
   const res = await fetch(`https://api.github.com${path}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      Accept: 'application/vnd.github+json',
+      Accept: "application/vnd.github+json",
     },
-  });
-  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-  return res.json();
+  })
+  if (!res.ok) throw new Error(`GitHub API ${res.status}`)
+  return res.json()
 }
 ```
 
@@ -105,7 +105,7 @@ For **long-running or scheduled syncs** (repos, issues, ERP documents), use a **
 
 - `integration_sync_control` — last run, cursor, status, error message per `(tenant_id, provider, resource)`.
 
-Define this in your **database package** when you implement sync; see [Database](./DATABASE.md). Workers or queue consumers read/write this table; the Vite app triggers **“sync now”** via an authenticated API.
+Define this in your **database package** when you implement sync; see [Database package](../packages/_database/README.md). Workers or queue consumers read/write this table; the Vite app triggers **“sync now”** via an authenticated API.
 
 ---
 
@@ -133,6 +133,6 @@ This is separate from **incoming** OAuth callbacks; name routes clearly to avoid
 ## Related docs
 
 - [Authentication](./AUTHENTICATION.md) — product login vs API tokens
-- [Database](./DATABASE.md) — where tokens and sync state live
+- [Database package](../packages/_database/README.md) — where tokens and sync state live
 - [Deployment](./DEPLOYMENT.md) — public URLs for OAuth callbacks in production
 - [Architecture](./ARCHITECTURE.md) — SPA vs API boundaries

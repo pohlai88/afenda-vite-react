@@ -30,3 +30,8 @@ export {
   queryAllowlistedPgEnums,
   type PgEnumRow,
 } from "./query-allowlisted-pg-enums"
+export {
+  studioEnumsResponseSchema,
+  studioPgEnumRowSchema,
+  type StudioPgEnumRow,
+} from "./studio-enums.schema"

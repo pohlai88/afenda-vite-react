@@ -1,5 +1,5 @@
 /**
- * Shared YAML → validated snapshot payload (used by studio:sync and studio:check).
+ * Shared YAML → validated snapshot payload (for tests and future YAML sources under docs/data/).
  * Node-only (crypto, child_process); not for browser bundles.
  */
 import { execSync } from "node:child_process"
@@ -155,7 +155,7 @@ export function assertGlossarySnapshotMatchesYaml(args: {
   const expectedHash = sha256Hex(args.glossaryYamlUtf8)
   if (snapshot.source_content_sha256 !== expectedHash) {
     throw new Error(
-      `business-glossary.snapshot.json source_content_sha256 does not match current business-technical-glossary.yaml (run: pnpm --filter @afenda/database run studio:sync)`
+      `business-glossary.snapshot.json source_content_sha256 does not match current business-technical-glossary.yaml (reconcile JSON with YAML or update the snapshot intentionally)`
     )
   }
   const a = JSON.stringify(
@@ -164,7 +164,7 @@ export function assertGlossarySnapshotMatchesYaml(args: {
   const b = JSON.stringify(expectedBody)
   if (a !== b) {
     throw new Error(
-      `business-glossary.snapshot.json body out of sync with business-technical-glossary.yaml (run: pnpm --filter @afenda/database run studio:sync)`
+      `business-glossary.snapshot.json body out of sync with business-technical-glossary.yaml (reconcile JSON with YAML or update the snapshot intentionally)`
     )
   }
 }
@@ -184,7 +184,7 @@ export function assertTruthGovernanceSnapshotMatchesYaml(args: {
   const expectedHash = sha256Hex(args.governanceYamlUtf8)
   if (snapshot.source_content_sha256 !== expectedHash) {
     throw new Error(
-      `database-truth-governance.snapshot.json source_content_sha256 does not match current database-truth-governance.yaml (run: pnpm --filter @afenda/database run studio:sync)`
+      `database-truth-governance.snapshot.json source_content_sha256 does not match current database-truth-governance.yaml (reconcile JSON with YAML or update the snapshot intentionally)`
     )
   }
   const a = JSON.stringify(
@@ -193,7 +193,7 @@ export function assertTruthGovernanceSnapshotMatchesYaml(args: {
   const b = JSON.stringify(expectedBody)
   if (a !== b) {
     throw new Error(
-      `database-truth-governance.snapshot.json body out of sync with database-truth-governance.yaml (run: pnpm --filter @afenda/database run studio:sync)`
+      `database-truth-governance.snapshot.json body out of sync with database-truth-governance.yaml (reconcile JSON with YAML or update the snapshot intentionally)`
     )
   }
 }

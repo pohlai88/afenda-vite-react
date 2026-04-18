@@ -1,8 +1,8 @@
 # Glossary of terms — Afenda ERP
 
-This document defines **key terms** used in the **Afenda** monorepo so product, engineering, and support share the same vocabulary. Definitions are **Afenda / ERP–centric**; they are not tied to a specific database schema until your migrations exist ([Database](./DATABASE.md)).
+This document defines **key terms** used in the **Afenda** monorepo so product, engineering, and support share the same vocabulary. Definitions are **Afenda / ERP–centric**; they are not tied to a specific database schema until your migrations exist ([Database package](../packages/_database/README.md)).
 
-**Related:** [Architecture](./ARCHITECTURE.md) · [Authentication](./AUTHENTICATION.md) · [Project structure](./PROJECT_STRUCTURE.md) · [Database architecture doctrine](../packages/_database/docs/DATABASE_ARCHITECTURE_DOCTRINE.md) (data modeling principles)
+**Related:** [Architecture](./ARCHITECTURE.md) · [Authentication](./AUTHENTICATION.md) · [Project structure](./PROJECT_STRUCTURE.md) · [Database charter (001)](../packages/_database/docs/guideline/001-postgreSQL-DDL.md) (PostgreSQL / ERP doctrine)
 
 ---
 
@@ -157,7 +157,7 @@ Counterparty for **procurement**; mirrored concepts: payment terms, bank details
 
 If Afenda (or an extension) implements **talent**, **learning**, or **OKR** features, terms like **skill**, **assessment**, **roadmap**, **objective / key result**, **learning assignment** follow common HR / performance practice ([SFIA](https://sfia-online.org/), [OKR](https://en.wikipedia.org/wiki/Objectives_and_key_results), ISO skills metrics). Keep **definitions** in a module-specific doc when you ship those tables—avoid overloading this glossary with schema you have not released.
 
-Similarly, **AI-assisted** features (quizzes, agenda suggestions, semantic search over documents) depend on **product** and **governance** choices; see [Database](./DATABASE.md) for **pgvector** when relevant.
+Similarly, **AI-assisted** features (quizzes, agenda suggestions, semantic search over documents) depend on **product** and **governance** choices; see [Database package](../packages/_database/README.md) for **pgvector** when relevant.
 
 ---
 

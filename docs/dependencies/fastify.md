@@ -29,21 +29,21 @@ This document describes how **Afenda** plans to implement **`apps/api`** with **
 
 - Implement **`/api/tenants/:tenant/...`** and **`/api/chat`** per [API](../API.md).
 - **AuthZ / authN** — [Authentication](../AUTHENTICATION.md), [Roles and permissions](../ROLES_AND_PERMISSIONS.md).
-- **DB** — **Drizzle** only on server ([Database](../DATABASE.md), [Drizzle ORM](./drizzle-orm.md)).
+- **DB** — **Drizzle** only on server ([Database package](../../packages/_database/README.md), [Drizzle ORM](https://orm.drizzle.team/)).
 
 ---
 
 ## How we scaffold Fastify
 
-| Topic | Convention |
-| --- | --- |
-| **Prefixes** | `fastify.register(tenantRoutes, { prefix: '/api/tenants/:tenant' })` + shared **`preHandler`** (or **`preValidation`**) for tenant membership |
-| **Hooks** | Use the [lifecycle](https://fastify.dev/docs/latest/Reference/Hooks/) that fits: auth often **`preValidation`** / **`preHandler`**; avoid duplicating work across hooks |
-| **Validation** | Route **`schema`** (JSON Schema) and/or shared Zod/types at the boundary—aligned with [API](../API.md); see [Validation and serialization](https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/) |
-| **Plugins** | **`fastify-plugin`** when decorators/hooks must apply outside a child scope (e.g. shared auth)—[Plugins](https://fastify.dev/docs/latest/Reference/Plugins/) |
-| **Logger** | Built-in **Pino** — [Pino](./pino.md), [Logging](https://fastify.dev/docs/latest/Reference/Logging/) |
-| **CORS** | **`@fastify/cors`** with explicit origins when SPA and API differ — [Ecosystem](https://fastify.dev/docs/latest/Guides/Ecosystem/) |
-| **Listen / deploy** | Default bind is **localhost**; use **`host: '0.0.0.0'`** (or **`::`**) in containers—[Getting started](https://fastify.dev/docs/latest/Guides/Getting-Started/) |
+| Topic               | Convention                                                                                                                                                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Prefixes**        | `fastify.register(tenantRoutes, { prefix: '/api/tenants/:tenant' })` + shared **`preHandler`** (or **`preValidation`**) for tenant membership                                                                       |
+| **Hooks**           | Use the [lifecycle](https://fastify.dev/docs/latest/Reference/Hooks/) that fits: auth often **`preValidation`** / **`preHandler`**; avoid duplicating work across hooks                                             |
+| **Validation**      | Route **`schema`** (JSON Schema) and/or shared Zod/types at the boundary—aligned with [API](../API.md); see [Validation and serialization](https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/) |
+| **Plugins**         | **`fastify-plugin`** when decorators/hooks must apply outside a child scope (e.g. shared auth)—[Plugins](https://fastify.dev/docs/latest/Reference/Plugins/)                                                        |
+| **Logger**          | Built-in **Pino** — [Pino](./pino.md), [Logging](https://fastify.dev/docs/latest/Reference/Logging/)                                                                                                                |
+| **CORS**            | **`@fastify/cors`** with explicit origins when SPA and API differ — [Ecosystem](https://fastify.dev/docs/latest/Guides/Ecosystem/)                                                                                  |
+| **Listen / deploy** | Default bind is **localhost**; use **`host: '0.0.0.0'`** (or **`::`**) in containers—[Getting started](https://fastify.dev/docs/latest/Guides/Getting-Started/)                                                     |
 
 ---
 

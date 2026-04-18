@@ -1,24 +1,24 @@
 # ⚙️ Project configuration
 
-The **Afenda** monorepo is built for **type safety**, **consistent formatting**, and **fast feedback** in CI and on commit. This page summarizes **what we use** and **where it lives**; feature-specific auth and DB env vars are covered in [Authentication](./AUTHENTICATION.md), [Database](./DATABASE.md), and [Deployment](./DEPLOYMENT.md).
+The **Afenda** monorepo is built for **type safety**, **consistent formatting**, and **fast feedback** in CI and on commit. This page summarizes **what we use** and **where it lives**; feature-specific auth and DB env vars are covered in [Authentication](./AUTHENTICATION.md), [Database package](../packages/_database/README.md), and [Deployment](./DEPLOYMENT.md).
 
 ---
 
 ## Tech stack (summary)
 
-| Area | Technology |
-| --- | --- |
-| Monorepo | [pnpm](https://pnpm.io/) workspaces + [Turborepo](https://turborepo.com/) |
-| Web app | [Vite](https://vitejs.dev/) 8 + [React](https://react.dev/) 19 (`apps/web`) |
-| Language | [TypeScript](https://www.typescriptlang.org/) ~5.9 (strict presets in [`packages/typescript-config/`](../packages/typescript-config/)) |
-| Styling | Global / component CSS today; **Tailwind CSS v4** + shadcn/ui when you adopt them ([Components and styling](./COMPONENTS_AND_STYLING.md)) |
-| Data (client) | [TanStack Query](https://tanstack.com/query) + [Zustand](https://github.com/pmndrs/zustand) where needed ([State management](./STATE_MANAGEMENT.md)) |
-| Database | [PostgreSQL](https://www.postgresql.org/) + [Drizzle ORM](https://orm.drizzle.team/) on the **server** when you add an API package—not inside the Vite bundle ([Database](./DATABASE.md)) |
-| Auth (product) | IdP / BFF patterns in [Authentication](./AUTHENTICATION.md) (not Next.js Auth.js routes) |
-| Testing | [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) (`apps/web`) |
-| Linting | [ESLint](https://eslint.org/) 9 **flat config** ([`eslint.config.js`](../eslint.config.js)) |
-| Formatting | [Prettier](https://prettier.io/) ([`prettier.config.js`](../prettier.config.js)) |
-| Git hooks | [simple-git-hooks](https://github.com/toplenboren/simple-git-hooks) + [lint-staged](https://github.com/lint-staged/lint-staged) (root [`package.json`](../package.json)) |
+| Area           | Technology                                                                                                                                                                                                          |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Monorepo       | [pnpm](https://pnpm.io/) workspaces + [Turborepo](https://turborepo.com/)                                                                                                                                           |
+| Web app        | [Vite](https://vitejs.dev/) 8 + [React](https://react.dev/) 19 (`apps/web`)                                                                                                                                         |
+| Language       | [TypeScript](https://www.typescriptlang.org/) ~5.9 (strict presets in [`packages/typescript-config/`](../packages/typescript-config/))                                                                              |
+| Styling        | Global / component CSS today; **Tailwind CSS v4** + shadcn/ui when you adopt them ([Components and styling](./COMPONENTS_AND_STYLING.md))                                                                           |
+| Data (client)  | [TanStack Query](https://tanstack.com/query) + [Zustand](https://github.com/pmndrs/zustand) where needed ([State management](./STATE_MANAGEMENT.md))                                                                |
+| Database       | [PostgreSQL](https://www.postgresql.org/) + [Drizzle ORM](https://orm.drizzle.team/) on the **server** when you add an API package—not inside the Vite bundle ([Database package](../packages/_database/README.md)) |
+| Auth (product) | IdP / BFF patterns in [Authentication](./AUTHENTICATION.md) (not Next.js Auth.js routes)                                                                                                                            |
+| Testing        | [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) (`apps/web`)                                                                                                                        |
+| Linting        | [ESLint](https://eslint.org/) 9 **flat config** ([`eslint.config.js`](../eslint.config.js))                                                                                                                         |
+| Formatting     | [Prettier](https://prettier.io/) ([`prettier.config.js`](../prettier.config.js))                                                                                                                                    |
+| Git hooks      | [simple-git-hooks](https://github.com/toplenboren/simple-git-hooks) + [lint-staged](https://github.com/lint-staged/lint-staged) (root [`package.json`](../package.json))                                            |
 
 ---
 
@@ -83,7 +83,7 @@ VITE_API_BASE_URL=https://api.example.com
 
 ### Server / API (when you add a backend package)
 
-Database URLs, OAuth client secrets, session keys, and integration keys must live in **server-only** env (no `VITE_` prefix), loaded by Node or your host—not by Vite. See [Authentication](./AUTHENTICATION.md), [Database](./DATABASE.md), [Integrations](./INTEGRATIONS.md), [Deployment](./DEPLOYMENT.md).
+Database URLs, OAuth client secrets, session keys, and integration keys must live in **server-only** env (no `VITE_` prefix), loaded by Node or your host—not by Vite. See [Authentication](./AUTHENTICATION.md), [Database package](../packages/_database/README.md), [Integrations](./INTEGRATIONS.md), [Deployment](./DEPLOYMENT.md).
 
 ### Type-safe env (optional)
 
@@ -111,10 +111,10 @@ Prefer **path aliases** so files can move without deep relative imports.
 
 ```typescript
 // Prefer
-import { Button } from '@afenda/shadcn-ui-deprecated/components/ui/button'
+import { Button } from "@afenda/shadcn-ui-deprecated/components/ui/button"
 
 // Avoid
-import { Button } from '../../../components/Button'
+import { Button } from "../../../components/Button"
 ```
 
 ---
@@ -124,7 +124,7 @@ import { Button } from '../../../components/Button'
 - [Architecture](./ARCHITECTURE.md) — monorepo and web client
 - [Authentication](./AUTHENTICATION.md) — env split (`VITE_*` vs server)
 - [Integrations](./INTEGRATIONS.md) — OAuth secrets for providers
-- [Database](./DATABASE.md) — `DATABASE_URL`, Drizzle
+- [Database package](../packages/_database/README.md) — `DATABASE_URL`, Drizzle
 - [Deployment](./DEPLOYMENT.md) — Vercel and production env
 - [Brand guidelines](./BRAND_GUIDELINES.md) · [Design system](./DESIGN_SYSTEM.md)
 - [Project structure](./PROJECT_STRUCTURE.md)

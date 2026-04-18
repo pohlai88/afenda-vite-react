@@ -289,7 +289,7 @@
       },
       "identity_bridge": {
         "title": "Thiếu cầu nối định danh",
-        "body": "Không có identity link Afenda cho tài khoản này (HTTP {{status}}). Hook đăng ký phải dùng cùng DATABASE_URL với apps/api và phải có identity_links (ADR-0004)."
+        "body": "Không có identity link Afenda cho tài khoản này (HTTP {{status}}). Hook đăng ký phải dùng cùng DATABASE_URL với apps/api và phải có identity_links."
       },
       "forbidden": {
         "title": "Truy cập bị từ chối",
@@ -673,7 +673,7 @@
     "meta_content_hash": "Hash YAML",
     "truth_heading": "Sổ đăng ký quản trị truth",
     "truth_description": "Truth class, mô hình phạm vi và mô hình thời gian — tách khỏi bảng thuật ngữ kinh doanh.",
-    "truth_empty": "Chưa có dòng đăng ký. Sửa database-truth-governance.yaml rồi chạy studio:sync.",
+    "truth_empty": "Chưa có dòng đăng ký truth, scope hoặc time. Dữ liệu được tải từ snapshot governance trong gói database khi có.",
     "truth_column_empty": "Chưa định nghĩa",
     "truth_classes_heading": "Truth class",
     "scope_models_heading": "Mô hình phạm vi",

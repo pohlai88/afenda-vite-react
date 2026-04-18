@@ -6,6 +6,11 @@
       "sourceType": "github",
       "computedHash": "d21b4ab166d9d1d31e6c95dbeea697aaf3843d8d8f71a67ab5d32813a3177707"
     },
+    "database-testing": {
+      "source": "proffesor-for-testing/agentic-qe",
+      "sourceType": "github",
+      "computedHash": "3f65cefbf51782011988977cdce6bb05b0a8fb9c2b1a089b270f47c429309e5b"
+    },
     "eslint-plugin": {
       "source": "third774/dotfiles",
       "sourceType": "github",

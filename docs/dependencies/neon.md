@@ -4,7 +4,7 @@ This document describes how **Afenda** expects to use **[Neon](https://neon.tech
 
 **Docs index:** [neon.tech/docs](https://neon.tech/docs) mirrors the canonical **[Neon documentation](https://neon.com/docs)** (same content; links below use **`neon.com`** for stability).
 
-**Status:** **Planned / recommended** for **hosted PostgreSQL** — not a dependency in **`apps/web`**. Mentioned in [Deployment](../DEPLOYMENT.md) as a typical provider alongside [Database](../DATABASE.md).
+**Status:** **Planned / recommended** for **hosted PostgreSQL** — not a dependency in **`apps/web`**. Mentioned in [Deployment](../DEPLOYMENT.md) as a typical provider alongside [Database package](../../packages/_database/README.md).
 
 **Official documentation:**
 
@@ -27,10 +27,10 @@ This document describes how **Afenda** expects to use **[Neon](https://neon.tech
 
 | Topic                 | Convention                                                                                                                                                                                                                                                                                                                                                   |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Connection**        | **`DATABASE_URL`** — **server-only**, never `VITE_*` ([Database](../DATABASE.md) §2)                                                                                                                                                                                                                                                                         |
+| **Connection**        | **`DATABASE_URL`** — **server-only**, never `VITE_*` ([Database package](../../packages/_database/README.md))                                                                                                                                                                                                                                                |
 | **Pooling**           | Console defaults to **pooled** strings (**`-pooler`** in the host). Use them for **serverless** / high concurrency; use a **direct** string (toggle off pooling in the console, or **`DATABASE_URL_UNPOOLED`** from Vercel integrations) when a tool needs a **non-pooled** session ([Connection pooling](https://neon.com/docs/connect/connection-pooling)) |
-| **Drivers / Drizzle** | Prefer **`drizzle-orm/neon-http`** + **`neon()`** or **`drizzle-orm/neon-serverless`** + **`Pool`** per workload—see [Drizzle ORM](./drizzle-orm.md) and [Neon’s Drizzle guide](https://neon.com/docs/guides/drizzle)                                                                                                                                        |
-| **Migrations**        | Same as any Postgres: **Drizzle Kit** in **`packages/_database`** (`@afenda/database`) ([Drizzle ORM](./drizzle-orm.md)); if a migrator misbehaves through the pooler, run against a **direct** URL                                                                                                                                                          |
+| **Drivers / Drizzle** | Prefer **`drizzle-orm/neon-http`** + **`neon()`** or **`drizzle-orm/neon-serverless`** + **`Pool`** per workload—see [Drizzle ORM](https://orm.drizzle.team/) and [Neon’s Drizzle guide](https://neon.com/docs/guides/drizzle)                                                                                                                               |
+| **Migrations**        | Same as any Postgres: **Drizzle Kit** in **`packages/_database`** (`@afenda/database`) ([Drizzle ORM](https://orm.drizzle.team/)); if a migrator misbehaves through the pooler, run against a **direct** URL                                                                                                                                                 |
 | **Previews**          | **Branch per preview** via **[Neon-managed Vercel](https://neon.com/docs/guides/neon-managed-vercel-integration)** (or equivalent automation) — [Deployment](../DEPLOYMENT.md)                                                                                                                                                                               |
 
 ---
@@ -45,9 +45,9 @@ This document describes how **Afenda** expects to use **[Neon](https://neon.tech
 
 ## Related documentation
 
-- [Database](../DATABASE.md)
+- [Database package](../../packages/_database/README.md)
 - [Deployment](../DEPLOYMENT.md)
-- [Drizzle ORM](./drizzle-orm.md)
+- [Drizzle ORM](https://orm.drizzle.team/)
 
 **External:** [neon.com/docs](https://neon.com/docs) · [Neon console](https://console.neon.tech/)
 

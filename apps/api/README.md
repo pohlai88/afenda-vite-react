@@ -9,7 +9,7 @@ Minimal HTTP boundary for **governed audit emission** and future REST surfaces. 
 - PostgreSQL with migrations applied: from repo root, with `DATABASE_URL` set:
 
   ```bash
-  pnpm --filter @afenda/database db:migrate
+  pnpm run db:migrate
   ```
 
 ## Run locally
@@ -42,13 +42,13 @@ Default port **3001** (override with `PORT`).
 
 ### DB Studio (read-only, session required)
 
-| Method | Path | Notes |
-| ------ | ---- | ----- |
-| `GET` | `/v1/studio/glossary` | Business ↔ technical glossary JSON (from [`@afenda/database/studio`](../../packages/_database/src/studio/index.ts) snapshot). |
-| `GET` | `/v1/studio/glossary/matrix` | `domain_modules` labels + `entry_counts_by_domain_module` (optional; DB Studio derives the same counts client-side from `/glossary`). |
-| `GET` | `/v1/studio/truth-governance` | Truth / scope / time governance snapshot (`database-truth-governance.snapshot.json`). |
-| `GET` | `/v1/studio/enums` | Allowlisted `pg_enum` values (public schema). |
-| `GET` | `/v1/studio/audit/recent?limit=` | Recent `audit_logs` for tenant; requires `X-Tenant-Id` and membership (403 if not allowed). |
+| Method | Path                             | Notes                                                                                                                                 |
+| ------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/v1/studio/glossary`            | Business ↔ technical glossary JSON (from [`@afenda/database/studio`](../../packages/_database/src/studio/index.ts) snapshot).         |
+| `GET`  | `/v1/studio/glossary/matrix`     | `domain_modules` labels + `entry_counts_by_domain_module` (optional; DB Studio derives the same counts client-side from `/glossary`). |
+| `GET`  | `/v1/studio/truth-governance`    | Truth / scope / time governance snapshot (`database-truth-governance.snapshot.json`).                                                 |
+| `GET`  | `/v1/studio/enums`               | Allowlisted `pg_enum` values (public schema).                                                                                         |
+| `GET`  | `/v1/studio/audit/recent?limit=` | Recent `audit_logs` for tenant; requires `X-Tenant-Id` and membership (403 if not allowed).                                           |
 
 ## Better Auth (self-hosted)
 
@@ -78,4 +78,4 @@ Optional: `AUDIT_API_URL=http://localhost:3001`
 
 ## Normative audit docs
 
-- [docs/AUDIT_ARCHITECTURE.md](../../docs/AUDIT_ARCHITECTURE.md)
+- [`packages/_database` README](../../packages/_database/README.md) and [`packages/_database/docs/`](../../packages/_database/docs/)

@@ -204,12 +204,6 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
       "React component patterns, colocation rules, and UI implementation guidance.",
     order: 70,
   },
-  "DATABASE.md": {
-    title: "Database",
-    description:
-      "PostgreSQL, Drizzle, migrations, and tenant-oriented schema notes.",
-    order: 80,
-  },
   "AUTHENTICATION.md": {
     title: "Authentication",
     description:
@@ -456,13 +450,6 @@ const DEPENDENCY_FILE_OVERRIDES: Record<string, FileOverride> = {
     description: "Hosted Postgres guidance and `DATABASE_URL` conventions.",
     category: "backend-planned",
     order: 10,
-  },
-  "drizzle-orm.md": {
-    title: "Drizzle ORM",
-    description:
-      "Schemas, queries, migrations, and validation patterns; see `docs/DATABASE.md` for environment/layout guidance.",
-    category: "backend-planned",
-    order: 20,
   },
   "cloudflare-r2.md": {
     title: "Cloudflare R2",
@@ -857,7 +844,7 @@ async function renderDependenciesReadme(
     "",
     "- [Documentation scope](../DOCUMENTATION_SCOPE.md) - Normative vs optional docs.",
     "- [API reference](../API.md) - HTTP contract.",
-    "- [Database](../DATABASE.md) - PostgreSQL and Drizzle architecture guidance.",
+    "- [Database package](../../packages/_database/README.md) — PostgreSQL, Drizzle, migrations.",
     "- [shadcn/ui](./shadcn-ui.md) - Example long-form dependency guide."
   )
 

@@ -22,7 +22,6 @@ These guides describe Afenda, Vite, and ERP concerns for this repository. They a
 | [Design system](./DESIGN_SYSTEM.md)                                        | Tokens, layout, motion, typography, and accessibility rules.                                                                     |
 | [Brand guidelines](./BRAND_GUIDELINES.md)                                  | Logo, palette, gradient rules, and Afenda visual identity guidance.                                                              |
 | [Components and styling](./COMPONENTS_AND_STYLING.md)                      | React component patterns, colocation rules, and UI implementation guidance.                                                      |
-| [Database](./DATABASE.md)                                                  | PostgreSQL, Drizzle, migrations, and tenant-oriented schema notes.                                                               |
 | [Authentication](./AUTHENTICATION.md)                                      | Vite SPA + backend auth flow, sessions, guards, and Auth0 integration notes.                                                     |
 | [Roles and permissions](./ROLES_AND_PERMISSIONS.md)                        | RBAC roles, PBAC permission keys, and API vs UI enforcement.                                                                     |
 | [State management](./STATE_MANAGEMENT.md)                                  | Local state, Zustand, TanStack Query, forms, and Context boundaries.                                                             |
@@ -36,7 +35,6 @@ These guides describe Afenda, Vite, and ERP concerns for this repository. They a
 | [Glossary](./GLOSSARY.md)                                                  | ERP and platform vocabulary used across the repository.                                                                          |
 | [Shell Components Guardrails (moved)](./SHELL_COMPONENTS_GUARDRAILS.md)    | Live shell module docs live under `apps/web/src/app/_platform/shell/` (see `README.md` there).                                   |
 | [Architecture evolution](./ARCHITECTURE_EVOLUTION.md)                      | Decision policy for when to upgrade architecture now vs later, with measurable triggers and ownership.                           |
-| [Audit architecture](./AUDIT_ARCHITECTURE.md)                              | Normative doctrine and implementation details are maintained next to the @afenda/database audit module (single source of truth): |
 | [CI Quality Gates (Scaffold)](./VITE_FRONTEND_CI_GATES.md)                 | Use this checklist as non-negotiable CI policy for Vite frontend release readiness.                                              |
 | [ERP App Shell Specification](./APP_SHELL_SPEC.md)                         | Architecture specification for the authenticated ERP shell in apps/web.                                                          |
 | [Feature Module Template (Scaffold)](./VITE_FRONTEND_FEATURE_TEMPLATE.md)  | Export only stable surfaces from feature root index.ts.                                                                          |

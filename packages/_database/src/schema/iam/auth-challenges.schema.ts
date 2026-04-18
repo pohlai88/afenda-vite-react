@@ -1,4 +1,18 @@
+/**
+ * @afenda/database — server-only PostgreSQL + Drizzle persistence boundary for the Afenda monorepo.
+ * Canonical DDL under `src/schema/`; **iam** schema (`pgSchema("iam")`) — login accounts, provider links, memberships, roles, ABAC policies, step-up challenges. Migrations emit to `packages/_database/drizzle/` (gitignored).
+ * Import via package exports only (`@afenda/database/schema`, …); do not deep-import `src/` from apps.
+ * Not for browser bundles: uses Node pg Pool; `DATABASE_URL` and pool env are server-side secrets, never `VITE_*`.
+ * Tenancy, audit append-only semantics, and FK patterns follow `docs/guideline/` (001-postgreSQL-DDL.md, 008-db-tree.md).
+ * Schema or relation changes require `db:guard` / `db:ci`; Drizzle Kit output is gitignored until you generate/apply migrations.
+ * Studio snapshots & glossary JSON describe intent; runtime truth is PostgreSQL plus migration history.
+ * Envelope timestamp: 2026-04-18T12:00:00.000Z
+ *
+ * This module: `src/schema/iam/auth-challenges.schema.ts` — `iam.auth_challenges` step-up / MFA lifecycle; `subject_*` text columns (no FK to `user_accounts` — intentional for pre-login flows).
+ */
+import { sql } from "drizzle-orm"
 import {
+  check,
   index,
   integer,
   jsonb,
@@ -81,6 +95,14 @@ export const authChallenges = iam.table(
     statusExpiresIdx: index("idx_iam_auth_challenges_status_expires").on(
       table.status,
       table.expiresAt
+    ),
+    ckAttemptsRemaining: check(
+      "ck_iam_auth_challenges_attempts_remaining",
+      sql`${table.attemptsRemaining} >= 0`
+    ),
+    ckExpiresAfterIssued: check(
+      "ck_iam_auth_challenges_expires_after_issued",
+      sql`${table.expiresAt} > ${table.issuedAt}`
     ),
   })
 )

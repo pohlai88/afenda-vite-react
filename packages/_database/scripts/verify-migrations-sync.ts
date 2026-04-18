@@ -14,7 +14,7 @@ const journalPath = path.join(databaseRoot, "drizzle", "meta", "_journal.json")
 
 if (!fs.existsSync(journalPath)) {
   console.log(
-    "[db:verify-migrations-sync] Skipping: no drizzle/meta/_journal.json — run `pnpm --filter @afenda/database db:generate` and commit `drizzle/` when ready for strict sync checks."
+    "[db:verify-migrations-sync] Skipping: no drizzle/meta/_journal.json — Drizzle-generated SQL/meta is not committed (see packages/_database/drizzle/.gitignore)."
   )
   process.exit(0)
 }
@@ -26,10 +26,14 @@ execSync("pnpm exec drizzle-kit generate", {
   env: { ...process.env, CI: "true" },
 })
 
-console.log("[db:verify-migrations-sync] Checking git diff for packages/_database/drizzle …")
+console.log(
+  "[db:verify-migrations-sync] Checking git diff for packages/_database/drizzle …"
+)
 execSync("git diff --exit-code -- packages/_database/drizzle", {
   cwd: repoRoot,
   stdio: "inherit",
 })
 
-console.log("[db:verify-migrations-sync] ok — committed migrations match the Drizzle schema.")
+console.log(
+  "[db:verify-migrations-sync] ok — committed migrations match the Drizzle schema."
+)
