@@ -10,6 +10,7 @@ export default [
     ignores: [
       "packages/design-system/**/*.{js,jsx,ts,tsx}",
       "packages/shadcn-ui-deprecated/src/**/*.{js,jsx,ts,tsx}",
+      "apps/web/src/api-client/**",
       "**/*.{test,spec}.{js,jsx,ts,tsx}",
       "**/*.stories.{js,jsx,ts,tsx}",
       "**/__tests__/**",
@@ -27,6 +28,11 @@ export default [
             {
               group: ["class-variance-authority"],
               message: "Define variants only in the governed UI package.",
+            },
+            {
+              group: ["@/api-client/web-*"],
+              message:
+                "Import from `@/api-client` (index barrel) only; do not deep-import `web-*` modules from feature code (`apps/web/src/api-client` may use relative `./web-*` imports).",
             },
           ],
         },

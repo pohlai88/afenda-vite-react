@@ -323,7 +323,7 @@
       },
       "api_unavailable": {
         "title": "API tidak tersedia",
-        "body": "BFF mengembalikan HTTP {{status}}. Jalankan @afenda/api pada port yang diproksi Vite (default 3001). Jika terminal Vite menampilkan ECONNREFUSED, proses API tidak berjalan."
+        "body": "BFF mengembalikan HTTP {{status}}. Jalankan @afenda/api pada port yang diproksi Vite (default 8787). Jika terminal Vite menampilkan ECONNREFUSED, proses API tidak berjalan."
       },
       "network": {
         "title": "Tidak dapat menjangkau API",

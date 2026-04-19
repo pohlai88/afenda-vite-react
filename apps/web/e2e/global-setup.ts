@@ -11,7 +11,7 @@ export default async function globalSetup(): Promise<void> {
   }
 
   const url =
-    process.env.E2E_API_HEALTH_URL?.trim() || "http://localhost:3001/health"
+    process.env.E2E_API_HEALTH_URL?.trim() || "http://localhost:8787/health"
   const deadline = Date.now() + 90_000
 
   while (Date.now() < deadline) {

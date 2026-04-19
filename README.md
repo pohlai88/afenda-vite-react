@@ -25,6 +25,7 @@ For detailed structure and conventions, see repo-root [`docs/PROJECT_STRUCTURE.m
 
 ## Extra documentation
 
+- [HTTP API (`apps/api`)](apps/api/README.md) — Hono + Node, Zod, `hc` typing, production hardening phases
 - [Architecture](docs/ARCHITECTURE.md) — ERP monorepo and web client overview
 - [Authentication](docs/AUTHENTICATION.md) — Vite SPA + backend auth (BFF, Auth0, route guards)
 - [Roles and permissions](docs/ROLES_AND_PERMISSIONS.md) — RBAC (role assignment) + PBAC (permission-key checks), API vs UI

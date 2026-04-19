@@ -6,6 +6,11 @@ import { defineConfig, devices } from "@playwright/test"
 const configDir = path.dirname(fileURLToPath(import.meta.url))
 const webAppDir = configDir
 
+/** Centralized under `apps/web/.artifacts/` (gitignored). */
+const playwrightArtifacts = path.join(webAppDir, ".artifacts", "playwright")
+const playwrightReportDir = path.join(playwrightArtifacts, "report")
+const playwrightResultsDir = path.join(playwrightArtifacts, "results")
+
 /** Dedicated port so E2E does not fight a developer’s normal Vite dev server on 5173. */
 const e2eWebPort = process.env.E2E_WEB_PORT?.trim() || "5199"
 /** Use `localhost` (not `127.0.0.1`) so the URL matches Vite’s dev banner and Playwright’s readiness probe. */
@@ -20,7 +25,7 @@ const reuseExisting =
  *
  * Prereqs: repo-root `.env` with a working `DATABASE_URL` and `BETTER_AUTH_SECRET`.
  *
- * **API:** `@afenda/api` must listen on port **3001** (default) before tests — `e2e/global-setup.ts` waits up to 90s.
+ * **API:** `@afenda/api` must listen on port **8787** (default) before tests — `e2e/global-setup.ts` waits up to 90s.
  * Start it in another terminal: `pnpm --filter @afenda/api dev`
  *
  * **Web:** Playwright starts **only Vite** on `E2E_WEB_PORT` (default **5199**) so it does not collide with a normal dev server on 5173.
@@ -31,6 +36,8 @@ const reuseExisting =
  */
 export default defineConfig({
   testDir: "./e2e",
+  /** Test artifacts (screenshots, traces, attachments) — not HTML report. */
+  outputDir: playwrightResultsDir,
   globalSetup: "./e2e/global-setup.ts",
   /** Default per-test timeout — Vite’s first compile + SPA hydration can exceed Playwright’s 30s default. @see https://playwright.dev/docs/test-timeouts */
   timeout: 90_000,
@@ -43,7 +50,10 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   /** SPA + Vite dev: avoid hammering the dev server with parallel navigations before deps are warm. */
   workers: 1,
-  reporter: [["list"], ["html", { open: "never" }]],
+  reporter: [
+    ["list"],
+    ["html", { open: "never", outputFolder: playwrightReportDir }],
+  ],
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL || e2eOrigin,
     /** @see https://playwright.dev/docs/test-timeouts#global-timeout */

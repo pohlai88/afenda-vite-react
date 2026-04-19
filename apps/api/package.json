@@ -3,6 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "exports": {
+    "./app": {
+      "types": "./dist/app.d.ts",
+      "import": "./dist/app.js",
+      "default": "./dist/app.js"
+    }
+  },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
@@ -13,23 +20,19 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
     "test": "vitest --configLoader bundle",
-    "test:run": "vitest run --configLoader bundle",
-    "smoke:auth": "tsx scripts/smoke-auth-e2e.ts"
+    "test:run": "vitest run --configLoader bundle"
   },
   "dependencies": {
     "@afenda/env-loader": "workspace:*",
-    "@afenda/better-auth": "workspace:*",
-    "@afenda/database": "workspace:*",
-    "drizzle-orm": "catalog:",
     "@hono/node-server": "^1.14.1",
+    "@hono/zod-validator": "^0.7.6",
     "hono": "^4.7.4",
-    "pg": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@afenda/tsconfig": "workspace:*",
     "@afenda/vitest-config": "workspace:*",
-    "@types/pg": "catalog:",
+    "@hono/cli": "^0.1.10",
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "tsx": "catalog:",

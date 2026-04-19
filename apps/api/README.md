@@ -1,81 +1,75 @@
 # @afenda/api
 
-**Node HTTP server** in `apps/api` — PostgreSQL, Drizzle, governed audit writes. This is **not** the Vite browser client; that lives at `apps/web/src/app/_platform/api-client` (import `@/app/_platform/api-client` or the `@/app/_platform` barrel). See [App Platform: HTTP surfaces](../web/src/app/_platform/README.md#http-surfaces-afenda).
+**Hono** on Node (`@hono/node-server`) — thin HTTP edge, middleware pipeline, route modules.
 
-Minimal HTTP boundary for **governed audit emission** and future REST surfaces. It uses `@afenda/database` (`insertGovernedAuditLog`) and maps request headers into audit correlation fields.
+## Target stack (Afenda)
 
-## Prerequisites
+This package follows an **API-first** layout: modular routes, thin transport, strong typing into the Vite client.
 
-- PostgreSQL with migrations applied: from repo root, with `DATABASE_URL` set:
+| Layer            | Choice                                                                                       |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| **Frontend**     | Vite + React (`@afenda/web`) — normal SPA; dev proxy to this API                             |
+| **Backend**      | Hono + `@hono/node-server`                                                                   |
+| **Validation**   | Zod + `@hono/zod-validator`                                                                  |
+| **Typed client** | `hono/client` `hc<AppType>()` (types exported from `@afenda/api/app` after `pnpm run build`) |
+| **Runtime**      | Node.js (see `package.json` `engines`)                                                       |
 
-  ```bash
-  pnpm run db:migrate
-  ```
+This stack stays **simpler to reason about and debug** than a heavier traditional backend: clear process boundary (Vite dev server vs API), Hono’s middleware model, Node adapter, and RPC-style typing flow match Hono’s documented API use cases.
 
-## Run locally
+## Production hardening (after baseline)
+
+Add these **in order** once the baseline routes, errors, and client typing are stable.
+
+### Phase 1
+
+1. **Request timing metrics** — latency and status per route (observability hooks).
+2. **Structured logger bridge** — production JSON logs (e.g. Pino) aligned with request IDs.
+3. **Auth middleware** — verify sessions or tokens before protected routes.
+4. **Cookie / session strategy** — explicit SameSite, secure, and domain policy for the SPA + API hosts.
+5. **RFC 9457 Problem Details** — standardize error bodies (`application/problem+json`) alongside or instead of the current `{ ok, error }` JSON envelope where appropriate.
+
+### Phase 2
+
+1. **Rate limiting** — per IP / key / route (Hono middleware or edge).
+2. **Idempotency** — safe retries for mutating endpoints (third-party or custom middleware).
+3. **ETag** — for read-heavy endpoints (Hono provides ETag helpers; cache validators).
+4. **OpenAPI** — only if **external** clients need formal contracts; internal `hc` typing often suffices.
+
+Hono’s ecosystem includes **logger**, **ETag**, **middleware** primitives, and community packages for concerns like **idempotency**; pick pieces that fit your deployment (Node vs serverless).
+
+## Scaffold (current)
+
+This tree was **replaced** from a full implementation. The previous **`apps/api`** (Better Auth, DB, studio, audit, etc.) is archived at:
+
+**[`archives/apps-api-backup-2026-04-19/`](../archives/apps-api-backup-2026-04-19/)** (config + `src` + `scripts`; `node_modules` / `dist` not included).
+
+### Layout
+
+- `src/index.ts` — `serve`, env load
+- `src/app.ts` — `createApp()`, middleware, route mounting (`/health`, `/api/*`)
+- `src/routes/` — `health`, `auth` (placeholder), `users`, `index` mounts sub-apps
+- `src/middleware/` — `logger` (via `hono/logger` in `app.ts`), `request-context`, `error-handler`
+- `src/lib/` — `env`, `errors`, `response` helpers
+- `src/modules/` — feature folders (e.g. `users/` schema + service)
+
+### Run
 
 ```bash
-# Terminal 1 — API (requires DATABASE_URL)
-set DATABASE_URL=postgres://...
 pnpm --filter @afenda/api dev
 ```
 
-Default port **3001** (override with `PORT`).
+Default port **8787** when `PORT` is unset (`index.ts` uses `process.env.PORT ?? 8787`). **`apps/web`** dev proxy targets **`http://localhost:8787`** by default (`VITE_API_URL` overrides). Graceful shutdown: `server.close()` on `SIGINT` / `SIGTERM` ([`@hono/node-server`](https://github.com/honojs/node-server)).
 
-## Headers → audit row
+### Endpoints (scaffold)
 
-| Header             | Audit field                                |
-| ------------------ | ------------------------------------------ |
-| `X-Tenant-Id`      | `tenantId` (required for `/v1/audit/demo`) |
-| `X-Request-Id`     | `requestId`                                |
-| `X-Trace-Id`       | `traceId` (or W3C `traceparent` trace id)  |
-| `X-Correlation-Id` | `correlationId`                            |
+- `GET /` and `GET /health` — liveness JSON via `success()` (`ok`, `data.service`, `data.status`, `data.now`, `data.uptimeSeconds`)
+- `GET /api/users`, `POST /api/users` — in-memory users; `POST` returns **201** with `success(user)`; invalid JSON body → **400** (default `@hono/zod-validator` response)
+- `GET /api/auth/session` — placeholder (`success()`; `authenticated` / `user`) until Better Auth is wired again
 
-## Endpoints
+## Typed client (web)
 
-- `GET /` — small JSON map of main routes (so opening `http://localhost:3001/` in a browser is not a 404)
-- `GET /health` — liveness
-- `GET /api/auth/ok` — Better Auth health check (requires Better Auth schema migrated; see below)
-- `GET|POST /api/auth/*` — [Better Auth](https://www.better-auth.com/) routes (email/password, OAuth when configured). The SPA calls these via the Vite dev proxy (`/api` → this server) or through `VITE_BETTER_AUTH_BASE_URL` when using a remote auth origin.
-- `GET /v1/me` — BFF: requires session cookie; returns Better Auth `user`/`session` plus Afenda `afendaUserId`, `tenantIds`, and `defaultTenantId` (from `users` + `tenant_memberships` via email). The Vite app calls this through `/api/v1/me` (proxy rewrites to `/v1/me`).
-- `POST /v1/audit/demo` — writes one governed `auth.login.succeeded` row (demo). JSON body optional: `{ "subjectId": string }`. `X-Tenant-Id` must match an active tenant membership for the signed-in user (403 otherwise).
+The Vite app imports **`AppType`** from **`@afenda/api/app`** (build the API first so `dist/*.d.ts` exists). See **`src/api-client/client.ts`** in `@afenda/web`. Frontend and API stay **separate processes**; no Hono-in-Vite plugin is required for this layout.
 
-### DB Studio (read-only, session required)
+## File envelope
 
-| Method | Path                             | Notes                                                                                                                                 |
-| ------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`  | `/v1/studio/glossary`            | Business ↔ technical glossary JSON (from [`@afenda/database/studio`](../../packages/_database/src/studio/index.ts) snapshot).         |
-| `GET`  | `/v1/studio/glossary/matrix`     | `domain_modules` labels + `entry_counts_by_domain_module` (optional; DB Studio derives the same counts client-side from `/glossary`). |
-| `GET`  | `/v1/studio/truth-governance`    | Truth / scope / time governance snapshot (`database-truth-governance.snapshot.json`).                                                 |
-| `GET`  | `/v1/studio/enums`               | Allowlisted `pg_enum` values (public schema).                                                                                         |
-| `GET`  | `/v1/studio/audit/recent?limit=` | Recent `audit_logs` for tenant; requires `X-Tenant-Id` and membership (403 if not allowed).                                           |
-
-## Better Auth (self-hosted)
-
-Server config lives in `@afenda/better-auth` (`createAfendaAuth`). Required env (see repo-root [`.env.example`](../../.env.example) — Database / Better Auth sections):
-
-- `DATABASE_URL` — same Postgres as `@afenda/database`
-- `BETTER_AUTH_SECRET` — strong secret (e.g. `openssl rand -base64 32`)
-- `BETTER_AUTH_URL` — **browser-visible** origin for cookies and redirects; for local Vite + proxy use `http://localhost:5173` (not only `http://localhost:3001`)
-
-Apply Better Auth tables with the CLI (from repo root, with `.env` loaded so `DATABASE_URL` and `BETTER_AUTH_SECRET` are set):
-
-```bash
-pnpm --filter @afenda/better-auth auth:migrate
-```
-
-Config path: `packages/better-auth/src/better-auth-cli-config.ts` (same target DB as `DATABASE_URL`). For a **drift check** before applying anything, run `pnpm dlx auth@latest migrate --help` in that package — the CLI’s supported flags evolve; if a dry-run option exists for your version, use it with the same `--config` as `auth:migrate`. You can also compare live tables (e.g. Neon SQL) to expected Better Auth models. Re-run `auth:migrate` after enabling new Better Auth plugins. Drizzle migrations under `packages/_database` are separate; run both as needed.
-
-## Local smoke (full stack)
-
-With the API running and `DATABASE_URL` valid:
-
-```bash
-pnpm exec tsx scripts/audit-api-smoke.ts
-```
-
-Optional: `AUDIT_API_URL=http://localhost:3001`
-
-## Normative audit docs
-
-- [`packages/_database` README](../../packages/_database/README.md) and [`packages/_database/docs/`](../../packages/_database/docs/)
+See repo-root [`ENVELOPE.md`](../../ENVELOPE.md).

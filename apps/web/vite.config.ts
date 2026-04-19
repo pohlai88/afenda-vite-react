@@ -1,5 +1,9 @@
 /// <reference types="vitest/config" />
 /**
+ * **Stack split:** this config is for the **Vite frontend only** (`@afenda/web`). The HTTP API is **Hono**
+ * in `apps/api` (default port **8787**), started separately. The dev `server.proxy` forwards same-origin
+ * `/api` (and related paths) to that host — no Hono Vite plugin, which keeps debugging and deploy boundaries clear.
+ *
  * Build hygiene (see also `package.json` scripts):
  * - **Rollup circular chunk warnings** — avoided by not splitting `@radix-ui` into its own chunk and by
  *   keeping `react`, `react-dom`, and `scheduler` in one `vendor-react` manual chunk.
@@ -241,7 +245,7 @@ async function resolveUserConfig({
       ...(analyze
         ? [
             visualizer({
-              filename: path.resolve(configDir, "dist/stats.html"),
+              filename: path.resolve(configDir, ".artifacts/temp/stats.html"),
               gzipSize: true,
               brotliSize: true,
               template: "treemap",
@@ -259,7 +263,7 @@ async function resolveUserConfig({
       },
     },
 
-    // Path resolution — `@/*` maps to `src/*` (see `tsconfig.app.json`); workspace
+    // Path resolution — `@/*` maps to `src/*` (see `config/tsconfig/app.json`); workspace
     // packages use `package.json` names (`@afenda/*`).
 
     // Development server configuration
@@ -275,19 +279,19 @@ async function resolveUserConfig({
       proxy: {
         // Agent Auth discovery document (Better Auth plugin) — same origin as SPA in dev.
         "/.well-known/agent-configuration": {
-          target: env.VITE_API_URL || "http://localhost:3001",
+          target: env.VITE_API_URL || "http://localhost:8787",
           changeOrigin: true,
           secure: false,
         },
         // Better Auth and other `/api/*` routes (except `/api/v1`) forward as-is — Hono serves `/api/auth/*` on the API host.
         "/api/v1": {
-          target: env.VITE_API_URL || "http://localhost:3001",
+          target: env.VITE_API_URL || "http://localhost:8787",
           changeOrigin: true,
           secure: false,
           rewrite: (p) => p.replace(/^\/api/, ""),
         },
         "/api": {
-          target: env.VITE_API_URL || "http://localhost:3001",
+          target: env.VITE_API_URL || "http://localhost:8787",
           changeOrigin: true,
           secure: false,
         },
@@ -421,10 +425,20 @@ async function resolveUserConfig({
       ...(() => {
         const base = getAfendaVitestTestOptions()
         // Default `threads` pool can time out spawning workers on some Windows setups; forks is more stable.
-        if (!process.env.VITEST_POOL && process.platform === "win32") {
-          return { ...base, pool: "forks" as const }
+        const withPool =
+          !process.env.VITEST_POOL && process.platform === "win32"
+            ? { ...base, pool: "forks" as const }
+            : base
+        return {
+          ...withPool,
+          coverage: {
+            ...withPool.coverage,
+            reportsDirectory: path.join(
+              configDir,
+              ".artifacts/vitest/coverage"
+            ),
+          },
         }
-        return base
       })(),
       environment: "jsdom",
       setupFiles: [path.join(configDir, "vitest.setup.ts")],

@@ -95,6 +95,8 @@ function resolvePasskeyRpId(): string {
 export const DEFAULT_BETTER_AUTH_TRUSTED_ORIGINS: readonly string[] = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
+  "http://localhost:8787",
+  "http://127.0.0.1:8787",
   "http://localhost:3001",
   "http://127.0.0.1:3001",
 ]

@@ -68,7 +68,7 @@
     },
     "test:coverage": {
       "dependsOn": ["^transit"],
-      "outputs": ["coverage/**"],
+      "outputs": ["coverage/**", ".artifacts/vitest/coverage/**"],
       "env": ["NODE_ENV", "VITE_*"],
       "passThroughEnv": ["VITEST_*"]
     },

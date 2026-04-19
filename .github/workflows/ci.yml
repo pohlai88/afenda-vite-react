@@ -39,6 +39,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Validate apps/web root layout
+        run: pnpm --filter @afenda/web run verify:layout
+
       - name: Regenerate i18n corpora and audit
         run: pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit
 

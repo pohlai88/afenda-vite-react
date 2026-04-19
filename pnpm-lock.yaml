@@ -170,27 +170,18 @@ importers:
 
   apps/api:
     dependencies:
-      '@afenda/better-auth':
-        specifier: workspace:*
-        version: link:../../packages/better-auth
-      '@afenda/database':
-        specifier: workspace:*
-        version: link:../../packages/_database
       '@afenda/env-loader':
         specifier: workspace:*
         version: link:../../packages/env-loader
       '@hono/node-server':
         specifier: ^1.14.1
         version: 1.19.12(hono@4.12.10)
-      drizzle-orm:
-        specifier: 'catalog:'
-        version: 0.45.2(@opentelemetry/api@1.9.1)(@types/pg@8.20.0)(kysely@0.28.16)(pg@8.20.0)
+      '@hono/zod-validator':
+        specifier: ^0.7.6
+        version: 0.7.6(hono@4.12.10)(zod@4.3.6)
       hono:
         specifier: ^4.7.4
         version: 4.12.10
-      pg:
-        specifier: 'catalog:'
-        version: 8.20.0
       zod:
         specifier: 'catalog:'
         version: 4.3.6
@@ -201,12 +192,12 @@ importers:
       '@afenda/vitest-config':
         specifier: workspace:*
         version: link:../../packages/vitest-config
+      '@hono/cli':
+        specifier: ^0.1.10
+        version: 0.1.10
       '@types/node':
         specifier: 'catalog:'
         version: 24.12.2
-      '@types/pg':
-        specifier: 'catalog:'
-        version: 8.20.0
       eslint:
         specifier: 'catalog:'
         version: 9.39.4(jiti@2.6.1)
@@ -303,6 +294,9 @@ importers:
       framer-motion:
         specifier: ^12.38.0
         version: 12.38.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      hono:
+        specifier: ^4.12.10
+        version: 4.12.10
       i18next:
         specifier: ^26.0.3
         version: 26.0.3(typescript@5.9.3)
@@ -358,6 +352,9 @@ importers:
         specifier: ^5.0.12
         version: 5.0.12(@types/react@19.2.14)(immer@11.1.4)(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))
     devDependencies:
+      '@afenda/api':
+        specifier: workspace:*
+        version: link:../api
       '@afenda/better-auth':
         specifier: workspace:*
         version: link:../../packages/better-auth
@@ -2012,11 +2009,21 @@ packages:
   '@hexagon/base64@1.1.28':
     resolution: {integrity: sha512-lhqDEAvWixy3bZ+UOYbPwUbBkwBq5C1LAJ/xPC8Oi+lL54oyakv/npbA0aU2hgCsx/1NUd4IBvV03+aUBWxerw==}
 
+  '@hono/cli@0.1.10':
+    resolution: {integrity: sha512-tjOLTsIeBYqfSDC5ezT25zZTV3DUeFy64MefDWi9UGFqnyRiRf2P8t+43dPnJQ04J4YB5UAZoSmW4tTZXjfB6Q==}
+    hasBin: true
+
   '@hono/node-server@1.19.12':
     resolution: {integrity: sha512-txsUW4SQ1iilgE0l9/e9VQWmELXifEFvmdA1j6WFh/aFPj99hIntrSsq/if0UWyGVkmrRPKA1wCeP+UCr1B9Uw==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
+
+  '@hono/zod-validator@0.7.6':
+    resolution: {integrity: sha512-Io1B6d011Gj1KknV4rXYz4le5+5EubcWEU/speUjuw9XMMIaP3n78yXLhjd2A3PXaXaUwEAluOiAyLqhBEJgsw==}
+    peerDependencies:
+      hono: '>=3.9.0'
+      zod: ^3.25.0 || ^4.0.0
 
   '@hookform/resolvers@5.2.2':
     resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
@@ -8879,9 +8886,21 @@ snapshots:
 
   '@hexagon/base64@1.1.28': {}
 
+  '@hono/cli@0.1.10':
+    dependencies:
+      '@hono/node-server': 1.19.12(hono@4.12.10)
+      commander: 14.0.3
+      esbuild: 0.25.12
+      hono: 4.12.10
+
   '@hono/node-server@1.19.12(hono@4.12.10)':
     dependencies:
       hono: 4.12.10
+
+  '@hono/zod-validator@0.7.6(hono@4.12.10)(zod@4.3.6)':
+    dependencies:
+      hono: 4.12.10
+      zod: 4.3.6
 
   '@hookform/resolvers@5.2.2(react-hook-form@7.72.1(react@19.2.4))':
     dependencies:

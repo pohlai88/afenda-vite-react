@@ -21,5 +21,6 @@ The app keeps **two governed filenames** for the same global token/theme system.
 
 ## Related
 
+- HTTP API (`@afenda/api`): [`../api/README.md`](../api/README.md) — Hono stack, `hc` typed client, production hardening roadmap (Phase 1 / Phase 2)
 - Monorepo docs: `docs/README.md`, `docs/COMPONENTS_AND_STYLING.md`
 - UI package (`@afenda/shadcn-ui-deprecated`): `packages/shadcn-ui-deprecated/README.md` (if present) and `docs/COMPONENTS_AND_STYLING.md`

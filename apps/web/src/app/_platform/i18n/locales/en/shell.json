@@ -323,7 +323,7 @@
       },
       "api_unavailable": {
         "title": "API unavailable",
-        "body": "The BFF returned HTTP {{status}}. Start @afenda/api on the port Vite proxies to (default 3001). If the Vite terminal shows ECONNREFUSED, the API process is not running."
+        "body": "The BFF returned HTTP {{status}}. Start @afenda/api on the port Vite proxies to (default 8787). If the Vite terminal shows ECONNREFUSED, the API process is not running."
       },
       "network": {
         "title": "Cannot reach API",

@@ -323,7 +323,7 @@
       },
       "api_unavailable": {
         "title": "API không khả dụng",
-        "body": "BFF trả về HTTP {{status}}. Hãy chạy @afenda/api trên cổng Vite proxy (mặc định 3001). Nếu terminal Vite báo ECONNREFUSED, tiến trình API không chạy."
+        "body": "BFF trả về HTTP {{status}}. Hãy chạy @afenda/api trên cổng Vite proxy (mặc định 8787). Nếu terminal Vite báo ECONNREFUSED, tiến trình API không chạy."
       },
       "network": {
         "title": "Không kết nối được API",

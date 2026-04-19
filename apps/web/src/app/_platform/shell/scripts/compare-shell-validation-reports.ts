@@ -3,7 +3,7 @@
  * Prints the diff as JSON to stdout. Exit code 1 if `hasBreakingChanges`, else 0.
  *
  * Usage:
- *   pnpm --filter @afenda/web exec tsx --tsconfig tsconfig.app.json \
+ *   pnpm --filter @afenda/web exec tsx --tsconfig config/tsconfig/app.json \
  *     src/app/_platform/shell/scripts/compare-shell-validation-reports.ts <baseline.json> <current.json>
  */
 
