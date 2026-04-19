@@ -1,11 +1,11 @@
 /**
  * Request + session context shapes for headers or JSON metadata from the API.
  * Aligns with the monorepo pack’s `requestContextSchema` / `sessionContextSchema`.
- * platform · http · api-client · request-context
+ * platform · http · rpc · request-context
  * Upstream: `zod`, `./web-envelope` (`webRequestIdSchema`), `./web-user` (`webUserIdSchema`).
  * Coupling: if `@afenda/api` exposes this on the wire, keep fields identical.
  * stable
- * @module api-client/web-request-context
+ * @module rpc/web-request-context
  * @package @afenda/web
  */
 import { z } from "zod"

@@ -2,7 +2,7 @@ import {
   ApiClientHttpError,
   getSharedApiClient,
   resolveApiV1Path,
-} from "../../api-client"
+} from "../../runtime"
 
 import type {
   AuthApiEnvelope,

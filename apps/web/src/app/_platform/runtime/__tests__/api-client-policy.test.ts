@@ -19,7 +19,7 @@ import {
   parseApiClientTimeoutMs,
 } from "../utils/api-client-utils"
 
-describe("_platform/api-client", () => {
+describe("_platform/runtime", () => {
   afterEach(() => {
     resetSharedApiClientForTests()
     vi.unstubAllGlobals()

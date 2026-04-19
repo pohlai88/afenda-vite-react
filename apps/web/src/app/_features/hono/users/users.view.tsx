@@ -1,9 +1,9 @@
 /**
- * Demo users list + create form (pack layout); typed RPC + `WebUser` from `@/api-client`.
- * @module features/users/users.view
+ * Demo users list + create form (pack layout); typed RPC + `WebUser` from `@/rpc`.
+ * @module app/_features/hono/users/users.view
  * @package @afenda/web
  */
-import type { WebUser } from "@/api-client"
+import type { WebUser } from "@/rpc"
 import { useEffect, useState } from "react"
 
 import { createUser, fetchUsers } from "./users.api"

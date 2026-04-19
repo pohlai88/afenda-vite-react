@@ -1,7 +1,7 @@
 import type { ApiClientCapabilityContract } from "../types/api-client-types"
 
 /**
- * Browser HTTP client capability — `_platform/api-client` only.
+ * Browser HTTP client capability — `_platform/runtime` only.
  *
  * Verification:
  * - **This** policy describes the SPA `fetch` client (env `VITE_*`, same-origin `/api/...`).
@@ -48,6 +48,6 @@ export const apiClientPlatformPolicy = {
     "__tests__",
   ],
   dependencyDirection:
-    "_features may import `_platform/api-client` public APIs; `_platform/api-client` must not import `_features` internals.",
+    "_features may import `_platform/runtime` public APIs; `_platform/runtime` must not import `_features` internals.",
   featureInternalImportPattern: "app/_features/*/*",
 } as const

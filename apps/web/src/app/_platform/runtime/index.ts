@@ -1,5 +1,5 @@
 /**
- * Browser **api-client** only (`_platform/api-client`). Server HTTP is `apps/api` — not re-exported here.
+ * Browser HTTP runtime only (`_platform/runtime`). Server HTTP is `apps/api` — not re-exported here.
  * @see README.md — naming convention: symbols use `ApiClient` / `apiClient` / `api-client-*` file names.
  */
 export { ApiClientBoundary } from "./components/ApiClientBoundary"

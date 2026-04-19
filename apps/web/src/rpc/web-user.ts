@@ -1,10 +1,10 @@
 /**
  * User entity + create-input and response envelope schemas for the SPA fetch layer.
- * platform · http · api-client · user
+ * platform · http · rpc · user
  * Upstream: `zod`. Downstream: `web-users`, forms, TanStack Query.
  * Coupling: keep schemas aligned with `apps/api/src/contract/user.ts`.
  * stable
- * @module api-client/web-user
+ * @module rpc/web-user
  * @package @afenda/web
  */
 import { z } from "zod"

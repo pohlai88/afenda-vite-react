@@ -9,7 +9,7 @@ import {
 import {
   getSharedApiClient,
   resolveApiV1Path,
-} from "../../../_platform/api-client"
+} from "../../../_platform/runtime"
 
 export const DB_STUDIO_GLOSSARY_STALE_MS = 30 * 60 * 1000
 

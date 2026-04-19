@@ -4,7 +4,7 @@ export type {
   PlatformCapabilityOwner,
   PlatformCapabilityStatus,
 } from "./_template/types/platform-capability"
-export * from "./api-client"
+export * from "./runtime"
 export * from "./auth"
 export * from "./i18n"
 export * from "./shell"

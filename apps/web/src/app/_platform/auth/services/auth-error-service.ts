@@ -1,4 +1,4 @@
-import { ApiClientHttpError } from "../../api-client"
+import { ApiClientHttpError } from "../../runtime"
 
 export class AuthServiceError extends Error {
   readonly code: string

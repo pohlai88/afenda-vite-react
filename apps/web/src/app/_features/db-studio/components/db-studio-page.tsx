@@ -26,7 +26,7 @@ import {
 import {
   getSharedApiClient,
   resolveApiV1Path,
-} from "../../../_platform/api-client"
+} from "../../../_platform/runtime"
 import { useOptionalTenantIdHeaders } from "../../../_platform/tenant/tenant-scope-context"
 import type {
   BusinessGlossaryEntry,

@@ -13,8 +13,8 @@ import {
 import {
   ApiClientHttpError,
   getSharedApiClient,
-} from "../api-client/services/api-client-service"
-import { resolveApiV1Path } from "../api-client/utils/api-client-utils"
+} from "../runtime/services/api-client-service"
+import { resolveApiV1Path } from "../runtime/utils/api-client-utils"
 import { getDemoTenantId } from "../config/afenda-local-env"
 import { useAfendaSession } from "../auth"
 

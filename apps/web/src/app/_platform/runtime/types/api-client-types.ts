@@ -44,7 +44,7 @@ export interface ApiClient {
 }
 
 /**
- * Metadata for the **browser** HTTP client under `_platform/api-client`.
+ * Metadata for the **browser** HTTP client under `_platform/runtime`.
  *
  * **Naming (do not confuse):**
  * - `id` is **`"api-client"`** — the Vite SPA fetch wrapper and hooks.

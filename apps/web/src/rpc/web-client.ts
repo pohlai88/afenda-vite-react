@@ -1,20 +1,20 @@
 /**
  * Typed Hono client (`hc<AppType>`) sharing the API’s route types from `@afenda/api`.
  * Owns base URL resolution for dev proxy vs absolute `VITE_API_BASE_URL`; no request helpers.
- * platform · http · api-client · hono-rpc
+ * platform · http · rpc · hono-rpc
  * Upstream: hono/client; types from `apps/api/src/app`. Env: `VITE_API_BASE_URL`.
  * Downstream: feature modules import `api` or wrap in hooks/services.
  * Side effects: none (client factory only).
  * Coupling: must stay aligned with `createApp()` route tree.
  * stable
- * @module api-client/web-client
+ * @module rpc/web-client
  * @package @afenda/web
  */
 import { hc } from "hono/client"
 
 import type { AppType } from "@afenda/api/app"
 
-import { normalizeApiClientBaseUrl } from "@/app/_platform/api-client/utils/api-client-utils"
+import { normalizeApiClientBaseUrl } from "@/app/_platform/runtime/utils/api-client-utils"
 
 function resolveHcBaseUrl(): string {
   const normalized = normalizeApiClientBaseUrl(

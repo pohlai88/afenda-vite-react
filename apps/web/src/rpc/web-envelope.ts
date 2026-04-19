@@ -1,11 +1,11 @@
 /**
  * JSON response envelopes for typed Hono RPC + manual `fetch` — mirrors `apps/api/src/contract/envelope.ts` / `lib/response`.
  * Zod validates error bodies from the wire; success payloads stay generic (`data: T`).
- * platform · http · api-client · envelope
+ * platform · http · rpc · envelope
  * Upstream: `zod`. Downstream: feature code parsing API JSON.
  * Coupling: keep field names in lockstep with `@afenda/api` `success` / `failure` / `onError`.
  * stable
- * @module api-client/web-envelope
+ * @module rpc/web-envelope
  * @package @afenda/web
  */
 import { z } from "zod"

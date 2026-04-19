@@ -10,7 +10,7 @@ export default [
     ignores: [
       "packages/design-system/**/*.{js,jsx,ts,tsx}",
       "packages/shadcn-ui-deprecated/src/**/*.{js,jsx,ts,tsx}",
-      "apps/web/src/api-client/**",
+      "apps/web/src/rpc/**",
       "**/*.{test,spec}.{js,jsx,ts,tsx}",
       "**/*.stories.{js,jsx,ts,tsx}",
       "**/__tests__/**",
@@ -30,9 +30,9 @@ export default [
               message: "Define variants only in the governed UI package.",
             },
             {
-              group: ["@/api-client/web-*"],
+              group: ["@/rpc/web-*"],
               message:
-                "Import from `@/api-client` (index barrel) only; do not deep-import `web-*` modules from feature code (`apps/web/src/api-client` may use relative `./web-*` imports).",
+                "Import from `@/rpc` (index barrel) only; do not deep-import `web-*` modules from feature code (`apps/web/src/rpc` may use relative `./web-*` imports).",
             },
           ],
         },
