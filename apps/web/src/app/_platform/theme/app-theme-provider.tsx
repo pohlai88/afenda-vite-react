@@ -1,6 +1,7 @@
 import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
+import { AFENDA_THEME_STORAGE_KEYS } from "./theme-storage-contract"
 import { ShellDensityRoot } from "./shell-density-root"
 import { ShellMotionRoot } from "./shell-motion-root"
 import { ThemeColorMeta } from "./theme-color-meta"
@@ -9,7 +10,7 @@ import { ThemeColorMeta } from "./theme-color-meta"
  * Signed-in app (`/app/*`) theme — separate storage from public marketing routes.
  * Must match `apps/web/index.html` blocking script (same keys + `isApp` via `pathAfterViteBase` + Vite `base`).
  */
-export const VITE_UI_THEME_STORAGE_KEY = "vite-ui-theme"
+export const VITE_UI_THEME_STORAGE_KEY = AFENDA_THEME_STORAGE_KEYS.app
 
 export interface AppThemeProviderProps {
   readonly children: ReactNode

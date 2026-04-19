@@ -18,6 +18,7 @@ export { RequireGuest } from "./guards/require-guest"
 
 export { RouteAuthUnified } from "./routes/route-auth-unified"
 export { RouteAuthCallback } from "./routes/route-auth-callback"
+export { AuthLayout } from "./routes/auth-layout"
 
 export { useAuthIntelligence } from "./hooks/use-auth-intelligence"
 export { useAuthSessions } from "./hooks/use-auth-sessions"

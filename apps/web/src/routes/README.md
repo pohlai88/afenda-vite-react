@@ -12,7 +12,7 @@
 | **[`src/main.tsx`](../main.tsx)**     | Bootstraps React; does **not** import route modules directly—only mounts `<App />`.                                                                                                                                                                                                                                                                                                                                                                                            |
 | **[`index.ts`](./index.ts)**          | Optional **barrel**: re-exports `router`, `browserRoutes`, and individual route modules for consumers that prefer a single import path.                                                                                                                                                                                                                                                                                                                                        |
 
-**Flow:** `main` → `App` → `RouterProvider(router)` → URL matches a child of `browserRoutes` (marketing at `/` or ERP shell at `/app/*`).
+**Flow:** `main` → `App` → `RouterProvider(router)` → URL matches a child of `browserRoutes` (marketing at `/`, auth at `/auth/*`, or ERP shell at `/app/*`).
 
 ## Naming
 
@@ -20,11 +20,12 @@ Filenames use the **`route-*.tsx`** prefix so route modules group clearly in the
 
 ## Files
 
-| File                                           | Role                                                                                                         |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [`route-marketing.tsx`](./route-marketing.tsx) | Public marketing + auth routes under `/` (no ERP shell).                                                     |
-| [`route-app-shell.tsx`](./route-app-shell.tsx) | Subtree for **`/app/*`**: `AppShellLayout`, feature pages, splat not-found.                                  |
-| [`index.ts`](./index.ts)                       | Re-exports route modules and [`router` / `browserRoutes`](../router.tsx) for consumers that prefer a barrel. |
+| File                                                                     | Role                                                                                                         |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| [`../marketing/marketing-routes.tsx`](../marketing/marketing-routes.tsx) | Standalone marketing routes under `/` and `/marketing/*` (no auth or ERP shell).                             |
+| [`route-auth.tsx`](./route-auth.tsx)                                     | Standalone auth routes under `/auth/*` plus legacy short-path redirects.                                     |
+| [`route-app-shell.tsx`](./route-app-shell.tsx)                           | Subtree for **`/app/*`**: `AppShellLayout`, feature pages, splat not-found.                                  |
+| [`index.ts`](./index.ts)                                                 | Re-exports route modules and [`router` / `browserRoutes`](../router.tsx) for consumers that prefer a barrel. |
 
 ## Shell metadata
 
@@ -36,7 +37,7 @@ Filenames use the **`route-*.tsx`** prefix so route modules group clearly in the
 
 **In-app shell:** Layout, feature children, and the `/app/*` splat not-found must carry governed `handle.shell` from definitions.
 
-**Outside shell:** Marketing and auth entry routes do not mount `AppShellLayout`; they declare `handle: { shell: null }` so policy is explicit. See [`route-marketing.tsx`](./route-marketing.tsx).
+**Outside shell:** Marketing and auth routes do not mount `AppShellLayout`; they declare `handle: { shell: null }` so policy is explicit. See [`../marketing/marketing-routes.tsx`](../marketing/marketing-routes.tsx) and [`route-auth.tsx`](./route-auth.tsx).
 
 Shell metadata ownership applies to the governed `/app/*` runtime, not to every route in the app.
 
@@ -46,10 +47,11 @@ Shell metadata ownership applies to the governed `/app/*` runtime, not to every 
 
 ## Adding routes
 
-1. **Marketing or auth-only path** (no shell): extend [`route-marketing.tsx`](./route-marketing.tsx) with `handle: { shell: null }` unless the route participates in shell chrome (it should not for these).
-2. **Authenticated ERP area under `/app`**:
+1. **Marketing-only path** (no shell): extend [`../marketing/marketing-routes.tsx`](../marketing/marketing-routes.tsx) with `handle: { shell: null }`.
+2. **Auth-only path** (no shell): extend [`route-auth.tsx`](./route-auth.tsx) with `handle: { shell: null }`.
+3. **Authenticated ERP area under `/app`**:
    - Update [`shell-route-definitions.ts`](../app/_platform/shell/routes/shell-route-definitions.ts) and wire the page in [`route-app-shell.tsx`](./route-app-shell.tsx) (often via the shared child-route map there).
-3. **New top-level segment** (e.g. a second product shell): add a dedicated `route-*.tsx` module, import it from [`router.tsx`](../router.tsx), and append it to the `browserRoutes` array in the right order.
+4. **New top-level segment** (e.g. a second product shell): add a dedicated `route-*.tsx` module, import it from [`router.tsx`](../router.tsx), and append it to the `browserRoutes` array in the right order.
 
 ## Normative docs
 

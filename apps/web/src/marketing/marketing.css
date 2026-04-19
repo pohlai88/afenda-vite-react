@@ -1,0 +1,300 @@
+/**
+ * MARKETING ART DIRECTION
+ *
+ * Loaded only via `MarketingLayout` for public routes.
+ * Uses design-system CSS variables only; no parallel token layer.
+ * Shell establishes isolated ambient background, readable editorial type,
+ * restrained entrance motion, and optional decorative forensic overlays.
+ */
+
+.forensic-overlay {
+  background-image:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.09) 50%),
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.025),
+      rgba(0, 255, 0, 0.01),
+      rgba(0, 0, 255, 0.025)
+    );
+  background-size:
+    100% 4px,
+    3px 100%;
+  opacity: 0.18;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.marketing-root {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+}
+
+.marketing-shell-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ambient depth: fixed background plane for subtle cinematic scroll behavior. */
+.marketing-root::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+  background:
+    radial-gradient(
+      ellipse 90% 55% at 50% -15%,
+      color-mix(in oklab, var(--color-primary) 14%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 50% 45% at 100% 30%,
+      color-mix(in oklab, var(--color-ring) 10%, transparent),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 45% 40% at 0% 70%,
+      color-mix(in oklab, var(--color-muted) 18%, transparent),
+      transparent 45%
+    );
+}
+
+.dark .marketing-root::before {
+  opacity: 0.55;
+}
+
+.marketing-display {
+  font-size: clamp(2.25rem, 5vw + 1rem, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.marketing-lede {
+  max-width: 42rem;
+  font-size: clamp(1.05rem, 0.5vw + 1rem, 1.25rem);
+  line-height: 1.65;
+  color: var(--color-muted-foreground);
+}
+
+.flagship-display {
+  font-size: clamp(4.5rem, 11vw, 12rem);
+  line-height: 0.84;
+  letter-spacing: -0.08em;
+}
+
+.flagship-grid {
+  background-image:
+    linear-gradient(
+      color-mix(in oklab, var(--color-border) 22%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-border) 18%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 96px 96px;
+  mask-image: radial-gradient(circle at center, black 35%, transparent 82%);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.flagship-grain {
+  background-image: radial-gradient(
+    circle at 20% 20%,
+    color-mix(in oklab, var(--color-foreground) 4%, transparent) 0 1px,
+    transparent 1px 100%
+  );
+  background-size: 10px 10px;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.flagship-card {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-card) 96%, transparent),
+    color-mix(in oklab, var(--color-card) 82%, transparent)
+  );
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--color-foreground) 8%, transparent),
+    0 28px 56px -32px
+      color-mix(in oklab, var(--color-foreground) 18%, transparent);
+}
+
+.flagship-canon-field {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at center,
+      color-mix(in oklab, var(--color-primary) 12%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-card) 96%, transparent),
+      color-mix(in oklab, var(--color-card) 76%, transparent)
+    );
+}
+
+.flagship-canon-spine {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-primary) 18%, transparent),
+    color-mix(in oklab, var(--color-foreground) 72%, transparent),
+    color-mix(in oklab, var(--color-primary) 18%, transparent)
+  );
+  box-shadow:
+    0 0 24px color-mix(in oklab, var(--color-primary) 25%, transparent),
+    0 0 96px color-mix(in oklab, var(--color-primary) 12%, transparent);
+}
+
+.flagship-fragment-chip {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-background) 85%, transparent),
+    color-mix(in oklab, var(--color-card) 92%, transparent)
+  );
+  box-shadow: 0 16px 36px -24px
+    color-mix(in oklab, var(--color-foreground) 24%, transparent);
+}
+
+@keyframes marketing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.marketing-animate-in {
+  opacity: 0;
+  animation: marketing-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.marketing-animate-delay-1 {
+  animation-delay: 0.08s;
+}
+
+.marketing-animate-delay-2 {
+  animation-delay: 0.16s;
+}
+
+.marketing-animate-delay-3 {
+  animation-delay: 0.24s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketing-animate-in,
+  .marketing-animate-delay-1,
+  .marketing-animate-delay-2,
+  .marketing-animate-delay-3 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.marketing-glass-panel {
+  border: 1px solid color-mix(in oklab, var(--color-border) 85%, transparent);
+  background: color-mix(in oklab, var(--color-card) 88%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--color-foreground) 6%, transparent),
+    0 24px 48px -24px
+      color-mix(in oklab, var(--color-foreground) 12%, transparent);
+}
+
+@supports (backdrop-filter: blur(12px)) {
+  .marketing-glass-panel {
+    background: color-mix(in oklab, var(--color-card) 72%, transparent);
+    backdrop-filter: blur(12px);
+  }
+}
+
+.dark .marketing-glass-panel {
+  background: color-mix(in oklab, var(--color-card) 62%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--color-foreground) 8%, transparent),
+    0 28px 56px -28px #00000066;
+}
+
+@supports (backdrop-filter: blur(12px)) {
+  .dark .marketing-glass-panel {
+    background: color-mix(in oklab, var(--color-card) 55%, transparent);
+  }
+}
+
+.marketing-skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 50;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transform: translateY(-120%);
+  transition: transform 0.2s ease;
+}
+
+.marketing-skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.flagship-monument-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 86%);
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    black 40%,
+    transparent 86%
+  );
+}
+
+.flagship-monument-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.flagship-monument-panel {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.flagship-monument-spine {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.86),
+    rgba(255, 255, 255, 0.18)
+  );
+}
+
+.flagship-monument-node {
+  background: rgb(255, 255, 255);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.22);
+}
+
+.flagship-monument-rail {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+@supports (backdrop-filter: blur(16px)) {
+  .flagship-monument-rail {
+    backdrop-filter: blur(16px);
+  }
+}

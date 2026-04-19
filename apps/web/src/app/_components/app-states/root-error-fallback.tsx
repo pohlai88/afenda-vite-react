@@ -3,11 +3,7 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@afenda/design-system/ui-primitives"
 
-function marketingHomeHref(): string {
-  const base = import.meta.env.BASE_URL
-  if (base === "/" || base === "") return "/"
-  return base.endsWith("/") ? base.slice(0, -1) || "/" : base
-}
+import { publicSpaHomeHref } from "./public-spa-href"
 
 export function RootErrorFallback({
   error,
@@ -17,7 +13,7 @@ export function RootErrorFallback({
   readonly onRetry: () => void
 }) {
   const { t } = useTranslation("shell")
-  const homeHref = marketingHomeHref()
+  const homeHref = publicSpaHomeHref()
 
   return (
     <div

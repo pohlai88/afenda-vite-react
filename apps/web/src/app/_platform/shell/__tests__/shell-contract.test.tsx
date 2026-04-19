@@ -2,12 +2,12 @@ import { act, render, screen } from "@testing-library/react"
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
 import { beforeAll, describe, expect, it, vi } from "vitest"
 
+import { MarketingThemeProvider } from "../../../../marketing/marketing-theme-provider"
 import { initI18n } from "../../i18n"
-import "../types/shell-route-handle"
 import { AppThemeProvider } from "../../theme/app-theme-provider"
-import { MarketingThemeProvider } from "../../../../pages/provider/marketing-theme-provider"
+import "../types/shell-route-handle"
 
-import LandingPage from "../../../../pages/landing"
+import MarketingRandomHome from "../../../../marketing/marketing-random-home"
 import { ShellLeftSidebarLayout } from "../components/shell-left-sidebar-block"
 
 describe("App shell layout contract", () => {
@@ -29,7 +29,7 @@ describe("App shell layout contract", () => {
 
   it("renders marketing home without the shell sidebar wrapper", async () => {
     const router = createMemoryRouter(
-      [{ path: "/", element: <LandingPage /> }],
+      [{ path: "/", element: <MarketingRandomHome /> }],
       {
         initialEntries: ["/"],
       }

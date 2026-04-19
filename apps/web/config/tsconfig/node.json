@@ -4,5 +4,8 @@
     "composite": true,
     "tsBuildInfoFile": "../../node_modules/.tmp/tsconfig.node.tsbuildinfo"
   },
-  "include": ["../../vite.config.ts"]
+  "include": [
+    "../../vite.config.ts",
+    "../../src/app/_platform/theme/theme-storage-contract.ts"
+  ]
 }

@@ -260,13 +260,6 @@
     "panel_error": "Security data could not be loaded.",
     "beacon_tooltip": "Trust: {{trust}} / Score: {{score}}"
   },
-  "platform_preview": {
-    "showcase_rail_hint": "Explore what each role sees",
-    "inspect_featured_step_aria": "Inspect this step in the featured event",
-    "inspect_featured_step_label": "Inspect this step",
-    "see_who_else_cares_aria": "See which adjacent role cares about this same event",
-    "see_who_else_cares_label": "See who else cares"
-  },
   "login": {
     "placeholder": {
       "title": "Sign in",

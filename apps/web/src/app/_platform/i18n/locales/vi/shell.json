@@ -260,13 +260,6 @@
     "panel_error": "Không thể tải dữ liệu bảo mật.",
     "beacon_tooltip": "Tin cậy: {{trust}} / Điểm: {{score}}"
   },
-  "platform_preview": {
-    "showcase_rail_hint": "Khám phá điều mỗi vai trò nhìn thấy",
-    "inspect_featured_step_aria": "Kiểm tra bước này trong sự kiện nổi bật",
-    "inspect_featured_step_label": "Kiểm tra bước này",
-    "see_who_else_cares_aria": "Xem vai trò liền kề nào quan tâm đến cùng sự kiện",
-    "see_who_else_cares_label": "Xem ai khác quan tâm"
-  },
   "login": {
     "placeholder": {
       "title": "Đăng nhập",

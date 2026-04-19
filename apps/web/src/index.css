@@ -24,12 +24,12 @@
 
 /*
  * Tailwind v4: `@source "./"` only registers the `src/` directory itself — nested trees
- * (`pages/landing.tsx`, `app/...`) are not scanned, so standard utilities never reach
+ * (`marketing/...`, `app/...`) are not scanned, so standard utilities never reach
  * `@layer utilities` and marketing `/` looks unstyled. Register each top-level `src/*`
  * tree explicitly, before theme imports (order matters for the pipeline).
  */
 @source "./app";
-@source "./pages";
+@source "./marketing";
 @source "./routes";
 @source "./share";
 @source "./worker";

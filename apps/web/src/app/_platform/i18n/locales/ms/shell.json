@@ -260,13 +260,6 @@
     "panel_error": "Data keselamatan tidak dapat dimuatkan.",
     "beacon_tooltip": "Kepercayaan: {{trust}} / Skor: {{score}}"
   },
-  "platform_preview": {
-    "showcase_rail_hint": "Terokai apa yang dilihat setiap peranan",
-    "inspect_featured_step_aria": "Periksa langkah ini dalam peristiwa terpilih",
-    "inspect_featured_step_label": "Periksa langkah ini",
-    "see_who_else_cares_aria": "Lihat peranan bersebelahan mana yang ambil berat tentang peristiwa yang sama",
-    "see_who_else_cares_label": "Lihat siapa lagi yang ambil berat"
-  },
   "login": {
     "placeholder": {
       "title": "Log masuk",

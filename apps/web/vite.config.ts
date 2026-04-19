@@ -25,6 +25,11 @@ import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
 import path from "path"
 import { fileURLToPath } from "node:url"
+import {
+  AFENDA_THEME_BOOT_HTML_TOKENS,
+  AFENDA_THEME_STORAGE_KEYS,
+  AFENDA_UI_STORAGE_KEYS,
+} from "./src/app/_platform/theme/theme-storage-contract"
 
 /** Directory containing `vite.config.ts` — explicit `root` avoids mis-resolution when the config path differs from cwd. */
 const configDir = path.dirname(fileURLToPath(import.meta.url))
@@ -66,10 +71,30 @@ function injectViteBaseForThemeScript(): Plugin {
       resolvedBase = config.base
     },
     transformIndexHtml(html) {
-      return html.replace(
-        /__VITE_RESOLVED_BASE_JSON__/g,
-        JSON.stringify(resolvedBase)
-      )
+      return html
+        .replace(
+          new RegExp(AFENDA_THEME_BOOT_HTML_TOKENS.viteBase, "g"),
+          JSON.stringify(resolvedBase)
+        )
+        .replace(
+          new RegExp(AFENDA_THEME_BOOT_HTML_TOKENS.appThemeStorageKey, "g"),
+          JSON.stringify(AFENDA_THEME_STORAGE_KEYS.app)
+        )
+        .replace(
+          new RegExp(
+            AFENDA_THEME_BOOT_HTML_TOKENS.marketingThemeStorageKey,
+            "g"
+          ),
+          JSON.stringify(AFENDA_THEME_STORAGE_KEYS.marketing)
+        )
+        .replace(
+          new RegExp(AFENDA_THEME_BOOT_HTML_TOKENS.densityStorageKey, "g"),
+          JSON.stringify(AFENDA_UI_STORAGE_KEYS.density)
+        )
+        .replace(
+          new RegExp(AFENDA_THEME_BOOT_HTML_TOKENS.motionStorageKey, "g"),
+          JSON.stringify(AFENDA_UI_STORAGE_KEYS.motion)
+        )
     },
   }
 }
@@ -405,14 +430,6 @@ async function resolveUserConfig({
 
     // Environment variables
     envPrefix: "VITE_",
-
-    // Worker configuration
-    worker: {
-      format: "es",
-      plugins: () => [
-        // Worker-specific plugins
-      ],
-    },
 
     // Experimental features (Vite 8)
     experimental: {

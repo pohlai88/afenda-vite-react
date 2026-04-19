@@ -21,63 +21,89 @@
     <title>Afenda</title>
     <!--
       Blocking theme/density/motion: localStorage keys must match next-themes / shell prefs.
-      App vs marketing: vite-ui-theme vs vite-ui-marketing-theme (see AppThemeProvider,
-      MarketingThemeProvider). `routePath` strips Vite base so subpath deploys match React Router.
+      App vs marketing: keys injected via `inject-vite-base-for-theme-script` in vite.config.ts.
+      `routePath` strips Vite base so subpath deploys match React Router.
     -->
     <script>
       ;(function () {
         var viteBase = __VITE_RESOLVED_BASE_JSON__
+
         function pathAfterViteBase(pathname, base) {
           var raw = (base || "").trim()
           if (!raw || raw === "/") return pathname
+
           var prefix =
             raw.charAt(raw.length - 1) === "/" ? raw.slice(0, -1) : raw
           if (!prefix) return pathname
           if (pathname === prefix || pathname === prefix + "/") return "/"
           if (pathname.indexOf(prefix + "/") === 0)
             return pathname.slice(prefix.length)
+
           return pathname
         }
+
+        function ensureThemeColorMeta() {
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (!meta) {
+            meta = document.createElement("meta")
+            meta.setAttribute("name", "theme-color")
+            document.head.appendChild(meta)
+          }
+          return meta
+        }
+
         var routePath = pathAfterViteBase(location.pathname, viteBase)
         var isApp = /^\/app(\/|$)/.test(routePath)
 
-        var key = isApp ? "vite-ui-theme" : "vite-ui-marketing-theme"
-        var stored = localStorage.getItem(key)
+        var themeKey = isApp
+          ? __AFENDA_APP_THEME_STORAGE_KEY_JSON__
+          : __AFENDA_MARKETING_THEME_STORAGE_KEY_JSON__
+        var storedTheme = localStorage.getItem(themeKey)
         var theme =
-          stored === "dark" || stored === "light" || stored === "system"
-            ? stored
+          storedTheme === "dark" ||
+          storedTheme === "light" ||
+          storedTheme === "system"
+            ? storedTheme
             : "system"
+
         var root = document.documentElement
         root.classList.remove("light", "dark")
+
+        var resolvedTheme = theme
         if (theme === "system") {
-          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            root.classList.add("dark")
-          } else {
-            root.classList.add("light")
-          }
-        } else {
-          root.classList.add(theme)
+          resolvedTheme = window.matchMedia("(prefers-color-scheme: dark)")
+            .matches
+            ? "dark"
+            : "light"
         }
+
+        root.classList.add(resolvedTheme)
+        ensureThemeColorMeta().setAttribute(
+          "content",
+          resolvedTheme === "dark" ? "#0a0a0a" : "#ffffff"
+        )
 
         if (!isApp) return
 
-        var dKey = "vite-ui-density"
-        var dStored = localStorage.getItem(dKey)
+        var dStored = localStorage.getItem(
+          __AFENDA_UI_DENSITY_STORAGE_KEY_JSON__
+        )
         var density =
           dStored === "compact" ||
           dStored === "comfortable" ||
           dStored === "spacious"
             ? dStored
             : "comfortable"
-        document.documentElement.setAttribute("data-density", density)
+        root.setAttribute("data-density", density)
 
-        var mKey = "vite-ui-motion-preference"
-        var mStored = localStorage.getItem(mKey)
+        var mStored = localStorage.getItem(
+          __AFENDA_UI_MOTION_STORAGE_KEY_JSON__
+        )
         var motion =
           mStored === "system" || mStored === "reduce" || mStored === "allow"
             ? mStored
             : "system"
-        document.documentElement.setAttribute("data-motion-preference", motion)
+        root.setAttribute("data-motion-preference", motion)
       })()
     </script>
   </head>

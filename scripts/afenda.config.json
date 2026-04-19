@@ -96,10 +96,11 @@
       "srcRoot": "apps/web/src",
       "allowedTopLevelDirectories": [
         "app",
-        "pages",
+        "marketing",
         "routes",
-        "styles",
-        "worker"
+        "rpc",
+        "share",
+        "styles"
       ],
       "requiredShareSubdirectories": [],
       "enforce": true

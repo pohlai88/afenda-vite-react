@@ -49,4 +49,26 @@ describe("AppRouteErrorFallback", () => {
       "route boom"
     )
   })
+
+  it("uses custom homeHref for the home link", async () => {
+    const router = createMemoryRouter(
+      [
+        {
+          path: "/",
+          element: <ThrowingRoute />,
+          errorElement: (
+            <AppRouteErrorFallback homeHref="/marketing/flagship" />
+          ),
+        },
+      ],
+      { initialEntries: ["/"] }
+    )
+
+    await act(async () => {
+      render(<RouterProvider router={router} />)
+    })
+
+    const home = screen.getByRole("link", { name: /workspace/i })
+    expect(home).toHaveAttribute("href", "/marketing/flagship")
+  })
 })

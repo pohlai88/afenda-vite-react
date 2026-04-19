@@ -6,6 +6,7 @@ export {
   AppRouteErrorFallback,
 } from "./app-route-error-fallback"
 export { resolveRouteErrorMessage } from "./resolve-route-error"
+export { publicSpaHomeHref } from "./public-spa-href"
 export {
   ShellOutletErrorBoundary,
   ShellOutletErrorFallback,

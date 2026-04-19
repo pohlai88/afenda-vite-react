@@ -1,20 +1,29 @@
 /**
- * Root data router for the Afenda web SPA (single `createBrowserRouter` for the app).
+ * Root data router for the Afenda web SPA.
  *
- * - Exports {@link router} for `<RouterProvider>` in `App.tsx` and {@link browserRoutes} for tests/tooling.
- * - Composes route modules from `./routes/` only; page components stay under `pages/` and `app/`.
- * - `basename` follows Vite `import.meta.env.BASE_URL` so deploys under a subpath stay aligned.
- * - Imports `shell-route-handle` once for typed `handle` / `RouteHandle` on matches.
+ * Owns:
+ * - top-level route composition only
+ * - router basename normalization for Vite subpath deploys
+ * - single `createBrowserRouter` export for the application
  *
- * @see ./routes/README.md — full router usage table, naming, shell metadata, and how to add routes.
+ * Must not own:
+ * - domain route definitions
+ * - shell policy decisions beyond composition
+ * - feature/UI logic
+ *
+ * Route domains:
+ * - marketing: standalone editorial/public landing surface (`/`, `/marketing/*`, legacy landing URLs)
+ * - auth: standalone authentication surface (`/auth/*` plus short-path redirects)
+ * - app: authenticated ERP shell (`/app/*`)
  */
 
 import { createBrowserRouter, type RouteObject } from "react-router-dom"
 
 import "./app/_platform/shell/types/shell-route-handle"
 
+import { marketingRouteObjects } from "./marketing/marketing-routes"
+import { authRouteObjects } from "./routes/route-auth"
 import { appShellRouteObject } from "./routes/route-app-shell"
-import { marketingRouteObjects } from "./routes/route-marketing"
 
 /** Align with Vite `base` / `import.meta.env.BASE_URL` for non-root deploys. */
 function viteBaseToRouterBasename(): string | undefined {
@@ -25,9 +34,10 @@ function viteBaseToRouterBasename(): string | undefined {
 
 const basename = viteBaseToRouterBasename()
 
-/** Top-level route tree: marketing (`/`) + authenticated shell (`/app/*`). */
+/** Top-level route tree: standalone marketing, standalone auth, and ERP app shell. */
 export const browserRoutes: RouteObject[] = [
   ...marketingRouteObjects,
+  ...authRouteObjects,
   appShellRouteObject,
 ]
 

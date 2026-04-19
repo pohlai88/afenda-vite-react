@@ -11,13 +11,17 @@ import { resolveRouteErrorMessage } from "./resolve-route-error"
 export const APP_SHELL_DEFAULT_HOME_HREF = "/app/events" as const
 
 /**
- * React Router `errorElement` surface for `/app/*` (and any route that opts in).
- * Keeps {@link AppThemeProvider} tokens when wrapped by the route table.
+ * React Router `errorElement` surface for `/app/*` and public routes (`/`, `/auth/*`).
+ * Wrap with {@link AppThemeProvider} or {@link PublicThemeProvider} at the route table.
+ *
+ * @param homeHref - `Link` target for "home" (default: ERP shell; use `"/"` for marketing/auth).
  */
 export function AppRouteErrorFallback({
   className,
+  homeHref = APP_SHELL_DEFAULT_HOME_HREF,
 }: {
   readonly className?: string
+  readonly homeHref?: string
 }) {
   const error = useRouteError()
   const { t } = useTranslation("shell")
@@ -58,9 +62,7 @@ export function AppRouteErrorFallback({
             {t("states.route_error.retry")}
           </Button>
           <Button variant="secondary" asChild>
-            <Link to={APP_SHELL_DEFAULT_HOME_HREF}>
-              {t("states.route_error.home")}
-            </Link>
+            <Link to={homeHref}>{t("states.route_error.home")}</Link>
           </Button>
         </div>
       </section>

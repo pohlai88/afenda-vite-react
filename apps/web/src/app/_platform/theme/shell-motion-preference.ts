@@ -1,10 +1,12 @@
+import { AFENDA_UI_STORAGE_KEYS } from "./theme-storage-contract"
+
 /**
  * Motion preference for `/app/*`: `data-motion-preference` on `document.documentElement`.
  * - `system`: follow `prefers-reduced-motion`
  * - `reduce`: always minimize motion
  * - `allow`: allow full motion even when the OS prefers reduced (explicit user choice)
  */
-export const VITE_UI_MOTION_STORAGE_KEY = "vite-ui-motion-preference" as const
+export const VITE_UI_MOTION_STORAGE_KEY = AFENDA_UI_STORAGE_KEYS.motion
 
 export type ShellMotionPreference = "system" | "reduce" | "allow"
 

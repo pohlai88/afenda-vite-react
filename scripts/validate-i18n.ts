@@ -278,7 +278,7 @@ const HARDCODED_ALLOWED_PATTERNS = [
   /^(className|id|htmlFor|data-testid|to|href|key|name|type|value|method|action|src)$/,
 ]
 
-const HARDCODED_SCAN_DIRS = ["apps/web/src/pages", "apps/web/src/app"]
+const HARDCODED_SCAN_DIRS = ["apps/web/src/marketing", "apps/web/src/app"]
 
 const HARDCODED_SKIP_FILES = [
   "router.tsx",

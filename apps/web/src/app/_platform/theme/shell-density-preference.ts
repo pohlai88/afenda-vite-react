@@ -1,8 +1,10 @@
+import { AFENDA_UI_STORAGE_KEYS } from "./theme-storage-contract"
+
 /**
  * UI density for `/app/*`: drives `data-density` on `document.documentElement`
  * (see `theme-density.css`). Persisted beside app theme in localStorage.
  */
-export const VITE_UI_DENSITY_STORAGE_KEY = "vite-ui-density" as const
+export const VITE_UI_DENSITY_STORAGE_KEY = AFENDA_UI_STORAGE_KEYS.density
 
 export type ShellDensity = "compact" | "comfortable" | "spacious"
 

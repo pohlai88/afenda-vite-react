@@ -22,7 +22,6 @@
 | **Hono-coupled features**                                                                | `src/app/_features/hono/<domain>/` | Grouped by **dependency** (Hono RPC), not a single flat bucket.                                                    |
 | **Marketing**                                                                            | `src/marketing/`                   | Replaces vague `src/pages/` for marketing-only surfaces.                                                           |
 | **Global cross-cutting**                                                                 | `src/share/`                       | Zero feature/RPC/marketing ownership; may be used even from shell.                                                 |
-| **Workers**                                                                              | `src/worker/`                      | Off–main-thread / worker entrypoints.                                                                              |
 
 **Hono’s official RPC docs** require `AppType` + `hono/client`’s `hc`; they do **not** prescribe folder names. The names above are **Afenda’s contract** for humans and tooling.
 
@@ -89,8 +88,6 @@ src/
   marketing/
 
   share/
-
-  worker/
 ```
 
 Implementation may still use existing file names inside `rpc/` (e.g. `web-client.ts`) until a rename pass; the **directory names** above are the contract.

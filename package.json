@@ -57,6 +57,7 @@
   "devDependencies": {
     "@afenda/env-loader": "workspace:*",
     "@afenda/eslint-config": "workspace:*",
+    "@afenda/vitest-config": "workspace:*",
     "@ast-grep/cli": "^0.42.1",
     "@tailwindcss/cli": "^4.2.2",
     "@types/node": "catalog:",

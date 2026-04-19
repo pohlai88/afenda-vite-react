@@ -260,13 +260,6 @@
     "panel_error": "Data keamanan tidak dapat dimuat.",
     "beacon_tooltip": "Kepercayaan: {{trust}} / Skor: {{score}}"
   },
-  "platform_preview": {
-    "showcase_rail_hint": "Jelajahi apa yang dilihat setiap peran",
-    "inspect_featured_step_aria": "Periksa langkah ini dalam peristiwa unggulan",
-    "inspect_featured_step_label": "Periksa langkah ini",
-    "see_who_else_cares_aria": "Lihat peran tetangga mana yang peduli pada peristiwa yang sama",
-    "see_who_else_cares_label": "Lihat siapa lagi yang peduli"
-  },
   "login": {
     "placeholder": {
       "title": "Masuk",
