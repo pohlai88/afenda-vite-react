@@ -1,14 +1,41 @@
+/**
+ * -----------------------------------------------------------------------------
+ * Root Error Boundary
+ * -----------------------------------------------------------------------------
+ * Purpose:
+ * - Catch React render errors above `RouterProvider`.
+ *
+ * Rules:
+ * - Must not depend on React Router for recovery actions.
+ * - Uses a plain fallback UI so recovery still works if router state is corrupted.
+ * - Logs diagnostic detail in development only.
+ * - Exposes an explicit retry action that clears captured boundary state.
+ * -----------------------------------------------------------------------------
+ */
 import { Component, type ErrorInfo, type ReactNode } from "react"
 
 import { RootErrorFallback } from "./root-error-fallback"
 
-type RootErrorBoundaryProps = {
+export interface RootErrorBoundaryProps {
   readonly children: ReactNode
 }
 
-type RootErrorBoundaryState = {
+export interface RootErrorBoundaryState {
   readonly hasError: boolean
   readonly error: Error | null
+}
+
+const INITIAL_STATE: RootErrorBoundaryState = {
+  hasError: false,
+  error: null,
+}
+
+function logRootBoundaryError(error: Error, info: ErrorInfo): void {
+  if (!import.meta.env.DEV) {
+    return
+  }
+
+  console.error("[RootErrorBoundary]", error, info.componentStack)
 }
 
 /**
@@ -19,26 +46,25 @@ export class RootErrorBoundary extends Component<
   RootErrorBoundaryProps,
   RootErrorBoundaryState
 > {
-  state: RootErrorBoundaryState = { hasError: false, error: null }
+  override state: RootErrorBoundaryState = INITIAL_STATE
 
   static getDerivedStateFromError(error: Error): RootErrorBoundaryState {
     return { hasError: true, error }
   }
 
-  componentDidCatch(error: Error, info: ErrorInfo): void {
-    if (import.meta.env.DEV) {
-      console.error("[RootErrorBoundary]", error, info.componentStack)
-    }
+  override componentDidCatch(error: Error, info: ErrorInfo): void {
+    logRootBoundaryError(error, info)
   }
 
-  private reset = (): void => {
-    this.setState({ hasError: false, error: null })
+  private readonly reset = (): void => {
+    this.setState(INITIAL_STATE)
   }
 
-  render(): ReactNode {
+  override render(): ReactNode {
     if (this.state.hasError) {
       return <RootErrorFallback error={this.state.error} onRetry={this.reset} />
     }
+
     return this.props.children
   }
 }

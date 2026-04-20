@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
   executeFeatureTemplateCommand,
@@ -15,9 +15,11 @@ import { resolveFeatureTemplateSlug } from "../utils/feature-template-utils"
 export interface UseFeatureTemplateResult {
   readonly feature: FeatureTemplateDefinition | null
   readonly isLoading: boolean
+  readonly errorMessage: string | null
   readonly actionResult: FeatureTemplateCommandResult | null
   readonly commands: typeof featureTemplateCommands
   readonly runCommand: (commandId: FeatureTemplateCommandId) => void
+  readonly reload: () => void
 }
 
 export function useFeatureTemplate(
@@ -26,41 +28,86 @@ export function useFeatureTemplate(
   const slug = useMemo(() => resolveFeatureTemplateSlug(routeSlug), [routeSlug])
   const [feature, setFeature] = useState<FeatureTemplateDefinition | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [actionResult, setActionResult] =
     useState<FeatureTemplateCommandResult | null>(null)
+  const [reloadToken, setReloadToken] = useState(0)
+
+  const reload = useCallback(() => {
+    setReloadToken((value) => value + 1)
+  }, [])
 
   useEffect(() => {
     let isActive = true
 
-    setIsLoading(true)
-    void fetchFeatureTemplate(slug).then((nextFeature) => {
-      if (!isActive) {
-        return
-      }
+    async function loadFeatureTemplate(): Promise<void> {
+      setIsLoading(true)
+      setErrorMessage(null)
 
-      setFeature(nextFeature)
-      setActionResult(null)
-      setIsLoading(false)
-    })
+      try {
+        const nextFeature = await fetchFeatureTemplate(slug)
+
+        if (!isActive) {
+          return
+        }
+
+        setFeature(nextFeature)
+        setActionResult((current) =>
+          current &&
+          current.commandId === "refresh-view" &&
+          current.featureSlug === nextFeature.slug
+            ? current
+            : null
+        )
+      } catch (error) {
+        if (!isActive) {
+          return
+        }
+
+        setFeature(null)
+        setActionResult(null)
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Unable to load the feature template."
+        )
+      } finally {
+        if (isActive) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    void loadFeatureTemplate()
 
     return () => {
       isActive = false
     }
-  }, [slug])
+  }, [slug, reloadToken])
 
-  function runCommand(commandId: FeatureTemplateCommandId): void {
-    if (!feature) {
-      return
-    }
+  const runCommand = useCallback(
+    (commandId: FeatureTemplateCommandId): void => {
+      if (!feature) {
+        return
+      }
 
-    setActionResult(executeFeatureTemplateCommand(feature, commandId))
-  }
+      const result = executeFeatureTemplateCommand(feature, commandId)
+      setActionResult(result)
+
+      if (commandId === "refresh-view") {
+        reload()
+      }
+    },
+    [feature, reload]
+  )
 
   return {
     feature,
     isLoading,
+    errorMessage,
     actionResult,
     commands: featureTemplateCommands,
     runCommand,
+    reload,
   }
 }

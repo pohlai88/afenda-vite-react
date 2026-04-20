@@ -26,25 +26,17 @@ beforeAll(() => {
 })
 
 describe("BeastmodeLandingPage", () => {
-  it("reuses the refined flagship surface", () => {
+  it("renders the beastmode experimental surface", () => {
     render(
       <MemoryRouter>
         <BeastmodeLandingPage />
       </MemoryRouter>
     )
 
+    expect(screen.getByText(/SCANNING FRAGMENTS/i)).toBeInTheDocument()
+
     expect(
-      screen.getByRole("heading", {
-        name: /Proof Every State\.\s*Trust Every Number\./i,
-      })
+      screen.getByRole("button", { name: /INITIALIZE PROTOCOL/i })
     ).toBeInTheDocument()
-
-    expect(
-      screen.getAllByRole("link", { name: /Enter Workspace/i })[0]
-    ).toHaveAttribute("href", "/login")
-
-    expect(
-      screen.getAllByRole("link", { name: /View Canon/i })[0]
-    ).toHaveAttribute("href", "/marketing/polaris")
   })
 })

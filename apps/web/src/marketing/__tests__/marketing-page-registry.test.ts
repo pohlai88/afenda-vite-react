@@ -3,16 +3,23 @@ import { describe, expect, it, vi } from "vitest"
 import {
   DEFAULT_MARKETING_LANDING_VARIANT_ID,
   MARKETING_LANDING_STORAGE_KEY,
+  MARKETING_PAGE_HREFS,
   getDefaultMarketingLandingVariant,
   isMarketingLandingVariantId,
   isMarketingLandingVariantSlug,
+  isMarketingRoutablePagePath,
+  marketingPageDirectoryNavigation,
   marketingLandingLegacyRedirects,
   marketingLandingLegacySlugRoutes,
   marketingLandingVariants,
   marketingLandingVariantIds,
   marketingLandingVariantSlugs,
+  marketingRoutablePagePaths,
+  marketingRoutablePages,
+  marketingShellNavigation,
   pickRandomMarketingLandingVariantId,
   requireMarketingLandingVariantBySlug,
+  requireMarketingRoutablePageByPath,
   resolveMarketingLandingVariantById,
   resolveMarketingLandingVariantBySlug,
   resolveMarketingLandingVariantId,
@@ -137,6 +144,12 @@ describe("marketing page registry", () => {
     ).toBe(marketingLandingLegacyRedirects.length)
   })
 
+  it("keeps routable marketing page paths unique", () => {
+    expect(new Set(marketingRoutablePagePaths).size).toBe(
+      marketingRoutablePagePaths.length
+    )
+  })
+
   it("resolves the default variant consistently", () => {
     expect(getDefaultMarketingLandingVariant().id).toBe(
       DEFAULT_MARKETING_LANDING_VARIANT_ID
@@ -163,9 +176,57 @@ describe("marketing page registry", () => {
     expect(isMarketingLandingVariantSlug("nope")).toBe(false)
   })
 
+  it("classifies known routable marketing page paths", () => {
+    expect(isMarketingRoutablePagePath("campaigns/erp-benchmark")).toBe(true)
+    expect(isMarketingRoutablePagePath("product/truth-engine")).toBe(true)
+    expect(isMarketingRoutablePagePath("company/about")).toBe(true)
+    expect(isMarketingRoutablePagePath("legal/nope")).toBe(false)
+  })
+
   it("resolves concrete ids and slugs without falling back to defaults", () => {
     expect(resolveMarketingLandingVariantById("Polaris").id).toBe("Polaris")
     expect(resolveMarketingLandingVariantBySlug("polaris").slug).toBe("polaris")
+  })
+
+  it("requires a known routable marketing page path", () => {
+    expect(requireMarketingRoutablePageByPath("legal/trust-center").id).toBe(
+      "TrustCenter"
+    )
+    expect(requireMarketingRoutablePageByPath("legal/privacy-policy").id).toBe(
+      "PrivacyPolicy"
+    )
+    expect(() => requireMarketingRoutablePageByPath("legal/unknown")).toThrow(
+      'Unknown marketing page path: "legal/unknown"'
+    )
+  })
+
+  it("keeps shell and footer navigation targets unique", () => {
+    expect(new Set(marketingShellNavigation.map((item) => item.to)).size).toBe(
+      marketingShellNavigation.length
+    )
+    expect(
+      new Set(marketingPageDirectoryNavigation.map((item) => item.to)).size
+    ).toBe(marketingPageDirectoryNavigation.length)
+  })
+
+  it("keeps canonical hrefs aligned with registered routable pages", () => {
+    expect(marketingRoutablePagePaths).toContain("product/truth-engine")
+    expect(marketingRoutablePagePaths).toContain("company/about")
+    expect(marketingRoutablePagePaths).toContain("legal/privacy-policy")
+    expect(marketingRoutablePagePaths).toContain("legal/pdpa")
+    expect(marketingRoutablePagePaths).toContain("regional/asia-pacific")
+
+    expect(MARKETING_PAGE_HREFS.truthEngine).toBe(
+      "/marketing/product/truth-engine"
+    )
+    expect(MARKETING_PAGE_HREFS.about).toBe("/marketing/company/about")
+    expect(MARKETING_PAGE_HREFS.privacyPolicy).toBe(
+      "/marketing/legal/privacy-policy"
+    )
+    expect(MARKETING_PAGE_HREFS.pdpa).toBe("/marketing/legal/pdpa")
+    expect(MARKETING_PAGE_HREFS.asiaPacific).toBe(
+      "/marketing/regional/asia-pacific"
+    )
   })
 
   it("continues when persisting the random choice fails", () => {
@@ -186,12 +247,19 @@ describe("marketing page registry", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
 
     try {
-      const modules = await Promise.all(
-        marketingLandingVariants.map(async (variant) => ({
+      const modules: Array<{
+        id: string
+        module: Awaited<
+          ReturnType<(typeof marketingLandingVariants)[number]["load"]>
+        >
+      }> = []
+
+      for (const variant of marketingLandingVariants) {
+        modules.push({
           id: variant.id,
           module: await variant.load(),
-        }))
-      )
+        })
+      }
 
       for (const entry of modules) {
         expect(entry.module.default, `${entry.id} default export`).toBeTypeOf(
@@ -201,5 +269,27 @@ describe("marketing page registry", () => {
     } finally {
       warn.mockRestore()
     }
-  })
+  }, 60000)
+
+  it("loads every routable marketing page module with a default export", async () => {
+    const modules: Array<{
+      id: string
+      module: Awaited<
+        ReturnType<(typeof marketingRoutablePages)[number]["load"]>
+      >
+    }> = []
+
+    for (const page of marketingRoutablePages) {
+      modules.push({
+        id: page.id,
+        module: await page.load(),
+      })
+    }
+
+    for (const entry of modules) {
+      expect(entry.module.default, `${entry.id} default export`).toBeTypeOf(
+        "function"
+      )
+    }
+  }, 30000)
 })

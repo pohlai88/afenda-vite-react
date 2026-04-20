@@ -16,6 +16,8 @@ describe("feature template contract", () => {
     expect(feature.slug).toBe("audit")
     expect(feature.metrics.length).toBeGreaterThan(0)
     expect(feature.records.length).toBeGreaterThan(0)
+    expect(feature.workspaceLabel.length).toBeGreaterThan(0)
+    expect(feature.scopeLabel.length).toBeGreaterThan(0)
     expect(feature.metrics.some((metric) => metric.trendLabel)).toBe(true)
     expect(feature.records.some((record) => record.severity)).toBe(true)
   })
@@ -35,9 +37,15 @@ describe("feature template contract", () => {
   it("reports the required template folders for onboarding checks", async () => {
     const report = await createFeatureTemplateReport("partners")
 
-    expect(report.requiredFolders).toEqual(
+    expect(report.structurePolicy.expectedFolders).toEqual(
       expect.arrayContaining(["__tests__", "scripts", "services", "types"])
     )
+    expect(report.structureEvidence.detectedFolders.status).toBe("unverified")
+    expect(report.structureEvidence.missingFolders.status).toBe("unverified")
+    expect(report.structureEvidence.hasPublicApi).toEqual({
+      value: null,
+      status: "unverified",
+    })
     expect(report.commandCount).toBe(featureTemplateCommands.length)
   })
 })

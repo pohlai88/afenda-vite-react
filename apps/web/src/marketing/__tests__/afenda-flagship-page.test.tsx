@@ -35,46 +35,78 @@ describe("AfendaFlagshipPage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /Proof Every State\.\s*Trust Every Number\./i,
+        name: /NO\s*GUESSWORK/i,
       })
     ).toBeInTheDocument()
 
-    expect(screen.getByText("Operational Proof System")).toBeInTheDocument()
+    expect(
+      screen.getByText(/Most systems record outcomes\./i, { selector: "p" })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Afenda records causality\./i, { selector: "p" })
+    ).toBeInTheDocument()
+    expect(screen.getByText("System State")).toBeInTheDocument()
+    expect(screen.getByText("Operational")).toBeInTheDocument()
+    expect(screen.getByText("Bound")).toBeInTheDocument()
+    expect(screen.getByText("Verified")).toBeInTheDocument()
+    expect(screen.getByText("No reconstruction")).toBeInTheDocument()
 
     expect(
       screen.getByRole("heading", {
-        name: /Ordinary Systems Fail at the Handoff\./i,
+        name: /You do not need more tools\.\s*You need one system that holds\./i,
       })
     ).toBeInTheDocument()
 
     expect(
       screen.getByRole("heading", {
-        name: /One Canonical Record\.\s*No Parallel Stories\./i,
+        name: /One system for the workflows that carry real consequence\./i,
       })
     ).toBeInTheDocument()
 
-    expect(
-      screen.getAllByText("NexusCanon", { exact: false })[0]
-    ).toBeInTheDocument()
+    expect(screen.getByText(/In practice/i)).toBeInTheDocument()
 
     expect(
       screen.getByRole("heading", {
-        name: /Built for Finance, Inventory & Operations\./i,
+        name: /Every state change arrives with its own explanation\./i,
+      })
+    ).toBeInTheDocument()
+
+    expect(screen.getAllByText(/NexusCanon/i).length).toBeGreaterThan(0)
+
+    expect(
+      screen.getByRole("heading", {
+        name: /This is where the record stops fragmenting\./i,
       })
     ).toBeInTheDocument()
 
     expect(
-      screen.getByText(/Run the business on evidence, not reconstruction\./i)
+      screen.getByText(/Stop explaining the system\./i)
     ).toBeInTheDocument()
 
-    expect(screen.getByText("Final Invitation")).toBeInTheDocument()
+    expect(
+      screen.getByText(/Use one that explains itself\./i)
+    ).toBeInTheDocument()
+
+    expect(screen.getByText("Final State")).toBeInTheDocument()
 
     expect(
-      screen.getAllByRole("link", { name: /Enter Workspace/i })[0]
+      screen.getAllByRole("link", { name: /Enter System/i })[0]
     ).toHaveAttribute("href", "/login")
 
     expect(
-      screen.getAllByRole("link", { name: /View Canon/i })[0]
+      screen.getAllByRole("link", { name: /See How Afenda Works/i })[0]
     ).toHaveAttribute("href", "/marketing/polaris")
+
+    expect(
+      screen.getByRole("link", { name: /Explore ERP Benchmarks/i })
+    ).toHaveAttribute("href", "/marketing/benchmark-erp")
+
+    expect(
+      screen.getAllByRole("link", { name: /Trust Center/i })[0]
+    ).toHaveAttribute("href", "/marketing/legal/trust-center")
+
+    expect(
+      screen.getByRole("link", { name: /View Campaign/i })
+    ).toHaveAttribute("href", "/marketing/campaigns/erp-benchmark")
   })
 })

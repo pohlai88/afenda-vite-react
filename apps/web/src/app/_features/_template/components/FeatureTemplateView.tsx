@@ -1,5 +1,8 @@
 import { useParams } from "react-router-dom"
 
+import { AppErrorState, AppLoadingState } from "../../../_components"
+import { Button } from "@afenda/design-system/ui-primitives"
+
 import { EvidenceActionPanel } from "./evidence-action-panel"
 import { EventTimelinePanel } from "./event-timeline-panel"
 import { FeatureCommandHeader } from "./feature-command-header"
@@ -24,13 +27,41 @@ export function FeatureTemplateView({
 }: FeatureTemplateViewProps) {
   const { slug: paramSlug = "" } = useParams<{ slug: string }>()
   const slug = slugProp ?? paramSlug
-  const { actionResult, commands, feature, isLoading, runCommand } =
-    useFeatureTemplate(slug)
+  const {
+    actionResult,
+    commands,
+    errorMessage,
+    feature,
+    isLoading,
+    reload,
+    runCommand,
+  } = useFeatureTemplate(slug)
 
-  if (isLoading || !feature) {
+  if (isLoading) {
     return (
       <section className="ui-page ui-stack-relaxed" aria-busy="true">
-        <p className="text-sm text-muted-foreground">Loading feature…</p>
+        <AppLoadingState
+          title="Loading feature"
+          description="Please wait while the workspace surface is being prepared."
+        />
+      </section>
+    )
+  }
+
+  if (errorMessage || !feature) {
+    return (
+      <section className="ui-page ui-stack-relaxed">
+        <AppErrorState
+          title="Feature unavailable"
+          description={
+            errorMessage ?? "We could not load this workspace feature."
+          }
+          actions={
+            <Button type="button" onClick={reload}>
+              Try again
+            </Button>
+          }
+        />
       </section>
     )
   }
@@ -55,7 +86,7 @@ export function FeatureTemplateView({
           onOpenRecord={handleOpenRecord}
         />
         <EventTimelinePanel records={feature.records} />
-        <div className="grid min-w-0 gap-[1rem]">
+        <div className="grid min-w-0 gap-4">
           <EvidenceActionPanel
             feature={feature}
             commands={commands}

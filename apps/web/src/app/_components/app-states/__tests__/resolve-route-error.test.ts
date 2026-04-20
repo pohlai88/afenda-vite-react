@@ -18,11 +18,44 @@ describe("resolveRouteErrorMessage", () => {
     expect(resolveRouteErrorMessage(err)).toBe("500")
   })
 
-  it("reads Error.message", () => {
-    expect(resolveRouteErrorMessage(new Error("x"))).toBe("x")
+  it("reads route error data message when statusText is blank", () => {
+    const err = {
+      status: 400,
+      statusText: "   ",
+      data: { message: "Validation failed" },
+      internal: false,
+    }
+    expect(resolveRouteErrorMessage(err)).toBe("400 Validation failed")
+  })
+
+  it("returns a trimmed Error.message", () => {
+    expect(resolveRouteErrorMessage(new Error("  x  "))).toBe("x")
+  })
+
+  it("falls back to the error name when Error.message is blank", () => {
+    const err = new Error("   ")
+    err.name = "TypeError"
+
+    expect(resolveRouteErrorMessage(err)).toBe("TypeError")
+  })
+
+  it("reads message from plain objects", () => {
+    expect(resolveRouteErrorMessage({ message: "  bad request  " })).toBe(
+      "bad request"
+    )
+  })
+
+  it("collapses multiline string errors into a single line", () => {
+    expect(resolveRouteErrorMessage("Failed\n\nrequest")).toBe("Failed request")
   })
 
   it("stringifies unknown values", () => {
     expect(resolveRouteErrorMessage(42)).toBe("42")
+  })
+
+  it("falls back to unknown error for blank strings and nullish values", () => {
+    expect(resolveRouteErrorMessage("   ")).toBe("Unknown error")
+    expect(resolveRouteErrorMessage(null)).toBe("Unknown error")
+    expect(resolveRouteErrorMessage(undefined)).toBe("Unknown error")
   })
 })

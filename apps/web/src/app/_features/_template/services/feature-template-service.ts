@@ -1,5 +1,20 @@
+/**
+ * Feature template seed service.
+ *
+ * Purpose:
+ * - Provide stable seeded feature-template contracts for the template feature.
+ * - Keep the seed dataset immutable at the service boundary.
+ * - Return cloned feature definitions so consumers cannot mutate shared seed state.
+ *
+ * Rules:
+ * - Seed data must stay complete for every `FeatureTemplateSlug`.
+ * - Service reads must return fresh objects, not shared references.
+ * - Contract shape should remain ready for a future API-backed implementation.
+ */
 import type {
   FeatureTemplateDefinition,
+  FeatureTemplateMetric,
+  FeatureTemplateRecord,
   FeatureTemplateSlug,
 } from "../types/feature-template"
 
@@ -12,6 +27,8 @@ const featureTemplateSeed: Record<
     title: "Event log",
     description:
       "Operational stream for workflow transitions, user activity, and system-level ERP events.",
+    workspaceLabel: "Acme Treasury Ltd",
+    scopeLabel: "Finance / Accounts payable",
     status: "healthy",
     routePath: "/app/events",
     metrics: [
@@ -101,6 +118,8 @@ const featureTemplateSeed: Record<
     title: "Audit trail",
     description:
       "Traceable record of operator decisions, policy checks, and tenant-scoped data changes.",
+    workspaceLabel: "Acme Treasury Ltd",
+    scopeLabel: "Audit / Control review",
     status: "attention",
     routePath: "/app/audit",
     metrics: [
@@ -170,6 +189,8 @@ const featureTemplateSeed: Record<
     title: "Partner integrations",
     description:
       "Integration readiness for connected banks, logistics providers, marketplaces, and tax systems.",
+    workspaceLabel: "Acme Treasury Ltd",
+    scopeLabel: "Integrations / Partner operations",
     status: "blocked",
     routePath: "/app/partners",
     metrics: [
@@ -234,10 +255,38 @@ const featureTemplateSeed: Record<
       },
     ],
   },
+} as const satisfies Record<FeatureTemplateSlug, FeatureTemplateDefinition>
+
+function cloneFeatureTemplateMetric(
+  metric: FeatureTemplateMetric
+): FeatureTemplateMetric {
+  return { ...metric }
+}
+
+function cloneFeatureTemplateRecord(
+  record: FeatureTemplateRecord
+): FeatureTemplateRecord {
+  return { ...record }
+}
+
+function cloneFeatureTemplateDefinition(
+  feature: FeatureTemplateDefinition
+): FeatureTemplateDefinition {
+  return {
+    ...feature,
+    metrics: feature.metrics.map(cloneFeatureTemplateMetric),
+    records: feature.records.map(cloneFeatureTemplateRecord),
+  }
+}
+
+function readFeatureTemplateSeed(
+  slug: FeatureTemplateSlug
+): FeatureTemplateDefinition {
+  return featureTemplateSeed[slug]
 }
 
 export async function fetchFeatureTemplate(
   slug: FeatureTemplateSlug
 ): Promise<FeatureTemplateDefinition> {
-  return featureTemplateSeed[slug]
+  return cloneFeatureTemplateDefinition(readFeatureTemplateSeed(slug))
 }

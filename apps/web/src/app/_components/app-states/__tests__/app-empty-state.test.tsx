@@ -37,18 +37,18 @@ describe("AppEmptyState", () => {
   })
 
   it("renders overrides and optional icon", async () => {
-    await act(async () => {
-      render(
-        <AppEmptyState
-          title="Custom title"
-          description="Custom body"
-          icon={<Inbox aria-label="inbox" />}
-        />
-      )
-    })
+    const view = render(
+      <AppEmptyState
+        title="Custom title"
+        description="Custom body"
+        icon={<Inbox aria-label="inbox" />}
+      />
+    )
 
     expect(screen.getByText("Custom title")).toBeInTheDocument()
     expect(screen.getByText("Custom body")).toBeInTheDocument()
-    expect(screen.getByLabelText("inbox")).toBeInTheDocument()
+    expect(
+      view.container.querySelector("[data-slot='empty-icon']")
+    ).not.toBeNull()
   })
 })

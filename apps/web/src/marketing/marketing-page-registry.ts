@@ -7,61 +7,109 @@ type MarketingLandingModule = {
   readonly default: ComponentType
 }
 
+export function loadMarketingFlagshipPage() {
+  return import("@/marketing/pages/landing/flagship/afenda-flagship-page")
+}
+
+export const MARKETING_PAGE_HREFS = {
+  home: "/",
+  marketingHome: "/marketing",
+  flagship: "/marketing/flagship",
+  canon: "/marketing/polaris",
+  benchmarkErp: "/marketing/benchmark-erp",
+  erpBenchmarkCampaign: "/marketing/campaigns/erp-benchmark",
+  truthEngine: "/marketing/product/truth-engine",
+  about: "/marketing/company/about",
+  trustCenter: "/marketing/legal/trust-center",
+  dataGovernance: "/marketing/legal/data-governance",
+  privacyPolicy: "/marketing/legal/privacy-policy",
+  pdpa: "/marketing/legal/pdpa",
+  asiaPacific: "/marketing/regional/asia-pacific",
+} as const
+
+export const marketingShellNavigation = [
+  { label: "Flagship", to: MARKETING_PAGE_HREFS.flagship },
+  { label: "Truth Engine", to: MARKETING_PAGE_HREFS.truthEngine },
+  { label: "Benchmark ERP", to: MARKETING_PAGE_HREFS.benchmarkErp },
+  { label: "Trust Center", to: MARKETING_PAGE_HREFS.trustCenter },
+  { label: "About", to: MARKETING_PAGE_HREFS.about },
+  { label: "Asia Pacific", to: MARKETING_PAGE_HREFS.asiaPacific },
+] as const
+
+export const marketingPageDirectoryNavigation = [
+  { label: "Flagship", to: MARKETING_PAGE_HREFS.flagship },
+  { label: "Truth Engine", to: MARKETING_PAGE_HREFS.truthEngine },
+  { label: "Benchmark ERP", to: MARKETING_PAGE_HREFS.benchmarkErp },
+  { label: "Campaign", to: MARKETING_PAGE_HREFS.erpBenchmarkCampaign },
+  { label: "About", to: MARKETING_PAGE_HREFS.about },
+  { label: "Trust Center", to: MARKETING_PAGE_HREFS.trustCenter },
+  { label: "Governance", to: MARKETING_PAGE_HREFS.dataGovernance },
+  { label: "Privacy Policy", to: MARKETING_PAGE_HREFS.privacyPolicy },
+  { label: "PDPA", to: MARKETING_PAGE_HREFS.pdpa },
+  { label: "Asia Pacific", to: MARKETING_PAGE_HREFS.asiaPacific },
+] as const
+
 export const marketingLandingVariants = [
   {
     id: "Moire",
     slug: "moire",
-    load: () => import("./pages/landing/1.Moire-BW"),
+    load: () => import("@/marketing/pages/landing/1.Moire-BW"),
   },
   {
     id: "Absolutism",
     slug: "kinetic-absolutism",
-    load: () => import("./pages/landing/2.Kinetic-Absolutism-BW"),
+    load: () => import("@/marketing/pages/landing/2.Kinetic-Absolutism-BW"),
   },
   {
     id: "Single-Life",
     slug: "single-life",
-    load: () => import("./pages/landing/3.Single-Life-BW"),
+    load: () => import("@/marketing/pages/landing/3.Single-Life-BW"),
   },
   {
     id: "Forensic",
     slug: "forensic",
-    load: () => import("./pages/landing/4.Forensic-BW"),
+    load: () => import("@/marketing/pages/landing/4.Forensic-BW"),
   },
   {
     id: "Topology",
     slug: "topology",
-    load: () => import("./pages/landing/5.Topology-BW"),
+    load: () => import("@/marketing/pages/landing/5.Topology-BW"),
   },
   {
     id: "Monochrom",
     slug: "monochrom",
-    load: () => import("./pages/landing/6.Monochrom-BW"),
+    load: () => import("@/marketing/pages/landing/6.Monochrom-BW"),
   },
   {
     id: "Resolve",
     slug: "resolve",
-    load: () => import("./pages/landing/7.Resolve-BW"),
+    load: () => import("@/marketing/pages/landing/7.Resolve-BW"),
   },
   {
     id: "Polaris",
     slug: "polaris",
-    load: () => import("./pages/landing/8.Polaris"),
+    load: () => import("@/marketing/pages/landing/8.Polaris"),
   },
   {
     id: "Surface",
     slug: "surface",
-    load: () => import("./pages/landing/9.Surface-BW"),
+    load: () => import("@/marketing/pages/landing/9.Surface-BW"),
   },
   {
     id: "Monument",
     slug: "monument",
-    load: () => import("./pages/landing/10.Monument"),
+    load: () => import("@/marketing/pages/landing/10.Monument"),
   },
   {
     id: "Beastmode",
     slug: "beastmode",
-    load: () => import("./pages/landing/11.Beastmode"),
+    load: () => import("@/marketing/pages/landing/11.Beastmode"),
+  },
+  {
+    id: "BenchmarkERP",
+    slug: "benchmark-erp",
+    load: () =>
+      import("@/marketing/pages/landing/flagship/afenda-flagship-page"),
   },
 ] as const satisfies readonly {
   readonly id: string
@@ -69,12 +117,64 @@ export const marketingLandingVariants = [
   readonly load: () => Promise<MarketingLandingModule>
 }[]
 
+export const marketingRoutablePages = [
+  {
+    id: "ErpBenchmarkCampaign",
+    path: "campaigns/erp-benchmark",
+    load: () => import("./pages/campaigns/erp-benchmark-page"),
+  },
+  {
+    id: "TruthEngine",
+    path: "product/truth-engine",
+    load: () => import("./pages/product/truth-engine-page"),
+  },
+  {
+    id: "About",
+    path: "company/about",
+    load: () => import("./pages/company/about-page"),
+  },
+  {
+    id: "TrustCenter",
+    path: "legal/trust-center",
+    load: () => import("./pages/legal/trust-center-page"),
+  },
+  {
+    id: "DataGovernance",
+    path: "legal/data-governance",
+    load: () => import("./pages/legal/data-governance-page"),
+  },
+  {
+    id: "PrivacyPolicy",
+    path: "legal/privacy-policy",
+    load: () => import("./pages/legal/privacy-policy-page"),
+  },
+  {
+    id: "Pdpa",
+    path: "legal/pdpa",
+    load: () => import("./pages/legal/pdpa-page"),
+  },
+  {
+    id: "AsiaPacific",
+    path: "regional/asia-pacific",
+    load: () => import("./pages/regional/asia-pacific-page"),
+  },
+] as const satisfies readonly {
+  readonly id: string
+  readonly path: string
+  readonly load: () => Promise<MarketingLandingModule>
+}[]
+
 export type MarketingLandingVariantDefinition =
   (typeof marketingLandingVariants)[number]
+
+export type MarketingRoutablePageDefinition =
+  (typeof marketingRoutablePages)[number]
 
 export type MarketingLandingVariantId = MarketingLandingVariantDefinition["id"]
 export type MarketingLandingVariantSlug =
   MarketingLandingVariantDefinition["slug"]
+export type MarketingRoutablePageId = MarketingRoutablePageDefinition["id"]
+export type MarketingRoutablePagePath = MarketingRoutablePageDefinition["path"]
 
 export const marketingLandingVariantIds = marketingLandingVariants.map(
   (variant) => variant.id
@@ -83,6 +183,10 @@ export const marketingLandingVariantIds = marketingLandingVariants.map(
 export const marketingLandingVariantSlugs = marketingLandingVariants.map(
   (variant) => variant.slug
 ) as readonly MarketingLandingVariantSlug[]
+
+export const marketingRoutablePagePaths = marketingRoutablePages.map(
+  (page) => page.path
+) as readonly MarketingRoutablePagePath[]
 
 /**
  * Root-level paths that load the same code-split chunk as `/marketing/:slug`.
@@ -112,6 +216,11 @@ const marketingLandingVariantsBySlug = new Map<
   MarketingLandingVariantDefinition
 >(marketingLandingVariants.map((variant) => [variant.slug, variant]))
 
+const marketingRoutablePagesByPath = new Map<
+  MarketingRoutablePagePath,
+  MarketingRoutablePageDefinition
+>(marketingRoutablePages.map((page) => [page.path, page]))
+
 export function isMarketingLandingVariantId(
   value: string
 ): value is MarketingLandingVariantId {
@@ -124,6 +233,12 @@ export function isMarketingLandingVariantSlug(
   return marketingLandingVariantsBySlug.has(
     value as MarketingLandingVariantSlug
   )
+}
+
+export function isMarketingRoutablePagePath(
+  value: string
+): value is MarketingRoutablePagePath {
+  return marketingRoutablePagesByPath.has(value as MarketingRoutablePagePath)
 }
 
 export function getDefaultMarketingLandingVariant(): MarketingLandingVariantDefinition {
@@ -156,6 +271,16 @@ export function requireMarketingLandingVariantBySlug(
   }
 
   return marketingLandingVariantsBySlug.get(slug)!
+}
+
+export function requireMarketingRoutablePageByPath(
+  path: string
+): MarketingRoutablePageDefinition {
+  if (!isMarketingRoutablePagePath(path)) {
+    throw new Error(`Unknown marketing page path: "${path}"`)
+  }
+
+  return marketingRoutablePagesByPath.get(path)!
 }
 
 export function pickRandomMarketingLandingVariantId(

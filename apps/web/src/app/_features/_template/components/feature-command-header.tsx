@@ -1,24 +1,18 @@
+import { Fragment } from "react"
 import { ArrowUpRight, MoreHorizontal, RefreshCw } from "lucide-react"
 
 import { Button } from "@afenda/design-system/ui-primitives"
-import { cn } from "@afenda/design-system/utils"
 
+import { FeatureTemplateStatusPill } from "./feature-template-status-pill"
 import type {
   FeatureTemplateCommand,
   FeatureTemplateCommandId,
   FeatureTemplateDefinition,
 } from "../types/feature-template"
 import {
-  formatFeatureTemplateStatus,
-  getFeatureTemplateStatusClassName,
-} from "../utils/feature-template-utils"
-
-const LAST_SYNC_FORMATTER = new Intl.DateTimeFormat(undefined, {
-  month: "short",
-  day: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-})
+  formatFeatureTemplateLastSync,
+  normalizeFeatureTemplateText,
+} from "../utils/feature-template-formatters"
 
 export interface FeatureCommandHeaderProps {
   readonly feature: FeatureTemplateDefinition
@@ -33,13 +27,38 @@ function resolveCommand(
   return commands.find((command) => command.id === id)
 }
 
-function formatLastSync(feature: FeatureTemplateDefinition): string {
-  const latest = feature.records[0]
-  if (!latest) {
-    return "No records observed"
-  }
+function resolveFeatureContextLabels(
+  feature: FeatureTemplateDefinition
+): readonly {
+  readonly key: string
+  readonly label: string
+  readonly translateNo?: boolean
+}[] {
+  const labels = [
+    {
+      key: "workspace",
+      label: normalizeFeatureTemplateText(feature.workspaceLabel),
+      translateNo: true,
+    },
+    {
+      key: "scope",
+      label: normalizeFeatureTemplateText(feature.scopeLabel),
+    },
+    {
+      key: "last-sync",
+      label: formatFeatureTemplateLastSync(feature.records),
+    },
+  ]
 
-  return `Last sync ${LAST_SYNC_FORMATTER.format(new Date(latest.updatedAt))}`
+  return labels.filter(
+    (
+      item
+    ): item is {
+      readonly key: string
+      readonly label: string
+      readonly translateNo?: boolean
+    } => item.label !== null
+  )
 }
 
 export function FeatureCommandHeader({
@@ -50,23 +69,17 @@ export function FeatureCommandHeader({
   const refreshCommand = resolveCommand(commands, "refresh-view")
   const exportCommand = resolveCommand(commands, "export-audit-pack")
   const reviewCommand = resolveCommand(commands, "review-queue")
+  const featureContextLabels = resolveFeatureContextLabels(feature)
 
   return (
     <header className="ui-command-surface px-4 py-4 md:px-5">
-      <div className="flex min-w-0 flex-col gap-[1rem] lg:flex-row lg:items-start lg:justify-between">
+      <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-[0.625rem]">
+          <div className="flex flex-wrap items-center gap-2">
             <p className="ui-mono-token tracking-widest text-muted-foreground uppercase">
               Workspace Command Surface
             </p>
-            <span
-              className={cn(
-                "ui-status-pill",
-                getFeatureTemplateStatusClassName(feature.status)
-              )}
-            >
-              {formatFeatureTemplateStatus(feature.status)}
-            </span>
+            <FeatureTemplateStatusPill status={feature.status} />
           </div>
 
           <h1 className="mt-3 max-w-3xl ui-title-hero text-balance">
@@ -76,22 +89,25 @@ export function FeatureCommandHeader({
             {feature.description}
           </p>
 
-          <div className="mt-4 flex flex-wrap items-center gap-[0.5rem] text-xs text-muted-foreground">
-            <span translate="no">Acme Treasury Ltd</span>
-            <span aria-hidden>/</span>
-            <span>Finance / Accounts payable</span>
-            <span aria-hidden>/</span>
-            <span>{formatLastSync(feature)}</span>
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            {featureContextLabels.map((item, index) => (
+              <Fragment key={item.key}>
+                {index > 0 ? <span aria-hidden>/</span> : null}
+                <span translate={item.translateNo ? "no" : undefined}>
+                  {item.label}
+                </span>
+              </Fragment>
+            ))}
           </div>
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-[0.5rem]">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           {refreshCommand ? (
             <Button
               type="button"
               size="sm"
               variant="outline"
-              className="gap-[0.5rem] rounded-full border-border-muted bg-card/70 focus-visible:ring-2 focus-visible:ring-ring"
+              className="gap-2 rounded-full border-border-muted bg-card/70 focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => onRunCommand(refreshCommand.id)}
             >
               <RefreshCw className="size-3.5" aria-hidden />
@@ -103,7 +119,7 @@ export function FeatureCommandHeader({
             <Button
               type="button"
               size="sm"
-              className="gap-[0.5rem] rounded-full focus-visible:ring-2 focus-visible:ring-ring"
+              className="gap-2 rounded-full focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => onRunCommand(exportCommand.id)}
             >
               <ArrowUpRight className="size-3.5" aria-hidden />
@@ -116,7 +132,7 @@ export function FeatureCommandHeader({
               type="button"
               size="sm"
               variant="ghost"
-              className="gap-[0.5rem] rounded-full text-muted-foreground hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              className="gap-2 rounded-full text-muted-foreground hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => onRunCommand(reviewCommand.id)}
             >
               <MoreHorizontal className="size-3.5" aria-hidden />

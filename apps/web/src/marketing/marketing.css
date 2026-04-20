@@ -7,294 +7,566 @@
  * restrained entrance motion, and optional decorative forensic overlays.
  */
 
-.forensic-overlay {
-  background-image:
-    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.09) 50%),
-    linear-gradient(
-      90deg,
-      rgba(255, 0, 0, 0.025),
-      rgba(0, 255, 0, 0.01),
-      rgba(0, 0, 255, 0.025)
+@layer components {
+  .forensic-overlay {
+    background-image:
+      linear-gradient(
+        color-mix(in oklab, var(--color-foreground) 0%, transparent) 50%,
+        color-mix(in oklab, var(--color-foreground) 9%, transparent) 50%
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--color-destructive) 10%, transparent),
+        color-mix(in oklab, var(--color-success) 8%, transparent),
+        color-mix(in oklab, var(--color-info) 10%, transparent)
+      );
+    background-size:
+      100% 4px,
+      3px 100%;
+    opacity: 0.18;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  .dark .forensic-overlay {
+    opacity: 0.14;
+  }
+
+  .marketing-root {
+    position: relative;
+    isolation: isolate;
+    min-height: 100dvh;
+
+    --marketing-content-max-width: 80rem;
+    --marketing-safe-x: 1.5rem;
+    --marketing-safe-b: 2rem;
+    --marketing-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+    --marketing-section-y: 5rem;
+    --marketing-section-y-hero-top: 6rem;
+    --marketing-section-y-hero-bottom: 4rem;
+    --marketing-section-y-grand: 5rem;
+    --marketing-shell-main-offset: 0rem;
+    --marketing-shell-main-offset-xl: 0rem;
+
+    --marketing-surface-border-strong: color-mix(
+      in oklab,
+      var(--color-border) 82%,
+      transparent
     );
-  background-size:
-    100% 4px,
-    3px 100%;
-  opacity: 0.18;
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-.marketing-root {
-  position: relative;
-  isolation: isolate;
-  min-height: 100dvh;
-}
-
-.marketing-shell-content {
-  position: relative;
-  z-index: 1;
-}
-
-/* Ambient depth: fixed background plane for subtle cinematic scroll behavior. */
-.marketing-root::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.85;
-  background:
-    radial-gradient(
-      ellipse 90% 55% at 50% -15%,
-      color-mix(in oklab, var(--color-primary) 14%, transparent),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 50% 45% at 100% 30%,
-      color-mix(in oklab, var(--color-ring) 10%, transparent),
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse 45% 40% at 0% 70%,
-      color-mix(in oklab, var(--color-muted) 18%, transparent),
-      transparent 45%
+    --marketing-surface-border-soft: color-mix(
+      in oklab,
+      var(--color-border) 70%,
+      transparent
     );
-}
-
-.dark .marketing-root::before {
-  opacity: 0.55;
-}
-
-.marketing-display {
-  font-size: clamp(2.25rem, 5vw + 1rem, 3.75rem);
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-  font-weight: 600;
-  text-wrap: balance;
-}
-
-.marketing-lede {
-  max-width: 42rem;
-  font-size: clamp(1.05rem, 0.5vw + 1rem, 1.25rem);
-  line-height: 1.65;
-  color: var(--color-muted-foreground);
-}
-
-.flagship-display {
-  font-size: clamp(4.5rem, 11vw, 12rem);
-  line-height: 0.84;
-  letter-spacing: -0.08em;
-}
-
-.flagship-grid {
-  background-image:
-    linear-gradient(
-      color-mix(in oklab, var(--color-border) 22%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      color-mix(in oklab, var(--color-border) 18%, transparent) 1px,
-      transparent 1px
+    --marketing-surface-border-emphasis: color-mix(
+      in oklab,
+      var(--color-border) 86%,
+      transparent
     );
-  background-size: 96px 96px;
-  mask-image: radial-gradient(circle at center, black 35%, transparent 82%);
-  opacity: 0.25;
-  pointer-events: none;
-}
 
-.flagship-grain {
-  background-image: radial-gradient(
-    circle at 20% 20%,
-    color-mix(in oklab, var(--color-foreground) 4%, transparent) 0 1px,
-    transparent 1px 100%
-  );
-  background-size: 10px 10px;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
+    --marketing-shadow-card:
+      0 1px 0 color-mix(in oklab, var(--color-foreground) 8%, transparent),
+      0 28px 56px -32px
+        color-mix(in oklab, var(--color-foreground) 18%, transparent);
+    --marketing-shadow-card-subtle:
+      0 1px 0 color-mix(in oklab, var(--color-foreground) 6%, transparent),
+      0 18px 36px -28px
+        color-mix(in oklab, var(--color-foreground) 14%, transparent);
+    --marketing-shadow-panel:
+      0 1px 0 color-mix(in oklab, var(--color-foreground) 6%, transparent),
+      0 20px 40px -30px
+        color-mix(in oklab, var(--color-foreground) 12%, transparent);
+    --marketing-shadow-panel-subtle:
+      0 1px 0 color-mix(in oklab, var(--color-foreground) 6%, transparent),
+      0 20px 40px -32px
+        color-mix(in oklab, var(--color-foreground) 10%, transparent);
+    --marketing-shadow-canon-fragment: 0 16px 36px -24px
+      color-mix(in oklab, var(--color-foreground) 24%, transparent);
+    --marketing-shadow-canon-core:
+      0 1px 0 color-mix(in oklab, var(--color-foreground) 8%, transparent),
+      0 28px 56px -28px
+        color-mix(in oklab, var(--color-foreground) 18%, transparent);
+  }
 
-.flagship-card {
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--color-card) 96%, transparent),
-    color-mix(in oklab, var(--color-card) 82%, transparent)
-  );
-  box-shadow:
-    0 1px 0 color-mix(in oklab, var(--color-foreground) 8%, transparent),
-    0 28px 56px -32px
-      color-mix(in oklab, var(--color-foreground) 18%, transparent);
-}
+  .marketing-safe-rail {
+    padding-top: env(safe-area-inset-top);
+  }
 
-.flagship-canon-field {
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(
-      ellipse at center,
-      color-mix(in oklab, var(--color-primary) 12%, transparent),
-      transparent 55%
-    ),
-    linear-gradient(
+  .marketing-safe-x,
+  .marketing-container {
+    padding-left: max(
+      var(--marketing-safe-x),
+      calc(var(--marketing-safe-x) + env(safe-area-inset-left))
+    );
+    padding-right: max(
+      var(--marketing-safe-x),
+      calc(var(--marketing-safe-x) + env(safe-area-inset-right))
+    );
+  }
+
+  .marketing-container {
+    margin-inline: auto;
+    max-width: var(--marketing-content-max-width);
+  }
+
+  .marketing-safe-b {
+    padding-bottom: max(
+      var(--marketing-safe-b),
+      calc(var(--marketing-safe-b) + env(safe-area-inset-bottom))
+    );
+  }
+
+  .marketing-section-standard {
+    padding-block: var(--marketing-section-y);
+  }
+
+  .marketing-section-hero {
+    padding-top: var(--marketing-section-y-hero-top);
+    padding-bottom: var(--marketing-section-y-hero-bottom);
+  }
+
+  .marketing-section-grand {
+    padding-block: var(--marketing-section-y-grand);
+  }
+
+  .marketing-anchor-offset {
+    scroll-margin-top: 7rem;
+  }
+
+  .marketing-kicker {
+    font-family: var(
+      --font-mono,
+      ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      "Liberation Mono",
+      "Courier New",
+      monospace
+    );
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-muted-foreground);
+  }
+
+  .marketing-heading-hero {
+    font-size: clamp(3.2rem, 7.2vw, 6.2rem);
+    line-height: 0.9;
+    font-weight: 600;
+    letter-spacing: -0.07em;
+    text-wrap: balance;
+  }
+
+  .marketing-heading-section {
+    font-size: clamp(2.4rem, 5vw, 4.6rem);
+    line-height: 0.92;
+    font-weight: 600;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+  }
+
+  .marketing-heading-compact {
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    line-height: 0.96;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+  }
+
+  .marketing-copy-lead {
+    font-size: clamp(1.05rem, 0.35vw + 1rem, 1.24rem);
+    line-height: 2rem;
+    color: var(--color-muted-foreground);
+    text-wrap: pretty;
+  }
+
+  .marketing-copy-body {
+    font-size: 1rem;
+    line-height: 2rem;
+    color: var(--color-muted-foreground);
+    text-wrap: pretty;
+  }
+
+  .marketing-copy-tight {
+    font-size: 1rem;
+    line-height: 1.75rem;
+    color: var(--color-muted-foreground);
+    text-wrap: pretty;
+  }
+
+  .marketing-cta-outline {
+    border-color: color-mix(in oklab, var(--color-border) 70%, transparent);
+    background: color-mix(in oklab, var(--color-background) 75%, transparent);
+  }
+
+  .marketing-shell-header {
+    position: fixed;
+    inset-inline: 0;
+    top: 0;
+    z-index: 30;
+    border-bottom: 1px solid
+      color-mix(in oklab, var(--color-border) 60%, transparent);
+    background: color-mix(in oklab, var(--color-background) 80%, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .marketing-shell-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1rem;
+  }
+
+  .marketing-shell-nav-row {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-block: 0.75rem;
+  }
+
+  .marketing-shell-footer-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 2rem;
+  }
+
+  .marketing-nav-link {
+    touch-action: manipulation;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
+    padding: 0.375rem 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: color 0.2s var(--marketing-ease-standard);
+  }
+
+  .marketing-shell-badge {
+    border-color: color-mix(in oklab, var(--color-border) 70%, transparent);
+    background: color-mix(in oklab, var(--color-background) 70%, transparent);
+    padding-inline: 0.75rem;
+    padding-block: 0.25rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-muted-foreground);
+  }
+
+  .marketing-shell-brand-mark {
+    display: flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    background: linear-gradient(
+      to bottom right,
+      var(--color-primary),
+      var(--color-secondary)
+    );
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary-foreground);
+    box-shadow: 0 10px 24px -14px
+      color-mix(in oklab, var(--color-primary) 42%, transparent);
+  }
+
+  .marketing-nav-scroller {
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    -webkit-tap-highlight-color: color-mix(
+      in oklab,
+      var(--color-primary) 24%,
+      transparent
+    );
+    scrollbar-width: thin;
+  }
+
+  .marketing-shell-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .marketing-shell-main {
+    padding-top: calc(
+      var(--marketing-shell-main-offset) + env(safe-area-inset-top)
+    );
+  }
+
+  /* Ambient depth: fixed background plane for subtle cinematic scroll behavior. */
+  .marketing-root::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+    background:
+      radial-gradient(
+        ellipse 90% 55% at 50% -15%,
+        color-mix(in oklab, var(--color-primary) 14%, transparent),
+        transparent 55%
+      ),
+      radial-gradient(
+        ellipse 50% 45% at 100% 30%,
+        color-mix(in oklab, var(--color-ring) 10%, transparent),
+        transparent 50%
+      ),
+      radial-gradient(
+        ellipse 45% 40% at 0% 70%,
+        color-mix(in oklab, var(--color-muted) 18%, transparent),
+        transparent 45%
+      );
+  }
+
+  .dark .marketing-root::before {
+    opacity: 0.55;
+  }
+
+  .flagship-grid {
+    background-image:
+      linear-gradient(
+        color-mix(in oklab, var(--color-border) 22%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--color-border) 18%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 96px 96px;
+    mask-image: radial-gradient(circle at center, black 35%, transparent 82%);
+    -webkit-mask-image: radial-gradient(
+      circle at center,
+      black 35%,
+      transparent 82%
+    );
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .flagship-grain {
+    background-image: radial-gradient(
+      circle at 20% 20%,
+      color-mix(in oklab, var(--color-foreground) 4%, transparent) 0 1px,
+      transparent 1px 100%
+    );
+    background-size: 10px 10px;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .flagship-card,
+  .flagship-card-subtle,
+  .flagship-practice-panel,
+  .flagship-principle-panel,
+  .flagship-canon-field,
+  .flagship-fragment-chip {
+    border: 1px solid var(--marketing-surface-border-strong);
+  }
+
+  .flagship-card {
+    background: linear-gradient(
       180deg,
       color-mix(in oklab, var(--color-card) 96%, transparent),
+      color-mix(in oklab, var(--color-card) 82%, transparent)
+    );
+    box-shadow: var(--marketing-shadow-card);
+  }
+
+  .flagship-card-subtle {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-card) 92%, transparent),
+      color-mix(in oklab, var(--color-card) 86%, transparent)
+    );
+    box-shadow: var(--marketing-shadow-card-subtle);
+  }
+
+  .flagship-card-interactive {
+    transition:
+      transform 0.3s var(--marketing-ease-standard),
+      border-color 0.3s var(--marketing-ease-standard);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .flagship-card-interactive:hover {
+      transform: translateY(-0.25rem);
+      border-color: color-mix(in oklab, var(--color-primary) 22%, transparent);
+    }
+  }
+
+  .flagship-proof-item,
+  .flagship-fact-chip {
+    border: 1px solid var(--marketing-surface-border-soft);
+    background: color-mix(in oklab, var(--color-background) 78%, transparent);
+  }
+
+  @supports (
+    (-webkit-backdrop-filter: blur(6px)) or (backdrop-filter: blur(6px))
+  ) {
+    @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+      .flagship-proof-item,
+      .flagship-fact-chip {
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+      }
+    }
+  }
+
+  .flagship-practice-panel {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-card) 84%, transparent),
       color-mix(in oklab, var(--color-card) 76%, transparent)
     );
-}
-
-.flagship-canon-spine {
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--color-primary) 18%, transparent),
-    color-mix(in oklab, var(--color-foreground) 72%, transparent),
-    color-mix(in oklab, var(--color-primary) 18%, transparent)
-  );
-  box-shadow:
-    0 0 24px color-mix(in oklab, var(--color-primary) 25%, transparent),
-    0 0 96px color-mix(in oklab, var(--color-primary) 12%, transparent);
-}
-
-.flagship-fragment-chip {
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--color-background) 85%, transparent),
-    color-mix(in oklab, var(--color-card) 92%, transparent)
-  );
-  box-shadow: 0 16px 36px -24px
-    color-mix(in oklab, var(--color-foreground) 24%, transparent);
-}
-
-@keyframes marketing-rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
+    box-shadow: var(--marketing-shadow-panel);
   }
-  to {
-    opacity: 1;
+
+  .flagship-principle-panel {
+    background: color-mix(in oklab, var(--color-background) 72%, transparent);
+    box-shadow: var(--marketing-shadow-panel-subtle);
+  }
+
+  .flagship-status-badge {
+    border-width: 1px;
+    font-weight: 500;
+  }
+
+  .flagship-status-badge--fail {
+    border-color: color-mix(
+      in oklab,
+      var(--color-destructive) 18%,
+      transparent
+    );
+    background: color-mix(in oklab, var(--color-destructive) 10%, transparent);
+    color: var(--color-destructive);
+  }
+
+  .flagship-status-badge--unknown {
+    border-color: color-mix(in oklab, var(--color-warning) 24%, transparent);
+    background: color-mix(in oklab, var(--color-warning) 12%, transparent);
+    color: var(--color-warning);
+  }
+
+  .flagship-status-badge--drift {
+    border-color: color-mix(in oklab, var(--color-border) 90%, transparent);
+    background: color-mix(in oklab, var(--color-muted) 80%, transparent);
+    color: color-mix(in oklab, var(--color-foreground) 80%, transparent);
+  }
+
+  .flagship-status-badge--reconstruction {
+    border-color: color-mix(in oklab, var(--color-primary) 24%, transparent);
+    background: color-mix(in oklab, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+  }
+
+  .flagship-canon-field {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(
+        ellipse at center,
+        color-mix(in oklab, var(--color-primary) 12%, transparent),
+        transparent 55%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--color-card) 96%, transparent),
+        color-mix(in oklab, var(--color-card) 76%, transparent)
+      );
+    box-shadow: var(--marketing-shadow-card);
+  }
+
+  .flagship-fragment-chip {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-background) 85%, transparent),
+      color-mix(in oklab, var(--color-card) 92%, transparent)
+    );
+    box-shadow: var(--marketing-shadow-canon-fragment);
+  }
+
+  .flagship-canon-core {
+    border: 1px solid var(--marketing-surface-border-emphasis);
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-card) 98%, transparent),
+      color-mix(in oklab, var(--color-card) 92%, transparent)
+    );
+    box-shadow: var(--marketing-shadow-canon-core);
+  }
+
+  .marketing-skip-link {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    z-index: 50;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transform: translateY(-120%);
+    transition: transform 0.2s var(--marketing-ease-standard);
+  }
+
+  .marketing-skip-link:focus-visible {
     transform: translateY(0);
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
   }
-}
 
-.marketing-animate-in {
-  opacity: 0;
-  animation: marketing-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.marketing-animate-delay-1 {
-  animation-delay: 0.08s;
-}
-
-.marketing-animate-delay-2 {
-  animation-delay: 0.16s;
-}
-
-.marketing-animate-delay-3 {
-  animation-delay: 0.24s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marketing-animate-in,
-  .marketing-animate-delay-1,
-  .marketing-animate-delay-2,
-  .marketing-animate-delay-3 {
-    animation: none;
-    opacity: 1;
-    transform: none;
+  @media (min-width: 768px) {
+    .marketing-root {
+      --marketing-safe-x: 2.5rem;
+      --marketing-section-y: 6rem;
+      --marketing-section-y-hero-top: 7rem;
+      --marketing-section-y-hero-bottom: 5rem;
+      --marketing-section-y-grand: 6rem;
+    }
   }
-}
 
-.marketing-glass-panel {
-  border: 1px solid color-mix(in oklab, var(--color-border) 85%, transparent);
-  background: color-mix(in oklab, var(--color-card) 88%, transparent);
-  box-shadow:
-    0 1px 0 color-mix(in oklab, var(--color-foreground) 6%, transparent),
-    0 24px 48px -24px
-      color-mix(in oklab, var(--color-foreground) 12%, transparent);
-}
+  @media (min-width: 1024px) {
+    .marketing-root {
+      --marketing-safe-x: 3rem;
+      --marketing-section-y: 7rem;
+      --marketing-section-y-hero-top: 7rem;
+      --marketing-section-y-hero-bottom: 6rem;
+      --marketing-section-y-grand: 8rem;
+    }
 
-@supports (backdrop-filter: blur(12px)) {
-  .marketing-glass-panel {
-    background: color-mix(in oklab, var(--color-card) 72%, transparent);
-    backdrop-filter: blur(12px);
+    .marketing-shell-footer-row {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
-}
 
-.dark .marketing-glass-panel {
-  background: color-mix(in oklab, var(--color-card) 62%, transparent);
-  box-shadow:
-    0 1px 0 color-mix(in oklab, var(--color-foreground) 8%, transparent),
-    0 28px 56px -28px #00000066;
-}
-
-@supports (backdrop-filter: blur(12px)) {
-  .dark .marketing-glass-panel {
-    background: color-mix(in oklab, var(--color-card) 55%, transparent);
+  @media (min-width: 1280px) {
+    .marketing-shell-main {
+      padding-top: calc(
+        var(--marketing-shell-main-offset-xl) + env(safe-area-inset-top)
+      );
+    }
   }
-}
 
-.marketing-skip-link {
-  position: absolute;
-  left: 1rem;
-  top: 1rem;
-  z-index: 50;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background: var(--color-primary);
-  color: var(--color-primary-foreground);
-  font-size: 0.875rem;
-  font-weight: 500;
-  transform: translateY(-120%);
-  transition: transform 0.2s ease;
-}
+  @media (prefers-reduced-motion: reduce) {
+    .flagship-card-interactive,
+    .marketing-skip-link {
+      transition: none;
+    }
 
-.marketing-skip-link:focus {
-  transform: translateY(0);
-  outline: 2px solid var(--color-ring);
-  outline-offset: 2px;
-}
-
-.flagship-monument-grid {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
-  background-size: 84px 84px;
-  mask-image: radial-gradient(circle at center, black 40%, transparent 86%);
-  -webkit-mask-image: radial-gradient(
-    circle at center,
-    black 40%,
-    transparent 86%
-  );
-}
-
-.flagship-monument-noise {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-.flagship-monument-panel {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.flagship-monument-spine {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.18),
-    rgba(255, 255, 255, 0.86),
-    rgba(255, 255, 255, 0.18)
-  );
-}
-
-.flagship-monument-node {
-  background: rgb(255, 255, 255);
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.22);
-}
-
-.flagship-monument-rail {
-  background: rgba(0, 0, 0, 0.72);
-}
-
-@supports (backdrop-filter: blur(16px)) {
-  .flagship-monument-rail {
-    backdrop-filter: blur(16px);
+    .flagship-card-interactive {
+      transform: none;
+    }
   }
 }

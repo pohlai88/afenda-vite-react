@@ -298,6 +298,14 @@
       "default_title": "Nothing here yet",
       "default_description": "There are no items to show. Adjust filters or check back later."
     },
+    "loading": {
+      "default_title": "Loading",
+      "default_description": "Please wait while content is being prepared."
+    },
+    "error": {
+      "default_title": "Something went wrong",
+      "default_description": "We could not load this content right now."
+    },
     "tenant_scope": {
       "hint_status": "HTTP {{status}}",
       "retry": "Retry",

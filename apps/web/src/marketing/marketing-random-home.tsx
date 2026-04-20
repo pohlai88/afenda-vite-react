@@ -1,11 +1,11 @@
 import { useEffect, useState, type ComponentType } from "react"
 
-import { MARKETING_CONFIG } from "./marketing.config"
-import { MarketingLoadingFallback } from "./marketing-loading-fallback"
+import { MARKETING_CONFIG } from "@/marketing/marketing.config"
+import { MarketingLoadingFallback } from "@/marketing/marketing-loading-fallback"
 import {
   resolveMarketingLandingVariantById,
   resolveMarketingLandingVariantId,
-} from "./marketing-page-registry"
+} from "@/marketing/marketing-page-registry"
 
 type MarketingPageComponent = ComponentType<Record<string, never>>
 type MarketingRandomHomeState =

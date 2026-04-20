@@ -298,6 +298,14 @@
       "default_title": "Chưa có dữ liệu",
       "default_description": "Không có mục nào để hiển thị. Điều chỉnh bộ lọc hoặc thử lại sau."
     },
+    "loading": {
+      "default_title": "Đang tải",
+      "default_description": "Vui lòng chờ trong khi nội dung đang được chuẩn bị."
+    },
+    "error": {
+      "default_title": "Đã xảy ra lỗi",
+      "default_description": "Chúng tôi không thể tải nội dung này ngay lúc này."
+    },
     "tenant_scope": {
       "hint_status": "HTTP {{status}}",
       "retry": "Thử lại",

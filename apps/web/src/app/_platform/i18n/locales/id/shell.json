@@ -298,6 +298,14 @@
       "default_title": "Belum ada data",
       "default_description": "Tidak ada item untuk ditampilkan. Ubah filter atau coba lagi nanti."
     },
+    "loading": {
+      "default_title": "Memuat",
+      "default_description": "Mohon tunggu sementara konten sedang disiapkan."
+    },
+    "error": {
+      "default_title": "Terjadi kesalahan",
+      "default_description": "Kami tidak dapat memuat konten ini sekarang."
+    },
     "tenant_scope": {
       "hint_status": "HTTP {{status}}",
       "retry": "Coba lagi",

@@ -298,6 +298,14 @@
       "default_title": "Tiada data lagi",
       "default_description": "Tiada item untuk dipaparkan. Laraskan penapis atau cuba lagi kemudian."
     },
+    "loading": {
+      "default_title": "Memuatkan",
+      "default_description": "Sila tunggu sementara kandungan sedang disediakan."
+    },
+    "error": {
+      "default_title": "Sesuatu telah berlaku",
+      "default_description": "Kami tidak dapat memuatkan kandungan ini sekarang."
+    },
     "tenant_scope": {
       "hint_status": "HTTP {{status}}",
       "retry": "Cuba lagi",

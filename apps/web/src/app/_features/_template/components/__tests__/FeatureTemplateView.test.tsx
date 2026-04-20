@@ -48,7 +48,7 @@ describe("FeatureTemplateView", () => {
 
     await waitFor(() => {
       expect(screen.getByRole("status")).toHaveTextContent(
-        "Prepared 3 event log record(s) for export."
+        "Prepared 3 records from Event log for export."
       )
     })
   })

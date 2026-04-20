@@ -7,6 +7,9 @@ This directory defines the **public marketing surface** of the application.
 For the canonical homepage execution plan, see
 [`FLAGSHIP_IMPLEMENTATION_PLAN.md`](./FLAGSHIP_IMPLEMENTATION_PLAN.md).
 
+For feature-level visual, accessibility, and implementation rules, see
+[`MARKETING_GUIDELINES.md`](./MARKETING_GUIDELINES.md).
+
 It is:
 
 - independent from `/app` (ERP shell)
@@ -169,6 +172,23 @@ Must not contain:
 ## Pages
 
 `pages/` is organized by **business domain**, never as a flat page dump.
+
+### `pages/_components/`
+
+`pages/_components/` is the approved exception for reusable **page-frame
+scaffolds** that support multiple marketing page domains.
+
+Allowed concerns:
+
+- page shells
+- section scaffolds
+- reusable CTA frames
+
+Forbidden concerns:
+
+- page-local prose
+- route-only wrappers with no domain meaning
+- generic utility dumping that belongs in `shared/`
 
 ### `pages/landing/`
 

@@ -14,16 +14,17 @@ import { PublicThemeProvider } from "../app/_platform/theme/public-theme-provide
 import { MarketingConfiguredHome } from "./marketing-configured-home"
 import { MarketingLoadingFallback } from "./marketing-loading-fallback"
 import {
+  loadMarketingFlagshipPage,
   marketingLandingLegacyRedirects,
   marketingLandingLegacySlugRoutes,
+  marketingRoutablePages,
   marketingLandingVariants,
+  type MarketingRoutablePagePath,
   type MarketingLandingVariantSlug,
 } from "./marketing-page-registry"
 import { MarketingLayout } from "./marketing-layout"
 
-const FlagshipPage = lazy(
-  () => import("./pages/landing/flagship/afenda-flagship-page")
-)
+const FlagshipPage = lazy(loadMarketingFlagshipPage)
 
 const marketingLandingPages = new Map<
   MarketingLandingVariantSlug,
@@ -33,6 +34,11 @@ const marketingLandingPages = new Map<
     (variant) => [variant.slug, lazy(variant.load)] as const
   )
 )
+
+const marketingRoutablePageMap = new Map<
+  MarketingRoutablePagePath,
+  ReturnType<typeof lazy>
+>(marketingRoutablePages.map((page) => [page.path, lazy(page.load)] as const))
 
 /** Resolves the lazy component for a registered landing slug (throws if the slug is missing from the route map). */
 export function getMarketingLandingPage(slug: MarketingLandingVariantSlug) {
@@ -45,8 +51,26 @@ export function getMarketingLandingPage(slug: MarketingLandingVariantSlug) {
   return page
 }
 
+export function getMarketingRoutablePage(path: MarketingRoutablePagePath) {
+  const page = marketingRoutablePageMap.get(path)
+  if (!page) {
+    throw new Error(`Missing marketing page registration for "${path}".`)
+  }
+  return page
+}
+
 function renderMarketingLandingPage(slug: MarketingLandingVariantSlug) {
   const Page = getMarketingLandingPage(slug)
+
+  return (
+    <Suspense fallback={<MarketingLoadingFallback />}>
+      <Page />
+    </Suspense>
+  )
+}
+
+function renderMarketingRoutablePage(path: MarketingRoutablePagePath) {
+  const Page = getMarketingRoutablePage(path)
 
   return (
     <Suspense fallback={<MarketingLoadingFallback />}>
@@ -92,6 +116,13 @@ export const marketingRouteObjects: RouteObject[] = [
             return {
               path: variant.slug,
               element: renderMarketingLandingPage(variant.slug),
+              handle: { shell: null },
+            } satisfies RouteObject
+          }),
+          ...marketingRoutablePages.map((page) => {
+            return {
+              path: page.path,
+              element: renderMarketingRoutablePage(page.path),
               handle: { shell: null },
             } satisfies RouteObject
           }),

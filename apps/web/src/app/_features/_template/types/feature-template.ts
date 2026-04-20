@@ -43,6 +43,8 @@ export interface FeatureTemplateDefinition {
   readonly slug: FeatureTemplateSlug
   readonly title: string
   readonly description: string
+  readonly workspaceLabel: string
+  readonly scopeLabel: string
   readonly status: FeatureTemplateStatus
   readonly routePath: string
   readonly metrics: readonly FeatureTemplateMetric[]
