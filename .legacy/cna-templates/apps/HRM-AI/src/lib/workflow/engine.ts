@@ -2,10 +2,15 @@
 // Workflow Engine - Core workflow processing logic
 // P2-19: Extended with PARALLEL and QUORUM approval modes
 
-import { db } from '@/lib/db'
-import { resolveApprover } from './approver-resolver'
-import { evaluateCondition, type Condition } from './condition-evaluator'
-import type { RequestStatus, ApprovalStatus, ApprovalMode, WorkflowStep as PrismaWorkflowStep } from '@prisma/client'
+import { db } from "@/lib/db"
+import { resolveApprover } from "./approver-resolver"
+import { evaluateCondition, type Condition } from "./condition-evaluator"
+import type {
+  RequestStatus,
+  ApprovalStatus,
+  ApprovalMode,
+  WorkflowStep as PrismaWorkflowStep,
+} from "@prisma/client"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -38,7 +43,9 @@ export interface WorkflowInstance {
 /**
  * Start a new workflow instance
  */
-export async function startWorkflow(input: StartWorkflowInput): Promise<WorkflowInstance> {
+export async function startWorkflow(
+  input: StartWorkflowInput
+): Promise<WorkflowInstance> {
   const {
     tenantId,
     workflowCode,
@@ -53,13 +60,13 @@ export async function startWorkflow(input: StartWorkflowInput): Promise<Workflow
     where: { tenantId_code: { tenantId, code: workflowCode } },
     include: {
       steps: {
-        orderBy: { stepOrder: 'asc' },
+        orderBy: { stepOrder: "asc" },
       },
     },
   })
 
   if (!definition || !definition.isActive) {
-    throw new Error('Quy trình không tồn tại hoặc đã bị vô hiệu hóa')
+    throw new Error("Quy trình không tồn tại hoặc đã bị vô hiệu hóa")
   }
 
   // 2. Create workflow instance (store context for subsequent steps)
@@ -70,7 +77,7 @@ export async function startWorkflow(input: StartWorkflowInput): Promise<Workflow
       referenceType,
       referenceId,
       requesterId,
-      status: 'PENDING',
+      status: "PENDING",
       currentStepOrder: 1,
       context: context as any,
     },
@@ -81,12 +88,18 @@ export async function startWorkflow(input: StartWorkflowInput): Promise<Workflow
 
   if (!firstStep) {
     // No steps required - auto approve
-    await completeWorkflow(instance.id, 'APPROVED')
+    await completeWorkflow(instance.id, "APPROVED")
     return instance
   }
 
   // 4. Create approval step(s) based on approval mode
-  await createApprovalSteps(tenantId, instance.id, firstStep, requesterId, context)
+  await createApprovalSteps(
+    tenantId,
+    instance.id,
+    firstStep,
+    requesterId,
+    context
+  )
 
   return instance
 }
@@ -102,7 +115,7 @@ export async function startWorkflow(input: StartWorkflowInput): Promise<Workflow
 export async function processApproval(
   approvalId: string,
   userId: string,
-  action: 'APPROVED' | 'REJECTED',
+  action: "APPROVED" | "REJECTED",
   comments?: string
 ): Promise<void> {
   // Get approval with related data
@@ -114,7 +127,7 @@ export async function processApproval(
           definition: {
             include: {
               steps: {
-                orderBy: { stepOrder: 'asc' },
+                orderBy: { stepOrder: "asc" },
               },
             },
           },
@@ -125,15 +138,15 @@ export async function processApproval(
   })
 
   if (!approval) {
-    throw new Error('Không tìm thấy yêu cầu duyệt')
+    throw new Error("Không tìm thấy yêu cầu duyệt")
   }
 
-  if (approval.status !== 'PENDING') {
-    throw new Error('Yêu cầu này đã được xử lý')
+  if (approval.status !== "PENDING") {
+    throw new Error("Yêu cầu này đã được xử lý")
   }
 
   if (approval.approverId !== userId) {
-    throw new Error('Bạn không có quyền duyệt yêu cầu này')
+    throw new Error("Bạn không có quyền duyệt yêu cầu này")
   }
 
   // Update this approval step
@@ -150,9 +163,9 @@ export async function processApproval(
   const requiredApprovals = approval.step.requiredApprovals
 
   // ─── SEQUENTIAL mode (original behavior) ───
-  if (approvalMode === 'SEQUENTIAL') {
-    if (action === 'REJECTED') {
-      await completeWorkflow(approval.instanceId, 'REJECTED')
+  if (approvalMode === "SEQUENTIAL") {
+    if (action === "REJECTED") {
+      await completeWorkflow(approval.instanceId, "REJECTED")
       return
     }
     await advanceToNextStep(approval)
@@ -168,17 +181,17 @@ export async function processApproval(
     },
   })
 
-  const approved = siblingApprovals.filter((a) => a.status === 'APPROVED')
-  const rejected = siblingApprovals.filter((a) => a.status === 'REJECTED')
-  const pending = siblingApprovals.filter((a) => a.status === 'PENDING')
+  const approved = siblingApprovals.filter((a) => a.status === "APPROVED")
+  const rejected = siblingApprovals.filter((a) => a.status === "REJECTED")
+  const pending = siblingApprovals.filter((a) => a.status === "PENDING")
   const total = siblingApprovals.length
 
-  if (approvalMode === 'PARALLEL') {
+  if (approvalMode === "PARALLEL") {
     // ALL must approve; any rejection = workflow rejected
-    if (action === 'REJECTED') {
+    if (action === "REJECTED") {
       // Skip remaining pending approvals
       await skipPendingApprovals(approval.instanceId, approval.stepId)
-      await completeWorkflow(approval.instanceId, 'REJECTED')
+      await completeWorkflow(approval.instanceId, "REJECTED")
       return
     }
     if (approved.length === total) {
@@ -189,7 +202,7 @@ export async function processApproval(
     return
   }
 
-  if (approvalMode === 'QUORUM') {
+  if (approvalMode === "QUORUM") {
     // Need requiredApprovals approvals; too many rejections = rejected
     if (approved.length >= requiredApprovals) {
       // Quorum reached - skip remaining and advance
@@ -202,7 +215,7 @@ export async function processApproval(
     if (maxPossibleApprovals < requiredApprovals) {
       // Cannot reach quorum anymore - reject
       await skipPendingApprovals(approval.instanceId, approval.stepId)
-      await completeWorkflow(approval.instanceId, 'REJECTED')
+      await completeWorkflow(approval.instanceId, "REJECTED")
       return
     }
     // Otherwise, still waiting for more votes
@@ -217,15 +230,18 @@ export async function processApproval(
 /**
  * Skip all pending approval steps for a given workflow step
  */
-async function skipPendingApprovals(instanceId: string, stepId: string): Promise<void> {
+async function skipPendingApprovals(
+  instanceId: string,
+  stepId: string
+): Promise<void> {
   await db.approvalStep.updateMany({
     where: {
       instanceId,
       stepId,
-      status: 'PENDING',
+      status: "PENDING",
     },
     data: {
-      status: 'SKIPPED',
+      status: "SKIPPED",
     },
   })
 }
@@ -255,7 +271,7 @@ async function advanceToNextStep(approval: {
 
   if (!nextStep) {
     // All steps completed - workflow approved
-    await completeWorkflow(approval.instanceId, 'APPROVED')
+    await completeWorkflow(approval.instanceId, "APPROVED")
     return
   }
 
@@ -282,7 +298,7 @@ function findNextStep(
   fromOrder: number,
   context: Record<string, unknown>
 ): PrismaWorkflowStep | null {
-  for (const step of steps.filter(s => s.stepOrder >= fromOrder)) {
+  for (const step of steps.filter((s) => s.stepOrder >= fromOrder)) {
     // Check conditions if present
     if (step.conditions) {
       const conditions = step.conditions as unknown as Condition | Condition[]
@@ -313,7 +329,7 @@ async function createApprovalSteps(
     ? new Date(Date.now() + step.slaHours * 60 * 60 * 1000)
     : null
 
-  if (approvalMode === 'SEQUENTIAL') {
+  if (approvalMode === "SEQUENTIAL") {
     // Original behavior: single approver
     const approverInfo = await resolveApprover(
       tenantId,
@@ -326,7 +342,13 @@ async function createApprovalSteps(
       context
     )
 
-    await createSingleApproval(tenantId, instanceId, step.id, approverInfo, dueAt)
+    await createSingleApproval(
+      tenantId,
+      instanceId,
+      step.id,
+      approverInfo,
+      dueAt
+    )
     return
   }
 
@@ -345,7 +367,13 @@ async function createApprovalSteps(
       requesterId,
       context
     )
-    await createSingleApproval(tenantId, instanceId, step.id, approverInfo, dueAt)
+    await createSingleApproval(
+      tenantId,
+      instanceId,
+      step.id,
+      approverInfo,
+      dueAt
+    )
     return
   }
 
@@ -377,7 +405,7 @@ async function createSingleApproval(
       stepId,
       approverId: approverInfo.approverId,
       delegatedFromId: approverInfo.delegatedFromId,
-      status: 'PENDING',
+      status: "PENDING",
       dueAt,
     },
   })
@@ -387,10 +415,10 @@ async function createSingleApproval(
     data: {
       tenantId,
       userId: approverInfo.approverId,
-      type: 'PENDING_APPROVAL',
-      title: 'Yêu cầu cần duyệt',
-      message: 'Bạn có yêu cầu mới cần xử lý',
-      referenceType: 'APPROVAL',
+      type: "PENDING_APPROVAL",
+      title: "Yêu cầu cần duyệt",
+      message: "Bạn có yêu cầu mới cần xử lý",
+      referenceType: "APPROVAL",
       referenceId: approval.id,
       actionUrl: `/approvals/${approval.id}`,
     },
@@ -402,7 +430,7 @@ async function createSingleApproval(
  */
 async function completeWorkflow(
   instanceId: string,
-  finalStatus: 'APPROVED' | 'REJECTED'
+  finalStatus: "APPROVED" | "REJECTED"
 ): Promise<void> {
   const instance = await db.workflowInstance.update({
     where: { id: instanceId },
@@ -421,9 +449,13 @@ async function completeWorkflow(
     data: {
       tenantId: instance.tenantId,
       userId: instance.requesterId,
-      type: finalStatus === 'APPROVED' ? 'REQUEST_APPROVED' : 'REQUEST_REJECTED',
-      title: finalStatus === 'APPROVED' ? 'Yêu cầu được duyệt' : 'Yêu cầu bị từ chối',
-      message: `Yêu cầu của bạn đã ${finalStatus === 'APPROVED' ? 'được duyệt' : 'bị từ chối'}`,
+      type:
+        finalStatus === "APPROVED" ? "REQUEST_APPROVED" : "REQUEST_REJECTED",
+      title:
+        finalStatus === "APPROVED"
+          ? "Yêu cầu được duyệt"
+          : "Yêu cầu bị từ chối",
+      message: `Yêu cầu của bạn đã ${finalStatus === "APPROVED" ? "được duyệt" : "bị từ chối"}`,
       referenceType: instance.referenceType,
       referenceId: instance.referenceId,
     },
@@ -441,18 +473,18 @@ async function executePostActions(instance: {
   finalStatus: ApprovalStatus | null
 }): Promise<void> {
   // Handle leave request completion
-  if (instance.referenceType === 'LEAVE_REQUEST') {
+  if (instance.referenceType === "LEAVE_REQUEST") {
     const request = await db.leaveRequest.findUnique({
       where: { id: instance.referenceId },
     })
 
     if (!request) return
 
-    if (instance.finalStatus === 'APPROVED') {
+    if (instance.finalStatus === "APPROVED") {
       // Update leave request status
       await db.leaveRequest.update({
         where: { id: request.id },
-        data: { status: 'APPROVED' },
+        data: { status: "APPROVED" },
       })
 
       // Update balance: move from pending to used
@@ -469,8 +501,12 @@ async function executePostActions(instance: {
       if (balance) {
         const newUsed = Number(balance.used) + Number(request.totalDays)
         const newPending = Number(balance.pending) - Number(request.totalDays)
-        const newAvailable = Number(balance.entitlement) + Number(balance.carryOver)
-          + Number(balance.adjustment) - newUsed - newPending
+        const newAvailable =
+          Number(balance.entitlement) +
+          Number(balance.carryOver) +
+          Number(balance.adjustment) -
+          newUsed -
+          newPending
 
         await db.leaveBalance.update({
           where: { id: balance.id },
@@ -485,7 +521,7 @@ async function executePostActions(instance: {
       // Update leave request status
       await db.leaveRequest.update({
         where: { id: request.id },
-        data: { status: 'REJECTED' },
+        data: { status: "REJECTED" },
       })
 
       // Return pending days to available
@@ -501,8 +537,12 @@ async function executePostActions(instance: {
 
       if (balance) {
         const newPending = Number(balance.pending) - Number(request.totalDays)
-        const newAvailable = Number(balance.entitlement) + Number(balance.carryOver)
-          + Number(balance.adjustment) - Number(balance.used) - newPending
+        const newAvailable =
+          Number(balance.entitlement) +
+          Number(balance.carryOver) +
+          Number(balance.adjustment) -
+          Number(balance.used) -
+          newPending
 
         await db.leaveBalance.update({
           where: { id: balance.id },
@@ -529,17 +569,17 @@ export async function cancelWorkflow(instanceId: string): Promise<void> {
   })
 
   if (!instance) {
-    throw new Error('Không tìm thấy workflow')
+    throw new Error("Không tìm thấy workflow")
   }
 
-  if (instance.status !== 'PENDING') {
-    throw new Error('Chỉ có thể hủy workflow đang chờ xử lý')
+  if (instance.status !== "PENDING") {
+    throw new Error("Chỉ có thể hủy workflow đang chờ xử lý")
   }
 
   await db.workflowInstance.update({
     where: { id: instanceId },
     data: {
-      status: 'CANCELLED',
+      status: "CANCELLED",
       completedAt: new Date(),
     },
   })
@@ -548,10 +588,10 @@ export async function cancelWorkflow(instanceId: string): Promise<void> {
   await db.approvalStep.updateMany({
     where: {
       instanceId,
-      status: 'PENDING',
+      status: "PENDING",
     },
     data: {
-      status: 'SKIPPED',
+      status: "SKIPPED",
     },
   })
 }
@@ -570,7 +610,7 @@ export async function getWorkflowStatus(instanceId: string) {
       definition: {
         include: {
           steps: {
-            orderBy: { stepOrder: 'asc' },
+            orderBy: { stepOrder: "asc" },
           },
         },
       },
@@ -584,7 +624,7 @@ export async function getWorkflowStatus(instanceId: string) {
             select: { id: true, name: true },
           },
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: "asc" },
       },
     },
   })

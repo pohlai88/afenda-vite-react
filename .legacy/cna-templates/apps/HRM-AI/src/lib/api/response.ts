@@ -1,8 +1,8 @@
 // src/lib/api/response.ts
 // API response utilities with caching and error handling
 
-import { NextResponse } from 'next/server'
-import { ZodError } from 'zod'
+import { NextResponse } from "next/server"
+import { ZodError } from "zod"
 
 // ═══════════════════════════════════════════════════════════════
 // RESPONSE TYPES
@@ -39,21 +39,18 @@ function getCacheHeaders(options: CacheOptions): HeadersInit {
 
   if (maxAge === 0) {
     return {
-      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      "Cache-Control": "no-store, no-cache, must-revalidate",
     }
   }
 
-  const directives = [
-    isPrivate ? 'private' : 'public',
-    `max-age=${maxAge}`,
-  ]
+  const directives = [isPrivate ? "private" : "public", `max-age=${maxAge}`]
 
   if (staleWhileRevalidate > 0) {
     directives.push(`stale-while-revalidate=${staleWhileRevalidate}`)
   }
 
   return {
-    'Cache-Control': directives.join(', '),
+    "Cache-Control": directives.join(", "),
   }
 }
 
@@ -66,7 +63,7 @@ export function successResponse<T>(
   options?: {
     status?: number
     cache?: CacheOptions
-    meta?: ApiResponse['meta']
+    meta?: ApiResponse["meta"]
   }
 ): NextResponse<ApiResponse<T>> {
   const { status = 200, cache, meta } = options ?? {}
@@ -101,7 +98,7 @@ export function errorResponse(
   status: number = 500,
   details?: unknown
 ): NextResponse<ApiResponse> {
-  const error: ApiResponse['error'] = {
+  const error: ApiResponse["error"] = {
     code,
     message,
   }
@@ -119,34 +116,34 @@ export function errorResponse(
 }
 
 export function badRequestResponse(
-  message: string = 'Invalid request',
+  message: string = "Invalid request",
   details?: unknown
 ): NextResponse<ApiResponse> {
-  return errorResponse('BAD_REQUEST', message, 400, details)
+  return errorResponse("BAD_REQUEST", message, 400, details)
 }
 
 export function unauthorizedResponse(
-  message: string = 'Authentication required'
+  message: string = "Authentication required"
 ): NextResponse<ApiResponse> {
-  return errorResponse('UNAUTHORIZED', message, 401)
+  return errorResponse("UNAUTHORIZED", message, 401)
 }
 
 export function forbiddenResponse(
-  message: string = 'Access denied'
+  message: string = "Access denied"
 ): NextResponse<ApiResponse> {
-  return errorResponse('FORBIDDEN', message, 403)
+  return errorResponse("FORBIDDEN", message, 403)
 }
 
 export function notFoundResponse(
-  resource: string = 'Resource'
+  resource: string = "Resource"
 ): NextResponse<ApiResponse> {
-  return errorResponse('NOT_FOUND', `${resource} not found`, 404)
+  return errorResponse("NOT_FOUND", `${resource} not found`, 404)
 }
 
 export function conflictResponse(
-  message: string = 'Resource already exists'
+  message: string = "Resource already exists"
 ): NextResponse<ApiResponse> {
-  return errorResponse('CONFLICT', message, 409)
+  return errorResponse("CONFLICT", message, 409)
 }
 
 export function rateLimitResponse(
@@ -154,15 +151,15 @@ export function rateLimitResponse(
 ): NextResponse<ApiResponse> {
   const headers: HeadersInit = {}
   if (retryAfter) {
-    headers['Retry-After'] = String(retryAfter)
+    headers["Retry-After"] = String(retryAfter)
   }
 
   return NextResponse.json(
     {
       success: false,
       error: {
-        code: 'RATE_LIMITED',
-        message: 'Too many requests. Please try again later.',
+        code: "RATE_LIMITED",
+        message: "Too many requests. Please try again later.",
       },
     } as ApiResponse,
     { status: 429, headers }
@@ -170,9 +167,9 @@ export function rateLimitResponse(
 }
 
 export function serverErrorResponse(
-  message: string = 'Internal server error'
+  message: string = "Internal server error"
 ): NextResponse<ApiResponse> {
-  return errorResponse('SERVER_ERROR', message, 500)
+  return errorResponse("SERVER_ERROR", message, 500)
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -180,24 +177,24 @@ export function serverErrorResponse(
 // ═══════════════════════════════════════════════════════════════
 
 export function handleApiError(error: unknown): NextResponse<ApiResponse> {
-  console.error('API Error:', error)
+  console.error("API Error:", error)
 
   // Zod validation error
   if (error instanceof ZodError) {
-    return badRequestResponse('Validation failed', error.issues)
+    return badRequestResponse("Validation failed", error.issues)
   }
 
   // Prisma errors
-  if (error && typeof error === 'object' && 'code' in error) {
+  if (error && typeof error === "object" && "code" in error) {
     const prismaError = error as { code: string; meta?: unknown }
 
     switch (prismaError.code) {
-      case 'P2002':
-        return conflictResponse('A record with this value already exists')
-      case 'P2025':
-        return notFoundResponse('Record')
-      case 'P2003':
-        return badRequestResponse('Referenced record does not exist')
+      case "P2002":
+        return conflictResponse("A record with this value already exists")
+      case "P2025":
+        return notFoundResponse("Record")
+      case "P2003":
+        return badRequestResponse("Referenced record does not exist")
     }
   }
 
@@ -205,9 +202,9 @@ export function handleApiError(error: unknown): NextResponse<ApiResponse> {
   if (error instanceof Error) {
     // Don't expose internal error messages in production
     const message =
-      process.env.NODE_ENV === 'development'
+      process.env.NODE_ENV === "development"
         ? error.message
-        : 'An unexpected error occurred'
+        : "An unexpected error occurred"
 
     return serverErrorResponse(message)
   }

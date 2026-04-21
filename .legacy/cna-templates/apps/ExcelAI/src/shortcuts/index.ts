@@ -1,3 +1,3 @@
-export * from './shortcuts';
-export * from './ShortcutManager';
-export * from './useShortcut';
+export * from "./shortcuts"
+export * from "./ShortcutManager"
+export * from "./useShortcut"

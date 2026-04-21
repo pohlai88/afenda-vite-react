@@ -1,11 +1,7 @@
-'use client'
+"use client"
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import { authQueryConfig } from '@/lib/query-config'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { authQueryConfig } from "@/lib/query-config"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -29,7 +25,13 @@ export interface Partner {
   contractEndDate: string | null
   isActive: boolean
   notes: string | null
-  company: { id: string; name: string; country?: string; logoUrl?: string; industry?: string }
+  company: {
+    id: string
+    name: string
+    country?: string
+    logoUrl?: string
+    industry?: string
+  }
   _count?: { deals: number; commissions: number; registrations: number }
   createdAt: string
   updatedAt: string
@@ -63,7 +65,12 @@ export interface DealRegistration {
   notes: string | null
   approvedAt: string | null
   rejectionNote: string | null
-  deal?: { id: string; title: string; value: number | string; currency?: string }
+  deal?: {
+    id: string
+    title: string
+    value: number | string
+    currency?: string
+  }
   approvedBy?: { id: string; name: string } | null
   partner?: Partner
   createdAt: string
@@ -80,7 +87,12 @@ export interface Commission {
   invoiceNumber: string | null
   paidAt: string | null
   notes: string | null
-  deal?: { id: string; title: string; value?: number | string; currency?: string }
+  deal?: {
+    id: string
+    title: string
+    value?: number | string
+    currency?: string
+  }
   partner?: Partner
   createdAt: string
 }
@@ -113,23 +125,25 @@ export function usePartners(filters?: {
   limit?: number
 }) {
   const params = new URLSearchParams()
-  if (filters?.partnerType) params.set('partnerType', filters.partnerType)
-  if (filters?.certificationLevel) params.set('certificationLevel', filters.certificationLevel)
-  if (filters?.isActive) params.set('isActive', filters.isActive)
-  if (filters?.page) params.set('page', String(filters.page))
-  if (filters?.limit) params.set('limit', String(filters.limit))
+  if (filters?.partnerType) params.set("partnerType", filters.partnerType)
+  if (filters?.certificationLevel)
+    params.set("certificationLevel", filters.certificationLevel)
+  if (filters?.isActive) params.set("isActive", filters.isActive)
+  if (filters?.page) params.set("page", String(filters.page))
+  if (filters?.limit) params.set("limit", String(filters.limit))
   const qs = params.toString()
 
   return useQuery<PartnerListResponse>({
-    queryKey: ['partners', filters],
-    queryFn: () => fetchJson<PartnerListResponse>(`/api/partners${qs ? `?${qs}` : ''}`),
+    queryKey: ["partners", filters],
+    queryFn: () =>
+      fetchJson<PartnerListResponse>(`/api/partners${qs ? `?${qs}` : ""}`),
     ...authQueryConfig,
   })
 }
 
 export function usePartner(id: string | undefined) {
   return useQuery<PartnerDetail>({
-    queryKey: ['partners', id],
+    queryKey: ["partners", id],
     queryFn: () => fetchJson<PartnerDetail>(`/api/partners/${id}`),
     enabled: !!id,
     ...authQueryConfig,
@@ -142,28 +156,32 @@ export function useCreatePartner() {
   const qc = useQueryClient()
   return useMutation<Partner, Error, Record<string, unknown>>({
     mutationFn: (data) =>
-      fetchJson<Partner>('/api/partners', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetchJson<Partner>("/api/partners", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['partners'] })
+      qc.invalidateQueries({ queryKey: ["partners"] })
     },
   })
 }
 
 export function useUpdatePartner() {
   const qc = useQueryClient()
-  return useMutation<Partner, Error, { id: string; data: Record<string, unknown> }>({
+  return useMutation<
+    Partner,
+    Error,
+    { id: string; data: Record<string, unknown> }
+  >({
     mutationFn: ({ id, data }) =>
       fetchJson<Partner>(`/api/partners/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['partners'] })
+      qc.invalidateQueries({ queryKey: ["partners"] })
     },
   })
 }
@@ -172,9 +190,9 @@ export function useDeletePartner() {
   const qc = useQueryClient()
   return useMutation<Partner, Error, string>({
     mutationFn: (id) =>
-      fetchJson<Partner>(`/api/partners/${id}`, { method: 'DELETE' }),
+      fetchJson<Partner>(`/api/partners/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['partners'] })
+      qc.invalidateQueries({ queryKey: ["partners"] })
     },
   })
 }
@@ -183,8 +201,11 @@ export function useDeletePartner() {
 
 export function useRegistrations(partnerId: string | undefined) {
   return useQuery<RegistrationListResponse>({
-    queryKey: ['registrations', partnerId],
-    queryFn: () => fetchJson<RegistrationListResponse>(`/api/partners/${partnerId}/registrations`),
+    queryKey: ["registrations", partnerId],
+    queryFn: () =>
+      fetchJson<RegistrationListResponse>(
+        `/api/partners/${partnerId}/registrations`
+      ),
     enabled: !!partnerId,
     ...authQueryConfig,
   })
@@ -192,16 +213,20 @@ export function useRegistrations(partnerId: string | undefined) {
 
 export function useCreateRegistration() {
   const qc = useQueryClient()
-  return useMutation<DealRegistration, Error, { partnerId: string; data: Record<string, unknown> }>({
+  return useMutation<
+    DealRegistration,
+    Error,
+    { partnerId: string; data: Record<string, unknown> }
+  >({
     mutationFn: ({ partnerId, data }) =>
       fetchJson<DealRegistration>(`/api/partners/${partnerId}/registrations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: (_d, vars) => {
-      qc.invalidateQueries({ queryKey: ['registrations', vars.partnerId] })
-      qc.invalidateQueries({ queryKey: ['partners'] })
+      qc.invalidateQueries({ queryKey: ["registrations", vars.partnerId] })
+      qc.invalidateQueries({ queryKey: ["partners"] })
     },
   })
 }
@@ -211,18 +236,25 @@ export function useActionRegistration() {
   return useMutation<
     DealRegistration,
     Error,
-    { partnerId: string; regId: string; data: { status: string; rejectionNote?: string } }
+    {
+      partnerId: string
+      regId: string
+      data: { status: string; rejectionNote?: string }
+    }
   >({
     mutationFn: ({ partnerId, regId, data }) =>
-      fetchJson<DealRegistration>(`/api/partners/${partnerId}/registrations/${regId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      }),
+      fetchJson<DealRegistration>(
+        `/api/partners/${partnerId}/registrations/${regId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      ),
     onSuccess: (_d, vars) => {
-      qc.invalidateQueries({ queryKey: ['registrations', vars.partnerId] })
-      qc.invalidateQueries({ queryKey: ['partners'] })
-      qc.invalidateQueries({ queryKey: ['deals'] })
+      qc.invalidateQueries({ queryKey: ["registrations", vars.partnerId] })
+      qc.invalidateQueries({ queryKey: ["partners"] })
+      qc.invalidateQueries({ queryKey: ["deals"] })
     },
   })
 }
@@ -236,31 +268,38 @@ export function useCommissions(filters?: {
   limit?: number
 }) {
   const params = new URLSearchParams()
-  if (filters?.status) params.set('status', filters.status)
-  if (filters?.partnerId) params.set('partnerId', filters.partnerId)
-  if (filters?.page) params.set('page', String(filters.page))
-  if (filters?.limit) params.set('limit', String(filters.limit))
+  if (filters?.status) params.set("status", filters.status)
+  if (filters?.partnerId) params.set("partnerId", filters.partnerId)
+  if (filters?.page) params.set("page", String(filters.page))
+  if (filters?.limit) params.set("limit", String(filters.limit))
   const qs = params.toString()
 
   return useQuery<CommissionListResponse>({
-    queryKey: ['commissions', filters],
-    queryFn: () => fetchJson<CommissionListResponse>(`/api/commissions${qs ? `?${qs}` : ''}`),
+    queryKey: ["commissions", filters],
+    queryFn: () =>
+      fetchJson<CommissionListResponse>(
+        `/api/commissions${qs ? `?${qs}` : ""}`
+      ),
     ...authQueryConfig,
   })
 }
 
 export function useUpdateCommission() {
   const qc = useQueryClient()
-  return useMutation<Commission, Error, { id: string; data: Record<string, unknown> }>({
+  return useMutation<
+    Commission,
+    Error,
+    { id: string; data: Record<string, unknown> }
+  >({
     mutationFn: ({ id, data }) =>
       fetchJson<Commission>(`/api/commissions/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['commissions'] })
-      qc.invalidateQueries({ queryKey: ['partners'] })
+      qc.invalidateQueries({ queryKey: ["commissions"] })
+      qc.invalidateQueries({ queryKey: ["partners"] })
     },
   })
 }

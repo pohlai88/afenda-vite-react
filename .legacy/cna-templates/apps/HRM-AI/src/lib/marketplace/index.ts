@@ -6,8 +6,8 @@
  */
 
 // Types
-export * from './types/marketplace.types';
+export * from "./types/marketplace.types"
 
 // Services
-export { MarketplaceService } from './services/marketplace.service';
-export { default as MarketplaceServiceDefault } from './services/marketplace.service';
+export { MarketplaceService } from "./services/marketplace.service"
+export { default as MarketplaceServiceDefault } from "./services/marketplace.service"

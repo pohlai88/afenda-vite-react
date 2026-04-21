@@ -195,7 +195,12 @@ export interface Offer {
 export interface OnboardingData {
   id: string
   employeeId: string
-  employee?: { id: string; fullName: string; employeeCode: string; position?: string }
+  employee?: {
+    id: string
+    fullName: string
+    employeeCode: string
+    position?: string
+  }
   templateId?: string
   status: string
   startDate: Date

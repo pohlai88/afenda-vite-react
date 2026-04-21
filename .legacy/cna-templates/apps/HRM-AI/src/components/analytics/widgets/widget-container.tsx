@@ -1,16 +1,16 @@
-'use client';
+"use client"
 
-import { GripVertical, X } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+import { GripVertical, X } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface WidgetContainerProps {
-  id: string;
-  title: string;
-  children: React.ReactNode;
-  onRemove?: (id: string) => void;
-  isDragging?: boolean;
-  className?: string;
+  id: string
+  title: string
+  children: React.ReactNode
+  onRemove?: (id: string) => void
+  isDragging?: boolean
+  className?: string
 }
 
 export function WidgetContainer({
@@ -24,8 +24,8 @@ export function WidgetContainer({
   return (
     <Card
       className={cn(
-        'relative transition-shadow',
-        isDragging && 'shadow-lg ring-2 ring-primary/20 opacity-90',
+        "relative transition-shadow",
+        isDragging && "shadow-lg ring-2 ring-primary/20 opacity-90",
         className
       )}
     >
@@ -48,5 +48,5 @@ export function WidgetContainer({
       </CardHeader>
       <CardContent>{children}</CardContent>
     </Card>
-  );
+  )
 }

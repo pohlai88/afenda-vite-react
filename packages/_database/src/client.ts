@@ -5,7 +5,7 @@ import {
   databaseRuntimeEnvKeys,
   defaultPoolSettings,
 } from "./schema/constants/runtime"
-import { readOptionalInteger } from "./schema/helpers"
+import { readOptionalInteger } from "./schema/environment-support"
 import * as schema from "./schema"
 import * as relations from "./relations/relations.schema"
 

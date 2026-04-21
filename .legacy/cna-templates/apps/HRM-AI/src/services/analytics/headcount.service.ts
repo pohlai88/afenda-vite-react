@@ -1,15 +1,15 @@
 // src/services/analytics/headcount.service.ts
 // Headcount Metrics Service
 
-import { calculateHeadcountMetrics } from '@/lib/analytics/calculators/headcount'
-import { db } from '@/lib/db'
+import { calculateHeadcountMetrics } from "@/lib/analytics/calculators/headcount"
+import { db } from "@/lib/db"
 
 // Simple in-memory cache
 const cache = new Map<string, { data: unknown; expiresAt: number }>()
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 function getCacheKey(tenantId: string, date: Date): string {
-  return `headcount:${tenantId}:${date.toISOString().split('T')[0]}`
+  return `headcount:${tenantId}:${date.toISOString().split("T")[0]}`
 }
 
 export async function getHeadcountMetrics(
@@ -46,8 +46,8 @@ export async function calculateAndStoreHeadcount(
   const existing = await db.analyticsMetric.findFirst({
     where: {
       tenantId,
-      metricType: 'HEADCOUNT',
-      period: 'MONTHLY',
+      metricType: "HEADCOUNT",
+      period: "MONTHLY",
       periodStart,
       departmentId: null,
     },
@@ -74,8 +74,8 @@ export async function calculateAndStoreHeadcount(
     await db.analyticsMetric.create({
       data: {
         tenantId,
-        metricType: 'HEADCOUNT',
-        period: 'MONTHLY',
+        metricType: "HEADCOUNT",
+        period: "MONTHLY",
         periodStart,
         periodEnd,
         value: result.total,

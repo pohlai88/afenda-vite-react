@@ -87,24 +87,24 @@ export const UNEMPLOYMENT_SALARY_CAP = {
 
 export const INSURANCE_REPORT_TYPES = {
   D02_TS: {
-    code: 'D02-TS',
-    name: 'Báo cáo tăng lao động',
-    description: 'Danh sách lao động tham gia BHXH, BHYT, BHTN',
+    code: "D02-TS",
+    name: "Báo cáo tăng lao động",
+    description: "Danh sách lao động tham gia BHXH, BHYT, BHTN",
   },
   D03_TS: {
-    code: 'D03-TS',
-    name: 'Báo cáo giảm lao động',
-    description: 'Danh sách lao động dừng đóng BHXH, BHYT, BHTN',
+    code: "D03-TS",
+    name: "Báo cáo giảm lao động",
+    description: "Danh sách lao động dừng đóng BHXH, BHYT, BHTN",
   },
   C12_TS: {
-    code: 'C12-TS',
-    name: 'Bảng kê đóng BHXH, BHYT, BHTN',
-    description: 'Bảng kê tổng hợp số tiền đóng hàng tháng',
+    code: "C12-TS",
+    name: "Bảng kê đóng BHXH, BHYT, BHTN",
+    description: "Bảng kê tổng hợp số tiền đóng hàng tháng",
   },
   TK1_TS: {
-    code: 'TK1-TS',
-    name: 'Tờ khai tham gia BHXH',
-    description: 'Tờ khai đăng ký tham gia BHXH lần đầu',
+    code: "TK1-TS",
+    name: "Tờ khai tham gia BHXH",
+    description: "Tờ khai đăng ký tham gia BHXH lần đầu",
   },
 } as const
 
@@ -113,11 +113,11 @@ export const INSURANCE_REPORT_TYPES = {
 // ═══════════════════════════════════════════════════════════════
 
 export const INSURANCE_REPORT_STATUS = {
-  DRAFT: { label: 'Nháp', color: 'gray' },
-  PENDING_REVIEW: { label: 'Chờ duyệt', color: 'yellow' },
-  SUBMITTED: { label: 'Đã nộp', color: 'blue' },
-  ACCEPTED: { label: 'Đã chấp nhận', color: 'green' },
-  REJECTED: { label: 'Từ chối', color: 'red' },
+  DRAFT: { label: "Nháp", color: "gray" },
+  PENDING_REVIEW: { label: "Chờ duyệt", color: "yellow" },
+  SUBMITTED: { label: "Đã nộp", color: "blue" },
+  ACCEPTED: { label: "Đã chấp nhận", color: "green" },
+  REJECTED: { label: "Từ chối", color: "red" },
 } as const
 
 // ═══════════════════════════════════════════════════════════════
@@ -127,61 +127,61 @@ export const INSURANCE_REPORT_STATUS = {
 export const INSURANCE_CHANGE_TYPES = {
   // D02 - Increase types
   NEW_HIRE: {
-    code: '01',
-    name: 'Tuyển mới',
-    reportType: 'D02',
+    code: "01",
+    name: "Tuyển mới",
+    reportType: "D02",
   },
   RETURN_FROM_LEAVE: {
-    code: '02',
-    name: 'Quay lại sau nghỉ không lương',
-    reportType: 'D02',
+    code: "02",
+    name: "Quay lại sau nghỉ không lương",
+    reportType: "D02",
   },
   SALARY_INCREASE: {
-    code: '03',
-    name: 'Tăng lương',
-    reportType: 'D02',
+    code: "03",
+    name: "Tăng lương",
+    reportType: "D02",
   },
   TRANSFER_IN: {
-    code: '04',
-    name: 'Chuyển đến từ đơn vị khác',
-    reportType: 'D02',
+    code: "04",
+    name: "Chuyển đến từ đơn vị khác",
+    reportType: "D02",
   },
 
   // D03 - Decrease types
   RESIGNATION: {
-    code: '11',
-    name: 'Thôi việc',
-    reportType: 'D03',
+    code: "11",
+    name: "Thôi việc",
+    reportType: "D03",
   },
   TERMINATION: {
-    code: '12',
-    name: 'Chấm dứt HĐLĐ',
-    reportType: 'D03',
+    code: "12",
+    name: "Chấm dứt HĐLĐ",
+    reportType: "D03",
   },
   UNPAID_LEAVE: {
-    code: '13',
-    name: 'Nghỉ không lương',
-    reportType: 'D03',
+    code: "13",
+    name: "Nghỉ không lương",
+    reportType: "D03",
   },
   SALARY_DECREASE: {
-    code: '14',
-    name: 'Giảm lương',
-    reportType: 'D03',
+    code: "14",
+    name: "Giảm lương",
+    reportType: "D03",
   },
   TRANSFER_OUT: {
-    code: '15',
-    name: 'Chuyển đi đơn vị khác',
-    reportType: 'D03',
+    code: "15",
+    name: "Chuyển đi đơn vị khác",
+    reportType: "D03",
   },
   DEATH: {
-    code: '16',
-    name: 'Chết',
-    reportType: 'D03',
+    code: "16",
+    name: "Chết",
+    reportType: "D03",
   },
   RETIREMENT: {
-    code: '17',
-    name: 'Nghỉ hưu',
-    reportType: 'D03',
+    code: "17",
+    name: "Nghỉ hưu",
+    reportType: "D03",
   },
 } as const
 

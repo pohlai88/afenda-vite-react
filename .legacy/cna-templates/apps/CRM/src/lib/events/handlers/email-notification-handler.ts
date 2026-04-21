@@ -1,15 +1,15 @@
-import { eventBus } from '../event-bus'
-import { CRM_EVENTS } from '../types'
+import { eventBus } from "../event-bus"
+import { CRM_EVENTS } from "../types"
 import type {
   QuoteEventPayload,
   QuoteExpiringPayload,
   TicketEventPayload,
   OrderStatusEventPayload,
   CampaignEventPayload,
-} from '../types'
-import { sendEmail, type EmailTemplate } from '@/lib/email'
-import { prisma } from '@/lib/prisma'
-import { generateNotifUnsubscribeUrl } from '@/lib/notifications/unsubscribe-token'
+} from "../types"
+import { sendEmail, type EmailTemplate } from "@/lib/email"
+import { prisma } from "@/lib/prisma"
+import { generateNotifUnsubscribeUrl } from "@/lib/notifications/unsubscribe-token"
 
 // ── Rate limit: 50 notification emails per user per day ──────────────
 
@@ -22,7 +22,7 @@ async function isRateLimited(userEmail: string): Promise<boolean> {
   const todayCount = await prisma.emailLog.count({
     where: {
       to: userEmail,
-      template: { startsWith: 'notification-' },
+      template: { startsWith: "notification-" },
       createdAt: { gte: startOfDay },
     },
   })
@@ -40,7 +40,7 @@ interface EmailEventConfig {
 
 const EMAIL_EVENT_MAP: Record<string, EmailEventConfig> = {
   [CRM_EVENTS.QUOTE_ACCEPTED]: {
-    template: 'notification-quote-accepted',
+    template: "notification-quote-accepted",
     getRecipientIds: (p) => [(p as QuoteEventPayload).ownerId],
     getSubject: (p) => {
       const q = p as QuoteEventPayload
@@ -50,15 +50,17 @@ const EMAIL_EVENT_MAP: Record<string, EmailEventConfig> = {
       const q = p as QuoteEventPayload
       return {
         quoteNumber: q.quote.quoteNumber,
-        contactName: q.quote.contactName || '',
-        total: q.quote.total ? new Intl.NumberFormat('vi-VN').format(q.quote.total) + ' VND' : '',
+        contactName: q.quote.contactName || "",
+        total: q.quote.total
+          ? new Intl.NumberFormat("vi-VN").format(q.quote.total) + " VND"
+          : "",
         viewUrl: `${baseUrl}/quotes/${q.quoteId}`,
       }
     },
   },
 
   [CRM_EVENTS.QUOTE_REJECTED]: {
-    template: 'notification-quote-rejected',
+    template: "notification-quote-rejected",
     getRecipientIds: (p) => [(p as QuoteEventPayload).ownerId],
     getSubject: (p) => {
       const q = p as QuoteEventPayload
@@ -68,17 +70,17 @@ const EMAIL_EVENT_MAP: Record<string, EmailEventConfig> = {
       const q = p as QuoteEventPayload
       return {
         quoteNumber: q.quote.quoteNumber,
-        contactName: q.quote.contactName || '',
+        contactName: q.quote.contactName || "",
         viewUrl: `${baseUrl}/quotes/${q.quoteId}`,
       }
     },
   },
 
   [CRM_EVENTS.TICKET_CREATED]: {
-    template: 'notification-ticket-new',
+    template: "notification-ticket-new",
     getRecipientIds: async () => {
       const managers = await prisma.user.findMany({
-        where: { role: { in: ['ADMIN', 'MANAGER'] } },
+        where: { role: { in: ["ADMIN", "MANAGER"] } },
         select: { id: true },
       })
       return managers.map((m) => m.id)
@@ -99,7 +101,7 @@ const EMAIL_EVENT_MAP: Record<string, EmailEventConfig> = {
   },
 
   [CRM_EVENTS.TICKET_ASSIGNED]: {
-    template: 'notification-ticket-assigned',
+    template: "notification-ticket-assigned",
     getRecipientIds: (p) => {
       const t = p as TicketEventPayload
       return t.assigneeId ? [t.assigneeId] : []
@@ -120,7 +122,7 @@ const EMAIL_EVENT_MAP: Record<string, EmailEventConfig> = {
   },
 
   [CRM_EVENTS.ORDER_STATUS_CHANGED]: {
-    template: 'notification-order-status',
+    template: "notification-order-status",
     getRecipientIds: (p) => [(p as OrderStatusEventPayload).ownerId],
     getSubject: (p) => {
       const o = p as OrderStatusEventPayload
@@ -137,7 +139,7 @@ const EMAIL_EVENT_MAP: Record<string, EmailEventConfig> = {
   },
 
   [CRM_EVENTS.QUOTE_EXPIRING]: {
-    template: 'notification-quote-expiring',
+    template: "notification-quote-expiring",
     getRecipientIds: (p) => [(p as QuoteExpiringPayload).ownerId],
     getSubject: (p) => {
       const q = p as QuoteExpiringPayload
@@ -154,7 +156,7 @@ const EMAIL_EVENT_MAP: Record<string, EmailEventConfig> = {
   },
 
   [CRM_EVENTS.CAMPAIGN_SENT]: {
-    template: 'notification-campaign-sent',
+    template: "notification-campaign-sent",
     getRecipientIds: (p) => [(p as CampaignEventPayload).createdById],
     getSubject: (p) => {
       const c = p as CampaignEventPayload
@@ -177,8 +179,11 @@ export function registerEmailNotificationHandlers(): void {
   for (const [event, config] of Object.entries(EMAIL_EVENT_MAP)) {
     eventBus.on(event, async (payload: unknown) => {
       try {
-        const recipientIds = await Promise.resolve(config.getRecipientIds(payload))
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3018'
+        const recipientIds = await Promise.resolve(
+          config.getRecipientIds(payload)
+        )
+        const baseUrl =
+          process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3018"
         const settingsUrl = `${baseUrl}/settings`
 
         for (const userId of recipientIds) {
@@ -217,7 +222,10 @@ export function registerEmailNotificationHandlers(): void {
             },
             userId
           ).catch((err) => {
-            console.error(`[EmailNotification] Send failed for ${event} to ${user.email}:`, err)
+            console.error(
+              `[EmailNotification] Send failed for ${event} to ${user.email}:`,
+              err
+            )
           })
         }
       } catch (err) {

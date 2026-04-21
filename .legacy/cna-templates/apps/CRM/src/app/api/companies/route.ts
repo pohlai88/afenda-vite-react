@@ -1,28 +1,31 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse, canAccess } from '@/lib/auth/rbac'
-import { validateRequest, createCompanySchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
-import { sanitizeObject } from '@/lib/api/sanitize'
-import { removeDiacritics } from '@/lib/utils/vietnamese'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse, canAccess } from "@/lib/auth/rbac"
+import { validateRequest, createCompanySchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
+import { sanitizeObject } from "@/lib/api/sanitize"
+import { removeDiacritics } from "@/lib/utils/vietnamese"
 
 // GET /api/companies — List companies with search, filter, pagination
 export async function GET(req: NextRequest) {
   try {
     const user = await getCurrentUser()
     const { searchParams } = req.nextUrl
-    const q = searchParams.get('q') || ''
-    const industry = searchParams.get('industry')
-    const size = searchParams.get('size')
-    const cursor = searchParams.get('cursor')
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
+    const q = searchParams.get("q") || ""
+    const industry = searchParams.get("industry")
+    const size = searchParams.get("size")
+    const cursor = searchParams.get("cursor")
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"))
+    const limit = Math.min(
+      100,
+      Math.max(1, parseInt(searchParams.get("limit") || "20"))
+    )
 
     const where: Prisma.CompanyWhereInput = {}
 
-    if (!canAccess(user, 'view_all')) {
+    if (!canAccess(user, "view_all")) {
       where.ownerId = user.id
     }
 
@@ -31,10 +34,10 @@ export async function GET(req: NextRequest) {
       const terms = [q]
       if (normalized !== q) terms.push(normalized)
       where.OR = terms.flatMap((term) => [
-        { name: { contains: term, mode: 'insensitive' as const } },
-        { domain: { contains: term, mode: 'insensitive' as const } },
-        { email: { contains: term, mode: 'insensitive' as const } },
-        { taxCode: { contains: term, mode: 'insensitive' as const } },
+        { name: { contains: term, mode: "insensitive" as const } },
+        { domain: { contains: term, mode: "insensitive" as const } },
+        { email: { contains: term, mode: "insensitive" as const } },
+        { taxCode: { contains: term, mode: "insensitive" as const } },
       ])
     }
 
@@ -60,7 +63,7 @@ export async function GET(req: NextRequest) {
       const data = await prisma.company.findMany({
         where,
         include: includeClause,
-        orderBy: { updatedAt: 'desc' },
+        orderBy: { updatedAt: "desc" },
         take: limit + 1,
         cursor: { id: cursor },
         skip: 1,
@@ -79,7 +82,7 @@ export async function GET(req: NextRequest) {
       prisma.company.findMany({
         where,
         include: includeClause,
-        orderBy: { updatedAt: 'desc' },
+        orderBy: { updatedAt: "desc" },
         skip,
         take: limit,
       }),
@@ -89,11 +92,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ data, total, page, limit })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/companies error:', error)
+    console.error("GET /api/companies error:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch companies' },
+      { error: "Failed to fetch companies" },
       { status: 500 }
     )
   }
@@ -102,7 +108,7 @@ export async function GET(req: NextRequest) {
 // POST /api/companies — Create company
 export async function POST(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER', 'MEMBER'])
+    const result = await requireRole(["ADMIN", "MANAGER", "MEMBER"])
     if (isErrorResponse(result)) return result
     const user = result
 
@@ -122,7 +128,7 @@ export async function POST(req: NextRequest) {
         address: data.address || undefined,
         city: data.city || undefined,
         province: data.province || undefined,
-        country: data.country || 'VN',
+        country: data.country || "VN",
         taxCode: data.taxCode || undefined,
         notes: data.notes || undefined,
         logoUrl: data.logoUrl || undefined,
@@ -139,6 +145,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(company, { status: 201 })
   } catch (error) {
-    return handleApiError(error, '/api/companies')
+    return handleApiError(error, "/api/companies")
   }
 }

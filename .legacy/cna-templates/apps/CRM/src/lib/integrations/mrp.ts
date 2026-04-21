@@ -1,4 +1,4 @@
-import { callModule } from '@/lib/integration'
+import { callModule } from "@/lib/integration"
 
 export interface MrpPartAvailability {
   partId: string
@@ -14,7 +14,10 @@ export async function checkMrpAvailability(
   mrpPartId: string
 ): Promise<MrpPartAvailability | null> {
   try {
-    return await callModule('mrp', `/api/internal/parts/${mrpPartId}/availability`)
+    return await callModule(
+      "mrp",
+      `/api/internal/parts/${mrpPartId}/availability`
+    )
   } catch {
     return null
   }
@@ -28,10 +31,10 @@ export async function createMrpWorkOrder(dealData: {
   expectedDate: string
 }): Promise<{ workOrderId: string } | null> {
   try {
-    return await callModule('mrp', '/api/internal/work-orders', {
-      method: 'POST',
+    return await callModule("mrp", "/api/internal/work-orders", {
+      method: "POST",
       body: JSON.stringify({
-        source: 'vierp-crm',
+        source: "vierp-crm",
         sourceDealId: dealData.dealId,
         title: `[CRM] ${dealData.title}`,
         items: dealData.products,
@@ -46,8 +49,8 @@ export async function createMrpWorkOrder(dealData: {
 
 export async function getMrpParts(search?: string): Promise<any[]> {
   try {
-    const query = search ? `?search=${encodeURIComponent(search)}` : ''
-    const data = await callModule('mrp', `/api/internal/parts${query}`)
+    const query = search ? `?search=${encodeURIComponent(search)}` : ""
+    const data = await callModule("mrp", `/api/internal/parts${query}`)
     return data?.parts || []
   } catch {
     return []

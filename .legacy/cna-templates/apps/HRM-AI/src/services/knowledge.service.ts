@@ -1,9 +1,9 @@
 // src/services/knowledge.service.ts
 // Knowledge Base Service
 
-import { db } from '@/lib/db'
-import type { Prisma } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
+import { db } from "@/lib/db"
+import type { Prisma } from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
 
 export interface KnowledgeFilters {
   category?: string
@@ -46,8 +46,8 @@ export const knowledgeService = {
       ...(isPublished !== undefined && { isPublished }),
       ...(search && {
         OR: [
-          { title: { contains: search, mode: 'insensitive' } },
-          { content: { contains: search, mode: 'insensitive' } },
+          { title: { contains: search, mode: "insensitive" } },
+          { content: { contains: search, mode: "insensitive" } },
         ],
       }),
     }
@@ -55,7 +55,7 @@ export const knowledgeService = {
     const [data, total] = await Promise.all([
       db.knowledgeArticle.findMany({
         where,
-        orderBy: [{ isPublished: 'desc' }, { updatedAt: 'desc' }],
+        orderBy: [{ isPublished: "desc" }, { updatedAt: "desc" }],
         skip,
         take: pageSize,
       }),
@@ -86,7 +86,7 @@ export const knowledgeService = {
         isPublished: true,
         ...(category && { category }),
       },
-      orderBy: { viewCount: 'desc' },
+      orderBy: { viewCount: "desc" },
     })
   },
 
@@ -145,13 +145,13 @@ export const knowledgeService = {
         tenantId,
         isPublished: true,
         OR: keywords.flatMap((keyword) => [
-          { title: { contains: keyword, mode: 'insensitive' } },
-          { content: { contains: keyword, mode: 'insensitive' } },
+          { title: { contains: keyword, mode: "insensitive" } },
+          { content: { contains: keyword, mode: "insensitive" } },
           { keywords: { has: keyword } },
         ]),
       },
       take: limit,
-      orderBy: { viewCount: 'desc' },
+      orderBy: { viewCount: "desc" },
     })
   },
 
@@ -162,7 +162,7 @@ export const knowledgeService = {
     const result = await db.knowledgeArticle.findMany({
       where: { tenantId },
       select: { category: true },
-      distinct: ['category'],
+      distinct: ["category"],
     })
     return result.map((r) => r.category)
   },
@@ -198,7 +198,7 @@ export const knowledgeService = {
   ): Promise<Prisma.KnowledgeArticleGetPayload<object>> {
     const article = await this.getById(tenantId, id)
     if (!article) {
-      throw new Error('Bài viết không tồn tại')
+      throw new Error("Bài viết không tồn tại")
     }
 
     return db.knowledgeArticle.update({
@@ -208,7 +208,9 @@ export const knowledgeService = {
         ...(input.content !== undefined && { content: input.content }),
         ...(input.category !== undefined && { category: input.category }),
         ...(input.keywords !== undefined && { keywords: input.keywords }),
-        ...(input.isPublished !== undefined && { isPublished: input.isPublished }),
+        ...(input.isPublished !== undefined && {
+          isPublished: input.isPublished,
+        }),
       },
     })
   },
@@ -219,7 +221,7 @@ export const knowledgeService = {
   async delete(tenantId: string, id: string): Promise<void> {
     const article = await this.getById(tenantId, id)
     if (!article) {
-      throw new Error('Bài viết không tồn tại')
+      throw new Error("Bài viết không tồn tại")
     }
 
     await db.knowledgeArticle.delete({ where: { id } })
@@ -234,7 +236,7 @@ export const knowledgeService = {
   ): Promise<Prisma.KnowledgeArticleGetPayload<object>> {
     const article = await this.getById(tenantId, id)
     if (!article) {
-      throw new Error('Bài viết không tồn tại')
+      throw new Error("Bài viết không tồn tại")
     }
 
     return db.knowledgeArticle.update({
@@ -249,7 +251,7 @@ export const knowledgeService = {
   async markHelpful(tenantId: string, id: string): Promise<void> {
     const article = await this.getById(tenantId, id)
     if (!article) {
-      throw new Error('Bài viết không tồn tại')
+      throw new Error("Bài viết không tồn tại")
     }
 
     await db.knowledgeArticle.update({

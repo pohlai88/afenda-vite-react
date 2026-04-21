@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from "@/lib/prisma"
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -28,7 +28,9 @@ export interface VariantStats {
 /**
  * Calculate real campaign stats from CampaignSend records.
  */
-export async function getCampaignStats(campaignId: string): Promise<CampaignStats> {
+export async function getCampaignStats(
+  campaignId: string
+): Promise<CampaignStats> {
   const sends = await prisma.campaignSend.findMany({
     where: { campaignId },
     select: {
@@ -39,10 +41,14 @@ export async function getCampaignStats(campaignId: string): Promise<CampaignStat
     },
   })
 
-  const sent = sends.filter((s) => s.status !== 'PENDING' && s.status !== 'FAILED').length
+  const sent = sends.filter(
+    (s) => s.status !== "PENDING" && s.status !== "FAILED"
+  ).length
   const opened = sends.filter((s) => s.openedAt !== null).length
   const clicked = sends.filter((s) => s.clickedAt !== null).length
-  const failed = sends.filter((s) => s.status === 'FAILED' || s.status === 'BOUNCED').length
+  const failed = sends.filter(
+    (s) => s.status === "FAILED" || s.status === "BOUNCED"
+  ).length
   const unsubscribed = sends.filter((s) => s.unsubscribedAt !== null).length
 
   return {
@@ -60,11 +66,13 @@ export async function getCampaignStats(campaignId: string): Promise<CampaignStat
 /**
  * Calculate per-variant stats for A/B comparison.
  */
-export async function getVariantStats(campaignId: string): Promise<VariantStats[]> {
+export async function getVariantStats(
+  campaignId: string
+): Promise<VariantStats[]> {
   const variants = await prisma.campaignVariant.findMany({
     where: { campaignId },
     select: { id: true, name: true },
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: "asc" },
   })
 
   const sends = await prisma.campaignSend.findMany({
@@ -79,7 +87,9 @@ export async function getVariantStats(campaignId: string): Promise<VariantStats[
 
   return variants.map((v) => {
     const variantSends = sends.filter((s) => s.variantId === v.id)
-    const sent = variantSends.filter((s) => s.status !== 'PENDING' && s.status !== 'FAILED').length
+    const sent = variantSends.filter(
+      (s) => s.status !== "PENDING" && s.status !== "FAILED"
+    ).length
     const opened = variantSends.filter((s) => s.openedAt !== null).length
     const clicked = variantSends.filter((s) => s.clickedAt !== null).length
 

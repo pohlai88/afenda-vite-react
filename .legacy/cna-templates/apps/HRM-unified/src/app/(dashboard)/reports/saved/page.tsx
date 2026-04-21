@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,13 +20,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { useToast } from '@/hooks/use-toast'
-import { Loader2, Play, Trash2, FileText } from 'lucide-react'
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import type { SavedReport } from '@/types/report'
-import Link from 'next/link'
+} from "@/components/ui/alert-dialog"
+import { useToast } from "@/hooks/use-toast"
+import { Loader2, Play, Trash2, FileText } from "lucide-react"
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
+import type { SavedReport } from "@/types/report"
+import Link from "next/link"
 
 export default function SavedReportsPage() {
   const [reports, setReports] = useState<SavedReport[]>([])
@@ -38,13 +38,13 @@ export default function SavedReportsPage() {
   const fetchReports = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/reports/saved')
+      const response = await fetch("/api/reports/saved")
       if (response.ok) {
         const data = await response.json()
         setReports(data.data)
       }
     } catch (error) {
-      console.error('Fetch reports error:', error)
+      console.error("Fetch reports error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -60,22 +60,22 @@ export default function SavedReportsPage() {
     setIsDeleting(true)
     try {
       const response = await fetch(`/api/reports/saved/${deleteId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       })
 
       if (response.ok) {
         setReports((prev) => prev.filter((r) => r.id !== deleteId))
         toast({
-          title: 'Đã xóa',
-          description: 'Báo cáo đã được xóa thành công',
+          title: "Đã xóa",
+          description: "Báo cáo đã được xóa thành công",
         })
       }
     } catch (error) {
-      console.error('Delete report error:', error)
+      console.error("Delete report error:", error)
       toast({
-        title: 'Lỗi',
-        description: 'Không thể xóa báo cáo',
-        variant: 'destructive',
+        title: "Lỗi",
+        description: "Không thể xóa báo cáo",
+        variant: "destructive",
       })
     } finally {
       setIsDeleting(false)
@@ -86,22 +86,22 @@ export default function SavedReportsPage() {
   const handleRun = async (id: string) => {
     try {
       const response = await fetch(`/api/reports/saved/${id}/run`, {
-        method: 'POST',
+        method: "POST",
       })
 
       if (response.ok) {
         toast({
-          title: 'Thành công',
-          description: 'Báo cáo đã được chạy',
+          title: "Thành công",
+          description: "Báo cáo đã được chạy",
         })
         fetchReports()
       }
     } catch (error) {
-      console.error('Run report error:', error)
+      console.error("Run report error:", error)
       toast({
-        title: 'Lỗi',
-        description: 'Không thể chạy báo cáo',
-        variant: 'destructive',
+        title: "Lỗi",
+        description: "Không thể chạy báo cáo",
+        variant: "destructive",
       })
     }
   }
@@ -111,9 +111,7 @@ export default function SavedReportsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Báo cáo đã lưu</h1>
-          <p className="text-muted-foreground">
-            Quản lý các báo cáo đã lưu
-          </p>
+          <p className="text-muted-foreground">Quản lý các báo cáo đã lưu</p>
         </div>
         <Button asChild>
           <Link href="/reports">
@@ -162,7 +160,7 @@ export default function SavedReportsPage() {
                     </TableCell>
                     <TableCell>{report.reportType}</TableCell>
                     <TableCell>
-                      {format(new Date(report.createdAt), 'dd/MM/yyyy', {
+                      {format(new Date(report.createdAt), "dd/MM/yyyy", {
                         locale: vi,
                       })}
                     </TableCell>
@@ -170,10 +168,10 @@ export default function SavedReportsPage() {
                       {report.lastRunAt
                         ? format(
                             new Date(report.lastRunAt),
-                            'HH:mm dd/MM/yyyy',
+                            "HH:mm dd/MM/yyyy",
                             { locale: vi }
                           )
-                        : 'Chưa chạy'}
+                        : "Chưa chạy"}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
@@ -219,7 +217,7 @@ export default function SavedReportsPage() {
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? 'Đang xóa...' : 'Xóa'}
+              {isDeleting ? "Đang xóa..." : "Xóa"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

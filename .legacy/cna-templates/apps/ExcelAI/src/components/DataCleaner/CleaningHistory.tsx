@@ -2,27 +2,27 @@
 // CLEANING HISTORY — Track and manage cleaning session history
 // =============================================================================
 
-import React, { useState } from 'react';
-import type { CellChange } from '../../datacleaner/types';
+import React, { useState } from "react"
+import type { CellChange } from "../../datacleaner/types"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 interface CleaningSession {
-  id: string;
-  timestamp: Date;
-  type: 'auto' | 'manual' | 'batch';
-  changes: CellChange[];
-  undone: boolean;
-  description: string;
+  id: string
+  timestamp: Date
+  type: "auto" | "manual" | "batch"
+  changes: CellChange[]
+  undone: boolean
+  description: string
 }
 
 interface HistoryState {
-  sessions: CleaningSession[];
-  currentIndex: number;
-  canUndo: boolean;
-  canRedo: boolean;
+  sessions: CleaningSession[]
+  currentIndex: number
+  canUndo: boolean
+  canRedo: boolean
 }
 
 // -----------------------------------------------------------------------------
@@ -30,12 +30,12 @@ interface HistoryState {
 // -----------------------------------------------------------------------------
 
 interface CleaningHistoryProps {
-  history: HistoryState;
-  onUndo?: () => void;
-  onRedo?: () => void;
-  onUndoSession?: (sessionId: string) => void;
-  onRevertToSession?: (sessionId: string) => void;
-  onClearHistory?: () => void;
+  history: HistoryState
+  onUndo?: () => void
+  onRedo?: () => void
+  onUndoSession?: (sessionId: string) => void
+  onRevertToSession?: (sessionId: string) => void
+  onClearHistory?: () => void
 }
 
 // -----------------------------------------------------------------------------
@@ -50,14 +50,17 @@ export const CleaningHistory: React.FC<CleaningHistoryProps> = ({
   onRevertToSession,
   onClearHistory,
 }) => {
-  const [expandedSession, setExpandedSession] = useState<string | null>(null);
-  const [showUndone, setShowUndone] = useState(false);
+  const [expandedSession, setExpandedSession] = useState<string | null>(null)
+  const [showUndone, setShowUndone] = useState(false)
 
   const visibleSessions = showUndone
     ? history.sessions
-    : history.sessions.filter(s => !s.undone);
+    : history.sessions.filter((s) => !s.undone)
 
-  const totalChanges = visibleSessions.reduce((sum, s) => sum + s.changes.length, 0);
+  const totalChanges = visibleSessions.reduce(
+    (sum, s) => sum + s.changes.length,
+    0
+  )
 
   return (
     <div className="cleaning-history">
@@ -120,9 +123,11 @@ export const CleaningHistory: React.FC<CleaningHistoryProps> = ({
               session={session}
               isExpanded={expandedSession === session.id}
               isCurrent={index === history.currentIndex}
-              onToggle={() => setExpandedSession(
-                expandedSession === session.id ? null : session.id
-              )}
+              onToggle={() =>
+                setExpandedSession(
+                  expandedSession === session.id ? null : session.id
+                )
+              }
               onUndo={onUndoSession}
               onRevert={onRevertToSession}
             />
@@ -133,30 +138,27 @@ export const CleaningHistory: React.FC<CleaningHistoryProps> = ({
       {/* Clear Button */}
       {onClearHistory && visibleSessions.length > 0 && (
         <div className="cleaning-history__footer">
-          <button
-            className="cleaning-history__clear"
-            onClick={onClearHistory}
-          >
+          <button className="cleaning-history__clear" onClick={onClearHistory}>
             <TrashIcon />
             Clear History
           </button>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // History Session Card Component
 // -----------------------------------------------------------------------------
 
 interface HistorySessionCardProps {
-  session: CleaningSession;
-  isExpanded: boolean;
-  isCurrent: boolean;
-  onToggle: () => void;
-  onUndo?: (sessionId: string) => void;
-  onRevert?: (sessionId: string) => void;
+  session: CleaningSession
+  isExpanded: boolean
+  isCurrent: boolean
+  onToggle: () => void
+  onUndo?: (sessionId: string) => void
+  onRevert?: (sessionId: string) => void
 }
 
 const HistorySessionCard: React.FC<HistorySessionCardProps> = ({
@@ -167,17 +169,19 @@ const HistorySessionCard: React.FC<HistorySessionCardProps> = ({
   onUndo,
   onRevert,
 }) => {
-  const typeConfig = getSessionTypeConfig(session.type);
+  const typeConfig = getSessionTypeConfig(session.type)
 
   return (
     <div
-      className={`history-session ${session.undone ? 'history-session--undone' : ''} ${isCurrent ? 'history-session--current' : ''}`}
+      className={`history-session ${session.undone ? "history-session--undone" : ""} ${isCurrent ? "history-session--current" : ""}`}
     >
       {/* Timeline Dot */}
       <div className="history-session__dot">
         <div
           className="history-session__dot-inner"
-          style={{ backgroundColor: session.undone ? '#94a3b8' : typeConfig.color }}
+          style={{
+            backgroundColor: session.undone ? "#94a3b8" : typeConfig.color,
+          }}
         />
       </div>
 
@@ -185,10 +189,15 @@ const HistorySessionCard: React.FC<HistorySessionCardProps> = ({
       <div className="history-session__content">
         <div className="history-session__header" onClick={onToggle}>
           <div className="history-session__info">
-            <span className="history-session__icon" style={{ color: typeConfig.color }}>
+            <span
+              className="history-session__icon"
+              style={{ color: typeConfig.color }}
+            >
               {typeConfig.icon}
             </span>
-            <span className="history-session__description">{session.description}</span>
+            <span className="history-session__description">
+              {session.description}
+            </span>
             {session.undone && (
               <span className="history-session__undone-badge">Undone</span>
             )}
@@ -214,7 +223,9 @@ const HistorySessionCard: React.FC<HistorySessionCardProps> = ({
             <div className="history-session__changes">
               {session.changes.slice(0, 10).map((change, i) => (
                 <div key={i} className="history-session__change">
-                  <span className="history-session__change-cell">{change.ref}</span>
+                  <span className="history-session__change-cell">
+                    {change.ref}
+                  </span>
                   <span className="history-session__change-before">
                     {formatValue(change.before)}
                   </span>
@@ -256,17 +267,17 @@ const HistorySessionCard: React.FC<HistorySessionCardProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Compact History Bar Component
 // -----------------------------------------------------------------------------
 
 interface CompactHistoryBarProps {
-  history: HistoryState;
-  onUndo?: () => void;
-  onRedo?: () => void;
+  history: HistoryState
+  onUndo?: () => void
+  onRedo?: () => void
 }
 
 export const CompactHistoryBar: React.FC<CompactHistoryBarProps> = ({
@@ -274,7 +285,7 @@ export const CompactHistoryBar: React.FC<CompactHistoryBarProps> = ({
   onUndo,
   onRedo,
 }) => {
-  const recentSession = history.sessions[history.currentIndex];
+  const recentSession = history.sessions[history.currentIndex]
 
   return (
     <div className="compact-history-bar">
@@ -302,50 +313,50 @@ export const CompactHistoryBar: React.FC<CompactHistoryBarProps> = ({
         <RedoIcon />
       </button>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
 
-function getSessionTypeConfig(type: CleaningSession['type']): {
-  color: string;
-  icon: React.ReactNode;
+function getSessionTypeConfig(type: CleaningSession["type"]): {
+  color: string
+  icon: React.ReactNode
 } {
   const configs = {
     auto: {
-      color: '#3b82f6',
+      color: "#3b82f6",
       icon: <ZapIcon />,
     },
     manual: {
-      color: '#8b5cf6',
+      color: "#8b5cf6",
       icon: <EditIcon />,
     },
     batch: {
-      color: '#10b981',
+      color: "#10b981",
       icon: <BatchIcon />,
     },
-  };
-  return configs[type];
+  }
+  return configs[type]
 }
 
 function formatTime(date: Date): string {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
 
-  if (diff < 60000) return 'Just now';
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+  if (diff < 60000) return "Just now"
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`
 
-  return date.toLocaleDateString();
+  return date.toLocaleDateString()
 }
 
 function formatValue(value: unknown): string {
-  if (value === null || value === undefined) return '(empty)';
-  if (value === '') return '(blank)';
-  const str = String(value);
-  return str.length > 20 ? str.slice(0, 20) + '...' : str;
+  if (value === null || value === undefined) return "(empty)"
+  if (value === "") return "(blank)"
+  const str = String(value)
+  return str.length > 20 ? str.slice(0, 20) + "..." : str
 }
 
 // -----------------------------------------------------------------------------
@@ -353,68 +364,131 @@ function formatValue(value: unknown): string {
 // -----------------------------------------------------------------------------
 
 const HistoryIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <circle cx="12" cy="12" r="10" />
     <polyline points="12 6 12 12 16 14" />
   </svg>
-);
+)
 
 const UndoIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M3 7v6h6" />
     <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
   </svg>
-);
+)
 
 const RedoIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M21 7v6h-6" />
     <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
   </svg>
-);
+)
 
 const RevertIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <polyline points="1 4 1 10 7 10" />
     <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
   </svg>
-);
+)
 
 const TrashIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <polyline points="3 6 5 6 21 6" />
     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
   </svg>
-);
+)
 
 const ZapIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
   </svg>
-);
+)
 
 const EditIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
   </svg>
-);
+)
 
 const BatchIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <rect x="3" y="3" width="7" height="7" />
     <rect x="14" y="3" width="7" height="7" />
     <rect x="14" y="14" width="7" height="7" />
     <rect x="3" y="14" width="7" height="7" />
   </svg>
-);
+)
 
 const EmptyIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="1">
+  <svg
+    width="48"
+    height="48"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#94a3b8"
+    strokeWidth="1"
+  >
     <circle cx="12" cy="12" r="10" />
     <polyline points="12 6 12 12 16 14" />
   </svg>
-);
+)
 
 const ChevronIcon: React.FC<{ expanded: boolean }> = ({ expanded }) => (
   <svg
@@ -424,10 +498,13 @@ const ChevronIcon: React.FC<{ expanded: boolean }> = ({ expanded }) => (
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
-    style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+    style={{
+      transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+      transition: "transform 0.2s",
+    }}
   >
     <polyline points="6 9 12 15 18 9" />
   </svg>
-);
+)
 
-export default CleaningHistory;
+export default CleaningHistory

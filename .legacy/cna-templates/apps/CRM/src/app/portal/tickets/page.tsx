@@ -1,22 +1,22 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  OPEN: { label: 'Mở', color: '#3B82F6' },
-  IN_PROGRESS: { label: 'Đang xử lý', color: '#F59E0B' },
-  WAITING_CUSTOMER: { label: 'Chờ phản hồi', color: '#8B5CF6' },
-  RESOLVED: { label: 'Đã giải quyết', color: '#10B981' },
-  CLOSED: { label: 'Đã đóng', color: '#6B7280' },
+  OPEN: { label: "Mở", color: "#3B82F6" },
+  IN_PROGRESS: { label: "Đang xử lý", color: "#F59E0B" },
+  WAITING_CUSTOMER: { label: "Chờ phản hồi", color: "#8B5CF6" },
+  RESOLVED: { label: "Đã giải quyết", color: "#10B981" },
+  CLOSED: { label: "Đã đóng", color: "#6B7280" },
 }
 
 const PRIORITY_LABELS: Record<string, string> = {
-  LOW: 'Thấp',
-  MEDIUM: 'Trung bình',
-  HIGH: 'Cao',
-  URGENT: 'Khẩn cấp',
+  LOW: "Thấp",
+  MEDIUM: "Trung bình",
+  HIGH: "Cao",
+  URGENT: "Khẩn cấp",
 }
 
 export default function PortalTicketsPage() {
@@ -24,42 +24,44 @@ export default function PortalTicketsPage() {
   const [tickets, setTickets] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [showNew, setShowNew] = useState(false)
-  const [newSubject, setNewSubject] = useState('')
-  const [newContent, setNewContent] = useState('')
+  const [newSubject, setNewSubject] = useState("")
+  const [newContent, setNewContent] = useState("")
   const [creating, setCreating] = useState(false)
 
   const loadTickets = () => {
-    fetch('/api/portal/tickets')
+    fetch("/api/portal/tickets")
       .then((r) => {
-        if (!r.ok) throw new Error('Unauthorized')
+        if (!r.ok) throw new Error("Unauthorized")
         return r.json()
       })
       .then(setTickets)
-      .catch(() => router.push('/portal/login'))
+      .catch(() => router.push("/portal/login"))
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => { loadTickets() }, [router])
+  useEffect(() => {
+    loadTickets()
+  }, [router])
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
     setCreating(true)
     try {
-      await fetch('/api/portal/tickets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("/api/portal/tickets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subject: newSubject, content: newContent }),
       })
       setShowNew(false)
-      setNewSubject('')
-      setNewContent('')
+      setNewSubject("")
+      setNewContent("")
       loadTickets()
     } finally {
       setCreating(false)
     }
   }
 
-  const formatDate = (d: string) => new Date(d).toLocaleDateString('vi-VN')
+  const formatDate = (d: string) => new Date(d).toLocaleDateString("vi-VN")
 
   return (
     <div className="space-y-3">
@@ -69,14 +71,19 @@ export default function PortalTicketsPage() {
           onClick={() => setShowNew(!showNew)}
           className="px-4 py-2 text-sm rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
         >
-          {showNew ? 'Hủy' : 'Tạo yêu cầu'}
+          {showNew ? "Hủy" : "Tạo yêu cầu"}
         </button>
       </div>
 
       {showNew && (
-        <form onSubmit={handleCreate} className="bg-white rounded-xl border border-gray-200 p-3 space-y-4">
+        <form
+          onSubmit={handleCreate}
+          className="bg-white rounded-xl border border-gray-200 p-3 space-y-4"
+        >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tiêu đề
+            </label>
             <input
               value={newSubject}
               onChange={(e) => setNewSubject(e.target.value)}
@@ -86,7 +93,9 @@ export default function PortalTicketsPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nội dung
+            </label>
             <textarea
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
@@ -101,7 +110,7 @@ export default function PortalTicketsPage() {
             disabled={creating}
             className="px-4 py-2 text-sm rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-50"
           >
-            {creating ? 'Đang gửi...' : 'Gửi yêu cầu'}
+            {creating ? "Đang gửi..." : "Gửi yêu cầu"}
           </button>
         </form>
       )}
@@ -109,7 +118,10 @@ export default function PortalTicketsPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 h-20 animate-pulse" />
+            <div
+              key={i}
+              className="bg-white rounded-xl border border-gray-200 p-4 h-20 animate-pulse"
+            />
           ))}
         </div>
       ) : tickets.length === 0 ? (
@@ -119,7 +131,10 @@ export default function PortalTicketsPage() {
       ) : (
         <div className="space-y-3">
           {tickets.map((ticket) => {
-            const status = STATUS_LABELS[ticket.status] || { label: ticket.status, color: '#6B7280' }
+            const status = STATUS_LABELS[ticket.status] || {
+              label: ticket.status,
+              color: "#6B7280",
+            }
             return (
               <Link
                 key={ticket.id}
@@ -129,20 +144,30 @@ export default function PortalTicketsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400 font-mono">{ticket.ticketNumber}</span>
+                      <span className="text-xs text-gray-400 font-mono">
+                        {ticket.ticketNumber}
+                      </span>
                       <span
                         className="text-xs font-medium px-2 py-0.5 rounded-full"
-                        style={{ backgroundColor: `${status.color}15`, color: status.color }}
+                        style={{
+                          backgroundColor: `${status.color}15`,
+                          color: status.color,
+                        }}
                       >
                         {status.label}
                       </span>
                     </div>
-                    <p className="font-medium text-gray-900 mt-1">{ticket.subject}</p>
+                    <p className="font-medium text-gray-900 mt-1">
+                      {ticket.subject}
+                    </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-gray-400">{formatDate(ticket.updatedAt || ticket.createdAt)}</p>
+                    <p className="text-xs text-gray-400">
+                      {formatDate(ticket.updatedAt || ticket.createdAt)}
+                    </p>
                     <p className="text-xs text-gray-400 mt-0.5">
-                      {PRIORITY_LABELS[ticket.priority] || ticket.priority} · {ticket._count?.messages || 0} tin nhắn
+                      {PRIORITY_LABELS[ticket.priority] || ticket.priority} ·{" "}
+                      {ticket._count?.messages || 0} tin nhắn
                     </p>
                   </div>
                 </div>

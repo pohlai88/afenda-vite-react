@@ -1,11 +1,15 @@
 // src/services/overtime.service.ts
 // Overtime request management service
 
-import { db } from '@/lib/db'
-import type { OvertimeFilters, PaginatedResponse, OvertimeRequestWithRelations } from '@/types'
-import type { Prisma, DayType } from '@prisma/client'
-import { calculateOT, validateOTRequest } from '@/lib/attendance/ot-calculator'
-import { getTimeDiffInHours, roundHours } from '@/lib/attendance/time-utils'
+import { db } from "@/lib/db"
+import type {
+  OvertimeFilters,
+  PaginatedResponse,
+  OvertimeRequestWithRelations,
+} from "@/types"
+import type { Prisma, DayType } from "@prisma/client"
+import { calculateOT, validateOTRequest } from "@/lib/attendance/ot-calculator"
+import { getTimeDiffInHours, roundHours } from "@/lib/attendance/time-utils"
 
 export const overtimeService = {
   // ═══════════════════════════════════════════════════════════════
@@ -37,23 +41,26 @@ export const overtimeService = {
       ...(search && {
         employee: {
           OR: [
-            { fullName: { contains: search, mode: 'insensitive' } },
-            { employeeCode: { contains: search, mode: 'insensitive' } },
+            { fullName: { contains: search, mode: "insensitive" } },
+            { employeeCode: { contains: search, mode: "insensitive" } },
           ],
         },
       }),
-      ...(dateFrom && dateTo && {
-        date: {
-          gte: new Date(dateFrom),
-          lte: new Date(dateTo),
-        },
-      }),
-      ...(dateFrom && !dateTo && {
-        date: { gte: new Date(dateFrom) },
-      }),
-      ...(!dateFrom && dateTo && {
-        date: { lte: new Date(dateTo) },
-      }),
+      ...(dateFrom &&
+        dateTo && {
+          date: {
+            gte: new Date(dateFrom),
+            lte: new Date(dateTo),
+          },
+        }),
+      ...(dateFrom &&
+        !dateTo && {
+          date: { gte: new Date(dateFrom) },
+        }),
+      ...(!dateFrom &&
+        dateTo && {
+          date: { lte: new Date(dateTo) },
+        }),
     }
 
     const [data, total] = await Promise.all([
@@ -72,7 +79,7 @@ export const overtimeService = {
             select: { id: true, name: true },
           },
         },
-        orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
+        orderBy: [{ date: "desc" }, { createdAt: "desc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -90,7 +97,10 @@ export const overtimeService = {
     }
   },
 
-  async findById(tenantId: string, id: string): Promise<OvertimeRequestWithRelations | null> {
+  async findById(
+    tenantId: string,
+    id: string
+  ): Promise<OvertimeRequestWithRelations | null> {
     return db.overtimeRequest.findFirst({
       where: { id, tenantId },
       include: {
@@ -123,18 +133,28 @@ export const overtimeService = {
     }
   ) {
     // Calculate planned hours
-    const plannedHours = roundHours(getTimeDiffInHours(data.startTime, data.endTime))
+    const plannedHours = roundHours(
+      getTimeDiffInHours(data.startTime, data.endTime)
+    )
 
     // Get existing OT hours in the month for validation
-    const monthStart = new Date(data.date.getFullYear(), data.date.getMonth(), 1)
-    const monthEnd = new Date(data.date.getFullYear(), data.date.getMonth() + 1, 0)
+    const monthStart = new Date(
+      data.date.getFullYear(),
+      data.date.getMonth(),
+      1
+    )
+    const monthEnd = new Date(
+      data.date.getFullYear(),
+      data.date.getMonth() + 1,
+      0
+    )
 
     const existingOT = await db.overtimeRequest.aggregate({
       where: {
         tenantId,
         employeeId: data.employeeId,
         date: { gte: monthStart, lte: monthEnd },
-        status: { in: ['PENDING', 'APPROVED'] },
+        status: { in: ["PENDING", "APPROVED"] },
       },
       _sum: { plannedHours: true },
     })
@@ -149,7 +169,7 @@ export const overtimeService = {
         tenantId,
         employeeId: data.employeeId,
         date: { gte: yearStart, lte: yearEnd },
-        status: { in: ['PENDING', 'APPROVED'] },
+        status: { in: ["PENDING", "APPROVED"] },
       },
       _sum: { plannedHours: true },
     })
@@ -166,11 +186,15 @@ export const overtimeService = {
     )
 
     if (!validation.isValid) {
-      throw new Error(validation.errors.join(', '))
+      throw new Error(validation.errors.join(", "))
     }
 
     // Calculate OT details
-    const otCalculation = calculateOT(data.startTime, data.endTime, data.dayType || 'NORMAL')
+    const otCalculation = calculateOT(
+      data.startTime,
+      data.endTime,
+      data.dayType || "NORMAL"
+    )
 
     return db.overtimeRequest.create({
       data: {
@@ -180,11 +204,11 @@ export const overtimeService = {
         startTime: data.startTime,
         endTime: data.endTime,
         plannedHours,
-        dayType: data.dayType || 'NORMAL',
+        dayType: data.dayType || "NORMAL",
         isNightShift: otCalculation.isNightShift,
         multiplier: otCalculation.totalMultiplier,
         reason: data.reason,
-        status: 'PENDING',
+        status: "PENDING",
         attachmentUrl: data.attachmentUrl,
         notes: data.notes,
       },
@@ -218,11 +242,11 @@ export const overtimeService = {
     })
 
     if (!existing) {
-      throw new Error('Đơn tăng ca không tồn tại')
+      throw new Error("Đơn tăng ca không tồn tại")
     }
 
-    if (existing.status !== 'PENDING') {
-      throw new Error('Chỉ có thể sửa đơn tăng ca đang chờ duyệt')
+    if (existing.status !== "PENDING") {
+      throw new Error("Chỉ có thể sửa đơn tăng ca đang chờ duyệt")
     }
 
     const startTime = data.startTime || existing.startTime
@@ -259,11 +283,11 @@ export const overtimeService = {
     })
 
     if (!existing) {
-      throw new Error('Đơn tăng ca không tồn tại')
+      throw new Error("Đơn tăng ca không tồn tại")
     }
 
-    if (existing.status === 'APPROVED') {
-      throw new Error('Không thể xóa đơn tăng ca đã được duyệt')
+    if (existing.status === "APPROVED") {
+      throw new Error("Không thể xóa đơn tăng ca đã được duyệt")
     }
 
     return db.overtimeRequest.delete({
@@ -286,22 +310,30 @@ export const overtimeService = {
     })
 
     if (!existing) {
-      throw new Error('Đơn tăng ca không tồn tại')
+      throw new Error("Đơn tăng ca không tồn tại")
     }
 
-    if (existing.status !== 'PENDING') {
-      throw new Error('Đơn tăng ca đã được xử lý')
+    if (existing.status !== "PENDING") {
+      throw new Error("Đơn tăng ca đã được xử lý")
     }
 
     // Validate monthly OT limits before approval
-    const monthStart = new Date(existing.date.getFullYear(), existing.date.getMonth(), 1)
-    const monthEnd = new Date(existing.date.getFullYear(), existing.date.getMonth() + 1, 0)
+    const monthStart = new Date(
+      existing.date.getFullYear(),
+      existing.date.getMonth(),
+      1
+    )
+    const monthEnd = new Date(
+      existing.date.getFullYear(),
+      existing.date.getMonth() + 1,
+      0
+    )
     const monthlyOT = await db.overtimeRequest.aggregate({
       where: {
         tenantId,
         employeeId: existing.employeeId,
         date: { gte: monthStart, lte: monthEnd },
-        status: 'APPROVED',
+        status: "APPROVED",
         id: { not: id },
       },
       _sum: { plannedHours: true },
@@ -323,7 +355,7 @@ export const overtimeService = {
         tenantId,
         employeeId: existing.employeeId,
         date: { gte: yearStart, lte: yearEnd },
-        status: 'APPROVED',
+        status: "APPROVED",
         id: { not: id },
       },
       _sum: { plannedHours: true },
@@ -339,7 +371,7 @@ export const overtimeService = {
     return db.overtimeRequest.update({
       where: { id },
       data: {
-        status: 'APPROVED',
+        status: "APPROVED",
         approvedBy: approverId,
         approvedAt: new Date(),
         actualHours: actualHours ?? existing.plannedHours,
@@ -362,17 +394,17 @@ export const overtimeService = {
     })
 
     if (!existing) {
-      throw new Error('Đơn tăng ca không tồn tại')
+      throw new Error("Đơn tăng ca không tồn tại")
     }
 
-    if (existing.status !== 'PENDING') {
-      throw new Error('Đơn tăng ca đã được xử lý')
+    if (existing.status !== "PENDING") {
+      throw new Error("Đơn tăng ca đã được xử lý")
     }
 
     return db.overtimeRequest.update({
       where: { id },
       data: {
-        status: 'REJECTED',
+        status: "REJECTED",
         approvedBy: approverId,
         approvedAt: new Date(),
         rejectionReason: reason,
@@ -390,17 +422,17 @@ export const overtimeService = {
     })
 
     if (!existing) {
-      throw new Error('Đơn tăng ca không tồn tại')
+      throw new Error("Đơn tăng ca không tồn tại")
     }
 
-    if (existing.status === 'APPROVED') {
-      throw new Error('Không thể hủy đơn tăng ca đã được duyệt')
+    if (existing.status === "APPROVED") {
+      throw new Error("Không thể hủy đơn tăng ca đã được duyệt")
     }
 
     return db.overtimeRequest.update({
       where: { id },
       data: {
-        status: 'CANCELLED',
+        status: "CANCELLED",
       },
     })
   },
@@ -410,10 +442,10 @@ export const overtimeService = {
       where: {
         id: { in: ids },
         tenantId,
-        status: 'PENDING',
+        status: "PENDING",
       },
       data: {
-        status: 'APPROVED',
+        status: "APPROVED",
         approvedBy: approverId,
         approvedAt: new Date(),
       },
@@ -426,7 +458,7 @@ export const overtimeService = {
 
   async getPendingCount(tenantId: string) {
     return db.overtimeRequest.count({
-      where: { tenantId, status: 'PENDING' },
+      where: { tenantId, status: "PENDING" },
     })
   },
 
@@ -444,7 +476,7 @@ export const overtimeService = {
         tenantId,
         employeeId,
         date: { gte: monthStart, lte: monthEnd },
-        status: 'APPROVED',
+        status: "APPROVED",
       },
     })
 
@@ -459,10 +491,10 @@ export const overtimeService = {
       totalHours += hours
 
       switch (req.dayType) {
-        case 'HOLIDAY':
+        case "HOLIDAY":
           holidayHours += hours
           break
-        case 'WEEKEND':
+        case "WEEKEND":
           weekendHours += hours
           break
         default:
@@ -489,9 +521,9 @@ export const overtimeService = {
       where: {
         tenantId,
         employeeId,
-        status: 'PENDING',
+        status: "PENDING",
       },
-      orderBy: { date: 'asc' },
+      orderBy: { date: "asc" },
     })
   },
 }

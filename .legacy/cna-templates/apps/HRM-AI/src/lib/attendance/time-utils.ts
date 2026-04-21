@@ -1,13 +1,13 @@
 // src/lib/attendance/time-utils.ts
 // Time utility functions for attendance calculations
 
-import { NIGHT_SHIFT_HOURS } from '@/constants/attendance'
+import { NIGHT_SHIFT_HOURS } from "@/constants/attendance"
 
 /**
  * Parse time string "HH:mm" to minutes from midnight
  */
 export function parseTimeToMinutes(time: string): number {
-  const [hours, minutes] = time.split(':').map(Number)
+  const [hours, minutes] = time.split(":").map(Number)
   return hours * 60 + minutes
 }
 
@@ -17,7 +17,7 @@ export function parseTimeToMinutes(time: string): number {
 export function minutesToTimeString(minutes: number): string {
   const hours = Math.floor(minutes / 60) % 24
   const mins = minutes % 60
-  return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`
+  return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`
 }
 
 /**
@@ -31,7 +31,7 @@ export function getMinutesFromMidnight(date: Date): number {
  * Create a Date object for a specific time on a given date
  */
 export function setTimeOnDate(date: Date, timeString: string): Date {
-  const [hours, minutes] = timeString.split(':').map(Number)
+  const [hours, minutes] = timeString.split(":").map(Number)
   const result = new Date(date)
   result.setHours(hours, minutes, 0, 0)
   return result
@@ -56,8 +56,8 @@ export function getTimeDiffInHours(start: Date, end: Date): number {
  */
 export function isNightTime(time: Date): boolean {
   const hours = time.getHours()
-  const nightStart = parseInt(NIGHT_SHIFT_HOURS.START.split(':')[0])
-  const nightEnd = parseInt(NIGHT_SHIFT_HOURS.END.split(':')[0])
+  const nightStart = parseInt(NIGHT_SHIFT_HOURS.START.split(":")[0])
+  const nightEnd = parseInt(NIGHT_SHIFT_HOURS.END.split(":")[0])
 
   // Night shift spans midnight: 22:00-06:00
   return hours >= nightStart || hours < nightEnd
@@ -84,7 +84,10 @@ export function calculateNightHours(checkIn: Date, checkOut: Date): number {
 /**
  * Optimized calculation of night hours
  */
-export function calculateNightHoursOptimized(checkIn: Date, checkOut: Date): number {
+export function calculateNightHoursOptimized(
+  checkIn: Date,
+  checkOut: Date
+): number {
   const NIGHT_START_HOUR = 22
   const NIGHT_END_HOUR = 6
 
@@ -94,7 +97,8 @@ export function calculateNightHoursOptimized(checkIn: Date, checkOut: Date): num
 
   while (current < end) {
     const currentHour = current.getHours()
-    const isNight = currentHour >= NIGHT_START_HOUR || currentHour < NIGHT_END_HOUR
+    const isNight =
+      currentHour >= NIGHT_START_HOUR || currentHour < NIGHT_END_HOUR
 
     if (isNight) {
       // Find end of current night period
@@ -146,8 +150,8 @@ export function getDayBounds(date: Date): { start: Date; end: Date } {
  */
 export function formatDateToYMD(date: Date): string {
   const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
   return `${year}-${month}-${day}`
 }
 
@@ -155,8 +159,8 @@ export function formatDateToYMD(date: Date): string {
  * Format date to DD/MM/YYYY string (Vietnam format)
  */
 export function formatDateToVN(date: Date): string {
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, "0")
+  const month = String(date.getMonth() + 1).padStart(2, "0")
   const year = date.getFullYear()
   return `${day}/${month}/${year}`
 }
@@ -165,8 +169,8 @@ export function formatDateToVN(date: Date): string {
  * Format time to HH:mm string
  */
 export function formatTimeToHM(date: Date): string {
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, "0")
+  const minutes = String(date.getMinutes()).padStart(2, "0")
   return `${hours}:${minutes}`
 }
 

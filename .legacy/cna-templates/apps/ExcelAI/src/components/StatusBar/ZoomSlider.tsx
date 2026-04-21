@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Minus, Plus } from 'lucide-react';
+import React, { useState } from "react"
+import { Minus, Plus } from "lucide-react"
 
 export const ZoomSlider: React.FC = () => {
-  const [zoom, setZoom] = useState(100);
+  const [zoom, setZoom] = useState(100)
 
-  const handleZoomIn = () => setZoom(Math.min(400, zoom + 10));
-  const handleZoomOut = () => setZoom(Math.max(10, zoom - 10));
+  const handleZoomIn = () => setZoom(Math.min(400, zoom + 10))
+  const handleZoomOut = () => setZoom(Math.max(10, zoom - 10))
 
   return (
     <div className="zoom-slider">
@@ -28,5 +28,5 @@ export const ZoomSlider: React.FC = () => {
 
       <span className="zoom-value">{zoom}%</span>
     </div>
-  );
-};
+  )
+}

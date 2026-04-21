@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss";
+import type { Config } from "tailwindcss"
 
 const config: Config = {
   darkMode: ["class"],
@@ -28,23 +28,44 @@ const config: Config = {
       // BLOOMBERG FONT SIZES
       // ═══════════════════════════════════════════════════════════
       fontSize: {
-        "xs": ["0.6875rem", { lineHeight: "1rem" }],
-        "sm": ["0.8125rem", { lineHeight: "1.25rem" }],
-        "base": ["0.875rem", { lineHeight: "1.375rem" }],
-        "md": ["0.9375rem", { lineHeight: "1.5rem" }],
-        "lg": ["1.0625rem", { lineHeight: "1.625rem" }],
-        "xl": ["1.25rem", { lineHeight: "1.75rem" }],
+        xs: ["0.6875rem", { lineHeight: "1rem" }],
+        sm: ["0.8125rem", { lineHeight: "1.25rem" }],
+        base: ["0.875rem", { lineHeight: "1.375rem" }],
+        md: ["0.9375rem", { lineHeight: "1.5rem" }],
+        lg: ["1.0625rem", { lineHeight: "1.625rem" }],
+        xl: ["1.25rem", { lineHeight: "1.75rem" }],
         "2xl": ["1.5rem", { lineHeight: "2rem" }],
         "3xl": ["1.875rem", { lineHeight: "2.375rem" }],
         "4xl": ["2.25rem", { lineHeight: "2.75rem" }],
         // Data typography (Mono)
-        "data-xs": ["0.6875rem", { lineHeight: "1rem", letterSpacing: "0.02em" }],
-        "data-sm": ["0.75rem", { lineHeight: "1.125rem", letterSpacing: "0.01em" }],
-        "data-base": ["0.875rem", { lineHeight: "1.25rem", letterSpacing: "0" }],
-        "data-lg": ["1.125rem", { lineHeight: "1.5rem", letterSpacing: "-0.01em" }],
-        "data-xl": ["1.5rem", { lineHeight: "1.875rem", letterSpacing: "-0.02em" }],
-        "data-2xl": ["2rem", { lineHeight: "2.25rem", letterSpacing: "-0.025em" }],
-        "data-3xl": ["2.5rem", { lineHeight: "2.75rem", letterSpacing: "-0.03em" }],
+        "data-xs": [
+          "0.6875rem",
+          { lineHeight: "1rem", letterSpacing: "0.02em" },
+        ],
+        "data-sm": [
+          "0.75rem",
+          { lineHeight: "1.125rem", letterSpacing: "0.01em" },
+        ],
+        "data-base": [
+          "0.875rem",
+          { lineHeight: "1.25rem", letterSpacing: "0" },
+        ],
+        "data-lg": [
+          "1.125rem",
+          { lineHeight: "1.5rem", letterSpacing: "-0.01em" },
+        ],
+        "data-xl": [
+          "1.5rem",
+          { lineHeight: "1.875rem", letterSpacing: "-0.02em" },
+        ],
+        "data-2xl": [
+          "2rem",
+          { lineHeight: "2.25rem", letterSpacing: "-0.025em" },
+        ],
+        "data-3xl": [
+          "2.5rem",
+          { lineHeight: "2.75rem", letterSpacing: "-0.03em" },
+        ],
       },
 
       // ═══════════════════════════════════════════════════════════
@@ -218,12 +239,24 @@ const config: Config = {
           "50%": { opacity: "0.7" },
         },
         pulseGlow: {
-          "0%, 100%": { opacity: "1", boxShadow: "0 0 0 0 rgba(249, 115, 22, 0.4)" },
-          "50%": { opacity: "0.9", boxShadow: "0 0 0 8px rgba(249, 115, 22, 0)" },
+          "0%, 100%": {
+            opacity: "1",
+            boxShadow: "0 0 0 0 rgba(249, 115, 22, 0.4)",
+          },
+          "50%": {
+            opacity: "0.9",
+            boxShadow: "0 0 0 8px rgba(249, 115, 22, 0)",
+          },
         },
         glow: {
-          "0%, 100%": { boxShadow: "0 0 5px hsl(var(--primary) / 0.3), 0 0 10px hsl(var(--primary) / 0.1)" },
-          "50%": { boxShadow: "0 0 20px hsl(var(--primary) / 0.5), 0 0 30px hsl(var(--primary) / 0.2)" },
+          "0%, 100%": {
+            boxShadow:
+              "0 0 5px hsl(var(--primary) / 0.3), 0 0 10px hsl(var(--primary) / 0.1)",
+          },
+          "50%": {
+            boxShadow:
+              "0 0 20px hsl(var(--primary) / 0.5), 0 0 30px hsl(var(--primary) / 0.2)",
+          },
         },
         shimmer: {
           "0%": { backgroundPosition: "-200% 0" },
@@ -275,14 +308,20 @@ const config: Config = {
         "fade-in-fast": "fadeIn 0.15s ease-out forwards",
         "fade-in-slow": "fadeIn 0.4s ease-out forwards",
         "fade-in-up": "fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "fade-in-up-fast": "fadeInUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "fade-in-down": "fadeInDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "slide-in-right": "slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "slide-in-left": "slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "fade-in-up-fast":
+          "fadeInUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "fade-in-down":
+          "fadeInDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "slide-in-right":
+          "slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "slide-in-left":
+          "slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "slide-in-up": "slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "slide-in-down": "slideInDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "slide-in-down":
+          "slideInDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "scale-in": "scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "scale-in-center": "scaleInCenter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+        "scale-in-center":
+          "scaleInCenter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
         // Exit
         "fade-out": "fadeOut 0.15s ease-in forwards",
         "fade-out-down": "fadeOutDown 0.2s ease-in forwards",
@@ -290,18 +329,19 @@ const config: Config = {
         // Continuous
         "pulse-subtle": "pulseSubtle 2s ease-in-out infinite",
         "pulse-glow": "pulseGlow 2s ease-in-out infinite",
-        "glow": "glow 2s ease-in-out infinite",
-        "shimmer": "shimmer 2s linear infinite",
+        glow: "glow 2s ease-in-out infinite",
+        shimmer: "shimmer 2s linear infinite",
         "spin-slow": "spin 3s linear infinite",
         // Data
         "number-tick": "numberTick 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "count-up": "countUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "progress-fill": "progressFill 1s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "progress-fill":
+          "progressFill 1s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "chart-grow": "chartGrow 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         // Micro-interactions
         "bounce-sm": "bounceSm 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
-        "wiggle": "wiggle 0.5s ease-in-out",
-        "shake": "shake 0.4s ease-in-out",
+        wiggle: "wiggle 0.5s ease-in-out",
+        shake: "shake 0.4s ease-in-out",
         "ping-once": "pingOnce 0.75s cubic-bezier(0, 0, 0.2, 1)",
       },
 
@@ -310,11 +350,11 @@ const config: Config = {
       // ═══════════════════════════════════════════════════════════
       boxShadow: {
         "glow-sm": "0 0 10px -3px hsl(var(--primary) / 0.3)",
-        "glow": "0 0 15px -3px hsl(var(--primary) / 0.4)",
+        glow: "0 0 15px -3px hsl(var(--primary) / 0.4)",
         "glow-lg": "0 0 25px -5px hsl(var(--primary) / 0.5)",
         "inner-glow": "inset 0 0 20px -10px hsl(var(--primary) / 0.3)",
-        "terminal": "0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 1px hsl(var(--border))",
-        "elevated": "0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px hsl(var(--border))",
+        terminal: "0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 1px hsl(var(--border))",
+        elevated: "0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px hsl(var(--border))",
       },
 
       // ═══════════════════════════════════════════════════════════
@@ -338,16 +378,16 @@ const config: Config = {
         "500": "500ms",
       },
       transitionTimingFunction: {
-        "smooth": "cubic-bezier(0.4, 0, 0.2, 1)",
-        "bounce": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        smooth: "cubic-bezier(0.4, 0, 0.2, 1)",
+        bounce: "cubic-bezier(0.34, 1.56, 0.64, 1)",
         "bounce-in": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
-        "snap": "cubic-bezier(0.16, 1, 0.3, 1)",
+        snap: "cubic-bezier(0.16, 1, 0.3, 1)",
         "ease-out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
         "ease-in-out-expo": "cubic-bezier(0.87, 0, 0.13, 1)",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-};
+}
 
-export default config;
+export default config

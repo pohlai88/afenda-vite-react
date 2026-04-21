@@ -1,16 +1,16 @@
 // src/app/api/holidays/[id]/route.ts
 // Single holiday API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { holidayService } from '@/services/holiday.service'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { holidayService } from "@/services/holiday.service"
+import { z } from "zod"
 
 const updateHolidaySchema = z.object({
   name: z.string().min(1).optional(),
   date: z.coerce.date().optional(),
   endDate: z.coerce.date().optional().nullable(),
-  dayType: z.enum(['NORMAL', 'WEEKEND', 'HOLIDAY', 'COMPENSATORY']).optional(),
+  dayType: z.enum(["NORMAL", "WEEKEND", "HOLIDAY", "COMPENSATORY"]).optional(),
   compensatoryDate: z.coerce.date().optional().nullable(),
   isRecurring: z.boolean().optional(),
   isNational: z.boolean().optional(),
@@ -24,21 +24,24 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
     const holiday = await holidayService.findById(session.user.tenantId, id)
 
     if (!holiday) {
-      return NextResponse.json({ error: 'Không tìm thấy ngày lễ' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Không tìm thấy ngày lễ" },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json(holiday)
   } catch (error) {
-    console.error('Error fetching holiday:', error)
+    console.error("Error fetching holiday:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -51,18 +54,22 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
     const body = await request.json()
     const validatedData = updateHolidaySchema.parse(body)
 
-    const holiday = await holidayService.update(session.user.tenantId, id, validatedData)
+    const holiday = await holidayService.update(
+      session.user.tenantId,
+      id,
+      validatedData
+    )
     return NextResponse.json(holiday)
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -74,9 +81,9 @@ export async function PATCH(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error updating holiday:', error)
+    console.error("Error updating holiday:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -89,11 +96,11 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -103,9 +110,9 @@ export async function DELETE(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error deleting holiday:', error)
+    console.error("Error deleting holiday:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

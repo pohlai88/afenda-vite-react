@@ -1,11 +1,19 @@
-import React from 'react';
-import { RibbonGroup } from '../RibbonGroup';
-import { RibbonButton } from '../RibbonButton';
-import { RibbonDropdown } from '../RibbonDropdown';
+import React from "react"
+import { RibbonGroup } from "../RibbonGroup"
+import { RibbonButton } from "../RibbonButton"
+import { RibbonDropdown } from "../RibbonDropdown"
 import {
-  LayoutGrid, Columns, Eye, Maximize, ZoomIn, ZoomOut,
-  Snowflake, SplitSquareHorizontal, PanelLeft, FileText
-} from 'lucide-react';
+  LayoutGrid,
+  Columns,
+  Eye,
+  Maximize,
+  ZoomIn,
+  ZoomOut,
+  Snowflake,
+  SplitSquareHorizontal,
+  PanelLeft,
+  FileText,
+} from "lucide-react"
 
 export const ViewTab: React.FC = () => {
   return (
@@ -53,10 +61,14 @@ export const ViewTab: React.FC = () => {
           label="Freeze Panes"
           size="large"
           options={[
-            { id: 'freeze', label: 'Freeze Panes', onClick: () => {} },
-            { id: 'freeze-top', label: 'Freeze Top Row', onClick: () => {} },
-            { id: 'freeze-first', label: 'Freeze First Column', onClick: () => {} },
-            { id: 'unfreeze', label: 'Unfreeze Panes', onClick: () => {} },
+            { id: "freeze", label: "Freeze Panes", onClick: () => {} },
+            { id: "freeze-top", label: "Freeze Top Row", onClick: () => {} },
+            {
+              id: "freeze-first",
+              label: "Freeze First Column",
+              onClick: () => {},
+            },
+            { id: "unfreeze", label: "Unfreeze Panes", onClick: () => {} },
           ]}
         />
         <RibbonButton icon={SplitSquareHorizontal} label="Split" size="large" />
@@ -64,5 +76,5 @@ export const ViewTab: React.FC = () => {
         <RibbonButton icon={Eye} label="Unhide" />
       </RibbonGroup>
     </div>
-  );
-};
+  )
+}

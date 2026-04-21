@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { handleApiError, NotFound } from '@/lib/api/errors'
-import { registrationActionSchema } from '@/lib/validations/partner'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { handleApiError, NotFound } from "@/lib/api/errors"
+import { registrationActionSchema } from "@/lib/validations/partner"
 
 // PATCH /api/partners/[id]/registrations/[regId] — Approve/Reject
 export async function PATCH(
@@ -10,7 +10,7 @@ export async function PATCH(
   { params }: { params: { id: string; regId: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER'])
+    const result = await requireRole(["ADMIN", "MANAGER"])
     if (isErrorResponse(result)) return result
     const user = result
 
@@ -21,22 +21,26 @@ export async function PATCH(
       where: { id: params.regId },
       include: { partner: true },
     })
-    if (!registration) return handleApiError(NotFound('Registration'), '/api/partners/[id]/registrations/[regId]')
+    if (!registration)
+      return handleApiError(
+        NotFound("Registration"),
+        "/api/partners/[id]/registrations/[regId]"
+      )
 
-    if (registration.status !== 'PENDING') {
+    if (registration.status !== "PENDING") {
       return NextResponse.json(
-        { error: 'Can only approve/reject PENDING registrations' },
+        { error: "Can only approve/reject PENDING registrations" },
         { status: 400 }
       )
     }
 
-    if (data.status === 'APPROVED') {
+    if (data.status === "APPROVED") {
       // Approve: set approvedBy, link partner to deal
       const updated = await prisma.$transaction([
         prisma.dealRegistration.update({
           where: { id: params.regId },
           data: {
-            status: 'APPROVED',
+            status: "APPROVED",
             approvedById: user.id,
             approvedAt: new Date(),
           },
@@ -54,13 +58,13 @@ export async function PATCH(
     const updated = await prisma.dealRegistration.update({
       where: { id: params.regId },
       data: {
-        status: 'REJECTED',
+        status: "REJECTED",
         rejectionNote: data.rejectionNote,
       },
     })
 
     return NextResponse.json(updated)
   } catch (error) {
-    return handleApiError(error, '/api/partners/[id]/registrations/[regId]')
+    return handleApiError(error, "/api/partners/[id]/registrations/[regId]")
   }
 }

@@ -13,22 +13,22 @@ import {
   DateGrouping,
   CalculatedField,
   AGGREGATE_LABELS,
-} from '../../types/pivot';
-import { aggregate, formatPivotValue } from '../../stores/pivotStore';
+} from "../../types/pivot"
+import { aggregate, formatPivotValue } from "../../stores/pivotStore"
 
 // ============================================================
 // DATA TYPES
 // ============================================================
 
 interface DataRow {
-  [key: string]: PivotCellValue;
+  [key: string]: PivotCellValue
 }
 
 interface GroupNode {
-  key: string;
-  values: DataRow[];
-  children: Map<string, GroupNode>;
-  aggregatedValues: Map<string, number>;
+  key: string
+  values: DataRow[]
+  children: Map<string, GroupNode>
+  aggregatedValues: Map<string, number>
 }
 
 // ============================================================
@@ -38,48 +38,59 @@ interface GroupNode {
 /**
  * Get unique values from a column
  */
-export function getUniqueValues(data: DataRow[], fieldId: string): PivotCellValue[] {
-  const unique = new Set<PivotCellValue>();
-  data.forEach(row => {
+export function getUniqueValues(
+  data: DataRow[],
+  fieldId: string
+): PivotCellValue[] {
+  const unique = new Set<PivotCellValue>()
+  data.forEach((row) => {
     if (row[fieldId] !== undefined && row[fieldId] !== null) {
-      unique.add(row[fieldId]);
+      unique.add(row[fieldId])
     }
-  });
+  })
   return Array.from(unique).sort((a, b) => {
-    if (a === null) return -1;
-    if (b === null) return 1;
-    return String(a).localeCompare(String(b));
-  });
+    if (a === null) return -1
+    if (b === null) return 1
+    return String(a).localeCompare(String(b))
+  })
 }
 
 /**
  * Apply date grouping to a value
  */
-export function applyDateGrouping(value: PivotCellValue, grouping?: DateGrouping): string {
-  if (value === null || value === undefined) return '';
+export function applyDateGrouping(
+  value: PivotCellValue,
+  grouping?: DateGrouping
+): string {
+  if (value === null || value === undefined) return ""
 
-  const isValidDateString = typeof value === 'string' && !isNaN(Date.parse(value));
-  const isValidDateNumber = typeof value === 'number' && !isNaN(value);
+  const isValidDateString =
+    typeof value === "string" && !isNaN(Date.parse(value))
+  const isValidDateNumber = typeof value === "number" && !isNaN(value)
 
-  if (!grouping || (!(value instanceof Date) && !isValidDateString && !isValidDateNumber)) {
-    return String(value);
+  if (
+    !grouping ||
+    (!(value instanceof Date) && !isValidDateString && !isValidDateNumber)
+  ) {
+    return String(value)
   }
 
-  const date = value instanceof Date ? value : new Date(value as string | number);
+  const date =
+    value instanceof Date ? value : new Date(value as string | number)
 
   switch (grouping) {
-    case 'years':
-      return date.getFullYear().toString();
-    case 'quarters':
-      return `Q${Math.ceil((date.getMonth() + 1) / 3)} ${date.getFullYear()}`;
-    case 'months':
-      return date.toLocaleString('default', { month: 'short', year: 'numeric' });
-    case 'days':
-      return date.toLocaleDateString();
-    case 'hours':
-      return `${date.toLocaleDateString()} ${date.getHours()}:00`;
+    case "years":
+      return date.getFullYear().toString()
+    case "quarters":
+      return `Q${Math.ceil((date.getMonth() + 1) / 3)} ${date.getFullYear()}`
+    case "months":
+      return date.toLocaleString("default", { month: "short", year: "numeric" })
+    case "days":
+      return date.toLocaleDateString()
+    case "hours":
+      return `${date.toLocaleDateString()} ${date.getHours()}:00`
     default:
-      return String(value);
+      return String(value)
   }
 }
 
@@ -90,53 +101,54 @@ export function getFieldDisplayName(
   field: PivotAreaField,
   pivotFields: PivotField[]
 ): string {
-  if (field.customName) return field.customName;
+  if (field.customName) return field.customName
 
-  const pivotField = pivotFields.find(f => f.id === field.fieldId);
-  const baseName = pivotField?.name || field.fieldId;
+  const pivotField = pivotFields.find((f) => f.id === field.fieldId)
+  const baseName = pivotField?.name || field.fieldId
 
   if (field.aggregateFunction) {
-    return `${AGGREGATE_LABELS[field.aggregateFunction]} of ${baseName}`;
+    return `${AGGREGATE_LABELS[field.aggregateFunction]} of ${baseName}`
   }
 
-  return baseName;
+  return baseName
 }
 
 /**
  * Filter data based on pivot filters
  */
 export function filterData(data: DataRow[], filters: PivotFilter[]): DataRow[] {
-  if (filters.length === 0) return data;
+  if (filters.length === 0) return data
 
-  return data.filter(row => {
-    return filters.every(filter => {
-      const value = row[filter.fieldId];
-      const isSelected = filter.selectedValues.includes(value);
-      return filter.excludeMode ? !isSelected : isSelected;
-    });
-  });
+  return data.filter((row) => {
+    return filters.every((filter) => {
+      const value = row[filter.fieldId]
+      const isSelected = filter.selectedValues.includes(value)
+      return filter.excludeMode ? !isSelected : isSelected
+    })
+  })
 }
 
 /**
  * Sort data based on field sort order
  */
-export function sortValues<T extends PivotCellValue>(values: T[], order: 'asc' | 'desc' | 'none'): T[] {
-  if (order === 'none') return values;
+export function sortValues<T extends PivotCellValue>(
+  values: T[],
+  order: "asc" | "desc" | "none"
+): T[] {
+  if (order === "none") return values
 
   return [...values].sort((a, b) => {
-    if (a === null || a === undefined) return 1;
-    if (b === null || b === undefined) return -1;
+    if (a === null || a === undefined) return 1
+    if (b === null || b === undefined) return -1
 
-    if (typeof a === 'number' && typeof b === 'number') {
-      return order === 'asc' ? a - b : b - a;
+    if (typeof a === "number" && typeof b === "number") {
+      return order === "asc" ? a - b : b - a
     }
 
-    const strA = String(a).toLowerCase();
-    const strB = String(b).toLowerCase();
-    return order === 'asc'
-      ? strA.localeCompare(strB)
-      : strB.localeCompare(strA);
-  });
+    const strA = String(a).toLowerCase()
+    const strB = String(b).toLowerCase()
+    return order === "asc" ? strA.localeCompare(strB) : strB.localeCompare(strA)
+  })
 }
 
 /**
@@ -150,31 +162,36 @@ export function evaluateCalculatedField(
 ): number {
   try {
     // Replace field references with actual values
-    let evalFormula = formula;
+    let evalFormula = formula
 
     // First, resolve regular fields
     for (const field of fields) {
-      const pattern = new RegExp(`\\[${escapeRegExp(field.name)}\\]`, 'gi');
-      const value = typeof row[field.id] === 'number' ? row[field.id] : 0;
-      evalFormula = evalFormula.replace(pattern, String(value));
+      const pattern = new RegExp(`\\[${escapeRegExp(field.name)}\\]`, "gi")
+      const value = typeof row[field.id] === "number" ? row[field.id] : 0
+      evalFormula = evalFormula.replace(pattern, String(value))
     }
 
     // Then resolve other calculated fields (recursive dependency)
     for (const calcField of calculatedFields) {
-      const pattern = new RegExp(`\\[${escapeRegExp(calcField.name)}\\]`, 'gi');
+      const pattern = new RegExp(`\\[${escapeRegExp(calcField.name)}\\]`, "gi")
       if (pattern.test(evalFormula)) {
         // Recursively evaluate the referenced calculated field
-        const value = evaluateCalculatedField(calcField.formula, row, fields, calculatedFields);
-        evalFormula = evalFormula.replace(pattern, String(value));
+        const value = evaluateCalculatedField(
+          calcField.formula,
+          row,
+          fields,
+          calculatedFields
+        )
+        evalFormula = evalFormula.replace(pattern, String(value))
       }
     }
 
     // Evaluate the expression safely
     // eslint-disable-next-line no-new-func
-    const result = new Function(`return ${evalFormula}`)();
-    return typeof result === 'number' && !isNaN(result) ? result : 0;
+    const result = new Function(`return ${evalFormula}`)()
+    return typeof result === "number" && !isNaN(result) ? result : 0
   } catch {
-    return 0;
+    return 0
   }
 }
 
@@ -182,7 +199,7 @@ export function evaluateCalculatedField(
  * Escape special regex characters in a string
  */
 function escapeRegExp(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
 // ============================================================
@@ -190,60 +207,60 @@ function escapeRegExp(string: string): string {
 // ============================================================
 
 export class PivotEngine {
-  private pivot: PivotTable;
-  private data: DataRow[];
-  private filteredData: DataRow[];
+  private pivot: PivotTable
+  private data: DataRow[]
+  private filteredData: DataRow[]
 
   constructor(pivot: PivotTable, sourceData: PivotCellValue[][]) {
-    this.pivot = pivot;
-    this.data = this.convertToDataRows(sourceData);
-    this.filteredData = filterData(this.data, pivot.filters);
+    this.pivot = pivot
+    this.data = this.convertToDataRows(sourceData)
+    this.filteredData = filterData(this.data, pivot.filters)
   }
 
   /**
    * Convert 2D array data to row objects using pivot fields
    */
   private convertToDataRows(sourceData: PivotCellValue[][]): DataRow[] {
-    if (sourceData.length === 0) return [];
+    if (sourceData.length === 0) return []
 
     // First row is headers - skip it
-    const rows: DataRow[] = [];
+    const rows: DataRow[] = []
 
     for (let i = 1; i < sourceData.length; i++) {
-      const row: DataRow = {};
+      const row: DataRow = {}
       this.pivot.fields.forEach((field) => {
-        const colIndex = field.sourceColumn;
-        row[field.id] = sourceData[i]?.[colIndex];
-      });
-      rows.push(row);
+        const colIndex = field.sourceColumn
+        row[field.id] = sourceData[i]?.[colIndex]
+      })
+      rows.push(row)
     }
 
-    return rows;
+    return rows
   }
 
   /**
    * Calculate the pivot result
    */
   calculate(): PivotResult {
-    const { rowFields, columnFields, valueFields } = this.pivot;
+    const { rowFields, columnFields, valueFields } = this.pivot
 
     // Handle empty pivot
     if (valueFields.length === 0) {
-      return this.createEmptyResult();
+      return this.createEmptyResult()
     }
 
     // Build row and column hierarchies
-    const rowGroups = this.buildGroups(rowFields);
-    const colGroups = this.buildGroups(columnFields);
+    const rowGroups = this.buildGroups(rowFields)
+    const colGroups = this.buildGroups(columnFields)
 
     // Calculate aggregations
-    const cells = this.buildCells(rowGroups, colGroups, valueFields);
+    const cells = this.buildCells(rowGroups, colGroups, valueFields)
 
     return {
       cells,
       rowCount: cells.length,
       colCount: cells[0]?.length || 0,
-    };
+    }
   }
 
   /**
@@ -251,26 +268,26 @@ export class PivotEngine {
    */
   private buildGroups(fields: PivotAreaField[]): GroupNode {
     const root: GroupNode = {
-      key: '',
+      key: "",
       values: [],
       children: new Map(),
       aggregatedValues: new Map(),
-    };
+    }
 
-    if (fields.length === 0) return root;
+    if (fields.length === 0) return root
 
-    this.filteredData.forEach(row => {
-      let currentNode = root;
+    this.filteredData.forEach((row) => {
+      let currentNode = root
 
       fields.forEach((field) => {
-        let value = row[field.fieldId];
+        let value = row[field.fieldId]
 
         // Apply date grouping if specified
         if (field.dateGrouping) {
-          value = applyDateGrouping(value, field.dateGrouping);
+          value = applyDateGrouping(value, field.dateGrouping)
         }
 
-        const key = String(value ?? '(blank)');
+        const key = String(value ?? "(blank)")
 
         if (!currentNode.children.has(key)) {
           currentNode.children.set(key, {
@@ -278,39 +295,43 @@ export class PivotEngine {
             values: [],
             children: new Map(),
             aggregatedValues: new Map(),
-          });
+          })
         }
 
-        currentNode = currentNode.children.get(key)!;
-      });
+        currentNode = currentNode.children.get(key)!
+      })
 
-      currentNode.values.push(row);
-    });
+      currentNode.values.push(row)
+    })
 
     // Sort children at each level
-    this.sortGroups(root, fields);
+    this.sortGroups(root, fields)
 
-    return root;
+    return root
   }
 
   /**
    * Sort groups based on field sort order
    */
-  private sortGroups(node: GroupNode, fields: PivotAreaField[], depth = 0): void {
-    if (depth >= fields.length || node.children.size === 0) return;
+  private sortGroups(
+    node: GroupNode,
+    fields: PivotAreaField[],
+    depth = 0
+  ): void {
+    if (depth >= fields.length || node.children.size === 0) return
 
-    const field = fields[depth];
-    const keys = Array.from(node.children.keys());
-    const sortedKeys = sortValues(keys, field.sortOrder);
+    const field = fields[depth]
+    const keys = Array.from(node.children.keys())
+    const sortedKeys = sortValues(keys, field.sortOrder)
 
-    const sortedChildren = new Map<string, GroupNode>();
-    sortedKeys.forEach(key => {
-      const child = node.children.get(key)!;
-      sortedChildren.set(key, child);
-      this.sortGroups(child, fields, depth + 1);
-    });
+    const sortedChildren = new Map<string, GroupNode>()
+    sortedKeys.forEach((key) => {
+      const child = node.children.get(key)!
+      sortedChildren.set(key, child)
+      this.sortGroups(child, fields, depth + 1)
+    })
 
-    node.children = sortedChildren;
+    node.children = sortedChildren
   }
 
   /**
@@ -321,32 +342,34 @@ export class PivotEngine {
     colGroups: GroupNode,
     valueFields: PivotAreaField[]
   ): PivotCellData[][] {
-    const cells: PivotCellData[][] = [];
-    const { showRowGrandTotals, showColGrandTotals } = this.pivot;
+    const cells: PivotCellData[][] = []
+    const { showRowGrandTotals, showColGrandTotals } = this.pivot
 
     // Build column headers
-    const colPaths = this.getLeafPaths(colGroups);
-    const colHeaderRows = this.buildColumnHeaders(colPaths, valueFields);
-    cells.push(...colHeaderRows);
+    const colPaths = this.getLeafPaths(colGroups)
+    const colHeaderRows = this.buildColumnHeaders(colPaths, valueFields)
+    cells.push(...colHeaderRows)
 
     // Build data rows
-    const rowPaths = this.getLeafPaths(rowGroups);
+    const rowPaths = this.getLeafPaths(rowGroups)
 
     rowPaths.forEach((rowPath, rowIndex) => {
-      const row: PivotCellData[] = [];
+      const row: PivotCellData[] = []
 
       // Row headers
       rowPath.forEach((key, level) => {
         // Only show label if it's different from previous row at this level
-        const prevPath = rowIndex > 0 ? rowPaths[rowIndex - 1] : null;
-        const showLabel = !prevPath ||
+        const prevPath = rowIndex > 0 ? rowPaths[rowIndex - 1] : null
+        const showLabel =
+          !prevPath ||
           !this.pivot.compactForm ||
           level === rowPath.length - 1 ||
-          rowPath.slice(0, level + 1).join('|') !== prevPath.slice(0, level + 1).join('|');
+          rowPath.slice(0, level + 1).join("|") !==
+            prevPath.slice(0, level + 1).join("|")
 
         row.push({
-          value: showLabel ? key : '',
-          formattedValue: showLabel ? key : '',
+          value: showLabel ? key : "",
+          formattedValue: showLabel ? key : "",
           isHeader: true,
           isTotal: false,
           isSubtotal: false,
@@ -354,14 +377,16 @@ export class PivotEngine {
           colPath: [],
           level,
           isCollapsible: level < rowPath.length - 1,
-          isExpanded: this.pivot.isExpanded[rowPath.slice(0, level + 1).join('|')] ?? true,
-        });
-      });
+          isExpanded:
+            this.pivot.isExpanded[rowPath.slice(0, level + 1).join("|")] ??
+            true,
+        })
+      })
 
       // Data cells
-      colPaths.forEach(colPath => {
-        valueFields.forEach(valueField => {
-          const value = this.calculateValue(rowPath, colPath, valueField);
+      colPaths.forEach((colPath) => {
+        valueFields.forEach((valueField) => {
+          const value = this.calculateValue(rowPath, colPath, valueField)
           row.push({
             value,
             formattedValue: this.formatValue(value, valueField),
@@ -374,14 +399,14 @@ export class PivotEngine {
             level: 0,
             isCollapsible: false,
             isExpanded: true,
-          });
-        });
-      });
+          })
+        })
+      })
 
       // Row grand total
       if (showColGrandTotals && colPaths.length > 0) {
-        valueFields.forEach(valueField => {
-          const value = this.calculateRowTotal(rowPath, valueField);
+        valueFields.forEach((valueField) => {
+          const value = this.calculateRowTotal(rowPath, valueField)
           row.push({
             value,
             formattedValue: this.formatValue(value, valueField),
@@ -389,113 +414,116 @@ export class PivotEngine {
             isTotal: true,
             isSubtotal: false,
             rowPath,
-            colPath: ['Grand Total'],
+            colPath: ["Grand Total"],
             fieldId: valueField.fieldId,
             level: 0,
             isCollapsible: false,
             isExpanded: true,
-          });
-        });
+          })
+        })
       }
 
-      cells.push(row);
-    });
+      cells.push(row)
+    })
 
     // Grand total row
     if (showRowGrandTotals && rowPaths.length > 0) {
-      const grandTotalRow: PivotCellData[] = [];
+      const grandTotalRow: PivotCellData[] = []
 
       // Label cell
       grandTotalRow.push({
-        value: 'Grand Total',
-        formattedValue: 'Grand Total',
+        value: "Grand Total",
+        formattedValue: "Grand Total",
         isHeader: true,
         isTotal: true,
         isSubtotal: false,
-        rowPath: ['Grand Total'],
+        rowPath: ["Grand Total"],
         colPath: [],
         level: 0,
         isCollapsible: false,
         isExpanded: true,
-      });
+      })
 
       // Fill remaining header cells
       for (let i = 1; i < this.pivot.rowFields.length; i++) {
         grandTotalRow.push({
-          value: '',
-          formattedValue: '',
+          value: "",
+          formattedValue: "",
           isHeader: true,
           isTotal: true,
           isSubtotal: false,
-          rowPath: ['Grand Total'],
+          rowPath: ["Grand Total"],
           colPath: [],
           level: i,
           isCollapsible: false,
           isExpanded: true,
-        });
+        })
       }
 
       // Column totals
-      colPaths.forEach(colPath => {
-        valueFields.forEach(valueField => {
-          const value = this.calculateColumnTotal(colPath, valueField);
+      colPaths.forEach((colPath) => {
+        valueFields.forEach((valueField) => {
+          const value = this.calculateColumnTotal(colPath, valueField)
           grandTotalRow.push({
             value,
             formattedValue: this.formatValue(value, valueField),
             isHeader: false,
             isTotal: true,
             isSubtotal: false,
-            rowPath: ['Grand Total'],
+            rowPath: ["Grand Total"],
             colPath,
             fieldId: valueField.fieldId,
             level: 0,
             isCollapsible: false,
             isExpanded: true,
-          });
-        });
-      });
+          })
+        })
+      })
 
       // Grand total of grand totals
       if (showColGrandTotals) {
-        valueFields.forEach(valueField => {
-          const value = this.calculateGrandTotal(valueField);
+        valueFields.forEach((valueField) => {
+          const value = this.calculateGrandTotal(valueField)
           grandTotalRow.push({
             value,
             formattedValue: this.formatValue(value, valueField),
             isHeader: false,
             isTotal: true,
             isSubtotal: false,
-            rowPath: ['Grand Total'],
-            colPath: ['Grand Total'],
+            rowPath: ["Grand Total"],
+            colPath: ["Grand Total"],
             fieldId: valueField.fieldId,
             level: 0,
             isCollapsible: false,
             isExpanded: true,
-          });
-        });
+          })
+        })
       }
 
-      cells.push(grandTotalRow);
+      cells.push(grandTotalRow)
     }
 
-    return cells;
+    return cells
   }
 
   /**
    * Get all leaf paths from a group tree
    */
-  private getLeafPaths(group: GroupNode, currentPath: string[] = []): string[][] {
+  private getLeafPaths(
+    group: GroupNode,
+    currentPath: string[] = []
+  ): string[][] {
     if (group.children.size === 0) {
-      return currentPath.length > 0 ? [currentPath] : [];
+      return currentPath.length > 0 ? [currentPath] : []
     }
 
-    const paths: string[][] = [];
+    const paths: string[][] = []
     group.children.forEach((child, key) => {
-      const childPaths = this.getLeafPaths(child, [...currentPath, key]);
-      paths.push(...childPaths);
-    });
+      const childPaths = this.getLeafPaths(child, [...currentPath, key])
+      paths.push(...childPaths)
+    })
 
-    return paths;
+    return paths
   }
 
   /**
@@ -505,23 +533,29 @@ export class PivotEngine {
     colPaths: string[][],
     valueFields: PivotAreaField[]
   ): PivotCellData[][] {
-    const headers: PivotCellData[][] = [];
-    const numRowFields = Math.max(1, this.pivot.rowFields.length);
-    const numColLevels = colPaths[0]?.length || 0;
+    const headers: PivotCellData[][] = []
+    const numRowFields = Math.max(1, this.pivot.rowFields.length)
+    const numColLevels = colPaths[0]?.length || 0
 
     // Column field headers
     for (let level = 0; level < numColLevels; level++) {
-      const row: PivotCellData[] = [];
+      const row: PivotCellData[] = []
 
       // Empty cells for row headers
       for (let i = 0; i < numRowFields; i++) {
         row.push({
-          value: i === 0 && level === numColLevels - 1
-            ? this.pivot.rowFields.map(f => getFieldDisplayName(f, this.pivot.fields)).join(' / ')
-            : '',
-          formattedValue: i === 0 && level === numColLevels - 1
-            ? this.pivot.rowFields.map(f => getFieldDisplayName(f, this.pivot.fields)).join(' / ')
-            : '',
+          value:
+            i === 0 && level === numColLevels - 1
+              ? this.pivot.rowFields
+                  .map((f) => getFieldDisplayName(f, this.pivot.fields))
+                  .join(" / ")
+              : "",
+          formattedValue:
+            i === 0 && level === numColLevels - 1
+              ? this.pivot.rowFields
+                  .map((f) => getFieldDisplayName(f, this.pivot.fields))
+                  .join(" / ")
+              : "",
           isHeader: true,
           isTotal: false,
           isSubtotal: false,
@@ -530,24 +564,28 @@ export class PivotEngine {
           level: 0,
           isCollapsible: false,
           isExpanded: true,
-        });
+        })
       }
 
       // Column headers
-      let prevValue = '';
-      colPaths.forEach(colPath => {
-        const value = colPath[level] || '';
-        const showLabel = value !== prevValue;
-        prevValue = value;
+      let prevValue = ""
+      colPaths.forEach((colPath) => {
+        const value = colPath[level] || ""
+        const showLabel = value !== prevValue
+        prevValue = value
 
         valueFields.forEach((vf, vfIndex) => {
-          const label = level === numColLevels - 1 && valueFields.length > 1
-            ? getFieldDisplayName(vf, this.pivot.fields)
-            : (vfIndex === 0 ? value : '');
+          const label =
+            level === numColLevels - 1 && valueFields.length > 1
+              ? getFieldDisplayName(vf, this.pivot.fields)
+              : vfIndex === 0
+                ? value
+                : ""
 
           row.push({
-            value: showLabel || level === numColLevels - 1 ? label : '',
-            formattedValue: showLabel || level === numColLevels - 1 ? label : '',
+            value: showLabel || level === numColLevels - 1 ? label : "",
+            formattedValue:
+              showLabel || level === numColLevels - 1 ? label : "",
             isHeader: true,
             isTotal: false,
             isSubtotal: false,
@@ -556,48 +594,64 @@ export class PivotEngine {
             level,
             isCollapsible: false,
             isExpanded: true,
-          });
-        });
-      });
+          })
+        })
+      })
 
       // Grand total header
       if (this.pivot.showColGrandTotals && colPaths.length > 0) {
         valueFields.forEach((vf, vfIndex) => {
           row.push({
-            value: level === numColLevels - 1
-              ? (valueFields.length > 1 ? getFieldDisplayName(vf, this.pivot.fields) : 'Grand Total')
-              : (vfIndex === 0 ? 'Grand Total' : ''),
-            formattedValue: level === numColLevels - 1
-              ? (valueFields.length > 1 ? getFieldDisplayName(vf, this.pivot.fields) : 'Grand Total')
-              : (vfIndex === 0 ? 'Grand Total' : ''),
+            value:
+              level === numColLevels - 1
+                ? valueFields.length > 1
+                  ? getFieldDisplayName(vf, this.pivot.fields)
+                  : "Grand Total"
+                : vfIndex === 0
+                  ? "Grand Total"
+                  : "",
+            formattedValue:
+              level === numColLevels - 1
+                ? valueFields.length > 1
+                  ? getFieldDisplayName(vf, this.pivot.fields)
+                  : "Grand Total"
+                : vfIndex === 0
+                  ? "Grand Total"
+                  : "",
             isHeader: true,
             isTotal: true,
             isSubtotal: false,
             rowPath: [],
-            colPath: ['Grand Total'],
+            colPath: ["Grand Total"],
             level,
             isCollapsible: false,
             isExpanded: true,
-          });
-        });
+          })
+        })
       }
 
-      headers.push(row);
+      headers.push(row)
     }
 
     // If no column fields, add a simple header row for values
     if (numColLevels === 0 && valueFields.length > 0) {
-      const row: PivotCellData[] = [];
+      const row: PivotCellData[] = []
 
       // Empty cells for row headers
       for (let i = 0; i < numRowFields; i++) {
         row.push({
-          value: i === 0
-            ? this.pivot.rowFields.map(f => getFieldDisplayName(f, this.pivot.fields)).join(' / ')
-            : '',
-          formattedValue: i === 0
-            ? this.pivot.rowFields.map(f => getFieldDisplayName(f, this.pivot.fields)).join(' / ')
-            : '',
+          value:
+            i === 0
+              ? this.pivot.rowFields
+                  .map((f) => getFieldDisplayName(f, this.pivot.fields))
+                  .join(" / ")
+              : "",
+          formattedValue:
+            i === 0
+              ? this.pivot.rowFields
+                  .map((f) => getFieldDisplayName(f, this.pivot.fields))
+                  .join(" / ")
+              : "",
           isHeader: true,
           isTotal: false,
           isSubtotal: false,
@@ -606,11 +660,11 @@ export class PivotEngine {
           level: 0,
           isCollapsible: false,
           isExpanded: true,
-        });
+        })
       }
 
       // Value field headers
-      valueFields.forEach(vf => {
+      valueFields.forEach((vf) => {
         row.push({
           value: getFieldDisplayName(vf, this.pivot.fields),
           formattedValue: getFieldDisplayName(vf, this.pivot.fields),
@@ -623,13 +677,13 @@ export class PivotEngine {
           level: 0,
           isCollapsible: false,
           isExpanded: true,
-        });
-      });
+        })
+      })
 
-      headers.push(row);
+      headers.push(row)
     }
 
-    return headers;
+    return headers
   }
 
   /**
@@ -640,24 +694,30 @@ export class PivotEngine {
     colPath: string[],
     valueField: PivotAreaField
   ): number {
-    const values = this.getMatchingValues(rowPath, colPath, valueField.fieldId);
-    return aggregate(values, valueField.aggregateFunction || 'sum');
+    const values = this.getMatchingValues(rowPath, colPath, valueField.fieldId)
+    return aggregate(values, valueField.aggregateFunction || "sum")
   }
 
   /**
    * Calculate row total (across all columns)
    */
-  private calculateRowTotal(rowPath: string[], valueField: PivotAreaField): number {
-    const values = this.getMatchingValues(rowPath, [], valueField.fieldId);
-    return aggregate(values, valueField.aggregateFunction || 'sum');
+  private calculateRowTotal(
+    rowPath: string[],
+    valueField: PivotAreaField
+  ): number {
+    const values = this.getMatchingValues(rowPath, [], valueField.fieldId)
+    return aggregate(values, valueField.aggregateFunction || "sum")
   }
 
   /**
    * Calculate column total (across all rows)
    */
-  private calculateColumnTotal(colPath: string[], valueField: PivotAreaField): number {
-    const values = this.getMatchingValues([], colPath, valueField.fieldId);
-    return aggregate(values, valueField.aggregateFunction || 'sum');
+  private calculateColumnTotal(
+    colPath: string[],
+    valueField: PivotAreaField
+  ): number {
+    const values = this.getMatchingValues([], colPath, valueField.fieldId)
+    return aggregate(values, valueField.aggregateFunction || "sum")
   }
 
   /**
@@ -665,22 +725,24 @@ export class PivotEngine {
    */
   private calculateGrandTotal(valueField: PivotAreaField): number {
     // Check if this is a calculated field
-    const calcField = this.pivot.calculatedFields.find(cf => cf.id === valueField.fieldId);
+    const calcField = this.pivot.calculatedFields.find(
+      (cf) => cf.id === valueField.fieldId
+    )
 
     const values = this.filteredData
-      .map(row => {
+      .map((row) => {
         if (calcField) {
           return evaluateCalculatedField(
             calcField.formula,
             row,
             this.pivot.fields,
             this.pivot.calculatedFields
-          );
+          )
         }
-        return row[valueField.fieldId];
+        return row[valueField.fieldId]
       })
-      .filter((v): v is number => typeof v === 'number' && !isNaN(v));
-    return aggregate(values, valueField.aggregateFunction || 'sum');
+      .filter((v): v is number => typeof v === "number" && !isNaN(v))
+    return aggregate(values, valueField.aggregateFunction || "sum")
   }
 
   /**
@@ -692,33 +754,35 @@ export class PivotEngine {
     fieldId: string
   ): number[] {
     // Check if this is a calculated field
-    const calcField = this.pivot.calculatedFields.find(cf => cf.id === fieldId);
+    const calcField = this.pivot.calculatedFields.find(
+      (cf) => cf.id === fieldId
+    )
 
     return this.filteredData
-      .filter(row => {
+      .filter((row) => {
         // Match row path
         for (let i = 0; i < rowPath.length; i++) {
-          const field = this.pivot.rowFields[i];
-          let value = row[field.fieldId];
+          const field = this.pivot.rowFields[i]
+          let value = row[field.fieldId]
           if (field.dateGrouping) {
-            value = applyDateGrouping(value, field.dateGrouping);
+            value = applyDateGrouping(value, field.dateGrouping)
           }
-          if (String(value ?? '(blank)') !== rowPath[i]) return false;
+          if (String(value ?? "(blank)") !== rowPath[i]) return false
         }
 
         // Match column path
         for (let i = 0; i < colPath.length; i++) {
-          const field = this.pivot.columnFields[i];
-          let value = row[field.fieldId];
+          const field = this.pivot.columnFields[i]
+          let value = row[field.fieldId]
           if (field.dateGrouping) {
-            value = applyDateGrouping(value, field.dateGrouping);
+            value = applyDateGrouping(value, field.dateGrouping)
           }
-          if (String(value ?? '(blank)') !== colPath[i]) return false;
+          if (String(value ?? "(blank)") !== colPath[i]) return false
         }
 
-        return true;
+        return true
       })
-      .map(row => {
+      .map((row) => {
         // If it's a calculated field, evaluate the formula
         if (calcField) {
           return evaluateCalculatedField(
@@ -726,11 +790,11 @@ export class PivotEngine {
             row,
             this.pivot.fields,
             this.pivot.calculatedFields
-          );
+          )
         }
-        return row[fieldId];
+        return row[fieldId]
       })
-      .filter((v): v is number => typeof v === 'number' && !isNaN(v));
+      .filter((v): v is number => typeof v === "number" && !isNaN(v))
   }
 
   /**
@@ -740,21 +804,21 @@ export class PivotEngine {
     if (field.numberFormat) {
       // Basic number formatting - could be extended
       try {
-        return new Intl.NumberFormat('en-US', {
-          style: field.numberFormat.includes('$') ? 'currency' : 'decimal',
-          currency: 'USD',
-          minimumFractionDigits: field.numberFormat.includes('.')
-            ? (field.numberFormat.split('.')[1]?.length || 0)
+        return new Intl.NumberFormat("en-US", {
+          style: field.numberFormat.includes("$") ? "currency" : "decimal",
+          currency: "USD",
+          minimumFractionDigits: field.numberFormat.includes(".")
+            ? field.numberFormat.split(".")[1]?.length || 0
             : 0,
-          maximumFractionDigits: field.numberFormat.includes('.')
-            ? (field.numberFormat.split('.')[1]?.length || 2)
+          maximumFractionDigits: field.numberFormat.includes(".")
+            ? field.numberFormat.split(".")[1]?.length || 2
             : 0,
-        }).format(value);
+        }).format(value)
       } catch {
-        return formatPivotValue(value, field.aggregateFunction || 'sum');
+        return formatPivotValue(value, field.aggregateFunction || "sum")
       }
     }
-    return formatPivotValue(value, field.aggregateFunction || 'sum');
+    return formatPivotValue(value, field.aggregateFunction || "sum")
   }
 
   /**
@@ -762,30 +826,37 @@ export class PivotEngine {
    */
   private createEmptyResult(): PivotResult {
     return {
-      cells: [[{
-        value: 'Add fields to create pivot table',
-        formattedValue: 'Add fields to create pivot table',
-        isHeader: true,
-        isTotal: false,
-        isSubtotal: false,
-        rowPath: [],
-        colPath: [],
-        level: 0,
-        isCollapsible: false,
-        isExpanded: true,
-      }]],
+      cells: [
+        [
+          {
+            value: "Add fields to create pivot table",
+            formattedValue: "Add fields to create pivot table",
+            isHeader: true,
+            isTotal: false,
+            isSubtotal: false,
+            rowPath: [],
+            colPath: [],
+            level: 0,
+            isCollapsible: false,
+            isExpanded: true,
+          },
+        ],
+      ],
       rowCount: 1,
       colCount: 1,
-    };
+    }
   }
 }
 
 /**
  * Create and run the pivot engine
  */
-export function calculatePivot(pivot: PivotTable, sourceData: PivotCellValue[][]): PivotResult {
-  const engine = new PivotEngine(pivot, sourceData);
-  return engine.calculate();
+export function calculatePivot(
+  pivot: PivotTable,
+  sourceData: PivotCellValue[][]
+): PivotResult {
+  const engine = new PivotEngine(pivot, sourceData)
+  return engine.calculate()
 }
 
-export default PivotEngine;
+export default PivotEngine

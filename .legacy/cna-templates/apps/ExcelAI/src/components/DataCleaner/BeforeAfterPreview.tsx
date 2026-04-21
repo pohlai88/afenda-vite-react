@@ -2,19 +2,19 @@
 // BEFORE/AFTER PREVIEW — Side-by-side comparison of changes
 // =============================================================================
 
-import React, { useState, useMemo } from 'react';
-import type { CellChange } from '../../datacleaner/types';
+import React, { useState, useMemo } from "react"
+import type { CellChange } from "../../datacleaner/types"
 
 // -----------------------------------------------------------------------------
 // Props
 // -----------------------------------------------------------------------------
 
 interface BeforeAfterPreviewProps {
-  changes: CellChange[];
-  onAcceptChange?: (change: CellChange) => void;
-  onRejectChange?: (change: CellChange) => void;
-  onAcceptAll?: () => void;
-  onRejectAll?: () => void;
+  changes: CellChange[]
+  onAcceptChange?: (change: CellChange) => void
+  onRejectChange?: (change: CellChange) => void
+  onAcceptAll?: () => void
+  onRejectAll?: () => void
 }
 
 // -----------------------------------------------------------------------------
@@ -28,45 +28,46 @@ export const BeforeAfterPreview: React.FC<BeforeAfterPreviewProps> = ({
   onAcceptAll,
   onRejectAll,
 }) => {
-  const [viewMode, setViewMode] = useState<'list' | 'grouped'>('grouped');
-  const [filterType, setFilterType] = useState<string>('all');
-  const [selectedChanges, setSelectedChanges] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<"list" | "grouped">("grouped")
+  const [filterType, setFilterType] = useState<string>("all")
+  const [selectedChanges, setSelectedChanges] = useState<Set<string>>(new Set())
 
   // Group changes by type
   const groupedChanges = useMemo(() => {
-    const groups = new Map<string, CellChange[]>();
+    const groups = new Map<string, CellChange[]>()
     for (const change of changes) {
-      const key = change.changeType;
-      const existing = groups.get(key) || [];
-      existing.push(change);
-      groups.set(key, existing);
+      const key = change.changeType
+      const existing = groups.get(key) || []
+      existing.push(change)
+      groups.set(key, existing)
     }
-    return groups;
-  }, [changes]);
+    return groups
+  }, [changes])
 
-  const changeTypes = Array.from(groupedChanges.keys());
+  const changeTypes = Array.from(groupedChanges.keys())
 
-  const filteredChanges = filterType === 'all'
-    ? changes
-    : changes.filter(c => c.changeType === filterType);
+  const filteredChanges =
+    filterType === "all"
+      ? changes
+      : changes.filter((c) => c.changeType === filterType)
 
   const toggleChange = (ref: string) => {
-    const newSelected = new Set(selectedChanges);
+    const newSelected = new Set(selectedChanges)
     if (newSelected.has(ref)) {
-      newSelected.delete(ref);
+      newSelected.delete(ref)
     } else {
-      newSelected.add(ref);
+      newSelected.add(ref)
     }
-    setSelectedChanges(newSelected);
-  };
+    setSelectedChanges(newSelected)
+  }
 
   const selectAll = () => {
-    setSelectedChanges(new Set(filteredChanges.map(c => c.ref)));
-  };
+    setSelectedChanges(new Set(filteredChanges.map((c) => c.ref)))
+  }
 
   const deselectAll = () => {
-    setSelectedChanges(new Set());
-  };
+    setSelectedChanges(new Set())
+  }
 
   if (changes.length === 0) {
     return (
@@ -75,7 +76,7 @@ export const BeforeAfterPreview: React.FC<BeforeAfterPreviewProps> = ({
         <p>No changes to preview</p>
         <span>Run cleaning operations to see a preview</span>
       </div>
-    );
+    )
   }
 
   return (
@@ -94,14 +95,14 @@ export const BeforeAfterPreview: React.FC<BeforeAfterPreviewProps> = ({
           {/* View Mode Toggle */}
           <div className="before-after__view-toggle">
             <button
-              className={`before-after__view-btn ${viewMode === 'list' ? 'before-after__view-btn--active' : ''}`}
-              onClick={() => setViewMode('list')}
+              className={`before-after__view-btn ${viewMode === "list" ? "before-after__view-btn--active" : ""}`}
+              onClick={() => setViewMode("list")}
             >
               <ListIcon />
             </button>
             <button
-              className={`before-after__view-btn ${viewMode === 'grouped' ? 'before-after__view-btn--active' : ''}`}
-              onClick={() => setViewMode('grouped')}
+              className={`before-after__view-btn ${viewMode === "grouped" ? "before-after__view-btn--active" : ""}`}
+              onClick={() => setViewMode("grouped")}
             >
               <GridIcon />
             </button>
@@ -114,9 +115,10 @@ export const BeforeAfterPreview: React.FC<BeforeAfterPreviewProps> = ({
             className="before-after__filter"
           >
             <option value="all">All Types ({changes.length})</option>
-            {changeTypes.map(type => (
+            {changeTypes.map((type) => (
               <option key={type} value={type}>
-                {formatChangeType(type)} ({groupedChanges.get(type)?.length || 0})
+                {formatChangeType(type)} (
+                {groupedChanges.get(type)?.length || 0})
               </option>
             ))}
           </select>
@@ -149,7 +151,7 @@ export const BeforeAfterPreview: React.FC<BeforeAfterPreviewProps> = ({
 
       {/* Content */}
       <div className="before-after__content">
-        {viewMode === 'list' ? (
+        {viewMode === "list" ? (
           <ChangesList
             changes={filteredChanges}
             selectedChanges={selectedChanges}
@@ -169,19 +171,19 @@ export const BeforeAfterPreview: React.FC<BeforeAfterPreviewProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Changes List Component
 // -----------------------------------------------------------------------------
 
 interface ChangesListProps {
-  changes: CellChange[];
-  selectedChanges: Set<string>;
-  onToggle: (ref: string) => void;
-  onAccept?: (change: CellChange) => void;
-  onReject?: (change: CellChange) => void;
+  changes: CellChange[]
+  selectedChanges: Set<string>
+  onToggle: (ref: string) => void
+  onAccept?: (change: CellChange) => void
+  onReject?: (change: CellChange) => void
 }
 
 const ChangesList: React.FC<ChangesListProps> = ({
@@ -205,7 +207,7 @@ const ChangesList: React.FC<ChangesListProps> = ({
       {changes.slice(0, 100).map((change) => (
         <div
           key={change.ref}
-          className={`change-item ${selectedChanges.has(change.ref) ? 'change-item--selected' : ''}`}
+          className={`change-item ${selectedChanges.has(change.ref) ? "change-item--selected" : ""}`}
         >
           <div className="change-item__select">
             <input
@@ -216,11 +218,15 @@ const ChangesList: React.FC<ChangesListProps> = ({
           </div>
           <div className="change-item__cell">{change.ref}</div>
           <div className="change-item__type">
-            <span className={`change-type-badge change-type-badge--${change.changeType}`}>
+            <span
+              className={`change-type-badge change-type-badge--${change.changeType}`}
+            >
               {formatChangeType(change.changeType)}
             </span>
           </div>
-          <div className="change-item__before">{formatValue(change.before)}</div>
+          <div className="change-item__before">
+            {formatValue(change.before)}
+          </div>
           <div className="change-item__arrow">→</div>
           <div className="change-item__after">{formatValue(change.after)}</div>
           <div className="change-item__actions">
@@ -252,19 +258,19 @@ const ChangesList: React.FC<ChangesListProps> = ({
       )}
     </div>
   </div>
-);
+)
 
 // -----------------------------------------------------------------------------
 // Changes Grouped Component
 // -----------------------------------------------------------------------------
 
 interface ChangesGroupedProps {
-  groups: Map<string, CellChange[]>;
-  filterType: string;
-  selectedChanges: Set<string>;
-  onToggle: (ref: string) => void;
-  onAccept?: (change: CellChange) => void;
-  onReject?: (change: CellChange) => void;
+  groups: Map<string, CellChange[]>
+  filterType: string
+  selectedChanges: Set<string>
+  onToggle: (ref: string) => void
+  onAccept?: (change: CellChange) => void
+  onReject?: (change: CellChange) => void
 }
 
 const ChangesGrouped: React.FC<ChangesGroupedProps> = ({
@@ -275,21 +281,24 @@ const ChangesGrouped: React.FC<ChangesGroupedProps> = ({
   onAccept,
   onReject,
 }) => {
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(groups.keys()));
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
+    new Set(groups.keys())
+  )
 
   const toggleGroup = (type: string) => {
-    const newExpanded = new Set(expandedGroups);
+    const newExpanded = new Set(expandedGroups)
     if (newExpanded.has(type)) {
-      newExpanded.delete(type);
+      newExpanded.delete(type)
     } else {
-      newExpanded.add(type);
+      newExpanded.add(type)
     }
-    setExpandedGroups(newExpanded);
-  };
+    setExpandedGroups(newExpanded)
+  }
 
-  const filteredGroups = filterType === 'all'
-    ? Array.from(groups.entries())
-    : Array.from(groups.entries()).filter(([type]) => type === filterType);
+  const filteredGroups =
+    filterType === "all"
+      ? Array.from(groups.entries())
+      : Array.from(groups.entries()).filter(([type]) => type === filterType)
 
   return (
     <div className="changes-grouped">
@@ -302,7 +311,9 @@ const ChangesGrouped: React.FC<ChangesGroupedProps> = ({
             <span className={`change-type-badge change-type-badge--${type}`}>
               {formatChangeType(type)}
             </span>
-            <span className="change-group__count">{changes.length} changes</span>
+            <span className="change-group__count">
+              {changes.length} changes
+            </span>
             <ChevronIcon expanded={expandedGroups.has(type)} />
           </div>
           {expandedGroups.has(type) && (
@@ -310,7 +321,7 @@ const ChangesGrouped: React.FC<ChangesGroupedProps> = ({
               {changes.slice(0, 50).map((change) => (
                 <div
                   key={change.ref}
-                  className={`change-item change-item--compact ${selectedChanges.has(change.ref) ? 'change-item--selected' : ''}`}
+                  className={`change-item change-item--compact ${selectedChanges.has(change.ref) ? "change-item--selected" : ""}`}
                 >
                   <input
                     type="checkbox"
@@ -318,9 +329,13 @@ const ChangesGrouped: React.FC<ChangesGroupedProps> = ({
                     onChange={() => onToggle(change.ref)}
                   />
                   <span className="change-item__cell">{change.ref}</span>
-                  <span className="change-item__before">{formatValue(change.before)}</span>
+                  <span className="change-item__before">
+                    {formatValue(change.before)}
+                  </span>
                   <span className="change-item__arrow">→</span>
-                  <span className="change-item__after">{formatValue(change.after)}</span>
+                  <span className="change-item__after">
+                    {formatValue(change.after)}
+                  </span>
                   <div className="change-item__actions">
                     {onAccept && (
                       <button onClick={() => onAccept(change)} title="Accept">
@@ -345,50 +360,58 @@ const ChangesGrouped: React.FC<ChangesGroupedProps> = ({
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Diff View Component
 // -----------------------------------------------------------------------------
 
 interface DiffViewProps {
-  before: string;
-  after: string;
+  before: string
+  after: string
 }
 
 export const DiffView: React.FC<DiffViewProps> = ({ before, after }) => {
-  const beforeChars = before.split('');
-  const afterChars = after.split('');
+  const beforeChars = before.split("")
+  const afterChars = after.split("")
 
   // Simple char-level diff
-  const diffs: Array<{ type: 'same' | 'removed' | 'added'; char: string }> = [];
+  const diffs: Array<{ type: "same" | "removed" | "added"; char: string }> = []
 
-  let i = 0, j = 0;
+  let i = 0,
+    j = 0
   while (i < beforeChars.length || j < afterChars.length) {
-    if (i < beforeChars.length && j < afterChars.length && beforeChars[i] === afterChars[j]) {
-      diffs.push({ type: 'same', char: beforeChars[i] });
-      i++;
-      j++;
+    if (
+      i < beforeChars.length &&
+      j < afterChars.length &&
+      beforeChars[i] === afterChars[j]
+    ) {
+      diffs.push({ type: "same", char: beforeChars[i] })
+      i++
+      j++
     } else if (i < beforeChars.length) {
-      diffs.push({ type: 'removed', char: beforeChars[i] });
-      i++;
+      diffs.push({ type: "removed", char: beforeChars[i] })
+      i++
     } else {
-      diffs.push({ type: 'added', char: afterChars[j] });
-      j++;
+      diffs.push({ type: "added", char: afterChars[j] })
+      j++
     }
   }
 
   return (
     <div className="diff-view">
       {diffs.map((d, idx) => (
-        <span key={idx} className={`diff-view__char diff-view__char--${d.type}`}>
+        <span
+          key={idx}
+          className={`diff-view__char diff-view__char--${d.type}`}
+        >
           {d.char}
         </span>
       ))}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -396,21 +419,21 @@ export const DiffView: React.FC<DiffViewProps> = ({ before, after }) => {
 
 function formatChangeType(type: string): string {
   const labels: Record<string, string> = {
-    format: 'Format',
-    duplicate: 'Duplicate',
-    missing: 'Missing',
-    inconsistency: 'Inconsistency',
-    whitespace: 'Whitespace',
-    outlier: 'Outlier',
-    validation: 'Validation',
-  };
-  return labels[type] || type;
+    format: "Format",
+    duplicate: "Duplicate",
+    missing: "Missing",
+    inconsistency: "Inconsistency",
+    whitespace: "Whitespace",
+    outlier: "Outlier",
+    validation: "Validation",
+  }
+  return labels[type] || type
 }
 
 function formatValue(value: unknown): string {
-  if (value === null || value === undefined) return '(empty)';
-  if (value === '') return '(blank)';
-  return String(value);
+  if (value === null || value === undefined) return "(empty)"
+  if (value === "") return "(blank)"
+  return String(value)
 }
 
 // -----------------------------------------------------------------------------
@@ -418,12 +441,19 @@ function formatValue(value: unknown): string {
 // -----------------------------------------------------------------------------
 
 const EmptyIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="1">
+  <svg
+    width="48"
+    height="48"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#94a3b8"
+    strokeWidth="1"
+  >
     <rect x="3" y="3" width="18" height="18" rx="2" />
     <line x1="9" y1="9" x2="15" y2="15" />
     <line x1="15" y1="9" x2="9" y2="15" />
   </svg>
-);
+)
 
 const CheckIcon: React.FC<{ small?: boolean }> = ({ small }) => (
   <svg
@@ -436,7 +466,7 @@ const CheckIcon: React.FC<{ small?: boolean }> = ({ small }) => (
   >
     <polyline points="20 6 9 17 4 12" />
   </svg>
-);
+)
 
 const XIcon: React.FC<{ small?: boolean }> = ({ small }) => (
   <svg
@@ -450,10 +480,17 @@ const XIcon: React.FC<{ small?: boolean }> = ({ small }) => (
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
-);
+)
 
 const ListIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <line x1="8" y1="6" x2="21" y2="6" />
     <line x1="8" y1="12" x2="21" y2="12" />
     <line x1="8" y1="18" x2="21" y2="18" />
@@ -461,16 +498,23 @@ const ListIcon = () => (
     <line x1="3" y1="12" x2="3.01" y2="12" />
     <line x1="3" y1="18" x2="3.01" y2="18" />
   </svg>
-);
+)
 
 const GridIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <rect x="3" y="3" width="7" height="7" />
     <rect x="14" y="3" width="7" height="7" />
     <rect x="14" y="14" width="7" height="7" />
     <rect x="3" y="14" width="7" height="7" />
   </svg>
-);
+)
 
 const ChevronIcon: React.FC<{ expanded: boolean }> = ({ expanded }) => (
   <svg
@@ -480,10 +524,13 @@ const ChevronIcon: React.FC<{ expanded: boolean }> = ({ expanded }) => (
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
-    style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+    style={{
+      transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+      transition: "transform 0.2s",
+    }}
   >
     <polyline points="6 9 12 15 18 9" />
   </svg>
-);
+)
 
-export default BeforeAfterPreview;
+export default BeforeAfterPreview

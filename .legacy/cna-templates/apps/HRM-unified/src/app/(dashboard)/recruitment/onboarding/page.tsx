@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { Plus, Users, CheckCircle } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { ONBOARDING_STATUS } from '@/lib/recruitment/constants'
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { Plus, Users, CheckCircle } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import { ONBOARDING_STATUS } from "@/lib/recruitment/constants"
 
 interface OnboardingItem {
   id: string
@@ -32,13 +32,15 @@ export default function OnboardingPage() {
   useEffect(() => {
     async function fetchOnboardings() {
       try {
-        const res = await fetch('/api/recruitment/onboarding')
-        if (!res.ok) throw new Error('Không thể tải danh sách onboarding')
+        const res = await fetch("/api/recruitment/onboarding")
+        if (!res.ok) throw new Error("Không thể tải danh sách onboarding")
         const json = await res.json()
         const result = json.data ?? json
-        setOnboardings(Array.isArray(result) ? result : result.onboardings ?? [])
+        setOnboardings(
+          Array.isArray(result) ? result : (result.onboardings ?? [])
+        )
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -50,12 +52,12 @@ export default function OnboardingPage() {
     const info = ONBOARDING_STATUS[status]
     if (!info) return <Badge variant="secondary">{status}</Badge>
     const colorMap: Record<string, string> = {
-      gray: 'bg-gray-100 text-gray-800',
-      blue: 'bg-blue-100 text-blue-800',
-      green: 'bg-green-100 text-green-800',
-      red: 'bg-red-100 text-red-800',
+      gray: "bg-gray-100 text-gray-800",
+      blue: "bg-blue-100 text-blue-800",
+      green: "bg-green-100 text-green-800",
+      red: "bg-red-100 text-red-800",
     }
-    return <Badge className={colorMap[info.color] || ''}>{info.label}</Badge>
+    return <Badge className={colorMap[info.color] || ""}>{info.label}</Badge>
   }
 
   if (loading) return <LoadingPage />
@@ -68,9 +70,7 @@ export default function OnboardingPage() {
       >
         <div className="flex gap-2">
           <Link href="/recruitment/onboarding/templates">
-            <Button variant="outline">
-              Quản lý template
-            </Button>
+            <Button variant="outline">Quản lý template</Button>
           </Link>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
@@ -94,13 +94,20 @@ export default function OnboardingPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {onboardings.map((onboarding) => (
-            <Link key={onboarding.id} href={`/recruitment/onboarding/${onboarding.id}`}>
+            <Link
+              key={onboarding.id}
+              href={`/recruitment/onboarding/${onboarding.id}`}
+            >
               <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="text-base">{onboarding.employeeName}</CardTitle>
-                      <p className="text-sm text-muted-foreground">{onboarding.position}</p>
+                      <CardTitle className="text-base">
+                        {onboarding.employeeName}
+                      </CardTitle>
+                      <p className="text-sm text-muted-foreground">
+                        {onboarding.position}
+                      </p>
                     </div>
                     {getStatusBadge(onboarding.status)}
                   </div>
@@ -108,7 +115,12 @@ export default function OnboardingPage() {
                 <CardContent className="space-y-3">
                   <div className="text-sm text-muted-foreground">
                     <p>{onboarding.department}</p>
-                    <p>Bắt đầu: {new Date(onboarding.startDate).toLocaleDateString('vi-VN')}</p>
+                    <p>
+                      Bắt đầu:{" "}
+                      {new Date(onboarding.startDate).toLocaleDateString(
+                        "vi-VN"
+                      )}
+                    </p>
                     {onboarding.buddyName && (
                       <p className="flex items-center gap-1 mt-1">
                         <Users className="h-3 w-3" />

@@ -1,12 +1,8 @@
-'use client'
+"use client"
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import type { Notification } from '@prisma/client'
-import { authQueryConfig } from '@/lib/query-config'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import type { Notification } from "@prisma/client"
+import { authQueryConfig } from "@/lib/query-config"
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -29,18 +25,23 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
 
 // ── Notifications list ──────────────────────────────────────────────
 
-export function useNotifications(params?: { page?: number; limit?: number; unread?: boolean; enabled?: boolean }) {
+export function useNotifications(params?: {
+  page?: number
+  limit?: number
+  unread?: boolean
+  enabled?: boolean
+}) {
   const page = params?.page ?? 1
   const limit = params?.limit ?? 20
   const unread = params?.unread ?? false
 
   return useQuery<NotificationsResponse>({
-    queryKey: ['notifications', { page, limit, unread }],
+    queryKey: ["notifications", { page, limit, unread }],
     queryFn: () => {
       const qs = new URLSearchParams({
         page: String(page),
         limit: String(limit),
-        ...(unread && { unread: 'true' }),
+        ...(unread && { unread: "true" }),
       })
       return fetchJson<NotificationsResponse>(`/api/notifications?${qs}`)
     },
@@ -54,9 +55,11 @@ export function useNotifications(params?: { page?: number; limit?: number; unrea
 
 export function useUnreadCount(enabled = true) {
   return useQuery<number>({
-    queryKey: ['notifications', 'unreadCount'],
+    queryKey: ["notifications", "unreadCount"],
     queryFn: async () => {
-      const data = await fetchJson<NotificationsResponse>('/api/notifications?limit=1')
+      const data = await fetchJson<NotificationsResponse>(
+        "/api/notifications?limit=1"
+      )
       return data.unreadCount
     },
     refetchInterval: 30_000,
@@ -74,10 +77,10 @@ export function useMarkAsRead() {
   return useMutation<{ success: boolean }, Error, string>({
     mutationFn: (id) =>
       fetchJson<{ success: boolean }>(`/api/notifications/${id}/read`, {
-        method: 'PATCH',
+        method: "PATCH",
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['notifications'] })
+      qc.invalidateQueries({ queryKey: ["notifications"] })
     },
   })
 }
@@ -89,11 +92,14 @@ export function useMarkAllAsRead() {
 
   return useMutation<{ success: boolean; count: number }, Error, void>({
     mutationFn: () =>
-      fetchJson<{ success: boolean; count: number }>('/api/notifications/mark-all-read', {
-        method: 'POST',
-      }),
+      fetchJson<{ success: boolean; count: number }>(
+        "/api/notifications/mark-all-read",
+        {
+          method: "POST",
+        }
+      ),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['notifications'] })
+      qc.invalidateQueries({ queryKey: ["notifications"] })
     },
   })
 }

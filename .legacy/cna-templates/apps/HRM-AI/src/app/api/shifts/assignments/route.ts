@@ -1,15 +1,15 @@
 // src/app/api/shifts/assignments/route.ts
 // Shift assignment API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { shiftService } from '@/services/shift.service'
-import { z } from 'zod'
-import { safeParseInt } from '@/lib/api/parse-params'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { shiftService } from "@/services/shift.service"
+import { z } from "zod"
+import { safeParseInt } from "@/lib/api/parse-params"
 
 const assignShiftSchema = z.object({
-  employeeId: z.string().min(1, 'Nhân viên là bắt buộc'),
-  shiftId: z.string().min(1, 'Ca làm việc là bắt buộc'),
+  employeeId: z.string().min(1, "Nhân viên là bắt buộc"),
+  shiftId: z.string().min(1, "Ca làm việc là bắt buộc"),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional().nullable(),
   daysOfWeek: z.array(z.number().min(0).max(6)).optional(),
@@ -28,27 +28,30 @@ export async function GET(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
     const filters = {
-      employeeId: searchParams.get('employeeId') || undefined,
-      shiftId: searchParams.get('shiftId') || undefined,
-      departmentId: searchParams.get('departmentId') || undefined,
-      startDate: searchParams.get('startDate') || undefined,
-      endDate: searchParams.get('endDate') || undefined,
-      isPrimary: searchParams.get('isPrimary') === 'true' ? true : undefined,
-      page: safeParseInt(searchParams.get('page'), 1),
-      pageSize: safeParseInt(searchParams.get('pageSize'), 20),
+      employeeId: searchParams.get("employeeId") || undefined,
+      shiftId: searchParams.get("shiftId") || undefined,
+      departmentId: searchParams.get("departmentId") || undefined,
+      startDate: searchParams.get("startDate") || undefined,
+      endDate: searchParams.get("endDate") || undefined,
+      isPrimary: searchParams.get("isPrimary") === "true" ? true : undefined,
+      page: safeParseInt(searchParams.get("page"), 1),
+      pageSize: safeParseInt(searchParams.get("pageSize"), 20),
     }
 
-    const result = await shiftService.findAssignments(session.user.tenantId, filters)
+    const result = await shiftService.findAssignments(
+      session.user.tenantId,
+      filters
+    )
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error fetching shift assignments:', error)
+    console.error("Error fetching shift assignments:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -58,11 +61,15 @@ export async function POST(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'HR_STAFF'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (
+      !["SUPER_ADMIN", "ADMIN", "HR_MANAGER", "HR_STAFF"].includes(
+        session.user.role
+      )
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const body = await request.json()
@@ -82,7 +89,10 @@ export async function POST(request: NextRequest) {
 
     // Single assign
     const validatedData = assignShiftSchema.parse(body)
-    const assignment = await shiftService.assignShift(session.user.tenantId, validatedData)
+    const assignment = await shiftService.assignShift(
+      session.user.tenantId,
+      validatedData
+    )
     return NextResponse.json(assignment, { status: 201 })
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -91,9 +101,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    console.error('Error assigning shift:', error)
+    console.error("Error assigning shift:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

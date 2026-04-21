@@ -1,6 +1,9 @@
-import { db } from '@/lib/db'
-import { calculateOverallReviewScore, scoreToRating } from '@/lib/performance/scoring'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import {
+  calculateOverallReviewScore,
+  scoreToRating,
+} from "@/lib/performance/scoring"
+import type { Prisma } from "@prisma/client"
 
 export async function createReviewCycle(
   tenantId: string,
@@ -8,7 +11,13 @@ export async function createReviewCycle(
   data: {
     name: string
     description?: string
-    cycleType: 'ANNUAL' | 'SEMI_ANNUAL' | 'QUARTERLY' | 'PROBATION' | 'PROJECT' | 'AD_HOC'
+    cycleType:
+      | "ANNUAL"
+      | "SEMI_ANNUAL"
+      | "QUARTERLY"
+      | "PROBATION"
+      | "PROJECT"
+      | "AD_HOC"
     year: number
     startDate: Date
     endDate: Date
@@ -81,8 +90,13 @@ export async function getReviewCycles(
     ...(filters?.cycleType && { cycleType: filters.cycleType as any }),
     ...(filters?.search && {
       OR: [
-        { name: { contains: filters.search, mode: 'insensitive' as const } },
-        { description: { contains: filters.search, mode: 'insensitive' as const } },
+        { name: { contains: filters.search, mode: "insensitive" as const } },
+        {
+          description: {
+            contains: filters.search,
+            mode: "insensitive" as const,
+          },
+        },
       ],
     }),
   }
@@ -95,7 +109,7 @@ export async function getReviewCycles(
           select: { reviews: true, goals: true },
         },
       },
-      orderBy: [{ year: 'desc' }, { startDate: 'desc' }],
+      orderBy: [{ year: "desc" }, { startDate: "desc" }],
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -132,7 +146,7 @@ export async function getReviewCycleById(id: string, tenantId: string) {
             select: { id: true, fullName: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       },
       goals: {
         include: {
@@ -140,7 +154,7 @@ export async function getReviewCycleById(id: string, tenantId: string) {
             select: { id: true, fullName: true, employeeCode: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       },
       _count: {
         select: { reviews: true, goals: true },
@@ -159,14 +173,14 @@ export async function launchReviewCycle(
   })
 
   if (!cycle) {
-    throw new Error('Review cycle not found')
+    throw new Error("Review cycle not found")
   }
 
   // Get employees to create reviews for
   const employees = await db.employee.findMany({
     where: {
       tenantId,
-      status: { in: ['ACTIVE', 'PROBATION'] },
+      status: { in: ["ACTIVE", "PROBATION"] },
       deletedAt: null,
       ...(employeeIds && { id: { in: employeeIds } }),
       directManagerId: { not: null },
@@ -179,7 +193,7 @@ export async function launchReviewCycle(
 
   // Create performance reviews for each employee
   const reviews = await db.$transaction(
-    employees.map(emp =>
+    employees.map((emp) =>
       db.performanceReview.upsert({
         where: {
           reviewCycleId_employeeId: {
@@ -193,7 +207,7 @@ export async function launchReviewCycle(
           reviewCycleId: id,
           employeeId: emp.id,
           managerId: emp.directManagerId!,
-          status: 'SELF_REVIEW_PENDING',
+          status: "SELF_REVIEW_PENDING",
         },
       })
     )
@@ -202,7 +216,7 @@ export async function launchReviewCycle(
   // Update cycle status
   await db.reviewCycle.update({
     where: { id },
-    data: { status: 'IN_PROGRESS' },
+    data: { status: "IN_PROGRESS" },
   })
 
   return {
@@ -237,8 +251,18 @@ export async function getPerformanceReviews(
     ...(filters?.search && {
       employee: {
         OR: [
-          { fullName: { contains: filters.search, mode: 'insensitive' as const } },
-          { employeeCode: { contains: filters.search, mode: 'insensitive' as const } },
+          {
+            fullName: {
+              contains: filters.search,
+              mode: "insensitive" as const,
+            },
+          },
+          {
+            employeeCode: {
+              contains: filters.search,
+              mode: "insensitive" as const,
+            },
+          },
         ],
       },
     }),
@@ -264,7 +288,7 @@ export async function getPerformanceReviews(
           select: { id: true, fullName: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -303,7 +327,7 @@ export async function getPerformanceReviewById(id: string, tenantId: string) {
         include: {
           goal: {
             include: {
-              keyResults: { orderBy: { order: 'asc' } },
+              keyResults: { orderBy: { order: "asc" } },
             },
           },
         },
@@ -338,8 +362,16 @@ export async function submitSelfReview(
     selfRating: number
     selfComments?: string
     goalScores?: { goalId: string; selfScore: number; selfComments?: string }[]
-    competencyRatings?: { competencyId: string; selfRating: number; selfComments?: string }[]
-    valueRatings?: { coreValueId: string; selfRating: number; selfComments?: string }[]
+    competencyRatings?: {
+      competencyId: string
+      selfRating: number
+      selfComments?: string
+    }[]
+    valueRatings?: {
+      coreValueId: string
+      selfRating: number
+      selfComments?: string
+    }[]
   }
 ) {
   const review = await db.performanceReview.findFirst({
@@ -347,13 +379,13 @@ export async function submitSelfReview(
   })
 
   if (!review) {
-    throw new Error('Review not found or access denied')
+    throw new Error("Review not found or access denied")
   }
 
   // Update goal scores
   if (data.goalScores) {
     await Promise.all(
-      data.goalScores.map(gs =>
+      data.goalScores.map((gs) =>
         db.reviewGoal.updateMany({
           where: { reviewId: id, goalId: gs.goalId },
           data: {
@@ -368,7 +400,7 @@ export async function submitSelfReview(
   // Update competency ratings
   if (data.competencyRatings) {
     await Promise.all(
-      data.competencyRatings.map(cr =>
+      data.competencyRatings.map((cr) =>
         db.reviewCompetency.updateMany({
           where: { reviewId: id, competencyId: cr.competencyId },
           data: {
@@ -383,7 +415,7 @@ export async function submitSelfReview(
   // Update value ratings
   if (data.valueRatings) {
     await Promise.all(
-      data.valueRatings.map(vr =>
+      data.valueRatings.map((vr) =>
         db.reviewValue.updateMany({
           where: { reviewId: id, coreValueId: vr.coreValueId },
           data: {
@@ -401,7 +433,7 @@ export async function submitSelfReview(
     data: {
       selfRating: data.selfRating,
       selfComments: data.selfComments,
-      status: 'SELF_REVIEW_DONE',
+      status: "SELF_REVIEW_DONE",
       selfReviewAt: new Date(),
     },
     include: {
@@ -424,10 +456,27 @@ export async function submitManagerReview(
     managerComments?: string
     strengths?: string
     developmentAreas?: string
-    developmentPlan?: { area: string; action: string; timeline: string; resources?: string }[]
-    goalScores?: { goalId: string; managerScore: number; managerComments?: string }[]
-    competencyRatings?: { competencyId: string; managerRating: number; managerComments?: string }[]
-    valueRatings?: { coreValueId: string; managerRating: number; managerComments?: string }[]
+    developmentPlan?: {
+      area: string
+      action: string
+      timeline: string
+      resources?: string
+    }[]
+    goalScores?: {
+      goalId: string
+      managerScore: number
+      managerComments?: string
+    }[]
+    competencyRatings?: {
+      competencyId: string
+      managerRating: number
+      managerComments?: string
+    }[]
+    valueRatings?: {
+      coreValueId: string
+      managerRating: number
+      managerComments?: string
+    }[]
   }
 ) {
   const review = await db.performanceReview.findFirst({
@@ -436,13 +485,13 @@ export async function submitManagerReview(
   })
 
   if (!review) {
-    throw new Error('Review not found or access denied')
+    throw new Error("Review not found or access denied")
   }
 
   // Update goal scores
   if (data.goalScores) {
     await Promise.all(
-      data.goalScores.map(gs =>
+      data.goalScores.map((gs) =>
         db.reviewGoal.updateMany({
           where: { reviewId: id, goalId: gs.goalId },
           data: {
@@ -458,7 +507,7 @@ export async function submitManagerReview(
   // Update competency ratings
   if (data.competencyRatings) {
     await Promise.all(
-      data.competencyRatings.map(cr =>
+      data.competencyRatings.map((cr) =>
         db.reviewCompetency.updateMany({
           where: { reviewId: id, competencyId: cr.competencyId },
           data: {
@@ -474,7 +523,7 @@ export async function submitManagerReview(
   // Update value ratings
   if (data.valueRatings) {
     await Promise.all(
-      data.valueRatings.map(vr =>
+      data.valueRatings.map((vr) =>
         db.reviewValue.updateMany({
           where: { reviewId: id, coreValueId: vr.coreValueId },
           data: {
@@ -488,17 +537,23 @@ export async function submitManagerReview(
   }
 
   // Calculate overall scores
-  const goalScore = data.goalScores && data.goalScores.length > 0
-    ? data.goalScores.reduce((sum, g) => sum + g.managerScore, 0) / data.goalScores.length
-    : null
+  const goalScore =
+    data.goalScores && data.goalScores.length > 0
+      ? data.goalScores.reduce((sum, g) => sum + g.managerScore, 0) /
+        data.goalScores.length
+      : null
 
-  const competencyScore = data.competencyRatings && data.competencyRatings.length > 0
-    ? data.competencyRatings.reduce((sum, c) => sum + c.managerRating, 0) / data.competencyRatings.length
-    : null
+  const competencyScore =
+    data.competencyRatings && data.competencyRatings.length > 0
+      ? data.competencyRatings.reduce((sum, c) => sum + c.managerRating, 0) /
+        data.competencyRatings.length
+      : null
 
-  const valuesScore = data.valueRatings && data.valueRatings.length > 0
-    ? data.valueRatings.reduce((sum, v) => sum + v.managerRating, 0) / data.valueRatings.length
-    : null
+  const valuesScore =
+    data.valueRatings && data.valueRatings.length > 0
+      ? data.valueRatings.reduce((sum, v) => sum + v.managerRating, 0) /
+        data.valueRatings.length
+      : null
 
   const weights = {
     goal: Number(review.reviewCycle.goalWeight),
@@ -530,7 +585,7 @@ export async function submitManagerReview(
       valuesScore,
       overallScore,
       finalRating,
-      status: 'MANAGER_REVIEW_DONE',
+      status: "MANAGER_REVIEW_DONE",
       managerReviewAt: new Date(),
     },
     include: {
@@ -558,14 +613,14 @@ export async function acknowledgeReview(
   })
 
   if (!review) {
-    throw new Error('Review not found or access denied')
+    throw new Error("Review not found or access denied")
   }
 
   return db.performanceReview.update({
     where: { id },
     data: {
       employeeComments: comments,
-      status: 'ACKNOWLEDGED',
+      status: "ACKNOWLEDGED",
       acknowledgedAt: new Date(),
     },
     include: {

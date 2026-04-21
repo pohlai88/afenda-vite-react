@@ -1,9 +1,9 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { Unauthorized, handleApiError } from '@/lib/api/errors'
-import { apiSuccess } from '@/lib/api/response'
+import { NextRequest } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { Unauthorized, handleApiError } from "@/lib/api/errors"
+import { apiSuccess } from "@/lib/api/response"
 
 // GET /api/settings/sla — Return SLA configs + assignment strategy
 export async function GET(req: NextRequest) {
@@ -11,29 +11,34 @@ export async function GET(req: NextRequest) {
     await getCurrentUser()
 
     const [configs, strategySetting] = await Promise.all([
-      prisma.slaConfig.findMany({ orderBy: { firstResponseHours: 'asc' } }),
-      prisma.setting.findUnique({ where: { key: 'ticket_assign_strategy' } }),
+      prisma.slaConfig.findMany({ orderBy: { firstResponseHours: "asc" } }),
+      prisma.setting.findUnique({ where: { key: "ticket_assign_strategy" } }),
     ])
 
     return apiSuccess({
       configs,
-      strategy: (strategySetting?.value as any)?.strategy || 'round_robin',
+      strategy: (strategySetting?.value as any)?.strategy || "round_robin",
     })
   } catch (error) {
-    if (error instanceof AuthError) return handleApiError(Unauthorized(error.message), '/api/settings/sla')
-    return handleApiError(error, '/api/settings/sla')
+    if (error instanceof AuthError)
+      return handleApiError(Unauthorized(error.message), "/api/settings/sla")
+    return handleApiError(error, "/api/settings/sla")
   }
 }
 
 // PUT /api/settings/sla — Update SLA configs + strategy (ADMIN only)
 export async function PUT(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
     const { configs, strategy } = body as {
-      configs: Array<{ priority: string; firstResponseHours: number; resolutionHours: number }>
+      configs: Array<{
+        priority: string
+        firstResponseHours: number
+        resolutionHours: number
+      }>
       strategy: string
     }
 
@@ -58,15 +63,20 @@ export async function PUT(req: NextRequest) {
     // Update assignment strategy
     if (strategy) {
       await prisma.setting.upsert({
-        where: { key: 'ticket_assign_strategy' },
+        where: { key: "ticket_assign_strategy" },
         update: { value: { strategy }, updatedBy: result.id },
-        create: { key: 'ticket_assign_strategy', value: { strategy }, updatedBy: result.id },
+        create: {
+          key: "ticket_assign_strategy",
+          value: { strategy },
+          updatedBy: result.id,
+        },
       })
     }
 
     return apiSuccess({ success: true })
   } catch (error) {
-    if (error instanceof AuthError) return handleApiError(Unauthorized(error.message), '/api/settings/sla')
-    return handleApiError(error, '/api/settings/sla')
+    if (error instanceof AuthError)
+      return handleApiError(Unauthorized(error.message), "/api/settings/sla")
+    return handleApiError(error, "/api/settings/sla")
   }
 }

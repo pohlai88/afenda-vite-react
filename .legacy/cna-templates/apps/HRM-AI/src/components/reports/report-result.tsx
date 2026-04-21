@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -9,11 +9,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import type { ReportResult } from '@/types/report'
-import { Download, Save, Clock } from 'lucide-react'
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
+} from "@/components/ui/table"
+import type { ReportResult } from "@/types/report"
+import { Download, Save, Clock } from "lucide-react"
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
 
 interface ReportResultProps {
   result: ReportResult
@@ -21,7 +21,11 @@ interface ReportResultProps {
   onExport?: () => void
 }
 
-export function ReportResultView({ result, onSave, onExport }: ReportResultProps) {
+export function ReportResultView({
+  result,
+  onSave,
+  onExport,
+}: ReportResultProps) {
   return (
     <Card>
       <CardHeader>
@@ -30,8 +34,8 @@ export function ReportResultView({ result, onSave, onExport }: ReportResultProps
             <CardTitle className="text-xl">{result.title}</CardTitle>
             <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
               <Clock className="h-4 w-4" />
-              Tạo lúc:{' '}
-              {format(new Date(result.generatedAt), 'HH:mm dd/MM/yyyy', {
+              Tạo lúc:{" "}
+              {format(new Date(result.generatedAt), "HH:mm dd/MM/yyyy", {
                 locale: vi,
               })}
             </p>
@@ -79,7 +83,7 @@ export function ReportResultView({ result, onSave, onExport }: ReportResultProps
                   <TableRow key={index}>
                     {result.columns.map((col) => (
                       <TableCell key={col.key}>
-                        {String(row[col.key] ?? '-')}
+                        {String(row[col.key] ?? "-")}
                       </TableCell>
                     ))}
                   </TableRow>

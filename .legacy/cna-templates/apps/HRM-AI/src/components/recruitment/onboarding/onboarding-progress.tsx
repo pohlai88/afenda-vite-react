@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { ONBOARDING_STATUS } from '@/lib/recruitment/constants'
-import type { OnboardingData } from '@/types/recruitment'
-import { CheckCircle2, Clock, User, Calendar } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { ONBOARDING_STATUS } from "@/lib/recruitment/constants"
+import type { OnboardingData } from "@/types/recruitment"
+import { CheckCircle2, Clock, User, Calendar } from "lucide-react"
 
 interface OnboardingProgressProps {
   onboarding: OnboardingData
@@ -13,36 +13,40 @@ interface OnboardingProgressProps {
 export function OnboardingProgress({ onboarding }: OnboardingProgressProps) {
   const statusConfig = ONBOARDING_STATUS[onboarding.status] || {
     label: onboarding.status,
-    color: 'gray',
+    color: "gray",
   }
 
   const statusColorMap: Record<string, string> = {
-    gray: 'bg-gray-100 text-gray-800',
-    blue: 'bg-blue-100 text-blue-800',
-    green: 'bg-green-100 text-green-800',
-    red: 'bg-red-100 text-red-800',
+    gray: "bg-gray-100 text-gray-800",
+    blue: "bg-blue-100 text-blue-800",
+    green: "bg-green-100 text-green-800",
+    red: "bg-red-100 text-red-800",
   }
 
   const totalTasks = onboarding.tasks?.length || 0
-  const completedTasks = onboarding.tasks?.filter((t) => t.status === 'COMPLETED').length || 0
-  const overdueTasks = onboarding.tasks?.filter(
-    (t) => t.status !== 'COMPLETED' && new Date(t.dueDate) < new Date()
-  ).length || 0
+  const completedTasks =
+    onboarding.tasks?.filter((t) => t.status === "COMPLETED").length || 0
+  const overdueTasks =
+    onboarding.tasks?.filter(
+      (t) => t.status !== "COMPLETED" && new Date(t.dueDate) < new Date()
+    ).length || 0
 
-  const progressPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+  const progressPercentage =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
   const daysRemaining = Math.max(
     0,
     Math.ceil(
-      (new Date(onboarding.expectedEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+      (new Date(onboarding.expectedEndDate).getTime() - Date.now()) /
+        (1000 * 60 * 60 * 24)
     )
   )
 
   const getProgressColor = () => {
-    if (progressPercentage >= 100) return 'bg-green-500'
-    if (progressPercentage >= 75) return 'bg-blue-500'
-    if (progressPercentage >= 50) return 'bg-yellow-500'
-    return 'bg-orange-500'
+    if (progressPercentage >= 100) return "bg-green-500"
+    if (progressPercentage >= 75) return "bg-blue-500"
+    if (progressPercentage >= 50) return "bg-yellow-500"
+    return "bg-orange-500"
   }
 
   return (
@@ -50,7 +54,11 @@ export function OnboardingProgress({ onboarding }: OnboardingProgressProps) {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">Tiến trình Onboarding</CardTitle>
-          <Badge className={statusColorMap[statusConfig.color] || statusColorMap.gray}>
+          <Badge
+            className={
+              statusColorMap[statusConfig.color] || statusColorMap.gray
+            }
+          >
             {statusConfig.label}
           </Badge>
         </div>
@@ -63,10 +71,13 @@ export function OnboardingProgress({ onboarding }: OnboardingProgressProps) {
               <User className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <p className="font-medium text-sm">{onboarding.employee.fullName}</p>
+              <p className="font-medium text-sm">
+                {onboarding.employee.fullName}
+              </p>
               <p className="text-xs text-muted-foreground">
                 {onboarding.employee.employeeCode}
-                {onboarding.employee.position && ` - ${onboarding.employee.position}`}
+                {onboarding.employee.position &&
+                  ` - ${onboarding.employee.position}`}
               </p>
             </div>
           </div>
@@ -85,10 +96,13 @@ export function OnboardingProgress({ onboarding }: OnboardingProgressProps) {
             />
           </div>
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>{completedTasks} / {totalTasks} công việc</span>
+            <span>
+              {completedTasks} / {totalTasks} công việc
+            </span>
             {onboarding.completedAt ? (
               <span className="text-green-600 font-medium">
-                Hoàn thành {new Date(onboarding.completedAt).toLocaleDateString('vi-VN')}
+                Hoàn thành{" "}
+                {new Date(onboarding.completedAt).toLocaleDateString("vi-VN")}
               </span>
             ) : (
               <span>Còn {daysRemaining} ngày</span>
@@ -139,11 +153,15 @@ export function OnboardingProgress({ onboarding }: OnboardingProgressProps) {
           )}
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Ngày bắt đầu:</span>
-            <span>{new Date(onboarding.startDate).toLocaleDateString('vi-VN')}</span>
+            <span>
+              {new Date(onboarding.startDate).toLocaleDateString("vi-VN")}
+            </span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Dự kiến kết thúc:</span>
-            <span>{new Date(onboarding.expectedEndDate).toLocaleDateString('vi-VN')}</span>
+            <span>
+              {new Date(onboarding.expectedEndDate).toLocaleDateString("vi-VN")}
+            </span>
           </div>
         </div>
       </CardContent>

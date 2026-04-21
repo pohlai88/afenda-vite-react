@@ -1,20 +1,21 @@
-'use client'
+"use client"
 
-import { MessageSquare, User } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { StarRating } from '../ratings/star-rating'
-import { FEEDBACK_TYPE } from '@/lib/performance/constants'
-import type { FeedbackData } from '@/types/performance'
+import { MessageSquare, User } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { StarRating } from "../ratings/star-rating"
+import { FEEDBACK_TYPE } from "@/lib/performance/constants"
+import type { FeedbackData } from "@/types/performance"
 
 interface FeedbackCardProps {
   feedback: FeedbackData
 }
 
 export function FeedbackCard({ feedback }: FeedbackCardProps) {
-  const typeInfo = FEEDBACK_TYPE[feedback.feedbackType as keyof typeof FEEDBACK_TYPE]
+  const typeInfo =
+    FEEDBACK_TYPE[feedback.feedbackType as keyof typeof FEEDBACK_TYPE]
 
   return (
     <Card>
@@ -27,7 +28,7 @@ export function FeedbackCard({ feedback }: FeedbackCardProps) {
             </Badge>
           </div>
           <span className="text-[10px] font-data text-muted-foreground">
-            {new Date(feedback.createdAt).toLocaleDateString('vi-VN')}
+            {new Date(feedback.createdAt).toLocaleDateString("vi-VN")}
           </span>
         </div>
       </CardHeader>
@@ -79,8 +80,8 @@ export function FeedbackCard({ feedback }: FeedbackCardProps) {
           <User className="h-3 w-3" />
           <span>
             {feedback.isAnonymous
-              ? 'Ẩn danh'
-              : feedback.provider?.name || 'Không xác định'}
+              ? "Ẩn danh"
+              : feedback.provider?.name || "Không xác định"}
           </span>
         </div>
       </CardContent>

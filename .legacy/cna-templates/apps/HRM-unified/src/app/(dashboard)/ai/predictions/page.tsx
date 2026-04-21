@@ -1,35 +1,41 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useState, useEffect } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
-} from '@/components/ui/table'
+  TableRow,
+} from "@/components/ui/table"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import {
   AlertTriangle,
   TrendingUp,
@@ -41,52 +47,63 @@ import {
   Eye,
   Lightbulb,
   Building2,
-  ChevronRight
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
+  ChevronRight,
+} from "lucide-react"
+import { cn } from "@/lib/utils"
 import type {
   TurnoverAnalysisResult,
   TurnoverPrediction,
-  RiskLevel
-} from '@/lib/ai/predictions/types'
+  RiskLevel,
+} from "@/lib/ai/predictions/types"
 
-function getRiskBadgeVariant(level: RiskLevel): 'default' | 'secondary' | 'destructive' | 'outline' {
-  const variants: Record<RiskLevel, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-    LOW: 'secondary',
-    MEDIUM: 'outline',
-    HIGH: 'default',
-    CRITICAL: 'destructive'
+function getRiskBadgeVariant(
+  level: RiskLevel
+): "default" | "secondary" | "destructive" | "outline" {
+  const variants: Record<
+    RiskLevel,
+    "default" | "secondary" | "destructive" | "outline"
+  > = {
+    LOW: "secondary",
+    MEDIUM: "outline",
+    HIGH: "default",
+    CRITICAL: "destructive",
   }
   return variants[level]
 }
 
 function getRiskLabel(level: RiskLevel): string {
   const labels: Record<RiskLevel, string> = {
-    LOW: 'Thấp',
-    MEDIUM: 'Trung bình',
-    HIGH: 'Cao',
-    CRITICAL: 'Rất cao'
+    LOW: "Thấp",
+    MEDIUM: "Trung bình",
+    HIGH: "Cao",
+    CRITICAL: "Rất cao",
   }
   return labels[level]
 }
 
 function getRiskColor(score: number): string {
-  if (score >= 80) return 'text-red-600'
-  if (score >= 60) return 'text-orange-600'
-  if (score >= 40) return 'text-yellow-600'
-  return 'text-green-600'
+  if (score >= 80) return "text-red-600"
+  if (score >= 60) return "text-orange-600"
+  if (score >= 40) return "text-yellow-600"
+  return "text-green-600"
 }
 
 function getProgressColor(score: number): string {
-  if (score >= 80) return 'bg-red-500'
-  if (score >= 60) return 'bg-orange-500'
-  if (score >= 40) return 'bg-yellow-500'
-  return 'bg-green-500'
+  if (score >= 80) return "bg-red-500"
+  if (score >= 60) return "bg-orange-500"
+  if (score >= 40) return "bg-yellow-500"
+  return "bg-green-500"
 }
 
-function TrendIcon({ trend }: { trend: 'increasing' | 'stable' | 'decreasing' }) {
-  if (trend === 'increasing') return <TrendingUp className="h-3 w-3 text-red-500" />
-  if (trend === 'decreasing') return <TrendingDown className="h-3 w-3 text-green-500" />
+function TrendIcon({
+  trend,
+}: {
+  trend: "increasing" | "stable" | "decreasing"
+}) {
+  if (trend === "increasing")
+    return <TrendingUp className="h-3 w-3 text-red-500" />
+  if (trend === "decreasing")
+    return <TrendingDown className="h-3 w-3 text-green-500" />
   return <Minus className="h-3 w-3 text-gray-500" />
 }
 
@@ -94,8 +111,9 @@ export default function TurnoverPredictionsPage() {
   const [data, setData] = useState<TurnoverAnalysisResult | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [selectedDepartment, setSelectedDepartment] = useState<string>('all')
-  const [selectedPrediction, setSelectedPrediction] = useState<TurnoverPrediction | null>(null)
+  const [selectedDepartment, setSelectedDepartment] = useState<string>("all")
+  const [selectedPrediction, setSelectedPrediction] =
+    useState<TurnoverPrediction | null>(null)
 
   const fetchPredictions = async () => {
     setIsLoading(true)
@@ -103,22 +121,22 @@ export default function TurnoverPredictionsPage() {
 
     try {
       const params = new URLSearchParams()
-      if (selectedDepartment && selectedDepartment !== 'all') {
-        params.append('departmentId', selectedDepartment)
+      if (selectedDepartment && selectedDepartment !== "all") {
+        params.append("departmentId", selectedDepartment)
       }
-      params.append('limit', '50')
+      params.append("limit", "50")
 
       const res = await fetch(`/api/ai/predictions/turnover?${params}`)
 
       if (!res.ok) {
         const errData = await res.json()
-        throw new Error(errData.error || 'Failed to fetch predictions')
+        throw new Error(errData.error || "Failed to fetch predictions")
       }
 
       const result = await res.json()
       setData(result.data ?? result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error')
+      setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
       setIsLoading(false)
     }
@@ -155,8 +173,14 @@ export default function TurnoverPredictionsPage() {
             Phân tích AI về rủi ro nghỉ việc của nhân viên
           </p>
         </div>
-        <Button onClick={fetchPredictions} variant="outline" disabled={isLoading}>
-          <RefreshCw className={cn('h-4 w-4 mr-2', isLoading && 'animate-spin')} />
+        <Button
+          onClick={fetchPredictions}
+          variant="outline"
+          disabled={isLoading}
+        >
+          <RefreshCw
+            className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")}
+          />
           Làm mới
         </Button>
       </div>
@@ -168,7 +192,9 @@ export default function TurnoverPredictionsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Tổng phân tích</p>
-                <p className="text-2xl font-bold">{data.summary.totalAnalyzed}</p>
+                <p className="text-2xl font-bold">
+                  {data.summary.totalAnalyzed}
+                </p>
               </div>
               <Users className="h-8 w-8 text-muted-foreground" />
             </div>
@@ -180,7 +206,9 @@ export default function TurnoverPredictionsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Rủi ro rất cao</p>
-                <p className="text-2xl font-bold text-red-600">{data.summary.criticalRisk}</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {data.summary.criticalRisk}
+                </p>
               </div>
               <AlertTriangle className="h-8 w-8 text-red-500" />
             </div>
@@ -192,7 +220,9 @@ export default function TurnoverPredictionsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Rủi ro cao</p>
-                <p className="text-2xl font-bold text-orange-600">{data.summary.highRisk}</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {data.summary.highRisk}
+                </p>
               </div>
               <TrendingUp className="h-8 w-8 text-orange-500" />
             </div>
@@ -203,8 +233,12 @@ export default function TurnoverPredictionsPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Rủi ro trung bình</p>
-                <p className="text-2xl font-bold text-yellow-600">{data.summary.mediumRisk}</p>
+                <p className="text-sm text-muted-foreground">
+                  Rủi ro trung bình
+                </p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {data.summary.mediumRisk}
+                </p>
               </div>
               <Minus className="h-8 w-8 text-yellow-500" />
             </div>
@@ -216,7 +250,9 @@ export default function TurnoverPredictionsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Rủi ro thấp</p>
-                <p className="text-2xl font-bold text-green-600">{data.summary.lowRisk}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {data.summary.lowRisk}
+                </p>
               </div>
               <TrendingDown className="h-8 w-8 text-green-500" />
             </div>
@@ -235,13 +271,16 @@ export default function TurnoverPredictionsPage() {
                   Sắp xếp theo điểm rủi ro cao nhất
                 </CardDescription>
               </div>
-              <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+              <Select
+                value={selectedDepartment}
+                onValueChange={setSelectedDepartment}
+              >
                 <SelectTrigger className="w-[200px]">
                   <SelectValue placeholder="Tất cả phòng ban" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Tất cả phòng ban</SelectItem>
-                  {data.insights.topRiskDepartments.map(dept => (
+                  {data.insights.topRiskDepartments.map((dept) => (
                     <SelectItem key={dept.name} value={dept.name}>
                       {dept.name}
                     </SelectItem>
@@ -263,11 +302,13 @@ export default function TurnoverPredictionsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.predictions.map(prediction => (
+                  {data.predictions.map((prediction) => (
                     <TableRow key={prediction.employeeId}>
                       <TableCell>
                         <div>
-                          <p className="font-medium">{prediction.employeeName}</p>
+                          <p className="font-medium">
+                            {prediction.employeeName}
+                          </p>
                           <p className="text-xs text-muted-foreground">
                             {prediction.employeeCode}
                           </p>
@@ -283,17 +324,27 @@ export default function TurnoverPredictionsPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col items-center gap-1">
-                          <span className={cn('font-bold', getRiskColor(prediction.riskScore))}>
+                          <span
+                            className={cn(
+                              "font-bold",
+                              getRiskColor(prediction.riskScore)
+                            )}
+                          >
                             {prediction.riskScore}
                           </span>
                           <Progress
                             value={prediction.riskScore}
-                            className={cn('h-1.5 w-16', getProgressColor(prediction.riskScore))}
+                            className={cn(
+                              "h-1.5 w-16",
+                              getProgressColor(prediction.riskScore)
+                            )}
                           />
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
-                        <Badge variant={getRiskBadgeVariant(prediction.riskLevel)}>
+                        <Badge
+                          variant={getRiskBadgeVariant(prediction.riskLevel)}
+                        >
                           {getRiskLabel(prediction.riskLevel)}
                         </Badge>
                       </TableCell>
@@ -315,7 +366,9 @@ export default function TurnoverPredictionsPage() {
                                 Chi tiết dự đoán - {prediction.employeeName}
                               </DialogTitle>
                               <DialogDescription>
-                                {prediction.employeeCode} | {prediction.departmentName} | {prediction.positionName}
+                                {prediction.employeeCode} |{" "}
+                                {prediction.departmentName} |{" "}
+                                {prediction.positionName}
                               </DialogDescription>
                             </DialogHeader>
 
@@ -323,15 +376,27 @@ export default function TurnoverPredictionsPage() {
                               {/* Risk Score */}
                               <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                                 <div>
-                                  <p className="text-sm text-muted-foreground">Điểm rủi ro tổng thể</p>
-                                  <p className={cn('text-3xl font-bold', getRiskColor(prediction.riskScore))}>
+                                  <p className="text-sm text-muted-foreground">
+                                    Điểm rủi ro tổng thể
+                                  </p>
+                                  <p
+                                    className={cn(
+                                      "text-3xl font-bold",
+                                      getRiskColor(prediction.riskScore)
+                                    )}
+                                  >
                                     {prediction.riskScore}/100
                                   </p>
                                   <p className="text-sm text-muted-foreground mt-1">
                                     {prediction.predictedTimeframe}
                                   </p>
                                 </div>
-                                <Badge variant={getRiskBadgeVariant(prediction.riskLevel)} className="text-lg px-4 py-2">
+                                <Badge
+                                  variant={getRiskBadgeVariant(
+                                    prediction.riskLevel
+                                  )}
+                                  className="text-lg px-4 py-2"
+                                >
                                   {getRiskLabel(prediction.riskLevel)}
                                 </Badge>
                               </div>
@@ -344,15 +409,27 @@ export default function TurnoverPredictionsPage() {
                                 </h4>
                                 <div className="space-y-3">
                                   {prediction.factors
-                                    .sort((a, b) => b.contribution - a.contribution)
+                                    .sort(
+                                      (a, b) => b.contribution - a.contribution
+                                    )
                                     .map((factor, idx) => (
-                                      <div key={idx} className="p-3 border rounded-lg">
+                                      <div
+                                        key={idx}
+                                        className="p-3 border rounded-lg"
+                                      >
                                         <div className="flex items-center justify-between mb-2">
                                           <div className="flex items-center gap-2">
-                                            <span className="font-medium">{factor.name}</span>
+                                            <span className="font-medium">
+                                              {factor.name}
+                                            </span>
                                             <TrendIcon trend={factor.trend} />
                                           </div>
-                                          <span className={cn('font-bold', getRiskColor(factor.score))}>
+                                          <span
+                                            className={cn(
+                                              "font-bold",
+                                              getRiskColor(factor.score)
+                                            )}
+                                          >
                                             {factor.score}/100
                                           </span>
                                         </div>
@@ -364,7 +441,8 @@ export default function TurnoverPredictionsPage() {
                                           {factor.description}
                                         </p>
                                         <p className="text-xs text-muted-foreground mt-1">
-                                          Trọng số: {factor.weight}% | Đóng góp: {factor.contribution.toFixed(1)} điểm
+                                          Trọng số: {factor.weight}% | Đóng góp:{" "}
+                                          {factor.contribution.toFixed(1)} điểm
                                         </p>
                                       </div>
                                     ))}
@@ -378,22 +456,27 @@ export default function TurnoverPredictionsPage() {
                                   Đề xuất hành động
                                 </h4>
                                 <div className="space-y-2">
-                                  {prediction.aiRecommendations.map((rec, idx) => (
-                                    <div
-                                      key={idx}
-                                      className="flex items-start gap-2 p-3 bg-muted rounded-lg"
-                                    >
-                                      <ChevronRight className="h-4 w-4 mt-0.5 text-primary" />
-                                      <span className="text-sm">{rec}</span>
-                                    </div>
-                                  ))}
+                                  {prediction.aiRecommendations.map(
+                                    (rec, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="flex items-start gap-2 p-3 bg-muted rounded-lg"
+                                      >
+                                        <ChevronRight className="h-4 w-4 mt-0.5 text-primary" />
+                                        <span className="text-sm">{rec}</span>
+                                      </div>
+                                    )
+                                  )}
                                 </div>
                               </div>
 
                               {/* Confidence */}
                               <div className="text-xs text-muted-foreground text-center">
-                                Độ tin cậy: {prediction.confidence}% | Tính toán lúc:{' '}
-                                {new Date(prediction.calculatedAt).toLocaleString('vi-VN')}
+                                Độ tin cậy: {prediction.confidence}% | Tính toán
+                                lúc:{" "}
+                                {new Date(
+                                  prediction.calculatedAt
+                                ).toLocaleString("vi-VN")}
                               </div>
                             </div>
                           </DialogContent>
@@ -423,7 +506,12 @@ export default function TurnoverPredictionsPage() {
                   <div key={idx} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <span className="truncate">{dept.name}</span>
-                      <span className={cn('font-medium', getRiskColor(dept.riskScore))}>
+                      <span
+                        className={cn(
+                          "font-medium",
+                          getRiskColor(dept.riskScore)
+                        )}
+                      >
                         {dept.riskScore}
                       </span>
                     </div>
@@ -467,18 +555,20 @@ export default function TurnoverPredictionsPage() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-3">
-                {data.insights.trendDirection === 'improving' && (
+                {data.insights.trendDirection === "improving" && (
                   <>
                     <TrendingDown className="h-8 w-8 text-green-500" />
                     <div>
-                      <p className="font-medium text-green-600">Đang cải thiện</p>
+                      <p className="font-medium text-green-600">
+                        Đang cải thiện
+                      </p>
                       <p className="text-sm text-muted-foreground">
                         Rủi ro nghỉ việc có xu hướng giảm
                       </p>
                     </div>
                   </>
                 )}
-                {data.insights.trendDirection === 'worsening' && (
+                {data.insights.trendDirection === "worsening" && (
                   <>
                     <TrendingUp className="h-8 w-8 text-red-500" />
                     <div>
@@ -489,7 +579,7 @@ export default function TurnoverPredictionsPage() {
                     </div>
                   </>
                 )}
-                {data.insights.trendDirection === 'stable' && (
+                {data.insights.trendDirection === "stable" && (
                   <>
                     <Minus className="h-8 w-8 text-gray-500" />
                     <div>

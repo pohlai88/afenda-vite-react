@@ -2,67 +2,78 @@
 // PAGE SETUP DIALOG
 // ============================================================
 
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import { usePrintStore } from '../../stores/printStore';
+import React, { useState } from "react"
+import { X } from "lucide-react"
+import { usePrintStore } from "../../stores/printStore"
 import {
   PAPER_SIZES,
   MARGIN_PRESETS,
   PageMargins,
   HEADER_FOOTER_CODES,
   PaperSize,
-} from '../../types/print';
-import './Print.css';
+} from "../../types/print"
+import "./Print.css"
 
 interface PageSetupDialogProps {
-  sheetId: string;
-  onClose: () => void;
+  sheetId: string
+  onClose: () => void
 }
 
-type TabType = 'page' | 'margins' | 'headerFooter';
+type TabType = "page" | "margins" | "headerFooter"
 
 export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
   sheetId,
   onClose,
 }) => {
-  const [activeTab, setActiveTab] = useState<TabType>('page');
-  const { getSettings, updateSettings, setMargins } = usePrintStore();
-  const settings = getSettings(sheetId);
+  const [activeTab, setActiveTab] = useState<TabType>("page")
+  const { getSettings, updateSettings, setMargins } = usePrintStore()
+  const settings = getSettings(sheetId)
 
-  const [localMargins, setLocalMargins] = useState<PageMargins>(settings.margins);
-  const [marginPreset, setMarginPreset] = useState('normal');
+  const [localMargins, setLocalMargins] = useState<PageMargins>(
+    settings.margins
+  )
+  const [marginPreset, setMarginPreset] = useState("normal")
 
   const handleMarginPresetChange = (preset: string) => {
-    setMarginPreset(preset);
-    if (preset !== 'custom') {
-      const presetMargins = MARGIN_PRESETS[preset];
-      setLocalMargins(presetMargins);
-      setMargins(sheetId, presetMargins);
+    setMarginPreset(preset)
+    if (preset !== "custom") {
+      const presetMargins = MARGIN_PRESETS[preset]
+      setLocalMargins(presetMargins)
+      setMargins(sheetId, presetMargins)
     }
-  };
+  }
 
   const handleMarginChange = (key: keyof PageMargins, value: number) => {
-    const newMargins = { ...localMargins, [key]: value };
-    setLocalMargins(newMargins);
-    setMarginPreset('custom');
-    setMargins(sheetId, newMargins);
-  };
+    const newMargins = { ...localMargins, [key]: value }
+    setLocalMargins(newMargins)
+    setMarginPreset("custom")
+    setMargins(sheetId, newMargins)
+  }
 
-  const handleHeaderChange = (position: 'left' | 'center' | 'right', value: string) => {
+  const handleHeaderChange = (
+    position: "left" | "center" | "right",
+    value: string
+  ) => {
     updateSettings(sheetId, {
       header: { ...settings.header, [position]: value },
-    });
-  };
+    })
+  }
 
-  const handleFooterChange = (position: 'left' | 'center' | 'right', value: string) => {
+  const handleFooterChange = (
+    position: "left" | "center" | "right",
+    value: string
+  ) => {
     updateSettings(sheetId, {
       footer: { ...settings.footer, [position]: value },
-    });
-  };
+    })
+  }
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog page-setup-dialog" onClick={e => e.stopPropagation()}>
+      <div
+        className="dialog page-setup-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h3>Page Setup</h3>
           <button className="close-btn" onClick={onClose}>
@@ -73,20 +84,20 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
         {/* Tabs */}
         <div className="page-setup-tabs">
           <button
-            className={activeTab === 'page' ? 'active' : ''}
-            onClick={() => setActiveTab('page')}
+            className={activeTab === "page" ? "active" : ""}
+            onClick={() => setActiveTab("page")}
           >
             Page
           </button>
           <button
-            className={activeTab === 'margins' ? 'active' : ''}
-            onClick={() => setActiveTab('margins')}
+            className={activeTab === "margins" ? "active" : ""}
+            onClick={() => setActiveTab("margins")}
           >
             Margins
           </button>
           <button
-            className={activeTab === 'headerFooter' ? 'active' : ''}
-            onClick={() => setActiveTab('headerFooter')}
+            className={activeTab === "headerFooter" ? "active" : ""}
+            onClick={() => setActiveTab("headerFooter")}
           >
             Header/Footer
           </button>
@@ -94,7 +105,7 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
 
         <div className="dialog-content">
           {/* Page Tab */}
-          {activeTab === 'page' && (
+          {activeTab === "page" && (
             <div className="tab-content">
               <div className="form-group">
                 <label>Orientation</label>
@@ -102,16 +113,20 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <label>
                     <input
                       type="radio"
-                      checked={settings.orientation === 'portrait'}
-                      onChange={() => updateSettings(sheetId, { orientation: 'portrait' })}
+                      checked={settings.orientation === "portrait"}
+                      onChange={() =>
+                        updateSettings(sheetId, { orientation: "portrait" })
+                      }
                     />
                     Portrait
                   </label>
                   <label>
                     <input
                       type="radio"
-                      checked={settings.orientation === 'landscape'}
-                      onChange={() => updateSettings(sheetId, { orientation: 'landscape' })}
+                      checked={settings.orientation === "landscape"}
+                      onChange={() =>
+                        updateSettings(sheetId, { orientation: "landscape" })
+                      }
                     />
                     Landscape
                   </label>
@@ -122,10 +137,16 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                 <label>Paper Size</label>
                 <select
                   value={settings.paperSize}
-                  onChange={(e) => updateSettings(sheetId, { paperSize: e.target.value as PaperSize })}
+                  onChange={(e) =>
+                    updateSettings(sheetId, {
+                      paperSize: e.target.value as PaperSize,
+                    })
+                  }
                 >
                   {Object.entries(PAPER_SIZES).map(([key, val]) => (
-                    <option key={key} value={key}>{val.label}</option>
+                    <option key={key} value={key}>
+                      {val.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -136,8 +157,13 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <label>
                     <input
                       type="radio"
-                      checked={settings.scalingMode === 'actual' || settings.scalingMode === 'custom'}
-                      onChange={() => updateSettings(sheetId, { scalingMode: 'actual' })}
+                      checked={
+                        settings.scalingMode === "actual" ||
+                        settings.scalingMode === "custom"
+                      }
+                      onChange={() =>
+                        updateSettings(sheetId, { scalingMode: "actual" })
+                      }
                     />
                     Adjust to:
                     <input
@@ -145,7 +171,12 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                       min="10"
                       max="400"
                       value={settings.customScale}
-                      onChange={(e) => updateSettings(sheetId, { scalingMode: 'custom', customScale: parseInt(e.target.value) })}
+                      onChange={(e) =>
+                        updateSettings(sheetId, {
+                          scalingMode: "custom",
+                          customScale: parseInt(e.target.value),
+                        })
+                      }
                       className="scale-number-input"
                     />
                     % normal size
@@ -153,8 +184,10 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <label>
                     <input
                       type="radio"
-                      checked={settings.scalingMode === 'fitToPage'}
-                      onChange={() => updateSettings(sheetId, { scalingMode: 'fitToPage' })}
+                      checked={settings.scalingMode === "fitToPage"}
+                      onChange={() =>
+                        updateSettings(sheetId, { scalingMode: "fitToPage" })
+                      }
                     />
                     Fit to page
                   </label>
@@ -168,7 +201,11 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                     <input
                       type="checkbox"
                       checked={settings.printGridlines}
-                      onChange={(e) => updateSettings(sheetId, { printGridlines: e.target.checked })}
+                      onChange={(e) =>
+                        updateSettings(sheetId, {
+                          printGridlines: e.target.checked,
+                        })
+                      }
                     />
                     Gridlines
                   </label>
@@ -176,7 +213,11 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                     <input
                       type="checkbox"
                       checked={settings.printRowColHeaders}
-                      onChange={(e) => updateSettings(sheetId, { printRowColHeaders: e.target.checked })}
+                      onChange={(e) =>
+                        updateSettings(sheetId, {
+                          printRowColHeaders: e.target.checked,
+                        })
+                      }
                     />
                     Row and column headings
                   </label>
@@ -184,7 +225,11 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                     <input
                       type="checkbox"
                       checked={settings.blackAndWhite}
-                      onChange={(e) => updateSettings(sheetId, { blackAndWhite: e.target.checked })}
+                      onChange={(e) =>
+                        updateSettings(sheetId, {
+                          blackAndWhite: e.target.checked,
+                        })
+                      }
                     />
                     Black and white
                   </label>
@@ -194,7 +239,7 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
           )}
 
           {/* Margins Tab */}
-          {activeTab === 'margins' && (
+          {activeTab === "margins" && (
             <div className="tab-content">
               <div className="form-group">
                 <label>Preset</label>
@@ -215,7 +260,9 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <input
                     type="number"
                     value={localMargins.top}
-                    onChange={(e) => handleMarginChange('top', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("top", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
@@ -223,7 +270,9 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <input
                     type="number"
                     value={localMargins.bottom}
-                    onChange={(e) => handleMarginChange('bottom', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("bottom", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
@@ -231,7 +280,9 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <input
                     type="number"
                     value={localMargins.left}
-                    onChange={(e) => handleMarginChange('left', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("left", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
@@ -239,7 +290,9 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <input
                     type="number"
                     value={localMargins.right}
-                    onChange={(e) => handleMarginChange('right', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("right", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
@@ -247,7 +300,9 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <input
                     type="number"
                     value={localMargins.header}
-                    onChange={(e) => handleMarginChange('header', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("header", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
@@ -255,7 +310,9 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <input
                     type="number"
                     value={localMargins.footer}
-                    onChange={(e) => handleMarginChange('footer', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("footer", parseInt(e.target.value))
+                    }
                   />
                 </div>
               </div>
@@ -265,7 +322,11 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <input
                     type="checkbox"
                     checked={settings.centerHorizontally}
-                    onChange={(e) => updateSettings(sheetId, { centerHorizontally: e.target.checked })}
+                    onChange={(e) =>
+                      updateSettings(sheetId, {
+                        centerHorizontally: e.target.checked,
+                      })
+                    }
                   />
                   Center on page horizontally
                 </label>
@@ -273,7 +334,11 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                   <input
                     type="checkbox"
                     checked={settings.centerVertically}
-                    onChange={(e) => updateSettings(sheetId, { centerVertically: e.target.checked })}
+                    onChange={(e) =>
+                      updateSettings(sheetId, {
+                        centerVertically: e.target.checked,
+                      })
+                    }
                   />
                   Center on page vertically
                 </label>
@@ -282,7 +347,7 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
           )}
 
           {/* Header/Footer Tab */}
-          {activeTab === 'headerFooter' && (
+          {activeTab === "headerFooter" && (
             <div className="tab-content">
               <div className="form-group">
                 <label>Header</label>
@@ -291,19 +356,23 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                     type="text"
                     placeholder="Left section"
                     value={settings.header.left}
-                    onChange={(e) => handleHeaderChange('left', e.target.value)}
+                    onChange={(e) => handleHeaderChange("left", e.target.value)}
                   />
                   <input
                     type="text"
                     placeholder="Center section"
                     value={settings.header.center}
-                    onChange={(e) => handleHeaderChange('center', e.target.value)}
+                    onChange={(e) =>
+                      handleHeaderChange("center", e.target.value)
+                    }
                   />
                   <input
                     type="text"
                     placeholder="Right section"
                     value={settings.header.right}
-                    onChange={(e) => handleHeaderChange('right', e.target.value)}
+                    onChange={(e) =>
+                      handleHeaderChange("right", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -315,19 +384,23 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                     type="text"
                     placeholder="Left section"
                     value={settings.footer.left}
-                    onChange={(e) => handleFooterChange('left', e.target.value)}
+                    onChange={(e) => handleFooterChange("left", e.target.value)}
                   />
                   <input
                     type="text"
                     placeholder="Center section"
                     value={settings.footer.center}
-                    onChange={(e) => handleFooterChange('center', e.target.value)}
+                    onChange={(e) =>
+                      handleFooterChange("center", e.target.value)
+                    }
                   />
                   <input
                     type="text"
                     placeholder="Right section"
                     value={settings.footer.right}
-                    onChange={(e) => handleFooterChange('right', e.target.value)}
+                    onChange={(e) =>
+                      handleFooterChange("right", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -342,7 +415,7 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                       title={`Insert ${label}`}
                       onClick={() => {
                         // Copy code to clipboard
-                        navigator.clipboard.writeText(code);
+                        navigator.clipboard.writeText(code)
                       }}
                     >
                       {label}
@@ -361,7 +434,7 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PageSetupDialog;
+export default PageSetupDialog

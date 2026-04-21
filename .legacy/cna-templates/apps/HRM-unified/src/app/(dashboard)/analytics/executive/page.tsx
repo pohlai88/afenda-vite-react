@@ -1,14 +1,26 @@
 // src/app/(dashboard)/analytics/executive/page.tsx
 // Executive Dashboard
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Badge } from '@/components/ui/badge'
+import { useState, useEffect } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge"
 import {
   Users,
   TrendingUp,
@@ -20,7 +32,7 @@ import {
   RefreshCw,
   ArrowUp,
   ArrowDown,
-} from 'lucide-react'
+} from "lucide-react"
 import {
   AreaChart,
   Area,
@@ -35,7 +47,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts'
+} from "recharts"
 
 interface ExecutiveMetrics {
   headcount: {
@@ -62,15 +74,28 @@ interface ExecutiveMetrics {
   }
 }
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
+const COLORS = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+]
 
 export default function ExecutiveDashboardPage() {
-  const [period, setPeriod] = useState('month')
+  const [period, setPeriod] = useState("month")
   const [loading, setLoading] = useState(true)
   const [metrics, setMetrics] = useState<ExecutiveMetrics | null>(null)
-  const [headcountTrend, setHeadcountTrend] = useState<Array<{ month: string; count: number }>>([])
-  const [departmentData, setDepartmentData] = useState<Array<{ name: string; value: number }>>([])
-  const [turnoverTrend, setTurnoverTrend] = useState<Array<{ month: string; rate: number; benchmark: number }>>([])
+  const [headcountTrend, setHeadcountTrend] = useState<
+    Array<{ month: string; count: number }>
+  >([])
+  const [departmentData, setDepartmentData] = useState<
+    Array<{ name: string; value: number }>
+  >([])
+  const [turnoverTrend, setTurnoverTrend] = useState<
+    Array<{ month: string; rate: number; benchmark: number }>
+  >([])
 
   useEffect(() => {
     fetchDashboardData()
@@ -83,16 +108,16 @@ export default function ExecutiveDashboardPage() {
       const startDate = new Date()
 
       switch (period) {
-        case 'week':
+        case "week":
           startDate.setDate(startDate.getDate() - 7)
           break
-        case 'month':
+        case "month":
           startDate.setMonth(startDate.getMonth() - 1)
           break
-        case 'quarter':
+        case "quarter":
           startDate.setMonth(startDate.getMonth() - 3)
           break
-        case 'year':
+        case "year":
           startDate.setFullYear(startDate.getFullYear() - 1)
           break
       }
@@ -132,34 +157,46 @@ export default function ExecutiveDashboardPage() {
 
         // Department breakdown
         setDepartmentData(
-          (workforce.headcount?.byDepartment || []).map((d: { department: string; count: number }) => ({
-            name: d.department,
-            value: d.count,
-          }))
+          (workforce.headcount?.byDepartment || []).map(
+            (d: { department: string; count: number }) => ({
+              name: d.department,
+              value: d.count,
+            })
+          )
         )
       }
 
       // Fetch real trend data
       try {
-        const trendsRes = await fetch('/api/analytics/workforce/trends')
+        const trendsRes = await fetch("/api/analytics/workforce/trends")
         if (trendsRes.ok) {
           const trendsJson = await trendsRes.json()
           const trends = trendsJson.data || []
-          setHeadcountTrend(trends.map((t: { month: string; headcount: number }) => ({
-            month: t.month,
-            count: t.headcount,
-          })))
-          setTurnoverTrend(trends.map((t: { month: string; turnoverRate: number; benchmark: number }) => ({
-            month: t.month,
-            rate: t.turnoverRate,
-            benchmark: t.benchmark,
-          })))
+          setHeadcountTrend(
+            trends.map((t: { month: string; headcount: number }) => ({
+              month: t.month,
+              count: t.headcount,
+            }))
+          )
+          setTurnoverTrend(
+            trends.map(
+              (t: {
+                month: string
+                turnoverRate: number
+                benchmark: number
+              }) => ({
+                month: t.month,
+                rate: t.turnoverRate,
+                benchmark: t.benchmark,
+              })
+            )
+          )
         }
       } catch (e) {
-        console.error('Error fetching trends:', e)
+        console.error("Error fetching trends:", e)
       }
     } catch (error) {
-      console.error('Error fetching dashboard data:', error)
+      console.error("Error fetching dashboard data:", error)
     } finally {
       setLoading(false)
     }
@@ -172,7 +209,7 @@ export default function ExecutiveDashboardPage() {
     if (value >= 1000000) {
       return `${(value / 1000000).toFixed(1)}M`
     }
-    return value.toLocaleString('vi-VN')
+    return value.toLocaleString("vi-VN")
   }
 
   return (
@@ -217,7 +254,9 @@ export default function ExecutiveDashboardPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold">{metrics?.headcount.total || 0}</p>
+                  <p className="text-2xl font-bold">
+                    {metrics?.headcount.total || 0}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
@@ -231,8 +270,15 @@ export default function ExecutiveDashboardPage() {
                 ) : (
                   <ArrowDown className="h-4 w-4 text-red-600" />
                 )}
-                <span className={metrics.headcount.change >= 0 ? 'text-green-600' : 'text-red-600'}>
-                  {Math.abs(metrics.headcount.change)} ({metrics.headcount.changePercent}%)
+                <span
+                  className={
+                    metrics.headcount.change >= 0
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }
+                >
+                  {Math.abs(metrics.headcount.change)} (
+                  {metrics.headcount.changePercent}%)
                 </span>
                 <span className="text-muted-foreground">so với kỳ trước</span>
               </div>
@@ -248,7 +294,9 @@ export default function ExecutiveDashboardPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold">{metrics?.turnover.rate.toFixed(1)}%</p>
+                  <p className="text-2xl font-bold">
+                    {metrics?.turnover.rate.toFixed(1)}%
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-red-100 rounded-full">
@@ -261,8 +309,16 @@ export default function ExecutiveDashboardPage() {
             </div>
             {!loading && metrics && (
               <div className="mt-2 flex items-center gap-2 text-sm">
-                <Badge variant={(metrics.turnover.rate <= metrics.turnover.benchmark) ? 'default' : 'destructive'}>
-                  {metrics.turnover.rate <= metrics.turnover.benchmark ? 'Tốt' : 'Cao'}
+                <Badge
+                  variant={
+                    metrics.turnover.rate <= metrics.turnover.benchmark
+                      ? "default"
+                      : "destructive"
+                  }
+                >
+                  {metrics.turnover.rate <= metrics.turnover.benchmark
+                    ? "Tốt"
+                    : "Cao"}
                 </Badge>
                 <span className="text-muted-foreground">
                   Benchmark: {metrics.turnover.benchmark}%
@@ -280,7 +336,9 @@ export default function ExecutiveDashboardPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold">{formatCurrency(metrics?.labor.totalCost || 0)}</p>
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(metrics?.labor.totalCost || 0)}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-green-100 rounded-full">
@@ -301,11 +359,15 @@ export default function ExecutiveDashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Tỷ lệ chuyên cần</p>
+                <p className="text-sm text-muted-foreground">
+                  Tỷ lệ chuyên cần
+                </p>
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold">{metrics?.productivity.attendanceRate}%</p>
+                  <p className="text-2xl font-bold">
+                    {metrics?.productivity.attendanceRate}%
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-purple-100 rounded-full">
@@ -330,7 +392,9 @@ export default function ExecutiveDashboardPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Xu hướng nhân sự</CardTitle>
-            <CardDescription>Biến động số lượng nhân viên theo thời gian</CardDescription>
+            <CardDescription>
+              Biến động số lượng nhân viên theo thời gian
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -376,11 +440,16 @@ export default function ExecutiveDashboardPage() {
                     outerRadius={80}
                     paddingAngle={5}
                     dataKey="value"
-                    label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                    label={({ name, percent }) =>
+                      `${name} ${((percent || 0) * 100).toFixed(0)}%`
+                    }
                     labelLine={false}
                   >
                     {departmentData.slice(0, 6).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -432,7 +501,7 @@ export default function ExecutiveDashboardPage() {
                   {loading ? (
                     <Skeleton className="h-5 w-24" />
                   ) : (
-                    formatCurrency(metrics?.labor.avgSalary || 0) + ' VND'
+                    formatCurrency(metrics?.labor.avgSalary || 0) + " VND"
                   )}
                 </span>
               </div>
@@ -442,26 +511,40 @@ export default function ExecutiveDashboardPage() {
                   {loading ? (
                     <Skeleton className="h-5 w-24" />
                   ) : (
-                    formatCurrency(metrics?.labor.costPerEmployee || 0) + ' VND'
+                    formatCurrency(metrics?.labor.costPerEmployee || 0) + " VND"
                   )}
                 </span>
               </div>
               <div className="flex items-center justify-between py-3 border-b">
                 <span className="text-muted-foreground">Giờ làm TB/tuần</span>
                 <span className="font-medium">
-                  {loading ? <Skeleton className="h-5 w-16" /> : `${metrics?.productivity.avgHoursPerWeek}h`}
+                  {loading ? (
+                    <Skeleton className="h-5 w-16" />
+                  ) : (
+                    `${metrics?.productivity.avgHoursPerWeek}h`
+                  )}
                 </span>
               </div>
               <div className="flex items-center justify-between py-3 border-b">
                 <span className="text-muted-foreground">NV đang hoạt động</span>
                 <span className="font-medium">
-                  {loading ? <Skeleton className="h-5 w-16" /> : metrics?.headcount.active}
+                  {loading ? (
+                    <Skeleton className="h-5 w-16" />
+                  ) : (
+                    metrics?.headcount.active
+                  )}
                 </span>
               </div>
               <div className="flex items-center justify-between py-3">
-                <span className="text-muted-foreground">% OT so với tổng giờ</span>
+                <span className="text-muted-foreground">
+                  % OT so với tổng giờ
+                </span>
                 <span className="font-medium">
-                  {loading ? <Skeleton className="h-5 w-16" /> : `${metrics?.productivity.overtimePercent}%`}
+                  {loading ? (
+                    <Skeleton className="h-5 w-16" />
+                  ) : (
+                    `${metrics?.productivity.overtimePercent}%`
+                  )}
                 </span>
               </div>
             </div>

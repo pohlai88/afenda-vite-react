@@ -2,15 +2,15 @@
 // TAB CONTEXT MENU - Right-click Menu
 // ============================================================
 
-import React, { useEffect, useRef } from 'react';
-import { useTabsStore } from '../../stores/tabsStore';
-import { X, Copy, Pin, PinOff, ExternalLink, Clipboard } from 'lucide-react';
+import React, { useEffect, useRef } from "react"
+import { useTabsStore } from "../../stores/tabsStore"
+import { X, Copy, Pin, PinOff, ExternalLink, Clipboard } from "lucide-react"
 
 interface TabContextMenuProps {
-  tabId: string;
-  x: number;
-  y: number;
-  onClose: () => void;
+  tabId: string
+  x: number
+  y: number
+  onClose: () => void
 }
 
 export const TabContextMenu: React.FC<TabContextMenuProps> = ({
@@ -19,7 +19,7 @@ export const TabContextMenu: React.FC<TabContextMenuProps> = ({
   y,
   onClose,
 }) => {
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null)
 
   const {
     tabs,
@@ -30,47 +30,47 @@ export const TabContextMenu: React.FC<TabContextMenuProps> = ({
     pinTab,
     unpinTab,
     getTabById,
-  } = useTabsStore();
+  } = useTabsStore()
 
-  const tab = getTabById(tabId);
-  const tabIndex = tabs.findIndex((t) => t.id === tabId);
+  const tab = getTabById(tabId)
+  const tabIndex = tabs.findIndex((t) => t.id === tabId)
   const hasTabsToRight = tabs
     .slice(tabIndex + 1)
-    .some((t) => t.type !== 'home' && !t.isPinned);
+    .some((t) => t.type !== "home" && !t.isPinned)
   const hasOtherTabs =
-    tabs.filter((t) => t.id !== tabId && t.type !== 'home' && !t.isPinned)
-      .length > 0;
+    tabs.filter((t) => t.id !== tabId && t.type !== "home" && !t.isPinned)
+      .length > 0
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        onClose();
+        onClose()
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose]);
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [onClose])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
+      if (e.key === "Escape") onClose()
+    }
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [onClose])
 
-  const adjustedX = Math.min(x, window.innerWidth - 200);
-  const adjustedY = Math.min(y, window.innerHeight - 300);
+  const adjustedX = Math.min(x, window.innerWidth - 200)
+  const adjustedY = Math.min(y, window.innerHeight - 300)
 
   const handleAction = (action: () => unknown) => {
-    action();
-    onClose();
-  };
+    action()
+    onClose()
+  }
 
-  if (!tab || tab.type === 'home') {
-    return null;
+  if (!tab || tab.type === "home") {
+    return null
   }
 
   return (
@@ -141,7 +141,7 @@ export const TabContextMenu: React.FC<TabContextMenuProps> = ({
           className="context-menu-item"
           onClick={() =>
             handleAction(() => {
-              navigator.clipboard.writeText(tab.path!);
+              navigator.clipboard.writeText(tab.path!)
             })
           }
         >
@@ -155,7 +155,7 @@ export const TabContextMenu: React.FC<TabContextMenuProps> = ({
         onClick={() =>
           handleAction(() => {
             // Open the tab in a new browser window
-            window.open(`${window.location.pathname}?tab=${tabId}`, '_blank');
+            window.open(`${window.location.pathname}?tab=${tabId}`, "_blank")
           })
         }
       >
@@ -163,7 +163,7 @@ export const TabContextMenu: React.FC<TabContextMenuProps> = ({
         <span className="menu-label">Open in New Window</span>
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default TabContextMenu;
+export default TabContextMenu

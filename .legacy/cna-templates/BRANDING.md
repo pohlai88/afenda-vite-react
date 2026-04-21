@@ -17,30 +17,30 @@ Mở file `packages/branding/src/config.ts` và thay đổi `DEFAULT_BRAND`:
 ```typescript
 export const DEFAULT_BRAND: BrandConfig = {
   platform: {
-    name: 'Tên Nền tảng của bạn / Your Platform Name',
-    shortName: 'ShortName',
+    name: "Tên Nền tảng của bạn / Your Platform Name",
+    shortName: "ShortName",
     tagline: {
-      vi: 'Slogan tiếng Việt',
-      en: 'English tagline',
+      vi: "Slogan tiếng Việt",
+      en: "English tagline",
     },
     // ...
   },
   company: {
-    name: 'Tên Công ty',
-    website: 'https://your-domain.com',
-    supportEmail: 'support@your-domain.com',
+    name: "Tên Công ty",
+    website: "https://your-domain.com",
+    supportEmail: "support@your-domain.com",
     // ...
   },
   technical: {
-    npmScope: '@yourscope',
-    apiKeyPrefix: 'yourprefix_live_',
-    k8sNamespace: 'your-system',
-    eventPrefix: 'your',
-    s3Prefix: 'your-files',
+    npmScope: "@yourscope",
+    apiKeyPrefix: "yourprefix_live_",
+    k8sNamespace: "your-system",
+    eventPrefix: "your",
+    s3Prefix: "your-files",
     // ...
   },
   // ...
-};
+}
 ```
 
 ### Bước 2: Chạy script tái thương hiệu / Step 2: Run Rebrand Script
@@ -90,37 +90,37 @@ packages/branding/
 
 ### Cấu trúc BrandConfig / BrandConfig Structure
 
-| Phần / Section    | Mô tả / Description                                        |
-|-------------------|-------------------------------------------------------------|
-| `platform`        | Tên, slogan, phiên bản / Name, tagline, version            |
-| `company`         | Thông tin pháp lý, website, email / Legal info, contacts    |
-| `visual`          | Logo, favicon, màu sắc / Logo, favicon, color palette       |
-| `technical`       | NPM scope, API prefix, Docker, K8s, S3 / Technical IDs      |
-| `ai`              | Tên trợ lý AI / AI assistant display name                   |
-| `legal`           | Copyright, license / Legal notices                          |
+| Phần / Section | Mô tả / Description                                      |
+| -------------- | -------------------------------------------------------- |
+| `platform`     | Tên, slogan, phiên bản / Name, tagline, version          |
+| `company`      | Thông tin pháp lý, website, email / Legal info, contacts |
+| `visual`       | Logo, favicon, màu sắc / Logo, favicon, color palette    |
+| `technical`    | NPM scope, API prefix, Docker, K8s, S3 / Technical IDs   |
+| `ai`           | Tên trợ lý AI / AI assistant display name                |
+| `legal`        | Copyright, license / Legal notices                       |
 
 ### Sử dụng trong code / Usage in Code
 
 ```typescript
 // Import từ package trung tâm / Import from central package
-import { getBrand, getLabels, platformName } from '@vierp/branding';
+import { getBrand, getLabels, platformName } from "@vierp/branding"
 
 // Lấy config / Get config
-const brand = getBrand();
-console.log(brand.platform.name);  // "VietERP Platform"
+const brand = getBrand()
+console.log(brand.platform.name) // "VietERP Platform"
 
 // Lấy UI labels song ngữ / Get bilingual UI labels
-import { setLocale, getLabels } from '@vierp/branding';
-setLocale('vi-en');  // Song ngữ / Bilingual
-const labels = getLabels();
-console.log(labels.nav.dashboard);  // "Tổng quan / Dashboard"
+import { setLocale, getLabels } from "@vierp/branding"
+setLocale("vi-en") // Song ngữ / Bilingual
+const labels = getLabels()
+console.log(labels.nav.dashboard) // "Tổng quan / Dashboard"
 
 // Override brand tại runtime / Runtime brand override
-import { setBrand } from '@vierp/branding';
+import { setBrand } from "@vierp/branding"
 setBrand({
-  platform: { name: 'MyERP', shortName: 'MyERP' },
-  company: { name: 'My Company' },
-});
+  platform: { name: "MyERP", shortName: "MyERP" },
+  company: { name: "My Company" },
+})
 ```
 
 ---
@@ -129,11 +129,11 @@ setBrand({
 
 ### 3 chế độ / 3 Modes
 
-| Chế độ / Mode | Ví dụ / Example            | Cách dùng / Usage    |
-|----------------|----------------------------|----------------------|
-| `vi`           | Tổng quan                  | `setLocale('vi')`    |
-| `en`           | Dashboard                  | `setLocale('en')`    |
-| `vi-en`        | Tổng quan / Dashboard      | `setLocale('vi-en')` |
+| Chế độ / Mode | Ví dụ / Example       | Cách dùng / Usage    |
+| ------------- | --------------------- | -------------------- |
+| `vi`          | Tổng quan             | `setLocale('vi')`    |
+| `en`          | Dashboard             | `setLocale('en')`    |
+| `vi-en`       | Tổng quan / Dashboard | `setLocale('vi-en')` |
 
 ### Danh sách labels / Label Categories
 
@@ -157,10 +157,12 @@ setBrand({
 ### Logo
 
 Thay thế các file sau / Replace these files:
+
 - `public/assets/logo.svg` — Logo chính / Primary logo
 - `public/assets/favicon.ico` — Favicon
 
 Cập nhật đường dẫn trong config / Update paths in config:
+
 ```typescript
 visual: {
   logoPath: '/assets/your-logo.svg',
@@ -200,18 +202,18 @@ visual: {
 
 ### Danh sách biến cần thay đổi / Variables to Change
 
-| Biến / Variable    | Mặc định / Default              | Mô tả / Description                    |
-|--------------------|----------------------------------|-----------------------------------------|
-| `npmScope`         | `@vierp`                        | NPM package scope                       |
-| `apiKeyPrefix`     | `vierp_live_`                   | API key prefix                          |
-| `dockerRegistry`   | `registry.your-domain.com`      | Docker registry URL                     |
-| `k8sNamespace`     | `vierp-system`                  | Kubernetes namespace                    |
-| `eventPrefix`      | `vierp`                         | NATS event subject prefix               |
-| `domain`           | `your-domain.com`               | Primary domain                          |
-| `dbPrefix`         | `vierp`                         | Database name prefix                    |
-| `storagePrefix`    | `vierp`                         | Cookie/localStorage key prefix          |
-| `githubOrg`        | `your-org`                      | GitHub organization                     |
-| `s3Prefix`         | `vierp-files`                   | S3 bucket name prefix                   |
+| Biến / Variable  | Mặc định / Default         | Mô tả / Description            |
+| ---------------- | -------------------------- | ------------------------------ |
+| `npmScope`       | `@vierp`                   | NPM package scope              |
+| `apiKeyPrefix`   | `vierp_live_`              | API key prefix                 |
+| `dockerRegistry` | `registry.your-domain.com` | Docker registry URL            |
+| `k8sNamespace`   | `vierp-system`             | Kubernetes namespace           |
+| `eventPrefix`    | `vierp`                    | NATS event subject prefix      |
+| `domain`         | `your-domain.com`          | Primary domain                 |
+| `dbPrefix`       | `vierp`                    | Database name prefix           |
+| `storagePrefix`  | `vierp`                    | Cookie/localStorage key prefix |
+| `githubOrg`      | `your-org`                 | GitHub organization            |
+| `s3Prefix`       | `vierp-files`              | S3 bucket name prefix          |
 
 ---
 
@@ -226,5 +228,5 @@ If you encounter issues during customization:
 
 ---
 
-*Tài liệu này được tạo tự động bởi VietERP Platform Debranding Tool.*
-*This document was auto-generated by the VietERP Platform Debranding Tool.*
+_Tài liệu này được tạo tự động bởi VietERP Platform Debranding Tool._
+_This document was auto-generated by the VietERP Platform Debranding Tool._

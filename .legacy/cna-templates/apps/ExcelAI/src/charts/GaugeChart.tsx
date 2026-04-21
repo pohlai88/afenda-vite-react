@@ -2,18 +2,18 @@
 // GAUGE CHART — Gauge/meter chart component
 // =============================================================================
 
-import React, { useMemo } from 'react';
-import type { ChartConfig } from '../autoviz/types';
-import { ChartWrapper } from './ChartWrapper';
+import React, { useMemo } from "react"
+import type { ChartConfig } from "../autoviz/types"
+import { ChartWrapper } from "./ChartWrapper"
 
 interface GaugeChartProps {
-  config: ChartConfig;
-  width?: number;
-  height?: number;
-  min?: number;
-  max?: number;
-  target?: number;
-  showTarget?: boolean;
+  config: ChartConfig
+  width?: number
+  height?: number
+  min?: number
+  max?: number
+  target?: number
+  showTarget?: boolean
 }
 
 export const GaugeChart: React.FC<GaugeChartProps> = ({
@@ -25,48 +25,65 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
   target,
   showTarget = true,
 }) => {
-  const { data, colorScheme, style } = config;
+  const { data, colorScheme, style } = config
 
   // Get value from data
-  const value = data.datasets[0]?.data[0] || 0;
-  const percentage = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
+  const value = data.datasets[0]?.data[0] || 0
+  const percentage = Math.min(
+    100,
+    Math.max(0, ((value - min) / (max - min)) * 100)
+  )
 
-  const chartWidth = width - style.padding * 2;
-  const chartHeight = height - (config.title ? 40 : 0);
+  const chartWidth = width - style.padding * 2
+  const chartHeight = height - (config.title ? 40 : 0)
 
   const gaugeData = useMemo(() => {
-    const cx = chartWidth / 2;
-    const cy = chartHeight - 20;
-    const radius = Math.min(chartWidth / 2, chartHeight - 30) - 10;
-    const strokeWidth = radius * 0.2;
-    const innerRadius = radius - strokeWidth;
+    const cx = chartWidth / 2
+    const cy = chartHeight - 20
+    const radius = Math.min(chartWidth / 2, chartHeight - 30) - 10
+    const strokeWidth = radius * 0.2
+    const innerRadius = radius - strokeWidth
 
     // Gauge arc (180 degrees, from left to right)
-    const startAngle = Math.PI;
-    const endAngle = 0;
-    const valueAngle = startAngle - (percentage / 100) * Math.PI;
+    const startAngle = Math.PI
+    const endAngle = 0
+    const valueAngle = startAngle - (percentage / 100) * Math.PI
 
     // Background arc path
-    const bgPath = describeArc(cx, cy, radius - strokeWidth / 2, startAngle, endAngle);
+    const bgPath = describeArc(
+      cx,
+      cy,
+      radius - strokeWidth / 2,
+      startAngle,
+      endAngle
+    )
 
     // Value arc path
-    const valuePath = describeArc(cx, cy, radius - strokeWidth / 2, startAngle, valueAngle);
+    const valuePath = describeArc(
+      cx,
+      cy,
+      radius - strokeWidth / 2,
+      startAngle,
+      valueAngle
+    )
 
     // Target position
-    const targetAngle = target !== undefined
-      ? startAngle - ((target - min) / (max - min)) * Math.PI
-      : null;
+    const targetAngle =
+      target !== undefined
+        ? startAngle - ((target - min) / (max - min)) * Math.PI
+        : null
 
-    const targetPos = targetAngle !== null
-      ? {
-          x: cx + (radius + 5) * Math.cos(targetAngle),
-          y: cy + (radius + 5) * Math.sin(targetAngle),
-        }
-      : null;
+    const targetPos =
+      targetAngle !== null
+        ? {
+            x: cx + (radius + 5) * Math.cos(targetAngle),
+            y: cy + (radius + 5) * Math.sin(targetAngle),
+          }
+        : null
 
     // Tick marks
     const ticks = [0, 25, 50, 75, 100].map((pct) => {
-      const angle = startAngle - (pct / 100) * Math.PI;
+      const angle = startAngle - (pct / 100) * Math.PI
       return {
         x1: cx + (radius - strokeWidth - 5) * Math.cos(angle),
         y1: cy + (radius - strokeWidth - 5) * Math.sin(angle),
@@ -75,8 +92,8 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
         labelX: cx + (radius - strokeWidth - 25) * Math.cos(angle),
         labelY: cy + (radius - strokeWidth - 25) * Math.sin(angle),
         value: min + (pct / 100) * (max - min),
-      };
-    });
+      }
+    })
 
     return {
       cx,
@@ -89,15 +106,15 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
       targetPos,
       targetAngle,
       ticks,
-    };
-  }, [chartWidth, chartHeight, percentage, min, max, target]);
+    }
+  }, [chartWidth, chartHeight, percentage, min, max, target])
 
   // Determine color based on percentage
   const getValueColor = () => {
-    if (percentage >= 80) return colorScheme.positive || '#22c55e';
-    if (percentage >= 50) return colorScheme.highlight || '#f59e0b';
-    return colorScheme.negative || '#ef4444';
-  };
+    if (percentage >= 80) return colorScheme.positive || "#22c55e"
+    if (percentage >= 50) return colorScheme.highlight || "#f59e0b"
+    return colorScheme.negative || "#ef4444"
+  }
 
   return (
     <ChartWrapper config={config} className="gauge-chart">
@@ -110,7 +127,7 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
         <path
           d={gaugeData.bgPath}
           fill="none"
-          stroke={colorScheme.gridColor || '#e5e7eb'}
+          stroke={colorScheme.gridColor || "#e5e7eb"}
           strokeWidth={gaugeData.strokeWidth}
           strokeLinecap="round"
         />
@@ -122,7 +139,7 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
           stroke={getValueColor()}
           strokeWidth={gaugeData.strokeWidth}
           strokeLinecap="round"
-          className={style.animation ? 'animate-gauge' : ''}
+          className={style.animation ? "animate-gauge" : ""}
         />
 
         {/* Tick marks */}
@@ -133,7 +150,7 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
               y1={tick.y1}
               x2={tick.x2}
               y2={tick.y2}
-              stroke={colorScheme.gridColor || '#d1d5db'}
+              stroke={colorScheme.gridColor || "#d1d5db"}
               strokeWidth={1}
             />
             <text
@@ -150,27 +167,43 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
         ))}
 
         {/* Target marker */}
-        {showTarget && gaugeData.targetPos && gaugeData.targetAngle !== null && (
-          <g className="target-marker">
-            <line
-              x1={gaugeData.cx + (gaugeData.radius - gaugeData.strokeWidth - 5) * Math.cos(gaugeData.targetAngle)}
-              y1={gaugeData.cy + (gaugeData.radius - gaugeData.strokeWidth - 5) * Math.sin(gaugeData.targetAngle)}
-              x2={gaugeData.cx + (gaugeData.radius + 5) * Math.cos(gaugeData.targetAngle)}
-              y2={gaugeData.cy + (gaugeData.radius + 5) * Math.sin(gaugeData.targetAngle)}
-              stroke={colorScheme.highlight || '#f59e0b'}
-              strokeWidth={3}
-            />
-            <text
-              x={gaugeData.targetPos.x}
-              y={gaugeData.targetPos.y - 10}
-              textAnchor="middle"
-              fontSize={10}
-              fill={colorScheme.highlight || '#f59e0b'}
-            >
-              Target
-            </text>
-          </g>
-        )}
+        {showTarget &&
+          gaugeData.targetPos &&
+          gaugeData.targetAngle !== null && (
+            <g className="target-marker">
+              <line
+                x1={
+                  gaugeData.cx +
+                  (gaugeData.radius - gaugeData.strokeWidth - 5) *
+                    Math.cos(gaugeData.targetAngle)
+                }
+                y1={
+                  gaugeData.cy +
+                  (gaugeData.radius - gaugeData.strokeWidth - 5) *
+                    Math.sin(gaugeData.targetAngle)
+                }
+                x2={
+                  gaugeData.cx +
+                  (gaugeData.radius + 5) * Math.cos(gaugeData.targetAngle)
+                }
+                y2={
+                  gaugeData.cy +
+                  (gaugeData.radius + 5) * Math.sin(gaugeData.targetAngle)
+                }
+                stroke={colorScheme.highlight || "#f59e0b"}
+                strokeWidth={3}
+              />
+              <text
+                x={gaugeData.targetPos.x}
+                y={gaugeData.targetPos.y - 10}
+                textAnchor="middle"
+                fontSize={10}
+                fill={colorScheme.highlight || "#f59e0b"}
+              >
+                Target
+              </text>
+            </g>
+          )}
 
         {/* Center value */}
         <text
@@ -218,8 +251,8 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
         </text>
       </svg>
     </ChartWrapper>
-  );
-};
+  )
+}
 
 // Helper function to describe arc path
 function describeArc(
@@ -232,26 +265,26 @@ function describeArc(
   const start = {
     x: cx + radius * Math.cos(startAngle),
     y: cy + radius * Math.sin(startAngle),
-  };
+  }
   const end = {
     x: cx + radius * Math.cos(endAngle),
     y: cy + radius * Math.sin(endAngle),
-  };
+  }
 
-  const largeArcFlag = Math.abs(endAngle - startAngle) > Math.PI ? 1 : 0;
-  const sweepFlag = endAngle > startAngle ? 0 : 1;
+  const largeArcFlag = Math.abs(endAngle - startAngle) > Math.PI ? 1 : 0
+  const sweepFlag = endAngle > startAngle ? 0 : 1
 
-  return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} ${sweepFlag} ${end.x} ${end.y}`;
+  return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} ${sweepFlag} ${end.x} ${end.y}`
 }
 
 function formatNumber(value: number): string {
   if (Math.abs(value) >= 1000000) {
-    return `${(value / 1000000).toFixed(1)}M`;
+    return `${(value / 1000000).toFixed(1)}M`
   }
   if (Math.abs(value) >= 1000) {
-    return `${(value / 1000).toFixed(1)}K`;
+    return `${(value / 1000).toFixed(1)}K`
   }
-  return value.toFixed(value % 1 === 0 ? 0 : 1);
+  return value.toFixed(value % 1 === 0 ? 0 : 1)
 }
 
-export default GaugeChart;
+export default GaugeChart

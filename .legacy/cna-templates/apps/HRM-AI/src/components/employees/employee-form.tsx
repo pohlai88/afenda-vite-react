@@ -28,8 +28,16 @@ import { Separator } from "@/components/ui/separator"
 import { useDepartments } from "@/hooks/use-departments"
 import { usePositions } from "@/hooks/use-positions"
 import { useBranches } from "@/hooks/use-branches"
-import { employeeFormSchema, type EmployeeFormInput, type CreateEmployeeInput } from "@/lib/validations/employee"
-import { GENDER_LABELS, EMPLOYEE_STATUS_LABELS, VN_BANKS } from "@/lib/constants"
+import {
+  employeeFormSchema,
+  type EmployeeFormInput,
+  type CreateEmployeeInput,
+} from "@/lib/validations/employee"
+import {
+  GENDER_LABELS,
+  EMPLOYEE_STATUS_LABELS,
+  VN_BANKS,
+} from "@/lib/constants"
 import type { EmployeeWithRelations } from "@/types"
 
 interface EmployeeFormProps {
@@ -38,7 +46,11 @@ interface EmployeeFormProps {
   isLoading?: boolean
 }
 
-export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormProps) {
+export function EmployeeForm({
+  initialData,
+  onSubmit,
+  isLoading,
+}: EmployeeFormProps) {
   const router = useRouter()
   const { data: departments } = useDepartments()
   const { data: positions } = usePositions()
@@ -49,7 +61,9 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
     defaultValues: {
       employeeCode: initialData?.employeeCode || "",
       fullName: initialData?.fullName || "",
-      dateOfBirth: initialData?.dateOfBirth ? new Date(initialData.dateOfBirth) : undefined,
+      dateOfBirth: initialData?.dateOfBirth
+        ? new Date(initialData.dateOfBirth)
+        : undefined,
       gender: initialData?.gender || undefined,
       idNumber: initialData?.idNumber || "",
       taxCode: initialData?.taxCode || "",
@@ -65,7 +79,9 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
       departmentId: initialData?.departmentId || undefined,
       positionId: initialData?.positionId || undefined,
       branchId: initialData?.branchId || undefined,
-      hireDate: initialData?.hireDate ? new Date(initialData.hireDate) : new Date(),
+      hireDate: initialData?.hireDate
+        ? new Date(initialData.hireDate)
+        : new Date(),
       status: initialData?.status || "ACTIVE",
       notes: initialData?.notes || "",
     },
@@ -121,8 +137,16 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
                     <Input
                       type="date"
                       {...field}
-                      value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
-                      onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
+                      value={
+                        field.value
+                          ? new Date(field.value).toISOString().split("T")[0]
+                          : ""
+                      }
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value ? new Date(e.target.value) : null
+                        )
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -135,7 +159,10 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Giới tính</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn giới tính" />
@@ -160,7 +187,11 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
                 <FormItem>
                   <FormLabel>Số CCCD/CMND</FormLabel>
                   <FormControl>
-                    <Input placeholder="012345678901" {...field} value={field.value || ""} />
+                    <Input
+                      placeholder="012345678901"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -173,7 +204,11 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
                 <FormItem>
                   <FormLabel>Số điện thoại</FormLabel>
                   <FormControl>
-                    <Input placeholder="0901234567" {...field} value={field.value || ""} />
+                    <Input
+                      placeholder="0901234567"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -195,7 +230,11 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
                 <FormItem>
                   <FormLabel>Mã số thuế cá nhân</FormLabel>
                   <FormControl>
-                    <Input placeholder="8012345678" {...field} value={field.value || ""} />
+                    <Input
+                      placeholder="8012345678"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -208,7 +247,11 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
                 <FormItem>
                   <FormLabel>Số sổ BHXH</FormLabel>
                   <FormControl>
-                    <Input placeholder="0123456789" {...field} value={field.value || ""} />
+                    <Input
+                      placeholder="0123456789"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -230,7 +273,11 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
                 <FormItem>
                   <FormLabel>Số tài khoản</FormLabel>
                   <FormControl>
-                    <Input placeholder="1234567890" {...field} value={field.value || ""} />
+                    <Input
+                      placeholder="1234567890"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -242,7 +289,10 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Ngân hàng</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn ngân hàng" />
@@ -267,7 +317,11 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
                 <FormItem>
                   <FormLabel>Chi nhánh</FormLabel>
                   <FormControl>
-                    <Input placeholder="Chi nhánh HCM" {...field} value={field.value || ""} />
+                    <Input
+                      placeholder="Chi nhánh HCM"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -288,7 +342,10 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phòng ban</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn phòng ban" />
@@ -312,7 +369,10 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Chức danh</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn chức danh" />
@@ -336,7 +396,10 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Chi nhánh</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn chi nhánh" />
@@ -364,7 +427,11 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
                     <Input
                       type="date"
                       {...field}
-                      value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
+                      value={
+                        field.value
+                          ? new Date(field.value).toISOString().split("T")[0]
+                          : ""
+                      }
                       onChange={(e) => field.onChange(new Date(e.target.value))}
                     />
                   </FormControl>
@@ -385,11 +452,13 @@ export function EmployeeForm({ initialData, onSubmit, isLoading }: EmployeeFormP
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.entries(EMPLOYEE_STATUS_LABELS).map(([key, label]) => (
-                        <SelectItem key={key} value={key}>
-                          {label}
-                        </SelectItem>
-                      ))}
+                      {Object.entries(EMPLOYEE_STATUS_LABELS).map(
+                        ([key, label]) => (
+                          <SelectItem key={key} value={key}>
+                            {label}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />

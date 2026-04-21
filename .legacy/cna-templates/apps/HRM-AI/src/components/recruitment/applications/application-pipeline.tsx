@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
+import { useState } from "react"
 import {
   DndContext,
   DragOverlay,
@@ -10,12 +10,12 @@ import {
   useSensors,
   DragStartEvent,
   DragEndEvent,
-} from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import type { Application } from '@/types/recruitment'
-import { PIPELINE_STAGES } from '@/lib/recruitment/constants'
-import { PipelineColumn } from './pipeline-column'
-import { ApplicationCard } from './application-card'
+} from "@dnd-kit/core"
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import type { Application } from "@/types/recruitment"
+import { PIPELINE_STAGES } from "@/lib/recruitment/constants"
+import { PipelineColumn } from "./pipeline-column"
+import { ApplicationCard } from "./application-card"
 
 interface ApplicationPipelineProps {
   pipeline: Record<string, Application[]>
@@ -28,7 +28,8 @@ export function ApplicationPipeline({
   onStatusChange,
   onViewApplication,
 }: ApplicationPipelineProps) {
-  const [activeApplication, setActiveApplication] = useState<Application | null>(null)
+  const [activeApplication, setActiveApplication] =
+    useState<Application | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -56,7 +57,7 @@ export function ApplicationPipeline({
     const applicationId = active.id as string
     const newStatus = over.id as string
 
-    let currentStatus = ''
+    let currentStatus = ""
     for (const [status, applications] of Object.entries(pipeline)) {
       if (applications.find((a) => a.id === applicationId)) {
         currentStatus = status
@@ -77,30 +78,30 @@ export function ApplicationPipeline({
       onDragEnd={handleDragEnd}
     >
       <div className="flex gap-4 overflow-x-auto pb-4">
-        {PIPELINE_STAGES.filter((s) => !['REJECTED', 'HIRED'].includes(s.id)).map(
-          (stage) => (
-            <PipelineColumn
-              key={stage.id}
-              id={stage.id}
-              title={stage.label}
-              count={pipeline[stage.id]?.length || 0}
-              color={stage.color}
+        {PIPELINE_STAGES.filter(
+          (s) => !["REJECTED", "HIRED"].includes(s.id)
+        ).map((stage) => (
+          <PipelineColumn
+            key={stage.id}
+            id={stage.id}
+            title={stage.label}
+            count={pipeline[stage.id]?.length || 0}
+            color={stage.color}
+          >
+            <SortableContext
+              items={pipeline[stage.id]?.map((a) => a.id) || []}
+              strategy={verticalListSortingStrategy}
             >
-              <SortableContext
-                items={pipeline[stage.id]?.map((a) => a.id) || []}
-                strategy={verticalListSortingStrategy}
-              >
-                {pipeline[stage.id]?.map((application) => (
-                  <ApplicationCard
-                    key={application.id}
-                    application={application}
-                    onClick={() => onViewApplication(application)}
-                  />
-                ))}
-              </SortableContext>
-            </PipelineColumn>
-          )
-        )}
+              {pipeline[stage.id]?.map((application) => (
+                <ApplicationCard
+                  key={application.id}
+                  application={application}
+                  onClick={() => onViewApplication(application)}
+                />
+              ))}
+            </SortableContext>
+          </PipelineColumn>
+        ))}
       </div>
       <DragOverlay>
         {activeApplication && (

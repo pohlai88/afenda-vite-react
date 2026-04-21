@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { useDroppable } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { cn } from '@/lib/utils'
-import { formatShortCurrency } from '@/lib/constants'
-import { DealCard } from './DealCard'
-import type { StageWithDeals } from '@/types'
+import { useDroppable } from "@dnd-kit/core"
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { cn } from "@/lib/utils"
+import { formatShortCurrency } from "@/lib/constants"
+import { DealCard } from "./DealCard"
+import type { StageWithDeals } from "@/types"
 
 interface KanbanColumnProps {
   stage: StageWithDeals
@@ -14,7 +14,7 @@ interface KanbanColumnProps {
 export function KanbanColumn({ stage }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: stage.id,
-    data: { type: 'stage', stage },
+    data: { type: "stage", stage },
   })
 
   const totalValue = stage.deals.reduce((sum, d) => sum + Number(d.value), 0)
@@ -26,8 +26,8 @@ export function KanbanColumn({ stage }: KanbanColumnProps) {
   return (
     <div
       className={cn(
-        'kanban-column flex flex-col',
-        isOver && 'border-[var(--crm-accent-ring)] bg-[var(--crm-accent-bg)]'
+        "kanban-column flex flex-col",
+        isOver && "border-[var(--crm-accent-ring)] bg-[var(--crm-accent-bg)]"
       )}
     >
       {/* Column header */}
@@ -44,16 +44,18 @@ export function KanbanColumn({ stage }: KanbanColumnProps) {
             {stage.deals.length}
           </span>
         </div>
-        <p className="text-xs text-[var(--crm-text-muted)]">{formatShortCurrency(totalValue)}</p>
+        <p className="text-xs text-[var(--crm-text-muted)]">
+          {formatShortCurrency(totalValue)}
+        </p>
       </div>
 
       {/* Droppable deal area */}
       <div
         ref={setNodeRef}
         className={cn(
-          'flex-1 p-2 space-y-2 overflow-y-auto min-h-[120px]',
-          isWon && 'bg-emerald-500/[0.02]',
-          isLost && 'bg-red-500/[0.02]'
+          "flex-1 p-2 space-y-2 overflow-y-auto min-h-[120px]",
+          isWon && "bg-emerald-500/[0.02]",
+          isLost && "bg-red-500/[0.02]"
         )}
       >
         <SortableContext items={dealIds} strategy={verticalListSortingStrategy}>

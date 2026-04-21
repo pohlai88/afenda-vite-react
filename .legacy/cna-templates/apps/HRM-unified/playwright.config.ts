@@ -1,6 +1,6 @@
 // playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
-import path from 'path';
+import { defineConfig, devices } from "@playwright/test"
+import path from "path"
 
 /**
  * LAC VIET HR - Playwright E2E Test Configuration
@@ -8,12 +8,12 @@ import path from 'path';
  */
 
 // Load environment variables
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
-const CI = !!process.env.CI;
+const BASE_URL = process.env.BASE_URL || "http://localhost:3000"
+const CI = !!process.env.CI
 
 export default defineConfig({
   // Test directory
-  testDir: './tests/e2e/specs',
+  testDir: "./tests/e2e/specs",
 
   // Run tests in parallel
   fullyParallel: true,
@@ -29,10 +29,10 @@ export default defineConfig({
 
   // Reporter configuration
   reporter: [
-    ['html', { outputFolder: 'test-results/e2e-report', open: 'never' }],
-    ['json', { outputFile: 'test-results/e2e-results.json' }],
-    ['junit', { outputFile: 'test-results/e2e-junit.xml' }],
-    ['list'],
+    ["html", { outputFolder: "test-results/e2e-report", open: "never" }],
+    ["json", { outputFile: "test-results/e2e-results.json" }],
+    ["junit", { outputFile: "test-results/e2e-junit.xml" }],
+    ["list"],
   ],
 
   // Global timeout
@@ -46,25 +46,25 @@ export default defineConfig({
     baseURL: BASE_URL,
 
     // Collect trace on first retry
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
 
     // Screenshot on failure
-    screenshot: 'only-on-failure',
+    screenshot: "only-on-failure",
 
     // Video on failure
-    video: 'retain-on-failure',
+    video: "retain-on-failure",
 
     // Action timeout
     actionTimeout: 10000,
     navigationTimeout: 30000,
 
     // Locale for Vietnamese
-    locale: 'vi-VN',
-    timezoneId: 'Asia/Ho_Chi_Minh',
+    locale: "vi-VN",
+    timezoneId: "Asia/Ho_Chi_Minh",
 
     // Geolocation (Ho Chi Minh City)
     geolocation: { longitude: 106.6297, latitude: 10.8231 },
-    permissions: ['geolocation'],
+    permissions: ["geolocation"],
   },
 
   // Test projects
@@ -73,12 +73,12 @@ export default defineConfig({
     // SETUP & TEARDOWN
     // ════════════════════════════════════════════════════════════════
     {
-      name: 'setup',
+      name: "setup",
       testMatch: /global-setup\.ts/,
-      teardown: 'teardown',
+      teardown: "teardown",
     },
     {
-      name: 'teardown',
+      name: "teardown",
       testMatch: /global-teardown\.ts/,
     },
 
@@ -86,68 +86,68 @@ export default defineConfig({
     // DESKTOP BROWSERS
     // ════════════════════════════════════════════════════════════════
     {
-      name: 'chromium',
+      name: "chromium",
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
         viewport: { width: 1920, height: 1080 },
       },
-      dependencies: ['setup'],
+      dependencies: ["setup"],
     },
     {
-      name: 'firefox',
+      name: "firefox",
       use: {
-        ...devices['Desktop Firefox'],
+        ...devices["Desktop Firefox"],
         viewport: { width: 1920, height: 1080 },
       },
-      dependencies: ['setup'],
+      dependencies: ["setup"],
     },
     {
-      name: 'webkit',
+      name: "webkit",
       use: {
-        ...devices['Desktop Safari'],
+        ...devices["Desktop Safari"],
         viewport: { width: 1920, height: 1080 },
       },
-      dependencies: ['setup'],
+      dependencies: ["setup"],
     },
 
     // ════════════════════════════════════════════════════════════════
     // MOBILE BROWSERS
     // ════════════════════════════════════════════════════════════════
     {
-      name: 'mobile-chrome',
-      use: { ...devices['Pixel 5'] },
-      dependencies: ['setup'],
+      name: "mobile-chrome",
+      use: { ...devices["Pixel 5"] },
+      dependencies: ["setup"],
     },
     {
-      name: 'mobile-safari',
-      use: { ...devices['iPhone 13'] },
-      dependencies: ['setup'],
+      name: "mobile-safari",
+      use: { ...devices["iPhone 13"] },
+      dependencies: ["setup"],
     },
 
     // ════════════════════════════════════════════════════════════════
     // TABLET
     // ════════════════════════════════════════════════════════════════
     {
-      name: 'tablet',
-      use: { ...devices['iPad Pro 11'] },
-      dependencies: ['setup'],
+      name: "tablet",
+      use: { ...devices["iPad Pro 11"] },
+      dependencies: ["setup"],
     },
   ],
 
   // Run local dev server before tests
   webServer: {
-    command: 'npm run dev',
+    command: "npm run dev",
     url: BASE_URL,
     reuseExistingServer: !CI,
     timeout: 120000,
-    stdout: 'pipe',
-    stderr: 'pipe',
+    stdout: "pipe",
+    stderr: "pipe",
   },
 
   // Output folder for test artifacts
-  outputDir: 'test-results/e2e-artifacts',
+  outputDir: "test-results/e2e-artifacts",
 
   // Global setup/teardown
-  globalSetup: path.resolve('./tests/e2e/global-setup.ts'),
-  globalTeardown: path.resolve('./tests/e2e/global-teardown.ts'),
-});
+  globalSetup: path.resolve("./tests/e2e/global-setup.ts"),
+  globalTeardown: path.resolve("./tests/e2e/global-teardown.ts"),
+})

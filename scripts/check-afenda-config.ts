@@ -103,6 +103,15 @@ async function main() {
   await runDiagnosticStep(
     "Validate governance path declarations",
     () => {
+      for (const [
+        index,
+        directory,
+      ] of config.workspaceGovernance.packageTopology.workspaceRootDirectories.entries()) {
+        assertRelativeWorkspacePath(
+          directory,
+          `workspaceGovernance.packageTopology.workspaceRootDirectories[${index}]`
+        )
+      }
       assertRelativeWorkspacePath(
         config.workspaceGovernance.featureTemplate.featuresRoot,
         "workspaceGovernance.featureTemplate.featuresRoot"
@@ -230,6 +239,15 @@ async function main() {
     },
     () =>
       `${workspacePackageJsonPaths.length} workspace package manifests checked against ${config.workspace.defaultPackageScope}.`
+  )
+
+  await runDiagnosticStep(
+    "Enforce workspace package topology",
+    async () => {
+      await assertPackageTopologyGovernance(config)
+    },
+    () =>
+      "Workspace package roots do not contain manifestless package directories."
   )
 
   await runDiagnosticStep(
@@ -377,6 +395,29 @@ async function assertRootTopologyGovernance(
 ) {
   const rootTopology = config.workspaceGovernance.rootTopology
   const allowedRootDirectorySet = new Set(rootTopology.allowedRootDirectories)
+  const allowedHiddenRootDirectorySet = new Set(
+    rootTopology.allowedHiddenRootDirectories
+  )
+  const storageDirectorySet = new Set(rootTopology.storageDirectories)
+
+  assertDisjointSets(
+    rootTopology.allowedRootDirectories,
+    rootTopology.allowedHiddenRootDirectories,
+    "workspaceGovernance.rootTopology.allowedRootDirectories",
+    "workspaceGovernance.rootTopology.allowedHiddenRootDirectories"
+  )
+  assertDisjointSets(
+    rootTopology.allowedRootDirectories,
+    rootTopology.storageDirectories,
+    "workspaceGovernance.rootTopology.allowedRootDirectories",
+    "workspaceGovernance.rootTopology.storageDirectories"
+  )
+  assertDisjointSets(
+    rootTopology.allowedHiddenRootDirectories,
+    rootTopology.storageDirectories,
+    "workspaceGovernance.rootTopology.allowedHiddenRootDirectories",
+    "workspaceGovernance.rootTopology.storageDirectories"
+  )
 
   for (const directory of rootTopology.primaryProductDirectories) {
     const directoryPath = path.join(workspaceRoot, directory)
@@ -387,15 +428,25 @@ async function assertRootTopologyGovernance(
   }
 
   const rootEntries = await fs.readdir(workspaceRoot, { withFileTypes: true })
-  const visibleRootDirectories = rootEntries
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
+  const rootDirectories = rootEntries
+    .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
     .sort((left, right) => left.localeCompare(right))
 
-  for (const directoryName of visibleRootDirectories) {
+  for (const directoryName of rootDirectories) {
+    if (directoryName.startsWith(".")) {
+      assert(
+        allowedHiddenRootDirectorySet.has(directoryName) ||
+          storageDirectorySet.has(directoryName),
+        `Hidden root directory "${directoryName}" is not allowed by workspaceGovernance.rootTopology.allowedHiddenRootDirectories or workspaceGovernance.rootTopology.storageDirectories.`
+      )
+      continue
+    }
+
     assert(
-      allowedRootDirectorySet.has(directoryName),
-      `Root directory "${directoryName}" is not allowed by workspaceGovernance.rootTopology.allowedRootDirectories.`
+      allowedRootDirectorySet.has(directoryName) ||
+        storageDirectorySet.has(directoryName),
+      `Root directory "${directoryName}" is not allowed by workspaceGovernance.rootTopology.allowedRootDirectories or workspaceGovernance.rootTopology.storageDirectories.`
     )
   }
 
@@ -403,6 +454,21 @@ async function assertRootTopologyGovernance(
     assert(
       allowedRootDirectorySet.has(directoryName),
       `Primary product directory "${directoryName}" must also be listed in allowedRootDirectories.`
+    )
+    assert(
+      !storageDirectorySet.has(directoryName),
+      `Primary product directory "${directoryName}" must not be listed in storageDirectories.`
+    )
+    assert(
+      !allowedHiddenRootDirectorySet.has(directoryName),
+      `Primary product directory "${directoryName}" must not be listed in allowedHiddenRootDirectories.`
+    )
+  }
+
+  for (const directoryName of rootTopology.storageDirectories) {
+    await assertDirectoryExists(
+      path.join(workspaceRoot, directoryName),
+      `Configured storage directory "${directoryName}" does not exist.`
     )
   }
 
@@ -457,6 +523,51 @@ async function assertFeatureTemplateGovernance(
       await assertFileExists(
         path.join(featureRoot, requiredFile),
         `Feature "${featureDirectory}" must include "${requiredFile}" per workspaceGovernance.featureTemplate.`
+      )
+    }
+  }
+}
+
+async function assertPackageTopologyGovernance(
+  config: Awaited<ReturnType<typeof loadAfendaConfig>>
+) {
+  const packageTopology = config.workspaceGovernance.packageTopology
+  const allowedManifestlessDirectories = new Set(
+    packageTopology.allowedManifestlessDirectories
+  )
+
+  for (const workspaceRootDirectory of packageTopology.workspaceRootDirectories) {
+    const workspaceRootPath = path.join(workspaceRoot, workspaceRootDirectory)
+    await assertDirectoryExists(
+      workspaceRootPath,
+      `Workspace root "${workspaceRootDirectory}" does not exist.`
+    )
+
+    const entries = await fs.readdir(workspaceRootPath, { withFileTypes: true })
+
+    for (const entry of entries) {
+      if (!entry.isDirectory() || entry.name.startsWith(".")) {
+        continue
+      }
+
+      const relativePackageDirectory = toPosixPath(
+        path.join(workspaceRootDirectory, entry.name)
+      )
+      const packageDirectoryPath = path.join(workspaceRootPath, entry.name)
+      const packageJsonPath = path.join(packageDirectoryPath, "package.json")
+
+      if (allowedManifestlessDirectories.has(relativePackageDirectory)) {
+        continue
+      }
+
+      const packageJsonExists = await fs
+        .stat(packageJsonPath)
+        .then((stats) => stats.isFile())
+        .catch(() => false)
+
+      assert(
+        packageJsonExists,
+        `Workspace package directory "${relativePackageDirectory}" must contain a package.json manifest or be explicitly allowlisted in workspaceGovernance.packageTopology.allowedManifestlessDirectories.`
       )
     }
   }
@@ -565,6 +676,21 @@ function assertScopedPackageName(
   assert(
     packageName.startsWith(defaultPackageScope),
     `${label} package name (${packageName}) does not start with workspace.defaultPackageScope (${defaultPackageScope}).`
+  )
+}
+
+function assertDisjointSets(
+  leftValues: string[],
+  rightValues: string[],
+  leftLabel: string,
+  rightLabel: string
+) {
+  const rightSet = new Set(rightValues)
+  const overlap = leftValues.filter((value) => rightSet.has(value))
+
+  assert(
+    overlap.length === 0,
+    `${leftLabel} and ${rightLabel} must be disjoint. Overlap: ${overlap.join(", ")}.`
   )
 }
 

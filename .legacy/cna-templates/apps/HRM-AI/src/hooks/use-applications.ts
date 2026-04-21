@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useState, useEffect, useCallback } from 'react'
-import type { Application } from '@/types/recruitment'
+import { useState, useEffect, useCallback } from "react"
+import type { Application } from "@/types/recruitment"
 
 interface UseApplicationsOptions {
   tenantId: string
@@ -20,9 +20,10 @@ export function useApplications(options: UseApplicationsOptions) {
     setLoading(true)
     try {
       const params = new URLSearchParams({ tenantId: options.tenantId })
-      if (options.status) params.set('status', options.status)
-      if (options.requisitionId) params.set('requisitionId', options.requisitionId)
-      if (options.page) params.set('page', String(options.page))
+      if (options.status) params.set("status", options.status)
+      if (options.requisitionId)
+        params.set("requisitionId", options.requisitionId)
+      if (options.page) params.set("page", String(options.page))
 
       const res = await fetch(`/api/recruitment/applications?${params}`)
       const data = await res.json()
@@ -34,7 +35,7 @@ export function useApplications(options: UseApplicationsOptions) {
         setError(data.error)
       }
     } catch {
-      setError('Failed to fetch applications')
+      setError("Failed to fetch applications")
     } finally {
       setLoading(false)
     }
@@ -44,24 +45,37 @@ export function useApplications(options: UseApplicationsOptions) {
     fetchApplications()
   }, [fetchApplications])
 
-  const updateStatus = useCallback(async (applicationId: string, newStatus: string) => {
-    try {
-      const res = await fetch(`/api/recruitment/applications/${applicationId}/status?tenantId=${options.tenantId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        await fetchApplications()
+  const updateStatus = useCallback(
+    async (applicationId: string, newStatus: string) => {
+      try {
+        const res = await fetch(
+          `/api/recruitment/applications/${applicationId}/status?tenantId=${options.tenantId}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: newStatus }),
+          }
+        )
+        const data = await res.json()
+        if (data.success) {
+          await fetchApplications()
+        }
+        return data
+      } catch {
+        return { success: false, error: "Failed to update status" }
       }
-      return data
-    } catch {
-      return { success: false, error: 'Failed to update status' }
-    }
-  }, [options.tenantId, fetchApplications])
+    },
+    [options.tenantId, fetchApplications]
+  )
 
-  return { applications, total, loading, error, refetch: fetchApplications, updateStatus }
+  return {
+    applications,
+    total,
+    loading,
+    error,
+    refetch: fetchApplications,
+    updateStatus,
+  }
 }
 
 export function usePipeline(tenantId: string, requisitionId?: string) {
@@ -72,16 +86,18 @@ export function usePipeline(tenantId: string, requisitionId?: string) {
     setLoading(true)
     try {
       const params = new URLSearchParams({ tenantId })
-      if (requisitionId) params.set('requisitionId', requisitionId)
+      if (requisitionId) params.set("requisitionId", requisitionId)
 
-      const res = await fetch(`/api/recruitment/applications/pipeline?${params}`)
+      const res = await fetch(
+        `/api/recruitment/applications/pipeline?${params}`
+      )
       const data = await res.json()
 
       if (data.success) {
         setPipeline(data.data)
       }
     } catch (err) {
-      console.error('Failed to fetch pipeline:', err)
+      console.error("Failed to fetch pipeline:", err)
     } finally {
       setLoading(false)
     }

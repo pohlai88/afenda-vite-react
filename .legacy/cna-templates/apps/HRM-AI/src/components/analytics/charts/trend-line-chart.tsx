@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import {
   ResponsiveContainer,
@@ -9,24 +9,24 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-} from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+} from "recharts"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface LineConfig {
-  dataKey: string;
-  name: string;
-  color: string;
+  dataKey: string
+  name: string
+  color: string
 }
 
 interface TrendLineChartProps {
-  title: string;
-  data: Record<string, unknown>[];
-  xKey: string;
-  lines: LineConfig[];
-  height?: number;
-  formatValue?: (value: number) => string;
-  className?: string;
+  title: string
+  data: Record<string, unknown>[]
+  xKey: string
+  lines: LineConfig[]
+  height?: number
+  formatValue?: (value: number) => string
+  className?: string
 }
 
 export function TrendLineChart({
@@ -45,7 +45,10 @@ export function TrendLineChart({
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={height}>
-          <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <LineChart
+            data={data}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
             <XAxis
               dataKey={xKey}
@@ -59,12 +62,14 @@ export function TrendLineChart({
             />
             <Tooltip
               formatter={(value) =>
-                formatValue ? formatValue(Number(value)) : Number(value).toLocaleString('vi-VN')
+                formatValue
+                  ? formatValue(Number(value))
+                  : Number(value).toLocaleString("vi-VN")
               }
               contentStyle={{
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '8px',
+                backgroundColor: "hsl(var(--card))",
+                border: "1px solid hsl(var(--border))",
+                borderRadius: "8px",
               }}
             />
             <Legend />
@@ -84,5 +89,5 @@ export function TrendLineChart({
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  );
+  )
 }

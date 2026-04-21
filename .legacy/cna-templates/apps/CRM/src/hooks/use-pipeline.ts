@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useQuery } from '@tanstack/react-query'
-import type { StageWithDeals, PipelineConfig } from '@/types'
+import { useQuery } from "@tanstack/react-query"
+import type { StageWithDeals, PipelineConfig } from "@/types"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -24,8 +24,8 @@ interface PipelineResponse {
 /** Fetch pipeline configuration with all stages and their deals. */
 export function usePipeline() {
   return useQuery<PipelineResponse>({
-    queryKey: ['pipeline'],
-    queryFn: () => fetchJson<PipelineResponse>('/api/pipeline'),
+    queryKey: ["pipeline"],
+    queryFn: () => fetchJson<PipelineResponse>("/api/pipeline"),
     staleTime: 30_000,
   })
 }

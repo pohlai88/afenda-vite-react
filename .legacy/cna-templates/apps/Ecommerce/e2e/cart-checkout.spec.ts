@@ -1,39 +1,55 @@
-import { test, expect } from '@playwright/test'
-import { TEST_PRODUCTS, TEST_ADDRESSES, PAYMENT_METHODS } from './fixtures/test-data'
+import { test, expect } from "@playwright/test"
+import {
+  TEST_PRODUCTS,
+  TEST_ADDRESSES,
+  PAYMENT_METHODS,
+} from "./fixtures/test-data"
 
-test.describe('Cart and Checkout', () => {
-  test('should add product to cart', async ({ page }) => {
-    await page.goto('/shop')
+test.describe("Cart and Checkout", () => {
+  test("should add product to cart", async ({ page }) => {
+    await page.goto("/shop")
 
     // Wait for products to load
-    await expect(page.locator('[data-testid="product-item"], .product-item, article').first()).toBeVisible({
+    await expect(
+      page
+        .locator('[data-testid="product-item"], .product-item, article')
+        .first()
+    ).toBeVisible({
       timeout: 10_000,
     })
 
     // Click add to cart button on first product
     const addToCartBtn = page
-      .getByRole('button', { name: /thêm vào giỏ|add to cart/i })
+      .getByRole("button", { name: /thêm vào giỏ|add to cart/i })
       .first()
 
     if (await addToCartBtn.isVisible()) {
       await addToCartBtn.click()
 
       // Verify cart updated (could be notification or cart count)
-      const cartNotification = page.getByText(/thêm vào giỏ thành công|added to cart|item added/i)
+      const cartNotification = page.getByText(
+        /thêm vào giỏ thành công|added to cart|item added/i
+      )
       const cartCount = page.locator('[data-testid="cart-count"], .cart-count')
 
-      const hasNotification = await cartNotification.isVisible({ timeout: 3_000 }).catch(() => false)
-      const hasCount = await cartCount.isVisible({ timeout: 3_000 }).catch(() => false)
+      const hasNotification = await cartNotification
+        .isVisible({ timeout: 3_000 })
+        .catch(() => false)
+      const hasCount = await cartCount
+        .isVisible({ timeout: 3_000 })
+        .catch(() => false)
 
       expect(hasNotification || hasCount).toBeTruthy()
     }
   })
 
-  test('should update product quantity in cart', async ({ page }) => {
-    await page.goto('/cart')
+  test("should update product quantity in cart", async ({ page }) => {
+    await page.goto("/cart")
 
     // Wait for cart items to load
-    await expect(page.locator('[data-testid="cart-item"], .cart-item, tr').first()).toBeVisible({
+    await expect(
+      page.locator('[data-testid="cart-item"], .cart-item, tr').first()
+    ).toBeVisible({
       timeout: 10_000,
     })
 
@@ -50,12 +66,13 @@ test.describe('Cart and Checkout', () => {
 
       // Wait for cart to update
       const responsePromise = page.waitForResponse(
-        (resp) => resp.url().includes('/api/cart') && resp.request().method() === 'PUT',
+        (resp) =>
+          resp.url().includes("/api/cart") && resp.request().method() === "PUT",
         { timeout: 15_000 }
       )
 
       // Trigger change event
-      await quantityInput.press('Enter')
+      await quantityInput.press("Enter")
 
       try {
         await responsePromise
@@ -64,27 +81,33 @@ test.describe('Cart and Checkout', () => {
       }
 
       // Verify total updated
-      const cartTotal = page.locator('[data-testid="cart-total"], .cart-total, .total')
+      const cartTotal = page.locator(
+        '[data-testid="cart-total"], .cart-total, .total'
+      )
       await expect(cartTotal).toBeVisible({ timeout: 5_000 })
     }
   })
 
-  test('should complete VNPay checkout flow', async ({ page }) => {
-    await page.goto('/cart')
+  test("should complete VNPay checkout flow", async ({ page }) => {
+    await page.goto("/cart")
 
     // Wait for cart to load
-    await expect(page.locator('[data-testid="cart-item"], .cart-item, tr').first()).toBeVisible({
+    await expect(
+      page.locator('[data-testid="cart-item"], .cart-item, tr').first()
+    ).toBeVisible({
       timeout: 10_000,
     })
 
     // Click proceed to checkout
-    const checkoutBtn = page.getByRole('button', { name: /thanh toán|checkout|proceed/i }).first()
+    const checkoutBtn = page
+      .getByRole("button", { name: /thanh toán|checkout|proceed/i })
+      .first()
 
     if (await checkoutBtn.isVisible()) {
       await checkoutBtn.click()
 
       // Wait for checkout page
-      await page.waitForLoadState('networkidle')
+      await page.waitForLoadState("networkidle")
 
       // Fill shipping address
       const address = TEST_ADDRESSES.hanoi
@@ -94,38 +117,46 @@ test.describe('Cart and Checkout', () => {
         await nameField.fill(address.fullName)
       }
 
-      const phoneField = page.getByPlaceholder(/điện thoại|phone|số điện thoại/i).first()
+      const phoneField = page
+        .getByPlaceholder(/điện thoại|phone|số điện thoại/i)
+        .first()
       if (await phoneField.isVisible()) {
         await phoneField.fill(address.phone)
       }
 
-      const streetField = page.getByPlaceholder(/địa chỉ|address|đường|street/i).first()
+      const streetField = page
+        .getByPlaceholder(/địa chỉ|address|đường|street/i)
+        .first()
       if (await streetField.isVisible()) {
         await streetField.fill(address.street)
       }
 
       // Select payment method - VNPay
       const paymentSelect = page
-        .getByRole('combobox', { name: /phương thức thanh toán|payment method/i })
+        .getByRole("combobox", {
+          name: /phương thức thanh toán|payment method/i,
+        })
         .first()
 
       if (await paymentSelect.isVisible({ timeout: 5_000 })) {
         await paymentSelect.click()
 
-        const vnpayOption = page.getByRole('option', { name: /vnpay/i }).first()
+        const vnpayOption = page.getByRole("option", { name: /vnpay/i }).first()
         if (await vnpayOption.isVisible()) {
           await vnpayOption.click()
         }
       }
 
       // Place order
-      const placeOrderBtn = page.getByRole('button', { name: /đặt hàng|place order|submit/i })
+      const placeOrderBtn = page.getByRole("button", {
+        name: /đặt hàng|place order|submit/i,
+      })
       if (await placeOrderBtn.isEnabled()) {
         const responsePromise = page.waitForResponse(
           (resp) =>
-            resp.url().includes('/api/orders') ||
-            resp.url().includes('/api/payment') ||
-            resp.url().includes('vnpay'),
+            resp.url().includes("/api/orders") ||
+            resp.url().includes("/api/payment") ||
+            resp.url().includes("vnpay"),
           { timeout: 20_000 }
         )
 
@@ -138,27 +169,33 @@ test.describe('Cart and Checkout', () => {
         }
 
         // Verify order confirmation or payment page
-        await expect(page).toHaveURL(/.*order|.*payment|.*checkout/, { timeout: 10_000 })
+        await expect(page).toHaveURL(/.*order|.*payment|.*checkout/, {
+          timeout: 10_000,
+        })
       }
     }
   })
 
-  test('should complete MoMo checkout flow', async ({ page }) => {
-    await page.goto('/cart')
+  test("should complete MoMo checkout flow", async ({ page }) => {
+    await page.goto("/cart")
 
     // Wait for cart to load
-    await expect(page.locator('[data-testid="cart-item"], .cart-item, tr').first()).toBeVisible({
+    await expect(
+      page.locator('[data-testid="cart-item"], .cart-item, tr').first()
+    ).toBeVisible({
       timeout: 10_000,
     })
 
     // Click proceed to checkout
-    const checkoutBtn = page.getByRole('button', { name: /thanh toán|checkout|proceed/i }).first()
+    const checkoutBtn = page
+      .getByRole("button", { name: /thanh toán|checkout|proceed/i })
+      .first()
 
     if (await checkoutBtn.isVisible()) {
       await checkoutBtn.click()
 
       // Wait for checkout page
-      await page.waitForLoadState('networkidle')
+      await page.waitForLoadState("networkidle")
 
       // Fill shipping address
       const address = TEST_ADDRESSES.hcm
@@ -168,38 +205,46 @@ test.describe('Cart and Checkout', () => {
         await nameField.fill(address.fullName)
       }
 
-      const phoneField = page.getByPlaceholder(/điện thoại|phone|số điện thoại/i).first()
+      const phoneField = page
+        .getByPlaceholder(/điện thoại|phone|số điện thoại/i)
+        .first()
       if (await phoneField.isVisible()) {
         await phoneField.fill(address.phone)
       }
 
-      const streetField = page.getByPlaceholder(/địa chỉ|address|đường|street/i).first()
+      const streetField = page
+        .getByPlaceholder(/địa chỉ|address|đường|street/i)
+        .first()
       if (await streetField.isVisible()) {
         await streetField.fill(address.street)
       }
 
       // Select payment method - MoMo
       const paymentSelect = page
-        .getByRole('combobox', { name: /phương thức thanh toán|payment method/i })
+        .getByRole("combobox", {
+          name: /phương thức thanh toán|payment method/i,
+        })
         .first()
 
       if (await paymentSelect.isVisible({ timeout: 5_000 })) {
         await paymentSelect.click()
 
-        const momoOption = page.getByRole('option', { name: /momo/i }).first()
+        const momoOption = page.getByRole("option", { name: /momo/i }).first()
         if (await momoOption.isVisible()) {
           await momoOption.click()
         }
       }
 
       // Place order
-      const placeOrderBtn = page.getByRole('button', { name: /đặt hàng|place order|submit/i })
+      const placeOrderBtn = page.getByRole("button", {
+        name: /đặt hàng|place order|submit/i,
+      })
       if (await placeOrderBtn.isEnabled()) {
         const responsePromise = page.waitForResponse(
           (resp) =>
-            resp.url().includes('/api/orders') ||
-            resp.url().includes('/api/payment') ||
-            resp.url().includes('momo'),
+            resp.url().includes("/api/orders") ||
+            resp.url().includes("/api/payment") ||
+            resp.url().includes("momo"),
           { timeout: 20_000 }
         )
 
@@ -212,7 +257,9 @@ test.describe('Cart and Checkout', () => {
         }
 
         // Verify order confirmation or payment page
-        await expect(page).toHaveURL(/.*order|.*payment|.*checkout/, { timeout: 10_000 })
+        await expect(page).toHaveURL(/.*order|.*payment|.*checkout/, {
+          timeout: 10_000,
+        })
       }
     }
   })

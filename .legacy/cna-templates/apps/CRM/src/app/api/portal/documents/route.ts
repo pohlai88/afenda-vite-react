@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server'
-import { getPortalSession } from '@/lib/portal-auth'
-import { prisma } from '@/lib/prisma'
+import { NextResponse } from "next/server"
+import { getPortalSession } from "@/lib/portal-auth"
+import { prisma } from "@/lib/prisma"
 
 export async function GET() {
   const session = await getPortalSession()
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const companyId = session.portalUser.companyId
@@ -13,10 +13,7 @@ export async function GET() {
   // Get documents belonging to the customer's company or their deals
   const documents = await prisma.document.findMany({
     where: {
-      OR: [
-        { companyId },
-        { deal: { companyId } },
-      ],
+      OR: [{ companyId }, { deal: { companyId } }],
     },
     select: {
       id: true,
@@ -29,7 +26,7 @@ export async function GET() {
       createdAt: true,
       uploadedBy: { select: { name: true } },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
     take: 100,
   })
 

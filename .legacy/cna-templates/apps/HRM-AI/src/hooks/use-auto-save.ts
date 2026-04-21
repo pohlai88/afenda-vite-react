@@ -1,9 +1,9 @@
 // src/hooks/use-auto-save.ts
 // Auto-save form data to localStorage to prevent data loss
 
-'use client'
+"use client"
 
-import { useEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback, useRef } from "react"
 
 interface UseAutoSaveOptions<T> {
   /** Unique key for this form (e.g. 'employee-form-create' or 'employee-form-edit-{id}') */
@@ -25,7 +25,7 @@ interface UseAutoSaveReturn<T> {
   hasSavedData: boolean
 }
 
-const STORAGE_PREFIX = 'vierp-hrm:autosave:'
+const STORAGE_PREFIX = "vierp-hrm:autosave:"
 
 /**
  * Hook to auto-save form data to localStorage.
@@ -119,7 +119,7 @@ export function useAutoSave<T>({
   }, [storageKey])
 
   const hasSavedData = (() => {
-    if (typeof window === 'undefined') return false
+    if (typeof window === "undefined") return false
     try {
       const raw = localStorage.getItem(storageKey)
       if (!raw) return false

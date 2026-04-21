@@ -1,33 +1,37 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft, CalendarIcon, Loader2 } from 'lucide-react'
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { ArrowLeft, CalendarIcon, Loader2 } from "lucide-react"
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Calendar } from '@/components/ui/calendar'
-import { useCreateDeal } from '@/hooks/use-deals'
-import { useCompanies } from '@/hooks/use-companies'
-import { usePipeline } from '@/hooks/use-pipeline'
-import { toast } from '@/hooks/use-toast'
-import { cn } from '@/lib/utils'
-import { useTranslation } from '@/i18n'
-import { CurrencySelect } from '@/components/currency/CurrencySelect'
-import { DEAL_TYPES } from '@/lib/constants'
+} from "@/components/ui/select"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { useCreateDeal } from "@/hooks/use-deals"
+import { useCompanies } from "@/hooks/use-companies"
+import { usePipeline } from "@/hooks/use-pipeline"
+import { toast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
+import { useTranslation } from "@/i18n"
+import { CurrencySelect } from "@/components/currency/CurrencySelect"
+import { DEAL_TYPES } from "@/lib/constants"
 
 export default function NewDealPage() {
   const { t } = useTranslation()
@@ -36,14 +40,14 @@ export default function NewDealPage() {
   const { data: companiesData } = useCompanies({ limit: 100 })
   const { data: pipelineData } = usePipeline()
 
-  const [title, setTitle] = useState('')
-  const [value, setValue] = useState('')
-  const [currency, setCurrency] = useState('VND')
-  const [dealType, setDealType] = useState('')
-  const [companyId, setCompanyId] = useState('')
-  const [stageId, setStageId] = useState('')
+  const [title, setTitle] = useState("")
+  const [value, setValue] = useState("")
+  const [currency, setCurrency] = useState("VND")
+  const [dealType, setDealType] = useState("")
+  const [companyId, setCompanyId] = useState("")
+  const [stageId, setStageId] = useState("")
   const [expectedCloseAt, setExpectedCloseAt] = useState<Date | undefined>()
-  const [notes, setNotes] = useState('')
+  const [notes, setNotes] = useState("")
   const [calendarOpen, setCalendarOpen] = useState(false)
 
   const companies = companiesData?.data ?? []
@@ -53,7 +57,11 @@ export default function NewDealPage() {
     e.preventDefault()
 
     if (!title.trim()) {
-      toast({ title: t('common.error'), description: t('pipeline.dealRequired'), variant: 'destructive' })
+      toast({
+        title: t("common.error"),
+        description: t("pipeline.dealRequired"),
+        variant: "destructive",
+      })
       return
     }
 
@@ -62,9 +70,9 @@ export default function NewDealPage() {
 
     if (!finalStageId) {
       toast({
-        title: t('common.error'),
-        description: t('pipeline.selectStage'),
-        variant: 'destructive',
+        title: t("common.error"),
+        description: t("pipeline.selectStage"),
+        variant: "destructive",
       })
       return
     }
@@ -83,14 +91,14 @@ export default function NewDealPage() {
       } as any,
       {
         onSuccess: () => {
-          toast({ title: t('pipeline.dealCreated') })
-          router.push('/pipeline')
+          toast({ title: t("pipeline.dealCreated") })
+          router.push("/pipeline")
         },
         onError: (err) => {
           toast({
-            title: t('common.error'),
+            title: t("common.error"),
             description: err.message,
-            variant: 'destructive',
+            variant: "destructive",
           })
         },
       }
@@ -99,9 +107,13 @@ export default function NewDealPage() {
 
   return (
     <PageShell
-      title={t('pipeline.newDeal')}
+      title={t("pipeline.newDeal")}
       actions={
-        <Button variant="outline" size="sm" onClick={() => router.push('/pipeline')}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => router.push("/pipeline")}
+        >
           <ArrowLeft className="w-4 h-4" />
           Quay lại
         </Button>
@@ -117,12 +129,15 @@ export default function NewDealPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Title */}
             <div className="space-y-2">
-              <Label htmlFor="title" className="text-[var(--crm-text-secondary)]">
+              <Label
+                htmlFor="title"
+                className="text-[var(--crm-text-secondary)]"
+              >
                 Tên deal <span className="text-red-400">*</span>
               </Label>
               <Input
                 id="title"
-                placeholder={t('pipeline.dealTitlePlaceholder')}
+                placeholder={t("pipeline.dealTitlePlaceholder")}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)]"
@@ -131,8 +146,11 @@ export default function NewDealPage() {
 
             {/* Value + Currency */}
             <div className="space-y-2">
-              <Label htmlFor="value" className="text-[var(--crm-text-secondary)]">
-                {t('common.value')}
+              <Label
+                htmlFor="value"
+                className="text-[var(--crm-text-secondary)]"
+              >
+                {t("common.value")}
               </Label>
               <div className="flex gap-2">
                 <Input
@@ -145,16 +163,22 @@ export default function NewDealPage() {
                   onChange={(e) => setValue(e.target.value)}
                   className="flex-1 bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)]"
                 />
-                <CurrencySelect value={currency} onValueChange={setCurrency} className="w-[140px]" />
+                <CurrencySelect
+                  value={currency}
+                  onValueChange={setCurrency}
+                  className="w-[140px]"
+                />
               </div>
             </div>
 
             {/* Deal Type */}
             <div className="space-y-2">
-              <Label className="text-[var(--crm-text-secondary)]">{t('pipeline.dealType')}</Label>
+              <Label className="text-[var(--crm-text-secondary)]">
+                {t("pipeline.dealType")}
+              </Label>
               <Select value={dealType} onValueChange={setDealType}>
                 <SelectTrigger className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                  <SelectValue placeholder={t('pipeline.selectDealType')} />
+                  <SelectValue placeholder={t("pipeline.selectDealType")} />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {DEAL_TYPES.map((dt) => (
@@ -172,10 +196,12 @@ export default function NewDealPage() {
 
             {/* Company */}
             <div className="space-y-2">
-              <Label className="text-[var(--crm-text-secondary)]">{t('contacts.company')}</Label>
+              <Label className="text-[var(--crm-text-secondary)]">
+                {t("contacts.company")}
+              </Label>
               <Select value={companyId} onValueChange={setCompanyId}>
                 <SelectTrigger className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                  <SelectValue placeholder={t('pipeline.selectCompany')} />
+                  <SelectValue placeholder={t("pipeline.selectCompany")} />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {companies.map((company) => (
@@ -193,10 +219,12 @@ export default function NewDealPage() {
 
             {/* Stage */}
             <div className="space-y-2">
-              <Label className="text-[var(--crm-text-secondary)]">{t('pipeline.stage')}</Label>
+              <Label className="text-[var(--crm-text-secondary)]">
+                {t("pipeline.stage")}
+              </Label>
               <Select value={stageId} onValueChange={setStageId}>
                 <SelectTrigger className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                  <SelectValue placeholder={t('pipeline.selectStage')} />
+                  <SelectValue placeholder={t("pipeline.selectStage")} />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {stages.map((stage) => (
@@ -220,20 +248,22 @@ export default function NewDealPage() {
 
             {/* Expected close date */}
             <div className="space-y-2">
-              <Label className="text-[var(--crm-text-secondary)]">{t('pipeline.expectedCloseDate')}</Label>
+              <Label className="text-[var(--crm-text-secondary)]">
+                {t("pipeline.expectedCloseDate")}
+              </Label>
               <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
-                      'w-full justify-start text-left font-normal bg-[var(--crm-bg-page)] border-[var(--crm-border)]',
-                      !expectedCloseAt && 'text-[var(--crm-text-muted)]'
+                      "w-full justify-start text-left font-normal bg-[var(--crm-bg-page)] border-[var(--crm-border)]",
+                      !expectedCloseAt && "text-[var(--crm-text-muted)]"
                     )}
                   >
                     <CalendarIcon className="w-4 h-4 mr-2" />
                     {expectedCloseAt
-                      ? format(expectedCloseAt, 'dd/MM/yyyy', { locale: vi })
-                      : t('common.selectDate')}
+                      ? format(expectedCloseAt, "dd/MM/yyyy", { locale: vi })
+                      : t("common.selectDate")}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0 bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
@@ -252,13 +282,16 @@ export default function NewDealPage() {
 
             {/* Notes */}
             <div className="space-y-2">
-              <Label htmlFor="notes" className="text-[var(--crm-text-secondary)]">
-                {t('common.notes')}
+              <Label
+                htmlFor="notes"
+                className="text-[var(--crm-text-secondary)]"
+              >
+                {t("common.notes")}
               </Label>
               <Textarea
                 id="notes"
                 rows={4}
-                placeholder={t('pipeline.notesPlaceholder')}
+                placeholder={t("pipeline.notesPlaceholder")}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)] resize-none"
@@ -268,15 +301,17 @@ export default function NewDealPage() {
             {/* Actions */}
             <div className="flex items-center gap-3 pt-2">
               <Button type="submit" disabled={createDeal.isPending}>
-                {createDeal.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                {createDeal.isPending && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
                 Tạo deal
               </Button>
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => router.push('/pipeline')}
+                onClick={() => router.push("/pipeline")}
               >
-                {t('common.cancel')}
+                {t("common.cancel")}
               </Button>
             </div>
           </form>

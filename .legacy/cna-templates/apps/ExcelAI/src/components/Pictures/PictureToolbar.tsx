@@ -2,7 +2,7 @@
 // PICTURE TOOLBAR — Formatting options for selected picture
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState } from "react"
 import {
   Trash2,
   Copy,
@@ -13,17 +13,17 @@ import {
   RotateCw,
   Sun,
   Square,
-} from 'lucide-react';
-import { usePicturesStore } from '../../stores/picturesStore';
-import './Pictures.css';
+} from "lucide-react"
+import { usePicturesStore } from "../../stores/picturesStore"
+import "./Pictures.css"
 
 interface PictureToolbarProps {
-  sheetId: string;
+  sheetId: string
 }
 
 export const PictureToolbar: React.FC<PictureToolbarProps> = ({ sheetId }) => {
-  const [showOpacitySlider, setShowOpacitySlider] = useState(false);
-  const [showBorderOptions, setShowBorderOptions] = useState(false);
+  const [showOpacitySlider, setShowOpacitySlider] = useState(false)
+  const [showBorderOptions, setShowBorderOptions] = useState(false)
 
   const {
     getSelectedPicture,
@@ -34,31 +34,33 @@ export const PictureToolbar: React.FC<PictureToolbarProps> = ({ sheetId }) => {
     bringToFront,
     sendToBack,
     rotatePicture,
-  } = usePicturesStore();
+  } = usePicturesStore()
 
-  const selectedPicture = getSelectedPicture(sheetId);
+  const selectedPicture = getSelectedPicture(sheetId)
 
-  if (!selectedPicture) return null;
+  if (!selectedPicture) return null
 
   const handleRotate = () => {
-    rotatePicture(sheetId, selectedPicture.id, selectedPicture.rotation + 90);
-  };
+    rotatePicture(sheetId, selectedPicture.id, selectedPicture.rotation + 90)
+  }
 
   const handleOpacityChange = (opacity: number) => {
-    updatePictureStyle(sheetId, selectedPicture.id, { opacity });
-  };
+    updatePictureStyle(sheetId, selectedPicture.id, { opacity })
+  }
 
   const handleBorderRadiusChange = (borderRadius: number) => {
-    updatePictureStyle(sheetId, selectedPicture.id, { borderRadius });
-  };
+    updatePictureStyle(sheetId, selectedPicture.id, { borderRadius })
+  }
 
   const handleBorderWidthChange = (borderWidth: number) => {
-    updatePictureStyle(sheetId, selectedPicture.id, { borderWidth });
-  };
+    updatePictureStyle(sheetId, selectedPicture.id, { borderWidth })
+  }
 
   const toggleLock = () => {
-    updatePicture(sheetId, selectedPicture.id, { locked: !selectedPicture.locked });
-  };
+    updatePicture(sheetId, selectedPicture.id, {
+      locked: !selectedPicture.locked,
+    })
+  }
 
   return (
     <div className="picture-toolbar">
@@ -76,8 +78,8 @@ export const PictureToolbar: React.FC<PictureToolbarProps> = ({ sheetId }) => {
         <button
           className="toolbar-btn"
           onClick={() => {
-            setShowOpacitySlider(!showOpacitySlider);
-            setShowBorderOptions(false);
+            setShowOpacitySlider(!showOpacitySlider)
+            setShowBorderOptions(false)
           }}
           title="Opacity"
         >
@@ -103,8 +105,8 @@ export const PictureToolbar: React.FC<PictureToolbarProps> = ({ sheetId }) => {
         <button
           className="toolbar-btn"
           onClick={() => {
-            setShowBorderOptions(!showBorderOptions);
-            setShowOpacitySlider(false);
+            setShowBorderOptions(!showBorderOptions)
+            setShowOpacitySlider(false)
           }}
           title="Border & Corners"
         >
@@ -119,7 +121,9 @@ export const PictureToolbar: React.FC<PictureToolbarProps> = ({ sheetId }) => {
                 min="0"
                 max="50"
                 value={selectedPicture.borderRadius}
-                onChange={(e) => handleBorderRadiusChange(parseInt(e.target.value))}
+                onChange={(e) =>
+                  handleBorderRadiusChange(parseInt(e.target.value))
+                }
               />
             </div>
             <div className="border-option">
@@ -129,7 +133,9 @@ export const PictureToolbar: React.FC<PictureToolbarProps> = ({ sheetId }) => {
                 min="0"
                 max="10"
                 value={selectedPicture.borderWidth}
-                onChange={(e) => handleBorderWidthChange(parseInt(e.target.value))}
+                onChange={(e) =>
+                  handleBorderWidthChange(parseInt(e.target.value))
+                }
               />
             </div>
           </div>
@@ -167,7 +173,7 @@ export const PictureToolbar: React.FC<PictureToolbarProps> = ({ sheetId }) => {
       <button
         className="toolbar-btn"
         onClick={toggleLock}
-        title={selectedPicture.locked ? 'Unlock' : 'Lock'}
+        title={selectedPicture.locked ? "Unlock" : "Lock"}
       >
         {selectedPicture.locked ? <Lock size={18} /> : <Unlock size={18} />}
       </button>
@@ -179,7 +185,7 @@ export const PictureToolbar: React.FC<PictureToolbarProps> = ({ sheetId }) => {
         <Trash2 size={18} />
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default PictureToolbar;
+export default PictureToolbar

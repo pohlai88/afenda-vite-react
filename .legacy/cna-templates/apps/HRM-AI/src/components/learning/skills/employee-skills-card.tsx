@@ -1,29 +1,39 @@
-'use client';
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { User } from 'lucide-react';
-import { SkillRating } from './skill-rating';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { User } from "lucide-react"
+import { SkillRating } from "./skill-rating"
 
 interface EmployeeSkill {
-  id: string;
-  name: string;
-  currentLevel: number;
-  requiredLevel?: number;
+  id: string
+  name: string
+  currentLevel: number
+  requiredLevel?: number
 }
 
 interface EmployeeSkillsCardProps {
-  employeeName: string;
-  position?: string;
-  skills: EmployeeSkill[];
+  employeeName: string
+  position?: string
+  skills: EmployeeSkill[]
 }
 
-export function EmployeeSkillsCard({ employeeName, position, skills }: EmployeeSkillsCardProps) {
-  const avgLevel = skills.length > 0
-    ? Math.round(skills.reduce((sum, s) => sum + s.currentLevel, 0) / skills.length * 10) / 10
-    : 0;
+export function EmployeeSkillsCard({
+  employeeName,
+  position,
+  skills,
+}: EmployeeSkillsCardProps) {
+  const avgLevel =
+    skills.length > 0
+      ? Math.round(
+          (skills.reduce((sum, s) => sum + s.currentLevel, 0) / skills.length) *
+            10
+        ) / 10
+      : 0
 
-  const gapCount = skills.filter((s) => s.requiredLevel && s.currentLevel < s.requiredLevel).length;
+  const gapCount = skills.filter(
+    (s) => s.requiredLevel && s.currentLevel < s.requiredLevel
+  ).length
 
   return (
     <Card>
@@ -35,7 +45,9 @@ export function EmployeeSkillsCard({ employeeName, position, skills }: EmployeeS
             </div>
             <div>
               <CardTitle className="text-sm">{employeeName}</CardTitle>
-              {position && <p className="text-xs text-muted-foreground">{position}</p>}
+              {position && (
+                <p className="text-xs text-muted-foreground">{position}</p>
+              )}
             </div>
           </div>
           <div className="text-right">
@@ -51,7 +63,10 @@ export function EmployeeSkillsCard({ employeeName, position, skills }: EmployeeS
       </CardHeader>
       <CardContent className="space-y-2">
         {skills.map((skill) => (
-          <div key={skill.id} className="flex items-center justify-between gap-3">
+          <div
+            key={skill.id}
+            className="flex items-center justify-between gap-3"
+          >
             <span className="text-xs truncate">{skill.name}</span>
             <SkillRating
               value={skill.currentLevel}
@@ -62,5 +77,5 @@ export function EmployeeSkillsCard({ employeeName, position, skills }: EmployeeS
         ))}
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,14 +1,14 @@
 // src/lib/recruitment/services/requisition.service.ts
 // Job Requisition Service - Manage job requisition workflows
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   RequisitionStatus,
   JobType,
   WorkMode,
   Prisma,
-  ApplicationStatus
-} from '@prisma/client'
+  ApplicationStatus,
+} from "@prisma/client"
 
 // Types
 export interface CreateRequisitionInput {
@@ -48,7 +48,7 @@ export interface PaginationOptions {
   page?: number
   pageSize?: number
   sortBy?: string
-  sortOrder?: 'asc' | 'desc'
+  sortOrder?: "asc" | "desc"
 }
 
 // Helper to generate requisition code
@@ -59,18 +59,21 @@ async function generateRequisitionCode(tenantId: string): Promise<string> {
   const lastRequisition = await db.jobRequisition.findFirst({
     where: {
       tenantId,
-      requisitionCode: { startsWith: prefix }
+      requisitionCode: { startsWith: prefix },
     },
-    orderBy: { requisitionCode: 'desc' }
+    orderBy: { requisitionCode: "desc" },
   })
 
   let nextNumber = 1
   if (lastRequisition) {
-    const lastNumber = parseInt(lastRequisition.requisitionCode.replace(prefix, ''), 10)
+    const lastNumber = parseInt(
+      lastRequisition.requisitionCode.replace(prefix, ""),
+      10
+    )
     nextNumber = lastNumber + 1
   }
 
-  return `${prefix}${nextNumber.toString().padStart(4, '0')}`
+  return `${prefix}${nextNumber.toString().padStart(4, "0")}`
 }
 
 export class JobRequisitionService {
@@ -99,7 +102,7 @@ export class JobRequisitionService {
         description: input.description,
         requirements: input.requirements,
         benefits: input.benefits,
-        priority: input.priority || 'NORMAL',
+        priority: input.priority || "NORMAL",
         targetHireDate: input.targetHireDate,
         requestedById,
         status: RequisitionStatus.DRAFT,
@@ -147,7 +150,7 @@ export class JobRequisitionService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found')
+      throw new Error("Requisition not found")
     }
 
     // Get application stats
@@ -156,10 +159,13 @@ export class JobRequisitionService {
       select: { status: true },
     })
 
-    const applicationStats = applications.reduce((acc: Record<string, number>, app) => {
-      acc[app.status] = (acc[app.status] || 0) + 1
-      return acc
-    }, {})
+    const applicationStats = applications.reduce(
+      (acc: Record<string, number>, app) => {
+        acc[app.status] = (acc[app.status] || 0) + 1
+        return acc
+      },
+      {}
+    )
 
     return {
       ...requisition,
@@ -170,8 +176,16 @@ export class JobRequisitionService {
   /**
    * List requisitions with filters and pagination
    */
-  async list(filters: RequisitionFilters = {}, pagination: PaginationOptions = {}) {
-    const { page = 1, pageSize = 20, sortBy = 'createdAt', sortOrder = 'desc' } = pagination
+  async list(
+    filters: RequisitionFilters = {},
+    pagination: PaginationOptions = {}
+  ) {
+    const {
+      page = 1,
+      pageSize = 20,
+      sortBy = "createdAt",
+      sortOrder = "desc",
+    } = pagination
     const skip = (page - 1) * pageSize
 
     const where: Prisma.JobRequisitionWhereInput = {
@@ -196,9 +210,9 @@ export class JobRequisitionService {
 
     if (filters.search) {
       where.OR = [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { requisitionCode: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
+        { title: { contains: filters.search, mode: "insensitive" } },
+        { requisitionCode: { contains: filters.search, mode: "insensitive" } },
+        { description: { contains: filters.search, mode: "insensitive" } },
       ]
     }
 
@@ -207,7 +221,10 @@ export class JobRequisitionService {
     }
 
     if (filters.toDate) {
-      where.createdAt = { ...(where.createdAt as object || {}), lte: filters.toDate }
+      where.createdAt = {
+        ...((where.createdAt as object) || {}),
+        lte: filters.toDate,
+      }
     }
 
     const [requisitions, total] = await Promise.all([
@@ -248,20 +265,29 @@ export class JobRequisitionService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found')
+      throw new Error("Requisition not found")
     }
 
     // Check if status change is allowed
-    if (input.status && !this.isStatusTransitionAllowed(requisition.status, input.status)) {
-      throw new Error(`Cannot transition from ${requisition.status} to ${input.status}`)
+    if (
+      input.status &&
+      !this.isStatusTransitionAllowed(requisition.status, input.status)
+    ) {
+      throw new Error(
+        `Cannot transition from ${requisition.status} to ${input.status}`
+      )
     }
 
     const updateData: Prisma.JobRequisitionUpdateInput = {}
 
     // Only allow editing in DRAFT or REJECTED status
-    if (requisition.status === RequisitionStatus.DRAFT || requisition.status === RequisitionStatus.REJECTED) {
+    if (
+      requisition.status === RequisitionStatus.DRAFT ||
+      requisition.status === RequisitionStatus.REJECTED
+    ) {
       if (input.title) updateData.title = input.title
-      if (input.departmentId) updateData.department = { connect: { id: input.departmentId } }
+      if (input.departmentId)
+        updateData.department = { connect: { id: input.departmentId } }
       if (input.reportingToId !== undefined) {
         updateData.reportingTo = input.reportingToId
           ? { connect: { id: input.reportingToId } }
@@ -273,12 +299,16 @@ export class JobRequisitionService {
       if (input.headcount) updateData.headcount = input.headcount
       if (input.salaryMin !== undefined) updateData.salaryMin = input.salaryMin
       if (input.salaryMax !== undefined) updateData.salaryMax = input.salaryMax
-      if (input.salaryDisplay !== undefined) updateData.salaryDisplay = input.salaryDisplay
-      if (input.description !== undefined) updateData.description = input.description
-      if (input.requirements !== undefined) updateData.requirements = input.requirements
+      if (input.salaryDisplay !== undefined)
+        updateData.salaryDisplay = input.salaryDisplay
+      if (input.description !== undefined)
+        updateData.description = input.description
+      if (input.requirements !== undefined)
+        updateData.requirements = input.requirements
       if (input.benefits !== undefined) updateData.benefits = input.benefits
       if (input.priority) updateData.priority = input.priority
-      if (input.targetHireDate !== undefined) updateData.targetHireDate = input.targetHireDate
+      if (input.targetHireDate !== undefined)
+        updateData.targetHireDate = input.targetHireDate
     }
 
     if (input.status) {
@@ -308,11 +338,11 @@ export class JobRequisitionService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found')
+      throw new Error("Requisition not found")
     }
 
     if (requisition.status !== RequisitionStatus.DRAFT) {
-      throw new Error('Only draft requisitions can be submitted for approval')
+      throw new Error("Only draft requisitions can be submitted for approval")
     }
 
     return db.jobRequisition.update({
@@ -330,11 +360,11 @@ export class JobRequisitionService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found')
+      throw new Error("Requisition not found")
     }
 
     if (requisition.status !== RequisitionStatus.PENDING_APPROVAL) {
-      throw new Error('Only pending requisitions can be approved')
+      throw new Error("Only pending requisitions can be approved")
     }
 
     return db.jobRequisition.update({
@@ -357,11 +387,11 @@ export class JobRequisitionService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found')
+      throw new Error("Requisition not found")
     }
 
     if (requisition.status !== RequisitionStatus.PENDING_APPROVAL) {
-      throw new Error('Only pending requisitions can be rejected')
+      throw new Error("Only pending requisitions can be rejected")
     }
 
     return db.jobRequisition.update({
@@ -384,11 +414,11 @@ export class JobRequisitionService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found')
+      throw new Error("Requisition not found")
     }
 
     if (requisition.status !== RequisitionStatus.APPROVED) {
-      throw new Error('Only approved requisitions can be opened')
+      throw new Error("Only approved requisitions can be opened")
     }
 
     return db.jobRequisition.update({
@@ -406,11 +436,11 @@ export class JobRequisitionService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found')
+      throw new Error("Requisition not found")
     }
 
     if (requisition.status !== RequisitionStatus.OPEN) {
-      throw new Error('Only open requisitions can be put on hold')
+      throw new Error("Only open requisitions can be put on hold")
     }
 
     return db.jobRequisition.update({
@@ -431,11 +461,11 @@ export class JobRequisitionService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found')
+      throw new Error("Requisition not found")
     }
 
     if (requisition.status === RequisitionStatus.FILLED) {
-      throw new Error('Cannot cancel a filled requisition')
+      throw new Error("Cannot cancel a filled requisition")
     }
 
     return db.jobRequisition.update({
@@ -456,7 +486,7 @@ export class JobRequisitionService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found')
+      throw new Error("Requisition not found")
     }
 
     const newFilledCount = requisition.filledCount + increment
@@ -475,52 +505,52 @@ export class JobRequisitionService {
    * Get requisition statistics
    */
   async getStats() {
-    const [
-      byStatus,
-      byDepartment,
-      byJobType,
-      avgTimeToFill,
-    ] = await Promise.all([
-      // By status
-      db.jobRequisition.groupBy({
-        by: ['status'],
-        where: { tenantId: this.tenantId },
-        _count: true,
-      }),
+    const [byStatus, byDepartment, byJobType, avgTimeToFill] =
+      await Promise.all([
+        // By status
+        db.jobRequisition.groupBy({
+          by: ["status"],
+          where: { tenantId: this.tenantId },
+          _count: true,
+        }),
 
-      // By department
-      db.jobRequisition.groupBy({
-        by: ['departmentId'],
-        where: {
-          tenantId: this.tenantId,
-          status: { in: [RequisitionStatus.OPEN, RequisitionStatus.APPROVED] },
-        },
-        _count: true,
-        _sum: { headcount: true },
-      }),
+        // By department
+        db.jobRequisition.groupBy({
+          by: ["departmentId"],
+          where: {
+            tenantId: this.tenantId,
+            status: {
+              in: [RequisitionStatus.OPEN, RequisitionStatus.APPROVED],
+            },
+          },
+          _count: true,
+          _sum: { headcount: true },
+        }),
 
-      // By job type
-      db.jobRequisition.groupBy({
-        by: ['jobType'],
-        where: {
-          tenantId: this.tenantId,
-          status: { notIn: [RequisitionStatus.CANCELLED, RequisitionStatus.REJECTED] },
-        },
-        _count: true,
-      }),
+        // By job type
+        db.jobRequisition.groupBy({
+          by: ["jobType"],
+          where: {
+            tenantId: this.tenantId,
+            status: {
+              notIn: [RequisitionStatus.CANCELLED, RequisitionStatus.REJECTED],
+            },
+          },
+          _count: true,
+        }),
 
-      // Average time to fill (for filled requisitions)
-      db.jobRequisition.findMany({
-        where: {
-          tenantId: this.tenantId,
-          status: RequisitionStatus.FILLED,
-        },
-        select: {
-          approvedAt: true,
-          updatedAt: true,
-        },
-      }),
-    ])
+        // Average time to fill (for filled requisitions)
+        db.jobRequisition.findMany({
+          where: {
+            tenantId: this.tenantId,
+            status: RequisitionStatus.FILLED,
+          },
+          select: {
+            approvedAt: true,
+            updatedAt: true,
+          },
+        }),
+      ])
 
     // Calculate average time to fill
     let avgDaysToFill = 0
@@ -528,7 +558,8 @@ export class JobRequisitionService {
       const totalDays = avgTimeToFill.reduce((sum, req) => {
         if (req.approvedAt) {
           const days = Math.floor(
-            (req.updatedAt.getTime() - req.approvedAt.getTime()) / (1000 * 60 * 60 * 24)
+            (req.updatedAt.getTime() - req.approvedAt.getTime()) /
+              (1000 * 60 * 60 * 24)
           )
           return sum + days
         }
@@ -538,25 +569,25 @@ export class JobRequisitionService {
     }
 
     // Get department names
-    const departmentIds = byDepartment.map(d => d.departmentId)
+    const departmentIds = byDepartment.map((d) => d.departmentId)
     const departments = await db.department.findMany({
       where: { id: { in: departmentIds } },
       select: { id: true, name: true },
     })
-    const deptMap = new Map(departments.map(d => [d.id, d.name]))
+    const deptMap = new Map(departments.map((d) => [d.id, d.name]))
 
     return {
-      byStatus: byStatus.map(s => ({
+      byStatus: byStatus.map((s) => ({
         status: s.status,
         count: s._count,
       })),
-      byDepartment: byDepartment.map(d => ({
+      byDepartment: byDepartment.map((d) => ({
         departmentId: d.departmentId,
-        departmentName: deptMap.get(d.departmentId) || 'Unknown',
+        departmentName: deptMap.get(d.departmentId) || "Unknown",
         count: d._count,
         totalHeadcount: d._sum.headcount || 0,
       })),
-      byJobType: byJobType.map(j => ({
+      byJobType: byJobType.map((j) => ({
         jobType: j.jobType,
         count: j._count,
       })),
@@ -567,14 +598,33 @@ export class JobRequisitionService {
   /**
    * Check if status transition is allowed
    */
-  private isStatusTransitionAllowed(from: RequisitionStatus, to: RequisitionStatus): boolean {
+  private isStatusTransitionAllowed(
+    from: RequisitionStatus,
+    to: RequisitionStatus
+  ): boolean {
     const allowedTransitions: Record<RequisitionStatus, RequisitionStatus[]> = {
-      [RequisitionStatus.DRAFT]: [RequisitionStatus.PENDING_APPROVAL, RequisitionStatus.CANCELLED],
-      [RequisitionStatus.PENDING_APPROVAL]: [RequisitionStatus.APPROVED, RequisitionStatus.REJECTED],
-      [RequisitionStatus.APPROVED]: [RequisitionStatus.OPEN, RequisitionStatus.CANCELLED],
+      [RequisitionStatus.DRAFT]: [
+        RequisitionStatus.PENDING_APPROVAL,
+        RequisitionStatus.CANCELLED,
+      ],
+      [RequisitionStatus.PENDING_APPROVAL]: [
+        RequisitionStatus.APPROVED,
+        RequisitionStatus.REJECTED,
+      ],
+      [RequisitionStatus.APPROVED]: [
+        RequisitionStatus.OPEN,
+        RequisitionStatus.CANCELLED,
+      ],
       [RequisitionStatus.REJECTED]: [RequisitionStatus.DRAFT],
-      [RequisitionStatus.OPEN]: [RequisitionStatus.ON_HOLD, RequisitionStatus.FILLED, RequisitionStatus.CANCELLED],
-      [RequisitionStatus.ON_HOLD]: [RequisitionStatus.OPEN, RequisitionStatus.CANCELLED],
+      [RequisitionStatus.OPEN]: [
+        RequisitionStatus.ON_HOLD,
+        RequisitionStatus.FILLED,
+        RequisitionStatus.CANCELLED,
+      ],
+      [RequisitionStatus.ON_HOLD]: [
+        RequisitionStatus.OPEN,
+        RequisitionStatus.CANCELLED,
+      ],
       [RequisitionStatus.FILLED]: [],
       [RequisitionStatus.CANCELLED]: [],
     }
@@ -584,6 +634,8 @@ export class JobRequisitionService {
 }
 
 // Factory function
-export function createJobRequisitionService(tenantId: string): JobRequisitionService {
+export function createJobRequisitionService(
+  tenantId: string
+): JobRequisitionService {
   return new JobRequisitionService(tenantId)
 }

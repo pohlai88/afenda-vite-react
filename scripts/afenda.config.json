@@ -57,27 +57,35 @@
         "rules",
         "scripts"
       ],
+      "allowedHiddenRootDirectories": [
+        ".agents",
+        ".artifacts",
+        ".cursor",
+        ".git",
+        ".github",
+        ".turbo",
+        ".vscode"
+      ],
+      "storageDirectories": [".legacy", "archives"],
       "requiredRootFiles": [
         "package.json",
         "pnpm-workspace.yaml",
         "turbo.json",
+        ".nvmrc",
         "tsconfig.json",
         "eslint.config.js",
         "prettier.config.js",
         "AGENTS.md"
       ]
     },
+    "packageTopology": {
+      "workspaceRootDirectories": ["apps", "packages"],
+      "allowedManifestlessDirectories": []
+    },
     "featureTemplate": {
       "featuresRoot": "apps/web/src/app/_features",
-      "requiredDirectories": [
-        "components",
-        "hooks",
-        "services",
-        "types",
-        "actions",
-        "utils"
-      ],
-      "requiredFiles": ["index.ts"],
+      "requiredDirectories": [],
+      "requiredFiles": [],
       "enforceWhenFeatureExists": true
     },
     "sharedPackageTemplate": {
@@ -106,8 +114,7 @@
         "marketing",
         "routes",
         "rpc",
-        "share",
-        "styles"
+        "share"
       ],
       "requiredShareSubdirectories": [],
       "enforce": true

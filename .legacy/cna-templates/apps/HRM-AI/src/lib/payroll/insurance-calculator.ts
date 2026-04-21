@@ -2,7 +2,7 @@
 // Vietnam Social Insurance Calculator (BHXH/BHYT/BHTN)
 // Based on Labor Code 2019 and Social Insurance Law 2014
 
-import { INSURANCE_RATES, INSURANCE_SALARY_CAP } from './constants'
+import { INSURANCE_RATES, INSURANCE_SALARY_CAP } from "./constants"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -66,11 +66,11 @@ export interface InsuranceResult {
 
   /** Tổng hợp */
   totals: {
-    employee: number      // Tổng NLĐ đóng
-    employer: number      // Tổng công ty đóng
-    total: number         // Tổng cả hai bên
-    employeeRate: number  // Tổng tỷ lệ NLĐ (10.5%)
-    employerRate: number  // Tổng tỷ lệ công ty (21.5%)
+    employee: number // Tổng NLĐ đóng
+    employer: number // Tổng công ty đóng
+    total: number // Tổng cả hai bên
+    employeeRate: number // Tổng tỷ lệ NLĐ (10.5%)
+    employerRate: number // Tổng tỷ lệ công ty (21.5%)
   }
 }
 
@@ -216,11 +216,7 @@ export function isInsuranceEligible(
 ): boolean {
   // Labor Code 2019: Insurance applies from first working day
   // for contracts >= 1 month
-  const validContractTypes = [
-    'DEFINITE_TERM',
-    'INDEFINITE_TERM',
-    'SEASONAL',
-  ]
+  const validContractTypes = ["DEFINITE_TERM", "INDEFINITE_TERM", "SEASONAL"]
 
   if (isProbation) {
     // Probation: Still need to pay insurance if probation contract >= 1 month
@@ -238,7 +234,9 @@ export function calculateAnnualInsurance(monthlyInsuranceSalary: number): {
   employer: number
   total: number
 } {
-  const monthly = calculateInsurance({ insuranceSalary: monthlyInsuranceSalary })
+  const monthly = calculateInsurance({
+    insuranceSalary: monthlyInsuranceSalary,
+  })
   return {
     employee: monthly.totals.employee * 12,
     employer: monthly.totals.employer * 12,
@@ -251,48 +249,60 @@ export function calculateAnnualInsurance(monthlyInsuranceSalary: number): {
  */
 export function formatInsuranceResult(result: InsuranceResult): string {
   const lines = [
-    `Lương đóng BH: ${result.insuranceSalary.toLocaleString('vi-VN')} VND`,
-    result.isCapped ? `(Đã áp dụng trần: ${result.cappedSalary.toLocaleString('vi-VN')} VND)` : '',
-    '',
+    `Lương đóng BH: ${result.insuranceSalary.toLocaleString("vi-VN")} VND`,
+    result.isCapped
+      ? `(Đã áp dụng trần: ${result.cappedSalary.toLocaleString("vi-VN")} VND)`
+      : "",
+    "",
     `BHXH (8% + 17.5%):`,
-    `  - NLĐ: ${result.bhxh.employee.toLocaleString('vi-VN')} VND`,
-    `  - Cty: ${result.bhxh.employer.toLocaleString('vi-VN')} VND`,
-    '',
+    `  - NLĐ: ${result.bhxh.employee.toLocaleString("vi-VN")} VND`,
+    `  - Cty: ${result.bhxh.employer.toLocaleString("vi-VN")} VND`,
+    "",
     `BHYT (1.5% + 3%):`,
-    `  - NLĐ: ${result.bhyt.employee.toLocaleString('vi-VN')} VND`,
-    `  - Cty: ${result.bhyt.employer.toLocaleString('vi-VN')} VND`,
-    '',
+    `  - NLĐ: ${result.bhyt.employee.toLocaleString("vi-VN")} VND`,
+    `  - Cty: ${result.bhyt.employer.toLocaleString("vi-VN")} VND`,
+    "",
     `BHTN (1% + 1%):`,
-    `  - NLĐ: ${result.bhtn.employee.toLocaleString('vi-VN')} VND`,
-    `  - Cty: ${result.bhtn.employer.toLocaleString('vi-VN')} VND`,
-    '',
+    `  - NLĐ: ${result.bhtn.employee.toLocaleString("vi-VN")} VND`,
+    `  - Cty: ${result.bhtn.employer.toLocaleString("vi-VN")} VND`,
+    "",
     `---`,
-    `Tổng NLĐ đóng: ${result.totals.employee.toLocaleString('vi-VN')} VND (10.5%)`,
-    `Tổng Cty đóng: ${result.totals.employer.toLocaleString('vi-VN')} VND (21.5%)`,
+    `Tổng NLĐ đóng: ${result.totals.employee.toLocaleString("vi-VN")} VND (10.5%)`,
+    `Tổng Cty đóng: ${result.totals.employer.toLocaleString("vi-VN")} VND (21.5%)`,
   ].filter(Boolean)
 
-  return lines.join('\n')
+  return lines.join("\n")
 }
 
 /**
  * Get insurance breakdown for payroll items
  */
-export function getInsurancePayrollItems(
-  result: InsuranceResult
-): {
+export function getInsurancePayrollItems(result: InsuranceResult): {
   employee: Array<{ code: string; name: string; amount: number }>
   employer: Array<{ code: string; name: string; amount: number }>
 } {
   return {
     employee: [
-      { code: 'BHXH_EE', name: 'BHXH (8%)', amount: result.bhxh.employee },
-      { code: 'BHYT_EE', name: 'BHYT (1.5%)', amount: result.bhyt.employee },
-      { code: 'BHTN_EE', name: 'BHTN (1%)', amount: result.bhtn.employee },
+      { code: "BHXH_EE", name: "BHXH (8%)", amount: result.bhxh.employee },
+      { code: "BHYT_EE", name: "BHYT (1.5%)", amount: result.bhyt.employee },
+      { code: "BHTN_EE", name: "BHTN (1%)", amount: result.bhtn.employee },
     ],
     employer: [
-      { code: 'BHXH_ER', name: 'BHXH công ty (17.5%)', amount: result.bhxh.employer },
-      { code: 'BHYT_ER', name: 'BHYT công ty (3%)', amount: result.bhyt.employer },
-      { code: 'BHTN_ER', name: 'BHTN công ty (1%)', amount: result.bhtn.employer },
+      {
+        code: "BHXH_ER",
+        name: "BHXH công ty (17.5%)",
+        amount: result.bhxh.employer,
+      },
+      {
+        code: "BHYT_ER",
+        name: "BHYT công ty (3%)",
+        amount: result.bhyt.employer,
+      },
+      {
+        code: "BHTN_ER",
+        name: "BHTN công ty (1%)",
+        amount: result.bhtn.employer,
+      },
     ],
   }
 }

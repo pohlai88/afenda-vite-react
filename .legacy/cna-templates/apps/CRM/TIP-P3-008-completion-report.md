@@ -22,12 +22,14 @@
 **TEMPLATE MODEL:** New — EmailTemplate with name, subject, body (@db.Text), category, isDefault, createdById
 
 **EDITOR INTEGRATION:**
+
 1. `/campaigns/new` (step 2 content) — RichTextEditor with CAMPAIGN_VARIABLES, dynamic import
 2. `/campaigns/templates/[id]` — RichTextEditor with CAMPAIGN_VARIABLES, dynamic import
 
 **PREVIEW APPROACH:** Tab toggle (compose/preview) — works on all screens
 
 **TEST RESULTS:**
+
 - AC-1: Rich Editor in Campaign Wizard — ✅ RichTextEditor replaces textarea, dynamic import with skeleton loader, CAMPAIGN_VARIABLES available via {x} toolbar button
 - AC-2: Template Management — ✅ `/campaigns/templates` list page with grid cards, create/duplicate/delete, category badges
 - AC-3: Template Selection — ✅ Dropdown in campaign wizard content step, populates subject + body, overwrite confirmation dialog
@@ -39,6 +41,7 @@
 **APP BUGS FOUND:** None
 
 **DEVIATIONS FROM SPEC:**
+
 - Template edit uses separate pages (/campaigns/templates and /campaigns/templates/[id]) instead of dialog, for better UX with the rich text editor
 - Test send confirmation dialog simplified — sends to current user email directly (no dialog for email input), keeps UI simpler
 - E2E test updated to type into TipTap `.tiptap` element instead of old `<textarea>`

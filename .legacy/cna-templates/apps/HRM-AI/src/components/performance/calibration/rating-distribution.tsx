@@ -1,7 +1,10 @@
-'use client'
+"use client"
 
-import { cn } from '@/lib/utils'
-import { RATING_SCALE, RATING_DISTRIBUTION_TARGET } from '@/lib/performance/constants'
+import { cn } from "@/lib/utils"
+import {
+  RATING_SCALE,
+  RATING_DISTRIBUTION_TARGET,
+} from "@/lib/performance/constants"
 
 interface RatingDistributionProps {
   distribution: { rating: number; count: number; percentage: number }[]
@@ -38,8 +41,10 @@ export function RatingDistribution({
           const actual = item?.percentage || 0
           const targetPct = target[rating] || 0
           const ratingInfo = RATING_SCALE.find((r) => r.value === rating)
-          const barWidth = maxPercentage > 0 ? (actual / maxPercentage) * 100 : 0
-          const targetWidth = maxPercentage > 0 ? (targetPct / maxPercentage) * 100 : 0
+          const barWidth =
+            maxPercentage > 0 ? (actual / maxPercentage) * 100 : 0
+          const targetWidth =
+            maxPercentage > 0 ? (targetPct / maxPercentage) * 100 : 0
 
           return (
             <div key={rating} className="flex items-center gap-3">
@@ -68,7 +73,7 @@ export function RatingDistribution({
                   className="h-full rounded-sm transition-all duration-300"
                   style={{
                     width: `${barWidth}%`,
-                    backgroundColor: ratingInfo?.color || '#FF6600',
+                    backgroundColor: ratingInfo?.color || "#FF6600",
                     opacity: 0.8,
                   }}
                 />
@@ -76,9 +81,7 @@ export function RatingDistribution({
 
               {/* Values */}
               <div className="w-20 shrink-0 text-right">
-                <span className="font-data text-xs">
-                  {actual.toFixed(1)}%
-                </span>
+                <span className="font-data text-xs">{actual.toFixed(1)}%</span>
                 <span className="text-[10px] text-muted-foreground ml-1">
                   ({item?.count || 0})
                 </span>

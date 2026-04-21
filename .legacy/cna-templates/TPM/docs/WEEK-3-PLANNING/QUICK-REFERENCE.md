@@ -2,19 +2,20 @@
 
 ## 🗓️ DAILY TASKS
 
-| Day | Focus | Deliverables |
-|-----|-------|--------------|
-| **Day 1** | Template API | 6 endpoints |
-| **Day 2** | Template UI | 3 pages + components + hooks |
-| **Day 3** | Scenario API | 6 endpoints + simulation logic |
-| **Day 4** | Scenario UI | 4 pages + comparison |
-| **Day 5** | Clash Detection | 4 endpoints + 2 pages |
+| Day       | Focus           | Deliverables                   |
+| --------- | --------------- | ------------------------------ |
+| **Day 1** | Template API    | 6 endpoints                    |
+| **Day 2** | Template UI     | 3 pages + components + hooks   |
+| **Day 3** | Scenario API    | 6 endpoints + simulation logic |
+| **Day 4** | Scenario UI     | 4 pages + comparison           |
+| **Day 5** | Clash Detection | 4 endpoints + 2 pages          |
 
 ---
 
 ## 🔌 API ENDPOINTS CHECKLIST
 
 ### Templates (6)
+
 ```
 [ ] GET    /api/planning/templates
 [ ] POST   /api/planning/templates
@@ -26,6 +27,7 @@
 ```
 
 ### Scenarios (6)
+
 ```
 [ ] GET    /api/planning/scenarios
 [ ] POST   /api/planning/scenarios
@@ -36,6 +38,7 @@
 ```
 
 ### Clash Detection (4)
+
 ```
 [ ] POST   /api/planning/clash-detection/check
 [ ] GET    /api/planning/clash-detection
@@ -48,6 +51,7 @@
 ## 📄 PAGES CHECKLIST
 
 ### Templates (3)
+
 ```
 [ ] /planning/templates           → List page (grid/table)
 [ ] /planning/templates/:id       → Detail/Edit page
@@ -55,6 +59,7 @@
 ```
 
 ### Scenarios (4)
+
 ```
 [ ] /planning/scenarios           → List page
 [ ] /planning/scenarios/:id       → Detail page
@@ -63,6 +68,7 @@
 ```
 
 ### Clash Detection (2)
+
 ```
 [ ] /planning/clash-detection     → Dashboard
 [ ] /planning/clash-detection/:id → Detail/Resolution
@@ -73,6 +79,7 @@
 ## 🧩 COMPONENTS CHECKLIST
 
 ### Templates
+
 ```
 [ ] TemplateCard.tsx
 [ ] TemplateForm.tsx
@@ -81,6 +88,7 @@
 ```
 
 ### Scenarios
+
 ```
 [ ] ScenarioCard.tsx
 [ ] ScenarioForm.tsx
@@ -90,6 +98,7 @@
 ```
 
 ### Clash Detection
+
 ```
 [ ] ClashCard.tsx
 [ ] ClashSeverityBadge.tsx
@@ -98,6 +107,7 @@
 ```
 
 ### Shared
+
 ```
 [ ] PlanningStats.tsx
 [ ] PlanningDashboard.tsx
@@ -137,6 +147,7 @@
 ## 📊 SCENARIO CALCULATION FORMULAS
 
 ### Sales Projection
+
 ```
 baselineSales = baselineSalesPerDay × duration
 projectedSales = baselineSales × (1 + expectedLiftPercent/100)
@@ -144,6 +155,7 @@ incrementalSales = projectedSales - baselineSales - cannibalized
 ```
 
 ### Cost & Margins
+
 ```
 redemptions = projectedSales × redemptionRatePercent/100
 promotionCost = redemptions × discountPercent/100 × averageOrderValue
@@ -156,18 +168,19 @@ roi = (netMargin / promotionCost) × 100
 
 ## 🚨 CLASH SEVERITY RULES
 
-| Severity | Criteria | Action |
-|----------|----------|--------|
-| **CRITICAL** | >5 products overlap OR Budget conflict >20% | Block approval |
-| **HIGH** | Customer overlap OR Mechanic conflict | Require resolution |
-| **MEDIUM** | 1-5 products overlap | Review required |
-| **LOW** | Date overlap only (no other conflicts) | Warning only |
+| Severity     | Criteria                                    | Action             |
+| ------------ | ------------------------------------------- | ------------------ |
+| **CRITICAL** | >5 products overlap OR Budget conflict >20% | Block approval     |
+| **HIGH**     | Customer overlap OR Mechanic conflict       | Require resolution |
+| **MEDIUM**   | 1-5 products overlap                        | Review required    |
+| **LOW**      | Date overlap only (no other conflicts)      | Warning only       |
 
 ---
 
 ## 🔄 WORKFLOWS
 
 ### Template Application
+
 ```
 1. Select template
 2. Fill required fields (name, dates)
@@ -178,6 +191,7 @@ roi = (netMargin / promotionCost) × 100
 ```
 
 ### Scenario Analysis
+
 ```
 1. Create scenario with parameters
 2. Set assumptions (baseline, margin)
@@ -189,6 +203,7 @@ roi = (netMargin / promotionCost) × 100
 ```
 
 ### Clash Resolution
+
 ```
 1. Auto-detect on promotion create/update
 2. Review clash details
@@ -266,10 +281,10 @@ git commit -m "feat(planning): Day X - [description]"
 
 ## 📊 WEEK 3 METRICS TARGET
 
-| Metric | Target |
-|--------|--------|
-| API Endpoints | 16 |
-| Pages | 9 |
-| Components | ~12 |
-| Hooks | ~20 |
-| Test Coverage | >80% |
+| Metric        | Target |
+| ------------- | ------ |
+| API Endpoints | 16     |
+| Pages         | 9      |
+| Components    | ~12    |
+| Hooks         | ~20    |
+| Test Coverage | >80%   |

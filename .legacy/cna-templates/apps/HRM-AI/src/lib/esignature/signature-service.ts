@@ -1,8 +1,8 @@
 // src/lib/esignature/signature-service.ts
 // E-Signature Service
 
-import prisma from '@/lib/db'
-import { VNPTCAProvider } from './providers/vnpt-ca'
+import prisma from "@/lib/db"
+import { VNPTCAProvider } from "./providers/vnpt-ca"
 import type {
   ISignatureProvider,
   SignatureProviderCode,
@@ -10,7 +10,7 @@ import type {
   SignatureResult,
   SignatureStatus,
   DocumentType,
-} from './types'
+} from "./types"
 
 // ═══════════════════════════════════════════════════════════════
 // SIGNATURE SERVICE
@@ -36,12 +36,12 @@ export class SignatureService {
     let provider: ISignatureProvider
 
     switch (providerCode) {
-      case 'VNPT_CA':
+      case "VNPT_CA":
         provider = new VNPTCAProvider()
         break
-      case 'VIETTEL_CA':
+      case "VIETTEL_CA":
         // TODO: Implement Viettel-CA provider
-        throw new Error('Viettel-CA provider not implemented')
+        throw new Error("Viettel-CA provider not implemented")
       default:
         throw new Error(`Signature provider not available for: ${providerCode}`)
     }
@@ -59,13 +59,13 @@ export class SignatureService {
     })
 
     if (!providerConfig) {
-      throw new Error('Signature provider configuration not found')
+      throw new Error("Signature provider configuration not found")
     }
 
     provider.configure({
       apiEndpoint: providerConfig.apiEndpoint,
-      clientId: providerConfig.clientId || '',
-      clientSecret: providerConfig.encryptedSecret || '', // In production, decrypt this
+      clientId: providerConfig.clientId || "",
+      clientSecret: providerConfig.encryptedSecret || "", // In production, decrypt this
     })
   }
 
@@ -85,7 +85,7 @@ export class SignatureService {
     requiredSigners: Array<{
       employeeId: string
       order: number
-      role: 'CREATOR' | 'APPROVER' | 'WITNESS'
+      role: "CREATOR" | "APPROVER" | "WITNESS"
     }>
     expiresAt?: Date
   }): Promise<string> {
@@ -101,7 +101,7 @@ export class SignatureService {
         sourceType: options.sourceType,
         sourceId: options.sourceId,
         requiredSigners: options.requiredSigners,
-        status: 'PENDING',
+        status: "PENDING",
         expiresAt: options.expiresAt,
       },
     })
@@ -123,20 +123,20 @@ export class SignatureService {
     })
 
     if (!document) {
-      throw new Error('Không tìm thấy tài liệu')
+      throw new Error("Không tìm thấy tài liệu")
     }
 
-    if (document.status === 'COMPLETED') {
-      throw new Error('Tài liệu đã được ký hoàn tất')
+    if (document.status === "COMPLETED") {
+      throw new Error("Tài liệu đã được ký hoàn tất")
     }
 
-    if (document.status === 'CANCELLED') {
-      throw new Error('Tài liệu đã bị hủy')
+    if (document.status === "CANCELLED") {
+      throw new Error("Tài liệu đã bị hủy")
     }
 
     // Check expiry
     if (document.expiresAt && document.expiresAt < new Date()) {
-      throw new Error('Tài liệu đã hết hạn ký')
+      throw new Error("Tài liệu đã hết hạn ký")
     }
 
     // Get certificate
@@ -146,11 +146,11 @@ export class SignatureService {
     })
 
     if (!certificate) {
-      throw new Error('Không tìm thấy chứng thư số')
+      throw new Error("Không tìm thấy chứng thư số")
     }
 
-    if (certificate.status !== 'ACTIVE') {
-      throw new Error('Chứng thư số không hợp lệ')
+    if (certificate.status !== "ACTIVE") {
+      throw new Error("Chứng thư số không hợp lệ")
     }
 
     // Check if signer is in required signers and it's their turn
@@ -162,32 +162,39 @@ export class SignatureService {
 
     const signerInfo = requiredSigners.find((s) => s.employeeId === signerId)
     if (!signerInfo) {
-      throw new Error('Bạn không có quyền ký tài liệu này')
+      throw new Error("Bạn không có quyền ký tài liệu này")
     }
 
     // Check signing order
     const existingSignatures = await prisma.documentSignature.findMany({
       where: { documentId },
-      orderBy: { signatureOrder: 'asc' },
+      orderBy: { signatureOrder: "asc" },
     })
 
-    const highestSignedOrder = Math.max(0, ...existingSignatures.map((s) => s.signatureOrder))
+    const highestSignedOrder = Math.max(
+      0,
+      ...existingSignatures.map((s) => s.signatureOrder)
+    )
     if (signerInfo.order > highestSignedOrder + 1) {
-      throw new Error('Chưa đến lượt ký của bạn')
+      throw new Error("Chưa đến lượt ký của bạn")
     }
 
     // Check if already signed
-    const alreadySigned = existingSignatures.find((s) => s.signerId === signerId)
+    const alreadySigned = existingSignatures.find(
+      (s) => s.signerId === signerId
+    )
     if (alreadySigned) {
-      throw new Error('Bạn đã ký tài liệu này')
+      throw new Error("Bạn đã ký tài liệu này")
     }
 
     // Get and configure provider
-    const provider = this.getProvider(certificate.provider.providerCode as SignatureProviderCode)
+    const provider = this.getProvider(
+      certificate.provider.providerCode as SignatureProviderCode
+    )
     await this.configureProvider(provider, certificate.providerId)
 
     // In production, read actual file content
-    const documentData = Buffer.from('document-content')
+    const documentData = Buffer.from("document-content")
 
     // Sign document
     const signRequest: SignatureRequest = {
@@ -212,7 +219,7 @@ export class SignatureService {
           signedAt: result.signedAt,
           signatureData: result.signatureData,
           signatureHash: result.signatureHash,
-          status: 'SIGNED',
+          status: "SIGNED",
           providerTransactionId: result.transactionId,
           providerResponse: result as unknown as object,
         },
@@ -226,15 +233,15 @@ export class SignatureService {
         await prisma.signableDocument.update({
           where: { id: documentId },
           data: {
-            status: 'COMPLETED',
+            status: "COMPLETED",
             completedAt: new Date(),
-            signedFile: document.originalFile.replace('.pdf', '-signed.pdf'), // In production, actual signed file
+            signedFile: document.originalFile.replace(".pdf", "-signed.pdf"), // In production, actual signed file
           },
         })
       } else {
         await prisma.signableDocument.update({
           where: { id: documentId },
-          data: { status: 'PARTIAL' },
+          data: { status: "PARTIAL" },
         })
       }
     }
@@ -245,13 +252,17 @@ export class SignatureService {
   /**
    * Reject signing a document
    */
-  async rejectDocument(documentId: string, signerId: string, reason: string): Promise<void> {
+  async rejectDocument(
+    documentId: string,
+    signerId: string,
+    reason: string
+  ): Promise<void> {
     const document = await prisma.signableDocument.findUnique({
       where: { id: documentId, tenantId: this.tenantId },
     })
 
     if (!document) {
-      throw new Error('Không tìm thấy tài liệu')
+      throw new Error("Không tìm thấy tài liệu")
     }
 
     // Find signer's certificate
@@ -270,7 +281,7 @@ export class SignatureService {
           certificateId: certificate.id,
           signerId,
           signatureOrder: 0,
-          status: 'REJECTED',
+          status: "REJECTED",
           rejectedAt: new Date(),
           rejectedReason: reason,
         },
@@ -279,7 +290,10 @@ export class SignatureService {
 
     await prisma.signableDocument.update({
       where: { id: documentId },
-      data: { status: 'CANCELLED', notes: `Từ chối bởi ${signerId}: ${reason}` },
+      data: {
+        status: "CANCELLED",
+        notes: `Từ chối bởi ${signerId}: ${reason}`,
+      },
     })
   }
 
@@ -301,14 +315,14 @@ export class SignatureService {
     const documents = await prisma.signableDocument.findMany({
       where: {
         tenantId: this.tenantId,
-        status: { in: ['PENDING', 'PARTIAL'] },
+        status: { in: ["PENDING", "PARTIAL"] },
       },
       include: {
         signatures: {
           select: { signerId: true, signatureOrder: true, status: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
 
     const result = []
@@ -320,15 +334,22 @@ export class SignatureService {
         role: string
       }>
 
-      const mySignerInfo = requiredSigners.find((s) => s.employeeId === employeeId)
+      const mySignerInfo = requiredSigners.find(
+        (s) => s.employeeId === employeeId
+      )
       if (!mySignerInfo) continue
 
       // Check if already signed
-      const alreadySigned = doc.signatures.find((s) => s.signerId === employeeId)
+      const alreadySigned = doc.signatures.find(
+        (s) => s.signerId === employeeId
+      )
       if (alreadySigned) continue
 
       // Check if can sign (previous signers have signed)
-      const highestSignedOrder = Math.max(0, ...doc.signatures.map((s) => s.signatureOrder))
+      const highestSignedOrder = Math.max(
+        0,
+        ...doc.signatures.map((s) => s.signatureOrder)
+      )
       const canSign = mySignerInfo.order <= highestSignedOrder + 1
 
       result.push({
@@ -359,7 +380,7 @@ export class SignatureService {
     }>
   > {
     const signatures = await prisma.documentSignature.findMany({
-      where: { signerId: employeeId, status: 'SIGNED' },
+      where: { signerId: employeeId, status: "SIGNED" },
       include: {
         document: {
           select: {
@@ -370,7 +391,7 @@ export class SignatureService {
           },
         },
       },
-      orderBy: { signedAt: 'desc' },
+      orderBy: { signedAt: "desc" },
     })
 
     return signatures.map((sig) => ({
@@ -406,7 +427,7 @@ export class SignatureService {
           select: { providerName: true },
         },
       },
-      orderBy: { isDefault: 'desc' },
+      orderBy: { isDefault: "desc" },
     })
 
     return certificates.map((cert) => ({

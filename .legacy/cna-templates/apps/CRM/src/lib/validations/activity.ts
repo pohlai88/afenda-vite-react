@@ -1,9 +1,18 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 export const createActivitySchema = z.object({
-  type: z.enum(['CALL', 'EMAIL', 'MEETING', 'TASK', 'NOTE', 'LUNCH', 'DEMO', 'FOLLOW_UP']),
-  subject: z.string().min(1, 'Tiêu đề không được trống').max(200),
-  description: z.string().max(5000).optional().or(z.literal('')),
+  type: z.enum([
+    "CALL",
+    "EMAIL",
+    "MEETING",
+    "TASK",
+    "NOTE",
+    "LUNCH",
+    "DEMO",
+    "FOLLOW_UP",
+  ]),
+  subject: z.string().min(1, "Tiêu đề không được trống").max(200),
+  description: z.string().max(5000).optional().or(z.literal("")),
   dueAt: z.coerce.date().optional().nullable(),
   duration: z.coerce.number().min(0).optional().nullable(),
   contactId: z.string().cuid().optional().nullable(),
@@ -12,7 +21,18 @@ export const createActivitySchema = z.object({
 })
 
 export const updateActivitySchema = z.object({
-  type: z.enum(['CALL', 'EMAIL', 'MEETING', 'TASK', 'NOTE', 'LUNCH', 'DEMO', 'FOLLOW_UP']).optional(),
+  type: z
+    .enum([
+      "CALL",
+      "EMAIL",
+      "MEETING",
+      "TASK",
+      "NOTE",
+      "LUNCH",
+      "DEMO",
+      "FOLLOW_UP",
+    ])
+    .optional(),
   subject: z.string().min(1).max(200).optional(),
   description: z.string().max(5000).optional(),
   dueAt: z.coerce.date().optional().nullable(),

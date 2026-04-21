@@ -1,11 +1,14 @@
-import { db } from '@/lib/db'
-import type { CreateDependentInput, UpdateDependentInput } from '@/lib/validations/dependent'
+import { db } from "@/lib/db"
+import type {
+  CreateDependentInput,
+  UpdateDependentInput,
+} from "@/lib/validations/dependent"
 
 export const dependentService = {
   async findByEmployeeId(employeeId: string) {
     return db.dependent.findMany({
       where: { employeeId, isActive: true },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
   },
 
@@ -23,8 +26,12 @@ export const dependentService = {
         relationship: data.relationship,
         dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
         idNumber: data.idNumber,
-        taxDeductionFrom: data.taxDeductionFrom ? new Date(data.taxDeductionFrom) : null,
-        taxDeductionTo: data.taxDeductionTo ? new Date(data.taxDeductionTo) : null,
+        taxDeductionFrom: data.taxDeductionFrom
+          ? new Date(data.taxDeductionFrom)
+          : null,
+        taxDeductionTo: data.taxDeductionTo
+          ? new Date(data.taxDeductionTo)
+          : null,
         deductionDocument: data.deductionDocument,
         isActive: data.isActive ?? true,
       },
@@ -37,19 +44,33 @@ export const dependentService = {
     })
 
     if (!current) {
-      throw new Error('Người phụ thuộc không tồn tại')
+      throw new Error("Người phụ thuộc không tồn tại")
     }
 
     return db.dependent.update({
       where: { id },
       data: {
         ...(data.fullName !== undefined && { fullName: data.fullName }),
-        ...(data.relationship !== undefined && { relationship: data.relationship }),
-        ...(data.dateOfBirth !== undefined && { dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null }),
+        ...(data.relationship !== undefined && {
+          relationship: data.relationship,
+        }),
+        ...(data.dateOfBirth !== undefined && {
+          dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
+        }),
         ...(data.idNumber !== undefined && { idNumber: data.idNumber }),
-        ...(data.taxDeductionFrom !== undefined && { taxDeductionFrom: data.taxDeductionFrom ? new Date(data.taxDeductionFrom) : null }),
-        ...(data.taxDeductionTo !== undefined && { taxDeductionTo: data.taxDeductionTo ? new Date(data.taxDeductionTo) : null }),
-        ...(data.deductionDocument !== undefined && { deductionDocument: data.deductionDocument }),
+        ...(data.taxDeductionFrom !== undefined && {
+          taxDeductionFrom: data.taxDeductionFrom
+            ? new Date(data.taxDeductionFrom)
+            : null,
+        }),
+        ...(data.taxDeductionTo !== undefined && {
+          taxDeductionTo: data.taxDeductionTo
+            ? new Date(data.taxDeductionTo)
+            : null,
+        }),
+        ...(data.deductionDocument !== undefined && {
+          deductionDocument: data.deductionDocument,
+        }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
       },
     })
@@ -61,7 +82,7 @@ export const dependentService = {
     })
 
     if (!dependent) {
-      throw new Error('Người phụ thuộc không tồn tại')
+      throw new Error("Người phụ thuộc không tồn tại")
     }
 
     // Soft delete by setting isActive to false

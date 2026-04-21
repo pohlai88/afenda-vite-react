@@ -15,8 +15,11 @@ import type { InferSelectModel } from "drizzle-orm"
 
 import type { DatabaseClient } from "../client"
 import { tenantPolicies } from "../schema/mdm/tenant-policies.schema"
-import { effectiveOnAsOfDatePredicate } from "./helpers/effective-row"
-import { assertIsoDateOnly, todayIsoDateUtc } from "./helpers/iso-date"
+import { effectiveOnAsOfDatePredicate } from "./query-primitives/effective-date-predicate"
+import {
+  assertIsoDateOnly,
+  todayIsoDateUtc,
+} from "./query-primitives/iso-date-assertions"
 
 export type TenantPolicyRecord = InferSelectModel<typeof tenantPolicies>
 

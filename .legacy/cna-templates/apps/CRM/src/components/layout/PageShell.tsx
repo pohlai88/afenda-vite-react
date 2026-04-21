@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils'
-import { type ReactNode } from 'react'
+import { cn } from "@/lib/utils"
+import { type ReactNode } from "react"
 
 interface PageShellProps {
   title: string
@@ -17,7 +17,7 @@ export function PageShell({
   className,
 }: PageShellProps) {
   return (
-    <div className={cn('space-y-4', className)}>
+    <div className={cn("space-y-4", className)}>
       {/* Page header */}
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -25,10 +25,14 @@ export function PageShell({
             {title}
           </h1>
           {description && (
-            <p className="mt-1 text-sm text-[var(--crm-text-secondary)]">{description}</p>
+            <p className="mt-1 text-sm text-[var(--crm-text-secondary)]">
+              {description}
+            </p>
           )}
         </div>
-        {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}
+        {actions && (
+          <div className="flex items-center gap-2 shrink-0">{actions}</div>
+        )}
       </div>
 
       {/* Page content */}

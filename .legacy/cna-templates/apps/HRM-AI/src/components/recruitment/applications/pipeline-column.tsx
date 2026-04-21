@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useDroppable } from '@dnd-kit/core'
-import { cn } from '@/lib/utils'
+import { useDroppable } from "@dnd-kit/core"
+import { cn } from "@/lib/utils"
 
 interface PipelineColumnProps {
   id: string
@@ -11,16 +11,22 @@ interface PipelineColumnProps {
   children: React.ReactNode
 }
 
-export function PipelineColumn({ id, title, count, color, children }: PipelineColumnProps) {
+export function PipelineColumn({
+  id,
+  title,
+  count,
+  color,
+  children,
+}: PipelineColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id })
 
   return (
     <div
       ref={setNodeRef}
       className={cn(
-        'flex-shrink-0 w-72 rounded-lg p-3',
+        "flex-shrink-0 w-72 rounded-lg p-3",
         color,
-        isOver && 'ring-2 ring-primary ring-offset-2'
+        isOver && "ring-2 ring-primary ring-offset-2"
       )}
     >
       <div className="flex items-center justify-between mb-3">

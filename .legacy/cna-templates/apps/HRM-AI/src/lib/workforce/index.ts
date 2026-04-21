@@ -6,8 +6,8 @@
  */
 
 // Types
-export * from './types/workforce.types';
+export * from "./types/workforce.types"
 
 // Services
-export { WorkforceService } from './services/workforce.service';
-export { default as WorkforceServiceDefault } from './services/workforce.service';
+export { WorkforceService } from "./services/workforce.service"
+export { default as WorkforceServiceDefault } from "./services/workforce.service"

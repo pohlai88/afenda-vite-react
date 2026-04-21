@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { Prisma } from "@prisma/client"
 
 export async function requestFeedback(
   tenantId: string,
@@ -7,14 +7,19 @@ export async function requestFeedback(
   data: {
     subjectId: string
     providerIds: string[]
-    feedbackType: 'CONTINUOUS' | 'REVIEW_360' | 'PEER' | 'UPWARD' | 'RECOGNITION'
+    feedbackType:
+      | "CONTINUOUS"
+      | "REVIEW_360"
+      | "PEER"
+      | "UPWARD"
+      | "RECOGNITION"
     reviewId?: string
     dueDate?: Date
     questions?: string[]
   }
 ) {
   const requests = await db.$transaction(
-    data.providerIds.map(providerId =>
+    data.providerIds.map((providerId) =>
       db.feedbackRequest.create({
         data: {
           tenantId,
@@ -25,7 +30,7 @@ export async function requestFeedback(
           reviewId: data.reviewId,
           dueDate: data.dueDate,
           questions: data.questions as any,
-          status: 'REQUESTED',
+          status: "REQUESTED",
         },
         include: {
           provider: {
@@ -49,7 +54,7 @@ export async function getFeedbackRequests(
     subjectId?: string
     requesterId?: string
     reviewId?: string
-    status?: 'REQUESTED' | 'PENDING' | 'SUBMITTED' | 'DECLINED'
+    status?: "REQUESTED" | "PENDING" | "SUBMITTED" | "DECLINED"
     feedbackType?: string
   }
 ) {
@@ -77,7 +82,7 @@ export async function getFeedbackRequests(
       },
       response: true,
     },
-    orderBy: { requestedAt: 'desc' },
+    orderBy: { requestedAt: "desc" },
   })
 }
 
@@ -87,7 +92,12 @@ export async function submitFeedback(
   data: {
     requestId?: string
     subjectId: string
-    feedbackType: 'CONTINUOUS' | 'REVIEW_360' | 'PEER' | 'UPWARD' | 'RECOGNITION'
+    feedbackType:
+      | "CONTINUOUS"
+      | "REVIEW_360"
+      | "PEER"
+      | "UPWARD"
+      | "RECOGNITION"
     overallRating?: number
     ratings?: Record<string, number>
     strengths?: string
@@ -126,7 +136,7 @@ export async function submitFeedback(
     await db.feedbackRequest.update({
       where: { id: data.requestId },
       data: {
-        status: 'SUBMITTED',
+        status: "SUBMITTED",
         respondedAt: new Date(),
       },
     })
@@ -150,12 +160,13 @@ export async function getFeedbackForEmployee(
     tenantId,
     subjectId,
     ...(options?.feedbackType && { feedbackType: options.feedbackType as any }),
-    ...(options?.startDate && options?.endDate && {
-      createdAt: {
-        gte: options.startDate,
-        lte: options.endDate,
-      },
-    }),
+    ...(options?.startDate &&
+      options?.endDate && {
+        createdAt: {
+          gte: options.startDate,
+          lte: options.endDate,
+        },
+      }),
   }
 
   const feedbacks = await db.feedback.findMany({
@@ -168,15 +179,15 @@ export async function getFeedbackForEmployee(
         select: { id: true, fullName: true },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   })
 
   // Mask anonymous feedback provider info
-  return feedbacks.map(feedback => {
+  return feedbacks.map((feedback) => {
     if (feedback.isAnonymous) {
       return {
         ...feedback,
-        providerId: 'anonymous',
+        providerId: "anonymous",
         provider: null,
       }
     }
@@ -193,13 +204,13 @@ export async function declineFeedbackRequest(
   })
 
   if (!request) {
-    throw new Error('Feedback request not found or access denied')
+    throw new Error("Feedback request not found or access denied")
   }
 
   return db.feedbackRequest.update({
     where: { id: requestId },
     data: {
-      status: 'DECLINED',
+      status: "DECLINED",
       respondedAt: new Date(),
     },
     include: {
@@ -224,7 +235,7 @@ export async function getRecognitions(
 ) {
   const where: Prisma.FeedbackWhereInput = {
     tenantId,
-    feedbackType: 'RECOGNITION',
+    feedbackType: "RECOGNITION",
     isPublic: true,
     ...(options?.subjectId && { subjectId: options.subjectId }),
     ...(options?.providerId && { providerId: options.providerId }),
@@ -241,7 +252,7 @@ export async function getRecognitions(
           select: { id: true, fullName: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: options?.offset ?? 0,
       take: options?.limit ?? 20,
     }),
@@ -249,11 +260,11 @@ export async function getRecognitions(
   ])
 
   // Mask anonymous recognitions
-  const maskedData = data.map(feedback => {
+  const maskedData = data.map((feedback) => {
     if (feedback.isAnonymous) {
       return {
         ...feedback,
-        providerId: 'anonymous',
+        providerId: "anonymous",
         provider: null,
       }
     }

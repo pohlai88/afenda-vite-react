@@ -21,7 +21,10 @@ export default function NewEmployeePage() {
         title="Thêm nhân viên mới"
         description="Nhập thông tin nhân viên"
       />
-      <EmployeeForm onSubmit={handleSubmit} isLoading={createEmployee.isPending} />
+      <EmployeeForm
+        onSubmit={handleSubmit}
+        isLoading={createEmployee.isPending}
+      />
     </div>
   )
 }

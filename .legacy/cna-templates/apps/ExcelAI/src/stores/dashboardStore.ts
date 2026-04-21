@@ -1,8 +1,8 @@
 // Phase 5: Dashboard Store
 // State management for interactive dashboards
 
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { create } from "zustand"
+import { devtools, persist } from "zustand/middleware"
 import {
   Dashboard,
   DashboardWidget,
@@ -11,64 +11,86 @@ import {
   DashboardTheme,
   DEFAULT_THEMES,
   FilterValue,
-} from '../types/visualization';
+} from "../types/visualization"
 
 interface DashboardState {
-  dashboards: Map<string, Dashboard>;
-  activeDashboardId: string | null;
-  selectedWidgetId: string | null;
-  editingWidgetId: string | null;
-  activeFilters: Map<string, Map<string, FilterValue[]>>;
-  isEditMode: boolean;
-  isPresentationMode: boolean;
-  loading: boolean;
-  error: string | null;
+  dashboards: Map<string, Dashboard>
+  activeDashboardId: string | null
+  selectedWidgetId: string | null
+  editingWidgetId: string | null
+  activeFilters: Map<string, Map<string, FilterValue[]>>
+  isEditMode: boolean
+  isPresentationMode: boolean
+  loading: boolean
+  error: string | null
 }
 
 // Type for persisted dashboard state (serialized to localStorage)
 interface PersistedDashboardState {
-  dashboards?: [string, Dashboard][];
+  dashboards?: [string, Dashboard][]
 }
 
 interface DashboardActions {
   // Dashboard CRUD
-  createDashboard: (workbookId: string, name: string) => Dashboard;
-  updateDashboard: (dashboardId: string, updates: Partial<Dashboard>) => void;
-  deleteDashboard: (dashboardId: string) => void;
-  duplicateDashboard: (dashboardId: string) => Dashboard | null;
+  createDashboard: (workbookId: string, name: string) => Dashboard
+  updateDashboard: (dashboardId: string, updates: Partial<Dashboard>) => void
+  deleteDashboard: (dashboardId: string) => void
+  duplicateDashboard: (dashboardId: string) => Dashboard | null
 
   // Widget management
-  addWidget: (dashboardId: string, widget: DashboardWidget) => void;
-  updateWidget: (dashboardId: string, widgetId: string, updates: Partial<DashboardWidget>) => void;
-  removeWidget: (dashboardId: string, widgetId: string) => void;
-  updateWidgetPosition: (dashboardId: string, widgetId: string, position: WidgetPosition) => void;
-  updateWidgetPositions: (dashboardId: string, updates: { id: string; position: WidgetPosition }[]) => void;
+  addWidget: (dashboardId: string, widget: DashboardWidget) => void
+  updateWidget: (
+    dashboardId: string,
+    widgetId: string,
+    updates: Partial<DashboardWidget>
+  ) => void
+  removeWidget: (dashboardId: string, widgetId: string) => void
+  updateWidgetPosition: (
+    dashboardId: string,
+    widgetId: string,
+    position: WidgetPosition
+  ) => void
+  updateWidgetPositions: (
+    dashboardId: string,
+    updates: { id: string; position: WidgetPosition }[]
+  ) => void
 
   // Filter management
-  addDashboardFilter: (dashboardId: string, filter: DashboardFilter) => void;
-  updateDashboardFilter: (dashboardId: string, filterId: string, updates: Partial<DashboardFilter>) => void;
-  removeDashboardFilter: (dashboardId: string, filterId: string) => void;
-  setFilterValue: (dashboardId: string, filterId: string, values: FilterValue[]) => void;
-  clearFilters: (dashboardId: string) => void;
+  addDashboardFilter: (dashboardId: string, filter: DashboardFilter) => void
+  updateDashboardFilter: (
+    dashboardId: string,
+    filterId: string,
+    updates: Partial<DashboardFilter>
+  ) => void
+  removeDashboardFilter: (dashboardId: string, filterId: string) => void
+  setFilterValue: (
+    dashboardId: string,
+    filterId: string,
+    values: FilterValue[]
+  ) => void
+  clearFilters: (dashboardId: string) => void
 
   // Theme
-  setTheme: (dashboardId: string, theme: DashboardTheme) => void;
+  setTheme: (dashboardId: string, theme: DashboardTheme) => void
 
   // Selection & UI state
-  setActiveDashboard: (dashboardId: string | null) => void;
-  selectWidget: (widgetId: string | null) => void;
-  startEditingWidget: (widgetId: string | null) => void;
-  setEditMode: (editMode: boolean) => void;
-  setPresentationMode: (presentationMode: boolean) => void;
+  setActiveDashboard: (dashboardId: string | null) => void
+  selectWidget: (widgetId: string | null) => void
+  startEditingWidget: (widgetId: string | null) => void
+  setEditMode: (editMode: boolean) => void
+  setPresentationMode: (presentationMode: boolean) => void
 
   // Loading
-  getDashboardsByWorkbook: (workbookId: string) => Dashboard[];
-  getActiveFiltersForWidget: (dashboardId: string, widgetId: string) => Map<string, FilterValue[]>;
+  getDashboardsByWorkbook: (workbookId: string) => Dashboard[]
+  getActiveFiltersForWidget: (
+    dashboardId: string,
+    widgetId: string
+  ) => Map<string, FilterValue[]>
 
   // Utility
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  reset: () => void;
+  setLoading: (loading: boolean) => void
+  setError: (error: string | null) => void
+  reset: () => void
 }
 
 const initialState: DashboardState = {
@@ -81,7 +103,7 @@ const initialState: DashboardState = {
   isPresentationMode: false,
   loading: false,
   error: null,
-};
+}
 
 export const useDashboardStore = create<DashboardState & DashboardActions>()(
   devtools(
@@ -95,7 +117,7 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
             workbookId,
             name,
             layout: {
-              layoutType: 'Grid',
+              layoutType: "Grid",
               columns: 12,
               rowHeight: 80,
               margin: [10, 10],
@@ -114,55 +136,57 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               showFilters: true,
               allowExport: true,
               allowFullscreen: true,
-              viewMode: 'Edit',
+              viewMode: "Edit",
             },
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-          };
+          }
 
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            dashboards.set(dashboard.id, dashboard);
-            return { dashboards, activeDashboardId: dashboard.id };
-          });
+            const dashboards = new Map(state.dashboards)
+            dashboards.set(dashboard.id, dashboard)
+            return { dashboards, activeDashboardId: dashboard.id }
+          })
 
-          return dashboard;
+          return dashboard
         },
 
         updateDashboard: (dashboardId, updates) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
               dashboards.set(dashboardId, {
                 ...dashboard,
                 ...updates,
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
-            return { dashboards };
-          });
+            return { dashboards }
+          })
         },
 
         deleteDashboard: (dashboardId) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const activeFilters = new Map(state.activeFilters);
-            dashboards.delete(dashboardId);
-            activeFilters.delete(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const activeFilters = new Map(state.activeFilters)
+            dashboards.delete(dashboardId)
+            activeFilters.delete(dashboardId)
             return {
               dashboards,
               activeFilters,
               activeDashboardId:
-                state.activeDashboardId === dashboardId ? null : state.activeDashboardId,
-            };
-          });
+                state.activeDashboardId === dashboardId
+                  ? null
+                  : state.activeDashboardId,
+            }
+          })
         },
 
         duplicateDashboard: (dashboardId) => {
-          const { dashboards } = get();
-          const original = dashboards.get(dashboardId);
-          if (!original) return null;
+          const { dashboards } = get()
+          const original = dashboards.get(dashboardId)
+          if (!original) return null
 
           const duplicate: Dashboard = {
             ...JSON.parse(JSON.stringify(original)),
@@ -178,36 +202,36 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               ...f,
               id: crypto.randomUUID(),
             })),
-          };
+          }
 
           set((state) => {
-            const newDashboards = new Map(state.dashboards);
-            newDashboards.set(duplicate.id, duplicate);
-            return { dashboards: newDashboards };
-          });
+            const newDashboards = new Map(state.dashboards)
+            newDashboards.set(duplicate.id, duplicate)
+            return { dashboards: newDashboards }
+          })
 
-          return duplicate;
+          return duplicate
         },
 
         addWidget: (dashboardId, widget) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
               dashboards.set(dashboardId, {
                 ...dashboard,
                 widgets: [...dashboard.widgets, widget],
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
-            return { dashboards };
-          });
+            return { dashboards }
+          })
         },
 
         updateWidget: (dashboardId, widgetId, updates) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
               dashboards.set(dashboardId, {
                 ...dashboard,
@@ -215,37 +239,41 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
                   w.id === widgetId ? { ...w, ...updates } : w
                 ),
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
-            return { dashboards };
-          });
+            return { dashboards }
+          })
         },
 
         removeWidget: (dashboardId, widgetId) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
               dashboards.set(dashboardId, {
                 ...dashboard,
                 widgets: dashboard.widgets.filter((w) => w.id !== widgetId),
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
             return {
               dashboards,
               selectedWidgetId:
-                state.selectedWidgetId === widgetId ? null : state.selectedWidgetId,
+                state.selectedWidgetId === widgetId
+                  ? null
+                  : state.selectedWidgetId,
               editingWidgetId:
-                state.editingWidgetId === widgetId ? null : state.editingWidgetId,
-            };
-          });
+                state.editingWidgetId === widgetId
+                  ? null
+                  : state.editingWidgetId,
+            }
+          })
         },
 
         updateWidgetPosition: (dashboardId, widgetId, position) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
               dashboards.set(dashboardId, {
                 ...dashboard,
@@ -253,50 +281,52 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
                   w.id === widgetId ? { ...w, position } : w
                 ),
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
-            return { dashboards };
-          });
+            return { dashboards }
+          })
         },
 
         updateWidgetPositions: (dashboardId, updates) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
-              const positionMap = new Map(updates.map((u) => [u.id, u.position]));
+              const positionMap = new Map(
+                updates.map((u) => [u.id, u.position])
+              )
               dashboards.set(dashboardId, {
                 ...dashboard,
                 widgets: dashboard.widgets.map((w) => {
-                  const newPosition = positionMap.get(w.id);
-                  return newPosition ? { ...w, position: newPosition } : w;
+                  const newPosition = positionMap.get(w.id)
+                  return newPosition ? { ...w, position: newPosition } : w
                 }),
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
-            return { dashboards };
-          });
+            return { dashboards }
+          })
         },
 
         addDashboardFilter: (dashboardId, filter) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
               dashboards.set(dashboardId, {
                 ...dashboard,
                 filters: [...dashboard.filters, filter],
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
-            return { dashboards };
-          });
+            return { dashboards }
+          })
         },
 
         updateDashboardFilter: (dashboardId, filterId, updates) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
               dashboards.set(dashboardId, {
                 ...dashboard,
@@ -304,81 +334,81 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
                   f.id === filterId ? { ...f, ...updates } : f
                 ),
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
-            return { dashboards };
-          });
+            return { dashboards }
+          })
         },
 
         removeDashboardFilter: (dashboardId, filterId) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
               dashboards.set(dashboardId, {
                 ...dashboard,
                 filters: dashboard.filters.filter((f) => f.id !== filterId),
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
             // Also clear active filter values
-            const activeFilters = new Map(state.activeFilters);
-            const dashboardFilters = activeFilters.get(dashboardId);
+            const activeFilters = new Map(state.activeFilters)
+            const dashboardFilters = activeFilters.get(dashboardId)
             if (dashboardFilters) {
-              dashboardFilters.delete(filterId);
+              dashboardFilters.delete(filterId)
             }
-            return { dashboards, activeFilters };
-          });
+            return { dashboards, activeFilters }
+          })
         },
 
         setFilterValue: (dashboardId, filterId, values) => {
           set((state) => {
-            const activeFilters = new Map(state.activeFilters);
+            const activeFilters = new Map(state.activeFilters)
             if (!activeFilters.has(dashboardId)) {
-              activeFilters.set(dashboardId, new Map());
+              activeFilters.set(dashboardId, new Map())
             }
-            activeFilters.get(dashboardId)!.set(filterId, values);
-            return { activeFilters };
-          });
+            activeFilters.get(dashboardId)!.set(filterId, values)
+            return { activeFilters }
+          })
         },
 
         clearFilters: (dashboardId) => {
           set((state) => {
-            const activeFilters = new Map(state.activeFilters);
-            activeFilters.set(dashboardId, new Map());
-            return { activeFilters };
-          });
+            const activeFilters = new Map(state.activeFilters)
+            activeFilters.set(dashboardId, new Map())
+            return { activeFilters }
+          })
         },
 
         setTheme: (dashboardId, theme) => {
           set((state) => {
-            const dashboards = new Map(state.dashboards);
-            const dashboard = dashboards.get(dashboardId);
+            const dashboards = new Map(state.dashboards)
+            const dashboard = dashboards.get(dashboardId)
             if (dashboard) {
               dashboards.set(dashboardId, {
                 ...dashboard,
                 theme,
                 updatedAt: new Date().toISOString(),
-              });
+              })
             }
-            return { dashboards };
-          });
+            return { dashboards }
+          })
         },
 
         setActiveDashboard: (dashboardId) => {
-          set({ activeDashboardId: dashboardId });
+          set({ activeDashboardId: dashboardId })
         },
 
         selectWidget: (widgetId) => {
-          set({ selectedWidgetId: widgetId });
+          set({ selectedWidgetId: widgetId })
         },
 
         startEditingWidget: (widgetId) => {
-          set({ editingWidgetId: widgetId });
+          set({ editingWidgetId: widgetId })
         },
 
         setEditMode: (editMode) => {
-          set({ isEditMode: editMode, isPresentationMode: false });
+          set({ isEditMode: editMode, isPresentationMode: false })
         },
 
         setPresentationMode: (presentationMode) => {
@@ -387,63 +417,70 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
             isEditMode: !presentationMode,
             selectedWidgetId: null,
             editingWidgetId: null,
-          });
+          })
         },
 
         getDashboardsByWorkbook: (workbookId) => {
-          const { dashboards } = get();
-          return Array.from(dashboards.values()).filter((d) => d.workbookId === workbookId);
+          const { dashboards } = get()
+          return Array.from(dashboards.values()).filter(
+            (d) => d.workbookId === workbookId
+          )
         },
 
         getActiveFiltersForWidget: (dashboardId, widgetId) => {
-          const { dashboards, activeFilters } = get();
-          const dashboard = dashboards.get(dashboardId);
-          if (!dashboard) return new Map();
+          const { dashboards, activeFilters } = get()
+          const dashboard = dashboards.get(dashboardId)
+          if (!dashboard) return new Map()
 
-          const dashboardActiveFilters = activeFilters.get(dashboardId);
-          if (!dashboardActiveFilters) return new Map();
+          const dashboardActiveFilters = activeFilters.get(dashboardId)
+          if (!dashboardActiveFilters) return new Map()
 
-          const result = new Map<string, FilterValue[]>();
+          const result = new Map<string, FilterValue[]>()
           for (const filter of dashboard.filters) {
-            if (filter.affectsWidgets.includes(widgetId) || filter.affectsWidgets.length === 0) {
-              const values = dashboardActiveFilters.get(filter.id);
+            if (
+              filter.affectsWidgets.includes(widgetId) ||
+              filter.affectsWidgets.length === 0
+            ) {
+              const values = dashboardActiveFilters.get(filter.id)
               if (values && values.length > 0) {
-                result.set(filter.sourceField, values);
+                result.set(filter.sourceField, values)
               }
             }
           }
-          return result;
+          return result
         },
 
         setLoading: (loading) => {
-          set({ loading });
+          set({ loading })
         },
 
         setError: (error) => {
-          set({ error });
+          set({ error })
         },
 
         reset: () => {
-          set(initialState);
+          set(initialState)
         },
       }),
       {
-        name: 'dashboard-store',
+        name: "dashboard-store",
         partialize: (state) => ({
           dashboards: Array.from(state.dashboards.entries()),
         }),
         merge: (persistedState: unknown, current) => {
-          const persisted = persistedState as PersistedDashboardState | undefined;
+          const persisted = persistedState as
+            | PersistedDashboardState
+            | undefined
           return {
             ...current,
             dashboards: new Map(persisted?.dashboards || []),
-          };
+          }
         },
       }
     ),
-    { name: 'dashboard-store' }
+    { name: "dashboard-store" }
   )
-);
+)
 
 // Widget factory functions
 export function createChartWidget(
@@ -453,7 +490,7 @@ export function createChartWidget(
 ): DashboardWidget {
   return {
     id: crypto.randomUUID(),
-    widgetType: 'Chart',
+    widgetType: "Chart",
     title,
     position,
     dataSource: { chartId },
@@ -463,15 +500,15 @@ export function createChartWidget(
       showShadow: false,
     },
     style: {
-      backgroundColor: '#FFFFFF',
-      borderColor: '#E0E0E0',
+      backgroundColor: "#FFFFFF",
+      borderColor: "#E0E0E0",
       borderRadius: 8,
       padding: 16,
       titleFontSize: 14,
-      titleColor: '#333333',
+      titleColor: "#333333",
     },
     interactions: [],
-  };
+  }
 }
 
 export function createPivotWidget(
@@ -481,7 +518,7 @@ export function createPivotWidget(
 ): DashboardWidget {
   return {
     id: crypto.randomUUID(),
-    widgetType: 'PivotTable',
+    widgetType: "PivotTable",
     title,
     position,
     dataSource: { pivotId },
@@ -491,15 +528,15 @@ export function createPivotWidget(
       showShadow: false,
     },
     style: {
-      backgroundColor: '#FFFFFF',
-      borderColor: '#E0E0E0',
+      backgroundColor: "#FFFFFF",
+      borderColor: "#E0E0E0",
       borderRadius: 8,
       padding: 16,
       titleFontSize: 14,
-      titleColor: '#333333',
+      titleColor: "#333333",
     },
     interactions: [],
-  };
+  }
 }
 
 export function createKPIWidget(
@@ -509,7 +546,7 @@ export function createKPIWidget(
 ): DashboardWidget {
   return {
     id: crypto.randomUUID(),
-    widgetType: 'KPI',
+    widgetType: "KPI",
     title,
     position,
     dataSource: {},
@@ -519,19 +556,19 @@ export function createKPIWidget(
       showShadow: false,
       kpiConfig: {
         valueCell,
-        comparisonType: 'None',
+        comparisonType: "None",
       },
     },
     style: {
-      backgroundColor: '#FFFFFF',
-      borderColor: '#E0E0E0',
+      backgroundColor: "#FFFFFF",
+      borderColor: "#E0E0E0",
       borderRadius: 8,
       padding: 16,
       titleFontSize: 14,
-      titleColor: '#333333',
+      titleColor: "#333333",
     },
     interactions: [],
-  };
+  }
 }
 
 export function createTextWidget(
@@ -540,7 +577,7 @@ export function createTextWidget(
 ): DashboardWidget {
   return {
     id: crypto.randomUUID(),
-    widgetType: 'Text',
+    widgetType: "Text",
     position,
     dataSource: {},
     config: {
@@ -550,24 +587,24 @@ export function createTextWidget(
       textContent: content,
     },
     style: {
-      backgroundColor: 'transparent',
-      borderColor: 'transparent',
+      backgroundColor: "transparent",
+      borderColor: "transparent",
       borderRadius: 0,
       padding: 8,
       titleFontSize: 14,
-      titleColor: '#333333',
+      titleColor: "#333333",
     },
     interactions: [],
-  };
+  }
 }
 
 // Helper to convert react-grid-layout positions
 export function fromGridLayout(layout: {
-  i: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
+  i: string
+  x: number
+  y: number
+  w: number
+  h: number
 }): WidgetPosition {
   return {
     x: layout.x,
@@ -575,20 +612,20 @@ export function fromGridLayout(layout: {
     w: layout.w,
     h: layout.h,
     isStatic: false,
-  };
+  }
 }
 
 export function toGridLayout(widget: DashboardWidget): {
-  i: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  minW?: number;
-  maxW?: number;
-  minH?: number;
-  maxH?: number;
-  static?: boolean;
+  i: string
+  x: number
+  y: number
+  w: number
+  h: number
+  minW?: number
+  maxW?: number
+  minH?: number
+  maxH?: number
+  static?: boolean
 } {
   return {
     i: widget.id,
@@ -601,5 +638,5 @@ export function toGridLayout(widget: DashboardWidget): {
     minH: widget.position.minH,
     maxH: widget.position.maxH,
     static: widget.position.isStatic,
-  };
+  }
 }

@@ -1,11 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { canAccess } from '@/lib/auth/rbac'
-import { generateOrderPDF } from '@/lib/pdf/generate'
-import { rateLimitPdf } from '@/lib/api/rate-limit'
-import { Forbidden, NotFound, RateLimited, InternalError, Unauthorized, handleApiError } from '@/lib/api/errors'
-import { logger } from '@/lib/logger'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { canAccess } from "@/lib/auth/rbac"
+import { generateOrderPDF } from "@/lib/pdf/generate"
+import { rateLimitPdf } from "@/lib/api/rate-limit"
+import {
+  Forbidden,
+  NotFound,
+  RateLimited,
+  InternalError,
+  Unauthorized,
+  handleApiError,
+} from "@/lib/api/errors"
+import { logger } from "@/lib/logger"
 
 // GET /api/orders/[id]/pdf — Generate and download order PDF
 export async function GET(
@@ -27,10 +34,10 @@ export async function GET(
     })
 
     if (!order) {
-      throw NotFound('Đơn hàng')
+      throw NotFound("Đơn hàng")
     }
 
-    if (!canAccess(user, 'view_all') && order.createdById !== user.id) {
+    if (!canAccess(user, "view_all") && order.createdById !== user.id) {
       throw Forbidden()
     }
 
@@ -38,23 +45,28 @@ export async function GET(
     try {
       pdfBuffer = await generateOrderPDF(id)
     } catch (pdfError) {
-      logger.error('PDF generation failed', pdfError instanceof Error ? pdfError : null, {
-        orderId: id, userId: user.id,
-      })
-      throw InternalError('Không thể tạo PDF')
+      logger.error(
+        "PDF generation failed",
+        pdfError instanceof Error ? pdfError : null,
+        {
+          orderId: id,
+          userId: user.id,
+        }
+      )
+      throw InternalError("Không thể tạo PDF")
     }
 
     return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${order.orderNumber}.pdf"`,
-        'Content-Length': String(pdfBuffer.length),
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${order.orderNumber}.pdf"`,
+        "Content-Length": String(pdfBuffer.length),
       },
     })
   } catch (error) {
     if (error instanceof AuthError) {
-      return handleApiError(Unauthorized(error.message), '/api/orders/[id]/pdf')
+      return handleApiError(Unauthorized(error.message), "/api/orders/[id]/pdf")
     }
-    return handleApiError(error, '/api/orders/[id]/pdf')
+    return handleApiError(error, "/api/orders/[id]/pdf")
   }
 }

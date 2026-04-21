@@ -1,8 +1,8 @@
 // src/lib/db/query-optimizer.ts
 // Database query optimization utilities
 
-import prisma from '@/lib/db'
-import { Prisma } from '@prisma/client'
+import prisma from "@/lib/db"
+import { Prisma } from "@prisma/client"
 
 // ═══════════════════════════════════════════════════════════════
 // PAGINATION UTILITIES
@@ -141,7 +141,7 @@ export function buildSearchFilter(
     OR: fields.map((field) => ({
       [field]: {
         contains: term,
-        mode: 'insensitive' as Prisma.QueryMode,
+        mode: "insensitive" as Prisma.QueryMode,
       },
     })),
   }
@@ -171,10 +171,10 @@ export async function getEmployeeStats(departmentId?: string) {
   const [total, active, onLeave] = await Promise.all([
     prisma.employee.count({ where }),
     prisma.employee.count({
-      where: { ...where, status: 'ACTIVE' },
+      where: { ...where, status: "ACTIVE" },
     }),
     prisma.employee.count({
-      where: { ...where, status: 'ON_LEAVE' },
+      where: { ...where, status: "ON_LEAVE" },
     }),
   ])
 
@@ -194,11 +194,13 @@ export async function getDepartmentStats() {
     },
   })
 
-  return departments.map((dept: { id: string; name: string; _count: { employees: number } }) => ({
-    id: dept.id,
-    name: dept.name,
-    employeeCount: dept._count.employees,
-  }))
+  return departments.map(
+    (dept: { id: string; name: string; _count: { employees: number } }) => ({
+      id: dept.id,
+      name: dept.name,
+      employeeCount: dept._count.employees,
+    })
+  )
 }
 
 // ═══════════════════════════════════════════════════════════════

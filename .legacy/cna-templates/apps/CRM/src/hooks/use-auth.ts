@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { useEffect, useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
-import type { User as SupabaseUser } from '@supabase/supabase-js'
+import { useEffect, useState, useCallback } from "react"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
+import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 export interface AuthUser {
   id: string
@@ -22,7 +22,7 @@ export function useAuth() {
   // Fetch DB user profile
   const fetchProfile = useCallback(async (userId: string) => {
     try {
-      const res = await fetch('/api/auth/me')
+      const res = await fetch("/api/auth/me")
       if (res.ok) {
         const data = await res.json()
         setDbUser(data)
@@ -45,18 +45,18 @@ export function useAuth() {
     })
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        const user = session?.user ?? null
-        setAuthUser(user)
-        if (user) {
-          fetchProfile(user.id)
-        } else {
-          setDbUser(null)
-        }
-        setIsLoading(false)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user ?? null
+      setAuthUser(user)
+      if (user) {
+        fetchProfile(user.id)
+      } else {
+        setDbUser(null)
       }
-    )
+      setIsLoading(false)
+    })
 
     return () => subscription.unsubscribe()
   }, [fetchProfile])
@@ -66,7 +66,7 @@ export function useAuth() {
     await supabase.auth.signOut()
     setAuthUser(null)
     setDbUser(null)
-    router.push('/login')
+    router.push("/login")
     router.refresh()
   }, [router])
 

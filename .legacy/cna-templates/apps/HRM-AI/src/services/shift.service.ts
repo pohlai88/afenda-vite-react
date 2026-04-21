@@ -1,9 +1,15 @@
 // src/services/shift.service.ts
 // Shift management service
 
-import { db } from '@/lib/db'
-import type { ShiftFilters, PaginatedResponse, ShiftWithRelations, ShiftAssignmentFilters, ShiftAssignmentWithRelations } from '@/types'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import type {
+  ShiftFilters,
+  PaginatedResponse,
+  ShiftWithRelations,
+  ShiftAssignmentFilters,
+  ShiftAssignmentWithRelations,
+} from "@/types"
+import type { Prisma } from "@prisma/client"
 
 export const shiftService = {
   // ═══════════════════════════════════════════════════════════════
@@ -20,8 +26,8 @@ export const shiftService = {
       tenantId,
       ...(search && {
         OR: [
-          { name: { contains: search, mode: 'insensitive' } },
-          { code: { contains: search, mode: 'insensitive' } },
+          { name: { contains: search, mode: "insensitive" } },
+          { code: { contains: search, mode: "insensitive" } },
         ],
       }),
       ...(shiftType && { shiftType }),
@@ -39,7 +45,7 @@ export const shiftService = {
             },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -57,7 +63,10 @@ export const shiftService = {
     }
   },
 
-  async findById(tenantId: string, id: string): Promise<ShiftWithRelations | null> {
+  async findById(
+    tenantId: string,
+    id: string
+  ): Promise<ShiftWithRelations | null> {
     return db.shift.findFirst({
       where: { id, tenantId },
       include: {
@@ -77,7 +86,10 @@ export const shiftService = {
     })
   },
 
-  async create(tenantId: string, data: Omit<Prisma.ShiftCreateInput, 'tenant'>) {
+  async create(
+    tenantId: string,
+    data: Omit<Prisma.ShiftCreateInput, "tenant">
+  ) {
     return db.shift.create({
       data: {
         ...data,
@@ -86,13 +98,17 @@ export const shiftService = {
     })
   },
 
-  async update(tenantId: string, id: string, data: Omit<Prisma.ShiftUpdateInput, 'tenant'>) {
+  async update(
+    tenantId: string,
+    id: string,
+    data: Omit<Prisma.ShiftUpdateInput, "tenant">
+  ) {
     const shift = await db.shift.findFirst({
       where: { id, tenantId },
     })
 
     if (!shift) {
-      throw new Error('Ca làm việc không tồn tại')
+      throw new Error("Ca làm việc không tồn tại")
     }
 
     return db.shift.update({
@@ -115,15 +131,15 @@ export const shiftService = {
     })
 
     if (!shift) {
-      throw new Error('Ca làm việc không tồn tại')
+      throw new Error("Ca làm việc không tồn tại")
     }
 
     if (shift._count.assignments > 0) {
-      throw new Error('Không thể xóa ca làm việc đang được gán cho nhân viên')
+      throw new Error("Không thể xóa ca làm việc đang được gán cho nhân viên")
     }
 
     if (shift._count.attendances > 0) {
-      throw new Error('Không thể xóa ca làm việc đã có dữ liệu chấm công')
+      throw new Error("Không thể xóa ca làm việc đã có dữ liệu chấm công")
     }
 
     return db.shift.delete({
@@ -134,7 +150,7 @@ export const shiftService = {
   async getActiveShifts(tenantId: string) {
     return db.shift.findMany({
       where: { tenantId, isActive: true },
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
     })
   },
 
@@ -146,7 +162,16 @@ export const shiftService = {
     tenantId: string,
     filters: ShiftAssignmentFilters = {}
   ): Promise<PaginatedResponse<ShiftAssignmentWithRelations>> {
-    const { employeeId, shiftId, departmentId, startDate, endDate, isPrimary, page = 1, pageSize = 20 } = filters
+    const {
+      employeeId,
+      shiftId,
+      departmentId,
+      startDate,
+      endDate,
+      isPrimary,
+      page = 1,
+      pageSize = 20,
+    } = filters
 
     const where: Prisma.ShiftAssignmentWhereInput = {
       tenantId,
@@ -157,10 +182,7 @@ export const shiftService = {
       }),
       ...(startDate && {
         startDate: { lte: new Date(startDate) },
-        OR: [
-          { endDate: null },
-          { endDate: { gte: new Date(startDate) } },
-        ],
+        OR: [{ endDate: null }, { endDate: { gte: new Date(startDate) } }],
       }),
       ...(endDate && {
         startDate: { lte: new Date(endDate) },
@@ -183,7 +205,7 @@ export const shiftService = {
           },
           shift: true,
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -253,7 +275,7 @@ export const shiftService = {
     })
 
     if (!assignment) {
-      throw new Error('Phân ca không tồn tại')
+      throw new Error("Phân ca không tồn tại")
     }
 
     return db.shiftAssignment.update({
@@ -272,7 +294,7 @@ export const shiftService = {
     })
 
     if (!assignment) {
-      throw new Error('Phân ca không tồn tại')
+      throw new Error("Phân ca không tồn tại")
     }
 
     return db.shiftAssignment.delete({
@@ -288,10 +310,7 @@ export const shiftService = {
         employeeId,
         isPrimary: true,
         startDate: { lte: date },
-        OR: [
-          { endDate: null },
-          { endDate: { gte: date } },
-        ],
+        OR: [{ endDate: null }, { endDate: { gte: date } }],
         daysOfWeek: { has: dayOfWeek },
       },
       include: { shift: true },

@@ -1,4 +1,5 @@
 # BÁO CÁO TOÀN DIỆN DỰ ÁN PROMO MASTER
+
 ## Hệ Thống Quản Lý Khuyến Mãi Thương Mại (Trade Promotion Management - TPM)
 
 **Ngày lập:** 27/01/2026
@@ -30,15 +31,15 @@
 
 ### 1.2 Quy Mô Dự Án
 
-| Chỉ số | Giá trị |
-|--------|---------|
-| **Tổng số dòng code** | ~72,700 LOC TypeScript |
-| **Frontend** | 54,086 LOC |
-| **Backend** | 18,614 LOC |
-| **Số trang UI** | 60+ pages |
-| **API Endpoints** | 80+ endpoints |
-| **Database Models** | 45+ entities |
-| **Test Files** | 16 unit + 11 E2E suites |
+| Chỉ số                | Giá trị                 |
+| --------------------- | ----------------------- |
+| **Tổng số dòng code** | ~72,700 LOC TypeScript  |
+| **Frontend**          | 54,086 LOC              |
+| **Backend**           | 18,614 LOC              |
+| **Số trang UI**       | 60+ pages               |
+| **API Endpoints**     | 80+ endpoints           |
+| **Database Models**   | 45+ entities            |
+| **Test Files**        | 16 unit + 11 E2E suites |
 
 ### 1.3 Cấu Trúc Monorepo
 
@@ -134,46 +135,46 @@ User Action → React Component → React Query Hook → Axios API Call
 
 ### 3.1 Frontend Stack
 
-| Công nghệ | Version | Mục đích |
-|-----------|---------|----------|
-| **React** | 19.2.0 | UI Library với Concurrent Rendering |
-| **TypeScript** | 5.9 | Type Safety |
-| **Vite** | 7.2 | Build Tool & Dev Server |
-| **Tailwind CSS** | 4.1 | Styling Framework |
-| **shadcn/ui** | Latest | Component Library (Radix-based) |
-| **React Router** | 7.13 | Client-side Routing |
-| **Zustand** | 5.0 | Client State Management |
-| **TanStack Query** | 5.90 | Server State & API Caching |
-| **React Hook Form** | 7.71 | Form Management |
-| **Zod** | 4.3 | Schema Validation |
-| **Recharts** | 3.7 | Data Visualization |
-| **Axios** | 1.13 | HTTP Client |
-| **MSW** | 2.12 | API Mocking |
-| **Vitest** | 4.0 | Unit Testing |
-| **Playwright** | 1.58 | E2E Testing |
+| Công nghệ           | Version | Mục đích                            |
+| ------------------- | ------- | ----------------------------------- |
+| **React**           | 19.2.0  | UI Library với Concurrent Rendering |
+| **TypeScript**      | 5.9     | Type Safety                         |
+| **Vite**            | 7.2     | Build Tool & Dev Server             |
+| **Tailwind CSS**    | 4.1     | Styling Framework                   |
+| **shadcn/ui**       | Latest  | Component Library (Radix-based)     |
+| **React Router**    | 7.13    | Client-side Routing                 |
+| **Zustand**         | 5.0     | Client State Management             |
+| **TanStack Query**  | 5.90    | Server State & API Caching          |
+| **React Hook Form** | 7.71    | Form Management                     |
+| **Zod**             | 4.3     | Schema Validation                   |
+| **Recharts**        | 3.7     | Data Visualization                  |
+| **Axios**           | 1.13    | HTTP Client                         |
+| **MSW**             | 2.12    | API Mocking                         |
+| **Vitest**          | 4.0     | Unit Testing                        |
+| **Playwright**      | 1.58    | E2E Testing                         |
 
 ### 3.2 Backend Stack
 
-| Công nghệ | Version | Mục đích |
-|-----------|---------|----------|
-| **Node.js** | 18+ | Runtime Environment |
-| **Express.js** | 4.18 | Web Framework |
-| **TypeScript** | 5.3 | Type Safety |
-| **Prisma** | 5.10 | ORM & Database Toolkit |
-| **PostgreSQL** | 15+ | Database (Neon Serverless) |
-| **JWT** | 9.0 | Authentication |
-| **bcryptjs** | 2.4 | Password Hashing |
+| Công nghệ      | Version | Mục đích                   |
+| -------------- | ------- | -------------------------- |
+| **Node.js**    | 18+     | Runtime Environment        |
+| **Express.js** | 4.18    | Web Framework              |
+| **TypeScript** | 5.3     | Type Safety                |
+| **Prisma**     | 5.10    | ORM & Database Toolkit     |
+| **PostgreSQL** | 15+     | Database (Neon Serverless) |
+| **JWT**        | 9.0     | Authentication             |
+| **bcryptjs**   | 2.4     | Password Hashing           |
 
 ### 3.3 DevOps & Tools
 
-| Công nghệ | Mục đích |
-|-----------|----------|
-| **Turbo** | Monorepo Build Orchestration |
-| **Vercel** | Deployment Platform |
-| **GitHub Actions** | CI/CD Pipeline |
-| **Docker** | Containerization |
-| **ESLint** | Code Linting |
-| **Prettier** | Code Formatting |
+| Công nghệ          | Mục đích                     |
+| ------------------ | ---------------------------- |
+| **Turbo**          | Monorepo Build Orchestration |
+| **Vercel**         | Deployment Platform          |
+| **GitHub Actions** | CI/CD Pipeline               |
+| **Docker**         | Containerization             |
+| **ESLint**         | Code Linting                 |
+| **Prettier**       | Code Formatting              |
 
 ---
 
@@ -182,6 +183,7 @@ User Action → React Component → React Query Hook → Axios API Call
 ### 4.1 Module Quản Lý Khuyến Mãi (Promotions)
 
 #### Vòng đời khuyến mãi
+
 ```
 DRAFT → PLANNED → CONFIRMED → EXECUTING → COMPLETED
          │
@@ -189,6 +191,7 @@ DRAFT → PLANNED → CONFIRMED → EXECUTING → COMPLETED
 ```
 
 #### Tính năng chi tiết
+
 - **Tạo & Quản lý Promotion**: CRUD đầy đủ với validation
 - **Loại Promotion**: DISCOUNT, REBATE, DISPLAY, LISTING_FEE, COOP_ADVERTISING, SAMPLING
 - **Mechanics**: On-Invoice (FIXED) và Off-Invoice (VARIABLE)
@@ -199,23 +202,27 @@ DRAFT → PLANNED → CONFIRMED → EXECUTING → COMPLETED
 ### 4.2 Module Quản Lý Tài Chính (Finance)
 
 #### 4.2.1 Accrual Engine (Dồn tích)
+
 - **Loại tính toán**: TIME_BASED, EXECUTION_BASED, CLAIM_BASED, MANUAL
 - **Tần suất**: Monthly, Weekly, Daily
 - **FiscalPeriod**: OPEN → SOFT_CLOSE → HARD_CLOSE
 - **Entry Types**: INITIAL_RESERVE, MONTHLY, ADJUSTMENT, TRUE_UP, REVERSAL, SETTLEMENT
 
 #### 4.2.2 Deduction Management (Quản lý khấu trừ)
+
 - **Nguồn dữ liệu**: ERP_AR, BANK_LOCKBOX, EDI_812, MANUAL, CUSTOMER_PORTAL
 - **Auto-matching**: Tự động ghép với promotion/claim
 - **Dispute Workflow**: Quy trình tranh chấp và giải quyết
 - **Write-off Rules**: Quy tắc xóa nợ với approval
 
 #### 4.2.3 GL Journal Integration
+
 - **Journal Entries**: Debit/Credit tracking
 - **Source Types**: ACCRUAL, SETTLEMENT, ADJUSTMENT, REVERSAL, IMPORT
 - **ERP Export**: Xuất dữ liệu sang ERP
 
 #### 4.2.4 Cheque Management
+
 - Quản lý chequebook
 - Liên kết với claims
 
@@ -234,18 +241,21 @@ PENDING → MATCHED → APPROVED → SETTLED
 ### 4.4 Module Operations (Vận hành)
 
 #### 4.4.1 Delivery Management
+
 - Quản lý đơn hàng giao
 - Tracking trạng thái: Planning → In Transit → Delivered → Returned
 - Calendar view
 - Timeline visualization
 
 #### 4.4.2 Inventory Tracking
+
 - Real-time inventory snapshots
 - Bulk import/export
 - Stock alerts
 - Multi-location support
 
 #### 4.4.3 Sell-Through Tracking
+
 - **Sell-in**: Bán vào (từ công ty đến đại lý)
 - **Sell-out**: Bán ra (từ đại lý đến người tiêu dùng)
 - Daily/Weekly/Monthly tracking
@@ -255,35 +265,41 @@ PENDING → MATCHED → APPROVED → SETTLED
 ### 4.5 Module Planning (Lập kế hoạch)
 
 #### 4.5.1 Scenario Builder
+
 - Tạo kịch bản "what-if"
 - Parameters: Duration, Budget, Expected Lift %, Redemption Rate
 - ROI Projections với daily breakdown
 - Compare multiple scenarios
 
 #### 4.5.2 Clash Detection
+
 - Phát hiện xung đột sản phẩm
 - Timeline conflict
 - Geographic zone clashes
 - Resolution workflow
 
 #### 4.5.3 Template Management
+
 - Template versioning
 - Apply templates to promotions
 
 ### 4.6 Module AI & Analytics
 
 #### 4.6.1 AI Insights
+
 - Anomaly detection
 - Automated insights generation
 - Confidence scoring
 - Action recommendations
 
 #### 4.6.2 AI Recommendations
+
 - Performance optimization suggestions
 - Budget reallocation recommendations
 - Accept/Reject workflow
 
 #### 4.6.3 Voice Commands (Placeholder)
+
 - Voice-activated operations
 - Speech-to-text ready
 
@@ -298,21 +314,25 @@ PENDING → MATCHED → APPROVED → SETTLED
 ### 4.8 Module Integration
 
 #### 4.8.1 ERP Integration
+
 - Connection management
 - Sync configurations
 - Test connections
 - Sync logs
 
 #### 4.8.2 DMS Integration
+
 - Distribution channel sync
 - Push/Pull data
 
 #### 4.8.3 Webhooks
+
 - Event subscriptions
 - Delivery tracking
 - Retry mechanism
 
 #### 4.8.4 Security
+
 - API Key management (Create, Revoke)
 - Immutable Audit Trail
 - Security Dashboard
@@ -320,6 +340,7 @@ PENDING → MATCHED → APPROVED → SETTLED
 ### 4.9 Budget & Target Allocation
 
 #### Hierarchical Allocation
+
 ```
 Country (Vietnam)
 ├── Region (Miền Bắc)
@@ -374,58 +395,58 @@ Country (Vietnam)
 
 ### 5.2 Core Domain Models
 
-| Model | Mô tả | Quan hệ chính |
-|-------|-------|---------------|
-| **User** | Người dùng với roles (ADMIN, MANAGER, KAM, FINANCE) | Company, UserSession, UserMFA |
-| **Company** | Đơn vị kinh doanh, hỗ trợ multi-tenancy | Users, Funds, SSOConfig |
-| **Customer** | Khách hàng theo kênh (MT, GT, E-commerce, HORECA) | Promotions, Claims |
-| **Product** | Sản phẩm với SKU, COGS, Price | TacticItems |
-| **Fund** | Ngân sách FIXED/VARIABLE | Promotions, Budgets |
+| Model        | Mô tả                                               | Quan hệ chính                 |
+| ------------ | --------------------------------------------------- | ----------------------------- |
+| **User**     | Người dùng với roles (ADMIN, MANAGER, KAM, FINANCE) | Company, UserSession, UserMFA |
+| **Company**  | Đơn vị kinh doanh, hỗ trợ multi-tenancy             | Users, Funds, SSOConfig       |
+| **Customer** | Khách hàng theo kênh (MT, GT, E-commerce, HORECA)   | Promotions, Claims            |
+| **Product**  | Sản phẩm với SKU, COGS, Price                       | TacticItems                   |
+| **Fund**     | Ngân sách FIXED/VARIABLE                            | Promotions, Budgets           |
 
 ### 5.3 Promotion Models
 
-| Model | Mô tả |
-|-------|-------|
-| **Promotion** | Chương trình khuyến mãi với lifecycle đầy đủ |
-| **Tactic** | Chi tiết cơ chế khuyến mãi |
-| **TacticItem** | Sản phẩm trong tactic |
-| **PromotionTemplate** | Template tái sử dụng |
-| **PromotionClash** | Xung đột giữa các promotion |
+| Model                 | Mô tả                                        |
+| --------------------- | -------------------------------------------- |
+| **Promotion**         | Chương trình khuyến mãi với lifecycle đầy đủ |
+| **Tactic**            | Chi tiết cơ chế khuyến mãi                   |
+| **TacticItem**        | Sản phẩm trong tactic                        |
+| **PromotionTemplate** | Template tái sử dụng                         |
+| **PromotionClash**    | Xung đột giữa các promotion                  |
 
 ### 5.4 Financial Models
 
-| Model | Mô tả |
-|-------|-------|
-| **FiscalPeriod** | Kỳ tài chính (OPEN, SOFT_CLOSE, HARD_CLOSE) |
-| **AccrualEntry** | Bút toán dồn tích |
-| **AccrualConfig** | Cấu hình accrual theo company |
-| **GLJournal** | Sổ cái tổng hợp |
-| **GLJournalLine** | Dòng chi tiết GL (Debit/Credit) |
-| **GLAccount** | Tài khoản kế toán |
-| **Deduction** | Khấu trừ từ nhiều nguồn |
-| **DeductionDispute** | Tranh chấp khấu trừ |
-| **WriteOffRule** | Quy tắc xóa nợ |
+| Model                | Mô tả                                       |
+| -------------------- | ------------------------------------------- |
+| **FiscalPeriod**     | Kỳ tài chính (OPEN, SOFT_CLOSE, HARD_CLOSE) |
+| **AccrualEntry**     | Bút toán dồn tích                           |
+| **AccrualConfig**    | Cấu hình accrual theo company               |
+| **GLJournal**        | Sổ cái tổng hợp                             |
+| **GLJournalLine**    | Dòng chi tiết GL (Debit/Credit)             |
+| **GLAccount**        | Tài khoản kế toán                           |
+| **Deduction**        | Khấu trừ từ nhiều nguồn                     |
+| **DeductionDispute** | Tranh chấp khấu trừ                         |
+| **WriteOffRule**     | Quy tắc xóa nợ                              |
 
 ### 5.5 Operations Models
 
-| Model | Mô tả |
-|-------|-------|
-| **DeliveryOrder** | Đơn hàng giao |
-| **DeliveryLine** | Chi tiết đơn hàng |
-| **InventorySnapshot** | Ảnh chụp tồn kho |
-| **SellTracking** | Dữ liệu sell-in/sell-out |
+| Model                 | Mô tả                    |
+| --------------------- | ------------------------ |
+| **DeliveryOrder**     | Đơn hàng giao            |
+| **DeliveryLine**      | Chi tiết đơn hàng        |
+| **InventorySnapshot** | Ảnh chụp tồn kho         |
+| **SellTracking**      | Dữ liệu sell-in/sell-out |
 
 ### 5.6 Integration & Security Models
 
-| Model | Mô tả |
-|-------|-------|
-| **ERPConnection** | Kết nối ERP |
-| **WebhookSubscription** | Đăng ký webhook |
-| **APIKey** | API authentication |
-| **ImmutableAuditLog** | Audit trail không thể sửa đổi |
-| **SSOConfig** | Cấu hình SSO (Azure AD, Google, Okta) |
-| **MFAConfig** | Cấu hình MFA |
-| **SOXControl** | Kiểm soát SOX compliance |
+| Model                   | Mô tả                                 |
+| ----------------------- | ------------------------------------- |
+| **ERPConnection**       | Kết nối ERP                           |
+| **WebhookSubscription** | Đăng ký webhook                       |
+| **APIKey**              | API authentication                    |
+| **ImmutableAuditLog**   | Audit trail không thể sửa đổi         |
+| **SSOConfig**           | Cấu hình SSO (Azure AD, Google, Okta) |
+| **MFAConfig**           | Cấu hình MFA                          |
+| **SOXControl**          | Kiểm soát SOX compliance              |
 
 ---
 
@@ -600,6 +621,7 @@ GET    /api/integration/security/dashboard    # Security overview
 Sử dụng **shadcn/ui** (built on Radix UI) + custom components:
 
 #### UI Components
+
 - Form controls: Input, Select, Checkbox, Radio, Switch, Textarea
 - Dialogs: Dialog, AlertDialog, Popover, Sheet
 - Menus: DropdownMenu, CommandMenu
@@ -608,6 +630,7 @@ Sử dụng **shadcn/ui** (built on Radix UI) + custom components:
 - Navigation: Tabs, Breadcrumb, Sidebar
 
 #### Feature Components
+
 - **Layout**: DashboardLayout, AuthLayout, Header, Sidebar
 - **Charts**: LineChart, BarChart, AreaChart, PieChart
 - **Cards**: PromotionCard, ClaimCard, AccrualCard, DeliveryCard, InsightCard, KPICard
@@ -618,106 +641,115 @@ Sử dụng **shadcn/ui** (built on Radix UI) + custom components:
 ### 7.2 Danh Sách Trang (60+ pages)
 
 #### Core Navigation
-| Đường dẫn | Tên trang | Mô tả |
-|-----------|-----------|-------|
+
+| Đường dẫn    | Tên trang | Mô tả                          |
+| ------------ | --------- | ------------------------------ |
 | `/dashboard` | Dashboard | Trang chủ với KPIs và overview |
-| `/calendar` | Calendar | Lịch promotions |
-| `/settings` | Settings | Cài đặt hệ thống |
+| `/calendar`  | Calendar  | Lịch promotions                |
+| `/settings`  | Settings  | Cài đặt hệ thống               |
 
 #### Promotions Module
-| Đường dẫn | Tên trang |
-|-----------|-----------|
-| `/promotions` | Danh sách Promotions |
-| `/promotions/new` | Tạo Promotion mới |
-| `/promotions/:id` | Chi tiết Promotion |
-| `/promotions/:id/edit` | Chỉnh sửa Promotion |
+
+| Đường dẫn              | Tên trang            |
+| ---------------------- | -------------------- |
+| `/promotions`          | Danh sách Promotions |
+| `/promotions/new`      | Tạo Promotion mới    |
+| `/promotions/:id`      | Chi tiết Promotion   |
+| `/promotions/:id/edit` | Chỉnh sửa Promotion  |
 
 #### Claims Module
-| Đường dẫn | Tên trang |
-|-----------|-----------|
-| `/claims` | Danh sách Claims |
-| `/claims/new` | Tạo Claim mới |
-| `/claims/:id` | Chi tiết Claim |
+
+| Đường dẫn     | Tên trang        |
+| ------------- | ---------------- |
+| `/claims`     | Danh sách Claims |
+| `/claims/new` | Tạo Claim mới    |
+| `/claims/:id` | Chi tiết Claim   |
 
 #### Finance Module
-| Đường dẫn | Tên trang |
-|-----------|-----------|
-| `/finance/accruals` | Danh sách Accruals |
-| `/finance/accruals/:id` | Chi tiết Accrual |
-| `/finance/accruals/calculate` | Tính toán Accruals |
-| `/finance/deductions` | Danh sách Deductions |
-| `/finance/deductions/:id` | Chi tiết Deduction |
-| `/finance/deductions/matching` | Matching Deductions |
-| `/finance/journals` | GL Journals |
-| `/finance/journals/:id` | Chi tiết Journal |
-| `/finance/cheques` | Danh sách Cheques |
-| `/finance/cheques/:id` | Chi tiết Cheque |
+
+| Đường dẫn                      | Tên trang            |
+| ------------------------------ | -------------------- |
+| `/finance/accruals`            | Danh sách Accruals   |
+| `/finance/accruals/:id`        | Chi tiết Accrual     |
+| `/finance/accruals/calculate`  | Tính toán Accruals   |
+| `/finance/deductions`          | Danh sách Deductions |
+| `/finance/deductions/:id`      | Chi tiết Deduction   |
+| `/finance/deductions/matching` | Matching Deductions  |
+| `/finance/journals`            | GL Journals          |
+| `/finance/journals/:id`        | Chi tiết Journal     |
+| `/finance/cheques`             | Danh sách Cheques    |
+| `/finance/cheques/:id`         | Chi tiết Cheque      |
 
 #### Master Data Module
-| Đường dẫn | Tên trang |
-|-----------|-----------|
-| `/customers` | Quản lý Khách hàng |
-| `/products` | Quản lý Sản phẩm |
-| `/budgets` | Quản lý Ngân sách |
-| `/targets` | Quản lý Chỉ tiêu |
-| `/baselines` | Quản lý Baseline |
-| `/budget-allocations` | Phân bổ Ngân sách |
-| `/target-allocations` | Phân bổ Chỉ tiêu |
+
+| Đường dẫn             | Tên trang          |
+| --------------------- | ------------------ |
+| `/customers`          | Quản lý Khách hàng |
+| `/products`           | Quản lý Sản phẩm   |
+| `/budgets`            | Quản lý Ngân sách  |
+| `/targets`            | Quản lý Chỉ tiêu   |
+| `/baselines`          | Quản lý Baseline   |
+| `/budget-allocations` | Phân bổ Ngân sách  |
+| `/target-allocations` | Phân bổ Chỉ tiêu   |
 
 #### Planning Module
-| Đường dẫn | Tên trang |
-|-----------|-----------|
-| `/planning/templates` | Danh sách Templates |
-| `/planning/templates/builder` | Template Builder |
-| `/planning/templates/:id` | Chi tiết Template |
-| `/planning/scenarios` | Danh sách Scenarios |
-| `/planning/scenarios/builder` | Scenario Builder |
-| `/planning/scenarios/:id` | Chi tiết Scenario |
-| `/planning/scenarios/compare` | So sánh Scenarios |
-| `/planning/clashes` | Danh sách Clashes |
-| `/planning/clashes/:id` | Chi tiết Clash |
+
+| Đường dẫn                     | Tên trang           |
+| ----------------------------- | ------------------- |
+| `/planning/templates`         | Danh sách Templates |
+| `/planning/templates/builder` | Template Builder    |
+| `/planning/templates/:id`     | Chi tiết Template   |
+| `/planning/scenarios`         | Danh sách Scenarios |
+| `/planning/scenarios/builder` | Scenario Builder    |
+| `/planning/scenarios/:id`     | Chi tiết Scenario   |
+| `/planning/scenarios/compare` | So sánh Scenarios   |
+| `/planning/clashes`           | Danh sách Clashes   |
+| `/planning/clashes/:id`       | Chi tiết Clash      |
 
 #### Operations Module
-| Đường dẫn | Tên trang |
-|-----------|-----------|
-| `/operations/delivery` | Danh sách Delivery |
-| `/operations/delivery/new` | Tạo Delivery mới |
-| `/operations/delivery/calendar` | Calendar View |
-| `/operations/delivery/:id` | Chi tiết Delivery |
-| `/operations/inventory` | Danh sách Inventory |
-| `/operations/inventory/new` | Tạo Inventory |
-| `/operations/inventory/import` | Import Inventory |
-| `/operations/inventory/snapshots` | Snapshots |
-| `/operations/sell-tracking` | Sell Tracking |
-| `/operations/sell-tracking/import` | Import Data |
-| `/operations/sell-tracking/sell-in` | Sell-in Analysis |
-| `/operations/sell-tracking/sell-out` | Sell-out Analysis |
+
+| Đường dẫn                            | Tên trang           |
+| ------------------------------------ | ------------------- |
+| `/operations/delivery`               | Danh sách Delivery  |
+| `/operations/delivery/new`           | Tạo Delivery mới    |
+| `/operations/delivery/calendar`      | Calendar View       |
+| `/operations/delivery/:id`           | Chi tiết Delivery   |
+| `/operations/inventory`              | Danh sách Inventory |
+| `/operations/inventory/new`          | Tạo Inventory       |
+| `/operations/inventory/import`       | Import Inventory    |
+| `/operations/inventory/snapshots`    | Snapshots           |
+| `/operations/sell-tracking`          | Sell Tracking       |
+| `/operations/sell-tracking/import`   | Import Data         |
+| `/operations/sell-tracking/sell-in`  | Sell-in Analysis    |
+| `/operations/sell-tracking/sell-out` | Sell-out Analysis   |
 
 #### AI & BI Module
-| Đường dẫn | Tên trang |
-|-----------|-----------|
-| `/ai/dashboard` | AI Dashboard |
-| `/ai/insights` | AI Insights |
+
+| Đường dẫn             | Tên trang       |
+| --------------------- | --------------- |
+| `/ai/dashboard`       | AI Dashboard    |
+| `/ai/insights`        | AI Insights     |
 | `/ai/recommendations` | Recommendations |
-| `/bi/dashboard` | BI Dashboard |
-| `/bi/analytics` | Analytics |
-| `/bi/reports` | Reports |
-| `/bi/export` | Export Center |
-| `/voice/commands` | Voice Commands |
+| `/bi/dashboard`       | BI Dashboard    |
+| `/bi/analytics`       | Analytics       |
+| `/bi/reports`         | Reports         |
+| `/bi/export`          | Export Center   |
+| `/voice/commands`     | Voice Commands  |
 
 #### Integration Module
-| Đường dẫn | Tên trang |
-|-----------|-----------|
-| `/integration/dashboard` | Integration Overview |
-| `/integration/erp` | ERP Connections |
-| `/integration/erp/:id` | ERP Detail |
-| `/integration/dms` | DMS Connections |
-| `/integration/dms/:id` | DMS Detail |
-| `/integration/webhooks` | Webhooks |
-| `/integration/webhooks/:id` | Webhook Detail |
-| `/integration/security` | Security Dashboard |
-| `/integration/security/api-keys` | API Keys |
-| `/integration/security/audit-logs` | Audit Logs |
+
+| Đường dẫn                          | Tên trang            |
+| ---------------------------------- | -------------------- |
+| `/integration/dashboard`           | Integration Overview |
+| `/integration/erp`                 | ERP Connections      |
+| `/integration/erp/:id`             | ERP Detail           |
+| `/integration/dms`                 | DMS Connections      |
+| `/integration/dms/:id`             | DMS Detail           |
+| `/integration/webhooks`            | Webhooks             |
+| `/integration/webhooks/:id`        | Webhook Detail       |
+| `/integration/security`            | Security Dashboard   |
+| `/integration/security/api-keys`   | API Keys             |
+| `/integration/security/audit-logs` | Audit Logs           |
 
 ---
 
@@ -747,41 +779,41 @@ Sử dụng **shadcn/ui** (built on Radix UI) + custom components:
 
 #### ✅ HOÀN THÀNH (Production-Ready)
 
-| Module | Trạng thái | Chi tiết |
-|--------|------------|----------|
-| **Authentication** | ✅ 100% | JWT, Roles, MFA-ready, SSO framework |
-| **UI/UX System** | ✅ 95% | 60+ pages, responsive, dark/light theme |
-| **Promotion Management** | ✅ 90% | Full CRUD, lifecycle, calendar |
-| **Claims Processing** | ✅ 90% | Full workflow, POA/POP |
-| **Fund Management** | ✅ 85% | Budget tracking, alerts |
-| **Accrual Engine** | ✅ 85% | Multi-type calculation, GL posting |
-| **Deduction Management** | ✅ 80% | Multi-source, dispute workflow |
-| **Operations Tracking** | ✅ 85% | Delivery, Inventory, Sell-tracking |
-| **Scenario Planning** | ✅ 80% | Builder, compare, clone |
-| **Clash Detection** | ✅ 80% | Detection, resolution |
-| **Dashboard & Analytics** | ✅ 85% | KPIs, charts, filters |
-| **BI Reports** | ✅ 75% | Report builder, export |
-| **Security & Audit** | ✅ 90% | Audit trail, API keys |
+| Module                    | Trạng thái | Chi tiết                                |
+| ------------------------- | ---------- | --------------------------------------- |
+| **Authentication**        | ✅ 100%    | JWT, Roles, MFA-ready, SSO framework    |
+| **UI/UX System**          | ✅ 95%     | 60+ pages, responsive, dark/light theme |
+| **Promotion Management**  | ✅ 90%     | Full CRUD, lifecycle, calendar          |
+| **Claims Processing**     | ✅ 90%     | Full workflow, POA/POP                  |
+| **Fund Management**       | ✅ 85%     | Budget tracking, alerts                 |
+| **Accrual Engine**        | ✅ 85%     | Multi-type calculation, GL posting      |
+| **Deduction Management**  | ✅ 80%     | Multi-source, dispute workflow          |
+| **Operations Tracking**   | ✅ 85%     | Delivery, Inventory, Sell-tracking      |
+| **Scenario Planning**     | ✅ 80%     | Builder, compare, clone                 |
+| **Clash Detection**       | ✅ 80%     | Detection, resolution                   |
+| **Dashboard & Analytics** | ✅ 85%     | KPIs, charts, filters                   |
+| **BI Reports**            | ✅ 75%     | Report builder, export                  |
+| **Security & Audit**      | ✅ 90%     | Audit trail, API keys                   |
 
 #### ⚡ ĐANG PHÁT TRIỂN (Mock Implementation)
 
-| Module | Trạng thái | Công việc còn lại |
-|--------|------------|-------------------|
-| **Real API Backend** | 70% | Cần kết nối thực với PostgreSQL |
-| **ERP Integration** | 40% | Mock only, cần SAP/Oracle connector |
-| **DMS Integration** | 40% | Mock only, cần real DMS API |
-| **Webhook Delivery** | 50% | Framework ready, cần event queue |
-| **File Upload (S3)** | 60% | UI ready, cần AWS S3 setup |
+| Module               | Trạng thái | Công việc còn lại                   |
+| -------------------- | ---------- | ----------------------------------- |
+| **Real API Backend** | 70%        | Cần kết nối thực với PostgreSQL     |
+| **ERP Integration**  | 40%        | Mock only, cần SAP/Oracle connector |
+| **DMS Integration**  | 40%        | Mock only, cần real DMS API         |
+| **Webhook Delivery** | 50%        | Framework ready, cần event queue    |
+| **File Upload (S3)** | 60%        | UI ready, cần AWS S3 setup          |
 
 #### 🔄 PLACEHOLDER (Cần Phát Triển Thêm)
 
-| Module | Trạng thái | Yêu cầu |
-|--------|------------|---------|
-| **AI Insights** | 30% | Cần ML model integration |
-| **AI Recommendations** | 30% | Cần ML training data |
-| **Voice Commands** | 20% | Cần Speech-to-Text API |
-| **Power BI Integration** | 10% | Cần Power BI Embedded setup |
-| **Advanced Analytics** | 40% | Cần data warehouse |
+| Module                   | Trạng thái | Yêu cầu                     |
+| ------------------------ | ---------- | --------------------------- |
+| **AI Insights**          | 30%        | Cần ML model integration    |
+| **AI Recommendations**   | 30%        | Cần ML training data        |
+| **Voice Commands**       | 20%        | Cần Speech-to-Text API      |
+| **Power BI Integration** | 10%        | Cần Power BI Embedded setup |
+| **Advanced Analytics**   | 40%        | Cần data warehouse          |
 
 ### 8.3 Mock Data System (MSW)
 
@@ -795,6 +827,7 @@ Frontend Request → MSW Interceptor → Mock Handler → Mock Response
 ```
 
 **Mock Data Files:**
+
 - `budget-target.ts` - Ngân sách & Chỉ tiêu
 - `claims.ts` - Claims & Statistics
 - `finance.ts` - Accruals, Deductions, Journals, Cheques
@@ -804,11 +837,11 @@ Frontend Request → MSW Interceptor → Mock Handler → Mock Response
 
 ### 8.4 Testing Coverage
 
-| Loại Test | Số lượng | Coverage |
-|-----------|----------|----------|
-| **Unit Tests** | 16 test files | ~15% code coverage |
-| **E2E Tests** | 11 test suites | Core workflows |
-| **Component Tests** | Included in unit | Key components |
+| Loại Test           | Số lượng         | Coverage           |
+| ------------------- | ---------------- | ------------------ |
+| **Unit Tests**      | 16 test files    | ~15% code coverage |
+| **E2E Tests**       | 11 test suites   | Core workflows     |
+| **Component Tests** | Included in unit | Key components     |
 
 ---
 
@@ -830,6 +863,7 @@ Tuần 3:
 ```
 
 **Deliverables:**
+
 - [ ] Real PostgreSQL database với full schema
 - [ ] All API endpoints connected to database
 - [ ] JWT authentication with refresh tokens
@@ -856,6 +890,7 @@ Tuần 3:
 ```
 
 **Deliverables:**
+
 - [ ] S3 file upload working
 - [ ] Email notifications
 - [ ] Webhook delivery system
@@ -878,6 +913,7 @@ Tuần 3-4:
 ```
 
 **Deliverables:**
+
 - [ ] AI Insights với real predictions
 - [ ] Smart recommendations
 - [ ] Anomaly alerts
@@ -899,6 +935,7 @@ Tuần 2-3:
 ```
 
 **Deliverables:**
+
 - [ ] Voice command center working
 - [ ] Power BI embedded reports
 - [ ] Mobile-optimized UI
@@ -921,6 +958,7 @@ Tuần 2:
 ```
 
 **Deliverables:**
+
 - [ ] Production deployment
 - [ ] CI/CD fully automated
 - [ ] Security audit passed
@@ -1015,27 +1053,28 @@ docker-compose up -d
 
 ### A. Glossary
 
-| Thuật ngữ | Giải thích |
-|-----------|------------|
-| **TPM** | Trade Promotion Management - Quản lý khuyến mãi thương mại |
-| **FMCG** | Fast-Moving Consumer Goods - Hàng tiêu dùng nhanh |
-| **MT** | Modern Trade - Kênh thương mại hiện đại (siêu thị, cửa hàng tiện lợi) |
-| **GT** | General Trade - Kênh thương mại truyền thống (tạp hóa, chợ) |
-| **KAM** | Key Account Manager - Quản lý khách hàng lớn |
-| **POA** | Proof of Activation - Bằng chứng kích hoạt |
-| **POP** | Proof of Performance - Bằng chứng thực hiện |
-| **Accrual** | Dồn tích - Ghi nhận chi phí theo kỳ |
-| **Deduction** | Khấu trừ - Khoản trừ từ thanh toán |
-| **GL** | General Ledger - Sổ cái tổng hợp |
-| **DMS** | Distribution Management System - Hệ thống quản lý phân phối |
-| **ERP** | Enterprise Resource Planning - Hệ thống hoạch định nguồn lực |
+| Thuật ngữ     | Giải thích                                                            |
+| ------------- | --------------------------------------------------------------------- |
+| **TPM**       | Trade Promotion Management - Quản lý khuyến mãi thương mại            |
+| **FMCG**      | Fast-Moving Consumer Goods - Hàng tiêu dùng nhanh                     |
+| **MT**        | Modern Trade - Kênh thương mại hiện đại (siêu thị, cửa hàng tiện lợi) |
+| **GT**        | General Trade - Kênh thương mại truyền thống (tạp hóa, chợ)           |
+| **KAM**       | Key Account Manager - Quản lý khách hàng lớn                          |
+| **POA**       | Proof of Activation - Bằng chứng kích hoạt                            |
+| **POP**       | Proof of Performance - Bằng chứng thực hiện                           |
+| **Accrual**   | Dồn tích - Ghi nhận chi phí theo kỳ                                   |
+| **Deduction** | Khấu trừ - Khoản trừ từ thanh toán                                    |
+| **GL**        | General Ledger - Sổ cái tổng hợp                                      |
+| **DMS**       | Distribution Management System - Hệ thống quản lý phân phối           |
+| **ERP**       | Enterprise Resource Planning - Hệ thống hoạch định nguồn lực          |
 
 ### B. Contact
 
 **Development Team:**
+
 - Repository: https://github.com/nclamvn/vierp-tpm-web
 - Issues: https://github.com/nclamvn/vierp-tpm-web/issues
 
 ---
 
-*Tài liệu này được tạo tự động và cập nhật lần cuối: 27/01/2026*
+_Tài liệu này được tạo tự động và cập nhật lần cuối: 27/01/2026_

@@ -50,16 +50,23 @@ export function Header() {
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 h-7 px-2">
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2 h-7 px-2"
+            >
               <Avatar className="h-6 w-6">
                 <AvatarFallback className="bg-primary/20 text-primary text-[10px] rounded-sm">
                   {session?.user?.name ? getInitials(session.user.name) : "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="hidden md:block text-left">
-                <p className="text-xs font-medium text-foreground">{session?.user?.name || "User"}</p>
+                <p className="text-xs font-medium text-foreground">
+                  {session?.user?.name || "User"}
+                </p>
                 <p className="text-[10px] text-muted-foreground">
-                  {session?.user?.role ? USER_ROLE_LABELS[session.user.role] : ""}
+                  {session?.user?.role
+                    ? USER_ROLE_LABELS[session.user.role]
+                    : ""}
                 </p>
               </div>
             </Button>
@@ -83,7 +90,10 @@ export function Header() {
               Cài đặt
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+            <DropdownMenuItem
+              onClick={handleSignOut}
+              className="text-destructive"
+            >
               <LogOut className="mr-2 h-4 w-4" />
               Đăng xuất
             </DropdownMenuItem>

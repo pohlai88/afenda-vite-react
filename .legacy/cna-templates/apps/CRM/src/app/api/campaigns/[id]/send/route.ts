@@ -1,16 +1,28 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { canAccess } from '@/lib/auth/rbac'
-import { sendEmail, renderTemplate } from '@/lib/email'
-import { getAudienceContacts } from '@/lib/campaigns/audience'
-import { replaceVariables, getContactVariables } from '@/lib/campaigns/template-engine'
-import { generateUnsubscribeUrl } from '@/lib/campaigns/unsubscribe'
-import { injectOpenTracker, rewriteLinksForTracking } from '@/lib/campaigns/tracking'
-import { BadRequest, Forbidden, NotFound, Unauthorized, handleApiError } from '@/lib/api/errors'
-import { apiSuccess } from '@/lib/api/response'
-import { logger } from '@/lib/logger'
-import { eventBus, CRM_EVENTS } from '@/lib/events'
+import { NextRequest } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { canAccess } from "@/lib/auth/rbac"
+import { sendEmail, renderTemplate } from "@/lib/email"
+import { getAudienceContacts } from "@/lib/campaigns/audience"
+import {
+  replaceVariables,
+  getContactVariables,
+} from "@/lib/campaigns/template-engine"
+import { generateUnsubscribeUrl } from "@/lib/campaigns/unsubscribe"
+import {
+  injectOpenTracker,
+  rewriteLinksForTracking,
+} from "@/lib/campaigns/tracking"
+import {
+  BadRequest,
+  Forbidden,
+  NotFound,
+  Unauthorized,
+  handleApiError,
+} from "@/lib/api/errors"
+import { apiSuccess } from "@/lib/api/response"
+import { logger } from "@/lib/logger"
+import { eventBus, CRM_EVENTS } from "@/lib/events"
 
 const SEND_DELAY_MS = Number(process.env.CAMPAIGN_SEND_DELAY_MS) || 500
 
@@ -24,7 +36,7 @@ export async function POST(
     const { id } = params
 
     // RBAC: ADMIN or MANAGER only
-    if (!canAccess(user, 'manage_campaigns')) {
+    if (!canAccess(user, "manage_campaigns")) {
       throw Forbidden()
     }
 
@@ -32,60 +44,70 @@ export async function POST(
     const campaign = await prisma.campaign.findUnique({
       where: { id },
       include: {
-        variants: { orderBy: { createdAt: 'asc' } },
+        variants: { orderBy: { createdAt: "asc" } },
         audience: { select: { id: true, name: true } },
       },
     })
 
-    if (!campaign) throw NotFound('Chiến dịch')
+    if (!campaign) throw NotFound("Chiến dịch")
 
     // Validation
-    if (campaign.status !== 'DRAFT' && campaign.status !== 'SCHEDULED') {
-      throw BadRequest('Chỉ có thể gửi chiến dịch ở trạng thái Nháp hoặc Đã lên lịch')
+    if (campaign.status !== "DRAFT" && campaign.status !== "SCHEDULED") {
+      throw BadRequest(
+        "Chỉ có thể gửi chiến dịch ở trạng thái Nháp hoặc Đã lên lịch"
+      )
     }
 
-    if (campaign.type !== 'EMAIL') {
-      throw BadRequest('Hiện chỉ hỗ trợ gửi chiến dịch Email')
+    if (campaign.type !== "EMAIL") {
+      throw BadRequest("Hiện chỉ hỗ trợ gửi chiến dịch Email")
     }
 
     if (campaign.variants.length === 0) {
-      throw BadRequest('Chiến dịch chưa có nội dung (variant)')
+      throw BadRequest("Chiến dịch chưa có nội dung (variant)")
     }
 
     // Check at least one variant has content
-    const validVariants = campaign.variants.filter((v) => v.content || v.subject)
+    const validVariants = campaign.variants.filter(
+      (v) => v.content || v.subject
+    )
     if (validVariants.length === 0) {
-      throw BadRequest('Chiến dịch chưa có variant nào có nội dung')
+      throw BadRequest("Chiến dịch chưa có variant nào có nội dung")
     }
 
     if (!campaign.audienceId || !campaign.audience) {
-      throw BadRequest('Chiến dịch chưa chọn đối tượng')
+      throw BadRequest("Chiến dịch chưa chọn đối tượng")
     }
 
     // Resolve audience contacts (filters out no-email and unsubscribed)
     const contacts = await getAudienceContacts(campaign.audienceId)
     if (contacts.length === 0) {
-      throw BadRequest('Không có liên hệ hợp lệ trong đối tượng (có thể đã hủy đăng ký hoặc thiếu email)')
+      throw BadRequest(
+        "Không có liên hệ hợp lệ trong đối tượng (có thể đã hủy đăng ký hoặc thiếu email)"
+      )
     }
 
     // Update status to SENDING
     await prisma.campaign.update({
       where: { id },
-      data: { status: 'SENDING' },
+      data: { status: "SENDING" },
     })
 
     // Split contacts by variant A/B percentages
     const variants = campaign.variants
     const contactAssignments: Array<{
-      contact: typeof contacts[number]
-      variant: typeof variants[number]
+      contact: (typeof contacts)[number]
+      variant: (typeof variants)[number]
     }> = []
 
     if (variants.length === 1) {
-      contacts.forEach((c) => contactAssignments.push({ contact: c, variant: variants[0] }))
+      contacts.forEach((c) =>
+        contactAssignments.push({ contact: c, variant: variants[0] })
+      )
     } else {
       // A/B split
-      const splitPoint = Math.floor(contacts.length * (variants[0].splitPercent / 100))
+      const splitPoint = Math.floor(
+        contacts.length * (variants[0].splitPercent / 100)
+      )
       contacts.forEach((c, idx) => {
         const variant = idx < splitPoint ? variants[0] : variants[1]
         contactAssignments.push({ contact: c, variant })
@@ -107,7 +129,7 @@ export async function POST(
         variant.subject || campaign.subject,
         variables
       )
-      const rawContent = variant.content || campaign.content || ''
+      const rawContent = variant.content || campaign.content || ""
       const content = replaceVariables(rawContent, variables)
 
       // Create CampaignSend record first (need ID for tracking)
@@ -116,14 +138,14 @@ export async function POST(
           campaignId: campaign.id,
           variantId: variant.id,
           contactId: contact.id,
-          status: 'PENDING',
+          status: "PENDING",
         },
       })
 
       // Render campaign template to HTML
       let html: string
       try {
-        html = await renderTemplate('campaign', {
+        html = await renderTemplate("campaign", {
           content,
           recipientName: `${contact.firstName} ${contact.lastName}`.trim(),
           unsubscribeUrl,
@@ -132,10 +154,13 @@ export async function POST(
         // If template rendering fails, mark as failed and continue
         await prisma.campaignSend.update({
           where: { id: send.id },
-          data: { status: 'FAILED' },
+          data: { status: "FAILED" },
         })
         totalFailed++
-        errors.push({ email: contact.email!, error: 'Template rendering failed' })
+        errors.push({
+          email: contact.email!,
+          error: "Template rendering failed",
+        })
         continue
       }
 
@@ -148,7 +173,7 @@ export async function POST(
         {
           to: contact.email!,
           subject,
-          template: 'campaign',
+          template: "campaign",
           data: {},
           html, // Pre-rendered HTML with tracking injected
         },
@@ -158,16 +183,19 @@ export async function POST(
       if (result.success) {
         await prisma.campaignSend.update({
           where: { id: send.id },
-          data: { status: 'SENT', sentAt: new Date() },
+          data: { status: "SENT", sentAt: new Date() },
         })
         totalSent++
       } else {
         await prisma.campaignSend.update({
           where: { id: send.id },
-          data: { status: 'FAILED' },
+          data: { status: "FAILED" },
         })
         totalFailed++
-        errors.push({ email: contact.email!, error: result.error || 'Unknown error' })
+        errors.push({
+          email: contact.email!,
+          error: result.error || "Unknown error",
+        })
       }
 
       // Rate limit delay between sends
@@ -179,7 +207,7 @@ export async function POST(
     // Determine final status
     const totalAttempted = totalSent + totalFailed
     const failRate = totalAttempted > 0 ? totalFailed / totalAttempted : 0
-    const finalStatus = failRate > 0.5 ? 'DRAFT' : 'SENT'
+    const finalStatus = failRate > 0.5 ? "DRAFT" : "SENT"
 
     // Update campaign stats
     await prisma.campaign.update({
@@ -196,7 +224,7 @@ export async function POST(
     // Update variant stats
     for (const variant of variants) {
       const variantSends = await prisma.campaignSend.count({
-        where: { campaignId: id, variantId: variant.id, status: 'SENT' },
+        where: { campaignId: id, variantId: variant.id, status: "SENT" },
       })
       await prisma.campaignVariant.update({
         where: { id: variant.id },
@@ -204,7 +232,7 @@ export async function POST(
       })
     }
 
-    logger.audit('campaign.send', user.id, {
+    logger.audit("campaign.send", user.id, {
       campaignId: id,
       totalSent,
       totalFailed,
@@ -212,14 +240,16 @@ export async function POST(
     })
 
     // Fire-and-forget: emit campaign sent event
-    eventBus.emit(CRM_EVENTS.CAMPAIGN_SENT, {
-      timestamp: new Date().toISOString(),
-      userId: user.id,
-      campaignId: id,
-      campaign: { name: campaign.name },
-      sentCount: totalSent,
-      createdById: campaign.createdById,
-    }).catch(() => {})
+    eventBus
+      .emit(CRM_EVENTS.CAMPAIGN_SENT, {
+        timestamp: new Date().toISOString(),
+        userId: user.id,
+        campaignId: id,
+        campaign: { name: campaign.name },
+        sentCount: totalSent,
+        createdById: campaign.createdById,
+      })
+      .catch(() => {})
 
     return apiSuccess({
       success: true,
@@ -229,8 +259,11 @@ export async function POST(
     })
   } catch (error) {
     if (error instanceof AuthError) {
-      return handleApiError(Unauthorized(error.message), '/api/campaigns/[id]/send')
+      return handleApiError(
+        Unauthorized(error.message),
+        "/api/campaigns/[id]/send"
+      )
     }
-    return handleApiError(error, '/api/campaigns/[id]/send')
+    return handleApiError(error, "/api/campaigns/[id]/send")
   }
 }

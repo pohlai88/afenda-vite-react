@@ -2,7 +2,7 @@
 // CONTEXT PANEL — Current Spreadsheet Context (Blueprint §5.3)
 // =============================================================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react"
 import {
   Eye,
   MousePointer,
@@ -11,25 +11,25 @@ import {
   Cpu,
   Activity,
   RefreshCw,
-} from 'lucide-react';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { useSelectionStore } from '../../stores/selectionStore';
-import { getAIRuntime } from '../../ai/AIRuntime';
-import type { AssembledContext } from '../../ai/types';
-import { loggers } from '@/utils/logger';
+} from "lucide-react"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { useSelectionStore } from "../../stores/selectionStore"
+import { getAIRuntime } from "../../ai/AIRuntime"
+import type { AssembledContext } from "../../ai/types"
+import { loggers } from "@/utils/logger"
 
 // -----------------------------------------------------------------------------
 // Helper to convert column number to letter
 // -----------------------------------------------------------------------------
 
 function colToLetter(col: number): string {
-  let result = '';
-  let n = col;
+  let result = ""
+  let n = col
   while (n >= 0) {
-    result = String.fromCharCode((n % 26) + 65) + result;
-    n = Math.floor(n / 26) - 1;
+    result = String.fromCharCode((n % 26) + 65) + result
+    n = Math.floor(n / 26) - 1
   }
-  return result;
+  return result
 }
 
 // -----------------------------------------------------------------------------
@@ -37,10 +37,10 @@ function colToLetter(col: number): string {
 // -----------------------------------------------------------------------------
 
 interface ContextSectionProps {
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-  collapsible?: boolean;
+  title: string
+  icon: React.ReactNode
+  children: React.ReactNode
+  collapsible?: boolean
 }
 
 const ContextSection: React.FC<ContextSectionProps> = ({
@@ -49,40 +49,46 @@ const ContextSection: React.FC<ContextSectionProps> = ({
   children,
   collapsible = false,
 }) => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false)
 
   return (
-    <div className={`ai-context-section ${collapsed ? 'collapsed' : ''}`}>
+    <div className={`ai-context-section ${collapsed ? "collapsed" : ""}`}>
       <div
         className="ai-context-section-header"
         onClick={collapsible ? () => setCollapsed(!collapsed) : undefined}
-        style={collapsible ? { cursor: 'pointer' } : undefined}
+        style={collapsible ? { cursor: "pointer" } : undefined}
       >
         {icon}
         <span>{title}</span>
         {collapsible && (
-          <span className="collapse-indicator">{collapsed ? '▶' : '▼'}</span>
+          <span className="collapse-indicator">{collapsed ? "▶" : "▼"}</span>
         )}
       </div>
-      {!collapsed && <div className="ai-context-section-content">{children}</div>}
+      {!collapsed && (
+        <div className="ai-context-section-content">{children}</div>
+      )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Token Budget Bar Component
 // -----------------------------------------------------------------------------
 
 interface TokenBudgetBarProps {
-  used: number;
-  total: number;
-  label: string;
+  used: number
+  total: number
+  label: string
 }
 
-const TokenBudgetBar: React.FC<TokenBudgetBarProps> = ({ used, total, label }) => {
-  const percentage = Math.min((used / total) * 100, 100);
+const TokenBudgetBar: React.FC<TokenBudgetBarProps> = ({
+  used,
+  total,
+  label,
+}) => {
+  const percentage = Math.min((used / total) * 100, 100)
   const colorClass =
-    percentage > 80 ? 'high' : percentage > 50 ? 'medium' : 'low';
+    percentage > 80 ? "high" : percentage > 50 ? "medium" : "low"
 
   return (
     <div className="token-budget-bar">
@@ -99,8 +105,8 @@ const TokenBudgetBar: React.FC<TokenBudgetBarProps> = ({ used, total, label }) =
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Main Component
@@ -108,62 +114,69 @@ const TokenBudgetBar: React.FC<TokenBudgetBarProps> = ({ used, total, label }) =
 
 export const ContextPanel: React.FC = () => {
   // Get real-time data from stores
-  const activeSheetId = useWorkbookStore((state) => state.activeSheetId);
-  const sheets = useWorkbookStore((state) => state.sheets);
-  const selectedCell = useSelectionStore((state) => state.selectedCell);
-  const selectionRange = useSelectionStore((state) => state.selectionRange);
+  const activeSheetId = useWorkbookStore((state) => state.activeSheetId)
+  const sheets = useWorkbookStore((state) => state.sheets)
+  const selectedCell = useSelectionStore((state) => state.selectedCell)
+  const selectionRange = useSelectionStore((state) => state.selectionRange)
 
-  const [assembledContext, setAssembledContext] = useState<AssembledContext | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [assembledContext, setAssembledContext] =
+    useState<AssembledContext | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
-  const activeSheet = activeSheetId ? sheets[activeSheetId] : null;
+  const activeSheet = activeSheetId ? sheets[activeSheetId] : null
 
   // Build selection range string
-  let selectionRangeStr = 'None';
-  let selectionCellCount = 0;
+  let selectionRangeStr = "None"
+  let selectionCellCount = 0
 
   if (selectedCell) {
     if (selectionRange) {
-      const startCol = Math.min(selectionRange.start.col, selectionRange.end.col);
-      const endCol = Math.max(selectionRange.start.col, selectionRange.end.col);
-      const startRow = Math.min(selectionRange.start.row, selectionRange.end.row);
-      const endRow = Math.max(selectionRange.start.row, selectionRange.end.row);
-      selectionRangeStr = `${colToLetter(startCol)}${startRow + 1}:${colToLetter(endCol)}${endRow + 1}`;
-      selectionCellCount = (endRow - startRow + 1) * (endCol - startCol + 1);
+      const startCol = Math.min(
+        selectionRange.start.col,
+        selectionRange.end.col
+      )
+      const endCol = Math.max(selectionRange.start.col, selectionRange.end.col)
+      const startRow = Math.min(
+        selectionRange.start.row,
+        selectionRange.end.row
+      )
+      const endRow = Math.max(selectionRange.start.row, selectionRange.end.row)
+      selectionRangeStr = `${colToLetter(startCol)}${startRow + 1}:${colToLetter(endCol)}${endRow + 1}`
+      selectionCellCount = (endRow - startRow + 1) * (endCol - startCol + 1)
     } else {
-      selectionRangeStr = `${colToLetter(selectedCell.col)}${selectedCell.row + 1}`;
-      selectionCellCount = 1;
+      selectionRangeStr = `${colToLetter(selectedCell.col)}${selectedCell.row + 1}`
+      selectionCellCount = 1
     }
   }
 
   // Calculate sheet stats
-  const cellCount = activeSheet ? Object.keys(activeSheet.cells).length : 0;
+  const cellCount = activeSheet ? Object.keys(activeSheet.cells).length : 0
   const formulaCount = activeSheet
     ? Object.values(activeSheet.cells).filter((c) => c.formula).length
-    : 0;
+    : 0
 
   // Get last assembled context on mount
   useEffect(() => {
-    const runtime = getAIRuntime();
-    const lastContext = runtime.getLastAssembledContext();
+    const runtime = getAIRuntime()
+    const lastContext = runtime.getLastAssembledContext()
     if (lastContext) {
-      setAssembledContext(lastContext);
+      setAssembledContext(lastContext)
     }
-  }, []);
+  }, [])
 
   // Refresh context
   const handleRefreshContext = async () => {
-    setIsRefreshing(true);
+    setIsRefreshing(true)
     try {
-      const runtime = getAIRuntime();
-      const context = await runtime.assembleContext('Show current context');
-      setAssembledContext(context);
+      const runtime = getAIRuntime()
+      const context = await runtime.assembleContext("Show current context")
+      setAssembledContext(context)
     } catch (error) {
-      loggers.ui.error('Failed to refresh context:', error);
+      loggers.ui.error("Failed to refresh context:", error)
     } finally {
-      setIsRefreshing(false);
+      setIsRefreshing(false)
     }
-  };
+  }
 
   return (
     <div className="ai-context-panel">
@@ -176,13 +189,14 @@ export const ContextPanel: React.FC = () => {
           disabled={isRefreshing}
           title="Refresh context"
         >
-          <RefreshCw size={14} className={isRefreshing ? 'spinning' : ''} />
+          <RefreshCw size={14} className={isRefreshing ? "spinning" : ""} />
         </button>
       </div>
 
       <div className="ai-context-info">
         <p>
-          This is what the AI Copilot knows about your current spreadsheet state.
+          This is what the AI Copilot knows about your current spreadsheet
+          state.
         </p>
       </div>
 
@@ -191,7 +205,9 @@ export const ContextPanel: React.FC = () => {
         <div className="ai-context-grid">
           <div className="ai-context-item">
             <span className="label">Range</span>
-            <span className="value ai-context-range">[{selectionRangeStr}]</span>
+            <span className="value ai-context-range">
+              [{selectionRangeStr}]
+            </span>
           </div>
           <div className="ai-context-item">
             <span className="label">Cells</span>
@@ -205,12 +221,12 @@ export const ContextPanel: React.FC = () => {
         <div className="ai-context-grid">
           <div className="ai-context-item">
             <span className="label">Name</span>
-            <span className="value">{activeSheet?.name || 'Sheet1'}</span>
+            <span className="value">{activeSheet?.name || "Sheet1"}</span>
           </div>
           <div className="ai-context-item">
             <span className="label">ID</span>
             <span className="value ai-context-id">
-              {activeSheetId?.slice(0, 8) || 'N/A'}
+              {activeSheetId?.slice(0, 8) || "N/A"}
             </span>
           </div>
         </div>
@@ -236,7 +252,10 @@ export const ContextPanel: React.FC = () => {
           <div className="ai-context-tokens">
             <TokenBudgetBar
               used={assembledContext.metadata.totalTokens}
-              total={assembledContext.metadata.totalTokens + assembledContext.metadata.budgetRemaining}
+              total={
+                assembledContext.metadata.totalTokens +
+                assembledContext.metadata.budgetRemaining
+              }
               label="Total"
             />
             <TokenBudgetBar
@@ -262,39 +281,56 @@ export const ContextPanel: React.FC = () => {
           </div>
         ) : (
           <p className="ai-context-empty">
-            No context assembled yet. Send a message to the AI to see token usage.
+            No context assembled yet. Send a message to the AI to see token
+            usage.
           </p>
         )}
       </ContextSection>
 
       {/* Assembly Stats */}
       {assembledContext && (
-        <ContextSection title="Assembly Stats" icon={<Activity size={14} />} collapsible>
+        <ContextSection
+          title="Assembly Stats"
+          icon={<Activity size={14} />}
+          collapsible
+        >
           <div className="ai-context-grid">
             <div className="ai-context-item">
               <span className="label">Direct Ranges</span>
-              <span className="value">{assembledContext.directData.ranges.length}</span>
+              <span className="value">
+                {assembledContext.directData.ranges.length}
+              </span>
             </div>
             <div className="ai-context-item">
               <span className="label">Direct Cells</span>
-              <span className="value">{assembledContext.directData.totalCells}</span>
+              <span className="value">
+                {assembledContext.directData.totalCells}
+              </span>
             </div>
             <div className="ai-context-item">
               <span className="label">Upstream Deps</span>
-              <span className="value">{assembledContext.dependencyContext.upstreamCells.length}</span>
+              <span className="value">
+                {assembledContext.dependencyContext.upstreamCells.length}
+              </span>
             </div>
             <div className="ai-context-item">
               <span className="label">Downstream Deps</span>
-              <span className="value">{assembledContext.dependencyContext.downstreamCells.length}</span>
+              <span className="value">
+                {assembledContext.dependencyContext.downstreamCells.length}
+              </span>
             </div>
             <div className="ai-context-item">
               <span className="label">Assembly Time</span>
-              <span className="value">{assembledContext.metadata.assemblyTime.toFixed(1)}ms</span>
+              <span className="value">
+                {assembledContext.metadata.assemblyTime.toFixed(1)}ms
+              </span>
             </div>
             {assembledContext.metadata.truncatedItems.length > 0 && (
               <div className="ai-context-item warning">
                 <span className="label">Truncated Items</span>
-                <span className="value">{assembledContext.metadata.truncatedItems.length}</span>
+                <span className="value">
+                  {assembledContext.metadata.truncatedItems.length}
+                </span>
               </div>
             )}
           </div>
@@ -321,7 +357,7 @@ export const ContextPanel: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ContextPanel;
+export default ContextPanel

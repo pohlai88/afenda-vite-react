@@ -1,7 +1,7 @@
 // Phase 11: GDPR Tools Component
 // Data export, erasure requests, and consent management
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react"
 import {
   Shield,
   Download,
@@ -17,173 +17,228 @@ import {
   RefreshCw,
   Eye,
   X,
-} from 'lucide-react';
-import { loggers } from '@/utils/logger';
+} from "lucide-react"
+import { loggers } from "@/utils/logger"
 
 interface DataSubjectRequest {
-  id: string;
-  type: 'access' | 'rectification' | 'erasure' | 'portability' | 'restriction' | 'objection';
-  userId: string;
-  userEmail: string;
-  userName: string;
-  status: 'pending' | 'processing' | 'completed' | 'rejected';
-  reason?: string;
-  requestedAt: string;
-  completedAt?: string;
-  processedBy?: string;
-  notes?: string;
+  id: string
+  type:
+    | "access"
+    | "rectification"
+    | "erasure"
+    | "portability"
+    | "restriction"
+    | "objection"
+  userId: string
+  userEmail: string
+  userName: string
+  status: "pending" | "processing" | "completed" | "rejected"
+  reason?: string
+  requestedAt: string
+  completedAt?: string
+  processedBy?: string
+  notes?: string
 }
 
 interface ConsentRecord {
-  id: string;
-  userId: string;
-  userEmail: string;
-  consentType: string;
-  granted: boolean;
-  grantedAt?: string;
-  revokedAt?: string;
-  ipAddress: string;
-  userAgent: string;
+  id: string
+  userId: string
+  userEmail: string
+  consentType: string
+  granted: boolean
+  grantedAt?: string
+  revokedAt?: string
+  ipAddress: string
+  userAgent: string
 }
 
 const REQUEST_TYPES = [
-  { value: 'access', label: 'Data Access', icon: Eye, description: 'Request a copy of personal data' },
-  { value: 'erasure', label: 'Data Erasure', icon: Trash2, description: 'Right to be forgotten' },
-  { value: 'portability', label: 'Data Portability', icon: Download, description: 'Export data in portable format' },
-  { value: 'rectification', label: 'Rectification', icon: FileText, description: 'Correct inaccurate data' },
-  { value: 'restriction', label: 'Restriction', icon: Shield, description: 'Restrict processing' },
-  { value: 'objection', label: 'Objection', icon: XCircle, description: 'Object to processing' },
-];
+  {
+    value: "access",
+    label: "Data Access",
+    icon: Eye,
+    description: "Request a copy of personal data",
+  },
+  {
+    value: "erasure",
+    label: "Data Erasure",
+    icon: Trash2,
+    description: "Right to be forgotten",
+  },
+  {
+    value: "portability",
+    label: "Data Portability",
+    icon: Download,
+    description: "Export data in portable format",
+  },
+  {
+    value: "rectification",
+    label: "Rectification",
+    icon: FileText,
+    description: "Correct inaccurate data",
+  },
+  {
+    value: "restriction",
+    label: "Restriction",
+    icon: Shield,
+    description: "Restrict processing",
+  },
+  {
+    value: "objection",
+    label: "Objection",
+    icon: XCircle,
+    description: "Object to processing",
+  },
+]
 
 export const GDPRTools: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'requests' | 'consents' | 'export'>('requests');
-  const [requests, setRequests] = useState<DataSubjectRequest[]>([]);
-  const [consents, setConsents] = useState<ConsentRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [selectedRequest, setSelectedRequest] = useState<DataSubjectRequest | null>(null);
-  const [showNewRequestModal, setShowNewRequestModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<
+    "requests" | "consents" | "export"
+  >("requests")
+  const [requests, setRequests] = useState<DataSubjectRequest[]>([])
+  const [consents, setConsents] = useState<ConsentRecord[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [typeFilter, setTypeFilter] = useState<string>("all")
+  const [selectedRequest, setSelectedRequest] =
+    useState<DataSubjectRequest | null>(null)
+  const [showNewRequestModal, setShowNewRequestModal] = useState(false)
 
   useEffect(() => {
-    if (activeTab === 'requests') {
-      fetchRequests();
-    } else if (activeTab === 'consents') {
-      fetchConsents();
+    if (activeTab === "requests") {
+      fetchRequests()
+    } else if (activeTab === "consents") {
+      fetchConsents()
     }
-  }, [activeTab]);
+  }, [activeTab])
 
   const fetchRequests = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const params = new URLSearchParams();
-      if (searchQuery) params.append('search', searchQuery);
-      if (statusFilter !== 'all') params.append('status', statusFilter);
-      if (typeFilter !== 'all') params.append('type', typeFilter);
+      const params = new URLSearchParams()
+      if (searchQuery) params.append("search", searchQuery)
+      if (statusFilter !== "all") params.append("status", statusFilter)
+      if (typeFilter !== "all") params.append("type", typeFilter)
 
       const response = await fetch(`/api/admin/gdpr/requests?${params}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-      });
+      })
 
       if (response.ok) {
-        const data = await response.json();
-        setRequests(data.requests);
+        const data = await response.json()
+        setRequests(data.requests)
       }
     } catch (error) {
-      loggers.admin.error('Failed to fetch DSR requests:', error);
+      loggers.admin.error("Failed to fetch DSR requests:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const fetchConsents = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const response = await fetch(`/api/admin/gdpr/consents?search=${searchQuery}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-      });
+      const response = await fetch(
+        `/api/admin/gdpr/consents?search=${searchQuery}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      )
 
       if (response.ok) {
-        const data = await response.json();
-        setConsents(data.consents);
+        const data = await response.json()
+        setConsents(data.consents)
       }
     } catch (error) {
-      loggers.admin.error('Failed to fetch consent records:', error);
+      loggers.admin.error("Failed to fetch consent records:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const handleProcessRequest = async (requestId: string, action: 'approve' | 'reject', notes?: string) => {
+  const handleProcessRequest = async (
+    requestId: string,
+    action: "approve" | "reject",
+    notes?: string
+  ) => {
     try {
-      const response = await fetch(`/api/admin/gdpr/requests/${requestId}/${action}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-        body: JSON.stringify({ notes }),
-      });
+      const response = await fetch(
+        `/api/admin/gdpr/requests/${requestId}/${action}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          body: JSON.stringify({ notes }),
+        }
+      )
 
       if (response.ok) {
-        fetchRequests();
-        setSelectedRequest(null);
+        fetchRequests()
+        setSelectedRequest(null)
       }
     } catch (error) {
-      loggers.admin.error(`Failed to ${action} request:`, error);
+      loggers.admin.error(`Failed to ${action} request:`, error)
     }
-  };
+  }
 
-  const getStatusBadge = (status: DataSubjectRequest['status']) => {
+  const getStatusBadge = (status: DataSubjectRequest["status"]) => {
     const styles = {
-      pending: 'bg-yellow-100 text-yellow-700',
-      processing: 'bg-blue-100 text-blue-700',
-      completed: 'bg-green-100 text-green-700',
-      rejected: 'bg-red-100 text-red-700',
-    };
+      pending: "bg-yellow-100 text-yellow-700",
+      processing: "bg-blue-100 text-blue-700",
+      completed: "bg-green-100 text-green-700",
+      rejected: "bg-red-100 text-red-700",
+    }
 
     const icons = {
       pending: <Clock className="w-3 h-3" />,
       processing: <RefreshCw className="w-3 h-3" />,
       completed: <CheckCircle className="w-3 h-3" />,
       rejected: <XCircle className="w-3 h-3" />,
-    };
+    }
 
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${styles[status]}`}>
+      <span
+        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${styles[status]}`}
+      >
         {icons[status]}
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
-    );
-  };
+    )
+  }
 
   const getTypeLabel = (type: string) => {
-    const requestType = REQUEST_TYPES.find((t) => t.value === type);
-    return requestType?.label || type;
-  };
+    const requestType = REQUEST_TYPES.find((t) => t.value === type)
+    return requestType?.label || type
+  }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">GDPR Compliance Tools</h1>
-          <p className="text-gray-500 mt-1">Manage data subject requests and consent records</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            GDPR Compliance Tools
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Manage data subject requests and consent records
+          </p>
         </div>
         <button
           onClick={() => setShowNewRequestModal(true)}
@@ -197,31 +252,31 @@ export const GDPRTools: React.FC = () => {
       {/* Tabs */}
       <div className="flex gap-1 mb-6 bg-gray-100 p-1 rounded-lg w-fit">
         <button
-          onClick={() => setActiveTab('requests')}
+          onClick={() => setActiveTab("requests")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            activeTab === 'requests'
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+            activeTab === "requests"
+              ? "bg-white text-gray-900 shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
           }`}
         >
           Data Subject Requests
         </button>
         <button
-          onClick={() => setActiveTab('consents')}
+          onClick={() => setActiveTab("consents")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            activeTab === 'consents'
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+            activeTab === "consents"
+              ? "bg-white text-gray-900 shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
           }`}
         >
           Consent Records
         </button>
         <button
-          onClick={() => setActiveTab('export')}
+          onClick={() => setActiveTab("export")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            activeTab === 'export'
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+            activeTab === "export"
+              ? "bg-white text-gray-900 shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
           }`}
         >
           Bulk Export
@@ -229,7 +284,7 @@ export const GDPRTools: React.FC = () => {
       </div>
 
       {/* Data Subject Requests Tab */}
-      {activeTab === 'requests' && (
+      {activeTab === "requests" && (
         <>
           {/* Filters */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
@@ -309,13 +364,19 @@ export const GDPRTools: React.FC = () => {
               <tbody className="divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                    <td
+                      colSpan={6}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
                       Loading requests...
                     </td>
                   </tr>
                 ) : requests.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                    <td
+                      colSpan={6}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
                       No requests found
                     </td>
                   </tr>
@@ -323,16 +384,26 @@ export const GDPRTools: React.FC = () => {
                   requests.map((request) => (
                     <tr key={request.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3">
-                        <div className="font-mono text-sm text-gray-900">{request.id.slice(0, 8)}...</div>
+                        <div className="font-mono text-sm text-gray-900">
+                          {request.id.slice(0, 8)}...
+                        </div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="text-sm font-medium text-gray-900">{request.userName}</div>
-                        <div className="text-xs text-gray-500">{request.userEmail}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {request.userName}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {request.userEmail}
+                        </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-sm text-gray-900">{getTypeLabel(request.type)}</span>
+                        <span className="text-sm text-gray-900">
+                          {getTypeLabel(request.type)}
+                        </span>
                       </td>
-                      <td className="px-4 py-3">{getStatusBadge(request.status)}</td>
+                      <td className="px-4 py-3">
+                        {getStatusBadge(request.status)}
+                      </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
                         {formatDate(request.requestedAt)}
                       </td>
@@ -354,7 +425,7 @@ export const GDPRTools: React.FC = () => {
       )}
 
       {/* Consent Records Tab */}
-      {activeTab === 'consents' && (
+      {activeTab === "consents" && (
         <>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
             <div className="relative">
@@ -393,13 +464,19 @@ export const GDPRTools: React.FC = () => {
               <tbody className="divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                    <td
+                      colSpan={5}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
                       Loading consent records...
                     </td>
                   </tr>
                 ) : consents.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                    <td
+                      colSpan={5}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
                       No consent records found
                     </td>
                   </tr>
@@ -407,10 +484,14 @@ export const GDPRTools: React.FC = () => {
                   consents.map((consent) => (
                     <tr key={consent.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3">
-                        <div className="text-sm text-gray-900">{consent.userEmail}</div>
+                        <div className="text-sm text-gray-900">
+                          {consent.userEmail}
+                        </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-sm text-gray-900">{consent.consentType}</span>
+                        <span className="text-sm text-gray-900">
+                          {consent.consentType}
+                        </span>
                       </td>
                       <td className="px-4 py-3">
                         {consent.granted ? (
@@ -426,10 +507,14 @@ export const GDPRTools: React.FC = () => {
                         )}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
-                        {formatDate(consent.grantedAt || consent.revokedAt || '')}
+                        {formatDate(
+                          consent.grantedAt || consent.revokedAt || ""
+                        )}
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-mono text-sm text-gray-500">{consent.ipAddress}</span>
+                        <span className="font-mono text-sm text-gray-500">
+                          {consent.ipAddress}
+                        </span>
                       </td>
                     </tr>
                   ))
@@ -441,7 +526,7 @@ export const GDPRTools: React.FC = () => {
       )}
 
       {/* Bulk Export Tab */}
-      {activeTab === 'export' && <BulkExportPanel />}
+      {activeTab === "export" && <BulkExportPanel />}
 
       {/* Request Details Modal */}
       {selectedRequest && (
@@ -457,67 +542,72 @@ export const GDPRTools: React.FC = () => {
         <NewRequestModal
           onClose={() => setShowNewRequestModal(false)}
           onSuccess={() => {
-            setShowNewRequestModal(false);
-            fetchRequests();
+            setShowNewRequestModal(false)
+            fetchRequests()
           }}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
 // Bulk Export Panel
 const BulkExportPanel: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [format, setFormat] = useState<'json' | 'csv' | 'xml'>('json');
-  const [exporting, setExporting] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [email, setEmail] = useState("")
+  const [format, setFormat] = useState<"json" | "csv" | "xml">("json")
+  const [exporting, setExporting] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   const handleExport = async () => {
-    if (!email) return;
+    if (!email) return
 
-    setExporting(true);
-    setSuccess(false);
+    setExporting(true)
+    setSuccess(false)
 
     try {
-      const response = await fetch('/api/admin/gdpr/export', {
-        method: 'POST',
+      const response = await fetch("/api/admin/gdpr/export", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify({ email, format }),
-      });
+      })
 
       if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `user-data-${email}-${new Date().toISOString().split('T')[0]}.${format}`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        setSuccess(true);
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = `user-data-${email}-${new Date().toISOString().split("T")[0]}.${format}`
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+        setSuccess(true)
       }
     } catch (error) {
-      loggers.admin.error('Export failed:', error);
+      loggers.admin.error("Export failed:", error)
     } finally {
-      setExporting(false);
+      setExporting(false)
     }
-  };
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">Export User Data</h3>
+      <h3 className="text-lg font-medium text-gray-900 mb-4">
+        Export User Data
+      </h3>
       <p className="text-gray-500 mb-6">
-        Export all data associated with a user for GDPR data portability compliance.
+        Export all data associated with a user for GDPR data portability
+        compliance.
       </p>
 
       <div className="space-y-4 max-w-md">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">User Email</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            User Email
+          </label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
@@ -531,10 +621,14 @@ const BulkExportPanel: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Export Format</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Export Format
+          </label>
           <select
             value={format}
-            onChange={(e) => setFormat(e.target.value as 'json' | 'csv' | 'xml')}
+            onChange={(e) =>
+              setFormat(e.target.value as "json" | "csv" | "xml")
+            }
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="json">JSON</option>
@@ -556,36 +650,43 @@ const BulkExportPanel: React.FC = () => {
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
         >
           <Download className="w-5 h-5" />
-          {exporting ? 'Exporting...' : 'Export Data'}
+          {exporting ? "Exporting..." : "Export Data"}
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Request Details Modal
 interface RequestDetailsModalProps {
-  request: DataSubjectRequest;
-  onClose: () => void;
-  onProcess: (id: string, action: 'approve' | 'reject', notes?: string) => void;
+  request: DataSubjectRequest
+  onClose: () => void
+  onProcess: (id: string, action: "approve" | "reject", notes?: string) => void
 }
 
-const RequestDetailsModal: React.FC<RequestDetailsModalProps> = ({ request, onClose, onProcess }) => {
-  const [notes, setNotes] = useState('');
-  const [processing, setProcessing] = useState(false);
+const RequestDetailsModal: React.FC<RequestDetailsModalProps> = ({
+  request,
+  onClose,
+  onProcess,
+}) => {
+  const [notes, setNotes] = useState("")
+  const [processing, setProcessing] = useState(false)
 
-  const handleAction = async (action: 'approve' | 'reject') => {
-    setProcessing(true);
-    await onProcess(request.id, action, notes);
-    setProcessing(false);
-  };
+  const handleAction = async (action: "approve" | "reject") => {
+    setProcessing(true)
+    await onProcess(request.id, action, notes)
+    setProcessing(false)
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-xl shadow-2xl p-6 max-w-lg w-full mx-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">Request Details</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-full">
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-gray-100 rounded-full"
+          >
             <X className="w-6 h-6 text-gray-400" />
           </button>
         </div>
@@ -593,11 +694,17 @@ const RequestDetailsModal: React.FC<RequestDetailsModalProps> = ({ request, onCl
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-500">Request ID</label>
-              <div className="font-mono text-sm text-gray-900">{request.id}</div>
+              <label className="block text-sm font-medium text-gray-500">
+                Request ID
+              </label>
+              <div className="font-mono text-sm text-gray-900">
+                {request.id}
+              </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-500">Type</label>
+              <label className="block text-sm font-medium text-gray-500">
+                Type
+              </label>
               <div className="text-gray-900">
                 {REQUEST_TYPES.find((t) => t.value === request.type)?.label}
               </div>
@@ -605,32 +712,40 @@ const RequestDetailsModal: React.FC<RequestDetailsModalProps> = ({ request, onCl
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-500">User</label>
+            <label className="block text-sm font-medium text-gray-500">
+              User
+            </label>
             <div className="text-gray-900">{request.userName}</div>
             <div className="text-sm text-gray-500">{request.userEmail}</div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-500">Requested</label>
+              <label className="block text-sm font-medium text-gray-500">
+                Requested
+              </label>
               <div className="text-gray-900">
                 {new Date(request.requestedAt).toLocaleDateString()}
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-500">Status</label>
+              <label className="block text-sm font-medium text-gray-500">
+                Status
+              </label>
               <div>{request.status}</div>
             </div>
           </div>
 
           {request.reason && (
             <div>
-              <label className="block text-sm font-medium text-gray-500">Reason</label>
+              <label className="block text-sm font-medium text-gray-500">
+                Reason
+              </label>
               <div className="text-gray-900">{request.reason}</div>
             </div>
           )}
 
-          {request.status === 'pending' && (
+          {request.status === "pending" && (
             <>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -647,24 +762,24 @@ const RequestDetailsModal: React.FC<RequestDetailsModalProps> = ({ request, onCl
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => handleAction('reject')}
+                  onClick={() => handleAction("reject")}
                   disabled={processing}
                   className="flex-1 px-4 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 disabled:opacity-50"
                 >
                   Reject
                 </button>
                 <button
-                  onClick={() => handleAction('approve')}
+                  onClick={() => handleAction("approve")}
                   disabled={processing}
                   className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
                 >
-                  {processing ? 'Processing...' : 'Approve & Process'}
+                  {processing ? "Processing..." : "Approve & Process"}
                 </button>
               </div>
             </>
           )}
 
-          {request.status !== 'pending' && (
+          {request.status !== "pending" && (
             <button
               onClick={onClose}
               className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
@@ -675,55 +790,60 @@ const RequestDetailsModal: React.FC<RequestDetailsModalProps> = ({ request, onCl
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // New Request Modal
 interface NewRequestModalProps {
-  onClose: () => void;
-  onSuccess: () => void;
+  onClose: () => void
+  onSuccess: () => void
 }
 
-const NewRequestModal: React.FC<NewRequestModalProps> = ({ onClose, onSuccess }) => {
+const NewRequestModal: React.FC<NewRequestModalProps> = ({
+  onClose,
+  onSuccess,
+}) => {
   const [formData, setFormData] = useState({
-    userEmail: '',
-    type: 'access',
-    reason: '',
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+    userEmail: "",
+    type: "access",
+    reason: "",
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+    e.preventDefault()
+    setLoading(true)
+    setError("")
 
     try {
-      const response = await fetch('/api/admin/gdpr/requests', {
-        method: 'POST',
+      const response = await fetch("/api/admin/gdpr/requests", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify(formData),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error('Failed to create request');
+        throw new Error("Failed to create request")
       }
 
-      onSuccess();
+      onSuccess()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create request');
+      setError(err instanceof Error ? err.message : "Failed to create request")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">New Data Subject Request</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">
+          New Data Subject Request
+        </h2>
 
         {error && (
           <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg flex items-center gap-2">
@@ -734,11 +854,15 @@ const NewRequestModal: React.FC<NewRequestModalProps> = ({ onClose, onSuccess })
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">User Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              User Email
+            </label>
             <input
               type="email"
               value={formData.userEmail}
-              onChange={(e) => setFormData({ ...formData, userEmail: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, userEmail: e.target.value })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="user@example.com"
               required
@@ -746,10 +870,14 @@ const NewRequestModal: React.FC<NewRequestModalProps> = ({ onClose, onSuccess })
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Request Type</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Request Type
+            </label>
             <select
               value={formData.type}
-              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, type: e.target.value })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             >
               {REQUEST_TYPES.map((type) => (
@@ -761,10 +889,14 @@ const NewRequestModal: React.FC<NewRequestModalProps> = ({ onClose, onSuccess })
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Reason (Optional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Reason (Optional)
+            </label>
             <textarea
               value={formData.reason}
-              onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, reason: e.target.value })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Reason for request..."
@@ -784,13 +916,13 @@ const NewRequestModal: React.FC<NewRequestModalProps> = ({ onClose, onSuccess })
               disabled={loading}
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
-              {loading ? 'Creating...' : 'Create Request'}
+              {loading ? "Creating..." : "Create Request"}
             </button>
           </div>
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default GDPRTools;
+export default GDPRTools

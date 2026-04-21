@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Check, Pencil } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { GoalProgress } from './goal-progress'
-import type { KeyResult } from '@/types/performance'
+import { useState } from "react"
+import { Check, Pencil } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { GoalProgress } from "./goal-progress"
+import type { KeyResult } from "@/types/performance"
 
 interface KeyResultItemProps {
   keyResult: KeyResult
@@ -31,7 +31,9 @@ export function KeyResultItem({
     <div className="flex items-center gap-3 p-3 rounded-sm border bg-card">
       <div className="flex-1 min-w-0 space-y-1.5">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium truncate">{keyResult.title}</span>
+          <span className="text-sm font-medium truncate">
+            {keyResult.title}
+          </span>
           {keyResult.weight > 0 && (
             <span className="text-[10px] font-data text-muted-foreground ml-2 shrink-0">
               {keyResult.weight}%
@@ -49,7 +51,9 @@ export function KeyResultItem({
                 className="h-6 w-16 text-xs font-data"
                 autoFocus
               />
-              <span className="font-data">/ {keyResult.targetValue} {keyResult.unit}</span>
+              <span className="font-data">
+                / {keyResult.targetValue} {keyResult.unit}
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -62,7 +66,8 @@ export function KeyResultItem({
           ) : (
             <div className="flex items-center gap-1">
               <span className="font-data">
-                {keyResult.currentValue} / {keyResult.targetValue} {keyResult.unit}
+                {keyResult.currentValue} / {keyResult.targetValue}{" "}
+                {keyResult.unit}
               </span>
               {!readonly && onUpdateProgress && (
                 <Button

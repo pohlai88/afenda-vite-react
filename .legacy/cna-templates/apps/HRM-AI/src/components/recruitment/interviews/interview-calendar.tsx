@@ -1,16 +1,16 @@
-'use client'
+"use client"
 
-import { useMemo, useCallback } from 'react'
-import { Calendar, momentLocalizer, Views, Event } from 'react-big-calendar'
-import moment from 'moment'
-import 'moment/locale/vi'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { INTERVIEW_TYPE, INTERVIEW_RESULT } from '@/lib/recruitment/constants'
-import type { CalendarEvent } from '@/types/recruitment'
+import { useMemo, useCallback } from "react"
+import { Calendar, momentLocalizer, Views, Event } from "react-big-calendar"
+import moment from "moment"
+import "moment/locale/vi"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { INTERVIEW_TYPE, INTERVIEW_RESULT } from "@/lib/recruitment/constants"
+import type { CalendarEvent } from "@/types/recruitment"
 
-import 'react-big-calendar/lib/css/react-big-calendar.css'
+import "react-big-calendar/lib/css/react-big-calendar.css"
 
-moment.locale('vi')
+moment.locale("vi")
 const localizer = momentLocalizer(moment)
 
 interface InterviewCalendarProps {
@@ -41,21 +41,21 @@ export function InterviewCalendar({
 
   const eventStyleGetter = useCallback((event: CalendarEventStyled) => {
     const result = event.resource.result
-    let backgroundColor = '#3b82f6' // blue default
+    let backgroundColor = "#3b82f6" // blue default
 
-    if (result === 'PASSED') backgroundColor = '#10b981'
-    else if (result === 'FAILED') backgroundColor = '#ef4444'
-    else if (result === 'RESCHEDULED') backgroundColor = '#f59e0b'
-    else if (result === 'NO_SHOW') backgroundColor = '#f97316'
+    if (result === "PASSED") backgroundColor = "#10b981"
+    else if (result === "FAILED") backgroundColor = "#ef4444"
+    else if (result === "RESCHEDULED") backgroundColor = "#f59e0b"
+    else if (result === "NO_SHOW") backgroundColor = "#f97316"
 
     return {
       style: {
         backgroundColor,
-        borderRadius: '4px',
+        borderRadius: "4px",
         opacity: 0.9,
-        color: 'white',
-        border: 'none',
-        fontSize: '12px',
+        color: "white",
+        border: "none",
+        fontSize: "12px",
       },
     }
   }, [])
@@ -79,17 +79,17 @@ export function InterviewCalendar({
   )
 
   const messages = {
-    today: 'Hôm nay',
-    previous: 'Trước',
-    next: 'Sau',
-    month: 'Tháng',
-    week: 'Tuần',
-    day: 'Ngày',
-    agenda: 'Lịch trình',
-    date: 'Ngày',
-    time: 'Giờ',
-    event: 'Sự kiện',
-    noEventsInRange: 'Không có lịch phỏng vấn trong khoảng thời gian này.',
+    today: "Hôm nay",
+    previous: "Trước",
+    next: "Sau",
+    month: "Tháng",
+    week: "Tuần",
+    day: "Ngày",
+    agenda: "Lịch trình",
+    date: "Ngày",
+    time: "Giờ",
+    event: "Sự kiện",
+    noEventsInRange: "Không có lịch phỏng vấn trong khoảng thời gian này.",
     showMore: (total: number) => `+${total} thêm`,
   }
 
@@ -100,7 +100,8 @@ export function InterviewCalendar({
           {event.resource.candidate.fullName}
         </div>
         <div className="text-[10px] opacity-80 truncate">
-          {INTERVIEW_TYPE[event.resource.type]?.label} - Vòng {event.resource.round}
+          {INTERVIEW_TYPE[event.resource.type]?.label} - Vòng{" "}
+          {event.resource.round}
         </div>
         {event.resource.location && (
           <div className="text-[10px] opacity-70 truncate">
@@ -123,18 +124,20 @@ export function InterviewCalendar({
                   className="w-2.5 h-2.5 rounded-full"
                   style={{
                     backgroundColor:
-                      key === 'PASSED'
-                        ? '#10b981'
-                        : key === 'FAILED'
-                        ? '#ef4444'
-                        : key === 'RESCHEDULED'
-                        ? '#f59e0b'
-                        : key === 'NO_SHOW'
-                        ? '#f97316'
-                        : '#3b82f6',
+                      key === "PASSED"
+                        ? "#10b981"
+                        : key === "FAILED"
+                          ? "#ef4444"
+                          : key === "RESCHEDULED"
+                            ? "#f59e0b"
+                            : key === "NO_SHOW"
+                              ? "#f97316"
+                              : "#3b82f6",
                   }}
                 />
-                <span className="text-xs text-muted-foreground">{val.label}</span>
+                <span className="text-xs text-muted-foreground">
+                  {val.label}
+                </span>
               </div>
             ))}
           </div>

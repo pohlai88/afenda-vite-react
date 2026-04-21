@@ -1,8 +1,8 @@
 // src/app/api/compliance/tax/calculate/route.ts
 // API endpoint for calculating personal income tax (TNCN)
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
 import {
   TaxCalculator,
   grossToNet,
@@ -10,15 +10,15 @@ import {
   formatTaxAmount,
   formatTaxRate,
   getTaxBracketInfo,
-} from '@/lib/compliance/tax'
-import { z } from 'zod'
+} from "@/lib/compliance/tax"
+import { z } from "zod"
 
 // ═══════════════════════════════════════════════════════════════
 // REQUEST SCHEMAS
 // ═══════════════════════════════════════════════════════════════
 
 const calculateSchema = z.object({
-  type: z.enum(['monthly', 'gross_to_net', 'net_to_gross']).default('monthly'),
+  type: z.enum(["monthly", "gross_to_net", "net_to_gross"]).default("monthly"),
   grossIncome: z.number().nonnegative().optional(),
   netIncome: z.number().nonnegative().optional(),
   insuranceSalary: z.number().nonnegative().optional(),
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -43,10 +43,10 @@ export async function POST(request: NextRequest) {
     let result
 
     switch (validated.type) {
-      case 'monthly': {
+      case "monthly": {
         if (!validated.grossIncome) {
           return NextResponse.json(
-            { error: 'grossIncome is required for monthly calculation' },
+            { error: "grossIncome is required for monthly calculation" },
             { status: 400 }
           )
         }
@@ -79,10 +79,10 @@ export async function POST(request: NextRequest) {
         break
       }
 
-      case 'gross_to_net': {
+      case "gross_to_net": {
         if (!validated.grossIncome) {
           return NextResponse.json(
-            { error: 'grossIncome is required for gross_to_net calculation' },
+            { error: "grossIncome is required for gross_to_net calculation" },
             { status: 400 }
           )
         }
@@ -103,10 +103,10 @@ export async function POST(request: NextRequest) {
         break
       }
 
-      case 'net_to_gross': {
+      case "net_to_gross": {
         if (!validated.netIncome) {
           return NextResponse.json(
-            { error: 'netIncome is required for net_to_gross calculation' },
+            { error: "netIncome is required for net_to_gross calculation" },
             { status: 400 }
           )
         }
@@ -135,16 +135,13 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Dữ liệu không hợp lệ', details: error.issues },
+        { error: "Dữ liệu không hợp lệ", details: error.issues },
         { status: 400 }
       )
     }
 
-    console.error('Tax calculation error:', error)
-    return NextResponse.json(
-      { error: 'Không thể tính thuế' },
-      { status: 500 }
-    )
+    console.error("Tax calculation error:", error)
+    return NextResponse.json({ error: "Không thể tính thuế" }, { status: 500 })
   }
 }
 
@@ -156,24 +153,26 @@ export async function GET() {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Return tax bracket information
-    const { TAX_BRACKETS, TAX_DEDUCTIONS } = await import('@/lib/compliance/tax/constants')
+    const { TAX_BRACKETS, TAX_DEDUCTIONS } =
+      await import("@/lib/compliance/tax/constants")
 
     return NextResponse.json({
       success: true,
       data: {
         brackets: TAX_BRACKETS,
         deductions: TAX_DEDUCTIONS,
-        description: 'Vietnam Personal Income Tax (TNCN) - Biểu thuế lũy tiến từng phần',
+        description:
+          "Vietnam Personal Income Tax (TNCN) - Biểu thuế lũy tiến từng phần",
       },
     })
   } catch (error) {
-    console.error('Get tax brackets error:', error)
+    console.error("Get tax brackets error:", error)
     return NextResponse.json(
-      { error: 'Không thể tải thông tin thuế' },
+      { error: "Không thể tải thông tin thuế" },
       { status: 500 }
     )
   }

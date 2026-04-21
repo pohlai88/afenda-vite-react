@@ -1,2 +1,2 @@
-export { SparklineRenderer } from './SparklineRenderer';
-export { SparklineDialog } from './SparklineDialog';
+export { SparklineRenderer } from "./SparklineRenderer"
+export { SparklineDialog } from "./SparklineDialog"

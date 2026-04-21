@@ -2,19 +2,20 @@
 
 ## 🗓️ DAILY TASKS
 
-| Day | Focus | Deliverables |
-|-----|-------|--------------|
-| **Day 1** | Delivery API | 8 endpoints + status transitions |
-| **Day 2** | Delivery UI | 4 pages + timeline + calendar |
-| **Day 3** | Sell Tracking API | 6 endpoints + import + alerts |
-| **Day 4** | Sell Tracking UI | 3 pages + charts + comparison |
-| **Day 5** | Inventory | 5 endpoints + 2 pages |
+| Day       | Focus             | Deliverables                     |
+| --------- | ----------------- | -------------------------------- |
+| **Day 1** | Delivery API      | 8 endpoints + status transitions |
+| **Day 2** | Delivery UI       | 4 pages + timeline + calendar    |
+| **Day 3** | Sell Tracking API | 6 endpoints + import + alerts    |
+| **Day 4** | Sell Tracking UI  | 3 pages + charts + comparison    |
+| **Day 5** | Inventory         | 5 endpoints + 2 pages            |
 
 ---
 
 ## 🔌 API ENDPOINTS CHECKLIST
 
 ### Delivery (8)
+
 ```
 [ ] GET    /api/operations/delivery
 [ ] POST   /api/operations/delivery
@@ -28,6 +29,7 @@
 ```
 
 ### Sell Tracking (6)
+
 ```
 [ ] GET    /api/operations/sell-tracking
 [ ] POST   /api/operations/sell-tracking
@@ -39,6 +41,7 @@
 ```
 
 ### Inventory (5)
+
 ```
 [ ] GET    /api/operations/inventory
 [ ] GET    /api/operations/inventory/snapshots
@@ -52,6 +55,7 @@
 ## 📄 PAGES CHECKLIST
 
 ### Delivery (4)
+
 ```
 [ ] /operations/delivery           → List page (table + calendar)
 [ ] /operations/delivery/:id       → Detail page with timeline
@@ -60,6 +64,7 @@
 ```
 
 ### Sell Tracking (3)
+
 ```
 [ ] /operations/sell-tracking      → Dashboard with comparison
 [ ] /operations/sell-tracking/sell-in  → Sell-in analysis
@@ -67,6 +72,7 @@
 ```
 
 ### Inventory (2)
+
 ```
 [ ] /operations/inventory          → Dashboard with alerts
 [ ] /operations/inventory/snapshots → Historical snapshots
@@ -77,6 +83,7 @@
 ## 🧩 COMPONENTS CHECKLIST
 
 ### Delivery
+
 ```
 [ ] DeliveryCard.tsx
 [ ] DeliveryForm.tsx
@@ -86,6 +93,7 @@
 ```
 
 ### Sell Tracking
+
 ```
 [ ] SellComparisonChart.tsx
 [ ] SellComparisonTable.tsx
@@ -95,6 +103,7 @@
 ```
 
 ### Inventory
+
 ```
 [ ] InventoryCard.tsx
 [ ] InventoryTable.tsx
@@ -104,6 +113,7 @@
 ```
 
 ### Shared
+
 ```
 [ ] OperationsStats.tsx
 [ ] OperationsDashboard.tsx
@@ -172,6 +182,7 @@ CANCELLED  CANCELLED   CANCELLED  CANCELLED  CANCELLED            PARTIAL
 ## 📊 SELL TRACKING FORMULAS
 
 ### Key Metrics
+
 ```
 Sell-through Rate = (Sell-out / Sell-in) × 100
 
@@ -183,29 +194,31 @@ Growth % = ((Current - Previous) / Previous) × 100
 ```
 
 ### Alert Thresholds
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| Low Sell-through | < 50% | WARNING |
-| Very Low Sell-through | < 30% | CRITICAL |
-| High Stock | > 60 days supply | WARNING |
-| Stockout Risk | < 7 days supply | CRITICAL |
+
+| Alert                 | Condition        | Severity |
+| --------------------- | ---------------- | -------- |
+| Low Sell-through      | < 50%            | WARNING  |
+| Very Low Sell-through | < 30%            | CRITICAL |
+| High Stock            | > 60 days supply | WARNING  |
+| Stockout Risk         | < 7 days supply  | CRITICAL |
 
 ---
 
 ## 📦 INVENTORY THRESHOLDS
 
-| Metric | Threshold | Status |
-|--------|-----------|--------|
-| Stock Coverage | < 1 month | LOW_STOCK |
-| Stock Coverage | > 6 months | OVERSTOCK |
-| Days to Expiry | < 30 days | NEAR_EXPIRY |
-| Quantity | = 0 | OUT_OF_STOCK |
+| Metric         | Threshold  | Status       |
+| -------------- | ---------- | ------------ |
+| Stock Coverage | < 1 month  | LOW_STOCK    |
+| Stock Coverage | > 6 months | OVERSTOCK    |
+| Days to Expiry | < 30 days  | NEAR_EXPIRY  |
+| Quantity       | = 0        | OUT_OF_STOCK |
 
 ---
 
 ## 🔄 WORKFLOWS
 
 ### Create Delivery Order
+
 ```
 1. Select customer
 2. Link to promotion (optional)
@@ -216,6 +229,7 @@ Growth % = ((Current - Previous) / Previous) × 100
 ```
 
 ### Delivery Status Update
+
 ```
 1. View order detail
 2. Click "Update Status"
@@ -227,6 +241,7 @@ Growth % = ((Current - Previous) / Previous) × 100
 ```
 
 ### Import Sell Data
+
 ```
 1. Select import type (Sell-in/Sell-out/Stock)
 2. Select period (YYYY-MM)
@@ -238,6 +253,7 @@ Growth % = ((Current - Previous) / Previous) × 100
 ```
 
 ### Take Inventory Snapshot
+
 ```
 1. Bulk import or manual entry
 2. Select snapshot date
@@ -317,10 +333,10 @@ git commit -m "feat(operations): Day X - [description]"
 
 ## 📊 WEEK 4 METRICS TARGET
 
-| Metric | Target |
-|--------|--------|
-| API Endpoints | 19 |
-| Pages | 9 |
-| Components | ~15 |
-| Hooks | ~20 |
-| Test Coverage | >80% |
+| Metric        | Target |
+| ------------- | ------ |
+| API Endpoints | 19     |
+| Pages         | 9      |
+| Components    | ~15    |
+| Hooks         | ~20    |
+| Test Coverage | >80%   |

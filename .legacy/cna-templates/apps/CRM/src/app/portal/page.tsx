@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 interface PortalUser {
   id: string
@@ -15,42 +15,69 @@ interface PortalUser {
 interface DashboardData {
   stats: { pendingQuotes: number; activeOrders: number; openTickets: number }
   recent: {
-    quotes: Array<{ id: string; quoteNumber: string; status: string; total: number; currency: string; createdAt: string }>
-    orders: Array<{ id: string; orderNumber: string; status: string; total: number; currency: string; createdAt: string }>
-    tickets: Array<{ id: string; ticketNumber: string; subject: string; status: string; priority: string; createdAt: string }>
+    quotes: Array<{
+      id: string
+      quoteNumber: string
+      status: string
+      total: number
+      currency: string
+      createdAt: string
+    }>
+    orders: Array<{
+      id: string
+      orderNumber: string
+      status: string
+      total: number
+      currency: string
+      createdAt: string
+    }>
+    tickets: Array<{
+      id: string
+      ticketNumber: string
+      subject: string
+      status: string
+      priority: string
+      createdAt: string
+    }>
   }
 }
 
 const STATUS_LABELS: Record<string, string> = {
   // Quotes
-  DRAFT: 'Nháp',
-  SENT: 'Đã gửi',
-  VIEWED: 'Đã xem',
-  ACCEPTED: 'Chấp nhận',
-  REJECTED: 'Từ chối',
-  EXPIRED: 'Hết hạn',
+  DRAFT: "Nháp",
+  SENT: "Đã gửi",
+  VIEWED: "Đã xem",
+  ACCEPTED: "Chấp nhận",
+  REJECTED: "Từ chối",
+  EXPIRED: "Hết hạn",
   // Orders
-  PENDING: 'Chờ xử lý',
-  CONFIRMED: 'Đã xác nhận',
-  IN_PRODUCTION: 'Đang sản xuất',
-  SHIPPED: 'Đã giao',
-  DELIVERED: 'Hoàn thành',
-  CANCELLED: 'Đã hủy',
-  REFUNDED: 'Hoàn tiền',
+  PENDING: "Chờ xử lý",
+  CONFIRMED: "Đã xác nhận",
+  IN_PRODUCTION: "Đang sản xuất",
+  SHIPPED: "Đã giao",
+  DELIVERED: "Hoàn thành",
+  CANCELLED: "Đã hủy",
+  REFUNDED: "Hoàn tiền",
   // Tickets
-  OPEN: 'Mở',
-  IN_PROGRESS: 'Đang xử lý',
-  WAITING_CUSTOMER: 'Chờ phản hồi',
-  RESOLVED: 'Đã giải quyết',
-  CLOSED: 'Đóng',
+  OPEN: "Mở",
+  IN_PROGRESS: "Đang xử lý",
+  WAITING_CUSTOMER: "Chờ phản hồi",
+  RESOLVED: "Đã giải quyết",
+  CLOSED: "Đóng",
 }
 
-function formatCurrency(amount: number, currency = 'VND') {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency }).format(amount)
+function formatCurrency(amount: number, currency = "VND") {
+  return new Intl.NumberFormat("vi-VN", { style: "currency", currency }).format(
+    amount
+  )
 }
 
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+  return new Date(dateStr).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  })
 }
 
 export default function PortalDashboard() {
@@ -61,11 +88,11 @@ export default function PortalDashboard() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/portal/me').then((r) => {
-        if (!r.ok) throw new Error('Unauthorized')
+      fetch("/api/portal/me").then((r) => {
+        if (!r.ok) throw new Error("Unauthorized")
         return r.json()
       }),
-      fetch('/api/portal/dashboard').then((r) => {
+      fetch("/api/portal/dashboard").then((r) => {
         if (!r.ok) return null
         return r.json()
       }),
@@ -74,7 +101,7 @@ export default function PortalDashboard() {
         setUser(userData)
         setDashboard(dashData)
       })
-      .catch(() => router.push('/portal/login'))
+      .catch(() => router.push("/portal/login"))
       .finally(() => setLoading(false))
   }, [router])
 
@@ -84,7 +111,10 @@ export default function PortalDashboard() {
         <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white rounded-xl border border-gray-200 p-6 h-32 animate-pulse" />
+            <div
+              key={i}
+              className="bg-white rounded-xl border border-gray-200 p-6 h-32 animate-pulse"
+            />
           ))}
         </div>
       </div>
@@ -98,27 +128,27 @@ export default function PortalDashboard() {
 
   const cards = [
     {
-      title: 'Đơn hàng',
-      description: 'Xem trạng thái đơn hàng',
-      href: '/portal/orders',
-      icon: '\u{1F4E6}',
-      color: 'bg-blue-50 text-blue-600',
+      title: "Đơn hàng",
+      description: "Xem trạng thái đơn hàng",
+      href: "/portal/orders",
+      icon: "\u{1F4E6}",
+      color: "bg-blue-50 text-blue-600",
       badge: stats?.activeOrders,
     },
     {
-      title: 'Báo giá',
-      description: 'Xem và phản hồi báo giá',
-      href: '/portal/quotes',
-      icon: '\u{1F4CB}',
-      color: 'bg-emerald-50 text-emerald-600',
+      title: "Báo giá",
+      description: "Xem và phản hồi báo giá",
+      href: "/portal/quotes",
+      icon: "\u{1F4CB}",
+      color: "bg-emerald-50 text-emerald-600",
       badge: stats?.pendingQuotes,
     },
     {
-      title: 'Hỗ trợ',
-      description: 'Gửi yêu cầu hỗ trợ',
-      href: '/portal/tickets',
-      icon: '\u{1F4AC}',
-      color: 'bg-purple-50 text-purple-600',
+      title: "Hỗ trợ",
+      description: "Gửi yêu cầu hỗ trợ",
+      href: "/portal/tickets",
+      icon: "\u{1F4AC}",
+      color: "bg-purple-50 text-purple-600",
       badge: stats?.openTickets,
     },
   ]
@@ -140,7 +170,9 @@ export default function PortalDashboard() {
             href={card.href}
             className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md hover:border-gray-300 transition-all group relative"
           >
-            <div className={`w-10 h-10 rounded-lg ${card.color} flex items-center justify-center text-lg mb-3`}>
+            <div
+              className={`w-10 h-10 rounded-lg ${card.color} flex items-center justify-center text-lg mb-3`}
+            >
               {card.icon}
             </div>
             <h3 className="font-medium text-gray-900 group-hover:text-emerald-600 transition-colors">
@@ -163,7 +195,10 @@ export default function PortalDashboard() {
           <div className="bg-white rounded-xl border border-gray-200 p-3">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-medium text-gray-900">Báo giá gần đây</h3>
-              <Link href="/portal/quotes" className="text-xs text-emerald-600 hover:underline">
+              <Link
+                href="/portal/quotes"
+                className="text-xs text-emerald-600 hover:underline"
+              >
                 Xem tất cả
               </Link>
             </div>
@@ -172,12 +207,21 @@ export default function PortalDashboard() {
             ) : (
               <div className="space-y-3">
                 {recent.quotes.map((q) => (
-                  <div key={q.id} className="flex items-center justify-between text-sm">
+                  <div
+                    key={q.id}
+                    className="flex items-center justify-between text-sm"
+                  >
                     <div>
-                      <span className="text-gray-700 font-medium">{q.quoteNumber}</span>
-                      <span className="text-gray-400 ml-2 text-xs">{STATUS_LABELS[q.status] || q.status}</span>
+                      <span className="text-gray-700 font-medium">
+                        {q.quoteNumber}
+                      </span>
+                      <span className="text-gray-400 ml-2 text-xs">
+                        {STATUS_LABELS[q.status] || q.status}
+                      </span>
                     </div>
-                    <span className="text-gray-600">{formatCurrency(q.total, q.currency)}</span>
+                    <span className="text-gray-600">
+                      {formatCurrency(q.total, q.currency)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -188,7 +232,10 @@ export default function PortalDashboard() {
           <div className="bg-white rounded-xl border border-gray-200 p-3">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-medium text-gray-900">Đơn hàng gần đây</h3>
-              <Link href="/portal/orders" className="text-xs text-emerald-600 hover:underline">
+              <Link
+                href="/portal/orders"
+                className="text-xs text-emerald-600 hover:underline"
+              >
                 Xem tất cả
               </Link>
             </div>
@@ -197,12 +244,21 @@ export default function PortalDashboard() {
             ) : (
               <div className="space-y-3">
                 {recent.orders.map((o) => (
-                  <div key={o.id} className="flex items-center justify-between text-sm">
+                  <div
+                    key={o.id}
+                    className="flex items-center justify-between text-sm"
+                  >
                     <div>
-                      <span className="text-gray-700 font-medium">{o.orderNumber}</span>
-                      <span className="text-gray-400 ml-2 text-xs">{STATUS_LABELS[o.status] || o.status}</span>
+                      <span className="text-gray-700 font-medium">
+                        {o.orderNumber}
+                      </span>
+                      <span className="text-gray-400 ml-2 text-xs">
+                        {STATUS_LABELS[o.status] || o.status}
+                      </span>
                     </div>
-                    <span className="text-gray-600">{formatCurrency(o.total, o.currency)}</span>
+                    <span className="text-gray-600">
+                      {formatCurrency(o.total, o.currency)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -213,7 +269,10 @@ export default function PortalDashboard() {
           <div className="bg-white rounded-xl border border-gray-200 p-3">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-medium text-gray-900">Ticket gần đây</h3>
-              <Link href="/portal/tickets" className="text-xs text-emerald-600 hover:underline">
+              <Link
+                href="/portal/tickets"
+                className="text-xs text-emerald-600 hover:underline"
+              >
                 Xem tất cả
               </Link>
             </div>
@@ -224,10 +283,16 @@ export default function PortalDashboard() {
                 {recent.tickets.map((t) => (
                   <div key={t.id} className="text-sm">
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-700 font-medium">{t.ticketNumber}</span>
-                      <span className="text-gray-400 text-xs">{STATUS_LABELS[t.status] || t.status}</span>
+                      <span className="text-gray-700 font-medium">
+                        {t.ticketNumber}
+                      </span>
+                      <span className="text-gray-400 text-xs">
+                        {STATUS_LABELS[t.status] || t.status}
+                      </span>
                     </div>
-                    <p className="text-gray-500 text-xs truncate mt-0.5">{t.subject}</p>
+                    <p className="text-gray-500 text-xs truncate mt-0.5">
+                      {t.subject}
+                    </p>
                   </div>
                 ))}
               </div>

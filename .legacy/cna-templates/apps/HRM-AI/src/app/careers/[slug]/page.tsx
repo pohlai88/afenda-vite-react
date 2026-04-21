@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import Link from "next/link"
 import {
   ArrowLeft,
   MapPin,
@@ -11,9 +11,9 @@ import {
   Building2,
   DollarSign,
   Share2,
-} from 'lucide-react'
+} from "lucide-react"
 
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'default'
+const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || "default"
 
 interface JobDetail {
   id: string
@@ -36,17 +36,17 @@ interface JobDetail {
 }
 
 const JOB_TYPE_LABELS: Record<string, string> = {
-  FULL_TIME: 'Toàn thời gian',
-  PART_TIME: 'Bán thời gian',
-  CONTRACT: 'Hợp đồng',
-  INTERNSHIP: 'Thực tập',
-  TEMPORARY: 'Tạm thời',
+  FULL_TIME: "Toàn thời gian",
+  PART_TIME: "Bán thời gian",
+  CONTRACT: "Hợp đồng",
+  INTERNSHIP: "Thực tập",
+  TEMPORARY: "Tạm thời",
 }
 
 const WORK_MODE_LABELS: Record<string, string> = {
-  ONSITE: 'Làm việc tại văn phòng',
-  REMOTE: 'Làm việc từ xa',
-  HYBRID: 'Kết hợp',
+  ONSITE: "Làm việc tại văn phòng",
+  REMOTE: "Làm việc từ xa",
+  HYBRID: "Kết hợp",
 }
 
 export default function JobDetailPage() {
@@ -59,7 +59,9 @@ export default function JobDetailPage() {
   useEffect(() => {
     async function fetchJob() {
       try {
-        const res = await fetch(`/api/public/careers/${slug}?tenantId=${TENANT_ID}`)
+        const res = await fetch(
+          `/api/public/careers/${slug}?tenantId=${TENANT_ID}`
+        )
         if (!res.ok) {
           setError(true)
           return
@@ -83,7 +85,7 @@ export default function JobDetailPage() {
       })
     } else {
       navigator.clipboard.writeText(window.location.href)
-      alert('Đã sao chép đường dẫn!')
+      alert("Đã sao chép đường dẫn!")
     }
   }
 
@@ -152,7 +154,9 @@ export default function JobDetailPage() {
           <div className="flex-1">
             {/* Title Section */}
             <div className="bg-white rounded-xl shadow-sm border p-8 mb-6">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">{job.title}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                {job.title}
+              </h1>
               <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-6">
                 {job.department && (
                   <span className="flex items-center gap-1.5">
@@ -179,7 +183,8 @@ export default function JobDetailPage() {
                 <div className="flex items-center gap-2 text-green-600 font-medium">
                   <DollarSign className="h-5 w-5" />
                   <span>
-                    {job.salaryMin.toLocaleString('vi-VN')} - {job.salaryMax.toLocaleString('vi-VN')} VND
+                    {job.salaryMin.toLocaleString("vi-VN")} -{" "}
+                    {job.salaryMax.toLocaleString("vi-VN")} VND
                   </span>
                 </div>
               )}
@@ -281,7 +286,7 @@ export default function JobDetailPage() {
                     <div className="flex items-center justify-between">
                       <span className="text-gray-500">Ngày đăng</span>
                       <span className="font-medium">
-                        {new Date(job.publishedAt).toLocaleDateString('vi-VN')}
+                        {new Date(job.publishedAt).toLocaleDateString("vi-VN")}
                       </span>
                     </div>
                   )}
@@ -289,7 +294,7 @@ export default function JobDetailPage() {
                     <div className="flex items-center justify-between">
                       <span className="text-gray-500">Hạn nộp</span>
                       <span className="font-medium text-orange-600">
-                        {new Date(job.closingDate).toLocaleDateString('vi-VN')}
+                        {new Date(job.closingDate).toLocaleDateString("vi-VN")}
                       </span>
                     </div>
                   )}
@@ -300,10 +305,12 @@ export default function JobDetailPage() {
               {(job.companyName || job.companyDescription) && (
                 <div className="bg-white rounded-xl shadow-sm border p-6 space-y-3">
                   <h3 className="font-semibold text-gray-900">
-                    {job.companyName || 'Về công ty'}
+                    {job.companyName || "Về công ty"}
                   </h3>
                   {job.companyDescription && (
-                    <p className="text-sm text-gray-600">{job.companyDescription}</p>
+                    <p className="text-sm text-gray-600">
+                      {job.companyDescription}
+                    </p>
                   )}
                 </div>
               )}

@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
-import { PortalNav } from './portal-nav'
+import type { Metadata } from "next"
+import { PortalNav } from "./portal-nav"
 
 export const metadata: Metadata = {
-  title: 'VietERP CRM — Cổng khách hàng',
+  title: "VietERP CRM — Cổng khách hàng",
 }
 
 export default function PortalLayout({
@@ -18,7 +18,9 @@ export default function PortalLayout({
           <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-3">
               <span className="font-semibold text-gray-900">VietERP CRM</span>
-              <span className="text-xs text-gray-400 border-l border-gray-200 pl-3 ml-1">Cổng khách hàng</span>
+              <span className="text-xs text-gray-400 border-l border-gray-200 pl-3 ml-1">
+                Cổng khách hàng
+              </span>
             </div>
             <PortalNav />
           </div>

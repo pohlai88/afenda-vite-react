@@ -1,15 +1,17 @@
 # 🖨️ IMPLEMENTATION GUIDE: Print Preview
+
 ## ExcelAI — Print & Page Setup Feature
 
 ---
 
 ## 🎯 Overview
 
-| Feature | Est. Time | Files | Impact |
-|---------|-----------|-------|--------|
-| Print Preview | 2 days | 8 | +0.5% |
+| Feature       | Est. Time | Files | Impact |
+| ------------- | --------- | ----- | ------ |
+| Print Preview | 2 days    | 8     | +0.5%  |
 
 **Features:**
+
 - Print Preview Dialog
 - Page Setup (margins, orientation, size)
 - Print Area Selection
@@ -47,109 +49,116 @@ src/
 // PRINT TYPE DEFINITIONS
 // ============================================================
 
-export type PageOrientation = 'portrait' | 'landscape';
+export type PageOrientation = "portrait" | "landscape"
 
-export type PaperSize = 
-  | 'letter'    // 8.5 x 11 in
-  | 'legal'     // 8.5 x 14 in
-  | 'a4'        // 210 x 297 mm
-  | 'a3'        // 297 x 420 mm
-  | 'tabloid';  // 11 x 17 in
+export type PaperSize =
+  | "letter" // 8.5 x 11 in
+  | "legal" // 8.5 x 14 in
+  | "a4" // 210 x 297 mm
+  | "a3" // 297 x 420 mm
+  | "tabloid" // 11 x 17 in
 
 export interface PaperDimensions {
-  width: number;   // in pixels at 96 DPI
-  height: number;
-  label: string;
+  width: number // in pixels at 96 DPI
+  height: number
+  label: string
 }
 
 export const PAPER_SIZES: Record<PaperSize, PaperDimensions> = {
   letter: { width: 816, height: 1056, label: 'Letter (8.5" × 11")' },
   legal: { width: 816, height: 1344, label: 'Legal (8.5" × 14")' },
-  a4: { width: 794, height: 1123, label: 'A4 (210mm × 297mm)' },
-  a3: { width: 1123, height: 1587, label: 'A3 (297mm × 420mm)' },
+  a4: { width: 794, height: 1123, label: "A4 (210mm × 297mm)" },
+  a3: { width: 1123, height: 1587, label: "A3 (297mm × 420mm)" },
   tabloid: { width: 1056, height: 1632, label: 'Tabloid (11" × 17")' },
-};
+}
 
 export interface PageMargins {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-  header: number;
-  footer: number;
+  top: number
+  bottom: number
+  left: number
+  right: number
+  header: number
+  footer: number
 }
 
 export const MARGIN_PRESETS: Record<string, PageMargins> = {
   normal: { top: 75, bottom: 75, left: 70, right: 70, header: 30, footer: 30 },
-  wide: { top: 100, bottom: 100, left: 100, right: 100, header: 50, footer: 50 },
+  wide: {
+    top: 100,
+    bottom: 100,
+    left: 100,
+    right: 100,
+    header: 50,
+    footer: 50,
+  },
   narrow: { top: 50, bottom: 50, left: 50, right: 50, header: 20, footer: 20 },
   custom: { top: 75, bottom: 75, left: 70, right: 70, header: 30, footer: 30 },
-};
+}
 
 export interface HeaderFooterContent {
-  left: string;
-  center: string;
-  right: string;
+  left: string
+  center: string
+  right: string
 }
 
 export interface PrintSettings {
   // Page Setup
-  orientation: PageOrientation;
-  paperSize: PaperSize;
-  margins: PageMargins;
-  
+  orientation: PageOrientation
+  paperSize: PaperSize
+  margins: PageMargins
+
   // Scaling
-  scalingMode: 'actual' | 'fitToPage' | 'fitToWidth' | 'custom';
-  customScale: number;  // 10-400%
-  fitToPagesWide: number;
-  fitToPagesTall: number;
-  
+  scalingMode: "actual" | "fitToPage" | "fitToWidth" | "custom"
+  customScale: number // 10-400%
+  fitToPagesWide: number
+  fitToPagesTall: number
+
   // Print Area
-  printArea: string | null;  // e.g., "A1:H20" or null for all
-  
+  printArea: string | null // e.g., "A1:H20" or null for all
+
   // Headers & Footers
-  header: HeaderFooterContent;
-  footer: HeaderFooterContent;
-  differentFirstPage: boolean;
-  differentOddEven: boolean;
-  
+  header: HeaderFooterContent
+  footer: HeaderFooterContent
+  differentFirstPage: boolean
+  differentOddEven: boolean
+
   // Options
-  printGridlines: boolean;
-  printRowColHeaders: boolean;
-  blackAndWhite: boolean;
-  draftQuality: boolean;
-  centerHorizontally: boolean;
-  centerVertically: boolean;
-  
+  printGridlines: boolean
+  printRowColHeaders: boolean
+  blackAndWhite: boolean
+  draftQuality: boolean
+  centerHorizontally: boolean
+  centerVertically: boolean
+
   // Page Order
-  pageOrder: 'downThenOver' | 'overThenDown';
+  pageOrder: "downThenOver" | "overThenDown"
 }
 
 export interface PageBreak {
-  type: 'row' | 'column';
-  index: number;
-  isManual: boolean;
+  type: "row" | "column"
+  index: number
+  isManual: boolean
 }
 
 export interface PrintPage {
-  pageNumber: number;
-  startRow: number;
-  endRow: number;
-  startCol: number;
-  endCol: number;
+  pageNumber: number
+  startRow: number
+  endRow: number
+  startCol: number
+  endCol: number
 }
 
 export const DEFAULT_PRINT_SETTINGS: PrintSettings = {
-  orientation: 'portrait',
-  paperSize: 'letter',
+  orientation: "portrait",
+  paperSize: "letter",
   margins: MARGIN_PRESETS.normal,
-  scalingMode: 'actual',
+  scalingMode: "actual",
   customScale: 100,
   fitToPagesWide: 1,
   fitToPagesTall: 1,
   printArea: null,
-  header: { left: '', center: '', right: '' },
-  footer: { left: '', center: '&[Page]', right: '' },
+  header: { left: "", center: "", right: "" },
+  footer: { left: "", center: "&[Page]", right: "" },
   differentFirstPage: false,
   differentOddEven: false,
   printGridlines: false,
@@ -158,18 +167,18 @@ export const DEFAULT_PRINT_SETTINGS: PrintSettings = {
   draftQuality: false,
   centerHorizontally: false,
   centerVertically: false,
-  pageOrder: 'downThenOver',
-};
+  pageOrder: "downThenOver",
+}
 
 // Header/Footer codes
 export const HEADER_FOOTER_CODES = {
-  '&[Page]': 'Page Number',
-  '&[Pages]': 'Total Pages',
-  '&[Date]': 'Current Date',
-  '&[Time]': 'Current Time',
-  '&[File]': 'File Name',
-  '&[Sheet]': 'Sheet Name',
-};
+  "&[Page]": "Page Number",
+  "&[Pages]": "Total Pages",
+  "&[Date]": "Current Date",
+  "&[Time]": "Current Time",
+  "&[File]": "File Name",
+  "&[Sheet]": "Sheet Name",
+}
 ```
 
 ---
@@ -181,8 +190,8 @@ export const HEADER_FOOTER_CODES = {
 // PRINT STORE — Zustand Store for Print Settings
 // ============================================================
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
 import {
   PrintSettings,
   PageBreak,
@@ -193,44 +202,58 @@ import {
   HeaderFooterContent,
   DEFAULT_PRINT_SETTINGS,
   PAPER_SIZES,
-} from '../types/print';
+} from "../types/print"
 
 interface PrintStore {
   // Settings per sheet
-  settings: Record<string, PrintSettings>;
-  
+  settings: Record<string, PrintSettings>
+
   // Page breaks per sheet
-  pageBreaks: Record<string, PageBreak[]>;
-  
+  pageBreaks: Record<string, PageBreak[]>
+
   // Calculated pages
-  pages: PrintPage[];
-  currentPage: number;
-  
+  pages: PrintPage[]
+  currentPage: number
+
   // Get settings for sheet
-  getSettings: (sheetId: string) => PrintSettings;
-  
+  getSettings: (sheetId: string) => PrintSettings
+
   // Update settings
-  updateSettings: (sheetId: string, updates: Partial<PrintSettings>) => void;
-  setOrientation: (sheetId: string, orientation: PageOrientation) => void;
-  setPaperSize: (sheetId: string, paperSize: PaperSize) => void;
-  setMargins: (sheetId: string, margins: PageMargins) => void;
-  setScaling: (sheetId: string, mode: PrintSettings['scalingMode'], value?: number) => void;
-  setPrintArea: (sheetId: string, area: string | null) => void;
-  setHeader: (sheetId: string, header: HeaderFooterContent) => void;
-  setFooter: (sheetId: string, footer: HeaderFooterContent) => void;
-  
+  updateSettings: (sheetId: string, updates: Partial<PrintSettings>) => void
+  setOrientation: (sheetId: string, orientation: PageOrientation) => void
+  setPaperSize: (sheetId: string, paperSize: PaperSize) => void
+  setMargins: (sheetId: string, margins: PageMargins) => void
+  setScaling: (
+    sheetId: string,
+    mode: PrintSettings["scalingMode"],
+    value?: number
+  ) => void
+  setPrintArea: (sheetId: string, area: string | null) => void
+  setHeader: (sheetId: string, header: HeaderFooterContent) => void
+  setFooter: (sheetId: string, footer: HeaderFooterContent) => void
+
   // Page breaks
-  addPageBreak: (sheetId: string, type: 'row' | 'column', index: number) => void;
-  removePageBreak: (sheetId: string, type: 'row' | 'column', index: number) => void;
-  clearPageBreaks: (sheetId: string) => void;
-  getPageBreaks: (sheetId: string) => PageBreak[];
-  
+  addPageBreak: (sheetId: string, type: "row" | "column", index: number) => void
+  removePageBreak: (
+    sheetId: string,
+    type: "row" | "column",
+    index: number
+  ) => void
+  clearPageBreaks: (sheetId: string) => void
+  getPageBreaks: (sheetId: string) => PageBreak[]
+
   // Page calculation
-  calculatePages: (sheetId: string, totalRows: number, totalCols: number, rowHeights: number[], colWidths: number[]) => void;
-  setCurrentPage: (page: number) => void;
-  
+  calculatePages: (
+    sheetId: string,
+    totalRows: number,
+    totalCols: number,
+    rowHeights: number[],
+    colWidths: number[]
+  ) => void
+  setCurrentPage: (page: number) => void
+
   // Reset
-  resetSettings: (sheetId: string) => void;
+  resetSettings: (sheetId: string) => void
 }
 
 export const usePrintStore = create<PrintStore>()(
@@ -242,11 +265,11 @@ export const usePrintStore = create<PrintStore>()(
       currentPage: 1,
 
       getSettings: (sheetId) => {
-        return get().settings[sheetId] || { ...DEFAULT_PRINT_SETTINGS };
+        return get().settings[sheetId] || { ...DEFAULT_PRINT_SETTINGS }
       },
 
       updateSettings: (sheetId, updates) => {
-        set(state => ({
+        set((state) => ({
           settings: {
             ...state.settings,
             [sheetId]: {
@@ -254,184 +277,206 @@ export const usePrintStore = create<PrintStore>()(
               ...updates,
             },
           },
-        }));
+        }))
       },
 
       setOrientation: (sheetId, orientation) => {
-        get().updateSettings(sheetId, { orientation });
+        get().updateSettings(sheetId, { orientation })
       },
 
       setPaperSize: (sheetId, paperSize) => {
-        get().updateSettings(sheetId, { paperSize });
+        get().updateSettings(sheetId, { paperSize })
       },
 
       setMargins: (sheetId, margins) => {
-        get().updateSettings(sheetId, { margins });
+        get().updateSettings(sheetId, { margins })
       },
 
       setScaling: (sheetId, mode, value) => {
-        const updates: Partial<PrintSettings> = { scalingMode: mode };
-        if (mode === 'custom' && value !== undefined) {
-          updates.customScale = Math.max(10, Math.min(400, value));
+        const updates: Partial<PrintSettings> = { scalingMode: mode }
+        if (mode === "custom" && value !== undefined) {
+          updates.customScale = Math.max(10, Math.min(400, value))
         }
-        get().updateSettings(sheetId, updates);
+        get().updateSettings(sheetId, updates)
       },
 
       setPrintArea: (sheetId, area) => {
-        get().updateSettings(sheetId, { printArea: area });
+        get().updateSettings(sheetId, { printArea: area })
       },
 
       setHeader: (sheetId, header) => {
-        get().updateSettings(sheetId, { header });
+        get().updateSettings(sheetId, { header })
       },
 
       setFooter: (sheetId, footer) => {
-        get().updateSettings(sheetId, { footer });
+        get().updateSettings(sheetId, { footer })
       },
 
       // Page Breaks
       addPageBreak: (sheetId, type, index) => {
-        set(state => {
-          const existing = state.pageBreaks[sheetId] || [];
+        set((state) => {
+          const existing = state.pageBreaks[sheetId] || []
           // Don't add duplicate
-          if (existing.some(pb => pb.type === type && pb.index === index)) {
-            return state;
+          if (existing.some((pb) => pb.type === type && pb.index === index)) {
+            return state
           }
           return {
             pageBreaks: {
               ...state.pageBreaks,
               [sheetId]: [...existing, { type, index, isManual: true }],
             },
-          };
-        });
+          }
+        })
       },
 
       removePageBreak: (sheetId, type, index) => {
-        set(state => ({
+        set((state) => ({
           pageBreaks: {
             ...state.pageBreaks,
             [sheetId]: (state.pageBreaks[sheetId] || []).filter(
-              pb => !(pb.type === type && pb.index === index && pb.isManual)
+              (pb) => !(pb.type === type && pb.index === index && pb.isManual)
             ),
           },
-        }));
+        }))
       },
 
       clearPageBreaks: (sheetId) => {
-        set(state => ({
+        set((state) => ({
           pageBreaks: {
             ...state.pageBreaks,
             [sheetId]: [],
           },
-        }));
+        }))
       },
 
       getPageBreaks: (sheetId) => {
-        return get().pageBreaks[sheetId] || [];
+        return get().pageBreaks[sheetId] || []
       },
 
       // Calculate pages based on content and settings
-      calculatePages: (sheetId, totalRows, totalCols, rowHeights, colWidths) => {
-        const settings = get().getSettings(sheetId);
-        const pageBreaks = get().getPageBreaks(sheetId);
-        const paper = PAPER_SIZES[settings.paperSize];
-        
+      calculatePages: (
+        sheetId,
+        totalRows,
+        totalCols,
+        rowHeights,
+        colWidths
+      ) => {
+        const settings = get().getSettings(sheetId)
+        const pageBreaks = get().getPageBreaks(sheetId)
+        const paper = PAPER_SIZES[settings.paperSize]
+
         // Get printable area
-        let pageWidth = settings.orientation === 'portrait' ? paper.width : paper.height;
-        let pageHeight = settings.orientation === 'portrait' ? paper.height : paper.width;
-        
+        let pageWidth =
+          settings.orientation === "portrait" ? paper.width : paper.height
+        let pageHeight =
+          settings.orientation === "portrait" ? paper.height : paper.width
+
         // Subtract margins
-        const printableWidth = pageWidth - settings.margins.left - settings.margins.right;
-        const printableHeight = pageHeight - settings.margins.top - settings.margins.bottom - 
-                               settings.margins.header - settings.margins.footer;
-        
+        const printableWidth =
+          pageWidth - settings.margins.left - settings.margins.right
+        const printableHeight =
+          pageHeight -
+          settings.margins.top -
+          settings.margins.bottom -
+          settings.margins.header -
+          settings.margins.footer
+
         // Apply scaling
-        let scale = 1;
-        if (settings.scalingMode === 'custom') {
-          scale = settings.customScale / 100;
+        let scale = 1
+        if (settings.scalingMode === "custom") {
+          scale = settings.customScale / 100
         }
-        
-        const scaledPrintableWidth = printableWidth / scale;
-        const scaledPrintableHeight = printableHeight / scale;
-        
+
+        const scaledPrintableWidth = printableWidth / scale
+        const scaledPrintableHeight = printableHeight / scale
+
         // Calculate pages
-        const pages: PrintPage[] = [];
-        let currentRow = 0;
-        let currentCol = 0;
-        let pageNum = 1;
-        
+        const pages: PrintPage[] = []
+        let currentRow = 0
+        let currentCol = 0
+        let pageNum = 1
+
         // Get manual row breaks
         const rowBreaks = pageBreaks
-          .filter(pb => pb.type === 'row')
-          .map(pb => pb.index)
-          .sort((a, b) => a - b);
-        
+          .filter((pb) => pb.type === "row")
+          .map((pb) => pb.index)
+          .sort((a, b) => a - b)
+
         // Get manual column breaks
         const colBreaks = pageBreaks
-          .filter(pb => pb.type === 'column')
-          .map(pb => pb.index)
-          .sort((a, b) => a - b);
+          .filter((pb) => pb.type === "column")
+          .map((pb) => pb.index)
+          .sort((a, b) => a - b)
 
         while (currentRow < totalRows) {
-          currentCol = 0;
-          
+          currentCol = 0
+
           while (currentCol < totalCols) {
             // Find end row for this page
-            let endRow = currentRow;
-            let heightSum = 0;
-            
-            while (endRow < totalRows && heightSum + (rowHeights[endRow] || 25) <= scaledPrintableHeight) {
+            let endRow = currentRow
+            let heightSum = 0
+
+            while (
+              endRow < totalRows &&
+              heightSum + (rowHeights[endRow] || 25) <= scaledPrintableHeight
+            ) {
               // Check for manual break
-              if (rowBreaks.includes(endRow) && endRow > currentRow) break;
-              heightSum += rowHeights[endRow] || 25;
-              endRow++;
+              if (rowBreaks.includes(endRow) && endRow > currentRow) break
+              heightSum += rowHeights[endRow] || 25
+              endRow++
             }
-            
+
             // Find end column for this page
-            let endCol = currentCol;
-            let widthSum = 0;
-            
-            while (endCol < totalCols && widthSum + (colWidths[endCol] || 100) <= scaledPrintableWidth) {
+            let endCol = currentCol
+            let widthSum = 0
+
+            while (
+              endCol < totalCols &&
+              widthSum + (colWidths[endCol] || 100) <= scaledPrintableWidth
+            ) {
               // Check for manual break
-              if (colBreaks.includes(endCol) && endCol > currentCol) break;
-              widthSum += colWidths[endCol] || 100;
-              endCol++;
+              if (colBreaks.includes(endCol) && endCol > currentCol) break
+              widthSum += colWidths[endCol] || 100
+              endCol++
             }
-            
+
             pages.push({
               pageNumber: pageNum++,
               startRow: currentRow,
               endRow: endRow - 1,
               startCol: currentCol,
               endCol: endCol - 1,
-            });
-            
-            currentCol = endCol;
+            })
+
+            currentCol = endCol
           }
-          
+
           // Move to next row section
-          let nextRow = currentRow;
-          let heightSum = 0;
-          while (nextRow < totalRows && heightSum + (rowHeights[nextRow] || 25) <= scaledPrintableHeight) {
-            if (rowBreaks.includes(nextRow) && nextRow > currentRow) break;
-            heightSum += rowHeights[nextRow] || 25;
-            nextRow++;
+          let nextRow = currentRow
+          let heightSum = 0
+          while (
+            nextRow < totalRows &&
+            heightSum + (rowHeights[nextRow] || 25) <= scaledPrintableHeight
+          ) {
+            if (rowBreaks.includes(nextRow) && nextRow > currentRow) break
+            heightSum += rowHeights[nextRow] || 25
+            nextRow++
           }
-          currentRow = nextRow;
+          currentRow = nextRow
         }
-        
-        set({ pages, currentPage: 1 });
+
+        set({ pages, currentPage: 1 })
       },
 
       setCurrentPage: (page) => {
-        const { pages } = get();
+        const { pages } = get()
         if (page >= 1 && page <= pages.length) {
-          set({ currentPage: page });
+          set({ currentPage: page })
         }
       },
 
       resetSettings: (sheetId) => {
-        set(state => ({
+        set((state) => ({
           settings: {
             ...state.settings,
             [sheetId]: { ...DEFAULT_PRINT_SETTINGS },
@@ -440,20 +485,20 @@ export const usePrintStore = create<PrintStore>()(
             ...state.pageBreaks,
             [sheetId]: [],
           },
-        }));
+        }))
       },
     }),
     {
-      name: 'excelai-print',
+      name: "excelai-print",
       partialize: (state) => ({
         settings: state.settings,
         pageBreaks: state.pageBreaks,
       }),
     }
   )
-);
+)
 
-export default usePrintStore;
+export default usePrintStore
 ```
 
 ---
@@ -465,9 +510,9 @@ export default usePrintStore;
 // PRINT PREVIEW DIALOG
 // ============================================================
 
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  X, 
+import React, { useState, useEffect, useRef } from "react"
+import {
+  X,
   Printer,
   ChevronLeft,
   ChevronRight,
@@ -477,18 +522,18 @@ import {
   Download,
   FileText,
   Maximize2,
-} from 'lucide-react';
-import { usePrintStore } from '../../stores/printStore';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { PrintPreviewCanvas } from './PrintPreviewCanvas';
-import { PageSetupDialog } from './PageSetupDialog';
-import { PAPER_SIZES } from '../../types/print';
-import './Print.css';
+} from "lucide-react"
+import { usePrintStore } from "../../stores/printStore"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { PrintPreviewCanvas } from "./PrintPreviewCanvas"
+import { PageSetupDialog } from "./PageSetupDialog"
+import { PAPER_SIZES } from "../../types/print"
+import "./Print.css"
 
 interface PrintPreviewDialogProps {
-  sheetId: string;
-  isOpen: boolean;
-  onClose: () => void;
+  sheetId: string
+  isOpen: boolean
+  onClose: () => void
 }
 
 export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
@@ -496,53 +541,50 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [zoom, setZoom] = useState(75);
-  const [showPageSetup, setShowPageSetup] = useState(false);
-  const printFrameRef = useRef<HTMLIFrameElement>(null);
+  const [zoom, setZoom] = useState(75)
+  const [showPageSetup, setShowPageSetup] = useState(false)
+  const printFrameRef = useRef<HTMLIFrameElement>(null)
 
-  const { 
-    getSettings, 
-    pages, 
-    currentPage, 
-    setCurrentPage,
-    calculatePages,
-  } = usePrintStore();
-  
-  const { sheets } = useWorkbookStore();
-  const settings = getSettings(sheetId);
-  const sheet = sheets[sheetId];
+  const { getSettings, pages, currentPage, setCurrentPage, calculatePages } =
+    usePrintStore()
+
+  const { sheets } = useWorkbookStore()
+  const settings = getSettings(sheetId)
+  const sheet = sheets[sheetId]
 
   // Calculate pages on mount/settings change
   useEffect(() => {
-    if (!isOpen || !sheet) return;
-    
+    if (!isOpen || !sheet) return
+
     // Get row heights and column widths from sheet data
-    const rowHeights = Array(100).fill(25);  // Default row height
-    const colWidths = Array(26).fill(100);   // Default column width
-    
-    calculatePages(sheetId, 100, 26, rowHeights, colWidths);
-  }, [isOpen, sheetId, settings, sheet, calculatePages]);
+    const rowHeights = Array(100).fill(25) // Default row height
+    const colWidths = Array(26).fill(100) // Default column width
+
+    calculatePages(sheetId, 100, 26, rowHeights, colWidths)
+  }, [isOpen, sheetId, settings, sheet, calculatePages])
 
   const handlePrint = () => {
-    window.print();
-  };
+    window.print()
+  }
 
   const handleExportPDF = () => {
     // Trigger browser print dialog with PDF option
-    window.print();
-  };
+    window.print()
+  }
 
-  const handleZoomIn = () => setZoom(z => Math.min(200, z + 25));
-  const handleZoomOut = () => setZoom(z => Math.max(25, z - 25));
+  const handleZoomIn = () => setZoom((z) => Math.min(200, z + 25))
+  const handleZoomOut = () => setZoom((z) => Math.max(25, z - 25))
 
-  const handlePrevPage = () => setCurrentPage(currentPage - 1);
-  const handleNextPage = () => setCurrentPage(currentPage + 1);
+  const handlePrevPage = () => setCurrentPage(currentPage - 1)
+  const handleNextPage = () => setCurrentPage(currentPage + 1)
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
-  const paper = PAPER_SIZES[settings.paperSize];
-  const pageWidth = settings.orientation === 'portrait' ? paper.width : paper.height;
-  const pageHeight = settings.orientation === 'portrait' ? paper.height : paper.width;
+  const paper = PAPER_SIZES[settings.paperSize]
+  const pageWidth =
+    settings.orientation === "portrait" ? paper.width : paper.height
+  const pageHeight =
+    settings.orientation === "portrait" ? paper.height : paper.width
 
   return (
     <div className="print-preview-overlay">
@@ -553,11 +595,11 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
             <Printer size={20} />
             <h2>Print Preview</h2>
           </div>
-          
+
           <div className="print-header-center">
             {/* Page Navigation */}
-            <button 
-              onClick={handlePrevPage} 
+            <button
+              onClick={handlePrevPage}
               disabled={currentPage <= 1}
               className="nav-btn"
             >
@@ -566,18 +608,22 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
             <span className="page-info">
               Page {currentPage} of {pages.length || 1}
             </span>
-            <button 
-              onClick={handleNextPage} 
+            <button
+              onClick={handleNextPage}
               disabled={currentPage >= pages.length}
               className="nav-btn"
             >
               <ChevronRight size={20} />
             </button>
-            
+
             <div className="header-divider" />
-            
+
             {/* Zoom */}
-            <button onClick={handleZoomOut} className="nav-btn" title="Zoom Out">
+            <button
+              onClick={handleZoomOut}
+              className="nav-btn"
+              title="Zoom Out"
+            >
               <ZoomOut size={18} />
             </button>
             <span className="zoom-level">{zoom}%</span>
@@ -585,9 +631,9 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
               <ZoomIn size={18} />
             </button>
           </div>
-          
+
           <div className="print-header-right">
-            <button 
+            <button
               className="setup-btn"
               onClick={() => setShowPageSetup(true)}
             >
@@ -606,20 +652,32 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
           <div className="print-sidebar">
             <div className="sidebar-section">
               <h3>Settings</h3>
-              
+
               <div className="setting-item">
                 <label>Orientation</label>
                 <div className="orientation-btns">
-                  <button 
-                    className={settings.orientation === 'portrait' ? 'active' : ''}
-                    onClick={() => usePrintStore.getState().setOrientation(sheetId, 'portrait')}
+                  <button
+                    className={
+                      settings.orientation === "portrait" ? "active" : ""
+                    }
+                    onClick={() =>
+                      usePrintStore
+                        .getState()
+                        .setOrientation(sheetId, "portrait")
+                    }
                   >
                     <FileText size={20} />
                     Portrait
                   </button>
-                  <button 
-                    className={settings.orientation === 'landscape' ? 'active' : ''}
-                    onClick={() => usePrintStore.getState().setOrientation(sheetId, 'landscape')}
+                  <button
+                    className={
+                      settings.orientation === "landscape" ? "active" : ""
+                    }
+                    onClick={() =>
+                      usePrintStore
+                        .getState()
+                        .setOrientation(sheetId, "landscape")
+                    }
                   >
                     <FileText size={20} className="rotate-90" />
                     Landscape
@@ -629,35 +687,53 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
 
               <div className="setting-item">
                 <label>Paper Size</label>
-                <select 
+                <select
                   value={settings.paperSize}
-                  onChange={(e) => usePrintStore.getState().setPaperSize(sheetId, e.target.value as any)}
+                  onChange={(e) =>
+                    usePrintStore
+                      .getState()
+                      .setPaperSize(sheetId, e.target.value as any)
+                  }
                 >
                   {Object.entries(PAPER_SIZES).map(([key, val]) => (
-                    <option key={key} value={key}>{val.label}</option>
+                    <option key={key} value={key}>
+                      {val.label}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div className="setting-item">
                 <label>Scaling</label>
-                <select 
+                <select
                   value={settings.scalingMode}
-                  onChange={(e) => usePrintStore.getState().setScaling(sheetId, e.target.value as any)}
+                  onChange={(e) =>
+                    usePrintStore
+                      .getState()
+                      .setScaling(sheetId, e.target.value as any)
+                  }
                 >
                   <option value="actual">Actual Size (100%)</option>
                   <option value="fitToPage">Fit to Page</option>
                   <option value="fitToWidth">Fit to Width</option>
                   <option value="custom">Custom Scale</option>
                 </select>
-                {settings.scalingMode === 'custom' && (
+                {settings.scalingMode === "custom" && (
                   <div className="scale-input">
-                    <input 
-                      type="number" 
-                      min="10" 
+                    <input
+                      type="number"
+                      min="10"
                       max="400"
                       value={settings.customScale}
-                      onChange={(e) => usePrintStore.getState().setScaling(sheetId, 'custom', parseInt(e.target.value))}
+                      onChange={(e) =>
+                        usePrintStore
+                          .getState()
+                          .setScaling(
+                            sheetId,
+                            "custom",
+                            parseInt(e.target.value)
+                          )
+                      }
                     />
                     <span>%</span>
                   </div>
@@ -666,10 +742,14 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
 
               <div className="setting-item checkbox-item">
                 <label>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={settings.printGridlines}
-                    onChange={(e) => usePrintStore.getState().updateSettings(sheetId, { printGridlines: e.target.checked })}
+                    onChange={(e) =>
+                      usePrintStore.getState().updateSettings(sheetId, {
+                        printGridlines: e.target.checked,
+                      })
+                    }
                   />
                   Print Gridlines
                 </label>
@@ -677,10 +757,14 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
 
               <div className="setting-item checkbox-item">
                 <label>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={settings.printRowColHeaders}
-                    onChange={(e) => usePrintStore.getState().updateSettings(sheetId, { printRowColHeaders: e.target.checked })}
+                    onChange={(e) =>
+                      usePrintStore.getState().updateSettings(sheetId, {
+                        printRowColHeaders: e.target.checked,
+                      })
+                    }
                   />
                   Print Row & Column Headers
                 </label>
@@ -702,21 +786,21 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
 
           {/* Preview Area */}
           <div className="preview-area">
-            <div 
+            <div
               className="preview-container"
-              style={{ 
+              style={{
                 transform: `scale(${zoom / 100})`,
-                transformOrigin: 'top center',
+                transformOrigin: "top center",
               }}
             >
-              <div 
+              <div
                 className="preview-page"
                 style={{
                   width: pageWidth,
                   height: pageHeight,
                 }}
               >
-                <PrintPreviewCanvas 
+                <PrintPreviewCanvas
                   sheetId={sheetId}
                   pageIndex={currentPage - 1}
                   settings={settings}
@@ -735,10 +819,10 @@ export const PrintPreviewDialog: React.FC<PrintPreviewDialogProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PrintPreviewDialog;
+export default PrintPreviewDialog
 ```
 
 ---
@@ -750,66 +834,77 @@ export default PrintPreviewDialog;
 // PAGE SETUP DIALOG
 // ============================================================
 
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import { usePrintStore } from '../../stores/printStore';
-import { 
-  PAPER_SIZES, 
+import React, { useState } from "react"
+import { X } from "lucide-react"
+import { usePrintStore } from "../../stores/printStore"
+import {
+  PAPER_SIZES,
   MARGIN_PRESETS,
   PageMargins,
   HEADER_FOOTER_CODES,
-} from '../../types/print';
-import './Print.css';
+} from "../../types/print"
+import "./Print.css"
 
 interface PageSetupDialogProps {
-  sheetId: string;
-  onClose: () => void;
+  sheetId: string
+  onClose: () => void
 }
 
-type TabType = 'page' | 'margins' | 'headerFooter';
+type TabType = "page" | "margins" | "headerFooter"
 
 export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
   sheetId,
   onClose,
 }) => {
-  const [activeTab, setActiveTab] = useState<TabType>('page');
-  const { getSettings, updateSettings, setMargins } = usePrintStore();
-  const settings = getSettings(sheetId);
+  const [activeTab, setActiveTab] = useState<TabType>("page")
+  const { getSettings, updateSettings, setMargins } = usePrintStore()
+  const settings = getSettings(sheetId)
 
-  const [localMargins, setLocalMargins] = useState<PageMargins>(settings.margins);
-  const [marginPreset, setMarginPreset] = useState('normal');
+  const [localMargins, setLocalMargins] = useState<PageMargins>(
+    settings.margins
+  )
+  const [marginPreset, setMarginPreset] = useState("normal")
 
   const handleMarginPresetChange = (preset: string) => {
-    setMarginPreset(preset);
-    if (preset !== 'custom') {
-      const presetMargins = MARGIN_PRESETS[preset];
-      setLocalMargins(presetMargins);
-      setMargins(sheetId, presetMargins);
+    setMarginPreset(preset)
+    if (preset !== "custom") {
+      const presetMargins = MARGIN_PRESETS[preset]
+      setLocalMargins(presetMargins)
+      setMargins(sheetId, presetMargins)
     }
-  };
+  }
 
   const handleMarginChange = (key: keyof PageMargins, value: number) => {
-    const newMargins = { ...localMargins, [key]: value };
-    setLocalMargins(newMargins);
-    setMarginPreset('custom');
-    setMargins(sheetId, newMargins);
-  };
+    const newMargins = { ...localMargins, [key]: value }
+    setLocalMargins(newMargins)
+    setMarginPreset("custom")
+    setMargins(sheetId, newMargins)
+  }
 
-  const handleHeaderChange = (position: 'left' | 'center' | 'right', value: string) => {
+  const handleHeaderChange = (
+    position: "left" | "center" | "right",
+    value: string
+  ) => {
     updateSettings(sheetId, {
       header: { ...settings.header, [position]: value },
-    });
-  };
+    })
+  }
 
-  const handleFooterChange = (position: 'left' | 'center' | 'right', value: string) => {
+  const handleFooterChange = (
+    position: "left" | "center" | "right",
+    value: string
+  ) => {
     updateSettings(sheetId, {
       footer: { ...settings.footer, [position]: value },
-    });
-  };
+    })
+  }
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog page-setup-dialog" onClick={e => e.stopPropagation()}>
+      <div
+        className="dialog page-setup-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h3>Page Setup</h3>
           <button className="close-btn" onClick={onClose}>
@@ -819,21 +914,21 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
 
         {/* Tabs */}
         <div className="page-setup-tabs">
-          <button 
-            className={activeTab === 'page' ? 'active' : ''}
-            onClick={() => setActiveTab('page')}
+          <button
+            className={activeTab === "page" ? "active" : ""}
+            onClick={() => setActiveTab("page")}
           >
             Page
           </button>
-          <button 
-            className={activeTab === 'margins' ? 'active' : ''}
-            onClick={() => setActiveTab('margins')}
+          <button
+            className={activeTab === "margins" ? "active" : ""}
+            onClick={() => setActiveTab("margins")}
           >
             Margins
           </button>
-          <button 
-            className={activeTab === 'headerFooter' ? 'active' : ''}
-            onClick={() => setActiveTab('headerFooter')}
+          <button
+            className={activeTab === "headerFooter" ? "active" : ""}
+            onClick={() => setActiveTab("headerFooter")}
           >
             Header/Footer
           </button>
@@ -841,24 +936,28 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
 
         <div className="dialog-content">
           {/* Page Tab */}
-          {activeTab === 'page' && (
+          {activeTab === "page" && (
             <div className="tab-content">
               <div className="form-group">
                 <label>Orientation</label>
                 <div className="radio-group">
                   <label>
-                    <input 
-                      type="radio" 
-                      checked={settings.orientation === 'portrait'}
-                      onChange={() => updateSettings(sheetId, { orientation: 'portrait' })}
+                    <input
+                      type="radio"
+                      checked={settings.orientation === "portrait"}
+                      onChange={() =>
+                        updateSettings(sheetId, { orientation: "portrait" })
+                      }
                     />
                     Portrait
                   </label>
                   <label>
-                    <input 
-                      type="radio" 
-                      checked={settings.orientation === 'landscape'}
-                      onChange={() => updateSettings(sheetId, { orientation: 'landscape' })}
+                    <input
+                      type="radio"
+                      checked={settings.orientation === "landscape"}
+                      onChange={() =>
+                        updateSettings(sheetId, { orientation: "landscape" })
+                      }
                     />
                     Landscape
                   </label>
@@ -867,12 +966,18 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
 
               <div className="form-group">
                 <label>Paper Size</label>
-                <select 
+                <select
                   value={settings.paperSize}
-                  onChange={(e) => updateSettings(sheetId, { paperSize: e.target.value as any })}
+                  onChange={(e) =>
+                    updateSettings(sheetId, {
+                      paperSize: e.target.value as any,
+                    })
+                  }
                 >
                   {Object.entries(PAPER_SIZES).map(([key, val]) => (
-                    <option key={key} value={key}>{val.label}</option>
+                    <option key={key} value={key}>
+                      {val.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -881,27 +986,36 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                 <label>Scaling</label>
                 <div className="scaling-options">
                   <label>
-                    <input 
-                      type="radio" 
-                      checked={settings.scalingMode === 'actual'}
-                      onChange={() => updateSettings(sheetId, { scalingMode: 'actual' })}
+                    <input
+                      type="radio"
+                      checked={settings.scalingMode === "actual"}
+                      onChange={() =>
+                        updateSettings(sheetId, { scalingMode: "actual" })
+                      }
                     />
-                    Adjust to: 
-                    <input 
-                      type="number" 
-                      min="10" 
+                    Adjust to:
+                    <input
+                      type="number"
+                      min="10"
                       max="400"
                       value={settings.customScale}
-                      onChange={(e) => updateSettings(sheetId, { scalingMode: 'custom', customScale: parseInt(e.target.value) })}
-                      disabled={settings.scalingMode !== 'custom'}
+                      onChange={(e) =>
+                        updateSettings(sheetId, {
+                          scalingMode: "custom",
+                          customScale: parseInt(e.target.value),
+                        })
+                      }
+                      disabled={settings.scalingMode !== "custom"}
                     />
                     % normal size
                   </label>
                   <label>
-                    <input 
-                      type="radio" 
-                      checked={settings.scalingMode === 'fitToPage'}
-                      onChange={() => updateSettings(sheetId, { scalingMode: 'fitToPage' })}
+                    <input
+                      type="radio"
+                      checked={settings.scalingMode === "fitToPage"}
+                      onChange={() =>
+                        updateSettings(sheetId, { scalingMode: "fitToPage" })
+                      }
                     />
                     Fit to page
                   </label>
@@ -912,26 +1026,38 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                 <label>Print Options</label>
                 <div className="checkbox-group">
                   <label>
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={settings.printGridlines}
-                      onChange={(e) => updateSettings(sheetId, { printGridlines: e.target.checked })}
+                      onChange={(e) =>
+                        updateSettings(sheetId, {
+                          printGridlines: e.target.checked,
+                        })
+                      }
                     />
                     Gridlines
                   </label>
                   <label>
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={settings.printRowColHeaders}
-                      onChange={(e) => updateSettings(sheetId, { printRowColHeaders: e.target.checked })}
+                      onChange={(e) =>
+                        updateSettings(sheetId, {
+                          printRowColHeaders: e.target.checked,
+                        })
+                      }
                     />
                     Row and column headings
                   </label>
                   <label>
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={settings.blackAndWhite}
-                      onChange={(e) => updateSettings(sheetId, { blackAndWhite: e.target.checked })}
+                      onChange={(e) =>
+                        updateSettings(sheetId, {
+                          blackAndWhite: e.target.checked,
+                        })
+                      }
                     />
                     Black and white
                   </label>
@@ -941,11 +1067,11 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
           )}
 
           {/* Margins Tab */}
-          {activeTab === 'margins' && (
+          {activeTab === "margins" && (
             <div className="tab-content">
               <div className="form-group">
                 <label>Preset</label>
-                <select 
+                <select
                   value={marginPreset}
                   onChange={(e) => handleMarginPresetChange(e.target.value)}
                 >
@@ -959,68 +1085,88 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
               <div className="margins-grid">
                 <div className="margin-input">
                   <label>Top</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={localMargins.top}
-                    onChange={(e) => handleMarginChange('top', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("top", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
                   <label>Bottom</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={localMargins.bottom}
-                    onChange={(e) => handleMarginChange('bottom', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("bottom", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
                   <label>Left</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={localMargins.left}
-                    onChange={(e) => handleMarginChange('left', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("left", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
                   <label>Right</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={localMargins.right}
-                    onChange={(e) => handleMarginChange('right', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("right", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
                   <label>Header</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={localMargins.header}
-                    onChange={(e) => handleMarginChange('header', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("header", parseInt(e.target.value))
+                    }
                   />
                 </div>
                 <div className="margin-input">
                   <label>Footer</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={localMargins.footer}
-                    onChange={(e) => handleMarginChange('footer', parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleMarginChange("footer", parseInt(e.target.value))
+                    }
                   />
                 </div>
               </div>
 
               <div className="center-options">
                 <label>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={settings.centerHorizontally}
-                    onChange={(e) => updateSettings(sheetId, { centerHorizontally: e.target.checked })}
+                    onChange={(e) =>
+                      updateSettings(sheetId, {
+                        centerHorizontally: e.target.checked,
+                      })
+                    }
                   />
                   Center on page horizontally
                 </label>
                 <label>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={settings.centerVertically}
-                    onChange={(e) => updateSettings(sheetId, { centerVertically: e.target.checked })}
+                    onChange={(e) =>
+                      updateSettings(sheetId, {
+                        centerVertically: e.target.checked,
+                      })
+                    }
                   />
                   Center on page vertically
                 </label>
@@ -1029,28 +1175,32 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
           )}
 
           {/* Header/Footer Tab */}
-          {activeTab === 'headerFooter' && (
+          {activeTab === "headerFooter" && (
             <div className="tab-content">
               <div className="form-group">
                 <label>Header</label>
                 <div className="header-footer-inputs">
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Left section"
                     value={settings.header.left}
-                    onChange={(e) => handleHeaderChange('left', e.target.value)}
+                    onChange={(e) => handleHeaderChange("left", e.target.value)}
                   />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Center section"
                     value={settings.header.center}
-                    onChange={(e) => handleHeaderChange('center', e.target.value)}
+                    onChange={(e) =>
+                      handleHeaderChange("center", e.target.value)
+                    }
                   />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Right section"
                     value={settings.header.right}
-                    onChange={(e) => handleHeaderChange('right', e.target.value)}
+                    onChange={(e) =>
+                      handleHeaderChange("right", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -1058,23 +1208,27 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
               <div className="form-group">
                 <label>Footer</label>
                 <div className="header-footer-inputs">
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Left section"
                     value={settings.footer.left}
-                    onChange={(e) => handleFooterChange('left', e.target.value)}
+                    onChange={(e) => handleFooterChange("left", e.target.value)}
                   />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Center section"
                     value={settings.footer.center}
-                    onChange={(e) => handleFooterChange('center', e.target.value)}
+                    onChange={(e) =>
+                      handleFooterChange("center", e.target.value)
+                    }
                   />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Right section"
                     value={settings.footer.right}
-                    onChange={(e) => handleFooterChange('right', e.target.value)}
+                    onChange={(e) =>
+                      handleFooterChange("right", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -1083,13 +1237,13 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
                 <label>Insert codes:</label>
                 <div className="code-buttons">
                   {Object.entries(HEADER_FOOTER_CODES).map(([code, label]) => (
-                    <button 
+                    <button
                       key={code}
                       className="code-btn"
                       title={`Insert ${label}`}
                       onClick={() => {
                         // Copy code to clipboard
-                        navigator.clipboard.writeText(code);
+                        navigator.clipboard.writeText(code)
                       }}
                     >
                       {label}
@@ -1108,10 +1262,10 @@ export const PageSetupDialog: React.FC<PageSetupDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PageSetupDialog;
+export default PageSetupDialog
 ```
 
 ---
@@ -1123,16 +1277,16 @@ export default PageSetupDialog;
 // PRINT PREVIEW CANVAS
 // ============================================================
 
-import React from 'react';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { usePrintStore } from '../../stores/printStore';
-import { PrintSettings, HEADER_FOOTER_CODES } from '../../types/print';
-import './Print.css';
+import React from "react"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { usePrintStore } from "../../stores/printStore"
+import { PrintSettings, HEADER_FOOTER_CODES } from "../../types/print"
+import "./Print.css"
 
 interface PrintPreviewCanvasProps {
-  sheetId: string;
-  pageIndex: number;
-  settings: PrintSettings;
+  sheetId: string
+  pageIndex: number
+  settings: PrintSettings
 }
 
 export const PrintPreviewCanvas: React.FC<PrintPreviewCanvasProps> = ({
@@ -1140,68 +1294,68 @@ export const PrintPreviewCanvas: React.FC<PrintPreviewCanvasProps> = ({
   pageIndex,
   settings,
 }) => {
-  const { sheets, getCellValue, getCellFormat } = useWorkbookStore();
-  const { pages } = usePrintStore();
-  
-  const sheet = sheets[sheetId];
-  const page = pages[pageIndex];
+  const { sheets, getCellValue, getCellFormat } = useWorkbookStore()
+  const { pages } = usePrintStore()
+
+  const sheet = sheets[sheetId]
+  const page = pages[pageIndex]
 
   if (!sheet || !page) {
-    return <div className="preview-empty">No content to display</div>;
+    return <div className="preview-empty">No content to display</div>
   }
 
   // Process header/footer text
   const processHeaderFooter = (text: string): string => {
-    let result = text;
-    result = result.replace('&[Page]', String(page.pageNumber));
-    result = result.replace('&[Pages]', String(pages.length));
-    result = result.replace('&[Date]', new Date().toLocaleDateString());
-    result = result.replace('&[Time]', new Date().toLocaleTimeString());
-    result = result.replace('&[File]', 'Untitled Workbook');
-    result = result.replace('&[Sheet]', sheet.name || 'Sheet1');
-    return result;
-  };
+    let result = text
+    result = result.replace("&[Page]", String(page.pageNumber))
+    result = result.replace("&[Pages]", String(pages.length))
+    result = result.replace("&[Date]", new Date().toLocaleDateString())
+    result = result.replace("&[Time]", new Date().toLocaleTimeString())
+    result = result.replace("&[File]", "Untitled Workbook")
+    result = result.replace("&[Sheet]", sheet.name || "Sheet1")
+    return result
+  }
 
   // Generate column letters
   const getColLetter = (col: number): string => {
-    let letter = '';
-    let temp = col;
+    let letter = ""
+    let temp = col
     while (temp >= 0) {
-      letter = String.fromCharCode(65 + (temp % 26)) + letter;
-      temp = Math.floor(temp / 26) - 1;
+      letter = String.fromCharCode(65 + (temp % 26)) + letter
+      temp = Math.floor(temp / 26) - 1
     }
-    return letter;
-  };
+    return letter
+  }
 
   // Render cells
   const renderCells = () => {
-    const rows = [];
-    
+    const rows = []
+
     for (let row = page.startRow; row <= page.endRow; row++) {
-      const cells = [];
-      
+      const cells = []
+
       for (let col = page.startCol; col <= page.endCol; col++) {
-        const value = getCellValue(sheetId, row, col);
-        const format = getCellFormat(sheetId, row, col);
-        
+        const value = getCellValue(sheetId, row, col)
+        const format = getCellFormat(sheetId, row, col)
+
         cells.push(
-          <td 
+          <td
             key={`${row}-${col}`}
             style={{
-              fontWeight: format?.bold ? 'bold' : 'normal',
-              fontStyle: format?.italic ? 'italic' : 'normal',
-              textAlign: format?.align || 'left',
-              backgroundColor: format?.backgroundColor || 'transparent',
-              color: format?.color || '#000',
-              borderRight: settings.printGridlines ? '1px solid #ccc' : 'none',
-              borderBottom: settings.printGridlines ? '1px solid #ccc' : 'none',
+              fontWeight: format?.bold ? "bold" : "normal",
+              fontStyle: format?.italic ? "italic" : "normal",
+              textAlign: format?.align || "left",
+              backgroundColor: format?.backgroundColor || "transparent",
+              color: format?.color || "#000",
+              borderRight: settings.printGridlines ? "1px solid #ccc" : "none",
+              borderBottom: settings.printGridlines ? "1px solid #ccc" : "none",
             }}
           >
             {value}
           </td>
-        );
+        )
       }
-      
+
       rows.push(
         <tr key={row}>
           {settings.printRowColHeaders && (
@@ -1209,73 +1363,91 @@ export const PrintPreviewCanvas: React.FC<PrintPreviewCanvasProps> = ({
           )}
           {cells}
         </tr>
-      );
+      )
     }
-    
-    return rows;
-  };
+
+    return rows
+  }
 
   // Render column headers
   const renderColHeaders = () => {
-    if (!settings.printRowColHeaders) return null;
-    
-    const headers = [];
+    if (!settings.printRowColHeaders) return null
+
+    const headers = []
     if (settings.printRowColHeaders) {
-      headers.push(<th key="corner" className="corner-header"></th>);
+      headers.push(<th key="corner" className="corner-header"></th>)
     }
-    
+
     for (let col = page.startCol; col <= page.endCol; col++) {
       headers.push(
         <th key={col} className="col-header">
           {getColLetter(col)}
         </th>
-      );
+      )
     }
-    
-    return <tr>{headers}</tr>;
-  };
+
+    return <tr>{headers}</tr>
+  }
 
   return (
     <div className="print-preview-canvas">
       {/* Header */}
-      {(settings.header.left || settings.header.center || settings.header.right) && (
-        <div className="page-header" style={{ height: settings.margins.header }}>
-          <span className="header-left">{processHeaderFooter(settings.header.left)}</span>
-          <span className="header-center">{processHeaderFooter(settings.header.center)}</span>
-          <span className="header-right">{processHeaderFooter(settings.header.right)}</span>
+      {(settings.header.left ||
+        settings.header.center ||
+        settings.header.right) && (
+        <div
+          className="page-header"
+          style={{ height: settings.margins.header }}
+        >
+          <span className="header-left">
+            {processHeaderFooter(settings.header.left)}
+          </span>
+          <span className="header-center">
+            {processHeaderFooter(settings.header.center)}
+          </span>
+          <span className="header-right">
+            {processHeaderFooter(settings.header.right)}
+          </span>
         </div>
       )}
 
       {/* Content */}
-      <div 
+      <div
         className="page-content"
         style={{
           padding: `${settings.margins.top}px ${settings.margins.right}px ${settings.margins.bottom}px ${settings.margins.left}px`,
         }}
       >
         <table className="print-table">
-          <thead>
-            {renderColHeaders()}
-          </thead>
-          <tbody>
-            {renderCells()}
-          </tbody>
+          <thead>{renderColHeaders()}</thead>
+          <tbody>{renderCells()}</tbody>
         </table>
       </div>
 
       {/* Footer */}
-      {(settings.footer.left || settings.footer.center || settings.footer.right) && (
-        <div className="page-footer" style={{ height: settings.margins.footer }}>
-          <span className="footer-left">{processHeaderFooter(settings.footer.left)}</span>
-          <span className="footer-center">{processHeaderFooter(settings.footer.center)}</span>
-          <span className="footer-right">{processHeaderFooter(settings.footer.right)}</span>
+      {(settings.footer.left ||
+        settings.footer.center ||
+        settings.footer.right) && (
+        <div
+          className="page-footer"
+          style={{ height: settings.margins.footer }}
+        >
+          <span className="footer-left">
+            {processHeaderFooter(settings.footer.left)}
+          </span>
+          <span className="footer-center">
+            {processHeaderFooter(settings.footer.center)}
+          </span>
+          <span className="footer-right">
+            {processHeaderFooter(settings.footer.right)}
+          </span>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default PrintPreviewCanvas;
+export default PrintPreviewCanvas
 ```
 
 ---
@@ -1612,9 +1784,21 @@ export default PrintPreviewCanvas;
   color: var(--text-muted, #888);
 }
 
-.header-left, .footer-left { text-align: left; flex: 1; }
-.header-center, .footer-center { text-align: center; flex: 1; }
-.header-right, .footer-right { text-align: right; flex: 1; }
+.header-left,
+.footer-left {
+  text-align: left;
+  flex: 1;
+}
+.header-center,
+.footer-center {
+  text-align: center;
+  flex: 1;
+}
+.header-right,
+.footer-right {
+  text-align: right;
+  flex: 1;
+}
 
 .page-content {
   flex: 1;
@@ -1807,16 +1991,16 @@ export default PrintPreviewCanvas;
   .print-preview-overlay {
     display: none;
   }
-  
+
   body * {
     visibility: hidden;
   }
-  
+
   .print-preview-canvas,
   .print-preview-canvas * {
     visibility: visible;
   }
-  
+
   .print-preview-canvas {
     position: absolute;
     left: 0;
@@ -1830,9 +2014,9 @@ export default PrintPreviewCanvas;
 ## 📄 File 7: `src/components/Print/index.ts`
 
 ```typescript
-export { PrintPreviewDialog } from './PrintPreviewDialog';
-export { PageSetupDialog } from './PageSetupDialog';
-export { PrintPreviewCanvas } from './PrintPreviewCanvas';
+export { PrintPreviewDialog } from "./PrintPreviewDialog"
+export { PageSetupDialog } from "./PageSetupDialog"
+export { PrintPreviewCanvas } from "./PrintPreviewCanvas"
 ```
 
 ---
@@ -1843,7 +2027,7 @@ export { PrintPreviewCanvas } from './PrintPreviewCanvas';
 
 ```tsx
 // In toolbar or File menu
-<button onClick={() => setShowPrintPreview(true)}>
+;<button onClick={() => setShowPrintPreview(true)}>
   <Printer size={16} />
   Print
 </button>
@@ -1851,14 +2035,14 @@ export { PrintPreviewCanvas } from './PrintPreviewCanvas';
 // Keyboard shortcut
 useEffect(() => {
   const handleKeyDown = (e: KeyboardEvent) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
-      e.preventDefault();
-      setShowPrintPreview(true);
+    if ((e.ctrlKey || e.metaKey) && e.key === "p") {
+      e.preventDefault()
+      setShowPrintPreview(true)
     }
-  };
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, []);
+  }
+  window.addEventListener("keydown", handleKeyDown)
+  return () => window.removeEventListener("keydown", handleKeyDown)
+}, [])
 ```
 
 ---
@@ -1866,12 +2050,14 @@ useEffect(() => {
 ## ✅ Implementation Checklist
 
 ### Day 1
+
 - [ ] `src/types/print.ts`
 - [ ] `src/stores/printStore.ts`
 - [ ] `src/components/Print/PrintPreviewDialog.tsx`
 - [ ] `src/components/Print/PageSetupDialog.tsx`
 
 ### Day 2
+
 - [ ] `src/components/Print/PrintPreviewCanvas.tsx`
 - [ ] `src/components/Print/Print.css`
 - [ ] `src/components/Print/index.ts`

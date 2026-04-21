@@ -1,21 +1,27 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   ArrowLeft,
   Send,
@@ -25,8 +31,8 @@ import {
   X,
   Calendar,
   Loader2,
-} from 'lucide-react'
-import { FEEDBACK_TYPE } from '@/lib/performance/constants'
+} from "lucide-react"
+import { FEEDBACK_TYPE } from "@/lib/performance/constants"
 
 interface Employee {
   id: string
@@ -40,7 +46,7 @@ interface SelectedProvider {
   id: string
   name: string
   email: string
-  type: 'PEER' | 'MANAGER' | 'DIRECT_REPORT' | 'CROSS_FUNCTIONAL'
+  type: "PEER" | "MANAGER" | "DIRECT_REPORT" | "CROSS_FUNCTIONAL"
 }
 
 export default function RequestFeedbackPage() {
@@ -49,22 +55,24 @@ export default function RequestFeedbackPage() {
   const [loading, setLoading] = useState(true)
 
   // Form state
-  const [subjectId, setSubjectId] = useState('')
+  const [subjectId, setSubjectId] = useState("")
   const [subjectEmployee, setSubjectEmployee] = useState<Employee | null>(null)
-  const [feedbackType, setFeedbackType] = useState<string>('PEER')
-  const [dueDate, setDueDate] = useState('')
-  const [selectedProviders, setSelectedProviders] = useState<SelectedProvider[]>([])
+  const [feedbackType, setFeedbackType] = useState<string>("PEER")
+  const [dueDate, setDueDate] = useState("")
+  const [selectedProviders, setSelectedProviders] = useState<
+    SelectedProvider[]
+  >([])
 
   // Employee search state
   const [employees, setEmployees] = useState<Employee[]>([])
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("")
   const [searchResults, setSearchResults] = useState<Employee[]>([])
 
   // Load employees for selection
   useEffect(() => {
     async function loadEmployees() {
       try {
-        const res = await fetch('/api/employees?limit=100')
+        const res = await fetch("/api/employees?limit=100")
         if (res.ok) {
           const data = await res.json()
           setEmployees(data.data || data || [])
@@ -86,13 +94,18 @@ export default function RequestFeedbackPage() {
     }
 
     const term = searchTerm.toLowerCase()
-    const results = employees.filter(
-      (emp) =>
-        emp.fullName.toLowerCase().includes(term) ||
-        emp.workEmail.toLowerCase().includes(term)
-    ).filter(
-      (emp) => emp.id !== subjectId && !selectedProviders.some((p) => p.id === emp.id)
-    ).slice(0, 10)
+    const results = employees
+      .filter(
+        (emp) =>
+          emp.fullName.toLowerCase().includes(term) ||
+          emp.workEmail.toLowerCase().includes(term)
+      )
+      .filter(
+        (emp) =>
+          emp.id !== subjectId &&
+          !selectedProviders.some((p) => p.id === emp.id)
+      )
+      .slice(0, 10)
 
     setSearchResults(results)
   }, [searchTerm, employees, subjectId, selectedProviders])
@@ -114,10 +127,10 @@ export default function RequestFeedbackPage() {
         id: employee.id,
         name: employee.fullName,
         email: employee.workEmail,
-        type: feedbackType as SelectedProvider['type'],
+        type: feedbackType as SelectedProvider["type"],
       },
     ])
-    setSearchTerm('')
+    setSearchTerm("")
   }
 
   // Remove provider
@@ -133,9 +146,9 @@ export default function RequestFeedbackPage() {
 
     setSubmitting(true)
     try {
-      const res = await fetch('/api/performance/feedback/requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/performance/feedback/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           subjectId,
           feedbackType,
@@ -145,7 +158,7 @@ export default function RequestFeedbackPage() {
       })
 
       if (res.ok) {
-        router.push('/performance/feedback')
+        router.push("/performance/feedback")
       }
     } catch {
       // Handle error
@@ -166,23 +179,36 @@ export default function RequestFeedbackPage() {
     <div className="space-y-6 p-6 bg-zinc-950 min-h-screen text-zinc-100">
       <div className="flex items-center gap-4">
         <Link href="/performance/feedback">
-          <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-100">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-zinc-400 hover:text-zinc-100"
+          >
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-amber-400">Yêu cầu 360° Feedback</h1>
-          <p className="text-sm text-zinc-500">Gửi yêu cầu feedback từ nhiều người</p>
+          <h1 className="text-2xl font-bold text-amber-400">
+            Yêu cầu 360° Feedback
+          </h1>
+          <p className="text-sm text-zinc-500">
+            Gửi yêu cầu feedback từ nhiều người
+          </p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+      >
         {/* Left Column - Form */}
         <div className="lg:col-span-2 space-y-6">
           {/* Subject Selection */}
           <Card className="bg-zinc-900 border-zinc-800">
             <CardHeader>
-              <CardTitle className="text-zinc-100 text-lg">Nhân viên được đánh giá</CardTitle>
+              <CardTitle className="text-zinc-100 text-lg">
+                Nhân viên được đánh giá
+              </CardTitle>
               <CardDescription className="text-zinc-500">
                 Chọn nhân viên sẽ nhận feedback 360°
               </CardDescription>
@@ -198,7 +224,9 @@ export default function RequestFeedbackPage() {
                       <div className="flex items-center gap-2">
                         <span>{emp.fullName}</span>
                         {emp.position && (
-                          <span className="text-xs text-zinc-500">- {emp.position.name}</span>
+                          <span className="text-xs text-zinc-500">
+                            - {emp.position.name}
+                          </span>
                         )}
                       </div>
                     </SelectItem>
@@ -213,8 +241,12 @@ export default function RequestFeedbackPage() {
                       <Users className="h-5 w-5 text-amber-400" />
                     </div>
                     <div>
-                      <p className="font-medium text-zinc-200">{subjectEmployee.fullName}</p>
-                      <p className="text-xs text-zinc-500">{subjectEmployee.workEmail}</p>
+                      <p className="font-medium text-zinc-200">
+                        {subjectEmployee.fullName}
+                      </p>
+                      <p className="text-xs text-zinc-500">
+                        {subjectEmployee.workEmail}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -225,7 +257,9 @@ export default function RequestFeedbackPage() {
           {/* Feedback Type */}
           <Card className="bg-zinc-900 border-zinc-800">
             <CardHeader>
-              <CardTitle className="text-zinc-100 text-lg">Loại feedback</CardTitle>
+              <CardTitle className="text-zinc-100 text-lg">
+                Loại feedback
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Select value={feedbackType} onValueChange={setFeedbackType}>
@@ -259,7 +293,9 @@ export default function RequestFeedbackPage() {
           {/* Provider Selection */}
           <Card className="bg-zinc-900 border-zinc-800">
             <CardHeader>
-              <CardTitle className="text-zinc-100 text-lg">Người được yêu cầu feedback</CardTitle>
+              <CardTitle className="text-zinc-100 text-lg">
+                Người được yêu cầu feedback
+              </CardTitle>
               <CardDescription className="text-zinc-500">
                 Tìm và thêm người sẽ cung cấp feedback
               </CardDescription>
@@ -286,9 +322,12 @@ export default function RequestFeedbackPage() {
                       onClick={() => addProvider(emp)}
                     >
                       <div>
-                        <p className="text-sm font-medium text-zinc-200">{emp.fullName}</p>
+                        <p className="text-sm font-medium text-zinc-200">
+                          {emp.fullName}
+                        </p>
                         <p className="text-xs text-zinc-500">
-                          {emp.position?.name || 'N/A'} - {emp.department?.name || 'N/A'}
+                          {emp.position?.name || "N/A"} -{" "}
+                          {emp.department?.name || "N/A"}
                         </p>
                       </div>
                       <UserPlus className="h-4 w-4 text-amber-400" />
@@ -300,7 +339,9 @@ export default function RequestFeedbackPage() {
               {/* Selected Providers */}
               {selectedProviders.length > 0 && (
                 <div className="space-y-2">
-                  <Label className="text-zinc-400 text-xs">Đã chọn ({selectedProviders.length})</Label>
+                  <Label className="text-zinc-400 text-xs">
+                    Đã chọn ({selectedProviders.length})
+                  </Label>
                   <div className="flex flex-wrap gap-2">
                     {selectedProviders.map((provider) => (
                       <Badge
@@ -329,36 +370,47 @@ export default function RequestFeedbackPage() {
         <div className="space-y-6">
           <Card className="bg-zinc-900 border-zinc-800 sticky top-6">
             <CardHeader>
-              <CardTitle className="text-zinc-100 text-lg">Tóm tắt yêu cầu</CardTitle>
+              <CardTitle className="text-zinc-100 text-lg">
+                Tóm tắt yêu cầu
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500">Nhân viên:</span>
-                  <span className="text-zinc-200">{subjectEmployee?.fullName || '-'}</span>
+                  <span className="text-zinc-200">
+                    {subjectEmployee?.fullName || "-"}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500">Loại:</span>
                   <span className="text-zinc-200">
-                    {FEEDBACK_TYPE[feedbackType as keyof typeof FEEDBACK_TYPE]?.label || feedbackType}
+                    {FEEDBACK_TYPE[feedbackType as keyof typeof FEEDBACK_TYPE]
+                      ?.label || feedbackType}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500">Hạn:</span>
                   <span className="text-zinc-200">
-                    {dueDate ? new Date(dueDate).toLocaleDateString('vi-VN') : 'Không giới hạn'}
+                    {dueDate
+                      ? new Date(dueDate).toLocaleDateString("vi-VN")
+                      : "Không giới hạn"}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500">Số người:</span>
-                  <span className="text-amber-400 font-medium">{selectedProviders.length}</span>
+                  <span className="text-amber-400 font-medium">
+                    {selectedProviders.length}
+                  </span>
                 </div>
               </div>
 
               <div className="border-t border-zinc-800 pt-4">
                 <Button
                   type="submit"
-                  disabled={submitting || !subjectId || selectedProviders.length === 0}
+                  disabled={
+                    submitting || !subjectId || selectedProviders.length === 0
+                  }
                   className="w-full bg-amber-500 hover:bg-amber-600 text-black"
                 >
                   {submitting ? (

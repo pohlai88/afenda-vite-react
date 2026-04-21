@@ -6,19 +6,19 @@
 // ═══════════════════════════════════════════════════════════════
 
 interface CounterMetric {
-  type: 'counter'
+  type: "counter"
   value: number
   labels: Record<string, string>
 }
 
 interface GaugeMetric {
-  type: 'gauge'
+  type: "gauge"
   value: number
   labels: Record<string, string>
 }
 
 interface HistogramMetric {
-  type: 'histogram'
+  type: "histogram"
   values: number[]
   labels: Record<string, string>
 }
@@ -38,7 +38,7 @@ class MetricsCollector {
     const labelStr = Object.entries(labels)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}="${v}"`)
-      .join(',')
+      .join(",")
     return labelStr ? `${name}{${labelStr}}` : name
   }
 
@@ -46,7 +46,11 @@ class MetricsCollector {
   // Counter methods
   // ─────────────────────────────────────────────────────────────
 
-  increment(name: string, labels: Record<string, string> = {}, value: number = 1): void {
+  increment(
+    name: string,
+    labels: Record<string, string> = {},
+    value: number = 1
+  ): void {
     const key = this.getKey(name, labels)
     const existing = this.counters.get(key)
 
@@ -54,7 +58,7 @@ class MetricsCollector {
       existing.value += value
     } else {
       this.counters.set(key, {
-        type: 'counter',
+        type: "counter",
         value,
         labels,
       })
@@ -65,10 +69,14 @@ class MetricsCollector {
   // Gauge methods
   // ─────────────────────────────────────────────────────────────
 
-  setGauge(name: string, value: number, labels: Record<string, string> = {}): void {
+  setGauge(
+    name: string,
+    value: number,
+    labels: Record<string, string> = {}
+  ): void {
     const key = this.getKey(name, labels)
     this.gauges.set(key, {
-      type: 'gauge',
+      type: "gauge",
       value,
       labels,
     })
@@ -78,7 +86,11 @@ class MetricsCollector {
   // Histogram methods
   // ─────────────────────────────────────────────────────────────
 
-  observe(name: string, value: number, labels: Record<string, string> = {}): void {
+  observe(
+    name: string,
+    value: number,
+    labels: Record<string, string> = {}
+  ): void {
     const key = this.getKey(name, labels)
     const existing = this.histograms.get(key)
 
@@ -90,7 +102,7 @@ class MetricsCollector {
       }
     } else {
       this.histograms.set(key, {
-        type: 'histogram',
+        type: "histogram",
         values: [value],
         labels,
       })
@@ -117,10 +129,10 @@ class MetricsCollector {
     const stopTimer = this.startTimer()
     try {
       const result = await fn()
-      this.observe(name, stopTimer(), { ...labels, status: 'success' })
+      this.observe(name, stopTimer(), { ...labels, status: "success" })
       return result
     } catch (error) {
-      this.observe(name, stopTimer(), { ...labels, status: 'error' })
+      this.observe(name, stopTimer(), { ...labels, status: "error" })
       throw error
     }
   }
@@ -149,7 +161,10 @@ class MetricsCollector {
   }
 
   // Get histogram statistics
-  getHistogramStats(name: string, labels: Record<string, string> = {}): {
+  getHistogramStats(
+    name: string,
+    labels: Record<string, string> = {}
+  ): {
     count: number
     min: number
     max: number
@@ -202,22 +217,22 @@ export const metrics = new MetricsCollector()
 
 export const MetricNames = {
   // HTTP metrics
-  HTTP_REQUESTS_TOTAL: 'http_requests_total',
-  HTTP_REQUEST_DURATION_MS: 'http_request_duration_ms',
-  HTTP_ERRORS_TOTAL: 'http_errors_total',
+  HTTP_REQUESTS_TOTAL: "http_requests_total",
+  HTTP_REQUEST_DURATION_MS: "http_request_duration_ms",
+  HTTP_ERRORS_TOTAL: "http_errors_total",
 
   // Database metrics
-  DB_QUERIES_TOTAL: 'db_queries_total',
-  DB_QUERY_DURATION_MS: 'db_query_duration_ms',
-  DB_CONNECTIONS_ACTIVE: 'db_connections_active',
+  DB_QUERIES_TOTAL: "db_queries_total",
+  DB_QUERY_DURATION_MS: "db_query_duration_ms",
+  DB_CONNECTIONS_ACTIVE: "db_connections_active",
 
   // Cache metrics
-  CACHE_HITS_TOTAL: 'cache_hits_total',
-  CACHE_MISSES_TOTAL: 'cache_misses_total',
+  CACHE_HITS_TOTAL: "cache_hits_total",
+  CACHE_MISSES_TOTAL: "cache_misses_total",
 
   // Business metrics
-  EMPLOYEES_TOTAL: 'employees_total',
-  ACTIVE_SESSIONS: 'active_sessions',
-  AI_REQUESTS_TOTAL: 'ai_requests_total',
-  AI_REQUEST_DURATION_MS: 'ai_request_duration_ms',
+  EMPLOYEES_TOTAL: "employees_total",
+  ACTIVE_SESSIONS: "active_sessions",
+  AI_REQUESTS_TOTAL: "ai_requests_total",
+  AI_REQUEST_DURATION_MS: "ai_request_duration_ms",
 } as const

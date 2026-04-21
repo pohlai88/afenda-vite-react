@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { InsightCard, InsightSummary } from '@/components/insights'
-import { Button } from '@/components/ui/button'
+import { useEffect, useState } from "react"
+import { InsightCard, InsightSummary } from "@/components/insights"
+import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Loader2, RefreshCw, Filter } from 'lucide-react'
-import type { Insight, InsightCounts } from '@/types/insight'
-import type { InsightType, InsightSeverity } from '@prisma/client'
+} from "@/components/ui/select"
+import { Loader2, RefreshCw, Filter } from "lucide-react"
+import type { Insight, InsightCounts } from "@/types/insight"
+import type { InsightType, InsightSeverity } from "@prisma/client"
 
 export default function InsightsPage() {
   const [insights, setInsights] = useState<Insight[]>([])
@@ -31,13 +31,13 @@ export default function InsightsPage() {
     setIsLoading(true)
     try {
       const params = new URLSearchParams()
-      if (filters.type) params.append('type', filters.type)
-      if (filters.severity) params.append('severity', filters.severity)
-      params.append('includeDismissed', String(filters.includeDismissed))
+      if (filters.type) params.append("type", filters.type)
+      if (filters.severity) params.append("severity", filters.severity)
+      params.append("includeDismissed", String(filters.includeDismissed))
 
       const [insightsRes, countsRes] = await Promise.all([
         fetch(`/api/insights?${params}`),
-        fetch('/api/insights/counts'),
+        fetch("/api/insights/counts"),
       ])
 
       if (insightsRes.ok) {
@@ -50,7 +50,7 @@ export default function InsightsPage() {
         setCounts(data.data)
       }
     } catch (error) {
-      console.error('Fetch insights error:', error)
+      console.error("Fetch insights error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -63,7 +63,7 @@ export default function InsightsPage() {
   const handleDismiss = async (id: string) => {
     try {
       const response = await fetch(`/api/insights/${id}/dismiss`, {
-        method: 'POST',
+        method: "POST",
       })
 
       if (response.ok) {
@@ -73,22 +73,22 @@ export default function InsightsPage() {
         }
       }
     } catch (error) {
-      console.error('Dismiss insight error:', error)
+      console.error("Dismiss insight error:", error)
     }
   }
 
   const handleGenerate = async () => {
     setIsGenerating(true)
     try {
-      const response = await fetch('/api/insights/generate', {
-        method: 'POST',
+      const response = await fetch("/api/insights/generate", {
+        method: "POST",
       })
 
       if (response.ok) {
         fetchData()
       }
     } catch (error) {
-      console.error('Generate insights error:', error)
+      console.error("Generate insights error:", error)
     } finally {
       setIsGenerating(false)
     }
@@ -120,11 +120,11 @@ export default function InsightsPage() {
       <div className="flex items-center gap-4 p-4 bg-muted rounded-lg">
         <Filter className="h-5 w-5 text-muted-foreground" />
         <Select
-          value={filters.type || 'all'}
+          value={filters.type || "all"}
           onValueChange={(v) =>
             setFilters((prev) => ({
               ...prev,
-              type: v === 'all' ? undefined : (v as InsightType),
+              type: v === "all" ? undefined : (v as InsightType),
             }))
           }
         >
@@ -141,11 +141,11 @@ export default function InsightsPage() {
         </Select>
 
         <Select
-          value={filters.severity || 'all'}
+          value={filters.severity || "all"}
           onValueChange={(v) =>
             setFilters((prev) => ({
               ...prev,
-              severity: v === 'all' ? undefined : (v as InsightSeverity),
+              severity: v === "all" ? undefined : (v as InsightSeverity),
             }))
           }
         >

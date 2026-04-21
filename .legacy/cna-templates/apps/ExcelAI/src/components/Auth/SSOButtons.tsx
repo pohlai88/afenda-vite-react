@@ -1,10 +1,10 @@
 // Phase 11: SSO Login Buttons
 // Google, Microsoft, and SAML SSO options
 
-import React from 'react';
-import { Building2, KeyRound } from 'lucide-react';
-import { useAuth } from '../../auth/AuthProvider';
-import { loggers } from '@/utils/logger';
+import React from "react"
+import { Building2, KeyRound } from "lucide-react"
+import { useAuth } from "../../auth/AuthProvider"
+import { loggers } from "@/utils/logger"
 
 // Google Icon Component
 const GoogleIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -26,7 +26,7 @@ const GoogleIcon: React.FC<{ className?: string }> = ({ className }) => (
       fill="#EA4335"
     />
   </svg>
-);
+)
 
 // Microsoft Icon Component
 const MicrosoftIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -36,32 +36,32 @@ const MicrosoftIcon: React.FC<{ className?: string }> = ({ className }) => (
     <rect x="1" y="13" width="10" height="10" fill="#00A4EF" />
     <rect x="13" y="13" width="10" height="10" fill="#FFB900" />
   </svg>
-);
+)
 
 interface SSOButtonsProps {
-  showSaml?: boolean;
-  samlLabel?: string;
+  showSaml?: boolean
+  samlLabel?: string
 }
 
 export const SSOButtons: React.FC<SSOButtonsProps> = ({
   showSaml = true,
-  samlLabel = 'Enterprise SSO',
+  samlLabel = "Enterprise SSO",
 }) => {
-  const { loginWithSSO, isLoading } = useAuth();
+  const { loginWithSSO, isLoading } = useAuth()
 
-  const handleSSOLogin = async (provider: 'google' | 'microsoft' | 'saml') => {
+  const handleSSOLogin = async (provider: "google" | "microsoft" | "saml") => {
     try {
-      await loginWithSSO(provider);
+      await loginWithSSO(provider)
     } catch (error) {
-      loggers.auth.error('SSO login failed:', error);
+      loggers.auth.error("SSO login failed:", error)
     }
-  };
+  }
 
   return (
     <div className="space-y-3">
       {/* Google */}
       <button
-        onClick={() => handleSSOLogin('google')}
+        onClick={() => handleSSOLogin("google")}
         disabled={isLoading}
         className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -71,18 +71,20 @@ export const SSOButtons: React.FC<SSOButtonsProps> = ({
 
       {/* Microsoft */}
       <button
-        onClick={() => handleSSOLogin('microsoft')}
+        onClick={() => handleSSOLogin("microsoft")}
         disabled={isLoading}
         className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <MicrosoftIcon className="w-5 h-5" />
-        <span className="text-gray-700 font-medium">Continue with Microsoft</span>
+        <span className="text-gray-700 font-medium">
+          Continue with Microsoft
+        </span>
       </button>
 
       {/* SAML SSO */}
       {showSaml && (
         <button
-          onClick={() => handleSSOLogin('saml')}
+          onClick={() => handleSSOLogin("saml")}
           disabled={isLoading}
           className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -91,17 +93,17 @@ export const SSOButtons: React.FC<SSOButtonsProps> = ({
         </button>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Compact version for modals
 export const SSOButtonsCompact: React.FC = () => {
-  const { loginWithSSO, isLoading } = useAuth();
+  const { loginWithSSO, isLoading } = useAuth()
 
   return (
     <div className="flex gap-3">
       <button
-        onClick={() => loginWithSSO('google')}
+        onClick={() => loginWithSSO("google")}
         disabled={isLoading}
         className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
         title="Continue with Google"
@@ -111,7 +113,7 @@ export const SSOButtonsCompact: React.FC = () => {
       </button>
 
       <button
-        onClick={() => loginWithSSO('microsoft')}
+        onClick={() => loginWithSSO("microsoft")}
         disabled={isLoading}
         className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
         title="Continue with Microsoft"
@@ -121,7 +123,7 @@ export const SSOButtonsCompact: React.FC = () => {
       </button>
 
       <button
-        onClick={() => loginWithSSO('saml')}
+        onClick={() => loginWithSSO("saml")}
         disabled={isLoading}
         className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
         title="Enterprise SSO"
@@ -130,7 +132,7 @@ export const SSOButtonsCompact: React.FC = () => {
         <span className="text-sm text-gray-600">SSO</span>
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default SSOButtons;
+export default SSOButtons

@@ -2,41 +2,41 @@
 // SHARE DIALOG - Share options and link generation
 // ============================================================
 
-import React, { useState } from 'react';
-import { X, Copy, Check, Globe, Link2 } from 'lucide-react';
+import React, { useState } from "react"
+import { X, Copy, Check, Globe, Link2 } from "lucide-react"
 
 interface ShareDialogProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
-type Permission = 'view' | 'comment' | 'edit';
+type Permission = "view" | "comment" | "edit"
 
 export const ShareDialog: React.FC<ShareDialogProps> = ({ onClose }) => {
-  const [email, setEmail] = useState('');
-  const [permission, setPermission] = useState<Permission>('view');
-  const [linkCopied, setLinkCopied] = useState(false);
+  const [email, setEmail] = useState("")
+  const [permission, setPermission] = useState<Permission>("view")
+  const [linkCopied, setLinkCopied] = useState(false)
   const [invites, setInvites] = useState<
     { email: string; permission: Permission }[]
-  >([]);
+  >([])
 
-  const shareLink = `https://excelai.app/share/${Math.random().toString(36).substring(2, 10)}`;
+  const shareLink = `https://excelai.app/share/${Math.random().toString(36).substring(2, 10)}`
 
   const handleCopyLink = async () => {
-    await navigator.clipboard.writeText(shareLink);
-    setLinkCopied(true);
-    setTimeout(() => setLinkCopied(false), 2000);
-  };
+    await navigator.clipboard.writeText(shareLink)
+    setLinkCopied(true)
+    setTimeout(() => setLinkCopied(false), 2000)
+  }
 
   const handleInvite = () => {
-    if (email && email.includes('@')) {
-      setInvites([...invites, { email, permission }]);
-      setEmail('');
+    if (email && email.includes("@")) {
+      setInvites([...invites, { email, permission }])
+      setEmail("")
     }
-  };
+  }
 
   const handleRemoveInvite = (emailToRemove: string) => {
-    setInvites(invites.filter((i) => i.email !== emailToRemove));
-  };
+    setInvites(invites.filter((i) => i.email !== emailToRemove))
+  }
 
   return (
     <div className="share-dialog-overlay" onClick={onClose}>
@@ -58,7 +58,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ onClose }) => {
                 placeholder="Enter email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
+                onKeyDown={(e) => e.key === "Enter" && handleInvite()}
               />
               <select
                 value={permission}
@@ -102,7 +102,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ onClose }) => {
                 <span>{shareLink}</span>
               </div>
               <button
-                className={`copy-link-btn ${linkCopied ? 'copied' : ''}`}
+                className={`copy-link-btn ${linkCopied ? "copied" : ""}`}
                 onClick={handleCopyLink}
               >
                 {linkCopied ? (
@@ -136,7 +136,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ onClose }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ShareDialog;
+export default ShareDialog

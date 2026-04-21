@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { Card } from '@/components/ui/card'
-import type { Application } from '@/types/recruitment'
-import { APPLICATION_SOURCE } from '@/lib/recruitment/constants'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+import { Card } from "@/components/ui/card"
+import type { Application } from "@/types/recruitment"
+import { APPLICATION_SOURCE } from "@/lib/recruitment/constants"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
 interface ApplicationCardProps {
   application: Application
@@ -12,10 +12,15 @@ interface ApplicationCardProps {
   isDragging?: boolean
 }
 
-export function ApplicationCard({ application, onClick, isDragging }: ApplicationCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: application.id,
-  })
+export function ApplicationCard({
+  application,
+  onClick,
+  isDragging,
+}: ApplicationCardProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: application.id,
+    })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -24,9 +29,11 @@ export function ApplicationCard({ application, onClick, isDragging }: Applicatio
   }
 
   const daysInStage = Math.floor(
-    (Date.now() - new Date(application.createdAt).getTime()) / (1000 * 60 * 60 * 24)
+    (Date.now() - new Date(application.createdAt).getTime()) /
+      (1000 * 60 * 60 * 24)
   )
-  const source = APPLICATION_SOURCE[application.source]?.label || application.source
+  const source =
+    APPLICATION_SOURCE[application.source]?.label || application.source
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
@@ -34,7 +41,9 @@ export function ApplicationCard({ application, onClick, isDragging }: Applicatio
         className="p-3 cursor-pointer hover:shadow-md transition-shadow"
         onClick={onClick}
       >
-        <div className="font-medium text-sm">{application.candidate?.fullName}</div>
+        <div className="font-medium text-sm">
+          {application.candidate?.fullName}
+        </div>
         <div className="text-xs text-muted-foreground mt-1">
           {application.requisition?.title}
         </div>

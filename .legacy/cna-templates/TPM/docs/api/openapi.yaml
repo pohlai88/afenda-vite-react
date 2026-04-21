@@ -167,7 +167,8 @@ components:
           enum: [DISCOUNT, BUNDLE, GIFT, REBATE, DISPLAY, VOLUME, LOYALTY]
         status:
           type: string
-          enum: [DRAFT, PENDING, APPROVED, ACTIVE, COMPLETED, CANCELLED, REJECTED]
+          enum:
+            [DRAFT, PENDING, APPROVED, ACTIVE, COMPLETED, CANCELLED, REJECTED]
         startDate:
           type: string
           format: date
@@ -263,7 +264,16 @@ components:
           enum: [DISCOUNT, REBATE, DISPLAY, DAMAGE, RETURN, OTHER]
         status:
           type: string
-          enum: [DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, PAID, CANCELLED]
+          enum:
+            [
+              DRAFT,
+              SUBMITTED,
+              UNDER_REVIEW,
+              APPROVED,
+              REJECTED,
+              PAID,
+              CANCELLED,
+            ]
         amount:
           type: number
         approvedAmount:
@@ -404,25 +414,25 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
     Forbidden:
       description: Permission denied
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
     NotFound:
       description: Resource not found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
     ValidationError:
       description: Validation failed
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
     RateLimitExceeded:
       description: Too many requests
       content:
@@ -472,7 +482,7 @@ paths:
               email: "admin@your-domain.com"
               password: "password123"
       responses:
-        '200':
+        "200":
           description: Login successful
           content:
             application/json:
@@ -485,15 +495,15 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
                       token:
                         type: string
                       expiresIn:
                         type: string
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/RateLimitExceeded'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimitExceeded"
 
   /auth/logout:
     post:
@@ -501,7 +511,7 @@ paths:
       summary: User logout
       description: Invalidate current session
       responses:
-        '200':
+        "200":
           description: Logout successful
 
   /auth/me:
@@ -510,7 +520,7 @@ paths:
       summary: Get current user
       description: Returns the authenticated user's profile
       responses:
-        '200':
+        "200":
           description: Current user info
           content:
             application/json:
@@ -520,9 +530,9 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/User'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                    $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
 
   # ═══════════════════════════════════════════════════════════════════════════
   # PROMOTIONS
@@ -548,7 +558,8 @@ paths:
           in: query
           schema:
             type: string
-            enum: [DRAFT, PENDING, APPROVED, ACTIVE, COMPLETED, CANCELLED, REJECTED]
+            enum:
+              [DRAFT, PENDING, APPROVED, ACTIVE, COMPLETED, CANCELLED, REJECTED]
         - name: type
           in: query
           schema:
@@ -573,7 +584,7 @@ paths:
             type: string
             format: date
       responses:
-        '200':
+        "200":
           description: List of promotions
           content:
             application/json:
@@ -585,9 +596,9 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Promotion'
+                      $ref: "#/components/schemas/Promotion"
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: "#/components/schemas/Pagination"
 
     post:
       tags: [Promotions]
@@ -598,9 +609,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PromotionCreate'
+              $ref: "#/components/schemas/PromotionCreate"
       responses:
-        '201':
+        "201":
           description: Promotion created
           content:
             application/json:
@@ -610,9 +621,9 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/Promotion'
-        '400':
-          $ref: '#/components/responses/ValidationError'
+                    $ref: "#/components/schemas/Promotion"
+        "400":
+          $ref: "#/components/responses/ValidationError"
 
   /promotions/{id}:
     get:
@@ -625,7 +636,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Promotion details
           content:
             application/json:
@@ -635,9 +646,9 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/Promotion'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                    $ref: "#/components/schemas/Promotion"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     put:
       tags: [Promotions]
@@ -654,12 +665,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PromotionCreate'
+              $ref: "#/components/schemas/PromotionCreate"
       responses:
-        '200':
+        "200":
           description: Promotion updated
-        '404':
-          $ref: '#/components/responses/NotFound'
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     delete:
       tags: [Promotions]
@@ -672,10 +683,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Promotion deleted
-        '404':
-          $ref: '#/components/responses/NotFound'
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   /promotions/{id}/submit:
     post:
@@ -689,7 +700,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Promotion submitted
 
   /promotions/{id}/approve:
@@ -704,10 +715,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Promotion approved
-        '403':
-          $ref: '#/components/responses/Forbidden'
+        "403":
+          $ref: "#/components/responses/Forbidden"
 
   /promotions/{id}/reject:
     post:
@@ -731,7 +742,7 @@ paths:
                 reason:
                   type: string
       responses:
-        '200':
+        "200":
           description: Promotion rejected
 
   # ═══════════════════════════════════════════════════════════════════════════
@@ -759,7 +770,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: List of claims
 
     post:
@@ -782,7 +793,7 @@ paths:
                 description:
                   type: string
       responses:
-        '201':
+        "201":
           description: Claim created
 
   /claims/{id}:
@@ -796,7 +807,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Claim details
 
   /claims/{id}/submit:
@@ -810,7 +821,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Claim submitted
 
   /claims/{id}/approve:
@@ -824,7 +835,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Claim approved
 
   /claims/{id}/reject:
@@ -848,7 +859,7 @@ paths:
                 reason:
                   type: string
       responses:
-        '200':
+        "200":
           description: Claim rejected
 
   # ═══════════════════════════════════════════════════════════════════════════
@@ -859,7 +870,7 @@ paths:
       tags: [Finance]
       summary: List accruals
       responses:
-        '200':
+        "200":
           description: List of accruals
 
   /finance/accruals/{id}/calculate:
@@ -873,7 +884,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Accrual calculated
 
   /finance/accruals/{id}/post:
@@ -887,7 +898,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Accrual posted
 
   /finance/deductions:
@@ -895,7 +906,7 @@ paths:
       tags: [Finance]
       summary: List deductions
       responses:
-        '200':
+        "200":
           description: List of deductions
 
   /finance/deductions/{id}/match:
@@ -909,7 +920,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Matching result
 
   /finance/journals:
@@ -917,7 +928,7 @@ paths:
       tags: [Finance]
       summary: List GL journals
       responses:
-        '200':
+        "200":
           description: List of journals
 
   # ═══════════════════════════════════════════════════════════════════════════
@@ -929,13 +940,13 @@ paths:
       summary: Health check
       security: []
       responses:
-        '200':
+        "200":
           description: System healthy
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthStatus'
-        '503':
+                $ref: "#/components/schemas/HealthStatus"
+        "503":
           description: System unhealthy
 
   /health/live:
@@ -944,7 +955,7 @@ paths:
       summary: Liveness probe
       security: []
       responses:
-        '200':
+        "200":
           description: Service alive
 
   /health/ready:
@@ -953,7 +964,7 @@ paths:
       summary: Readiness probe
       security: []
       responses:
-        '200':
+        "200":
           description: Service ready
-        '503':
+        "503":
           description: Service not ready

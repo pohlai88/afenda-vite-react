@@ -1,16 +1,16 @@
-import React from 'react'
-import { renderToBuffer } from '@react-pdf/renderer'
-import { prisma } from '@/lib/prisma'
-import { QuotePDF, type QuotePDFData } from './quote-pdf'
-import { OrderPDF, type OrderPDFData } from './order-pdf'
-import { getCompanySettings } from './utils'
+import React from "react"
+import { renderToBuffer } from "@react-pdf/renderer"
+import { prisma } from "@/lib/prisma"
+import { QuotePDF, type QuotePDFData } from "./quote-pdf"
+import { OrderPDF, type OrderPDFData } from "./order-pdf"
+import { getCompanySettings } from "./utils"
 
 export async function generateQuotePDF(quoteId: string): Promise<Buffer> {
   const quote = await prisma.quote.findUnique({
     where: { id: quoteId },
     include: {
       items: {
-        orderBy: { sortOrder: 'asc' },
+        orderBy: { sortOrder: "asc" },
         include: { product: { select: { name: true } } },
       },
       contact: {
@@ -33,7 +33,7 @@ export async function generateQuotePDF(quoteId: string): Promise<Buffer> {
   })
 
   if (!quote) {
-    throw new Error('Quote not found')
+    throw new Error("Quote not found")
   }
 
   const data: QuotePDFData = {
@@ -91,7 +91,7 @@ export async function generateOrderPDF(orderId: string): Promise<Buffer> {
   })
 
   if (!order) {
-    throw new Error('Order not found')
+    throw new Error("Order not found")
   }
 
   const data: OrderPDFData = {

@@ -10,49 +10,49 @@
 // ════════════════════════════════════════════════════════════════════════════════
 
 export interface WebVitalsMetric {
-  id: string;
-  name: 'FCP' | 'LCP' | 'CLS' | 'FID' | 'TTFB' | 'INP';
-  value: number;
-  rating: 'good' | 'needs-improvement' | 'poor';
-  delta: number;
-  navigationType: 'navigate' | 'reload' | 'back-forward' | 'back-forward-cache';
+  id: string
+  name: "FCP" | "LCP" | "CLS" | "FID" | "TTFB" | "INP"
+  value: number
+  rating: "good" | "needs-improvement" | "poor"
+  delta: number
+  navigationType: "navigate" | "reload" | "back-forward" | "back-forward-cache"
 }
 
 export interface PerformanceMetrics {
   // Navigation Timing
-  dns: number;
-  tcp: number;
-  ttfb: number;
-  download: number;
-  domInteractive: number;
-  domComplete: number;
-  loadComplete: number;
+  dns: number
+  tcp: number
+  ttfb: number
+  download: number
+  domInteractive: number
+  domComplete: number
+  loadComplete: number
 
   // Resource Timing
-  resourceCount: number;
-  resourceSize: number;
-  resourceDuration: number;
+  resourceCount: number
+  resourceSize: number
+  resourceDuration: number
 
   // Custom Metrics
-  hydrationTime?: number;
-  routeChangeTime?: number;
+  hydrationTime?: number
+  routeChangeTime?: number
 }
 
 export interface ResourceMetrics {
-  name: string;
-  type: 'script' | 'stylesheet' | 'image' | 'font' | 'fetch' | 'other';
-  size: number;
-  duration: number;
-  startTime: number;
-  cached: boolean;
+  name: string
+  type: "script" | "stylesheet" | "image" | "font" | "fetch" | "other"
+  size: number
+  duration: number
+  startTime: number
+  cached: boolean
 }
 
 export interface CustomTiming {
-  name: string;
-  startTime: number;
-  endTime?: number;
-  duration?: number;
-  metadata?: Record<string, unknown>;
+  name: string
+  startTime: number
+  endTime?: number
+  duration?: number
+  metadata?: Record<string, unknown>
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -95,28 +95,28 @@ export const WebVitalsThresholds = {
     good: 200,
     poor: 500,
   },
-} as const;
+} as const
 
 // ════════════════════════════════════════════════════════════════════════════════
 // WEB VITALS COLLECTION
 // ════════════════════════════════════════════════════════════════════════════════
 
-type MetricHandler = (metric: WebVitalsMetric) => void;
+type MetricHandler = (metric: WebVitalsMetric) => void
 
-const metricHandlers: MetricHandler[] = [];
+const metricHandlers: MetricHandler[] = []
 
 /**
  * Register a handler for Web Vitals metrics
  */
 export function onWebVitals(handler: MetricHandler): () => void {
-  metricHandlers.push(handler);
+  metricHandlers.push(handler)
 
   return () => {
-    const index = metricHandlers.indexOf(handler);
+    const index = metricHandlers.indexOf(handler)
     if (index > -1) {
-      metricHandlers.splice(index, 1);
+      metricHandlers.splice(index, 1)
     }
-  };
+  }
 }
 
 /**
@@ -125,11 +125,11 @@ export function onWebVitals(handler: MetricHandler): () => void {
 export function reportWebVital(metric: WebVitalsMetric): void {
   metricHandlers.forEach((handler) => {
     try {
-      handler(metric);
+      handler(metric)
     } catch (error) {
-      console.error('[WebVitals] Handler error:', error);
+      console.error("[WebVitals] Handler error:", error)
     }
-  });
+  })
 }
 
 /**
@@ -138,12 +138,12 @@ export function reportWebVital(metric: WebVitalsMetric): void {
 export function getMetricRating(
   name: keyof typeof WebVitalsThresholds,
   value: number
-): 'good' | 'needs-improvement' | 'poor' {
-  const thresholds = WebVitalsThresholds[name];
+): "good" | "needs-improvement" | "poor" {
+  const thresholds = WebVitalsThresholds[name]
 
-  if (value <= thresholds.good) return 'good';
-  if (value <= thresholds.poor) return 'needs-improvement';
-  return 'poor';
+  if (value <= thresholds.good) return "good"
+  if (value <= thresholds.poor) return "needs-improvement"
+  return "poor"
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -154,10 +154,12 @@ export function getMetricRating(
  * Get navigation timing metrics
  */
 export function getNavigationMetrics(): PerformanceMetrics | null {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null
 
-  const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-  if (!navigation) return null;
+  const navigation = performance.getEntriesByType(
+    "navigation"
+  )[0] as PerformanceNavigationTiming
+  if (!navigation) return null
 
   return {
     // DNS lookup time
@@ -185,7 +187,7 @@ export function getNavigationMetrics(): PerformanceMetrics | null {
     resourceCount: 0,
     resourceSize: 0,
     resourceDuration: 0,
-  };
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -196,12 +198,14 @@ export function getNavigationMetrics(): PerformanceMetrics | null {
  * Get resource timing metrics
  */
 export function getResourceMetrics(): ResourceMetrics[] {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === "undefined") return []
 
-  const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+  const resources = performance.getEntriesByType(
+    "resource"
+  ) as PerformanceResourceTiming[]
 
   return resources.map((resource) => {
-    const type = getResourceType(resource.initiatorType, resource.name);
+    const type = getResourceType(resource.initiatorType, resource.name)
 
     return {
       name: resource.name,
@@ -210,8 +214,8 @@ export function getResourceMetrics(): ResourceMetrics[] {
       duration: resource.duration,
       startTime: resource.startTime,
       cached: resource.transferSize === 0 && resource.decodedBodySize > 0,
-    };
-  });
+    }
+  })
 }
 
 /**
@@ -220,78 +224,92 @@ export function getResourceMetrics(): ResourceMetrics[] {
 function getResourceType(
   initiatorType: string,
   url: string
-): ResourceMetrics['type'] {
-  if (initiatorType === 'script' || url.endsWith('.js')) return 'script';
-  if (initiatorType === 'css' || url.endsWith('.css')) return 'stylesheet';
-  if (initiatorType === 'img' || /\.(png|jpg|jpeg|gif|webp|svg|avif)$/i.test(url)) return 'image';
-  if (/\.(woff2?|ttf|otf|eot)$/i.test(url)) return 'font';
-  if (initiatorType === 'fetch' || initiatorType === 'xmlhttprequest') return 'fetch';
-  return 'other';
+): ResourceMetrics["type"] {
+  if (initiatorType === "script" || url.endsWith(".js")) return "script"
+  if (initiatorType === "css" || url.endsWith(".css")) return "stylesheet"
+  if (
+    initiatorType === "img" ||
+    /\.(png|jpg|jpeg|gif|webp|svg|avif)$/i.test(url)
+  )
+    return "image"
+  if (/\.(woff2?|ttf|otf|eot)$/i.test(url)) return "font"
+  if (initiatorType === "fetch" || initiatorType === "xmlhttprequest")
+    return "fetch"
+  return "other"
 }
 
 /**
  * Get aggregated resource statistics
  */
 export function getResourceStats(): {
-  totalSize: number;
-  totalDuration: number;
-  byType: Record<ResourceMetrics['type'], { count: number; size: number; duration: number }>;
-  cacheHitRate: number;
+  totalSize: number
+  totalDuration: number
+  byType: Record<
+    ResourceMetrics["type"],
+    { count: number; size: number; duration: number }
+  >
+  cacheHitRate: number
 } {
-  const resources = getResourceMetrics();
+  const resources = getResourceMetrics()
 
-  const byType: Record<ResourceMetrics['type'], { count: number; size: number; duration: number }> = {
+  const byType: Record<
+    ResourceMetrics["type"],
+    { count: number; size: number; duration: number }
+  > = {
     script: { count: 0, size: 0, duration: 0 },
     stylesheet: { count: 0, size: 0, duration: 0 },
     image: { count: 0, size: 0, duration: 0 },
     font: { count: 0, size: 0, duration: 0 },
     fetch: { count: 0, size: 0, duration: 0 },
     other: { count: 0, size: 0, duration: 0 },
-  };
+  }
 
-  let totalSize = 0;
-  let totalDuration = 0;
-  let cachedCount = 0;
+  let totalSize = 0
+  let totalDuration = 0
+  let cachedCount = 0
 
   resources.forEach((resource) => {
-    totalSize += resource.size;
-    totalDuration += resource.duration;
+    totalSize += resource.size
+    totalDuration += resource.duration
 
-    if (resource.cached) cachedCount++;
+    if (resource.cached) cachedCount++
 
-    const stats = byType[resource.type];
-    stats.count++;
-    stats.size += resource.size;
-    stats.duration += resource.duration;
-  });
+    const stats = byType[resource.type]
+    stats.count++
+    stats.size += resource.size
+    stats.duration += resource.duration
+  })
 
   return {
     totalSize,
     totalDuration,
     byType,
     cacheHitRate: resources.length > 0 ? cachedCount / resources.length : 0,
-  };
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
 // CUSTOM TIMING
 // ════════════════════════════════════════════════════════════════════════════════
 
-const customTimings = new Map<string, CustomTiming>();
+const customTimings = new Map<string, CustomTiming>()
 
 /**
  * Start a custom timing measurement
  */
-export function startTiming(name: string, metadata?: Record<string, unknown>): void {
+export function startTiming(
+  name: string,
+  metadata?: Record<string, unknown>
+): void {
   customTimings.set(name, {
     name,
     startTime: performance.now(),
     metadata,
-  });
+  })
 
   // Also mark in performance timeline
-  if (typeof performance.mark === 'function') {
-    performance.mark(`${name}-start`);
+  if (typeof performance.mark === "function") {
+    performance.mark(`${name}-start`)
   }
 }
 
@@ -299,36 +317,36 @@ export function startTiming(name: string, metadata?: Record<string, unknown>): v
  * End a custom timing measurement
  */
 export function endTiming(name: string): CustomTiming | null {
-  const timing = customTimings.get(name);
+  const timing = customTimings.get(name)
   if (!timing) {
-    console.warn(`[Performance] Timing "${name}" was not started`);
-    return null;
+    console.warn(`[Performance] Timing "${name}" was not started`)
+    return null
   }
 
-  timing.endTime = performance.now();
-  timing.duration = timing.endTime - timing.startTime;
+  timing.endTime = performance.now()
+  timing.duration = timing.endTime - timing.startTime
 
   // Mark end in performance timeline
-  if (typeof performance.mark === 'function') {
-    performance.mark(`${name}-end`);
-    performance.measure(name, `${name}-start`, `${name}-end`);
+  if (typeof performance.mark === "function") {
+    performance.mark(`${name}-end`)
+    performance.measure(name, `${name}-start`, `${name}-end`)
   }
 
-  return timing;
+  return timing
 }
 
 /**
  * Get a custom timing
  */
 export function getTiming(name: string): CustomTiming | undefined {
-  return customTimings.get(name);
+  return customTimings.get(name)
 }
 
 /**
  * Clear all custom timings
  */
 export function clearTimings(): void {
-  customTimings.clear();
+  customTimings.clear()
 }
 
 /**
@@ -339,19 +357,19 @@ export async function measureAsync<T>(
   fn: () => Promise<T>,
   metadata?: Record<string, unknown>
 ): Promise<{ result: T; duration: number }> {
-  startTiming(name, metadata);
+  startTiming(name, metadata)
 
   try {
-    const result = await fn();
-    const timing = endTiming(name);
+    const result = await fn()
+    const timing = endTiming(name)
 
     return {
       result,
       duration: timing?.duration || 0,
-    };
+    }
   } catch (error) {
-    endTiming(name);
-    throw error;
+    endTiming(name)
+    throw error
   }
 }
 
@@ -363,19 +381,19 @@ export function measureSync<T>(
   fn: () => T,
   metadata?: Record<string, unknown>
 ): { result: T; duration: number } {
-  startTiming(name, metadata);
+  startTiming(name, metadata)
 
   try {
-    const result = fn();
-    const timing = endTiming(name);
+    const result = fn()
+    const timing = endTiming(name)
 
     return {
       result,
       duration: timing?.duration || 0,
-    };
+    }
   } catch (error) {
-    endTiming(name);
-    throw error;
+    endTiming(name)
+    throw error
   }
 }
 
@@ -384,12 +402,12 @@ export function measureSync<T>(
 // ════════════════════════════════════════════════════════════════════════════════
 
 export interface LongTask {
-  startTime: number;
-  duration: number;
-  attribution: string[];
+  startTime: number
+  duration: number
+  attribution: string[]
 }
 
-const longTasks: LongTask[] = [];
+const longTasks: LongTask[] = []
 
 /**
  * Start monitoring long tasks (tasks > 50ms that block main thread)
@@ -397,8 +415,8 @@ const longTasks: LongTask[] = [];
 export function startLongTaskMonitoring(
   callback?: (task: LongTask) => void
 ): () => void {
-  if (typeof window === 'undefined' || !('PerformanceObserver' in window)) {
-    return () => {};
+  if (typeof window === "undefined" || !("PerformanceObserver" in window)) {
+    return () => {}
   }
 
   try {
@@ -407,21 +425,22 @@ export function startLongTaskMonitoring(
         const task: LongTask = {
           startTime: entry.startTime,
           duration: entry.duration,
-          attribution: (entry as unknown as { attribution?: { name: string }[] }).attribution?.map(
-            (a) => a.name
-          ) || [],
-        };
+          attribution:
+            (
+              entry as unknown as { attribution?: { name: string }[] }
+            ).attribution?.map((a) => a.name) || [],
+        }
 
-        longTasks.push(task);
-        callback?.(task);
+        longTasks.push(task)
+        callback?.(task)
       }
-    });
+    })
 
-    observer.observe({ entryTypes: ['longtask'] });
+    observer.observe({ entryTypes: ["longtask"] })
 
-    return () => observer.disconnect();
+    return () => observer.disconnect()
   } catch {
-    return () => {};
+    return () => {}
   }
 }
 
@@ -429,14 +448,14 @@ export function startLongTaskMonitoring(
  * Get recorded long tasks
  */
 export function getLongTasks(): LongTask[] {
-  return [...longTasks];
+  return [...longTasks]
 }
 
 /**
  * Clear long task history
  */
 export function clearLongTasks(): void {
-  longTasks.length = 0;
+  longTasks.length = 0
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -444,32 +463,36 @@ export function clearLongTasks(): void {
 // ════════════════════════════════════════════════════════════════════════════════
 
 export interface MemoryInfo {
-  usedJSHeapSize: number;
-  totalJSHeapSize: number;
-  jsHeapSizeLimit: number;
-  usagePercentage: number;
+  usedJSHeapSize: number
+  totalJSHeapSize: number
+  jsHeapSizeLimit: number
+  usagePercentage: number
 }
 
 /**
  * Get memory usage information (Chrome only)
  */
 export function getMemoryInfo(): MemoryInfo | null {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null
 
-  const memory = (performance as unknown as { memory?: {
-    usedJSHeapSize: number;
-    totalJSHeapSize: number;
-    jsHeapSizeLimit: number;
-  } }).memory;
+  const memory = (
+    performance as unknown as {
+      memory?: {
+        usedJSHeapSize: number
+        totalJSHeapSize: number
+        jsHeapSizeLimit: number
+      }
+    }
+  ).memory
 
-  if (!memory) return null;
+  if (!memory) return null
 
   return {
     usedJSHeapSize: memory.usedJSHeapSize,
     totalJSHeapSize: memory.totalJSHeapSize,
     jsHeapSizeLimit: memory.jsHeapSizeLimit,
     usagePercentage: (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100,
-  };
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -477,19 +500,19 @@ export function getMemoryInfo(): MemoryInfo | null {
 // ════════════════════════════════════════════════════════════════════════════════
 
 export interface FrameRateStats {
-  current: number;
-  average: number;
-  min: number;
-  max: number;
-  dropped: number;
+  current: number
+  average: number
+  min: number
+  max: number
+  dropped: number
 }
 
 let frameRateMonitor: {
-  frames: number[];
-  lastFrameTime: number;
-  rafId: number | null;
-  callback?: (stats: FrameRateStats) => void;
-} | null = null;
+  frames: number[]
+  lastFrameTime: number
+  rafId: number | null
+  callback?: (stats: FrameRateStats) => void
+} | null = null
 
 /**
  * Start monitoring frame rate
@@ -498,44 +521,44 @@ export function startFrameRateMonitoring(
   callback?: (stats: FrameRateStats) => void,
   sampleSize: number = 60
 ): () => void {
-  if (typeof window === 'undefined') return () => {};
+  if (typeof window === "undefined") return () => {}
 
   frameRateMonitor = {
     frames: [],
     lastFrameTime: performance.now(),
     rafId: null,
     callback,
-  };
+  }
 
-  const monitor = frameRateMonitor;
+  const monitor = frameRateMonitor
 
   function tick(currentTime: number) {
-    const delta = currentTime - monitor.lastFrameTime;
-    const fps = 1000 / delta;
+    const delta = currentTime - monitor.lastFrameTime
+    const fps = 1000 / delta
 
-    monitor.frames.push(fps);
+    monitor.frames.push(fps)
     if (monitor.frames.length > sampleSize) {
-      monitor.frames.shift();
+      monitor.frames.shift()
     }
 
-    monitor.lastFrameTime = currentTime;
+    monitor.lastFrameTime = currentTime
 
     // Report stats every second
     if (monitor.frames.length % 60 === 0 && monitor.callback) {
-      monitor.callback(getFrameRateStats());
+      monitor.callback(getFrameRateStats())
     }
 
-    monitor.rafId = requestAnimationFrame(tick);
+    monitor.rafId = requestAnimationFrame(tick)
   }
 
-  monitor.rafId = requestAnimationFrame(tick);
+  monitor.rafId = requestAnimationFrame(tick)
 
   return () => {
     if (monitor.rafId !== null) {
-      cancelAnimationFrame(monitor.rafId);
+      cancelAnimationFrame(monitor.rafId)
     }
-    frameRateMonitor = null;
-  };
+    frameRateMonitor = null
+  }
 }
 
 /**
@@ -549,15 +572,15 @@ export function getFrameRateStats(): FrameRateStats {
       min: 0,
       max: 0,
       dropped: 0,
-    };
+    }
   }
 
-  const frames = frameRateMonitor.frames;
-  const current = frames[frames.length - 1];
-  const average = frames.reduce((a, b) => a + b, 0) / frames.length;
-  const min = Math.min(...frames);
-  const max = Math.max(...frames);
-  const dropped = frames.filter((f) => f < 30).length;
+  const frames = frameRateMonitor.frames
+  const current = frames[frames.length - 1]
+  const average = frames.reduce((a, b) => a + b, 0) / frames.length
+  const min = Math.min(...frames)
+  const max = Math.max(...frames)
+  const dropped = frames.filter((f) => f < 30).length
 
   return {
     current: Math.round(current),
@@ -565,7 +588,7 @@ export function getFrameRateStats(): FrameRateStats {
     min: Math.round(min),
     max: Math.round(max),
     dropped,
-  };
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -573,43 +596,43 @@ export function getFrameRateStats(): FrameRateStats {
 // ════════════════════════════════════════════════════════════════════════════════
 
 export interface PerformanceReport {
-  timestamp: number;
-  url: string;
-  webVitals: Partial<Record<WebVitalsMetric['name'], number>>;
-  navigation: PerformanceMetrics | null;
+  timestamp: number
+  url: string
+  webVitals: Partial<Record<WebVitalsMetric["name"], number>>
+  navigation: PerformanceMetrics | null
   resources: {
-    totalSize: number;
-    totalDuration: number;
-    cacheHitRate: number;
-  };
+    totalSize: number
+    totalDuration: number
+    cacheHitRate: number
+  }
   longTasks: {
-    count: number;
-    totalDuration: number;
-  };
-  memory: MemoryInfo | null;
-  frameRate: FrameRateStats | null;
+    count: number
+    totalDuration: number
+  }
+  memory: MemoryInfo | null
+  frameRate: FrameRateStats | null
 }
 
-const collectedVitals: Partial<Record<WebVitalsMetric['name'], number>> = {};
+const collectedVitals: Partial<Record<WebVitalsMetric["name"], number>> = {}
 
 /**
  * Collect Web Vitals for reporting
  */
 export function collectWebVital(metric: WebVitalsMetric): void {
-  collectedVitals[metric.name] = metric.value;
+  collectedVitals[metric.name] = metric.value
 }
 
 /**
  * Generate a performance report
  */
 export function generatePerformanceReport(): PerformanceReport {
-  const navigation = getNavigationMetrics();
-  const resourceStats = getResourceStats();
-  const tasks = getLongTasks();
+  const navigation = getNavigationMetrics()
+  const resourceStats = getResourceStats()
+  const tasks = getLongTasks()
 
   return {
     timestamp: Date.now(),
-    url: typeof window !== 'undefined' ? window.location.href : '',
+    url: typeof window !== "undefined" ? window.location.href : "",
     webVitals: { ...collectedVitals },
     navigation,
     resources: {
@@ -623,7 +646,7 @@ export function generatePerformanceReport(): PerformanceReport {
     },
     memory: getMemoryInfo(),
     frameRate: frameRateMonitor ? getFrameRateStats() : null,
-  };
+  }
 }
 
 /**
@@ -633,24 +656,26 @@ export async function sendPerformanceReport(
   endpoint: string,
   report?: PerformanceReport
 ): Promise<void> {
-  const data = report || generatePerformanceReport();
+  const data = report || generatePerformanceReport()
 
   try {
     // Use sendBeacon for reliability during page unload
     if (navigator.sendBeacon) {
-      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-      navigator.sendBeacon(endpoint, blob);
+      const blob = new Blob([JSON.stringify(data)], {
+        type: "application/json",
+      })
+      navigator.sendBeacon(endpoint, blob)
     } else {
       // Fallback to fetch
       await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
         keepalive: true,
-      });
+      })
     }
   } catch (error) {
-    console.error('[Performance] Failed to send report:', error);
+    console.error("[Performance] Failed to send report:", error)
   }
 }
 
@@ -661,50 +686,52 @@ export async function sendPerformanceReport(
 /**
  * Initialize performance monitoring
  */
-export function initPerformanceMonitoring(options: {
-  reportEndpoint?: string;
-  enableLongTaskMonitoring?: boolean;
-  enableFrameRateMonitoring?: boolean;
-  onWebVital?: MetricHandler;
-} = {}): () => void {
-  const cleanupFns: (() => void)[] = [];
+export function initPerformanceMonitoring(
+  options: {
+    reportEndpoint?: string
+    enableLongTaskMonitoring?: boolean
+    enableFrameRateMonitoring?: boolean
+    onWebVital?: MetricHandler
+  } = {}
+): () => void {
+  const cleanupFns: (() => void)[] = []
 
   // Collect Web Vitals
-  cleanupFns.push(onWebVitals(collectWebVital));
+  cleanupFns.push(onWebVitals(collectWebVital))
 
   if (options.onWebVital) {
-    cleanupFns.push(onWebVitals(options.onWebVital));
+    cleanupFns.push(onWebVitals(options.onWebVital))
   }
 
   // Long task monitoring
   if (options.enableLongTaskMonitoring) {
-    cleanupFns.push(startLongTaskMonitoring());
+    cleanupFns.push(startLongTaskMonitoring())
   }
 
   // Frame rate monitoring
   if (options.enableFrameRateMonitoring) {
-    cleanupFns.push(startFrameRateMonitoring());
+    cleanupFns.push(startFrameRateMonitoring())
   }
 
   // Send report on page unload
-  if (options.reportEndpoint && typeof window !== 'undefined') {
+  if (options.reportEndpoint && typeof window !== "undefined") {
     const handleUnload = () => {
-      sendPerformanceReport(options.reportEndpoint!);
-    };
+      sendPerformanceReport(options.reportEndpoint!)
+    }
 
-    window.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        handleUnload();
+    window.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        handleUnload()
       }
-    });
+    })
 
     cleanupFns.push(() => {
-      window.removeEventListener('visibilitychange', handleUnload);
-    });
+      window.removeEventListener("visibilitychange", handleUnload)
+    })
   }
 
   // Return cleanup function
   return () => {
-    cleanupFns.forEach((fn) => fn());
-  };
+    cleanupFns.forEach((fn) => fn())
+  }
 }

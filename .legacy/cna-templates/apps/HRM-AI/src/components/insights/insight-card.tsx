@@ -1,12 +1,19 @@
-'use client'
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import type { Insight } from '@/types/insight'
-import { AlertTriangle, TrendingUp, Lightbulb, AlertCircle, X, ExternalLink } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import type { Insight } from "@/types/insight"
+import {
+  AlertTriangle,
+  TrendingUp,
+  Lightbulb,
+  AlertCircle,
+  X,
+  ExternalLink,
+} from "lucide-react"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 interface InsightCardProps {
   insight: Insight
@@ -21,17 +28,17 @@ const typeIcons = {
 }
 
 const severityConfig = {
-  CRITICAL: { label: 'Nghiêm trọng', className: 'bg-red-500 text-white' },
-  HIGH: { label: 'Cao', className: 'bg-orange-500 text-white' },
-  MEDIUM: { label: 'Trung bình', className: 'bg-yellow-500 text-white' },
-  LOW: { label: 'Thấp', className: 'bg-blue-500 text-white' },
+  CRITICAL: { label: "Nghiêm trọng", className: "bg-red-500 text-white" },
+  HIGH: { label: "Cao", className: "bg-orange-500 text-white" },
+  MEDIUM: { label: "Trung bình", className: "bg-yellow-500 text-white" },
+  LOW: { label: "Thấp", className: "bg-blue-500 text-white" },
 }
 
 const typeLabels = {
-  ANOMALY: 'Bất thường',
-  TREND: 'Xu hướng',
-  SUGGESTION: 'Gợi ý',
-  WARNING: 'Cảnh báo',
+  ANOMALY: "Bất thường",
+  TREND: "Xu hướng",
+  SUGGESTION: "Gợi ý",
+  WARNING: "Cảnh báo",
 }
 
 export function InsightCard({ insight, onDismiss }: InsightCardProps) {
@@ -39,7 +46,12 @@ export function InsightCard({ insight, onDismiss }: InsightCardProps) {
   const severity = severityConfig[insight.severity]
 
   return (
-    <Card className={cn('relative', !insight.isRead && 'border-l-4 border-l-primary')}>
+    <Card
+      className={cn(
+        "relative",
+        !insight.isRead && "border-l-4 border-l-primary"
+      )}
+    >
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -47,7 +59,7 @@ export function InsightCard({ insight, onDismiss }: InsightCardProps) {
             <Badge variant="secondary" className="text-xs">
               {typeLabels[insight.type]}
             </Badge>
-            <Badge className={cn('text-xs', severity.className)}>
+            <Badge className={cn("text-xs", severity.className)}>
               {severity.label}
             </Badge>
           </div>
@@ -97,13 +109,13 @@ export function InsightCard({ insight, onDismiss }: InsightCardProps) {
 
 function getRefLink(type: string, id: string): string {
   switch (type) {
-    case 'EMPLOYEE':
+    case "EMPLOYEE":
       return `/admin/employees/${id}`
-    case 'DEPARTMENT':
+    case "DEPARTMENT":
       return `/admin/departments/${id}`
-    case 'LEAVE_REQUEST':
+    case "LEAVE_REQUEST":
       return `/ess/leave/${id}`
     default:
-      return '#'
+      return "#"
   }
 }

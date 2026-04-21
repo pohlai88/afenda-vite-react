@@ -1,8 +1,8 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 export const departmentSchema = z.object({
-  name: z.string().min(1, 'Tên phòng ban là bắt buộc').max(100),
-  code: z.string().min(1, 'Mã phòng ban là bắt buộc').max(20),
+  name: z.string().min(1, "Tên phòng ban là bắt buộc").max(100),
+  code: z.string().min(1, "Mã phòng ban là bắt buộc").max(20),
   description: z.string().max(500).optional().nullable(),
   parentId: z.string().optional().nullable(),
   managerId: z.string().optional().nullable(),

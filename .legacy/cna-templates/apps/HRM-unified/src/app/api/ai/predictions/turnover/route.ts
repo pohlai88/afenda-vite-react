@@ -1,27 +1,31 @@
 // src/app/api/ai/predictions/turnover/route.ts
 // Turnover Prediction API
 
-import { NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { createTurnoverPredictor } from '@/lib/ai/predictions'
-import { z } from 'zod'
+import { NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { createTurnoverPredictor } from "@/lib/ai/predictions"
+import { z } from "zod"
 
 const querySchema = z.object({
   departmentId: z.string().optional(),
-  limit: z.coerce.number().min(1).max(100).optional().default(20)
+  limit: z.coerce.number().min(1).max(100).optional().default(20),
 })
 
 export async function GET(request: Request) {
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Check role - only HR and Admin can access predictions
-    if (!['ADMIN', 'HR_MANAGER', 'HR_STAFF', 'MANAGER'].includes(session.user.role)) {
+    if (
+      !["ADMIN", "HR_MANAGER", "HR_STAFF", "MANAGER"].includes(
+        session.user.role
+      )
+    ) {
       return NextResponse.json(
-        { error: 'Insufficient permissions' },
+        { error: "Insufficient permissions" },
         { status: 403 }
       )
     }
@@ -29,7 +33,7 @@ export async function GET(request: Request) {
     // Check AI configuration
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
-        { error: 'AI features are not configured' },
+        { error: "AI features are not configured" },
         { status: 503 }
       )
     }
@@ -37,8 +41,8 @@ export async function GET(request: Request) {
     // Parse query params
     const { searchParams } = new URL(request.url)
     const params = querySchema.parse({
-      departmentId: searchParams.get('departmentId'),
-      limit: searchParams.get('limit')
+      departmentId: searchParams.get("departmentId"),
+      limit: searchParams.get("limit"),
     })
 
     // Create predictor and run analysis
@@ -47,22 +51,22 @@ export async function GET(request: Request) {
       tenantId: session.user.tenantId,
       userId: session.user.id,
       departmentId: params.departmentId,
-      limit: params.limit
+      limit: params.limit,
     })
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Turnover prediction error:', error)
+    console.error("Turnover prediction error:", error)
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid parameters', details: error.issues },
+        { error: "Invalid parameters", details: error.issues },
         { status: 400 }
       )
     }
 
     return NextResponse.json(
-      { error: 'Failed to generate predictions' },
+      { error: "Failed to generate predictions" },
       { status: 500 }
     )
   }
@@ -73,20 +77,24 @@ export async function POST(request: Request) {
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Check role
-    if (!['ADMIN', 'HR_MANAGER', 'HR_STAFF', 'MANAGER'].includes(session.user.role)) {
+    if (
+      !["ADMIN", "HR_MANAGER", "HR_STAFF", "MANAGER"].includes(
+        session.user.role
+      )
+    ) {
       return NextResponse.json(
-        { error: 'Insufficient permissions' },
+        { error: "Insufficient permissions" },
         { status: 403 }
       )
     }
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
-        { error: 'AI features are not configured' },
+        { error: "AI features are not configured" },
         { status: 503 }
       )
     }
@@ -96,7 +104,7 @@ export async function POST(request: Request) {
 
     if (!employeeId) {
       return NextResponse.json(
-        { error: 'Employee ID is required' },
+        { error: "Employee ID is required" },
         { status: 400 }
       )
     }
@@ -106,23 +114,25 @@ export async function POST(request: Request) {
     const result = await predictor.analyzeTurnoverRisk({
       tenantId: session.user.tenantId,
       userId: session.user.id,
-      limit: 200
+      limit: 200,
     })
 
-    const prediction = result.predictions.find(p => p.employeeId === employeeId)
+    const prediction = result.predictions.find(
+      (p) => p.employeeId === employeeId
+    )
 
     if (!prediction) {
       return NextResponse.json(
-        { error: 'Employee not found or not eligible for analysis' },
+        { error: "Employee not found or not eligible for analysis" },
         { status: 404 }
       )
     }
 
     return NextResponse.json(prediction)
   } catch (error) {
-    console.error('Single prediction error:', error)
+    console.error("Single prediction error:", error)
     return NextResponse.json(
-      { error: 'Failed to generate prediction' },
+      { error: "Failed to generate prediction" },
       { status: 500 }
     )
   }

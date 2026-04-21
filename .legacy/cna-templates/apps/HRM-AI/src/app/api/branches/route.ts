@@ -34,7 +34,15 @@ export async function POST(request: NextRequest) {
 
     const branch = await branchService.create(session.user.tenantId, validated)
 
-    await audit.create({ tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' }, 'Branch', branch.id)
+    await audit.create(
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Branch",
+      branch.id
+    )
 
     return NextResponse.json(branch, { status: 201 })
   } catch (error) {

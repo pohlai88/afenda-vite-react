@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getPortalSession } from '@/lib/portal-auth'
-import { prisma } from '@/lib/prisma'
+import { NextRequest, NextResponse } from "next/server"
+import { getPortalSession } from "@/lib/portal-auth"
+import { prisma } from "@/lib/prisma"
 
 // POST /api/portal/quotes/[id]/viewed — Mark quote as VIEWED (fire-and-forget)
 export async function POST(
@@ -20,9 +20,9 @@ export async function POST(
       where: {
         id,
         companyId: session.portalUser.companyId,
-        status: 'SENT',
+        status: "SENT",
       },
-      data: { status: 'VIEWED' },
+      data: { status: "VIEWED" },
     })
 
     return NextResponse.json({ success: true })

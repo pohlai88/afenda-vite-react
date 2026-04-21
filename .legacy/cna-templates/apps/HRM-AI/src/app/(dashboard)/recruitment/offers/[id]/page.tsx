@@ -1,22 +1,22 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import Link from "next/link"
 import {
   ArrowLeft,
   CheckCircle,
   SendHorizontal,
   ThumbsUp,
   ThumbsDown,
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { OFFER_STATUS } from '@/lib/recruitment/constants'
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import { OFFER_STATUS } from "@/lib/recruitment/constants"
 
 interface OfferDetail {
   id: string
@@ -54,11 +54,11 @@ export default function OfferDetailPage() {
     async function fetchOffer() {
       try {
         const res = await fetch(`/api/recruitment/offers/${id}`)
-        if (!res.ok) throw new Error('Không thể tải thông tin offer')
+        if (!res.ok) throw new Error("Không thể tải thông tin offer")
         const json = await res.json()
         setOffer(json)
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -70,13 +70,13 @@ export default function OfferDetailPage() {
     setActionLoading(true)
     try {
       const res = await fetch(`/api/recruitment/offers/${id}/${action}`, {
-        method: 'POST',
+        method: "POST",
       })
-      if (!res.ok) throw new Error('Không thể thực hiện thao tác')
+      if (!res.ok) throw new Error("Không thể thực hiện thao tác")
       const updated = await res.json()
       setOffer(updated)
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     } finally {
       setActionLoading(false)
     }
@@ -86,15 +86,15 @@ export default function OfferDetailPage() {
     const info = OFFER_STATUS[status]
     if (!info) return <Badge variant="secondary">{status}</Badge>
     const colorMap: Record<string, string> = {
-      gray: 'bg-gray-100 text-gray-800',
-      yellow: 'bg-yellow-100 text-yellow-800',
-      blue: 'bg-blue-100 text-blue-800',
-      purple: 'bg-purple-100 text-purple-800',
-      green: 'bg-green-100 text-green-800',
-      red: 'bg-red-100 text-red-800',
-      orange: 'bg-orange-100 text-orange-800',
+      gray: "bg-gray-100 text-gray-800",
+      yellow: "bg-yellow-100 text-yellow-800",
+      blue: "bg-blue-100 text-blue-800",
+      purple: "bg-purple-100 text-purple-800",
+      green: "bg-green-100 text-green-800",
+      red: "bg-red-100 text-red-800",
+      orange: "bg-orange-100 text-orange-800",
     }
-    return <Badge className={colorMap[info.color] || ''}>{info.label}</Badge>
+    return <Badge className={colorMap[info.color] || ""}>{info.label}</Badge>
   }
 
   if (loading) return <LoadingPage />
@@ -105,7 +105,7 @@ export default function OfferDetailPage() {
         <PageHeader title="Chi tiết Offer" />
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            {error || 'Không tìm thấy offer'}
+            {error || "Không tìm thấy offer"}
           </CardContent>
         </Card>
       </div>
@@ -119,37 +119,37 @@ export default function OfferDetailPage() {
         description={`Ứng viên: ${offer.candidateName}`}
       >
         <div className="flex items-center gap-2">
-          {offer.status === 'DRAFT' && (
+          {offer.status === "DRAFT" && (
             <Button
-              onClick={() => handleAction('submit')}
+              onClick={() => handleAction("submit")}
               disabled={actionLoading}
             >
               <SendHorizontal className="mr-2 h-4 w-4" />
               Gửi duyệt
             </Button>
           )}
-          {offer.status === 'PENDING_APPROVAL' && (
+          {offer.status === "PENDING_APPROVAL" && (
             <Button
-              onClick={() => handleAction('approve')}
+              onClick={() => handleAction("approve")}
               disabled={actionLoading}
             >
               <CheckCircle className="mr-2 h-4 w-4" />
               Phê duyệt
             </Button>
           )}
-          {offer.status === 'APPROVED' && (
+          {offer.status === "APPROVED" && (
             <Button
-              onClick={() => handleAction('send')}
+              onClick={() => handleAction("send")}
               disabled={actionLoading}
             >
               <SendHorizontal className="mr-2 h-4 w-4" />
               Gửi cho ứng viên
             </Button>
           )}
-          {offer.status === 'SENT' && (
+          {offer.status === "SENT" && (
             <>
               <Button
-                onClick={() => handleAction('accept')}
+                onClick={() => handleAction("accept")}
                 disabled={actionLoading}
                 className="bg-green-600 hover:bg-green-700"
               >
@@ -157,7 +157,7 @@ export default function OfferDetailPage() {
                 Chấp nhận
               </Button>
               <Button
-                onClick={() => handleAction('decline')}
+                onClick={() => handleAction("decline")}
                 disabled={actionLoading}
                 variant="destructive"
               >
@@ -202,9 +202,11 @@ export default function OfferDetailPage() {
                   <p className="font-medium">{offer.department}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Ngày bắt đầu dự kiến</p>
+                  <p className="text-sm text-muted-foreground">
+                    Ngày bắt đầu dự kiến
+                  </p>
                   <p className="font-medium">
-                    {new Date(offer.startDate).toLocaleDateString('vi-VN')}
+                    {new Date(offer.startDate).toLocaleDateString("vi-VN")}
                   </p>
                 </div>
               </div>
@@ -214,10 +216,12 @@ export default function OfferDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Mức lương</p>
                 <p className="text-xl font-bold text-primary">
-                  {offer.salary.toLocaleString('vi-VN')} VND
+                  {offer.salary.toLocaleString("vi-VN")} VND
                 </p>
                 {offer.salaryNote && (
-                  <p className="text-sm text-muted-foreground mt-1">{offer.salaryNote}</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {offer.salaryNote}
+                  </p>
                 )}
               </div>
 
@@ -225,22 +229,32 @@ export default function OfferDetailPage() {
                 <>
                   <Separator />
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground mb-2">Quyền lợi</p>
-                    <p className="whitespace-pre-wrap text-sm">{offer.benefits}</p>
+                    <p className="text-sm font-medium text-muted-foreground mb-2">
+                      Quyền lợi
+                    </p>
+                    <p className="whitespace-pre-wrap text-sm">
+                      {offer.benefits}
+                    </p>
                   </div>
                 </>
               )}
 
               {offer.conditions && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Điều kiện</p>
-                  <p className="whitespace-pre-wrap text-sm">{offer.conditions}</p>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">
+                    Điều kiện
+                  </p>
+                  <p className="whitespace-pre-wrap text-sm">
+                    {offer.conditions}
+                  </p>
                 </div>
               )}
 
               {offer.notes && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Ghi chú</p>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">
+                    Ghi chú
+                  </p>
                   <p className="whitespace-pre-wrap text-sm">{offer.notes}</p>
                 </div>
               )}
@@ -260,7 +274,9 @@ export default function OfferDetailPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Ngày tạo</span>
-                  <span>{new Date(offer.createdAt).toLocaleDateString('vi-VN')}</span>
+                  <span>
+                    {new Date(offer.createdAt).toLocaleDateString("vi-VN")}
+                  </span>
                 </div>
                 {offer.approvedBy && (
                   <div className="flex justify-between">
@@ -271,25 +287,33 @@ export default function OfferDetailPage() {
                 {offer.approvedAt && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Ngày duyệt</span>
-                    <span>{new Date(offer.approvedAt).toLocaleDateString('vi-VN')}</span>
+                    <span>
+                      {new Date(offer.approvedAt).toLocaleDateString("vi-VN")}
+                    </span>
                   </div>
                 )}
                 {offer.sentAt && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Ngày gửi</span>
-                    <span>{new Date(offer.sentAt).toLocaleDateString('vi-VN')}</span>
+                    <span>
+                      {new Date(offer.sentAt).toLocaleDateString("vi-VN")}
+                    </span>
                   </div>
                 )}
                 {offer.expiresAt && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Hạn phản hồi</span>
-                    <span>{new Date(offer.expiresAt).toLocaleDateString('vi-VN')}</span>
+                    <span>
+                      {new Date(offer.expiresAt).toLocaleDateString("vi-VN")}
+                    </span>
                   </div>
                 )}
                 {offer.respondedAt && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Ngày phản hồi</span>
-                    <span>{new Date(offer.respondedAt).toLocaleDateString('vi-VN')}</span>
+                    <span>
+                      {new Date(offer.respondedAt).toLocaleDateString("vi-VN")}
+                    </span>
                   </div>
                 )}
               </div>

@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { JOB_TYPE, WORK_MODE } from '@/lib/recruitment/constants'
-import type { JobPosting } from '@/types/recruitment'
-import { MapPin, Briefcase, Monitor, Clock, ArrowRight } from 'lucide-react'
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { JOB_TYPE, WORK_MODE } from "@/lib/recruitment/constants"
+import type { JobPosting } from "@/types/recruitment"
+import { MapPin, Briefcase, Monitor, Clock, ArrowRight } from "lucide-react"
 
 interface JobListingCardProps {
   posting: JobPosting
@@ -13,7 +13,11 @@ interface JobListingCardProps {
   onViewDetails?: () => void
 }
 
-export function JobListingCard({ posting, onApply, onViewDetails }: JobListingCardProps) {
+export function JobListingCard({
+  posting,
+  onApply,
+  onViewDetails,
+}: JobListingCardProps) {
   const publishedDate = posting.publishedAt
     ? new Date(posting.publishedAt)
     : new Date(posting.createdAt)
@@ -24,10 +28,10 @@ export function JobListingCard({ posting, onApply, onViewDetails }: JobListingCa
 
   const timeLabel =
     daysAgo === 0
-      ? 'Hôm nay'
+      ? "Hôm nay"
       : daysAgo === 1
-      ? 'Hôm qua'
-      : `${daysAgo} ngày trước`
+        ? "Hôm qua"
+        : `${daysAgo} ngày trước`
 
   return (
     <Card className="hover:shadow-lg transition-all duration-200 hover:border-primary/30 group">

@@ -7,7 +7,7 @@ import {
   INSURANCE_DEDUCTION_RATES,
   type TaxCalculationResult,
   type AnnualTaxSummary,
-} from './constants'
+} from "./constants"
 
 // ═══════════════════════════════════════════════════════════════
 // TAX CALCULATOR CLASS
@@ -40,7 +40,9 @@ export class TaxCalculator {
    * Calculate insurance deduction (BHXH, BHYT, BHTN - employee portion)
    */
   private calculateInsuranceDeduction(): number {
-    return Math.round(this.insuranceSalary * INSURANCE_DEDUCTION_RATES.EMPLOYEE_TOTAL)
+    return Math.round(
+      this.insuranceSalary * INSURANCE_DEDUCTION_RATES.EMPLOYEE_TOTAL
+    )
   }
 
   /**
@@ -133,7 +135,8 @@ export class TaxCalculator {
       : this.calculateTaxProgressive(taxableIncome)
 
     const netIncome = this.grossIncome - insuranceDeduction - taxAmount
-    const effectiveRate = this.grossIncome > 0 ? taxAmount / this.grossIncome : 0
+    const effectiveRate =
+      this.grossIncome > 0 ? taxAmount / this.grossIncome : 0
     const bracket = this.findBracket(taxableIncome)
 
     return {
@@ -187,19 +190,28 @@ export function calculateAnnualTax(
   annualOtherDeductions: number = 0
 ): AnnualTaxSummary {
   // Sum up all monthly incomes
-  const totalGrossIncome = monthlyData.reduce((sum, m) => sum + m.grossIncome, 0)
+  const totalGrossIncome = monthlyData.reduce(
+    (sum, m) => sum + m.grossIncome,
+    0
+  )
   const totalTaxPaid = monthlyData.reduce((sum, m) => sum + m.taxPaid, 0)
 
   // Calculate total deductions
   const totalInsuranceDeduction = monthlyData.reduce(
-    (sum, m) => sum + Math.round((m.insuranceSalary || m.grossIncome) * INSURANCE_DEDUCTION_RATES.EMPLOYEE_TOTAL),
+    (sum, m) =>
+      sum +
+      Math.round(
+        (m.insuranceSalary || m.grossIncome) *
+          INSURANCE_DEDUCTION_RATES.EMPLOYEE_TOTAL
+      ),
     0
   )
 
   // Use annual deductions (for the full year or pro-rated based on employment period)
   const monthsWorked = monthlyData.filter((m) => m.grossIncome > 0).length
   const totalPersonalDeduction = TAX_DEDUCTIONS.PERSONAL * monthsWorked
-  const totalDependentDeduction = TAX_DEDUCTIONS.DEPENDENT * annualDependentCount * monthsWorked
+  const totalDependentDeduction =
+    TAX_DEDUCTIONS.DEPENDENT * annualDependentCount * monthsWorked
 
   // Calculate annual taxable income
   const totalTaxableIncome = Math.max(
@@ -214,13 +226,27 @@ export function calculateAnnualTax(
   // Calculate annual tax amount
   const annualCalculator = new TaxCalculator({
     grossIncome: totalGrossIncome,
-    insuranceSalary: monthlyData.reduce((sum, m) => sum + (m.insuranceSalary || m.grossIncome), 0),
+    insuranceSalary: monthlyData.reduce(
+      (sum, m) => sum + (m.insuranceSalary || m.grossIncome),
+      0
+    ),
     dependentCount: 0, // We've already calculated deductions above
-    otherDeductions: totalInsuranceDeduction + totalPersonalDeduction + totalDependentDeduction + annualOtherDeductions,
+    otherDeductions:
+      totalInsuranceDeduction +
+      totalPersonalDeduction +
+      totalDependentDeduction +
+      annualOtherDeductions,
     useQuickDeduction: true,
   })
 
-  const taxableIncome = Math.max(0, totalGrossIncome - (totalInsuranceDeduction + totalPersonalDeduction + totalDependentDeduction + annualOtherDeductions))
+  const taxableIncome = Math.max(
+    0,
+    totalGrossIncome -
+      (totalInsuranceDeduction +
+        totalPersonalDeduction +
+        totalDependentDeduction +
+        annualOtherDeductions)
+  )
   const totalTaxAmount = annualCalculator.getTaxFromTaxableIncome(taxableIncome)
 
   // Calculate refund or owed
@@ -244,7 +270,9 @@ export function calculateAnnualTax(
 }
 
 // Add method to TaxCalculator for direct taxable income calculation
-TaxCalculator.prototype.getTaxFromTaxableIncome = function (taxableIncome: number): number {
+TaxCalculator.prototype.getTaxFromTaxableIncome = function (
+  taxableIncome: number
+): number {
   if (taxableIncome <= 0) return 0
 
   let remainingIncome = taxableIncome
@@ -264,7 +292,7 @@ TaxCalculator.prototype.getTaxFromTaxableIncome = function (taxableIncome: numbe
 }
 
 // Extend TaxCalculator interface
-declare module './calculator' {
+declare module "./calculator" {
   interface TaxCalculator {
     getTaxFromTaxableIncome(taxableIncome: number): number
   }
@@ -278,9 +306,9 @@ declare module './calculator' {
  * Format currency for display
  */
 export function formatTaxAmount(amount: number): string {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
     maximumFractionDigits: 0,
   }).format(amount)
 }
@@ -289,7 +317,7 @@ export function formatTaxAmount(amount: number): string {
  * Format percentage for display
  */
 export function formatTaxRate(rate: number): string {
-  return (rate * 100).toFixed(1) + '%'
+  return (rate * 100).toFixed(1) + "%"
 }
 
 /**

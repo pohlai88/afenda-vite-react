@@ -1,6 +1,6 @@
-import { auth } from '@/lib/auth'
-import { NextRequest, NextResponse } from 'next/server'
-import * as pipService from '@/services/performance/pip.service'
+import { auth } from "@/lib/auth"
+import { NextRequest, NextResponse } from "next/server"
+import * as pipService from "@/services/performance/pip.service"
 
 export async function POST(
   request: NextRequest,
@@ -9,7 +9,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
     const userId = session.user.id
@@ -21,8 +21,11 @@ export async function POST(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error adding PIP milestone:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error adding PIP milestone:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -33,7 +36,7 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
     const userId = session.user.id
@@ -45,7 +48,10 @@ export async function PATCH(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error updating PIP milestone:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error updating PIP milestone:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

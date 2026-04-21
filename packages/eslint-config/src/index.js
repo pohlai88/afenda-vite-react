@@ -166,4 +166,120 @@ export function createConfig(opts = {}) {
   )
 }
 
+export function createRepositoryBoundaryConfig() {
+  return [
+    {
+      name: "afenda/web-routes/private-folder-import-fence",
+      files: ["apps/web/src/routes/**/*.{js,jsx,ts,tsx}"],
+      ignores: [
+        "**/*.{test,spec}.{js,jsx,ts,tsx}",
+        "**/*.stories.{js,jsx,ts,tsx}",
+        "**/__tests__/**",
+        "**/__test__/**",
+      ],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: [
+                  "@/app/_features/*/components/*",
+                  "@/app/_features/*/hooks/*",
+                  "@/app/_features/*/services/*",
+                  "@/app/_features/*/actions/*",
+                  "@/app/_features/*/types/*",
+                  "@/app/_features/*/utils/*",
+                  "../app/_features/*/components/*",
+                  "../app/_features/*/hooks/*",
+                  "../app/_features/*/services/*",
+                  "../app/_features/*/actions/*",
+                  "../app/_features/*/types/*",
+                  "../app/_features/*/utils/*",
+                  "@/app/_platform/*/components/*",
+                  "@/app/_platform/*/hooks/*",
+                  "@/app/_platform/*/services/*",
+                  "@/app/_platform/*/actions/*",
+                  "@/app/_platform/*/types/*",
+                  "@/app/_platform/*/utils/*",
+                  "../app/_platform/*/components/*",
+                  "../app/_platform/*/hooks/*",
+                  "../app/_platform/*/services/*",
+                  "../app/_platform/*/actions/*",
+                  "../app/_platform/*/types/*",
+                  "../app/_platform/*/utils/*",
+                ],
+                message:
+                  "Route modules must depend on feature or platform entrypoints, not conventional private folders.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda/web-feature-route-boundaries",
+      files: ["apps/web/src/app/_features/**/*.{js,jsx,ts,tsx}"],
+      ignores: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "**/__tests__/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["@/routes/*", "**/routes/*"],
+                message:
+                  "Feature modules must not import route modules. Route composition stays at the route or platform boundary.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda/web-share-feature-boundaries",
+      files: ["apps/web/src/share/**/*.{js,jsx,ts,tsx}"],
+      ignores: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "**/__tests__/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["@/app/_features/*", "**/app/_features/*"],
+                message:
+                  "Promoted share modules must not import feature-owned code.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda/api-module-boundaries",
+      files: ["apps/api/src/modules/**/*.{js,jsx,ts,tsx}"],
+      ignores: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "**/__tests__/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: [
+                  "@/routes/*",
+                  "@/middleware/*",
+                  "**/routes/*",
+                  "**/middleware/*",
+                ],
+                message:
+                  "API modules must not import route or middleware modules directly.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ]
+}
+
 export { afendaUiPlugin }

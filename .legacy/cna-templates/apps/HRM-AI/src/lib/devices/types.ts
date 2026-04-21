@@ -5,13 +5,23 @@
 // DEVICE TYPES
 // ═══════════════════════════════════════════════════════════════
 
-export type DeviceType = 'FINGERPRINT' | 'FACE_RECOGNITION' | 'CARD_READER' | 'GPS_CHECKIN' | 'QR_CODE'
+export type DeviceType =
+  | "FINGERPRINT"
+  | "FACE_RECOGNITION"
+  | "CARD_READER"
+  | "GPS_CHECKIN"
+  | "QR_CODE"
 
-export type DeviceStatus = 'ONLINE' | 'OFFLINE' | 'MAINTENANCE' | 'ERROR'
+export type DeviceStatus = "ONLINE" | "OFFLINE" | "MAINTENANCE" | "ERROR"
 
-export type DeviceManufacturer = 'ZKTECO' | 'HIKVISION' | 'SUPREMA' | 'DAHUA' | 'CUSTOM'
+export type DeviceManufacturer =
+  | "ZKTECO"
+  | "HIKVISION"
+  | "SUPREMA"
+  | "DAHUA"
+  | "CUSTOM"
 
-export type ConnectionType = 'TCP' | 'HTTP' | 'SDK' | 'USB'
+export type ConnectionType = "TCP" | "HTTP" | "SDK" | "USB"
 
 export type PunchType = 0 | 1 | 2 | 3 | 4 | 5 // Check-in, Check-out, Break-out, Break-in, OT-in, OT-out
 
@@ -82,7 +92,7 @@ export interface BiometricTemplate {
   userId: string
   fingerIndex: number // 0-9 for fingers
   template: Buffer
-  templateType: 'FINGERPRINT' | 'FACE' | 'PALM'
+  templateType: "FINGERPRINT" | "FACE" | "PALM"
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -90,7 +100,7 @@ export interface BiometricTemplate {
 // ═══════════════════════════════════════════════════════════════
 
 export interface SyncOptions {
-  syncType: 'FULL' | 'INCREMENTAL'
+  syncType: "FULL" | "INCREMENTAL"
   fromDate?: Date
   toDate?: Date
   clearAfterSync?: boolean
@@ -133,7 +143,7 @@ export interface GPSCheckInRequest {
 export interface GPSCheckInResult {
   success: boolean
   checkInTime: Date
-  locationType: 'OFFICE' | 'REMOTE' | 'FIELD'
+  locationType: "OFFICE" | "REMOTE" | "FIELD"
   locationName?: string
   distanceFromOffice?: number
   isWithinRadius: boolean
@@ -184,34 +194,34 @@ export interface IDeviceSDK {
 // ═══════════════════════════════════════════════════════════════
 
 export const DEVICE_STATUS_LABELS = {
-  ONLINE: { label: 'Hoạt động', color: 'green' },
-  OFFLINE: { label: 'Mất kết nối', color: 'red' },
-  MAINTENANCE: { label: 'Bảo trì', color: 'yellow' },
-  ERROR: { label: 'Lỗi', color: 'red' },
+  ONLINE: { label: "Hoạt động", color: "green" },
+  OFFLINE: { label: "Mất kết nối", color: "red" },
+  MAINTENANCE: { label: "Bảo trì", color: "yellow" },
+  ERROR: { label: "Lỗi", color: "red" },
 } as const
 
 export const DEVICE_TYPE_LABELS = {
-  FINGERPRINT: { label: 'Vân tay', icon: 'fingerprint' },
-  FACE_RECOGNITION: { label: 'Nhận diện khuôn mặt', icon: 'face' },
-  CARD_READER: { label: 'Thẻ từ', icon: 'card' },
-  GPS_CHECKIN: { label: 'GPS Check-in', icon: 'location' },
-  QR_CODE: { label: 'QR Code', icon: 'qr-code' },
+  FINGERPRINT: { label: "Vân tay", icon: "fingerprint" },
+  FACE_RECOGNITION: { label: "Nhận diện khuôn mặt", icon: "face" },
+  CARD_READER: { label: "Thẻ từ", icon: "card" },
+  GPS_CHECKIN: { label: "GPS Check-in", icon: "location" },
+  QR_CODE: { label: "QR Code", icon: "qr-code" },
 } as const
 
 export const PUNCH_TYPE_LABELS = {
-  0: 'Check-in',
-  1: 'Check-out',
-  2: 'Break-out',
-  3: 'Break-in',
-  4: 'OT-in',
-  5: 'OT-out',
+  0: "Check-in",
+  1: "Check-out",
+  2: "Break-out",
+  3: "Break-in",
+  4: "OT-in",
+  5: "OT-out",
 } as const
 
 export const VERIFY_TYPE_LABELS = {
-  0: 'Mật khẩu',
-  1: 'Vân tay',
-  2: 'Thẻ',
-  3: 'Khuôn mặt',
-  4: 'Lòng bàn tay',
-  15: 'Đa phương thức',
+  0: "Mật khẩu",
+  1: "Vân tay",
+  2: "Thẻ",
+  3: "Khuôn mặt",
+  4: "Lòng bàn tay",
+  15: "Đa phương thức",
 } as const

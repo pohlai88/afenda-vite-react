@@ -1,9 +1,9 @@
 // src/services/bank-payment.service.ts
 // Bank Payment Batch Service
 
-import { db } from '@/lib/db'
-import type { Prisma, PayrollStatus, BankCode } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
+import { db } from "@/lib/db"
+import type { Prisma, PayrollStatus, BankCode } from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
 import {
   generateBankFile,
   createPaymentRecords,
@@ -12,7 +12,7 @@ import {
   type BankFileFormat,
   type GeneratedFile,
   type BankFileOptions,
-} from '@/lib/payroll/bank-file-generator'
+} from "@/lib/payroll/bank-file-generator"
 
 export interface BankPaymentFilters {
   periodId?: string
@@ -90,7 +90,7 @@ export const bankPaymentService = {
             select: { id: true, name: true, email: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -136,7 +136,7 @@ export const bankPaymentService = {
           select: { id: true, name: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
   },
 
@@ -163,7 +163,7 @@ export const bankPaymentService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     // Count existing batches for sequence
@@ -189,7 +189,7 @@ export const bankPaymentService = {
         fileName: data.fileName,
         fileUrl: data.fileUrl,
         fileFormat: data.fileFormat,
-        status: 'DRAFT',
+        status: "DRAFT",
         generatedAt: new Date(),
         notes: data.notes,
       },
@@ -205,11 +205,11 @@ export const bankPaymentService = {
     })
 
     if (!batch) {
-      throw new Error('Đợt thanh toán không tồn tại')
+      throw new Error("Đợt thanh toán không tồn tại")
     }
 
-    if (batch.status === 'PAID') {
-      throw new Error('Không thể xóa đợt thanh toán đã xử lý')
+    if (batch.status === "PAID") {
+      throw new Error("Không thể xóa đợt thanh toán đã xử lý")
     }
 
     return db.bankPaymentBatch.delete({
@@ -240,11 +240,11 @@ export const bankPaymentService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
-    if (period.status !== 'APPROVED' && period.status !== 'PAID') {
-      throw new Error('Kỳ lương chưa được duyệt')
+    if (period.status !== "APPROVED" && period.status !== "PAID") {
+      throw new Error("Kỳ lương chưa được duyệt")
     }
 
     // Get payrolls with bank info
@@ -266,12 +266,12 @@ export const bankPaymentService = {
     })
 
     if (payrolls.length === 0) {
-      throw new Error('Không có nhân viên cần thanh toán')
+      throw new Error("Không có nhân viên cần thanh toán")
     }
 
     // Create payment records
     const records = createPaymentRecords(
-      payrolls.map(p => ({
+      payrolls.map((p) => ({
         ...p,
         netSalary: Number(p.netSalary),
       })),
@@ -282,9 +282,9 @@ export const bankPaymentService = {
 
     // Filter by bank if not generic
     let filteredRecords = records
-    if (bankCode !== 'GENERIC') {
-      filteredRecords = records.filter(r =>
-        r.bankCode === bankCode || r.bankCode === 'OTHER'
+    if (bankCode !== "GENERIC") {
+      filteredRecords = records.filter(
+        (r) => r.bankCode === bankCode || r.bankCode === "OTHER"
       )
     }
 
@@ -337,7 +337,7 @@ export const bankPaymentService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     // Get payrolls with bank info
@@ -359,12 +359,12 @@ export const bankPaymentService = {
     })
 
     if (payrolls.length === 0) {
-      throw new Error('Không có nhân viên cần thanh toán')
+      throw new Error("Không có nhân viên cần thanh toán")
     }
 
     // Create payment records
     const records = createPaymentRecords(
-      payrolls.map(p => ({
+      payrolls.map((p) => ({
         ...p,
         netSalary: Number(p.netSalary),
       })),
@@ -429,13 +429,13 @@ export const bankPaymentService = {
     })
 
     if (!batch) {
-      throw new Error('Đợt thanh toán không tồn tại')
+      throw new Error("Đợt thanh toán không tồn tại")
     }
 
     return db.bankPaymentBatch.update({
       where: { id },
       data: {
-        status: 'PAID',
+        status: "PAID",
         processedAt: new Date(),
         processedBy: userId,
         bankReference,
@@ -473,14 +473,14 @@ export const bankPaymentService = {
    */
   getBankFormat(bankCode: string): BankFileFormat {
     switch (bankCode) {
-      case 'VCB':
-        return 'VCB'
-      case 'TCB':
-        return 'TCB'
-      case 'BIDV':
-        return 'BIDV'
+      case "VCB":
+        return "VCB"
+      case "TCB":
+        return "TCB"
+      case "BIDV":
+        return "BIDV"
       default:
-        return 'GENERIC'
+        return "GENERIC"
     }
   },
 
@@ -496,8 +496,8 @@ export const bankPaymentService = {
       totalBatches: batches.length,
       totalRecords: batches.reduce((sum, b) => sum + b.totalRecords, 0),
       totalAmount: batches.reduce((sum, b) => sum + Number(b.totalAmount), 0),
-      processed: batches.filter(b => b.status === 'PAID').length,
-      pending: batches.filter(b => b.status !== 'PAID').length,
+      processed: batches.filter((b) => b.status === "PAID").length,
+      pending: batches.filter((b) => b.status !== "PAID").length,
     }
   },
 }

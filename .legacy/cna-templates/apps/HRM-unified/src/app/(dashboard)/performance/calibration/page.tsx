@@ -1,14 +1,17 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Scale, Plus, BarChart3, Calendar } from 'lucide-react'
-import { CalibrationSession } from '@/types/performance'
-import { RATING_SCALE, RATING_DISTRIBUTION_TARGET } from '@/lib/performance/constants'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Scale, Plus, BarChart3, Calendar } from "lucide-react"
+import { CalibrationSession } from "@/types/performance"
+import {
+  RATING_SCALE,
+  RATING_DISTRIBUTION_TARGET,
+} from "@/lib/performance/constants"
 
 export default function CalibrationPage() {
   const [sessions, setSessions] = useState<CalibrationSession[]>([])
@@ -17,7 +20,7 @@ export default function CalibrationPage() {
   useEffect(() => {
     async function loadSessions() {
       try {
-        const res = await fetch('/api/performance/calibration')
+        const res = await fetch("/api/performance/calibration")
         if (res.ok) {
           const data = await res.json()
           setSessions(Array.isArray(data) ? data : data.data || [])
@@ -53,7 +56,8 @@ export default function CalibrationPage() {
       <Card className="bg-zinc-900 border-zinc-800">
         <CardHeader>
           <CardTitle className="text-zinc-100 flex items-center gap-2">
-            <BarChart3 className="h-4 w-4 text-amber-400" /> Phân bố đánh giá mục tiêu
+            <BarChart3 className="h-4 w-4 text-amber-400" /> Phân bố đánh giá
+            mục tiêu
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -61,7 +65,10 @@ export default function CalibrationPage() {
             {RATING_SCALE.map((rating) => {
               const target = RATING_DISTRIBUTION_TARGET[rating.value] || 0
               return (
-                <div key={rating.value} className="flex-1 flex flex-col items-center gap-1">
+                <div
+                  key={rating.value}
+                  className="flex-1 flex flex-col items-center gap-1"
+                >
                   <span className="text-xs text-zinc-500">{target}%</span>
                   <div
                     className="w-full rounded-t"
@@ -72,7 +79,9 @@ export default function CalibrationPage() {
                     }}
                   />
                   <span className="text-xs text-zinc-400">{rating.value}</span>
-                  <span className="text-[10px] text-zinc-600">{rating.label}</span>
+                  <span className="text-[10px] text-zinc-600">
+                    {rating.label}
+                  </span>
                 </div>
               )
             })}
@@ -85,28 +94,47 @@ export default function CalibrationPage() {
         <div className="flex flex-col items-center justify-center py-16 text-zinc-500">
           <Scale className="h-16 w-16 mb-4 text-zinc-700" />
           <p className="text-lg">Chưa có phiên calibration nào</p>
-          <p className="text-sm text-zinc-600 mt-1">Tạo phiên mới để bắt đầu quá trình điều chỉnh đánh giá</p>
+          <p className="text-sm text-zinc-600 mt-1">
+            Tạo phiên mới để bắt đầu quá trình điều chỉnh đánh giá
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
           {sessions.map((session) => (
-            <Link key={session.id} href={`/performance/calibration/${session.id}`}>
+            <Link
+              key={session.id}
+              href={`/performance/calibration/${session.id}`}
+            >
               <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors cursor-pointer">
                 <CardContent className="py-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-zinc-200">{session.name}</p>
+                      <p className="font-medium text-zinc-200">
+                        {session.name}
+                      </p>
                       <div className="flex items-center gap-3 mt-1 text-xs text-zinc-500">
-                        {session.department && <span>{session.department.name}</span>}
+                        {session.department && (
+                          <span>{session.department.name}</span>
+                        )}
                         <span className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
-                          {new Date(session.scheduledAt).toLocaleDateString('vi-VN')}
+                          {new Date(session.scheduledAt).toLocaleDateString(
+                            "vi-VN"
+                          )}
                         </span>
-                        <span>{session.participantIds.length} người tham gia</span>
+                        <span>
+                          {session.participantIds.length} người tham gia
+                        </span>
                       </div>
                     </div>
-                    <Badge className={session.completedAt ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400'}>
-                      {session.completedAt ? 'Hoàn thành' : 'Đang diễn ra'}
+                    <Badge
+                      className={
+                        session.completedAt
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-blue-500/20 text-blue-400"
+                      }
+                    >
+                      {session.completedAt ? "Hoàn thành" : "Đang diễn ra"}
                     </Badge>
                   </div>
                 </CardContent>

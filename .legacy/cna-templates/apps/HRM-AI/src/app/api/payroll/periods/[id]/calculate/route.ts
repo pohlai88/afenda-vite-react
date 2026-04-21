@@ -1,10 +1,10 @@
 // src/app/api/payroll/periods/[id]/calculate/route.ts
 // Payroll Calculation API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { payrollCalculationService } from '@/services/payroll-calculation.service'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { payrollCalculationService } from "@/services/payroll-calculation.service"
+import { z } from "zod"
 
 const calculateSchema = z.object({
   employeeIds: z.array(z.string()).optional(),
@@ -19,11 +19,15 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'HR_STAFF'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (
+      !["SUPER_ADMIN", "ADMIN", "HR_MANAGER", "HR_STAFF"].includes(
+        session.user.role
+      )
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -50,9 +54,9 @@ export async function POST(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error calculating payroll:', error)
+    console.error("Error calculating payroll:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

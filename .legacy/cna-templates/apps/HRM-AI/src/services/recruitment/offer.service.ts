@@ -1,9 +1,9 @@
-import { db } from '@/lib/db'
-import { Prisma } from '@prisma/client'
-import type { JobType, WorkMode } from '@prisma/client'
-import { audit } from '@/lib/recruitment/utils'
-import { emailService } from '@/services/email.service'
-import type { AuditContext } from '@/types/audit'
+import { db } from "@/lib/db"
+import { Prisma } from "@prisma/client"
+import type { JobType, WorkMode } from "@prisma/client"
+import { audit } from "@/lib/recruitment/utils"
+import { emailService } from "@/services/email.service"
+import type { AuditContext } from "@/types/audit"
 
 export async function generateOfferCode(tenantId: string): Promise<string> {
   const year = new Date().getFullYear()
@@ -16,7 +16,7 @@ export async function generateOfferCode(tenantId: string): Promise<string> {
       },
     },
   })
-  return `OFFER-${year}-${String(count + 1).padStart(4, '0')}`
+  return `OFFER-${year}-${String(count + 1).padStart(4, "0")}`
 }
 
 export async function createOffer(
@@ -59,7 +59,7 @@ export async function createOffer(
       startDate: data.startDate,
       probationMonths: data.probationMonths || 2,
       expiresAt: data.expiresAt,
-      status: 'DRAFT',
+      status: "DRAFT",
     },
     include: {
       application: { include: { candidate: true } },
@@ -67,7 +67,12 @@ export async function createOffer(
     },
   })
 
-  await audit.create(ctx, 'Offer', offer.id, `${offer.offerCode} - ${offer.position}`)
+  await audit.create(
+    ctx,
+    "Offer",
+    offer.id,
+    `${offer.offerCode} - ${offer.position}`
+  )
 
   return offer
 }
@@ -100,7 +105,7 @@ export async function getOffers(
         },
         department: true,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -135,7 +140,7 @@ export async function approveOffer(
   ctx: AuditContext
 ) {
   const offer = await db.offer.findFirst({
-    where: { id, tenantId, status: 'PENDING_APPROVAL' },
+    where: { id, tenantId, status: "PENDING_APPROVAL" },
   })
 
   if (!offer) return null
@@ -143,13 +148,13 @@ export async function approveOffer(
   const updated = await db.offer.update({
     where: { id },
     data: {
-      status: 'APPROVED',
+      status: "APPROVED",
       approvedById: userId,
       approvedAt: new Date(),
     },
   })
 
-  await audit.approve(ctx, 'Offer', id, offer.offerCode)
+  await audit.approve(ctx, "Offer", id, offer.offerCode)
 
   return updated
 }
@@ -161,7 +166,7 @@ export async function sendOffer(
   ctx: AuditContext
 ) {
   const offer = await db.offer.findFirst({
-    where: { id, tenantId, status: 'APPROVED' },
+    where: { id, tenantId, status: "APPROVED" },
     include: {
       application: { include: { candidate: true } },
       department: true,
@@ -173,7 +178,7 @@ export async function sendOffer(
   const updated = await db.offer.update({
     where: { id },
     data: {
-      status: 'SENT',
+      status: "SENT",
       sentAt: new Date(),
       sentById: userId,
     },
@@ -181,32 +186,41 @@ export async function sendOffer(
 
   await db.application.update({
     where: { id: offer.applicationId },
-    data: { status: 'OFFER' },
+    data: { status: "OFFER" },
   })
 
   try {
-    await emailService.queueEmail(tenantId, offer.application.candidate.email, 'offer_letter', {
-      candidateName: offer.application.candidate.fullName,
-      position: offer.position,
-      department: offer.department.name,
-      baseSalary: new Intl.NumberFormat('vi-VN').format(Number(offer.baseSalary)),
-      startDate: offer.startDate.toLocaleDateString('vi-VN'),
-      expiresAt: offer.expiresAt.toLocaleDateString('vi-VN'),
-    })
+    await emailService.queueEmail(
+      tenantId,
+      offer.application.candidate.email,
+      "offer_letter",
+      {
+        candidateName: offer.application.candidate.fullName,
+        position: offer.position,
+        department: offer.department.name,
+        baseSalary: new Intl.NumberFormat("vi-VN").format(
+          Number(offer.baseSalary)
+        ),
+        startDate: offer.startDate.toLocaleDateString("vi-VN"),
+        expiresAt: offer.expiresAt.toLocaleDateString("vi-VN"),
+      }
+    )
   } catch (e) {
-    console.error('Failed to queue offer email:', e)
+    console.error("Failed to queue offer email:", e)
   }
 
   await db.applicationActivity.create({
     data: {
       applicationId: offer.applicationId,
-      action: 'offer_sent',
+      action: "offer_sent",
       description: `Đã gửi offer letter (${offer.offerCode})`,
       performedById: userId,
     },
   })
 
-  await audit.update(ctx, 'Offer', id, { status: { old: 'APPROVED', new: 'SENT' } })
+  await audit.update(ctx, "Offer", id, {
+    status: { old: "APPROVED", new: "SENT" },
+  })
 
   return updated
 }
@@ -218,12 +232,12 @@ export async function respondToOffer(
   note?: string
 ) {
   const offer = await db.offer.findFirst({
-    where: { id, tenantId, status: 'SENT' },
+    where: { id, tenantId, status: "SENT" },
   })
 
   if (!offer) return null
 
-  const newStatus = accepted ? 'ACCEPTED' : 'DECLINED'
+  const newStatus = accepted ? "ACCEPTED" : "DECLINED"
 
   const updated = await db.offer.update({
     where: { id },
@@ -237,7 +251,7 @@ export async function respondToOffer(
   if (accepted) {
     await db.application.update({
       where: { id: offer.applicationId },
-      data: { status: 'HIRED', hiredAt: new Date() },
+      data: { status: "HIRED", hiredAt: new Date() },
     })
 
     const application = await db.application.findUnique({
@@ -255,8 +269,10 @@ export async function respondToOffer(
   await db.applicationActivity.create({
     data: {
       applicationId: offer.applicationId,
-      action: accepted ? 'offer_accepted' : 'offer_declined',
-      description: accepted ? 'Ứng viên đã chấp nhận offer' : 'Ứng viên đã từ chối offer',
+      action: accepted ? "offer_accepted" : "offer_declined",
+      description: accepted
+        ? "Ứng viên đã chấp nhận offer"
+        : "Ứng viên đã từ chối offer",
     },
   })
 

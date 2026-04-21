@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useState, useEffect, useCallback } from 'react'
-import type { JobRequisition } from '@/types/recruitment'
+import { useState, useEffect, useCallback } from "react"
+import type { JobRequisition } from "@/types/recruitment"
 
 interface UseRequisitionsOptions {
   tenantId: string
@@ -20,9 +20,9 @@ export function useRequisitions(options: UseRequisitionsOptions) {
     setLoading(true)
     try {
       const params = new URLSearchParams({ tenantId: options.tenantId })
-      if (options.status) params.set('status', options.status)
-      if (options.departmentId) params.set('departmentId', options.departmentId)
-      if (options.page) params.set('page', String(options.page))
+      if (options.status) params.set("status", options.status)
+      if (options.departmentId) params.set("departmentId", options.departmentId)
+      if (options.page) params.set("page", String(options.page))
 
       const res = await fetch(`/api/recruitment/requisitions?${params}`)
       const data = await res.json()
@@ -34,7 +34,7 @@ export function useRequisitions(options: UseRequisitionsOptions) {
         setError(data.error)
       }
     } catch {
-      setError('Failed to fetch requisitions')
+      setError("Failed to fetch requisitions")
     } finally {
       setLoading(false)
     }

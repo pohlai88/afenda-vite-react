@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { CONTACT_STATUSES } from '@/lib/constants'
-import { useTranslation } from '@/i18n'
-import type { ContactWithCompany } from '@/types'
+import Link from "next/link"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { CONTACT_STATUSES } from "@/lib/constants"
+import { useTranslation } from "@/i18n"
+import type { ContactWithCompany } from "@/types"
 
 interface ContactCardProps {
   contact: ContactWithCompany
@@ -25,9 +25,7 @@ export function ContactCard({ contact }: ContactCardProps) {
       className="flex items-center gap-3 rounded-lg border border-[var(--crm-border)] bg-[var(--crm-bg-card)] p-3 transition-colors hover:bg-[var(--crm-bg-hover)]"
     >
       <Avatar className="h-10 w-10 shrink-0">
-        <AvatarFallback
-          className="bg-[#10B981]/20 text-[#10B981] text-sm font-medium"
-        >
+        <AvatarFallback className="bg-[#10B981]/20 text-[#10B981] text-sm font-medium">
           {getInitials(contact.firstName, contact.lastName)}
         </AvatarFallback>
       </Avatar>
@@ -50,7 +48,9 @@ export function ContactCard({ contact }: ContactCardProps) {
           )}
         </div>
         {contact.email && (
-          <p className="truncate text-xs text-[var(--crm-text-secondary)]">{contact.email}</p>
+          <p className="truncate text-xs text-[var(--crm-text-secondary)]">
+            {contact.email}
+          </p>
         )}
         {contact.company && (
           <p className="truncate text-xs text-[var(--crm-text-muted)]">

@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Added
+
 - Database documentation structure
 - Migration guide for Prisma
 - Enhanced CONTRIBUTING guide with detailed workflow
@@ -17,13 +18,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Database schema documentation by module
 
 ### Changed
+
 - Updated CONTRIBUTING.md with community-focused guidance
 - Improved SECURITY.md with detailed response timeline and severity levels
 
 ### Fixed
+
 - None yet
 
 ### Security
+
 - Documented security measures and best practices
 - Added severity classification for vulnerability reports
 - Defined responsible disclosure process
@@ -35,6 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added - Phase 1-5 Integration
 
 **Infrastructure & DevOps**
+
 - ✅ Complete CI/CD pipeline (GitHub Actions)
 - ✅ Multi-environment deployment (Dev, Staging, Prod)
 - ✅ Docker & Kubernetes support with Helm charts
@@ -42,6 +47,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ✅ Automated monitoring and alerting
 
 **Database & ORM**
+
 - ✅ PostgreSQL 16 with multi-schema architecture
 - ✅ Prisma 5.0+ ORM with full type safety
 - ✅ 14+ database schemas (one per module)
@@ -49,6 +55,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ✅ Audit logging and change tracking
 
 **Testing & Quality**
+
 - ✅ E2E tests with Playwright
 - ✅ Unit tests with Vitest
 - ✅ Integration tests
@@ -56,6 +63,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ✅ Performance testing
 
 **Security**
+
 - ✅ Keycloak SSO / OIDC integration
 - ✅ Role-Based Access Control (RBAC)
 - ✅ Row-Level Security (RLS)
@@ -67,6 +75,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ✅ Encryption at rest and in transit
 
 **Monitoring & Observability**
+
 - ✅ Centralized logging (ELK Stack)
 - ✅ APM with New Relic
 - ✅ Real-time alerting
@@ -74,6 +83,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ✅ Error tracking (Sentry integration)
 
 **Microservices & API**
+
 - ✅ 14 independent modules
 - ✅ Event-driven architecture with RabbitMQ
 - ✅ Event sourcing for data consistency
@@ -85,6 +95,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Module Implementations (Phase 1-5)
 
 **Phase 1: Accounting Module**
+
 - Chart of Accounts (VAS compliant)
 - Journal Entries & Posting
 - AR & AP Invoice Management
@@ -93,6 +104,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Financial Reporting
 
 **Phase 2: CRM Module**
+
 - Lead Management
 - Contact & Account Management
 - Opportunity Pipeline
@@ -101,6 +113,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Sales Forecasting
 
 **Phase 3: HRM Module**
+
 - Employee Management
 - Department & Position Structure
 - Attendance Tracking
@@ -109,6 +122,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Performance Reviews
 
 **Phase 4: Ecommerce Module**
+
 - Product Catalog
 - Order Management
 - Shopping Cart
@@ -117,6 +131,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Inventory Management
 
 **Phase 5: MRP Module**
+
 - Bill of Materials (BOM)
 - Production Orders
 - Quality Control
@@ -127,6 +142,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Shared Infrastructure
 
 **Master Data Management**
+
 - Centralized customer database
 - Product catalog
 - Employee master data
@@ -135,6 +151,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Units of measure
 
 **Framework & Libraries**
+
 - 20+ shared packages
 - Common utilities and helpers
 - Shared UI components
@@ -210,6 +227,7 @@ Initial open-source release of VietERP Platform.
 ### Initial Release Includes
 
 **Project Statistics**
+
 - 📊 14 fully functional modules
 - 📦 20+ shared packages
 - 🗂️ ~738,518 lines of code
@@ -217,6 +235,7 @@ Initial open-source release of VietERP Platform.
 - 🔐 Enterprise-grade security
 
 **Core Modules (Production Ready)**
+
 1. Accounting (VAS-compliant)
 2. CRM (Lead, Contact, Opportunity management)
 3. Human Resource Management
@@ -233,6 +252,7 @@ Initial open-source release of VietERP Platform.
 14. API Gateway
 
 **Technology Stack**
+
 - **Frontend:** Next.js, React, Tailwind CSS
 - **Backend:** NestJS, Express.js, Node.js
 - **Database:** PostgreSQL 16, Prisma ORM
@@ -244,6 +264,7 @@ Initial open-source release of VietERP Platform.
 - **Testing:** Playwright, Vitest, Jest
 
 **Key Features**
+
 - ✅ Multi-tenant architecture
 - ✅ Role-based access control
 - ✅ Event-driven architecture
@@ -256,6 +277,7 @@ Initial open-source release of VietERP Platform.
 - ✅ CI/CD pipeline
 
 **Documentation**
+
 - ✅ Architecture documentation
 - ✅ API documentation
 - ✅ Database schema documentation
@@ -264,6 +286,7 @@ Initial open-source release of VietERP Platform.
 - ✅ User guides
 
 **Community**
+
 - ✅ Open source license (TBD)
 - ✅ Contribution guidelines
 - ✅ Code of conduct

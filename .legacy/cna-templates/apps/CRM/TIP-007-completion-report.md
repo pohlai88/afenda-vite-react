@@ -5,15 +5,18 @@
 **FILES CHANGED:**
 
 Created:
+
 - `src/lib/quotes/status.ts` — Quote status helpers (isQuoteExpired, daysUntilExpiry, getQuoteStatusColor, getQuoteStatusLabel)
 - `src/app/api/quotes/[id]/send/route.ts` — POST endpoint: generate PDF, send email with attachment, update status DRAFT→SENT, create activity log
 - `src/app/api/quotes/check-expiry/route.ts` — POST endpoint: auto-expire overdue quotes, send reminder emails for quotes expiring within 3 days (MANAGER+ only)
 
 Modified:
+
 - `prisma/schema.prisma` — Added `sentAt DateTime?` field to Quote model
 - `src/app/(app)/quotes/[id]/page.tsx` — Major update: replaced simple "Gửi báo giá" button with send dialog modal (email input, message textarea, PDF attachment note), added expiry indicator badges (amber/red based on days remaining), disabled send for expired quotes, added placeholder "Tạo bản sao" button for expired quotes, RBAC-gated send button
 
 **SCHEMA CHANGES:**
+
 - Quote model: added `sentAt DateTime?` — tracks when quote was last sent via email
 - Applied via `prisma db push`
 
@@ -39,14 +42,17 @@ Modified:
 - AC-7 Build & No Regression: PASS — `tsc --noEmit` zero errors, `next build` success, all routes compiled including new `/api/quotes/[id]/send` and `/api/quotes/check-expiry`.
 
 **ISSUES DISCOVERED:**
+
 - None
 
 **DEVIATIONS FROM SPEC:**
+
 - **Expiry check-expiry duplicate prevention**: Added 24-hour dedup check via EmailLog query to prevent sending multiple reminders for the same quote within a day. Spec didn't mention this but it's essential for cron job safety.
 - **Activity type for expired quotes**: Used `NOTE` type instead of `EMAIL` for auto-expired quote activities, since no email is sent when a quote expires — only status update. Reminders use `EMAIL` type since an email is actually sent.
 - **"Tạo bản sao" placeholder**: Shows as a disabled button on expired quotes. Spec said "placeholder UI only" — implemented exactly that.
 
 **SUGGESTIONS FOR CHỦ THẦU:**
+
 - The check-expiry endpoint should be called via Vercel Cron or external scheduler (e.g., daily at 8am). Example Vercel cron config: `{ "path": "/api/quotes/check-expiry", "schedule": "0 8 * * *" }`
 - Consider adding a `quoteId` field to EmailLog for better quote-level email tracking (currently uses subject string matching for dedup).
 - TIP-007 completes the core business flow: Create Quote → Generate PDF → Send Email → Track Expiry. The M2 milestone (Email & PDF) is now fully achieved.

@@ -1,30 +1,32 @@
 // src/app/api/payroll/components/[id]/route.ts
 // Single Salary Component API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { salaryComponentService } from '@/services/salary-component.service'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { salaryComponentService } from "@/services/salary-component.service"
+import { z } from "zod"
 
 const updateComponentSchema = z.object({
   name: z.string().min(1).optional(),
   code: z.string().min(1).max(50).optional(),
-  category: z.enum([
-    'BASE_SALARY',
-    'ALLOWANCE_TAXABLE',
-    'ALLOWANCE_NON_TAXABLE',
-    'OVERTIME',
-    'BONUS',
-    'COMMISSION',
-    'INSURANCE_EMPLOYEE',
-    'INSURANCE_EMPLOYER',
-    'PIT',
-    'ADVANCE',
-    'LOAN',
-    'OTHER_DEDUCTION',
-    'OTHER_EARNING',
-  ]).optional(),
-  itemType: z.enum(['EARNING', 'DEDUCTION', 'EMPLOYER_COST']).optional(),
+  category: z
+    .enum([
+      "BASE_SALARY",
+      "ALLOWANCE_TAXABLE",
+      "ALLOWANCE_NON_TAXABLE",
+      "OVERTIME",
+      "BONUS",
+      "COMMISSION",
+      "INSURANCE_EMPLOYEE",
+      "INSURANCE_EMPLOYER",
+      "PIT",
+      "ADVANCE",
+      "LOAN",
+      "OTHER_DEDUCTION",
+      "OTHER_EARNING",
+    ])
+    .optional(),
+  itemType: z.enum(["EARNING", "DEDUCTION", "EMPLOYER_COST"]).optional(),
   defaultAmount: z.number().optional(),
   isPercentage: z.boolean().optional(),
   percentageBase: z.string().optional(),
@@ -42,7 +44,7 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
@@ -53,16 +55,16 @@ export async function GET(
 
     if (!component) {
       return NextResponse.json(
-        { error: 'Thành phần lương không tồn tại' },
+        { error: "Thành phần lương không tồn tại" },
         { status: 404 }
       )
     }
 
     return NextResponse.json(component)
   } catch (error) {
-    console.error('Error fetching salary component:', error)
+    console.error("Error fetching salary component:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -75,11 +77,11 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -103,9 +105,9 @@ export async function PATCH(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error updating salary component:', error)
+    console.error("Error updating salary component:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -118,11 +120,11 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -133,9 +135,9 @@ export async function DELETE(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error deleting salary component:', error)
+    console.error("Error deleting salary component:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { handleApiError } from '@/lib/api/errors'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { handleApiError } from "@/lib/api/errors"
 
 // POST /api/deals/[id]/contacts — Add contact to deal
 export async function POST(
@@ -11,25 +11,39 @@ export async function POST(
   try {
     await getCurrentUser()
     const { id: dealId } = await params
-    const { contactId, role = 'OTHER', isPrimary = false } = await req.json()
+    const { contactId, role = "OTHER", isPrimary = false } = await req.json()
 
     if (!contactId) {
-      return NextResponse.json({ error: 'contactId is required' }, { status: 400 })
+      return NextResponse.json(
+        { error: "contactId is required" },
+        { status: 400 }
+      )
     }
 
     const dc = await prisma.dealContact.create({
       data: { dealId, contactId, role, isPrimary },
       include: {
-        contact: { select: { id: true, firstName: true, lastName: true, email: true, avatarUrl: true } },
+        contact: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            avatarUrl: true,
+          },
+        },
       },
     })
 
     return NextResponse.json(dc, { status: 201 })
   } catch (error: any) {
-    if (error?.code === 'P2002') {
-      return NextResponse.json({ error: 'Contact already added to this deal' }, { status: 409 })
+    if (error?.code === "P2002") {
+      return NextResponse.json(
+        { error: "Contact already added to this deal" },
+        { status: 409 }
+      )
     }
-    return handleApiError(error, '/api/deals/[id]/contacts')
+    return handleApiError(error, "/api/deals/[id]/contacts")
   }
 }
 
@@ -44,7 +58,10 @@ export async function PATCH(
     const { contactId, role, isPrimary, notes } = await req.json()
 
     if (!contactId) {
-      return NextResponse.json({ error: 'contactId is required' }, { status: 400 })
+      return NextResponse.json(
+        { error: "contactId is required" },
+        { status: 400 }
+      )
     }
 
     const dc = await prisma.dealContact.update({
@@ -55,16 +72,27 @@ export async function PATCH(
         ...(notes !== undefined && { notes }),
       },
       include: {
-        contact: { select: { id: true, firstName: true, lastName: true, email: true, avatarUrl: true } },
+        contact: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            avatarUrl: true,
+          },
+        },
       },
     })
 
     return NextResponse.json(dc)
   } catch (error: any) {
-    if (error?.code === 'P2025') {
-      return NextResponse.json({ error: 'Contact not found on this deal' }, { status: 404 })
+    if (error?.code === "P2025") {
+      return NextResponse.json(
+        { error: "Contact not found on this deal" },
+        { status: 404 }
+      )
     }
-    return handleApiError(error, '/api/deals/[id]/contacts')
+    return handleApiError(error, "/api/deals/[id]/contacts")
   }
 }
 
@@ -77,10 +105,13 @@ export async function DELETE(
     await getCurrentUser()
     const { id: dealId } = await params
     const { searchParams } = req.nextUrl
-    const contactId = searchParams.get('contactId')
+    const contactId = searchParams.get("contactId")
 
     if (!contactId) {
-      return NextResponse.json({ error: 'contactId is required' }, { status: 400 })
+      return NextResponse.json(
+        { error: "contactId is required" },
+        { status: 400 }
+      )
     }
 
     await prisma.dealContact.delete({
@@ -89,9 +120,12 @@ export async function DELETE(
 
     return new NextResponse(null, { status: 204 })
   } catch (error: any) {
-    if (error?.code === 'P2025') {
-      return NextResponse.json({ error: 'Contact not found on this deal' }, { status: 404 })
+    if (error?.code === "P2025") {
+      return NextResponse.json(
+        { error: "Contact not found on this deal" },
+        { status: 404 }
+      )
     }
-    return handleApiError(error, '/api/deals/[id]/contacts')
+    return handleApiError(error, "/api/deals/[id]/contacts")
   }
 }

@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { useState, useRef, useEffect } from 'react'
-import { Textarea } from '@/components/ui/textarea'
-import { ArrowUp, Loader2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { useState, useRef, useEffect } from "react"
+import { Textarea } from "@/components/ui/textarea"
+import { ArrowUp, Loader2 } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface ChatInputProps {
   onSend: (message: string) => void
@@ -14,15 +14,15 @@ interface ChatInputProps {
 export function ChatInput({
   onSend,
   isLoading = false,
-  placeholder = 'Nhập tin nhắn...',
+  placeholder = "Nhập tin nhắn...",
 }: ChatInputProps) {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     const textarea = textareaRef.current
     if (textarea) {
-      textarea.style.height = 'auto'
+      textarea.style.height = "auto"
       textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`
     }
   }, [input])
@@ -31,12 +31,12 @@ export function ChatInput({
     const trimmed = input.trim()
     if (trimmed && !isLoading) {
       onSend(trimmed)
-      setInput('')
+      setInput("")
     }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       handleSubmit()
     }

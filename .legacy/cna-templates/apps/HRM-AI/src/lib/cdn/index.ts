@@ -19,4 +19,4 @@ export {
   defaultCacheRules,
   type CacheConfig,
   type CacheRule,
-} from './headers';
+} from "./headers"

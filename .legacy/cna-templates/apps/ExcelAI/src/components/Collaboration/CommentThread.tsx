@@ -2,36 +2,36 @@
 // COMMENT THREAD — Threaded comments UI (Blueprint §6.4)
 // =============================================================================
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react"
 import type {
   Comment,
   CommentThread as CommentThreadType,
   CollaborationUser,
-} from '../../collaboration/types';
-import { UserAvatar } from './CollaboratorsList';
+} from "../../collaboration/types"
+import { UserAvatar } from "./CollaboratorsList"
 
 // -----------------------------------------------------------------------------
 // Props
 // -----------------------------------------------------------------------------
 
 interface CommentThreadProps {
-  thread: CommentThreadType;
-  currentUser: CollaborationUser;
-  onReply: (content: string) => void;
-  onEdit: (commentId: string, content: string) => void;
-  onDelete: (commentId: string) => void;
-  onResolve: () => void;
-  onReopen: () => void;
-  isExpanded?: boolean;
-  onToggleExpand?: () => void;
+  thread: CommentThreadType
+  currentUser: CollaborationUser
+  onReply: (content: string) => void
+  onEdit: (commentId: string, content: string) => void
+  onDelete: (commentId: string) => void
+  onResolve: () => void
+  onReopen: () => void
+  isExpanded?: boolean
+  onToggleExpand?: () => void
 }
 
 interface SingleCommentProps {
-  comment: Comment;
-  currentUser: CollaborationUser;
-  onEdit: (content: string) => void;
-  onDelete: () => void;
-  isFirst?: boolean;
+  comment: Comment
+  currentUser: CollaborationUser
+  onEdit: (content: string) => void
+  onDelete: () => void
+  isFirst?: boolean
 }
 
 // -----------------------------------------------------------------------------
@@ -39,18 +39,18 @@ interface SingleCommentProps {
 // -----------------------------------------------------------------------------
 
 function formatRelativeTime(date: Date): string {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const seconds = Math.floor(diff / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
 
-  if (seconds < 60) return 'just now';
-  if (minutes < 60) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  if (days < 7) return `${days}d ago`;
-  return date.toLocaleDateString();
+  if (seconds < 60) return "just now"
+  if (minutes < 60) return `${minutes}m ago`
+  if (hours < 24) return `${hours}h ago`
+  if (days < 7) return `${days}d ago`
+  return date.toLocaleDateString()
 }
 
 // -----------------------------------------------------------------------------
@@ -64,46 +64,46 @@ const SingleComment: React.FC<SingleCommentProps> = ({
   onDelete,
   isFirst = false,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState(comment.content);
-  const [showActions, setShowActions] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isEditing, setIsEditing] = useState(false)
+  const [editContent, setEditContent] = useState(comment.content)
+  const [showActions, setShowActions] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const isAuthor = comment.author.id === currentUser.id;
+  const isAuthor = comment.author.id === currentUser.id
 
   useEffect(() => {
     if (isEditing && textareaRef.current) {
-      textareaRef.current.focus();
+      textareaRef.current.focus()
       textareaRef.current.setSelectionRange(
         editContent.length,
         editContent.length
-      );
+      )
     }
-  }, [isEditing, editContent.length]);
+  }, [isEditing, editContent.length])
 
   const handleSaveEdit = () => {
     if (editContent.trim() && editContent !== comment.content) {
-      onEdit(editContent.trim());
+      onEdit(editContent.trim())
     }
-    setIsEditing(false);
-  };
+    setIsEditing(false)
+  }
 
   const handleCancelEdit = () => {
-    setEditContent(comment.content);
-    setIsEditing(false);
-  };
+    setEditContent(comment.content)
+    setIsEditing(false)
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      handleSaveEdit();
-    } else if (e.key === 'Escape') {
-      handleCancelEdit();
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      handleSaveEdit()
+    } else if (e.key === "Escape") {
+      handleCancelEdit()
     }
-  };
+  }
 
   return (
     <div
-      className={`comment ${isFirst ? 'comment--first' : 'comment--reply'} ${comment.resolved ? 'comment--resolved' : ''}`}
+      className={`comment ${isFirst ? "comment--first" : "comment--reply"} ${comment.resolved ? "comment--resolved" : ""}`}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
@@ -168,8 +168,8 @@ const SingleComment: React.FC<SingleCommentProps> = ({
         <p className="comment__content">{comment.content}</p>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Comment Thread Component
@@ -186,40 +186,42 @@ export const CommentThread: React.FC<CommentThreadProps> = ({
   isExpanded = true,
   onToggleExpand,
 }) => {
-  const [replyContent, setReplyContent] = useState('');
-  const [isReplying, setIsReplying] = useState(false);
-  const replyInputRef = useRef<HTMLTextAreaElement>(null);
+  const [replyContent, setReplyContent] = useState("")
+  const [isReplying, setIsReplying] = useState(false)
+  const replyInputRef = useRef<HTMLTextAreaElement>(null)
 
-  const rootComment = thread.comments[0];
-  const replies = thread.comments.slice(1);
+  const rootComment = thread.comments[0]
+  const replies = thread.comments.slice(1)
 
   const handleSubmitReply = () => {
     if (replyContent.trim()) {
-      onReply(replyContent.trim());
-      setReplyContent('');
-      setIsReplying(false);
+      onReply(replyContent.trim())
+      setReplyContent("")
+      setIsReplying(false)
     }
-  };
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      handleSubmitReply();
-    } else if (e.key === 'Escape') {
-      setIsReplying(false);
-      setReplyContent('');
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      handleSubmitReply()
+    } else if (e.key === "Escape") {
+      setIsReplying(false)
+      setReplyContent("")
     }
-  };
+  }
 
   useEffect(() => {
     if (isReplying && replyInputRef.current) {
-      replyInputRef.current.focus();
+      replyInputRef.current.focus()
     }
-  }, [isReplying]);
+  }, [isReplying])
 
-  if (!rootComment) return null;
+  if (!rootComment) return null
 
   return (
-    <div className={`comment-thread ${thread.resolved ? 'comment-thread--resolved' : ''}`}>
+    <div
+      className={`comment-thread ${thread.resolved ? "comment-thread--resolved" : ""}`}
+    >
       {/* Thread header */}
       <div className="comment-thread__header">
         <span className="comment-thread__cell">{thread.cellRef}</span>
@@ -230,7 +232,7 @@ export const CommentThread: React.FC<CommentThreadProps> = ({
           <button
             className="comment-thread__toggle"
             onClick={onToggleExpand}
-            title={isExpanded ? 'Collapse' : 'Expand'}
+            title={isExpanded ? "Collapse" : "Expand"}
           >
             {isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
           </button>
@@ -279,8 +281,8 @@ export const CommentThread: React.FC<CommentThreadProps> = ({
                 <button
                   className="comment__btn comment__btn--secondary"
                   onClick={() => {
-                    setIsReplying(false);
-                    setReplyContent('');
+                    setIsReplying(false)
+                    setReplyContent("")
                   }}
                 >
                   Cancel
@@ -303,10 +305,7 @@ export const CommentThread: React.FC<CommentThreadProps> = ({
                 Reply
               </button>
               {thread.resolved ? (
-                <button
-                  className="comment-thread__action"
-                  onClick={onReopen}
-                >
+                <button className="comment-thread__action" onClick={onReopen}>
                   Reopen
                 </button>
               ) : (
@@ -322,23 +321,23 @@ export const CommentThread: React.FC<CommentThreadProps> = ({
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Comment Panel (sidebar view)
 // -----------------------------------------------------------------------------
 
 interface CommentPanelProps {
-  threads: CommentThreadType[];
-  currentUser: CollaborationUser;
-  onReply: (threadId: string, content: string) => void;
-  onEdit: (commentId: string, content: string) => void;
-  onDelete: (commentId: string) => void;
-  onResolve: (threadId: string) => void;
-  onReopen: (threadId: string) => void;
-  showResolved?: boolean;
-  onToggleResolved?: () => void;
+  threads: CommentThreadType[]
+  currentUser: CollaborationUser
+  onReply: (threadId: string, content: string) => void
+  onEdit: (commentId: string, content: string) => void
+  onDelete: (commentId: string) => void
+  onResolve: (threadId: string) => void
+  onReopen: (threadId: string) => void
+  showResolved?: boolean
+  onToggleResolved?: () => void
 }
 
 export const CommentPanel: React.FC<CommentPanelProps> = ({
@@ -354,23 +353,23 @@ export const CommentPanel: React.FC<CommentPanelProps> = ({
 }) => {
   const filteredThreads = showResolved
     ? threads
-    : threads.filter((t) => !t.resolved);
+    : threads.filter((t) => !t.resolved)
 
-  const resolvedCount = threads.filter((t) => t.resolved).length;
+  const resolvedCount = threads.filter((t) => t.resolved).length
 
   return (
     <div className="comment-panel">
       <div className="comment-panel__header">
         <h3 className="comment-panel__title">Comments</h3>
         <span className="comment-panel__count">
-          {filteredThreads.length} {showResolved ? 'total' : 'open'}
+          {filteredThreads.length} {showResolved ? "total" : "open"}
         </span>
         {onToggleResolved && resolvedCount > 0 && (
           <button
             className="comment-panel__toggle-resolved"
             onClick={onToggleResolved}
           >
-            {showResolved ? 'Hide' : 'Show'} resolved ({resolvedCount})
+            {showResolved ? "Hide" : "Show"} resolved ({resolvedCount})
           </button>
         )}
       </div>
@@ -397,42 +396,77 @@ export const CommentPanel: React.FC<CommentPanelProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Simple Icons
 // -----------------------------------------------------------------------------
 
 const EditIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
   </svg>
-);
+)
 
 const TrashIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
   </svg>
-);
+)
 
 const ChevronUpIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M18 15l-6-6-6 6" />
   </svg>
-);
+)
 
 const ChevronDownIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M6 9l6 6 6-6" />
   </svg>
-);
+)
 
 const CommentIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
   </svg>
-);
+)
 
-export default CommentThread;
+export default CommentThread

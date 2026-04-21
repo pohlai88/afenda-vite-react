@@ -1,22 +1,40 @@
-import { db } from '@/lib/db'
-import type { ContractFilters, PaginatedResponse, ContractWithRelations } from '@/types'
-import type { CreateContractInput, UpdateContractInput } from '@/lib/validations/contract'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import type {
+  ContractFilters,
+  PaginatedResponse,
+  ContractWithRelations,
+} from "@/types"
+import type {
+  CreateContractInput,
+  UpdateContractInput,
+} from "@/lib/validations/contract"
+import type { Prisma } from "@prisma/client"
 
 export const contractService = {
   async findAll(
     tenantId: string,
     filters: ContractFilters = {}
   ): Promise<PaginatedResponse<ContractWithRelations>> {
-    const { search, employeeId, status, contractType, page = 1, pageSize = 20 } = filters
+    const {
+      search,
+      employeeId,
+      status,
+      contractType,
+      page = 1,
+      pageSize = 20,
+    } = filters
 
     const where: Prisma.ContractWhereInput = {
       tenantId,
       ...(search && {
         OR: [
-          { contractNumber: { contains: search, mode: 'insensitive' } },
-          { employee: { fullName: { contains: search, mode: 'insensitive' } } },
-          { employee: { employeeCode: { contains: search, mode: 'insensitive' } } },
+          { contractNumber: { contains: search, mode: "insensitive" } },
+          { employee: { fullName: { contains: search, mode: "insensitive" } } },
+          {
+            employee: {
+              employeeCode: { contains: search, mode: "insensitive" },
+            },
+          },
         ],
       }),
       ...(employeeId && { employeeId }),
@@ -38,7 +56,7 @@ export const contractService = {
             },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -56,7 +74,10 @@ export const contractService = {
     }
   },
 
-  async findById(tenantId: string, id: string): Promise<ContractWithRelations | null> {
+  async findById(
+    tenantId: string,
+    id: string
+  ): Promise<ContractWithRelations | null> {
     return db.contract.findFirst({
       where: { id, tenantId },
       include: {
@@ -73,7 +94,7 @@ export const contractService = {
   async findByEmployeeId(tenantId: string, employeeId: string) {
     return db.contract.findMany({
       where: { tenantId, employeeId },
-      orderBy: { startDate: 'desc' },
+      orderBy: { startDate: "desc" },
     })
   },
 
@@ -93,7 +114,9 @@ export const contractService = {
         allowances: data.allowances || [],
         workSchedule: data.workSchedule,
         status: data.status,
-        terminationDate: data.terminationDate ? new Date(data.terminationDate) : null,
+        terminationDate: data.terminationDate
+          ? new Date(data.terminationDate)
+          : null,
         terminationReason: data.terminationReason,
         attachmentUrl: data.attachmentUrl,
         notes: data.notes,
@@ -104,31 +127,47 @@ export const contractService = {
     })
   },
 
-  async update(tenantId: string, id: string, data: Partial<UpdateContractInput>) {
+  async update(
+    tenantId: string,
+    id: string,
+    data: Partial<UpdateContractInput>
+  ) {
     const current = await db.contract.findFirst({
       where: { id, tenantId },
     })
 
     if (!current) {
-      throw new Error('Hợp đồng không tồn tại')
+      throw new Error("Hợp đồng không tồn tại")
     }
 
     const updateData: Prisma.ContractUpdateInput = {}
 
-    if (data.contractNumber !== undefined) updateData.contractNumber = data.contractNumber
-    if (data.contractType !== undefined) updateData.contractType = data.contractType
-    if (data.signedDate !== undefined) updateData.signedDate = data.signedDate ? new Date(data.signedDate) : null
-    if (data.startDate !== undefined) updateData.startDate = new Date(data.startDate)
-    if (data.endDate !== undefined) updateData.endDate = data.endDate ? new Date(data.endDate) : null
+    if (data.contractNumber !== undefined)
+      updateData.contractNumber = data.contractNumber
+    if (data.contractType !== undefined)
+      updateData.contractType = data.contractType
+    if (data.signedDate !== undefined)
+      updateData.signedDate = data.signedDate ? new Date(data.signedDate) : null
+    if (data.startDate !== undefined)
+      updateData.startDate = new Date(data.startDate)
+    if (data.endDate !== undefined)
+      updateData.endDate = data.endDate ? new Date(data.endDate) : null
     if (data.baseSalary !== undefined) updateData.baseSalary = data.baseSalary
     if (data.salaryType !== undefined) updateData.salaryType = data.salaryType
-    if (data.insuranceSalary !== undefined) updateData.insuranceSalary = data.insuranceSalary
+    if (data.insuranceSalary !== undefined)
+      updateData.insuranceSalary = data.insuranceSalary
     if (data.allowances !== undefined) updateData.allowances = data.allowances
-    if (data.workSchedule !== undefined) updateData.workSchedule = data.workSchedule
+    if (data.workSchedule !== undefined)
+      updateData.workSchedule = data.workSchedule
     if (data.status !== undefined) updateData.status = data.status
-    if (data.terminationDate !== undefined) updateData.terminationDate = data.terminationDate ? new Date(data.terminationDate) : null
-    if (data.terminationReason !== undefined) updateData.terminationReason = data.terminationReason
-    if (data.attachmentUrl !== undefined) updateData.attachmentUrl = data.attachmentUrl
+    if (data.terminationDate !== undefined)
+      updateData.terminationDate = data.terminationDate
+        ? new Date(data.terminationDate)
+        : null
+    if (data.terminationReason !== undefined)
+      updateData.terminationReason = data.terminationReason
+    if (data.attachmentUrl !== undefined)
+      updateData.attachmentUrl = data.attachmentUrl
     if (data.notes !== undefined) updateData.notes = data.notes
 
     return db.contract.update({
@@ -146,7 +185,7 @@ export const contractService = {
     })
 
     if (!contract) {
-      throw new Error('Hợp đồng không tồn tại')
+      throw new Error("Hợp đồng không tồn tại")
     }
 
     return db.contract.delete({
@@ -161,7 +200,7 @@ export const contractService = {
         tenantId,
         contractNumber: { startsWith: `HD${year}/` },
       },
-      orderBy: { contractNumber: 'desc' },
+      orderBy: { contractNumber: "desc" },
       select: { contractNumber: true },
     })
 
@@ -171,7 +210,7 @@ export const contractService = {
 
     const match = lastContract.contractNumber.match(/\/(\d+)$/)
     const num = match ? parseInt(match[1], 10) + 1 : 1
-    return `HD${year}/${String(num).padStart(4, '0')}`
+    return `HD${year}/${String(num).padStart(4, "0")}`
   },
 
   async getExpiringContracts(tenantId: string, days = 30) {
@@ -181,7 +220,7 @@ export const contractService = {
     return db.contract.findMany({
       where: {
         tenantId,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         endDate: {
           gte: now,
           lte: futureDate,
@@ -197,7 +236,7 @@ export const contractService = {
           },
         },
       },
-      orderBy: { endDate: 'asc' },
+      orderBy: { endDate: "asc" },
     })
   },
 }

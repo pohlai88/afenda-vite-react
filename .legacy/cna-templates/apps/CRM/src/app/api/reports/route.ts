@@ -1,28 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { handleApiError } from '@/lib/api/errors'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { handleApiError } from "@/lib/api/errors"
 
 // GET /api/reports — Dashboard stats and report data
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl
-    const type = searchParams.get('type') || 'dashboard'
+    const type = searchParams.get("type") || "dashboard"
 
     switch (type) {
-      case 'dashboard':
+      case "dashboard":
         return NextResponse.json(await getDashboardStats())
-      case 'funnel':
+      case "funnel":
         return NextResponse.json(await getFunnelData())
-      case 'revenue':
+      case "revenue":
         return NextResponse.json(await getRevenueData())
       default:
         return NextResponse.json(
-          { error: 'Invalid report type. Use: dashboard, funnel, revenue' },
+          { error: "Invalid report type. Use: dashboard, funnel, revenue" },
           { status: 400 }
         )
     }
   } catch (error) {
-    return handleApiError(error, '/api/reports')
+    return handleApiError(error, "/api/reports")
   }
 }
 
@@ -37,46 +37,48 @@ async function getDashboardStats() {
   })
   const activeStageIds = activeStages.map((s) => s.id)
 
-  const [activeDeals, pipelineValueResult, wonThisMonth, totalDeals, wonDeals] = await Promise.all([
-    // Count active deals
-    prisma.deal.count({
-      where: { stageId: { in: activeStageIds } },
-    }),
+  const [activeDeals, pipelineValueResult, wonThisMonth, totalDeals, wonDeals] =
+    await Promise.all([
+      // Count active deals
+      prisma.deal.count({
+        where: { stageId: { in: activeStageIds } },
+      }),
 
-    // Sum of active pipeline value
-    prisma.deal.aggregate({
-      where: { stageId: { in: activeStageIds } },
-      _sum: { value: true },
-    }),
+      // Sum of active pipeline value
+      prisma.deal.aggregate({
+        where: { stageId: { in: activeStageIds } },
+        _sum: { value: true },
+      }),
 
-    // Deals won this month
-    prisma.deal.findMany({
-      where: {
-        stage: { isWon: true },
-        closedAt: { gte: startOfMonth },
-      },
-      select: { value: true },
-    }),
+      // Deals won this month
+      prisma.deal.findMany({
+        where: {
+          stage: { isWon: true },
+          closedAt: { gte: startOfMonth },
+        },
+        select: { value: true },
+      }),
 
-    // Total closed deals (for conversion rate)
-    prisma.deal.count({
-      where: {
-        OR: [
-          { stage: { isWon: true } },
-          { stage: { isLost: true } },
-        ],
-      },
-    }),
+      // Total closed deals (for conversion rate)
+      prisma.deal.count({
+        where: {
+          OR: [{ stage: { isWon: true } }, { stage: { isLost: true } }],
+        },
+      }),
 
-    // Won deals count
-    prisma.deal.count({
-      where: { stage: { isWon: true } },
-    }),
-  ])
+      // Won deals count
+      prisma.deal.count({
+        where: { stage: { isWon: true } },
+      }),
+    ])
 
   const pipelineValue = Number(pipelineValueResult._sum.value || 0)
-  const wonThisMonthValue = wonThisMonth.reduce((sum, d) => sum + Number(d.value), 0)
-  const conversionRate = totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0
+  const wonThisMonthValue = wonThisMonth.reduce(
+    (sum, d) => sum + Number(d.value),
+    0
+  )
+  const conversionRate =
+    totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0
 
   return {
     activeDeals,
@@ -95,7 +97,7 @@ async function getFunnelData() {
     where: {
       pipeline: { isDefault: true },
     },
-    orderBy: { order: 'asc' },
+    orderBy: { order: "asc" },
     include: {
       _count: { select: { deals: true } },
       deals: {
@@ -132,7 +134,10 @@ async function getRevenueData() {
       select: { value: true },
     })
 
-    const monthLabel = start.toLocaleDateString('vi-VN', { month: 'short', year: 'numeric' })
+    const monthLabel = start.toLocaleDateString("vi-VN", {
+      month: "short",
+      year: "numeric",
+    })
 
     months.push({
       month: monthLabel,

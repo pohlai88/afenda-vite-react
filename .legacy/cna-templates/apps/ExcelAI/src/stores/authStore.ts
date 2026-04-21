@@ -1,6 +1,6 @@
 // Phase 4 + Phase 11: Authentication Store with Enterprise Security
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
 import {
   User,
   AuthTokens,
@@ -9,45 +9,45 @@ import {
   Session,
   UpdateUserRequest,
   UpdatePreferencesRequest,
-} from '../types/auth';
+} from "../types/auth"
 
 interface AuthState {
   // State
-  user: User | null;
-  tokens: AuthTokens | null;
-  sessions: Session[];
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
+  user: User | null
+  tokens: AuthTokens | null
+  sessions: Session[]
+  isAuthenticated: boolean
+  isLoading: boolean
+  error: string | null
 
   // Phase 11: MFA State
-  mfaPending: boolean;
-  mfaSessionToken: string | null;
+  mfaPending: boolean
+  mfaSessionToken: string | null
 
   // Actions
-  login: (request: LoginRequest) => Promise<void>;
-  loginWithSSO: (provider: 'google' | 'microsoft' | 'saml') => Promise<void>;
-  verifyMfa: (code: string) => Promise<boolean>;
-  logout: () => Promise<void>;
-  refreshToken: () => Promise<void>;
-  fetchCurrentUser: () => Promise<void>;
-  updateUser: (request: UpdateUserRequest) => Promise<void>;
-  updatePreferences: (request: UpdatePreferencesRequest) => Promise<void>;
-  fetchSessions: () => Promise<void>;
-  revokeSession: (sessionId: string) => Promise<void>;
-  setUser: (user: User | null) => void;
-  setTokens: (tokens: AuthTokens | null) => void;
-  setError: (error: string | null) => void;
-  clearAuth: () => void;
-  clearError: () => void;
+  login: (request: LoginRequest) => Promise<void>
+  loginWithSSO: (provider: "google" | "microsoft" | "saml") => Promise<void>
+  verifyMfa: (code: string) => Promise<boolean>
+  logout: () => Promise<void>
+  refreshToken: () => Promise<void>
+  fetchCurrentUser: () => Promise<void>
+  updateUser: (request: UpdateUserRequest) => Promise<void>
+  updatePreferences: (request: UpdatePreferencesRequest) => Promise<void>
+  fetchSessions: () => Promise<void>
+  revokeSession: (sessionId: string) => Promise<void>
+  setUser: (user: User | null) => void
+  setTokens: (tokens: AuthTokens | null) => void
+  setError: (error: string | null) => void
+  clearAuth: () => void
+  clearError: () => void
 
   // Phase 11: Permission helpers
-  hasPermission: (permission: string) => boolean;
-  hasRole: (role: string) => boolean;
-  hasAnyRole: (roles: string[]) => boolean;
+  hasPermission: (permission: string) => boolean
+  hasRole: (role: string) => boolean
+  hasAnyRole: (roles: string[]) => boolean
 }
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = "http://localhost:3001/api"
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -63,20 +63,23 @@ export const useAuthStore = create<AuthState>()(
       mfaSessionToken: null,
 
       login: async (request: LoginRequest) => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null })
         try {
           const response = await fetch(`${API_BASE}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(request),
-          });
+          })
 
           if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Login failed');
+            const errorData = await response.json()
+            throw new Error(errorData.error || "Login failed")
           }
 
-          const data: LoginResponse & { mfaRequired?: boolean; mfaSessionToken?: string } = await response.json();
+          const data: LoginResponse & {
+            mfaRequired?: boolean
+            mfaSessionToken?: string
+          } = await response.json()
 
           // Phase 11: Check if MFA is required
           if (data.mfaRequired) {
@@ -84,8 +87,8 @@ export const useAuthStore = create<AuthState>()(
               mfaPending: true,
               mfaSessionToken: data.mfaSessionToken || null,
               isLoading: false,
-            });
-            return;
+            })
+            return
           }
 
           set({
@@ -99,52 +102,54 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             mfaPending: false,
             mfaSessionToken: null,
-          });
+          })
         } catch (error) {
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'Login failed',
-          });
-          throw error;
+            error: error instanceof Error ? error.message : "Login failed",
+          })
+          throw error
         }
       },
 
       // Phase 11: SSO Login
-      loginWithSSO: async (provider: 'google' | 'microsoft' | 'saml') => {
-        set({ isLoading: true, error: null });
+      loginWithSSO: async (provider: "google" | "microsoft" | "saml") => {
+        set({ isLoading: true, error: null })
         try {
-          const response = await fetch(`${API_BASE}/auth/sso/${provider}/authorize`);
-          const data = await response.json();
+          const response = await fetch(
+            `${API_BASE}/auth/sso/${provider}/authorize`
+          )
+          const data = await response.json()
 
           if (data.authorizationUrl) {
-            window.location.href = data.authorizationUrl;
+            window.location.href = data.authorizationUrl
           }
         } catch (error) {
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'SSO login failed',
-          });
+            error: error instanceof Error ? error.message : "SSO login failed",
+          })
         }
       },
 
       // Phase 11: MFA Verification
       verifyMfa: async (code: string) => {
-        const { mfaSessionToken } = get();
-        set({ isLoading: true, error: null });
+        const { mfaSessionToken } = get()
+        set({ isLoading: true, error: null })
 
         try {
           const response = await fetch(`${API_BASE}/auth/mfa/verify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code, sessionToken: mfaSessionToken }),
-          });
+          })
 
           if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'MFA verification failed');
+            const errorData = await response.json()
+            throw new Error(errorData.error || "MFA verification failed")
           }
 
-          const data: LoginResponse = await response.json();
+          const data: LoginResponse = await response.json()
           set({
             user: data.user,
             tokens: {
@@ -156,27 +161,30 @@ export const useAuthStore = create<AuthState>()(
             mfaPending: false,
             mfaSessionToken: null,
             isLoading: false,
-          });
-          return true;
+          })
+          return true
         } catch (error) {
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'MFA verification failed',
-          });
-          return false;
+            error:
+              error instanceof Error
+                ? error.message
+                : "MFA verification failed",
+          })
+          return false
         }
       },
 
       logout: async () => {
-        const { tokens } = get();
+        const { tokens } = get()
         try {
           if (tokens?.token) {
             await fetch(`${API_BASE}/auth/logout`, {
-              method: 'POST',
+              method: "POST",
               headers: {
-                'Authorization': `Bearer ${tokens.token}`,
+                Authorization: `Bearer ${tokens.token}`,
               },
-            });
+            })
           }
         } catch {
           // Ignore logout errors
@@ -188,186 +196,200 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
           mfaPending: false,
           mfaSessionToken: null,
-        });
+        })
       },
 
       refreshToken: async () => {
-        const { tokens } = get();
+        const { tokens } = get()
         if (!tokens?.refreshToken) {
-          throw new Error('No refresh token');
+          throw new Error("No refresh token")
         }
 
         try {
           const response = await fetch(`${API_BASE}/auth/refresh`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({ refreshToken: tokens.refreshToken }),
-          });
+          })
 
           if (!response.ok) {
-            throw new Error('Token refresh failed');
+            throw new Error("Token refresh failed")
           }
 
-          const data: LoginResponse = await response.json();
+          const data: LoginResponse = await response.json()
           set({
             tokens: {
               token: data.token,
               refreshToken: data.refreshToken,
               expiresIn: data.expiresIn,
             },
-          });
+          })
         } catch (error) {
           // Clear auth on refresh failure
           set({
             user: null,
             tokens: null,
             isAuthenticated: false,
-          });
-          throw error;
+          })
+          throw error
         }
       },
 
       fetchCurrentUser: async () => {
-        const { tokens } = get();
-        if (!tokens?.token) return;
+        const { tokens } = get()
+        if (!tokens?.token) return
 
-        set({ isLoading: true });
+        set({ isLoading: true })
         try {
           const response = await fetch(`${API_BASE}/auth/me`, {
             headers: {
-              'Authorization': `Bearer ${tokens.token}`,
+              Authorization: `Bearer ${tokens.token}`,
             },
-          });
+          })
 
           if (!response.ok) {
             if (response.status === 401) {
               // Try to refresh token
-              await get().refreshToken();
-              return get().fetchCurrentUser();
+              await get().refreshToken()
+              return get().fetchCurrentUser()
             }
-            throw new Error('Failed to fetch user');
+            throw new Error("Failed to fetch user")
           }
 
-          const user: User = await response.json();
-          set({ user, isLoading: false });
+          const user: User = await response.json()
+          set({ user, isLoading: false })
         } catch (error) {
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'Failed to fetch user',
-          });
+            error:
+              error instanceof Error ? error.message : "Failed to fetch user",
+          })
         }
       },
 
       updateUser: async (request: UpdateUserRequest) => {
-        const { user, tokens } = get();
-        if (!user || !tokens?.token) return;
+        const { user, tokens } = get()
+        if (!user || !tokens?.token) return
 
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null })
         try {
           const response = await fetch(`${API_BASE}/users/${user.id}`, {
-            method: 'PUT',
+            method: "PUT",
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${tokens.token}`,
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokens.token}`,
             },
             body: JSON.stringify(request),
-          });
+          })
 
           if (!response.ok) {
-            throw new Error('Failed to update user');
+            throw new Error("Failed to update user")
           }
 
-          const updatedUser: User = await response.json();
-          set({ user: updatedUser, isLoading: false });
+          const updatedUser: User = await response.json()
+          set({ user: updatedUser, isLoading: false })
         } catch (error) {
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'Failed to update user',
-          });
-          throw error;
+            error:
+              error instanceof Error ? error.message : "Failed to update user",
+          })
+          throw error
         }
       },
 
       updatePreferences: async (request: UpdatePreferencesRequest) => {
-        const { user, tokens } = get();
-        if (!user || !tokens?.token) return;
+        const { user, tokens } = get()
+        if (!user || !tokens?.token) return
 
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null })
         try {
-          const response = await fetch(`${API_BASE}/users/${user.id}/preferences`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${tokens.token}`,
-            },
-            body: JSON.stringify(request),
-          });
+          const response = await fetch(
+            `${API_BASE}/users/${user.id}/preferences`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokens.token}`,
+              },
+              body: JSON.stringify(request),
+            }
+          )
 
           if (!response.ok) {
-            throw new Error('Failed to update preferences');
+            throw new Error("Failed to update preferences")
           }
 
-          const updatedUser: User = await response.json();
-          set({ user: updatedUser, isLoading: false });
+          const updatedUser: User = await response.json()
+          set({ user: updatedUser, isLoading: false })
         } catch (error) {
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'Failed to update preferences',
-          });
-          throw error;
+            error:
+              error instanceof Error
+                ? error.message
+                : "Failed to update preferences",
+          })
+          throw error
         }
       },
 
       fetchSessions: async () => {
-        const { tokens } = get();
-        if (!tokens?.token) return;
+        const { tokens } = get()
+        if (!tokens?.token) return
 
         try {
           const response = await fetch(`${API_BASE}/sessions`, {
             headers: {
-              'Authorization': `Bearer ${tokens.token}`,
+              Authorization: `Bearer ${tokens.token}`,
             },
-          });
+          })
 
           if (!response.ok) {
-            throw new Error('Failed to fetch sessions');
+            throw new Error("Failed to fetch sessions")
           }
 
-          const sessions: Session[] = await response.json();
-          set({ sessions });
+          const sessions: Session[] = await response.json()
+          set({ sessions })
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : 'Failed to fetch sessions',
-          });
+            error:
+              error instanceof Error
+                ? error.message
+                : "Failed to fetch sessions",
+          })
         }
       },
 
       revokeSession: async (sessionId: string) => {
-        const { tokens } = get();
-        if (!tokens?.token) return;
+        const { tokens } = get()
+        if (!tokens?.token) return
 
         try {
           const response = await fetch(`${API_BASE}/sessions/${sessionId}`, {
-            method: 'DELETE',
+            method: "DELETE",
             headers: {
-              'Authorization': `Bearer ${tokens.token}`,
+              Authorization: `Bearer ${tokens.token}`,
             },
-          });
+          })
 
           if (!response.ok) {
-            throw new Error('Failed to revoke session');
+            throw new Error("Failed to revoke session")
           }
 
           set((state) => ({
             sessions: state.sessions.filter((s) => s.id !== sessionId),
-          }));
+          }))
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : 'Failed to revoke session',
-          });
-          throw error;
+            error:
+              error instanceof Error
+                ? error.message
+                : "Failed to revoke session",
+          })
+          throw error
         }
       },
 
@@ -388,38 +410,41 @@ export const useAuthStore = create<AuthState>()(
 
       // Phase 11: Permission helpers
       hasPermission: (permission: string) => {
-        const { user } = get();
-        if (!user) return false;
+        const { user } = get()
+        if (!user) return false
 
         // Check if user has permissions array
-        const permissions = (user as User & { permissions?: string[] }).permissions || [];
+        const permissions =
+          (user as User & { permissions?: string[] }).permissions || []
 
         return permissions.some((p: string) => {
-          if (p === '*') return true;
-          if (p === permission) return true;
+          if (p === "*") return true
+          if (p === permission) return true
 
           // Check wildcard patterns (e.g., "workbooks:*" matches "workbooks:read")
-          const pParts = p.split(':');
-          const permParts = permission.split(':');
+          const pParts = p.split(":")
+          const permParts = permission.split(":")
 
-          if (pParts.length !== permParts.length) return false;
+          if (pParts.length !== permParts.length) return false
 
-          return pParts.every((part, i) => part === '*' || part === permParts[i]);
-        });
+          return pParts.every(
+            (part, i) => part === "*" || part === permParts[i]
+          )
+        })
       },
 
       hasRole: (role: string) => {
-        const { user } = get();
-        return user?.role === role;
+        const { user } = get()
+        return user?.role === role
       },
 
       hasAnyRole: (roles: string[]) => {
-        const { user } = get();
-        return user ? roles.includes(user.role || '') : false;
+        const { user } = get()
+        return user ? roles.includes(user.role || "") : false
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       partialize: (state) => ({
         user: state.user,
         tokens: state.tokens,
@@ -427,13 +452,13 @@ export const useAuthStore = create<AuthState>()(
       }),
     }
   )
-);
+)
 
 // Auth header helper
 export const getAuthHeaders = (): HeadersInit => {
-  const tokens = useAuthStore.getState().tokens;
-  if (!tokens?.token) return {};
+  const tokens = useAuthStore.getState().tokens
+  if (!tokens?.token) return {}
   return {
     Authorization: `Bearer ${tokens.token}`,
-  };
-};
+  }
+}

@@ -1,43 +1,43 @@
-'use client'
+"use client"
 
-import { useForm, useFieldArray } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+import { useForm, useFieldArray } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { JOB_TYPE, WORK_MODE } from '@/lib/recruitment/constants'
-import { Loader2, Plus, Trash2 } from 'lucide-react'
+} from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { JOB_TYPE, WORK_MODE } from "@/lib/recruitment/constants"
+import { Loader2, Plus, Trash2 } from "lucide-react"
 
 const offerSchema = z.object({
-  position: z.string().min(1, 'Vui lòng nhập vị trí'),
-  departmentId: z.string().min(1, 'Vui lòng chọn phòng ban'),
+  position: z.string().min(1, "Vui lòng nhập vị trí"),
+  departmentId: z.string().min(1, "Vui lòng chọn phòng ban"),
   reportingToId: z.string().optional(),
-  jobType: z.string().min(1, 'Vui lòng chọn loại công việc'),
-  workMode: z.string().min(1, 'Vui lòng chọn hình thức'),
+  jobType: z.string().min(1, "Vui lòng chọn loại công việc"),
+  workMode: z.string().min(1, "Vui lòng chọn hình thức"),
   location: z.string().optional(),
-  baseSalary: z.coerce.number().min(1, 'Vui lòng nhập mức lương'),
+  baseSalary: z.coerce.number().min(1, "Vui lòng nhập mức lương"),
   allowances: z.array(
     z.object({
-      name: z.string().min(1, 'Nhập tên phụ cấp'),
+      name: z.string().min(1, "Nhập tên phụ cấp"),
       amount: z.coerce.number().min(0),
     })
   ),
   bonus: z.string().optional(),
   benefits: z.string().optional(),
-  startDate: z.string().min(1, 'Vui lòng chọn ngày bắt đầu'),
+  startDate: z.string().min(1, "Vui lòng chọn ngày bắt đầu"),
   probationMonths: z.coerce.number().min(0).max(6),
-  expiresAt: z.string().min(1, 'Vui lòng chọn hạn phản hồi'),
+  expiresAt: z.string().min(1, "Vui lòng chọn hạn phản hồi"),
 })
 
 type OfferFormData = z.infer<typeof offerSchema>
@@ -66,7 +66,7 @@ interface OfferFormProps {
 export function OfferForm({
   applicationId,
   candidateName,
-  defaultPosition = '',
+  defaultPosition = "",
   departments,
   employees,
   onSubmit,
@@ -84,28 +84,28 @@ export function OfferForm({
     resolver: zodResolver(offerSchema) as never,
     defaultValues: {
       position: defaultPosition,
-      departmentId: '',
-      reportingToId: '',
-      jobType: 'FULL_TIME',
-      workMode: 'ONSITE',
-      location: '',
+      departmentId: "",
+      reportingToId: "",
+      jobType: "FULL_TIME",
+      workMode: "ONSITE",
+      location: "",
       baseSalary: 0,
       allowances: [],
-      bonus: '',
-      benefits: '',
-      startDate: '',
+      bonus: "",
+      benefits: "",
+      startDate: "",
       probationMonths: 2,
-      expiresAt: '',
+      expiresAt: "",
     },
   })
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'allowances',
+    name: "allowances",
   })
 
-  const baseSalary = watch('baseSalary') || 0
-  const allowances = watch('allowances') || []
+  const baseSalary = watch("baseSalary") || 0
+  const allowances = watch("allowances") || []
   const totalCompensation =
     baseSalary + allowances.reduce((sum, a) => sum + (a.amount || 0), 0)
 
@@ -128,7 +128,7 @@ export function OfferForm({
             <Input
               id="position"
               placeholder="VD: Senior Frontend Developer"
-              {...register('position')}
+              {...register("position")}
             />
             {errors.position && (
               <p className="text-sm text-red-500">{errors.position.message}</p>
@@ -139,8 +139,8 @@ export function OfferForm({
             <div className="space-y-2">
               <Label>Phòng ban *</Label>
               <Select
-                value={watch('departmentId')}
-                onValueChange={(val) => setValue('departmentId', val)}
+                value={watch("departmentId")}
+                onValueChange={(val) => setValue("departmentId", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn phòng ban" />
@@ -154,15 +154,17 @@ export function OfferForm({
                 </SelectContent>
               </Select>
               {errors.departmentId && (
-                <p className="text-sm text-red-500">{errors.departmentId.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.departmentId.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
               <Label>Báo cáo cho</Label>
               <Select
-                value={watch('reportingToId') || ''}
-                onValueChange={(val) => setValue('reportingToId', val)}
+                value={watch("reportingToId") || ""}
+                onValueChange={(val) => setValue("reportingToId", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn quản lý" />
@@ -182,8 +184,8 @@ export function OfferForm({
             <div className="space-y-2">
               <Label>Loại công việc *</Label>
               <Select
-                value={watch('jobType')}
-                onValueChange={(val) => setValue('jobType', val)}
+                value={watch("jobType")}
+                onValueChange={(val) => setValue("jobType", val)}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -201,8 +203,8 @@ export function OfferForm({
             <div className="space-y-2">
               <Label>Hình thức *</Label>
               <Select
-                value={watch('workMode')}
-                onValueChange={(val) => setValue('workMode', val)}
+                value={watch("workMode")}
+                onValueChange={(val) => setValue("workMode", val)}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -222,7 +224,7 @@ export function OfferForm({
               <Input
                 id="location"
                 placeholder="VD: TP.HCM"
-                {...register('location')}
+                {...register("location")}
               />
             </div>
           </div>
@@ -240,10 +242,12 @@ export function OfferForm({
               id="baseSalary"
               type="number"
               placeholder="VD: 25000000"
-              {...register('baseSalary')}
+              {...register("baseSalary")}
             />
             {errors.baseSalary && (
-              <p className="text-sm text-red-500">{errors.baseSalary.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.baseSalary.message}
+              </p>
             )}
           </div>
 
@@ -254,7 +258,7 @@ export function OfferForm({
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => append({ name: '', amount: 0 })}
+                onClick={() => append({ name: "", amount: 0 })}
               >
                 <Plus className="mr-1 h-3.5 w-3.5" />
                 Thêm phụ cấp
@@ -297,7 +301,7 @@ export function OfferForm({
             <div className="flex justify-between text-sm">
               <span>Tổng thu nhập hàng tháng:</span>
               <span className="font-bold text-primary">
-                {new Intl.NumberFormat('vi-VN').format(totalCompensation)} VND
+                {new Intl.NumberFormat("vi-VN").format(totalCompensation)} VND
               </span>
             </div>
           </div>
@@ -308,7 +312,7 @@ export function OfferForm({
               id="bonus"
               placeholder="VD: Thưởng tháng 13, thưởng KPI..."
               rows={2}
-              {...register('bonus')}
+              {...register("bonus")}
             />
           </div>
 
@@ -318,7 +322,7 @@ export function OfferForm({
               id="benefits"
               placeholder="VD: Bảo hiểm sức khỏe, đào tạo..."
               rows={3}
-              {...register('benefits')}
+              {...register("benefits")}
             />
           </div>
         </CardContent>
@@ -332,21 +336,21 @@ export function OfferForm({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="startDate">Ngày bắt đầu *</Label>
-              <Input
-                id="startDate"
-                type="date"
-                {...register('startDate')}
-              />
+              <Input id="startDate" type="date" {...register("startDate")} />
               {errors.startDate && (
-                <p className="text-sm text-red-500">{errors.startDate.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.startDate.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="probationMonths">Thử việc (tháng)</Label>
               <Select
-                value={String(watch('probationMonths'))}
-                onValueChange={(val) => setValue('probationMonths', Number(val))}
+                value={String(watch("probationMonths"))}
+                onValueChange={(val) =>
+                  setValue("probationMonths", Number(val))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -363,13 +367,11 @@ export function OfferForm({
 
             <div className="space-y-2">
               <Label htmlFor="expiresAt">Hạn phản hồi *</Label>
-              <Input
-                id="expiresAt"
-                type="date"
-                {...register('expiresAt')}
-              />
+              <Input id="expiresAt" type="date" {...register("expiresAt")} />
               {errors.expiresAt && (
-                <p className="text-sm text-red-500">{errors.expiresAt.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.expiresAt.message}
+                </p>
               )}
             </div>
           </div>

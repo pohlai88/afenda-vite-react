@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/prisma'
-import { eventBus } from '../event-bus'
-import { CRM_EVENTS } from '../types'
+import { prisma } from "@/lib/prisma"
+import { eventBus } from "../event-bus"
+import { CRM_EVENTS } from "../types"
 
 /**
  * Commission Handler — DEAL_WON → auto-create Commission
@@ -44,7 +44,7 @@ export function registerCommissionHandlers(): void {
         where: {
           dealId: deal.id,
           partnerId: deal.partnerId,
-          status: 'APPROVED',
+          status: "APPROVED",
         },
       })
 
@@ -63,7 +63,7 @@ export function registerCommissionHandlers(): void {
       // Calculate commission
       const dealValue = Number(deal.value)
       const rate = deal.partner.commissionRate
-      const amount = dealValue * rate / 100
+      const amount = (dealValue * rate) / 100
 
       await prisma.commission.create({
         data: {
@@ -71,8 +71,8 @@ export function registerCommissionHandlers(): void {
           partnerId: deal.partnerId,
           amount,
           rate,
-          currency: deal.currency || 'VND',
-          status: 'PENDING',
+          currency: deal.currency || "VND",
+          status: "PENDING",
         },
       })
 
@@ -80,7 +80,10 @@ export function registerCommissionHandlers(): void {
         `[Commission] Created commission for deal "${deal.title}": ${amount} (${rate}%)`
       )
     } catch (error) {
-      console.error('[Commission] Error creating commission on DEAL_WON:', error)
+      console.error(
+        "[Commission] Error creating commission on DEAL_WON:",
+        error
+      )
     }
   })
 }

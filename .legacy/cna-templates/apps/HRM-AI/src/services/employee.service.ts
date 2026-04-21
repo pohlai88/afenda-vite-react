@@ -1,24 +1,39 @@
-import { db } from '@/lib/db'
-import type { EmployeeFilters, PaginatedResponse, EmployeeWithRelations } from '@/types'
-import type { CreateEmployeeInput, UpdateEmployeeInput } from '@/lib/validations/employee'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import type {
+  EmployeeFilters,
+  PaginatedResponse,
+  EmployeeWithRelations,
+} from "@/types"
+import type {
+  CreateEmployeeInput,
+  UpdateEmployeeInput,
+} from "@/lib/validations/employee"
+import type { Prisma } from "@prisma/client"
 
 export const employeeService = {
   async findAll(
     tenantId: string,
     filters: EmployeeFilters = {}
   ): Promise<PaginatedResponse<EmployeeWithRelations>> {
-    const { search, departmentId, positionId, branchId, status, page = 1, pageSize = 20 } = filters
+    const {
+      search,
+      departmentId,
+      positionId,
+      branchId,
+      status,
+      page = 1,
+      pageSize = 20,
+    } = filters
 
     const where: Prisma.EmployeeWhereInput = {
       tenantId,
       deletedAt: null,
       ...(search && {
         OR: [
-          { fullName: { contains: search, mode: 'insensitive' } },
-          { employeeCode: { contains: search, mode: 'insensitive' } },
+          { fullName: { contains: search, mode: "insensitive" } },
+          { employeeCode: { contains: search, mode: "insensitive" } },
           { phone: { contains: search } },
-          { workEmail: { contains: search, mode: 'insensitive' } },
+          { workEmail: { contains: search, mode: "insensitive" } },
         ],
       }),
       ...(departmentId && { departmentId }),
@@ -42,7 +57,7 @@ export const employeeService = {
             },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -60,7 +75,10 @@ export const employeeService = {
     }
   },
 
-  async findById(tenantId: string, id: string): Promise<EmployeeWithRelations | null> {
+  async findById(
+    tenantId: string,
+    id: string
+  ): Promise<EmployeeWithRelations | null> {
     return db.employee.findFirst({
       where: { id, tenantId, deletedAt: null },
       include: {
@@ -69,11 +87,11 @@ export const employeeService = {
         branch: true,
         directManager: true,
         contracts: {
-          orderBy: { startDate: 'desc' },
+          orderBy: { startDate: "desc" },
         },
         dependents: {
           where: { isActive: true },
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
         },
       },
     }) as Promise<EmployeeWithRelations | null>
@@ -86,10 +104,16 @@ export const employeeService = {
         tenantId,
         dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
         idIssueDate: data.idIssueDate ? new Date(data.idIssueDate) : null,
-        socialInsuranceDate: data.socialInsuranceDate ? new Date(data.socialInsuranceDate) : null,
+        socialInsuranceDate: data.socialInsuranceDate
+          ? new Date(data.socialInsuranceDate)
+          : null,
         hireDate: new Date(data.hireDate),
-        probationEndDate: data.probationEndDate ? new Date(data.probationEndDate) : null,
-        resignationDate: data.resignationDate ? new Date(data.resignationDate) : null,
+        probationEndDate: data.probationEndDate
+          ? new Date(data.probationEndDate)
+          : null,
+        resignationDate: data.resignationDate
+          ? new Date(data.resignationDate)
+          : null,
       },
       include: {
         department: true,
@@ -99,13 +123,18 @@ export const employeeService = {
     })
   },
 
-  async update(tenantId: string, id: string, data: Partial<UpdateEmployeeInput> & { _expectedUpdatedAt?: string }, changedBy: string) {
+  async update(
+    tenantId: string,
+    id: string,
+    data: Partial<UpdateEmployeeInput> & { _expectedUpdatedAt?: string },
+    changedBy: string
+  ) {
     const current = await db.employee.findFirst({
       where: { id, tenantId, deletedAt: null },
     })
 
     if (!current) {
-      throw new Error('Nhân viên không tồn tại')
+      throw new Error("Nhân viên không tồn tại")
     }
 
     // Optimistic locking: check if record was modified since client last fetched it
@@ -114,40 +143,60 @@ export const employeeService = {
       const actualTime = current.updatedAt.getTime()
       if (actualTime > expectedTime) {
         throw new Error(
-          'Dữ liệu đã được chỉnh sửa bởi người khác. Vui lòng tải lại trang và thử lại.'
+          "Dữ liệu đã được chỉnh sửa bởi người khác. Vui lòng tải lại trang và thử lại."
         )
       }
     }
 
     // Track changes for history
-    const changes: { fieldName: string; oldValue: string | null; newValue: string | null }[] = []
+    const changes: {
+      fieldName: string
+      oldValue: string | null
+      newValue: string | null
+    }[] = []
     const updateData = { ...data } as Record<string, unknown>
     delete updateData._expectedUpdatedAt
 
     // Process dates
     if (data.dateOfBirth !== undefined) {
-      updateData.dateOfBirth = data.dateOfBirth ? new Date(data.dateOfBirth) : null
+      updateData.dateOfBirth = data.dateOfBirth
+        ? new Date(data.dateOfBirth)
+        : null
     }
     if (data.idIssueDate !== undefined) {
-      updateData.idIssueDate = data.idIssueDate ? new Date(data.idIssueDate) : null
+      updateData.idIssueDate = data.idIssueDate
+        ? new Date(data.idIssueDate)
+        : null
     }
     if (data.socialInsuranceDate !== undefined) {
-      updateData.socialInsuranceDate = data.socialInsuranceDate ? new Date(data.socialInsuranceDate) : null
+      updateData.socialInsuranceDate = data.socialInsuranceDate
+        ? new Date(data.socialInsuranceDate)
+        : null
     }
     if (data.hireDate !== undefined) {
       updateData.hireDate = new Date(data.hireDate)
     }
     if (data.probationEndDate !== undefined) {
-      updateData.probationEndDate = data.probationEndDate ? new Date(data.probationEndDate) : null
+      updateData.probationEndDate = data.probationEndDate
+        ? new Date(data.probationEndDate)
+        : null
     }
     if (data.resignationDate !== undefined) {
-      updateData.resignationDate = data.resignationDate ? new Date(data.resignationDate) : null
+      updateData.resignationDate = data.resignationDate
+        ? new Date(data.resignationDate)
+        : null
     }
 
     // Compare and track changes for important fields
     const trackFields = [
-      'departmentId', 'positionId', 'branchId', 'status', 'directManagerId',
-      'fullName', 'phone', 'workEmail'
+      "departmentId",
+      "positionId",
+      "branchId",
+      "status",
+      "directManagerId",
+      "fullName",
+      "phone",
+      "workEmail",
     ]
 
     for (const field of trackFields) {
@@ -200,7 +249,7 @@ export const employeeService = {
     })
 
     if (!employee) {
-      throw new Error('Nhân viên không tồn tại')
+      throw new Error("Nhân viên không tồn tại")
     }
 
     return db.employee.update({
@@ -215,7 +264,7 @@ export const employeeService = {
     })
 
     if (!employee) {
-      throw new Error('Nhân viên không tồn tại hoặc chưa bị xóa')
+      throw new Error("Nhân viên không tồn tại hoặc chưa bị xóa")
     }
 
     return db.employee.update({
@@ -227,23 +276,23 @@ export const employeeService = {
   async getNextEmployeeCode(tenantId: string): Promise<string> {
     const lastEmployee = await db.employee.findFirst({
       where: { tenantId },
-      orderBy: { employeeCode: 'desc' },
+      orderBy: { employeeCode: "desc" },
       select: { employeeCode: true },
     })
 
     if (!lastEmployee) {
-      return 'NV00001'
+      return "NV00001"
     }
 
     const match = lastEmployee.employeeCode.match(/\d+$/)
     const num = match ? parseInt(match[0], 10) + 1 : 1
-    return `NV${String(num).padStart(5, '0')}`
+    return `NV${String(num).padStart(5, "0")}`
   },
 
   async getChangeHistory(employeeId: string) {
     return db.employeeChangeHistory.findMany({
       where: { employeeId },
-      orderBy: { changedAt: 'desc' },
+      orderBy: { changedAt: "desc" },
       take: 50,
     })
   },
@@ -260,8 +309,12 @@ export const employeeService = {
       resignedThisMonth,
     ] = await Promise.all([
       db.employee.count({ where: { tenantId, deletedAt: null } }),
-      db.employee.count({ where: { tenantId, deletedAt: null, status: 'ACTIVE' } }),
-      db.employee.count({ where: { tenantId, deletedAt: null, status: 'PROBATION' } }),
+      db.employee.count({
+        where: { tenantId, deletedAt: null, status: "ACTIVE" },
+      }),
+      db.employee.count({
+        where: { tenantId, deletedAt: null, status: "PROBATION" },
+      }),
       db.employee.count({
         where: {
           tenantId,
@@ -273,7 +326,7 @@ export const employeeService = {
         where: {
           tenantId,
           deletedAt: null,
-          status: 'RESIGNED',
+          status: "RESIGNED",
           resignationDate: { gte: startOfMonth },
         },
       }),
@@ -282,7 +335,7 @@ export const employeeService = {
     const expiringContracts = await db.contract.count({
       where: {
         tenantId,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         endDate: {
           gte: now,
           lte: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000), // 30 days

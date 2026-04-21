@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import {
   ResponsiveContainer,
@@ -7,28 +7,37 @@ import {
   Cell,
   Tooltip,
   Legend,
-} from 'recharts';
+} from "recharts"
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+const COLORS = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#14b8a6",
+  "#f97316",
+]
 
 interface Dataset {
-  label: string;
-  data: number[];
+  label: string
+  data: number[]
 }
 
 interface SimplePieChartProps {
   data: {
-    labels: string[];
-    datasets: Dataset[];
-  };
-  height?: number;
+    labels: string[]
+    datasets: Dataset[]
+  }
+  height?: number
 }
 
 export function PieChart({ data, height = 250 }: SimplePieChartProps) {
   const chartData = data.labels.map((label, index) => ({
     name: label,
     value: data.datasets[0]?.data[index] ?? 0,
-  }));
+  }))
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -45,15 +54,15 @@ export function PieChart({ data, height = 250 }: SimplePieChartProps) {
           ))}
         </Pie>
         <Tooltip
-          formatter={(value) => Number(value).toLocaleString('vi-VN')}
+          formatter={(value) => Number(value).toLocaleString("vi-VN")}
           contentStyle={{
-            backgroundColor: 'hsl(var(--card))',
-            border: '1px solid hsl(var(--border))',
-            borderRadius: '8px',
+            backgroundColor: "hsl(var(--card))",
+            border: "1px solid hsl(var(--border))",
+            borderRadius: "8px",
           }}
         />
         <Legend />
       </RechartsPieChart>
     </ResponsiveContainer>
-  );
+  )
 }

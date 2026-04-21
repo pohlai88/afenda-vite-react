@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { Prisma } from "@prisma/client"
 
 export async function createCalibrationSession(
   tenantId: string,
@@ -75,7 +75,7 @@ export async function getCalibrationSessions(
         select: { decisions: true },
       },
     },
-    orderBy: { scheduledAt: 'desc' },
+    orderBy: { scheduledAt: "desc" },
   })
 }
 
@@ -101,7 +101,7 @@ export async function getCalibrationSessionById(id: string, tenantId: string) {
             select: { id: true, name: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       },
     },
   })
@@ -158,13 +158,13 @@ export async function completeCalibration(sessionId: string, tenantId: string) {
   })
 
   if (!session) {
-    throw new Error('Calibration session not found')
+    throw new Error("Calibration session not found")
   }
 
   // Apply calibrated ratings to performance reviews
   await db.$transaction([
     // Update each employee's performance review with calibrated rating
-    ...session.decisions.map(decision =>
+    ...session.decisions.map((decision) =>
       db.performanceReview.updateMany({
         where: {
           tenantId,
@@ -175,7 +175,7 @@ export async function completeCalibration(sessionId: string, tenantId: string) {
           calibratedRating: decision.calibratedRating,
           finalRating: decision.calibratedRating,
           calibratedAt: new Date(),
-          status: 'COMPLETED',
+          status: "COMPLETED",
         },
       })
     ),

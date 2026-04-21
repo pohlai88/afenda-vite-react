@@ -1,9 +1,6 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
-  extends: [
-    "eslint-config-base",
-    "plugin:@typescript-eslint/recommended",
-  ],
+  extends: ["eslint-config-base", "plugin:@typescript-eslint/recommended"],
   rules: {
     "@typescript-eslint/ban-ts-comment": [
       "error",
@@ -13,4 +10,4 @@ module.exports = {
       },
     ],
   },
-};
+}

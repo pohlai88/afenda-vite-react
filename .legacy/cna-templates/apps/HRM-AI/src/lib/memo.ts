@@ -58,10 +58,13 @@ export function useThrottle<T>(value: T, interval: number): T {
       lastUpdated.current = now
       setThrottledValue(value)
     } else {
-      const timer = setTimeout(() => {
-        lastUpdated.current = Date.now()
-        setThrottledValue(value)
-      }, interval - (now - lastUpdated.current))
+      const timer = setTimeout(
+        () => {
+          lastUpdated.current = Date.now()
+          setThrottledValue(value)
+        },
+        interval - (now - lastUpdated.current)
+      )
       return () => clearTimeout(timer)
     }
   }, [value, interval])

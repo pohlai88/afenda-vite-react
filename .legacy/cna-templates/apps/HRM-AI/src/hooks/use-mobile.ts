@@ -1,7 +1,7 @@
 // src/hooks/use-mobile.ts
 // Hook for detecting mobile devices and responsive breakpoints
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 
 // Breakpoints matching Tailwind CSS defaults
 const BREAKPOINTS = {
@@ -9,7 +9,7 @@ const BREAKPOINTS = {
   md: 768,
   lg: 1024,
   xl: 1280,
-  '2xl': 1536,
+  "2xl": 1536,
 } as const
 
 type Breakpoint = keyof typeof BREAKPOINTS
@@ -29,7 +29,7 @@ export function useMediaQuery(
   const [matches, setMatches] = useState(defaultValue)
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return
 
     const mediaQuery = window.matchMedia(query)
     setMatches(mediaQuery.matches)
@@ -38,8 +38,8 @@ export function useMediaQuery(
       setMatches(event.matches)
     }
 
-    mediaQuery.addEventListener('change', handler)
-    return () => mediaQuery.removeEventListener('change', handler)
+    mediaQuery.addEventListener("change", handler)
+    return () => mediaQuery.removeEventListener("change", handler)
   }, [query])
 
   return matches
@@ -78,19 +78,19 @@ export function useBreakpoint(breakpoint: Breakpoint): boolean {
 /**
  * Hook to get the current breakpoint name
  */
-export function useCurrentBreakpoint(): Breakpoint | 'xs' {
-  const isSm = useBreakpoint('sm')
-  const isMd = useBreakpoint('md')
-  const isLg = useBreakpoint('lg')
-  const isXl = useBreakpoint('xl')
-  const is2xl = useBreakpoint('2xl')
+export function useCurrentBreakpoint(): Breakpoint | "xs" {
+  const isSm = useBreakpoint("sm")
+  const isMd = useBreakpoint("md")
+  const isLg = useBreakpoint("lg")
+  const isXl = useBreakpoint("xl")
+  const is2xl = useBreakpoint("2xl")
 
-  if (is2xl) return '2xl'
-  if (isXl) return 'xl'
-  if (isLg) return 'lg'
-  if (isMd) return 'md'
-  if (isSm) return 'sm'
-  return 'xs'
+  if (is2xl) return "2xl"
+  if (isXl) return "xl"
+  if (isLg) return "lg"
+  if (isMd) return "md"
+  if (isSm) return "sm"
+  return "xs"
 }
 
 /**
@@ -100,10 +100,10 @@ export function useIsTouchDevice(): boolean {
   const [isTouch, setIsTouch] = useState(false)
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return
 
     const isTouchDevice =
-      'ontouchstart' in window ||
+      "ontouchstart" in window ||
       navigator.maxTouchPoints > 0 ||
       // @ts-expect-error - msMaxTouchPoints is IE specific
       navigator.msMaxTouchPoints > 0
@@ -118,15 +118,15 @@ export function useIsTouchDevice(): boolean {
  * Hook to detect if device prefers reduced motion
  */
 export function usePrefersReducedMotion(): boolean {
-  return useMediaQuery('(prefers-reduced-motion: reduce)')
+  return useMediaQuery("(prefers-reduced-motion: reduce)")
 }
 
 /**
  * Hook to detect device orientation
  */
-export function useOrientation(): 'portrait' | 'landscape' {
-  const isPortrait = useMediaQuery('(orientation: portrait)')
-  return isPortrait ? 'portrait' : 'landscape'
+export function useOrientation(): "portrait" | "landscape" {
+  const isPortrait = useMediaQuery("(orientation: portrait)")
+  return isPortrait ? "portrait" : "landscape"
 }
 
 /**
@@ -136,11 +136,12 @@ export function useIsStandalone(): boolean {
   const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return
 
     const isStandaloneMode =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as Navigator & { standalone?: boolean }).standalone ===
+        true
 
     setIsStandalone(isStandaloneMode)
   }, [])

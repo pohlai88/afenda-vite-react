@@ -1,7 +1,7 @@
 // Phase 11: User Management Component
 // Admin interface for managing users, roles, and permissions
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react"
 import {
   UserPlus,
   Search,
@@ -17,168 +17,170 @@ import {
   Key,
   Ban,
   RefreshCw,
-} from 'lucide-react';
-import { useAuth } from '../../auth/AuthProvider';
-import { loggers } from '@/utils/logger';
+} from "lucide-react"
+import { useAuth } from "../../auth/AuthProvider"
+import { loggers } from "@/utils/logger"
 
 interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  status: 'active' | 'inactive' | 'suspended' | 'pending';
-  mfaEnabled: boolean;
-  lastLogin?: string;
-  createdAt: string;
-  avatar?: string;
+  id: string
+  email: string
+  name: string
+  role: string
+  status: "active" | "inactive" | "suspended" | "pending"
+  mfaEnabled: boolean
+  lastLogin?: string
+  createdAt: string
+  avatar?: string
 }
 
 interface UserManagementProps {
-  organizationId?: string;
+  organizationId?: string
 }
 
-export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }) => {
-  const { hasPermission } = useAuth();
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [roleFilter, setRoleFilter] = useState<string>('all');
-  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [actionMenuUser, setActionMenuUser] = useState<string | null>(null);
+export const UserManagement: React.FC<UserManagementProps> = ({
+  organizationId,
+}) => {
+  const { hasPermission } = useAuth()
+  const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [roleFilter, setRoleFilter] = useState<string>("all")
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set())
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [actionMenuUser, setActionMenuUser] = useState<string | null>(null)
 
-  const canCreate = hasPermission('users:create');
-  const canEdit = hasPermission('users:update');
-  const canDelete = hasPermission('users:delete');
+  const canCreate = hasPermission("users:create")
+  const canEdit = hasPermission("users:update")
+  const canDelete = hasPermission("users:delete")
 
   const fetchUsers = useCallback(async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const params = new URLSearchParams();
-      if (searchQuery) params.append('search', searchQuery);
-      if (statusFilter !== 'all') params.append('status', statusFilter);
-      if (roleFilter !== 'all') params.append('role', roleFilter);
-      if (organizationId) params.append('org', organizationId);
+      const params = new URLSearchParams()
+      if (searchQuery) params.append("search", searchQuery)
+      if (statusFilter !== "all") params.append("status", statusFilter)
+      if (roleFilter !== "all") params.append("role", roleFilter)
+      if (organizationId) params.append("org", organizationId)
 
       const response = await fetch(`/api/admin/users?${params}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-      });
+      })
 
       if (response.ok) {
-        const data = await response.json();
-        setUsers(data.users);
+        const data = await response.json()
+        setUsers(data.users)
       }
     } catch (error) {
-      loggers.admin.error('Failed to fetch users:', error);
+      loggers.admin.error("Failed to fetch users:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [searchQuery, statusFilter, roleFilter, organizationId]);
+  }, [searchQuery, statusFilter, roleFilter, organizationId])
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    fetchUsers()
+  }, [fetchUsers])
 
   const handleUserAction = async (userId: string, action: string) => {
     try {
       const response = await fetch(`/api/admin/users/${userId}/${action}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-      });
+      })
 
       if (response.ok) {
-        fetchUsers();
+        fetchUsers()
       }
     } catch (error) {
-      loggers.admin.error(`Failed to ${action} user:`, error);
+      loggers.admin.error(`Failed to ${action} user:`, error)
     }
-    setActionMenuUser(null);
-  };
+    setActionMenuUser(null)
+  }
 
   const handleDeleteUser = async (userId: string) => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+    if (!confirm("Are you sure you want to delete this user?")) return
 
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-      });
+      })
 
       if (response.ok) {
-        fetchUsers();
+        fetchUsers()
       }
     } catch (error) {
-      loggers.admin.error('Failed to delete user:', error);
+      loggers.admin.error("Failed to delete user:", error)
     }
-  };
+  }
 
   const handleBulkAction = async (action: string) => {
-    if (selectedUsers.size === 0) return;
+    if (selectedUsers.size === 0) return
 
     try {
-      const response = await fetch('/api/admin/users/bulk', {
-        method: 'POST',
+      const response = await fetch("/api/admin/users/bulk", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify({
           userIds: Array.from(selectedUsers),
           action,
         }),
-      });
+      })
 
       if (response.ok) {
-        setSelectedUsers(new Set());
-        fetchUsers();
+        setSelectedUsers(new Set())
+        fetchUsers()
       }
     } catch (error) {
-      loggers.admin.error('Bulk action failed:', error);
+      loggers.admin.error("Bulk action failed:", error)
     }
-  };
+  }
 
   const toggleSelectAll = () => {
     if (selectedUsers.size === users.length) {
-      setSelectedUsers(new Set());
+      setSelectedUsers(new Set())
     } else {
-      setSelectedUsers(new Set(users.map((u) => u.id)));
+      setSelectedUsers(new Set(users.map((u) => u.id)))
     }
-  };
+  }
 
   const toggleSelectUser = (userId: string) => {
-    const newSelected = new Set(selectedUsers);
+    const newSelected = new Set(selectedUsers)
     if (newSelected.has(userId)) {
-      newSelected.delete(userId);
+      newSelected.delete(userId)
     } else {
-      newSelected.add(userId);
+      newSelected.add(userId)
     }
-    setSelectedUsers(newSelected);
-  };
+    setSelectedUsers(newSelected)
+  }
 
-  const getStatusBadge = (status: User['status']) => {
+  const getStatusBadge = (status: User["status"]) => {
     const styles = {
-      active: 'bg-green-100 text-green-700',
-      inactive: 'bg-gray-100 text-gray-700',
-      suspended: 'bg-red-100 text-red-700',
-      pending: 'bg-yellow-100 text-yellow-700',
-    };
+      active: "bg-green-100 text-green-700",
+      inactive: "bg-gray-100 text-gray-700",
+      suspended: "bg-red-100 text-red-700",
+      pending: "bg-yellow-100 text-yellow-700",
+    }
 
     const icons = {
       active: <CheckCircle className="w-3 h-3" />,
       inactive: <XCircle className="w-3 h-3" />,
       suspended: <Ban className="w-3 h-3" />,
       pending: <AlertCircle className="w-3 h-3" />,
-    };
+    }
 
     return (
       <span
@@ -187,17 +189,17 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
         {icons[status]}
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
-    );
-  };
+    )
+  }
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Never';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+    if (!dateString) return "Never"
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -205,7 +207,9 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-500 mt-1">Manage users, roles, and access permissions</p>
+          <p className="text-gray-500 mt-1">
+            Manage users, roles, and access permissions
+          </p>
         </div>
         {canCreate && (
           <button
@@ -278,21 +282,23 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
         {/* Bulk Actions */}
         {selectedUsers.size > 0 && (
           <div className="mt-4 pt-4 border-t border-gray-200 flex items-center gap-4">
-            <span className="text-sm text-gray-600">{selectedUsers.size} selected</span>
+            <span className="text-sm text-gray-600">
+              {selectedUsers.size} selected
+            </span>
             <button
-              onClick={() => handleBulkAction('activate')}
+              onClick={() => handleBulkAction("activate")}
               className="text-sm text-green-600 hover:text-green-700"
             >
               Activate
             </button>
             <button
-              onClick={() => handleBulkAction('deactivate')}
+              onClick={() => handleBulkAction("deactivate")}
               className="text-sm text-gray-600 hover:text-gray-700"
             >
               Deactivate
             </button>
             <button
-              onClick={() => handleBulkAction('suspend')}
+              onClick={() => handleBulkAction("suspend")}
               className="text-sm text-red-600 hover:text-red-700"
             >
               Suspend
@@ -309,7 +315,9 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
               <th className="px-4 py-3 text-left">
                 <input
                   type="checkbox"
-                  checked={selectedUsers.size === users.length && users.length > 0}
+                  checked={
+                    selectedUsers.size === users.length && users.length > 0
+                  }
                   onChange={toggleSelectAll}
                   className="rounded border-gray-300"
                 />
@@ -374,15 +382,19 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
                         )}
                       </div>
                       <div>
-                        <div className="font-medium text-gray-900">{user.name}</div>
-                        <div className="text-sm text-gray-500">{user.email}</div>
+                        <div className="font-medium text-gray-900">
+                          {user.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {user.email}
+                        </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded text-sm">
                       <Shield className="w-3 h-3" />
-                      {user.role.replace('_', ' ')}
+                      {user.role.replace("_", " ")}
                     </span>
                   </td>
                   <td className="px-4 py-3">{getStatusBadge(user.status)}</td>
@@ -404,7 +416,9 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
                     <div className="relative">
                       <button
                         onClick={() =>
-                          setActionMenuUser(actionMenuUser === user.id ? null : user.id)
+                          setActionMenuUser(
+                            actionMenuUser === user.id ? null : user.id
+                          )
                         }
                         className="p-1 hover:bg-gray-100 rounded"
                       >
@@ -417,9 +431,9 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
                             <>
                               <button
                                 onClick={() => {
-                                  setEditingUser(user);
-                                  setShowEditModal(true);
-                                  setActionMenuUser(null);
+                                  setEditingUser(user)
+                                  setShowEditModal(true)
+                                  setActionMenuUser(null)
                                 }}
                                 className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                               >
@@ -427,22 +441,28 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
                                 Edit User
                               </button>
                               <button
-                                onClick={() => handleUserAction(user.id, 'reset-password')}
+                                onClick={() =>
+                                  handleUserAction(user.id, "reset-password")
+                                }
                                 className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                               >
                                 <Key className="w-4 h-4" />
                                 Reset Password
                               </button>
                               <button
-                                onClick={() => handleUserAction(user.id, 'reset-mfa')}
+                                onClick={() =>
+                                  handleUserAction(user.id, "reset-mfa")
+                                }
                                 className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                               >
                                 <Shield className="w-4 h-4" />
                                 Reset MFA
                               </button>
-                              {user.status === 'active' ? (
+                              {user.status === "active" ? (
                                 <button
-                                  onClick={() => handleUserAction(user.id, 'suspend')}
+                                  onClick={() =>
+                                    handleUserAction(user.id, "suspend")
+                                  }
                                   className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
                                 >
                                   <Ban className="w-4 h-4" />
@@ -450,7 +470,9 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
                                 </button>
                               ) : (
                                 <button
-                                  onClick={() => handleUserAction(user.id, 'activate')}
+                                  onClick={() =>
+                                    handleUserAction(user.id, "activate")
+                                  }
                                   className="w-full flex items-center gap-2 px-4 py-2 text-sm text-green-600 hover:bg-gray-50"
                                 >
                                   <CheckCircle className="w-4 h-4" />
@@ -481,7 +503,10 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
 
       {/* Add User Modal - Placeholder */}
       {showAddModal && (
-        <AddUserModal onClose={() => setShowAddModal(false)} onSuccess={fetchUsers} />
+        <AddUserModal
+          onClose={() => setShowAddModal(false)}
+          onSuccess={fetchUsers}
+        />
       )}
 
       {/* Edit User Modal - Placeholder */}
@@ -489,60 +514,60 @@ export const UserManagement: React.FC<UserManagementProps> = ({ organizationId }
         <EditUserModal
           user={editingUser}
           onClose={() => {
-            setShowEditModal(false);
-            setEditingUser(null);
+            setShowEditModal(false)
+            setEditingUser(null)
           }}
           onSuccess={fetchUsers}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
 // Add User Modal Component
 interface AddUserModalProps {
-  onClose: () => void;
-  onSuccess: () => void;
+  onClose: () => void
+  onSuccess: () => void
 }
 
 const AddUserModal: React.FC<AddUserModalProps> = ({ onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    email: '',
-    name: '',
-    role: 'viewer',
+    email: "",
+    name: "",
+    role: "viewer",
     sendInvite: true,
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+    e.preventDefault()
+    setLoading(true)
+    setError("")
 
     try {
-      const response = await fetch('/api/admin/users', {
-        method: 'POST',
+      const response = await fetch("/api/admin/users", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify(formData),
-      });
+      })
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to create user');
+        const data = await response.json()
+        throw new Error(data.message || "Failed to create user")
       }
 
-      onSuccess();
-      onClose();
+      onSuccess()
+      onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create user');
+      setError(err instanceof Error ? err.message : "Failed to create user")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -558,13 +583,17 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose, onSuccess }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="user@example.com"
                 required
@@ -573,11 +602,15 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose, onSuccess }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="John Doe"
               required
@@ -585,10 +618,14 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose, onSuccess }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Role
+            </label>
             <select
               value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             >
               <option value="viewer">Viewer</option>
@@ -602,7 +639,9 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose, onSuccess }) => {
             <input
               type="checkbox"
               checked={formData.sendInvite}
-              onChange={(e) => setFormData({ ...formData, sendInvite: e.target.checked })}
+              onChange={(e) =>
+                setFormData({ ...formData, sendInvite: e.target.checked })
+              }
               className="rounded border-gray-300"
             />
             <span className="text-sm text-gray-600">Send invite email</span>
@@ -621,59 +660,63 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose, onSuccess }) => {
               disabled={loading}
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
-              {loading ? 'Creating...' : 'Create User'}
+              {loading ? "Creating..." : "Create User"}
             </button>
           </div>
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Edit User Modal Component
 interface EditUserModalProps {
-  user: User;
-  onClose: () => void;
-  onSuccess: () => void;
+  user: User
+  onClose: () => void
+  onSuccess: () => void
 }
 
-const EditUserModal: React.FC<EditUserModalProps> = ({ user, onClose, onSuccess }) => {
+const EditUserModal: React.FC<EditUserModalProps> = ({
+  user,
+  onClose,
+  onSuccess,
+}) => {
   const [formData, setFormData] = useState({
     name: user.name,
     role: user.role,
     status: user.status,
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+    e.preventDefault()
+    setLoading(true)
+    setError("")
 
     try {
       const response = await fetch(`/api/admin/users/${user.id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify(formData),
-      });
+      })
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to update user');
+        const data = await response.json()
+        throw new Error(data.message || "Failed to update user")
       }
 
-      onSuccess();
-      onClose();
+      onSuccess()
+      onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update user');
+      setError(err instanceof Error ? err.message : "Failed to update user")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -689,7 +732,9 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onClose, onSuccess 
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <input
               type="email"
               value={user.email}
@@ -699,21 +744,29 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onClose, onSuccess 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Role
+            </label>
             <select
               value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             >
               <option value="viewer">Viewer</option>
@@ -725,11 +778,16 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onClose, onSuccess 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Status
+            </label>
             <select
               value={formData.status}
               onChange={(e) =>
-                setFormData({ ...formData, status: e.target.value as User['status'] })
+                setFormData({
+                  ...formData,
+                  status: e.target.value as User["status"],
+                })
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             >
@@ -752,13 +810,13 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onClose, onSuccess 
               disabled={loading}
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UserManagement;
+export default UserManagement

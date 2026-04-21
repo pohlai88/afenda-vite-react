@@ -1,10 +1,13 @@
-'use client'
+"use client"
 
-import { CheckSquare, Square, Loader2 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useDealChecklist, useUpdateChecklistItem } from '@/hooks/use-compliance'
-import { toast } from '@/hooks/use-toast'
-import { useTranslation } from '@/i18n'
+import { CheckSquare, Square, Loader2 } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  useDealChecklist,
+  useUpdateChecklistItem,
+} from "@/hooks/use-compliance"
+import { toast } from "@/hooks/use-toast"
+import { useTranslation } from "@/i18n"
 
 interface DealChecklistProps {
   dealId: string
@@ -25,7 +28,12 @@ export function DealChecklistPanel({ dealId }: DealChecklistProps) {
     updateItem.mutate(
       { dealId, key, checked: !currentChecked },
       {
-        onError: (err) => toast({ title: t('common.error'), description: err.message, variant: 'destructive' }),
+        onError: (err) =>
+          toast({
+            title: t("common.error"),
+            description: err.message,
+            variant: "destructive",
+          }),
       }
     )
   }
@@ -34,7 +42,7 @@ export function DealChecklistPanel({ dealId }: DealChecklistProps) {
     <Card className="bg-[var(--crm-bg-card)] border-[var(--crm-border)]">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-semibold text-[var(--crm-text-primary)] flex items-center justify-between">
-          <span>{t('compliance.checklist')}</span>
+          <span>{t("compliance.checklist")}</span>
           <span className="text-xs font-normal text-[var(--crm-text-muted)]">
             {completedCount}/{totalCount}
           </span>
@@ -43,13 +51,16 @@ export function DealChecklistPanel({ dealId }: DealChecklistProps) {
         <div className="w-full h-1.5 bg-[var(--crm-bg-page)] rounded-full overflow-hidden">
           <div
             className="h-full bg-emerald-500 rounded-full transition-all"
-            style={{ width: `${totalCount > 0 ? (completedCount / totalCount) * 100 : 0}%` }}
+            style={{
+              width: `${totalCount > 0 ? (completedCount / totalCount) * 100 : 0}%`,
+            }}
           />
         </div>
       </CardHeader>
       <CardContent className="space-y-1">
         {items.map((item) => {
-          const isUpdating = updateItem.isPending && updateItem.variables?.key === item.key
+          const isUpdating =
+            updateItem.isPending && updateItem.variables?.key === item.key
           return (
             <button
               key={item.key}
@@ -64,7 +75,9 @@ export function DealChecklistPanel({ dealId }: DealChecklistProps) {
               ) : (
                 <Square className="w-4 h-4 text-[var(--crm-text-muted)] flex-shrink-0" />
               )}
-              <span className={`text-xs ${item.checked ? 'text-[var(--crm-text-muted)] line-through' : 'text-[var(--crm-text-primary)]'}`}>
+              <span
+                className={`text-xs ${item.checked ? "text-[var(--crm-text-muted)] line-through" : "text-[var(--crm-text-primary)]"}`}
+              >
                 {t(item.label)}
               </span>
             </button>

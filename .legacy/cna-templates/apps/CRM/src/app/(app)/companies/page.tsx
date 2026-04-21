@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 import {
   Plus,
   Search,
@@ -12,64 +12,64 @@ import {
   MapPin,
   Download,
   Upload,
-} from 'lucide-react'
+} from "lucide-react"
 
-import { useTranslation } from '@/i18n'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useTranslation } from "@/i18n"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { useCompanies } from '@/hooks/use-companies'
-import { usePermissions } from '@/hooks/use-permissions'
-import { COMPANY_SIZES, COUNTRIES } from '@/lib/constants'
-import type { CompanyWithContacts } from '@/types'
+} from "@/components/ui/select"
+import { useCompanies } from "@/hooks/use-companies"
+import { usePermissions } from "@/hooks/use-permissions"
+import { COMPANY_SIZES, COUNTRIES } from "@/lib/constants"
+import type { CompanyWithContacts } from "@/types"
 
 const INDUSTRIES = [
-  'Công nghệ',
-  'Tài chính',
-  'Sản xuất',
-  'Bán lẻ',
-  'Y tế',
-  'Giáo dục',
-  'Bất động sản',
-  'Logistics',
-  'F&B',
-  'Khác',
+  "Công nghệ",
+  "Tài chính",
+  "Sản xuất",
+  "Bán lẻ",
+  "Y tế",
+  "Giáo dục",
+  "Bất động sản",
+  "Logistics",
+  "F&B",
+  "Khác",
 ]
 
 export default function CompaniesPage() {
   const router = useRouter()
   const { canCreate, canExport, isManagerOrAbove } = usePermissions()
   const { t } = useTranslation()
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("")
   const [exporting, setExporting] = useState(false)
 
   const handleExport = async () => {
     setExporting(true)
     try {
-      const res = await fetch('/api/companies/export')
-      if (!res.ok) throw new Error('Export failed')
+      const res = await fetch("/api/companies/export")
+      if (!res.ok) throw new Error("Export failed")
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
+      const a = document.createElement("a")
       a.href = url
-      a.download = `companies-${new Date().toISOString().split('T')[0]}.csv`
+      a.download = `companies-${new Date().toISOString().split("T")[0]}.csv`
       a.click()
       URL.revokeObjectURL(url)
     } finally {
       setExporting(false)
     }
   }
-  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState("")
   const [industry, setIndustry] = useState<string>()
   const [page, setPage] = useState(1)
   const limit = 12
@@ -84,7 +84,7 @@ export default function CompaniesPage() {
 
   const { data, isLoading } = useCompanies({
     q: debouncedSearch || undefined,
-    industry: industry === '__all__' ? undefined : industry,
+    industry: industry === "__all__" ? undefined : industry,
     page,
     limit,
   })
@@ -95,7 +95,7 @@ export default function CompaniesPage() {
 
   return (
     <PageShell
-      title={t('companies.title')}
+      title={t("companies.title")}
       actions={
         <div className="flex items-center gap-2">
           {canExport && (
@@ -106,7 +106,7 @@ export default function CompaniesPage() {
               className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
             >
               <Download className="h-4 w-4 mr-1" />
-              {exporting ? t('common.processing') : t('import.exportCSV')}
+              {exporting ? t("common.processing") : t("import.exportCSV")}
             </Button>
           )}
           {isManagerOrAbove && (
@@ -116,7 +116,7 @@ export default function CompaniesPage() {
                 className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
               >
                 <Upload className="h-4 w-4 mr-1" />
-                {t('import.importCSV')}
+                {t("import.importCSV")}
               </Button>
             </Link>
           )}
@@ -124,7 +124,7 @@ export default function CompaniesPage() {
             <Link href="/companies/new">
               <Button className="btn-accent-glow">
                 <Plus className="h-4 w-4" />
-                {t('companies.addCompany')}
+                {t("companies.addCompany")}
               </Button>
             </Link>
           )}
@@ -138,24 +138,31 @@ export default function CompaniesPage() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('companies.searchPlaceholder')}
+            placeholder={t("companies.searchPlaceholder")}
             className="input-premium pl-10 bg-[var(--crm-bg-card)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)]"
           />
         </div>
 
         <Select
-          value={industry ?? ''}
+          value={industry ?? ""}
           onValueChange={(val) => setIndustry(val || undefined)}
         >
           <SelectTrigger className="h-9 w-[160px] input-premium bg-[var(--crm-bg-card)] border-[var(--crm-border)] text-sm text-[var(--crm-text-secondary)]">
             <SelectValue placeholder="Ngành nghề" />
           </SelectTrigger>
           <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
-            <SelectItem value="__all__" className="text-[var(--crm-text-secondary)]">
-              {t('companies.allIndustries')}
+            <SelectItem
+              value="__all__"
+              className="text-[var(--crm-text-secondary)]"
+            >
+              {t("companies.allIndustries")}
             </SelectItem>
             {INDUSTRIES.map((ind) => (
-              <SelectItem key={ind} value={ind} className="text-[var(--crm-text-primary)]">
+              <SelectItem
+                key={ind}
+                value={ind}
+                className="text-[var(--crm-text-primary)]"
+              >
                 {ind}
               </SelectItem>
             ))}
@@ -174,7 +181,7 @@ export default function CompaniesPage() {
         <div className="glass-card-static py-16 flex flex-col items-center justify-center">
           <Building2 className="h-12 w-12 text-[var(--crm-text-muted)]" />
           <p className="mt-4 text-sm font-medium text-[var(--crm-text-primary)]">
-            {t('companies.empty')}
+            {t("companies.empty")}
           </p>
           <p className="mt-1 text-xs text-[var(--crm-text-muted)]">
             Bắt đầu bằng cách thêm công ty đầu tiên
@@ -183,7 +190,7 @@ export default function CompaniesPage() {
             <Link href="/companies/new" className="mt-4">
               <Button className="btn-accent-glow">
                 <Plus className="h-4 w-4" />
-                {t('companies.addCompany')}
+                {t("companies.addCompany")}
               </Button>
             </Link>
           )}
@@ -204,8 +211,8 @@ export default function CompaniesPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between pt-2">
               <p className="text-xs text-[var(--crm-text-muted)]">
-                {t('common.showing')} {(page - 1) * limit + 1}-
-                {Math.min(page * limit, total)} {t('common.of')} {total}
+                {t("common.showing")} {(page - 1) * limit + 1}-
+                {Math.min(page * limit, total)} {t("common.of")} {total}
               </p>
               <div className="flex items-center gap-2">
                 <Button
@@ -265,7 +272,9 @@ function CompanyCard({
                 {company.name}
               </h3>
               {company.industry && (
-                <p className="text-xs text-[var(--crm-text-secondary)]">{company.industry}</p>
+                <p className="text-xs text-[var(--crm-text-secondary)]">
+                  {company.industry}
+                </p>
               )}
             </div>
           </div>
@@ -294,8 +303,11 @@ function CompanyCard({
               <span className="truncate">{company.city}</span>
             </div>
           )}
-          {company.country && company.country !== 'VN' && (
-            <Badge variant="outline" className="text-[10px] border-[var(--crm-border)] text-[var(--crm-text-muted)]">
+          {company.country && company.country !== "VN" && (
+            <Badge
+              variant="outline"
+              className="text-[10px] border-[var(--crm-border)] text-[var(--crm-text-muted)]"
+            >
               {company.country}
             </Badge>
           )}

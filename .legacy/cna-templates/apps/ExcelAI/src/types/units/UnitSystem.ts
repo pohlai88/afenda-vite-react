@@ -2,21 +2,21 @@
 // UNIT SYSTEM — Physical unit definitions (Blueprint §3.2)
 // =============================================================================
 
-import type { Dimension } from '../semantic/types';
+import type { Dimension } from "../semantic/types"
 
 // -----------------------------------------------------------------------------
 // Unit Interface
 // -----------------------------------------------------------------------------
 
 export interface Unit {
-  id: string;
-  name: string;
-  symbol: string;
-  dimension: Dimension;
-  toBase: number;      // Multiply by this to convert to base unit
-  fromBase: number;    // Multiply by this to convert from base unit
-  offset?: number;     // For temperature conversions
-  aliases?: string[];  // Alternative names for this unit
+  id: string
+  name: string
+  symbol: string
+  dimension: Dimension
+  toBase: number // Multiply by this to convert to base unit
+  fromBase: number // Multiply by this to convert from base unit
+  offset?: number // For temperature conversions
+  aliases?: string[] // Alternative names for this unit
 }
 
 // -----------------------------------------------------------------------------
@@ -29,85 +29,85 @@ export const UNITS: Record<string, Record<string, Unit>> = {
   // ═══════════════════════════════════════════════════════════════
   length: {
     m: {
-      id: 'm',
-      name: 'Meter',
-      symbol: 'm',
-      dimension: 'length',
+      id: "m",
+      name: "Meter",
+      symbol: "m",
+      dimension: "length",
       toBase: 1,
       fromBase: 1,
-      aliases: ['meter', 'meters', 'metre', 'metres'],
+      aliases: ["meter", "meters", "metre", "metres"],
     },
     km: {
-      id: 'km',
-      name: 'Kilometer',
-      symbol: 'km',
-      dimension: 'length',
+      id: "km",
+      name: "Kilometer",
+      symbol: "km",
+      dimension: "length",
       toBase: 1000,
       fromBase: 0.001,
-      aliases: ['kilometer', 'kilometers'],
+      aliases: ["kilometer", "kilometers"],
     },
     cm: {
-      id: 'cm',
-      name: 'Centimeter',
-      symbol: 'cm',
-      dimension: 'length',
+      id: "cm",
+      name: "Centimeter",
+      symbol: "cm",
+      dimension: "length",
       toBase: 0.01,
       fromBase: 100,
-      aliases: ['centimeter', 'centimeters'],
+      aliases: ["centimeter", "centimeters"],
     },
     mm: {
-      id: 'mm',
-      name: 'Millimeter',
-      symbol: 'mm',
-      dimension: 'length',
+      id: "mm",
+      name: "Millimeter",
+      symbol: "mm",
+      dimension: "length",
       toBase: 0.001,
       fromBase: 1000,
-      aliases: ['millimeter', 'millimeters'],
+      aliases: ["millimeter", "millimeters"],
     },
     mi: {
-      id: 'mi',
-      name: 'Mile',
-      symbol: 'mi',
-      dimension: 'length',
+      id: "mi",
+      name: "Mile",
+      symbol: "mi",
+      dimension: "length",
       toBase: 1609.344,
       fromBase: 0.000621371,
-      aliases: ['mile', 'miles'],
+      aliases: ["mile", "miles"],
     },
     ft: {
-      id: 'ft',
-      name: 'Foot',
-      symbol: 'ft',
-      dimension: 'length',
+      id: "ft",
+      name: "Foot",
+      symbol: "ft",
+      dimension: "length",
       toBase: 0.3048,
       fromBase: 3.28084,
-      aliases: ['foot', 'feet'],
+      aliases: ["foot", "feet"],
     },
     in: {
-      id: 'in',
-      name: 'Inch',
-      symbol: 'in',
-      dimension: 'length',
+      id: "in",
+      name: "Inch",
+      symbol: "in",
+      dimension: "length",
       toBase: 0.0254,
       fromBase: 39.3701,
-      aliases: ['inch', 'inches'],
+      aliases: ["inch", "inches"],
     },
     yd: {
-      id: 'yd',
-      name: 'Yard',
-      symbol: 'yd',
-      dimension: 'length',
+      id: "yd",
+      name: "Yard",
+      symbol: "yd",
+      dimension: "length",
       toBase: 0.9144,
       fromBase: 1.09361,
-      aliases: ['yard', 'yards'],
+      aliases: ["yard", "yards"],
     },
     nmi: {
-      id: 'nmi',
-      name: 'Nautical Mile',
-      symbol: 'nmi',
-      dimension: 'length',
+      id: "nmi",
+      name: "Nautical Mile",
+      symbol: "nmi",
+      dimension: "length",
       toBase: 1852,
       fromBase: 0.000539957,
-      aliases: ['nautical mile', 'nautical miles'],
+      aliases: ["nautical mile", "nautical miles"],
     },
   },
 
@@ -116,58 +116,58 @@ export const UNITS: Record<string, Record<string, Unit>> = {
   // ═══════════════════════════════════════════════════════════════
   mass: {
     kg: {
-      id: 'kg',
-      name: 'Kilogram',
-      symbol: 'kg',
-      dimension: 'mass',
+      id: "kg",
+      name: "Kilogram",
+      symbol: "kg",
+      dimension: "mass",
       toBase: 1,
       fromBase: 1,
-      aliases: ['kilogram', 'kilograms'],
+      aliases: ["kilogram", "kilograms"],
     },
     g: {
-      id: 'g',
-      name: 'Gram',
-      symbol: 'g',
-      dimension: 'mass',
+      id: "g",
+      name: "Gram",
+      symbol: "g",
+      dimension: "mass",
       toBase: 0.001,
       fromBase: 1000,
-      aliases: ['gram', 'grams'],
+      aliases: ["gram", "grams"],
     },
     mg: {
-      id: 'mg',
-      name: 'Milligram',
-      symbol: 'mg',
-      dimension: 'mass',
+      id: "mg",
+      name: "Milligram",
+      symbol: "mg",
+      dimension: "mass",
       toBase: 0.000001,
       fromBase: 1000000,
-      aliases: ['milligram', 'milligrams'],
+      aliases: ["milligram", "milligrams"],
     },
     t: {
-      id: 't',
-      name: 'Metric Ton',
-      symbol: 't',
-      dimension: 'mass',
+      id: "t",
+      name: "Metric Ton",
+      symbol: "t",
+      dimension: "mass",
       toBase: 1000,
       fromBase: 0.001,
-      aliases: ['ton', 'tons', 'tonne', 'tonnes'],
+      aliases: ["ton", "tons", "tonne", "tonnes"],
     },
     lb: {
-      id: 'lb',
-      name: 'Pound',
-      symbol: 'lb',
-      dimension: 'mass',
+      id: "lb",
+      name: "Pound",
+      symbol: "lb",
+      dimension: "mass",
       toBase: 0.453592,
       fromBase: 2.20462,
-      aliases: ['pound', 'pounds', 'lbs'],
+      aliases: ["pound", "pounds", "lbs"],
     },
     oz: {
-      id: 'oz',
-      name: 'Ounce',
-      symbol: 'oz',
-      dimension: 'mass',
+      id: "oz",
+      name: "Ounce",
+      symbol: "oz",
+      dimension: "mass",
       toBase: 0.0283495,
       fromBase: 35.274,
-      aliases: ['ounce', 'ounces'],
+      aliases: ["ounce", "ounces"],
     },
   },
 
@@ -176,58 +176,58 @@ export const UNITS: Record<string, Record<string, Unit>> = {
   // ═══════════════════════════════════════════════════════════════
   time: {
     s: {
-      id: 's',
-      name: 'Second',
-      symbol: 's',
-      dimension: 'time',
+      id: "s",
+      name: "Second",
+      symbol: "s",
+      dimension: "time",
       toBase: 1,
       fromBase: 1,
-      aliases: ['sec', 'second', 'seconds'],
+      aliases: ["sec", "second", "seconds"],
     },
     ms: {
-      id: 'ms',
-      name: 'Millisecond',
-      symbol: 'ms',
-      dimension: 'time',
+      id: "ms",
+      name: "Millisecond",
+      symbol: "ms",
+      dimension: "time",
       toBase: 0.001,
       fromBase: 1000,
-      aliases: ['millisecond', 'milliseconds'],
+      aliases: ["millisecond", "milliseconds"],
     },
     min: {
-      id: 'min',
-      name: 'Minute',
-      symbol: 'min',
-      dimension: 'time',
+      id: "min",
+      name: "Minute",
+      symbol: "min",
+      dimension: "time",
       toBase: 60,
       fromBase: 1 / 60,
-      aliases: ['minute', 'minutes'],
+      aliases: ["minute", "minutes"],
     },
     h: {
-      id: 'h',
-      name: 'Hour',
-      symbol: 'h',
-      dimension: 'time',
+      id: "h",
+      name: "Hour",
+      symbol: "h",
+      dimension: "time",
       toBase: 3600,
       fromBase: 1 / 3600,
-      aliases: ['hr', 'hour', 'hours'],
+      aliases: ["hr", "hour", "hours"],
     },
     d: {
-      id: 'd',
-      name: 'Day',
-      symbol: 'd',
-      dimension: 'time',
+      id: "d",
+      name: "Day",
+      symbol: "d",
+      dimension: "time",
       toBase: 86400,
       fromBase: 1 / 86400,
-      aliases: ['day', 'days'],
+      aliases: ["day", "days"],
     },
     wk: {
-      id: 'wk',
-      name: 'Week',
-      symbol: 'wk',
-      dimension: 'time',
+      id: "wk",
+      name: "Week",
+      symbol: "wk",
+      dimension: "time",
       toBase: 604800,
       fromBase: 1 / 604800,
-      aliases: ['week', 'weeks'],
+      aliases: ["week", "weeks"],
     },
   },
 
@@ -236,34 +236,34 @@ export const UNITS: Record<string, Record<string, Unit>> = {
   // ═══════════════════════════════════════════════════════════════
   temperature: {
     celsius: {
-      id: 'celsius',
-      name: 'Celsius',
-      symbol: '°C',
-      dimension: 'temperature',
+      id: "celsius",
+      name: "Celsius",
+      symbol: "°C",
+      dimension: "temperature",
       toBase: 1,
       fromBase: 1,
       offset: 0,
-      aliases: ['c', 'degc', '°c'],
+      aliases: ["c", "degc", "°c"],
     },
     fahrenheit: {
-      id: 'fahrenheit',
-      name: 'Fahrenheit',
-      symbol: '°F',
-      dimension: 'temperature',
+      id: "fahrenheit",
+      name: "Fahrenheit",
+      symbol: "°F",
+      dimension: "temperature",
       toBase: 5 / 9,
       fromBase: 9 / 5,
       offset: -32,
-      aliases: ['f', 'degf', '°f'],
+      aliases: ["f", "degf", "°f"],
     },
     kelvin: {
-      id: 'kelvin',
-      name: 'Kelvin',
-      symbol: 'K',
-      dimension: 'temperature',
+      id: "kelvin",
+      name: "Kelvin",
+      symbol: "K",
+      dimension: "temperature",
       toBase: 1,
       fromBase: 1,
       offset: -273.15,
-      aliases: ['k'],
+      aliases: ["k"],
     },
   },
 
@@ -272,49 +272,49 @@ export const UNITS: Record<string, Record<string, Unit>> = {
   // ═══════════════════════════════════════════════════════════════
   area: {
     m2: {
-      id: 'm2',
-      name: 'Square Meter',
-      symbol: 'm²',
-      dimension: 'area',
+      id: "m2",
+      name: "Square Meter",
+      symbol: "m²",
+      dimension: "area",
       toBase: 1,
       fromBase: 1,
-      aliases: ['sqm', 'square meter', 'square meters'],
+      aliases: ["sqm", "square meter", "square meters"],
     },
     km2: {
-      id: 'km2',
-      name: 'Square Kilometer',
-      symbol: 'km²',
-      dimension: 'area',
+      id: "km2",
+      name: "Square Kilometer",
+      symbol: "km²",
+      dimension: "area",
       toBase: 1000000,
       fromBase: 0.000001,
-      aliases: ['sqkm', 'square kilometer'],
+      aliases: ["sqkm", "square kilometer"],
     },
     ha: {
-      id: 'ha',
-      name: 'Hectare',
-      symbol: 'ha',
-      dimension: 'area',
+      id: "ha",
+      name: "Hectare",
+      symbol: "ha",
+      dimension: "area",
       toBase: 10000,
       fromBase: 0.0001,
-      aliases: ['hectare', 'hectares'],
+      aliases: ["hectare", "hectares"],
     },
     acre: {
-      id: 'acre',
-      name: 'Acre',
-      symbol: 'acre',
-      dimension: 'area',
+      id: "acre",
+      name: "Acre",
+      symbol: "acre",
+      dimension: "area",
       toBase: 4046.86,
       fromBase: 0.000247105,
-      aliases: ['acres'],
+      aliases: ["acres"],
     },
     ft2: {
-      id: 'ft2',
-      name: 'Square Foot',
-      symbol: 'ft²',
-      dimension: 'area',
+      id: "ft2",
+      name: "Square Foot",
+      symbol: "ft²",
+      dimension: "area",
       toBase: 0.092903,
       fromBase: 10.7639,
-      aliases: ['sqft', 'square foot', 'square feet'],
+      aliases: ["sqft", "square foot", "square feet"],
     },
   },
 
@@ -323,58 +323,58 @@ export const UNITS: Record<string, Record<string, Unit>> = {
   // ═══════════════════════════════════════════════════════════════
   volume: {
     liter: {
-      id: 'liter',
-      name: 'Liter',
-      symbol: 'L',
-      dimension: 'volume',
+      id: "liter",
+      name: "Liter",
+      symbol: "L",
+      dimension: "volume",
       toBase: 1,
       fromBase: 1,
-      aliases: ['l', 'litre', 'litres', 'liters'],
+      aliases: ["l", "litre", "litres", "liters"],
     },
     ml: {
-      id: 'ml',
-      name: 'Milliliter',
-      symbol: 'mL',
-      dimension: 'volume',
+      id: "ml",
+      name: "Milliliter",
+      symbol: "mL",
+      dimension: "volume",
       toBase: 0.001,
       fromBase: 1000,
-      aliases: ['milliliter', 'milliliters'],
+      aliases: ["milliliter", "milliliters"],
     },
     m3: {
-      id: 'm3',
-      name: 'Cubic Meter',
-      symbol: 'm³',
-      dimension: 'volume',
+      id: "m3",
+      name: "Cubic Meter",
+      symbol: "m³",
+      dimension: "volume",
       toBase: 1000,
       fromBase: 0.001,
-      aliases: ['cubic meter', 'cubic meters'],
+      aliases: ["cubic meter", "cubic meters"],
     },
     gal: {
-      id: 'gal',
-      name: 'Gallon',
-      symbol: 'gal',
-      dimension: 'volume',
+      id: "gal",
+      name: "Gallon",
+      symbol: "gal",
+      dimension: "volume",
       toBase: 3.78541,
       fromBase: 0.264172,
-      aliases: ['gallon', 'gallons'],
+      aliases: ["gallon", "gallons"],
     },
     qt: {
-      id: 'qt',
-      name: 'Quart',
-      symbol: 'qt',
-      dimension: 'volume',
+      id: "qt",
+      name: "Quart",
+      symbol: "qt",
+      dimension: "volume",
       toBase: 0.946353,
       fromBase: 1.05669,
-      aliases: ['quart', 'quarts'],
+      aliases: ["quart", "quarts"],
     },
     cup: {
-      id: 'cup',
-      name: 'Cup',
-      symbol: 'cup',
-      dimension: 'volume',
+      id: "cup",
+      name: "Cup",
+      symbol: "cup",
+      dimension: "volume",
       toBase: 0.236588,
       fromBase: 4.22675,
-      aliases: ['cups'],
+      aliases: ["cups"],
     },
   },
 
@@ -382,41 +382,41 @@ export const UNITS: Record<string, Record<string, Unit>> = {
   // SPEED (base: km/h)
   // ═══════════════════════════════════════════════════════════════
   speed: {
-    'km/h': {
-      id: 'km/h',
-      name: 'Kilometers per Hour',
-      symbol: 'km/h',
-      dimension: 'speed',
+    "km/h": {
+      id: "km/h",
+      name: "Kilometers per Hour",
+      symbol: "km/h",
+      dimension: "speed",
       toBase: 1,
       fromBase: 1,
-      aliases: ['kph', 'kmh', 'kmph'],
+      aliases: ["kph", "kmh", "kmph"],
     },
-    'm/s': {
-      id: 'm/s',
-      name: 'Meters per Second',
-      symbol: 'm/s',
-      dimension: 'speed',
+    "m/s": {
+      id: "m/s",
+      name: "Meters per Second",
+      symbol: "m/s",
+      dimension: "speed",
       toBase: 3.6,
       fromBase: 1 / 3.6,
-      aliases: ['mps'],
+      aliases: ["mps"],
     },
-    'mi/h': {
-      id: 'mi/h',
-      name: 'Miles per Hour',
-      symbol: 'mph',
-      dimension: 'speed',
+    "mi/h": {
+      id: "mi/h",
+      name: "Miles per Hour",
+      symbol: "mph",
+      dimension: "speed",
       toBase: 1.60934,
       fromBase: 0.621371,
-      aliases: ['mph'],
+      aliases: ["mph"],
     },
     knot: {
-      id: 'knot',
-      name: 'Knot',
-      symbol: 'kn',
-      dimension: 'speed',
+      id: "knot",
+      name: "Knot",
+      symbol: "kn",
+      dimension: "speed",
       toBase: 1.852,
       fromBase: 0.539957,
-      aliases: ['knots', 'kn'],
+      aliases: ["knots", "kn"],
     },
   },
 
@@ -425,55 +425,55 @@ export const UNITS: Record<string, Record<string, Unit>> = {
   // ═══════════════════════════════════════════════════════════════
   data: {
     byte: {
-      id: 'byte',
-      name: 'Byte',
-      symbol: 'B',
-      dimension: 'data',
+      id: "byte",
+      name: "Byte",
+      symbol: "B",
+      dimension: "data",
       toBase: 1,
       fromBase: 1,
-      aliases: ['bytes'],
+      aliases: ["bytes"],
     },
     kb: {
-      id: 'kb',
-      name: 'Kilobyte',
-      symbol: 'KB',
-      dimension: 'data',
+      id: "kb",
+      name: "Kilobyte",
+      symbol: "KB",
+      dimension: "data",
       toBase: 1024,
       fromBase: 1 / 1024,
-      aliases: ['kilobyte', 'kilobytes'],
+      aliases: ["kilobyte", "kilobytes"],
     },
     mb: {
-      id: 'mb',
-      name: 'Megabyte',
-      symbol: 'MB',
-      dimension: 'data',
+      id: "mb",
+      name: "Megabyte",
+      symbol: "MB",
+      dimension: "data",
       toBase: 1048576,
       fromBase: 1 / 1048576,
-      aliases: ['megabyte', 'megabytes'],
+      aliases: ["megabyte", "megabytes"],
     },
     gb: {
-      id: 'gb',
-      name: 'Gigabyte',
-      symbol: 'GB',
-      dimension: 'data',
+      id: "gb",
+      name: "Gigabyte",
+      symbol: "GB",
+      dimension: "data",
       toBase: 1073741824,
       fromBase: 1 / 1073741824,
-      aliases: ['gigabyte', 'gigabytes'],
+      aliases: ["gigabyte", "gigabytes"],
     },
     tb: {
-      id: 'tb',
-      name: 'Terabyte',
-      symbol: 'TB',
-      dimension: 'data',
+      id: "tb",
+      name: "Terabyte",
+      symbol: "TB",
+      dimension: "data",
       toBase: 1099511627776,
       fromBase: 1 / 1099511627776,
-      aliases: ['terabyte', 'terabytes'],
+      aliases: ["terabyte", "terabytes"],
     },
   },
 
   // Currency placeholder (handled separately)
   currency: {},
-};
+}
 
 // -----------------------------------------------------------------------------
 // Unit Lookup Functions
@@ -483,12 +483,12 @@ export const UNITS: Record<string, Record<string, Unit>> = {
  * Find a unit by ID, symbol, or alias
  */
 export function findUnit(query: string, dimension?: string): Unit | null {
-  const queryLower = query.toLowerCase().trim();
-  const dimensions = dimension ? [dimension] : Object.keys(UNITS);
+  const queryLower = query.toLowerCase().trim()
+  const dimensions = dimension ? [dimension] : Object.keys(UNITS)
 
   for (const dim of dimensions) {
-    const units = UNITS[dim];
-    if (!units) continue;
+    const units = UNITS[dim]
+    if (!units) continue
 
     for (const unit of Object.values(units)) {
       if (
@@ -496,34 +496,34 @@ export function findUnit(query: string, dimension?: string): Unit | null {
         unit.symbol.toLowerCase() === queryLower ||
         unit.aliases?.some((a) => a.toLowerCase() === queryLower)
       ) {
-        return unit;
+        return unit
       }
     }
   }
-  return null;
+  return null
 }
 
 /**
  * Get all units for a dimension
  */
 export function getUnitsForDimension(dimension: string): Unit[] {
-  return Object.values(UNITS[dimension] || {});
+  return Object.values(UNITS[dimension] || {})
 }
 
 /**
  * Get all dimensions
  */
 export function getDimensions(): string[] {
-  return Object.keys(UNITS).filter((d) => d !== 'currency');
+  return Object.keys(UNITS).filter((d) => d !== "currency")
 }
 
 /**
  * Get the base unit for a dimension
  */
 export function getBaseUnit(dimension: string): Unit | null {
-  const units = UNITS[dimension];
-  if (!units) return null;
+  const units = UNITS[dimension]
+  if (!units) return null
 
   // Base unit has toBase = 1
-  return Object.values(units).find((u) => u.toBase === 1) || null;
+  return Object.values(units).find((u) => u.toBase === 1) || null
 }

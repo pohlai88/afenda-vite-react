@@ -1,9 +1,13 @@
 // src/services/holiday.service.ts
 // Holiday management service
 
-import { db } from '@/lib/db'
-import type { HolidayFilters, PaginatedResponse, HolidayWithRelations } from '@/types'
-import type { Prisma, DayType } from '@prisma/client'
+import { db } from "@/lib/db"
+import type {
+  HolidayFilters,
+  PaginatedResponse,
+  HolidayWithRelations,
+} from "@/types"
+import type { Prisma, DayType } from "@prisma/client"
 
 export const holidayService = {
   // ═══════════════════════════════════════════════════════════════
@@ -25,7 +29,7 @@ export const holidayService = {
     const [data, total] = await Promise.all([
       db.holiday.findMany({
         where,
-        orderBy: [{ date: 'asc' }],
+        orderBy: [{ date: "asc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -43,7 +47,10 @@ export const holidayService = {
     }
   },
 
-  async findById(tenantId: string, id: string): Promise<HolidayWithRelations | null> {
+  async findById(
+    tenantId: string,
+    id: string
+  ): Promise<HolidayWithRelations | null> {
     return db.holiday.findFirst({
       where: { id, tenantId },
     }) as unknown as Promise<HolidayWithRelations | null>
@@ -86,7 +93,7 @@ export const holidayService = {
         name: data.name,
         date: data.date,
         endDate: data.endDate,
-        dayType: data.dayType || 'HOLIDAY',
+        dayType: data.dayType || "HOLIDAY",
         compensatoryDate: data.compensatoryDate,
         isRecurring: data.isRecurring ?? false,
         isNational: data.isNational ?? true,
@@ -115,7 +122,7 @@ export const holidayService = {
     })
 
     if (!holiday) {
-      throw new Error('Ngày lễ không tồn tại')
+      throw new Error("Ngày lễ không tồn tại")
     }
 
     const year = data.date ? data.date.getFullYear() : holiday.year
@@ -142,7 +149,7 @@ export const holidayService = {
     })
 
     if (!holiday) {
-      throw new Error('Ngày lễ không tồn tại')
+      throw new Error("Ngày lễ không tồn tại")
     }
 
     return db.holiday.delete({
@@ -167,7 +174,7 @@ export const holidayService = {
           },
         ],
       },
-      orderBy: { date: 'asc' },
+      orderBy: { date: "asc" },
     })
   },
 
@@ -204,7 +211,7 @@ export const holidayService = {
         tenantId,
         date: { gte: today },
       },
-      orderBy: { date: 'asc' },
+      orderBy: { date: "asc" },
       take: limit,
     })
   },
@@ -216,25 +223,25 @@ export const holidayService = {
   async seedNationalHolidays(tenantId: string, year: number) {
     const holidays = [
       {
-        name: 'Tết Dương lịch',
+        name: "Tết Dương lịch",
         date: new Date(year, 0, 1), // Jan 1
         isNational: true,
         isRecurring: true,
       },
       {
-        name: 'Ngày Giải phóng miền Nam',
+        name: "Ngày Giải phóng miền Nam",
         date: new Date(year, 3, 30), // Apr 30
         isNational: true,
         isRecurring: true,
       },
       {
-        name: 'Ngày Quốc tế Lao động',
+        name: "Ngày Quốc tế Lao động",
         date: new Date(year, 4, 1), // May 1
         isNational: true,
         isRecurring: true,
       },
       {
-        name: 'Ngày Quốc khánh',
+        name: "Ngày Quốc khánh",
         date: new Date(year, 8, 2), // Sep 2
         endDate: new Date(year, 8, 3), // Sep 3
         isNational: true,
@@ -257,7 +264,7 @@ export const holidayService = {
       if (!existing) {
         const created_holiday = await this.create(tenantId, {
           ...holiday,
-          dayType: 'HOLIDAY',
+          dayType: "HOLIDAY",
         })
         created.push(created_holiday)
       }
@@ -278,9 +285,9 @@ export const holidayService = {
       where: {
         tenantId,
         year,
-        dayType: 'COMPENSATORY',
+        dayType: "COMPENSATORY",
       },
-      orderBy: { date: 'asc' },
+      orderBy: { date: "asc" },
     })
   },
 
@@ -296,7 +303,7 @@ export const holidayService = {
     return this.create(tenantId, {
       name: data.name,
       date: data.date,
-      dayType: 'COMPENSATORY',
+      dayType: "COMPENSATORY",
       isNational: false,
       isRecurring: false,
       notes: data.notes,

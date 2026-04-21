@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import Link from "next/link"
 import {
   Search,
   MapPin,
@@ -9,9 +9,9 @@ import {
   Clock,
   Building2,
   ChevronRight,
-} from 'lucide-react'
+} from "lucide-react"
 
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'default'
+const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || "default"
 
 interface JobListing {
   id: string
@@ -27,33 +27,33 @@ interface JobListing {
 }
 
 const JOB_TYPE_LABELS: Record<string, string> = {
-  FULL_TIME: 'Toàn thời gian',
-  PART_TIME: 'Bán thời gian',
-  CONTRACT: 'Hợp đồng',
-  INTERNSHIP: 'Thực tập',
-  TEMPORARY: 'Tạm thời',
+  FULL_TIME: "Toàn thời gian",
+  PART_TIME: "Bán thời gian",
+  CONTRACT: "Hợp đồng",
+  INTERNSHIP: "Thực tập",
+  TEMPORARY: "Tạm thời",
 }
 
 const WORK_MODE_LABELS: Record<string, string> = {
-  ONSITE: 'Onsite',
-  REMOTE: 'Remote',
-  HYBRID: 'Hybrid',
+  ONSITE: "Onsite",
+  REMOTE: "Remote",
+  HYBRID: "Hybrid",
 }
 
 export default function CareersPage() {
   const [jobs, setJobs] = useState<JobListing[]>([])
   const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [departmentFilter, setDepartmentFilter] = useState('')
-  const [locationFilter, setLocationFilter] = useState('')
+  const [search, setSearch] = useState("")
+  const [departmentFilter, setDepartmentFilter] = useState("")
+  const [locationFilter, setLocationFilter] = useState("")
 
   useEffect(() => {
     async function fetchJobs() {
       try {
         const params = new URLSearchParams({ tenantId: TENANT_ID })
-        if (search) params.set('search', search)
-        if (departmentFilter) params.set('department', departmentFilter)
-        if (locationFilter) params.set('location', locationFilter)
+        if (search) params.set("search", search)
+        if (departmentFilter) params.set("department", departmentFilter)
+        if (locationFilter) params.set("location", locationFilter)
 
         const res = await fetch(`/api/public/careers?${params.toString()}`)
         if (res.ok) {
@@ -69,8 +69,12 @@ export default function CareersPage() {
     fetchJobs()
   }, [search, departmentFilter, locationFilter])
 
-  const departments = Array.from(new Set(jobs.map(j => j.department).filter(Boolean)))
-  const locations = Array.from(new Set(jobs.map(j => j.location).filter(Boolean)))
+  const departments = Array.from(
+    new Set(jobs.map((j) => j.department).filter(Boolean))
+  )
+  const locations = Array.from(
+    new Set(jobs.map((j) => j.location).filter(Boolean))
+  )
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -123,7 +127,9 @@ export default function CareersPage() {
 
               {departments.length > 0 && (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Phòng ban</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Phòng ban
+                  </label>
                   <select
                     value={departmentFilter}
                     onChange={(e) => setDepartmentFilter(e.target.value)}
@@ -131,7 +137,9 @@ export default function CareersPage() {
                   >
                     <option value="">Tất cả</option>
                     {departments.map((dept) => (
-                      <option key={dept} value={dept}>{dept}</option>
+                      <option key={dept} value={dept}>
+                        {dept}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -139,7 +147,9 @@ export default function CareersPage() {
 
               {locations.length > 0 && (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Địa điểm</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Địa điểm
+                  </label>
                   <select
                     value={locationFilter}
                     onChange={(e) => setLocationFilter(e.target.value)}
@@ -147,7 +157,9 @@ export default function CareersPage() {
                   >
                     <option value="">Tất cả</option>
                     {locations.map((loc) => (
-                      <option key={loc} value={loc}>{loc}</option>
+                      <option key={loc} value={loc}>
+                        {loc}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -166,7 +178,10 @@ export default function CareersPage() {
             {loading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white rounded-xl shadow-sm border p-6 animate-pulse">
+                  <div
+                    key={i}
+                    className="bg-white rounded-xl shadow-sm border p-6 animate-pulse"
+                  >
                     <div className="h-6 bg-gray-200 rounded w-2/3 mb-3" />
                     <div className="h-4 bg-gray-200 rounded w-1/3 mb-2" />
                     <div className="h-4 bg-gray-200 rounded w-1/4" />
@@ -180,8 +195,8 @@ export default function CareersPage() {
                   Chưa có vị trí phù hợp
                 </h3>
                 <p className="text-gray-500">
-                  Hiện tại chưa có vị trí nào phù hợp với tiêu chí tìm kiếm.
-                  Hãy thử lại với từ khóa khác.
+                  Hiện tại chưa có vị trí nào phù hợp với tiêu chí tìm kiếm. Hãy
+                  thử lại với từ khóa khác.
                 </p>
               </div>
             ) : (
@@ -223,7 +238,10 @@ export default function CareersPage() {
                           )}
                           {job.expiresAt && (
                             <p className="text-xs text-gray-400">
-                              Hạn nộp: {new Date(job.expiresAt).toLocaleDateString('vi-VN')}
+                              Hạn nộp:{" "}
+                              {new Date(job.expiresAt).toLocaleDateString(
+                                "vi-VN"
+                              )}
                             </p>
                           )}
                         </div>

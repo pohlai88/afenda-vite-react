@@ -1,16 +1,12 @@
-'use client'
+"use client"
 
-import { useEffect, useState, useMemo } from 'react'
-import Link from 'next/link'
-import {
-  Calendar as CalendarIcon,
-  List,
-  Clock,
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useEffect, useState, useMemo } from "react"
+import Link from "next/link"
+import { Calendar as CalendarIcon, List, Clock } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Table,
   TableBody,
@@ -18,10 +14,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { INTERVIEW_TYPE, INTERVIEW_RESULT } from '@/lib/recruitment/constants'
+} from "@/components/ui/table"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import { INTERVIEW_TYPE, INTERVIEW_RESULT } from "@/lib/recruitment/constants"
 
 interface Interview {
   id: string
@@ -39,20 +35,20 @@ export default function InterviewsPage() {
   const [interviews, setInterviews] = useState<Interview[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState('list')
+  const [activeTab, setActiveTab] = useState("list")
   const [currentDate, setCurrentDate] = useState(new Date())
 
   useEffect(() => {
     async function fetchInterviews() {
       try {
-        const res = await fetch('/api/recruitment/interviews')
-        if (!res.ok) throw new Error('Không thể tải danh sách phỏng vấn')
+        const res = await fetch("/api/recruitment/interviews")
+        if (!res.ok) throw new Error("Không thể tải danh sách phỏng vấn")
         const json = await res.json()
         // API returns { success: true, data: [...] }
         const data = json.data || json || []
         setInterviews(Array.isArray(data) ? data : [])
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -64,13 +60,13 @@ export default function InterviewsPage() {
     const info = INTERVIEW_RESULT[result]
     if (!info) return <Badge variant="secondary">{result}</Badge>
     const colorMap: Record<string, string> = {
-      gray: 'bg-gray-100 text-gray-800',
-      green: 'bg-green-100 text-green-800',
-      red: 'bg-red-100 text-red-800',
-      orange: 'bg-orange-100 text-orange-800',
-      yellow: 'bg-yellow-100 text-yellow-800',
+      gray: "bg-gray-100 text-gray-800",
+      green: "bg-green-100 text-green-800",
+      red: "bg-red-100 text-red-800",
+      orange: "bg-orange-100 text-orange-800",
+      yellow: "bg-yellow-100 text-yellow-800",
     }
-    return <Badge className={colorMap[info.color] || ''}>{info.label}</Badge>
+    return <Badge className={colorMap[info.color] || ""}>{info.label}</Badge>
   }
 
   // Calendar helpers
@@ -92,7 +88,7 @@ export default function InterviewsPage() {
   }, [currentDate])
 
   const getInterviewsForDate = (date: Date) => {
-    return interviews.filter(interview => {
+    return interviews.filter((interview) => {
       const interviewDate = new Date(interview.scheduledAt)
       return (
         interviewDate.getFullYear() === date.getFullYear() &&
@@ -103,21 +99,22 @@ export default function InterviewsPage() {
   }
 
   const prevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
+    )
   }
 
   const nextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
+    )
   }
 
   if (loading) return <LoadingPage />
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Phỏng vấn"
-        description="Quản lý lịch phỏng vấn"
-      />
+      <PageHeader title="Phỏng vấn" description="Quản lý lịch phỏng vấn" />
 
       {error ? (
         <Card>
@@ -155,7 +152,10 @@ export default function InterviewsPage() {
                   <TableBody>
                     {interviews.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={6}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           Chưa có lịch phỏng vấn nào
                         </TableCell>
                       </TableRow>
@@ -170,27 +170,35 @@ export default function InterviewsPage() {
                               {interview.candidateName}
                             </Link>
                           </TableCell>
-                          <TableCell className="text-sm">{interview.position}</TableCell>
+                          <TableCell className="text-sm">
+                            {interview.position}
+                          </TableCell>
                           <TableCell>
                             <Badge variant="secondary">
-                              {INTERVIEW_TYPE[interview.type]?.label || interview.type}
+                              {INTERVIEW_TYPE[interview.type]?.label ||
+                                interview.type}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-sm">
                             <div className="flex items-center gap-1">
                               <Clock className="h-3 w-3 text-muted-foreground" />
-                              {new Date(interview.scheduledAt).toLocaleString('vi-VN', {
-                                day: '2-digit',
-                                month: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
+                              {new Date(interview.scheduledAt).toLocaleString(
+                                "vi-VN",
+                                {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
                             </div>
                           </TableCell>
                           <TableCell className="text-sm">
-                            {interview.interviewers.join(', ')}
+                            {interview.interviewers.join(", ")}
                           </TableCell>
-                          <TableCell>{getResultBadge(interview.result)}</TableCell>
+                          <TableCell>
+                            {getResultBadge(interview.result)}
+                          </TableCell>
                         </TableRow>
                       ))
                     )}
@@ -208,9 +216,9 @@ export default function InterviewsPage() {
                     &lt;
                   </Button>
                   <CardTitle>
-                    {currentDate.toLocaleDateString('vi-VN', {
-                      month: 'long',
-                      year: 'numeric',
+                    {currentDate.toLocaleDateString("vi-VN", {
+                      month: "long",
+                      year: "numeric",
                     })}
                   </CardTitle>
                   <Button variant="outline" size="sm" onClick={nextMonth}>
@@ -220,8 +228,11 @@ export default function InterviewsPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-7 gap-1">
-                  {['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'].map((day) => (
-                    <div key={day} className="text-center text-sm font-medium text-muted-foreground p-2">
+                  {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((day) => (
+                    <div
+                      key={day}
+                      className="text-center text-sm font-medium text-muted-foreground p-2"
+                    >
                       {day}
                     </div>
                   ))}
@@ -236,10 +247,14 @@ export default function InterviewsPage() {
                       <div
                         key={day.toISOString()}
                         className={`min-h-[80px] p-1 border rounded-lg ${
-                          isToday ? 'bg-primary/5 border-primary' : 'border-gray-100'
+                          isToday
+                            ? "bg-primary/5 border-primary"
+                            : "border-gray-100"
                         }`}
                       >
-                        <div className={`text-xs font-medium p-1 ${isToday ? 'text-primary' : ''}`}>
+                        <div
+                          className={`text-xs font-medium p-1 ${isToday ? "text-primary" : ""}`}
+                        >
                           {day.getDate()}
                         </div>
                         {dayInterviews.slice(0, 2).map((interview) => (
@@ -248,10 +263,13 @@ export default function InterviewsPage() {
                             href={`/recruitment/interviews/${interview.id}`}
                             className="block text-xs p-1 mb-0.5 rounded bg-blue-50 text-blue-700 truncate hover:bg-blue-100"
                           >
-                            {new Date(interview.scheduledAt).toLocaleTimeString('vi-VN', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}{' '}
+                            {new Date(interview.scheduledAt).toLocaleTimeString(
+                              "vi-VN",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}{" "}
                             {interview.candidateName}
                           </Link>
                         ))}

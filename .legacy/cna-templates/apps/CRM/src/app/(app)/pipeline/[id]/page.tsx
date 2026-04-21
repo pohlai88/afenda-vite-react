@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
 import {
   ArrowLeft,
   Building2,
@@ -24,48 +24,57 @@ import {
   ChevronDown,
   Check,
   Heart,
-} from 'lucide-react'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Separator } from '@/components/ui/separator'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+} from "lucide-react"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Separator } from "@/components/ui/separator"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { useDeal, useUpdateDeal } from '@/hooks/use-deals'
-import { useActivities } from '@/hooks/use-activities'
-import { usePipeline } from '@/hooks/use-pipeline'
-import { formatCurrency, ACTIVITY_TYPES, DEFAULT_STAGES, DEAL_CONTACT_ROLES, DEAL_TYPES, getCurrencyInfo, LOSS_REASONS, COMPETITORS } from '@/lib/constants'
-import { getHealthColor, HEALTH_COLORS } from '@/lib/analytics/health-score'
-import { toast } from '@/hooks/use-toast'
-import { useTranslation } from '@/i18n'
-import { DocumentPanel } from '@/components/documents/DocumentPanel'
-import { CompliancePanel } from '@/components/compliance/CompliancePanel'
-import { DealChecklistPanel } from '@/components/compliance/DealChecklist'
-import { ComplianceBadge } from '@/components/compliance/ComplianceBadge'
+} from "@/components/ui/dropdown-menu"
+import { useDeal, useUpdateDeal } from "@/hooks/use-deals"
+import { useActivities } from "@/hooks/use-activities"
+import { usePipeline } from "@/hooks/use-pipeline"
+import {
+  formatCurrency,
+  ACTIVITY_TYPES,
+  DEFAULT_STAGES,
+  DEAL_CONTACT_ROLES,
+  DEAL_TYPES,
+  getCurrencyInfo,
+  LOSS_REASONS,
+  COMPETITORS,
+} from "@/lib/constants"
+import { getHealthColor, HEALTH_COLORS } from "@/lib/analytics/health-score"
+import { toast } from "@/hooks/use-toast"
+import { useTranslation } from "@/i18n"
+import { DocumentPanel } from "@/components/documents/DocumentPanel"
+import { CompliancePanel } from "@/components/compliance/CompliancePanel"
+import { DealChecklistPanel } from "@/components/compliance/DealChecklist"
+import { ComplianceBadge } from "@/components/compliance/ComplianceBadge"
 
 const ACTIVITY_ICONS: Record<string, React.ElementType> = {
   CALL: Phone,
@@ -91,8 +100,14 @@ export default function DealDetailPage() {
 
   // Loss dialog state
   const [lossDialogOpen, setLossDialogOpen] = useState(false)
-  const [pendingLostStageId, setPendingLostStageId] = useState<string | null>(null)
-  const [lossForm, setLossForm] = useState({ reason: '', competitor: '', notes: '' })
+  const [pendingLostStageId, setPendingLostStageId] = useState<string | null>(
+    null
+  )
+  const [lossForm, setLossForm] = useState({
+    reason: "",
+    competitor: "",
+    notes: "",
+  })
 
   const pipelineStages = pipelineData?.stages ?? []
 
@@ -101,26 +116,23 @@ export default function DealDetailPage() {
     const targetStage = pipelineStages.find((s) => s.id === stageId)
     if (targetStage?.isLost) {
       setPendingLostStageId(stageId)
-      setLossForm({ reason: '', competitor: '', notes: '' })
+      setLossForm({ reason: "", competitor: "", notes: "" })
       setLossDialogOpen(true)
       return
     }
 
-    updateDeal.mutate(
-      { id, stageId } as any,
-      {
-        onSuccess: () => {
-          toast({ title: t('pipeline.stageUpdated') })
-        },
-        onError: (err) => {
-          toast({
-            title: t('common.error'),
-            description: err.message,
-            variant: 'destructive',
-          })
-        },
-      }
-    )
+    updateDeal.mutate({ id, stageId } as any, {
+      onSuccess: () => {
+        toast({ title: t("pipeline.stageUpdated") })
+      },
+      onError: (err) => {
+        toast({
+          title: t("common.error"),
+          description: err.message,
+          variant: "destructive",
+        })
+      },
+    })
   }
 
   const handleLossSubmit = () => {
@@ -131,19 +143,21 @@ export default function DealDetailPage() {
         stageId: pendingLostStageId,
         lostReason: lossForm.reason,
         competitorName: lossForm.competitor || undefined,
-        notes: lossForm.notes ? `${deal?.notes ? deal.notes + '\n' : ''}[Lost] ${lossForm.notes}` : undefined,
+        notes: lossForm.notes
+          ? `${deal?.notes ? deal.notes + "\n" : ""}[Lost] ${lossForm.notes}`
+          : undefined,
       } as any,
       {
         onSuccess: () => {
           setLossDialogOpen(false)
           setPendingLostStageId(null)
-          toast({ title: t('pipeline.stageUpdated') })
+          toast({ title: t("pipeline.stageUpdated") })
         },
         onError: (err) => {
           toast({
-            title: t('common.error'),
+            title: t("common.error"),
             description: err.message,
-            variant: 'destructive',
+            variant: "destructive",
           })
         },
       }
@@ -160,12 +174,18 @@ export default function DealDetailPage() {
 
   if (!deal) {
     return (
-      <PageShell title={t('pipeline.dealNotFound')}>
+      <PageShell title={t("pipeline.dealNotFound")}>
         <Card className="bg-[var(--crm-bg-card)] border-[var(--crm-border)]">
           <CardContent className="p-8 text-center space-y-3">
-            <p className="text-sm text-[var(--crm-text-secondary)]">Deal không tồn tại hoặc đã bị xóa.</p>
-            <Button variant="outline" size="sm" onClick={() => router.push('/pipeline')}>
-              {t('pipeline.backToPipeline')}
+            <p className="text-sm text-[var(--crm-text-secondary)]">
+              Deal không tồn tại hoặc đã bị xóa.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/pipeline")}
+            >
+              {t("pipeline.backToPipeline")}
             </Button>
           </CardContent>
         </Card>
@@ -173,18 +193,18 @@ export default function DealDetailPage() {
     )
   }
 
-  const createdDate = new Date(deal.createdAt).toLocaleDateString('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
+  const createdDate = new Date(deal.createdAt).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
   })
   const expectedClose = deal.expectedCloseAt
-    ? new Date(deal.expectedCloseAt).toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
+    ? new Date(deal.expectedCloseAt).toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       })
-    : 'Chưa xác định'
+    : "Chưa xác định"
 
   const activities = activitiesData?.data ?? []
 
@@ -193,9 +213,13 @@ export default function DealDetailPage() {
       title={deal.title}
       actions={
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => router.push('/pipeline')}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/pipeline")}
+          >
             <ArrowLeft className="w-4 h-4" />
-            {t('common.back')}
+            {t("common.back")}
           </Button>
           <Button
             variant="outline"
@@ -211,7 +235,7 @@ export default function DealDetailPage() {
       {/* Header info */}
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-lg font-semibold text-emerald-400">
-          {formatCurrency(Number(deal.value), deal.currency || 'VND')}
+          {formatCurrency(Number(deal.value), deal.currency || "VND")}
         </span>
         <Badge
           className="text-xs"
@@ -238,7 +262,7 @@ export default function DealDetailPage() {
             className="flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full bg-[#8B5CF6]/15 text-[#8B5CF6] hover:bg-[#8B5CF6]/25 transition-colors"
           >
             <Handshake className="w-3 h-3" />
-            {(deal as any).partner.company?.name || 'Partner'}
+            {(deal as any).partner.company?.name || "Partner"}
           </Link>
         )}
         {deal.healthScore != null && (
@@ -269,23 +293,36 @@ export default function DealDetailPage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <InfoItem
-                  icon={<span className="text-emerald-400 font-bold text-sm">{getCurrencyInfo(deal.currency || 'VND').symbol}</span>}
-                  label={t('common.value')}
-                  value={formatCurrency(Number(deal.value), deal.currency || 'VND')}
+                  icon={
+                    <span className="text-emerald-400 font-bold text-sm">
+                      {getCurrencyInfo(deal.currency || "VND").symbol}
+                    </span>
+                  }
+                  label={t("common.value")}
+                  value={formatCurrency(
+                    Number(deal.value),
+                    deal.currency || "VND"
+                  )}
                 />
                 <InfoItem
-                  icon={<Percent className="w-3.5 h-3.5 text-[var(--crm-text-secondary)]" />}
-                  label={t('pipeline.probability')}
+                  icon={
+                    <Percent className="w-3.5 h-3.5 text-[var(--crm-text-secondary)]" />
+                  }
+                  label={t("pipeline.probability")}
                   value={`${deal.stage?.probability ?? 0}%`}
                 />
                 <InfoItem
-                  icon={<Calendar className="w-3.5 h-3.5 text-[var(--crm-text-secondary)]" />}
-                  label={t('pipeline.expectedCloseDate')}
+                  icon={
+                    <Calendar className="w-3.5 h-3.5 text-[var(--crm-text-secondary)]" />
+                  }
+                  label={t("pipeline.expectedCloseDate")}
                   value={expectedClose}
                 />
                 <InfoItem
-                  icon={<Clock className="w-3.5 h-3.5 text-[var(--crm-text-secondary)]" />}
-                  label={t('pipeline.createdDate')}
+                  icon={
+                    <Clock className="w-3.5 h-3.5 text-[var(--crm-text-secondary)]" />
+                  }
+                  label={t("pipeline.createdDate")}
                   value={createdDate}
                 />
               </div>
@@ -293,7 +330,9 @@ export default function DealDetailPage() {
                 <>
                   <Separator className="bg-[var(--crm-border)]" />
                   <div>
-                    <p className="text-xs text-[var(--crm-text-muted)] mb-1">{t('common.notes')}</p>
+                    <p className="text-xs text-[var(--crm-text-muted)] mb-1">
+                      {t("common.notes")}
+                    </p>
                     <p className="text-sm text-[var(--crm-text-primary)] whitespace-pre-wrap">
                       {deal.notes}
                     </p>
@@ -308,13 +347,15 @@ export default function DealDetailPage() {
             <Card className="bg-[var(--crm-bg-card)] border-[var(--crm-border)]">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-[var(--crm-text-secondary)]">
-                  {t('pipeline.contactsCount', { n: deal.contacts.length })}
+                  {t("pipeline.contactsCount", { n: deal.contacts.length })}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   {deal.contacts.map((dc: any) => {
-                    const roleInfo = DEAL_CONTACT_ROLES.find((r) => r.value === dc.role)
+                    const roleInfo = DEAL_CONTACT_ROLES.find(
+                      (r) => r.value === dc.role
+                    )
                     return (
                       <Link
                         key={dc.contact.id}
@@ -322,7 +363,9 @@ export default function DealDetailPage() {
                         className="flex items-center gap-3 p-2 rounded-md hover:bg-white/[0.02] transition-colors"
                       >
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src={dc.contact.avatarUrl || undefined} />
+                          <AvatarImage
+                            src={dc.contact.avatarUrl || undefined}
+                          />
                           <AvatarFallback className="text-xs bg-[var(--crm-border)] text-[var(--crm-text-secondary)]">
                             {dc.contact.firstName?.[0]}
                             {dc.contact.lastName?.[0]}
@@ -337,13 +380,18 @@ export default function DealDetailPage() {
                               <span className="text-amber-400 text-xs">★</span>
                             )}
                           </div>
-                          <p className="text-xs text-[var(--crm-text-muted)]">{dc.contact.email}</p>
+                          <p className="text-xs text-[var(--crm-text-muted)]">
+                            {dc.contact.email}
+                          </p>
                         </div>
                         {roleInfo && (
                           <Badge
                             variant="outline"
                             className="text-[10px] flex-shrink-0"
-                            style={{ borderColor: roleInfo.color, color: roleInfo.color }}
+                            style={{
+                              borderColor: roleInfo.color,
+                              color: roleInfo.color,
+                            }}
                           >
                             {t(roleInfo.labelKey)}
                           </Badge>
@@ -360,13 +408,13 @@ export default function DealDetailPage() {
           <Card className="bg-[var(--crm-bg-card)] border-[var(--crm-border)]">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-[var(--crm-text-secondary)]">
-                {t('nav.activities')}
+                {t("nav.activities")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {activities.length === 0 ? (
                 <p className="text-sm text-[var(--crm-text-muted)] py-4 text-center">
-                  {t('activities.empty')}
+                  {t("activities.empty")}
                 </p>
               ) : (
                 <div className="relative pl-6">
@@ -375,17 +423,26 @@ export default function DealDetailPage() {
 
                   {activities.map((activity) => {
                     const Icon = ACTIVITY_ICONS[activity.type] || FileText
-                    const actType = ACTIVITY_TYPES.find((at) => at.value === activity.type)
-                    const typeLabel = actType ? t(actType.labelKey) : activity.type
-                    const date = new Date(activity.createdAt).toLocaleDateString('vi-VN', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
+                    const actType = ACTIVITY_TYPES.find(
+                      (at) => at.value === activity.type
+                    )
+                    const typeLabel = actType
+                      ? t(actType.labelKey)
+                      : activity.type
+                    const date = new Date(
+                      activity.createdAt
+                    ).toLocaleDateString("vi-VN", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })
 
                     return (
-                      <div key={activity.id} className="relative pb-4 last:pb-0">
+                      <div
+                        key={activity.id}
+                        className="relative pb-4 last:pb-0"
+                      >
                         {/* Dot */}
                         <div className="absolute -left-6 top-1 w-[22px] h-[22px] rounded-full bg-[var(--crm-bg-card)] border border-[var(--crm-border)] flex items-center justify-center">
                           <Icon className="w-3 h-3 text-[var(--crm-text-secondary)]" />
@@ -395,7 +452,10 @@ export default function DealDetailPage() {
                             <span className="text-sm font-medium text-[var(--crm-text-primary)]">
                               {activity.subject || typeLabel}
                             </span>
-                            <Badge variant="outline" className="text-[10px] text-[var(--crm-text-muted)] border-[var(--crm-border)]">
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] text-[var(--crm-text-muted)] border-[var(--crm-border)]"
+                            >
                               {typeLabel}
                             </Badge>
                           </div>
@@ -404,7 +464,9 @@ export default function DealDetailPage() {
                               {activity.description}
                             </p>
                           )}
-                          <p className="text-xs text-[var(--crm-text-muted)] mt-1">{date}</p>
+                          <p className="text-xs text-[var(--crm-text-muted)] mt-1">
+                            {date}
+                          </p>
                         </div>
                       </div>
                     )
@@ -449,8 +511,11 @@ export default function DealDetailPage() {
                       <div
                         className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0"
                         style={{
-                          borderColor: isPast || isCurrent ? stage.color : 'rgba(255,255,255,0.1)',
-                          backgroundColor: isPast ? stage.color : 'transparent',
+                          borderColor:
+                            isPast || isCurrent
+                              ? stage.color
+                              : "rgba(255,255,255,0.1)",
+                          backgroundColor: isPast ? stage.color : "transparent",
                         }}
                       >
                         {isPast && <Check className="w-3 h-3 text-white" />}
@@ -464,10 +529,10 @@ export default function DealDetailPage() {
                       <span
                         className={`text-sm ${
                           isCurrent
-                            ? 'font-medium text-[var(--crm-text-primary)]'
+                            ? "font-medium text-[var(--crm-text-primary)]"
                             : isPast
-                            ? 'text-[var(--crm-text-secondary)]'
-                            : 'text-[var(--crm-text-muted)]'
+                              ? "text-[var(--crm-text-secondary)]"
+                              : "text-[var(--crm-text-muted)]"
                         }`}
                       >
                         {stage.name}
@@ -486,7 +551,7 @@ export default function DealDetailPage() {
           <Card className="bg-[var(--crm-bg-card)] border-[var(--crm-border)]">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-[var(--crm-text-secondary)]">
-                {t('pipeline.quickActions')}
+                {t("pipeline.quickActions")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -497,7 +562,7 @@ export default function DealDetailPage() {
                 onClick={() => router.push(`/activities/new?dealId=${id}`)}
               >
                 <MessageSquare className="w-4 h-4" />
-                {t('pipeline.logActivity')}
+                {t("pipeline.logActivity")}
               </Button>
               <Button
                 variant="outline"
@@ -519,7 +584,7 @@ export default function DealDetailPage() {
                   >
                     <span className="flex items-center gap-2">
                       <ArrowRight className="w-4 h-4" />
-                      {t('pipeline.changeStage')}
+                      {t("pipeline.changeStage")}
                     </span>
                     <ChevronDown className="w-3.5 h-3.5 text-[var(--crm-text-muted)]" />
                   </Button>
@@ -555,7 +620,7 @@ export default function DealDetailPage() {
               entityType="DEAL"
               entityId={id}
               entityName={deal.company.name}
-              country={deal.company.country || 'VN'}
+              country={deal.company.country || "VN"}
               complianceStatus={deal.complianceStatus}
             />
           )}
@@ -580,15 +645,17 @@ export default function DealDetailPage() {
                     <AvatarImage src={deal.owner.avatarUrl || undefined} />
                     <AvatarFallback className="bg-[var(--crm-border)] text-[var(--crm-text-secondary)] text-sm">
                       {deal.owner.name
-                        ?.split(' ')
+                        ?.split(" ")
                         .map((n) => n[0])
-                        .join('')
+                        .join("")
                         .toUpperCase()
                         .slice(0, 2)}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-medium text-[var(--crm-text-primary)]">{deal.owner.name}</p>
+                    <p className="text-sm font-medium text-[var(--crm-text-primary)]">
+                      {deal.owner.name}
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -602,21 +669,30 @@ export default function DealDetailPage() {
         <DialogContent className="bg-[var(--crm-bg-card)] border-[var(--crm-border)]">
           <DialogHeader>
             <DialogTitle className="text-[var(--crm-text-primary)]">
-              {t('pipeline.lossDialog.title')}
+              {t("pipeline.lossDialog.title")}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
               <Label className="text-[var(--crm-text-secondary)]">
-                {t('pipeline.lossDialog.reason')} *
+                {t("pipeline.lossDialog.reason")} *
               </Label>
-              <Select value={lossForm.reason} onValueChange={(v) => setLossForm((f) => ({ ...f, reason: v }))}>
+              <Select
+                value={lossForm.reason}
+                onValueChange={(v) => setLossForm((f) => ({ ...f, reason: v }))}
+              >
                 <SelectTrigger className="bg-[var(--crm-bg-input)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                  <SelectValue placeholder={t('pipeline.lossDialog.selectReason')} />
+                  <SelectValue
+                    placeholder={t("pipeline.lossDialog.selectReason")}
+                  />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {LOSS_REASONS.map((lr) => (
-                    <SelectItem key={lr.value} value={lr.value} className="text-[var(--crm-text-primary)]">
+                    <SelectItem
+                      key={lr.value}
+                      value={lr.value}
+                      className="text-[var(--crm-text-primary)]"
+                    >
                       {t(lr.labelKey)}
                     </SelectItem>
                   ))}
@@ -625,15 +701,26 @@ export default function DealDetailPage() {
             </div>
             <div className="space-y-2">
               <Label className="text-[var(--crm-text-secondary)]">
-                {t('pipeline.lossDialog.competitor')}
+                {t("pipeline.lossDialog.competitor")}
               </Label>
-              <Select value={lossForm.competitor} onValueChange={(v) => setLossForm((f) => ({ ...f, competitor: v }))}>
+              <Select
+                value={lossForm.competitor}
+                onValueChange={(v) =>
+                  setLossForm((f) => ({ ...f, competitor: v }))
+                }
+              >
                 <SelectTrigger className="bg-[var(--crm-bg-input)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                  <SelectValue placeholder={t('pipeline.lossDialog.selectCompetitor')} />
+                  <SelectValue
+                    placeholder={t("pipeline.lossDialog.selectCompetitor")}
+                  />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {COMPETITORS.map((c) => (
-                    <SelectItem key={c} value={c} className="text-[var(--crm-text-primary)]">
+                    <SelectItem
+                      key={c}
+                      value={c}
+                      className="text-[var(--crm-text-primary)]"
+                    >
                       {c}
                     </SelectItem>
                   ))}
@@ -642,12 +729,14 @@ export default function DealDetailPage() {
             </div>
             <div className="space-y-2">
               <Label className="text-[var(--crm-text-secondary)]">
-                {t('pipeline.lossDialog.notes')}
+                {t("pipeline.lossDialog.notes")}
               </Label>
               <Textarea
                 value={lossForm.notes}
-                onChange={(e) => setLossForm((f) => ({ ...f, notes: e.target.value }))}
-                placeholder={t('pipeline.lossDialog.notesPlaceholder')}
+                onChange={(e) =>
+                  setLossForm((f) => ({ ...f, notes: e.target.value }))
+                }
+                placeholder={t("pipeline.lossDialog.notesPlaceholder")}
                 className="bg-[var(--crm-bg-input)] border-[var(--crm-border)] text-[var(--crm-text-primary)]"
                 rows={3}
               />
@@ -655,14 +744,14 @@ export default function DealDetailPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setLossDialogOpen(false)}>
-              {t('common.cancel')}
+              {t("common.cancel")}
             </Button>
             <Button
               variant="destructive"
               onClick={handleLossSubmit}
               disabled={!lossForm.reason || updateDeal.isPending}
             >
-              {t('pipeline.lossDialog.confirm')}
+              {t("pipeline.lossDialog.confirm")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -686,7 +775,9 @@ function InfoItem({
         {icon}
         <span className="text-xs text-[var(--crm-text-muted)]">{label}</span>
       </div>
-      <p className="text-sm font-medium text-[var(--crm-text-primary)]">{value}</p>
+      <p className="text-sm font-medium text-[var(--crm-text-primary)]">
+        {value}
+      </p>
     </div>
   )
 }

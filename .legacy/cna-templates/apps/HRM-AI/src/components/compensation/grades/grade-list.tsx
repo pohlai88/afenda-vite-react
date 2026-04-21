@@ -1,11 +1,13 @@
-'use client';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { SalaryRangeBar } from '../common/salary-range-bar';
-import { formatCurrency } from '@/lib/compensation/utils';
-import { SalaryGrade } from '@/types/compensation';
+"use client"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { SalaryRangeBar } from "../common/salary-range-bar"
+import { formatCurrency } from "@/lib/compensation/utils"
+import { SalaryGrade } from "@/types/compensation"
 
-interface GradeListProps { grades: SalaryGrade[]; }
+interface GradeListProps {
+  grades: SalaryGrade[]
+}
 
 export function GradeList({ grades }: GradeListProps) {
   return (
@@ -18,12 +20,18 @@ export function GradeList({ grades }: GradeListProps) {
                 <Badge variant="outline">{grade.code}</Badge>
                 <span className="font-medium text-sm">{grade.name}</span>
               </div>
-              <span className="text-xs text-muted-foreground">Level {grade.level}</span>
+              <span className="text-xs text-muted-foreground">
+                Level {grade.level}
+              </span>
             </div>
-            <SalaryRangeBar min={grade.minSalary} mid={grade.midSalary} max={grade.maxSalary} />
+            <SalaryRangeBar
+              min={grade.minSalary}
+              mid={grade.midSalary}
+              max={grade.maxSalary}
+            />
           </CardContent>
         </Card>
       ))}
     </div>
-  );
+  )
 }

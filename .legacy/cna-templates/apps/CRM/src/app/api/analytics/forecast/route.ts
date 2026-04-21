@@ -1,20 +1,22 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { handleApiError } from '@/lib/api/errors'
-import { apiSuccess } from '@/lib/api/response'
+import { NextRequest } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { handleApiError } from "@/lib/api/errors"
+import { apiSuccess } from "@/lib/api/response"
 
 // GET /api/analytics/forecast — Weighted pipeline forecast by quarter
 export async function GET(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER'])
+    const result = await requireRole(["ADMIN", "MANAGER"])
     if (isErrorResponse(result)) return result
 
     const { searchParams } = req.nextUrl
-    const baseCurrency = searchParams.get('baseCurrency') || 'USD'
+    const baseCurrency = searchParams.get("baseCurrency") || "USD"
 
     // Load exchange rates
-    const exchangeRates = await prisma.exchangeRate.findMany({ where: { isActive: true } })
+    const exchangeRates = await prisma.exchangeRate.findMany({
+      where: { isActive: true },
+    })
     const rateMap: Record<string, number> = {}
     for (const r of exchangeRates) {
       rateMap[r.currency] = Number(r.rateToBase)
@@ -58,13 +60,16 @@ export async function GET(req: NextRequest) {
     }
 
     // Group deals by quarter
-    const quarterMap: Record<string, {
-      weighted: number
-      unweighted: number
-      dealCount: number
-      bySegment: Record<string, { weighted: number; count: number }>
-      byCurrency: Record<string, { weighted: number; count: number }>
-    }> = {}
+    const quarterMap: Record<
+      string,
+      {
+        weighted: number
+        unweighted: number
+        dealCount: number
+        bySegment: Record<string, { weighted: number; count: number }>
+        byCurrency: Record<string, { weighted: number; count: number }>
+      }
+    > = {}
 
     const now = new Date()
     // Default expected close: 90 days from creation
@@ -77,12 +82,21 @@ export async function GET(req: NextRequest) {
       const weighted = baseValue * probability
 
       // Determine quarter
-      const closeDate = deal.expectedCloseAt
-        || new Date(deal.createdAt.getTime() + DEFAULT_CYCLE_DAYS * 24 * 60 * 60 * 1000)
+      const closeDate =
+        deal.expectedCloseAt ||
+        new Date(
+          deal.createdAt.getTime() + DEFAULT_CYCLE_DAYS * 24 * 60 * 60 * 1000
+        )
       const quarter = getQuarter(closeDate)
 
       if (!quarterMap[quarter]) {
-        quarterMap[quarter] = { weighted: 0, unweighted: 0, dealCount: 0, bySegment: {}, byCurrency: {} }
+        quarterMap[quarter] = {
+          weighted: 0,
+          unweighted: 0,
+          dealCount: 0,
+          bySegment: {},
+          byCurrency: {},
+        }
       }
       const q = quarterMap[quarter]
       q.weighted += weighted
@@ -90,13 +104,15 @@ export async function GET(req: NextRequest) {
       q.dealCount += 1
 
       // By segment
-      const segment = deal.dealType || 'UNKNOWN'
-      if (!q.bySegment[segment]) q.bySegment[segment] = { weighted: 0, count: 0 }
+      const segment = deal.dealType || "UNKNOWN"
+      if (!q.bySegment[segment])
+        q.bySegment[segment] = { weighted: 0, count: 0 }
       q.bySegment[segment].weighted += weighted
       q.bySegment[segment].count += 1
 
       // By currency
-      if (!q.byCurrency[deal.currency]) q.byCurrency[deal.currency] = { weighted: 0, count: 0 }
+      if (!q.byCurrency[deal.currency])
+        q.byCurrency[deal.currency] = { weighted: 0, count: 0 }
       q.byCurrency[deal.currency].weighted += weighted
       q.byCurrency[deal.currency].count += 1
     }
@@ -118,8 +134,16 @@ export async function GET(req: NextRequest) {
     nextQ.setMonth(nextQ.getMonth() + 3)
     const nextQuarter = getQuarter(nextQ)
 
-    const thisQ = quarters.find((q) => q.quarter === currentQuarter) || { weighted: 0, unweighted: 0, dealCount: 0 }
-    const nextQData = quarters.find((q) => q.quarter === nextQuarter) || { weighted: 0, unweighted: 0, dealCount: 0 }
+    const thisQ = quarters.find((q) => q.quarter === currentQuarter) || {
+      weighted: 0,
+      unweighted: 0,
+      dealCount: 0,
+    }
+    const nextQData = quarters.find((q) => q.quarter === nextQuarter) || {
+      weighted: 0,
+      unweighted: 0,
+      dealCount: 0,
+    }
 
     const pipelineTotal = {
       weighted: quarters.reduce((s, q) => s + q.weighted, 0),
@@ -129,12 +153,20 @@ export async function GET(req: NextRequest) {
 
     return apiSuccess({
       quarters,
-      thisQuarter: { weighted: thisQ.weighted, unweighted: thisQ.unweighted, dealCount: thisQ.dealCount },
-      nextQuarter: { weighted: nextQData.weighted, unweighted: nextQData.unweighted, dealCount: nextQData.dealCount },
+      thisQuarter: {
+        weighted: thisQ.weighted,
+        unweighted: thisQ.unweighted,
+        dealCount: thisQ.dealCount,
+      },
+      nextQuarter: {
+        weighted: nextQData.weighted,
+        unweighted: nextQData.unweighted,
+        dealCount: nextQData.dealCount,
+      },
       pipelineTotal,
       baseCurrency,
     })
   } catch (error) {
-    return handleApiError(error, '/api/analytics/forecast')
+    return handleApiError(error, "/api/analytics/forecast")
   }
 }

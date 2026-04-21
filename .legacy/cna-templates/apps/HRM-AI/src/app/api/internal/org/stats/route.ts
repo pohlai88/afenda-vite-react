@@ -1,11 +1,11 @@
 // GET /api/internal/org/stats
 // Return aggregate org stats: totalEmployees, activeEmployees, departments, newHires30d, turnover30d
 
-import { NextRequest, NextResponse } from 'next/server'
-import { validateInternalRequest } from '@/lib/api/internal-auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { validateInternalRequest } from "@/lib/api/internal-auth"
+import { db } from "@/lib/db"
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic"
 
 export async function GET(req: NextRequest) {
   const authError = validateInternalRequest(req)
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       db.employee.count({
         where: {
           deletedAt: null,
-          status: 'ACTIVE',
+          status: "ACTIVE",
         },
       }),
 
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
       db.employee.count({
         where: {
           resignationDate: { gte: thirtyDaysAgo },
-          status: { in: ['RESIGNED', 'TERMINATED'] },
+          status: { in: ["RESIGNED", "TERMINATED"] },
         },
       }),
     ])
@@ -67,9 +67,9 @@ export async function GET(req: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('[Internal API] Org stats error:', error)
+    console.error("[Internal API] Org stats error:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

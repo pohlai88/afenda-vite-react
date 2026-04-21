@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
+import Link from "next/link"
 import {
   CalendarDays,
   ClipboardCheck,
   FileText,
   Settings,
-  ChevronRight
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+  ChevronRight,
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface QuickAction {
   icon: React.ReactNode
@@ -22,32 +22,34 @@ interface ESSQuickActionsProps {
   pendingApprovalsCount?: number
 }
 
-export function ESSQuickActions({ pendingApprovalsCount = 0 }: ESSQuickActionsProps) {
+export function ESSQuickActions({
+  pendingApprovalsCount = 0,
+}: ESSQuickActionsProps) {
   const actions: QuickAction[] = [
     {
       icon: <CalendarDays className="h-5 w-5" />,
-      label: 'Xin nghỉ phép',
-      description: 'Tạo đơn xin nghỉ mới',
-      href: '/ess/leave',
+      label: "Xin nghỉ phép",
+      description: "Tạo đơn xin nghỉ mới",
+      href: "/ess/leave",
     },
     {
       icon: <ClipboardCheck className="h-5 w-5" />,
-      label: 'Phê duyệt',
-      description: 'Xem và duyệt đơn',
-      href: '/ess/approvals',
+      label: "Phê duyệt",
+      description: "Xem và duyệt đơn",
+      href: "/ess/approvals",
       badge: pendingApprovalsCount,
     },
     {
       icon: <FileText className="h-5 w-5" />,
-      label: 'Đơn của tôi',
-      description: 'Xem lịch sử đơn',
-      href: '/ess/leave/my-requests',
+      label: "Đơn của tôi",
+      description: "Xem lịch sử đơn",
+      href: "/ess/leave/my-requests",
     },
     {
       icon: <Settings className="h-5 w-5" />,
-      label: 'Cài đặt',
-      description: 'Ủy quyền & cấu hình',
-      href: '/ess/settings',
+      label: "Cài đặt",
+      description: "Ủy quyền & cấu hình",
+      href: "/ess/settings",
     },
   ]
 

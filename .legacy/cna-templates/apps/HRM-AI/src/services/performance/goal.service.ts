@@ -1,6 +1,9 @@
-import { db } from '@/lib/db'
-import { calculateGoalProgress, calculateGoalScore } from '@/lib/performance/scoring'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import {
+  calculateGoalProgress,
+  calculateGoalScore,
+} from "@/lib/performance/scoring"
+import type { Prisma } from "@prisma/client"
 
 export async function createGoal(
   tenantId: string,
@@ -8,7 +11,7 @@ export async function createGoal(
   data: {
     title: string
     description?: string
-    goalType: 'COMPANY' | 'DEPARTMENT' | 'TEAM' | 'INDIVIDUAL'
+    goalType: "COMPANY" | "DEPARTMENT" | "TEAM" | "INDIVIDUAL"
     category?: string
     ownerId?: string
     departmentId?: string
@@ -18,7 +21,7 @@ export async function createGoal(
     targetValue?: number
     unit?: string
     weight?: number
-    priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+    priority?: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
     reviewCycleId?: string
     keyResults?: {
       title: string
@@ -46,7 +49,7 @@ export async function createGoal(
       targetValue: data.targetValue,
       unit: data.unit,
       weight: data.weight ?? 100,
-      priority: data.priority ?? 'MEDIUM',
+      priority: data.priority ?? "MEDIUM",
       reviewCycleId: data.reviewCycleId,
       createdById: userId,
       keyResults: data.keyResults
@@ -74,7 +77,7 @@ export async function createGoal(
         select: { id: true, title: true },
       },
       keyResults: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
       reviewCycle: {
         select: { id: true, name: true },
@@ -88,8 +91,8 @@ export async function createGoal(
 export async function getGoals(
   tenantId: string,
   filters?: {
-    goalType?: 'COMPANY' | 'DEPARTMENT' | 'TEAM' | 'INDIVIDUAL'
-    status?: 'DRAFT' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'ON_HOLD'
+    goalType?: "COMPANY" | "DEPARTMENT" | "TEAM" | "INDIVIDUAL"
+    status?: "DRAFT" | "ACTIVE" | "COMPLETED" | "CANCELLED" | "ON_HOLD"
     ownerId?: string
     departmentId?: string
     reviewCycleId?: string
@@ -106,11 +109,18 @@ export async function getGoals(
     ...(filters?.ownerId && { ownerId: filters.ownerId }),
     ...(filters?.departmentId && { departmentId: filters.departmentId }),
     ...(filters?.reviewCycleId && { reviewCycleId: filters.reviewCycleId }),
-    ...(filters?.parentGoalId !== undefined && { parentGoalId: filters.parentGoalId }),
+    ...(filters?.parentGoalId !== undefined && {
+      parentGoalId: filters.parentGoalId,
+    }),
     ...(filters?.search && {
       OR: [
-        { title: { contains: filters.search, mode: 'insensitive' as const } },
-        { description: { contains: filters.search, mode: 'insensitive' as const } },
+        { title: { contains: filters.search, mode: "insensitive" as const } },
+        {
+          description: {
+            contains: filters.search,
+            mode: "insensitive" as const,
+          },
+        },
       ],
     }),
   }
@@ -126,13 +136,13 @@ export async function getGoals(
           select: { id: true, name: true },
         },
         keyResults: {
-          orderBy: { order: 'asc' },
+          orderBy: { order: "asc" },
         },
         _count: {
           select: { childGoals: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -168,12 +178,12 @@ export async function getGoalById(id: string, tenantId: string) {
           owner: {
             select: { id: true, fullName: true, employeeCode: true },
           },
-          keyResults: { orderBy: { order: 'asc' } },
+          keyResults: { orderBy: { order: "asc" } },
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: "asc" },
       },
       keyResults: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
       updates: {
         include: {
@@ -181,7 +191,7 @@ export async function getGoalById(id: string, tenantId: string) {
             select: { id: true, name: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 20,
       },
       reviewCycle: {
@@ -206,8 +216,8 @@ export async function updateGoal(
     targetValue?: number
     unit?: string
     weight?: number
-    status?: 'DRAFT' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'ON_HOLD'
-    priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+    status?: "DRAFT" | "ACTIVE" | "COMPLETED" | "CANCELLED" | "ON_HOLD"
+    priority?: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
   }
 ) {
   return db.goal.update({
@@ -225,7 +235,7 @@ export async function updateGoal(
         select: { id: true, name: true },
       },
       keyResults: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
     },
   })
@@ -246,7 +256,7 @@ export async function updateGoalProgress(
   })
 
   if (!goal) {
-    throw new Error('Goal not found')
+    throw new Error("Goal not found")
   }
 
   const targetValue = goal.targetValue ? Number(goal.targetValue) : 0
@@ -263,13 +273,13 @@ export async function updateGoalProgress(
         currentValue: data.currentValue,
         progress: newProgress,
         score: newScore,
-        ...(newProgress >= 100 && { status: 'COMPLETED' }),
+        ...(newProgress >= 100 && { status: "COMPLETED" }),
       },
       include: {
         owner: {
           select: { id: true, fullName: true, employeeCode: true },
         },
-        keyResults: { orderBy: { order: 'asc' } },
+        keyResults: { orderBy: { order: "asc" } },
       },
     }),
     db.goalUpdate.create({
@@ -307,7 +317,7 @@ export async function updateKeyResultProgress(
   })
 
   if (!keyResult || keyResult.goal.tenantId !== tenantId) {
-    throw new Error('Key result not found')
+    throw new Error("Key result not found")
   }
 
   const previousValue = Number(keyResult.currentValue)
@@ -339,13 +349,17 @@ export async function updateKeyResultProgress(
     where: { goalId: keyResult.goal.id },
   })
 
-  const totalWeight = allKeyResults.reduce((sum, kr) => sum + Number(kr.weight), 0)
+  const totalWeight = allKeyResults.reduce(
+    (sum, kr) => sum + Number(kr.weight),
+    0
+  )
   const weightedProgress = allKeyResults.reduce((sum, kr) => {
     const krId = kr.id === keyResultId ? newProgress : kr.progress
-    return sum + (krId * Number(kr.weight))
+    return sum + krId * Number(kr.weight)
   }, 0)
 
-  const goalProgress = totalWeight > 0 ? Math.round(weightedProgress / totalWeight) : 0
+  const goalProgress =
+    totalWeight > 0 ? Math.round(weightedProgress / totalWeight) : 0
   const goalScore = calculateGoalScore(goalProgress)
 
   await db.goal.update({
@@ -354,7 +368,7 @@ export async function updateKeyResultProgress(
       progress: goalProgress,
       score: goalScore,
       currentValue: goalProgress,
-      ...(goalProgress >= 100 && { status: 'COMPLETED' }),
+      ...(goalProgress >= 100 && { status: "COMPLETED" }),
     },
   })
 
@@ -365,8 +379,9 @@ export async function deleteGoal(id: string, tenantId: string, userId: string) {
   const goal = await db.goal.findFirst({
     where: { id, tenantId },
   })
-  if (!goal) throw new Error('Goal not found')
-  if (goal.ownerId !== userId) throw new Error('Not authorized to delete this goal')
+  if (!goal) throw new Error("Goal not found")
+  if (goal.ownerId !== userId)
+    throw new Error("Not authorized to delete this goal")
 
   // Delete related records first
   await db.keyResultUpdate.deleteMany({
@@ -379,14 +394,19 @@ export async function deleteGoal(id: string, tenantId: string, userId: string) {
   return { success: true }
 }
 
-export async function addKeyResult(id: string, tenantId: string, _userId: string, data: {
-  title: string
-  targetValue: number
-  unit?: string
-  weight?: number
-}) {
+export async function addKeyResult(
+  id: string,
+  tenantId: string,
+  _userId: string,
+  data: {
+    title: string
+    targetValue: number
+    unit?: string
+    weight?: number
+  }
+) {
   const goal = await db.goal.findFirst({ where: { id, tenantId } })
-  if (!goal) throw new Error('Goal not found')
+  if (!goal) throw new Error("Goal not found")
 
   const maxOrder = await db.keyResult.aggregate({
     where: { goalId: id },
@@ -399,17 +419,14 @@ export async function addKeyResult(id: string, tenantId: string, _userId: string
       title: data.title,
       targetValue: data.targetValue,
       currentValue: 0,
-      unit: data.unit || '%',
+      unit: data.unit || "%",
       weight: data.weight || 100,
       order: (maxOrder._max.order ?? -1) + 1,
     },
   })
 }
 
-export async function getGoalCascade(
-  tenantId: string,
-  reviewCycleId?: string
-) {
+export async function getGoalCascade(tenantId: string, reviewCycleId?: string) {
   const where: Prisma.GoalWhereInput = {
     tenantId,
     parentGoalId: null, // Only top-level goals
@@ -426,7 +443,7 @@ export async function getGoalCascade(
         select: { id: true, name: true },
       },
       keyResults: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
       childGoals: {
         include: {
@@ -437,7 +454,7 @@ export async function getGoalCascade(
             select: { id: true, name: true },
           },
           keyResults: {
-            orderBy: { order: 'asc' },
+            orderBy: { order: "asc" },
           },
           childGoals: {
             include: {
@@ -445,23 +462,23 @@ export async function getGoalCascade(
                 select: { id: true, fullName: true, employeeCode: true },
               },
               keyResults: {
-                orderBy: { order: 'asc' },
+                orderBy: { order: "asc" },
               },
             },
-            orderBy: { createdAt: 'asc' },
+            orderBy: { createdAt: "asc" },
           },
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: "asc" },
       },
     },
-    orderBy: [{ goalType: 'asc' }, { createdAt: 'asc' }],
+    orderBy: [{ goalType: "asc" }, { createdAt: "asc" }],
   })
 
   // Organize by hierarchy: COMPANY -> DEPARTMENT -> INDIVIDUAL
-  const company = goals.filter(g => g.goalType === 'COMPANY')
-  const department = goals.filter(g => g.goalType === 'DEPARTMENT')
-  const team = goals.filter(g => g.goalType === 'TEAM')
-  const individual = goals.filter(g => g.goalType === 'INDIVIDUAL')
+  const company = goals.filter((g) => g.goalType === "COMPANY")
+  const department = goals.filter((g) => g.goalType === "DEPARTMENT")
+  const team = goals.filter((g) => g.goalType === "TEAM")
+  const individual = goals.filter((g) => g.goalType === "INDIVIDUAL")
 
   return {
     company,

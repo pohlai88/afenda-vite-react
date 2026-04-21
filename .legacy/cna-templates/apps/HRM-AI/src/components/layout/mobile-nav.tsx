@@ -81,8 +81,8 @@ export function MobileBottomNav() {
     const fetchBadges = async () => {
       try {
         const [approvalsRes, notifRes] = await Promise.all([
-          fetch('/api/approvals/pending?countOnly=true').catch(() => null),
-          fetch('/api/notifications/unread-count').catch(() => null),
+          fetch("/api/approvals/pending?countOnly=true").catch(() => null),
+          fetch("/api/notifications/unread-count").catch(() => null),
         ])
 
         if (approvalsRes?.ok) {
@@ -128,7 +128,10 @@ export function MobileBottomNav() {
     return item
   })
 
-  const totalMoreBadges = moreItemsWithBadges.reduce((sum, item) => sum + (item.badge || 0), 0)
+  const totalMoreBadges = moreItemsWithBadges.reduce(
+    (sum, item) => sum + (item.badge || 0),
+    0
+  )
 
   return (
     <>
@@ -164,7 +167,7 @@ export function MobileBottomNav() {
                         variant="destructive"
                         className="absolute -top-1.5 -right-2 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center"
                       >
-                        {item.badge > 99 ? '99+' : item.badge}
+                        {item.badge > 99 ? "99+" : item.badge}
                       </Badge>
                     )}
                   </div>
@@ -189,7 +192,7 @@ export function MobileBottomNav() {
                     variant="destructive"
                     className="absolute -top-1.5 -right-2 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center"
                   >
-                    {totalMoreBadges > 99 ? '99+' : totalMoreBadges}
+                    {totalMoreBadges > 99 ? "99+" : totalMoreBadges}
                   </Badge>
                 )}
               </div>
@@ -222,7 +225,8 @@ export function MobileBottomNav() {
                       "flex flex-col items-center gap-2 p-3 rounded-xl transition-all",
                       "touch-manipulation active:scale-95",
                       "hover:bg-muted/50",
-                      pathname.startsWith(item.href) && "bg-primary/10 text-primary"
+                      pathname.startsWith(item.href) &&
+                        "bg-primary/10 text-primary"
                     )}
                   >
                     <div className="relative p-3 rounded-full bg-muted">
@@ -232,11 +236,13 @@ export function MobileBottomNav() {
                           variant="destructive"
                           className="absolute -top-1 -right-1 h-5 min-w-5 px-1 text-[10px]"
                         >
-                          {item.badge > 99 ? '99+' : item.badge}
+                          {item.badge > 99 ? "99+" : item.badge}
                         </Badge>
                       )}
                     </div>
-                    <span className="text-xs font-medium text-center">{item.label}</span>
+                    <span className="text-xs font-medium text-center">
+                      {item.label}
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -253,7 +259,9 @@ export function MobileBottomNav() {
                     >
                       <div className="flex items-center gap-3">
                         <item.icon className="w-5 h-5 text-muted-foreground" />
-                        <span className="font-medium text-sm">{item.label}</span>
+                        <span className="font-medium text-sm">
+                          {item.label}
+                        </span>
                       </div>
                       <ChevronRight className="w-4 h-4 text-muted-foreground" />
                     </Link>

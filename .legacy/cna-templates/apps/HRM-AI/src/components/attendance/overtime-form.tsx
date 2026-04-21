@@ -34,8 +34,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { overtimeRequestSchema, type OvertimeRequestFormData } from "@/lib/validations/attendance"
-import { DAY_TYPE_LABELS, OT_MULTIPLIERS, NIGHT_BONUS } from "@/constants/attendance"
+import {
+  overtimeRequestSchema,
+  type OvertimeRequestFormData,
+} from "@/lib/validations/attendance"
+import {
+  DAY_TYPE_LABELS,
+  OT_MULTIPLIERS,
+  NIGHT_BONUS,
+} from "@/constants/attendance"
 import type { OvertimeRequest, Employee } from "@prisma/client"
 
 interface OvertimeFormProps {
@@ -58,8 +65,12 @@ export function OvertimeForm({
     defaultValues: {
       employeeId: initialData?.employeeId || currentEmployeeId || "",
       date: initialData?.date ? new Date(initialData.date) : new Date(),
-      startTime: initialData?.startTime ? new Date(initialData.startTime) : new Date(),
-      endTime: initialData?.endTime ? new Date(initialData.endTime) : new Date(),
+      startTime: initialData?.startTime
+        ? new Date(initialData.startTime)
+        : new Date(),
+      endTime: initialData?.endTime
+        ? new Date(initialData.endTime)
+        : new Date(),
       dayType: initialData?.dayType || "NORMAL",
       reason: initialData?.reason || "",
       attachmentUrl: initialData?.attachmentUrl || null,
@@ -70,7 +81,14 @@ export function OvertimeForm({
   const selectedDayType = form.watch("dayType")
 
   const getMultiplierText = () => {
-    const base = OT_MULTIPLIERS[selectedDayType === "HOLIDAY" ? "HOLIDAY" : selectedDayType === "WEEKEND" ? "WEEKEND" : "WEEKDAY"]
+    const base =
+      OT_MULTIPLIERS[
+        selectedDayType === "HOLIDAY"
+          ? "HOLIDAY"
+          : selectedDayType === "WEEKEND"
+            ? "WEEKEND"
+            : "WEEKDAY"
+      ]
     return `${Math.round(base * 100)}%${selectedDayType !== "HOLIDAY" ? ` (+ ${Math.round(NIGHT_BONUS * 100)}% nếu ca đêm)` : ""}`
   }
 
@@ -88,7 +106,10 @@ export function OvertimeForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nhân viên *</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Chọn nhân viên" />
@@ -157,9 +178,13 @@ export function OvertimeForm({
                 <FormControl>
                   <Input
                     type="time"
-                    value={field.value ? format(field.value as Date, "HH:mm") : ""}
+                    value={
+                      field.value ? format(field.value as Date, "HH:mm") : ""
+                    }
                     onChange={(e) => {
-                      const [hours, minutes] = e.target.value.split(":").map(Number)
+                      const [hours, minutes] = e.target.value
+                        .split(":")
+                        .map(Number)
                       const date = new Date(form.getValues("date") as Date)
                       date.setHours(hours, minutes, 0, 0)
                       field.onChange(date)
@@ -180,9 +205,13 @@ export function OvertimeForm({
                 <FormControl>
                   <Input
                     type="time"
-                    value={field.value ? format(field.value as Date, "HH:mm") : ""}
+                    value={
+                      field.value ? format(field.value as Date, "HH:mm") : ""
+                    }
                     onChange={(e) => {
-                      const [hours, minutes] = e.target.value.split(":").map(Number)
+                      const [hours, minutes] = e.target.value
+                        .split(":")
+                        .map(Number)
                       const date = new Date(form.getValues("date") as Date)
                       date.setHours(hours, minutes, 0, 0)
                       field.onChange(date)

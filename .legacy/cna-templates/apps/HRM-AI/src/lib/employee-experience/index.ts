@@ -2,13 +2,13 @@
 // Employee Experience Module - Main export
 
 // Surveys & Feedback
-export * from './surveys'
+export * from "./surveys"
 
 // Recognition & Kudos
-export * from './recognition'
+export * from "./recognition"
 
 // Company Feed & Communication
-export * from './feed'
+export * from "./feed"
 
 // Offboarding
-export * from './offboarding'
+export * from "./offboarding"

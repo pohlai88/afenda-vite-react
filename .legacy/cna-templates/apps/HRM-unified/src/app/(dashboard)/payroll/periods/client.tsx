@@ -43,7 +43,11 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
-import { formatVND, PAYROLL_STATUS_LABELS, PAYROLL_STATUS_COLORS } from "@/lib/payroll/constants"
+import {
+  formatVND,
+  PAYROLL_STATUS_LABELS,
+  PAYROLL_STATUS_COLORS,
+} from "@/lib/payroll/constants"
 
 interface PayrollPeriod {
   id: string
@@ -149,8 +153,13 @@ export function PayrollPeriodsClient() {
   })
 
   const calculateMutation = useMutation({
-    mutationFn: ({ periodId, recalculate }: { periodId: string; recalculate: boolean }) =>
-      calculatePeriod(periodId, recalculate),
+    mutationFn: ({
+      periodId,
+      recalculate,
+    }: {
+      periodId: string
+      recalculate: boolean
+    }) => calculatePeriod(periodId, recalculate),
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["payroll-periods"] })
       setCalculatingId(null)
@@ -310,9 +319,7 @@ export function PayrollPeriodsClient() {
       <Card>
         <CardHeader>
           <CardTitle>Danh sách kỳ lương năm {selectedYear}</CardTitle>
-          <CardDescription>
-            Tổng cộng {periods.length} kỳ lương
-          </CardDescription>
+          <CardDescription>Tổng cộng {periods.length} kỳ lương</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -339,13 +346,12 @@ export function PayrollPeriodsClient() {
               <TableBody>
                 {periods.map((period) => (
                   <TableRow key={period.id}>
-                    <TableCell className="font-medium">
-                      {period.name}
-                    </TableCell>
+                    <TableCell className="font-medium">{period.name}</TableCell>
                     <TableCell>
                       <Badge
                         style={{
-                          backgroundColor: PAYROLL_STATUS_COLORS[period.status] || "#6B7280",
+                          backgroundColor:
+                            PAYROLL_STATUS_COLORS[period.status] || "#6B7280",
                           color: "white",
                         }}
                       >
@@ -363,7 +369,9 @@ export function PayrollPeriodsClient() {
                     </TableCell>
                     <TableCell className="text-right text-sm text-muted-foreground">
                       {period.calculatedAt
-                        ? format(new Date(period.calculatedAt), "dd/MM HH:mm", { locale: vi })
+                        ? format(new Date(period.calculatedAt), "dd/MM HH:mm", {
+                            locale: vi,
+                          })
                         : "-"}
                     </TableCell>
                     <TableCell>
@@ -372,7 +380,12 @@ export function PayrollPeriodsClient() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleCalculate(period.id, period.status === "SIMULATED")}
+                            onClick={() =>
+                              handleCalculate(
+                                period.id,
+                                period.status === "SIMULATED"
+                              )
+                            }
                             disabled={calculatingId === period.id}
                           >
                             {calculatingId === period.id ? (
@@ -380,7 +393,9 @@ export function PayrollPeriodsClient() {
                             ) : (
                               <Calculator className="mr-1 h-3 w-3" />
                             )}
-                            {period.status === "DRAFT" ? "Tính lương" : "Tính lại"}
+                            {period.status === "DRAFT"
+                              ? "Tính lương"
+                              : "Tính lại"}
                           </Button>
                         )}
                         {period.status === "SIMULATED" && (

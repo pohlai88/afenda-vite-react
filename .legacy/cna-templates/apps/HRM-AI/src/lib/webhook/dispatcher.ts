@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
-import { createHmac, randomBytes } from 'crypto'
+import { db } from "@/lib/db"
+import { createHmac, randomBytes } from "crypto"
 
 export async function dispatchWebhook(
   tenantId: string,
@@ -7,12 +7,12 @@ export async function dispatchWebhook(
   data: unknown
 ) {
   const webhooks = await db.webhook.findMany({
-    where: { tenantId, status: 'ACTIVE' },
+    where: { tenantId, status: "ACTIVE" },
   })
 
-  const matchingWebhooks = webhooks.filter(w => {
+  const matchingWebhooks = webhooks.filter((w) => {
     const events = w.events as string[]
-    return events.includes(event) || events.includes('*')
+    return events.includes(event) || events.includes("*")
   })
 
   for (const webhook of matchingWebhooks) {
@@ -22,36 +22,40 @@ export async function dispatchWebhook(
   return matchingWebhooks.length
 }
 
-async function deliverWebhook(webhook: { id: string; url: string; secret: string; headers?: unknown }, event: string, data: unknown) {
+async function deliverWebhook(
+  webhook: { id: string; url: string; secret: string; headers?: unknown },
+  event: string,
+  data: unknown
+) {
   const payload = {
-    id: `evt_${Date.now()}_${randomBytes(4).toString('hex')}`,
+    id: `evt_${Date.now()}_${randomBytes(4).toString("hex")}`,
     type: event,
     timestamp: new Date().toISOString(),
     data,
   }
 
   const payloadStr = JSON.stringify(payload)
-  const signature = createHmac('sha256', webhook.secret)
+  const signature = createHmac("sha256", webhook.secret)
     .update(payloadStr)
-    .digest('hex')
+    .digest("hex")
 
   const startTime = Date.now()
-  let status = 'failed'
+  let status = "failed"
   let statusCode: number | null = null
   let responseBody: string | null = null
   let errorMessage: string | null = null
 
   try {
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'X-Webhook-Signature': `sha256=${signature}`,
-      'X-Webhook-Event': event,
-      'X-Webhook-Id': payload.id,
+      "Content-Type": "application/json",
+      "X-Webhook-Signature": `sha256=${signature}`,
+      "X-Webhook-Event": event,
+      "X-Webhook-Id": payload.id,
       ...((webhook.headers as Record<string, string>) || {}),
     }
 
     const response = await fetch(webhook.url, {
-      method: 'POST',
+      method: "POST",
       headers,
       body: payloadStr,
       signal: AbortSignal.timeout(30000),
@@ -59,9 +63,9 @@ async function deliverWebhook(webhook: { id: string; url: string; secret: string
 
     statusCode = response.status
     responseBody = await response.text().catch(() => null)
-    status = response.ok ? 'success' : 'failed'
+    status = response.ok ? "success" : "failed"
   } catch (error: unknown) {
-    errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    errorMessage = error instanceof Error ? error.message : "Unknown error"
   }
 
   const duration = Date.now() - startTime
@@ -83,8 +87,8 @@ async function deliverWebhook(webhook: { id: string; url: string; secret: string
     where: { id: webhook.id },
     data: {
       totalDeliveries: { increment: 1 },
-      successDeliveries: status === 'success' ? { increment: 1 } : undefined,
-      failedDeliveries: status === 'failed' ? { increment: 1 } : undefined,
+      successDeliveries: status === "success" ? { increment: 1 } : undefined,
+      failedDeliveries: status === "failed" ? { increment: 1 } : undefined,
       lastDeliveryAt: new Date(),
     },
   })

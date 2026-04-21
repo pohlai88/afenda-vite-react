@@ -7,6 +7,7 @@ An intelligent Human Resource Management System (HRMS) built with Next.js 14, fe
 ## Features
 
 ### Core HR Modules
+
 - **Employee Management** - Complete employee lifecycle management
 - **Attendance Tracking** - Check-in/check-out with geolocation support
 - **Leave Management** - Leave requests, approvals, and balance tracking
@@ -17,6 +18,7 @@ An intelligent Human Resource Management System (HRMS) built with Next.js 14, fe
 - **Onboarding** - Structured onboarding workflows
 
 ### AI-Powered Features
+
 - **HR Copilot** - Natural language assistant for HR queries
 - **Turnover Prediction** - ML-based employee retention risk analysis
 - **Smart Insights** - Automated dashboard recommendations
@@ -25,6 +27,7 @@ An intelligent Human Resource Management System (HRMS) built with Next.js 14, fe
 - **Weekly AI Summary** - Automated HR intelligence reports
 
 ### Technical Features
+
 - Modern Next.js 14 App Router architecture
 - TypeScript for type safety
 - Prisma ORM with PostgreSQL
@@ -56,22 +59,26 @@ An intelligent Human Resource Management System (HRMS) built with Next.js 14, fe
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/your-org/vierp-hrm.git
 cd vierp-hrm
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 3. **Set up environment variables**
+
 ```bash
 cp .env.example .env
 ```
 
 Edit `.env` with your configuration:
+
 ```env
 DATABASE_URL="postgresql://postgres:password@localhost:5432/vierp_hr"
 NEXTAUTH_SECRET="your-secret-key"
@@ -80,6 +87,7 @@ ANTHROPIC_API_KEY="your-anthropic-api-key"
 ```
 
 4. **Set up the database**
+
 ```bash
 # Run migrations
 npx prisma migrate dev
@@ -89,6 +97,7 @@ npx prisma db seed
 ```
 
 5. **Start the development server**
+
 ```bash
 npm run dev
 ```
@@ -96,6 +105,7 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Demo Credentials
+
 ```
 Email: admin@your-domain.com
 Password: Admin@123
@@ -137,47 +147,49 @@ docker compose --profile production up -d
 
 ### Environment Variables for Production
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | Yes |
-| `NEXTAUTH_SECRET` | Session encryption key | Yes |
-| `NEXTAUTH_URL` | Application URL | Yes |
-| `ANTHROPIC_API_KEY` | Claude API key for AI features | Yes |
+| Variable            | Description                    | Required |
+| ------------------- | ------------------------------ | -------- |
+| `DATABASE_URL`      | PostgreSQL connection string   | Yes      |
+| `NEXTAUTH_SECRET`   | Session encryption key         | Yes      |
+| `NEXTAUTH_URL`      | Application URL                | Yes      |
+| `ANTHROPIC_API_KEY` | Claude API key for AI features | Yes      |
 
 ## API Documentation
 
 ### Authentication
+
 All API endpoints require authentication via session cookie or Bearer token.
 
 ### Core Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/employees` | List employees |
-| GET | `/api/employees/[id]` | Get employee details |
-| POST | `/api/employees` | Create employee |
-| PUT | `/api/employees/[id]` | Update employee |
-| DELETE | `/api/employees/[id]` | Delete employee |
-| GET | `/api/attendance` | Get attendance records |
-| POST | `/api/attendance/check-in` | Record check-in |
-| POST | `/api/attendance/check-out` | Record check-out |
-| GET | `/api/leaves` | List leave requests |
-| POST | `/api/leaves` | Submit leave request |
-| GET | `/api/payroll` | List payroll records |
-| GET | `/api/dashboard` | Dashboard statistics |
+| Method | Endpoint                    | Description            |
+| ------ | --------------------------- | ---------------------- |
+| GET    | `/api/employees`            | List employees         |
+| GET    | `/api/employees/[id]`       | Get employee details   |
+| POST   | `/api/employees`            | Create employee        |
+| PUT    | `/api/employees/[id]`       | Update employee        |
+| DELETE | `/api/employees/[id]`       | Delete employee        |
+| GET    | `/api/attendance`           | Get attendance records |
+| POST   | `/api/attendance/check-in`  | Record check-in        |
+| POST   | `/api/attendance/check-out` | Record check-out       |
+| GET    | `/api/leaves`               | List leave requests    |
+| POST   | `/api/leaves`               | Submit leave request   |
+| GET    | `/api/payroll`              | List payroll records   |
+| GET    | `/api/dashboard`            | Dashboard statistics   |
 
 ### AI Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/ai/chat` | HR Copilot chat |
-| GET | `/api/ai/insights` | Get AI insights |
-| GET | `/api/ai/predictions/turnover` | Turnover predictions |
-| GET | `/api/ai/anomalies` | Anomaly detection |
-| GET | `/api/ai/reports/weekly` | Weekly AI summary |
-| POST | `/api/ai/automation/suggest` | Workflow suggestions |
+| Method | Endpoint                       | Description          |
+| ------ | ------------------------------ | -------------------- |
+| POST   | `/api/ai/chat`                 | HR Copilot chat      |
+| GET    | `/api/ai/insights`             | Get AI insights      |
+| GET    | `/api/ai/predictions/turnover` | Turnover predictions |
+| GET    | `/api/ai/anomalies`            | Anomaly detection    |
+| GET    | `/api/ai/reports/weekly`       | Weekly AI summary    |
+| POST   | `/api/ai/automation/suggest`   | Workflow suggestions |
 
 ### Health Check
+
 ```
 GET /api/health
 ```

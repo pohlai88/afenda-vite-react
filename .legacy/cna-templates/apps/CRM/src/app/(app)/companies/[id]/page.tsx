@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
 import {
   ArrowLeft,
   Pencil,
@@ -13,17 +13,17 @@ import {
   FileText,
   Tag,
   ExternalLink,
-} from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
-import { vi } from 'date-fns/locale'
+} from "lucide-react"
+import { formatDistanceToNow } from "date-fns"
+import { vi } from "date-fns/locale"
 
-import { useTranslation } from '@/i18n'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useTranslation } from "@/i18n"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Table,
   TableBody,
@@ -31,19 +31,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { ContactTimeline } from '@/components/contacts/ContactTimeline'
-import { useCompany } from '@/hooks/use-companies'
-import { useActivities } from '@/hooks/use-activities'
+} from "@/components/ui/table"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { ContactTimeline } from "@/components/contacts/ContactTimeline"
+import { useCompany } from "@/hooks/use-companies"
+import { useActivities } from "@/hooks/use-activities"
 import {
   COMPANY_SIZES,
   CONTACT_STATUSES,
   formatCurrency,
-} from '@/lib/constants'
-import { DEFAULT_STAGES } from '@/lib/constants'
-import { DocumentPanel } from '@/components/documents/DocumentPanel'
-import { CompliancePanel } from '@/components/compliance/CompliancePanel'
+} from "@/lib/constants"
+import { DEFAULT_STAGES } from "@/lib/constants"
+import { DocumentPanel } from "@/components/documents/DocumentPanel"
+import { CompliancePanel } from "@/components/compliance/CompliancePanel"
 
 export default function CompanyDetailPage() {
   const params = useParams()
@@ -71,15 +71,17 @@ export default function CompanyDetailPage() {
 
   if (!company) {
     return (
-      <PageShell title={t('common.notFound')}>
+      <PageShell title={t("common.notFound")}>
         <div className="flex flex-col items-center justify-center py-16">
-          <p className="text-sm text-[var(--crm-text-muted)]">{t('companies.notFound')}</p>
+          <p className="text-sm text-[var(--crm-text-muted)]">
+            {t("companies.notFound")}
+          </p>
           <Button
             variant="outline"
             className="mt-4 border-[var(--crm-border)] text-[var(--crm-text-secondary)]"
-            onClick={() => router.push('/companies')}
+            onClick={() => router.push("/companies")}
           >
-            {t('common.back')}
+            {t("common.back")}
           </Button>
         </div>
       </PageShell>
@@ -95,10 +97,10 @@ export default function CompanyDetailPage() {
             variant="outline"
             size="sm"
             className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)]"
-            onClick={() => router.push('/companies')}
+            onClick={() => router.push("/companies")}
           >
             <ArrowLeft className="h-4 w-4" />
-            {t('common.back')}
+            {t("common.back")}
           </Button>
           <Button
             size="sm"
@@ -142,7 +144,7 @@ export default function CompanyDetailPage() {
               {company.website && (
                 <a
                   href={
-                    company.website.startsWith('http')
+                    company.website.startsWith("http")
                       ? company.website
                       : `https://${company.website}`
                   }
@@ -187,26 +189,37 @@ export default function CompanyDetailPage() {
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-3 md:grid-cols-3">
           <InfoItem icon={Phone} label="Điện thoại" value={company.phone} />
-          <InfoItem icon={Mail} label={t('common.email')} value={company.email} />
+          <InfoItem
+            icon={Mail}
+            label={t("common.email")}
+            value={company.email}
+          />
           <InfoItem icon={MapPin} label="Địa chỉ" value={company.address} />
           <InfoItem icon={MapPin} label="Thành phố" value={company.city} />
           <InfoItem icon={MapPin} label="Tỉnh" value={company.province} />
-          <InfoItem icon={FileText} label={t('companies.taxCode')} value={company.taxCode} />
+          <InfoItem
+            icon={FileText}
+            label={t("companies.taxCode")}
+            value={company.taxCode}
+          />
         </CardContent>
       </Card>
 
       {/* Company Hierarchy */}
-      {(company.parent || (company.children && company.children.length > 0)) && (
+      {(company.parent ||
+        (company.children && company.children.length > 0)) && (
         <Card className="border-[var(--crm-border)] bg-[var(--crm-bg-card)]">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-[var(--crm-text-secondary)]">
-              {t('companies.parentCompany')} / {t('companies.subsidiaries')}
+              {t("companies.parentCompany")} / {t("companies.subsidiaries")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {company.parent && (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-[var(--crm-text-muted)]">{t('companies.parentCompany')}:</span>
+                <span className="text-xs text-[var(--crm-text-muted)]">
+                  {t("companies.parentCompany")}:
+                </span>
                 <Link
                   href={`/companies/${company.parent.id}`}
                   className="text-sm text-[#10B981] hover:underline"
@@ -217,7 +230,9 @@ export default function CompanyDetailPage() {
             )}
             {company.children && company.children.length > 0 && (
               <div>
-                <span className="text-xs text-[var(--crm-text-muted)]">{t('companies.subsidiaries')}:</span>
+                <span className="text-xs text-[var(--crm-text-muted)]">
+                  {t("companies.subsidiaries")}:
+                </span>
                 <div className="mt-1 space-y-1">
                   {company.children.map((child: any) => (
                     <Link
@@ -242,7 +257,7 @@ export default function CompanyDetailPage() {
           entityType="COMPANY"
           entityId={id}
           entityName={company.name}
-          country={company.country || 'VN'}
+          country={company.country || "VN"}
           complianceStatus={company.sanctionsStatus}
         />
         <DocumentPanel entityType="company" entityId={id} />
@@ -278,10 +293,18 @@ export default function CompanyDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-[var(--crm-border)] hover:bg-transparent">
-                    <TableHead className="text-[var(--crm-text-muted)] text-xs">Tên</TableHead>
-                    <TableHead className="text-[var(--crm-text-muted)] text-xs">Email</TableHead>
-                    <TableHead className="text-[var(--crm-text-muted)] text-xs">Điện thoại</TableHead>
-                    <TableHead className="text-[var(--crm-text-muted)] text-xs">{t('common.status')}</TableHead>
+                    <TableHead className="text-[var(--crm-text-muted)] text-xs">
+                      Tên
+                    </TableHead>
+                    <TableHead className="text-[var(--crm-text-muted)] text-xs">
+                      Email
+                    </TableHead>
+                    <TableHead className="text-[var(--crm-text-muted)] text-xs">
+                      Điện thoại
+                    </TableHead>
+                    <TableHead className="text-[var(--crm-text-muted)] text-xs">
+                      {t("common.status")}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -289,7 +312,8 @@ export default function CompanyDetailPage() {
                     const st = CONTACT_STATUSES.find(
                       (s) => s.value === contact.status
                     )
-                    const initials = `${contact.firstName.charAt(0)}${contact.lastName.charAt(0)}`.toUpperCase()
+                    const initials =
+                      `${contact.firstName.charAt(0)}${contact.lastName.charAt(0)}`.toUpperCase()
                     return (
                       <TableRow
                         key={contact.id}
@@ -309,10 +333,10 @@ export default function CompanyDetailPage() {
                           </div>
                         </TableCell>
                         <TableCell className="text-sm text-[var(--crm-text-secondary)]">
-                          {contact.email ?? '-'}
+                          {contact.email ?? "-"}
                         </TableCell>
                         <TableCell className="text-sm text-[var(--crm-text-secondary)]">
-                          {contact.phone ?? '-'}
+                          {contact.phone ?? "-"}
                         </TableCell>
                         <TableCell>
                           {st && (
@@ -334,7 +358,9 @@ export default function CompanyDetailPage() {
               </Table>
             ) : (
               <div className="py-12 text-center">
-                <p className="text-sm text-[var(--crm-text-muted)]">{t('companies.noContacts')}</p>
+                <p className="text-sm text-[var(--crm-text-muted)]">
+                  {t("companies.noContacts")}
+                </p>
               </div>
             )}
           </Card>
@@ -347,10 +373,18 @@ export default function CompanyDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-[var(--crm-border)] hover:bg-transparent">
-                    <TableHead className="text-[var(--crm-text-muted)] text-xs">Tên deal</TableHead>
-                    <TableHead className="text-[var(--crm-text-muted)] text-xs">{t('common.value')}</TableHead>
-                    <TableHead className="text-[var(--crm-text-muted)] text-xs">{t('pipeline.stage')}</TableHead>
-                    <TableHead className="text-[var(--crm-text-muted)] text-xs">{t('quotes.createdDate')}</TableHead>
+                    <TableHead className="text-[var(--crm-text-muted)] text-xs">
+                      Tên deal
+                    </TableHead>
+                    <TableHead className="text-[var(--crm-text-muted)] text-xs">
+                      {t("common.value")}
+                    </TableHead>
+                    <TableHead className="text-[var(--crm-text-muted)] text-xs">
+                      {t("pipeline.stage")}
+                    </TableHead>
+                    <TableHead className="text-[var(--crm-text-muted)] text-xs">
+                      {t("quotes.createdDate")}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -382,7 +416,9 @@ export default function CompanyDetailPage() {
                               {stageMeta.name}
                             </Badge>
                           ) : (
-                            <span className="text-xs text-[var(--crm-text-muted)]">-</span>
+                            <span className="text-xs text-[var(--crm-text-muted)]">
+                              -
+                            </span>
                           )}
                         </TableCell>
                         <TableCell className="text-xs text-[var(--crm-text-secondary)]">
@@ -398,7 +434,9 @@ export default function CompanyDetailPage() {
               </Table>
             ) : (
               <div className="py-12 text-center">
-                <p className="text-sm text-[var(--crm-text-muted)]">{t('companies.noDeals')}</p>
+                <p className="text-sm text-[var(--crm-text-muted)]">
+                  {t("companies.noDeals")}
+                </p>
               </div>
             )}
           </Card>
@@ -431,7 +469,9 @@ function InfoItem({
       <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--crm-text-muted)]" />
       <div className="min-w-0">
         <p className="text-xs text-[var(--crm-text-muted)]">{label}</p>
-        <p className="text-sm text-[var(--crm-text-primary)] truncate">{value || '-'}</p>
+        <p className="text-sm text-[var(--crm-text-primary)] truncate">
+          {value || "-"}
+        </p>
       </div>
     </div>
   )

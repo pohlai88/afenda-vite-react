@@ -1,83 +1,82 @@
-'use client'
+"use client"
 
 // src/app/(dashboard)/admin/api-docs/page.tsx
 // Swagger UI for API Documentation
 
-import { useEffect, useRef } from 'react'
-import { PageContainer } from '@/components/layout/page-container'
-import { PageHeader } from '@/components/layout/page-header'
+import { useEffect, useRef } from "react"
+import { PageContainer } from "@/components/layout/page-container"
+import { PageHeader } from "@/components/layout/page-header"
 
 export default function ApiDocsPage() {
-    const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-    useEffect(() => {
-        // Dynamically load Swagger UI
-        const loadSwaggerUI = async () => {
-            // Load CSS
-            const link = document.createElement('link')
-            link.rel = 'stylesheet'
-            link.href = 'https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css'
-            document.head.appendChild(link)
+  useEffect(() => {
+    // Dynamically load Swagger UI
+    const loadSwaggerUI = async () => {
+      // Load CSS
+      const link = document.createElement("link")
+      link.rel = "stylesheet"
+      link.href = "https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css"
+      document.head.appendChild(link)
 
-            // Load JS
-            const script = document.createElement('script')
-            script.src = 'https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js'
-            script.onload = () => {
-                // @ts-expect-error SwaggerUIBundle is loaded dynamically
-                window.SwaggerUIBundle({
-                    url: '/api/docs',
-                    dom_id: '#swagger-ui',
-                    deepLinking: true,
-                    presets: [
-                        // @ts-expect-error SwaggerUIBundle is loaded dynamically
-                        window.SwaggerUIBundle.presets.apis,
-                        // @ts-expect-error SwaggerUIStandalonePreset is loaded dynamically
-                        window.SwaggerUIStandalonePreset,
-                    ],
-                    plugins: [
-                        // @ts-expect-error SwaggerUIBundle is loaded dynamically
-                        window.SwaggerUIBundle.plugins.DownloadUrl,
-                    ],
-                    layout: 'StandaloneLayout',
-                    defaultModelsExpandDepth: 2,
-                    defaultModelExpandDepth: 2,
-                    displayRequestDuration: true,
-                    filter: true,
-                    showExtensions: true,
-                    showCommonExtensions: true,
-                    tryItOutEnabled: true,
-                })
-            }
-            document.body.appendChild(script)
-        }
+      // Load JS
+      const script = document.createElement("script")
+      script.src =
+        "https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"
+      script.onload = () => {
+        // @ts-expect-error SwaggerUIBundle is loaded dynamically
+        window.SwaggerUIBundle({
+          url: "/api/docs",
+          dom_id: "#swagger-ui",
+          deepLinking: true,
+          presets: [
+            // @ts-expect-error SwaggerUIBundle is loaded dynamically
+            window.SwaggerUIBundle.presets.apis,
+            // @ts-expect-error SwaggerUIStandalonePreset is loaded dynamically
+            window.SwaggerUIStandalonePreset,
+          ],
+          plugins: [
+            // @ts-expect-error SwaggerUIBundle is loaded dynamically
+            window.SwaggerUIBundle.plugins.DownloadUrl,
+          ],
+          layout: "StandaloneLayout",
+          defaultModelsExpandDepth: 2,
+          defaultModelExpandDepth: 2,
+          displayRequestDuration: true,
+          filter: true,
+          showExtensions: true,
+          showCommonExtensions: true,
+          tryItOutEnabled: true,
+        })
+      }
+      document.body.appendChild(script)
+    }
 
-        loadSwaggerUI()
+    loadSwaggerUI()
 
-        return () => {
-            // Cleanup
-            const swaggerLinks = document.querySelectorAll('link[href*="swagger-ui"]')
-            const swaggerScripts = document.querySelectorAll('script[src*="swagger-ui"]')
-            swaggerLinks.forEach(link => link.remove())
-            swaggerScripts.forEach(script => script.remove())
-        }
-    }, [])
+    return () => {
+      // Cleanup
+      const swaggerLinks = document.querySelectorAll('link[href*="swagger-ui"]')
+      const swaggerScripts = document.querySelectorAll(
+        'script[src*="swagger-ui"]'
+      )
+      swaggerLinks.forEach((link) => link.remove())
+      swaggerScripts.forEach((script) => script.remove())
+    }
+  }, [])
 
-    return (
-        <PageContainer>
-            <PageHeader
-                title="API Documentation"
-                description="OpenAPI 3.0 specification cho VietERP HRM API"
-            />
+  return (
+    <PageContainer>
+      <PageHeader
+        title="API Documentation"
+        description="OpenAPI 3.0 specification cho VietERP HRM API"
+      />
 
-            <div className="mt-6 rounded-lg border bg-white dark:bg-card">
-                <div
-                    id="swagger-ui"
-                    ref={containerRef}
-                    className="min-h-[800px]"
-                />
-            </div>
+      <div className="mt-6 rounded-lg border bg-white dark:bg-card">
+        <div id="swagger-ui" ref={containerRef} className="min-h-[800px]" />
+      </div>
 
-            <style jsx global>{`
+      <style jsx global>{`
         .swagger-ui .topbar {
           display: none;
         }
@@ -104,7 +103,7 @@ export default function ApiDocsPage() {
         .dark .swagger-ui .parameter__type,
         .dark .swagger-ui .response-col_status,
         .dark .swagger-ui .response-col_description {
-          color: #DDE1E8 !important;
+          color: #dde1e8 !important;
         }
         .dark .swagger-ui .opblock {
           background: rgba(255, 255, 255, 0.03);
@@ -123,6 +122,6 @@ export default function ApiDocsPage() {
           background: rgba(255, 255, 255, 0.03);
         }
       `}</style>
-        </PageContainer>
-    )
+    </PageContainer>
+  )
 }

@@ -1,62 +1,70 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Search, Filter, BookOpen, Clock, Users, Star } from 'lucide-react';
-import Link from 'next/link';
+import { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Search, Filter, BookOpen, Clock, Users, Star } from "lucide-react"
+import Link from "next/link"
 
 interface Course {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  duration: number;
-  level: string;
-  rating: number;
-  enrolledCount: number;
-  provider: string;
-  type: string;
+  id: string
+  title: string
+  description: string
+  category: string
+  duration: number
+  level: string
+  rating: number
+  enrolledCount: number
+  provider: string
+  type: string
 }
 
 export default function CourseCatalogPage() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [error, setError] = useState('');
+  const [courses, setCourses] = useState<Course[]>([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState("")
+  const [error, setError] = useState("")
 
   useEffect(() => {
     async function fetchCourses() {
       try {
-        const res = await fetch('/api/learning/courses');
+        const res = await fetch("/api/learning/courses")
         if (res.ok) {
-          const data = await res.json();
-          setCourses(data.data || []);
+          const data = await res.json()
+          setCourses(data.data || [])
         }
       } catch (err) {
-        setError('Không thể tải danh sách khóa học');
+        setError("Không thể tải danh sách khóa học")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchCourses();
-  }, []);
+    fetchCourses()
+  }, [])
 
-  const filteredCourses = courses.filter(c =>
-    c.title.toLowerCase().includes(search.toLowerCase()) ||
-    c.category.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredCourses = courses.filter(
+    (c) =>
+      c.title.toLowerCase().includes(search.toLowerCase()) ||
+      c.category.toLowerCase().includes(search.toLowerCase())
+  )
 
-  if (loading) return <div className="flex items-center justify-center h-64"><p>Đang tải...</p></div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p>Đang tải...</p>
+      </div>
+    )
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Danh mục khóa học</h1>
-          <p className="text-muted-foreground">Khám phá và đăng ký các khóa học đào tạo</p>
+          <p className="text-muted-foreground">
+            Khám phá và đăng ký các khóa học đào tạo
+          </p>
         </div>
         <Link href="/learning/requests/new">
           <Button>Yêu cầu đào tạo</Button>
@@ -73,7 +81,10 @@ export default function CourseCatalogPage() {
             className="pl-10"
           />
         </div>
-        <Button variant="outline"><Filter className="h-4 w-4 mr-2" />Lọc</Button>
+        <Button variant="outline">
+          <Filter className="h-4 w-4 mr-2" />
+          Lọc
+        </Button>
       </div>
 
       {error && <p className="text-red-500">{error}</p>}
@@ -98,11 +109,22 @@ export default function CourseCatalogPage() {
                   <CardTitle className="text-lg mt-2">{course.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{course.description}</p>
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    {course.description}
+                  </p>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{course.duration}h</span>
-                    <span className="flex items-center gap-1"><Users className="h-3 w-3" />{course.enrolledCount}</span>
-                    <span className="flex items-center gap-1"><Star className="h-3 w-3" />{course.rating}</span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {course.duration}h
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Users className="h-3 w-3" />
+                      {course.enrolledCount}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Star className="h-3 w-3" />
+                      {course.rating}
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -111,5 +133,5 @@ export default function CourseCatalogPage() {
         </div>
       )}
     </div>
-  );
+  )
 }

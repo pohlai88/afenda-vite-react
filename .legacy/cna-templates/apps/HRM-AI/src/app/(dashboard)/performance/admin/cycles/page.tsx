@@ -1,30 +1,40 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { RotateCcw, Plus } from 'lucide-react'
-import { ReviewCycle } from '@/types/performance'
-import { REVIEW_CYCLE_TYPE, REVIEW_CYCLE_STATUS } from '@/lib/performance/constants'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { RotateCcw, Plus } from "lucide-react"
+import { ReviewCycle } from "@/types/performance"
+import {
+  REVIEW_CYCLE_TYPE,
+  REVIEW_CYCLE_STATUS,
+} from "@/lib/performance/constants"
 
 function ReviewCycleStatusBadge({ status }: { status: string }) {
   const info = REVIEW_CYCLE_STATUS[status as keyof typeof REVIEW_CYCLE_STATUS]
   const colorMap: Record<string, string> = {
-    gray: 'bg-zinc-700 text-zinc-300',
-    blue: 'bg-blue-500/20 text-blue-400',
-    yellow: 'bg-yellow-500/20 text-yellow-400',
-    orange: 'bg-orange-500/20 text-orange-400',
-    purple: 'bg-purple-500/20 text-purple-400',
-    green: 'bg-green-500/20 text-green-400',
-    red: 'bg-red-500/20 text-red-400',
+    gray: "bg-zinc-700 text-zinc-300",
+    blue: "bg-blue-500/20 text-blue-400",
+    yellow: "bg-yellow-500/20 text-yellow-400",
+    orange: "bg-orange-500/20 text-orange-400",
+    purple: "bg-purple-500/20 text-purple-400",
+    green: "bg-green-500/20 text-green-400",
+    red: "bg-red-500/20 text-red-400",
   }
 
   return (
-    <Badge className={colorMap[info?.color || 'gray'] || colorMap.gray}>
+    <Badge className={colorMap[info?.color || "gray"] || colorMap.gray}>
       {info?.label || status}
     </Badge>
   )
@@ -37,7 +47,7 @@ export default function CyclesPage() {
   useEffect(() => {
     async function loadCycles() {
       try {
-        const res = await fetch('/api/performance/cycles')
+        const res = await fetch("/api/performance/cycles")
         if (res.ok) {
           const data = await res.json()
           setCycles(Array.isArray(data) ? data : data.data || [])
@@ -76,7 +86,10 @@ export default function CyclesPage() {
           <RotateCcw className="h-16 w-16 mb-4 text-zinc-700" />
           <p className="text-lg">Chưa có chu kỳ đánh giá nào</p>
           <Link href="/performance/admin/cycles/new">
-            <Button size="sm" className="mt-4 bg-amber-500 hover:bg-amber-600 text-black">
+            <Button
+              size="sm"
+              className="mt-4 bg-amber-500 hover:bg-amber-600 text-black"
+            >
               <Plus className="mr-1 h-4 w-4" /> Tạo chu kỳ mới
             </Button>
           </Link>
@@ -97,19 +110,34 @@ export default function CyclesPage() {
               </TableHeader>
               <TableBody>
                 {cycles.map((cycle) => {
-                  const typeInfo = REVIEW_CYCLE_TYPE[cycle.cycleType as keyof typeof REVIEW_CYCLE_TYPE]
+                  const typeInfo =
+                    REVIEW_CYCLE_TYPE[
+                      cycle.cycleType as keyof typeof REVIEW_CYCLE_TYPE
+                    ]
                   return (
                     <TableRow key={cycle.id} className="border-zinc-800">
-                      <TableCell className="text-zinc-200 font-medium">{cycle.name}</TableCell>
-                      <TableCell className="text-zinc-400">{typeInfo?.label || cycle.cycleType}</TableCell>
-                      <TableCell className="text-zinc-400">{cycle.year}</TableCell>
+                      <TableCell className="text-zinc-200 font-medium">
+                        {cycle.name}
+                      </TableCell>
+                      <TableCell className="text-zinc-400">
+                        {typeInfo?.label || cycle.cycleType}
+                      </TableCell>
+                      <TableCell className="text-zinc-400">
+                        {cycle.year}
+                      </TableCell>
                       <TableCell>
                         <ReviewCycleStatusBadge status={cycle.status} />
                       </TableCell>
-                      <TableCell className="text-zinc-400">{cycle._count?.reviews || 0}</TableCell>
+                      <TableCell className="text-zinc-400">
+                        {cycle._count?.reviews || 0}
+                      </TableCell>
                       <TableCell>
                         <Link href={`/performance/admin/cycles/${cycle.id}`}>
-                          <Button size="sm" variant="ghost" className="text-amber-400 hover:text-amber-300">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-amber-400 hover:text-amber-300"
+                          >
                             Chi tiết
                           </Button>
                         </Link>

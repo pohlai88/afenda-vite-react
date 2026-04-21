@@ -2,8 +2,8 @@
 // Bank Payment File Generator
 // Supports VCB, TCB, BIDV, and Generic CSV formats
 
-import { format } from 'date-fns'
-import { BANK_CODE_LABELS } from './constants'
+import { format } from "date-fns"
+import { BANK_CODE_LABELS } from "./constants"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -50,7 +50,7 @@ export interface GeneratedFile {
   fileName: string
   content: string
   format: string
-  encoding: 'utf-8' | 'utf-16le'
+  encoding: "utf-8" | "utf-16le"
   totalRecords: number
   totalAmount: number
 }
@@ -67,30 +67,37 @@ export function generateVCBFile(
   records: PaymentRecord[],
   options: BankFileOptions
 ): GeneratedFile {
-  const { batchNumber, paymentDate, periodMonth, periodYear, companyName, companyAccount } = options
+  const {
+    batchNumber,
+    paymentDate,
+    periodMonth,
+    periodYear,
+    companyName,
+    companyAccount,
+  } = options
 
   // VCB format header
   const headers = [
-    'STT',
-    'Số tài khoản',
-    'Tên người thụ hưởng',
-    'Mã ngân hàng',
-    'Số tiền',
-    'Nội dung',
+    "STT",
+    "Số tài khoản",
+    "Tên người thụ hưởng",
+    "Mã ngân hàng",
+    "Số tiền",
+    "Nội dung",
   ]
 
   const lines: string[] = []
 
   // Add metadata as comment
   lines.push(`# Đợt thanh toán: ${batchNumber}`)
-  lines.push(`# Ngày: ${format(paymentDate, 'dd/MM/yyyy')}`)
+  lines.push(`# Ngày: ${format(paymentDate, "dd/MM/yyyy")}`)
   lines.push(`# Kỳ lương: ${periodMonth}/${periodYear}`)
   lines.push(`# Công ty: ${companyName}`)
   lines.push(`# Tài khoản nguồn: ${companyAccount}`)
-  lines.push('')
+  lines.push("")
 
   // Add header
-  lines.push(headers.join(','))
+  lines.push(headers.join(","))
 
   // Add records
   let totalAmount = 0
@@ -103,22 +110,22 @@ export function generateVCBFile(
       record.amount.toString(),
       `"${removeVietnameseAccents(record.description)}"`,
     ]
-    lines.push(row.join(','))
+    lines.push(row.join(","))
     totalAmount += record.amount
   }
 
   // Add footer
-  lines.push('')
+  lines.push("")
   lines.push(`# Tổng số bản ghi: ${records.length}`)
-  lines.push(`# Tổng số tiền: ${totalAmount.toLocaleString('vi-VN')} VND`)
+  lines.push(`# Tổng số tiền: ${totalAmount.toLocaleString("vi-VN")} VND`)
 
-  const fileName = `VCB_${batchNumber}_${format(paymentDate, 'yyyyMMdd')}.csv`
+  const fileName = `VCB_${batchNumber}_${format(paymentDate, "yyyyMMdd")}.csv`
 
   return {
     fileName,
-    content: lines.join('\n'),
-    format: 'VCB_CSV',
-    encoding: 'utf-8',
+    content: lines.join("\n"),
+    format: "VCB_CSV",
+    encoding: "utf-8",
     totalRecords: records.length,
     totalAmount,
   }
@@ -138,47 +145,53 @@ export function generateTCBFile(
 
   // TCB Header line (H record)
   const headerLine = [
-    'H', // Record type
+    "H", // Record type
     padRight(batchNumber, 20),
-    format(paymentDate, 'ddMMyyyy'),
+    format(paymentDate, "ddMMyyyy"),
     padRight(companyAccount, 20),
     padRight(companyName.substring(0, 50), 50),
-    padLeft(records.length.toString(), 6, '0'),
-    padLeft(records.reduce((sum, r) => sum + r.amount, 0).toString(), 18, '0'),
-  ].join('|')
+    padLeft(records.length.toString(), 6, "0"),
+    padLeft(records.reduce((sum, r) => sum + r.amount, 0).toString(), 18, "0"),
+  ].join("|")
   lines.push(headerLine)
 
   // TCB Detail lines (D records)
   let totalAmount = 0
   for (const record of records) {
     const detailLine = [
-      'D', // Record type
-      padLeft(record.seq.toString(), 6, '0'),
+      "D", // Record type
+      padLeft(record.seq.toString(), 6, "0"),
       padRight(record.bankAccount, 20),
-      padRight(removeVietnameseAccents(record.employeeName).substring(0, 50), 50),
+      padRight(
+        removeVietnameseAccents(record.employeeName).substring(0, 50),
+        50
+      ),
       padRight(record.bankCode, 10),
-      padLeft(record.amount.toString(), 18, '0'),
-      padRight(removeVietnameseAccents(record.description).substring(0, 100), 100),
-    ].join('|')
+      padLeft(record.amount.toString(), 18, "0"),
+      padRight(
+        removeVietnameseAccents(record.description).substring(0, 100),
+        100
+      ),
+    ].join("|")
     lines.push(detailLine)
     totalAmount += record.amount
   }
 
   // TCB Footer line (T record)
   const footerLine = [
-    'T', // Record type
-    padLeft(records.length.toString(), 6, '0'),
-    padLeft(totalAmount.toString(), 18, '0'),
-  ].join('|')
+    "T", // Record type
+    padLeft(records.length.toString(), 6, "0"),
+    padLeft(totalAmount.toString(), 18, "0"),
+  ].join("|")
   lines.push(footerLine)
 
-  const fileName = `TCB_${batchNumber}_${format(paymentDate, 'yyyyMMdd')}.txt`
+  const fileName = `TCB_${batchNumber}_${format(paymentDate, "yyyyMMdd")}.txt`
 
   return {
     fileName,
-    content: lines.join('\r\n'),
-    format: 'TCB_TXT',
-    encoding: 'utf-8',
+    content: lines.join("\r\n"),
+    format: "TCB_TXT",
+    encoding: "utf-8",
     totalRecords: records.length,
     totalAmount,
   }
@@ -195,20 +208,20 @@ export function generateBIDVFile(
   const { batchNumber, paymentDate } = options
 
   const headers = [
-    'STT',
-    'Số tài khoản người nhận',
-    'Tên người nhận',
-    'CMND/CCCD',
-    'Ngân hàng nhận',
-    'Mã ngân hàng',
-    'Số tiền',
-    'Nội dung chuyển tiền',
+    "STT",
+    "Số tài khoản người nhận",
+    "Tên người nhận",
+    "CMND/CCCD",
+    "Ngân hàng nhận",
+    "Mã ngân hàng",
+    "Số tiền",
+    "Nội dung chuyển tiền",
   ]
 
   const lines: string[] = []
 
   // Add BOM for Excel UTF-8
-  lines.push('\uFEFF' + headers.join(','))
+  lines.push("\uFEFF" + headers.join(","))
 
   let totalAmount = 0
   for (const record of records) {
@@ -216,23 +229,23 @@ export function generateBIDVFile(
       record.seq.toString(),
       `"${record.bankAccount}"`,
       `"${record.employeeName}"`,
-      `"${record.idNumber || ''}"`,
+      `"${record.idNumber || ""}"`,
       `"${record.bankName}"`,
       record.bankCode,
       record.amount.toString(),
       `"${record.description}"`,
     ]
-    lines.push(row.join(','))
+    lines.push(row.join(","))
     totalAmount += record.amount
   }
 
-  const fileName = `BIDV_${batchNumber}_${format(paymentDate, 'yyyyMMdd')}.csv`
+  const fileName = `BIDV_${batchNumber}_${format(paymentDate, "yyyyMMdd")}.csv`
 
   return {
     fileName,
-    content: lines.join('\n'),
-    format: 'BIDV_CSV',
-    encoding: 'utf-8',
+    content: lines.join("\n"),
+    format: "BIDV_CSV",
+    encoding: "utf-8",
     totalRecords: records.length,
     totalAmount,
   }
@@ -249,22 +262,22 @@ export function generateGenericFile(
   const { batchNumber, paymentDate, periodMonth, periodYear } = options
 
   const headers = [
-    'STT',
-    'Mã NV',
-    'Họ tên',
-    'Số tài khoản',
-    'Ngân hàng',
-    'Mã NH',
-    'Chi nhánh',
-    'Số tiền',
-    'Nội dung',
-    'Kỳ lương',
+    "STT",
+    "Mã NV",
+    "Họ tên",
+    "Số tài khoản",
+    "Ngân hàng",
+    "Mã NH",
+    "Chi nhánh",
+    "Số tiền",
+    "Nội dung",
+    "Kỳ lương",
   ]
 
   const lines: string[] = []
 
   // Add BOM for Excel UTF-8
-  lines.push('\uFEFF' + headers.join(','))
+  lines.push("\uFEFF" + headers.join(","))
 
   let totalAmount = 0
   for (const record of records) {
@@ -275,26 +288,26 @@ export function generateGenericFile(
       `"${record.bankAccount}"`,
       `"${record.bankName}"`,
       record.bankCode,
-      `"${record.bankBranch || ''}"`,
+      `"${record.bankBranch || ""}"`,
       record.amount.toString(),
       `"${record.description}"`,
       `"${periodMonth}/${periodYear}"`,
     ]
-    lines.push(row.join(','))
+    lines.push(row.join(","))
     totalAmount += record.amount
   }
 
   // Add summary row
-  lines.push('')
+  lines.push("")
   lines.push(`"","","TỔNG CỘNG","","","","",${totalAmount},"","",`)
 
-  const fileName = `SALARY_${batchNumber}_${format(paymentDate, 'yyyyMMdd')}.csv`
+  const fileName = `SALARY_${batchNumber}_${format(paymentDate, "yyyyMMdd")}.csv`
 
   return {
     fileName,
-    content: lines.join('\n'),
-    format: 'GENERIC_CSV',
-    encoding: 'utf-8',
+    content: lines.join("\n"),
+    format: "GENERIC_CSV",
+    encoding: "utf-8",
     totalRecords: records.length,
     totalAmount,
   }
@@ -304,7 +317,7 @@ export function generateGenericFile(
 // Main Generator
 // ═══════════════════════════════════════════════════════════════
 
-export type BankFileFormat = 'VCB' | 'TCB' | 'BIDV' | 'GENERIC'
+export type BankFileFormat = "VCB" | "TCB" | "BIDV" | "GENERIC"
 
 /**
  * Generate bank payment file based on bank code
@@ -315,13 +328,13 @@ export function generateBankFile(
   options: BankFileOptions
 ): GeneratedFile {
   switch (bankCode) {
-    case 'VCB':
+    case "VCB":
       return generateVCBFile(records, options)
-    case 'TCB':
+    case "TCB":
       return generateTCBFile(records, options)
-    case 'BIDV':
+    case "BIDV":
       return generateBIDVFile(records, options)
-    case 'GENERIC':
+    case "GENERIC":
     default:
       return generateGenericFile(records, options)
   }
@@ -344,15 +357,16 @@ export function createPaymentRecords(
   companyName: string
 ): PaymentRecord[] {
   return payrolls
-    .filter(p => p.bankAccount) // Only include those with bank accounts
+    .filter((p) => p.bankAccount) // Only include those with bank accounts
     .map((p, index) => ({
       seq: index + 1,
       employeeCode: p.employeeCode,
       employeeName: p.employeeName,
       bankAccount: p.bankAccount!,
-      bankName: p.bankName || 'Unknown',
-      bankCode: p.bankCode || 'OTHER',
-      amount: typeof p.netSalary === 'number' ? p.netSalary : Number(p.netSalary),
+      bankName: p.bankName || "Unknown",
+      bankCode: p.bankCode || "OTHER",
+      amount:
+        typeof p.netSalary === "number" ? p.netSalary : Number(p.netSalary),
       description: `Luong T${periodMonth}/${periodYear} - ${companyName}`,
     }))
 }
@@ -366,7 +380,7 @@ export function groupRecordsByBank(
   const grouped = new Map<string, PaymentRecord[]>()
 
   for (const record of records) {
-    const bankCode = record.bankCode || 'OTHER'
+    const bankCode = record.bankCode || "OTHER"
     if (!grouped.has(bankCode)) {
       grouped.set(bankCode, [])
     }
@@ -384,8 +398,8 @@ export function generateBatchNumber(
   periodMonth: number,
   sequence: number = 1
 ): string {
-  const monthStr = periodMonth.toString().padStart(2, '0')
-  const seqStr = sequence.toString().padStart(3, '0')
+  const monthStr = periodMonth.toString().padStart(2, "0")
+  const seqStr = sequence.toString().padStart(3, "0")
   return `PAY-${periodYear}-${monthStr}-${seqStr}`
 }
 
@@ -398,51 +412,159 @@ export function generateBatchNumber(
  */
 function removeVietnameseAccents(str: string): string {
   const accentsMap: Record<string, string> = {
-    'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
-    'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
-    'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
-    'è': 'e', 'é': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
-    'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
-    'ì': 'i', 'í': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
-    'ò': 'o', 'ó': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
-    'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
-    'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
-    'ù': 'u', 'ú': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
-    'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
-    'ỳ': 'y', 'ý': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
-    'đ': 'd',
-    'À': 'A', 'Á': 'A', 'Ả': 'A', 'Ã': 'A', 'Ạ': 'A',
-    'Ă': 'A', 'Ằ': 'A', 'Ắ': 'A', 'Ẳ': 'A', 'Ẵ': 'A', 'Ặ': 'A',
-    'Â': 'A', 'Ầ': 'A', 'Ấ': 'A', 'Ẩ': 'A', 'Ẫ': 'A', 'Ậ': 'A',
-    'È': 'E', 'É': 'E', 'Ẻ': 'E', 'Ẽ': 'E', 'Ẹ': 'E',
-    'Ê': 'E', 'Ề': 'E', 'Ế': 'E', 'Ể': 'E', 'Ễ': 'E', 'Ệ': 'E',
-    'Ì': 'I', 'Í': 'I', 'Ỉ': 'I', 'Ĩ': 'I', 'Ị': 'I',
-    'Ò': 'O', 'Ó': 'O', 'Ỏ': 'O', 'Õ': 'O', 'Ọ': 'O',
-    'Ô': 'O', 'Ồ': 'O', 'Ố': 'O', 'Ổ': 'O', 'Ỗ': 'O', 'Ộ': 'O',
-    'Ơ': 'O', 'Ờ': 'O', 'Ớ': 'O', 'Ở': 'O', 'Ỡ': 'O', 'Ợ': 'O',
-    'Ù': 'U', 'Ú': 'U', 'Ủ': 'U', 'Ũ': 'U', 'Ụ': 'U',
-    'Ư': 'U', 'Ừ': 'U', 'Ứ': 'U', 'Ử': 'U', 'Ữ': 'U', 'Ự': 'U',
-    'Ỳ': 'Y', 'Ý': 'Y', 'Ỷ': 'Y', 'Ỹ': 'Y', 'Ỵ': 'Y',
-    'Đ': 'D',
+    à: "a",
+    á: "a",
+    ả: "a",
+    ã: "a",
+    ạ: "a",
+    ă: "a",
+    ằ: "a",
+    ắ: "a",
+    ẳ: "a",
+    ẵ: "a",
+    ặ: "a",
+    â: "a",
+    ầ: "a",
+    ấ: "a",
+    ẩ: "a",
+    ẫ: "a",
+    ậ: "a",
+    è: "e",
+    é: "e",
+    ẻ: "e",
+    ẽ: "e",
+    ẹ: "e",
+    ê: "e",
+    ề: "e",
+    ế: "e",
+    ể: "e",
+    ễ: "e",
+    ệ: "e",
+    ì: "i",
+    í: "i",
+    ỉ: "i",
+    ĩ: "i",
+    ị: "i",
+    ò: "o",
+    ó: "o",
+    ỏ: "o",
+    õ: "o",
+    ọ: "o",
+    ô: "o",
+    ồ: "o",
+    ố: "o",
+    ổ: "o",
+    ỗ: "o",
+    ộ: "o",
+    ơ: "o",
+    ờ: "o",
+    ớ: "o",
+    ở: "o",
+    ỡ: "o",
+    ợ: "o",
+    ù: "u",
+    ú: "u",
+    ủ: "u",
+    ũ: "u",
+    ụ: "u",
+    ư: "u",
+    ừ: "u",
+    ứ: "u",
+    ử: "u",
+    ữ: "u",
+    ự: "u",
+    ỳ: "y",
+    ý: "y",
+    ỷ: "y",
+    ỹ: "y",
+    ỵ: "y",
+    đ: "d",
+    À: "A",
+    Á: "A",
+    Ả: "A",
+    Ã: "A",
+    Ạ: "A",
+    Ă: "A",
+    Ằ: "A",
+    Ắ: "A",
+    Ẳ: "A",
+    Ẵ: "A",
+    Ặ: "A",
+    Â: "A",
+    Ầ: "A",
+    Ấ: "A",
+    Ẩ: "A",
+    Ẫ: "A",
+    Ậ: "A",
+    È: "E",
+    É: "E",
+    Ẻ: "E",
+    Ẽ: "E",
+    Ẹ: "E",
+    Ê: "E",
+    Ề: "E",
+    Ế: "E",
+    Ể: "E",
+    Ễ: "E",
+    Ệ: "E",
+    Ì: "I",
+    Í: "I",
+    Ỉ: "I",
+    Ĩ: "I",
+    Ị: "I",
+    Ò: "O",
+    Ó: "O",
+    Ỏ: "O",
+    Õ: "O",
+    Ọ: "O",
+    Ô: "O",
+    Ồ: "O",
+    Ố: "O",
+    Ổ: "O",
+    Ỗ: "O",
+    Ộ: "O",
+    Ơ: "O",
+    Ờ: "O",
+    Ớ: "O",
+    Ở: "O",
+    Ỡ: "O",
+    Ợ: "O",
+    Ù: "U",
+    Ú: "U",
+    Ủ: "U",
+    Ũ: "U",
+    Ụ: "U",
+    Ư: "U",
+    Ừ: "U",
+    Ứ: "U",
+    Ử: "U",
+    Ữ: "U",
+    Ự: "U",
+    Ỳ: "Y",
+    Ý: "Y",
+    Ỷ: "Y",
+    Ỹ: "Y",
+    Ỵ: "Y",
+    Đ: "D",
   }
 
   return str
-    .split('')
-    .map(char => accentsMap[char] || char)
-    .join('')
+    .split("")
+    .map((char) => accentsMap[char] || char)
+    .join("")
 }
 
 /**
  * Pad string to right
  */
-function padRight(str: string, length: number, char: string = ' '): string {
+function padRight(str: string, length: number, char: string = " "): string {
   return str.padEnd(length, char).substring(0, length)
 }
 
 /**
  * Pad string to left
  */
-function padLeft(str: string, length: number, char: string = ' '): string {
+function padLeft(str: string, length: number, char: string = " "): string {
   return str.padStart(length, char).substring(0, length)
 }
 
@@ -458,5 +580,5 @@ export function getBankName(code: string): string {
  */
 export function validateBankAccount(account: string): boolean {
   // Basic validation: 8-20 digits
-  return /^\d{8,20}$/.test(account.replace(/\s/g, ''))
+  return /^\d{8,20}$/.test(account.replace(/\s/g, ""))
 }

@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { handleApiError } from '@/lib/api/errors'
-import { compatibilitySchema } from '@/lib/validations/bundle'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { handleApiError } from "@/lib/api/errors"
+import { compatibilitySchema } from "@/lib/validations/bundle"
 
 // GET /api/product-compatibility — List rules
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl
-    const productId = searchParams.get('productId')
+    const productId = searchParams.get("productId")
 
     const where = productId
       ? { OR: [{ productId }, { relatedProductId: productId }] }
@@ -24,15 +24,18 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ data: rules })
   } catch (error) {
-    console.error('GET /api/product-compatibility error:', error)
-    return NextResponse.json({ error: 'Failed to fetch compatibility rules' }, { status: 500 })
+    console.error("GET /api/product-compatibility error:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch compatibility rules" },
+      { status: 500 }
+    )
   }
 }
 
 // POST /api/product-compatibility — Create rule
 export async function POST(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
@@ -53,6 +56,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(rule, { status: 201 })
   } catch (error) {
-    return handleApiError(error, '/api/product-compatibility')
+    return handleApiError(error, "/api/product-compatibility")
   }
 }

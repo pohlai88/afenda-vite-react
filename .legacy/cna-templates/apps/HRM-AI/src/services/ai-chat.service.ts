@@ -1,7 +1,7 @@
 // src/services/ai-chat.service.ts
 // AI Chat Service
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   chat,
   buildHRAssistantPrompt,
@@ -9,9 +9,9 @@ import {
   getRelevantKnowledge,
   classifyIntent,
   processAIResponse,
-} from '@/lib/ai'
-import type { AIMessage, AIConversation, AIAction } from '@/types/ai'
-import type { AIIntentType } from '@prisma/client'
+} from "@/lib/ai"
+import type { AIMessage, AIConversation, AIAction } from "@/types/ai"
+import type { AIIntentType } from "@prisma/client"
 
 export interface SendMessageInput {
   conversationId?: string
@@ -42,8 +42,8 @@ export const aiChatService = {
     const userContext = await buildUserContext(userId, tenantId)
 
     // Get relevant knowledge for FAQ queries
-    let knowledgeContext = ''
-    if (intent === 'FAQ') {
+    let knowledgeContext = ""
+    if (intent === "FAQ") {
       knowledgeContext = await getRelevantKnowledge(tenantId, message)
     }
 
@@ -54,7 +54,7 @@ export const aiChatService = {
     let conversation = conversationId
       ? await db.aIConversation.findFirst({
           where: { id: conversationId, tenantId, userId },
-          include: { messages: { orderBy: { createdAt: 'asc' } } },
+          include: { messages: { orderBy: { createdAt: "asc" } } },
         })
       : null
 
@@ -66,18 +66,18 @@ export const aiChatService = {
           userId,
           title: message.slice(0, 50),
         },
-        include: { messages: { orderBy: { createdAt: 'asc' } } },
+        include: { messages: { orderBy: { createdAt: "asc" } } },
       })
     }
 
     // Build message history
     const history = conversation.messages.map((m) => ({
-      role: m.role as 'user' | 'assistant',
+      role: m.role as "user" | "assistant",
       content: m.content,
     }))
 
     // Add user message
-    history.push({ role: 'user', content: message })
+    history.push({ role: "user", content: message })
 
     // Get AI response
     const aiResponse = await chat(history, { systemPrompt })
@@ -90,17 +90,19 @@ export const aiChatService = {
       data: [
         {
           conversationId: conversation.id,
-          role: 'user',
+          role: "user",
           content: message,
           intent,
         },
         {
           conversationId: conversation.id,
-          role: 'assistant',
+          role: "assistant",
           content: cleanMessage,
           intent,
           actionType: action?.type,
-          actionData: action?.data ? JSON.parse(JSON.stringify(action.data)) : undefined,
+          actionData: action?.data
+            ? JSON.parse(JSON.stringify(action.data))
+            : undefined,
         },
       ],
     })
@@ -116,7 +118,7 @@ export const aiChatService = {
     return {
       conversationId: conversation.id,
       message: {
-        role: 'assistant',
+        role: "assistant",
         content: cleanMessage,
         intent,
         action: action || undefined,
@@ -136,7 +138,7 @@ export const aiChatService = {
   ): Promise<AIConversation | null> {
     const conversation = await db.aIConversation.findFirst({
       where: { id: conversationId, tenantId, userId },
-      include: { messages: { orderBy: { createdAt: 'asc' } } },
+      include: { messages: { orderBy: { createdAt: "asc" } } },
     })
 
     if (!conversation) return null
@@ -146,12 +148,12 @@ export const aiChatService = {
       title: conversation.title || undefined,
       messages: conversation.messages.map((m) => ({
         id: m.id,
-        role: m.role as 'user' | 'assistant',
+        role: m.role as "user" | "assistant",
         content: m.content,
         intent: m.intent || undefined,
         action: m.actionType
           ? {
-              type: m.actionType as AIAction['type'],
+              type: m.actionType as AIAction["type"],
               data: (m.actionData as Record<string, unknown>) || {},
             }
           : undefined,
@@ -172,13 +174,13 @@ export const aiChatService = {
     const conversations = await db.aIConversation.findMany({
       where: { tenantId, userId },
       select: { id: true, title: true, createdAt: true },
-      orderBy: { updatedAt: 'desc' },
+      orderBy: { updatedAt: "desc" },
       take: limit,
     })
 
     return conversations.map((c) => ({
       id: c.id,
-      title: c.title || 'Cuộc hội thoại mới',
+      title: c.title || "Cuộc hội thoại mới",
       createdAt: c.createdAt,
     }))
   },
@@ -199,10 +201,7 @@ export const aiChatService = {
   /**
    * Clear all conversations for a user
    */
-  async clearAllConversations(
-    tenantId: string,
-    userId: string
-  ): Promise<void> {
+  async clearAllConversations(tenantId: string, userId: string): Promise<void> {
     await db.aIConversation.deleteMany({
       where: { tenantId, userId },
     })

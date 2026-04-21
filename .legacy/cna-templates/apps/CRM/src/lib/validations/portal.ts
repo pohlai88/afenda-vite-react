@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 // ── Portal Auth ─────────────────────────────────────────────────────
 
@@ -22,7 +22,7 @@ export const portalCreateTicketSchema = z.object({
   subject: z.string().min(1).max(255),
   content: z.string().min(1).max(5000),
   category: z.string().max(100).optional().nullable(),
-  priority: z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT']).optional(),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).optional(),
 })
 export type PortalCreateTicketInput = z.infer<typeof portalCreateTicketSchema>
 
@@ -35,6 +35,6 @@ export type PortalTicketMessageInput = z.infer<typeof portalTicketMessageSchema>
 
 export const portalQuoteActionSchema = z.object({
   quoteId: z.string().min(1),
-  action: z.enum(['ACCEPTED', 'REJECTED']),
+  action: z.enum(["ACCEPTED", "REJECTED"]),
 })
 export type PortalQuoteActionInput = z.infer<typeof portalQuoteActionSchema>

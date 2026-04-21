@@ -1,28 +1,31 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { ArrowLeft } from "lucide-react"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { QuoteBuilder, type QuoteLineItem } from '@/components/quotes/QuoteBuilder'
-import { useContacts } from '@/hooks/use-contacts'
-import { useCompanies } from '@/hooks/use-companies'
-import { useDeals } from '@/hooks/use-deals'
-import { useProducts } from '@/hooks/use-products'
-import { useCreateQuote } from '@/hooks/use-quotes'
-import { useTranslation } from '@/i18n'
+} from "@/components/ui/select"
+import {
+  QuoteBuilder,
+  type QuoteLineItem,
+} from "@/components/quotes/QuoteBuilder"
+import { useContacts } from "@/hooks/use-contacts"
+import { useCompanies } from "@/hooks/use-companies"
+import { useDeals } from "@/hooks/use-deals"
+import { useProducts } from "@/hooks/use-products"
+import { useCreateQuote } from "@/hooks/use-quotes"
+import { useTranslation } from "@/i18n"
 
 export default function NewQuotePage() {
   const router = useRouter()
@@ -44,18 +47,21 @@ export default function NewQuotePage() {
     description: p.description,
   }))
 
-  const [contactId, setContactId] = useState('')
-  const [companyId, setCompanyId] = useState('')
-  const [dealId, setDealId] = useState('')
-  const [validUntil, setValidUntil] = useState('')
-  const [terms, setTerms] = useState('')
+  const [contactId, setContactId] = useState("")
+  const [companyId, setCompanyId] = useState("")
+  const [dealId, setDealId] = useState("")
+  const [validUntil, setValidUntil] = useState("")
+  const [terms, setTerms] = useState("")
   const [items, setItems] = useState<QuoteLineItem[]>([])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (items.length === 0) return
 
-    const subtotal = items.reduce((sum, it) => sum + it.quantity * it.unitPrice, 0)
+    const subtotal = items.reduce(
+      (sum, it) => sum + it.quantity * it.unitPrice,
+      0
+    )
     const discountAmount = items.reduce(
       (sum, it) => sum + it.quantity * it.unitPrice * (it.discount / 100),
       0
@@ -88,14 +94,14 @@ export default function NewQuotePage() {
         })),
       } as unknown as Parameters<typeof createQuote.mutate>[0],
       {
-        onSuccess: () => router.push('/quotes'),
+        onSuccess: () => router.push("/quotes"),
       }
     )
   }
 
   return (
     <PageShell
-      title={t('quotes.createQuote')}
+      title={t("quotes.createQuote")}
       description="Tạo báo giá mới cho khách hàng"
       actions={
         <Button
@@ -111,18 +117,26 @@ export default function NewQuotePage() {
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* Customer info */}
         <Card className="bg-[var(--crm-bg-card)] border-[var(--crm-border)] p-3">
-          <h3 className="text-sm font-medium text-[var(--crm-text-primary)] mb-4">Thông tin khách hàng</h3>
+          <h3 className="text-sm font-medium text-[var(--crm-text-primary)] mb-4">
+            Thông tin khách hàng
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {/* Contact */}
             <div className="space-y-1.5">
-              <Label className="text-[var(--crm-text-secondary)] text-xs">{t('activities.contact')}</Label>
+              <Label className="text-[var(--crm-text-secondary)] text-xs">
+                {t("activities.contact")}
+              </Label>
               <Select value={contactId} onValueChange={setContactId}>
                 <SelectTrigger className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                  <SelectValue placeholder={t('quotes.selectContact')} />
+                  <SelectValue placeholder={t("quotes.selectContact")} />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {contacts.map((c) => (
-                    <SelectItem key={c.id} value={c.id} className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
+                    <SelectItem
+                      key={c.id}
+                      value={c.id}
+                      className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                    >
                       {c.firstName} {c.lastName}
                     </SelectItem>
                   ))}
@@ -132,14 +146,20 @@ export default function NewQuotePage() {
 
             {/* Company */}
             <div className="space-y-1.5">
-              <Label className="text-[var(--crm-text-secondary)] text-xs">{t('contacts.company')}</Label>
+              <Label className="text-[var(--crm-text-secondary)] text-xs">
+                {t("contacts.company")}
+              </Label>
               <Select value={companyId} onValueChange={setCompanyId}>
                 <SelectTrigger className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                  <SelectValue placeholder={t('quotes.selectCompany')} />
+                  <SelectValue placeholder={t("quotes.selectCompany")} />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {companies.map((c) => (
-                    <SelectItem key={c.id} value={c.id} className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
+                    <SelectItem
+                      key={c.id}
+                      value={c.id}
+                      className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                    >
                       {c.name}
                     </SelectItem>
                   ))}
@@ -149,14 +169,20 @@ export default function NewQuotePage() {
 
             {/* Deal */}
             <div className="space-y-1.5">
-              <Label className="text-[var(--crm-text-secondary)] text-xs">Thương vụ</Label>
+              <Label className="text-[var(--crm-text-secondary)] text-xs">
+                Thương vụ
+              </Label>
               <Select value={dealId} onValueChange={setDealId}>
                 <SelectTrigger className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                  <SelectValue placeholder={t('quotes.selectDeal')} />
+                  <SelectValue placeholder={t("quotes.selectDeal")} />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {deals.map((d) => (
-                    <SelectItem key={d.id} value={d.id} className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
+                    <SelectItem
+                      key={d.id}
+                      value={d.id}
+                      className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                    >
                       {d.title}
                     </SelectItem>
                   ))}
@@ -168,16 +194,26 @@ export default function NewQuotePage() {
 
         {/* Line items */}
         <Card className="bg-[var(--crm-bg-card)] border-[var(--crm-border)] p-3">
-          <h3 className="text-sm font-medium text-[var(--crm-text-primary)] mb-4">Sản phẩm / Dịch vụ</h3>
-          <QuoteBuilder items={items} onItemsChange={setItems} products={products} />
+          <h3 className="text-sm font-medium text-[var(--crm-text-primary)] mb-4">
+            Sản phẩm / Dịch vụ
+          </h3>
+          <QuoteBuilder
+            items={items}
+            onItemsChange={setItems}
+            products={products}
+          />
         </Card>
 
         {/* Terms & Valid Until */}
         <Card className="bg-[var(--crm-bg-card)] border-[var(--crm-border)] p-3">
-          <h3 className="text-sm font-medium text-[var(--crm-text-primary)] mb-4">Điều khoản & thời hạn</h3>
+          <h3 className="text-sm font-medium text-[var(--crm-text-primary)] mb-4">
+            Điều khoản & thời hạn
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-[var(--crm-text-secondary)] text-xs">Hiệu lực đến</Label>
+              <Label className="text-[var(--crm-text-secondary)] text-xs">
+                Hiệu lực đến
+              </Label>
               <Input
                 type="date"
                 value={validUntil}
@@ -186,11 +222,13 @@ export default function NewQuotePage() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[var(--crm-text-secondary)] text-xs">Điều khoản</Label>
+              <Label className="text-[var(--crm-text-secondary)] text-xs">
+                Điều khoản
+              </Label>
               <Textarea
                 value={terms}
                 onChange={(e) => setTerms(e.target.value)}
-                placeholder={t('quotes.termsPlaceholder')}
+                placeholder={t("quotes.termsPlaceholder")}
                 rows={3}
                 className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)] resize-none"
               />
@@ -206,14 +244,16 @@ export default function NewQuotePage() {
             onClick={() => router.back()}
             className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
           >
-            {t('common.cancel')}
+            {t("common.cancel")}
           </Button>
           <Button
             type="submit"
             disabled={items.length === 0 || createQuote.isPending}
             className="bg-[#10B981] hover:bg-[#10B981]/90 text-white"
           >
-            {createQuote.isPending ? t('common.creating') : t('quotes.createQuote')}
+            {createQuote.isPending
+              ? t("common.creating")
+              : t("quotes.createQuote")}
           </Button>
         </div>
       </form>

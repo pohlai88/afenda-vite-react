@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 interface SystemStats {
   employees: number
@@ -26,8 +26,12 @@ export default function SystemDashboardPage() {
   const [health, setHealth] = useState<HealthData | null>(null)
 
   useEffect(() => {
-    fetch('/api/admin/system/stats').then(r => r.json()).then(r => setStats(r.data))
-    fetch('/api/admin/system/health').then(r => r.json()).then(r => setHealth(r.data))
+    fetch("/api/admin/system/stats")
+      .then((r) => r.json())
+      .then((r) => setStats(r.data))
+    fetch("/api/admin/system/health")
+      .then((r) => r.json())
+      .then((r) => setHealth(r.data))
   }, [])
 
   return (
@@ -39,8 +43,12 @@ export default function SystemDashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               Trạng thái hệ thống
-              <Badge variant={health.status === 'healthy' ? 'default' : 'destructive'}>
-                {health.status === 'healthy' ? 'Hoạt động' : 'Có lỗi'}
+              <Badge
+                variant={
+                  health.status === "healthy" ? "default" : "destructive"
+                }
+              >
+                {health.status === "healthy" ? "Hoạt động" : "Có lỗi"}
               </Badge>
             </CardTitle>
           </CardHeader>
@@ -48,12 +56,15 @@ export default function SystemDashboardPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {Object.entries(health.services).map(([name, svc]) => (
                 <div key={name} className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${svc.status === 'up' ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <div
+                    className={`w-2 h-2 rounded-full ${svc.status === "up" ? "bg-green-500" : "bg-red-500"}`}
+                  />
                   <span className="capitalize">{name}</span>
                 </div>
               ))}
               <div className="text-sm text-muted-foreground">
-                Uptime: {Math.floor((health.uptime || 0) / 3600)}h {Math.floor(((health.uptime || 0) % 3600) / 60)}m
+                Uptime: {Math.floor((health.uptime || 0) / 3600)}h{" "}
+                {Math.floor(((health.uptime || 0) % 3600) / 60)}m
               </div>
             </div>
           </CardContent>
@@ -77,12 +88,16 @@ export default function SystemDashboardPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-2xl font-bold">{stats.auditLogs30d}</div>
-              <p className="text-sm text-muted-foreground">Audit logs (30 ngày)</p>
+              <p className="text-sm text-muted-foreground">
+                Audit logs (30 ngày)
+              </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <div className="text-2xl font-bold">{stats.emailQueuePending}</div>
+              <div className="text-2xl font-bold">
+                {stats.emailQueuePending}
+              </div>
               <p className="text-sm text-muted-foreground">Email chờ gửi</p>
             </CardContent>
           </Card>

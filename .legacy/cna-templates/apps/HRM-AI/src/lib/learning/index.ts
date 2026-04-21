@@ -2,7 +2,7 @@
 // Learning Management Module - Main export
 
 // Services
-export * from './services'
+export * from "./services"
 
 // Re-export factory functions for convenience
 export {
@@ -11,4 +11,4 @@ export {
   createLearningPathService,
   createAssessmentService,
   createCertificateService,
-} from './services'
+} from "./services"

@@ -2,5 +2,5 @@
 // LANDING — Landing Page Component Export
 // =============================================================================
 
-export { LandingPage } from './LandingPage';
-export { default } from './LandingPage';
+export { LandingPage } from "./LandingPage"
+export { default } from "./LandingPage"

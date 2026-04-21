@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import { X } from 'lucide-react'
-import { useTranslation } from '@/i18n'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { X } from "lucide-react"
+import { useTranslation } from "@/i18n"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { CONTACT_STATUSES, LEAD_SOURCES } from '@/lib/constants'
-import { useCompanies } from '@/hooks/use-companies'
+} from "@/components/ui/select"
+import { CONTACT_STATUSES, LEAD_SOURCES } from "@/lib/constants"
+import { useCompanies } from "@/hooks/use-companies"
 
 interface Filters {
   status?: string
@@ -25,7 +25,10 @@ interface ContactFiltersProps {
   onFilterChange: (filters: Filters) => void
 }
 
-export function ContactFilters({ filters, onFilterChange }: ContactFiltersProps) {
+export function ContactFilters({
+  filters,
+  onFilterChange,
+}: ContactFiltersProps) {
   const { t } = useTranslation()
   const { data: companiesData } = useCompanies({ limit: 100 })
   const companies = companiesData?.data ?? []
@@ -34,15 +37,24 @@ export function ContactFilters({ filters, onFilterChange }: ContactFiltersProps)
 
   if (filters.status) {
     const s = CONTACT_STATUSES.find((s) => s.value === filters.status)
-    activeFilters.push({ key: 'status', label: `${t('common.status')}: ${s ? t(s.labelKey) : filters.status}` })
+    activeFilters.push({
+      key: "status",
+      label: `${t("common.status")}: ${s ? t(s.labelKey) : filters.status}`,
+    })
   }
   if (filters.companyId) {
     const c = companies.find((c) => c.id === filters.companyId)
-    activeFilters.push({ key: 'companyId', label: `${t('contacts.company')}: ${c?.name ?? filters.companyId}` })
+    activeFilters.push({
+      key: "companyId",
+      label: `${t("contacts.company")}: ${c?.name ?? filters.companyId}`,
+    })
   }
   if (filters.source) {
     const src = LEAD_SOURCES.find((s) => s.value === filters.source)
-    activeFilters.push({ key: 'source', label: `${t('contacts.source')}: ${src ? t(src.labelKey) : filters.source}` })
+    activeFilters.push({
+      key: "source",
+      label: `${t("contacts.source")}: ${src ? t(src.labelKey) : filters.source}`,
+    })
   }
 
   function removeFilter(key: keyof Filters) {
@@ -54,20 +66,27 @@ export function ContactFilters({ filters, onFilterChange }: ContactFiltersProps)
       {/* Filter dropdowns */}
       <div className="flex flex-wrap items-center gap-2">
         <Select
-          value={filters.status ?? ''}
+          value={filters.status ?? ""}
           onValueChange={(val) =>
             onFilterChange({ ...filters, status: val || undefined })
           }
         >
           <SelectTrigger className="h-8 w-[160px] input-premium bg-[var(--crm-bg-card)] border-[var(--crm-border)] text-sm text-[var(--crm-text-secondary)]">
-            <SelectValue placeholder={t('common.status')} />
+            <SelectValue placeholder={t("common.status")} />
           </SelectTrigger>
           <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
-            <SelectItem value="__all__" className="text-[var(--crm-text-secondary)]">
-              {t('contacts.allStatuses')}
+            <SelectItem
+              value="__all__"
+              className="text-[var(--crm-text-secondary)]"
+            >
+              {t("contacts.allStatuses")}
             </SelectItem>
             {CONTACT_STATUSES.map((s) => (
-              <SelectItem key={s.value} value={s.value} className="text-[var(--crm-text-primary)]">
+              <SelectItem
+                key={s.value}
+                value={s.value}
+                className="text-[var(--crm-text-primary)]"
+              >
                 {t(s.labelKey)}
               </SelectItem>
             ))}
@@ -75,20 +94,27 @@ export function ContactFilters({ filters, onFilterChange }: ContactFiltersProps)
         </Select>
 
         <Select
-          value={filters.companyId ?? ''}
+          value={filters.companyId ?? ""}
           onValueChange={(val) =>
             onFilterChange({ ...filters, companyId: val || undefined })
           }
         >
           <SelectTrigger className="h-8 w-[180px] input-premium bg-[var(--crm-bg-card)] border-[var(--crm-border)] text-sm text-[var(--crm-text-secondary)]">
-            <SelectValue placeholder={t('contacts.company')} />
+            <SelectValue placeholder={t("contacts.company")} />
           </SelectTrigger>
           <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
-            <SelectItem value="__all__" className="text-[var(--crm-text-secondary)]">
-              {t('contacts.allCompanies')}
+            <SelectItem
+              value="__all__"
+              className="text-[var(--crm-text-secondary)]"
+            >
+              {t("contacts.allCompanies")}
             </SelectItem>
             {companies.map((c) => (
-              <SelectItem key={c.id} value={c.id} className="text-[var(--crm-text-primary)]">
+              <SelectItem
+                key={c.id}
+                value={c.id}
+                className="text-[var(--crm-text-primary)]"
+              >
                 {c.name}
               </SelectItem>
             ))}
@@ -96,20 +122,27 @@ export function ContactFilters({ filters, onFilterChange }: ContactFiltersProps)
         </Select>
 
         <Select
-          value={filters.source ?? ''}
+          value={filters.source ?? ""}
           onValueChange={(val) =>
             onFilterChange({ ...filters, source: val || undefined })
           }
         >
           <SelectTrigger className="h-8 w-[160px] input-premium bg-[var(--crm-bg-card)] border-[var(--crm-border)] text-sm text-[var(--crm-text-secondary)]">
-            <SelectValue placeholder={t('contacts.source')} />
+            <SelectValue placeholder={t("contacts.source")} />
           </SelectTrigger>
           <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
-            <SelectItem value="__all__" className="text-[var(--crm-text-secondary)]">
-              {t('contacts.allSources')}
+            <SelectItem
+              value="__all__"
+              className="text-[var(--crm-text-secondary)]"
+            >
+              {t("contacts.allSources")}
             </SelectItem>
             {LEAD_SOURCES.map((s) => (
-              <SelectItem key={s.value} value={s.value} className="text-[var(--crm-text-primary)]">
+              <SelectItem
+                key={s.value}
+                value={s.value}
+                className="text-[var(--crm-text-primary)]"
+              >
                 {t(s.labelKey)}
               </SelectItem>
             ))}
@@ -141,7 +174,7 @@ export function ContactFilters({ filters, onFilterChange }: ContactFiltersProps)
             className="h-6 text-xs text-[var(--crm-text-muted)] hover:text-[var(--crm-text-secondary)]"
             onClick={() => onFilterChange({})}
           >
-            {t('common.clearAll')}
+            {t("common.clearAll")}
           </Button>
         </div>
       )}

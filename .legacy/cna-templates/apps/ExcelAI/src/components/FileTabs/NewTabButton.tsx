@@ -2,11 +2,11 @@
 // NEW TAB BUTTON - Add New Tab Component
 // ============================================================
 
-import React from 'react';
-import { Plus } from 'lucide-react';
+import React from "react"
+import { Plus } from "lucide-react"
 
 interface NewTabButtonProps {
-  onClick: () => void;
+  onClick: () => void
 }
 
 export const NewTabButton: React.FC<NewTabButtonProps> = ({ onClick }) => {
@@ -19,7 +19,7 @@ export const NewTabButton: React.FC<NewTabButtonProps> = ({ onClick }) => {
       <Plus size={18} />
       <span className="new-tab-text">New</span>
     </button>
-  );
-};
+  )
+}
 
-export default NewTabButton;
+export default NewTabButton

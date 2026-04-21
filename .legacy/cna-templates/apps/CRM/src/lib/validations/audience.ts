@@ -1,16 +1,32 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 // ── Rule schemas ────────────────────────────────────────────────────
 
 const VALID_FIELDS = [
-  'status', 'source', 'companyId', 'company.industry', 'company.size',
-  'company.city', 'score', 'lastActivityAt', 'createdAt', 'tags',
+  "status",
+  "source",
+  "companyId",
+  "company.industry",
+  "company.size",
+  "company.city",
+  "score",
+  "lastActivityAt",
+  "createdAt",
+  "tags",
 ] as const
 
 const VALID_OPERATORS = [
-  'equals', 'not_equals', 'contains', 'not_contains',
-  'greater_than', 'less_than', 'in', 'not_in',
-  'is_empty', 'is_not_empty', 'between',
+  "equals",
+  "not_equals",
+  "contains",
+  "not_contains",
+  "greater_than",
+  "less_than",
+  "in",
+  "not_in",
+  "is_empty",
+  "is_not_empty",
+  "between",
 ] as const
 
 export const audienceRuleSchema = z.object({
@@ -22,12 +38,12 @@ export const audienceRuleSchema = z.object({
 
 export const audienceRuleGroupSchema = z.object({
   id: z.string(),
-  connector: z.enum(['AND', 'OR']),
+  connector: z.enum(["AND", "OR"]),
   rules: z.array(audienceRuleSchema).min(1),
 })
 
 export const audienceRulesSchema = z.object({
-  connector: z.enum(['AND', 'OR']),
+  connector: z.enum(["AND", "OR"]),
   groups: z.array(audienceRuleGroupSchema).min(1),
 })
 
@@ -37,23 +53,24 @@ export const createAudienceSchema = z
   .object({
     name: z.string().min(1).max(100),
     description: z.string().max(500).optional(),
-    type: z.enum(['STATIC', 'DYNAMIC']),
+    type: z.enum(["STATIC", "DYNAMIC"]),
     rules: audienceRulesSchema.optional(),
     contactIds: z.array(z.string()).optional(),
   })
   .refine(
     (data) => {
-      if (data.type === 'DYNAMIC') return !!data.rules
+      if (data.type === "DYNAMIC") return !!data.rules
       return true
     },
-    { message: 'Dynamic audiences require rules', path: ['rules'] }
+    { message: "Dynamic audiences require rules", path: ["rules"] }
   )
   .refine(
     (data) => {
-      if (data.type === 'STATIC') return data.contactIds && data.contactIds.length > 0
+      if (data.type === "STATIC")
+        return data.contactIds && data.contactIds.length > 0
       return true
     },
-    { message: 'Static audiences require contacts', path: ['contactIds'] }
+    { message: "Static audiences require contacts", path: ["contactIds"] }
   )
 
 export const updateAudienceSchema = z.object({

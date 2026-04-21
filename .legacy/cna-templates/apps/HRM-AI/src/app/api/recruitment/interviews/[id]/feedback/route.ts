@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { z } from "zod"
 
 const feedbackSchema = z.object({
   overallRating: z.number().min(1).max(5),
-  recommendation: z.enum(['STRONG_YES', 'YES', 'NEUTRAL', 'NO', 'STRONG_NO']),
+  recommendation: z.enum(["STRONG_YES", "YES", "NEUTRAL", "NO", "STRONG_NO"]),
   technicalSkills: z.number().int().min(1).max(5).optional(),
   communication: z.number().int().min(1).max(5).optional(),
   problemSolving: z.number().int().min(1).max(5).optional(),
@@ -24,7 +24,7 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Get evaluations for this interview using CandidateEvaluation
@@ -35,7 +35,7 @@ export async function GET(
           select: { id: true, name: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
 
     return NextResponse.json({
@@ -43,9 +43,9 @@ export async function GET(
       data: evaluations,
     })
   } catch (error) {
-    console.error('Error fetching feedback:', error)
+    console.error("Error fetching feedback:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch feedback' },
+      { error: "Failed to fetch feedback" },
       { status: 500 }
     )
   }
@@ -59,7 +59,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -71,7 +71,10 @@ export async function POST(
     })
 
     if (!interview) {
-      return NextResponse.json({ error: 'Interview not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Interview not found" },
+        { status: 404 }
+      )
     }
 
     // Check if user is in the interviewerIds list
@@ -80,7 +83,7 @@ export async function POST(
 
     if (!isInterviewer) {
       return NextResponse.json(
-        { error: 'You are not assigned to this interview' },
+        { error: "You are not assigned to this interview" },
         { status: 403 }
       )
     }
@@ -95,7 +98,7 @@ export async function POST(
 
     if (existingEvaluation) {
       return NextResponse.json(
-        { error: 'You have already submitted feedback for this interview' },
+        { error: "You have already submitted feedback for this interview" },
         { status: 400 }
       )
     }
@@ -136,7 +139,7 @@ export async function POST(
       // Mark interview as passed (or determine based on evaluations)
       await db.interview.update({
         where: { id: params.id },
-        data: { result: 'PASSED' },
+        data: { result: "PASSED" },
       })
     }
 
@@ -144,27 +147,30 @@ export async function POST(
     await db.applicationActivity.create({
       data: {
         applicationId: interview.applicationId,
-        action: 'feedback_submitted',
+        action: "feedback_submitted",
         description: `Feedback phỏng vấn - Điểm: ${data.overallRating}/5, Đề xuất: ${data.recommendation}`,
         performedById: session.user.id,
       },
     })
 
-    return NextResponse.json({
-      success: true,
-      data: evaluation,
-      message: 'Feedback submitted successfully',
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: evaluation,
+        message: "Feedback submitted successfully",
+      },
+      { status: 201 }
+    )
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    console.error('Error submitting feedback:', error)
+    console.error("Error submitting feedback:", error)
     return NextResponse.json(
-      { error: 'Failed to submit feedback' },
+      { error: "Failed to submit feedback" },
       { status: 500 }
     )
   }

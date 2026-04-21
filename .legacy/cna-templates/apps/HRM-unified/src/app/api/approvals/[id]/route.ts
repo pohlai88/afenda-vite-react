@@ -1,9 +1,9 @@
 // src/app/api/approvals/[id]/route.ts
 // Get approval step details
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
 
 export async function GET(
   request: NextRequest,
@@ -12,7 +12,7 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
@@ -52,14 +52,14 @@ export async function GET(
     })
 
     if (!approvalStep) {
-      return NextResponse.json({ error: 'Approval not found' }, { status: 404 })
+      return NextResponse.json({ error: "Approval not found" }, { status: 404 })
     }
 
     return NextResponse.json(approvalStep)
   } catch (error) {
-    console.error('Error fetching approval:', error)
+    console.error("Error fetching approval:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch approval' },
+      { error: "Failed to fetch approval" },
       { status: 500 }
     )
   }

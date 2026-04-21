@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
+import { useState } from "react"
 import {
   Table,
   TableBody,
@@ -8,26 +8,30 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+} from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { REQUISITION_STATUS, JOB_TYPE, PRIORITY } from '@/lib/recruitment/constants'
-import type { JobRequisition } from '@/types/recruitment'
-import { Search, Plus, MoreHorizontal, Eye, Edit, Trash2 } from 'lucide-react'
+} from "@/components/ui/dropdown-menu"
+import {
+  REQUISITION_STATUS,
+  JOB_TYPE,
+  PRIORITY,
+} from "@/lib/recruitment/constants"
+import type { JobRequisition } from "@/types/recruitment"
+import { Search, Plus, MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react"
 
 interface RequisitionListProps {
   requisitions: JobRequisition[]
@@ -46,29 +50,33 @@ export function RequisitionList({
   onCreate,
   isLoading = false,
 }: RequisitionListProps) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('ALL')
-  const [priorityFilter, setPriorityFilter] = useState<string>('ALL')
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("ALL")
+  const [priorityFilter, setPriorityFilter] = useState<string>("ALL")
 
   const filteredRequisitions = requisitions.filter((req) => {
     const matchesSearch =
       req.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       req.requisitionCode.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesStatus = statusFilter === 'ALL' || req.status === statusFilter
-    const matchesPriority = priorityFilter === 'ALL' || req.priority === priorityFilter
+    const matchesStatus = statusFilter === "ALL" || req.status === statusFilter
+    const matchesPriority =
+      priorityFilter === "ALL" || req.priority === priorityFilter
     return matchesSearch && matchesStatus && matchesPriority
   })
 
   const getStatusBadge = (status: string) => {
-    const config = REQUISITION_STATUS[status] || { label: status, color: 'gray' }
+    const config = REQUISITION_STATUS[status] || {
+      label: status,
+      color: "gray",
+    }
     const colorMap: Record<string, string> = {
-      blue: 'bg-blue-100 text-blue-800',
-      yellow: 'bg-yellow-100 text-yellow-800',
-      orange: 'bg-orange-100 text-orange-800',
-      green: 'bg-green-100 text-green-800',
-      purple: 'bg-purple-100 text-purple-800',
-      red: 'bg-red-100 text-red-800',
-      gray: 'bg-gray-100 text-gray-800',
+      blue: "bg-blue-100 text-blue-800",
+      yellow: "bg-yellow-100 text-yellow-800",
+      orange: "bg-orange-100 text-orange-800",
+      green: "bg-green-100 text-green-800",
+      purple: "bg-purple-100 text-purple-800",
+      red: "bg-red-100 text-red-800",
+      gray: "bg-gray-100 text-gray-800",
     }
     return (
       <Badge className={colorMap[config.color] || colorMap.gray}>
@@ -78,15 +86,18 @@ export function RequisitionList({
   }
 
   const getPriorityBadge = (priority: string) => {
-    const config = PRIORITY[priority] || { label: priority, color: 'gray' }
+    const config = PRIORITY[priority] || { label: priority, color: "gray" }
     const colorMap: Record<string, string> = {
-      gray: 'bg-gray-100 text-gray-800',
-      blue: 'bg-blue-100 text-blue-800',
-      orange: 'bg-orange-100 text-orange-800',
-      red: 'bg-red-100 text-red-800',
+      gray: "bg-gray-100 text-gray-800",
+      blue: "bg-blue-100 text-blue-800",
+      orange: "bg-orange-100 text-orange-800",
+      red: "bg-red-100 text-red-800",
     }
     return (
-      <Badge variant="outline" className={colorMap[config.color] || colorMap.gray}>
+      <Badge
+        variant="outline"
+        className={colorMap[config.color] || colorMap.gray}
+      >
         {config.label}
       </Badge>
     )
@@ -156,24 +167,33 @@ export function RequisitionList({
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                <TableCell
+                  colSpan={9}
+                  className="text-center py-8 text-muted-foreground"
+                >
                   Đang tải...
                 </TableCell>
               </TableRow>
             ) : filteredRequisitions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                <TableCell
+                  colSpan={9}
+                  className="text-center py-8 text-muted-foreground"
+                >
                   Không có yêu cầu tuyển dụng nào
                 </TableCell>
               </TableRow>
             ) : (
               filteredRequisitions.map((req) => (
-                <TableRow key={req.id} className="cursor-pointer hover:bg-muted/50">
+                <TableRow
+                  key={req.id}
+                  className="cursor-pointer hover:bg-muted/50"
+                >
                   <TableCell className="font-mono text-xs">
                     {req.requisitionCode}
                   </TableCell>
                   <TableCell className="font-medium">{req.title}</TableCell>
-                  <TableCell>{req.department?.name || '-'}</TableCell>
+                  <TableCell>{req.department?.name || "-"}</TableCell>
                   <TableCell>
                     <span className="text-xs">
                       {JOB_TYPE[req.jobType]?.shortLabel || req.jobType}
@@ -188,7 +208,11 @@ export function RequisitionList({
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                        >
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>

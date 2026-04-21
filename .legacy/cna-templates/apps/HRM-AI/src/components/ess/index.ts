@@ -1,2 +1,2 @@
-export { ESSProfileCard } from './ess-profile-card'
-export { ESSQuickActions } from './ess-quick-actions'
+export { ESSProfileCard } from "./ess-profile-card"
+export { ESSQuickActions } from "./ess-quick-actions"

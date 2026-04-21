@@ -1,27 +1,35 @@
-import { useEffect, useCallback } from 'react';
-import { useWorkbookStore } from '../stores/workbookStore';
-import { useSelectionStore } from '../stores/selectionStore';
+import { useEffect, useCallback } from "react"
+import { useWorkbookStore } from "../stores/workbookStore"
+import { useSelectionStore } from "../stores/selectionStore"
 
 type DialogType =
-  | 'findReplace'
-  | 'print'
-  | 'goTo'
-  | 'insertFunction'
-  | 'formatCells'
-  | 'dataValidation'
-  | 'conditionalFormatting'
-  | 'customSort';
+  | "findReplace"
+  | "print"
+  | "goTo"
+  | "insertFunction"
+  | "formatCells"
+  | "dataValidation"
+  | "conditionalFormatting"
+  | "customSort"
 
 interface UseKeyboardShortcutsOptions {
-  onOpenDialog?: (dialog: DialogType) => void;
-  onSave?: () => void;
-  onExport?: () => void;
-  onPasteSpecial?: () => void;
-  enabled?: boolean;
+  onOpenDialog?: (dialog: DialogType) => void
+  onSave?: () => void
+  onExport?: () => void
+  onPasteSpecial?: () => void
+  enabled?: boolean
 }
 
-export const useKeyboardShortcuts = (options: UseKeyboardShortcutsOptions = {}) => {
-  const { onOpenDialog, onSave, onExport, onPasteSpecial, enabled = true } = options;
+export const useKeyboardShortcuts = (
+  options: UseKeyboardShortcutsOptions = {}
+) => {
+  const {
+    onOpenDialog,
+    onSave,
+    onExport,
+    onPasteSpecial,
+    enabled = true,
+  } = options
 
   const {
     undo,
@@ -36,32 +44,32 @@ export const useKeyboardShortcuts = (options: UseKeyboardShortcutsOptions = {}) 
     insertColumn,
     fillDown,
     fillRight,
-  } = useWorkbookStore();
+  } = useWorkbookStore()
 
-  const { moveSelection, isEditing } = useSelectionStore();
+  const { moveSelection, isEditing } = useSelectionStore()
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       // Skip if in editing mode (typing in cell) unless it's a navigation key
-      if (isEditing && !['Escape', 'Tab', 'Enter'].includes(e.key)) {
-        return;
+      if (isEditing && !["Escape", "Tab", "Enter"].includes(e.key)) {
+        return
       }
 
       // Skip if in an input/textarea
-      const target = e.target as HTMLElement;
+      const target = e.target as HTMLElement
       if (
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
         target.isContentEditable
       ) {
         // Allow Escape to close dialogs
-        if (e.key !== 'Escape') {
-          return;
+        if (e.key !== "Escape") {
+          return
         }
       }
 
-      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-      const ctrlKey = isMac ? e.metaKey : e.ctrlKey;
+      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0
+      const ctrlKey = isMac ? e.metaKey : e.ctrlKey
 
       // ═══════════════════════════════════════════════════════════════════
       // CTRL/CMD SHORTCUTS
@@ -70,123 +78,123 @@ export const useKeyboardShortcuts = (options: UseKeyboardShortcutsOptions = {}) 
       if (ctrlKey) {
         switch (e.key.toLowerCase()) {
           // Undo/Redo
-          case 'z':
-            e.preventDefault();
+          case "z":
+            e.preventDefault()
             if (e.shiftKey) {
-              redo();
+              redo()
             } else {
-              undo();
+              undo()
             }
-            break;
+            break
 
-          case 'y':
-            e.preventDefault();
-            redo();
-            break;
+          case "y":
+            e.preventDefault()
+            redo()
+            break
 
           // Clipboard
-          case 'c':
-            e.preventDefault();
-            copy();
-            break;
+          case "c":
+            e.preventDefault()
+            copy()
+            break
 
-          case 'x':
-            e.preventDefault();
-            cut();
-            break;
+          case "x":
+            e.preventDefault()
+            cut()
+            break
 
-          case 'v':
-            e.preventDefault();
+          case "v":
+            e.preventDefault()
             if (e.shiftKey) {
-              onPasteSpecial?.();
+              onPasteSpecial?.()
             } else {
-              paste();
+              paste()
             }
-            break;
+            break
 
           // Formatting
-          case 'b':
-            e.preventDefault();
-            applyFormat({ bold: true });
-            break;
+          case "b":
+            e.preventDefault()
+            applyFormat({ bold: true })
+            break
 
-          case 'i':
-            e.preventDefault();
-            applyFormat({ italic: true });
-            break;
+          case "i":
+            e.preventDefault()
+            applyFormat({ italic: true })
+            break
 
-          case 'u':
-            e.preventDefault();
-            applyFormat({ underline: true });
-            break;
+          case "u":
+            e.preventDefault()
+            applyFormat({ underline: true })
+            break
 
           // Fill operations
-          case 'd':
-            e.preventDefault();
-            fillDown();
-            break;
+          case "d":
+            e.preventDefault()
+            fillDown()
+            break
 
-          case 'r':
-            e.preventDefault();
-            fillRight();
-            break;
+          case "r":
+            e.preventDefault()
+            fillRight()
+            break
 
           // Dialogs
-          case 'f':
-            e.preventDefault();
-            onOpenDialog?.('findReplace');
-            break;
+          case "f":
+            e.preventDefault()
+            onOpenDialog?.("findReplace")
+            break
 
-          case 'h':
-            e.preventDefault();
-            onOpenDialog?.('findReplace');
-            break;
+          case "h":
+            e.preventDefault()
+            onOpenDialog?.("findReplace")
+            break
 
-          case 'p':
-            e.preventDefault();
-            onOpenDialog?.('print');
-            break;
+          case "p":
+            e.preventDefault()
+            onOpenDialog?.("print")
+            break
 
-          case 'g':
-            e.preventDefault();
-            onOpenDialog?.('goTo');
-            break;
+          case "g":
+            e.preventDefault()
+            onOpenDialog?.("goTo")
+            break
 
-          case 's':
-            e.preventDefault();
+          case "s":
+            e.preventDefault()
             if (e.shiftKey) {
-              onExport?.();
+              onExport?.()
             } else {
-              onSave?.();
+              onSave?.()
             }
-            break;
+            break
 
           // Select All
-          case 'a':
-            e.preventDefault();
+          case "a":
+            e.preventDefault()
             // Select all - would need to implement selectAll in store
-            break;
+            break
 
           // Insert row/column
-          case '+':
-          case '=':
-            e.preventDefault();
+          case "+":
+          case "=":
+            e.preventDefault()
             if (e.shiftKey) {
-              insertColumn();
+              insertColumn()
             } else {
-              insertRow();
+              insertRow()
             }
-            break;
+            break
 
           // Delete row/column
-          case '-':
-            e.preventDefault();
+          case "-":
+            e.preventDefault()
             if (e.shiftKey) {
-              deleteColumn();
+              deleteColumn()
             } else {
-              deleteRow();
+              deleteRow()
             }
-            break;
+            break
         }
       }
 
@@ -195,40 +203,40 @@ export const useKeyboardShortcuts = (options: UseKeyboardShortcutsOptions = {}) 
       // ═══════════════════════════════════════════════════════════════════
 
       switch (e.key) {
-        case 'F1':
-          e.preventDefault();
+        case "F1":
+          e.preventDefault()
           // Help
-          break;
+          break
 
-        case 'F2':
-          e.preventDefault();
+        case "F2":
+          e.preventDefault()
           // Start editing current cell
-          break;
+          break
 
-        case 'F4':
-          e.preventDefault();
+        case "F4":
+          e.preventDefault()
           // Toggle absolute/relative reference in formula
-          break;
+          break
 
-        case 'F5':
-          e.preventDefault();
-          onOpenDialog?.('goTo');
-          break;
+        case "F5":
+          e.preventDefault()
+          onOpenDialog?.("goTo")
+          break
 
-        case 'F7':
-          e.preventDefault();
+        case "F7":
+          e.preventDefault()
           // Spell check
-          break;
+          break
 
-        case 'F11':
-          e.preventDefault();
+        case "F11":
+          e.preventDefault()
           // Insert chart
-          break;
+          break
 
-        case 'F12':
-          e.preventDefault();
-          onExport?.();
-          break;
+        case "F12":
+          e.preventDefault()
+          onExport?.()
+          break
       }
 
       // ═══════════════════════════════════════════════════════════════════
@@ -237,52 +245,52 @@ export const useKeyboardShortcuts = (options: UseKeyboardShortcutsOptions = {}) 
 
       if (!ctrlKey && !e.altKey) {
         switch (e.key) {
-          case 'ArrowUp':
-            e.preventDefault();
-            moveSelection('up');
-            break;
+          case "ArrowUp":
+            e.preventDefault()
+            moveSelection("up")
+            break
 
-          case 'ArrowDown':
-            e.preventDefault();
-            moveSelection('down');
-            break;
+          case "ArrowDown":
+            e.preventDefault()
+            moveSelection("down")
+            break
 
-          case 'ArrowLeft':
-            e.preventDefault();
-            moveSelection('left');
-            break;
+          case "ArrowLeft":
+            e.preventDefault()
+            moveSelection("left")
+            break
 
-          case 'ArrowRight':
-            e.preventDefault();
-            moveSelection('right');
-            break;
+          case "ArrowRight":
+            e.preventDefault()
+            moveSelection("right")
+            break
 
-          case 'Tab':
-            e.preventDefault();
+          case "Tab":
+            e.preventDefault()
             if (e.shiftKey) {
-              moveSelection('left');
+              moveSelection("left")
             } else {
-              moveSelection('right');
+              moveSelection("right")
             }
-            break;
+            break
 
-          case 'Enter':
-            e.preventDefault();
+          case "Enter":
+            e.preventDefault()
             if (e.shiftKey) {
-              moveSelection('up');
+              moveSelection("up")
             } else {
-              moveSelection('down');
+              moveSelection("down")
             }
-            break;
+            break
 
-          case 'Delete':
-          case 'Backspace':
+          case "Delete":
+          case "Backspace":
             // Clear cell content - handled by grid
-            break;
+            break
 
-          case 'Escape':
+          case "Escape":
             // Cancel editing - handled by grid
-            break;
+            break
         }
       }
 
@@ -292,15 +300,15 @@ export const useKeyboardShortcuts = (options: UseKeyboardShortcutsOptions = {}) 
 
       if (e.altKey && !ctrlKey) {
         switch (e.key) {
-          case '=':
-            e.preventDefault();
+          case "=":
+            e.preventDefault()
             // AutoSum
-            break;
+            break
 
-          case 'Enter':
-            e.preventDefault();
+          case "Enter":
+            e.preventDefault()
             // Insert line break in cell
-            break;
+            break
         }
       }
     },
@@ -324,46 +332,46 @@ export const useKeyboardShortcuts = (options: UseKeyboardShortcutsOptions = {}) 
       onPasteSpecial,
       isEditing,
     ]
-  );
+  )
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) return
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown, enabled]);
-};
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [handleKeyDown, enabled])
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // SHORTCUT REFERENCE
 // ═══════════════════════════════════════════════════════════════════════════
 
 export const KEYBOARD_SHORTCUTS = [
-  { keys: ['Ctrl', 'C'], description: 'Copy' },
-  { keys: ['Ctrl', 'X'], description: 'Cut' },
-  { keys: ['Ctrl', 'V'], description: 'Paste' },
-  { keys: ['Ctrl', 'Shift', 'V'], description: 'Paste Special' },
-  { keys: ['Ctrl', 'Z'], description: 'Undo' },
-  { keys: ['Ctrl', 'Y'], description: 'Redo' },
-  { keys: ['Ctrl', 'Shift', 'Z'], description: 'Redo' },
-  { keys: ['Ctrl', 'B'], description: 'Bold' },
-  { keys: ['Ctrl', 'I'], description: 'Italic' },
-  { keys: ['Ctrl', 'U'], description: 'Underline' },
-  { keys: ['Ctrl', 'D'], description: 'Fill Down' },
-  { keys: ['Ctrl', 'R'], description: 'Fill Right' },
-  { keys: ['Ctrl', 'F'], description: 'Find' },
-  { keys: ['Ctrl', 'H'], description: 'Find & Replace' },
-  { keys: ['Ctrl', 'P'], description: 'Print' },
-  { keys: ['Ctrl', 'S'], description: 'Save' },
-  { keys: ['Ctrl', 'G'], description: 'Go To' },
-  { keys: ['F5'], description: 'Go To' },
-  { keys: ['F12'], description: 'Save As / Export' },
-  { keys: ['Tab'], description: 'Move right' },
-  { keys: ['Shift', 'Tab'], description: 'Move left' },
-  { keys: ['Enter'], description: 'Move down' },
-  { keys: ['Shift', 'Enter'], description: 'Move up' },
-  { keys: ['Arrow keys'], description: 'Navigate cells' },
-  { keys: ['Delete'], description: 'Clear cell' },
-  { keys: ['Ctrl', '+'], description: 'Insert row' },
-  { keys: ['Ctrl', '-'], description: 'Delete row' },
-];
+  { keys: ["Ctrl", "C"], description: "Copy" },
+  { keys: ["Ctrl", "X"], description: "Cut" },
+  { keys: ["Ctrl", "V"], description: "Paste" },
+  { keys: ["Ctrl", "Shift", "V"], description: "Paste Special" },
+  { keys: ["Ctrl", "Z"], description: "Undo" },
+  { keys: ["Ctrl", "Y"], description: "Redo" },
+  { keys: ["Ctrl", "Shift", "Z"], description: "Redo" },
+  { keys: ["Ctrl", "B"], description: "Bold" },
+  { keys: ["Ctrl", "I"], description: "Italic" },
+  { keys: ["Ctrl", "U"], description: "Underline" },
+  { keys: ["Ctrl", "D"], description: "Fill Down" },
+  { keys: ["Ctrl", "R"], description: "Fill Right" },
+  { keys: ["Ctrl", "F"], description: "Find" },
+  { keys: ["Ctrl", "H"], description: "Find & Replace" },
+  { keys: ["Ctrl", "P"], description: "Print" },
+  { keys: ["Ctrl", "S"], description: "Save" },
+  { keys: ["Ctrl", "G"], description: "Go To" },
+  { keys: ["F5"], description: "Go To" },
+  { keys: ["F12"], description: "Save As / Export" },
+  { keys: ["Tab"], description: "Move right" },
+  { keys: ["Shift", "Tab"], description: "Move left" },
+  { keys: ["Enter"], description: "Move down" },
+  { keys: ["Shift", "Enter"], description: "Move up" },
+  { keys: ["Arrow keys"], description: "Navigate cells" },
+  { keys: ["Delete"], description: "Clear cell" },
+  { keys: ["Ctrl", "+"], description: "Insert row" },
+  { keys: ["Ctrl", "-"], description: "Delete row" },
+]

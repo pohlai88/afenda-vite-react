@@ -1,17 +1,23 @@
 // src/app/[locale]/(tenant)/[tenantId]/employee-experience/feed/page.tsx
 // Company Feed Page
 
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+import { useState } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import {
   Dialog,
   DialogContent,
@@ -19,20 +25,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu"
 import {
   Plus,
   Megaphone,
@@ -53,96 +59,100 @@ import {
   CheckCircle,
   XCircle,
   HelpCircle,
-} from 'lucide-react'
+} from "lucide-react"
 
 // Mock data
 const mockPosts = [
   {
-    id: '1',
-    type: 'ANNOUNCEMENT',
-    title: 'Q4 Company Results & 2024 Strategy Update',
-    content: 'I am excited to share our Q4 results and outline our strategic priorities for 2024. We achieved 120% of our revenue target and expanded to 3 new markets. In the coming year, we will focus on product innovation, customer success, and team growth. Please join us for the All-Hands meeting next Friday to discuss in detail.',
+    id: "1",
+    type: "ANNOUNCEMENT",
+    title: "Q4 Company Results & 2024 Strategy Update",
+    content:
+      "I am excited to share our Q4 results and outline our strategic priorities for 2024. We achieved 120% of our revenue target and expanded to 3 new markets. In the coming year, we will focus on product innovation, customer success, and team growth. Please join us for the All-Hands meeting next Friday to discuss in detail.",
     author: {
-      name: 'Nguyen Van CEO',
-      avatar: '',
-      position: 'Chief Executive Officer',
+      name: "Nguyen Van CEO",
+      avatar: "",
+      position: "Chief Executive Officer",
     },
     isPinned: true,
-    publishedAt: '2 hours ago',
+    publishedAt: "2 hours ago",
     reactions: [
-      { emoji: '👏', count: 45 },
-      { emoji: '🚀', count: 32 },
-      { emoji: '❤️', count: 28 },
+      { emoji: "👏", count: 45 },
+      { emoji: "🚀", count: 32 },
+      { emoji: "❤️", count: 28 },
     ],
     comments: 12,
     reads: 198,
     totalEmployees: 248,
   },
   {
-    id: '2',
-    type: 'EVENT',
-    title: 'Annual Company Retreat - Phu Quoc 2024',
-    content: 'Save the date! Our annual company retreat will be held in Phu Quoc from March 15-17, 2024. This year\'s theme is "Building Tomorrow Together". Expect team-building activities, strategy sessions, and lots of fun!',
+    id: "2",
+    type: "EVENT",
+    title: "Annual Company Retreat - Phu Quoc 2024",
+    content:
+      'Save the date! Our annual company retreat will be held in Phu Quoc from March 15-17, 2024. This year\'s theme is "Building Tomorrow Together". Expect team-building activities, strategy sessions, and lots of fun!',
     author: {
-      name: 'Tran Thi HR',
-      avatar: '',
-      position: 'HR Director',
+      name: "Tran Thi HR",
+      avatar: "",
+      position: "HR Director",
     },
     isPinned: false,
-    publishedAt: 'Yesterday',
+    publishedAt: "Yesterday",
     event: {
-      startDate: 'March 15, 2024',
-      endDate: 'March 17, 2024',
-      location: 'Phu Quoc Island',
+      startDate: "March 15, 2024",
+      endDate: "March 17, 2024",
+      location: "Phu Quoc Island",
       isVirtual: false,
       attendees: { going: 156, maybe: 45, notGoing: 12 },
     },
     reactions: [
-      { emoji: '🎉', count: 78 },
-      { emoji: '🏖️', count: 54 },
+      { emoji: "🎉", count: 78 },
+      { emoji: "🏖️", count: 54 },
     ],
     comments: 23,
   },
   {
-    id: '3',
-    type: 'CELEBRATION',
-    title: 'Celebrating 5 Years with VietERP HRM! 🎂',
-    content: 'Please join us in congratulating the following team members on their 5-year work anniversary: Nguyen Van A (Engineering), Tran Thi B (Product), and Le Van C (Sales). Thank you for your dedication and contributions to our success!',
+    id: "3",
+    type: "CELEBRATION",
+    title: "Celebrating 5 Years with VietERP HRM! 🎂",
+    content:
+      "Please join us in congratulating the following team members on their 5-year work anniversary: Nguyen Van A (Engineering), Tran Thi B (Product), and Le Van C (Sales). Thank you for your dedication and contributions to our success!",
     author: {
-      name: 'HR Team',
-      avatar: '',
-      position: 'Human Resources',
+      name: "HR Team",
+      avatar: "",
+      position: "Human Resources",
     },
     isPinned: false,
-    publishedAt: '2 days ago',
+    publishedAt: "2 days ago",
     reactions: [
-      { emoji: '🎉', count: 89 },
-      { emoji: '👏', count: 67 },
-      { emoji: '❤️', count: 45 },
+      { emoji: "🎉", count: 89 },
+      { emoji: "👏", count: 67 },
+      { emoji: "❤️", count: 45 },
     ],
     comments: 34,
   },
   {
-    id: '4',
-    type: 'POLL',
-    title: 'Office Snack Preferences Survey',
-    content: 'We\'re updating our office snack selection! Vote for your preferred options below.',
+    id: "4",
+    type: "POLL",
+    title: "Office Snack Preferences Survey",
+    content:
+      "We're updating our office snack selection! Vote for your preferred options below.",
     author: {
-      name: 'Office Admin',
-      avatar: '',
-      position: 'Office Manager',
+      name: "Office Admin",
+      avatar: "",
+      position: "Office Manager",
     },
     isPinned: false,
-    publishedAt: '3 days ago',
+    publishedAt: "3 days ago",
     poll: {
       options: [
-        { text: 'Fresh fruits', votes: 87, percentage: 35 },
-        { text: 'Healthy snack bars', votes: 62, percentage: 25 },
-        { text: 'Vietnamese snacks', votes: 50, percentage: 20 },
-        { text: 'Mixed nuts', votes: 49, percentage: 20 },
+        { text: "Fresh fruits", votes: 87, percentage: 35 },
+        { text: "Healthy snack bars", votes: 62, percentage: 25 },
+        { text: "Vietnamese snacks", votes: 50, percentage: 20 },
+        { text: "Mixed nuts", votes: 49, percentage: 20 },
       ],
       totalVotes: 248,
-      endsAt: 'In 2 days',
+      endsAt: "In 2 days",
     },
     reactions: [],
     comments: 8,
@@ -151,39 +161,60 @@ const mockPosts = [
 
 const upcomingEvents = [
   {
-    id: '1',
-    title: 'All-Hands Meeting',
-    date: 'Jan 26, 2024',
-    time: '3:00 PM',
+    id: "1",
+    title: "All-Hands Meeting",
+    date: "Jan 26, 2024",
+    time: "3:00 PM",
     isVirtual: true,
   },
   {
-    id: '2',
-    title: 'Engineering Team Lunch',
-    date: 'Jan 27, 2024',
-    time: '12:00 PM',
-    location: 'Office Cafeteria',
+    id: "2",
+    title: "Engineering Team Lunch",
+    date: "Jan 27, 2024",
+    time: "12:00 PM",
+    location: "Office Cafeteria",
   },
   {
-    id: '3',
-    title: 'Company Retreat',
-    date: 'Mar 15-17, 2024',
-    location: 'Phu Quoc',
+    id: "3",
+    title: "Company Retreat",
+    date: "Mar 15-17, 2024",
+    location: "Phu Quoc",
   },
 ]
 
 export default function FeedPage() {
   const [createPostOpen, setCreatePostOpen] = useState(false)
-  const [postType, setPostType] = useState<string>('ANNOUNCEMENT')
+  const [postType, setPostType] = useState<string>("ANNOUNCEMENT")
 
   const getTypeBadge = (type: string) => {
-    const config: Record<string, { icon: any; color: string; label: string }> = {
-      ANNOUNCEMENT: { icon: Megaphone, color: 'bg-red-100 text-red-800', label: 'Announcement' },
-      NEWS: { icon: Newspaper, color: 'bg-blue-100 text-blue-800', label: 'News' },
-      EVENT: { icon: Calendar, color: 'bg-green-100 text-green-800', label: 'Event' },
-      CELEBRATION: { icon: PartyPopper, color: 'bg-yellow-100 text-yellow-800', label: 'Celebration' },
-      POLL: { icon: BarChart3, color: 'bg-purple-100 text-purple-800', label: 'Poll' },
-    }
+    const config: Record<string, { icon: any; color: string; label: string }> =
+      {
+        ANNOUNCEMENT: {
+          icon: Megaphone,
+          color: "bg-red-100 text-red-800",
+          label: "Announcement",
+        },
+        NEWS: {
+          icon: Newspaper,
+          color: "bg-blue-100 text-blue-800",
+          label: "News",
+        },
+        EVENT: {
+          icon: Calendar,
+          color: "bg-green-100 text-green-800",
+          label: "Event",
+        },
+        CELEBRATION: {
+          icon: PartyPopper,
+          color: "bg-yellow-100 text-yellow-800",
+          label: "Celebration",
+        },
+        POLL: {
+          icon: BarChart3,
+          color: "bg-purple-100 text-purple-800",
+          label: "Poll",
+        },
+      }
     const { icon: Icon, color, label } = config[type] || config.NEWS
     return (
       <Badge className={color}>
@@ -276,13 +307,18 @@ export default function FeedPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="ALL">All Employees</SelectItem>
-                    <SelectItem value="DEPARTMENT">Specific Departments</SelectItem>
+                    <SelectItem value="DEPARTMENT">
+                      Specific Departments
+                    </SelectItem>
                     <SelectItem value="MANAGERS">Managers Only</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setCreatePostOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setCreatePostOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button onClick={() => setCreatePostOpen(false)}>
@@ -307,20 +343,28 @@ export default function FeedPage() {
 
             <TabsContent value="all" className="space-y-4">
               {mockPosts.map((post) => (
-                <Card key={post.id} className={post.isPinned ? 'border-primary' : ''}>
+                <Card
+                  key={post.id}
+                  className={post.isPinned ? "border-primary" : ""}
+                >
                   <CardContent className="pt-6">
                     <div className="flex gap-4">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={post.author.avatar} />
                         <AvatarFallback>
-                          {post.author.name.split(' ').map(n => n[0]).join('')}
+                          {post.author.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
                         <div className="flex items-start justify-between">
                           <div>
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-semibold">{post.author.name}</span>
+                              <span className="font-semibold">
+                                {post.author.name}
+                              </span>
                               {getTypeBadge(post.type)}
                               {post.isPinned && (
                                 <Badge variant="outline" className="text-xs">
@@ -335,14 +379,18 @@ export default function FeedPage() {
                           </div>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0"
+                              >
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem>
                                 <Pin className="h-4 w-4 mr-2" />
-                                {post.isPinned ? 'Unpin' : 'Pin'} post
+                                {post.isPinned ? "Unpin" : "Pin"} post
                               </DropdownMenuItem>
                               <DropdownMenuItem>
                                 <Share2 className="h-4 w-4 mr-2" />
@@ -380,11 +428,19 @@ export default function FeedPage() {
                                 <CheckCircle className="h-4 w-4 mr-1" />
                                 Going ({post.event.attendees.going})
                               </Button>
-                              <Button size="sm" variant="outline" className="flex-1">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="flex-1"
+                              >
                                 <HelpCircle className="h-4 w-4 mr-1" />
                                 Maybe ({post.event.attendees.maybe})
                               </Button>
-                              <Button size="sm" variant="ghost" className="flex-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="flex-1"
+                              >
                                 <XCircle className="h-4 w-4 mr-1" />
                                 No ({post.event.attendees.notGoing})
                               </Button>
@@ -399,7 +455,9 @@ export default function FeedPage() {
                               <div key={index} className="space-y-1">
                                 <div className="flex justify-between text-sm">
                                   <span>{option.text}</span>
-                                  <span className="font-medium">{option.percentage}%</span>
+                                  <span className="font-medium">
+                                    {option.percentage}%
+                                  </span>
                                 </div>
                                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                                   <div
@@ -410,7 +468,8 @@ export default function FeedPage() {
                               </div>
                             ))}
                             <p className="text-xs text-muted-foreground">
-                              {post.poll.totalVotes} votes · Ends {post.poll.endsAt}
+                              {post.poll.totalVotes} votes · Ends{" "}
+                              {post.poll.endsAt}
                             </p>
                           </div>
                         )}
@@ -419,12 +478,23 @@ export default function FeedPage() {
                         <div className="flex items-center justify-between mt-4 pt-4 border-t">
                           <div className="flex items-center gap-2">
                             {post.reactions.map((reaction, index) => (
-                              <Button key={index} variant="ghost" size="sm" className="h-8 px-2">
+                              <Button
+                                key={index}
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 px-2"
+                              >
                                 <span className="mr-1">{reaction.emoji}</span>
-                                <span className="text-xs">{reaction.count}</span>
+                                <span className="text-xs">
+                                  {reaction.count}
+                                </span>
                               </Button>
                             ))}
-                            <Button variant="ghost" size="sm" className="h-8 px-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 px-2"
+                            >
                               <Heart className="h-4 w-4" />
                             </Button>
                           </div>
@@ -450,7 +520,7 @@ export default function FeedPage() {
 
             <TabsContent value="announcements" className="space-y-4">
               {mockPosts
-                .filter((p) => p.type === 'ANNOUNCEMENT')
+                .filter((p) => p.type === "ANNOUNCEMENT")
                 .map((post) => (
                   <Card key={post.id}>
                     <CardContent className="pt-6">
@@ -466,7 +536,7 @@ export default function FeedPage() {
 
             <TabsContent value="events" className="space-y-4">
               {mockPosts
-                .filter((p) => p.type === 'EVENT')
+                .filter((p) => p.type === "EVENT")
                 .map((post) => (
                   <Card key={post.id}>
                     <CardContent className="pt-6">
@@ -484,12 +554,14 @@ export default function FeedPage() {
 
             <TabsContent value="polls" className="space-y-4">
               {mockPosts
-                .filter((p) => p.type === 'POLL')
+                .filter((p) => p.type === "POLL")
                 .map((post) => (
                   <Card key={post.id}>
                     <CardContent className="pt-6">
                       <h3 className="font-semibold">{post.title}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">{post.content}</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {post.content}
+                      </p>
                     </CardContent>
                   </Card>
                 ))}
@@ -513,17 +585,18 @@ export default function FeedPage() {
                   <div key={event.id} className="flex gap-3">
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex flex-col items-center justify-center text-primary">
                       <span className="text-xs font-medium">
-                        {event.date.split(' ')[0].slice(0, 3)}
+                        {event.date.split(" ")[0].slice(0, 3)}
                       </span>
                       <span className="text-lg font-bold leading-none">
-                        {event.date.split(' ')[1]?.replace(',', '') || event.date.split('-')[0].split(' ')[1]}
+                        {event.date.split(" ")[1]?.replace(",", "") ||
+                          event.date.split("-")[0].split(" ")[1]}
                       </span>
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium">{event.title}</p>
                       <p className="text-xs text-muted-foreground">
                         {event.time && <>{event.time} · </>}
-                        {event.isVirtual ? 'Virtual' : event.location}
+                        {event.isVirtual ? "Virtual" : event.location}
                       </p>
                     </div>
                   </div>
@@ -551,7 +624,9 @@ export default function FeedPage() {
                   <span className="font-medium">3</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">This week's posts</span>
+                  <span className="text-muted-foreground">
+                    This week's posts
+                  </span>
                   <span className="font-medium">8</span>
                 </div>
               </div>
@@ -575,7 +650,9 @@ export default function FeedPage() {
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">Nguyen Van A</p>
-                    <p className="text-xs text-muted-foreground">🎂 Birthday - Jan 26</p>
+                    <p className="text-xs text-muted-foreground">
+                      🎂 Birthday - Jan 26
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -584,7 +661,9 @@ export default function FeedPage() {
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">Tran Thi B</p>
-                    <p className="text-xs text-muted-foreground">🎉 3 Years - Jan 28</p>
+                    <p className="text-xs text-muted-foreground">
+                      🎉 3 Years - Jan 28
+                    </p>
                   </div>
                 </div>
               </div>

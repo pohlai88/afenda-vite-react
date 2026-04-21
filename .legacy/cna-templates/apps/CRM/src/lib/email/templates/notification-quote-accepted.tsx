@@ -1,6 +1,6 @@
-import { Button, Heading, Text } from '@react-email/components'
-import * as React from 'react'
-import { NotificationLayout } from './notification-layout'
+import { Button, Heading, Text } from "@react-email/components"
+import * as React from "react"
+import { NotificationLayout } from "./notification-layout"
 
 export interface NotificationQuoteAcceptedProps {
   userName: string
@@ -30,9 +30,9 @@ export function NotificationQuoteAcceptedEmail({
       <Heading style={heading}>Báo giá được chấp nhận</Heading>
       <Text style={text}>Xin chào {userName},</Text>
       <Text style={text}>
-        <strong>{contactName}</strong> đã chấp nhận báo giá{' '}
+        <strong>{contactName}</strong> đã chấp nhận báo giá{" "}
         <strong>{quoteNumber}</strong>
-        {total ? ` trị giá ${total}` : ''}.
+        {total ? ` trị giá ${total}` : ""}.
       </Text>
       <Button style={button} href={viewUrl}>
         Xem báo giá
@@ -42,32 +42,32 @@ export function NotificationQuoteAcceptedEmail({
 }
 
 const heading: React.CSSProperties = {
-  color: '#1F2937',
-  fontSize: '22px',
+  color: "#1F2937",
+  fontSize: "22px",
   fontWeight: 700,
-  lineHeight: '28px',
-  margin: '0 0 16px',
+  lineHeight: "28px",
+  margin: "0 0 16px",
 }
 
 const text: React.CSSProperties = {
-  color: '#374151',
-  fontSize: '14px',
-  lineHeight: '24px',
-  margin: '0 0 12px',
+  color: "#374151",
+  fontSize: "14px",
+  lineHeight: "24px",
+  margin: "0 0 12px",
 }
 
 const button: React.CSSProperties = {
-  backgroundColor: '#10B981',
-  borderRadius: '6px',
-  color: '#FFFFFF',
-  display: 'inline-block',
-  fontSize: '14px',
+  backgroundColor: "#10B981",
+  borderRadius: "6px",
+  color: "#FFFFFF",
+  display: "inline-block",
+  fontSize: "14px",
   fontWeight: 600,
-  lineHeight: '1',
-  padding: '12px 24px',
-  textDecoration: 'none',
-  textAlign: 'center' as const,
-  margin: '8px 0 0',
+  lineHeight: "1",
+  padding: "12px 24px",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  margin: "8px 0 0",
 }
 
 export default NotificationQuoteAcceptedEmail

@@ -1,13 +1,8 @@
 // src/lib/learning/services/course.service.ts
 // Course Service - Manage courses, modules, and categories
 
-import { db } from '@/lib/db'
-import {
-  CourseType,
-  CourseLevel,
-  CourseStatus,
-  Prisma
-} from '@prisma/client'
+import { db } from "@/lib/db"
+import { CourseType, CourseLevel, CourseStatus, Prisma } from "@prisma/client"
 
 // Types
 export interface CreateCourseInput {
@@ -93,10 +88,10 @@ export class CourseService {
   async getCategories() {
     const categories = await db.courseCategory.findMany({
       where: { tenantId: this.tenantId, parentId: null },
-      orderBy: { order: 'asc' },
+      orderBy: { order: "asc" },
       include: {
         children: {
-          orderBy: { order: 'asc' },
+          orderBy: { order: "asc" },
           include: {
             _count: { select: { courses: true } },
           },
@@ -134,7 +129,7 @@ export class CourseService {
     })
 
     if (coursesCount > 0) {
-      throw new Error('Cannot delete category with courses')
+      throw new Error("Cannot delete category with courses")
     }
 
     await db.courseCategory.delete({ where: { id } })
@@ -158,7 +153,7 @@ export class CourseService {
     })
 
     if (existing) {
-      throw new Error('Course code already exists')
+      throw new Error("Course code already exists")
     }
 
     const course = await db.course.create({
@@ -179,11 +174,12 @@ export class CourseService {
         providerId: input.providerId,
         instructorName: input.instructorName,
         costPerPerson: input.costPerPerson,
-        currency: input.currency || 'VND',
+        currency: input.currency || "VND",
         prerequisites: input.prerequisites,
         targetAudience: input.targetAudience,
         isMandatory: input.isMandatory || false,
-        mandatoryForPositions: input.mandatoryForPositions as unknown as Prisma.InputJsonValue,
+        mandatoryForPositions:
+          input.mandatoryForPositions as unknown as Prisma.InputJsonValue,
         recertificationMonths: input.recertificationMonths,
         thumbnailUrl: input.thumbnailUrl,
         createdById,
@@ -213,7 +209,7 @@ export class CourseService {
         provider: { select: { id: true, name: true } },
         createdBy: { select: { id: true, name: true } },
         modules: {
-          orderBy: { order: 'asc' },
+          orderBy: { order: "asc" },
         },
         skills: {
           include: {
@@ -231,7 +227,7 @@ export class CourseService {
     })
 
     if (!course) {
-      throw new Error('Course not found')
+      throw new Error("Course not found")
     }
 
     return course
@@ -240,7 +236,11 @@ export class CourseService {
   /**
    * List courses with filters
    */
-  async list(filters: CourseFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: CourseFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.CourseWhereInput = {
@@ -273,16 +273,16 @@ export class CourseService {
 
     if (filters.search) {
       where.OR = [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { code: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
+        { title: { contains: filters.search, mode: "insensitive" } },
+        { code: { contains: filters.search, mode: "insensitive" } },
+        { description: { contains: filters.search, mode: "insensitive" } },
       ]
     }
 
     const [courses, total] = await Promise.all([
       db.course.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -310,7 +310,11 @@ export class CourseService {
   /**
    * List published courses (for learners)
    */
-  async listPublished(filters: CourseFilters = {}, page: number = 1, pageSize: number = 20) {
+  async listPublished(
+    filters: CourseFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     return this.list(
       { ...filters, status: [CourseStatus.PUBLISHED] },
       page,
@@ -327,7 +331,7 @@ export class CourseService {
     })
 
     if (!course) {
-      throw new Error('Course not found')
+      throw new Error("Course not found")
     }
 
     return db.course.update({
@@ -351,7 +355,8 @@ export class CourseService {
         prerequisites: input.prerequisites,
         targetAudience: input.targetAudience,
         isMandatory: input.isMandatory,
-        mandatoryForPositions: input.mandatoryForPositions as unknown as Prisma.InputJsonValue,
+        mandatoryForPositions:
+          input.mandatoryForPositions as unknown as Prisma.InputJsonValue,
         recertificationMonths: input.recertificationMonths,
         thumbnailUrl: input.thumbnailUrl,
         status: input.status,
@@ -371,11 +376,11 @@ export class CourseService {
     })
 
     if (!course) {
-      throw new Error('Course not found')
+      throw new Error("Course not found")
     }
 
     if (course.status !== CourseStatus.DRAFT) {
-      throw new Error('Only draft courses can be published')
+      throw new Error("Only draft courses can be published")
     }
 
     return db.course.update({
@@ -396,7 +401,7 @@ export class CourseService {
     })
 
     if (!course) {
-      throw new Error('Course not found')
+      throw new Error("Course not found")
     }
 
     return db.course.update({
@@ -418,7 +423,7 @@ export class CourseService {
     })
 
     if (!course) {
-      throw new Error('Course not found')
+      throw new Error("Course not found")
     }
 
     // Create new course
@@ -444,7 +449,8 @@ export class CourseService {
         prerequisites: course.prerequisites,
         targetAudience: course.targetAudience,
         isMandatory: course.isMandatory,
-        mandatoryForPositions: course.mandatoryForPositions as Prisma.InputJsonValue,
+        mandatoryForPositions:
+          course.mandatoryForPositions as Prisma.InputJsonValue,
         recertificationMonths: course.recertificationMonths,
         thumbnailUrl: course.thumbnailUrl,
         createdById,
@@ -455,7 +461,7 @@ export class CourseService {
     // Clone modules
     if (course.modules.length > 0) {
       await db.courseModule.createMany({
-        data: course.modules.map(m => ({
+        data: course.modules.map((m) => ({
           courseId: newCourse.id,
           title: m.title,
           description: m.description,
@@ -481,13 +487,13 @@ export class CourseService {
     })
 
     if (!course) {
-      throw new Error('Course not found')
+      throw new Error("Course not found")
     }
 
     // Get max order
     const lastModule = await db.courseModule.findFirst({
       where: { courseId },
-      orderBy: { order: 'desc' },
+      orderBy: { order: "desc" },
     })
 
     const order = input.order ?? (lastModule ? lastModule.order + 1 : 0)
@@ -581,40 +587,41 @@ export class CourseService {
    * Get course statistics
    */
   async getStats() {
-    const [total, byStatus, byType, byLevel, recentEnrollments] = await Promise.all([
-      db.course.count({ where: { tenantId: this.tenantId } }),
+    const [total, byStatus, byType, byLevel, recentEnrollments] =
+      await Promise.all([
+        db.course.count({ where: { tenantId: this.tenantId } }),
 
-      db.course.groupBy({
-        by: ['status'],
-        where: { tenantId: this.tenantId },
-        _count: true,
-      }),
+        db.course.groupBy({
+          by: ["status"],
+          where: { tenantId: this.tenantId },
+          _count: true,
+        }),
 
-      db.course.groupBy({
-        by: ['courseType'],
-        where: { tenantId: this.tenantId },
-        _count: true,
-      }),
+        db.course.groupBy({
+          by: ["courseType"],
+          where: { tenantId: this.tenantId },
+          _count: true,
+        }),
 
-      db.course.groupBy({
-        by: ['level'],
-        where: { tenantId: this.tenantId },
-        _count: true,
-      }),
+        db.course.groupBy({
+          by: ["level"],
+          where: { tenantId: this.tenantId },
+          _count: true,
+        }),
 
-      db.enrollment.count({
-        where: {
-          tenantId: this.tenantId,
-          createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
-        },
-      }),
-    ])
+        db.enrollment.count({
+          where: {
+            tenantId: this.tenantId,
+            createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+          },
+        }),
+      ])
 
     return {
       total,
-      byStatus: byStatus.map(s => ({ status: s.status, count: s._count })),
-      byType: byType.map(t => ({ type: t.courseType, count: t._count })),
-      byLevel: byLevel.map(l => ({ level: l.level, count: l._count })),
+      byStatus: byStatus.map((s) => ({ status: s.status, count: s._count })),
+      byType: byType.map((t) => ({ type: t.courseType, count: t._count })),
+      byLevel: byLevel.map((l) => ({ level: l.level, count: l._count })),
       recentEnrollments,
     }
   }
@@ -629,7 +636,7 @@ export class CourseService {
         status: CourseStatus.PUBLISHED,
       },
       orderBy: {
-        enrollments: { _count: 'desc' },
+        enrollments: { _count: "desc" },
       },
       take: limit,
       include: {

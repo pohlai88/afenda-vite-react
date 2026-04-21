@@ -1,9 +1,9 @@
 // src/hooks/use-bulk-selection.ts
 // Hook for managing multi-row selection in data tables
 
-'use client'
+"use client"
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo } from "react"
 
 interface UseBulkSelectionOptions<T> {
   /** All items available for selection */
@@ -69,7 +69,8 @@ export function useBulkSelection<T>({
   )
 
   const isAllSelected = useMemo(
-    () => currentIds.size > 0 && [...currentIds].every((id) => selectedIds.has(id)),
+    () =>
+      currentIds.size > 0 && [...currentIds].every((id) => selectedIds.has(id)),
     [currentIds, selectedIds]
   )
 

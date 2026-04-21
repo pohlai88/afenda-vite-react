@@ -167,7 +167,10 @@ export default function AttendancePage() {
               />
             </div>
 
-            <Select value={departmentId || "all"} onValueChange={(v) => setDepartmentId(v === "all" ? "" : v)}>
+            <Select
+              value={departmentId || "all"}
+              onValueChange={(v) => setDepartmentId(v === "all" ? "" : v)}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Phòng ban" />
               </SelectTrigger>
@@ -181,17 +184,22 @@ export default function AttendancePage() {
               </SelectContent>
             </Select>
 
-            <Select value={status || "all"} onValueChange={(v) => setStatus(v === "all" ? "" : v)}>
+            <Select
+              value={status || "all"}
+              onValueChange={(v) => setStatus(v === "all" ? "" : v)}
+            >
               <SelectTrigger className="w-[160px]">
                 <SelectValue placeholder="Trạng thái" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tất cả</SelectItem>
-                {Object.entries(ATTENDANCE_STATUS_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
+                {Object.entries(ATTENDANCE_STATUS_LABELS).map(
+                  ([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  )
+                )}
               </SelectContent>
             </Select>
 

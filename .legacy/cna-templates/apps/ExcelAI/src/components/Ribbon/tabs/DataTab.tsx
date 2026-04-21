@@ -1,11 +1,18 @@
-import React from 'react';
-import { RibbonGroup } from '../RibbonGroup';
-import { RibbonButton } from '../RibbonButton';
-import { RibbonDropdown } from '../RibbonDropdown';
+import React from "react"
+import { RibbonGroup } from "../RibbonGroup"
+import { RibbonButton } from "../RibbonButton"
+import { RibbonDropdown } from "../RibbonDropdown"
 import {
-  Database, RefreshCw, Table, ArrowDownAZ, Filter,
-  SplitSquareHorizontal, CheckSquare, Sparkles, GitCompare
-} from 'lucide-react';
+  Database,
+  RefreshCw,
+  Table,
+  ArrowDownAZ,
+  Filter,
+  SplitSquareHorizontal,
+  CheckSquare,
+  Sparkles,
+  GitCompare,
+} from "lucide-react"
 
 export const DataTab: React.FC = () => {
   return (
@@ -17,10 +24,14 @@ export const DataTab: React.FC = () => {
           label="Get Data"
           size="large"
           options={[
-            { id: 'from-file', label: 'From File', onClick: () => {} },
-            { id: 'from-database', label: 'From Database', onClick: () => {} },
-            { id: 'from-web', label: 'From Web', onClick: () => {} },
-            { id: 'from-other', label: 'From Other Sources', onClick: () => {} },
+            { id: "from-file", label: "From File", onClick: () => {} },
+            { id: "from-database", label: "From Database", onClick: () => {} },
+            { id: "from-web", label: "From Web", onClick: () => {} },
+            {
+              id: "from-other",
+              label: "From Other Sources",
+              onClick: () => {},
+            },
           ]}
         />
         <RibbonButton icon={RefreshCw} label="Refresh All" size="large" />
@@ -58,5 +69,5 @@ export const DataTab: React.FC = () => {
         <RibbonButton icon={CheckSquare} label="Data Validation" />
       </RibbonGroup>
     </div>
-  );
-};
+  )
+}

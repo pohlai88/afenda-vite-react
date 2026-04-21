@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import { X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { X } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 interface BulkAction {
   label: string
   icon?: React.ReactNode
   onClick: (selectedIds: string[]) => void
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost'
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost"
   disabled?: boolean
 }
 
@@ -57,7 +57,7 @@ export function BulkActionBar({
       {actions.map((action, i) => (
         <Button
           key={i}
-          variant={action.variant || 'outline'}
+          variant={action.variant || "outline"}
           size="sm"
           disabled={action.disabled}
           onClick={() => action.onClick([...selectedIds])}

@@ -2,7 +2,12 @@
 
 import { useState } from "react"
 import { Plus, MoreHorizontal, Pencil, Trash2, MapPin } from "lucide-react"
-import { useBranches, useCreateBranch, useUpdateBranch, useDeleteBranch } from "@/hooks/use-branches"
+import {
+  useBranches,
+  useCreateBranch,
+  useUpdateBranch,
+  useDeleteBranch,
+} from "@/hooks/use-branches"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -36,9 +41,24 @@ import { Switch } from "@/components/ui/switch"
 
 export default function BranchesPage() {
   const [isOpen, setIsOpen] = useState(false)
-  const [editingBranch, setEditingBranch] = useState<{ id: string; name: string; code: string; address: string | null; phone: string | null; isHeadquarters: boolean; isActive: boolean } | null>(null)
+  const [editingBranch, setEditingBranch] = useState<{
+    id: string
+    name: string
+    code: string
+    address: string | null
+    phone: string | null
+    isHeadquarters: boolean
+    isActive: boolean
+  } | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ name: "", code: "", address: "", phone: "", isHeadquarters: false, isActive: true })
+  const [formData, setFormData] = useState({
+    name: "",
+    code: "",
+    address: "",
+    phone: "",
+    isHeadquarters: false,
+    isActive: true,
+  })
 
   const { data: branches, isLoading } = useBranches()
   const createBranch = useCreateBranch()
@@ -47,11 +67,26 @@ export default function BranchesPage() {
 
   const handleOpenCreate = () => {
     setEditingBranch(null)
-    setFormData({ name: "", code: "", address: "", phone: "", isHeadquarters: false, isActive: true })
+    setFormData({
+      name: "",
+      code: "",
+      address: "",
+      phone: "",
+      isHeadquarters: false,
+      isActive: true,
+    })
     setIsOpen(true)
   }
 
-  const handleOpenEdit = (branch: { id: string; name: string; code: string; address: string | null; phone: string | null; isHeadquarters: boolean; isActive: boolean }) => {
+  const handleOpenEdit = (branch: {
+    id: string
+    name: string
+    code: string
+    address: string | null
+    phone: string | null
+    isHeadquarters: boolean
+    isActive: boolean
+  }) => {
     setEditingBranch(branch)
     setFormData({
       name: branch.name,
@@ -83,7 +118,10 @@ export default function BranchesPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Chi nhánh" description="Quản lý các chi nhánh, văn phòng">
+      <PageHeader
+        title="Chi nhánh"
+        description="Quản lý các chi nhánh, văn phòng"
+      >
         <Button onClick={handleOpenCreate}>
           <Plus className="mr-2 h-4 w-4" />
           Thêm chi nhánh
@@ -120,50 +158,65 @@ export default function BranchesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {branches.map((branch: { id: string; code: string; name: string; address: string | null; phone: string | null; isHeadquarters: boolean; isActive: boolean; _count?: { employees: number } }) => (
-                <TableRow key={branch.id}>
-                  <TableCell className="font-mono">{branch.code}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{branch.name}</span>
-                      {branch.isHeadquarters && (
-                        <Badge variant="secondary">Trụ sở chính</Badge>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground max-w-[200px] truncate">
-                    {branch.address || "-"}
-                  </TableCell>
-                  <TableCell>{branch._count?.employees || 0}</TableCell>
-                  <TableCell>
-                    <Badge variant={branch.isActive ? "success" : "secondary"}>
-                      {branch.isActive ? "Hoạt động" : "Ngừng"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleOpenEdit(branch)}>
-                          <Pencil className="mr-2 h-4 w-4" />
-                          Chỉnh sửa
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => setDeleteId(branch.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Xóa
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {branches.map(
+                (branch: {
+                  id: string
+                  code: string
+                  name: string
+                  address: string | null
+                  phone: string | null
+                  isHeadquarters: boolean
+                  isActive: boolean
+                  _count?: { employees: number }
+                }) => (
+                  <TableRow key={branch.id}>
+                    <TableCell className="font-mono">{branch.code}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{branch.name}</span>
+                        {branch.isHeadquarters && (
+                          <Badge variant="secondary">Trụ sở chính</Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground max-w-[200px] truncate">
+                      {branch.address || "-"}
+                    </TableCell>
+                    <TableCell>{branch._count?.employees || 0}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={branch.isActive ? "success" : "secondary"}
+                      >
+                        {branch.isActive ? "Hoạt động" : "Ngừng"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleOpenEdit(branch)}
+                          >
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Chỉnh sửa
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => setDeleteId(branch.id)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Xóa
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                )
+              )}
             </TableBody>
           </Table>
         </div>
@@ -182,7 +235,9 @@ export default function BranchesPage() {
               <Input
                 id="code"
                 value={formData.code}
-                onChange={(e) => setFormData((p) => ({ ...p, code: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, code: e.target.value }))
+                }
                 placeholder="VD: HQ, HN, DN"
                 required
               />
@@ -192,7 +247,9 @@ export default function BranchesPage() {
               <Input
                 id="name"
                 value={formData.name}
-                onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, name: e.target.value }))
+                }
                 placeholder="VD: Trụ sở chính, Chi nhánh Hà Nội"
                 required
               />
@@ -202,7 +259,9 @@ export default function BranchesPage() {
               <Input
                 id="address"
                 value={formData.address}
-                onChange={(e) => setFormData((p) => ({ ...p, address: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, address: e.target.value }))
+                }
                 placeholder="123 Nguyễn Huệ, Quận 1, TP.HCM"
               />
             </div>
@@ -211,7 +270,9 @@ export default function BranchesPage() {
               <Input
                 id="phone"
                 value={formData.phone}
-                onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, phone: e.target.value }))
+                }
                 placeholder="028 1234 5678"
               />
             </div>
@@ -219,12 +280,18 @@ export default function BranchesPage() {
               <Switch
                 id="isHeadquarters"
                 checked={formData.isHeadquarters}
-                onCheckedChange={(checked) => setFormData((p) => ({ ...p, isHeadquarters: checked }))}
+                onCheckedChange={(checked) =>
+                  setFormData((p) => ({ ...p, isHeadquarters: checked }))
+                }
               />
               <Label htmlFor="isHeadquarters">Là trụ sở chính</Label>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsOpen(false)}
+              >
                 Hủy
               </Button>
               <Button

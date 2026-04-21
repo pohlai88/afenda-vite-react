@@ -26,15 +26,15 @@ This guide covers system administration tasks for the TPM system.
 1. Navigate to **Settings** → **Users** → **Add User**
 2. Fill in user details:
 
-| Field | Description | Required |
-|-------|-------------|----------|
-| Email | Login email address | Yes |
-| Full Name | Display name | Yes |
-| Phone | Contact number | No |
-| Department | Organization unit | Yes |
-| Role | User role | Yes |
-| Region | Assigned region(s) | Depends on role |
-| Manager | Direct manager | No |
+| Field      | Description         | Required        |
+| ---------- | ------------------- | --------------- |
+| Email      | Login email address | Yes             |
+| Full Name  | Display name        | Yes             |
+| Phone      | Contact number      | No              |
+| Department | Organization unit   | Yes             |
+| Role       | User role           | Yes             |
+| Region     | Assigned region(s)  | Depends on role |
+| Manager    | Direct manager      | No              |
 
 3. Click **Create User**
 4. System sends welcome email with temporary password
@@ -52,26 +52,26 @@ This guide covers system administration tasks for the TPM system.
 
 ### User Status Management
 
-| Status | Description | Actions |
-|--------|-------------|---------|
-| Active | Normal access | Deactivate |
-| Inactive | No access, preserved data | Activate, Delete |
-| Locked | Temporarily blocked | Unlock |
-| Pending | Awaiting email verification | Resend, Delete |
+| Status   | Description                 | Actions          |
+| -------- | --------------------------- | ---------------- |
+| Active   | Normal access               | Deactivate       |
+| Inactive | No access, preserved data   | Activate, Delete |
+| Locked   | Temporarily blocked         | Unlock           |
+| Pending  | Awaiting email verification | Resend, Delete   |
 
 ### Password Policies
 
 Configure in **Settings** → **Security** → **Password Policy**:
 
-| Setting | Default | Recommended |
-|---------|---------|-------------|
-| Minimum length | 8 | 12 |
-| Require uppercase | Yes | Yes |
-| Require lowercase | Yes | Yes |
-| Require number | Yes | Yes |
-| Require special char | No | Yes |
-| Expiry days | 90 | 60 |
-| History count | 5 | 10 |
+| Setting              | Default | Recommended |
+| -------------------- | ------- | ----------- |
+| Minimum length       | 8       | 12          |
+| Require uppercase    | Yes     | Yes         |
+| Require lowercase    | Yes     | Yes         |
+| Require number       | Yes     | Yes         |
+| Require special char | No      | Yes         |
+| Expiry days          | 90      | 60          |
+| History count        | 5       | 10          |
 
 ### Session Management
 
@@ -85,14 +85,14 @@ Configure in **Settings** → **Security** → **Password Policy**:
 
 ### Default Roles
 
-| Role | Description | Key Permissions |
-|------|-------------|-----------------|
-| Admin | Full system access | All permissions |
-| Finance Manager | Finance operations | Finance module, Reports |
-| Regional Manager | Regional oversight | Region data, Approvals |
-| Sales Manager | Team management | Team promotions, Claims |
-| Sales Rep | Field operations | Create claims, View assigned |
-| Viewer | Read-only access | View dashboards, Reports |
+| Role             | Description        | Key Permissions              |
+| ---------------- | ------------------ | ---------------------------- |
+| Admin            | Full system access | All permissions              |
+| Finance Manager  | Finance operations | Finance module, Reports      |
+| Regional Manager | Regional oversight | Region data, Approvals       |
+| Sales Manager    | Team management    | Team promotions, Claims      |
+| Sales Rep        | Field operations   | Create claims, View assigned |
+| Viewer           | Read-only access   | View dashboards, Reports     |
 
 ### Permission Categories
 
@@ -145,11 +145,11 @@ Admin
 
 Configure row-level security based on:
 
-| Dimension | Options |
-|-----------|---------|
-| Region | All, Specific regions, Own region |
-| Channel | All, Specific channels |
-| Customer | All, Assigned customers |
+| Dimension | Options                               |
+| --------- | ------------------------------------- |
+| Region    | All, Specific regions, Own region     |
+| Channel   | All, Specific channels                |
+| Customer  | All, Assigned customers               |
 | Promotion | All, Created by user, Team promotions |
 
 ---
@@ -160,14 +160,14 @@ Configure row-level security based on:
 
 **Settings** → **System** → **General**
 
-| Setting | Description |
-|---------|-------------|
-| Company Name | Displayed in header and emails |
-| Logo | Company logo (max 500KB) |
-| Timezone | System timezone (Asia/Ho_Chi_Minh) |
-| Date Format | DD/MM/YYYY or MM/DD/YYYY |
-| Currency | VND, USD |
-| Decimal Places | 0 for VND, 2 for USD |
+| Setting        | Description                        |
+| -------------- | ---------------------------------- |
+| Company Name   | Displayed in header and emails     |
+| Logo           | Company logo (max 500KB)           |
+| Timezone       | System timezone (Asia/Ho_Chi_Minh) |
+| Date Format    | DD/MM/YYYY or MM/DD/YYYY           |
+| Currency       | VND, USD                           |
+| Decimal Places | 0 for VND, 2 for USD               |
 
 ### Email Configuration
 
@@ -182,6 +182,7 @@ From Name: TPM System
 ```
 
 Email templates can be customized:
+
 - Welcome email
 - Password reset
 - Approval notifications
@@ -191,15 +192,15 @@ Email templates can be customized:
 
 Configure notification channels:
 
-| Event | Email | In-App | Push |
-|-------|-------|--------|------|
-| Promotion pending approval | Yes | Yes | Optional |
-| Promotion approved/rejected | Yes | Yes | Yes |
-| Claim submitted | No | Yes | No |
-| Claim approved | Yes | Yes | Optional |
-| Claim rejected | Yes | Yes | Yes |
-| Budget alert | Yes | Yes | Yes |
-| System maintenance | Yes | Yes | No |
+| Event                       | Email | In-App | Push     |
+| --------------------------- | ----- | ------ | -------- |
+| Promotion pending approval  | Yes   | Yes    | Optional |
+| Promotion approved/rejected | Yes   | Yes    | Yes      |
+| Claim submitted             | No    | Yes    | No       |
+| Claim approved              | Yes   | Yes    | Optional |
+| Claim rejected              | Yes   | Yes    | Yes      |
+| Budget alert                | Yes   | Yes    | Yes      |
+| System maintenance          | Yes   | Yes    | No       |
 
 ---
 
@@ -226,12 +227,12 @@ Company
 
 ### Channels
 
-| Code | Name | Description |
-|------|------|-------------|
-| GT | General Trade | Traditional retail |
-| MT | Modern Trade | Supermarkets, convenience stores |
-| HORECA | Hotel/Restaurant/Cafe | Hospitality |
-| ONLINE | E-commerce | Online channels |
+| Code   | Name                  | Description                      |
+| ------ | --------------------- | -------------------------------- |
+| GT     | General Trade         | Traditional retail               |
+| MT     | Modern Trade          | Supermarkets, convenience stores |
+| HORECA | Hotel/Restaurant/Cafe | Hospitality                      |
+| ONLINE | E-commerce            | Online channels                  |
 
 ### Products
 
@@ -242,6 +243,7 @@ Maintain product master:
 3. **Manual add**: Settings → Products → Add
 
 Product fields:
+
 - SKU, Name, Category, Brand
 - Unit, Pack size
 - Status (Active/Inactive)
@@ -249,6 +251,7 @@ Product fields:
 ### Customers
 
 Customer master data includes:
+
 - Customer code, Name, Tax code
 - Address, Contact info
 - Region, Channel classification
@@ -258,13 +261,13 @@ Customer master data includes:
 
 Finance → Settings → GL Accounts
 
-| Account | Description |
-|---------|-------------|
+| Account | Description                  |
+| ------- | ---------------------------- |
 | 641-001 | Promotion expense - Discount |
-| 641-002 | Promotion expense - Rebate |
-| 641-003 | Promotion expense - POSM |
-| 331-XXX | Customer payables |
-| 138-XXX | Accrued expenses |
+| 641-002 | Promotion expense - Rebate   |
+| 641-003 | Promotion expense - POSM     |
+| 331-XXX | Customer payables            |
+| 138-XXX | Accrued expenses             |
 
 ---
 
@@ -274,11 +277,11 @@ Finance → Settings → GL Accounts
 
 **Settings** → **Workflows** → **Promotion Approval**
 
-| Level | Role | Condition |
-|-------|------|-----------|
-| 1 | Area Sales Manager | Budget < 50M |
-| 2 | Regional Sales Manager | Budget 50M - 200M |
-| 3 | National Sales Manager | Budget > 200M |
+| Level | Role                   | Condition         |
+| ----- | ---------------------- | ----------------- |
+| 1     | Area Sales Manager     | Budget < 50M      |
+| 2     | Regional Sales Manager | Budget 50M - 200M |
+| 3     | National Sales Manager | Budget > 200M     |
 
 ### Workflow Rules
 
@@ -311,15 +314,16 @@ Configure automatic routing:
 
 ### SLA Configuration
 
-| Approval Level | SLA | Escalation After |
-|----------------|-----|------------------|
-| Level 1 | 24 hours | 48 hours |
-| Level 2 | 48 hours | 72 hours |
-| Level 3 | 72 hours | 96 hours |
+| Approval Level | SLA      | Escalation After |
+| -------------- | -------- | ---------------- |
+| Level 1        | 24 hours | 48 hours         |
+| Level 2        | 48 hours | 72 hours         |
+| Level 3        | 72 hours | 96 hours         |
 
 ### Delegation
 
 Users can delegate approval authority:
+
 1. User goes to **Profile** → **Delegation**
 2. Select delegate
 3. Set date range
@@ -347,6 +351,7 @@ Annual Budget
 **Finance** → **Budget** → **Allocate**
 
 Allocate by:
+
 - Region
 - Channel
 - Product category
@@ -354,15 +359,16 @@ Allocate by:
 
 ### Budget Controls
 
-| Control | Action |
-|---------|--------|
-| Soft limit (80%) | Warning notification |
-| Hard limit (100%) | Block new promotions |
-| Over-budget | Requires CFO approval |
+| Control           | Action                |
+| ----------------- | --------------------- |
+| Soft limit (80%)  | Warning notification  |
+| Hard limit (100%) | Block new promotions  |
+| Over-budget       | Requires CFO approval |
 
 ### Budget Transfers
 
 Transfer budget between:
+
 - Regions (requires RSM approval)
 - Channels (requires NSM approval)
 - Categories (requires Finance approval)
@@ -384,10 +390,11 @@ port: 8443
 client: 100
 system_id: PRD
 username: TPM_INTERFACE
-sync_interval: 60  # minutes
+sync_interval: 60 # minutes
 ```
 
 Synchronized data:
+
 - Customers (daily)
 - Products (daily)
 - Sales data (hourly)
@@ -403,12 +410,14 @@ Generate API keys for external systems:
 4. Copy key (shown once only)
 
 API rate limits:
+
 - Standard: 100 requests/minute
 - Premium: 1000 requests/minute
 
 ### SSO Configuration
 
 Support for:
+
 - SAML 2.0
 - OAuth 2.0 / OIDC
 - Azure AD
@@ -436,6 +445,7 @@ Monitor at `/api/health`:
 ### Performance Metrics
 
 Dashboard shows:
+
 - API response times (p50, p95, p99)
 - Database query performance
 - Active users
@@ -443,19 +453,20 @@ Dashboard shows:
 
 ### Alert Configuration
 
-| Alert | Threshold | Action |
-|-------|-----------|--------|
-| High error rate | > 1% | Email + Slack |
-| Slow response | p95 > 2s | Email |
-| Database CPU | > 80% | Slack + PagerDuty |
-| Disk usage | > 85% | Email |
-| Failed logins | > 10/min | Email + Slack |
+| Alert           | Threshold | Action            |
+| --------------- | --------- | ----------------- |
+| High error rate | > 1%      | Email + Slack     |
+| Slow response   | p95 > 2s  | Email             |
+| Database CPU    | > 80%     | Slack + PagerDuty |
+| Disk usage      | > 85%     | Email             |
+| Failed logins   | > 10/min  | Email + Slack     |
 
 ### Audit Logs
 
 **Settings** → **Audit** → **Logs**
 
 Logged events:
+
 - User login/logout
 - Data changes (create, update, delete)
 - Permission changes
@@ -465,6 +476,7 @@ Logged events:
 Retention: 2 years
 
 Export audit logs:
+
 - CSV for analysis
 - Send to SIEM (Splunk, ELK)
 
@@ -474,11 +486,11 @@ Export audit logs:
 
 ### Automatic Backups
 
-| Type | Frequency | Retention |
-|------|-----------|-----------|
-| Full | Daily (2 AM) | 30 days |
-| Incremental | Hourly | 7 days |
-| Transaction log | 15 minutes | 3 days |
+| Type            | Frequency    | Retention |
+| --------------- | ------------ | --------- |
+| Full            | Daily (2 AM) | 30 days   |
+| Incremental     | Hourly       | 7 days    |
+| Transaction log | 15 minutes   | 3 days    |
 
 ### Manual Backup
 
@@ -505,6 +517,7 @@ RTO (Recovery Time Objective): 4 hours
 RPO (Recovery Point Objective): 1 hour
 
 Procedures:
+
 1. Failover to DR site (automatic)
 2. Verify system health
 3. Notify users
@@ -517,24 +530,28 @@ Procedures:
 ### Common Issues
 
 #### Users can't log in
+
 1. Check user status (active?)
 2. Verify password hasn't expired
 3. Check for account lockout
 4. Review login error logs
 
 #### Slow performance
+
 1. Check database query times
 2. Review active connections
 3. Check memory usage
 4. Analyze slow query logs
 
 #### Email not sending
+
 1. Verify SMTP configuration
 2. Check email queue
 3. Review error logs
 4. Test SMTP connection
 
 #### Integration sync failed
+
 1. Check external system availability
 2. Review sync logs
 3. Verify credentials
@@ -543,6 +560,7 @@ Procedures:
 ### Log Analysis
 
 Log locations:
+
 ```
 /var/log/tpm/app.log       # Application logs
 /var/log/tpm/error.log     # Error logs
@@ -551,6 +569,7 @@ Log locations:
 ```
 
 Log levels:
+
 - ERROR: Requires immediate attention
 - WARN: Potential issues
 - INFO: Normal operations
@@ -558,14 +577,15 @@ Log levels:
 
 ### Support Escalation
 
-| Severity | Response Time | Examples |
-|----------|---------------|----------|
-| Critical | 1 hour | System down, data loss |
-| High | 4 hours | Major feature broken |
-| Medium | 8 hours | Minor feature issue |
-| Low | 24 hours | Questions, enhancements |
+| Severity | Response Time | Examples                |
+| -------- | ------------- | ----------------------- |
+| Critical | 1 hour        | System down, data loss  |
+| High     | 4 hours       | Major feature broken    |
+| Medium   | 8 hours       | Minor feature issue     |
+| Low      | 24 hours      | Questions, enhancements |
 
 Contact:
+
 - Email: admin-support@company.com
 - Phone: Internal ext. 1234
 - Slack: #tpm-support
@@ -574,13 +594,14 @@ Contact:
 
 ## Maintenance Windows
 
-| Type | Schedule | Duration | Impact |
-|------|----------|----------|--------|
-| Patching | Sunday 2-4 AM | 2 hours | Possible downtime |
-| Upgrades | First Sunday/month | 4 hours | Downtime |
-| Emergency | As needed | Varies | Varies |
+| Type      | Schedule           | Duration | Impact            |
+| --------- | ------------------ | -------- | ----------------- |
+| Patching  | Sunday 2-4 AM      | 2 hours  | Possible downtime |
+| Upgrades  | First Sunday/month | 4 hours  | Downtime          |
+| Emergency | As needed          | Varies   | Varies            |
 
 Notification:
+
 - 1 week advance for planned maintenance
 - 24 hours for urgent patches
 - Immediate for emergencies

@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { Prisma } from "@prisma/client"
 
 export async function createOneOnOne(
   tenantId: string,
@@ -8,7 +8,7 @@ export async function createOneOnOne(
     managerId: string
     scheduledAt: Date
     duration?: number
-    agenda?: { topic: string; owner: 'employee' | 'manager'; notes?: string }[]
+    agenda?: { topic: string; owner: "employee" | "manager"; notes?: string }[]
   }
 ) {
   return db.oneOnOne.create({
@@ -50,12 +50,13 @@ export async function getOneOnOnes(
     ...(filters?.isCompleted !== undefined && {
       completedAt: filters.isCompleted ? { not: null } : null,
     }),
-    ...(filters?.startDate && filters?.endDate && {
-      scheduledAt: {
-        gte: filters.startDate,
-        lte: filters.endDate,
-      },
-    }),
+    ...(filters?.startDate &&
+      filters?.endDate && {
+        scheduledAt: {
+          gte: filters.startDate,
+          lte: filters.endDate,
+        },
+      }),
   }
 
   const [data, total] = await Promise.all([
@@ -69,7 +70,7 @@ export async function getOneOnOnes(
           select: { id: true, fullName: true },
         },
       },
-      orderBy: { scheduledAt: 'desc' },
+      orderBy: { scheduledAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -107,10 +108,15 @@ export async function updateOneOnOne(
   data: {
     scheduledAt?: Date
     duration?: number
-    agenda?: { topic: string; owner: 'employee' | 'manager'; notes?: string }[]
+    agenda?: { topic: string; owner: "employee" | "manager"; notes?: string }[]
     employeeNotes?: string
     managerNotes?: string
-    actionItems?: { task: string; assignee: string; dueDate?: string; completed: boolean }[]
+    actionItems?: {
+      task: string
+      assignee: string
+      dueDate?: string
+      completed: boolean
+    }[]
     completedAt?: Date | null
   }
 ) {
@@ -119,7 +125,7 @@ export async function updateOneOnOne(
   })
 
   if (!oneOnOne) {
-    throw new Error('One-on-one not found')
+    throw new Error("One-on-one not found")
   }
 
   return db.oneOnOne.update({
@@ -128,9 +134,15 @@ export async function updateOneOnOne(
       ...(data.scheduledAt !== undefined && { scheduledAt: data.scheduledAt }),
       ...(data.duration !== undefined && { duration: data.duration }),
       ...(data.agenda !== undefined && { agenda: data.agenda as any }),
-      ...(data.employeeNotes !== undefined && { employeeNotes: data.employeeNotes }),
-      ...(data.managerNotes !== undefined && { managerNotes: data.managerNotes }),
-      ...(data.actionItems !== undefined && { actionItems: data.actionItems as any }),
+      ...(data.employeeNotes !== undefined && {
+        employeeNotes: data.employeeNotes,
+      }),
+      ...(data.managerNotes !== undefined && {
+        managerNotes: data.managerNotes,
+      }),
+      ...(data.actionItems !== undefined && {
+        actionItems: data.actionItems as any,
+      }),
       ...(data.completedAt !== undefined && { completedAt: data.completedAt }),
     },
     include: {

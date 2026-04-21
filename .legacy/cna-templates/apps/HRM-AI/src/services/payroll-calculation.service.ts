@@ -1,21 +1,26 @@
 // src/services/payroll-calculation.service.ts
 // Payroll Calculation Service - Orchestrates payroll calculation
 
-import { db } from '@/lib/db'
-import type { Prisma, PayrollComponentCategory, PayrollItemType, BankCode } from '@prisma/client'
+import { db } from "@/lib/db"
+import type {
+  Prisma,
+  PayrollComponentCategory,
+  PayrollItemType,
+  BankCode,
+} from "@prisma/client"
 import {
   calculatePayroll,
   calculatePayrollBatch,
   type PayrollInput,
   type PayrollResult,
   type PayrollTotals,
-} from '@/lib/payroll'
-import { payrollConfigService } from './payroll-config.service'
-import { payrollPeriodService } from './payroll-period.service'
+} from "@/lib/payroll"
+import { payrollConfigService } from "./payroll-config.service"
+import { payrollPeriodService } from "./payroll-period.service"
 
 export interface CalculationOptions {
-  employeeIds?: string[]  // If not provided, calculate for all active employees
-  recalculate?: boolean   // If true, delete existing and recalculate
+  employeeIds?: string[] // If not provided, calculate for all active employees
+  recalculate?: boolean // If true, delete existing and recalculate
 }
 
 export interface CalculationResult {
@@ -48,15 +53,15 @@ export const payrollCalculationService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     if (period.isLocked) {
-      throw new Error('Kỳ lương đã khóa, không thể tính toán')
+      throw new Error("Kỳ lương đã khóa, không thể tính toán")
     }
 
     // Update status to CALCULATING
-    await payrollPeriodService.updateStatus(tenantId, periodId, 'CALCULATING')
+    await payrollPeriodService.updateStatus(tenantId, periodId, "CALCULATING")
 
     try {
       // Get config for period
@@ -102,7 +107,7 @@ export const payrollCalculationService = {
         } catch (error) {
           errors.push({
             employeeId: emp.id,
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message : "Unknown error",
           })
         }
       }
@@ -124,7 +129,7 @@ export const payrollCalculationService = {
         totalEmployerCost: totals.totalInsuranceEmployer,
       })
 
-      await payrollPeriodService.updateStatus(tenantId, periodId, 'SIMULATED')
+      await payrollPeriodService.updateStatus(tenantId, periodId, "SIMULATED")
 
       return {
         periodId,
@@ -136,7 +141,7 @@ export const payrollCalculationService = {
       }
     } catch (error) {
       // Reset status on error
-      await payrollPeriodService.updateStatus(tenantId, periodId, 'DRAFT')
+      await payrollPeriodService.updateStatus(tenantId, periodId, "DRAFT")
       throw error
     }
   },
@@ -154,7 +159,7 @@ export const payrollCalculationService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     const config = await payrollConfigService.getConfigForDate(
@@ -168,8 +173,8 @@ export const payrollCalculationService = {
         department: { select: { name: true } },
         position: { select: { name: true } },
         contracts: {
-          where: { status: 'ACTIVE' },
-          orderBy: { startDate: 'desc' },
+          where: { status: "ACTIVE" },
+          orderBy: { startDate: "desc" },
           take: 1,
         },
         dependents: {
@@ -186,7 +191,7 @@ export const payrollCalculationService = {
     })
 
     if (!employee) {
-      throw new Error('Nhân viên không tồn tại')
+      throw new Error("Nhân viên không tồn tại")
     }
 
     const input = await this.prepareEmployeeInput(
@@ -228,7 +233,10 @@ export const payrollCalculationService = {
     employeeIds?: string[]
   ): Promise<{ results: PayrollResult[]; totals: PayrollTotals }> {
     const periodDate = new Date(year, month - 1, 1)
-    const config = await payrollConfigService.getConfigForDate(tenantId, periodDate)
+    const config = await payrollConfigService.getConfigForDate(
+      tenantId,
+      periodDate
+    )
 
     const employees = await this.getEmployeesForCalculation(
       tenantId,
@@ -276,15 +284,16 @@ export const payrollCalculationService = {
 
     const where: Prisma.EmployeeWhereInput = {
       tenantId,
-      status: { in: ['ACTIVE', 'PROBATION'] },
+      status: { in: ["ACTIVE", "PROBATION"] },
       hireDate: { lte: periodEnd },
       OR: [
         { resignationDate: null },
         { resignationDate: { gte: periodStart } },
       ],
-      ...(employeeIds && employeeIds.length > 0 && {
-        id: { in: employeeIds },
-      }),
+      ...(employeeIds &&
+        employeeIds.length > 0 && {
+          id: { in: employeeIds },
+        }),
     }
 
     return db.employee.findMany({
@@ -293,8 +302,8 @@ export const payrollCalculationService = {
         department: { select: { name: true } },
         position: { select: { name: true } },
         contracts: {
-          where: { status: 'ACTIVE' },
-          orderBy: { startDate: 'desc' },
+          where: { status: "ACTIVE" },
+          orderBy: { startDate: "desc" },
           take: 1,
         },
         dependents: {
@@ -308,7 +317,7 @@ export const payrollCalculationService = {
           },
         },
       },
-      orderBy: { employeeCode: 'asc' },
+      orderBy: { employeeCode: "asc" },
     })
   },
 
@@ -332,7 +341,9 @@ export const payrollCalculationService = {
     // Get active contract
     const contract = employee.contracts[0]
     if (!contract) {
-      throw new Error(`Nhân viên ${employee.employeeCode} không có hợp đồng hiệu lực`)
+      throw new Error(
+        `Nhân viên ${employee.employeeCode} không có hợp đồng hiệu lực`
+      )
     }
 
     // Get attendance summary
@@ -350,7 +361,7 @@ export const payrollCalculationService = {
       where: {
         tenantId,
         employeeId: employee.id,
-        status: 'APPROVED',
+        status: "APPROVED",
         date: {
           gte: new Date(year, month - 1, 1),
           lte: new Date(year, month, 0),
@@ -367,13 +378,13 @@ export const payrollCalculationService = {
     for (const ot of otRequests) {
       const hours = Number(ot.actualHours || ot.plannedHours)
       switch (ot.dayType) {
-        case 'NORMAL':
+        case "NORMAL":
           otHoursWeekday += hours
           break
-        case 'WEEKEND':
+        case "WEEKEND":
           otHoursWeekend += hours
           break
-        case 'HOLIDAY':
+        case "HOLIDAY":
           otHoursHoliday += hours
           break
       }
@@ -389,14 +400,14 @@ export const payrollCalculationService = {
         employeeId: employee.id,
         year,
         month,
-        status: 'APPROVED',
+        status: "APPROVED",
       },
     })
 
     // Convert adjustments to allowances/deductions
     const allowances = adjustments
-      .filter(a => a.itemType === 'EARNING')
-      .map(a => ({
+      .filter((a) => a.itemType === "EARNING")
+      .map((a) => ({
         code: `ADJ_${a.id.substring(0, 8)}`,
         name: a.name,
         amount: Number(a.amount),
@@ -405,8 +416,8 @@ export const payrollCalculationService = {
       }))
 
     const deductions = adjustments
-      .filter(a => a.itemType === 'DEDUCTION')
-      .map(a => ({
+      .filter((a) => a.itemType === "DEDUCTION")
+      .map((a) => ({
         code: `ADJ_${a.id.substring(0, 8)}`,
         name: a.name,
         amount: Number(a.amount),
@@ -422,7 +433,7 @@ export const payrollCalculationService = {
     if (contractAllowances && Array.isArray(contractAllowances)) {
       for (const allowance of contractAllowances) {
         allowances.push({
-          code: `CONTRACT_${allowance.name.replace(/\s+/g, '_').toUpperCase()}`,
+          code: `CONTRACT_${allowance.name.replace(/\s+/g, "_").toUpperCase()}`,
           name: allowance.name,
           amount: allowance.amount,
           isTaxable: allowance.taxable ?? true,
@@ -432,14 +443,20 @@ export const payrollCalculationService = {
     }
 
     const baseSalary = Number(contract.baseSalary)
-    const insuranceSalary = Number(contract.insuranceSalary || contract.baseSalary)
+    const insuranceSalary = Number(
+      contract.insuranceSalary || contract.baseSalary
+    )
 
     // Validate salary values to prevent negative payroll calculations
     if (baseSalary < 0 || !Number.isFinite(baseSalary)) {
-      throw new Error(`Nhân viên ${employee.employeeCode} có lương cơ bản không hợp lệ (${baseSalary})`)
+      throw new Error(
+        `Nhân viên ${employee.employeeCode} có lương cơ bản không hợp lệ (${baseSalary})`
+      )
     }
     if (insuranceSalary < 0 || !Number.isFinite(insuranceSalary)) {
-      throw new Error(`Nhân viên ${employee.employeeCode} có lương đóng BH không hợp lệ (${insuranceSalary})`)
+      throw new Error(
+        `Nhân viên ${employee.employeeCode} có lương đóng BH không hợp lệ (${insuranceSalary})`
+      )
     }
 
     return {
@@ -452,13 +469,23 @@ export const payrollCalculationService = {
       baseSalary,
       insuranceSalary,
 
-      workDays: attendanceSummary ? Number(attendanceSummary.actualWorkDays) : Number(config.standardWorkDays || 22),
+      workDays: attendanceSummary
+        ? Number(attendanceSummary.actualWorkDays)
+        : Number(config.standardWorkDays || 22),
       standardDays: Number(config.standardWorkDays || 22),
 
-      otHoursWeekday: attendanceSummary ? Number(attendanceSummary.otWeekdayHours) : otHoursWeekday,
-      otHoursWeekend: attendanceSummary ? Number(attendanceSummary.otWeekendHours) : otHoursWeekend,
-      otHoursHoliday: attendanceSummary ? Number(attendanceSummary.otHolidayHours) : otHoursHoliday,
-      otHoursNight: attendanceSummary ? Number(attendanceSummary.otNightHours) : otHoursNight,
+      otHoursWeekday: attendanceSummary
+        ? Number(attendanceSummary.otWeekdayHours)
+        : otHoursWeekday,
+      otHoursWeekend: attendanceSummary
+        ? Number(attendanceSummary.otWeekendHours)
+        : otHoursWeekend,
+      otHoursHoliday: attendanceSummary
+        ? Number(attendanceSummary.otHolidayHours)
+        : otHoursHoliday,
+      otHoursNight: attendanceSummary
+        ? Number(attendanceSummary.otNightHours)
+        : otHoursNight,
 
       dependentCount: employee.dependents.length,
 
@@ -535,13 +562,13 @@ export const payrollCalculationService = {
         totalEmployerCost: result.totalEmployerCost,
         bankAccount: result.bankAccount,
         bankName: result.bankName,
-        bankCode: result.bankCode as BankCode || null,
-        status: 'SIMULATED',
+        bankCode: (result.bankCode as BankCode) || null,
+        status: "SIMULATED",
       },
     })
 
     // Create payroll items
-    const items = result.allItems.map(item => ({
+    const items = result.allItems.map((item) => ({
       payrollId: payroll.id,
       name: item.name,
       code: item.code,

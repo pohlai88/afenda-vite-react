@@ -1,9 +1,9 @@
 // src/lib/compliance/insurance/reports/d02-generator.ts
 // D02-TS Report Generator - Báo cáo tăng lao động tham gia BHXH, BHYT, BHTN
 
-import prisma from '@/lib/db'
-import { formatInsuranceAmount } from '../calculator'
-import { INSURANCE_CHANGE_TYPES } from '../constants'
+import prisma from "@/lib/db"
+import { formatInsuranceAmount } from "../calculator"
+import { INSURANCE_CHANGE_TYPES } from "../constants"
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -50,7 +50,11 @@ export interface D02ReportData {
 // CHANGE TYPE DETECTION
 // ═══════════════════════════════════════════════════════════════
 
-type IncreaseChangeType = 'NEW_HIRE' | 'RETURN_FROM_LEAVE' | 'SALARY_INCREASE' | 'TRANSFER_IN'
+type IncreaseChangeType =
+  | "NEW_HIRE"
+  | "RETURN_FROM_LEAVE"
+  | "SALARY_INCREASE"
+  | "TRANSFER_IN"
 
 function detectIncreaseChangeType(employee: {
   hireDate: Date
@@ -64,25 +68,28 @@ function detectIncreaseChangeType(employee: {
 
   // New hire
   if (employee.hireDate >= monthAgo) {
-    return 'NEW_HIRE'
+    return "NEW_HIRE"
   }
 
   // Return from unpaid leave
-  if (employee.previousStatus === 'ON_LEAVE') {
-    return 'RETURN_FROM_LEAVE'
+  if (employee.previousStatus === "ON_LEAVE") {
+    return "RETURN_FROM_LEAVE"
   }
 
   // Transfer from another company
   if (employee.transferFrom) {
-    return 'TRANSFER_IN'
+    return "TRANSFER_IN"
   }
 
   // Salary increase
-  if (employee.previousSalary && employee.currentSalary > employee.previousSalary) {
-    return 'SALARY_INCREASE'
+  if (
+    employee.previousSalary &&
+    employee.currentSalary > employee.previousSalary
+  ) {
+    return "SALARY_INCREASE"
   }
 
-  return 'NEW_HIRE'
+  return "NEW_HIRE"
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -106,7 +113,7 @@ export async function generateD02Report(
   })
 
   if (!tenant) {
-    throw new Error('Không tìm thấy thông tin công ty')
+    throw new Error("Không tìm thấy thông tin công ty")
   }
 
   const startOfMonth = new Date(year, month - 1, 1)
@@ -136,7 +143,7 @@ export async function generateD02Report(
       },
     },
     orderBy: {
-      registrationDate: 'asc',
+      registrationDate: "asc",
     },
   })
 
@@ -183,8 +190,8 @@ export async function generateD02Report(
       employeeCode: ins.employee.employeeCode,
       fullName: ins.employee.fullName,
       dateOfBirth: ins.employee.dateOfBirth,
-      gender: ins.employee.gender === 'MALE' ? 'Nam' : 'Nữ',
-      idNumber: ins.employee.idNumber || '',
+      gender: ins.employee.gender === "MALE" ? "Nam" : "Nữ",
+      idNumber: ins.employee.idNumber || "",
       socialInsuranceNumber: ins.socialInsuranceNumber,
       insuranceSalary: Number(ins.insuranceSalaryBase),
       effectiveDate: ins.effectiveFrom,
@@ -205,12 +212,15 @@ export async function generateD02Report(
 
   const summary = {
     totalNewEmployees: employees.length,
-    totalInsuranceSalary: employees.reduce((sum, emp) => sum + emp.insuranceSalary, 0),
+    totalInsuranceSalary: employees.reduce(
+      (sum, emp) => sum + emp.insuranceSalary,
+      0
+    ),
     byChangeType,
   }
 
   // Generate report code
-  const reportCode = `D02-${year}${month.toString().padStart(2, '0')}-${Date.now().toString(36).toUpperCase()}`
+  const reportCode = `D02-${year}${month.toString().padStart(2, "0")}-${Date.now().toString(36).toUpperCase()}`
 
   return {
     reportCode,
@@ -218,9 +228,10 @@ export async function generateD02Report(
     reportYear: year,
     companyInfo: {
       name: tenant.name,
-      taxCode: tenant.taxCode || '',
-      address: tenant.address || '',
-      socialInsuranceCode: (tenant.settings as Record<string, unknown>)?.socialInsuranceCode as string,
+      taxCode: tenant.taxCode || "",
+      address: tenant.address || "",
+      socialInsuranceCode: (tenant.settings as Record<string, unknown>)
+        ?.socialInsuranceCode as string,
     },
     employees,
     summary,
@@ -241,16 +252,18 @@ export async function saveD02Report(
   const employerRate = 0.215 // 21.5%
 
   const totalEmployeeAmount = reportData.employees.reduce(
-    (sum, e) => sum + e.insuranceSalary * employeeRate, 0
+    (sum, e) => sum + e.insuranceSalary * employeeRate,
+    0
   )
   const totalEmployerAmount = reportData.employees.reduce(
-    (sum, e) => sum + e.insuranceSalary * employerRate, 0
+    (sum, e) => sum + e.insuranceSalary * employerRate,
+    0
   )
 
   const report = await prisma.insuranceReport.create({
     data: {
       tenantId,
-      reportType: 'D02_TS',
+      reportType: "D02_TS",
       reportCode: reportData.reportCode,
       reportMonth: reportData.reportMonth,
       reportYear: reportData.reportYear,
@@ -259,7 +272,7 @@ export async function saveD02Report(
       totalEmployeeAmount,
       totalEmployerAmount,
       totalAmount: totalEmployeeAmount + totalEmployerAmount,
-      status: 'DRAFT',
+      status: "DRAFT",
       metadata: {
         generatedAt: reportData.generatedAt.toISOString(),
         byChangeType: reportData.summary.byChangeType,
@@ -292,8 +305,8 @@ export async function saveD02Report(
           employeeCode: emp.employeeCode,
           employeeName: emp.fullName,
           dateOfBirth: insurance.employee.dateOfBirth || new Date(1990, 0, 1),
-          gender: (insurance.employee.gender as any) || 'MALE',
-          idNumber: insurance.employee.idNumber || '',
+          gender: (insurance.employee.gender as any) || "MALE",
+          idNumber: insurance.employee.idNumber || "",
           insuranceSalary: emp.insuranceSalary,
           employeeAmount: empAmount,
           employerAmount: erAmount,
@@ -315,37 +328,50 @@ export async function saveD02Report(
 
 export function generateD02ExcelData(reportData: D02ReportData): unknown[][] {
   const headers = [
-    'STT',
-    'Mã NV',
-    'Họ và tên',
-    'Ngày sinh',
-    'Giới tính',
-    'Số CMND/CCCD',
-    'Số sổ BHXH',
-    'Mức lương đóng BH',
-    'Ngày hiệu lực',
-    'Mã loại',
-    'Loại tăng',
-    'Lý do',
+    "STT",
+    "Mã NV",
+    "Họ và tên",
+    "Ngày sinh",
+    "Giới tính",
+    "Số CMND/CCCD",
+    "Số sổ BHXH",
+    "Mức lương đóng BH",
+    "Ngày hiệu lực",
+    "Mã loại",
+    "Loại tăng",
+    "Lý do",
   ]
 
   const rows = reportData.employees.map((emp) => [
     emp.sequence,
     emp.employeeCode,
     emp.fullName,
-    emp.dateOfBirth ? emp.dateOfBirth.toLocaleDateString('vi-VN') : '',
+    emp.dateOfBirth ? emp.dateOfBirth.toLocaleDateString("vi-VN") : "",
     emp.gender,
     emp.idNumber,
     emp.socialInsuranceNumber,
     emp.insuranceSalary,
-    emp.effectiveDate.toLocaleDateString('vi-VN'),
+    emp.effectiveDate.toLocaleDateString("vi-VN"),
     emp.changeTypeCode,
     emp.changeType,
     emp.reason,
   ])
 
   // Add summary
-  const summaryRow = ['', '', 'TỔNG CỘNG', '', '', '', '', reportData.summary.totalInsuranceSalary, '', '', '', '']
+  const summaryRow = [
+    "",
+    "",
+    "TỔNG CỘNG",
+    "",
+    "",
+    "",
+    "",
+    reportData.summary.totalInsuranceSalary,
+    "",
+    "",
+    "",
+    "",
+  ]
 
   return [headers, ...rows, summaryRow]
 }
@@ -361,19 +387,24 @@ export function formatD02ForDisplay(reportData: D02ReportData): {
   summary: Array<{ label: string; value: string }>
 } {
   return {
-    title: 'BÁO CÁO TĂNG LAO ĐỘNG (D02-TS)',
+    title: "BÁO CÁO TĂNG LAO ĐỘNG (D02-TS)",
     period: `Tháng ${reportData.reportMonth}/${reportData.reportYear}`,
     company: reportData.companyInfo.name,
     summary: [
-      { label: 'Tổng số lao động tăng', value: reportData.summary.totalNewEmployees.toString() },
       {
-        label: 'Tổng mức lương đóng BH',
+        label: "Tổng số lao động tăng",
+        value: reportData.summary.totalNewEmployees.toString(),
+      },
+      {
+        label: "Tổng mức lương đóng BH",
         value: formatInsuranceAmount(reportData.summary.totalInsuranceSalary),
       },
-      ...Object.entries(reportData.summary.byChangeType).map(([type, count]) => ({
-        label: type,
-        value: count.toString(),
-      })),
+      ...Object.entries(reportData.summary.byChangeType).map(
+        ([type, count]) => ({
+          label: type,
+          value: count.toString(),
+        })
+      ),
     ],
   }
 }

@@ -8,39 +8,39 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type MacroActionType =
-  | 'setCellValue'
-  | 'setCellFormula'
-  | 'formatCells'
-  | 'insertRow'
-  | 'insertColumn'
-  | 'deleteRow'
-  | 'deleteColumn'
-  | 'copyRange'
-  | 'pasteRange'
-  | 'sortRange'
-  | 'filterRange'
-  | 'clearRange'
-  | 'mergeRange'
-  | 'autoFill'
-  | 'conditionalFormat'
-  | 'createChart'
-  | 'showMessage'
-  | 'inputPrompt'
-  | 'loop';
+  | "setCellValue"
+  | "setCellFormula"
+  | "formatCells"
+  | "insertRow"
+  | "insertColumn"
+  | "deleteRow"
+  | "deleteColumn"
+  | "copyRange"
+  | "pasteRange"
+  | "sortRange"
+  | "filterRange"
+  | "clearRange"
+  | "mergeRange"
+  | "autoFill"
+  | "conditionalFormat"
+  | "createChart"
+  | "showMessage"
+  | "inputPrompt"
+  | "loop"
 
 export interface MacroAction {
-  type: MacroActionType;
-  params: Record<string, unknown>;
-  description?: string;
+  type: MacroActionType
+  params: Record<string, unknown>
+  description?: string
 }
 
 export interface ConvertedMacro {
-  name: string;
-  description: string;
-  actions: MacroAction[];
-  warnings: string[];
-  unsupportedFeatures: string[];
-  originalVBA: string;
+  name: string
+  description: string
+  actions: MacroAction[]
+  warnings: string[]
+  unsupportedFeatures: string[]
+  originalVBA: string
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -48,14 +48,14 @@ export interface ConvertedMacro {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const VBA_PATTERNS: Array<{
-  pattern: RegExp;
-  convert: (match: RegExpMatchArray) => MacroAction | null;
+  pattern: RegExp
+  convert: (match: RegExpMatchArray) => MacroAction | null
 }> = [
   // Range("A1").Value = "text"
   {
     pattern: /Range\("([A-Z]+\d+)"\)\.Value\s*=\s*"([^"]*)"$/m,
     convert: (m) => ({
-      type: 'setCellValue',
+      type: "setCellValue",
       params: { cell: m[1], value: m[2] },
       description: `Set ${m[1]} = "${m[2]}"`,
     }),
@@ -64,7 +64,7 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /Range\("([A-Z]+\d+)"\)\.Value\s*=\s*(\d+\.?\d*)/m,
     convert: (m) => ({
-      type: 'setCellValue',
+      type: "setCellValue",
       params: { cell: m[1], value: parseFloat(m[2]) },
       description: `Set ${m[1]} = ${m[2]}`,
     }),
@@ -73,7 +73,7 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /Range\("([A-Z]+\d+)"\)\.Formula\s*=\s*"([^"]*)"$/m,
     convert: (m) => ({
-      type: 'setCellFormula',
+      type: "setCellFormula",
       params: { cell: m[1], formula: m[2] },
       description: `Set formula ${m[1]} = ${m[2]}`,
     }),
@@ -82,35 +82,47 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /Cells\((\d+),\s*(\d+)\)\.Value\s*=\s*(.+)/m,
     convert: (m) => ({
-      type: 'setCellValue',
-      params: { row: parseInt(m[1]) - 1, col: parseInt(m[2]) - 1, value: m[3].trim().replace(/^"|"$/g, '') },
+      type: "setCellValue",
+      params: {
+        row: parseInt(m[1]) - 1,
+        col: parseInt(m[2]) - 1,
+        value: m[3].trim().replace(/^"|"$/g, ""),
+      },
       description: `Set cell (${m[1]},${m[2]}) = ${m[3].trim()}`,
     }),
   },
   // Range("A1:B10").Font.Bold = True
   {
-    pattern: /Range\("([^"]+)"\)\.Font\.Bold\s*=\s*(True|False)/mi,
+    pattern: /Range\("([^"]+)"\)\.Font\.Bold\s*=\s*(True|False)/im,
     convert: (m) => ({
-      type: 'formatCells',
-      params: { range: m[1], format: { bold: m[2].toLowerCase() === 'true' } },
-      description: `${m[2] === 'True' ? 'Bold' : 'Unbold'} ${m[1]}`,
+      type: "formatCells",
+      params: { range: m[1], format: { bold: m[2].toLowerCase() === "true" } },
+      description: `${m[2] === "True" ? "Bold" : "Unbold"} ${m[1]}`,
     }),
   },
   // Range("A1:B10").Font.Color = RGB(r,g,b)
   {
-    pattern: /Range\("([^"]+)"\)\.Font\.Color\s*=\s*RGB\((\d+),\s*(\d+),\s*(\d+)\)/m,
+    pattern:
+      /Range\("([^"]+)"\)\.Font\.Color\s*=\s*RGB\((\d+),\s*(\d+),\s*(\d+)\)/m,
     convert: (m) => ({
-      type: 'formatCells',
-      params: { range: m[1], format: { textColor: `rgb(${m[2]},${m[3]},${m[4]})` } },
+      type: "formatCells",
+      params: {
+        range: m[1],
+        format: { textColor: `rgb(${m[2]},${m[3]},${m[4]})` },
+      },
       description: `Set text color of ${m[1]}`,
     }),
   },
   // Range("A1:B10").Interior.Color = RGB(r,g,b)
   {
-    pattern: /Range\("([^"]+)"\)\.Interior\.Color\s*=\s*RGB\((\d+),\s*(\d+),\s*(\d+)\)/m,
+    pattern:
+      /Range\("([^"]+)"\)\.Interior\.Color\s*=\s*RGB\((\d+),\s*(\d+),\s*(\d+)\)/m,
     convert: (m) => ({
-      type: 'formatCells',
-      params: { range: m[1], format: { backgroundColor: `rgb(${m[2]},${m[3]},${m[4]})` } },
+      type: "formatCells",
+      params: {
+        range: m[1],
+        format: { backgroundColor: `rgb(${m[2]},${m[3]},${m[4]})` },
+      },
       description: `Set background color of ${m[1]}`,
     }),
   },
@@ -118,7 +130,7 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /Rows\((\d+)\)\.Insert/m,
     convert: (m) => ({
-      type: 'insertRow',
+      type: "insertRow",
       params: { index: parseInt(m[1]) - 1 },
       description: `Insert row at ${m[1]}`,
     }),
@@ -127,7 +139,7 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /Rows\((\d+)\)\.Delete/m,
     convert: (m) => ({
-      type: 'deleteRow',
+      type: "deleteRow",
       params: { index: parseInt(m[1]) - 1 },
       description: `Delete row ${m[1]}`,
     }),
@@ -136,7 +148,7 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /Columns\((\d+)\)\.Insert/m,
     convert: (m) => ({
-      type: 'insertColumn',
+      type: "insertColumn",
       params: { index: parseInt(m[1]) - 1 },
       description: `Insert column at ${m[1]}`,
     }),
@@ -145,7 +157,7 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /Range\("([^"]+)"\)\.Sort\s+Key1:=Range\("([^"]+)"\)/m,
     convert: (m) => ({
-      type: 'sortRange',
+      type: "sortRange",
       params: { range: m[1], keyCell: m[2] },
       description: `Sort ${m[1]} by ${m[2]}`,
     }),
@@ -154,7 +166,7 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /Range\("([^"]+)"\)\.ClearContents/m,
     convert: (m) => ({
-      type: 'clearRange',
+      type: "clearRange",
       params: { range: m[1] },
       description: `Clear contents of ${m[1]}`,
     }),
@@ -163,7 +175,7 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /Range\("([^"]+)"\)\.Copy/m,
     convert: (m) => ({
-      type: 'copyRange',
+      type: "copyRange",
       params: { range: m[1] },
       description: `Copy ${m[1]}`,
     }),
@@ -172,7 +184,7 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /MsgBox\s+"([^"]+)"/m,
     convert: (m) => ({
-      type: 'showMessage',
+      type: "showMessage",
       params: { message: m[1] },
       description: `Show message: "${m[1]}"`,
     }),
@@ -181,12 +193,17 @@ const VBA_PATTERNS: Array<{
   {
     pattern: /For\s+(\w+)\s*=\s*(\d+)\s+To\s+(\d+)/m,
     convert: (m) => ({
-      type: 'loop',
-      params: { variable: m[1], start: parseInt(m[2]), end: parseInt(m[3]), actions: [] },
+      type: "loop",
+      params: {
+        variable: m[1],
+        start: parseInt(m[2]),
+        end: parseInt(m[3]),
+        actions: [],
+      },
       description: `Loop ${m[1]} from ${m[2]} to ${m[3]}`,
     }),
   },
-];
+]
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Convert VBA to Macro JSON
@@ -197,49 +214,70 @@ const VBA_PATTERNS: Array<{
  * Falls back gracefully for unrecognized patterns.
  */
 export function convertVBALocally(vbaCode: string): ConvertedMacro {
-  const actions: MacroAction[] = [];
-  const warnings: string[] = [];
-  const unsupported: string[] = [];
+  const actions: MacroAction[] = []
+  const warnings: string[] = []
+  const unsupported: string[] = []
 
   // Extract macro name
-  const nameMatch = vbaCode.match(/Sub\s+(\w+)\s*\(/);
-  const name = nameMatch?.[1] || 'ConvertedMacro';
+  const nameMatch = vbaCode.match(/Sub\s+(\w+)\s*\(/)
+  const name = nameMatch?.[1] || "ConvertedMacro"
 
   // Split into lines and process each
   const lines = vbaCode
-    .split('\n')
+    .split("\n")
     .map((l) => l.trim())
-    .filter((l) => l && !l.startsWith("'") && !l.startsWith('Sub ') && !l.startsWith('End Sub') && l !== 'Dim');
+    .filter(
+      (l) =>
+        l &&
+        !l.startsWith("'") &&
+        !l.startsWith("Sub ") &&
+        !l.startsWith("End Sub") &&
+        l !== "Dim"
+    )
 
   for (const line of lines) {
     // Skip Dim declarations
-    if (line.startsWith('Dim ')) continue;
-    if (line === 'Next' || line.match(/^Next \w+$/)) continue;
-    if (line.startsWith('End If') || line.startsWith('Else') || line === 'Wend' || line === 'Loop') continue;
+    if (line.startsWith("Dim ")) continue
+    if (line === "Next" || line.match(/^Next \w+$/)) continue
+    if (
+      line.startsWith("End If") ||
+      line.startsWith("Else") ||
+      line === "Wend" ||
+      line === "Loop"
+    )
+      continue
 
-    let matched = false;
+    let matched = false
     for (const { pattern, convert } of VBA_PATTERNS) {
-      const match = line.match(pattern);
+      const match = line.match(pattern)
       if (match) {
-        const action = convert(match);
+        const action = convert(match)
         if (action) {
-          actions.push(action);
-          matched = true;
-          break;
+          actions.push(action)
+          matched = true
+          break
         }
       }
     }
 
     if (!matched && line.length > 3) {
       // Check for known unsupported constructs
-      if (/ActiveSheet|Worksheet|Application\.|Selection\.|ActiveWorkbook/i.test(line)) {
-        unsupported.push(line);
+      if (
+        /ActiveSheet|Worksheet|Application\.|Selection\.|ActiveWorkbook/i.test(
+          line
+        )
+      ) {
+        unsupported.push(line)
       } else if (/If\s+.+\s+Then/i.test(line)) {
-        warnings.push(`Conditional logic detected: "${line}" — may need manual review`);
+        warnings.push(
+          `Conditional logic detected: "${line}" — may need manual review`
+        )
       } else if (/Do\s+While|While\s+/i.test(line)) {
-        warnings.push(`While loop detected: "${line}" — simplified to loop action`);
+        warnings.push(
+          `While loop detected: "${line}" — simplified to loop action`
+        )
       } else {
-        warnings.push(`Unrecognized: "${line}"`);
+        warnings.push(`Unrecognized: "${line}"`)
       }
     }
   }
@@ -251,7 +289,7 @@ export function convertVBALocally(vbaCode: string): ConvertedMacro {
     warnings,
     unsupportedFeatures: unsupported,
     originalVBA: vbaCode,
-  };
+  }
 }
 
 /**
@@ -270,5 +308,5 @@ VBA Code:
 ${vbaCode}
 \`\`\`
 
-Return ONLY a JSON array of actions. For unsupported VBA features, add a "warning" field.`;
+Return ONLY a JSON array of actions. For unsupported VBA features, add a "warning" field.`
 }

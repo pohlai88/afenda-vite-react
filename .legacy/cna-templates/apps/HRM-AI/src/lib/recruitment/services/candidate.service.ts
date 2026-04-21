@@ -1,11 +1,8 @@
 // src/lib/recruitment/services/candidate.service.ts
 // Candidate Service - Manage candidate pool and talent database
 
-import { db } from '@/lib/db'
-import {
-  ApplicationSource,
-  Prisma
-} from '@prisma/client'
+import { db } from "@/lib/db"
+import { ApplicationSource, Prisma } from "@prisma/client"
 
 // Types
 export interface CreateCandidateInput {
@@ -110,7 +107,8 @@ export class CandidateService {
         yearsOfExperience: input.yearsOfExperience,
         skills: (input.skills || []) as unknown as Prisma.InputJsonValue,
         education: (input.education || []) as unknown as Prisma.InputJsonValue,
-        workHistory: (input.workHistory || []) as unknown as Prisma.InputJsonValue,
+        workHistory: (input.workHistory ||
+          []) as unknown as Prisma.InputJsonValue,
         notes: input.notes,
         tags: input.tags || [],
         source: input.source || ApplicationSource.CAREERS_PAGE,
@@ -137,7 +135,7 @@ export class CandidateService {
           },
         },
         applications: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           include: {
             requisition: {
               select: {
@@ -148,15 +146,15 @@ export class CandidateService {
               },
             },
             interviews: {
-              orderBy: { scheduledAt: 'desc' },
+              orderBy: { scheduledAt: "desc" },
               take: 5,
             },
             evaluations: {
-              orderBy: { createdAt: 'desc' },
+              orderBy: { createdAt: "desc" },
               take: 5,
             },
             offers: {
-              orderBy: { createdAt: 'desc' },
+              orderBy: { createdAt: "desc" },
               take: 1,
             },
           },
@@ -165,7 +163,7 @@ export class CandidateService {
     })
 
     if (!candidate) {
-      throw new Error('Candidate not found')
+      throw new Error("Candidate not found")
     }
 
     return candidate
@@ -188,7 +186,11 @@ export class CandidateService {
   /**
    * List candidates with filters
    */
-  async list(filters: CandidateFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: CandidateFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.CandidateWhereInput = {
@@ -197,11 +199,11 @@ export class CandidateService {
 
     if (filters.search) {
       where.OR = [
-        { fullName: { contains: filters.search, mode: 'insensitive' } },
-        { email: { contains: filters.search, mode: 'insensitive' } },
-        { phone: { contains: filters.search, mode: 'insensitive' } },
-        { currentCompany: { contains: filters.search, mode: 'insensitive' } },
-        { currentPosition: { contains: filters.search, mode: 'insensitive' } },
+        { fullName: { contains: filters.search, mode: "insensitive" } },
+        { email: { contains: filters.search, mode: "insensitive" } },
+        { phone: { contains: filters.search, mode: "insensitive" } },
+        { currentCompany: { contains: filters.search, mode: "insensitive" } },
+        { currentPosition: { contains: filters.search, mode: "insensitive" } },
       ]
     }
 
@@ -219,7 +221,7 @@ export class CandidateService {
 
     if (filters.maxExperience !== undefined) {
       where.yearsOfExperience = {
-        ...(where.yearsOfExperience as object || {}),
+        ...((where.yearsOfExperience as object) || {}),
         lte: filters.maxExperience,
       }
     }
@@ -230,7 +232,7 @@ export class CandidateService {
     if (filters.hasActiveApplication) {
       where.applications = {
         some: {
-          status: { notIn: ['HIRED', 'REJECTED', 'WITHDRAWN'] },
+          status: { notIn: ["HIRED", "REJECTED", "WITHDRAWN"] },
         },
       }
     }
@@ -238,7 +240,7 @@ export class CandidateService {
     const [candidates, total] = await Promise.all([
       db.candidate.findMany({
         where,
-        orderBy: { updatedAt: 'desc' },
+        orderBy: { updatedAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -247,7 +249,7 @@ export class CandidateService {
           },
           applications: {
             take: 1,
-            orderBy: { createdAt: 'desc' },
+            orderBy: { createdAt: "desc" },
             select: {
               status: true,
               createdAt: true,
@@ -262,7 +264,7 @@ export class CandidateService {
     ])
 
     return {
-      data: candidates.map(c => ({
+      data: candidates.map((c) => ({
         ...c,
         latestApplication: c.applications[0] || null,
         applications: undefined,
@@ -283,7 +285,7 @@ export class CandidateService {
     })
 
     if (!candidate) {
-      throw new Error('Candidate not found')
+      throw new Error("Candidate not found")
     }
 
     return db.candidate.update({
@@ -325,7 +327,7 @@ export class CandidateService {
     })
 
     if (!candidate) {
-      throw new Error('Candidate not found')
+      throw new Error("Candidate not found")
     }
 
     const existingTags = (candidate.tags as string[]) || []
@@ -346,11 +348,11 @@ export class CandidateService {
     })
 
     if (!candidate) {
-      throw new Error('Candidate not found')
+      throw new Error("Candidate not found")
     }
 
     const existingTags = (candidate.tags as string[]) || []
-    const newTags = existingTags.filter(t => !tags.includes(t))
+    const newTags = existingTags.filter((t) => !tags.includes(t))
 
     return db.candidate.update({
       where: { id },
@@ -367,7 +369,7 @@ export class CandidateService {
     })
 
     if (!candidate) {
-      throw new Error('Candidate not found')
+      throw new Error("Candidate not found")
     }
 
     return db.candidate.update({
@@ -388,7 +390,7 @@ export class CandidateService {
     })
 
     if (!candidate) {
-      throw new Error('Candidate not found')
+      throw new Error("Candidate not found")
     }
 
     return db.candidate.update({
@@ -405,12 +407,16 @@ export class CandidateService {
    */
   async merge(primaryId: string, duplicateId: string) {
     const [primary, duplicate] = await Promise.all([
-      db.candidate.findFirst({ where: { id: primaryId, tenantId: this.tenantId } }),
-      db.candidate.findFirst({ where: { id: duplicateId, tenantId: this.tenantId } }),
+      db.candidate.findFirst({
+        where: { id: primaryId, tenantId: this.tenantId },
+      }),
+      db.candidate.findFirst({
+        where: { id: duplicateId, tenantId: this.tenantId },
+      }),
     ])
 
     if (!primary || !duplicate) {
-      throw new Error('Candidates not found')
+      throw new Error("Candidates not found")
     }
 
     // Move all applications to primary
@@ -420,14 +426,18 @@ export class CandidateService {
     })
 
     // Merge tags and skills
-    const mergedTags = Array.from(new Set([
-      ...((primary.tags as string[]) || []),
-      ...((duplicate.tags as string[]) || []),
-    ]))
-    const mergedSkills = Array.from(new Set([
-      ...((primary.skills as string[]) || []),
-      ...((duplicate.skills as string[]) || []),
-    ]))
+    const mergedTags = Array.from(
+      new Set([
+        ...((primary.tags as string[]) || []),
+        ...((duplicate.tags as string[]) || []),
+      ])
+    )
+    const mergedSkills = Array.from(
+      new Set([
+        ...((primary.skills as string[]) || []),
+        ...((duplicate.skills as string[]) || []),
+      ])
+    )
 
     // Update primary with merged data
     await db.candidate.update({
@@ -442,7 +452,7 @@ export class CandidateService {
         linkedinUrl: primary.linkedinUrl || duplicate.linkedinUrl,
         portfolioUrl: primary.portfolioUrl || duplicate.portfolioUrl,
         notes: primary.notes
-          ? `${primary.notes}\n\n--- Merged from ${duplicate.email} ---\n${duplicate.notes || ''}`
+          ? `${primary.notes}\n\n--- Merged from ${duplicate.email} ---\n${duplicate.notes || ""}`
           : duplicate.notes,
       },
     })
@@ -469,10 +479,10 @@ export class CandidateService {
 
     // Calculate match score
     return candidates
-      .map(c => {
+      .map((c) => {
         const candidateSkills = (c.skills as string[]) || []
-        const matchedSkills = skills.filter(s =>
-          candidateSkills.some(cs => cs.toLowerCase() === s.toLowerCase())
+        const matchedSkills = skills.filter((s) =>
+          candidateSkills.some((cs) => cs.toLowerCase() === s.toLowerCase())
         )
         return {
           ...c,
@@ -480,7 +490,7 @@ export class CandidateService {
           matchScore: matchedSkills.length,
         }
       })
-      .filter(c => c.matchScore >= minMatch)
+      .filter((c) => c.matchScore >= minMatch)
       .sort((a, b) => b.matchScore - a.matchScore)
   }
 
@@ -492,7 +502,7 @@ export class CandidateService {
       db.candidate.count({ where: { tenantId: this.tenantId } }),
 
       db.candidate.groupBy({
-        by: ['source'],
+        by: ["source"],
         where: { tenantId: this.tenantId },
         _count: true,
       }),
@@ -507,7 +517,7 @@ export class CandidateService {
 
     return {
       total,
-      bySource: bySource.map(s => ({
+      bySource: bySource.map((s) => ({
         source: s.source,
         count: s._count,
       })),
@@ -527,7 +537,7 @@ export class CandidateService {
       select: { tags: true },
     })
 
-    const allTags = candidates.flatMap(c => (c.tags as string[]) || [])
+    const allTags = candidates.flatMap((c) => (c.tags as string[]) || [])
     return Array.from(new Set(allTags)).sort()
   }
 
@@ -540,7 +550,7 @@ export class CandidateService {
       select: { skills: true },
     })
 
-    const allSkills = candidates.flatMap(c => (c.skills as string[]) || [])
+    const allSkills = candidates.flatMap((c) => (c.skills as string[]) || [])
     return Array.from(new Set(allSkills)).sort()
   }
 }

@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { WifiOff, RefreshCw, Home } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { WifiOff, RefreshCw, Home } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function OfflinePage() {
   const handleRetry = () => {
@@ -9,7 +9,7 @@ export default function OfflinePage() {
   }
 
   const handleHome = () => {
-    window.location.href = '/'
+    window.location.href = "/"
   }
 
   return (

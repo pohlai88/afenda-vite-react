@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Bell } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect } from "react"
+import { Bell } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { NotificationList } from './notification-list'
-import type { NotificationType } from '@prisma/client'
+} from "@/components/ui/popover"
+import { NotificationList } from "./notification-list"
+import type { NotificationType } from "@prisma/client"
 
 interface Notification {
   id: string
@@ -34,7 +34,7 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
   const fetchNotifications = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/notifications?limit=20')
+      const response = await fetch("/api/notifications?limit=20")
       if (response.ok) {
         const data = await response.json()
         setNotifications(data.data)
@@ -47,7 +47,7 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
 
   const fetchUnreadCount = async () => {
     try {
-      const response = await fetch('/api/notifications/unread-count')
+      const response = await fetch("/api/notifications/unread-count")
       if (response.ok) {
         const data = await response.json()
         setUnreadCount(data.count)
@@ -71,7 +71,7 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
 
   const handleMarkAsRead = async (id: string) => {
     try {
-      await fetch(`/api/notifications/${id}/read`, { method: 'POST' })
+      await fetch(`/api/notifications/${id}/read`, { method: "POST" })
       setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
       )
@@ -83,7 +83,7 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
 
   const handleMarkAllAsRead = async () => {
     try {
-      await fetch('/api/notifications/mark-all-read', { method: 'POST' })
+      await fetch("/api/notifications/mark-all-read", { method: "POST" })
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
       setUnreadCount(0)
     } catch {
@@ -104,7 +104,7 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-[10px] font-medium text-white flex items-center justify-center">
-              {unreadCount > 99 ? '99+' : unreadCount}
+              {unreadCount > 99 ? "99+" : unreadCount}
             </span>
           )}
         </Button>

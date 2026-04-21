@@ -1,8 +1,8 @@
 // src/lib/devices/sync-service.ts
 // Attendance Device Sync Service
 
-import prisma from '@/lib/db'
-import { createZKTecoSDK } from './sdk/zkteco'
+import prisma from "@/lib/db"
+import { createZKTecoSDK } from "./sdk/zkteco"
 import type {
   IDeviceSDK,
   DeviceConfig,
@@ -10,7 +10,7 @@ import type {
   SyncOptions,
   RawPunchRecord,
   DeviceManufacturer,
-} from './types'
+} from "./types"
 
 // ═══════════════════════════════════════════════════════════════
 // DEVICE SYNC SERVICE
@@ -26,16 +26,19 @@ export class DeviceSyncService {
   /**
    * Get SDK instance based on manufacturer
    */
-  private getSDK(manufacturer: DeviceManufacturer, config: DeviceConfig): IDeviceSDK {
+  private getSDK(
+    manufacturer: DeviceManufacturer,
+    config: DeviceConfig
+  ): IDeviceSDK {
     switch (manufacturer) {
-      case 'ZKTECO':
+      case "ZKTECO":
         return createZKTecoSDK(config)
-      case 'HIKVISION':
+      case "HIKVISION":
         // TODO: Implement HikVision SDK
-        throw new Error('HikVision SDK not implemented')
-      case 'SUPREMA':
+        throw new Error("HikVision SDK not implemented")
+      case "SUPREMA":
         // TODO: Implement Suprema SDK
-        throw new Error('Suprema SDK not implemented')
+        throw new Error("Suprema SDK not implemented")
       default:
         throw new Error(`Unknown manufacturer: ${manufacturer}`)
     }
@@ -44,7 +47,10 @@ export class DeviceSyncService {
   /**
    * Sync attendance logs from a single device
    */
-  async syncDevice(deviceId: string, options?: SyncOptions): Promise<SyncResult> {
+  async syncDevice(
+    deviceId: string,
+    options?: SyncOptions
+  ): Promise<SyncResult> {
     // Get device configuration
     const device = await prisma.attendanceDevice.findFirst({
       where: {
@@ -55,7 +61,7 @@ export class DeviceSyncService {
     })
 
     if (!device) {
-      throw new Error('Device not found or inactive')
+      throw new Error("Device not found or inactive")
     }
 
     // Create sync log
@@ -63,9 +69,9 @@ export class DeviceSyncService {
       data: {
         tenantId: this.tenantId,
         deviceId: device.id,
-        syncType: options?.syncType || 'INCREMENTAL',
+        syncType: options?.syncType || "INCREMENTAL",
         syncStartAt: new Date(),
-        status: 'IN_PROGRESS',
+        status: "IN_PROGRESS",
       },
     })
 
@@ -74,13 +80,14 @@ export class DeviceSyncService {
       const sdkConfig = device.sdkConfig as DeviceConfig | null
 
       if (!sdkConfig || !device.ipAddress) {
-        throw new Error('Device configuration incomplete')
+        throw new Error("Device configuration incomplete")
       }
 
       const config: DeviceConfig = {
         ipAddress: device.ipAddress,
         port: device.port || 4370,
-        connectionType: (sdkConfig?.connectionType || 'TCP') as DeviceConfig['connectionType'],
+        connectionType: (sdkConfig?.connectionType ||
+          "TCP") as DeviceConfig["connectionType"],
         commKey: sdkConfig?.commKey as string | undefined,
       }
 
@@ -90,7 +97,7 @@ export class DeviceSyncService {
       // Connect to device
       const connected = await sdk.connect()
       if (!connected) {
-        throw new Error('Failed to connect to device')
+        throw new Error("Failed to connect to device")
       }
 
       try {
@@ -105,7 +112,7 @@ export class DeviceSyncService {
           where: { id: device.id },
           data: {
             lastSyncAt: new Date(),
-            status: 'ONLINE',
+            status: "ONLINE",
           },
         })
 
@@ -117,7 +124,7 @@ export class DeviceSyncService {
             recordsFetched: logs.length,
             recordsProcessed: processed.success,
             recordsFailed: processed.failed,
-            status: 'SUCCESS',
+            status: "SUCCESS",
           },
         })
 
@@ -142,8 +149,9 @@ export class DeviceSyncService {
         where: { id: syncLog.id },
         data: {
           syncEndAt: new Date(),
-          status: 'FAILED',
-          errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          status: "FAILED",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
         },
       })
 
@@ -151,7 +159,7 @@ export class DeviceSyncService {
       await prisma.attendanceDevice.update({
         where: { id: device.id },
         data: {
-          status: 'ERROR',
+          status: "ERROR",
         },
       })
 
@@ -161,7 +169,7 @@ export class DeviceSyncService {
         recordsProcessed: 0,
         recordsFailed: 0,
         lastSyncTime: new Date(),
-        errors: [error instanceof Error ? error.message : 'Unknown error'],
+        errors: [error instanceof Error ? error.message : "Unknown error"],
       }
     }
   }
@@ -206,7 +214,10 @@ export class DeviceSyncService {
 
         success++
       } catch (error) {
-        console.error(`Failed to process log for user ${log.deviceUserId}:`, error)
+        console.error(
+          `Failed to process log for user ${log.deviceUserId}:`,
+          error
+        )
         failed++
       }
     }
@@ -227,11 +238,15 @@ export class DeviceSyncService {
       where: {
         tenantId: this.tenantId,
         isActive: true,
-        deviceType: { not: 'GPS_CHECKIN' }, // Skip GPS devices
+        deviceType: { not: "GPS_CHECKIN" }, // Skip GPS devices
       },
     })
 
-    const results: Array<{ deviceId: string; deviceName: string; result: SyncResult }> = []
+    const results: Array<{
+      deviceId: string
+      deviceName: string
+      result: SyncResult
+    }> = []
     let successCount = 0
     let failedCount = 0
 
@@ -259,7 +274,7 @@ export class DeviceSyncService {
             recordsProcessed: 0,
             recordsFailed: 0,
             lastSyncTime: new Date(),
-            errors: [error instanceof Error ? error.message : 'Unknown error'],
+            errors: [error instanceof Error ? error.message : "Unknown error"],
           },
         })
         failedCount++
@@ -288,7 +303,7 @@ export class DeviceSyncService {
         isProcessed: false,
         employeeId: { not: null },
       },
-      orderBy: [{ employeeId: 'asc' }, { punchTime: 'asc' }],
+      orderBy: [{ employeeId: "asc" }, { punchTime: "asc" }],
       take: 1000, // Process in batches
     })
 
@@ -300,7 +315,7 @@ export class DeviceSyncService {
     const groupedLogs = new Map<string, typeof unprocessedLogs>()
 
     for (const log of unprocessedLogs) {
-      const date = log.punchTime.toISOString().split('T')[0]
+      const date = log.punchTime.toISOString().split("T")[0]
       const key = `${log.employeeId}-${date}`
 
       if (!groupedLogs.has(key)) {
@@ -313,19 +328,23 @@ export class DeviceSyncService {
     const entries = Array.from(groupedLogs.entries())
     for (const [key, logs] of entries) {
       try {
-        const parts = key.split('-')
+        const parts = key.split("-")
         const employeeId = parts[0]
-        const dateStr = parts.slice(1).join('-')
+        const dateStr = parts.slice(1).join("-")
         const date = new Date(dateStr)
 
         // Sort by time
         const sortedLogs = [...logs].sort(
-          (a: typeof logs[0], b: typeof logs[0]) => a.punchTime.getTime() - b.punchTime.getTime()
+          (a: (typeof logs)[0], b: (typeof logs)[0]) =>
+            a.punchTime.getTime() - b.punchTime.getTime()
         )
 
         // First punch is check-in, last punch is check-out
         const checkIn = sortedLogs[0].punchTime
-        const checkOut = sortedLogs.length > 1 ? sortedLogs[sortedLogs.length - 1].punchTime : null
+        const checkOut =
+          sortedLogs.length > 1
+            ? sortedLogs[sortedLogs.length - 1].punchTime
+            : null
 
         // Check if attendance record exists
         const existingAttendance = await prisma.attendance.findFirst({
@@ -357,7 +376,7 @@ export class DeviceSyncService {
               date: new Date(dateStr),
               checkIn,
               checkOut,
-              status: 'PRESENT',
+              status: "PRESENT",
             },
           })
           created++
@@ -366,7 +385,7 @@ export class DeviceSyncService {
         // Mark logs as processed
         await prisma.rawPunchLog.updateMany({
           where: {
-            id: { in: sortedLogs.map((l: typeof sortedLogs[0]) => l.id) },
+            id: { in: sortedLogs.map((l: (typeof sortedLogs)[0]) => l.id) },
           },
           data: {
             isProcessed: true,
@@ -409,7 +428,7 @@ export class DeviceSyncService {
         deviceId,
       },
       orderBy: {
-        syncStartAt: 'desc',
+        syncStartAt: "desc",
       },
       take: limit,
     })

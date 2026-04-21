@@ -1,31 +1,31 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { ReportBuilder, ReportResultView } from '@/components/reports'
-import type { ReportResult } from '@/types/report'
+import { useState } from "react"
+import { ReportBuilder, ReportResultView } from "@/components/reports"
+import type { ReportResult } from "@/types/report"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/hooks/use-toast'
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/hooks/use-toast"
 
 export default function ReportsPage() {
   const [result, setResult] = useState<ReportResult | null>(null)
   const [showSaveDialog, setShowSaveDialog] = useState(false)
-  const [saveData, setSaveData] = useState({ name: '', description: '' })
+  const [saveData, setSaveData] = useState({ name: "", description: "" })
   const [isSaving, setIsSaving] = useState(false)
   const { toast } = useToast()
 
   const handleGenerate = (data: ReportResult) => {
     setResult(data)
-    setSaveData({ name: data.title, description: '' })
+    setSaveData({ name: data.title, description: "" })
   }
 
   const handleSave = async () => {
@@ -33,30 +33,30 @@ export default function ReportsPage() {
 
     setIsSaving(true)
     try {
-      const response = await fetch('/api/reports/saved', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/reports/saved", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: saveData.name,
           description: saveData.description,
-          reportType: 'custom',
+          reportType: "custom",
           parameters: {},
         }),
       })
 
       if (response.ok) {
         toast({
-          title: 'Đã lưu báo cáo',
-          description: 'Báo cáo đã được lưu thành công',
+          title: "Đã lưu báo cáo",
+          description: "Báo cáo đã được lưu thành công",
         })
         setShowSaveDialog(false)
       }
     } catch (error) {
-      console.error('Save report error:', error)
+      console.error("Save report error:", error)
       toast({
-        title: 'Lỗi',
-        description: 'Không thể lưu báo cáo',
-        variant: 'destructive',
+        title: "Lỗi",
+        description: "Không thể lưu báo cáo",
+        variant: "destructive",
       })
     } finally {
       setIsSaving(false)
@@ -67,24 +67,24 @@ export default function ReportsPage() {
     if (!result) return
 
     // Create CSV content
-    const headers = result.columns.map((c) => c.label).join(',')
+    const headers = result.columns.map((c) => c.label).join(",")
     const rows = result.data.map((row) =>
-      result.columns.map((c) => String(row[c.key] ?? '')).join(',')
+      result.columns.map((c) => String(row[c.key] ?? "")).join(",")
     )
-    const csv = [headers, ...rows].join('\n')
+    const csv = [headers, ...rows].join("\n")
 
     // Download
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' })
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" })
     const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
+    const link = document.createElement("a")
     link.href = url
-    link.download = `${result.title.replace(/\s+/g, '_')}.csv`
+    link.download = `${result.title.replace(/\s+/g, "_")}.csv`
     link.click()
     URL.revokeObjectURL(url)
 
     toast({
-      title: 'Đã xuất báo cáo',
-      description: 'Tệp CSV đã được tải xuống',
+      title: "Đã xuất báo cáo",
+      description: "Tệp CSV đã được tải xuống",
     })
   }
 
@@ -150,14 +150,11 @@ export default function ReportsPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowSaveDialog(false)}
-            >
+            <Button variant="outline" onClick={() => setShowSaveDialog(false)}>
               Hủy
             </Button>
             <Button onClick={handleSave} disabled={isSaving || !saveData.name}>
-              {isSaving ? 'Đang lưu...' : 'Lưu báo cáo'}
+              {isSaving ? "Đang lưu..." : "Lưu báo cáo"}
             </Button>
           </DialogFooter>
         </DialogContent>

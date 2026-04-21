@@ -5,14 +5,21 @@ import * as React from "react"
 /**
  * Stagger delay calculator for list animations
  */
-export function staggerDelay(index: number, baseDelay = 50, maxDelay = 500): number {
+export function staggerDelay(
+  index: number,
+  baseDelay = 50,
+  maxDelay = 500
+): number {
   return Math.min(index * baseDelay, maxDelay)
 }
 
 /**
  * Generate stagger animation style
  */
-export function staggerStyle(index: number, baseDelay = 50): React.CSSProperties {
+export function staggerStyle(
+  index: number,
+  baseDelay = 50
+): React.CSSProperties {
   return {
     animationDelay: `${staggerDelay(index, baseDelay)}ms`,
     animationFillMode: "both",

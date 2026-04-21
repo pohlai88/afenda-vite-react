@@ -332,9 +332,13 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
         {!collapsed && (
           <Link href="/" className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
-              <span className="text-xs font-bold text-primary-foreground">R</span>
+              <span className="text-xs font-bold text-primary-foreground">
+                R
+              </span>
             </div>
-            <span className="font-semibold text-foreground">RTR-<span className="text-primary">HRM</span></span>
+            <span className="font-semibold text-foreground">
+              RTR-<span className="text-primary">HRM</span>
+            </span>
           </Link>
         )}
         <Button
@@ -354,7 +358,9 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
           className="mx-3 mt-3 mb-2 flex items-center gap-2 rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-sm text-muted-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-foreground transition-all duration-200 group ai-glow"
         >
           <Sparkles className="h-4 w-4 text-primary group-hover:animate-pulse-subtle" />
-          <span className="flex-1 text-left text-xs font-medium">AI Command</span>
+          <span className="flex-1 text-left text-xs font-medium">
+            AI Command
+          </span>
         </button>
       ) : (
         <button

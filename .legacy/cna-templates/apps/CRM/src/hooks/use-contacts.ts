@@ -1,21 +1,17 @@
-'use client'
+"use client"
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import type { Contact, ContactWithCompany } from '@/types'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import type { Contact, ContactWithCompany } from "@/types"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 function buildUrl(
   base: string,
-  params?: Record<string, string | number | undefined | null>,
+  params?: Record<string, string | number | undefined | null>
 ) {
   const url = new URL(base, window.location.origin)
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
+      if (value !== undefined && value !== null && value !== "") {
         url.searchParams.set(key, String(value))
       }
     })
@@ -53,9 +49,14 @@ interface ContactListResponse {
 /** List contacts with optional search, filter, and pagination. */
 export function useContacts(params?: ContactListParams) {
   return useQuery<ContactListResponse>({
-    queryKey: ['contacts', params],
+    queryKey: ["contacts", params],
     queryFn: () =>
-      fetchJson<ContactListResponse>(buildUrl('/api/contacts', params as Record<string, string | number | undefined>)),
+      fetchJson<ContactListResponse>(
+        buildUrl(
+          "/api/contacts",
+          params as Record<string, string | number | undefined>
+        )
+      ),
     staleTime: 30_000,
   })
 }
@@ -63,7 +64,7 @@ export function useContacts(params?: ContactListParams) {
 /** Fetch a single contact by ID. */
 export function useContact(id: string) {
   return useQuery<ContactWithCompany>({
-    queryKey: ['contacts', id],
+    queryKey: ["contacts", id],
     queryFn: () => fetchJson<ContactWithCompany>(`/api/contacts/${id}`),
     enabled: !!id,
     staleTime: 30_000,
@@ -78,13 +79,13 @@ export function useCreateContact() {
 
   return useMutation<Contact, Error, Partial<Contact>>({
     mutationFn: (data) =>
-      fetchJson<Contact>('/api/contacts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetchJson<Contact>("/api/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['contacts'] })
+      qc.invalidateQueries({ queryKey: ["contacts"] })
     },
   })
 }
@@ -96,13 +97,13 @@ export function useUpdateContact() {
   return useMutation<Contact, Error, { id: string } & Partial<Contact>>({
     mutationFn: ({ id, ...data }) =>
       fetchJson<Contact>(`/api/contacts/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: (_data, variables) => {
-      qc.invalidateQueries({ queryKey: ['contacts'] })
-      qc.invalidateQueries({ queryKey: ['contacts', variables.id] })
+      qc.invalidateQueries({ queryKey: ["contacts"] })
+      qc.invalidateQueries({ queryKey: ["contacts", variables.id] })
     },
   })
 }
@@ -113,9 +114,9 @@ export function useDeleteContact() {
 
   return useMutation<void, Error, string>({
     mutationFn: (id) =>
-      fetchJson<void>(`/api/contacts/${id}`, { method: 'DELETE' }),
+      fetchJson<void>(`/api/contacts/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['contacts'] })
+      qc.invalidateQueries({ queryKey: ["contacts"] })
     },
   })
 }

@@ -3,7 +3,7 @@
  * - `*.schema.ts` for table/enum modules
  * - `_schema.ts` for `pgSchema()` handles
  * - `index.ts` barrels
- * - `shared/helpers.ts` is the only extra non-`*.schema.ts` allowed in `shared/`
+ * - `shared/shared-sql-defaults.ts` is the only extra non-`*.schema.ts` allowed in `shared/`
  *
  * @see packages/_database/src/schema/pkg-governance/schema-modules.ts
  */
@@ -42,7 +42,7 @@ function isAllowedInDomain(base: string): boolean {
 }
 
 function isAllowedInShared(base: string): boolean {
-  if (base === "index.ts" || base === "helpers.ts") return true
+  if (base === "index.ts" || base === "shared-sql-defaults.ts") return true
   return isDrizzleSchemaModuleFile(base)
 }
 
@@ -72,7 +72,7 @@ for (const file of sharedFiles) {
 
 if (violations.length > 0) {
   console.error(
-    "guard-schema-modules: disallowed .ts filename in DDL domain or shared/ (expected index.ts, _schema.ts, *.schema.ts, or shared/helpers.ts):\n" +
+    "guard-schema-modules: disallowed .ts filename in DDL domain or shared/ (expected index.ts, _schema.ts, *.schema.ts, or shared/shared-sql-defaults.ts):\n" +
       violations.join("\n")
   )
   process.exit(1)

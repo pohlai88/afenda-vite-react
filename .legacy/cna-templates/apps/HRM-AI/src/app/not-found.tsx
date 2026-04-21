@@ -18,7 +18,8 @@ export default function NotFound() {
           </h2>
 
           <p className="text-zinc-400 mb-6">
-            Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển sang địa chỉ khác.
+            Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển sang
+            địa chỉ khác.
           </p>
 
           <div className="flex gap-3 justify-center">

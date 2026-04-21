@@ -1,11 +1,11 @@
 // src/services/report.service.ts
 // Report Generator Service
 
-import { db } from '@/lib/db'
-import { classify } from '@/lib/ai/client'
-import { REPORT_GENERATOR_PROMPT } from '@/lib/ai/prompts'
-import type { PaginatedResponse } from '@/types'
-import type { ReportParams, ReportResult, SavedReport } from '@/types/report'
+import { db } from "@/lib/db"
+import { classify } from "@/lib/ai/client"
+import { REPORT_GENERATOR_PROMPT } from "@/lib/ai/prompts"
+import type { PaginatedResponse } from "@/types"
+import type { ReportParams, ReportResult, SavedReport } from "@/types/report"
 
 export const reportService = {
   /**
@@ -17,24 +17,24 @@ export const reportService = {
     try {
       const params = JSON.parse(response)
       return {
-        reportType: params.reportType || 'attendance',
-        title: params.title || 'Báo cáo',
+        reportType: params.reportType || "attendance",
+        title: params.title || "Báo cáo",
         parameters: {
           startDate: params.parameters?.startDate || getDefaultStartDate(),
           endDate: params.parameters?.endDate || getDefaultEndDate(),
           departmentId: params.parameters?.departmentId,
-          groupBy: params.parameters?.groupBy || 'employee',
+          groupBy: params.parameters?.groupBy || "employee",
         },
       }
     } catch {
       // Default to attendance report for current month
       return {
-        reportType: 'attendance',
-        title: 'Báo cáo chấm công',
+        reportType: "attendance",
+        title: "Báo cáo chấm công",
         parameters: {
           startDate: getDefaultStartDate(),
           endDate: getDefaultEndDate(),
-          groupBy: 'employee',
+          groupBy: "employee",
         },
       }
     }
@@ -51,7 +51,7 @@ export const reportService = {
     const { startDate, endDate, departmentId, groupBy } = parameters
 
     switch (reportType) {
-      case 'attendance':
+      case "attendance":
         return this.generateAttendanceReport(
           tenantId,
           title,
@@ -61,7 +61,7 @@ export const reportService = {
           groupBy
         )
 
-      case 'leave':
+      case "leave":
         return this.generateLeaveReport(
           tenantId,
           title,
@@ -71,7 +71,7 @@ export const reportService = {
           groupBy
         )
 
-      case 'overtime':
+      case "overtime":
         return this.generateOvertimeReport(
           tenantId,
           title,
@@ -81,7 +81,7 @@ export const reportService = {
           groupBy
         )
 
-      case 'headcount':
+      case "headcount":
         return this.generateHeadcountReport(tenantId, title, departmentId)
 
       default:
@@ -118,18 +118,18 @@ export const reportService = {
     // Calculate summary
     const totalRecords = records.length
     const presentDays = records.filter(
-      (r) => r.status === 'PRESENT' || r.status === 'LATE'
+      (r) => r.status === "PRESENT" || r.status === "LATE"
     ).length
-    const lateDays = records.filter((r) => r.status === 'LATE').length
-    const absentDays = records.filter((r) => r.status === 'ABSENT').length
+    const lateDays = records.filter((r) => r.status === "LATE").length
+    const absentDays = records.filter((r) => r.status === "ABSENT").length
 
     // Group data
     const groupedData: Record<string, unknown>[] = []
 
-    if (groupBy === 'department') {
+    if (groupBy === "department") {
       const byDept = new Map<string, typeof records>()
       records.forEach((r) => {
-        const dept = r.employee.department?.name || 'Chưa phân bổ'
+        const dept = r.employee.department?.name || "Chưa phân bổ"
         if (!byDept.has(dept)) byDept.set(dept, [])
         byDept.get(dept)!.push(r)
       })
@@ -139,10 +139,10 @@ export const reportService = {
           department: deptName,
           totalDays: deptRecords.length,
           presentDays: deptRecords.filter(
-            (r) => r.status === 'PRESENT' || r.status === 'LATE'
+            (r) => r.status === "PRESENT" || r.status === "LATE"
           ).length,
-          lateDays: deptRecords.filter((r) => r.status === 'LATE').length,
-          absentDays: deptRecords.filter((r) => r.status === 'ABSENT').length,
+          lateDays: deptRecords.filter((r) => r.status === "LATE").length,
+          absentDays: deptRecords.filter((r) => r.status === "ABSENT").length,
         })
       })
     } else {
@@ -158,13 +158,13 @@ export const reportService = {
         groupedData.push({
           employeeCode: emp.employeeCode,
           employeeName: emp.fullName,
-          department: emp.department?.name || 'N/A',
+          department: emp.department?.name || "N/A",
           totalDays: empRecords.length,
           presentDays: empRecords.filter(
-            (r) => r.status === 'PRESENT' || r.status === 'LATE'
+            (r) => r.status === "PRESENT" || r.status === "LATE"
           ).length,
-          lateDays: empRecords.filter((r) => r.status === 'LATE').length,
-          absentDays: empRecords.filter((r) => r.status === 'ABSENT').length,
+          lateDays: empRecords.filter((r) => r.status === "LATE").length,
+          absentDays: empRecords.filter((r) => r.status === "ABSENT").length,
         })
       })
     }
@@ -172,28 +172,28 @@ export const reportService = {
     return {
       title,
       summary: {
-        'Tổng bản ghi': totalRecords,
-        'Ngày có mặt': presentDays,
-        'Ngày đi muộn': lateDays,
-        'Ngày vắng mặt': absentDays,
+        "Tổng bản ghi": totalRecords,
+        "Ngày có mặt": presentDays,
+        "Ngày đi muộn": lateDays,
+        "Ngày vắng mặt": absentDays,
       },
       data: groupedData,
       columns:
-        groupBy === 'department'
+        groupBy === "department"
           ? [
-              { key: 'department', label: 'Phòng ban' },
-              { key: 'totalDays', label: 'Tổng ngày' },
-              { key: 'presentDays', label: 'Có mặt' },
-              { key: 'lateDays', label: 'Đi muộn' },
-              { key: 'absentDays', label: 'Vắng mặt' },
+              { key: "department", label: "Phòng ban" },
+              { key: "totalDays", label: "Tổng ngày" },
+              { key: "presentDays", label: "Có mặt" },
+              { key: "lateDays", label: "Đi muộn" },
+              { key: "absentDays", label: "Vắng mặt" },
             ]
           : [
-              { key: 'employeeCode', label: 'Mã NV' },
-              { key: 'employeeName', label: 'Họ tên' },
-              { key: 'department', label: 'Phòng ban' },
-              { key: 'presentDays', label: 'Có mặt' },
-              { key: 'lateDays', label: 'Đi muộn' },
-              { key: 'absentDays', label: 'Vắng mặt' },
+              { key: "employeeCode", label: "Mã NV" },
+              { key: "employeeName", label: "Họ tên" },
+              { key: "department", label: "Phòng ban" },
+              { key: "presentDays", label: "Có mặt" },
+              { key: "lateDays", label: "Đi muộn" },
+              { key: "absentDays", label: "Vắng mặt" },
             ],
       generatedAt: new Date(),
     }
@@ -218,7 +218,7 @@ export const reportService = {
         },
         startDate: { gte: startDate },
         endDate: { lte: endDate },
-        status: 'APPROVED',
+        status: "APPROVED",
       },
       include: {
         employee: { include: { department: true } },
@@ -234,8 +234,8 @@ export const reportService = {
     })
 
     const summary: Record<string, string | number> = {
-      'Tổng đơn': requests.length,
-      'Tổng ngày nghỉ': totalDays,
+      "Tổng đơn": requests.length,
+      "Tổng ngày nghỉ": totalDays,
     }
     byType.forEach((days, type) => {
       summary[type] = days
@@ -243,10 +243,10 @@ export const reportService = {
 
     const data: Record<string, unknown>[] = []
 
-    if (groupBy === 'department') {
+    if (groupBy === "department") {
       const byDept = new Map<string, typeof requests>()
       requests.forEach((r) => {
-        const dept = r.employee.department?.name || 'Chưa phân bổ'
+        const dept = r.employee.department?.name || "Chưa phân bổ"
         if (!byDept.has(dept)) byDept.set(dept, [])
         byDept.get(dept)!.push(r)
       })
@@ -263,10 +263,10 @@ export const reportService = {
         data.push({
           employeeCode: r.employee.employeeCode,
           employeeName: r.employee.fullName,
-          department: r.employee.department?.name || 'N/A',
+          department: r.employee.department?.name || "N/A",
           policy: r.policy.name,
-          startDate: r.startDate.toISOString().split('T')[0],
-          endDate: r.endDate.toISOString().split('T')[0],
+          startDate: r.startDate.toISOString().split("T")[0],
+          endDate: r.endDate.toISOString().split("T")[0],
           days: Number(r.totalDays),
         })
       })
@@ -277,19 +277,19 @@ export const reportService = {
       summary,
       data,
       columns:
-        groupBy === 'department'
+        groupBy === "department"
           ? [
-              { key: 'department', label: 'Phòng ban' },
-              { key: 'totalRequests', label: 'Số đơn' },
-              { key: 'totalDays', label: 'Tổng ngày' },
+              { key: "department", label: "Phòng ban" },
+              { key: "totalRequests", label: "Số đơn" },
+              { key: "totalDays", label: "Tổng ngày" },
             ]
           : [
-              { key: 'employeeCode', label: 'Mã NV' },
-              { key: 'employeeName', label: 'Họ tên' },
-              { key: 'policy', label: 'Loại nghỉ' },
-              { key: 'startDate', label: 'Từ ngày' },
-              { key: 'endDate', label: 'Đến ngày' },
-              { key: 'days', label: 'Số ngày' },
+              { key: "employeeCode", label: "Mã NV" },
+              { key: "employeeName", label: "Họ tên" },
+              { key: "policy", label: "Loại nghỉ" },
+              { key: "startDate", label: "Từ ngày" },
+              { key: "endDate", label: "Đến ngày" },
+              { key: "days", label: "Số ngày" },
             ],
       generatedAt: new Date(),
     }
@@ -313,21 +313,24 @@ export const reportService = {
           ...(departmentId && { departmentId }),
         },
         date: { gte: startDate, lte: endDate },
-        status: 'APPROVED',
+        status: "APPROVED",
       },
       include: {
         employee: { include: { department: true } },
       },
     })
 
-    const totalHours = records.reduce((sum, r) => sum + Number(r.actualHours || r.plannedHours), 0)
+    const totalHours = records.reduce(
+      (sum, r) => sum + Number(r.actualHours || r.plannedHours),
+      0
+    )
 
     const data: Record<string, unknown>[] = []
 
-    if (groupBy === 'department') {
+    if (groupBy === "department") {
       const byDept = new Map<string, typeof records>()
       records.forEach((r) => {
-        const dept = r.employee.department?.name || 'Chưa phân bổ'
+        const dept = r.employee.department?.name || "Chưa phân bổ"
         if (!byDept.has(dept)) byDept.set(dept, [])
         byDept.get(dept)!.push(r)
       })
@@ -336,7 +339,10 @@ export const reportService = {
         data.push({
           department: deptName,
           totalRequests: deptRecs.length,
-          totalHours: deptRecs.reduce((sum, r) => sum + Number(r.actualHours || r.plannedHours), 0),
+          totalHours: deptRecs.reduce(
+            (sum, r) => sum + Number(r.actualHours || r.plannedHours),
+            0
+          ),
         })
       })
     } else {
@@ -351,9 +357,12 @@ export const reportService = {
         data.push({
           employeeCode: emp.employeeCode,
           employeeName: emp.fullName,
-          department: emp.department?.name || 'N/A',
+          department: emp.department?.name || "N/A",
           totalRequests: empRecs.length,
-          totalHours: empRecs.reduce((sum, r) => sum + Number(r.actualHours || r.plannedHours), 0),
+          totalHours: empRecs.reduce(
+            (sum, r) => sum + Number(r.actualHours || r.plannedHours),
+            0
+          ),
         })
       })
     }
@@ -361,23 +370,23 @@ export const reportService = {
     return {
       title,
       summary: {
-        'Tổng yêu cầu': records.length,
-        'Tổng giờ tăng ca': totalHours,
+        "Tổng yêu cầu": records.length,
+        "Tổng giờ tăng ca": totalHours,
       },
       data,
       columns:
-        groupBy === 'department'
+        groupBy === "department"
           ? [
-              { key: 'department', label: 'Phòng ban' },
-              { key: 'totalRequests', label: 'Số yêu cầu' },
-              { key: 'totalHours', label: 'Tổng giờ' },
+              { key: "department", label: "Phòng ban" },
+              { key: "totalRequests", label: "Số yêu cầu" },
+              { key: "totalHours", label: "Tổng giờ" },
             ]
           : [
-              { key: 'employeeCode', label: 'Mã NV' },
-              { key: 'employeeName', label: 'Họ tên' },
-              { key: 'department', label: 'Phòng ban' },
-              { key: 'totalRequests', label: 'Số yêu cầu' },
-              { key: 'totalHours', label: 'Tổng giờ' },
+              { key: "employeeCode", label: "Mã NV" },
+              { key: "employeeName", label: "Họ tên" },
+              { key: "department", label: "Phòng ban" },
+              { key: "totalRequests", label: "Số yêu cầu" },
+              { key: "totalHours", label: "Tổng giờ" },
             ],
       generatedAt: new Date(),
     }
@@ -394,7 +403,7 @@ export const reportService = {
     const employees = await db.employee.findMany({
       where: {
         tenantId,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         ...(departmentId && { departmentId }),
       },
       include: { department: true, position: true },
@@ -404,8 +413,8 @@ export const reportService = {
     const byPosition = new Map<string, number>()
 
     employees.forEach((e) => {
-      const dept = e.department?.name || 'Chưa phân bổ'
-      const pos = e.position?.name || 'Chưa xác định'
+      const dept = e.department?.name || "Chưa phân bổ"
+      const pos = e.position?.name || "Chưa xác định"
       byDept.set(dept, (byDept.get(dept) || 0) + 1)
       byPosition.set(pos, (byPosition.get(pos) || 0) + 1)
     })
@@ -416,7 +425,7 @@ export const reportService = {
     })
 
     const summary: Record<string, string | number> = {
-      'Tổng nhân sự': employees.length,
+      "Tổng nhân sự": employees.length,
     }
 
     return {
@@ -424,8 +433,8 @@ export const reportService = {
       summary,
       data,
       columns: [
-        { key: 'department', label: 'Phòng ban' },
-        { key: 'headcount', label: 'Số lượng' },
+        { key: "department", label: "Phòng ban" },
+        { key: "headcount", label: "Số lượng" },
       ],
       generatedAt: new Date(),
     }
@@ -475,7 +484,7 @@ export const reportService = {
     const [data, total] = await Promise.all([
       db.savedReport.findMany({
         where: { tenantId },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
       }),
@@ -518,13 +527,10 @@ export const reportService = {
   /**
    * Run saved report
    */
-  async runSavedReport(
-    tenantId: string,
-    id: string
-  ): Promise<ReportResult> {
+  async runSavedReport(tenantId: string, id: string): Promise<ReportResult> {
     const saved = await this.getSavedReportById(tenantId, id)
     if (!saved) {
-      throw new Error('Báo cáo không tồn tại')
+      throw new Error("Báo cáo không tồn tại")
     }
 
     // Update last run time
@@ -536,7 +542,7 @@ export const reportService = {
     return this.generateReport(tenantId, {
       reportType: saved.reportType,
       title: saved.name,
-      parameters: saved.parameters as ReportParams['parameters'],
+      parameters: saved.parameters as ReportParams["parameters"],
     })
   },
 }
@@ -546,12 +552,12 @@ function getDefaultStartDate(): string {
   const now = new Date()
   return new Date(now.getFullYear(), now.getMonth(), 1)
     .toISOString()
-    .split('T')[0]
+    .split("T")[0]
 }
 
 function getDefaultEndDate(): string {
   const now = new Date()
   return new Date(now.getFullYear(), now.getMonth() + 1, 0)
     .toISOString()
-    .split('T')[0]
+    .split("T")[0]
 }

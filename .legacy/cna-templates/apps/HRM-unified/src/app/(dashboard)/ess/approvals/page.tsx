@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { Loader2, ClipboardCheck, Inbox } from 'lucide-react'
-import { ApprovalCard } from '@/components/workflow'
-import { useToast } from '@/hooks/use-toast'
-import type { RequestStatus } from '@prisma/client'
+import { useEffect, useState } from "react"
+import { Loader2, ClipboardCheck, Inbox } from "lucide-react"
+import { ApprovalCard } from "@/components/workflow"
+import { useToast } from "@/hooks/use-toast"
+import type { RequestStatus } from "@prisma/client"
 
 interface ApprovalItem {
   id: string
@@ -37,16 +37,16 @@ export default function ApprovalsPage() {
 
   const fetchApprovals = async () => {
     try {
-      const response = await fetch('/api/approvals/pending')
+      const response = await fetch("/api/approvals/pending")
       if (response.ok) {
         const data = await response.json()
         setApprovals(data.data || [])
       }
     } catch {
       toast({
-        title: 'Lỗi',
-        description: 'Không thể tải danh sách phê duyệt',
-        variant: 'destructive',
+        title: "Lỗi",
+        description: "Không thể tải danh sách phê duyệt",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -61,27 +61,28 @@ export default function ApprovalsPage() {
   const handleApprove = async (id: string, comment?: string) => {
     try {
       const response = await fetch(`/api/approvals/${id}/approve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ comment }),
       })
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to approve')
+        throw new Error(error.error || "Failed to approve")
       }
 
       toast({
-        title: 'Thành công',
-        description: 'Đã phê duyệt đơn xin nghỉ',
+        title: "Thành công",
+        description: "Đã phê duyệt đơn xin nghỉ",
       })
 
       fetchApprovals()
     } catch (error) {
       toast({
-        title: 'Lỗi',
-        description: error instanceof Error ? error.message : 'Không thể phê duyệt',
-        variant: 'destructive',
+        title: "Lỗi",
+        description:
+          error instanceof Error ? error.message : "Không thể phê duyệt",
+        variant: "destructive",
       })
       throw error
     }
@@ -90,27 +91,28 @@ export default function ApprovalsPage() {
   const handleReject = async (id: string, reason: string) => {
     try {
       const response = await fetch(`/api/approvals/${id}/reject`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),
       })
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to reject')
+        throw new Error(error.error || "Failed to reject")
       }
 
       toast({
-        title: 'Thành công',
-        description: 'Đã từ chối đơn xin nghỉ',
+        title: "Thành công",
+        description: "Đã từ chối đơn xin nghỉ",
       })
 
       fetchApprovals()
     } catch (error) {
       toast({
-        title: 'Lỗi',
-        description: error instanceof Error ? error.message : 'Không thể từ chối',
-        variant: 'destructive',
+        title: "Lỗi",
+        description:
+          error instanceof Error ? error.message : "Không thể từ chối",
+        variant: "destructive",
       })
       throw error
     }

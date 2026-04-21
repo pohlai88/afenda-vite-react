@@ -1,15 +1,15 @@
 // src/lib/ai/client.ts
 // Anthropic Claude API Client
 
-import Anthropic from '@anthropic-ai/sdk'
+import Anthropic from "@anthropic-ai/sdk"
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
+  apiKey: process.env.ANTHROPIC_API_KEY || "",
 })
 
 export interface ChatMessage {
-  role: 'user' | 'assistant'
+  role: "user" | "assistant"
   content: string
 }
 
@@ -29,7 +29,7 @@ export async function chat(
   const { systemPrompt, maxTokens = 1024, temperature = 0.7 } = options
 
   const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: "claude-sonnet-4-20250514",
     max_tokens: maxTokens,
     system: systemPrompt,
     messages: messages.map((m) => ({
@@ -40,8 +40,8 @@ export async function chat(
   })
 
   // Extract text from response
-  const textBlock = response.content.find((block) => block.type === 'text')
-  return textBlock?.type === 'text' ? textBlock.text : ''
+  const textBlock = response.content.find((block) => block.type === "text")
+  return textBlock?.type === "text" ? textBlock.text : ""
 }
 
 /**
@@ -52,15 +52,15 @@ export async function classify(
   systemPrompt: string
 ): Promise<string> {
   const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: "claude-sonnet-4-20250514",
     max_tokens: 100,
     system: systemPrompt,
-    messages: [{ role: 'user', content: prompt }],
+    messages: [{ role: "user", content: prompt }],
     temperature: 0,
   })
 
-  const textBlock = response.content.find((block) => block.type === 'text')
-  return textBlock?.type === 'text' ? textBlock.text.trim() : ''
+  const textBlock = response.content.find((block) => block.type === "text")
+  return textBlock?.type === "text" ? textBlock.text.trim() : ""
 }
 
 /**
@@ -73,7 +73,7 @@ export async function* streamChat(
   const { systemPrompt, maxTokens = 1024, temperature = 0.7 } = options
 
   const stream = anthropic.messages.stream({
-    model: 'claude-sonnet-4-20250514',
+    model: "claude-sonnet-4-20250514",
     max_tokens: maxTokens,
     system: systemPrompt,
     messages: messages.map((m) => ({
@@ -85,8 +85,8 @@ export async function* streamChat(
 
   for await (const event of stream) {
     if (
-      event.type === 'content_block_delta' &&
-      event.delta.type === 'text_delta'
+      event.type === "content_block_delta" &&
+      event.delta.type === "text_delta"
     ) {
       yield event.delta.text
     }

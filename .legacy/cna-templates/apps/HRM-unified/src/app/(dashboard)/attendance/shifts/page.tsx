@@ -40,7 +40,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { ShiftForm } from "@/components/attendance/shift-form"
-import { useShifts, useCreateShift, useUpdateShift, useDeleteShift } from "@/hooks/use-shifts"
+import {
+  useShifts,
+  useCreateShift,
+  useUpdateShift,
+  useDeleteShift,
+} from "@/hooks/use-shifts"
 import { useToast } from "@/hooks/use-toast"
 import { SHIFT_TYPE_LABELS } from "@/constants/attendance"
 import type { Shift } from "@prisma/client"
@@ -65,7 +70,8 @@ export default function ShiftsPage() {
     } catch (error) {
       toast({
         title: "Lỗi",
-        description: error instanceof Error ? error.message : "Không thể tạo ca làm việc",
+        description:
+          error instanceof Error ? error.message : "Không thể tạo ca làm việc",
         variant: "destructive",
       })
     }
@@ -81,7 +87,8 @@ export default function ShiftsPage() {
     } catch (error) {
       toast({
         title: "Lỗi",
-        description: error instanceof Error ? error.message : "Không thể cập nhật",
+        description:
+          error instanceof Error ? error.message : "Không thể cập nhật",
         variant: "destructive",
       })
     }
@@ -146,7 +153,10 @@ export default function ShiftsPage() {
                 </TableRow>
               ) : !shifts?.data.length ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  <TableCell
+                    colSpan={7}
+                    className="text-center py-8 text-muted-foreground"
+                  >
                     Chưa có ca làm việc nào
                   </TableCell>
                 </TableRow>
@@ -165,18 +175,14 @@ export default function ShiftsPage() {
                     <TableCell>
                       <code className="text-sm">{shift.code}</code>
                     </TableCell>
-                    <TableCell>
-                      {SHIFT_TYPE_LABELS[shift.shiftType]}
-                    </TableCell>
+                    <TableCell>{SHIFT_TYPE_LABELS[shift.shiftType]}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         {shift.startTime} - {shift.endTime}
                       </div>
                     </TableCell>
-                    <TableCell>
-                      {Number(shift.workHoursPerDay)}h/ngày
-                    </TableCell>
+                    <TableCell>{Number(shift.workHoursPerDay)}h/ngày</TableCell>
                     <TableCell>
                       <Badge variant={shift.isActive ? "default" : "secondary"}>
                         {shift.isActive ? "Hoạt động" : "Ngưng"}
@@ -190,7 +196,9 @@ export default function ShiftsPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => setEditingShift(shift as Shift)}>
+                          <DropdownMenuItem
+                            onClick={() => setEditingShift(shift as Shift)}
+                          >
                             <Edit className="mr-2 h-4 w-4" />
                             Chỉnh sửa
                           </DropdownMenuItem>
@@ -247,7 +255,8 @@ export default function ShiftsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
             <AlertDialogDescription>
-              Bạn có chắc muốn xóa ca làm việc này? Hành động này không thể hoàn tác.
+              Bạn có chắc muốn xóa ca làm việc này? Hành động này không thể hoàn
+              tác.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

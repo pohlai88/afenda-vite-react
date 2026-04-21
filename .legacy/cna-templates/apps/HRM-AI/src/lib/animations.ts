@@ -1,7 +1,7 @@
 // src/lib/animations.ts
 // Animation utilities for UI polish
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from "react"
 
 // ═══════════════════════════════════════════════════════════════
 // CSS ANIMATION KEYFRAMES (for use with Tailwind)
@@ -10,61 +10,61 @@ import { useState, useEffect, useCallback } from 'react'
 // These can be added to tailwind.config.js
 export const animationConfig = {
   keyframes: {
-    'fade-in': {
-      '0%': { opacity: '0' },
-      '100%': { opacity: '1' }
+    "fade-in": {
+      "0%": { opacity: "0" },
+      "100%": { opacity: "1" },
     },
-    'fade-out': {
-      '0%': { opacity: '1' },
-      '100%': { opacity: '0' }
+    "fade-out": {
+      "0%": { opacity: "1" },
+      "100%": { opacity: "0" },
     },
-    'slide-in-right': {
-      '0%': { transform: 'translateX(100%)', opacity: '0' },
-      '100%': { transform: 'translateX(0)', opacity: '1' }
+    "slide-in-right": {
+      "0%": { transform: "translateX(100%)", opacity: "0" },
+      "100%": { transform: "translateX(0)", opacity: "1" },
     },
-    'slide-in-left': {
-      '0%': { transform: 'translateX(-100%)', opacity: '0' },
-      '100%': { transform: 'translateX(0)', opacity: '1' }
+    "slide-in-left": {
+      "0%": { transform: "translateX(-100%)", opacity: "0" },
+      "100%": { transform: "translateX(0)", opacity: "1" },
     },
-    'slide-in-up': {
-      '0%': { transform: 'translateY(100%)', opacity: '0' },
-      '100%': { transform: 'translateY(0)', opacity: '1' }
+    "slide-in-up": {
+      "0%": { transform: "translateY(100%)", opacity: "0" },
+      "100%": { transform: "translateY(0)", opacity: "1" },
     },
-    'slide-in-down': {
-      '0%': { transform: 'translateY(-100%)', opacity: '0' },
-      '100%': { transform: 'translateY(0)', opacity: '1' }
+    "slide-in-down": {
+      "0%": { transform: "translateY(-100%)", opacity: "0" },
+      "100%": { transform: "translateY(0)", opacity: "1" },
     },
-    'scale-in': {
-      '0%': { transform: 'scale(0.9)', opacity: '0' },
-      '100%': { transform: 'scale(1)', opacity: '1' }
+    "scale-in": {
+      "0%": { transform: "scale(0.9)", opacity: "0" },
+      "100%": { transform: "scale(1)", opacity: "1" },
     },
-    'scale-out': {
-      '0%': { transform: 'scale(1)', opacity: '1' },
-      '100%': { transform: 'scale(0.9)', opacity: '0' }
+    "scale-out": {
+      "0%": { transform: "scale(1)", opacity: "1" },
+      "100%": { transform: "scale(0.9)", opacity: "0" },
     },
-    'bounce-in': {
-      '0%': { transform: 'scale(0.3)', opacity: '0' },
-      '50%': { transform: 'scale(1.05)' },
-      '70%': { transform: 'scale(0.9)' },
-      '100%': { transform: 'scale(1)', opacity: '1' }
+    "bounce-in": {
+      "0%": { transform: "scale(0.3)", opacity: "0" },
+      "50%": { transform: "scale(1.05)" },
+      "70%": { transform: "scale(0.9)" },
+      "100%": { transform: "scale(1)", opacity: "1" },
     },
     shimmer: {
-      '0%': { backgroundPosition: '-200% 0' },
-      '100%': { backgroundPosition: '200% 0' }
-    }
+      "0%": { backgroundPosition: "-200% 0" },
+      "100%": { backgroundPosition: "200% 0" },
+    },
   },
   animation: {
-    'fade-in': 'fade-in 0.3s ease-out',
-    'fade-out': 'fade-out 0.2s ease-in',
-    'slide-in-right': 'slide-in-right 0.3s ease-out',
-    'slide-in-left': 'slide-in-left 0.3s ease-out',
-    'slide-in-up': 'slide-in-up 0.3s ease-out',
-    'slide-in-down': 'slide-in-down 0.3s ease-out',
-    'scale-in': 'scale-in 0.2s ease-out',
-    'scale-out': 'scale-out 0.2s ease-in',
-    'bounce-in': 'bounce-in 0.5s ease-out',
-    shimmer: 'shimmer 2s linear infinite'
-  }
+    "fade-in": "fade-in 0.3s ease-out",
+    "fade-out": "fade-out 0.2s ease-in",
+    "slide-in-right": "slide-in-right 0.3s ease-out",
+    "slide-in-left": "slide-in-left 0.3s ease-out",
+    "slide-in-up": "slide-in-up 0.3s ease-out",
+    "slide-in-down": "slide-in-down 0.3s ease-out",
+    "scale-in": "scale-in 0.2s ease-out",
+    "scale-out": "scale-out 0.2s ease-in",
+    "bounce-in": "bounce-in 0.5s ease-out",
+    shimmer: "shimmer 2s linear infinite",
+  },
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -73,21 +73,21 @@ export const animationConfig = {
 
 // Page transition classes
 export const pageTransition = {
-  initial: 'opacity-0 translate-y-4',
-  animate: 'opacity-100 translate-y-0 transition-all duration-300 ease-out',
-  exit: 'opacity-0 -translate-y-4 transition-all duration-200 ease-in'
+  initial: "opacity-0 translate-y-4",
+  animate: "opacity-100 translate-y-0 transition-all duration-300 ease-out",
+  exit: "opacity-0 -translate-y-4 transition-all duration-200 ease-in",
 }
 
 // Card hover effect classes
 export const cardHover = {
-  base: 'transition-all duration-200 ease-out',
-  hover: 'hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/10'
+  base: "transition-all duration-200 ease-out",
+  hover: "hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/10",
 }
 
 // List item stagger animation
 export const staggerItem = {
-  base: 'opacity-0 translate-y-4',
-  visible: 'opacity-100 translate-y-0 transition-all duration-300 ease-out'
+  base: "opacity-0 translate-y-4",
+  visible: "opacity-100 translate-y-0 transition-all duration-300 ease-out",
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -121,7 +121,11 @@ export function useCountUp(
       const easeOut = 1 - Math.pow(1 - progress, 3)
       const currentValue = easeOut * end
 
-      setCount(decimals > 0 ? parseFloat(currentValue.toFixed(decimals)) : Math.floor(currentValue))
+      setCount(
+        decimals > 0
+          ? parseFloat(currentValue.toFixed(decimals))
+          : Math.floor(currentValue)
+      )
 
       if (progress < 1) {
         requestAnimationFrame(step)
@@ -153,7 +157,7 @@ export function useStaggerAnimation(itemCount: number, delay: number = 100) {
 
     for (let i = 0; i < itemCount; i++) {
       const timer = setTimeout(() => {
-        setVisibleItems(prev => new Set(Array.from(prev).concat(i)))
+        setVisibleItems((prev) => new Set(Array.from(prev).concat(i)))
       }, i * delay)
       timers.push(timer)
     }
@@ -171,7 +175,10 @@ export function useStaggerAnimation(itemCount: number, delay: number = 100) {
  * Intersection observer hook for scroll animations
  */
 export function useInView(
-  options: IntersectionObserverInit = { threshold: 0.1, triggerOnce: true } as any
+  options: IntersectionObserverInit = {
+    threshold: 0.1,
+    triggerOnce: true,
+  } as any
 ) {
   const [ref, setRef] = useState<HTMLElement | null>(null)
   const [isInView, setIsInView] = useState(false)
@@ -206,7 +213,7 @@ export function useTypewriter(
   options: { speed?: number; delay?: number } = {}
 ) {
   const { speed = 50, delay = 0 } = options
-  const [displayText, setDisplayText] = useState('')
+  const [displayText, setDisplayText] = useState("")
   const [isTyping, setIsTyping] = useState(false)
 
   useEffect(() => {
@@ -252,11 +259,11 @@ export function getStaggerDelay(index: number, baseDelay: number = 50): string {
 export function createTransition(
   properties: string[],
   duration: number = 300,
-  easing: string = 'ease-out'
+  easing: string = "ease-out"
 ): React.CSSProperties {
   return {
-    transitionProperty: properties.join(', '),
+    transitionProperty: properties.join(", "),
     transitionDuration: `${duration}ms`,
-    transitionTimingFunction: easing
+    transitionTimingFunction: easing,
   }
 }

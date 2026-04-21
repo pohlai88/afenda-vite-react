@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useState, useEffect, useCallback } from 'react'
-import type { PerformanceReview, ReviewCycle } from '@/types/performance'
+import { useState, useEffect, useCallback } from "react"
+import type { PerformanceReview, ReviewCycle } from "@/types/performance"
 
 interface UseReviewsOptions {
   reviewCycleId?: string
@@ -21,23 +21,30 @@ export function useReviews(options: UseReviewsOptions = {}) {
     setLoading(true)
     try {
       const params = new URLSearchParams()
-      if (options.reviewCycleId) params.set('reviewCycleId', options.reviewCycleId)
-      if (options.employeeId) params.set('employeeId', options.employeeId)
-      if (options.managerId) params.set('managerId', options.managerId)
-      if (options.status) params.set('status', options.status)
-      if (options.page) params.set('page', String(options.page))
+      if (options.reviewCycleId)
+        params.set("reviewCycleId", options.reviewCycleId)
+      if (options.employeeId) params.set("employeeId", options.employeeId)
+      if (options.managerId) params.set("managerId", options.managerId)
+      if (options.status) params.set("status", options.status)
+      if (options.page) params.set("page", String(options.page))
 
       const res = await fetch(`/api/performance/reviews?${params}`)
-      if (!res.ok) throw new Error('Failed to fetch reviews')
+      if (!res.ok) throw new Error("Failed to fetch reviews")
       const data = await res.json()
       setReviews(data.reviews || [])
       setTotal(data.total || 0)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error')
+      setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
       setLoading(false)
     }
-  }, [options.reviewCycleId, options.employeeId, options.managerId, options.status, options.page])
+  }, [
+    options.reviewCycleId,
+    options.employeeId,
+    options.managerId,
+    options.status,
+    options.page,
+  ])
 
   useEffect(() => {
     fetchReviews()
@@ -56,11 +63,11 @@ export function useReview(id: string | null) {
     setLoading(true)
     try {
       const res = await fetch(`/api/performance/reviews/${id}`)
-      if (!res.ok) throw new Error('Failed to fetch review')
+      if (!res.ok) throw new Error("Failed to fetch review")
       const data = await res.json()
       setReview(data)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error')
+      setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
       setLoading(false)
     }
@@ -80,8 +87,8 @@ export function useReviewCycles() {
   const fetchCycles = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/performance/cycles')
-      if (!res.ok) throw new Error('Failed to fetch cycles')
+      const res = await fetch("/api/performance/cycles")
+      if (!res.ok) throw new Error("Failed to fetch cycles")
       const data = await res.json()
       setCycles(data.cycles || [])
     } catch {

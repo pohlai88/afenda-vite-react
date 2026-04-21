@@ -2,27 +2,27 @@
 // TYPE SELECTOR — Select semantic type for a cell/column
 // =============================================================================
 
-import React, { useState, useMemo } from 'react';
-import { Search, ChevronLeft, Check } from 'lucide-react';
+import React, { useState, useMemo } from "react"
+import { Search, ChevronLeft, Check } from "lucide-react"
 import {
   BUILT_IN_TYPES,
   TYPE_CATEGORIES,
   type SemanticType,
   type TypeCategory,
-} from '../../types/semantic/types';
-import { TypeBadge, CategoryBadge } from './TypeBadge';
+} from "../../types/semantic/types"
+import { TypeBadge, CategoryBadge } from "./TypeBadge"
 
 // -----------------------------------------------------------------------------
 // Type Selector Props
 // -----------------------------------------------------------------------------
 
 interface TypeSelectorProps {
-  value?: string;
-  onChange: (type: SemanticType) => void;
-  onClose?: () => void;
-  showSearch?: boolean;
-  showCategories?: boolean;
-  className?: string;
+  value?: string
+  onChange: (type: SemanticType) => void
+  onClose?: () => void
+  showSearch?: boolean
+  showCategories?: boolean
+  className?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -35,43 +35,45 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({
   onClose,
   showSearch = true,
   showCategories = true,
-  className = '',
+  className = "",
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<TypeCategory | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<TypeCategory | null>(
+    null
+  )
+  const [searchQuery, setSearchQuery] = useState("")
 
   // Filter types based on category and search
   const filteredTypes = useMemo(() => {
-    let types = Object.values(BUILT_IN_TYPES);
+    let types = Object.values(BUILT_IN_TYPES)
 
     if (selectedCategory) {
-      types = types.filter((t) => t.category === selectedCategory);
+      types = types.filter((t) => t.category === selectedCategory)
     }
 
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase()
       types = types.filter(
         (t) =>
           t.name.toLowerCase().includes(q) ||
           t.id.toLowerCase().includes(q) ||
           t.description?.toLowerCase().includes(q)
-      );
+      )
     }
 
-    return types;
-  }, [selectedCategory, searchQuery]);
+    return types
+  }, [selectedCategory, searchQuery])
 
   // Handle type selection
   const handleSelect = (type: SemanticType) => {
-    onChange(type);
-    onClose?.();
-  };
+    onChange(type)
+    onClose?.()
+  }
 
   // Handle back button
   const handleBack = () => {
-    setSelectedCategory(null);
-    setSearchQuery('');
-  };
+    setSelectedCategory(null)
+    setSearchQuery("")
+  }
 
   return (
     <div className={`type-selector ${className}`}>
@@ -112,12 +114,19 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({
                 className="type-selector-category"
                 onClick={() => setSelectedCategory(cat.id)}
               >
-                <span className="type-selector-category-icon" style={{ color: cat.color }}>
+                <span
+                  className="type-selector-category-icon"
+                  style={{ color: cat.color }}
+                >
                   {cat.icon}
                 </span>
                 <div className="type-selector-category-info">
-                  <span className="type-selector-category-name">{cat.name}</span>
-                  <span className="type-selector-category-desc">{cat.description}</span>
+                  <span className="type-selector-category-name">
+                    {cat.name}
+                  </span>
+                  <span className="type-selector-category-desc">
+                    {cat.description}
+                  </span>
                 </div>
               </button>
             ))}
@@ -131,15 +140,19 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({
               filteredTypes.map((type) => (
                 <button
                   key={type.id}
-                  className={`type-selector-type ${value === type.id ? 'selected' : ''}`}
+                  className={`type-selector-type ${value === type.id ? "selected" : ""}`}
                   onClick={() => handleSelect(type)}
                 >
                   <TypeBadge type={type} size="small" showLabel={false} />
                   <div className="type-selector-type-info">
                     <span className="type-selector-type-name">{type.name}</span>
-                    <span className="type-selector-type-desc">{type.description}</span>
+                    <span className="type-selector-type-desc">
+                      {type.description}
+                    </span>
                   </div>
-                  {value === type.id && <Check size={14} className="type-selector-check" />}
+                  {value === type.id && (
+                    <Check size={14} className="type-selector-check" />
+                  )}
                 </button>
               ))
             )}
@@ -147,30 +160,33 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Compact Type Selector (dropdown style)
 // -----------------------------------------------------------------------------
 
 interface CompactTypeSelectorProps {
-  value?: string;
-  onChange: (type: SemanticType) => void;
-  className?: string;
+  value?: string
+  onChange: (type: SemanticType) => void
+  className?: string
 }
 
 export const CompactTypeSelector: React.FC<CompactTypeSelectorProps> = ({
   value,
   onChange,
-  className = '',
+  className = "",
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const selectedType = value ? BUILT_IN_TYPES[value] : null;
+  const [isOpen, setIsOpen] = useState(false)
+  const selectedType = value ? BUILT_IN_TYPES[value] : null
 
   return (
     <div className={`compact-type-selector ${className}`}>
-      <button className="compact-type-selector-trigger" onClick={() => setIsOpen(!isOpen)}>
+      <button
+        className="compact-type-selector-trigger"
+        onClick={() => setIsOpen(!isOpen)}
+      >
         {selectedType ? (
           <TypeBadge type={selectedType} size="small" />
         ) : (
@@ -183,8 +199,8 @@ export const CompactTypeSelector: React.FC<CompactTypeSelectorProps> = ({
           <TypeSelector
             value={value}
             onChange={(type) => {
-              onChange(type);
-              setIsOpen(false);
+              onChange(type)
+              setIsOpen(false)
             }}
             onClose={() => setIsOpen(false)}
             showSearch={true}
@@ -193,45 +209,45 @@ export const CompactTypeSelector: React.FC<CompactTypeSelectorProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Type Quick Select (inline buttons)
 // -----------------------------------------------------------------------------
 
 interface TypeQuickSelectProps {
-  value?: string;
-  onChange: (type: SemanticType) => void;
-  types?: string[];
-  className?: string;
+  value?: string
+  onChange: (type: SemanticType) => void
+  types?: string[]
+  className?: string
 }
 
 export const TypeQuickSelect: React.FC<TypeQuickSelectProps> = ({
   value,
   onChange,
-  types = ['text', 'number', 'currency', 'date', 'percentage', 'boolean'],
-  className = '',
+  types = ["text", "number", "currency", "date", "percentage", "boolean"],
+  className = "",
 }) => {
   return (
     <div className={`type-quick-select ${className}`}>
       {types.map((typeId) => {
-        const type = BUILT_IN_TYPES[typeId];
-        if (!type) return null;
+        const type = BUILT_IN_TYPES[typeId]
+        if (!type) return null
 
         return (
           <button
             key={typeId}
-            className={`type-quick-select-btn ${value === typeId ? 'selected' : ''}`}
+            className={`type-quick-select-btn ${value === typeId ? "selected" : ""}`}
             onClick={() => onChange(type)}
             title={type.name}
           >
             <span style={{ color: type.color }}>{type.icon}</span>
           </button>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
-export { CategoryBadge };
+export { CategoryBadge }

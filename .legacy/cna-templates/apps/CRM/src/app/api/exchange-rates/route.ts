@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { handleApiError } from '@/lib/api/errors'
-import { sanitizeObject } from '@/lib/api/sanitize'
-import { createExchangeRateSchema } from '@/lib/validations/exchange-rate'
-import { validateRequest } from '@/lib/validations'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { handleApiError } from "@/lib/api/errors"
+import { sanitizeObject } from "@/lib/api/sanitize"
+import { createExchangeRateSchema } from "@/lib/validations/exchange-rate"
+import { validateRequest } from "@/lib/validations"
 
 // GET /api/exchange-rates — List all exchange rates
 export async function GET() {
@@ -13,22 +13,25 @@ export async function GET() {
     await getCurrentUser()
 
     const rates = await prisma.exchangeRate.findMany({
-      orderBy: [{ isBase: 'desc' }, { currency: 'asc' }],
+      orderBy: [{ isBase: "desc" }, { currency: "asc" }],
     })
 
     return NextResponse.json({ data: rates })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    return handleApiError(error, '/api/exchange-rates')
+    return handleApiError(error, "/api/exchange-rates")
   }
 }
 
 // POST /api/exchange-rates — Create new exchange rate (ADMIN only)
 export async function POST(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
     const user = result
 
@@ -58,6 +61,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(rate, { status: 201 })
   } catch (error) {
-    return handleApiError(error, '/api/exchange-rates')
+    return handleApiError(error, "/api/exchange-rates")
   }
 }

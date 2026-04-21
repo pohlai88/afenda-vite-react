@@ -2,17 +2,17 @@
 // LINE CHART — Line chart component
 // =============================================================================
 
-import React, { useMemo } from 'react';
-import type { ChartConfig } from '../autoviz/types';
-import { ChartWrapper } from './ChartWrapper';
+import React, { useMemo } from "react"
+import type { ChartConfig } from "../autoviz/types"
+import { ChartWrapper } from "./ChartWrapper"
 
 interface LineChartProps {
-  config: ChartConfig;
-  width?: number;
-  height?: number;
-  showPoints?: boolean;
-  showArea?: boolean;
-  smooth?: boolean;
+  config: ChartConfig
+  width?: number
+  height?: number
+  showPoints?: boolean
+  showArea?: boolean
+  smooth?: boolean
 }
 
 export const LineChart: React.FC<LineChartProps> = ({
@@ -23,24 +23,26 @@ export const LineChart: React.FC<LineChartProps> = ({
   showArea = false,
   smooth = false,
 }) => {
-  const { data, colorScheme, style, yAxis, tooltip } = config;
+  const { data, colorScheme, style, yAxis, tooltip } = config
 
-  const chartHeight = height - (config.title ? 60 : 0) - (config.legend?.show ? 40 : 0);
-  const chartWidth = width - style.padding * 2;
+  const chartHeight =
+    height - (config.title ? 60 : 0) - (config.legend?.show ? 40 : 0)
+  const chartWidth = width - style.padding * 2
 
   // Calculate scales
   const { paths, points, gridLines, xLabels, yLabels } = useMemo(() => {
-    const allValues = data.datasets.flatMap((ds) => ds.data);
-    const maxValue = Math.max(...allValues, 0);
-    const minValue = Math.min(...allValues, 0);
-    const range = maxValue - minValue || 1;
+    const allValues = data.datasets.flatMap((ds) => ds.data)
+    const maxValue = Math.max(...allValues, 0)
+    const minValue = Math.min(...allValues, 0)
+    const range = maxValue - minValue || 1
 
-    const padding = { top: 20, right: 20, bottom: 30, left: 50 };
-    const plotWidth = chartWidth - padding.left - padding.right;
-    const plotHeight = chartHeight - padding.top - padding.bottom;
+    const padding = { top: 20, right: 20, bottom: 30, left: 50 }
+    const plotWidth = chartWidth - padding.left - padding.right
+    const plotHeight = chartHeight - padding.top - padding.bottom
 
-    const xStep = plotWidth / Math.max(data.datasets[0]?.data.length - 1 || 1, 1);
-    const yScale = plotHeight / range;
+    const xStep =
+      plotWidth / Math.max(data.datasets[0]?.data.length - 1 || 1, 1)
+    const yScale = plotHeight / range
 
     // Calculate paths for each dataset
     const paths = data.datasets.map((dataset, dsIndex) => {
@@ -49,29 +51,29 @@ export const LineChart: React.FC<LineChartProps> = ({
         y: padding.top + plotHeight - (value - minValue) * yScale,
         value,
         label: data.labels?.[i] || `${i + 1}`,
-      }));
+      }))
 
-      let pathData: string;
+      let pathData: string
       if (smooth && pts.length > 2) {
         // Smooth curve using bezier
         pathData = pts
           .map((pt, i) => {
-            if (i === 0) return `M ${pt.x} ${pt.y}`;
-            const prev = pts[i - 1];
-            const cpx = (prev.x + pt.x) / 2;
-            return `C ${cpx} ${prev.y}, ${cpx} ${pt.y}, ${pt.x} ${pt.y}`;
+            if (i === 0) return `M ${pt.x} ${pt.y}`
+            const prev = pts[i - 1]
+            const cpx = (prev.x + pt.x) / 2
+            return `C ${cpx} ${prev.y}, ${cpx} ${pt.y}, ${pt.x} ${pt.y}`
           })
-          .join(' ');
+          .join(" ")
       } else {
         pathData = pts
-          .map((pt, i) => `${i === 0 ? 'M' : 'L'} ${pt.x} ${pt.y}`)
-          .join(' ');
+          .map((pt, i) => `${i === 0 ? "M" : "L"} ${pt.x} ${pt.y}`)
+          .join(" ")
       }
 
       // Area path
       const areaPath = showArea
         ? `${pathData} L ${pts[pts.length - 1].x} ${padding.top + plotHeight} L ${padding.left} ${padding.top + plotHeight} Z`
-        : '';
+        : ""
 
       return {
         linePath: pathData,
@@ -79,38 +81,44 @@ export const LineChart: React.FC<LineChartProps> = ({
         color: dataset.color || colorScheme.colors[dsIndex],
         points: pts,
         label: dataset.label,
-      };
-    });
+      }
+    })
 
     // Grid lines
-    const gridCount = 5;
+    const gridCount = 5
     const gridLines = Array.from({ length: gridCount + 1 }, (_, i) => {
-      const ratio = i / gridCount;
+      const ratio = i / gridCount
       return {
         y: padding.top + plotHeight - ratio * plotHeight,
         value: minValue + ratio * range,
-      };
-    });
+      }
+    })
 
     // X labels
     const xLabels =
       data.labels?.map((label, i) => ({
         x: padding.left + i * xStep,
         label: label.length > 8 ? `${label.slice(0, 8)}...` : label,
-      })) || [];
+      })) || []
 
     // Y labels
     const yLabels = gridLines.map((line) => ({
       y: line.y,
       label: formatNumber(line.value),
-    }));
+    }))
 
-    return { paths, points: paths.flatMap((p) => p.points), gridLines, xLabels, yLabels };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, chartWidth, chartHeight, colorScheme.colors, smooth, showArea]);
+    return {
+      paths,
+      points: paths.flatMap((p) => p.points),
+      gridLines,
+      xLabels,
+      yLabels,
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, chartWidth, chartHeight, colorScheme.colors, smooth, showArea])
 
   // `points` is computed for future use (tooltips, etc.)
-  void points;
+  void points
 
   return (
     <ChartWrapper config={config} className="line-chart">
@@ -129,7 +137,7 @@ export const LineChart: React.FC<LineChartProps> = ({
                 y1={line.y}
                 x2={chartWidth - 20}
                 y2={line.y}
-                stroke={colorScheme.gridColor || '#e5e7eb'}
+                stroke={colorScheme.gridColor || "#e5e7eb"}
                 strokeDasharray="4"
               />
             ))}
@@ -177,7 +185,7 @@ export const LineChart: React.FC<LineChartProps> = ({
                 d={path.areaPath}
                 fill={path.color}
                 opacity={0.2}
-                className={style.animation ? 'animate-area' : ''}
+                className={style.animation ? "animate-area" : ""}
               />
             )}
             <path
@@ -187,7 +195,7 @@ export const LineChart: React.FC<LineChartProps> = ({
               strokeWidth={2}
               strokeLinecap="round"
               strokeLinejoin="round"
-              className={style.animation ? 'animate-line' : ''}
+              className={style.animation ? "animate-line" : ""}
             />
           </g>
         ))}
@@ -204,7 +212,7 @@ export const LineChart: React.FC<LineChartProps> = ({
                   fill={path.color}
                   stroke="#fff"
                   strokeWidth={2}
-                  className={style.animation ? 'animate-point' : ''}
+                  className={style.animation ? "animate-point" : ""}
                   style={{ animationDelay: `${i * 50}ms` }}
                 />
                 {tooltip?.enabled && (
@@ -216,13 +224,14 @@ export const LineChart: React.FC<LineChartProps> = ({
 
         {/* Annotations */}
         {config.annotations?.map((annotation) => {
-          if (annotation.type === 'line' && annotation.y !== undefined) {
+          if (annotation.type === "line" && annotation.y !== undefined) {
             const yPos =
               chartHeight -
               30 -
               ((Number(annotation.y) - (gridLines[0]?.value || 0)) /
-                ((gridLines[gridLines.length - 1]?.value || 1) - (gridLines[0]?.value || 0))) *
-                (chartHeight - 50);
+                ((gridLines[gridLines.length - 1]?.value || 1) -
+                  (gridLines[0]?.value || 0))) *
+                (chartHeight - 50)
 
             return (
               <g key={annotation.id}>
@@ -231,7 +240,7 @@ export const LineChart: React.FC<LineChartProps> = ({
                   y1={yPos}
                   x2={chartWidth - 20}
                   y2={yPos}
-                  stroke={annotation.color || '#f59e0b'}
+                  stroke={annotation.color || "#f59e0b"}
                   strokeWidth={2}
                   strokeDasharray="6"
                 />
@@ -241,29 +250,29 @@ export const LineChart: React.FC<LineChartProps> = ({
                     y={yPos - 5}
                     textAnchor="end"
                     fontSize={11}
-                    fill={annotation.color || '#f59e0b'}
+                    fill={annotation.color || "#f59e0b"}
                   >
                     {annotation.label}
                   </text>
                 )}
               </g>
-            );
+            )
           }
-          return null;
+          return null
         })}
       </svg>
     </ChartWrapper>
-  );
-};
+  )
+}
 
 function formatNumber(value: number): string {
   if (Math.abs(value) >= 1000000) {
-    return `${(value / 1000000).toFixed(1)}M`;
+    return `${(value / 1000000).toFixed(1)}M`
   }
   if (Math.abs(value) >= 1000) {
-    return `${(value / 1000).toFixed(1)}K`;
+    return `${(value / 1000).toFixed(1)}K`
   }
-  return value.toFixed(value % 1 === 0 ? 0 : 1);
+  return value.toFixed(value % 1 === 0 ? 0 : 1)
 }
 
-export default LineChart;
+export default LineChart

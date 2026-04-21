@@ -6,10 +6,10 @@
 // ═══════════════════════════════════════════════════════════════
 
 export enum LogLevel {
-  DEBUG = 'debug',
-  INFO = 'info',
-  WARN = 'warn',
-  ERROR = 'error',
+  DEBUG = "debug",
+  INFO = "info",
+  WARN = "warn",
+  ERROR = "error",
 }
 
 const LOG_LEVEL_PRIORITY: Record<LogLevel, number> = {
@@ -48,7 +48,9 @@ class Logger {
 
   constructor() {
     const level = process.env.LOG_LEVEL?.toLowerCase() as LogLevel
-    this.minLevel = Object.values(LogLevel).includes(level) ? level : LogLevel.INFO
+    this.minLevel = Object.values(LogLevel).includes(level)
+      ? level
+      : LogLevel.INFO
   }
 
   private shouldLog(level: LogLevel): boolean {
@@ -56,12 +58,12 @@ class Logger {
   }
 
   private formatEntry(entry: LogEntry): string {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       // Human-readable format for development
       const parts = [
         `[${entry.timestamp}]`,
         `[${entry.level.toUpperCase()}]`,
-        entry.context ? `[${entry.context}]` : '',
+        entry.context ? `[${entry.context}]` : "",
         entry.message,
       ]
 
@@ -69,16 +71,16 @@ class Logger {
         parts.push(`(${entry.duration}ms)`)
       }
 
-      let output = parts.filter(Boolean).join(' ')
+      let output = parts.filter(Boolean).join(" ")
 
       if (entry.data) {
-        output += '\n  Data: ' + JSON.stringify(entry.data, null, 2)
+        output += "\n  Data: " + JSON.stringify(entry.data, null, 2)
       }
 
       if (entry.error) {
         output += `\n  Error: ${entry.error.name}: ${entry.error.message}`
         if (entry.error.stack) {
-          output += '\n  Stack: ' + entry.error.stack
+          output += "\n  Stack: " + entry.error.stack
         }
       }
 
@@ -140,19 +142,51 @@ class Logger {
     }
   }
 
-  debug(message: string, options?: { context?: string; data?: Record<string, unknown>; duration?: number }): void {
+  debug(
+    message: string,
+    options?: {
+      context?: string
+      data?: Record<string, unknown>
+      duration?: number
+    }
+  ): void {
     this.log(LogLevel.DEBUG, message, options)
   }
 
-  info(message: string, options?: { context?: string; data?: Record<string, unknown>; duration?: number; userId?: string; requestId?: string }): void {
+  info(
+    message: string,
+    options?: {
+      context?: string
+      data?: Record<string, unknown>
+      duration?: number
+      userId?: string
+      requestId?: string
+    }
+  ): void {
     this.log(LogLevel.INFO, message, options)
   }
 
-  warn(message: string, options?: { context?: string; data?: Record<string, unknown>; error?: Error; duration?: number }): void {
+  warn(
+    message: string,
+    options?: {
+      context?: string
+      data?: Record<string, unknown>
+      error?: Error
+      duration?: number
+    }
+  ): void {
     this.log(LogLevel.WARN, message, options)
   }
 
-  error(message: string, options?: { context?: string; data?: Record<string, unknown>; error?: Error; duration?: number }): void {
+  error(
+    message: string,
+    options?: {
+      context?: string
+      data?: Record<string, unknown>
+      error?: Error
+      duration?: number
+    }
+  ): void {
     this.log(LogLevel.ERROR, message, options)
   }
 
@@ -170,7 +204,7 @@ class Logger {
     const { statusCode, duration, userId, requestId } = options
 
     this.info(`${method} ${path} ${statusCode}`, {
-      context: 'HTTP',
+      context: "HTTP",
       data: { method, path, statusCode },
       duration,
       userId,
@@ -188,13 +222,13 @@ class Logger {
 
     if (success) {
       this.debug(`${operation} on ${model}`, {
-        context: 'DB',
+        context: "DB",
         data: { operation, model },
         duration,
       })
     } else {
       this.error(`${operation} on ${model} failed`, {
-        context: 'DB',
+        context: "DB",
         data: { operation, model },
         duration,
         error,

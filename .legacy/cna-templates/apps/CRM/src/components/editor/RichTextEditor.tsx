@@ -1,16 +1,16 @@
-'use client'
+"use client"
 
-import './editor-styles.css'
-import { useCallback, useMemo, useRef, useState } from 'react'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Link from '@tiptap/extension-link'
-import Image from '@tiptap/extension-image'
-import Placeholder from '@tiptap/extension-placeholder'
-import TextAlign from '@tiptap/extension-text-align'
-import Underline from '@tiptap/extension-underline'
-import Highlight from '@tiptap/extension-highlight'
-import { VariableNode } from './variable-extension'
+import "./editor-styles.css"
+import { useCallback, useMemo, useRef, useState } from "react"
+import { useEditor, EditorContent } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
+import Link from "@tiptap/extension-link"
+import Image from "@tiptap/extension-image"
+import Placeholder from "@tiptap/extension-placeholder"
+import TextAlign from "@tiptap/extension-text-align"
+import Underline from "@tiptap/extension-underline"
+import Highlight from "@tiptap/extension-highlight"
+import { VariableNode } from "./variable-extension"
 import {
   Bold,
   Italic,
@@ -29,7 +29,7 @@ import {
   ImageIcon,
   Code2,
   Unlink,
-} from 'lucide-react'
+} from "lucide-react"
 
 export interface Variable {
   key: string
@@ -38,12 +38,12 @@ export interface Variable {
 }
 
 export const CAMPAIGN_VARIABLES: Variable[] = [
-  { key: 'firstName', label: 'Tên', preview: 'Nguyễn' },
-  { key: 'lastName', label: 'Họ', preview: 'Văn A' },
-  { key: 'fullName', label: 'Họ tên', preview: 'Nguyễn Văn A' },
-  { key: 'email', label: 'Email', preview: 'a@email.com' },
-  { key: 'company', label: 'Công ty', preview: 'ABC Corp' },
-  { key: 'title', label: 'Chức danh', preview: 'Giám đốc' },
+  { key: "firstName", label: "Tên", preview: "Nguyễn" },
+  { key: "lastName", label: "Họ", preview: "Văn A" },
+  { key: "fullName", label: "Họ tên", preview: "Nguyễn Văn A" },
+  { key: "email", label: "Email", preview: "a@email.com" },
+  { key: "company", label: "Công ty", preview: "ABC Corp" },
+  { key: "title", label: "Chức danh", preview: "Giám đốc" },
 ]
 
 export interface RichTextEditorProps {
@@ -79,11 +79,12 @@ function ToolbarButton({
       title={title}
       className={`
         flex h-8 w-8 items-center justify-center rounded transition-colors
-        ${active
-          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
-          : 'text-[var(--crm-text-secondary)] hover:bg-[var(--crm-bg-hover)] hover:text-[var(--crm-text-primary)]'
+        ${
+          active
+            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
+            : "text-[var(--crm-text-secondary)] hover:bg-[var(--crm-bg-hover)] hover:text-[var(--crm-text-primary)]"
         }
-        ${disabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}
+        ${disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}
       `}
     >
       {children}
@@ -107,7 +108,7 @@ function LinkDialog({
   onRemove?: () => void
   onCancel: () => void
 }) {
-  const [url, setUrl] = useState(initialUrl || '')
+  const [url, setUrl] = useState(initialUrl || "")
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (
@@ -121,8 +122,8 @@ function LinkDialog({
         className="h-8 w-56 rounded border border-[var(--crm-border)] bg-[var(--crm-bg-page)] px-2 text-sm text-[var(--crm-text-primary)] outline-none focus:border-emerald-500"
         autoFocus
         onKeyDown={(e) => {
-          if (e.key === 'Enter' && url) onSubmit(url)
-          if (e.key === 'Escape') onCancel()
+          if (e.key === "Enter" && url) onSubmit(url)
+          if (e.key === "Escape") onCancel()
         }}
       />
       <button
@@ -162,8 +163,8 @@ function ImageDialog({
   onSubmit: (url: string, alt: string) => void
   onCancel: () => void
 }) {
-  const [url, setUrl] = useState('')
-  const [alt, setAlt] = useState('')
+  const [url, setUrl] = useState("")
+  const [alt, setAlt] = useState("")
 
   return (
     <div className="absolute left-0 top-full z-50 mt-1 flex flex-col gap-2 rounded-lg border border-[var(--crm-border)] bg-[var(--crm-bg-card)] p-3 shadow-lg">
@@ -175,7 +176,7 @@ function ImageDialog({
         className="h-8 w-64 rounded border border-[var(--crm-border)] bg-[var(--crm-bg-page)] px-2 text-sm text-[var(--crm-text-primary)] outline-none focus:border-emerald-500"
         autoFocus
         onKeyDown={(e) => {
-          if (e.key === 'Escape') onCancel()
+          if (e.key === "Escape") onCancel()
         }}
       />
       <input
@@ -185,8 +186,8 @@ function ImageDialog({
         placeholder="Mô tả hình ảnh"
         className="h-8 w-64 rounded border border-[var(--crm-border)] bg-[var(--crm-bg-page)] px-2 text-sm text-[var(--crm-text-primary)] outline-none focus:border-emerald-500"
         onKeyDown={(e) => {
-          if (e.key === 'Enter' && url) onSubmit(url, alt)
-          if (e.key === 'Escape') onCancel()
+          if (e.key === "Enter" && url) onSubmit(url, alt)
+          if (e.key === "Escape") onCancel()
         }}
       />
       <div className="flex justify-end gap-2">
@@ -251,12 +252,12 @@ function VariableDropdown({
 export function RichTextEditor({
   value,
   onChange,
-  placeholder = '',
+  placeholder = "",
   readOnly = false,
   variables,
   minHeight = 200,
   maxHeight = 500,
-  className = '',
+  className = "",
 }: RichTextEditorProps) {
   const [showLinkDialog, setShowLinkDialog] = useState(false)
   const [showImageDialog, setShowImageDialog] = useState(false)
@@ -268,10 +269,7 @@ export function RichTextEditor({
     let html = value
     for (const v of variables) {
       if (v.preview) {
-        html = html.replace(
-          new RegExp(`\\{\\{${v.key}\\}\\}`, 'g'),
-          v.preview
-        )
+        html = html.replace(new RegExp(`\\{\\{${v.key}\\}\\}`, "g"), v.preview)
       }
     }
     // Also handle variable chips in data-variable spans
@@ -279,7 +277,7 @@ export function RichTextEditor({
       if (v.preview) {
         const re = new RegExp(
           `<span[^>]*data-variable="${v.key}"[^>]*>[^<]*</span>`,
-          'g'
+          "g"
         )
         html = html.replace(re, v.preview)
       }
@@ -310,13 +308,13 @@ export function RichTextEditor({
       Highlight,
       Link.configure({
         openOnClick: false,
-        HTMLAttributes: { target: '_blank', rel: 'noopener noreferrer' },
+        HTMLAttributes: { target: "_blank", rel: "noopener noreferrer" },
       }),
       Image.configure({
-        HTMLAttributes: { style: 'max-width: 100%; height: auto;' },
+        HTMLAttributes: { style: "max-width: 100%; height: auto;" },
       }),
       Placeholder.configure({ placeholder }),
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
       VariableNode,
     ],
     content: value,
@@ -345,14 +343,14 @@ export function RichTextEditor({
       .chain()
       .focus()
       .insertContent({
-        type: 'variable',
+        type: "variable",
         attrs: { key: v.key, label: v.label },
       })
       .run()
   }
 
   const setLink = (url: string) => {
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
     setShowLinkDialog(false)
   }
 
@@ -366,8 +364,8 @@ export function RichTextEditor({
     setShowImageDialog(false)
   }
 
-  const currentLinkUrl = editor.isActive('link')
-    ? (editor.getAttributes('link').href as string)
+  const currentLinkUrl = editor.isActive("link")
+    ? (editor.getAttributes("link").href as string)
     : undefined
 
   return (
@@ -379,28 +377,28 @@ export function RichTextEditor({
         {/* Text formatting */}
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
-          active={editor.isActive('bold')}
+          active={editor.isActive("bold")}
           title="Đậm"
         >
           <Bold className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          active={editor.isActive('italic')}
+          active={editor.isActive("italic")}
           title="Nghiêng"
         >
           <Italic className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          active={editor.isActive('underline')}
+          active={editor.isActive("underline")}
           title="Gạch chân"
         >
           <UnderlineIcon className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          active={editor.isActive('strike')}
+          active={editor.isActive("strike")}
           title="Gạch ngang"
         >
           <Strikethrough className="h-4 w-4" />
@@ -410,22 +408,28 @@ export function RichTextEditor({
 
         {/* Headings */}
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          active={editor.isActive('heading', { level: 1 })}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
+          active={editor.isActive("heading", { level: 1 })}
           title="Tiêu đề 1"
         >
           <Heading1 className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          active={editor.isActive('heading', { level: 2 })}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
+          active={editor.isActive("heading", { level: 2 })}
           title="Tiêu đề 2"
         >
           <Heading2 className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          active={editor.isActive('heading', { level: 3 })}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
+          active={editor.isActive("heading", { level: 3 })}
           title="Tiêu đề 3"
         >
           <Heading3 className="h-4 w-4" />
@@ -436,14 +440,14 @@ export function RichTextEditor({
         {/* Lists + HR */}
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          active={editor.isActive('bulletList')}
+          active={editor.isActive("bulletList")}
           title="Danh sách"
         >
           <List className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          active={editor.isActive('orderedList')}
+          active={editor.isActive("orderedList")}
           title="Danh sách số"
         >
           <ListOrdered className="h-4 w-4" />
@@ -459,22 +463,22 @@ export function RichTextEditor({
 
         {/* Alignment */}
         <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign('left').run()}
-          active={editor.isActive({ textAlign: 'left' })}
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          active={editor.isActive({ textAlign: "left" })}
           title="Căn trái"
         >
           <AlignLeft className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign('center').run()}
-          active={editor.isActive({ textAlign: 'center' })}
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          active={editor.isActive({ textAlign: "center" })}
           title="Căn giữa"
         >
           <AlignCenter className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign('right').run()}
-          active={editor.isActive({ textAlign: 'right' })}
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          active={editor.isActive({ textAlign: "right" })}
           title="Căn phải"
         >
           <AlignRight className="h-4 w-4" />
@@ -490,7 +494,7 @@ export function RichTextEditor({
               setShowImageDialog(false)
               setShowVariables(false)
             }}
-            active={editor.isActive('link')}
+            active={editor.isActive("link")}
             title="Liên kết"
           >
             <LinkIcon className="h-4 w-4" />
@@ -499,7 +503,7 @@ export function RichTextEditor({
             <LinkDialog
               initialUrl={currentLinkUrl}
               onSubmit={setLink}
-              onRemove={editor.isActive('link') ? removeLink : undefined}
+              onRemove={editor.isActive("link") ? removeLink : undefined}
               onCancel={() => setShowLinkDialog(false)}
             />
           )}
@@ -555,7 +559,7 @@ export function RichTextEditor({
       {/* Editor content */}
       <div
         className="tiptap-content"
-        style={{ minHeight, maxHeight, overflowY: 'auto' }}
+        style={{ minHeight, maxHeight, overflowY: "auto" }}
       >
         <EditorContent editor={editor} />
       </div>

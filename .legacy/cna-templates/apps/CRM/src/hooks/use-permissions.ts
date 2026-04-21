@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useAuth } from './use-auth'
-import type { UserRole } from '@prisma/client'
+import { useAuth } from "./use-auth"
+import type { UserRole } from "@prisma/client"
 
 const ROLE_HIERARCHY: Record<string, number> = {
   ADMIN: 4,
@@ -12,7 +12,7 @@ const ROLE_HIERARCHY: Record<string, number> = {
 
 export function usePermissions() {
   const { user, isLoading } = useAuth()
-  const role = (user?.role || 'VIEWER') as UserRole
+  const role = (user?.role || "VIEWER") as UserRole
 
   const isAtLeast = (requiredRole: UserRole): boolean => {
     return (ROLE_HIERARCHY[role] || 0) >= (ROLE_HIERARCHY[requiredRole] || 0)
@@ -21,28 +21,28 @@ export function usePermissions() {
   return {
     role,
     isLoading,
-    isAdmin: role === 'ADMIN',
-    isManagerOrAbove: isAtLeast('MANAGER'),
-    canCreate: isAtLeast('MEMBER'),
-    canEditOwn: isAtLeast('MEMBER'),
-    canEditAny: isAtLeast('MANAGER'),
-    canDeleteOwn: isAtLeast('MEMBER'),
-    canDeleteAny: isAtLeast('MANAGER'),
-    canManageTeam: role === 'ADMIN',
-    canManageSettings: role === 'ADMIN',
-    canViewApiDocs: isAtLeast('MANAGER'),
-    canManageCampaigns: isAtLeast('MANAGER'),
-    canManagePortal: isAtLeast('MANAGER'),
-    canExport: isAtLeast('MEMBER'),
+    isAdmin: role === "ADMIN",
+    isManagerOrAbove: isAtLeast("MANAGER"),
+    canCreate: isAtLeast("MEMBER"),
+    canEditOwn: isAtLeast("MEMBER"),
+    canEditAny: isAtLeast("MANAGER"),
+    canDeleteOwn: isAtLeast("MEMBER"),
+    canDeleteAny: isAtLeast("MANAGER"),
+    canManageTeam: role === "ADMIN",
+    canManageSettings: role === "ADMIN",
+    canViewApiDocs: isAtLeast("MANAGER"),
+    canManageCampaigns: isAtLeast("MANAGER"),
+    canManagePortal: isAtLeast("MANAGER"),
+    canExport: isAtLeast("MEMBER"),
     isAtLeast,
     /** Check if user is the owner or has manager+ role */
     canEditRecord: (ownerId: string) => {
       if (!user) return false
-      return user.id === ownerId || isAtLeast('MANAGER')
+      return user.id === ownerId || isAtLeast("MANAGER")
     },
     canDeleteRecord: (ownerId: string) => {
       if (!user) return false
-      return user.id === ownerId || isAtLeast('MANAGER')
+      return user.id === ownerId || isAtLeast("MANAGER")
     },
     userId: user?.id || null,
   }

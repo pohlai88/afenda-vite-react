@@ -1,4 +1,4 @@
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 
 export async function createEvaluation(
   tenantId: string,
@@ -45,7 +45,9 @@ export async function createEvaluation(
     where: { applicationId: data.applicationId },
   })
 
-  const avgRating = allEvaluations.reduce((sum, e) => sum + Number(e.overallRating), 0) / allEvaluations.length
+  const avgRating =
+    allEvaluations.reduce((sum, e) => sum + Number(e.overallRating), 0) /
+    allEvaluations.length
 
   await db.application.update({
     where: { id: data.applicationId },
@@ -55,7 +57,7 @@ export async function createEvaluation(
   await db.applicationActivity.create({
     data: {
       applicationId: data.applicationId,
-      action: 'evaluation_added',
+      action: "evaluation_added",
       description: `Đánh giá từ ${evaluation.evaluator.name}: ${data.recommendation}`,
       performedById: data.evaluatorId,
     },
@@ -89,6 +91,6 @@ export async function getEvaluations(
         },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   })
 }

@@ -1,27 +1,38 @@
-import { useState } from 'react';
-import { useTableStore } from '../../stores/tableStore';
-import { Table, TableColumn } from '../../types/cell';
+import { useState } from "react"
+import { useTableStore } from "../../stores/tableStore"
+import { Table, TableColumn } from "../../types/cell"
 
 interface TableManagerProps {
-  sheetId: string;
-  onClose: () => void;
+  sheetId: string
+  onClose: () => void
 }
 
-export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) => {
-  const { tables, getTablesBySheet, addTable, removeTable, updateTable, addColumn, removeColumn } = useTableStore();
+export const TableManager: React.FC<TableManagerProps> = ({
+  sheetId,
+  onClose,
+}) => {
+  const {
+    tables,
+    getTablesBySheet,
+    addTable,
+    removeTable,
+    updateTable,
+    addColumn,
+    removeColumn,
+  } = useTableStore()
 
-  const [selectedTableId, setSelectedTableId] = useState<string | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
-  const [newTableName, setNewTableName] = useState('');
-  const [newColumnName, setNewColumnName] = useState('');
+  const [selectedTableId, setSelectedTableId] = useState<string | null>(null)
+  const [isCreating, setIsCreating] = useState(false)
+  const [newTableName, setNewTableName] = useState("")
+  const [newColumnName, setNewColumnName] = useState("")
 
-  const sheetTables = getTablesBySheet(sheetId);
-  const selectedTable = selectedTableId ? tables[selectedTableId] : null;
+  const sheetTables = getTablesBySheet(sheetId)
+  const selectedTable = selectedTableId ? tables[selectedTableId] : null
 
   const handleCreateTable = () => {
-    if (!newTableName.trim()) return;
+    if (!newTableName.trim()) return
 
-    const now = new Date().toISOString();
+    const now = new Date().toISOString()
     const newTable: Table = {
       id: crypto.randomUUID(),
       name: newTableName.trim(),
@@ -29,49 +40,49 @@ export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) 
       startRow: 0,
       startCol: 0,
       columns: [
-        { id: crypto.randomUUID(), name: 'Column1', index: 0, hidden: false },
+        { id: crypto.randomUUID(), name: "Column1", index: 0, hidden: false },
       ],
       rowCount: 0,
       hasHeaderRow: true,
       hasTotalRow: false,
       style: {
-        name: 'Default',
-        headerBackgroundColor: '#4472C4',
-        headerTextColor: '#FFFFFF',
-        alternateRowColor: '#D9E2F3',
+        name: "Default",
+        headerBackgroundColor: "#4472C4",
+        headerTextColor: "#FFFFFF",
+        alternateRowColor: "#D9E2F3",
       },
       createdAt: now,
       updatedAt: now,
-    };
+    }
 
-    addTable(newTable);
-    setSelectedTableId(newTable.id);
-    setNewTableName('');
-    setIsCreating(false);
-  };
+    addTable(newTable)
+    setSelectedTableId(newTable.id)
+    setNewTableName("")
+    setIsCreating(false)
+  }
 
   const handleAddColumn = () => {
-    if (!selectedTable || !newColumnName.trim()) return;
+    if (!selectedTable || !newColumnName.trim()) return
 
     const column: TableColumn = {
       id: crypto.randomUUID(),
       name: newColumnName.trim(),
       index: selectedTable.columns.length,
       hidden: false,
-    };
+    }
 
-    addColumn(selectedTable.id, column);
-    setNewColumnName('');
-  };
+    addColumn(selectedTable.id, column)
+    setNewColumnName("")
+  }
 
   const handleDeleteTable = (tableId: string) => {
-    if (confirm('Are you sure you want to delete this table?')) {
-      removeTable(tableId);
+    if (confirm("Are you sure you want to delete this table?")) {
+      removeTable(tableId)
       if (selectedTableId === tableId) {
-        setSelectedTableId(null);
+        setSelectedTableId(null)
       }
     }
-  };
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -79,7 +90,10 @@ export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) 
         {/* Header */}
         <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
           <h2 className="text-lg font-semibold">Table Manager</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
             ✕
           </button>
         </div>
@@ -117,7 +131,10 @@ export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) 
                     Create
                   </button>
                   <button
-                    onClick={() => { setIsCreating(false); setNewTableName(''); }}
+                    onClick={() => {
+                      setIsCreating(false)
+                      setNewTableName("")
+                    }}
                     className="px-3 py-1 text-sm bg-gray-300 rounded hover:bg-gray-400"
                   >
                     Cancel
@@ -135,7 +152,9 @@ export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) 
                   <div
                     key={table.id}
                     className={`p-2 rounded cursor-pointer flex justify-between items-center ${
-                      selectedTableId === table.id ? 'bg-blue-100 border border-blue-300' : 'hover:bg-gray-100'
+                      selectedTableId === table.id
+                        ? "bg-blue-100 border border-blue-300"
+                        : "hover:bg-gray-100"
                     }`}
                     onClick={() => setSelectedTableId(table.id)}
                   >
@@ -146,7 +165,10 @@ export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) 
                       </span>
                     </div>
                     <button
-                      onClick={(e) => { e.stopPropagation(); handleDeleteTable(table.id); }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDeleteTable(table.id)
+                      }}
                       className="text-red-500 hover:text-red-700 px-2"
                     >
                       Delete
@@ -167,7 +189,10 @@ export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) 
                 <h4 className="text-sm font-medium mb-2">Columns</h4>
                 <div className="space-y-1">
                   {selectedTable.columns.map((col) => (
-                    <div key={col.id} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <div
+                      key={col.id}
+                      className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                    >
                       <span>{col.name}</span>
                       <button
                         onClick={() => removeColumn(selectedTable.id, col.id)}
@@ -203,7 +228,11 @@ export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) 
                   <input
                     type="checkbox"
                     checked={selectedTable.hasHeaderRow}
-                    onChange={(e) => updateTable(selectedTable.id, { hasHeaderRow: e.target.checked })}
+                    onChange={(e) =>
+                      updateTable(selectedTable.id, {
+                        hasHeaderRow: e.target.checked,
+                      })
+                    }
                   />
                   <span className="text-sm">Has header row</span>
                 </label>
@@ -211,7 +240,11 @@ export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) 
                   <input
                     type="checkbox"
                     checked={selectedTable.hasTotalRow}
-                    onChange={(e) => updateTable(selectedTable.id, { hasTotalRow: e.target.checked })}
+                    onChange={(e) =>
+                      updateTable(selectedTable.id, {
+                        hasTotalRow: e.target.checked,
+                      })
+                    }
                   />
                   <span className="text-sm">Has total row</span>
                 </label>
@@ -231,5 +264,5 @@ export const TableManager: React.FC<TableManagerProps> = ({ sheetId, onClose }) 
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

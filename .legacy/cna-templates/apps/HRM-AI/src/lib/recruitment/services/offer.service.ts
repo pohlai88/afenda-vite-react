@@ -1,14 +1,14 @@
 // src/lib/recruitment/services/offer.service.ts
 // Offer Service - Manage job offers and acceptance workflow
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   OfferStatus,
   ApplicationStatus,
   JobType,
   WorkMode,
-  Prisma
-} from '@prisma/client'
+  Prisma,
+} from "@prisma/client"
 
 // Types
 export interface CreateOfferInput {
@@ -28,7 +28,9 @@ export interface CreateOfferInput {
   expiresAt: Date
 }
 
-export interface UpdateOfferInput extends Partial<Omit<CreateOfferInput, 'applicationId'>> {
+export interface UpdateOfferInput extends Partial<
+  Omit<CreateOfferInput, "applicationId">
+> {
   status?: OfferStatus
 }
 
@@ -47,16 +49,16 @@ async function generateOfferCode(tenantId: string): Promise<string> {
 
   const lastOffer = await db.offer.findFirst({
     where: { offerCode: { startsWith: prefix } },
-    orderBy: { offerCode: 'desc' }
+    orderBy: { offerCode: "desc" },
   })
 
   let nextNumber = 1
   if (lastOffer) {
-    const lastNumber = parseInt(lastOffer.offerCode.replace(prefix, ''), 10)
+    const lastNumber = parseInt(lastOffer.offerCode.replace(prefix, ""), 10)
     nextNumber = lastNumber + 1
   }
 
-  return `${prefix}${nextNumber.toString().padStart(4, '0')}`
+  return `${prefix}${nextNumber.toString().padStart(4, "0")}`
 }
 
 export class OfferService {
@@ -71,25 +73,37 @@ export class OfferService {
       where: {
         id: input.applicationId,
         tenantId: this.tenantId,
-        status: { notIn: [ApplicationStatus.REJECTED, ApplicationStatus.WITHDRAWN, ApplicationStatus.HIRED] },
+        status: {
+          notIn: [
+            ApplicationStatus.REJECTED,
+            ApplicationStatus.WITHDRAWN,
+            ApplicationStatus.HIRED,
+          ],
+        },
       },
       include: {
         candidate: true,
         offers: {
           where: {
-            status: { notIn: [OfferStatus.DECLINED, OfferStatus.EXPIRED, OfferStatus.WITHDRAWN] },
+            status: {
+              notIn: [
+                OfferStatus.DECLINED,
+                OfferStatus.EXPIRED,
+                OfferStatus.WITHDRAWN,
+              ],
+            },
           },
         },
       },
     })
 
     if (!application) {
-      throw new Error('Application not found or not in valid status')
+      throw new Error("Application not found or not in valid status")
     }
 
     // Check for existing active offer
     if (application.offers.length > 0) {
-      throw new Error('Application already has an active offer')
+      throw new Error("Application already has an active offer")
     }
 
     const offerCode = await generateOfferCode(this.tenantId)
@@ -105,7 +119,7 @@ export class OfferService {
         jobType: input.jobType,
         workMode: input.workMode,
         location: input.location,
-        baseSalary: (input.baseSalary),
+        baseSalary: input.baseSalary,
         allowances: input.allowances,
         bonus: input.bonus,
         benefits: input.benefits,
@@ -131,7 +145,7 @@ export class OfferService {
     await db.applicationActivity.create({
       data: {
         applicationId: input.applicationId,
-        action: 'OFFER_CREATED',
+        action: "OFFER_CREATED",
         description: `Offer created: ${input.position}`,
       },
     })
@@ -169,7 +183,7 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
     return offer
@@ -178,7 +192,11 @@ export class OfferService {
   /**
    * List offers with filters
    */
-  async list(filters: OfferFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: OfferFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.OfferWhereInput = {
@@ -202,13 +220,16 @@ export class OfferService {
     }
 
     if (filters.toDate) {
-      where.createdAt = { ...(where.createdAt as object || {}), lte: filters.toDate }
+      where.createdAt = {
+        ...((where.createdAt as object) || {}),
+        lte: filters.toDate,
+      }
     }
 
     const [offers, total] = await Promise.all([
       db.offer.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -243,12 +264,12 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
     // Only allow editing in DRAFT status
     if (offer.status !== OfferStatus.DRAFT && !input.status) {
-      throw new Error('Can only edit offers in draft status')
+      throw new Error("Can only edit offers in draft status")
     }
 
     return db.offer.update({
@@ -260,7 +281,8 @@ export class OfferService {
         jobType: input.jobType,
         workMode: input.workMode,
         location: input.location,
-        baseSalary: input.baseSalary !== undefined ? (input.baseSalary) : undefined,
+        baseSalary:
+          input.baseSalary !== undefined ? input.baseSalary : undefined,
         allowances: input.allowances,
         bonus: input.bonus,
         benefits: input.benefits,
@@ -291,11 +313,11 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
     if (offer.status !== OfferStatus.DRAFT) {
-      throw new Error('Only draft offers can be submitted for approval')
+      throw new Error("Only draft offers can be submitted for approval")
     }
 
     return db.offer.update({
@@ -313,11 +335,11 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
     if (offer.status !== OfferStatus.PENDING_APPROVAL) {
-      throw new Error('Only pending offers can be approved')
+      throw new Error("Only pending offers can be approved")
     }
 
     const updated = await db.offer.update({
@@ -332,8 +354,8 @@ export class OfferService {
     await db.applicationActivity.create({
       data: {
         applicationId: offer.applicationId,
-        action: 'OFFER_APPROVED',
-        description: 'Offer approved',
+        action: "OFFER_APPROVED",
+        description: "Offer approved",
         performedById: approvedById,
       },
     })
@@ -350,16 +372,16 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
     if (offer.status !== OfferStatus.APPROVED) {
-      throw new Error('Only approved offers can be sent')
+      throw new Error("Only approved offers can be sent")
     }
 
     // Check if offer has expired
     if (offer.expiresAt < new Date()) {
-      throw new Error('Offer has expired, please update the expiry date')
+      throw new Error("Offer has expired, please update the expiry date")
     }
 
     const updated = await db.offer.update({
@@ -380,8 +402,8 @@ export class OfferService {
     await db.applicationActivity.create({
       data: {
         applicationId: offer.applicationId,
-        action: 'OFFER_SENT',
-        description: 'Offer sent to candidate',
+        action: "OFFER_SENT",
+        description: "Offer sent to candidate",
         performedById: sentById,
       },
     })
@@ -398,17 +420,17 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
     if (offer.status !== OfferStatus.SENT) {
-      throw new Error('Only sent offers can be accepted')
+      throw new Error("Only sent offers can be accepted")
     }
 
     // Check if offer has expired
     if (offer.expiresAt < new Date()) {
       await this.expire(id)
-      throw new Error('Offer has expired')
+      throw new Error("Offer has expired")
     }
 
     const updated = await db.offer.update({
@@ -423,8 +445,8 @@ export class OfferService {
     await db.applicationActivity.create({
       data: {
         applicationId: offer.applicationId,
-        action: 'OFFER_ACCEPTED',
-        description: 'Candidate accepted the offer',
+        action: "OFFER_ACCEPTED",
+        description: "Candidate accepted the offer",
       },
     })
 
@@ -440,11 +462,11 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
     if (offer.status !== OfferStatus.SENT) {
-      throw new Error('Only sent offers can be declined')
+      throw new Error("Only sent offers can be declined")
     }
 
     const updated = await db.offer.update({
@@ -459,8 +481,8 @@ export class OfferService {
     await db.applicationActivity.create({
       data: {
         applicationId: offer.applicationId,
-        action: 'OFFER_DECLINED',
-        description: `Candidate declined the offer${reason ? `: ${reason}` : ''}`,
+        action: "OFFER_DECLINED",
+        description: `Candidate declined the offer${reason ? `: ${reason}` : ""}`,
       },
     })
 
@@ -476,12 +498,16 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
-    const terminalStatuses = [OfferStatus.ACCEPTED, OfferStatus.DECLINED, OfferStatus.EXPIRED]
-    if (terminalStatuses.some(s => s === offer.status)) {
-      throw new Error('Cannot withdraw offer in current status')
+    const terminalStatuses = [
+      OfferStatus.ACCEPTED,
+      OfferStatus.DECLINED,
+      OfferStatus.EXPIRED,
+    ]
+    if (terminalStatuses.some((s) => s === offer.status)) {
+      throw new Error("Cannot withdraw offer in current status")
     }
 
     const updated = await db.offer.update({
@@ -495,7 +521,7 @@ export class OfferService {
     await db.applicationActivity.create({
       data: {
         applicationId: offer.applicationId,
-        action: 'OFFER_WITHDRAWN',
+        action: "OFFER_WITHDRAWN",
         description: `Offer withdrawn: ${reason}`,
         performedById: withdrawnById,
       },
@@ -513,11 +539,11 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
     if (offer.status !== OfferStatus.SENT) {
-      throw new Error('Only sent offers can expire')
+      throw new Error("Only sent offers can expire")
     }
 
     const updated = await db.offer.update({
@@ -528,8 +554,8 @@ export class OfferService {
     await db.applicationActivity.create({
       data: {
         applicationId: offer.applicationId,
-        action: 'OFFER_EXPIRED',
-        description: 'Offer expired',
+        action: "OFFER_EXPIRED",
+        description: "Offer expired",
       },
     })
 
@@ -564,11 +590,14 @@ export class OfferService {
     })
 
     if (!offer) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
-    if (offer.status !== OfferStatus.SENT && offer.status !== OfferStatus.EXPIRED) {
-      throw new Error('Can only extend sent or expired offers')
+    if (
+      offer.status !== OfferStatus.SENT &&
+      offer.status !== OfferStatus.EXPIRED
+    ) {
+      throw new Error("Can only extend sent or expired offers")
     }
 
     const updated = await db.offer.update({
@@ -582,7 +611,7 @@ export class OfferService {
     await db.applicationActivity.create({
       data: {
         applicationId: offer.applicationId,
-        action: 'OFFER_EXTENDED',
+        action: "OFFER_EXTENDED",
         description: `Offer expiry extended to ${newExpiresAt.toISOString()}`,
         oldValue: offer.expiresAt.toISOString(),
         newValue: newExpiresAt.toISOString(),
@@ -601,7 +630,7 @@ export class OfferService {
     })
 
     if (!original) {
-      throw new Error('Offer not found')
+      throw new Error("Offer not found")
     }
 
     const newOfferCode = await generateOfferCode(this.tenantId)
@@ -618,14 +647,18 @@ export class OfferService {
         workMode: adjustments?.workMode || original.workMode,
         location: adjustments?.location || original.location,
         baseSalary: adjustments?.baseSalary
-          ? (adjustments.baseSalary)
+          ? adjustments.baseSalary
           : original.baseSalary,
-        allowances: (adjustments?.allowances || original.allowances) as Prisma.InputJsonValue,
+        allowances: (adjustments?.allowances ||
+          original.allowances) as Prisma.InputJsonValue,
         bonus: adjustments?.bonus || original.bonus,
         benefits: adjustments?.benefits || original.benefits,
         startDate: adjustments?.startDate || original.startDate,
-        probationMonths: adjustments?.probationMonths || original.probationMonths,
-        expiresAt: adjustments?.expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        probationMonths:
+          adjustments?.probationMonths || original.probationMonths,
+        expiresAt:
+          adjustments?.expiresAt ||
+          new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         status: OfferStatus.DRAFT,
       },
     })
@@ -650,7 +683,7 @@ export class OfferService {
 
     const [byStatus, avgSalary, acceptanceRate] = await Promise.all([
       db.offer.groupBy({
-        by: ['status'],
+        by: ["status"],
         where,
         _count: true,
       }),
@@ -681,17 +714,19 @@ export class OfferService {
     const rate = responded > 0 ? Math.round((accepted / responded) * 100) : 0
 
     return {
-      byStatus: byStatus.map(s => ({
+      byStatus: byStatus.map((s) => ({
         status: s.status,
         count: s._count,
       })),
       salaryStats: {
-        average: avgSalary._avg.baseSalary ? Number(avgSalary._avg.baseSalary) : 0,
+        average: avgSalary._avg.baseSalary
+          ? Number(avgSalary._avg.baseSalary)
+          : 0,
         min: avgSalary._min.baseSalary ? Number(avgSalary._min.baseSalary) : 0,
         max: avgSalary._max.baseSalary ? Number(avgSalary._max.baseSalary) : 0,
       },
       acceptanceRate: rate,
-      pending: byStatus.find(s => s.status === OfferStatus.SENT)?._count || 0,
+      pending: byStatus.find((s) => s.status === OfferStatus.SENT)?._count || 0,
     }
   }
 }

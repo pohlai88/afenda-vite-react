@@ -1,10 +1,15 @@
-import { NextRequest } from 'next/server'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { canAccess } from '@/lib/auth/rbac'
-import { prisma } from '@/lib/prisma'
-import { getCampaignStats, getVariantStats } from '@/lib/campaigns/stats'
-import { NotFound, Forbidden, Unauthorized, handleApiError } from '@/lib/api/errors'
-import { apiSuccess } from '@/lib/api/response'
+import { NextRequest } from "next/server"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { canAccess } from "@/lib/auth/rbac"
+import { prisma } from "@/lib/prisma"
+import { getCampaignStats, getVariantStats } from "@/lib/campaigns/stats"
+import {
+  NotFound,
+  Forbidden,
+  Unauthorized,
+  handleApiError,
+} from "@/lib/api/errors"
+import { apiSuccess } from "@/lib/api/response"
 
 // GET /api/campaigns/[id]/stats — Real campaign statistics
 export async function GET(
@@ -20,10 +25,10 @@ export async function GET(
       select: { id: true, createdById: true },
     })
 
-    if (!campaign) throw NotFound('Chiến dịch')
+    if (!campaign) throw NotFound("Chiến dịch")
 
     // RBAC: owner or MANAGER+
-    if (!canAccess(user, 'view_all') && campaign.createdById !== user.id) {
+    if (!canAccess(user, "view_all") && campaign.createdById !== user.id) {
       throw Forbidden()
     }
 
@@ -35,8 +40,11 @@ export async function GET(
     return apiSuccess({ ...stats, variants: variantStats })
   } catch (error) {
     if (error instanceof AuthError) {
-      return handleApiError(Unauthorized(error.message), '/api/campaigns/[id]/stats')
+      return handleApiError(
+        Unauthorized(error.message),
+        "/api/campaigns/[id]/stats"
+      )
     }
-    return handleApiError(error, '/api/campaigns/[id]/stats')
+    return handleApiError(error, "/api/campaigns/[id]/stats")
   }
 }

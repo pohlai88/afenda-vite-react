@@ -1,48 +1,60 @@
-import React, { useState } from 'react';
-import { X, Clipboard } from 'lucide-react';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { useUIStore } from '../../stores/uiStore';
+import React, { useState } from "react"
+import { X, Clipboard } from "lucide-react"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { useUIStore } from "../../stores/uiStore"
 
 interface PasteSpecialDialogProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
-type PasteType = 'all' | 'formulas' | 'values' | 'formats' | 'comments' | 'validation' | 'allExceptBorders' | 'columnWidths' | 'formulasAndNumberFormats' | 'valuesAndNumberFormats';
+type PasteType =
+  | "all"
+  | "formulas"
+  | "values"
+  | "formats"
+  | "comments"
+  | "validation"
+  | "allExceptBorders"
+  | "columnWidths"
+  | "formulasAndNumberFormats"
+  | "valuesAndNumberFormats"
 
-type PasteOperation = 'none' | 'add' | 'subtract' | 'multiply' | 'divide';
+type PasteOperation = "none" | "add" | "subtract" | "multiply" | "divide"
 
-export const PasteSpecialDialog: React.FC<PasteSpecialDialogProps> = ({ onClose }) => {
-  const [pasteType, setPasteType] = useState<PasteType>('all');
-  const [operation, setOperation] = useState<PasteOperation>('none');
-  const [skipBlanks, setSkipBlanks] = useState(false);
-  const [transpose, setTranspose] = useState(false);
+export const PasteSpecialDialog: React.FC<PasteSpecialDialogProps> = ({
+  onClose,
+}) => {
+  const [pasteType, setPasteType] = useState<PasteType>("all")
+  const [operation, setOperation] = useState<PasteOperation>("none")
+  const [skipBlanks, setSkipBlanks] = useState(false)
+  const [transpose, setTranspose] = useState(false)
 
-  const { paste, pasteSpecial, clipboard } = useWorkbookStore();
-  const { showToast } = useUIStore();
+  const { paste, pasteSpecial, clipboard } = useWorkbookStore()
+  const { showToast } = useUIStore()
 
   const handlePaste = () => {
     if (!clipboard) {
-      showToast('Nothing to paste. Copy cells first.', 'warning');
-      onClose();
-      return;
+      showToast("Nothing to paste. Copy cells first.", "warning")
+      onClose()
+      return
     }
 
     // Map to store's paste modes
-    let mode: 'all' | 'values' | 'formulas' | 'formatting' = 'all';
+    let mode: "all" | "values" | "formulas" | "formatting" = "all"
     switch (pasteType) {
-      case 'values':
-      case 'valuesAndNumberFormats':
-        mode = 'values';
-        break;
-      case 'formulas':
-      case 'formulasAndNumberFormats':
-        mode = 'formulas';
-        break;
-      case 'formats':
-        mode = 'formatting';
-        break;
+      case "values":
+      case "valuesAndNumberFormats":
+        mode = "values"
+        break
+      case "formulas":
+      case "formulasAndNumberFormats":
+        mode = "formulas"
+        break
+      case "formats":
+        mode = "formatting"
+        break
       default:
-        mode = 'all';
+        mode = "all"
     }
 
     // Use pasteSpecial if available, otherwise use regular paste
@@ -52,35 +64,35 @@ export const PasteSpecialDialog: React.FC<PasteSpecialDialogProps> = ({ onClose 
         operation,
         skipBlanks,
         transpose,
-      });
+      })
     } else {
-      paste(mode);
+      paste(mode)
     }
 
-    showToast('Pasted successfully', 'success');
-    onClose();
-  };
+    showToast("Pasted successfully", "success")
+    onClose()
+  }
 
   const pasteTypes: { id: PasteType; label: string }[] = [
-    { id: 'all', label: 'All' },
-    { id: 'formulas', label: 'Formulas' },
-    { id: 'values', label: 'Values' },
-    { id: 'formats', label: 'Formats' },
-    { id: 'comments', label: 'Comments' },
-    { id: 'validation', label: 'Validation' },
-    { id: 'allExceptBorders', label: 'All except borders' },
-    { id: 'columnWidths', label: 'Column widths' },
-    { id: 'formulasAndNumberFormats', label: 'Formulas and number formats' },
-    { id: 'valuesAndNumberFormats', label: 'Values and number formats' },
-  ];
+    { id: "all", label: "All" },
+    { id: "formulas", label: "Formulas" },
+    { id: "values", label: "Values" },
+    { id: "formats", label: "Formats" },
+    { id: "comments", label: "Comments" },
+    { id: "validation", label: "Validation" },
+    { id: "allExceptBorders", label: "All except borders" },
+    { id: "columnWidths", label: "Column widths" },
+    { id: "formulasAndNumberFormats", label: "Formulas and number formats" },
+    { id: "valuesAndNumberFormats", label: "Values and number formats" },
+  ]
 
   const operations: { id: PasteOperation; label: string }[] = [
-    { id: 'none', label: 'None' },
-    { id: 'add', label: 'Add' },
-    { id: 'subtract', label: 'Subtract' },
-    { id: 'multiply', label: 'Multiply' },
-    { id: 'divide', label: 'Divide' },
-  ];
+    { id: "none", label: "None" },
+    { id: "add", label: "Add" },
+    { id: "subtract", label: "Subtract" },
+    { id: "multiply", label: "Multiply" },
+    { id: "divide", label: "Divide" },
+  ]
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
@@ -156,7 +168,13 @@ export const PasteSpecialDialog: React.FC<PasteSpecialDialogProps> = ({ onClose 
           </div>
 
           {!clipboard && (
-            <p className="dialog-info" style={{ marginTop: 'var(--spacing-md)', color: 'var(--orange-accent)' }}>
+            <p
+              className="dialog-info"
+              style={{
+                marginTop: "var(--spacing-md)",
+                color: "var(--orange-accent)",
+              }}
+            >
               No data in clipboard. Copy cells first (Ctrl+C).
             </p>
           )}
@@ -166,12 +184,16 @@ export const PasteSpecialDialog: React.FC<PasteSpecialDialogProps> = ({ onClose 
           <button className="dialog-btn-secondary" onClick={onClose}>
             Cancel
           </button>
-          <button className="dialog-btn-primary" onClick={handlePaste} disabled={!clipboard}>
+          <button
+            className="dialog-btn-primary"
+            onClick={handlePaste}
+            disabled={!clipboard}
+          >
             <Clipboard size={14} style={{ marginRight: 6 }} />
             OK
           </button>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

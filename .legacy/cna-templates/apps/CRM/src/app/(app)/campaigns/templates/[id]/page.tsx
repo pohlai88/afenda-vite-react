@@ -1,31 +1,32 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter, useParams } from 'next/navigation'
-import dynamic from 'next/dynamic'
-import { ArrowLeft, Save, Eye, Pencil, TestTube2 } from 'lucide-react'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useState, useEffect } from "react"
+import { useRouter, useParams } from "next/navigation"
+import dynamic from "next/dynamic"
+import { ArrowLeft, Save, Eye, Pencil, TestTube2 } from "lucide-react"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   useEmailTemplate,
   useUpdateEmailTemplate,
   useSendTestEmail,
-} from '@/hooks/use-email-templates'
-import { useTranslation } from '@/i18n'
-import { useToast } from '@/hooks/use-toast'
-import { CAMPAIGN_VARIABLES } from '@/components/editor'
+} from "@/hooks/use-email-templates"
+import { useTranslation } from "@/i18n"
+import { useToast } from "@/hooks/use-toast"
+import { CAMPAIGN_VARIABLES } from "@/components/editor"
 
 const RichTextEditor = dynamic(
-  () => import('@/components/editor').then((m) => ({ default: m.RichTextEditor })),
+  () =>
+    import("@/components/editor").then((m) => ({ default: m.RichTextEditor })),
   {
     ssr: false,
     loading: () => (
@@ -46,21 +47,21 @@ export default function EditTemplatePage() {
   const sendTest = useSendTestEmail()
 
   const [form, setForm] = useState({
-    name: '',
-    subject: '',
-    body: '',
-    category: 'campaign',
+    name: "",
+    subject: "",
+    body: "",
+    category: "campaign",
   })
-  const [tab, setTab] = useState<'compose' | 'preview'>('compose')
+  const [tab, setTab] = useState<"compose" | "preview">("compose")
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
     if (template && !initialized) {
       setForm({
-        name: template.name || '',
-        subject: template.subject || '',
-        body: template.body || '',
-        category: template.category || 'campaign',
+        name: template.name || "",
+        subject: template.subject || "",
+        body: template.body || "",
+        category: template.category || "campaign",
       })
       setInitialized(true)
     }
@@ -71,7 +72,7 @@ export default function EditTemplatePage() {
       { id, ...form },
       {
         onSuccess: () => {
-          toast({ title: t('templates.saved') })
+          toast({ title: t("templates.saved") })
         },
       }
     )
@@ -84,12 +85,12 @@ export default function EditTemplatePage() {
       {
         onSuccess: (data) => {
           toast({
-            title: t('templates.testSent'),
-            description: t('templates.testSentTo', { email: data.to }),
+            title: t("templates.testSent"),
+            description: t("templates.testSentTo", { email: data.to }),
           })
         },
         onError: () => {
-          toast({ title: t('templates.testError'), variant: 'destructive' })
+          toast({ title: t("templates.testError"), variant: "destructive" })
         },
       }
     )
@@ -97,10 +98,13 @@ export default function EditTemplatePage() {
 
   if (isLoading) {
     return (
-      <PageShell title={t('templates.edit')}>
+      <PageShell title={t("templates.edit")}>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-12 animate-pulse rounded-lg bg-[var(--crm-bg-subtle)]" />
+            <div
+              key={i}
+              className="h-12 animate-pulse rounded-lg bg-[var(--crm-bg-subtle)]"
+            />
           ))}
         </div>
       </PageShell>
@@ -109,16 +113,16 @@ export default function EditTemplatePage() {
 
   return (
     <PageShell
-      title={t('templates.edit')}
+      title={t("templates.edit")}
       actions={
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            onClick={() => router.push('/campaigns/templates')}
+            onClick={() => router.push("/campaigns/templates")}
             className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
           >
             <ArrowLeft className="w-4 h-4 mr-1.5" />
-            {t('common.back')}
+            {t("common.back")}
           </Button>
           <Button
             variant="outline"
@@ -127,7 +131,7 @@ export default function EditTemplatePage() {
             className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)]"
           >
             <TestTube2 className="w-4 h-4 mr-1.5" />
-            {t('templates.testSend')}
+            {t("templates.testSend")}
           </Button>
           <Button
             onClick={handleSave}
@@ -135,7 +139,7 @@ export default function EditTemplatePage() {
             className="btn-accent-glow"
           >
             <Save className="w-4 h-4 mr-1.5" />
-            {updateTemplate.isPending ? '...' : t('common.save')}
+            {updateTemplate.isPending ? "..." : t("common.save")}
           </Button>
         </div>
       }
@@ -145,32 +149,44 @@ export default function EditTemplatePage() {
         <div className="grid grid-cols-1 md:grid-cols-[1fr_200px] gap-3">
           <div className="space-y-1.5">
             <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-              {t('templates.name')} *
+              {t("templates.name")} *
             </Label>
             <Input
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              placeholder={t('templates.namePlaceholder')}
+              placeholder={t("templates.namePlaceholder")}
               className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]"
             />
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-              {t('templates.category')}
+              {t("templates.category")}
             </Label>
-            <Select value={form.category} onValueChange={(v) => setForm((f) => ({ ...f, category: v }))}>
+            <Select
+              value={form.category}
+              onValueChange={(v) => setForm((f) => ({ ...f, category: v }))}
+            >
               <SelectTrigger className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
-                <SelectItem value="campaign" className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
-                  {t('templates.categoryCampaign')}
+                <SelectItem
+                  value="campaign"
+                  className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                >
+                  {t("templates.categoryCampaign")}
                 </SelectItem>
-                <SelectItem value="transactional" className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
-                  {t('templates.categoryTransactional')}
+                <SelectItem
+                  value="transactional"
+                  className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                >
+                  {t("templates.categoryTransactional")}
                 </SelectItem>
-                <SelectItem value="notification" className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
-                  {t('templates.categoryNotification')}
+                <SelectItem
+                  value="notification"
+                  className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                >
+                  {t("templates.categoryNotification")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -180,12 +196,14 @@ export default function EditTemplatePage() {
         {/* Subject */}
         <div className="space-y-1.5">
           <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-            {t('templates.subject')} *
+            {t("templates.subject")} *
           </Label>
           <Input
             value={form.subject}
-            onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
-            placeholder={t('templates.subjectPlaceholder')}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, subject: e.target.value }))
+            }
+            placeholder={t("templates.subjectPlaceholder")}
             className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]"
           />
         </div>
@@ -194,42 +212,42 @@ export default function EditTemplatePage() {
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-              {t('templates.body')}
+              {t("templates.body")}
             </Label>
             <div className="flex items-center gap-1">
               <button
                 type="button"
-                onClick={() => setTab('compose')}
+                onClick={() => setTab("compose")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  tab === 'compose'
-                    ? 'bg-[#10B981]/10 text-[#10B981]'
-                    : 'text-[var(--crm-text-muted)] hover:text-[var(--crm-text-primary)]'
+                  tab === "compose"
+                    ? "bg-[#10B981]/10 text-[#10B981]"
+                    : "text-[var(--crm-text-muted)] hover:text-[var(--crm-text-primary)]"
                 }`}
               >
                 <Pencil className="w-3 h-3" />
-                {t('templates.compose')}
+                {t("templates.compose")}
               </button>
               <button
                 type="button"
-                onClick={() => setTab('preview')}
+                onClick={() => setTab("preview")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  tab === 'preview'
-                    ? 'bg-[#10B981]/10 text-[#10B981]'
-                    : 'text-[var(--crm-text-muted)] hover:text-[var(--crm-text-primary)]'
+                  tab === "preview"
+                    ? "bg-[#10B981]/10 text-[#10B981]"
+                    : "text-[var(--crm-text-muted)] hover:text-[var(--crm-text-primary)]"
                 }`}
               >
                 <Eye className="w-3 h-3" />
-                {t('templates.preview')}
+                {t("templates.preview")}
               </button>
             </div>
           </div>
 
-          {tab === 'compose' ? (
+          {tab === "compose" ? (
             <RichTextEditor
               value={form.body}
               onChange={(html) => setForm((f) => ({ ...f, body: html }))}
               variables={CAMPAIGN_VARIABLES}
-              placeholder={t('templates.bodyPlaceholder')}
+              placeholder={t("templates.bodyPlaceholder")}
               minHeight={350}
             />
           ) : (

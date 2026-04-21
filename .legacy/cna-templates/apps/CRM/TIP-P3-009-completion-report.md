@@ -6,16 +6,16 @@
 
 ## PASS 1 — Technical Health
 
-| Check | Result |
-|-------|--------|
-| `tsc --noEmit` | ✅ PASS — 0 errors |
-| `npx prisma validate` | ✅ PASS |
-| `next build` | ✅ PASS — 46 routes, largest 260 KB |
-| E2E tests (run 1) | ✅ 44 passed, 1 skipped |
-| E2E tests (run 2) | ✅ 44 passed, 1 skipped |
-| Console.log scan | ✅ All legitimate (logger util, prisma slow query, webhook events) |
-| TODO/FIXME scan | ✅ Zero found in src/ |
-| Bundle size | ✅ All pages < 300 KB first-load JS |
+| Check                 | Result                                                             |
+| --------------------- | ------------------------------------------------------------------ |
+| `tsc --noEmit`        | ✅ PASS — 0 errors                                                 |
+| `npx prisma validate` | ✅ PASS                                                            |
+| `next build`          | ✅ PASS — 46 routes, largest 260 KB                                |
+| E2E tests (run 1)     | ✅ 44 passed, 1 skipped                                            |
+| E2E tests (run 2)     | ✅ 44 passed, 1 skipped                                            |
+| Console.log scan      | ✅ All legitimate (logger util, prisma slow query, webhook events) |
+| TODO/FIXME scan       | ✅ Zero found in src/                                              |
+| Bundle size           | ✅ All pages < 300 KB first-load JS                                |
 
 **E2E Note:** 1 skipped = `portal ticket detail` test conditionally skips via `test.skip()` when seed ticket is not found. This is expected behavior.
 
@@ -24,6 +24,7 @@
 ## PASS 2 — Phase 3 Feature Completeness (61/61 PASS)
 
 ### P3-001: Support Tickets (13/13) ✅
+
 - SupportTicket model, TicketMessage model, TicketAttachment model
 - API CRUD: GET/POST /api/tickets, GET/PATCH /api/tickets/[id]
 - Messages: GET/POST /api/tickets/[id]/messages
@@ -36,6 +37,7 @@
 - E2E test for ticket creation
 
 ### P3-002: SLA Engine (8/8) ✅
+
 - SlaConfig model with firstResponseHours/resolutionHours per priority
 - calculateSlaStatus() — real-time SLA computation
 - checkSlaBreaches() — batch breach detection
@@ -46,6 +48,7 @@
 - Cron endpoint /api/cron/sla-check
 
 ### P3-003: EventBus (6/6) ✅
+
 - EventBus class with on/onAny/emit pattern
 - Singleton instance (event-bus.ts)
 - 22 event types defined (CRM_EVENTS)
@@ -54,6 +57,7 @@
 - Fire-and-forget emission throughout business logic
 
 ### P3-004: Webhooks (9/9) ✅
+
 - Webhook model with secret, events[], active flag
 - WebhookLog model with attempt tracking
 - CRUD API: GET/POST /api/webhooks, GET/PATCH/DELETE /api/webhooks/[id]
@@ -65,6 +69,7 @@
 - Delivery logs viewer with status, duration, attempt
 
 ### P3-005: Email Notifications (8/8) ✅
+
 - NotificationPreference model (userId + eventType)
 - Email preference per event type (default OFF)
 - In-app preference per event type (default ON)
@@ -75,6 +80,7 @@
 - Templates for ticket, quote, order, campaign events
 
 ### P3-006: Notification Preferences UI (5/5) ✅
+
 - Preference matrix in settings page
 - Toggle per event × channel (inApp/email)
 - Grouped by category (Tickets, Quotes, Orders, Campaigns)
@@ -82,6 +88,7 @@
 - Default values (inApp: ON, email: OFF)
 
 ### P3-007: Rich Text Editor (8/8) ✅
+
 - TipTap-based RichTextEditor component (564 lines)
 - 16 toolbar buttons in 6 groups
 - Custom VariableNode extension for template chips
@@ -92,6 +99,7 @@
 - Dynamic import with SSR: false
 
 ### P3-008: Campaign Editor Integration (9/9) ✅
+
 - EmailTemplate model with CRUD API
 - Template list page (/campaigns/templates)
 - Template editor page (/campaigns/templates/[id])
@@ -106,30 +114,31 @@
 
 ## PASS 3 — Phase 1+2 Regression (16/16 OK)
 
-| Feature | Status |
-|---------|--------|
-| Auth (login/register/logout) | ✅ No regression |
-| Contact CRUD + search | ✅ No regression |
-| Company CRUD | ✅ No regression |
-| Deal pipeline + Kanban | ✅ No regression |
-| Quote CRUD + PDF | ✅ No regression |
-| Order CRUD + transitions | ✅ No regression |
-| Dashboard analytics | ✅ No regression |
-| Activity timeline | ✅ No regression |
-| Command palette (Cmd+K) | ✅ No regression |
-| Settings page | ✅ No regression |
-| i18n (VI/EN toggle) | ✅ No regression |
-| Theme (dark/light) | ✅ No regression |
+| Feature                                   | Status           |
+| ----------------------------------------- | ---------------- |
+| Auth (login/register/logout)              | ✅ No regression |
+| Contact CRUD + search                     | ✅ No regression |
+| Company CRUD                              | ✅ No regression |
+| Deal pipeline + Kanban                    | ✅ No regression |
+| Quote CRUD + PDF                          | ✅ No regression |
+| Order CRUD + transitions                  | ✅ No regression |
+| Dashboard analytics                       | ✅ No regression |
+| Activity timeline                         | ✅ No regression |
+| Command palette (Cmd+K)                   | ✅ No regression |
+| Settings page                             | ✅ No regression |
+| i18n (VI/EN toggle)                       | ✅ No regression |
+| Theme (dark/light)                        | ✅ No regression |
 | Portal (dashboard/quotes/tickets/profile) | ✅ No regression |
-| Campaigns (list/create/detail) | ✅ No regression |
-| Notifications (bell/list/mark-read) | ✅ No regression |
-| Reports (charts/export) | ✅ No regression |
+| Campaigns (list/create/detail)            | ✅ No regression |
+| Notifications (bell/list/mark-read)       | ✅ No regression |
+| Reports (charts/export)                   | ✅ No regression |
 
 ---
 
 ## PASS 4 — Cross-Feature Scenarios (4/4 Traced)
 
 ### Scenario A: Full Support Flow ✅
+
 Portal ticket → auto-assign → notification → SLA tracking → agent reply → resolve
 
 - Portal creates ticket via POST /api/portal/tickets ✅
@@ -142,6 +151,7 @@ Portal ticket → auto-assign → notification → SLA tracking → agent reply 
 - TICKET_RESOLVED event emitted on resolve ✅ (fixed in Pass 5)
 
 ### Scenario B: Campaign with Rich Content ✅
+
 Template → preview → test send → audience → create → view
 
 - Email template CRUD via API ✅
@@ -154,6 +164,7 @@ Template → preview → test send → audience → create → view
 - Campaign list shows stats ✅
 
 ### Scenario C: Full Sales Cycle ✅
+
 Contact → deal → quote → portal accept → order → dashboard
 
 - Contact creation → Deal with contactIds ✅
@@ -165,10 +176,11 @@ Contact → deal → quote → portal accept → order → dashboard
 - Dashboard analytics aggregate orders/quotes/revenue ✅
 
 ### Scenario D: Webhook Integration ✅
+
 Create → event → dispatch → HMAC → deliver → retry → logs
 
 - Admin creates webhook with events selection ✅
-- Secret generated: whsec_<32-byte-hex> ✅
+- Secret generated: whsec\_<32-byte-hex> ✅
 - EventBus dispatches to wildcard handler ✅
 - HMAC-SHA256 signature computed ✅
 - HTTP POST with X-Prismy-Signature header ✅
@@ -181,12 +193,14 @@ Create → event → dispatch → HMAC → deliver → retry → logs
 ## PASS 5 — Quick Fixes Applied
 
 ### Fix 1: Missing TICKET_RESOLVED event emission
+
 **File:** `src/app/api/tickets/[id]/route.ts`
 **Issue:** `TICKET_RESOLVED` event was defined in types.ts but never emitted when ticket status changed to RESOLVED.
 **Fix:** Added event emission block after ticket update, parallel to existing TICKET_ASSIGNED emission.
 **Impact:** Webhooks subscribed to `ticket.resolved` now fire correctly. Future notification handlers can listen for this event.
 
 ### Fix 2: Flaky portal quotes E2E test (fixed in Pass 1)
+
 **File:** `e2e/portal.spec.ts`
 **Issue:** `locator.isVisible()` is a snapshot check that doesn't retry, causing false failures during VIEWED tracking re-render.
 **Fix:** Changed to `.or()` locator pattern: `quoteEl.or(emptyEl)` with Playwright auto-retry.
@@ -208,17 +222,17 @@ Create → event → dispatch → HMAC → deliver → retry → logs
 
 ## Final Summary
 
-| Metric | Value |
-|--------|-------|
-| Phase 3 TIPs completed | 8/8 feature TIPs + 1 VERIFY |
-| TypeScript errors | 0 |
-| Build status | PASS (46 routes) |
-| E2E tests | 44 passed, 1 skipped |
-| Feature checks | 61/61 PASS |
-| Regression checks | 16/16 OK |
-| Cross-feature scenarios | 4/4 traced |
-| Quick fixes applied | 2 |
-| Known limitations | 4 (all out-of-scope) |
-| Bundle (largest page) | 260 KB first-load JS |
+| Metric                  | Value                       |
+| ----------------------- | --------------------------- |
+| Phase 3 TIPs completed  | 8/8 feature TIPs + 1 VERIFY |
+| TypeScript errors       | 0                           |
+| Build status            | PASS (46 routes)            |
+| E2E tests               | 44 passed, 1 skipped        |
+| Feature checks          | 61/61 PASS                  |
+| Regression checks       | 16/16 OK                    |
+| Cross-feature scenarios | 4/4 traced                  |
+| Quick fixes applied     | 2                           |
+| Known limitations       | 4 (all out-of-scope)        |
+| Bundle (largest page)   | 260 KB first-load JS        |
 
 **Phase 3 is COMPLETE and VERIFIED.** ✅

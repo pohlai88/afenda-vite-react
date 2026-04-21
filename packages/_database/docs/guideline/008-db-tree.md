@@ -4,13 +4,13 @@
 
 **Allowlist (strict):** The authoritative **list of paths that may exist** under `src/schema/` is **this document** (§1 tree below). Edit **008** in the same PR as any add/remove/rename under `src/schema/`. The **logical** foundation (namespaces, table families) is [002-foundation-inventory.md](./002-foundation-inventory.md). The **full knowledge base** (L1/L2/L3 truth layers, relations, queries, raw SQL, Kit config) is [002A-foundation-inventory-architecture.md](./002A-foundation-inventory-architecture.md).
 
-Registered modules are those under `packages/_database/src/schema/` re-exported from `src/schema/index.ts` (which re-exports `shared/`, including `helpers.ts`) and covered by `DRIZZLE_MANAGED_PG_SCHEMAS` (`iam`, `mdm`, `ref`, `finance`, `governance`). Each `*.schema.ts` line below is marked **— authorised**; `helpers.ts` is authorised shared SQL fragments (not a `*.schema.ts` table module—see file header).
+Registered modules are those under `packages/_database/src/schema/` re-exported from `src/schema/index.ts` (which re-exports `shared/`, including `shared-sql-defaults.ts`) and covered by `DRIZZLE_MANAGED_PG_SCHEMAS` (`iam`, `mdm`, `ref`, `finance`, `governance`). Each `*.schema.ts` line below is marked **— authorised**; `shared-sql-defaults.ts` is authorised shared SQL fragments (not a `*.schema.ts` table module—see file header).
 
 ### Path freeze (reconcile with `practical-discipline.md`)
 
 These **non-DDL** support folders live **only** under **`src/schema/<name>/`** on disk:
 
-`identity/` · `tenancy/` · `pkg-governance/` · `helpers/` · `constants/`
+`identity/` · `tenancy/` · `pkg-governance/` · `environment-support/` · `constants/`
 
 **7W1H audit** (DDL for `governance.audit_logs`, enums, Zod boundary, action catalog, insert/query services) lives at **`packages/_database/src/7w1h-audit/`** — a **sibling** of `src/schema/` (`@afenda/database/7w1h-audit`). Files are re-exported from **`src/schema/governance/index.ts`** so Drizzle Kit still sees them in the schema graph.
 
@@ -31,7 +31,7 @@ packages/_database/
       shared/
         columns.schema.ts                                    — authorised
         enums.schema.ts                                      — authorised
-        helpers.ts                                           — authorised (shared `sql` fragments)
+        shared-sql-defaults.ts                               — authorised (shared `sql` fragments)
         shared-boundary.schema.ts                            — authorised
         index.ts
         __tests__/
@@ -140,10 +140,9 @@ packages/_database/
         __tests__/
           governance.test.ts                                 — authorised
 
-      helpers/
-        columns.ts                                           — authorised
-        env.ts                                               — authorised
-        env-boundary.schema.ts                               — authorised
+      environment-support/
+        environment-integer-parsing.ts                       — authorised
+        environment-integer.schema.ts                        — authorised
         index.ts
 
       constants/

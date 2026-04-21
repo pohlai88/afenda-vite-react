@@ -2,7 +2,10 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import type { PositionWithRelations } from "@/types"
-import type { CreatePositionInput, UpdatePositionInput } from "@/lib/validations/position"
+import type {
+  CreatePositionInput,
+  UpdatePositionInput,
+} from "@/lib/validations/position"
 import { toast } from "sonner"
 
 async function fetchPositions(): Promise<PositionWithRelations[]> {
@@ -14,7 +17,9 @@ async function fetchPositions(): Promise<PositionWithRelations[]> {
   return json.data ?? json
 }
 
-async function createPosition(data: CreatePositionInput): Promise<PositionWithRelations> {
+async function createPosition(
+  data: CreatePositionInput
+): Promise<PositionWithRelations> {
   const res = await fetch("/api/positions", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -27,7 +32,9 @@ async function createPosition(data: CreatePositionInput): Promise<PositionWithRe
   return res.json()
 }
 
-async function updatePosition(data: UpdatePositionInput): Promise<PositionWithRelations> {
+async function updatePosition(
+  data: UpdatePositionInput
+): Promise<PositionWithRelations> {
   const res = await fetch(`/api/positions/${data.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

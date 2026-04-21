@@ -2,54 +2,54 @@
 
 export const CRM_EVENTS = {
   // Contact
-  CONTACT_CREATED: 'contact.created',
-  CONTACT_UPDATED: 'contact.updated',
-  CONTACT_DELETED: 'contact.deleted',
+  CONTACT_CREATED: "contact.created",
+  CONTACT_UPDATED: "contact.updated",
+  CONTACT_DELETED: "contact.deleted",
 
   // Deal
-  DEAL_CREATED: 'deal.created',
-  DEAL_UPDATED: 'deal.updated',
-  DEAL_STAGE_CHANGED: 'deal.stage_changed',
-  DEAL_WON: 'deal.won',
-  DEAL_LOST: 'deal.lost',
+  DEAL_CREATED: "deal.created",
+  DEAL_UPDATED: "deal.updated",
+  DEAL_STAGE_CHANGED: "deal.stage_changed",
+  DEAL_WON: "deal.won",
+  DEAL_LOST: "deal.lost",
 
   // Quote
-  QUOTE_CREATED: 'quote.created',
-  QUOTE_SENT: 'quote.sent',
-  QUOTE_ACCEPTED: 'quote.accepted',
-  QUOTE_REJECTED: 'quote.rejected',
-  QUOTE_EXPIRING: 'quote.expiring',
+  QUOTE_CREATED: "quote.created",
+  QUOTE_SENT: "quote.sent",
+  QUOTE_ACCEPTED: "quote.accepted",
+  QUOTE_REJECTED: "quote.rejected",
+  QUOTE_EXPIRING: "quote.expiring",
 
   // Order
-  ORDER_CREATED: 'order.created',
-  ORDER_STATUS_CHANGED: 'order.status_changed',
-  ORDER_CANCELLED: 'order.cancelled',
-  ORDER_REFUNDED: 'order.refunded',
+  ORDER_CREATED: "order.created",
+  ORDER_STATUS_CHANGED: "order.status_changed",
+  ORDER_CANCELLED: "order.cancelled",
+  ORDER_REFUNDED: "order.refunded",
 
   // Ticket
-  TICKET_CREATED: 'ticket.created',
-  TICKET_ASSIGNED: 'ticket.assigned',
-  TICKET_REPLIED: 'ticket.replied',
-  TICKET_STAFF_REPLIED: 'ticket.staff_replied',
-  TICKET_RESOLVED: 'ticket.resolved',
+  TICKET_CREATED: "ticket.created",
+  TICKET_ASSIGNED: "ticket.assigned",
+  TICKET_REPLIED: "ticket.replied",
+  TICKET_STAFF_REPLIED: "ticket.staff_replied",
+  TICKET_RESOLVED: "ticket.resolved",
 
   // Campaign
-  CAMPAIGN_SENT: 'campaign.sent',
+  CAMPAIGN_SENT: "campaign.sent",
 
   // User
-  USER_CREATED: 'user.created',
+  USER_CREATED: "user.created",
 
   // Document
-  DOCUMENT_UPLOADED: 'document.uploaded',
-  DOCUMENT_DELETED: 'document.deleted',
+  DOCUMENT_UPLOADED: "document.uploaded",
+  DOCUMENT_DELETED: "document.deleted",
 
   // Compliance
-  COMPLIANCE_FLAG_RAISED: 'compliance.flag_raised',
+  COMPLIANCE_FLAG_RAISED: "compliance.flag_raised",
 
   // Partner / Commission
-  DEAL_REGISTRATION_CREATED: 'deal_registration.created',
-  DEAL_REGISTRATION_APPROVED: 'deal_registration.approved',
-  COMMISSION_CREATED: 'commission.created',
+  DEAL_REGISTRATION_CREATED: "deal_registration.created",
+  DEAL_REGISTRATION_APPROVED: "deal_registration.approved",
+  COMMISSION_CREATED: "commission.created",
 } as const
 
 export type CrmEventName = (typeof CRM_EVENTS)[keyof typeof CRM_EVENTS]

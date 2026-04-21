@@ -1,7 +1,7 @@
 // src/lib/leave/calculator.ts
 // Leave Days Calculator
 
-import { eachDayOfInterval, isWeekend, isSameDay } from 'date-fns'
+import { eachDayOfInterval, isWeekend, isSameDay } from "date-fns"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -10,8 +10,8 @@ import { eachDayOfInterval, isWeekend, isSameDay } from 'date-fns'
 export interface CalculateLeaveDaysInput {
   startDate: Date
   endDate: Date
-  startHalf?: 'AM' | 'PM' | null
-  endHalf?: 'AM' | 'PM' | null
+  startHalf?: "AM" | "PM" | null
+  endHalf?: "AM" | "PM" | null
   holidays?: Date[]
 }
 
@@ -45,9 +45,9 @@ export function calculateLeaveDays(input: CalculateLeaveDaysInput): number {
   const days = eachDayOfInterval({ start: startDate, end: endDate })
 
   // Filter out weekends and holidays
-  const workDays = days.filter(day => {
+  const workDays = days.filter((day) => {
     if (isWeekend(day)) return false
-    if (holidays.some(h => isSameDay(h, day))) return false
+    if (holidays.some((h) => isSameDay(h, day))) return false
     return true
   })
 
@@ -64,10 +64,10 @@ export function calculateLeaveDays(input: CalculateLeaveDaysInput): number {
   }
 
   // Handle multiple days with half day adjustments
-  if (startHalf === 'PM') {
+  if (startHalf === "PM") {
     totalDays -= 0.5 // Start from afternoon, skip morning
   }
-  if (endHalf === 'AM') {
+  if (endHalf === "AM") {
     totalDays -= 0.5 // End at morning, skip afternoon
   }
 
@@ -81,7 +81,9 @@ export function calculateLeaveDays(input: CalculateLeaveDaysInput): number {
 /**
  * Validate a leave request against policy rules
  */
-export function validateLeaveRequest(input: ValidateLeaveInput): ValidationResult {
+export function validateLeaveRequest(
+  input: ValidateLeaveInput
+): ValidationResult {
   const {
     balance,
     requestDays,
@@ -174,7 +176,7 @@ export function getWorkingDaysInMonth(year: number, month: number): number {
   const end = new Date(year, month, 0)
   const days = eachDayOfInterval({ start, end })
 
-  return days.filter(day => !isWeekend(day)).length
+  return days.filter((day) => !isWeekend(day)).length
 }
 
 /**
@@ -192,7 +194,7 @@ export function dateRangesOverlap(
 /**
  * Generate request code
  */
-export function generateRequestCode(prefix: string = 'LR'): string {
+export function generateRequestCode(prefix: string = "LR"): string {
   const year = new Date().getFullYear()
   const random = Math.random().toString(36).substring(2, 6).toUpperCase()
   const seq = String(Date.now()).slice(-4)

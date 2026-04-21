@@ -1,7 +1,7 @@
 // src/lib/banking/adapters/base.ts
 // Base Bank Adapter
 
-import type { BankCode, BankApiConfig } from '../types'
+import type { BankCode, BankApiConfig } from "../types"
 
 // ═══════════════════════════════════════════════════════════════
 // BASE BANK ADAPTER
@@ -21,7 +21,7 @@ export abstract class BaseBankAdapter {
 
   protected ensureConfigured(): void {
     if (!this.config) {
-      throw new Error('Bank adapter not configured. Call configure() first.')
+      throw new Error("Bank adapter not configured. Call configure() first.")
     }
   }
 
@@ -34,7 +34,7 @@ export abstract class BaseBankAdapter {
   protected async makeRequest<T>(
     endpoint: string,
     options: {
-      method: 'GET' | 'POST' | 'PUT' | 'DELETE'
+      method: "GET" | "POST" | "PUT" | "DELETE"
       body?: Record<string, unknown>
       headers?: Record<string, string>
     }
@@ -46,14 +46,16 @@ export abstract class BaseBankAdapter {
     const response = await fetch(url, {
       method: options.method,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options.headers,
       },
       body: options.body ? JSON.stringify(options.body) : undefined,
     })
 
     if (!response.ok) {
-      throw new Error(`Bank API error: ${response.status} ${response.statusText}`)
+      throw new Error(
+        `Bank API error: ${response.status} ${response.statusText}`
+      )
     }
 
     return response.json()

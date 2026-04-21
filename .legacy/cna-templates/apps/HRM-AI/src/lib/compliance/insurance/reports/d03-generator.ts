@@ -1,9 +1,9 @@
 // src/lib/compliance/insurance/reports/d03-generator.ts
 // D03-TS Report Generator - Báo cáo giảm lao động dừng đóng BHXH, BHYT, BHTN
 
-import prisma from '@/lib/db'
-import { formatInsuranceAmount } from '../calculator'
-import { INSURANCE_CHANGE_TYPES } from '../constants'
+import prisma from "@/lib/db"
+import { formatInsuranceAmount } from "../calculator"
+import { INSURANCE_CHANGE_TYPES } from "../constants"
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -51,13 +51,13 @@ export interface D03ReportData {
 // ═══════════════════════════════════════════════════════════════
 
 type DecreaseChangeType =
-  | 'RESIGNATION'
-  | 'TERMINATION'
-  | 'UNPAID_LEAVE'
-  | 'SALARY_DECREASE'
-  | 'TRANSFER_OUT'
-  | 'DEATH'
-  | 'RETIREMENT'
+  | "RESIGNATION"
+  | "TERMINATION"
+  | "UNPAID_LEAVE"
+  | "SALARY_DECREASE"
+  | "TRANSFER_OUT"
+  | "DEATH"
+  | "RETIREMENT"
 
 function detectDecreaseChangeType(employee: {
   resignationReason?: string | null
@@ -65,35 +65,41 @@ function detectDecreaseChangeType(employee: {
   age?: number
 }): DecreaseChangeType {
   // Check for death
-  if (employee.resignationReason?.toLowerCase().includes('chết') ||
-      employee.resignationReason?.toLowerCase().includes('death')) {
-    return 'DEATH'
+  if (
+    employee.resignationReason?.toLowerCase().includes("chết") ||
+    employee.resignationReason?.toLowerCase().includes("death")
+  ) {
+    return "DEATH"
   }
 
   // Check for retirement (assuming retirement age 60 for men, 55 for women)
   if (employee.age && employee.age >= 55) {
-    if (employee.resignationReason?.toLowerCase().includes('hưu') ||
-        employee.resignationReason?.toLowerCase().includes('retire')) {
-      return 'RETIREMENT'
+    if (
+      employee.resignationReason?.toLowerCase().includes("hưu") ||
+      employee.resignationReason?.toLowerCase().includes("retire")
+    ) {
+      return "RETIREMENT"
     }
   }
 
   // Check for unpaid leave
-  if (employee.status === 'ON_LEAVE') {
-    return 'UNPAID_LEAVE'
+  if (employee.status === "ON_LEAVE") {
+    return "UNPAID_LEAVE"
   }
 
   // Check for termination vs resignation
-  if (employee.status === 'TERMINATED') {
-    return 'TERMINATION'
+  if (employee.status === "TERMINATED") {
+    return "TERMINATION"
   }
 
-  if (employee.resignationReason?.toLowerCase().includes('chuyển') ||
-      employee.resignationReason?.toLowerCase().includes('transfer')) {
-    return 'TRANSFER_OUT'
+  if (
+    employee.resignationReason?.toLowerCase().includes("chuyển") ||
+    employee.resignationReason?.toLowerCase().includes("transfer")
+  ) {
+    return "TRANSFER_OUT"
   }
 
-  return 'RESIGNATION'
+  return "RESIGNATION"
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -117,7 +123,7 @@ export async function generateD03Report(
   })
 
   if (!tenant) {
-    throw new Error('Không tìm thấy thông tin công ty')
+    throw new Error("Không tìm thấy thông tin công ty")
   }
 
   const startOfMonth = new Date(year, month - 1, 1)
@@ -148,7 +154,7 @@ export async function generateD03Report(
       },
     },
     orderBy: {
-      terminationDate: 'asc',
+      terminationDate: "asc",
     },
   })
 
@@ -158,7 +164,10 @@ export async function generateD03Report(
     const today = new Date()
     let age = today.getFullYear() - dateOfBirth.getFullYear()
     const monthDiff = today.getMonth() - dateOfBirth.getMonth()
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dateOfBirth.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < dateOfBirth.getDate())
+    ) {
       age--
     }
     return age
@@ -179,8 +188,8 @@ export async function generateD03Report(
       employeeCode: ins.employee.employeeCode,
       fullName: ins.employee.fullName,
       dateOfBirth: ins.employee.dateOfBirth,
-      gender: ins.employee.gender === 'MALE' ? 'Nam' : 'Nữ',
-      idNumber: ins.employee.idNumber || '',
+      gender: ins.employee.gender === "MALE" ? "Nam" : "Nữ",
+      idNumber: ins.employee.idNumber || "",
       socialInsuranceNumber: ins.socialInsuranceNumber,
       lastInsuranceSalary: Number(ins.insuranceSalaryBase),
       terminationDate: ins.terminationDate!,
@@ -201,12 +210,15 @@ export async function generateD03Report(
 
   const summary = {
     totalTerminatedEmployees: employees.length,
-    totalLastInsuranceSalary: employees.reduce((sum, emp) => sum + emp.lastInsuranceSalary, 0),
+    totalLastInsuranceSalary: employees.reduce(
+      (sum, emp) => sum + emp.lastInsuranceSalary,
+      0
+    ),
     byChangeType,
   }
 
   // Generate report code
-  const reportCode = `D03-${year}${month.toString().padStart(2, '0')}-${Date.now().toString(36).toUpperCase()}`
+  const reportCode = `D03-${year}${month.toString().padStart(2, "0")}-${Date.now().toString(36).toUpperCase()}`
 
   return {
     reportCode,
@@ -214,9 +226,10 @@ export async function generateD03Report(
     reportYear: year,
     companyInfo: {
       name: tenant.name,
-      taxCode: tenant.taxCode || '',
-      address: tenant.address || '',
-      socialInsuranceCode: (tenant.settings as Record<string, unknown>)?.socialInsuranceCode as string,
+      taxCode: tenant.taxCode || "",
+      address: tenant.address || "",
+      socialInsuranceCode: (tenant.settings as Record<string, unknown>)
+        ?.socialInsuranceCode as string,
     },
     employees,
     summary,
@@ -236,16 +249,18 @@ export async function saveD03Report(
   const employerRate = 0.215
 
   const totalEmployeeAmount = reportData.employees.reduce(
-    (sum, e) => sum + e.lastInsuranceSalary * employeeRate, 0
+    (sum, e) => sum + e.lastInsuranceSalary * employeeRate,
+    0
   )
   const totalEmployerAmount = reportData.employees.reduce(
-    (sum, e) => sum + e.lastInsuranceSalary * employerRate, 0
+    (sum, e) => sum + e.lastInsuranceSalary * employerRate,
+    0
   )
 
   const report = await prisma.insuranceReport.create({
     data: {
       tenantId,
-      reportType: 'D03_TS',
+      reportType: "D03_TS",
       reportCode: reportData.reportCode,
       reportMonth: reportData.reportMonth,
       reportYear: reportData.reportYear,
@@ -254,7 +269,7 @@ export async function saveD03Report(
       totalEmployeeAmount,
       totalEmployerAmount,
       totalAmount: totalEmployeeAmount + totalEmployerAmount,
-      status: 'DRAFT',
+      status: "DRAFT",
       metadata: {
         generatedAt: reportData.generatedAt.toISOString(),
         byChangeType: reportData.summary.byChangeType,
@@ -286,8 +301,8 @@ export async function saveD03Report(
           employeeCode: emp.employeeCode,
           employeeName: emp.fullName,
           dateOfBirth: insurance.employee.dateOfBirth || new Date(1990, 0, 1),
-          gender: (insurance.employee.gender as any) || 'MALE',
-          idNumber: insurance.employee.idNumber || '',
+          gender: (insurance.employee.gender as any) || "MALE",
+          idNumber: insurance.employee.idNumber || "",
           insuranceSalary: emp.lastInsuranceSalary,
           employeeAmount: empAmount,
           employerAmount: erAmount,
@@ -309,30 +324,30 @@ export async function saveD03Report(
 
 export function generateD03ExcelData(reportData: D03ReportData): unknown[][] {
   const headers = [
-    'STT',
-    'Mã NV',
-    'Họ và tên',
-    'Ngày sinh',
-    'Giới tính',
-    'Số CMND/CCCD',
-    'Số sổ BHXH',
-    'Mức lương đóng BH cuối',
-    'Ngày dừng đóng',
-    'Mã loại',
-    'Loại giảm',
-    'Lý do',
+    "STT",
+    "Mã NV",
+    "Họ và tên",
+    "Ngày sinh",
+    "Giới tính",
+    "Số CMND/CCCD",
+    "Số sổ BHXH",
+    "Mức lương đóng BH cuối",
+    "Ngày dừng đóng",
+    "Mã loại",
+    "Loại giảm",
+    "Lý do",
   ]
 
   const rows = reportData.employees.map((emp) => [
     emp.sequence,
     emp.employeeCode,
     emp.fullName,
-    emp.dateOfBirth ? emp.dateOfBirth.toLocaleDateString('vi-VN') : '',
+    emp.dateOfBirth ? emp.dateOfBirth.toLocaleDateString("vi-VN") : "",
     emp.gender,
     emp.idNumber,
     emp.socialInsuranceNumber,
     emp.lastInsuranceSalary,
-    emp.terminationDate.toLocaleDateString('vi-VN'),
+    emp.terminationDate.toLocaleDateString("vi-VN"),
     emp.changeTypeCode,
     emp.changeType,
     emp.reason,
@@ -340,18 +355,18 @@ export function generateD03ExcelData(reportData: D03ReportData): unknown[][] {
 
   // Add summary
   const summaryRow = [
-    '',
-    '',
-    'TỔNG CỘNG',
-    '',
-    '',
-    '',
-    '',
+    "",
+    "",
+    "TỔNG CỘNG",
+    "",
+    "",
+    "",
+    "",
     reportData.summary.totalLastInsuranceSalary,
-    '',
-    '',
-    '',
-    '',
+    "",
+    "",
+    "",
+    "",
   ]
 
   return [headers, ...rows, summaryRow]
@@ -368,19 +383,26 @@ export function formatD03ForDisplay(reportData: D03ReportData): {
   summary: Array<{ label: string; value: string }>
 } {
   return {
-    title: 'BÁO CÁO GIẢM LAO ĐỘNG (D03-TS)',
+    title: "BÁO CÁO GIẢM LAO ĐỘNG (D03-TS)",
     period: `Tháng ${reportData.reportMonth}/${reportData.reportYear}`,
     company: reportData.companyInfo.name,
     summary: [
-      { label: 'Tổng số lao động giảm', value: reportData.summary.totalTerminatedEmployees.toString() },
       {
-        label: 'Tổng mức lương đóng BH cuối',
-        value: formatInsuranceAmount(reportData.summary.totalLastInsuranceSalary),
+        label: "Tổng số lao động giảm",
+        value: reportData.summary.totalTerminatedEmployees.toString(),
       },
-      ...Object.entries(reportData.summary.byChangeType).map(([type, count]) => ({
-        label: type,
-        value: count.toString(),
-      })),
+      {
+        label: "Tổng mức lương đóng BH cuối",
+        value: formatInsuranceAmount(
+          reportData.summary.totalLastInsuranceSalary
+        ),
+      },
+      ...Object.entries(reportData.summary.byChangeType).map(
+        ([type, count]) => ({
+          label: type,
+          value: count.toString(),
+        })
+      ),
     ],
   }
 }

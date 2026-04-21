@@ -96,30 +96,30 @@ npm run test:all
 ### Page Object Model (E2E)
 
 ```typescript
-import { LoginPage } from '../pages/login.page';
+import { LoginPage } from "../pages/login.page"
 
-test('should login successfully', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  await loginPage.goto();
-  await loginPage.login('admin@test.your-domain.com', 'Admin@123456');
-  await loginPage.expectRedirectToDashboard();
-});
+test("should login successfully", async ({ page }) => {
+  const loginPage = new LoginPage(page)
+  await loginPage.goto()
+  await loginPage.login("admin@test.your-domain.com", "Admin@123456")
+  await loginPage.expectRedirectToDashboard()
+})
 ```
 
 ### Auth Fixtures (E2E)
 
 ```typescript
-import { test } from '../fixtures/auth.fixture';
+import { test } from "../fixtures/auth.fixture"
 
-test('admin can manage employees', async ({ adminPage }) => {
+test("admin can manage employees", async ({ adminPage }) => {
   // adminPage is pre-authenticated as admin
-  await adminPage.goto('/employees');
-});
+  await adminPage.goto("/employees")
+})
 
-test('employee can view dashboard', async ({ employeePage }) => {
+test("employee can view dashboard", async ({ employeePage }) => {
   // employeePage is pre-authenticated as employee
-  await employeePage.goto('/dashboard');
-});
+  await employeePage.goto("/dashboard")
+})
 ```
 
 ### Custom Render (Unit Tests)
@@ -148,29 +148,32 @@ test('renders component with providers', () => {
 
 ### Test Users (E2E)
 
-| Role     | Email                      | Password        |
-|----------|----------------------------|-----------------|
-| Admin    | admin@test.your-domain.com     | Admin@123456    |
-| Manager  | manager@test.your-domain.com   | Manager@123456  |
-| Employee | employee@test.your-domain.com  | Employee@123456 |
+| Role     | Email                         | Password        |
+| -------- | ----------------------------- | --------------- |
+| Admin    | admin@test.your-domain.com    | Admin@123456    |
+| Manager  | manager@test.your-domain.com  | Manager@123456  |
+| Employee | employee@test.your-domain.com | Employee@123456 |
 
 ### Mock Data Generators
 
 ```typescript
-import { generateEmployee, generateEmployees } from '@/tests/mocks/data/employees.mock';
+import {
+  generateEmployee,
+  generateEmployees,
+} from "@/tests/mocks/data/employees.mock"
 
-const employee = generateEmployee({ firstName: 'Nguyễn' });
-const employees = generateEmployees(10);
+const employee = generateEmployee({ firstName: "Nguyễn" })
+const employees = generateEmployees(10)
 ```
 
 ## Coverage Requirements
 
-| Category      | Target |
-|---------------|--------|
-| Global        | 70%    |
-| lib/          | 80%    |
-| services/     | 75%    |
-| components/   | 60%    |
+| Category    | Target |
+| ----------- | ------ |
+| Global      | 70%    |
+| lib/        | 80%    |
+| services/   | 75%    |
+| components/ | 60%    |
 
 ## CI/CD Integration
 
@@ -183,7 +186,7 @@ test:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: "20"
     - run: npm ci
     - run: npm run test:coverage
     - run: npx playwright install --with-deps
@@ -232,14 +235,14 @@ describe('MyComponent', () => {
 
 ```typescript
 // tests/e2e/specs/feature/my-feature.spec.ts
-import { test, expect } from '../../fixtures/auth.fixture';
+import { test, expect } from "../../fixtures/auth.fixture"
 
-test.describe('My Feature', () => {
-  test('should work for admin', async ({ adminPage }) => {
-    await adminPage.goto('/my-feature');
-    await expect(adminPage.locator('h1')).toHaveText('My Feature');
-  });
-});
+test.describe("My Feature", () => {
+  test("should work for admin", async ({ adminPage }) => {
+    await adminPage.goto("/my-feature")
+    await expect(adminPage.locator("h1")).toHaveText("My Feature")
+  })
+})
 ```
 
 ## Troubleshooting

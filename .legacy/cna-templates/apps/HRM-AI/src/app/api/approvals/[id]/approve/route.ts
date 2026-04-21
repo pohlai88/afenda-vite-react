@@ -1,9 +1,9 @@
 // src/app/api/approvals/[id]/approve/route.ts
 // Approve an approval step
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { approvalService } from '@/services/approval.service'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { approvalService } from "@/services/approval.service"
 
 export async function POST(
   request: NextRequest,
@@ -12,24 +12,20 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
     const body = await request.json().catch(() => ({}))
-    const comment = body.comment || ''
+    const comment = body.comment || ""
 
-    const result = await approvalService.approve(
-      id,
-      session.user.id,
-      comment
-    )
+    const result = await approvalService.approve(id, session.user.id, comment)
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error approving:', error)
+    console.error("Error approving:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to approve' },
+      { error: error instanceof Error ? error.message : "Failed to approve" },
       { status: 400 }
     )
   }

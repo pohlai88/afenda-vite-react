@@ -7,7 +7,7 @@ export {
   CollaboratorsList,
   UserAvatar,
   CompactUserList,
-} from './CollaboratorsList';
+} from "./CollaboratorsList"
 
 // Remote Cursor
 export {
@@ -15,7 +15,7 @@ export {
   RemoteCursorsOverlay,
   CursorLabel,
   useVisibleCursors,
-} from './RemoteCursor';
+} from "./RemoteCursor"
 
 // Remote Selection
 export {
@@ -23,20 +23,17 @@ export {
   RemoteSelectionsOverlay,
   SelectionInfo,
   useVisibleSelections,
-} from './RemoteSelection';
+} from "./RemoteSelection"
 
 // Comment Thread
-export {
-  CommentThread,
-  CommentPanel,
-} from './CommentThread';
+export { CommentThread, CommentPanel } from "./CommentThread"
 
 // Comment Marker
 export {
   CommentMarker,
   CommentCellOverlay,
   NewCommentInput,
-} from './CommentMarker';
+} from "./CommentMarker"
 
 // Attribution Badge
 export {
@@ -44,7 +41,7 @@ export {
   AttributionTooltip,
   EditHistoryPanel,
   AttributionSummary,
-} from './AttributionBadge';
+} from "./AttributionBadge"
 
 // Presence Indicator
 export {
@@ -53,5 +50,4 @@ export {
   OnlineUsersIndicator,
   TypingIndicator,
   LiveIndicator,
-} from './PresenceIndicator';
-
+} from "./PresenceIndicator"

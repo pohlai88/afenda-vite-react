@@ -1,11 +1,7 @@
-'use client'
+"use client"
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import type { BundleInput } from '@/lib/validations/bundle'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import type { BundleInput } from "@/lib/validations/bundle"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -68,22 +64,26 @@ interface BundleListResponse {
 
 // ── Queries ──────────────────────────────────────────────────────────
 
-export function useBundles(filters?: { bundleType?: string; isActive?: string }) {
+export function useBundles(filters?: {
+  bundleType?: string
+  isActive?: string
+}) {
   const params = new URLSearchParams()
-  if (filters?.bundleType) params.set('bundleType', filters.bundleType)
-  if (filters?.isActive) params.set('isActive', filters.isActive)
+  if (filters?.bundleType) params.set("bundleType", filters.bundleType)
+  if (filters?.isActive) params.set("isActive", filters.isActive)
   const qs = params.toString()
 
   return useQuery<BundleListResponse>({
-    queryKey: ['bundles', filters],
-    queryFn: () => fetchJson<BundleListResponse>(`/api/bundles${qs ? `?${qs}` : ''}`),
+    queryKey: ["bundles", filters],
+    queryFn: () =>
+      fetchJson<BundleListResponse>(`/api/bundles${qs ? `?${qs}` : ""}`),
     staleTime: 30_000,
   })
 }
 
 export function useBundle(id: string | undefined) {
   return useQuery<Bundle>({
-    queryKey: ['bundles', id],
+    queryKey: ["bundles", id],
     queryFn: () => fetchJson<Bundle>(`/api/bundles/${id}`),
     enabled: !!id,
     staleTime: 30_000,
@@ -96,39 +96,41 @@ export function useCreateBundle() {
   const qc = useQueryClient()
   return useMutation<Bundle, Error, BundleInput>({
     mutationFn: (data) =>
-      fetchJson<Bundle>('/api/bundles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetchJson<Bundle>("/api/bundles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['bundles'] })
+      qc.invalidateQueries({ queryKey: ["bundles"] })
     },
   })
 }
 
 export function useUpdateBundle() {
   const qc = useQueryClient()
-  return useMutation<Bundle, Error, { id: string; data: Partial<BundleInput> }>({
-    mutationFn: ({ id, data }) =>
-      fetchJson<Bundle>(`/api/bundles/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['bundles'] })
-    },
-  })
+  return useMutation<Bundle, Error, { id: string; data: Partial<BundleInput> }>(
+    {
+      mutationFn: ({ id, data }) =>
+        fetchJson<Bundle>(`/api/bundles/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }),
+      onSuccess: () => {
+        qc.invalidateQueries({ queryKey: ["bundles"] })
+      },
+    }
+  )
 }
 
 export function useDeleteBundle() {
   const qc = useQueryClient()
   return useMutation<Bundle, Error, string>({
     mutationFn: (id) =>
-      fetchJson<Bundle>(`/api/bundles/${id}`, { method: 'DELETE' }),
+      fetchJson<Bundle>(`/api/bundles/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['bundles'] })
+      qc.invalidateQueries({ queryKey: ["bundles"] })
     },
   })
 }

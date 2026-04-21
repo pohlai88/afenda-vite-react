@@ -57,12 +57,12 @@ Dashboard hiển thị tổng quan các chỉ số quan trọng:
 
 ### Các Widget chính
 
-| Widget | Mô tả |
-|--------|-------|
-| **Tổng ngân sách** | Ngân sách được phân bổ và đã sử dụng |
-| **Khuyến mãi hoạt động** | Số lượng chương trình đang chạy |
-| **Claims chờ xử lý** | Claims cần duyệt hoặc xử lý |
-| **ROI trung bình** | Hiệu quả đầu tư khuyến mãi |
+| Widget                   | Mô tả                                |
+| ------------------------ | ------------------------------------ |
+| **Tổng ngân sách**       | Ngân sách được phân bổ và đã sử dụng |
+| **Khuyến mãi hoạt động** | Số lượng chương trình đang chạy      |
+| **Claims chờ xử lý**     | Claims cần duyệt hoặc xử lý          |
+| **ROI trung bình**       | Hiệu quả đầu tư khuyến mãi           |
 
 ### Biểu đồ
 
@@ -85,15 +85,15 @@ Dashboard hiển thị tổng quan các chỉ số quan trọng:
 1. Vào **Promotions** → **Tạo mới**
 2. Điền thông tin cơ bản:
 
-| Trường | Mô tả | Bắt buộc |
-|--------|-------|----------|
-| Tên khuyến mãi | Tên chương trình | ✅ |
-| Mã khuyến mãi | Mã định danh duy nhất | ✅ |
-| Loại | Discount, Rebate, POSM, Display... | ✅ |
-| Ngày bắt đầu | Ngày hiệu lực | ✅ |
-| Ngày kết thúc | Ngày kết thúc | ✅ |
-| Ngân sách | Tổng ngân sách chương trình | ✅ |
-| Mô tả | Chi tiết chương trình | |
+| Trường         | Mô tả                              | Bắt buộc |
+| -------------- | ---------------------------------- | -------- |
+| Tên khuyến mãi | Tên chương trình                   | ✅       |
+| Mã khuyến mãi  | Mã định danh duy nhất              | ✅       |
+| Loại           | Discount, Rebate, POSM, Display... | ✅       |
+| Ngày bắt đầu   | Ngày hiệu lực                      | ✅       |
+| Ngày kết thúc  | Ngày kết thúc                      | ✅       |
+| Ngân sách      | Tổng ngân sách chương trình        | ✅       |
+| Mô tả          | Chi tiết chương trình              |          |
 
 3. Chọn đối tượng áp dụng:
    - **Khu vực**: Chọn vùng địa lý
@@ -110,18 +110,22 @@ Dashboard hiển thị tổng quan các chỉ số quan trọng:
 ### Các loại khuyến mãi
 
 #### Discount (Chiết khấu)
+
 - Giảm giá trực tiếp trên hóa đơn
 - Áp dụng theo % hoặc số tiền
 
 #### Rebate (Thưởng doanh số)
+
 - Thưởng khi đạt mục tiêu
 - Tính cuối kỳ
 
 #### Display (Trưng bày)
+
 - Hỗ trợ trưng bày sản phẩm
 - Yêu cầu hình ảnh xác nhận
 
 #### POSM (Vật phẩm quảng cáo)
+
 - Cung cấp POSM miễn phí
 - Theo dõi số lượng
 
@@ -136,15 +140,15 @@ Draft ──▶ Pending ──▶ Approved ──▶ Active ──▶ Completed
    └─────────┴────────────┴──▶ Cancelled
 ```
 
-| Trạng thái | Mô tả | Hành động có thể |
-|------------|-------|------------------|
-| Draft | Bản nháp | Sửa, Xóa, Gửi duyệt |
-| Pending | Chờ duyệt | Duyệt, Từ chối |
-| Approved | Đã duyệt | Kích hoạt, Hủy |
-| Active | Đang chạy | Hoàn thành, Hủy |
-| Completed | Hoàn thành | Xem báo cáo |
-| Rejected | Bị từ chối | Sửa và gửi lại |
-| Cancelled | Đã hủy | Không có |
+| Trạng thái | Mô tả      | Hành động có thể    |
+| ---------- | ---------- | ------------------- |
+| Draft      | Bản nháp   | Sửa, Xóa, Gửi duyệt |
+| Pending    | Chờ duyệt  | Duyệt, Từ chối      |
+| Approved   | Đã duyệt   | Kích hoạt, Hủy      |
+| Active     | Đang chạy  | Hoàn thành, Hủy     |
+| Completed  | Hoàn thành | Xem báo cáo         |
+| Rejected   | Bị từ chối | Sửa và gửi lại      |
+| Cancelled  | Đã hủy     | Không có            |
 
 ---
 
@@ -181,12 +185,12 @@ Draft ──▶ Pending ──▶ Approved ──▶ Active ──▶ Completed
 3. Chọn khách hàng
 4. Nhập thông tin claim:
 
-| Trường | Mô tả |
-|--------|-------|
-| Kỳ claim | Tháng/quý áp dụng |
+| Trường           | Mô tả             |
+| ---------------- | ----------------- |
+| Kỳ claim         | Tháng/quý áp dụng |
 | Doanh số thực tế | Doanh số đạt được |
-| Số tiền claim | Số tiền yêu cầu |
-| Ghi chú | Thông tin bổ sung |
+| Số tiền claim    | Số tiền yêu cầu   |
+| Ghi chú          | Thông tin bổ sung |
 
 5. Đính kèm chứng từ:
    - Báo cáo doanh số
@@ -198,30 +202,33 @@ Draft ──▶ Pending ──▶ Approved ──▶ Active ──▶ Completed
 ### Xử lý Claim
 
 #### Đối với nhân viên kinh doanh
+
 1. Tạo và gửi claim
 2. Theo dõi trạng thái
 3. Bổ sung thông tin nếu cần
 
 #### Đối với người duyệt
+
 1. Kiểm tra thông tin claim
 2. Xác minh chứng từ
 3. Duyệt hoặc từ chối
 
 #### Đối với kế toán
+
 1. Kiểm tra claim đã duyệt
 2. Tạo bút toán
 3. Đối chiếu và quyết toán
 
 ### Trạng thái Claim
 
-| Trạng thái | Mô tả |
-|------------|-------|
-| Submitted | Đã gửi, chờ xử lý |
-| Under Review | Đang kiểm tra |
-| Approved | Đã duyệt |
-| Rejected | Bị từ chối |
-| Processing | Đang xử lý thanh toán |
-| Paid | Đã thanh toán |
+| Trạng thái   | Mô tả                 |
+| ------------ | --------------------- |
+| Submitted    | Đã gửi, chờ xử lý     |
+| Under Review | Đang kiểm tra         |
+| Approved     | Đã duyệt              |
+| Rejected     | Bị từ chối            |
+| Processing   | Đang xử lý thanh toán |
+| Paid         | Đã thanh toán         |
 
 ---
 
@@ -264,14 +271,14 @@ Credit: Phải trả khách hàng (331)
 
 ### Báo cáo có sẵn
 
-| Báo cáo | Mô tả |
-|---------|-------|
+| Báo cáo               | Mô tả                      |
+| --------------------- | -------------------------- |
 | Promotion Performance | Hiệu quả từng chương trình |
-| ROI Analysis | Phân tích ROI |
-| Budget Utilization | Sử dụng ngân sách |
-| Claims Summary | Tổng hợp claims |
-| Customer Performance | Hiệu quả theo khách hàng |
-| Regional Analysis | Phân tích theo vùng |
+| ROI Analysis          | Phân tích ROI              |
+| Budget Utilization    | Sử dụng ngân sách          |
+| Claims Summary        | Tổng hợp claims            |
+| Customer Performance  | Hiệu quả theo khách hàng   |
+| Regional Analysis     | Phân tích theo vùng        |
 
 ### Tạo báo cáo
 
@@ -338,28 +345,32 @@ AI phát hiện và cảnh báo:
 
 ## Phím tắt / Keyboard Shortcuts
 
-| Phím | Chức năng |
-|------|-----------|
-| `Ctrl + N` | Tạo mới |
-| `Ctrl + S` | Lưu |
-| `Ctrl + F` | Tìm kiếm |
+| Phím       | Chức năng   |
+| ---------- | ----------- |
+| `Ctrl + N` | Tạo mới     |
+| `Ctrl + S` | Lưu         |
+| `Ctrl + F` | Tìm kiếm    |
 | `Ctrl + /` | Mở trợ giúp |
-| `Esc` | Đóng dialog |
+| `Esc`      | Đóng dialog |
 
 ---
 
 ## Câu hỏi thường gặp / FAQ
 
 ### Q: Làm sao để sửa khuyến mãi đã gửi duyệt?
+
 A: Yêu cầu người duyệt từ chối, sau đó sửa và gửi lại.
 
 ### Q: Claim bị từ chối, làm sao xử lý?
+
 A: Xem lý do từ chối, bổ sung thông tin/chứng từ và tạo claim mới.
 
 ### Q: Báo cáo không hiển thị đủ dữ liệu?
+
 A: Kiểm tra bộ lọc và quyền truy cập. Liên hệ admin nếu cần mở rộng quyền.
 
 ### Q: Quên mật khẩu?
+
 A: Nhấn "Quên mật khẩu" trên trang đăng nhập để nhận email reset.
 
 ---

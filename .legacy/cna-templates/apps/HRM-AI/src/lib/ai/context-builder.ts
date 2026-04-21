@@ -1,8 +1,8 @@
 // src/lib/ai/context-builder.ts
 // Build user context for AI conversations
 
-import { db } from '@/lib/db'
-import type { UserContext } from '@/types/ai'
+import { db } from "@/lib/db"
+import type { UserContext } from "@/types/ai"
 
 /**
  * Build complete user context for AI assistant
@@ -27,13 +27,13 @@ export async function buildUserContext(
   })
 
   if (!user) {
-    throw new Error('User not found')
+    throw new Error("User not found")
   }
 
   const context: UserContext = {
     user: {
       id: user.id,
-      name: user.name || 'Nhân viên',
+      name: user.name || "Nhân viên",
       role: user.role,
     },
   }
@@ -43,8 +43,8 @@ export async function buildUserContext(
     context.employee = {
       id: user.employee.id,
       code: user.employee.employeeCode,
-      department: user.employee.department?.name || 'N/A',
-      position: user.employee.position?.name || 'N/A',
+      department: user.employee.department?.name || "N/A",
+      position: user.employee.position?.name || "N/A",
     }
 
     // Check if manager
@@ -57,7 +57,7 @@ export async function buildUserContext(
       const pendingCount = await db.approvalStep.count({
         where: {
           approverId: userId,
-          status: 'PENDING',
+          status: "PENDING",
         },
       })
       context.pendingRequests = pendingCount
@@ -113,11 +113,9 @@ export async function buildUserContext(
 
     // Sum up stats
     const actualDays = attendances.filter(
-      (r) => r.status === 'PRESENT' || r.status === 'LATE'
+      (r) => r.status === "PRESENT" || r.status === "LATE"
     ).length
-    const lateDays = attendances.filter(
-      (r) => r.status === 'LATE'
-    ).length
+    const lateDays = attendances.filter((r) => r.status === "LATE").length
 
     // Get OT hours
     const otRecords = await db.overtimeRequest.findMany({
@@ -127,7 +125,7 @@ export async function buildUserContext(
           gte: startOfMonth,
           lte: endOfMonth,
         },
-        status: 'APPROVED',
+        status: "APPROVED",
       },
     })
     const otHours = otRecords.reduce(
@@ -162,7 +160,7 @@ export async function getRelevantKnowledge(
     .filter((w) => w.length > 2)
 
   if (keywords.length === 0) {
-    return ''
+    return ""
   }
 
   const articles = await db.knowledgeArticle.findMany({
@@ -170,20 +168,18 @@ export async function getRelevantKnowledge(
       tenantId,
       isPublished: true,
       OR: keywords.flatMap((keyword) => [
-        { title: { contains: keyword, mode: 'insensitive' } },
-        { content: { contains: keyword, mode: 'insensitive' } },
+        { title: { contains: keyword, mode: "insensitive" } },
+        { content: { contains: keyword, mode: "insensitive" } },
         { keywords: { has: keyword } },
       ]),
     },
     take: limit,
-    orderBy: { viewCount: 'desc' },
+    orderBy: { viewCount: "desc" },
   })
 
   if (articles.length === 0) {
-    return ''
+    return ""
   }
 
-  return articles
-    .map((a) => `### ${a.title}\n${a.content}`)
-    .join('\n\n---\n\n')
+  return articles.map((a) => `### ${a.title}\n${a.content}`).join("\n\n---\n\n")
 }

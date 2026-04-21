@@ -6,7 +6,7 @@ import {
   INSURANCE_SALARY_CAP,
   UNEMPLOYMENT_SALARY_CAP,
   type InsuranceContribution,
-} from './constants'
+} from "./constants"
 
 // ═══════════════════════════════════════════════════════════════
 // REGION TYPES
@@ -23,7 +23,11 @@ export class InsuranceCalculator {
   private region: WageRegion
   private year: number
 
-  constructor(options: { baseSalary: number; region?: WageRegion; year?: number }) {
+  constructor(options: {
+    baseSalary: number
+    region?: WageRegion
+    year?: number
+  }) {
     this.baseSalary = options.baseSalary
     this.region = options.region || 1
     this.year = options.year || new Date().getFullYear()
@@ -79,16 +83,24 @@ export class InsuranceCalculator {
     const unemploymentCapped = this.getCappedSalaryForUnemployment()
 
     // Employee contributions
-    const employeeSocial = Math.round(socialHealthCapped * INSURANCE_RATES.SOCIAL.EMPLOYEE)
-    const employeeHealth = Math.round(socialHealthCapped * INSURANCE_RATES.HEALTH.EMPLOYEE)
+    const employeeSocial = Math.round(
+      socialHealthCapped * INSURANCE_RATES.SOCIAL.EMPLOYEE
+    )
+    const employeeHealth = Math.round(
+      socialHealthCapped * INSURANCE_RATES.HEALTH.EMPLOYEE
+    )
     const employeeUnemployment = Math.round(
       unemploymentCapped * INSURANCE_RATES.UNEMPLOYMENT.EMPLOYEE
     )
     const employeeTotal = employeeSocial + employeeHealth + employeeUnemployment
 
     // Employer contributions
-    const employerSocial = Math.round(socialHealthCapped * INSURANCE_RATES.SOCIAL.EMPLOYER)
-    const employerHealth = Math.round(socialHealthCapped * INSURANCE_RATES.HEALTH.EMPLOYER)
+    const employerSocial = Math.round(
+      socialHealthCapped * INSURANCE_RATES.SOCIAL.EMPLOYER
+    )
+    const employerHealth = Math.round(
+      socialHealthCapped * INSURANCE_RATES.HEALTH.EMPLOYER
+    )
     const employerUnemployment = Math.round(
       unemploymentCapped * INSURANCE_RATES.UNEMPLOYMENT.EMPLOYER
     )
@@ -197,9 +209,9 @@ export function calculateBatchInsurance(
  * Format currency for display
  */
 export function formatInsuranceAmount(amount: number): string {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
     maximumFractionDigits: 0,
   }).format(amount)
 }
@@ -238,17 +250,17 @@ export function validateInsuranceRegistration(data: {
 
   // Validate social insurance number format (10 digits)
   if (!/^\d{10}$/.test(data.socialInsuranceNumber)) {
-    errors.push('Số BHXH phải có đúng 10 chữ số')
+    errors.push("Số BHXH phải có đúng 10 chữ số")
   }
 
   // Validate registration date
   if (data.registrationDate > new Date()) {
-    errors.push('Ngày đăng ký không thể trong tương lai')
+    errors.push("Ngày đăng ký không thể trong tương lai")
   }
 
   // Validate base salary
   if (data.baseSalary < 0) {
-    errors.push('Mức lương đóng BHXH không thể âm')
+    errors.push("Mức lương đóng BHXH không thể âm")
   }
 
   return {

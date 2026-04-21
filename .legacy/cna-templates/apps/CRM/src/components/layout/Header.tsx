@@ -1,14 +1,20 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Search, LogOut, User, ChevronDown, Sun, Moon, Settings, Menu } from 'lucide-react'
-import Link from 'next/link'
-import { useTheme } from 'next-themes'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect } from "react"
 import {
-  Avatar,
-  AvatarFallback,
-} from '@/components/ui/avatar'
+  Search,
+  LogOut,
+  User,
+  ChevronDown,
+  Sun,
+  Moon,
+  Settings,
+  Menu,
+} from "lucide-react"
+import Link from "next/link"
+import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,16 +22,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Skeleton } from '@/components/ui/skeleton'
-import { useAuth } from '@/hooks/use-auth'
-import { useTranslation } from '@/i18n'
-import { CommandPalette } from '@/components/command-palette/CommandPalette'
-import { NotificationBell } from '@/components/notifications/notification-bell'
-import { useUIStore } from '@/stores/ui-store'
+} from "@/components/ui/dropdown-menu"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/i18n"
+import { CommandPalette } from "@/components/command-palette/CommandPalette"
+import { NotificationBell } from "@/components/notifications/notification-bell"
+import { useUIStore } from "@/stores/ui-store"
 
 function getInitials(name: string | null | undefined): string {
-  if (!name) return '?'
+  if (!name) return "?"
   const parts = name.trim().split(/\s+/)
   if (parts.length >= 2) {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
@@ -42,12 +48,12 @@ export function Header() {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
-  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
-  const toggleLocale = () => setLocale(locale === 'vi' ? 'en' : 'vi')
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark")
+  const toggleLocale = () => setLocale(locale === "vi" ? "en" : "vi")
 
   const initials = getInitials(user?.name)
-  const displayName = user?.name || user?.email || 'User'
-  const displayEmail = user?.email || ''
+  const displayName = user?.name || user?.email || "User"
+  const displayEmail = user?.email || ""
 
   return (
     <header className="h-11 flex items-center justify-between px-6 bg-[var(--glass-bg)] backdrop-blur-xl border-b border-[var(--crm-border)] shrink-0">
@@ -69,7 +75,7 @@ export function Header() {
           style={{ paddingTop: 3, paddingBottom: 3 }}
         >
           <Search className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">{t('common.search')}...</span>
+          <span className="hidden sm:inline">{t("common.search")}...</span>
           <kbd className="hidden sm:inline-flex items-center gap-0.5 ml-4 px-1.5 py-0.5 rounded bg-[var(--crm-bg-subtle)] text-[10px] font-mono text-[var(--crm-text-muted)]">
             <span className="text-xs">&#8984;</span>K
           </kbd>
@@ -87,9 +93,11 @@ export function Header() {
           size="sm"
           onClick={toggleLocale}
           className="text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)] font-medium text-xs px-2"
-          title={locale === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
+          title={
+            locale === "vi" ? "Switch to English" : "Chuyển sang Tiếng Việt"
+          }
         >
-          {locale === 'vi' ? 'EN' : 'VI'}
+          {locale === "vi" ? "EN" : "VI"}
         </Button>
 
         {/* Theme toggle */}
@@ -98,10 +106,16 @@ export function Header() {
           size="icon"
           onClick={toggleTheme}
           className="text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
-          title={mounted ? (theme === 'dark' ? t('common.lightMode') : t('common.darkMode')) : undefined}
+          title={
+            mounted
+              ? theme === "dark"
+                ? t("common.lightMode")
+                : t("common.darkMode")
+              : undefined
+          }
         >
           {mounted ? (
-            theme === 'dark' ? (
+            theme === "dark" ? (
               <Sun className="w-[18px] h-[18px]" />
             ) : (
               <Moon className="w-[18px] h-[18px]" />
@@ -145,18 +159,23 @@ export function Header() {
             <DropdownMenuLabel className="text-[var(--crm-text-primary)] font-normal">
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{displayName}</span>
-                <span className="text-xs text-[var(--crm-text-muted)]">{displayEmail}</span>
+                <span className="text-xs text-[var(--crm-text-muted)]">
+                  {displayEmail}
+                </span>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-[var(--crm-border)]" />
             <DropdownMenuItem className="text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] focus:text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] cursor-pointer">
               <User className="w-4 h-4 mr-2" />
-              {t('nav.profile')}
+              {t("nav.profile")}
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/settings" className="text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] focus:text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] cursor-pointer">
+              <Link
+                href="/settings"
+                className="text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] focus:text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] cursor-pointer"
+              >
                 <Settings className="w-4 h-4 mr-2" />
-                {t('nav.settings')}
+                {t("nav.settings")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-[var(--crm-border)]" />
@@ -165,7 +184,7 @@ export function Header() {
               className="text-red-400 focus:text-red-400 focus:bg-red-500/10 cursor-pointer"
             >
               <LogOut className="w-4 h-4 mr-2" />
-              {t('common.logout')}
+              {t("common.logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

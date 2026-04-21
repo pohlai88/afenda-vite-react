@@ -24,14 +24,20 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const body = await request.json()
   const validated = createPositionSchema.parse(body)
 
-  const position = await positionService.create(session.user.tenantId, validated)
+  const position = await positionService.create(
+    session.user.tenantId,
+    validated
+  )
 
   await audit.create(
-    { tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' },
-    'Position',
+    {
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      userEmail: session.user.email || "",
+    },
+    "Position",
     position.id
   )
 
   return successResponse(position, undefined, 201)
 })
-

@@ -91,20 +91,20 @@ vierp-tpm-web/
 
 ### 1.4 Production URLs
 
-| Service | URL |
-|---------|-----|
-| Frontend | https://vierp-tpm.onrender.com |
-| API | https://vierp-tpm-api.onrender.com/api |
-| Swagger Docs | https://vierp-tpm-api.onrender.com/api/docs |
+| Service      | URL                                           |
+| ------------ | --------------------------------------------- |
+| Frontend     | https://vierp-tpm.onrender.com                |
+| API          | https://vierp-tpm-api.onrender.com/api        |
+| Swagger Docs | https://vierp-tpm-api.onrender.com/api/docs   |
 | Health Check | https://vierp-tpm-api.onrender.com/api/health |
 
 ### 1.5 Test Accounts
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@your-domain.com | admin123 |
+| Role    | Email                   | Password |
+| ------- | ----------------------- | -------- |
+| Admin   | admin@your-domain.com   | admin123 |
 | Manager | manager@your-domain.com | admin123 |
-| KAM | kam1@your-domain.com | admin123 |
+| KAM     | kam1@your-domain.com    | admin123 |
 | Finance | finance@your-domain.com | admin123 |
 
 ---
@@ -203,6 +203,7 @@ render.yaml defines 2 services + 1 database:
 ### 3.2 Auto-Migration & Seed (main.ts)
 
 NestJS `main.ts` runs before app bootstrap:
+
 1. `prisma db push --skip-generate --accept-data-loss` → creates/syncs all 101 tables
 2. Checks `user.count()` → if 0, seeds company + 4 users with bcrypt-hashed passwords
 3. Idempotent: safe to run on every server start
@@ -210,6 +211,7 @@ NestJS `main.ts` runs before app bootstrap:
 ### 3.3 API Response Format
 
 All responses are wrapped by `TransformInterceptor`:
+
 ```json
 // Success
 { "success": true, "data": { ... }, "meta": { "timestamp": "...", "requestId": "..." } }
@@ -231,19 +233,19 @@ All responses are wrapped by `TransformInterceptor`:
 
 ### 3.1 Completed Tasks
 
-| Task | Status | Description |
-|------|--------|-------------|
-| Budget API Enhancement | ✅ | CRUD + Approval workflow |
-| Budget Submit/Review | ✅ | Multi-level approval |
-| Approval History | ✅ | Audit trail |
-| Fund Health Score | ✅ | 4-dimension calculation |
-| Budget Comparison | ✅ | Period-over-period |
-| Target Allocation APIs | ✅ | Hierarchical allocation tree |
-| Target Progress | ✅ | Progress by geographic level |
-| Fund Activity APIs | ✅ | Activity-Fund linking + ROI |
-| Frontend Hooks | ✅ | All React Query hooks |
-| UI Components | ✅ | Health Score, Comparison, ROI Dashboard |
-| Seed Data | ✅ | Geographic + Demo data |
+| Task                   | Status | Description                             |
+| ---------------------- | ------ | --------------------------------------- |
+| Budget API Enhancement | ✅     | CRUD + Approval workflow                |
+| Budget Submit/Review   | ✅     | Multi-level approval                    |
+| Approval History       | ✅     | Audit trail                             |
+| Fund Health Score      | ✅     | 4-dimension calculation                 |
+| Budget Comparison      | ✅     | Period-over-period                      |
+| Target Allocation APIs | ✅     | Hierarchical allocation tree            |
+| Target Progress        | ✅     | Progress by geographic level            |
+| Fund Activity APIs     | ✅     | Activity-Fund linking + ROI             |
+| Frontend Hooks         | ✅     | All React Query hooks                   |
+| UI Components          | ✅     | Health Score, Comparison, ROI Dashboard |
+| Seed Data              | ✅     | Geographic + Demo data                  |
 
 ### 3.2 API Files Created
 
@@ -359,38 +361,38 @@ GET    /fund-activities/summary    # ROI analysis summary
 
 ```typescript
 // Basic CRUD
-useBudgets(params)                 // List budgets
-useBudget(id)                      // Get single
-useCreateBudget()                  // Create mutation
-useUpdateBudget()                  // Update mutation
-useDeleteBudget()                  // Delete mutation
+useBudgets(params) // List budgets
+useBudget(id) // Get single
+useCreateBudget() // Create mutation
+useUpdateBudget() // Update mutation
+useDeleteBudget() // Delete mutation
 
 // Approval Workflow
-useSubmitBudget()                  // Submit for approval
-useReviewBudget()                  // Approve/Reject/Revision
-useApprovalHistory(budgetId)       // Audit trail
+useSubmitBudget() // Submit for approval
+useReviewBudget() // Approve/Reject/Revision
+useApprovalHistory(budgetId) // Audit trail
 
 // Analytics
-useFundHealthScore(budgetId)       // Health score data
-useBudgetComparison(budgetId)      // Period comparison data
+useFundHealthScore(budgetId) // Health score data
+useBudgetComparison(budgetId) // Period comparison data
 ```
 
 ### 5.2 Target Hooks (`useTargets.ts`)
 
 ```typescript
 // Basic CRUD
-useTargets(params)                 // List targets
-useTarget(id)                      // Get single
+useTargets(params) // List targets
+useTarget(id) // Get single
 
 // Progress
-useTargetProgress(targetId)        // Progress by level
+useTargetProgress(targetId) // Progress by level
 useTargetAllocationTreeWithSummary(targetId)
 
 // Allocations (Nested)
 useCreateTargetAllocationNested(targetId)
 useUpdateTargetAllocationNested(targetId)
 useDeleteTargetAllocationNested(targetId)
-useUpdateTargetProgress()          // Update achieved value
+useUpdateTargetProgress() // Update achieved value
 ```
 
 ### 5.3 Fund Activity Hooks (`useFundActivities.ts`)
@@ -406,11 +408,11 @@ useDeleteFundActivity()            // Delete
 
 ### 5.4 Components
 
-| Component | Description |
-|-----------|-------------|
-| `FundHealthScore` | Circular gauge with 4-dimension breakdown |
-| `BudgetComparison` | Period comparison with trending chart |
-| `FundActivityROI` | ROI Dashboard with activity list |
+| Component          | Description                               |
+| ------------------ | ----------------------------------------- |
+| `FundHealthScore`  | Circular gauge with 4-dimension breakdown |
+| `BudgetComparison` | Period comparison with trending chart     |
+| `FundActivityROI`  | ROI Dashboard with activity list          |
 
 ---
 
@@ -467,6 +469,7 @@ npm run db:seed
 ```
 
 **Creates:**
+
 - Vietnam geographic hierarchy (Country → Region → Province → District → Dealer)
 - 4 sample budgets with allocations
 - 3 sample targets with allocations
@@ -509,6 +512,7 @@ VITE_API_URL=http://localhost:3000/api npm run dev
 ### 8.3 Environment Variables
 
 **API NestJS (.env)**
+
 ```
 DATABASE_URL=postgresql://...
 JWT_ACCESS_SECRET=your-secret
@@ -517,6 +521,7 @@ PORT=3000
 ```
 
 **Web (.env.development)**
+
 ```
 VITE_API_URL=/api
 VITE_ENABLE_MSW=true      # Enable mock service worker
@@ -525,12 +530,12 @@ VITE_APP_NAME=PROMO MASTER
 
 ### 8.4 Development URLs
 
-| Service | URL |
-|---------|-----|
-| Frontend | http://localhost:5173 |
-| NestJS API | http://localhost:3000/api |
-| Swagger Docs | http://localhost:3000/api/docs |
-| Prisma Studio | npx prisma studio |
+| Service       | URL                            |
+| ------------- | ------------------------------ |
+| Frontend      | http://localhost:5173          |
+| NestJS API    | http://localhost:3000/api      |
+| Swagger Docs  | http://localhost:3000/api/docs |
+| Prisma Studio | npx prisma studio              |
 
 ---
 
@@ -538,12 +543,12 @@ VITE_APP_NAME=PROMO MASTER
 
 ### 8.1 Days 9-10: E2E Testing & Polish
 
-| Task | Priority | Estimate |
-|------|----------|----------|
-| E2E Tests for Budget Approval | High | 1 day |
-| E2E Tests for Target Allocation | High | 0.5 day |
-| UI Polish & Error Handling | Medium | 0.5 day |
-| Performance Optimization | Low | As needed |
+| Task                            | Priority | Estimate  |
+| ------------------------------- | -------- | --------- |
+| E2E Tests for Budget Approval   | High     | 1 day     |
+| E2E Tests for Target Allocation | High     | 0.5 day   |
+| UI Polish & Error Handling      | Medium   | 0.5 day   |
+| Performance Optimization        | Low      | As needed |
 
 ### 8.2 Future Enhancements
 

@@ -2,36 +2,36 @@
 // VALIDATION REPORT — Display validation results
 // =============================================================================
 
-import React, { useState } from 'react';
+import React, { useState } from "react"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
-type ValidationStatus = 'passed' | 'failed' | 'warning';
+type ValidationStatus = "passed" | "failed" | "warning"
 
 interface ValidationRule {
-  id: string;
-  name: string;
-  description: string;
-  column?: string;
-  type: 'required' | 'unique' | 'range' | 'regex' | 'enum' | 'type' | 'custom';
+  id: string
+  name: string
+  description: string
+  column?: string
+  type: "required" | "unique" | "range" | "regex" | "enum" | "type" | "custom"
 }
 
 interface ValidationResult {
-  rule: ValidationRule;
-  status: ValidationStatus;
-  passCount: number;
-  failCount: number;
-  failedCells: ValidationFailure[];
+  rule: ValidationRule
+  status: ValidationStatus
+  passCount: number
+  failCount: number
+  failedCells: ValidationFailure[]
 }
 
 interface ValidationFailure {
-  cell: string;
-  row: number;
-  column: string;
-  value: unknown;
-  message: string;
+  cell: string
+  row: number
+  column: string
+  value: unknown
+  message: string
 }
 
 // -----------------------------------------------------------------------------
@@ -39,9 +39,9 @@ interface ValidationFailure {
 // -----------------------------------------------------------------------------
 
 interface ValidationReportProps {
-  results: ValidationResult[];
-  onFixFailure?: (failure: ValidationFailure) => void;
-  onRerunValidation?: () => void;
+  results: ValidationResult[]
+  onFixFailure?: (failure: ValidationFailure) => void
+  onRerunValidation?: () => void
 }
 
 // -----------------------------------------------------------------------------
@@ -53,18 +53,21 @@ export const ValidationReport: React.FC<ValidationReportProps> = ({
   onFixFailure,
   onRerunValidation,
 }) => {
-  const [expandedRule, setExpandedRule] = useState<string | null>(null);
-  const [filterStatus, setFilterStatus] = useState<ValidationStatus | 'all'>('all');
+  const [expandedRule, setExpandedRule] = useState<string | null>(null)
+  const [filterStatus, setFilterStatus] = useState<ValidationStatus | "all">(
+    "all"
+  )
 
-  const passed = results.filter(r => r.status === 'passed');
-  const failed = results.filter(r => r.status === 'failed');
-  const warnings = results.filter(r => r.status === 'warning');
+  const passed = results.filter((r) => r.status === "passed")
+  const failed = results.filter((r) => r.status === "failed")
+  const warnings = results.filter((r) => r.status === "warning")
 
-  const filteredResults = filterStatus === 'all'
-    ? results
-    : results.filter(r => r.status === filterStatus);
+  const filteredResults =
+    filterStatus === "all"
+      ? results
+      : results.filter((r) => r.status === filterStatus)
 
-  const totalFailures = results.reduce((sum, r) => sum + r.failCount, 0);
+  const totalFailures = results.reduce((sum, r) => sum + r.failCount, 0)
 
   return (
     <div className="validation-report">
@@ -87,7 +90,9 @@ export const ValidationReport: React.FC<ValidationReportProps> = ({
         <div className="validation-report__actions">
           <select
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value as ValidationStatus | 'all')}
+            onChange={(e) =>
+              setFilterStatus(e.target.value as ValidationStatus | "all")
+            }
             className="validation-report__filter"
           >
             <option value="all">All Rules ({results.length})</option>
@@ -108,7 +113,9 @@ export const ValidationReport: React.FC<ValidationReportProps> = ({
       </div>
 
       {/* Overall Status */}
-      <div className={`validation-report__status validation-report__status--${failed.length > 0 ? 'failed' : 'passed'}`}>
+      <div
+        className={`validation-report__status validation-report__status--${failed.length > 0 ? "failed" : "passed"}`}
+      >
         {failed.length > 0 ? (
           <>
             <XCircleIcon />
@@ -129,26 +136,28 @@ export const ValidationReport: React.FC<ValidationReportProps> = ({
             key={result.rule.id}
             result={result}
             isExpanded={expandedRule === result.rule.id}
-            onToggle={() => setExpandedRule(
-              expandedRule === result.rule.id ? null : result.rule.id
-            )}
+            onToggle={() =>
+              setExpandedRule(
+                expandedRule === result.rule.id ? null : result.rule.id
+              )
+            }
             onFixFailure={onFixFailure}
           />
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Validation Result Card Component
 // -----------------------------------------------------------------------------
 
 interface ValidationResultCardProps {
-  result: ValidationResult;
-  isExpanded: boolean;
-  onToggle: () => void;
-  onFixFailure?: (failure: ValidationFailure) => void;
+  result: ValidationResult
+  isExpanded: boolean
+  onToggle: () => void
+  onFixFailure?: (failure: ValidationFailure) => void
 }
 
 const ValidationResultCard: React.FC<ValidationResultCardProps> = ({
@@ -157,25 +166,29 @@ const ValidationResultCard: React.FC<ValidationResultCardProps> = ({
   onToggle,
   onFixFailure,
 }) => {
-  const typeLabel = getRuleTypeLabel(result.rule.type);
+  const typeLabel = getRuleTypeLabel(result.rule.type)
 
   return (
     <div className={`validation-result validation-result--${result.status}`}>
       {/* Result Header */}
       <div className="validation-result__header" onClick={onToggle}>
         <div className="validation-result__status-icon">
-          {result.status === 'passed' && <CheckIcon small />}
-          {result.status === 'failed' && <XIcon small />}
-          {result.status === 'warning' && <WarningIcon small />}
+          {result.status === "passed" && <CheckIcon small />}
+          {result.status === "failed" && <XIcon small />}
+          {result.status === "warning" && <WarningIcon small />}
         </div>
         <div className="validation-result__info">
           <span className="validation-result__name">{result.rule.name}</span>
-          <span className="validation-result__description">{result.rule.description}</span>
+          <span className="validation-result__description">
+            {result.rule.description}
+          </span>
         </div>
         <div className="validation-result__meta">
           <span className="validation-result__type">{typeLabel}</span>
           {result.rule.column && (
-            <span className="validation-result__column">{result.rule.column}</span>
+            <span className="validation-result__column">
+              {result.rule.column}
+            </span>
           )}
         </div>
         <div className="validation-result__counts">
@@ -188,9 +201,7 @@ const ValidationResultCard: React.FC<ValidationResultCardProps> = ({
             </span>
           )}
         </div>
-        {result.failedCells.length > 0 && (
-          <ChevronIcon expanded={isExpanded} />
-        )}
+        {result.failedCells.length > 0 && <ChevronIcon expanded={isExpanded} />}
       </div>
 
       {/* Failures List */}
@@ -206,9 +217,11 @@ const ValidationResultCard: React.FC<ValidationResultCardProps> = ({
             <div key={i} className="validation-failure">
               <span className="validation-failure__cell">{failure.cell}</span>
               <span className="validation-failure__value">
-                {String(failure.value ?? '(empty)')}
+                {String(failure.value ?? "(empty)")}
               </span>
-              <span className="validation-failure__message">{failure.message}</span>
+              <span className="validation-failure__message">
+                {failure.message}
+              </span>
               {onFixFailure && (
                 <button
                   className="validation-failure__fix"
@@ -227,40 +240,40 @@ const ValidationResultCard: React.FC<ValidationResultCardProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Rule Builder Component
 // -----------------------------------------------------------------------------
 
 interface RuleBuilderProps {
-  onAddRule: (rule: Omit<ValidationRule, 'id'>) => void;
-  columns: string[];
+  onAddRule: (rule: Omit<ValidationRule, "id">) => void
+  columns: string[]
 }
 
 export const RuleBuilder: React.FC<RuleBuilderProps> = ({
   onAddRule,
   columns,
 }) => {
-  const [name, setName] = useState('');
-  const [type, setType] = useState<ValidationRule['type']>('required');
-  const [column, setColumn] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("")
+  const [type, setType] = useState<ValidationRule["type"]>("required")
+  const [column, setColumn] = useState("")
+  const [description, setDescription] = useState("")
 
   const handleSubmit = () => {
-    if (!name) return;
+    if (!name) return
 
     onAddRule({
       name,
       type,
       column: column || undefined,
       description: description || getDefaultDescription(type),
-    });
+    })
 
-    setName('');
-    setDescription('');
-  };
+    setName("")
+    setDescription("")
+  }
 
   return (
     <div className="rule-builder">
@@ -275,7 +288,7 @@ export const RuleBuilder: React.FC<RuleBuilderProps> = ({
         />
         <select
           value={type}
-          onChange={(e) => setType(e.target.value as ValidationRule['type'])}
+          onChange={(e) => setType(e.target.value as ValidationRule["type"])}
           className="rule-builder__select"
         >
           <option value="required">Required</option>
@@ -292,7 +305,9 @@ export const RuleBuilder: React.FC<RuleBuilderProps> = ({
         >
           <option value="">All Columns</option>
           {columns.map((col) => (
-            <option key={col} value={col}>{col}</option>
+            <option key={col} value={col}>
+              {col}
+            </option>
           ))}
         </select>
         <button
@@ -304,44 +319,47 @@ export const RuleBuilder: React.FC<RuleBuilderProps> = ({
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
 
-function getRuleTypeLabel(type: ValidationRule['type']): string {
-  const labels: Record<ValidationRule['type'], string> = {
-    required: 'Required',
-    unique: 'Unique',
-    range: 'Range',
-    regex: 'Pattern',
-    enum: 'Allowed',
-    type: 'Type',
-    custom: 'Custom',
-  };
-  return labels[type];
+function getRuleTypeLabel(type: ValidationRule["type"]): string {
+  const labels: Record<ValidationRule["type"], string> = {
+    required: "Required",
+    unique: "Unique",
+    range: "Range",
+    regex: "Pattern",
+    enum: "Allowed",
+    type: "Type",
+    custom: "Custom",
+  }
+  return labels[type]
 }
 
-function getDefaultDescription(type: ValidationRule['type']): string {
-  const descriptions: Record<ValidationRule['type'], string> = {
-    required: 'Value must not be empty',
-    unique: 'Value must be unique in column',
-    range: 'Value must be within specified range',
-    regex: 'Value must match pattern',
-    enum: 'Value must be one of allowed values',
-    type: 'Value must be of specified type',
-    custom: 'Custom validation rule',
-  };
-  return descriptions[type];
+function getDefaultDescription(type: ValidationRule["type"]): string {
+  const descriptions: Record<ValidationRule["type"], string> = {
+    required: "Value must not be empty",
+    unique: "Value must be unique in column",
+    range: "Value must be within specified range",
+    regex: "Value must match pattern",
+    enum: "Value must be one of allowed values",
+    type: "Value must be of specified type",
+    custom: "Custom validation rule",
+  }
+  return descriptions[type]
 }
 
 // -----------------------------------------------------------------------------
 // Icons
 // -----------------------------------------------------------------------------
 
-const CheckIcon: React.FC<{ small?: boolean; tiny?: boolean }> = ({ small, tiny }) => (
+const CheckIcon: React.FC<{ small?: boolean; tiny?: boolean }> = ({
+  small,
+  tiny,
+}) => (
   <svg
     width={tiny ? 10 : small ? 14 : 16}
     height={tiny ? 10 : small ? 14 : 16}
@@ -352,9 +370,12 @@ const CheckIcon: React.FC<{ small?: boolean; tiny?: boolean }> = ({ small, tiny 
   >
     <polyline points="20 6 9 17 4 12" />
   </svg>
-);
+)
 
-const XIcon: React.FC<{ small?: boolean; tiny?: boolean }> = ({ small, tiny }) => (
+const XIcon: React.FC<{ small?: boolean; tiny?: boolean }> = ({
+  small,
+  tiny,
+}) => (
   <svg
     width={tiny ? 10 : small ? 14 : 16}
     height={tiny ? 10 : small ? 14 : 16}
@@ -366,7 +387,7 @@ const XIcon: React.FC<{ small?: boolean; tiny?: boolean }> = ({ small, tiny }) =
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
-);
+)
 
 const WarningIcon: React.FC<{ small?: boolean }> = ({ small }) => (
   <svg
@@ -381,29 +402,50 @@ const WarningIcon: React.FC<{ small?: boolean }> = ({ small }) => (
     <line x1="12" y1="9" x2="12" y2="13" />
     <line x1="12" y1="17" x2="12.01" y2="17" />
   </svg>
-);
+)
 
 const CheckCircleIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#22c55e"
+    strokeWidth="2"
+  >
     <circle cx="12" cy="12" r="10" />
     <polyline points="9 12 11 14 15 10" />
   </svg>
-);
+)
 
 const XCircleIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#ef4444"
+    strokeWidth="2"
+  >
     <circle cx="12" cy="12" r="10" />
     <line x1="15" y1="9" x2="9" y2="15" />
     <line x1="9" y1="9" x2="15" y2="15" />
   </svg>
-);
+)
 
 const RefreshIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <polyline points="23 4 23 10 17 10" />
     <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
   </svg>
-);
+)
 
 const ChevronIcon: React.FC<{ expanded: boolean }> = ({ expanded }) => (
   <svg
@@ -413,10 +455,13 @@ const ChevronIcon: React.FC<{ expanded: boolean }> = ({ expanded }) => (
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
-    style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+    style={{
+      transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+      transition: "transform 0.2s",
+    }}
   >
     <polyline points="6 9 12 15 18 9" />
   </svg>
-);
+)
 
-export default ValidationReport;
+export default ValidationReport

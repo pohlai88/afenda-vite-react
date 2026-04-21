@@ -85,13 +85,27 @@ export function AttendanceTable({
             <TableBody>
               {Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
-                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-12" /></TableCell>
-                  <TableCell><Skeleton className="h-5 w-20" /></TableCell>
-                  <TableCell><Skeleton className="h-8 w-8" /></TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-32" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-12" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-5 w-20" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-8 w-8" />
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -130,7 +144,9 @@ export function AttendanceTable({
               <TableRow key={attendance.id}>
                 <TableCell>
                   <div>
-                    <div className="font-medium">{attendance.employee?.fullName}</div>
+                    <div className="font-medium">
+                      {attendance.employee?.fullName}
+                    </div>
                     <div className="text-sm text-muted-foreground">
                       {attendance.employee?.employeeCode}
                     </div>
@@ -139,20 +155,23 @@ export function AttendanceTable({
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <span>
-                      {format(new Date(attendance.date), "dd/MM/yyyy", { locale: vi })}
+                      {format(new Date(attendance.date), "dd/MM/yyyy", {
+                        locale: vi,
+                      })}
                     </span>
-                    {attendance.anomalies && attendance.anomalies.length > 0 && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            {attendance.anomalies.length} bất thường
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
+                    {attendance.anomalies &&
+                      attendance.anomalies.length > 0 && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {attendance.anomalies.length} bất thường
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -170,9 +189,18 @@ export function AttendanceTable({
                         </TooltipTrigger>
                         <TooltipContent>
                           <div className="text-xs">
-                            <div>Nguồn: {ATTENDANCE_SOURCE_LABELS[attendance.checkInSource || "MANUAL"]}</div>
+                            <div>
+                              Nguồn:{" "}
+                              {
+                                ATTENDANCE_SOURCE_LABELS[
+                                  attendance.checkInSource || "MANUAL"
+                                ]
+                              }
+                            </div>
                             {attendance.checkInAddress && (
-                              <div className="max-w-[200px] truncate">{attendance.checkInAddress}</div>
+                              <div className="max-w-[200px] truncate">
+                                {attendance.checkInAddress}
+                              </div>
                             )}
                           </div>
                         </TooltipContent>
@@ -202,9 +230,18 @@ export function AttendanceTable({
                         </TooltipTrigger>
                         <TooltipContent>
                           <div className="text-xs">
-                            <div>Nguồn: {ATTENDANCE_SOURCE_LABELS[attendance.checkOutSource || "MANUAL"]}</div>
+                            <div>
+                              Nguồn:{" "}
+                              {
+                                ATTENDANCE_SOURCE_LABELS[
+                                  attendance.checkOutSource || "MANUAL"
+                                ]
+                              }
+                            </div>
                             {attendance.checkOutAddress && (
-                              <div className="max-w-[200px] truncate">{attendance.checkOutAddress}</div>
+                              <div className="max-w-[200px] truncate">
+                                {attendance.checkOutAddress}
+                              </div>
                             )}
                           </div>
                         </TooltipContent>
@@ -238,7 +275,9 @@ export function AttendanceTable({
                   )}
                 </TableCell>
                 <TableCell>
-                  <Badge className={ATTENDANCE_STATUS_COLORS[attendance.status]}>
+                  <Badge
+                    className={ATTENDANCE_STATUS_COLORS[attendance.status]}
+                  >
                     {ATTENDANCE_STATUS_LABELS[attendance.status]}
                   </Badge>
                 </TableCell>

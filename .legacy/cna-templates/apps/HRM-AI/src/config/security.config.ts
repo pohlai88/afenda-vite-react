@@ -9,7 +9,7 @@
 // ENVIRONMENT HELPERS
 // ════════════════════════════════════════════════════════════════════════════════
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === "production"
 
 // ════════════════════════════════════════════════════════════════════════════════
 // SECURITY CONFIGURATION
@@ -20,11 +20,11 @@ export const SecurityConfig = {
   // JWT SETTINGS
   // ─────────────────────────────────────────────────────────────────────────────
   jwt: {
-    accessTokenExpiry: '15m',
-    refreshTokenExpiry: '7d',
-    algorithm: 'HS256' as const,
-    issuer: 'vierp-hrm',
-    audience: 'vierp-hr-users',
+    accessTokenExpiry: "15m",
+    refreshTokenExpiry: "7d",
+    algorithm: "HS256" as const,
+    issuer: "vierp-hrm",
+    audience: "vierp-hr-users",
   },
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -61,10 +61,10 @@ export const SecurityConfig = {
     maxAttempts: 5,
     attemptWindowSeconds: 15 * 60, // 15 minutes
     lockoutDurations: [
-      5 * 60,       // First: 5 minutes
-      15 * 60,      // Second: 15 minutes
-      30 * 60,      // Third: 30 minutes
-      60 * 60,      // Fourth: 1 hour
+      5 * 60, // First: 5 minutes
+      15 * 60, // Second: 15 minutes
+      30 * 60, // Third: 30 minutes
+      60 * 60, // Fourth: 1 hour
       24 * 60 * 60, // Fifth+: 24 hours
     ],
     ipMaxAttempts: 20,
@@ -125,10 +125,12 @@ export const SecurityConfig = {
     csp: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
-      connectSrc: ["'self'", process.env.NEXT_PUBLIC_API_URL || ''].filter(Boolean),
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "blob:", "https:"],
+      connectSrc: ["'self'", process.env.NEXT_PUBLIC_API_URL || ""].filter(
+        Boolean
+      ),
       frameSrc: ["'none'"],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
@@ -136,13 +138,13 @@ export const SecurityConfig = {
       frameAncestors: ["'none'"],
       upgradeInsecureRequests: isProduction,
     },
-    xFrameOptions: 'DENY' as const,
-    xContentTypeOptions: 'nosniff' as const,
-    referrerPolicy: 'strict-origin-when-cross-origin' as const,
+    xFrameOptions: "DENY" as const,
+    xContentTypeOptions: "nosniff" as const,
+    referrerPolicy: "strict-origin-when-cross-origin" as const,
     permissionsPolicy: {
       camera: [],
       microphone: [],
-      geolocation: ['self'],
+      geolocation: ["self"],
       payment: [],
       usb: [],
       accelerometer: [],
@@ -156,21 +158,21 @@ export const SecurityConfig = {
   cors: {
     origins: [
       process.env.NEXT_PUBLIC_APP_URL,
-      'https://vierp-hrm.com',
-      'https://www.vierp-hrm.com',
+      "https://vierp-hrm.com",
+      "https://www.vierp-hrm.com",
     ].filter(Boolean) as string[],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'X-CSRF-Token',
-      'X-Request-ID',
+      "Content-Type",
+      "Authorization",
+      "X-CSRF-Token",
+      "X-Request-ID",
     ],
     exposedHeaders: [
-      'X-RateLimit-Limit',
-      'X-RateLimit-Remaining',
-      'X-RateLimit-Reset',
-      'X-Request-ID',
+      "X-RateLimit-Limit",
+      "X-RateLimit-Remaining",
+      "X-RateLimit-Reset",
+      "X-Request-ID",
     ],
     credentials: true,
     maxAge: 86400, // 24 hours
@@ -182,16 +184,16 @@ export const SecurityConfig = {
   csrf: {
     tokenLength: 32,
     tokenExpiry: 24 * 60 * 60, // 24 hours
-    cookieName: '__Host-csrf-token',
-    headerName: 'x-csrf-token',
-    excludePaths: ['/api/webhooks/', '/api/public/', '/api/health'],
+    cookieName: "__Host-csrf-token",
+    headerName: "x-csrf-token",
+    excludePaths: ["/api/webhooks/", "/api/public/", "/api/health"],
   },
 
   // ─────────────────────────────────────────────────────────────────────────────
   // MFA
   // ─────────────────────────────────────────────────────────────────────────────
   mfa: {
-    issuer: process.env.MFA_ISSUER || 'LAC VIET HR',
+    issuer: process.env.MFA_ISSUER || "LAC VIET HR",
     backupCodesCount: 10,
     totpWindow: 1, // Allow 1 step before/after current time
   },
@@ -202,7 +204,7 @@ export const SecurityConfig = {
   audit: {
     enabled: true,
     retentionDays: 90,
-    sensitiveFields: ['password', 'token', 'secret', 'creditCard', 'ssn'],
+    sensitiveFields: ["password", "token", "secret", "creditCard", "ssn"],
   },
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -215,16 +217,16 @@ export const SecurityConfig = {
       default: 10 * 1024 * 1024, // 10MB
     },
     allowedTypes: {
-      avatar: ['image/jpeg', 'image/png', 'image/webp'],
+      avatar: ["image/jpeg", "image/png", "image/webp"],
       document: [
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       ],
     },
   },
-};
+}
 
-export default SecurityConfig;
+export default SecurityConfig

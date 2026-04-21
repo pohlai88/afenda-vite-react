@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import { User, Building, Briefcase, Mail, Calendar, Users } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
+import { User, Building, Briefcase, Mail, Calendar, Users } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface Employee {
   id: string
@@ -31,7 +31,8 @@ interface ESSProfileCardProps {
 }
 
 export function ESSProfileCard({ employee }: ESSProfileCardProps) {
-  const initials = `${employee.firstName[0]}${employee.lastName[0]}`.toUpperCase()
+  const initials =
+    `${employee.firstName[0]}${employee.lastName[0]}`.toUpperCase()
 
   return (
     <Card>
@@ -81,8 +82,8 @@ export function ESSProfileCard({ employee }: ESSProfileCardProps) {
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span>
-                  Vào làm:{' '}
-                  {format(new Date(employee.hireDate), 'dd/MM/yyyy', {
+                  Vào làm:{" "}
+                  {format(new Date(employee.hireDate), "dd/MM/yyyy", {
                     locale: vi,
                   })}
                 </span>

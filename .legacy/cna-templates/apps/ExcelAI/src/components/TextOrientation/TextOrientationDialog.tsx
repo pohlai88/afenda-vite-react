@@ -2,13 +2,13 @@
 // TEXT ORIENTATION DIALOG
 // ============================================================
 
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from "react"
+import { X } from "lucide-react"
 
 interface TextOrientationDialogProps {
-  onClose: () => void;
-  onApply: (angle: number) => void;
-  initialAngle?: number;
+  onClose: () => void
+  onApply: (angle: number) => void
+  initialAngle?: number
 }
 
 export const TextOrientationDialog: React.FC<TextOrientationDialogProps> = ({
@@ -16,17 +16,20 @@ export const TextOrientationDialog: React.FC<TextOrientationDialogProps> = ({
   onApply,
   initialAngle = 0,
 }) => {
-  const [angle, setAngle] = useState(initialAngle);
+  const [angle, setAngle] = useState(initialAngle)
 
   const handleAngleChange = (value: number) => {
-    setAngle(Math.max(-90, Math.min(90, value)));
-  };
+    setAngle(Math.max(-90, Math.min(90, value)))
+  }
 
-  const presets = [-90, -45, 0, 45, 90];
+  const presets = [-90, -45, 0, 45, 90]
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog orientation-dialog" onClick={e => e.stopPropagation()}>
+      <div
+        className="dialog orientation-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h3>Text Orientation</h3>
           <button className="close-btn" onClick={onClose}>
@@ -41,15 +44,18 @@ export const TextOrientationDialog: React.FC<TextOrientationDialogProps> = ({
                 className="dial-indicator"
                 style={{ transform: `rotate(${-angle}deg)` }}
               />
-              <div className="dial-text" style={{ transform: `rotate(${-angle}deg)` }}>
+              <div
+                className="dial-text"
+                style={{ transform: `rotate(${-angle}deg)` }}
+              >
                 Text
               </div>
               {/* Degree markers */}
               <div className="degree-markers">
-                {presets.map(deg => (
+                {presets.map((deg) => (
                   <div
                     key={deg}
-                    className={`degree-marker ${angle === deg ? 'active' : ''}`}
+                    className={`degree-marker ${angle === deg ? "active" : ""}`}
                     style={{
                       transform: `rotate(${-deg}deg) translateY(-55px)`,
                     }}
@@ -77,17 +83,19 @@ export const TextOrientationDialog: React.FC<TextOrientationDialogProps> = ({
                 min="-90"
                 max="90"
                 value={angle}
-                onChange={(e) => handleAngleChange(parseInt(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleAngleChange(parseInt(e.target.value) || 0)
+                }
               />
               <span>°</span>
             </div>
           </div>
 
           <div className="preset-buttons">
-            {presets.map(deg => (
+            {presets.map((deg) => (
               <button
                 key={deg}
-                className={`preset-btn ${angle === deg ? 'active' : ''}`}
+                className={`preset-btn ${angle === deg ? "active" : ""}`}
                 onClick={() => setAngle(deg)}
               >
                 {deg}°
@@ -104,7 +112,7 @@ export const TextOrientationDialog: React.FC<TextOrientationDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TextOrientationDialog;
+export default TextOrientationDialog

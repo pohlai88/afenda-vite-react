@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { requireOwnerOrRole, isErrorResponse } from '@/lib/auth/rbac'
-import { validateRequest, updateActivitySchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { requireOwnerOrRole, isErrorResponse } from "@/lib/auth/rbac"
+import { validateRequest, updateActivitySchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
 
 // PATCH /api/activities/[id] — Update activity (mark complete, edit)
 export async function PATCH(
@@ -11,10 +11,17 @@ export async function PATCH(
 ) {
   try {
     const { id } = params
-    const existing = await prisma.activity.findUnique({ where: { id }, select: { userId: true } })
-    if (!existing) return NextResponse.json({ error: 'Activity not found' }, { status: 404 })
+    const existing = await prisma.activity.findUnique({
+      where: { id },
+      select: { userId: true },
+    })
+    if (!existing)
+      return NextResponse.json({ error: "Activity not found" }, { status: 404 })
 
-    const result = await requireOwnerOrRole(existing.userId, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.userId, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
@@ -42,7 +49,7 @@ export async function PATCH(
 
     return NextResponse.json(activity)
   } catch (error) {
-    return handleApiError(error, '/api/activities/[id]')
+    return handleApiError(error, "/api/activities/[id]")
   }
 }
 
@@ -53,17 +60,28 @@ export async function DELETE(
 ) {
   try {
     const { id } = params
-    const existing = await prisma.activity.findUnique({ where: { id }, select: { userId: true } })
-    if (!existing) return NextResponse.json({ error: 'Activity not found' }, { status: 404 })
+    const existing = await prisma.activity.findUnique({
+      where: { id },
+      select: { userId: true },
+    })
+    if (!existing)
+      return NextResponse.json({ error: "Activity not found" }, { status: 404 })
 
-    const result = await requireOwnerOrRole(existing.userId, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.userId, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     await prisma.activity.delete({ where: { id } })
     return NextResponse.json({ success: true })
   } catch (error: any) {
-    if (error?.code === 'P2025') return NextResponse.json({ error: 'Activity not found' }, { status: 404 })
-    console.error('DELETE /api/activities/[id] error:', error)
-    return NextResponse.json({ error: 'Failed to delete activity' }, { status: 500 })
+    if (error?.code === "P2025")
+      return NextResponse.json({ error: "Activity not found" }, { status: 404 })
+    console.error("DELETE /api/activities/[id] error:", error)
+    return NextResponse.json(
+      { error: "Failed to delete activity" },
+      { status: 500 }
+    )
   }
 }

@@ -15,7 +15,10 @@ export async function GET(
     }
 
     const { id } = await params
-    const department = await departmentService.findById(session.user.tenantId, id)
+    const department = await departmentService.findById(
+      session.user.tenantId,
+      id
+    )
 
     if (!department) {
       return NextResponse.json(
@@ -48,9 +51,21 @@ export async function PUT(
     const body = await request.json()
     const validated = updateDepartmentSchema.parse({ ...body, id })
 
-    const department = await departmentService.update(session.user.tenantId, id, validated)
+    const department = await departmentService.update(
+      session.user.tenantId,
+      id,
+      validated
+    )
 
-    await audit.update({ tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' }, 'Department', id)
+    await audit.update(
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Department",
+      id
+    )
 
     return NextResponse.json(department)
   } catch (error) {
@@ -78,7 +93,15 @@ export async function DELETE(
     const { id } = await params
     await departmentService.delete(session.user.tenantId, id)
 
-    await audit.delete({ tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' }, 'Department', id)
+    await audit.delete(
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Department",
+      id
+    )
 
     return NextResponse.json({ success: true })
   } catch (error) {

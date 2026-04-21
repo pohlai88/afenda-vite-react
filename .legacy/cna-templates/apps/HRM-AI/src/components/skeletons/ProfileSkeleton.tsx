@@ -30,7 +30,10 @@ export function ProfileSkeleton() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+          <div
+            key={i}
+            className="bg-zinc-900 border border-zinc-800 rounded-lg p-4"
+          >
             <Skeleton className="h-4 w-24 mb-2 bg-zinc-800" />
             <Skeleton className="h-7 w-16 bg-zinc-800" />
           </div>

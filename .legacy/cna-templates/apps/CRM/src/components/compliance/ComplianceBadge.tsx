@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { Badge } from '@/components/ui/badge'
-import { COMPLIANCE_STATUSES } from '@/lib/constants'
-import { useTranslation } from '@/i18n'
+import { Badge } from "@/components/ui/badge"
+import { COMPLIANCE_STATUSES } from "@/lib/constants"
+import { useTranslation } from "@/i18n"
 
 interface ComplianceBadgeProps {
   status: string
@@ -23,7 +23,7 @@ export function ComplianceBadge({ status, className }: ComplianceBadgeProps) {
         backgroundColor: `${info?.color}15`,
       }}
     >
-      {t(info?.labelKey ?? 'compliance.notChecked')}
+      {t(info?.labelKey ?? "compliance.notChecked")}
     </Badge>
   )
 }

@@ -12,5 +12,5 @@
  */
 export * from "./columns.schema"
 export * from "./enums.schema"
-export * from "./helpers"
+export * from "./shared-sql-defaults"
 export * from "./shared-boundary.schema"

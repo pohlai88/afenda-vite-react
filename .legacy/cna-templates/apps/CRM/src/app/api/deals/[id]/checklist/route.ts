@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { handleApiError } from '@/lib/api/errors'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { handleApiError } from "@/lib/api/errors"
 
 // GET /api/deals/[id]/checklist — Get deal compliance checklist
 export async function GET(
@@ -14,15 +14,18 @@ export async function GET(
 
     const items = await prisma.dealChecklist.findMany({
       where: { dealId: id },
-      orderBy: { key: 'asc' },
+      orderBy: { key: "asc" },
     })
 
     return NextResponse.json({ data: items })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    return handleApiError(error, '/api/deals/[id]/checklist')
+    return handleApiError(error, "/api/deals/[id]/checklist")
   }
 }
 
@@ -38,7 +41,7 @@ export async function PATCH(
     const { key, checked, notes } = body
 
     if (!key) {
-      return NextResponse.json({ error: 'key is required' }, { status: 400 })
+      return NextResponse.json({ error: "key is required" }, { status: 400 })
     }
 
     const item = await prisma.dealChecklist.update({
@@ -53,9 +56,12 @@ export async function PATCH(
 
     return NextResponse.json(item)
   } catch (error: any) {
-    if (error?.code === 'P2025') {
-      return NextResponse.json({ error: 'Checklist item not found' }, { status: 404 })
+    if (error?.code === "P2025") {
+      return NextResponse.json(
+        { error: "Checklist item not found" },
+        { status: 404 }
+      )
     }
-    return handleApiError(error, '/api/deals/[id]/checklist')
+    return handleApiError(error, "/api/deals/[id]/checklist")
   }
 }

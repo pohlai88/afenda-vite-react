@@ -1,6 +1,6 @@
-import { Button, Heading, Text } from '@react-email/components'
-import * as React from 'react'
-import { BaseLayout } from './base-layout'
+import { Button, Heading, Text } from "@react-email/components"
+import * as React from "react"
+import { BaseLayout } from "./base-layout"
 
 export interface WelcomeEmailProps {
   userName: string
@@ -10,9 +10,7 @@ export interface WelcomeEmailProps {
 export function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) {
   return (
     <BaseLayout preview={`Chào mừng ${userName} đến với VietERP CRM!`}>
-      <Heading style={heading}>
-        Chào mừng đến với VietERP CRM!
-      </Heading>
+      <Heading style={heading}>Chào mừng đến với VietERP CRM!</Heading>
       <Text style={text}>
         Xin chào <strong>{userName}</strong>,
       </Text>
@@ -25,47 +23,47 @@ export function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) {
         Đăng nhập ngay
       </Button>
       <Text style={subtext}>
-        Nếu bạn có bất kỳ câu hỏi nào, đừng ngần ngại liên hệ với đội ngũ hỗ
-        trợ của chúng tôi.
+        Nếu bạn có bất kỳ câu hỏi nào, đừng ngần ngại liên hệ với đội ngũ hỗ trợ
+        của chúng tôi.
       </Text>
     </BaseLayout>
   )
 }
 
 const heading: React.CSSProperties = {
-  color: '#1F2937',
-  fontSize: '22px',
+  color: "#1F2937",
+  fontSize: "22px",
   fontWeight: 700,
-  lineHeight: '28px',
-  margin: '0 0 16px',
+  lineHeight: "28px",
+  margin: "0 0 16px",
 }
 
 const text: React.CSSProperties = {
-  color: '#374151',
-  fontSize: '14px',
-  lineHeight: '24px',
-  margin: '0 0 12px',
+  color: "#374151",
+  fontSize: "14px",
+  lineHeight: "24px",
+  margin: "0 0 12px",
 }
 
 const button: React.CSSProperties = {
-  backgroundColor: '#2563EB',
-  borderRadius: '6px',
-  color: '#FFFFFF',
-  display: 'inline-block',
-  fontSize: '14px',
+  backgroundColor: "#2563EB",
+  borderRadius: "6px",
+  color: "#FFFFFF",
+  display: "inline-block",
+  fontSize: "14px",
   fontWeight: 600,
-  lineHeight: '1',
-  padding: '12px 24px',
-  textDecoration: 'none',
-  textAlign: 'center' as const,
-  margin: '8px 0 16px',
+  lineHeight: "1",
+  padding: "12px 24px",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  margin: "8px 0 16px",
 }
 
 const subtext: React.CSSProperties = {
-  color: '#6B7280',
-  fontSize: '13px',
-  lineHeight: '20px',
-  margin: '16px 0 0',
+  color: "#6B7280",
+  fontSize: "13px",
+  lineHeight: "20px",
+  margin: "16px 0 0",
 }
 
 export default WelcomeEmail

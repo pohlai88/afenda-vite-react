@@ -48,6 +48,18 @@ export function mapAuthErrorToUserMessage(
     return "The requested auth resource was not found."
   }
 
+  if (normalized === "tenant_selection_required") {
+    return "Choose the workspace that should become your active operating context."
+  }
+
+  if (normalized === "tenant_context_resolution_failed") {
+    return "We could not resolve your workspace access yet. Check your membership or contact support."
+  }
+
+  if (normalized === "auth_not_configured") {
+    return "Authentication is online, but tenant activation is not configured for this environment yet."
+  }
+
   if (normalized === "http_408") {
     return "The request timed out. Please try again."
   }

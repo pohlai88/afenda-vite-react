@@ -1,41 +1,46 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse, canAccess } from '@/lib/auth/rbac'
-import { validateRequest, createActivitySchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse, canAccess } from "@/lib/auth/rbac"
+import { validateRequest, createActivitySchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
 
 // GET /api/activities — List activities with filters, pagination
 export async function GET(req: NextRequest) {
   try {
     const user = await getCurrentUser()
     const { searchParams } = req.nextUrl
-    const type = searchParams.get('type')
-    const contactId = searchParams.get('contactId')
-    const dealId = searchParams.get('dealId')
-    const userId = searchParams.get('userId')
-    const isCompleted = searchParams.get('isCompleted')
-    const cursor = searchParams.get('cursor')
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
+    const type = searchParams.get("type")
+    const contactId = searchParams.get("contactId")
+    const dealId = searchParams.get("dealId")
+    const userId = searchParams.get("userId")
+    const isCompleted = searchParams.get("isCompleted")
+    const cursor = searchParams.get("cursor")
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"))
+    const limit = Math.min(
+      100,
+      Math.max(1, parseInt(searchParams.get("limit") || "20"))
+    )
 
     const where: Prisma.ActivityWhereInput = {}
 
-    if (!canAccess(user, 'view_all')) {
+    if (!canAccess(user, "view_all")) {
       where.userId = user.id
     }
 
     if (type) where.type = type as any
     if (contactId) where.contactId = contactId
     if (dealId) where.dealId = dealId
-    if (userId && canAccess(user, 'view_all')) where.userId = userId
+    if (userId && canAccess(user, "view_all")) where.userId = userId
     if (isCompleted !== null && isCompleted !== undefined) {
-      where.isCompleted = isCompleted === 'true'
+      where.isCompleted = isCompleted === "true"
     }
 
     const includeClause = {
-      contact: { select: { id: true, firstName: true, lastName: true, email: true } },
+      contact: {
+        select: { id: true, firstName: true, lastName: true, email: true },
+      },
       company: { select: { id: true, name: true } },
       deal: { select: { id: true, title: true, value: true } },
       user: { select: { id: true, name: true, avatarUrl: true } },
@@ -45,7 +50,7 @@ export async function GET(req: NextRequest) {
       const data = await prisma.activity.findMany({
         where,
         include: includeClause,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: limit + 1,
         cursor: { id: cursor },
         skip: 1,
@@ -64,7 +69,7 @@ export async function GET(req: NextRequest) {
       prisma.activity.findMany({
         where,
         include: includeClause,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: limit,
       }),
@@ -74,17 +79,23 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ data, total, page, limit })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/activities error:', error)
-    return NextResponse.json({ error: 'Failed to fetch activities' }, { status: 500 })
+    console.error("GET /api/activities error:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch activities" },
+      { status: 500 }
+    )
   }
 }
 
 // POST /api/activities — Create activity
 export async function POST(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER', 'MEMBER'])
+    const result = await requireRole(["ADMIN", "MANAGER", "MEMBER"])
     if (isErrorResponse(result)) return result
     const user = result
 
@@ -112,14 +123,16 @@ export async function POST(req: NextRequest) {
     })
 
     if (data.contactId) {
-      await prisma.contact.update({
-        where: { id: data.contactId },
-        data: { lastActivityAt: new Date() },
-      }).catch(() => {})
+      await prisma.contact
+        .update({
+          where: { id: data.contactId },
+          data: { lastActivityAt: new Date() },
+        })
+        .catch(() => {})
     }
 
     return NextResponse.json(activity, { status: 201 })
   } catch (error) {
-    return handleApiError(error, '/api/activities')
+    return handleApiError(error, "/api/activities")
   }
 }

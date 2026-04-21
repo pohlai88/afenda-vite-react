@@ -2,21 +2,26 @@
 // UNIT PICKER — Select units for measurement types
 // =============================================================================
 
-import React, { useState, useMemo } from 'react';
-import { Search, ChevronDown } from 'lucide-react';
-import { UNITS, getDimensions, getUnitsForDimension, type Unit } from '../../types/units/UnitSystem';
+import React, { useState, useMemo } from "react"
+import { Search, ChevronDown } from "lucide-react"
+import {
+  UNITS,
+  getDimensions,
+  getUnitsForDimension,
+  type Unit,
+} from "../../types/units/UnitSystem"
 
 // -----------------------------------------------------------------------------
 // Unit Picker Props
 // -----------------------------------------------------------------------------
 
 interface UnitPickerProps {
-  value?: string;
-  dimension?: string;
-  onChange: (unit: Unit) => void;
-  onClose?: () => void;
-  showSearch?: boolean;
-  className?: string;
+  value?: string
+  dimension?: string
+  onChange: (unit: Unit) => void
+  onClose?: () => void
+  showSearch?: boolean
+  className?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -29,46 +34,48 @@ export const UnitPicker: React.FC<UnitPickerProps> = ({
   onChange,
   onClose,
   showSearch = true,
-  className = '',
+  className = "",
 }) => {
-  const [selectedDimension, setSelectedDimension] = useState<string | null>(dimension || null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDimension, setSelectedDimension] = useState<string | null>(
+    dimension || null
+  )
+  const [searchQuery, setSearchQuery] = useState("")
 
   // Get dimensions to show
-  const dimensions = useMemo(() => getDimensions(), []);
+  const dimensions = useMemo(() => getDimensions(), [])
 
   // Filter units based on dimension and search
   const filteredUnits = useMemo(() => {
-    let units: Unit[] = [];
+    let units: Unit[] = []
 
     if (selectedDimension) {
-      units = getUnitsForDimension(selectedDimension);
+      units = getUnitsForDimension(selectedDimension)
     } else if (searchQuery) {
       // Search across all dimensions
       for (const dim of dimensions) {
-        units.push(...getUnitsForDimension(dim));
+        units.push(...getUnitsForDimension(dim))
       }
     }
 
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase()
       units = units.filter(
         (u) =>
           u.id.toLowerCase().includes(q) ||
           u.name.toLowerCase().includes(q) ||
           u.symbol.toLowerCase().includes(q) ||
           u.aliases?.some((a) => a.toLowerCase().includes(q))
-      );
+      )
     }
 
-    return units;
-  }, [selectedDimension, searchQuery, dimensions]);
+    return units
+  }, [selectedDimension, searchQuery, dimensions])
 
   // Handle unit selection
   const handleSelect = (unit: Unit) => {
-    onChange(unit);
-    onClose?.();
-  };
+    onChange(unit)
+    onClose?.()
+  }
 
   return (
     <div className={`unit-picker ${className}`}>
@@ -124,7 +131,7 @@ export const UnitPicker: React.FC<UnitPickerProps> = ({
             filteredUnits.map((unit) => (
               <button
                 key={unit.id}
-                className={`unit-picker-unit ${value === unit.id ? 'selected' : ''}`}
+                className={`unit-picker-unit ${value === unit.id ? "selected" : ""}`}
                 onClick={() => handleSelect(unit)}
               >
                 <span className="unit-picker-unit-symbol">{unit.symbol}</span>
@@ -135,40 +142,40 @@ export const UnitPicker: React.FC<UnitPickerProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Compact Unit Picker (dropdown style)
 // -----------------------------------------------------------------------------
 
 interface CompactUnitPickerProps {
-  value?: string;
-  dimension?: string;
-  onChange: (unit: Unit) => void;
-  className?: string;
+  value?: string
+  dimension?: string
+  onChange: (unit: Unit) => void
+  className?: string
 }
 
 export const CompactUnitPicker: React.FC<CompactUnitPickerProps> = ({
   value,
   dimension,
   onChange,
-  className = '',
+  className = "",
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   // Find selected unit
   const selectedUnit = useMemo(() => {
-    if (!value) return null;
-    const dims = dimension ? [dimension] : getDimensions();
+    if (!value) return null
+    const dims = dimension ? [dimension] : getDimensions()
     for (const dim of dims) {
-      const units = UNITS[dim];
+      const units = UNITS[dim]
       if (units && units[value]) {
-        return units[value];
+        return units[value]
       }
     }
-    return null;
-  }, [value, dimension]);
+    return null
+  }, [value, dimension])
 
   return (
     <div className={`compact-unit-picker ${className}`}>
@@ -177,7 +184,9 @@ export const CompactUnitPicker: React.FC<CompactUnitPickerProps> = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         {selectedUnit ? (
-          <span className="compact-unit-picker-value">{selectedUnit.symbol}</span>
+          <span className="compact-unit-picker-value">
+            {selectedUnit.symbol}
+          </span>
         ) : (
           <span className="compact-unit-picker-placeholder">Unit</span>
         )}
@@ -190,27 +199,27 @@ export const CompactUnitPicker: React.FC<CompactUnitPickerProps> = ({
             value={value}
             dimension={dimension}
             onChange={(unit) => {
-              onChange(unit);
-              setIsOpen(false);
+              onChange(unit)
+              setIsOpen(false)
             }}
             onClose={() => setIsOpen(false)}
           />
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Unit Quick Select (inline buttons for common units)
 // -----------------------------------------------------------------------------
 
 interface UnitQuickSelectProps {
-  dimension: string;
-  value?: string;
-  onChange: (unit: Unit) => void;
-  limit?: number;
-  className?: string;
+  dimension: string
+  value?: string
+  onChange: (unit: Unit) => void
+  limit?: number
+  className?: string
 }
 
 export const UnitQuickSelect: React.FC<UnitQuickSelectProps> = ({
@@ -218,19 +227,19 @@ export const UnitQuickSelect: React.FC<UnitQuickSelectProps> = ({
   value,
   onChange,
   limit = 5,
-  className = '',
+  className = "",
 }) => {
   const units = useMemo(
     () => getUnitsForDimension(dimension).slice(0, limit),
     [dimension, limit]
-  );
+  )
 
   return (
     <div className={`unit-quick-select ${className}`}>
       {units.map((unit) => (
         <button
           key={unit.id}
-          className={`unit-quick-select-btn ${value === unit.id ? 'selected' : ''}`}
+          className={`unit-quick-select-btn ${value === unit.id ? "selected" : ""}`}
           onClick={() => onChange(unit)}
           title={unit.name}
         >
@@ -238,5 +247,5 @@ export const UnitQuickSelect: React.FC<UnitQuickSelectProps> = ({
         </button>
       ))}
     </div>
-  );
-};
+  )
+}

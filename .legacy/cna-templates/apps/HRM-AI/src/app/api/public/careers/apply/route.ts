@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
-import { findOrCreateCandidate } from '@/services/recruitment/candidate.service'
-import { createApplication } from '@/services/recruitment/application.service'
+import { NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/db"
+import { findOrCreateCandidate } from "@/services/recruitment/candidate.service"
+import { createApplication } from "@/services/recruitment/application.service"
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,20 +38,31 @@ export async function POST(request: NextRequest) {
 
     if (!tenantId || !jobPostingId || !fullName || !email) {
       return NextResponse.json(
-        { success: false, error: 'tenantId, jobPostingId, fullName, and email are required' },
+        {
+          success: false,
+          error: "tenantId, jobPostingId, fullName, and email are required",
+        },
         { status: 400 }
       )
     }
 
     // Look up jobPosting to get requisitionId
     const jobPosting = await db.jobPosting.findFirst({
-      where: { id: jobPostingId, tenantId, status: 'PUBLISHED', isPublic: true },
+      where: {
+        id: jobPostingId,
+        tenantId,
+        status: "PUBLISHED",
+        isPublic: true,
+      },
       select: { id: true, requisitionId: true },
     })
 
     if (!jobPosting) {
       return NextResponse.json(
-        { success: false, error: 'Job posting not found or not accepting applications' },
+        {
+          success: false,
+          error: "Job posting not found or not accepting applications",
+        },
         { status: 404 }
       )
     }
@@ -67,7 +78,7 @@ export async function POST(request: NextRequest) {
       yearsOfExperience,
       linkedinUrl,
       portfolioUrl,
-      source: source || 'CAREER_PAGE',
+      source: source || "CAREER_PAGE",
     })
 
     // Create application
@@ -76,15 +87,21 @@ export async function POST(request: NextRequest) {
       requisitionId: jobPosting.requisitionId,
       jobPostingId,
       coverLetter,
-      source: source || 'CAREER_PAGE',
+      source: source || "CAREER_PAGE",
     })
 
     return NextResponse.json(
-      { success: true, data: { applicationId: application.id, candidateId: candidate.id } },
+      {
+        success: true,
+        data: { applicationId: application.id, candidateId: candidate.id },
+      },
       { status: 201 }
     )
   } catch (error) {
-    console.error('POST /api/public/careers/apply error:', error)
-    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
+    console.error("POST /api/public/careers/apply error:", error)
+    return NextResponse.json(
+      { success: false, error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

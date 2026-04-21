@@ -11,7 +11,13 @@ import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -72,7 +78,9 @@ function LoginForm() {
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
-            <span className="text-xl font-bold text-primary-foreground">LV</span>
+            <span className="text-xl font-bold text-primary-foreground">
+              LV
+            </span>
           </div>
         </div>
         <CardTitle className="text-2xl">Đăng nhập</CardTitle>
@@ -142,7 +150,9 @@ function LoginForm() {
         </div>
 
         <div className="mt-6 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/50 p-4">
-          <p className="text-xs font-medium text-muted-foreground mb-2">Tài khoản demo:</p>
+          <p className="text-xs font-medium text-muted-foreground mb-2">
+            Tài khoản demo:
+          </p>
           <div className="space-y-1.5 text-xs text-muted-foreground">
             <div className="flex justify-between">
               <span>Admin:</span>
@@ -161,21 +171,25 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <Card>
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
-              <span className="text-xl font-bold text-primary-foreground">LV</span>
+    <Suspense
+      fallback={
+        <Card>
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
+                <span className="text-xl font-bold text-primary-foreground">
+                  LV
+                </span>
+              </div>
             </div>
-          </div>
-          <CardTitle className="text-2xl">Đăng nhập</CardTitle>
-        </CardHeader>
-        <CardContent className="flex justify-center py-8">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </CardContent>
-      </Card>
-    }>
+            <CardTitle className="text-2xl">Đăng nhập</CardTitle>
+          </CardHeader>
+          <CardContent className="flex justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </CardContent>
+        </Card>
+      }
+    >
       <LoginForm />
     </Suspense>
   )

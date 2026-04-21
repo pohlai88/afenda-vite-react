@@ -2,7 +2,10 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import type { DepartmentWithRelations } from "@/types"
-import type { CreateDepartmentInput, UpdateDepartmentInput } from "@/lib/validations/department"
+import type {
+  CreateDepartmentInput,
+  UpdateDepartmentInput,
+} from "@/lib/validations/department"
 import { toast } from "sonner"
 
 async function fetchDepartments(): Promise<DepartmentWithRelations[]> {
@@ -14,7 +17,9 @@ async function fetchDepartments(): Promise<DepartmentWithRelations[]> {
   return json.data ?? json
 }
 
-async function createDepartment(data: CreateDepartmentInput): Promise<DepartmentWithRelations> {
+async function createDepartment(
+  data: CreateDepartmentInput
+): Promise<DepartmentWithRelations> {
   const res = await fetch("/api/departments", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -27,7 +32,9 @@ async function createDepartment(data: CreateDepartmentInput): Promise<Department
   return res.json()
 }
 
-async function updateDepartment(data: UpdateDepartmentInput): Promise<DepartmentWithRelations> {
+async function updateDepartment(
+  data: UpdateDepartmentInput
+): Promise<DepartmentWithRelations> {
   const res = await fetch(`/api/departments/${data.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

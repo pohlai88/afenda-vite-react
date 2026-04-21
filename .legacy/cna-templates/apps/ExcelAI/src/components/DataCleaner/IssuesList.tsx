@@ -2,17 +2,21 @@
 // ISSUES LIST — Display list of data quality issues
 // =============================================================================
 
-import React, { useState } from 'react';
-import type { QualityIssue, IssueSeverity, IssueType } from '../../datacleaner/types';
+import React, { useState } from "react"
+import type {
+  QualityIssue,
+  IssueSeverity,
+  IssueType,
+} from "../../datacleaner/types"
 
 // -----------------------------------------------------------------------------
 // Props
 // -----------------------------------------------------------------------------
 
 interface IssuesListProps {
-  issues: QualityIssue[];
-  onIssueClick?: (issue: QualityIssue) => void;
-  onFixIssue?: (issue: QualityIssue) => void;
+  issues: QualityIssue[]
+  onIssueClick?: (issue: QualityIssue) => void
+  onFixIssue?: (issue: QualityIssue) => void
 }
 
 // -----------------------------------------------------------------------------
@@ -24,17 +28,16 @@ export const IssuesList: React.FC<IssuesListProps> = ({
   onIssueClick,
   onFixIssue,
 }) => {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<IssueType | 'all'>('all');
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [filter, setFilter] = useState<IssueType | "all">("all")
 
-  const filteredIssues = filter === 'all'
-    ? issues
-    : issues.filter(i => i.type === filter);
+  const filteredIssues =
+    filter === "all" ? issues : issues.filter((i) => i.type === filter)
 
   // Group by severity
-  const critical = filteredIssues.filter(i => i.severity === 'critical');
-  const warning = filteredIssues.filter(i => i.severity === 'warning');
-  const info = filteredIssues.filter(i => i.severity === 'info');
+  const critical = filteredIssues.filter((i) => i.severity === "critical")
+  const warning = filteredIssues.filter((i) => i.severity === "warning")
+  const info = filteredIssues.filter((i) => i.severity === "info")
 
   return (
     <div className="issues-list">
@@ -42,7 +45,7 @@ export const IssuesList: React.FC<IssuesListProps> = ({
       <div className="issues-list__filter">
         <select
           value={filter}
-          onChange={(e) => setFilter(e.target.value as IssueType | 'all')}
+          onChange={(e) => setFilter(e.target.value as IssueType | "all")}
           className="issues-list__select"
         >
           <option value="all">All Issues ({issues.length})</option>
@@ -103,21 +106,21 @@ export const IssuesList: React.FC<IssuesListProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Issue Group Component
 // -----------------------------------------------------------------------------
 
 interface IssueGroupProps {
-  title: string;
-  severity: IssueSeverity;
-  issues: QualityIssue[];
-  expandedId: string | null;
-  onToggle: (id: string | null) => void;
-  onIssueClick?: (issue: QualityIssue) => void;
-  onFixIssue?: (issue: QualityIssue) => void;
+  title: string
+  severity: IssueSeverity
+  issues: QualityIssue[]
+  expandedId: string | null
+  onToggle: (id: string | null) => void
+  onIssueClick?: (issue: QualityIssue) => void
+  onFixIssue?: (issue: QualityIssue) => void
 }
 
 const IssueGroup: React.FC<IssueGroupProps> = ({
@@ -136,7 +139,7 @@ const IssueGroup: React.FC<IssueGroupProps> = ({
       <span className="issues-list__group-count">{issues.length}</span>
     </div>
     <div className="issues-list__group-items">
-      {issues.map(issue => (
+      {issues.map((issue) => (
         <IssueItem
           key={issue.id}
           issue={issue}
@@ -148,18 +151,18 @@ const IssueGroup: React.FC<IssueGroupProps> = ({
       ))}
     </div>
   </div>
-);
+)
 
 // -----------------------------------------------------------------------------
 // Issue Item Component
 // -----------------------------------------------------------------------------
 
 interface IssueItemProps {
-  issue: QualityIssue;
-  isExpanded: boolean;
-  onToggle: () => void;
-  onClick?: (issue: QualityIssue) => void;
-  onFix?: (issue: QualityIssue) => void;
+  issue: QualityIssue
+  isExpanded: boolean
+  onToggle: () => void
+  onClick?: (issue: QualityIssue) => void
+  onFix?: (issue: QualityIssue) => void
 }
 
 const IssueItem: React.FC<IssueItemProps> = ({
@@ -230,7 +233,7 @@ const IssueItem: React.FC<IssueItemProps> = ({
       </div>
     )}
   </div>
-);
+)
 
 // -----------------------------------------------------------------------------
 // Icons
@@ -238,83 +241,146 @@ const IssueItem: React.FC<IssueItemProps> = ({
 
 const SeverityIcon: React.FC<{ severity: IssueSeverity }> = ({ severity }) => {
   switch (severity) {
-    case 'critical':
+    case "critical":
       return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" strokeWidth="2">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="#ef4444"
+          stroke="#ef4444"
+          strokeWidth="2"
+        >
           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
           <line x1="12" y1="9" x2="12" y2="13" stroke="white" />
           <line x1="12" y1="17" x2="12.01" y2="17" stroke="white" />
         </svg>
-      );
-    case 'warning':
+      )
+    case "warning":
       return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#f59e0b"
+          strokeWidth="2"
+        >
           <circle cx="12" cy="12" r="10" />
           <line x1="12" y1="8" x2="12" y2="12" />
           <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
-      );
+      )
     default:
       return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#3b82f6"
+          strokeWidth="2"
+        >
           <circle cx="12" cy="12" r="10" />
           <line x1="12" y1="16" x2="12" y2="12" />
           <line x1="12" y1="8" x2="12.01" y2="8" />
         </svg>
-      );
+      )
   }
-};
+}
 
 const IssueTypeIcon: React.FC<{ type: IssueType }> = ({ type }) => {
   switch (type) {
-    case 'duplicate':
+    case "duplicate":
       return (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
         </svg>
-      );
-    case 'missing':
+      )
+    case "missing":
       return (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <circle cx="12" cy="12" r="10" />
           <line x1="8" y1="12" x2="16" y2="12" />
         </svg>
-      );
-    case 'invalid_format':
+      )
+    case "invalid_format":
       return (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <polyline points="4 7 4 4 20 4 20 7" />
           <line x1="9" y1="20" x2="15" y2="20" />
           <line x1="12" y1="4" x2="12" y2="20" />
         </svg>
-      );
-    case 'inconsistent':
+      )
+    case "inconsistent":
       return (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M18 6L6 18" />
           <path d="M6 6l12 12" />
         </svg>
-      );
-    case 'outlier':
+      )
+    case "outlier":
       return (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <line x1="18" y1="20" x2="18" y2="10" />
           <line x1="12" y1="20" x2="12" y2="4" />
           <line x1="6" y1="20" x2="6" y2="14" />
           <circle cx="18" cy="4" r="2" />
         </svg>
-      );
+      )
     default:
       return (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <circle cx="12" cy="12" r="10" />
           <line x1="12" y1="8" x2="12" y2="12" />
           <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
-      );
+      )
   }
-};
+}
 
 const ChevronIcon: React.FC<{ expanded: boolean }> = ({ expanded }) => (
   <svg
@@ -324,23 +390,40 @@ const ChevronIcon: React.FC<{ expanded: boolean }> = ({ expanded }) => (
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
-    style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+    style={{
+      transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+      transition: "transform 0.2s",
+    }}
   >
     <polyline points="6 9 12 15 18 9" />
   </svg>
-);
+)
 
 const CheckIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="1.5">
+  <svg
+    width="48"
+    height="48"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#22c55e"
+    strokeWidth="1.5"
+  >
     <circle cx="12" cy="12" r="10" />
     <polyline points="9 12 11 14 15 10" />
   </svg>
-);
+)
 
 const ZapIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
   </svg>
-);
+)
 
-export default IssuesList;
+export default IssuesList

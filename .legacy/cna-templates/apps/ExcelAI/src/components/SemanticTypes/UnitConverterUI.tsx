@@ -2,22 +2,28 @@
 // UNIT CONVERTER UI — Convert between units
 // =============================================================================
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowRight, RefreshCw, Copy, Check } from 'lucide-react';
-import { unitConverter, type ConversionResult } from '../../types/units/UnitConverter';
-import { getUnitsForDimension, getDimensions } from '../../types/units/UnitSystem';
+import React, { useState, useEffect, useMemo } from "react"
+import { ArrowRight, RefreshCw, Copy, Check } from "lucide-react"
+import {
+  unitConverter,
+  type ConversionResult,
+} from "../../types/units/UnitConverter"
+import {
+  getUnitsForDimension,
+  getDimensions,
+} from "../../types/units/UnitSystem"
 
 // -----------------------------------------------------------------------------
 // Unit Converter UI Props
 // -----------------------------------------------------------------------------
 
 interface UnitConverterUIProps {
-  initialValue?: number;
-  initialFromUnit?: string;
-  initialToUnit?: string;
-  dimension?: string;
-  onConvert?: (result: ConversionResult) => void;
-  className?: string;
+  initialValue?: number
+  initialFromUnit?: string
+  initialToUnit?: string
+  dimension?: string
+  onConvert?: (result: ConversionResult) => void
+  className?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -26,59 +32,59 @@ interface UnitConverterUIProps {
 
 export const UnitConverterUI: React.FC<UnitConverterUIProps> = ({
   initialValue = 0,
-  initialFromUnit = '',
-  initialToUnit = '',
+  initialFromUnit = "",
+  initialToUnit = "",
   dimension: initialDimension,
   onConvert,
-  className = '',
+  className = "",
 }) => {
-  const [value, setValue] = useState(initialValue);
-  const [fromUnit, setFromUnit] = useState(initialFromUnit);
-  const [toUnit, setToUnit] = useState(initialToUnit);
-  const [dimension, setDimension] = useState(initialDimension || '');
-  const [result, setResult] = useState<ConversionResult | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [value, setValue] = useState(initialValue)
+  const [fromUnit, setFromUnit] = useState(initialFromUnit)
+  const [toUnit, setToUnit] = useState(initialToUnit)
+  const [dimension, setDimension] = useState(initialDimension || "")
+  const [result, setResult] = useState<ConversionResult | null>(null)
+  const [copied, setCopied] = useState(false)
 
-  const dimensions = useMemo(() => getDimensions(), []);
+  const dimensions = useMemo(() => getDimensions(), [])
   const units = useMemo(
     () => (dimension ? getUnitsForDimension(dimension) : []),
     [dimension]
-  );
+  )
 
   // Update conversion when inputs change
   useEffect(() => {
     if (fromUnit && toUnit && !isNaN(value)) {
-      const convResult = unitConverter.convert(value, fromUnit, toUnit);
-      setResult(convResult);
-      onConvert?.(convResult);
+      const convResult = unitConverter.convert(value, fromUnit, toUnit)
+      setResult(convResult)
+      onConvert?.(convResult)
     } else {
-      setResult(null);
+      setResult(null)
     }
-  }, [value, fromUnit, toUnit, onConvert]);
+  }, [value, fromUnit, toUnit, onConvert])
 
   // Handle dimension change
   const handleDimensionChange = (newDimension: string) => {
-    setDimension(newDimension);
-    setFromUnit('');
-    setToUnit('');
-    setResult(null);
-  };
+    setDimension(newDimension)
+    setFromUnit("")
+    setToUnit("")
+    setResult(null)
+  }
 
   // Swap units
   const handleSwap = () => {
-    const temp = fromUnit;
-    setFromUnit(toUnit);
-    setToUnit(temp);
-  };
+    const temp = fromUnit
+    setFromUnit(toUnit)
+    setToUnit(temp)
+  }
 
   // Copy result
   const handleCopy = () => {
     if (result?.success) {
-      navigator.clipboard.writeText(result.value.toString());
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      navigator.clipboard.writeText(result.value.toString())
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
     }
-  };
+  }
 
   return (
     <div className={`unit-converter-ui ${className}`}>
@@ -146,7 +152,7 @@ export const UnitConverterUI: React.FC<UnitConverterUIProps> = ({
           <div className="unit-converter-input-group">
             <input
               type="text"
-              value={result?.success ? result.value.toFixed(6) : ''}
+              value={result?.success ? result.value.toFixed(6) : ""}
               readOnly
               className="unit-converter-result-input"
               placeholder="Result"
@@ -170,7 +176,9 @@ export const UnitConverterUI: React.FC<UnitConverterUIProps> = ({
 
       {/* Result */}
       {result && (
-        <div className={`unit-converter-result ${result.success ? 'success' : 'error'}`}>
+        <div
+          className={`unit-converter-result ${result.success ? "success" : "error"}`}
+        >
           {result.success ? (
             <>
               <span className="unit-converter-formula">{result.formula}</span>
@@ -184,33 +192,35 @@ export const UnitConverterUI: React.FC<UnitConverterUIProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Quick Convert Component (inline)
 // -----------------------------------------------------------------------------
 
 interface QuickConvertProps {
-  value: number;
-  fromUnit: string;
-  toUnit: string;
-  className?: string;
+  value: number
+  fromUnit: string
+  toUnit: string
+  className?: string
 }
 
 export const QuickConvert: React.FC<QuickConvertProps> = ({
   value,
   fromUnit,
   toUnit,
-  className = '',
+  className = "",
 }) => {
   const result = useMemo(
     () => unitConverter.convert(value, fromUnit, toUnit),
     [value, fromUnit, toUnit]
-  );
+  )
 
   if (!result.success) {
-    return <span className={`quick-convert error ${className}`}>{result.error}</span>;
+    return (
+      <span className={`quick-convert error ${className}`}>{result.error}</span>
+    )
   }
 
   return (
@@ -223,27 +233,27 @@ export const QuickConvert: React.FC<QuickConvertProps> = ({
         {result.value.toFixed(2)} {toUnit}
       </span>
     </span>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Conversion Table Component
 // -----------------------------------------------------------------------------
 
 interface ConversionTableProps {
-  value: number;
-  fromUnit: string;
-  dimension: string;
-  className?: string;
+  value: number
+  fromUnit: string
+  dimension: string
+  className?: string
 }
 
 export const ConversionTable: React.FC<ConversionTableProps> = ({
   value,
   fromUnit,
   dimension,
-  className = '',
+  className = "",
 }) => {
-  const units = useMemo(() => getUnitsForDimension(dimension), [dimension]);
+  const units = useMemo(() => getUnitsForDimension(dimension), [dimension])
 
   const conversions = useMemo(() => {
     return units
@@ -252,8 +262,8 @@ export const ConversionTable: React.FC<ConversionTableProps> = ({
         unit: u,
         result: unitConverter.convert(value, fromUnit, u.id),
       }))
-      .filter((c) => c.result.success);
-  }, [value, fromUnit, units]);
+      .filter((c) => c.result.success)
+  }, [value, fromUnit, units])
 
   return (
     <div className={`conversion-table ${className}`}>
@@ -265,12 +275,14 @@ export const ConversionTable: React.FC<ConversionTableProps> = ({
       <div className="conversion-table-body">
         {conversions.map(({ unit, result }) => (
           <div key={unit.id} className="conversion-table-row">
-            <span className="conversion-table-value">{result.value.toFixed(4)}</span>
+            <span className="conversion-table-value">
+              {result.value.toFixed(4)}
+            </span>
             <span className="conversion-table-unit">{unit.symbol}</span>
             <span className="conversion-table-name">{unit.name}</span>
           </div>
         ))}
       </div>
     </div>
-  );
-};
+  )
+}

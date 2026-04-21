@@ -11,7 +11,7 @@ Central **Vitest defaults** for the Afenda monorepo: a small factory API (`getAf
 [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) sets the Vitest block from the shared factory:
 
 ```ts
-import { getAfendaVitestTestOptions } from '@afenda/vitest-config/vitest/defaults'
+import { getAfendaVitestTestOptions } from "@afenda/vitest-config/vitest/defaults"
 
 export default defineConfig({
   // ...
@@ -33,22 +33,22 @@ Example: [`packages/design-system/vitest.config.ts`](../../packages/design-syste
 
 ### Exports
 
-| Export | Role |
-|--------|------|
+| Export                                  | Role                                                                                                               |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `@afenda/vitest-config/vitest/defaults` | `getAfendaVitestTestOptions`, `getAfendaVitestNodeTestOptions`, `afendaVitestSetupFile`, `COVERAGE_PRESETS`, types |
-| `@afenda/vitest-config/vitest/setup` | Side effect: registers `@testing-library/jest-dom/vitest` (imported via `setupFiles` for jsdom) |
+| `@afenda/vitest-config/vitest/setup`    | Side effect: registers `@testing-library/jest-dom/vitest` (imported via `setupFiles` for jsdom)                    |
 
 ## What the factory configures
 
-| Area | Notes |
-|------|--------|
-| **`globals`** | `true` — `describe` / `expect` / `vi` without per-file imports (Vitest globals) |
-| **`environment`** | Default `jsdom`; override with `options.environment` or use `getAfendaVitestNodeTestOptions()` |
-| **`include`** | `src/**/__test__/**/*.{test,spec}.{ts,tsx}` and `**/__tests__/**/*.{test,spec}.{ts,tsx}` — apps may use `__test__/` (singular) under `src/`; packages often use `__tests__/` (see [`TESTING.md`](./TESTING.md)) |
-| **`setupFiles`** | Default: shared [`setup.ts`](./src/vitest/setup.ts) for non-node; for `node`, default `[]`. Pass `setupFiles: []` explicitly to skip **all** setup including jest-dom |
-| **`pool`** | Default **`threads`** when `VITEST_POOL` is unset (Vitest upstream default is **`forks`** — see intentional choices below) |
-| **`coverage`** | Provider **`v8`**, reporters `text` / `json` / `html`, thresholds from **`COVERAGE_PRESETS`** or env (see below) |
-| **`mockReset`** | `true` — Jest-like mock semantics for shared utilities |
+| Area              | Notes                                                                                                                                                                                                           |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`globals`**     | `true` — `describe` / `expect` / `vi` without per-file imports (Vitest globals)                                                                                                                                 |
+| **`environment`** | Default `jsdom`; override with `options.environment` or use `getAfendaVitestNodeTestOptions()`                                                                                                                  |
+| **`include`**     | `src/**/__test__/**/*.{test,spec}.{ts,tsx}` and `**/__tests__/**/*.{test,spec}.{ts,tsx}` — apps may use `__test__/` (singular) under `src/`; packages often use `__tests__/` (see [`TESTING.md`](./TESTING.md)) |
+| **`setupFiles`**  | Default: shared [`setup.ts`](./src/vitest/setup.ts) for non-node; for `node`, default `[]`. Pass `setupFiles: []` explicitly to skip **all** setup including jest-dom                                           |
+| **`pool`**        | Default **`threads`** when `VITEST_POOL` is unset (Vitest upstream default is **`forks`** — see intentional choices below)                                                                                      |
+| **`coverage`**    | Provider **`v8`**, reporters `text` / `json` / `html`, thresholds from **`COVERAGE_PRESETS`** or env (see below)                                                                                                |
+| **`mockReset`**   | `true` — Jest-like mock semantics for shared utilities                                                                                                                                                          |
 
 **Peer dependencies:** `vitest`, `vite`, `@testing-library/jest-dom` (see [`package.json`](./package.json)).
 
@@ -56,18 +56,18 @@ Example: [`packages/design-system/vitest.config.ts`](../../packages/design-syste
 
 Read in [`src/vitest/defaults.ts`](./src/vitest/defaults.ts):
 
-| Variable | Effect |
-|----------|--------|
-| `VITEST_POOL` | `forks` \| `threads` \| `vmThreads` — invalid values ignored |
-| `VITEST_COVERAGE_STRICT=1` | Use **`COVERAGE_PRESETS.strict`** instead of `default` |
-| `VITEST_COVERAGE_LINES` / `STATEMENTS` / `FUNCTIONS` / `BRANCHES` | Numeric overrides for thresholds |
+| Variable                                                          | Effect                                                       |
+| ----------------------------------------------------------------- | ------------------------------------------------------------ |
+| `VITEST_POOL`                                                     | `forks` \| `threads` \| `vmThreads` — invalid values ignored |
+| `VITEST_COVERAGE_STRICT=1`                                        | Use **`COVERAGE_PRESETS.strict`** instead of `default`       |
+| `VITEST_COVERAGE_LINES` / `STATEMENTS` / `FUNCTIONS` / `BRANCHES` | Numeric overrides for thresholds                             |
 
 ## Intentional choices
 
 - **Default pool `threads` (not `forks`)** — Faster iteration on typical TS/RTL tests; use **`VITEST_POOL=forks`** when you need stronger isolation (native addons, odd worker behavior). See [Vitest performance](https://vitest.dev/guide/improving-performance.html).
 - **Coverage floors are modest by default** — `COVERAGE_PRESETS.default` keeps CI green while the suite grows; **`VITEST_COVERAGE_STRICT=1`** or per-package overrides (e.g. design-system) raise the bar where policy requires it.
 - **`@typescript-eslint`-style duplication avoided** — N/A here; test config stays in one factory so apps do not fork `include` / pool / coverage logic.
-- **Optional `_vitest-github/` mirror** — A trimmed local clone of the Vitest repo may exist for **offline reference** only; it is not part of the product build and is ignored from tooling where relevant. Do not run it as the workspace’s Vitest.
+- **Legacy upstream reference** — Vitest source references now live under [`.legacy/vitest-github-reference-2026-04-22`](../../.legacy/vitest-github-reference-2026-04-22) so the active package root stays workspace-owned.
 
 ## Official references
 

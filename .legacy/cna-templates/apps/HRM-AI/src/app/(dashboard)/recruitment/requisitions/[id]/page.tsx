@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import Link from "next/link"
 import {
   ArrowLeft,
   CheckCircle,
@@ -11,19 +11,19 @@ import {
   Play,
   FileText,
   Users,
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
 import {
   REQUISITION_STATUS,
   JOB_TYPE,
   WORK_MODE,
   PRIORITY,
-} from '@/lib/recruitment/constants'
+} from "@/lib/recruitment/constants"
 
 interface RequisitionDetail {
   id: string
@@ -64,11 +64,12 @@ export default function RequisitionDetailPage() {
     async function fetchRequisition() {
       try {
         const res = await fetch(`/api/recruitment/requisitions/${id}`)
-        if (!res.ok) throw new Error('Không thể tải thông tin yêu cầu tuyển dụng')
+        if (!res.ok)
+          throw new Error("Không thể tải thông tin yêu cầu tuyển dụng")
         const json = await res.json()
         setRequisition(json.data ?? json)
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -80,13 +81,13 @@ export default function RequisitionDetailPage() {
     setActionLoading(true)
     try {
       const res = await fetch(`/api/recruitment/requisitions/${id}/${action}`, {
-        method: 'POST',
+        method: "POST",
       })
       if (!res.ok) throw new Error(`Không thể thực hiện thao tác`)
       const updated = await res.json()
       setRequisition(updated.data ?? updated)
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     } finally {
       setActionLoading(false)
     }
@@ -96,17 +97,15 @@ export default function RequisitionDetailPage() {
     const info = REQUISITION_STATUS[status]
     if (!info) return <Badge variant="secondary">{status}</Badge>
     const colorMap: Record<string, string> = {
-      gray: 'bg-gray-100 text-gray-800',
-      yellow: 'bg-yellow-100 text-yellow-800',
-      blue: 'bg-blue-100 text-blue-800',
-      red: 'bg-red-100 text-red-800',
-      green: 'bg-green-100 text-green-800',
-      orange: 'bg-orange-100 text-orange-800',
-      purple: 'bg-purple-100 text-purple-800',
+      gray: "bg-gray-100 text-gray-800",
+      yellow: "bg-yellow-100 text-yellow-800",
+      blue: "bg-blue-100 text-blue-800",
+      red: "bg-red-100 text-red-800",
+      green: "bg-green-100 text-green-800",
+      orange: "bg-orange-100 text-orange-800",
+      purple: "bg-purple-100 text-purple-800",
     }
-    return (
-      <Badge className={colorMap[info.color] || ''}>{info.label}</Badge>
-    )
+    return <Badge className={colorMap[info.color] || ""}>{info.label}</Badge>
   }
 
   if (loading) return <LoadingPage />
@@ -117,7 +116,7 @@ export default function RequisitionDetailPage() {
         <PageHeader title="Yêu cầu tuyển dụng" />
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            {error || 'Không tìm thấy yêu cầu tuyển dụng'}
+            {error || "Không tìm thấy yêu cầu tuyển dụng"}
           </CardContent>
         </Card>
       </div>
@@ -131,19 +130,19 @@ export default function RequisitionDetailPage() {
         description={`Mã: ${requisition.code}`}
       >
         <div className="flex items-center gap-2">
-          {requisition.status === 'DRAFT' && (
+          {requisition.status === "DRAFT" && (
             <Button
-              onClick={() => handleAction('submit')}
+              onClick={() => handleAction("submit")}
               disabled={actionLoading}
             >
               <SendHorizontal className="mr-2 h-4 w-4" />
               Gửi duyệt
             </Button>
           )}
-          {requisition.status === 'PENDING_APPROVAL' && (
+          {requisition.status === "PENDING_APPROVAL" && (
             <>
               <Button
-                onClick={() => handleAction('approve')}
+                onClick={() => handleAction("approve")}
                 disabled={actionLoading}
                 variant="default"
               >
@@ -151,7 +150,7 @@ export default function RequisitionDetailPage() {
                 Phê duyệt
               </Button>
               <Button
-                onClick={() => handleAction('reject')}
+                onClick={() => handleAction("reject")}
                 disabled={actionLoading}
                 variant="destructive"
               >
@@ -160,9 +159,9 @@ export default function RequisitionDetailPage() {
               </Button>
             </>
           )}
-          {requisition.status === 'APPROVED' && (
+          {requisition.status === "APPROVED" && (
             <Button
-              onClick={() => handleAction('open')}
+              onClick={() => handleAction("open")}
               disabled={actionLoading}
             >
               <Play className="mr-2 h-4 w-4" />
@@ -194,31 +193,39 @@ export default function RequisitionDetailPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Loại hình</p>
                   <p className="font-medium">
-                    {JOB_TYPE[requisition.jobType]?.label || requisition.jobType}
+                    {JOB_TYPE[requisition.jobType]?.label ||
+                      requisition.jobType}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Hình thức làm việc</p>
+                  <p className="text-sm text-muted-foreground">
+                    Hình thức làm việc
+                  </p>
                   <p className="font-medium">
-                    {WORK_MODE[requisition.workMode]?.label || requisition.workMode}
+                    {WORK_MODE[requisition.workMode]?.label ||
+                      requisition.workMode}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Số lượng cần tuyển</p>
+                  <p className="text-sm text-muted-foreground">
+                    Số lượng cần tuyển
+                  </p>
                   <p className="font-medium">
                     {requisition.filledCount}/{requisition.headcount}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Địa điểm</p>
-                  <p className="font-medium">{requisition.location || 'Chưa xác định'}</p>
+                  <p className="font-medium">
+                    {requisition.location || "Chưa xác định"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Mức lương</p>
                   <p className="font-medium">
                     {requisition.salaryMin && requisition.salaryMax
-                      ? `${requisition.salaryMin.toLocaleString('vi-VN')} - ${requisition.salaryMax.toLocaleString('vi-VN')} VND`
-                      : 'Thỏa thuận'}
+                      ? `${requisition.salaryMin.toLocaleString("vi-VN")} - ${requisition.salaryMax.toLocaleString("vi-VN")} VND`
+                      : "Thỏa thuận"}
                   </p>
                 </div>
               </div>
@@ -227,28 +234,40 @@ export default function RequisitionDetailPage() {
 
               {requisition.description && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Mô tả vị trí</p>
-                  <p className="whitespace-pre-wrap">{requisition.description}</p>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">
+                    Mô tả vị trí
+                  </p>
+                  <p className="whitespace-pre-wrap">
+                    {requisition.description}
+                  </p>
                 </div>
               )}
 
               {requisition.requirements && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Yêu cầu</p>
-                  <p className="whitespace-pre-wrap">{requisition.requirements}</p>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">
+                    Yêu cầu
+                  </p>
+                  <p className="whitespace-pre-wrap">
+                    {requisition.requirements}
+                  </p>
                 </div>
               )}
 
               {requisition.benefits && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Quyền lợi</p>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">
+                    Quyền lợi
+                  </p>
                   <p className="whitespace-pre-wrap">{requisition.benefits}</p>
                 </div>
               )}
 
               {requisition.reason && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Lý do tuyển dụng</p>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">
+                    Lý do tuyển dụng
+                  </p>
                   <p className="whitespace-pre-wrap">{requisition.reason}</p>
                 </div>
               )}
@@ -294,7 +313,8 @@ export default function RequisitionDetailPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {requisition.applications && requisition.applications.length > 0 ? (
+              {requisition.applications &&
+              requisition.applications.length > 0 ? (
                 <div className="space-y-2">
                   {requisition.applications.map((app) => (
                     <Link
@@ -330,13 +350,14 @@ export default function RequisitionDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Mức ưu tiên</p>
                 <p className="font-medium">
-                  {PRIORITY[requisition.priority]?.label || requisition.priority}
+                  {PRIORITY[requisition.priority]?.label ||
+                    requisition.priority}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Ngày tạo</p>
                 <p className="font-medium">
-                  {new Date(requisition.createdAt).toLocaleDateString('vi-VN')}
+                  {new Date(requisition.createdAt).toLocaleDateString("vi-VN")}
                 </p>
               </div>
               {requisition.createdBy && (
@@ -354,9 +375,13 @@ export default function RequisitionDetailPage() {
                   </div>
                   {requisition.approvedAt && (
                     <div>
-                      <p className="text-sm text-muted-foreground">Ngày duyệt</p>
+                      <p className="text-sm text-muted-foreground">
+                        Ngày duyệt
+                      </p>
                       <p className="font-medium">
-                        {new Date(requisition.approvedAt).toLocaleDateString('vi-VN')}
+                        {new Date(requisition.approvedAt).toLocaleDateString(
+                          "vi-VN"
+                        )}
                       </p>
                     </div>
                   )}

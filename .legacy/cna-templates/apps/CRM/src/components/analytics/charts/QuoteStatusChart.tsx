@@ -1,19 +1,24 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
-} from 'recharts'
-import { useTranslation } from '@/i18n'
-import type { QuotesByStatusItem } from '@/types'
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts"
+import { useTranslation } from "@/i18n"
+import type { QuotesByStatusItem } from "@/types"
 
 const STATUS_LABEL_KEYS: Record<string, string> = {
-  DRAFT: 'quoteStatus.draft',
-  SENT: 'quoteStatus.sent',
-  VIEWED: 'quoteStatus.viewed',
-  ACCEPTED: 'quoteStatus.accepted',
-  REJECTED: 'quoteStatus.rejected',
-  EXPIRED: 'quoteStatus.expired',
+  DRAFT: "quoteStatus.draft",
+  SENT: "quoteStatus.sent",
+  VIEWED: "quoteStatus.viewed",
+  ACCEPTED: "quoteStatus.accepted",
+  REJECTED: "quoteStatus.rejected",
+  EXPIRED: "quoteStatus.expired",
 }
 
 function CustomTooltip({ active, payload }: any) {
@@ -21,7 +26,9 @@ function CustomTooltip({ active, payload }: any) {
   const item = payload[0]
   return (
     <div className="rounded-lg border border-[var(--crm-border)] bg-[var(--crm-bg-card)]/95 backdrop-blur-xl px-3 py-2 shadow-xl">
-      <p className="text-sm font-medium text-[var(--crm-text-primary)]">{item.name}</p>
+      <p className="text-sm font-medium text-[var(--crm-text-primary)]">
+        {item.name}
+      </p>
       <p className="text-xs text-[var(--crm-text-secondary)]">{item.value}</p>
     </div>
   )
@@ -41,10 +48,12 @@ export function QuoteStatusChart({ data }: { data: QuotesByStatusItem[] }) {
     return (
       <div className="glass-card-static p-3">
         <h3 className="text-sm font-medium text-[var(--crm-text-secondary)] mb-4">
-          {t('analytics.quotesByStatus' as any)}
+          {t("analytics.quotesByStatus" as any)}
         </h3>
         <div className="h-[280px] flex items-center justify-center">
-          <p className="text-sm text-[var(--crm-text-muted)]">{t('common.noData' as any)}</p>
+          <p className="text-sm text-[var(--crm-text-muted)]">
+            {t("common.noData" as any)}
+          </p>
         </div>
       </div>
     )
@@ -53,7 +62,7 @@ export function QuoteStatusChart({ data }: { data: QuotesByStatusItem[] }) {
   return (
     <div className="glass-card-static p-3">
       <h3 className="text-sm font-medium text-[var(--crm-text-secondary)] mb-4">
-        {t('analytics.quotesByStatus' as any)}
+        {t("analytics.quotesByStatus" as any)}
       </h3>
       <div className="h-[280px]">
         {!mounted ? null : (
@@ -79,7 +88,9 @@ export function QuoteStatusChart({ data }: { data: QuotesByStatusItem[] }) {
                 iconType="circle"
                 iconSize={8}
                 formatter={(value: string) => (
-                  <span className="text-xs text-[var(--crm-text-secondary)]">{value}</span>
+                  <span className="text-xs text-[var(--crm-text-secondary)]">
+                    {value}
+                  </span>
                 )}
               />
             </PieChart>

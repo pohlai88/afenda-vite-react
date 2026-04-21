@@ -4,6 +4,7 @@
 
 **AUDIT RESULT:**
 The bidirectional portal ticket conversation was already fully functional from Phase 3 (P3-001 + P3-002). The audit found all core components in place:
+
 - `GET /api/portal/tickets/[id]` — returns messages with `isInternal: false` filter ✅
 - `POST /api/portal/tickets/[id]` — customer reply endpoint with auto-reopen ✅
 - `src/app/portal/tickets/[id]/page.tsx` — detail page with message thread + reply form ✅
@@ -29,10 +30,12 @@ This TIP verified all ACs and applied UX improvements + behavioral fixes.
 6. **Reply placeholder**: Updated to "Nhập phản hồi của bạn..." per spec
 
 **SECURITY VERIFIED:** Internal notes hidden from portal ☑
+
 - API: `where: { isInternal: false }` in GET query (line 25)
 - Ownership: `portalUserId: session.portalUser.id` enforced on both GET and POST
 
 **TEST RESULTS:**
+
 - AC-1: Staff public reply visible in portal ✅
 - AC-2: Internal note hidden from portal ✅
 - AC-3: Customer reply → CRM staff notified ✅
@@ -45,6 +48,7 @@ This TIP verified all ACs and applied UX improvements + behavioral fixes.
 **APP BUGS FOUND:** None
 
 **DEVIATIONS FROM SPEC:**
+
 - i18n keys not added — portal pages use hardcoded Vietnamese (consistent with all other portal pages which are forced light + Vietnamese-only). Adding i18n would be inconsistent.
 - No "unread indicator" — requires read-tracking infrastructure (lastViewedAt per ticket per user). Deferred to backlog.
 - No "Đánh dấu đã giải quyết" button in portal — customers should not close their own tickets; staff manages status. Customer can always reply to reopen.

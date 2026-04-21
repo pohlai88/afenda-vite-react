@@ -16,9 +16,36 @@ env:
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
+  governance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Governance checks
+        run: pnpm run script:check-governance
+
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: governance
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,9 +74,6 @@ jobs:
 
       - name: Check generated i18n artifacts are committed
         run: git diff --exit-code -- scripts/data/i18n-corpus-*.json apps/web/src/app/_platform/i18n/audit/conflicts.json apps/web/src/app/_platform/i18n/audit/provenance.json
-
-      - name: Validate Afenda config
-        run: pnpm run script:check-afenda-config
 
       - name: Design system component governance check
         run: pnpm --filter @afenda/design-system run component-governance:check

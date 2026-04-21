@@ -1,9 +1,9 @@
 // src/lib/learning/services/certificate.service.ts
 // Certificate Service - Manage course completion certificates
 
-import { db } from '@/lib/db'
-import { EnrollmentStatus, Prisma } from '@prisma/client'
-import crypto from 'crypto'
+import { db } from "@/lib/db"
+import { EnrollmentStatus, Prisma } from "@prisma/client"
+import crypto from "crypto"
 
 // Types
 export interface CertificateData {
@@ -43,7 +43,7 @@ export class CertificateService {
    */
   private generateCertificateNumber(): string {
     const timestamp = Date.now().toString(36).toUpperCase()
-    const random = crypto.randomBytes(4).toString('hex').toUpperCase()
+    const random = crypto.randomBytes(4).toString("hex").toUpperCase()
     return `CERT-${timestamp}-${random}`
   }
 
@@ -67,19 +67,21 @@ export class CertificateService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     if (enrollment.status !== EnrollmentStatus.COMPLETED) {
-      throw new Error('Certificate can only be issued for completed enrollments')
+      throw new Error(
+        "Certificate can only be issued for completed enrollments"
+      )
     }
 
     if (!enrollment.passed) {
-      throw new Error('Certificate can only be issued for passed enrollments')
+      throw new Error("Certificate can only be issued for passed enrollments")
     }
 
     if (enrollment.certificateIssued) {
-      throw new Error('Certificate already issued for this enrollment')
+      throw new Error("Certificate already issued for this enrollment")
     }
 
     // Generate certificate number
@@ -110,7 +112,9 @@ export class CertificateService {
   /**
    * Get certificate data for an enrollment
    */
-  async getCertificateData(enrollmentId: string): Promise<CertificateData | null> {
+  async getCertificateData(
+    enrollmentId: string
+  ): Promise<CertificateData | null> {
     const enrollment = await db.enrollment.findFirst({
       where: {
         id: enrollmentId,
@@ -149,7 +153,9 @@ export class CertificateService {
   /**
    * Verify certificate is valid
    */
-  async verify(enrollmentId: string): Promise<{ valid: boolean; data?: CertificateData; reason?: string }> {
+  async verify(
+    enrollmentId: string
+  ): Promise<{ valid: boolean; data?: CertificateData; reason?: string }> {
     const enrollment = await db.enrollment.findFirst({
       where: {
         id: enrollmentId,
@@ -166,19 +172,22 @@ export class CertificateService {
     })
 
     if (!enrollment) {
-      return { valid: false, reason: 'Enrollment not found' }
+      return { valid: false, reason: "Enrollment not found" }
     }
 
     if (!enrollment.certificateIssued) {
-      return { valid: false, reason: 'No certificate issued for this enrollment' }
+      return {
+        valid: false,
+        reason: "No certificate issued for this enrollment",
+      }
     }
 
     if (enrollment.status !== EnrollmentStatus.COMPLETED) {
-      return { valid: false, reason: 'Enrollment is not completed' }
+      return { valid: false, reason: "Enrollment is not completed" }
     }
 
     if (!enrollment.passed) {
-      return { valid: false, reason: 'Course was not passed' }
+      return { valid: false, reason: "Course was not passed" }
     }
 
     return {
@@ -209,7 +218,7 @@ export class CertificateService {
         employeeId,
         certificateIssued: true,
       },
-      orderBy: { completedAt: 'desc' },
+      orderBy: { completedAt: "desc" },
       include: {
         course: {
           select: { id: true, title: true, code: true, thumbnailUrl: true },
@@ -217,7 +226,7 @@ export class CertificateService {
       },
     })
 
-    return enrollments.map(e => ({
+    return enrollments.map((e) => ({
       enrollmentId: e.id,
       courseId: e.courseId,
       courseTitle: e.course.title,
@@ -232,7 +241,11 @@ export class CertificateService {
   /**
    * List all issued certificates
    */
-  async list(filters: CertificateFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: CertificateFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.EnrollmentWhereInput = {
@@ -254,7 +267,7 @@ export class CertificateService {
 
     if (filters.toDate) {
       where.completedAt = {
-        ...(where.completedAt as object || {}),
+        ...((where.completedAt as object) || {}),
         lte: filters.toDate,
       }
     }
@@ -262,7 +275,7 @@ export class CertificateService {
     const [enrollments, total] = await Promise.all([
       db.enrollment.findMany({
         where,
-        orderBy: { completedAt: 'desc' },
+        orderBy: { completedAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -282,7 +295,7 @@ export class CertificateService {
     ])
 
     return {
-      data: enrollments.map(e => ({
+      data: enrollments.map((e) => ({
         enrollmentId: e.id,
         employeeId: e.employeeId,
         employeeName: e.employee.fullName,
@@ -314,7 +327,7 @@ export class CertificateService {
     })
 
     if (!enrollment) {
-      throw new Error('Certificate not found')
+      throw new Error("Certificate not found")
     }
 
     // In a real implementation, you might have a separate revocation table
@@ -371,15 +384,15 @@ export class CertificateService {
           employeeName: enrollment.employee.fullName,
           courseTitle: enrollment.course.title,
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : "Unknown error",
         })
       }
     }
 
     return {
       total: eligibleEnrollments.length,
-      issued: results.filter(r => r.success).length,
-      failed: results.filter(r => !r.success).length,
+      issued: results.filter((r) => r.success).length,
+      failed: results.filter((r) => !r.success).length,
       results,
     }
   }
@@ -404,10 +417,10 @@ export class CertificateService {
       db.enrollment.count({ where }),
 
       db.enrollment.groupBy({
-        by: ['courseId'],
+        by: ["courseId"],
         where,
         _count: true,
-        orderBy: { _count: { courseId: 'desc' } },
+        orderBy: { _count: { courseId: "desc" } },
         take: 10,
       }),
 
@@ -424,16 +437,19 @@ export class CertificateService {
     ])
 
     // Get course names
-    const courseIds = byCourse.map(c => c.courseId)
+    const courseIds = byCourse.map((c) => c.courseId)
     const courses = await db.course.findMany({
       where: { id: { in: courseIds } },
       select: { id: true, title: true },
     })
-    const courseMap = new Map(courses.map(c => [c.id, c.title]))
+    const courseMap = new Map(courses.map((c) => [c.id, c.title]))
 
     // Count by department
-    const deptCounts: Record<string, { id: string; name: string; count: number }> = {}
-    byDepartment.forEach(e => {
+    const deptCounts: Record<
+      string,
+      { id: string; name: string; count: number }
+    > = {}
+    byDepartment.forEach((e) => {
       if (e.employee.department) {
         const deptId = e.employee.department.id
         if (!deptCounts[deptId]) {
@@ -449,9 +465,9 @@ export class CertificateService {
 
     return {
       totalCertificates: total,
-      topCourses: byCourse.map(c => ({
+      topCourses: byCourse.map((c) => ({
         courseId: c.courseId,
-        courseTitle: courseMap.get(c.courseId) || 'Unknown',
+        courseTitle: courseMap.get(c.courseId) || "Unknown",
         count: c._count,
       })),
       byDepartment: Object.values(deptCounts).sort((a, b) => b.count - a.count),
@@ -480,7 +496,9 @@ export class CertificateService {
       if (!course.recertificationMonths) continue
 
       const expirationThreshold = new Date()
-      expirationThreshold.setMonth(expirationThreshold.getMonth() - course.recertificationMonths)
+      expirationThreshold.setMonth(
+        expirationThreshold.getMonth() - course.recertificationMonths
+      )
       expirationThreshold.setDate(expirationThreshold.getDate() + daysAhead)
 
       const enrollments = await db.enrollment.findMany({
@@ -504,7 +522,9 @@ export class CertificateService {
         if (!enrollment.completedAt) continue
 
         const expirationDate = new Date(enrollment.completedAt)
-        expirationDate.setMonth(expirationDate.getMonth() + course.recertificationMonths)
+        expirationDate.setMonth(
+          expirationDate.getMonth() + course.recertificationMonths
+        )
 
         if (expirationDate <= futureDate) {
           expiringCerts.push({
@@ -516,13 +536,17 @@ export class CertificateService {
             courseTitle: course.title,
             completedAt: enrollment.completedAt,
             expirationDate,
-            daysUntilExpiration: Math.ceil((expirationDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)),
+            daysUntilExpiration: Math.ceil(
+              (expirationDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+            ),
           })
         }
       }
     }
 
-    return expiringCerts.sort((a, b) => a.daysUntilExpiration - b.daysUntilExpiration)
+    return expiringCerts.sort(
+      (a, b) => a.daysUntilExpiration - b.daysUntilExpiration
+    )
   }
 }
 

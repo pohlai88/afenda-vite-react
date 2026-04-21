@@ -1,80 +1,95 @@
-import React, { useState, useMemo } from 'react';
-import { X, GitCompare, Check, AlertTriangle } from 'lucide-react';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { useUIStore } from '../../stores/uiStore';
-import { colToLetter, getCellKey } from '../../types/cell';
+import React, { useState, useMemo } from "react"
+import { X, GitCompare, Check, AlertTriangle } from "lucide-react"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { useUIStore } from "../../stores/uiStore"
+import { colToLetter, getCellKey } from "../../types/cell"
 
 interface RemoveDuplicatesDialogProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
-export const RemoveDuplicatesDialog: React.FC<RemoveDuplicatesDialogProps> = ({ onClose }) => {
-  const { activeSheetId, sheets, selectionRange, selectedCell, batchUpdateCells } = useWorkbookStore();
-  const { showToast } = useUIStore();
+export const RemoveDuplicatesDialog: React.FC<RemoveDuplicatesDialogProps> = ({
+  onClose,
+}) => {
+  const {
+    activeSheetId,
+    sheets,
+    selectionRange,
+    selectedCell,
+    batchUpdateCells,
+  } = useWorkbookStore()
+  const { showToast } = useUIStore()
 
-  const sheet = activeSheetId ? sheets[activeSheetId] : null;
+  const sheet = activeSheetId ? sheets[activeSheetId] : null
 
   // Determine the range to work with
   const range = useMemo(() => {
     if (selectionRange) {
-      return selectionRange;
+      return selectionRange
     }
     if (selectedCell) {
       // Auto-detect data region from selected cell
-      return { start: selectedCell, end: selectedCell };
+      return { start: selectedCell, end: selectedCell }
     }
-    return null;
-  }, [selectionRange, selectedCell]);
+    return null
+  }, [selectionRange, selectedCell])
 
   // Get columns in the selection
   const columns = useMemo(() => {
-    if (!range) return [];
-    const cols: { index: number; letter: string; hasHeader: boolean }[] = [];
+    if (!range) return []
+    const cols: { index: number; letter: string; hasHeader: boolean }[] = []
     for (let col = range.start.col; col <= range.end.col; col++) {
-      const headerKey = getCellKey(range.start.row, col);
-      const headerCell = sheet?.cells[headerKey];
-      const headerValue = headerCell?.displayValue || headerCell?.value;
+      const headerKey = getCellKey(range.start.row, col)
+      const headerCell = sheet?.cells[headerKey]
+      const headerValue = headerCell?.displayValue || headerCell?.value
       cols.push({
         index: col,
         letter: colToLetter(col),
-        hasHeader: !!headerValue && typeof headerValue === 'string' && headerValue.length > 0,
-      });
+        hasHeader:
+          !!headerValue &&
+          typeof headerValue === "string" &&
+          headerValue.length > 0,
+      })
     }
-    return cols;
-  }, [range, sheet]);
+    return cols
+  }, [range, sheet])
 
   const [selectedColumns, setSelectedColumns] = useState<Set<number>>(() => {
-    return new Set(columns.map((c) => c.index));
-  });
-  const [hasHeaders, setHasHeaders] = useState(true);
+    return new Set(columns.map((c) => c.index))
+  })
+  const [hasHeaders, setHasHeaders] = useState(true)
 
   // Preview duplicates
   const duplicateInfo = useMemo(() => {
     if (!range || !sheet || selectedColumns.size === 0) {
-      return { duplicateCount: 0, uniqueCount: 0, duplicateRows: [] as number[] };
+      return {
+        duplicateCount: 0,
+        uniqueCount: 0,
+        duplicateRows: [] as number[],
+      }
     }
 
-    const startRow = hasHeaders ? range.start.row + 1 : range.start.row;
-    const endRow = range.end.row;
+    const startRow = hasHeaders ? range.start.row + 1 : range.start.row
+    const endRow = range.end.row
 
-    const seen = new Map<string, number>();
-    const duplicateRows: number[] = [];
+    const seen = new Map<string, number>()
+    const duplicateRows: number[] = []
 
     for (let row = startRow; row <= endRow; row++) {
       // Build key from selected columns
       const key = Array.from(selectedColumns)
         .sort((a, b) => a - b)
         .map((col) => {
-          const cellKey = getCellKey(row, col);
-          const cell = sheet.cells[cellKey];
-          return String(cell?.value ?? '');
+          const cellKey = getCellKey(row, col)
+          const cell = sheet.cells[cellKey]
+          return String(cell?.value ?? "")
         })
-        .join('|');
+        .join("|")
 
       if (seen.has(key)) {
-        duplicateRows.push(row);
+        duplicateRows.push(row)
       } else {
-        seen.set(key, row);
+        seen.set(key, row)
       }
     }
 
@@ -82,49 +97,53 @@ export const RemoveDuplicatesDialog: React.FC<RemoveDuplicatesDialogProps> = ({ 
       duplicateCount: duplicateRows.length,
       uniqueCount: seen.size,
       duplicateRows,
-    };
-  }, [range, sheet, selectedColumns, hasHeaders]);
+    }
+  }, [range, sheet, selectedColumns, hasHeaders])
 
   const handleColumnToggle = (colIndex: number) => {
-    const newSelected = new Set(selectedColumns);
+    const newSelected = new Set(selectedColumns)
     if (newSelected.has(colIndex)) {
-      newSelected.delete(colIndex);
+      newSelected.delete(colIndex)
     } else {
-      newSelected.add(colIndex);
+      newSelected.add(colIndex)
     }
-    setSelectedColumns(newSelected);
-  };
+    setSelectedColumns(newSelected)
+  }
 
   const handleSelectAll = () => {
-    setSelectedColumns(new Set(columns.map((c) => c.index)));
-  };
+    setSelectedColumns(new Set(columns.map((c) => c.index)))
+  }
 
   const handleDeselectAll = () => {
-    setSelectedColumns(new Set());
-  };
+    setSelectedColumns(new Set())
+  }
 
   const handleRemoveDuplicates = () => {
     if (!range || !sheet || !activeSheetId) {
-      showToast('No data range selected', 'warning');
-      return;
+      showToast("No data range selected", "warning")
+      return
     }
 
     if (selectedColumns.size === 0) {
-      showToast('Select at least one column', 'warning');
-      return;
+      showToast("Select at least one column", "warning")
+      return
     }
 
     if (duplicateInfo.duplicateCount === 0) {
-      showToast('No duplicates found', 'info');
-      onClose();
-      return;
+      showToast("No duplicates found", "info")
+      onClose()
+      return
     }
 
     // Remove duplicate rows by clearing their cells
-    const updates: Array<{ row: number; col: number; data: { value: null; displayValue: string; formula: null } }> = [];
+    const updates: Array<{
+      row: number
+      col: number
+      data: { value: null; displayValue: string; formula: null }
+    }> = []
 
     // Sort duplicate rows in descending order to remove from bottom first
-    const rowsToRemove = [...duplicateInfo.duplicateRows].sort((a, b) => b - a);
+    const rowsToRemove = [...duplicateInfo.duplicateRows].sort((a, b) => b - a)
 
     // For now, we'll just clear the duplicate rows
     // A more sophisticated approach would shift rows up
@@ -133,26 +152,29 @@ export const RemoveDuplicatesDialog: React.FC<RemoveDuplicatesDialogProps> = ({ 
         updates.push({
           row,
           col,
-          data: { value: null, displayValue: '', formula: null },
-        });
+          data: { value: null, displayValue: "", formula: null },
+        })
       }
     }
 
     if (updates.length > 0) {
-      batchUpdateCells(activeSheetId, updates);
+      batchUpdateCells(activeSheetId, updates)
     }
 
     showToast(
       `Removed ${duplicateInfo.duplicateCount} duplicate rows. ${duplicateInfo.uniqueCount} unique values remain.`,
-      'success'
-    );
-    onClose();
-  };
+      "success"
+    )
+    onClose()
+  }
 
   if (!range) {
     return (
       <div className="dialog-overlay" onClick={onClose}>
-        <div className="dialog remove-duplicates-dialog" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="dialog remove-duplicates-dialog"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="dialog-header">
             <h3>
               <GitCompare className="w-4 h-4" />
@@ -175,12 +197,15 @@ export const RemoveDuplicatesDialog: React.FC<RemoveDuplicatesDialogProps> = ({ 
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog remove-duplicates-dialog" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="dialog remove-duplicates-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h3>
             <GitCompare className="w-4 h-4" />
@@ -227,11 +252,13 @@ export const RemoveDuplicatesDialog: React.FC<RemoveDuplicatesDialogProps> = ({ 
 
             <div className="columns-list">
               {columns.map((col) => {
-                const headerKey = getCellKey(range.start.row, col.index);
-                const headerCell = sheet?.cells[headerKey];
+                const headerKey = getCellKey(range.start.row, col.index)
+                const headerCell = sheet?.cells[headerKey]
                 const headerValue = hasHeaders
-                  ? headerCell?.displayValue || headerCell?.value || `Column ${col.letter}`
-                  : `Column ${col.letter}`;
+                  ? headerCell?.displayValue ||
+                    headerCell?.value ||
+                    `Column ${col.letter}`
+                  : `Column ${col.letter}`
 
                 return (
                   <label key={col.index} className="column-item">
@@ -243,7 +270,7 @@ export const RemoveDuplicatesDialog: React.FC<RemoveDuplicatesDialogProps> = ({ 
                     <span className="column-letter">{col.letter}</span>
                     <span className="column-name">{String(headerValue)}</span>
                   </label>
-                );
+                )
               })}
             </div>
           </div>
@@ -253,12 +280,18 @@ export const RemoveDuplicatesDialog: React.FC<RemoveDuplicatesDialogProps> = ({ 
               {duplicateInfo.duplicateCount > 0 ? (
                 <>
                   <div className="stat stat-warning">
-                    <span className="stat-value">{duplicateInfo.duplicateCount}</span>
+                    <span className="stat-value">
+                      {duplicateInfo.duplicateCount}
+                    </span>
                     <span className="stat-label">duplicate rows found</span>
                   </div>
                   <div className="stat stat-success">
-                    <span className="stat-value">{duplicateInfo.uniqueCount}</span>
-                    <span className="stat-label">unique values will remain</span>
+                    <span className="stat-value">
+                      {duplicateInfo.uniqueCount}
+                    </span>
+                    <span className="stat-label">
+                      unique values will remain
+                    </span>
                   </div>
                 </>
               ) : (
@@ -285,5 +318,5 @@ export const RemoveDuplicatesDialog: React.FC<RemoveDuplicatesDialogProps> = ({ 
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

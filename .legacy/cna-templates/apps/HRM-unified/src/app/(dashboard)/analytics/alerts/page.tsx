@@ -1,23 +1,29 @@
 // src/app/(dashboard)/analytics/alerts/page.tsx
 // Alerts Management Page
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Switch } from '@/components/ui/switch'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Switch } from "@/components/ui/switch"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   Dialog,
   DialogContent,
@@ -25,7 +31,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 import {
   Table,
   TableBody,
@@ -33,7 +39,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table"
 import {
   Bell,
   Plus,
@@ -44,7 +50,7 @@ import {
   Settings,
   RefreshCw,
   Filter,
-} from 'lucide-react'
+} from "lucide-react"
 
 interface Alert {
   id: string
@@ -53,8 +59,8 @@ interface Alert {
   metricType: string
   condition: string
   threshold: number
-  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
-  status: 'IDLE' | 'ACTIVE' | 'RESOLVED' | 'DISABLED'
+  severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
+  status: "IDLE" | "ACTIVE" | "RESOLVED" | "DISABLED"
   isActive: boolean
   lastTriggeredAt: string | null
   triggerCount: number
@@ -71,39 +77,39 @@ interface AlertHistory {
 }
 
 const SEVERITY_COLORS = {
-  LOW: 'bg-blue-100 text-blue-800',
-  MEDIUM: 'bg-yellow-100 text-yellow-800',
-  HIGH: 'bg-orange-100 text-orange-800',
-  CRITICAL: 'bg-red-100 text-red-800',
+  LOW: "bg-blue-100 text-blue-800",
+  MEDIUM: "bg-yellow-100 text-yellow-800",
+  HIGH: "bg-orange-100 text-orange-800",
+  CRITICAL: "bg-red-100 text-red-800",
 }
 
 const STATUS_COLORS = {
-  IDLE: 'bg-gray-100 text-gray-800',
-  ACTIVE: 'bg-red-100 text-red-800',
-  RESOLVED: 'bg-green-100 text-green-800',
-  DISABLED: 'bg-gray-100 text-gray-500',
+  IDLE: "bg-gray-100 text-gray-800",
+  ACTIVE: "bg-red-100 text-red-800",
+  RESOLVED: "bg-green-100 text-green-800",
+  DISABLED: "bg-gray-100 text-gray-500",
 }
 
 const SEVERITY_LABELS = {
-  LOW: 'Thấp',
-  MEDIUM: 'Trung bình',
-  HIGH: 'Cao',
-  CRITICAL: 'Nghiêm trọng',
+  LOW: "Thấp",
+  MEDIUM: "Trung bình",
+  HIGH: "Cao",
+  CRITICAL: "Nghiêm trọng",
 }
 
 const STATUS_LABELS = {
-  IDLE: 'Chờ',
-  ACTIVE: 'Đang kích hoạt',
-  RESOLVED: 'Đã xử lý',
-  DISABLED: 'Tắt',
+  IDLE: "Chờ",
+  ACTIVE: "Đang kích hoạt",
+  RESOLVED: "Đã xử lý",
+  DISABLED: "Tắt",
 }
 
 export default function AlertsPage() {
   const [loading, setLoading] = useState(true)
   const [alerts, setAlerts] = useState<Alert[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [severityFilter, setSeverityFilter] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [severityFilter, setSeverityFilter] = useState<string>("all")
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [history, setHistory] = useState<AlertHistory[]>([])
@@ -115,9 +121,9 @@ export default function AlertsPage() {
   const fetchAlerts = async () => {
     setLoading(true)
     try {
-      let url = '/api/analytics/alerts?'
-      if (statusFilter !== 'all') url += `status=${statusFilter}&`
-      if (severityFilter !== 'all') url += `severity=${severityFilter}&`
+      let url = "/api/analytics/alerts?"
+      if (statusFilter !== "all") url += `status=${statusFilter}&`
+      if (severityFilter !== "all") url += `severity=${severityFilter}&`
 
       const response = await fetch(url)
       if (response.ok) {
@@ -127,65 +133,65 @@ export default function AlertsPage() {
         // Mock data
         setAlerts([
           {
-            id: '1',
-            name: 'Tỷ lệ nghỉ việc cao',
-            description: 'Cảnh báo khi tỷ lệ nghỉ việc vượt 15%',
-            metricType: 'turnover_rate',
-            condition: 'gt',
+            id: "1",
+            name: "Tỷ lệ nghỉ việc cao",
+            description: "Cảnh báo khi tỷ lệ nghỉ việc vượt 15%",
+            metricType: "turnover_rate",
+            condition: "gt",
             threshold: 15,
-            severity: 'CRITICAL',
-            status: 'ACTIVE',
+            severity: "CRITICAL",
+            status: "ACTIVE",
             isActive: true,
-            lastTriggeredAt: '2024-01-20T10:00:00Z',
+            lastTriggeredAt: "2024-01-20T10:00:00Z",
             triggerCount: 3,
             department: null,
           },
           {
-            id: '2',
-            name: 'Hợp đồng sắp hết hạn',
-            description: 'Cảnh báo khi có nhiều hợp đồng sắp hết hạn',
-            metricType: 'expiring_contracts',
-            condition: 'gte',
+            id: "2",
+            name: "Hợp đồng sắp hết hạn",
+            description: "Cảnh báo khi có nhiều hợp đồng sắp hết hạn",
+            metricType: "expiring_contracts",
+            condition: "gte",
             threshold: 5,
-            severity: 'HIGH',
-            status: 'ACTIVE',
+            severity: "HIGH",
+            status: "ACTIVE",
             isActive: true,
-            lastTriggeredAt: '2024-01-19T14:30:00Z',
+            lastTriggeredAt: "2024-01-19T14:30:00Z",
             triggerCount: 2,
             department: null,
           },
           {
-            id: '3',
-            name: 'Nhân viên nguy cơ cao',
-            description: 'Cảnh báo khi số nhân viên nguy cơ cao tăng',
-            metricType: 'high_risk_employees',
-            condition: 'gte',
+            id: "3",
+            name: "Nhân viên nguy cơ cao",
+            description: "Cảnh báo khi số nhân viên nguy cơ cao tăng",
+            metricType: "high_risk_employees",
+            condition: "gte",
             threshold: 10,
-            severity: 'HIGH',
-            status: 'IDLE',
+            severity: "HIGH",
+            status: "IDLE",
             isActive: true,
             lastTriggeredAt: null,
             triggerCount: 0,
             department: null,
           },
           {
-            id: '4',
-            name: 'Tỷ lệ chuyên cần thấp',
-            description: 'Phòng Kinh doanh có tỷ lệ chuyên cần thấp',
-            metricType: 'attendance_rate',
-            condition: 'lt',
+            id: "4",
+            name: "Tỷ lệ chuyên cần thấp",
+            description: "Phòng Kinh doanh có tỷ lệ chuyên cần thấp",
+            metricType: "attendance_rate",
+            condition: "lt",
             threshold: 90,
-            severity: 'MEDIUM',
-            status: 'RESOLVED',
+            severity: "MEDIUM",
+            status: "RESOLVED",
             isActive: true,
-            lastTriggeredAt: '2024-01-15T09:00:00Z',
+            lastTriggeredAt: "2024-01-15T09:00:00Z",
             triggerCount: 1,
-            department: { id: '1', name: 'Phòng Kinh doanh' },
+            department: { id: "1", name: "Phòng Kinh doanh" },
           },
         ])
       }
     } catch (error) {
-      console.error('Error fetching alerts:', error)
+      console.error("Error fetching alerts:", error)
     } finally {
       setLoading(false)
     }
@@ -194,25 +200,25 @@ export default function AlertsPage() {
   const toggleAlert = async (alertId: string, isActive: boolean) => {
     try {
       await fetch(`/api/analytics/alerts/${alertId}/toggle`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive }),
       })
       setAlerts((prev) =>
         prev.map((a) => (a.id === alertId ? { ...a, isActive } : a))
       )
     } catch (error) {
-      console.error('Error toggling alert:', error)
+      console.error("Error toggling alert:", error)
     }
   }
 
   const checkAlerts = async () => {
     setLoading(true)
     try {
-      await fetch('/api/analytics/alerts/check', { method: 'POST' })
+      await fetch("/api/analytics/alerts/check", { method: "POST" })
       await fetchAlerts()
     } catch (error) {
-      console.error('Error checking alerts:', error)
+      console.error("Error checking alerts:", error)
     } finally {
       setLoading(false)
     }
@@ -224,20 +230,20 @@ export default function AlertsPage() {
     // Mock history
     setHistory([
       {
-        id: '1',
-        triggeredAt: '2024-01-20T10:00:00Z',
+        id: "1",
+        triggeredAt: "2024-01-20T10:00:00Z",
         metricValue: 18.5,
-        message: 'Tỷ lệ nghỉ việc đạt 18.5%, vượt ngưỡng 15%',
-        acknowledgedAt: '2024-01-20T10:30:00Z',
+        message: "Tỷ lệ nghỉ việc đạt 18.5%, vượt ngưỡng 15%",
+        acknowledgedAt: "2024-01-20T10:30:00Z",
         resolvedAt: null,
       },
       {
-        id: '2',
-        triggeredAt: '2024-01-15T09:00:00Z',
+        id: "2",
+        triggeredAt: "2024-01-15T09:00:00Z",
         metricValue: 16.2,
-        message: 'Tỷ lệ nghỉ việc đạt 16.2%, vượt ngưỡng 15%',
-        acknowledgedAt: '2024-01-15T09:15:00Z',
-        resolvedAt: '2024-01-16T14:00:00Z',
+        message: "Tỷ lệ nghỉ việc đạt 16.2%, vượt ngưỡng 15%",
+        acknowledgedAt: "2024-01-15T09:15:00Z",
+        resolvedAt: "2024-01-16T14:00:00Z",
       },
     ])
   }
@@ -247,19 +253,19 @@ export default function AlertsPage() {
   )
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(dateString).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     })
   }
 
   const getStats = () => ({
     total: alerts.length,
-    active: alerts.filter((a) => a.status === 'ACTIVE').length,
-    resolved: alerts.filter((a) => a.status === 'RESOLVED').length,
+    active: alerts.filter((a) => a.status === "ACTIVE").length,
+    resolved: alerts.filter((a) => a.status === "RESOLVED").length,
     disabled: alerts.filter((a) => !a.isActive).length,
   })
 
@@ -316,7 +322,9 @@ export default function AlertsPage() {
                 <AlertTriangle className="h-5 w-5 text-red-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-red-600">{stats.active}</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {stats.active}
+                </p>
                 <p className="text-sm text-muted-foreground">Đang kích hoạt</p>
               </div>
             </div>
@@ -329,7 +337,9 @@ export default function AlertsPage() {
                 <CheckCircle className="h-5 w-5 text-green-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">{stats.resolved}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {stats.resolved}
+                </p>
                 <p className="text-sm text-muted-foreground">Đã xử lý</p>
               </div>
             </div>
@@ -441,13 +451,15 @@ export default function AlertsPage() {
                     <TableCell>
                       {alert.lastTriggeredAt
                         ? formatDate(alert.lastTriggeredAt)
-                        : '-'}
+                        : "-"}
                     </TableCell>
                     <TableCell>{alert.triggerCount}</TableCell>
                     <TableCell>
                       <Switch
                         checked={alert.isActive}
-                        onCheckedChange={(checked) => toggleAlert(alert.id, checked)}
+                        onCheckedChange={(checked) =>
+                          toggleAlert(alert.id, checked)
+                        }
                       />
                     </TableCell>
                     <TableCell className="text-right">
@@ -486,13 +498,15 @@ export default function AlertsPage() {
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-red-600" />
-                    <span className="font-medium">{formatDate(h.triggeredAt)}</span>
+                    <span className="font-medium">
+                      {formatDate(h.triggeredAt)}
+                    </span>
                   </div>
-                  <Badge variant="outline">
-                    Giá trị: {h.metricValue}
-                  </Badge>
+                  <Badge variant="outline">Giá trị: {h.metricValue}</Badge>
                 </div>
-                <p className="text-sm text-muted-foreground mb-2">{h.message}</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {h.message}
+                </p>
                 <div className="flex gap-4 text-xs text-muted-foreground">
                   {h.acknowledgedAt && (
                     <span>Xác nhận: {formatDate(h.acknowledgedAt)}</span>

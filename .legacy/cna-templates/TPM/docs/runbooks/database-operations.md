@@ -32,11 +32,11 @@ pnpm db:studio
 
 ### Environment Variables
 
-| Environment | Variable | Location |
-|-------------|----------|----------|
-| Production | DATABASE_URL | Vercel Env |
-| Staging | DATABASE_URL | Vercel Env (staging) |
-| Development | DATABASE_URL | .env.local |
+| Environment | Variable     | Location             |
+| ----------- | ------------ | -------------------- |
+| Production  | DATABASE_URL | Vercel Env           |
+| Staging     | DATABASE_URL | Vercel Env (staging) |
+| Development | DATABASE_URL | .env.local           |
 
 ---
 
@@ -115,6 +115,7 @@ pnpm prisma migrate dev --create-only
 ### Rollback Procedures
 
 **Option 1: Prisma Rollback (if supported)**
+
 ```bash
 # Check migration history
 pnpm prisma migrate status
@@ -124,6 +125,7 @@ pnpm prisma migrate reset
 ```
 
 **Option 2: Manual Rollback**
+
 ```sql
 -- Remove from migration history
 DELETE FROM _prisma_migrations WHERE migration_name = 'migration_to_rollback';
@@ -135,6 +137,7 @@ ALTER TABLE promotions DROP COLUMN new_column;
 ### Safe Migration Practices
 
 1. **Always backup before migrations**
+
    ```bash
    pg_dump $DATABASE_URL > backup-pre-migration.sql
    ```
@@ -142,6 +145,7 @@ ALTER TABLE promotions DROP COLUMN new_column;
 2. **Test migrations on staging first**
 
 3. **For large tables, use batched operations**
+
    ```sql
    -- Instead of one big UPDATE
    UPDATE large_table SET column = value WHERE id BETWEEN 1 AND 10000;
@@ -292,6 +296,7 @@ WHERE state = 'idle'
 1. **Check Neon status**: https://neon.tech/status
 
 2. **Check connection**:
+
    ```bash
    psql $DATABASE_URL -c "SELECT 1"
    ```
@@ -311,6 +316,7 @@ WHERE state = 'idle'
 ### High CPU/Memory Usage
 
 1. **Identify resource-heavy queries**:
+
    ```sql
    SELECT pid, query, state, query_start
    FROM pg_stat_activity
@@ -319,6 +325,7 @@ WHERE state = 'idle'
    ```
 
 2. **Kill problematic queries**:
+
    ```sql
    SELECT pg_cancel_backend(pid);  -- Graceful
    SELECT pg_terminate_backend(pid);  -- Force
@@ -331,11 +338,13 @@ WHERE state = 'idle'
 1. **Do NOT write more data**
 
 2. **Create backup immediately**:
+
    ```bash
    pg_dump $DATABASE_URL > emergency-backup.sql
    ```
 
 3. **Check for corruption**:
+
    ```sql
    -- Check table
    SELECT count(*) FROM table_name;

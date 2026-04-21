@@ -1,8 +1,8 @@
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import "@testing-library/jest-dom"
+import { vi } from "vitest"
 
 // Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation((query: string) => ({
     matches: false,
@@ -14,14 +14,14 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
-});
+})
 
 // Mock ResizeObserver
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-}));
+}))
 
 // Mock canvas context
 HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation(() => ({
@@ -54,7 +54,7 @@ HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation(() => ({
   createLinearGradient: vi.fn(() => ({
     addColorStop: vi.fn(),
   })),
-}));
+}))
 
 // Mock localStorage
 const localStorageMock = {
@@ -62,10 +62,10 @@ const localStorageMock = {
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
-};
-Object.defineProperty(window, 'localStorage', {
+}
+Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
-});
+})
 
 // Mock scrollIntoView
-Element.prototype.scrollIntoView = vi.fn();
+Element.prototype.scrollIntoView = vi.fn()

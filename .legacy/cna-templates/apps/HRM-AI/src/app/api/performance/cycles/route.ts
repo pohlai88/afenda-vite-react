@@ -1,29 +1,32 @@
-import { auth } from '@/lib/auth'
-import { NextRequest, NextResponse } from 'next/server'
-import * as cycleService from '@/services/performance/cycle.service'
-import { safeParseInt, safeParseIntOptional } from '@/lib/api/parse-params'
+import { auth } from "@/lib/auth"
+import { NextRequest, NextResponse } from "next/server"
+import * as cycleService from "@/services/performance/cycle.service"
+import { safeParseInt, safeParseIntOptional } from "@/lib/api/parse-params"
 
 export async function GET(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
 
     const { searchParams } = request.nextUrl
     const params = {
-      status: searchParams.get('status') || undefined,
-      year: safeParseIntOptional(searchParams.get('year')),
-      page: safeParseInt(searchParams.get('page'), 1),
-      pageSize: safeParseInt(searchParams.get('pageSize'), 20),
+      status: searchParams.get("status") || undefined,
+      year: safeParseIntOptional(searchParams.get("year")),
+      page: safeParseInt(searchParams.get("page"), 1),
+      pageSize: safeParseInt(searchParams.get("pageSize"), 20),
     }
 
     const result = await cycleService.listCycles(tenantId, params)
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error listing cycles:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error listing cycles:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -31,7 +34,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
     const userId = session.user.id
@@ -43,7 +46,10 @@ export async function POST(request: NextRequest) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error creating cycle:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error creating cycle:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

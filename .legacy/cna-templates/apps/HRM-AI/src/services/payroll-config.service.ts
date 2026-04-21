@@ -1,8 +1,8 @@
 // src/services/payroll-config.service.ts
 // Payroll Configuration Service
 
-import { db } from '@/lib/db'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { Prisma } from "@prisma/client"
 import {
   PIT_BRACKETS,
   PIT_DEDUCTIONS,
@@ -10,7 +10,7 @@ import {
   INSURANCE_SALARY_CAP,
   OT_RATES,
   WORK_SETTINGS,
-} from '@/lib/payroll/constants'
+} from "@/lib/payroll/constants"
 
 export const payrollConfigService = {
   // ═══════════════════════════════════════════════════════════════
@@ -28,12 +28,9 @@ export const payrollConfigService = {
         tenantId,
         isActive: true,
         effectiveFrom: { lte: now },
-        OR: [
-          { effectiveTo: null },
-          { effectiveTo: { gte: now } },
-        ],
+        OR: [{ effectiveTo: null }, { effectiveTo: { gte: now } }],
       },
-      orderBy: { effectiveFrom: 'desc' },
+      orderBy: { effectiveFrom: "desc" },
     })
 
     // If no config exists, return default values
@@ -50,7 +47,7 @@ export const payrollConfigService = {
   async findAll(tenantId: string) {
     return db.payrollConfig.findMany({
       where: { tenantId },
-      orderBy: { effectiveFrom: 'desc' },
+      orderBy: { effectiveFrom: "desc" },
     })
   },
 
@@ -68,7 +65,7 @@ export const payrollConfigService = {
    */
   async create(
     tenantId: string,
-    data: Omit<Prisma.PayrollConfigCreateInput, 'tenant'>
+    data: Omit<Prisma.PayrollConfigCreateInput, "tenant">
   ) {
     // Deactivate overlapping configs
     if (data.isActive) {
@@ -93,14 +90,14 @@ export const payrollConfigService = {
   async update(
     tenantId: string,
     id: string,
-    data: Omit<Prisma.PayrollConfigUpdateInput, 'tenant'>
+    data: Omit<Prisma.PayrollConfigUpdateInput, "tenant">
   ) {
     const config = await db.payrollConfig.findFirst({
       where: { id, tenantId },
     })
 
     if (!config) {
-      throw new Error('Cấu hình không tồn tại')
+      throw new Error("Cấu hình không tồn tại")
     }
 
     return db.payrollConfig.update({
@@ -118,7 +115,7 @@ export const payrollConfigService = {
     })
 
     if (!config) {
-      throw new Error('Cấu hình không tồn tại')
+      throw new Error("Cấu hình không tồn tại")
     }
 
     return db.payrollConfig.delete({
@@ -209,7 +206,7 @@ export const payrollConfigService = {
     const defaults = this.getDefaultConfig()
 
     return this.create(tenantId, {
-      effectiveFrom: new Date('2024-01-01'),
+      effectiveFrom: new Date("2024-01-01"),
       effectiveTo: null,
       bhxhEmployeeRate: defaults.bhxhEmployeeRate,
       bhxhEmployerRate: defaults.bhxhEmployerRate,
@@ -228,7 +225,7 @@ export const payrollConfigService = {
       standardWorkDays: defaults.standardWorkDays,
       standardWorkHours: defaults.standardWorkHours,
       isActive: true,
-      notes: 'Cấu hình mặc định theo quy định VN 2024-2026',
+      notes: "Cấu hình mặc định theo quy định VN 2024-2026",
     })
   },
 
@@ -241,12 +238,9 @@ export const payrollConfigService = {
         tenantId,
         isActive: true,
         effectiveFrom: { lte: date },
-        OR: [
-          { effectiveTo: null },
-          { effectiveTo: { gte: date } },
-        ],
+        OR: [{ effectiveTo: null }, { effectiveTo: { gte: date } }],
       },
-      orderBy: { effectiveFrom: 'desc' },
+      orderBy: { effectiveFrom: "desc" },
     })
 
     if (!config) {

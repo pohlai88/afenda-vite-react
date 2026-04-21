@@ -1,14 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { emitEvent } from '@/lib/webhooks'
-import { eventBus } from '@/lib/events/event-bus'
-import { CRM_EVENTS } from '@/lib/events/types'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireOwnerOrRole, isErrorResponse, forbiddenResponse, canAccess } from '@/lib/auth/rbac'
-import { validateRequest, updateDealSchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
-import { getChecklistTemplate } from '@/lib/compliance/checklist-templates'
-import { calculateHealthScore } from '@/lib/analytics/health-score'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { emitEvent } from "@/lib/webhooks"
+import { eventBus } from "@/lib/events/event-bus"
+import { CRM_EVENTS } from "@/lib/events/types"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import {
+  requireOwnerOrRole,
+  isErrorResponse,
+  forbiddenResponse,
+  canAccess,
+} from "@/lib/auth/rbac"
+import { validateRequest, updateDealSchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
+import { getChecklistTemplate } from "@/lib/compliance/checklist-templates"
+import { calculateHealthScore } from "@/lib/analytics/health-score"
 
 // GET /api/deals/[id] — Get deal with all relations
 export async function GET(
@@ -24,7 +29,12 @@ export async function GET(
       include: {
         stage: true,
         pipeline: { select: { id: true, name: true } },
-        company: { include: { parent: { select: { id: true, name: true } }, children: { select: { id: true, name: true } } } },
+        company: {
+          include: {
+            parent: { select: { id: true, name: true } },
+            children: { select: { id: true, name: true } },
+          },
+        },
         contacts: {
           include: {
             contact: {
@@ -35,37 +45,39 @@ export async function GET(
           },
         },
         activities: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           take: 20,
           include: {
             user: { select: { id: true, name: true, avatarUrl: true } },
           },
         },
         quotes: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           include: {
             _count: { select: { items: true } },
           },
         },
         orders: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           include: {
             _count: { select: { items: true } },
           },
         },
         tags: { include: { tag: true } },
-        owner: { select: { id: true, name: true, email: true, avatarUrl: true } },
+        owner: {
+          select: { id: true, name: true, email: true, avatarUrl: true },
+        },
         partner: { include: { company: { select: { id: true, name: true } } } },
-        checklists: { orderBy: { key: 'asc' } },
+        checklists: { orderBy: { key: "asc" } },
         _count: { select: { documents: true, contacts: true } },
       },
     })
 
     if (!deal) {
-      return NextResponse.json({ error: 'Deal not found' }, { status: 404 })
+      return NextResponse.json({ error: "Deal not found" }, { status: 404 })
     }
 
-    if (!canAccess(user, 'view_all') && deal.ownerId !== user.id) {
+    if (!canAccess(user, "view_all") && deal.ownerId !== user.id) {
       return forbiddenResponse()
     }
 
@@ -83,10 +95,13 @@ export async function GET(
     return NextResponse.json({ ...deal, healthScore })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/deals/[id] error:', error)
-    return NextResponse.json({ error: 'Failed to fetch deal' }, { status: 500 })
+    console.error("GET /api/deals/[id] error:", error)
+    return NextResponse.json({ error: "Failed to fetch deal" }, { status: 500 })
   }
 }
 
@@ -97,14 +112,24 @@ export async function PATCH(
 ) {
   try {
     const { id } = params
-    const existing = await prisma.deal.findUnique({ where: { id }, select: { ownerId: true, stageId: true, stage: true, dealType: true } })
-    if (!existing) return NextResponse.json({ error: 'Deal not found' }, { status: 404 })
+    const existing = await prisma.deal.findUnique({
+      where: { id },
+      select: { ownerId: true, stageId: true, stage: true, dealType: true },
+    })
+    if (!existing)
+      return NextResponse.json({ error: "Deal not found" }, { status: 404 })
 
-    const result = await requireOwnerOrRole(existing.ownerId, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.ownerId, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
-    const { contactIds, contacts, ...updateData } = validateRequest(updateDealSchema, body)
+    const { contactIds, contacts, ...updateData } = validateRequest(
+      updateDealSchema,
+      body
+    )
 
     // Auto-set closedAt when deal moves to a won/lost stage
     let autoClosedAt: Date | undefined
@@ -122,7 +147,9 @@ export async function PATCH(
       where: { id },
       data: {
         ...updateData,
-        ...(autoClosedAt && !updateData.closedAt ? { closedAt: autoClosedAt } : {}),
+        ...(autoClosedAt && !updateData.closedAt
+          ? { closedAt: autoClosedAt }
+          : {}),
       },
       include: {
         stage: true,
@@ -135,7 +162,9 @@ export async function PATCH(
 
     // Auto-create checklist if dealType changed
     if (updateData.dealType && updateData.dealType !== existing.dealType) {
-      const existingChecklist = await prisma.dealChecklist.count({ where: { dealId: id } })
+      const existingChecklist = await prisma.dealChecklist.count({
+        where: { dealId: id },
+      })
       if (existingChecklist === 0) {
         const template = getChecklistTemplate(updateData.dealType)
         if (template.length > 0) {
@@ -171,7 +200,7 @@ export async function PATCH(
 
     // Emit webhook events
     if (updateData.stageId && existing.stageId !== updateData.stageId) {
-      emitEvent('crm.deal.stage_changed', {
+      emitEvent("crm.deal.stage_changed", {
         dealId: deal.id,
         title: deal.title,
         oldStageId: existing.stageId,
@@ -184,7 +213,7 @@ export async function PATCH(
     }
 
     if (deal.stage?.isWon) {
-      emitEvent('crm.deal.won', {
+      emitEvent("crm.deal.won", {
         dealId: deal.id,
         title: deal.title,
         value: deal.value,
@@ -193,16 +222,18 @@ export async function PATCH(
       }).catch(() => {})
 
       // Fire EventBus DEAL_WON for commission auto-creation
-      eventBus.emit(CRM_EVENTS.DEAL_WON, {
-        dealId: deal.id,
-        deal: { title: deal.title, value: Number(deal.value) },
-        timestamp: new Date().toISOString(),
-      }).catch(() => {})
+      eventBus
+        .emit(CRM_EVENTS.DEAL_WON, {
+          dealId: deal.id,
+          deal: { title: deal.title, value: Number(deal.value) },
+          timestamp: new Date().toISOString(),
+        })
+        .catch(() => {})
     }
 
     return NextResponse.json(deal)
   } catch (error) {
-    return handleApiError(error, '/api/deals/[id]')
+    return handleApiError(error, "/api/deals/[id]")
   }
 }
 
@@ -213,17 +244,28 @@ export async function DELETE(
 ) {
   try {
     const { id } = params
-    const existing = await prisma.deal.findUnique({ where: { id }, select: { ownerId: true } })
-    if (!existing) return NextResponse.json({ error: 'Deal not found' }, { status: 404 })
+    const existing = await prisma.deal.findUnique({
+      where: { id },
+      select: { ownerId: true },
+    })
+    if (!existing)
+      return NextResponse.json({ error: "Deal not found" }, { status: 404 })
 
-    const result = await requireOwnerOrRole(existing.ownerId, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.ownerId, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     await prisma.deal.delete({ where: { id } })
     return NextResponse.json({ success: true })
   } catch (error: any) {
-    if (error?.code === 'P2025') return NextResponse.json({ error: 'Deal not found' }, { status: 404 })
-    console.error('DELETE /api/deals/[id] error:', error)
-    return NextResponse.json({ error: 'Failed to delete deal' }, { status: 500 })
+    if (error?.code === "P2025")
+      return NextResponse.json({ error: "Deal not found" }, { status: 404 })
+    console.error("DELETE /api/deals/[id] error:", error)
+    return NextResponse.json(
+      { error: "Failed to delete deal" },
+      { status: 500 }
+    )
   }
 }

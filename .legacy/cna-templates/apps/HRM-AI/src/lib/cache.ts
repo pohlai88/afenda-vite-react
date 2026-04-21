@@ -110,9 +110,9 @@ export const CACHE_KEYS: CacheKey = {
   dashboard: (userId) => `dashboard:${userId}`,
   employees: (page, limit) => `employees:${page}:${limit}`,
   employee: (id) => `employee:${id}`,
-  departments: () => 'departments',
+  departments: () => "departments",
   department: (id) => `department:${id}`,
-  positions: () => 'positions',
+  positions: () => "positions",
   attendance: (employeeId, date) => `attendance:${employeeId}:${date}`,
   leaves: (employeeId) => `leaves:${employeeId}`,
   payroll: (employeeId, period) => `payroll:${employeeId}:${period}`,
@@ -152,7 +152,7 @@ export function invalidateEmployeeCache(employeeId?: string): void {
     cache.delete(CACHE_KEYS.employee(employeeId))
   }
   // Invalidate list caches
-  cache.invalidatePattern('^employees:')
+  cache.invalidatePattern("^employees:")
 }
 
 export function invalidateDepartmentCache(departmentId?: string): void {
@@ -162,7 +162,10 @@ export function invalidateDepartmentCache(departmentId?: string): void {
   cache.delete(CACHE_KEYS.departments())
 }
 
-export function invalidateAttendanceCache(employeeId: string, date?: string): void {
+export function invalidateAttendanceCache(
+  employeeId: string,
+  date?: string
+): void {
   if (date) {
     cache.delete(CACHE_KEYS.attendance(employeeId, date))
   }
@@ -182,8 +185,11 @@ export function invalidateDashboardCache(userId: string): void {
 // ═══════════════════════════════════════════════════════════════
 
 // Run cleanup every 10 minutes
-if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
-    cache.cleanup()
-  }, 10 * 60 * 1000)
+if (typeof setInterval !== "undefined") {
+  setInterval(
+    () => {
+      cache.cleanup()
+    },
+    10 * 60 * 1000
+  )
 }

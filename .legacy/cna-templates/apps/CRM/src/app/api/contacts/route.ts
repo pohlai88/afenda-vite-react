@@ -1,29 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse, canAccess } from '@/lib/auth/rbac'
-import { validateRequest, createContactSchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
-import { sanitizeObject } from '@/lib/api/sanitize'
-import { removeDiacritics } from '@/lib/utils/vietnamese'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse, canAccess } from "@/lib/auth/rbac"
+import { validateRequest, createContactSchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
+import { sanitizeObject } from "@/lib/api/sanitize"
+import { removeDiacritics } from "@/lib/utils/vietnamese"
 
 // GET /api/contacts — List contacts with search, filter, pagination
 export async function GET(req: NextRequest) {
   try {
     const user = await getCurrentUser()
     const { searchParams } = req.nextUrl
-    const q = searchParams.get('q') || ''
-    const status = searchParams.get('status')
-    const companyId = searchParams.get('companyId')
-    const cursor = searchParams.get('cursor')
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
+    const q = searchParams.get("q") || ""
+    const status = searchParams.get("status")
+    const companyId = searchParams.get("companyId")
+    const cursor = searchParams.get("cursor")
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"))
+    const limit = Math.min(
+      100,
+      Math.max(1, parseInt(searchParams.get("limit") || "20"))
+    )
 
     const where: Prisma.ContactWhereInput = {}
 
     // MEMBER/VIEWER: only see own contacts
-    if (!canAccess(user, 'view_all')) {
+    if (!canAccess(user, "view_all")) {
       where.ownerId = user.id
     }
 
@@ -32,11 +35,11 @@ export async function GET(req: NextRequest) {
       const terms = [q]
       if (normalized !== q) terms.push(normalized)
       where.OR = terms.flatMap((term) => [
-        { firstName: { contains: term, mode: 'insensitive' as const } },
-        { lastName: { contains: term, mode: 'insensitive' as const } },
-        { email: { contains: term, mode: 'insensitive' as const } },
-        { phone: { contains: term, mode: 'insensitive' as const } },
-        { jobTitle: { contains: term, mode: 'insensitive' as const } },
+        { firstName: { contains: term, mode: "insensitive" as const } },
+        { lastName: { contains: term, mode: "insensitive" as const } },
+        { email: { contains: term, mode: "insensitive" as const } },
+        { phone: { contains: term, mode: "insensitive" as const } },
+        { jobTitle: { contains: term, mode: "insensitive" as const } },
       ])
     }
 
@@ -58,7 +61,7 @@ export async function GET(req: NextRequest) {
       const data = await prisma.contact.findMany({
         where,
         include: includeClause,
-        orderBy: { updatedAt: 'desc' },
+        orderBy: { updatedAt: "desc" },
         take: limit + 1,
         cursor: { id: cursor },
         skip: 1,
@@ -78,7 +81,7 @@ export async function GET(req: NextRequest) {
       prisma.contact.findMany({
         where,
         include: includeClause,
-        orderBy: { updatedAt: 'desc' },
+        orderBy: { updatedAt: "desc" },
         skip,
         take: limit,
       }),
@@ -88,11 +91,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ data, total, page, limit })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/contacts error:', error)
+    console.error("GET /api/contacts error:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch contacts' },
+      { error: "Failed to fetch contacts" },
       { status: 500 }
     )
   }
@@ -101,7 +107,7 @@ export async function GET(req: NextRequest) {
 // POST /api/contacts — Create contact
 export async function POST(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER', 'MEMBER'])
+    const result = await requireRole(["ADMIN", "MANAGER", "MEMBER"])
     if (isErrorResponse(result)) return result
     const user = result
 
@@ -132,6 +138,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(contact, { status: 201 })
   } catch (error) {
-    return handleApiError(error, '/api/contacts')
+    return handleApiError(error, "/api/contacts")
   }
 }

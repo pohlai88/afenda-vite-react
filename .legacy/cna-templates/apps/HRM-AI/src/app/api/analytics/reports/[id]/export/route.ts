@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { reportBuilderService } from '@/services/analytics'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { reportBuilderService } from "@/services/analytics"
+import { z } from "zod"
 
 const exportReportSchema = z.object({
-  format: z.enum(['PDF', 'EXCEL', 'CSV', 'JSON']),
+  format: z.enum(["PDF", "EXCEL", "CSV", "JSON"]),
   parameters: z.record(z.string(), z.unknown()).optional(),
 })
 
@@ -16,7 +16,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const tenantId = session.user.tenantId
@@ -32,24 +32,27 @@ export async function POST(
       data.parameters
     )
 
-    return NextResponse.json({
-      success: true,
-      data: exportRecord,
-      message: 'Export started',
-    }, { status: 202 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: exportRecord,
+        message: "Export started",
+      },
+      { status: 202 }
+    )
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    if (error instanceof Error && error.message.includes('not found')) {
-      return NextResponse.json({ error: 'Report not found' }, { status: 404 })
+    if (error instanceof Error && error.message.includes("not found")) {
+      return NextResponse.json({ error: "Report not found" }, { status: 404 })
     }
-    console.error('Error exporting report:', error)
+    console.error("Error exporting report:", error)
     return NextResponse.json(
-      { error: 'Failed to export report' },
+      { error: "Failed to export report" },
       { status: 500 }
     )
   }
@@ -63,22 +66,26 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const tenantId = session.user.tenantId
     const userId = session.user.id
 
-    const exports = await reportBuilderService.getExports(tenantId, userId, params.id)
+    const exports = await reportBuilderService.getExports(
+      tenantId,
+      userId,
+      params.id
+    )
 
     return NextResponse.json({
       success: true,
       data: exports,
     })
   } catch (error) {
-    console.error('Error fetching exports:', error)
+    console.error("Error fetching exports:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch exports' },
+      { error: "Failed to fetch exports" },
       { status: 500 }
     )
   }

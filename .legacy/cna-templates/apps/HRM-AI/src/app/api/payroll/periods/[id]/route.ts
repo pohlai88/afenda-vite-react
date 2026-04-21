@@ -1,21 +1,23 @@
 // src/app/api/payroll/periods/[id]/route.ts
 // Single Payroll Period API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { payrollPeriodService } from '@/services/payroll-period.service'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { payrollPeriodService } from "@/services/payroll-period.service"
+import { z } from "zod"
 
 const updatePeriodSchema = z.object({
-  status: z.enum([
-    'DRAFT',
-    'CALCULATING',
-    'SIMULATED',
-    'PENDING_APPROVAL',
-    'APPROVED',
-    'PAID',
-    'CANCELLED',
-  ]).optional(),
+  status: z
+    .enum([
+      "DRAFT",
+      "CALCULATING",
+      "SIMULATED",
+      "PENDING_APPROVAL",
+      "APPROVED",
+      "PAID",
+      "CANCELLED",
+    ])
+    .optional(),
   notes: z.string().optional(),
 })
 
@@ -26,24 +28,27 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
-    const period = await payrollPeriodService.findById(session.user.tenantId, id)
+    const period = await payrollPeriodService.findById(
+      session.user.tenantId,
+      id
+    )
 
     if (!period) {
       return NextResponse.json(
-        { error: 'Kỳ lương không tồn tại' },
+        { error: "Kỳ lương không tồn tại" },
         { status: 404 }
       )
     }
 
     return NextResponse.json(period)
   } catch (error) {
-    console.error('Error fetching payroll period:', error)
+    console.error("Error fetching payroll period:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -56,11 +61,11 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -95,9 +100,9 @@ export async function PATCH(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error updating payroll period:', error)
+    console.error("Error updating payroll period:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -110,11 +115,11 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -125,9 +130,9 @@ export async function DELETE(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error deleting payroll period:', error)
+    console.error("Error deleting payroll period:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

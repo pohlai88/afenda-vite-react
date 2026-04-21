@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { usePathname } from "next/navigation"
+import Link from "next/link"
 import {
   Home,
   Clock,
@@ -13,17 +13,17 @@ import {
   FileText,
   Bell,
   Settings,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Badge } from '@/components/ui/badge'
+} from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet'
-import { useState, useEffect } from 'react'
+} from "@/components/ui/sheet"
+import { useState, useEffect } from "react"
 
 interface NavItem {
   href: string
@@ -35,56 +35,56 @@ interface NavItem {
 
 const mainNavItems: NavItem[] = [
   {
-    href: '/',
+    href: "/",
     icon: <Home className="h-5 w-5" />,
-    label: 'Trang chủ',
-    matchPaths: ['/', '/dashboard'],
+    label: "Trang chủ",
+    matchPaths: ["/", "/dashboard"],
   },
   {
-    href: '/attendance',
+    href: "/attendance",
     icon: <Clock className="h-5 w-5" />,
-    label: 'Chấm công',
-    matchPaths: ['/attendance'],
+    label: "Chấm công",
+    matchPaths: ["/attendance"],
   },
   {
-    href: '/leave',
+    href: "/leave",
     icon: <Calendar className="h-5 w-5" />,
-    label: 'Nghỉ phép',
-    matchPaths: ['/leave'],
+    label: "Nghỉ phép",
+    matchPaths: ["/leave"],
   },
   {
-    href: '/approvals',
+    href: "/approvals",
     icon: <CheckSquare className="h-5 w-5" />,
-    label: 'Phê duyệt',
-    matchPaths: ['/approvals'],
+    label: "Phê duyệt",
+    matchPaths: ["/approvals"],
   },
 ]
 
 const moreNavItems: NavItem[] = [
   {
-    href: '/ai',
+    href: "/ai",
     icon: <MessageSquare className="h-5 w-5" />,
-    label: 'AI Assistant',
+    label: "AI Assistant",
   },
   {
-    href: '/payslip',
+    href: "/payslip",
     icon: <FileText className="h-5 w-5" />,
-    label: 'Phiếu lương',
+    label: "Phiếu lương",
   },
   {
-    href: '/notifications',
+    href: "/notifications",
     icon: <Bell className="h-5 w-5" />,
-    label: 'Thông báo',
+    label: "Thông báo",
   },
   {
-    href: '/profile',
+    href: "/profile",
     icon: <User className="h-5 w-5" />,
-    label: 'Hồ sơ',
+    label: "Hồ sơ",
   },
   {
-    href: '/settings',
+    href: "/settings",
     icon: <Settings className="h-5 w-5" />,
-    label: 'Cài đặt',
+    label: "Cài đặt",
   },
 ]
 
@@ -100,11 +100,11 @@ function NavItemButton({
   const content = (
     <div
       className={cn(
-        'flex flex-col items-center justify-center gap-0.5 py-2 px-3 rounded-lg transition-all',
-        'active:scale-95 touch-manipulation',
+        "flex flex-col items-center justify-center gap-0.5 py-2 px-3 rounded-lg transition-all",
+        "active:scale-95 touch-manipulation",
         isActive
-          ? 'text-primary bg-primary/10'
-          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+          ? "text-primary bg-primary/10"
+          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
       )}
       onClick={onClick}
     >
@@ -115,11 +115,13 @@ function NavItemButton({
             className="absolute -top-1.5 -right-1.5 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center"
             variant="destructive"
           >
-            {item.badge > 99 ? '99+' : item.badge}
+            {item.badge > 99 ? "99+" : item.badge}
           </Badge>
         )}
       </div>
-      <span className="text-[10px] font-medium leading-tight">{item.label}</span>
+      <span className="text-[10px] font-medium leading-tight">
+        {item.label}
+      </span>
     </div>
   )
 
@@ -145,8 +147,8 @@ export function BottomNavigation() {
     const fetchBadges = async () => {
       try {
         const [approvalsRes, notifRes] = await Promise.all([
-          fetch('/api/approvals/pending?countOnly=true'),
-          fetch('/api/notifications/unread-count'),
+          fetch("/api/approvals/pending?countOnly=true"),
+          fetch("/api/notifications/unread-count"),
         ])
 
         if (approvalsRes.ok) {
@@ -171,7 +173,7 @@ export function BottomNavigation() {
   const isActive = (item: NavItem) => {
     if (item.matchPaths) {
       return item.matchPaths.some((path) =>
-        path === '/' ? pathname === '/' : pathname.startsWith(path)
+        path === "/" ? pathname === "/" : pathname.startsWith(path)
       )
     }
     return pathname.startsWith(item.href)
@@ -179,20 +181,23 @@ export function BottomNavigation() {
 
   // Add badges to nav items
   const navItemsWithBadges = mainNavItems.map((item) => {
-    if (item.href === '/approvals') {
+    if (item.href === "/approvals") {
       return { ...item, badge: pendingApprovals }
     }
     return item
   })
 
   const moreItemsWithBadges = moreNavItems.map((item) => {
-    if (item.href === '/notifications') {
+    if (item.href === "/notifications") {
       return { ...item, badge: unreadNotifications }
     }
     return item
   })
 
-  const totalMoreBadges = moreItemsWithBadges.reduce((acc, item) => acc + (item.badge || 0), 0)
+  const totalMoreBadges = moreItemsWithBadges.reduce(
+    (acc, item) => acc + (item.badge || 0),
+    0
+  )
 
   return (
     <>
@@ -220,9 +225,9 @@ export function BottomNavigation() {
               <div className="flex-1">
                 <NavItemButton
                   item={{
-                    href: '#',
+                    href: "#",
                     icon: <MoreHorizontal className="h-5 w-5" />,
-                    label: 'Thêm',
+                    label: "Thêm",
                     badge: totalMoreBadges,
                   }}
                   isActive={false}
@@ -230,7 +235,10 @@ export function BottomNavigation() {
                 />
               </div>
             </SheetTrigger>
-            <SheetContent side="bottom" className="h-auto max-h-[70vh] rounded-t-2xl">
+            <SheetContent
+              side="bottom"
+              className="h-auto max-h-[70vh] rounded-t-2xl"
+            >
               <SheetHeader className="pb-4">
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
@@ -241,10 +249,10 @@ export function BottomNavigation() {
                     href={item.href}
                     onClick={() => setIsMoreOpen(false)}
                     className={cn(
-                      'flex flex-col items-center gap-2 p-3 rounded-xl transition-all',
-                      'active:scale-95 touch-manipulation',
-                      'hover:bg-muted/50',
-                      isActive(item) && 'bg-primary/10 text-primary'
+                      "flex flex-col items-center gap-2 p-3 rounded-xl transition-all",
+                      "active:scale-95 touch-manipulation",
+                      "hover:bg-muted/50",
+                      isActive(item) && "bg-primary/10 text-primary"
                     )}
                   >
                     <div className="relative p-3 rounded-full bg-muted">
@@ -254,7 +262,7 @@ export function BottomNavigation() {
                           className="absolute -top-1 -right-1 h-5 min-w-5 px-1 text-[10px]"
                           variant="destructive"
                         >
-                          {item.badge > 99 ? '99+' : item.badge}
+                          {item.badge > 99 ? "99+" : item.badge}
                         </Badge>
                       )}
                     </div>

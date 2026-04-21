@@ -1,9 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from "@supabase/supabase-js"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
-const BUCKET = 'crm-documents'
+const BUCKET = "crm-documents"
 const MAX_FILE_SIZE = 25 * 1024 * 1024 // 25MB
 
 function getClient() {
@@ -16,7 +16,7 @@ export async function uploadDocument(
   mimeType: string
 ): Promise<{ path: string }> {
   if (file.length > MAX_FILE_SIZE) {
-    throw new Error('File size exceeds 25MB limit')
+    throw new Error("File size exceeds 25MB limit")
   }
 
   const supabase = getClient()
@@ -46,9 +46,7 @@ export async function getSignedUrl(
 
 export async function deleteFile(path: string): Promise<void> {
   const supabase = getClient()
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .remove([path])
+  const { error } = await supabase.storage.from(BUCKET).remove([path])
 
   if (error) throw new Error(`Delete failed: ${error.message}`)
 }
@@ -59,6 +57,6 @@ export function buildStoragePath(
   fileName: string
 ): string {
   const timestamp = Date.now()
-  const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
+  const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_")
   return `${entityType}/${entityId}/${timestamp}-${safeName}`
 }

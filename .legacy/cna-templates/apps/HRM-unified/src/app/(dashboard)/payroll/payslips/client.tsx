@@ -81,7 +81,8 @@ export function PayslipsClient() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["payslips", selectedPeriodId, search],
-    queryFn: () => fetchPayrolls(selectedPeriodId || undefined, search || undefined),
+    queryFn: () =>
+      fetchPayrolls(selectedPeriodId || undefined, search || undefined),
     enabled: !!selectedPeriodId,
   })
 
@@ -92,17 +93,13 @@ export function PayslipsClient() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Phiếu lương</h1>
-        <p className="text-muted-foreground">
-          Xem và in phiếu lương nhân viên
-        </p>
+        <p className="text-muted-foreground">Xem và in phiếu lương nhân viên</p>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle>Danh sách phiếu lương</CardTitle>
-          <CardDescription>
-            Chọn kỳ lương để xem phiếu lương
-          </CardDescription>
+          <CardDescription>Chọn kỳ lương để xem phiếu lương</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">

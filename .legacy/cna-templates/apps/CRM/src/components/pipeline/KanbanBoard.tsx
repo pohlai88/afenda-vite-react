@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback } from "react"
 import {
   DndContext,
   DragOverlay,
@@ -11,11 +11,11 @@ import {
   type DragStartEvent,
   type DragEndEvent,
   type DragOverEvent,
-} from '@dnd-kit/core'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { KanbanColumn } from './KanbanColumn'
-import { DealCard } from './DealCard'
-import type { StageWithDeals, DealWithRelations } from '@/types'
+} from "@dnd-kit/core"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { KanbanColumn } from "./KanbanColumn"
+import { DealCard } from "./DealCard"
+import type { StageWithDeals, DealWithRelations } from "@/types"
 
 interface KanbanBoardProps {
   stages: StageWithDeals[]
@@ -49,9 +49,9 @@ export function KanbanBoard({ stages, onMoveDeal }: KanbanBoardProps) {
       // Determine the target stage ID
       let targetStageId: string | null = null
 
-      if (over.data.current?.type === 'stage') {
+      if (over.data.current?.type === "stage") {
         targetStageId = over.id as string
-      } else if (over.data.current?.type === 'deal') {
+      } else if (over.data.current?.type === "deal") {
         // Dropped onto another deal; find which stage that deal belongs to
         const targetDeal = over.data.current.deal as DealWithRelations
         targetStageId = targetDeal.stageId

@@ -1,7 +1,7 @@
 // src/services/analytics/dashboard.service.ts
 // Custom Dashboard CRUD Service
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 
 export interface CreateDashboardInput {
   name: string
@@ -45,10 +45,7 @@ export async function list(tenantId: string, userId: string) {
   const dashboards = await db.dashboard.findMany({
     where: {
       tenantId,
-      OR: [
-        { userId },
-        { isShared: true },
-      ],
+      OR: [{ userId }, { isShared: true }],
     },
     include: {
       widgets: true,
@@ -56,10 +53,7 @@ export async function list(tenantId: string, userId: string) {
         select: { id: true, name: true, email: true },
       },
     },
-    orderBy: [
-      { isDefault: 'desc' },
-      { updatedAt: 'desc' },
-    ],
+    orderBy: [{ isDefault: "desc" }, { updatedAt: "desc" }],
   })
 
   return dashboards
@@ -70,14 +64,11 @@ export async function getById(tenantId: string, userId: string, id: string) {
     where: {
       id,
       tenantId,
-      OR: [
-        { userId },
-        { isShared: true },
-      ],
+      OR: [{ userId }, { isShared: true }],
     },
     include: {
       widgets: {
-        orderBy: [{ y: 'asc' }, { x: 'asc' }],
+        orderBy: [{ y: "asc" }, { x: "asc" }],
       },
       user: {
         select: { id: true, name: true, email: true },
@@ -131,7 +122,7 @@ export async function update(
   })
 
   if (!existing) {
-    throw new Error('Dashboard không tồn tại hoặc bạn không có quyền chỉnh sửa')
+    throw new Error("Dashboard không tồn tại hoặc bạn không có quyền chỉnh sửa")
   }
 
   // If setting as default, unset other defaults
@@ -166,7 +157,7 @@ export async function remove(tenantId: string, userId: string, id: string) {
   })
 
   if (!existing) {
-    throw new Error('Dashboard không tồn tại hoặc bạn không có quyền xóa')
+    throw new Error("Dashboard không tồn tại hoặc bạn không có quyền xóa")
   }
 
   await db.dashboard.delete({
@@ -186,7 +177,7 @@ export async function addWidget(
   })
 
   if (!dashboard) {
-    throw new Error('Dashboard không tồn tại hoặc bạn không có quyền chỉnh sửa')
+    throw new Error("Dashboard không tồn tại hoặc bạn không có quyền chỉnh sửa")
   }
 
   const widget = await db.dashboardWidget.create({
@@ -219,7 +210,7 @@ export async function updateWidget(
   })
 
   if (!dashboard) {
-    throw new Error('Dashboard không tồn tại hoặc bạn không có quyền chỉnh sửa')
+    throw new Error("Dashboard không tồn tại hoặc bạn không có quyền chỉnh sửa")
   }
 
   const widget = await db.dashboardWidget.update({
@@ -232,7 +223,9 @@ export async function updateWidget(
       ...(data.width !== undefined && { width: data.width }),
       ...(data.height !== undefined && { height: data.height }),
       ...(data.config !== undefined && { config: data.config as object }),
-      ...(data.dataSource !== undefined && { dataSource: data.dataSource as object }),
+      ...(data.dataSource !== undefined && {
+        dataSource: data.dataSource as object,
+      }),
     },
   })
 
@@ -251,7 +244,7 @@ export async function removeWidget(
   })
 
   if (!dashboard) {
-    throw new Error('Dashboard không tồn tại hoặc bạn không có quyền chỉnh sửa')
+    throw new Error("Dashboard không tồn tại hoặc bạn không có quyền chỉnh sửa")
   }
 
   await db.dashboardWidget.delete({

@@ -11,4 +11,16 @@ describe("mapAuthErrorToUserMessage", () => {
       mapAuthErrorToUserMessage("Email could not be sent. Try again shortly.")
     ).toContain("could not send email")
   })
+
+  it("maps tenant activation errors to setup-specific guidance", () => {
+    expect(mapAuthErrorToUserMessage("tenant_selection_required")).toContain(
+      "active operating context"
+    )
+    expect(
+      mapAuthErrorToUserMessage("tenant_context_resolution_failed")
+    ).toContain("workspace access")
+    expect(mapAuthErrorToUserMessage("auth_not_configured")).toContain(
+      "tenant activation"
+    )
+  })
 })

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
 
 // GET /api/pipeline — Get default pipeline with stages and deals (for Kanban)
 export async function GET(req: NextRequest) {
@@ -8,10 +8,10 @@ export async function GET(req: NextRequest) {
       where: { isDefault: true },
       include: {
         stages: {
-          orderBy: { order: 'asc' },
+          orderBy: { order: "asc" },
           include: {
             deals: {
-              orderBy: { updatedAt: 'desc' },
+              orderBy: { updatedAt: "desc" },
               include: {
                 stage: { select: { id: true, name: true, color: true } },
                 company: { select: { id: true, name: true } },
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 
     if (!pipeline) {
       return NextResponse.json(
-        { error: 'No default pipeline found' },
+        { error: "No default pipeline found" },
         { status: 404 }
       )
     }
@@ -55,9 +55,9 @@ export async function GET(req: NextRequest) {
       stages: stagesWithTotals,
     })
   } catch (error) {
-    console.error('GET /api/pipeline error:', error)
+    console.error("GET /api/pipeline error:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch pipeline' },
+      { error: "Failed to fetch pipeline" },
       { status: 500 }
     )
   }

@@ -2,7 +2,7 @@
 // ACTIONS PANEL — Pending AI Actions
 // ═══════════════════════════════════════════════════════════════════════════
 
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react"
 import {
   Check,
   X,
@@ -11,20 +11,20 @@ import {
   Zap,
   FileEdit,
   Trash2,
-} from 'lucide-react';
-import { useAIStore } from '../../stores/aiStore';
-import type { AIProposedAction } from '../../ai/types';
+} from "lucide-react"
+import { useAIStore } from "../../stores/aiStore"
+import type { AIProposedAction } from "../../ai/types"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Action Card Component
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface ActionCardProps {
-  action: AIProposedAction;
-  isSelected: boolean;
-  onSelect: () => void;
-  onApprove: () => void;
-  onReject: () => void;
+  action: AIProposedAction
+  isSelected: boolean
+  onSelect: () => void
+  onApprove: () => void
+  onReject: () => void
 }
 
 const ActionCard: React.FC<ActionCardProps> = ({
@@ -36,29 +36,29 @@ const ActionCard: React.FC<ActionCardProps> = ({
 }) => {
   const getRiskIcon = () => {
     switch (action.riskLevel) {
-      case 'high':
-        return <AlertTriangle size={14} className="text-red-500" />;
-      case 'medium':
-        return <Shield size={14} className="text-yellow-500" />;
+      case "high":
+        return <AlertTriangle size={14} className="text-red-500" />
+      case "medium":
+        return <Shield size={14} className="text-yellow-500" />
       default:
-        return <Zap size={14} className="text-green-500" />;
+        return <Zap size={14} className="text-green-500" />
     }
-  };
+  }
 
   const getTypeIcon = () => {
     switch (action.type) {
-      case 'write':
-        return <FileEdit size={14} />;
-      case 'delete':
-        return <Trash2 size={14} />;
+      case "write":
+        return <FileEdit size={14} />
+      case "delete":
+        return <Trash2 size={14} />
       default:
-        return <Zap size={14} />;
+        return <Zap size={14} />
     }
-  };
+  }
 
   return (
     <div
-      className={`ai-action-card ${isSelected ? 'ai-action-card--selected' : ''}`}
+      className={`ai-action-card ${isSelected ? "ai-action-card--selected" : ""}`}
       onClick={onSelect}
     >
       <div className="ai-action-card-header">
@@ -79,13 +79,13 @@ const ActionCard: React.FC<ActionCardProps> = ({
         <span>{action.status}</span>
       </div>
 
-      {action.status === 'pending' && (
+      {action.status === "pending" && (
         <div className="ai-action-card-actions">
           <button
             className="ai-action-btn ai-action-btn--approve"
             onClick={(e) => {
-              e.stopPropagation();
-              onApprove();
+              e.stopPropagation()
+              onApprove()
             }}
           >
             <Check size={14} />
@@ -94,8 +94,8 @@ const ActionCard: React.FC<ActionCardProps> = ({
           <button
             className="ai-action-btn ai-action-btn--reject"
             onClick={(e) => {
-              e.stopPropagation();
-              onReject();
+              e.stopPropagation()
+              onReject()
             }}
           >
             <X size={14} />
@@ -104,40 +104,40 @@ const ActionCard: React.FC<ActionCardProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Main Component
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const ActionsPanel: React.FC = () => {
-  const pendingActions = useAIStore((state) => state.pendingActions);
-  const selectedAction = useAIStore((state) => state.selectedAction);
-  const selectAction = useAIStore((state) => state.selectAction);
-  const approveAction = useAIStore((state) => state.approveAction);
-  const rejectAction = useAIStore((state) => state.rejectAction);
+  const pendingActions = useAIStore((state) => state.pendingActions)
+  const selectedAction = useAIStore((state) => state.selectedAction)
+  const selectAction = useAIStore((state) => state.selectAction)
+  const approveAction = useAIStore((state) => state.approveAction)
+  const rejectAction = useAIStore((state) => state.rejectAction)
 
   const handleSelect = useCallback(
     (action: AIProposedAction) => {
-      selectAction(selectedAction?.id === action.id ? null : action);
+      selectAction(selectedAction?.id === action.id ? null : action)
     },
     [selectedAction, selectAction]
-  );
+  )
 
   const handleApprove = useCallback(
     (actionId: string) => {
-      approveAction(actionId);
+      approveAction(actionId)
     },
     [approveAction]
-  );
+  )
 
   const handleReject = useCallback(
     (actionId: string) => {
-      rejectAction(actionId);
+      rejectAction(actionId)
     },
     [rejectAction]
-  );
+  )
 
   return (
     <div className="ai-actions-panel">
@@ -192,7 +192,7 @@ export const ActionsPanel: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ActionsPanel;
+export default ActionsPanel

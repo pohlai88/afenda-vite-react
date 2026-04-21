@@ -1,13 +1,8 @@
 // src/lib/performance/services/goal.service.ts
 // Goal Service - OKR and Goal Management
 
-import { db } from '@/lib/db'
-import {
-  GoalType,
-  GoalStatus,
-  GoalPriority,
-  Prisma
-} from '@prisma/client'
+import { db } from "@/lib/db"
+import { GoalType, GoalStatus, GoalPriority, Prisma } from "@prisma/client"
 
 // Types
 export interface CreateGoalInput {
@@ -70,7 +65,7 @@ export class GoalService {
       })
 
       if (!parentGoal) {
-        throw new Error('Parent goal not found')
+        throw new Error("Parent goal not found")
       }
     }
 
@@ -118,14 +113,14 @@ export class GoalService {
         parentGoal: { select: { id: true, title: true } },
         childGoals: {
           select: { id: true, title: true, progress: true, status: true },
-          orderBy: { createdAt: 'asc' },
+          orderBy: { createdAt: "asc" },
         },
         keyResults: {
-          orderBy: { order: 'asc' },
+          orderBy: { order: "asc" },
         },
         createdBy: { select: { id: true, name: true } },
         updates: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           take: 10,
           include: {
             updatedBy: { select: { id: true, name: true } },
@@ -135,7 +130,7 @@ export class GoalService {
     })
 
     if (!goal) {
-      throw new Error('Goal not found')
+      throw new Error("Goal not found")
     }
 
     return goal
@@ -144,7 +139,11 @@ export class GoalService {
   /**
    * List goals
    */
-  async list(filters: GoalFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: GoalFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.GoalWhereInput = {
@@ -181,15 +180,15 @@ export class GoalService {
 
     if (filters.search) {
       where.OR = [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
+        { title: { contains: filters.search, mode: "insensitive" } },
+        { description: { contains: filters.search, mode: "insensitive" } },
       ]
     }
 
     const [goals, total] = await Promise.all([
       db.goal.findMany({
         where,
-        orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
+        orderBy: [{ priority: "desc" }, { createdAt: "desc" }],
         skip,
         take: pageSize,
         include: {
@@ -226,9 +225,9 @@ export class GoalService {
 
     return db.goal.findMany({
       where,
-      orderBy: [{ priority: 'desc' }, { startDate: 'asc' }],
+      orderBy: [{ priority: "desc" }, { startDate: "asc" }],
       include: {
-        keyResults: { orderBy: { order: 'asc' } },
+        keyResults: { orderBy: { order: "asc" } },
         parentGoal: { select: { id: true, title: true, goalType: true } },
       },
     })
@@ -251,14 +250,14 @@ export class GoalService {
 
     return db.goal.findMany({
       where,
-      orderBy: { priority: 'desc' },
+      orderBy: { priority: "desc" },
       include: {
         childGoals: {
           include: {
             owner: { select: { id: true, fullName: true } },
           },
         },
-        keyResults: { orderBy: { order: 'asc' } },
+        keyResults: { orderBy: { order: "asc" } },
       },
     })
   }
@@ -272,7 +271,7 @@ export class GoalService {
     })
 
     if (!goal) {
-      throw new Error('Goal not found')
+      throw new Error("Goal not found")
     }
 
     return db.goal.update({
@@ -348,7 +347,7 @@ export class GoalService {
     })
 
     if (!goal) {
-      throw new Error('Goal not found')
+      throw new Error("Goal not found")
     }
 
     // Create update record
@@ -384,15 +383,15 @@ export class GoalService {
     })
 
     if (!goal) {
-      throw new Error('Goal not found')
+      throw new Error("Goal not found")
     }
 
     if (goal._count.childGoals > 0) {
-      throw new Error('Cannot delete goal with child goals')
+      throw new Error("Cannot delete goal with child goals")
     }
 
     if (goal.status === GoalStatus.ACTIVE) {
-      throw new Error('Cannot delete active goal. Cancel it first.')
+      throw new Error("Cannot delete active goal. Cancel it first.")
     }
 
     await db.goal.delete({ where: { id } })
@@ -410,13 +409,13 @@ export class GoalService {
     })
 
     if (!goal) {
-      throw new Error('Goal not found')
+      throw new Error("Goal not found")
     }
 
     // Get max order
     const lastKR = await db.keyResult.findFirst({
       where: { goalId },
-      orderBy: { order: 'desc' },
+      orderBy: { order: "desc" },
     })
 
     const order = input.order ?? (lastKR ? lastKR.order + 1 : 0)
@@ -438,7 +437,10 @@ export class GoalService {
   /**
    * Update key result
    */
-  async updateKeyResult(keyResultId: string, input: Partial<CreateKeyResultInput>) {
+  async updateKeyResult(
+    keyResultId: string,
+    input: Partial<CreateKeyResultInput>
+  ) {
     return db.keyResult.update({
       where: { id: keyResultId },
       data: {
@@ -456,13 +458,18 @@ export class GoalService {
   /**
    * Update key result progress
    */
-  async updateKeyResultProgress(keyResultId: string, userId: string, currentValue: number, notes?: string) {
+  async updateKeyResultProgress(
+    keyResultId: string,
+    userId: string,
+    currentValue: number,
+    notes?: string
+  ) {
     const kr = await db.keyResult.findUnique({
       where: { id: keyResultId },
     })
 
     if (!kr) {
-      throw new Error('Key result not found')
+      throw new Error("Key result not found")
     }
 
     // Create update record
@@ -478,9 +485,10 @@ export class GoalService {
 
     // Calculate progress
     const targetValue = Number(kr.targetValue)
-    const progress = targetValue > 0
-      ? Math.min(100, Math.round((currentValue / targetValue) * 100))
-      : 0
+    const progress =
+      targetValue > 0
+        ? Math.min(100, Math.round((currentValue / targetValue) * 100))
+        : 0
 
     const completedAt = progress >= 100 ? new Date() : null
 
@@ -509,7 +517,7 @@ export class GoalService {
     })
 
     if (!kr) {
-      throw new Error('Key result not found')
+      throw new Error("Key result not found")
     }
 
     await db.keyResult.delete({ where: { id: keyResultId } })
@@ -533,13 +541,17 @@ export class GoalService {
     }
 
     // Weighted average progress
-    const totalWeight = keyResults.reduce((sum, kr) => sum + Number(kr.weight), 0)
+    const totalWeight = keyResults.reduce(
+      (sum, kr) => sum + Number(kr.weight),
+      0
+    )
     const weightedProgress = keyResults.reduce(
-      (sum, kr) => sum + (kr.progress * Number(kr.weight)),
+      (sum, kr) => sum + kr.progress * Number(kr.weight),
       0
     )
 
-    const progress = totalWeight > 0 ? Math.round(weightedProgress / totalWeight) : 0
+    const progress =
+      totalWeight > 0 ? Math.round(weightedProgress / totalWeight) : 0
 
     await db.goal.update({
       where: { id: goalId },
@@ -565,13 +577,13 @@ export class GoalService {
       db.goal.count({ where }),
 
       db.goal.groupBy({
-        by: ['status'],
+        by: ["status"],
         where,
         _count: true,
       }),
 
       db.goal.groupBy({
-        by: ['goalType'],
+        by: ["goalType"],
         where,
         _count: true,
       }),
@@ -584,8 +596,8 @@ export class GoalService {
 
     return {
       total,
-      byStatus: byStatus.map(s => ({ status: s.status, count: s._count })),
-      byType: byType.map(t => ({ type: t.goalType, count: t._count })),
+      byStatus: byStatus.map((s) => ({ status: s.status, count: s._count })),
+      byType: byType.map((t) => ({ type: t.goalType, count: t._count })),
       averageProgress: avgProgress._avg.progress || 0,
     }
   }
@@ -603,7 +615,7 @@ export class GoalService {
         endDate: { gt: now },
         progress: { lt: 50 }, // Less than 50% progress
       },
-      orderBy: { endDate: 'asc' },
+      orderBy: { endDate: "asc" },
       include: {
         owner: { select: { id: true, fullName: true } },
         department: { select: { id: true, name: true } },

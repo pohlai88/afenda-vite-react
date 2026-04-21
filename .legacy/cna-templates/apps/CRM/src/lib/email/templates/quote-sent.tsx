@@ -1,6 +1,6 @@
-import { Button, Heading, Text, Section } from '@react-email/components'
-import * as React from 'react'
-import { BaseLayout } from './base-layout'
+import { Button, Heading, Text, Section } from "@react-email/components"
+import * as React from "react"
+import { BaseLayout } from "./base-layout"
 
 export interface QuoteSentEmailProps {
   customerName: string
@@ -24,7 +24,7 @@ export function QuoteSentEmail({
       <Heading style={heading}>Báo giá từ {companyName}</Heading>
       <Text style={text}>Kính gửi {customerName},</Text>
       <Text style={text}>
-        Chúng tôi gửi đến bạn báo giá <strong>{quoteNumber}</strong> từ{' '}
+        Chúng tôi gửi đến bạn báo giá <strong>{quoteNumber}</strong> từ{" "}
         <strong>{companyName}</strong>.
       </Text>
 
@@ -37,7 +37,9 @@ export function QuoteSentEmail({
             </tr>
             <tr>
               <td style={summaryLabel}>Tổng giá trị</td>
-              <td style={{ ...summaryValue, color: '#2563EB', fontWeight: 700 }}>
+              <td
+                style={{ ...summaryValue, color: "#2563EB", fontWeight: 700 }}
+              >
                 {totalAmount}
               </td>
             </tr>
@@ -65,73 +67,73 @@ export function QuoteSentEmail({
 }
 
 const heading: React.CSSProperties = {
-  color: '#1F2937',
-  fontSize: '22px',
+  color: "#1F2937",
+  fontSize: "22px",
   fontWeight: 700,
-  lineHeight: '28px',
-  margin: '0 0 16px',
+  lineHeight: "28px",
+  margin: "0 0 16px",
 }
 
 const text: React.CSSProperties = {
-  color: '#374151',
-  fontSize: '14px',
-  lineHeight: '24px',
-  margin: '0 0 12px',
+  color: "#374151",
+  fontSize: "14px",
+  lineHeight: "24px",
+  margin: "0 0 12px",
 }
 
 const summaryBox: React.CSSProperties = {
-  backgroundColor: '#F9FAFB',
-  borderRadius: '6px',
-  border: '1px solid #E5E7EB',
-  padding: '16px',
-  margin: '16px 0',
+  backgroundColor: "#F9FAFB",
+  borderRadius: "6px",
+  border: "1px solid #E5E7EB",
+  padding: "16px",
+  margin: "16px 0",
 }
 
 const summaryTable: React.CSSProperties = {
-  width: '100%',
+  width: "100%",
 }
 
 const summaryLabel: React.CSSProperties = {
-  color: '#6B7280',
-  fontSize: '13px',
-  padding: '4px 0',
+  color: "#6B7280",
+  fontSize: "13px",
+  padding: "4px 0",
 }
 
 const summaryValue: React.CSSProperties = {
-  color: '#1F2937',
-  fontSize: '14px',
+  color: "#1F2937",
+  fontSize: "14px",
   fontWeight: 600,
-  padding: '4px 0',
-  textAlign: 'right' as const,
+  padding: "4px 0",
+  textAlign: "right" as const,
 }
 
 const button: React.CSSProperties = {
-  backgroundColor: '#2563EB',
-  borderRadius: '6px',
-  color: '#FFFFFF',
-  display: 'inline-block',
-  fontSize: '14px',
+  backgroundColor: "#2563EB",
+  borderRadius: "6px",
+  color: "#FFFFFF",
+  display: "inline-block",
+  fontSize: "14px",
   fontWeight: 600,
-  lineHeight: '1',
-  padding: '12px 24px',
-  textDecoration: 'none',
-  textAlign: 'center' as const,
-  margin: '8px 0 16px',
+  lineHeight: "1",
+  padding: "12px 24px",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  margin: "8px 0 16px",
 }
 
 const note: React.CSSProperties = {
-  color: '#6B7280',
-  fontSize: '13px',
-  lineHeight: '20px',
-  margin: '12px 0 0',
-  fontStyle: 'italic',
+  color: "#6B7280",
+  fontSize: "13px",
+  lineHeight: "20px",
+  margin: "12px 0 0",
+  fontStyle: "italic",
 }
 
 const subtext: React.CSSProperties = {
-  color: '#6B7280',
-  fontSize: '13px',
-  lineHeight: '20px',
-  margin: '4px 0 0',
+  color: "#6B7280",
+  fontSize: "13px",
+  lineHeight: "20px",
+  margin: "4px 0 0",
 }
 
 export default QuoteSentEmail

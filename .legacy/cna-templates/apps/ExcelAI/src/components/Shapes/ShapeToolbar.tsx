@@ -2,7 +2,7 @@
 // SHAPE TOOLBAR — Formatting options for selected shape
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState } from "react"
 import {
   Palette,
   PenLine,
@@ -12,18 +12,21 @@ import {
   ArrowDown,
   Lock,
   Unlock,
-} from 'lucide-react';
-import { useShapesStore } from '../../stores/shapesStore';
-import { SHAPE_FILL_PRESETS, SHAPE_STROKE_PRESETS } from '../../data/shapeDefinitions';
-import './Shapes.css';
+} from "lucide-react"
+import { useShapesStore } from "../../stores/shapesStore"
+import {
+  SHAPE_FILL_PRESETS,
+  SHAPE_STROKE_PRESETS,
+} from "../../data/shapeDefinitions"
+import "./Shapes.css"
 
 interface ShapeToolbarProps {
-  sheetId: string;
+  sheetId: string
 }
 
 export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
-  const [showFillPicker, setShowFillPicker] = useState(false);
-  const [showStrokePicker, setShowStrokePicker] = useState(false);
+  const [showFillPicker, setShowFillPicker] = useState(false)
+  const [showStrokePicker, setShowStrokePicker] = useState(false)
 
   const {
     getSelectedShape,
@@ -33,29 +36,29 @@ export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
     duplicateShape,
     bringToFront,
     sendToBack,
-  } = useShapesStore();
+  } = useShapesStore()
 
-  const selectedShape = getSelectedShape(sheetId);
+  const selectedShape = getSelectedShape(sheetId)
 
-  if (!selectedShape) return null;
+  if (!selectedShape) return null
 
   const handleFillChange = (color: string) => {
-    updateShapeStyle(sheetId, selectedShape.id, { fill: color });
-    setShowFillPicker(false);
-  };
+    updateShapeStyle(sheetId, selectedShape.id, { fill: color })
+    setShowFillPicker(false)
+  }
 
   const handleStrokeChange = (color: string) => {
-    updateShapeStyle(sheetId, selectedShape.id, { stroke: color });
-    setShowStrokePicker(false);
-  };
+    updateShapeStyle(sheetId, selectedShape.id, { stroke: color })
+    setShowStrokePicker(false)
+  }
 
   const handleStrokeWidthChange = (width: number) => {
-    updateShapeStyle(sheetId, selectedShape.id, { strokeWidth: width });
-  };
+    updateShapeStyle(sheetId, selectedShape.id, { strokeWidth: width })
+  }
 
   const toggleLock = () => {
-    updateShape(sheetId, selectedShape.id, { locked: !selectedShape.locked });
-  };
+    updateShape(sheetId, selectedShape.id, { locked: !selectedShape.locked })
+  }
 
   return (
     <div className="shape-toolbar">
@@ -64,8 +67,8 @@ export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
         <button
           className="toolbar-btn"
           onClick={() => {
-            setShowFillPicker(!showFillPicker);
-            setShowStrokePicker(false);
+            setShowFillPicker(!showFillPicker)
+            setShowStrokePicker(false)
           }}
           title="Fill Color"
         >
@@ -79,10 +82,10 @@ export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
           <div className="color-picker">
             <div className="color-picker-title">Fill Color</div>
             <div className="color-grid">
-              {SHAPE_FILL_PRESETS.map(color => (
+              {SHAPE_FILL_PRESETS.map((color) => (
                 <button
                   key={color}
-                  className={`color-swatch ${selectedShape.style.fill === color ? 'active' : ''}`}
+                  className={`color-swatch ${selectedShape.style.fill === color ? "active" : ""}`}
                   style={{ background: color }}
                   onClick={() => handleFillChange(color)}
                 />
@@ -90,7 +93,9 @@ export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
             </div>
             <button
               className="no-fill-btn"
-              onClick={() => updateShapeStyle(sheetId, selectedShape.id, { fillOpacity: 0 })}
+              onClick={() =>
+                updateShapeStyle(sheetId, selectedShape.id, { fillOpacity: 0 })
+              }
             >
               No Fill
             </button>
@@ -103,8 +108,8 @@ export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
         <button
           className="toolbar-btn"
           onClick={() => {
-            setShowStrokePicker(!showStrokePicker);
-            setShowFillPicker(false);
+            setShowStrokePicker(!showStrokePicker)
+            setShowFillPicker(false)
           }}
           title="Outline Color"
         >
@@ -118,10 +123,10 @@ export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
           <div className="color-picker">
             <div className="color-picker-title">Outline Color</div>
             <div className="color-grid">
-              {SHAPE_STROKE_PRESETS.map(color => (
+              {SHAPE_STROKE_PRESETS.map((color) => (
                 <button
                   key={color}
-                  className={`color-swatch ${selectedShape.style.stroke === color ? 'active' : ''}`}
+                  className={`color-swatch ${selectedShape.style.stroke === color ? "active" : ""}`}
                   style={{ background: color }}
                   onClick={() => handleStrokeChange(color)}
                 />
@@ -134,7 +139,9 @@ export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
                 min="0"
                 max="10"
                 value={selectedShape.style.strokeWidth}
-                onChange={(e) => handleStrokeWidthChange(Number(e.target.value))}
+                onChange={(e) =>
+                  handleStrokeWidthChange(Number(e.target.value))
+                }
               />
               <span>{selectedShape.style.strokeWidth}px</span>
             </div>
@@ -172,7 +179,7 @@ export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
       <button
         className="toolbar-btn"
         onClick={toggleLock}
-        title={selectedShape.locked ? 'Unlock' : 'Lock'}
+        title={selectedShape.locked ? "Unlock" : "Lock"}
       >
         {selectedShape.locked ? <Lock size={18} /> : <Unlock size={18} />}
       </button>
@@ -184,7 +191,7 @@ export const ShapeToolbar: React.FC<ShapeToolbarProps> = ({ sheetId }) => {
         <Trash2 size={18} />
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default ShapeToolbar;
+export default ShapeToolbar

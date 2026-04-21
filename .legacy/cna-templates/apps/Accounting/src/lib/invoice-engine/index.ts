@@ -3,55 +3,63 @@
 // Manages accounts payable and accounts receivable workflows
 // ============================================================
 
-import Decimal from 'decimal.js';
-import type { GLJournalEntry, GLJournalLine } from '../gl-engine';
+import Decimal from "decimal.js"
+import type { GLJournalEntry, GLJournalLine } from "../gl-engine"
 
 // ==================== Types ====================
 
 export interface InvoiceInput {
-  invoiceNumber: string;
-  counterpartyId: string;     // supplierId (AP) or customerId (AR)
-  counterpartyName: string;
-  counterpartyTaxCode?: string;
-  invoiceDate: Date;
-  dueDate: Date;
-  lines: InvoiceLineInput[];
-  currency?: string;
-  exchangeRate?: number;
-  description?: string;
-  paymentTermDays?: number;
-  glAccountId?: string;       // Override default GL account
+  invoiceNumber: string
+  counterpartyId: string // supplierId (AP) or customerId (AR)
+  counterpartyName: string
+  counterpartyTaxCode?: string
+  invoiceDate: Date
+  dueDate: Date
+  lines: InvoiceLineInput[]
+  currency?: string
+  exchangeRate?: number
+  description?: string
+  paymentTermDays?: number
+  glAccountId?: string // Override default GL account
 }
 
 export interface InvoiceLineInput {
-  description: string;
-  quantity: number;
-  unitPrice: number;
-  vatRate: number;            // 0, 0.05, 0.08, 0.10
-  accountId?: string;         // GL expense/revenue account
-  productId?: string;
-  departmentId?: string;
-  costCenterId?: string;
-  projectId?: string;
+  description: string
+  quantity: number
+  unitPrice: number
+  vatRate: number // 0, 0.05, 0.08, 0.10
+  accountId?: string // GL expense/revenue account
+  productId?: string
+  departmentId?: string
+  costCenterId?: string
+  projectId?: string
 }
 
 export interface InvoiceCalculation {
-  subtotal: Decimal;
-  vatAmount: Decimal;
-  totalAmount: Decimal;
-  lines: Array<InvoiceLineInput & {
-    amount: Decimal;
-    vatAmount: Decimal;
-    totalAmount: Decimal;
-  }>;
+  subtotal: Decimal
+  vatAmount: Decimal
+  totalAmount: Decimal
+  lines: Array<
+    InvoiceLineInput & {
+      amount: Decimal
+      vatAmount: Decimal
+      totalAmount: Decimal
+    }
+  >
 }
 
 export interface AgingBucket {
-  label: string;
-  days: string;
-  count: number;
-  amount: Decimal;
-  invoices: Array<{ id: string; number: string; counterparty: string; amount: number; daysOverdue: number }>;
+  label: string
+  days: string
+  count: number
+  amount: Decimal
+  invoices: Array<{
+    id: string
+    number: string
+    counterparty: string
+    amount: number
+    daysOverdue: number
+  }>
 }
 
 // ==================== Invoice Calculation ====================
@@ -59,36 +67,41 @@ export interface AgingBucket {
 /**
  * Calculate invoice totals from lines
  */
-export function calculateInvoice(lines: InvoiceLineInput[]): InvoiceCalculation {
-  let subtotal = new Decimal(0);
-  let vatTotal = new Decimal(0);
+export function calculateInvoice(
+  lines: InvoiceLineInput[]
+): InvoiceCalculation {
+  let subtotal = new Decimal(0)
+  let vatTotal = new Decimal(0)
 
-  const calculatedLines = lines.map(line => {
-    const qty = new Decimal(line.quantity);
-    const price = new Decimal(line.unitPrice);
-    const amount = qty.times(price);
-    const vat = amount.times(new Decimal(line.vatRate));
-    const total = amount.plus(vat);
+  const calculatedLines = lines.map((line) => {
+    const qty = new Decimal(line.quantity)
+    const price = new Decimal(line.unitPrice)
+    const amount = qty.times(price)
+    const vat = amount.times(new Decimal(line.vatRate))
+    const total = amount.plus(vat)
 
-    subtotal = subtotal.plus(amount);
-    vatTotal = vatTotal.plus(vat);
+    subtotal = subtotal.plus(amount)
+    vatTotal = vatTotal.plus(vat)
 
-    return { ...line, amount, vatAmount: vat, totalAmount: total };
-  });
+    return { ...line, amount, vatAmount: vat, totalAmount: total }
+  })
 
   return {
     subtotal,
     vatAmount: vatTotal,
     totalAmount: subtotal.plus(vatTotal),
     lines: calculatedLines,
-  };
+  }
 }
 
 /**
  * Calculate remaining amount after payments
  */
-export function calculateRemainingAmount(totalAmount: number, paidAmount: number): Decimal {
-  return new Decimal(totalAmount).minus(new Decimal(paidAmount));
+export function calculateRemainingAmount(
+  totalAmount: number,
+  paidAmount: number
+): Decimal {
+  return new Decimal(totalAmount).minus(new Decimal(paidAmount))
 }
 
 /**
@@ -100,12 +113,12 @@ export function determineInvoiceStatus(
   dueDate: Date,
   currentDate: Date = new Date()
 ): string {
-  const remaining = new Decimal(totalAmount).minus(new Decimal(paidAmount));
+  const remaining = new Decimal(totalAmount).minus(new Decimal(paidAmount))
 
-  if (remaining.isZero() || remaining.isNegative()) return 'PAID';
-  if (paidAmount > 0) return 'PARTIALLY_PAID';
-  if (currentDate > dueDate) return 'OVERDUE';
-  return 'SENT';
+  if (remaining.isZero() || remaining.isNegative()) return "PAID"
+  if (paidAmount > 0) return "PARTIALLY_PAID"
+  if (currentDate > dueDate) return "OVERDUE"
+  return "SENT"
 }
 
 // ==================== GL Posting ====================
@@ -118,16 +131,16 @@ export function determineInvoiceStatus(
 export function generateAPJournalEntry(
   invoice: InvoiceInput,
   calculation: InvoiceCalculation,
-  apAccountId: string,        // TK 331
-  inputVatAccountId: string   // TK 1331
+  apAccountId: string, // TK 331
+  inputVatAccountId: string // TK 1331
 ): GLJournalEntry {
-  const lines: GLJournalLine[] = [];
+  const lines: GLJournalLine[] = []
 
   // Debit expense accounts
   for (const line of calculation.lines) {
     if (line.amount.greaterThan(0)) {
       lines.push({
-        accountId: line.accountId || invoice.glAccountId || '',
+        accountId: line.accountId || invoice.glAccountId || "",
         description: line.description,
         debitAmount: line.amount.toNumber(),
         creditAmount: 0,
@@ -136,7 +149,7 @@ export function generateAPJournalEntry(
         projectId: line.projectId,
         productId: line.productId,
         supplierId: invoice.counterpartyId,
-      });
+      })
     }
   }
 
@@ -148,7 +161,7 @@ export function generateAPJournalEntry(
       debitAmount: calculation.vatAmount.toNumber(),
       creditAmount: 0,
       supplierId: invoice.counterpartyId,
-    });
+    })
   }
 
   // Credit AP
@@ -158,19 +171,19 @@ export function generateAPJournalEntry(
     debitAmount: 0,
     creditAmount: calculation.totalAmount.toNumber(),
     supplierId: invoice.counterpartyId,
-  });
+  })
 
   return {
     entryDate: invoice.invoiceDate,
-    journalType: 'PURCHASE',
-    source: 'SYSTEM',
-    sourceModule: 'accounting',
+    journalType: "PURCHASE",
+    source: "SYSTEM",
+    sourceModule: "accounting",
     sourceRef: invoice.invoiceNumber,
     description: `Mua hàng - ${invoice.counterpartyName} - HĐ ${invoice.invoiceNumber}`,
     currency: invoice.currency,
     exchangeRate: invoice.exchangeRate,
     lines,
-  };
+  }
 }
 
 /**
@@ -181,10 +194,10 @@ export function generateAPJournalEntry(
 export function generateARJournalEntry(
   invoice: InvoiceInput,
   calculation: InvoiceCalculation,
-  arAccountId: string,          // TK 131
-  outputVatAccountId: string    // TK 33311
+  arAccountId: string, // TK 131
+  outputVatAccountId: string // TK 33311
 ): GLJournalEntry {
-  const lines: GLJournalLine[] = [];
+  const lines: GLJournalLine[] = []
 
   // Debit AR
   lines.push({
@@ -193,13 +206,13 @@ export function generateARJournalEntry(
     debitAmount: calculation.totalAmount.toNumber(),
     creditAmount: 0,
     customerId: invoice.counterpartyId,
-  });
+  })
 
   // Credit revenue accounts
   for (const line of calculation.lines) {
     if (line.amount.greaterThan(0)) {
       lines.push({
-        accountId: line.accountId || invoice.glAccountId || '',
+        accountId: line.accountId || invoice.glAccountId || "",
         description: line.description,
         debitAmount: 0,
         creditAmount: line.amount.toNumber(),
@@ -207,7 +220,7 @@ export function generateARJournalEntry(
         projectId: line.projectId,
         productId: line.productId,
         customerId: invoice.counterpartyId,
-      });
+      })
     }
   }
 
@@ -219,20 +232,20 @@ export function generateARJournalEntry(
       debitAmount: 0,
       creditAmount: calculation.vatAmount.toNumber(),
       customerId: invoice.counterpartyId,
-    });
+    })
   }
 
   return {
     entryDate: invoice.invoiceDate,
-    journalType: 'SALES',
-    source: 'SYSTEM',
-    sourceModule: 'accounting',
+    journalType: "SALES",
+    source: "SYSTEM",
+    sourceModule: "accounting",
     sourceRef: invoice.invoiceNumber,
     description: `Bán hàng - ${invoice.counterpartyName} - HĐ ${invoice.invoiceNumber}`,
     currency: invoice.currency,
     exchangeRate: invoice.exchangeRate,
     lines,
-  };
+  }
 }
 
 /**
@@ -241,42 +254,50 @@ export function generateARJournalEntry(
  * AR Receipt: Debit 111/112, Credit 131
  */
 export function generatePaymentJournalEntry(
-  type: 'AP' | 'AR',
+  type: "AP" | "AR",
   amount: number,
   counterpartyId: string,
   counterpartyName: string,
-  payableReceivableAccountId: string,   // TK 331 or 131
-  cashBankAccountId: string,            // TK 111 or 112
+  payableReceivableAccountId: string, // TK 331 or 131
+  cashBankAccountId: string, // TK 111 or 112
   paymentMethod: string,
   reference?: string
 ): GLJournalEntry {
-  const isAP = type === 'AP';
+  const isAP = type === "AP"
 
   return {
     entryDate: new Date(),
-    journalType: isAP ? 'CASH_PAYMENT' : 'CASH_RECEIPT',
-    source: 'SYSTEM',
-    sourceModule: 'accounting',
+    journalType: isAP ? "CASH_PAYMENT" : "CASH_RECEIPT",
+    source: "SYSTEM",
+    sourceModule: "accounting",
     description: isAP
-      ? `Thanh toán cho ${counterpartyName}${reference ? ` - Ref: ${reference}` : ''}`
-      : `Thu tiền từ ${counterpartyName}${reference ? ` - Ref: ${reference}` : ''}`,
+      ? `Thanh toán cho ${counterpartyName}${reference ? ` - Ref: ${reference}` : ""}`
+      : `Thu tiền từ ${counterpartyName}${reference ? ` - Ref: ${reference}` : ""}`,
     lines: [
       {
         accountId: isAP ? payableReceivableAccountId : cashBankAccountId,
-        description: isAP ? `Trả nợ ${counterpartyName}` : `Thu tiền ${counterpartyName}`,
+        description: isAP
+          ? `Trả nợ ${counterpartyName}`
+          : `Thu tiền ${counterpartyName}`,
         debitAmount: amount,
         creditAmount: 0,
-        ...(isAP ? { supplierId: counterpartyId } : { customerId: counterpartyId }),
+        ...(isAP
+          ? { supplierId: counterpartyId }
+          : { customerId: counterpartyId }),
       },
       {
         accountId: isAP ? cashBankAccountId : payableReceivableAccountId,
-        description: isAP ? `Chi ${paymentMethod === 'CASH' ? 'tiền mặt' : 'chuyển khoản'}` : `Ghi nhận thu`,
+        description: isAP
+          ? `Chi ${paymentMethod === "CASH" ? "tiền mặt" : "chuyển khoản"}`
+          : `Ghi nhận thu`,
         debitAmount: 0,
         creditAmount: amount,
-        ...(isAP ? { supplierId: counterpartyId } : { customerId: counterpartyId }),
+        ...(isAP
+          ? { supplierId: counterpartyId }
+          : { customerId: counterpartyId }),
       },
     ],
-  };
+  }
 }
 
 // ==================== Aging Analysis ====================
@@ -286,44 +307,78 @@ export function generatePaymentJournalEntry(
  */
 export function calculateAging(
   invoices: Array<{
-    id: string;
-    invoiceNumber: string;
-    counterpartyName: string;
-    remainingAmount: number;
-    dueDate: Date;
+    id: string
+    invoiceNumber: string
+    counterpartyName: string
+    remainingAmount: number
+    dueDate: Date
   }>,
   asOfDate: Date = new Date()
 ): AgingBucket[] {
   const buckets: AgingBucket[] = [
-    { label: 'Chưa đến hạn', days: 'Current', count: 0, amount: new Decimal(0), invoices: [] },
-    { label: '1-30 ngày', days: '1-30', count: 0, amount: new Decimal(0), invoices: [] },
-    { label: '31-60 ngày', days: '31-60', count: 0, amount: new Decimal(0), invoices: [] },
-    { label: '61-90 ngày', days: '61-90', count: 0, amount: new Decimal(0), invoices: [] },
-    { label: 'Trên 90 ngày', days: '90+', count: 0, amount: new Decimal(0), invoices: [] },
-  ];
+    {
+      label: "Chưa đến hạn",
+      days: "Current",
+      count: 0,
+      amount: new Decimal(0),
+      invoices: [],
+    },
+    {
+      label: "1-30 ngày",
+      days: "1-30",
+      count: 0,
+      amount: new Decimal(0),
+      invoices: [],
+    },
+    {
+      label: "31-60 ngày",
+      days: "31-60",
+      count: 0,
+      amount: new Decimal(0),
+      invoices: [],
+    },
+    {
+      label: "61-90 ngày",
+      days: "61-90",
+      count: 0,
+      amount: new Decimal(0),
+      invoices: [],
+    },
+    {
+      label: "Trên 90 ngày",
+      days: "90+",
+      count: 0,
+      amount: new Decimal(0),
+      invoices: [],
+    },
+  ]
 
   for (const inv of invoices) {
-    if (inv.remainingAmount <= 0) continue;
+    if (inv.remainingAmount <= 0) continue
 
-    const daysOverdue = Math.floor((asOfDate.getTime() - inv.dueDate.getTime()) / (1000 * 60 * 60 * 24));
+    const daysOverdue = Math.floor(
+      (asOfDate.getTime() - inv.dueDate.getTime()) / (1000 * 60 * 60 * 24)
+    )
 
-    let bucketIndex: number;
-    if (daysOverdue <= 0) bucketIndex = 0;
-    else if (daysOverdue <= 30) bucketIndex = 1;
-    else if (daysOverdue <= 60) bucketIndex = 2;
-    else if (daysOverdue <= 90) bucketIndex = 3;
-    else bucketIndex = 4;
+    let bucketIndex: number
+    if (daysOverdue <= 0) bucketIndex = 0
+    else if (daysOverdue <= 30) bucketIndex = 1
+    else if (daysOverdue <= 60) bucketIndex = 2
+    else if (daysOverdue <= 90) bucketIndex = 3
+    else bucketIndex = 4
 
-    buckets[bucketIndex].count++;
-    buckets[bucketIndex].amount = buckets[bucketIndex].amount.plus(inv.remainingAmount);
+    buckets[bucketIndex].count++
+    buckets[bucketIndex].amount = buckets[bucketIndex].amount.plus(
+      inv.remainingAmount
+    )
     buckets[bucketIndex].invoices.push({
       id: inv.id,
       number: inv.invoiceNumber,
       counterparty: inv.counterpartyName,
       amount: inv.remainingAmount,
       daysOverdue: Math.max(0, daysOverdue),
-    });
+    })
   }
 
-  return buckets;
+  return buckets
 }

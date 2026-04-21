@@ -1,10 +1,10 @@
 // src/services/approval.service.ts
 // Approval Service
 
-import { db } from '@/lib/db'
-import type { ApprovalStatus, Prisma } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
-import { processApproval } from '@/lib/workflow/engine'
+import { db } from "@/lib/db"
+import type { ApprovalStatus, Prisma } from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
+import { processApproval } from "@/lib/workflow/engine"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -62,7 +62,7 @@ export const approvalService = {
     const approvals = await db.approvalStep.findMany({
       where: {
         approverId: userId,
-        status: 'PENDING',
+        status: "PENDING",
       },
       include: {
         step: {
@@ -86,10 +86,10 @@ export const approvalService = {
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
 
-    return approvals.map(a => ({
+    return approvals.map((a) => ({
       id: a.id,
       status: a.status,
       comments: a.comments,
@@ -110,14 +110,14 @@ export const approvalService = {
   async getHistory(
     userId: string,
     filters: ApprovalFilters = {}
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<PaginatedResponse<any>> {
     const { status, page = 1, pageSize = 20 } = filters
     const skip = (page - 1) * pageSize
 
     const where: Prisma.ApprovalStepWhereInput = {
       approverId: userId,
-      status: status || { not: 'PENDING' },
+      status: status || { not: "PENDING" },
     }
 
     const [data, total] = await Promise.all([
@@ -139,7 +139,7 @@ export const approvalService = {
             },
           },
         },
-        orderBy: { respondedAt: 'desc' },
+        orderBy: { respondedAt: "desc" },
         skip,
         take: pageSize,
       }),
@@ -196,7 +196,7 @@ export const approvalService = {
                 step: true,
                 approver: { select: { id: true, name: true } },
               },
-              orderBy: { createdAt: 'asc' },
+              orderBy: { createdAt: "asc" },
             },
           },
         },
@@ -207,7 +207,7 @@ export const approvalService = {
 
     // Get the actual request data based on reference type
     let requestData = null
-    if (approval.instance.referenceType === 'LEAVE_REQUEST') {
+    if (approval.instance.referenceType === "LEAVE_REQUEST") {
       requestData = await db.leaveRequest.findUnique({
         where: { id: approval.instance.referenceId },
         include: {
@@ -234,7 +234,7 @@ export const approvalService = {
    * Approve a request
    */
   async approve(approvalId: string, userId: string, comments?: string) {
-    await processApproval(approvalId, userId, 'APPROVED', comments)
+    await processApproval(approvalId, userId, "APPROVED", comments)
     return this.getById(approvalId)
   },
 
@@ -243,9 +243,9 @@ export const approvalService = {
    */
   async reject(approvalId: string, userId: string, comments?: string) {
     if (!comments) {
-      throw new Error('Vui lòng nhập lý do từ chối')
+      throw new Error("Vui lòng nhập lý do từ chối")
     }
-    await processApproval(approvalId, userId, 'REJECTED', comments)
+    await processApproval(approvalId, userId, "REJECTED", comments)
     return this.getById(approvalId)
   },
 
@@ -256,7 +256,7 @@ export const approvalService = {
     return db.approvalStep.count({
       where: {
         approverId: userId,
-        status: 'PENDING',
+        status: "PENDING",
       },
     })
   },
@@ -276,7 +276,7 @@ export const approvalService = {
           select: { id: true, name: true },
         },
       },
-      orderBy: { step: { stepOrder: 'asc' } },
+      orderBy: { step: { stepOrder: "asc" } },
     })
   },
 
@@ -288,7 +288,7 @@ export const approvalService = {
 
     await db.approvalStep.updateMany({
       where: {
-        status: 'PENDING',
+        status: "PENDING",
         dueAt: { lt: now },
         isOverdue: false,
       },

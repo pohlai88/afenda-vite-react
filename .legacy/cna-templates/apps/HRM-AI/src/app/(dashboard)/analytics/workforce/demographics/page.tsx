@@ -1,13 +1,19 @@
 // src/app/(dashboard)/analytics/workforce/demographics/page.tsx
 // Demographics Analysis Page
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { RefreshCw, Download } from 'lucide-react'
+import { useState, useEffect } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { RefreshCw, Download } from "lucide-react"
 import {
   BarChart,
   Bar,
@@ -20,7 +26,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts'
+} from "recharts"
 
 interface DemographicsData {
   byGender: Array<{ gender: string; count: number }>
@@ -29,7 +35,14 @@ interface DemographicsData {
   byEducation: Array<{ level: string; count: number }>
 }
 
-const COLORS = ['#3b82f6', '#ec4899', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444']
+const COLORS = [
+  "#3b82f6",
+  "#ec4899",
+  "#8b5cf6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+]
 
 export default function DemographicsPage() {
   const [loading, setLoading] = useState(true)
@@ -61,7 +74,7 @@ export default function DemographicsPage() {
         })
       }
     } catch (error) {
-      console.error('Error fetching demographics data:', error)
+      console.error("Error fetching demographics data:", error)
     } finally {
       setLoading(false)
     }
@@ -110,7 +123,9 @@ export default function DemographicsPage() {
                     outerRadius={100}
                     dataKey="count"
                     nameKey="gender"
-                    label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                    label={({ name, percent }) =>
+                      `${name} ${((percent || 0) * 100).toFixed(0)}%`
+                    }
                   >
                     {(data?.byGender || []).map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index]} />
@@ -189,7 +204,9 @@ export default function DemographicsPage() {
                     outerRadius={100}
                     dataKey="count"
                     nameKey="level"
-                    label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                    label={({ name, percent }) =>
+                      `${name} ${((percent || 0) * 100).toFixed(0)}%`
+                    }
                   >
                     {(data?.byEducation || []).map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index]} />
@@ -221,7 +238,9 @@ export default function DemographicsPage() {
             </div>
             <div className="text-center">
               <p className="text-3xl font-bold text-purple-600">65%</p>
-              <p className="text-sm text-muted-foreground">Có bằng ĐH trở lên</p>
+              <p className="text-sm text-muted-foreground">
+                Có bằng ĐH trở lên
+              </p>
             </div>
             <div className="text-center">
               <p className="text-3xl font-bold text-orange-600">45%</p>

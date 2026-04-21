@@ -2,20 +2,20 @@
 // FORMULA SUGGESTIONS — Dropdown suggestions component
 // =============================================================================
 
-import React, { useState, useEffect } from 'react';
-import { nlFormulaEngine } from '../../nlformula';
-import type { CellContext, Suggestion } from '../../nlformula/types';
+import React, { useState, useEffect } from "react"
+import { nlFormulaEngine } from "../../nlformula"
+import type { CellContext, Suggestion } from "../../nlformula/types"
 
 // -----------------------------------------------------------------------------
 // Props
 // -----------------------------------------------------------------------------
 
 interface FormulaSuggestionsProps {
-  input: string;
-  cursorPosition: number;
-  context: CellContext;
-  onSelect: (value: string) => void;
-  maxSuggestions?: number;
+  input: string
+  cursorPosition: number
+  context: CellContext
+  onSelect: (value: string) => void
+  maxSuggestions?: number
 }
 
 // -----------------------------------------------------------------------------
@@ -29,61 +29,64 @@ export const FormulaSuggestions: React.FC<FormulaSuggestionsProps> = ({
   onSelect,
   maxSuggestions = 6,
 }) => {
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Fetch suggestions
   useEffect(() => {
     const fetchSuggestions = async () => {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
         const result = await nlFormulaEngine.suggest(
           input,
           cursorPosition,
           context
-        );
-        setSuggestions(result.suggestions.slice(0, maxSuggestions));
-        setSelectedIndex(0);
+        )
+        setSuggestions(result.suggestions.slice(0, maxSuggestions))
+        setSelectedIndex(0)
       } catch {
-        setSuggestions([]);
+        setSuggestions([])
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchSuggestions();
-  }, [input, cursorPosition, context, maxSuggestions]);
+    fetchSuggestions()
+  }, [input, cursorPosition, context, maxSuggestions])
 
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (suggestions.length === 0) return;
+      if (suggestions.length === 0) return
 
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
+      if (e.key === "ArrowDown") {
+        e.preventDefault()
         setSelectedIndex((prev) =>
           prev < suggestions.length - 1 ? prev + 1 : 0
-        );
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
+        )
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault()
         setSelectedIndex((prev) =>
           prev > 0 ? prev - 1 : suggestions.length - 1
-        );
-      } else if (e.key === 'Tab' || (e.key === 'Enter' && suggestions.length > 0)) {
+        )
+      } else if (
+        e.key === "Tab" ||
+        (e.key === "Enter" && suggestions.length > 0)
+      ) {
         if (suggestions[selectedIndex]) {
-          e.preventDefault();
-          onSelect(suggestions[selectedIndex].insert);
+          e.preventDefault()
+          onSelect(suggestions[selectedIndex].insert)
         }
       }
-    };
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [suggestions, selectedIndex, onSelect]);
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [suggestions, selectedIndex, onSelect])
 
   if (suggestions.length === 0 && !isLoading) {
-    return null;
+    return null
   }
 
   return (
@@ -98,12 +101,16 @@ export const FormulaSuggestions: React.FC<FormulaSuggestionsProps> = ({
             <li
               key={`${suggestion.type}-${suggestion.display}-${index}`}
               className={`formula-suggestions__item ${
-                index === selectedIndex ? 'formula-suggestions__item--selected' : ''
+                index === selectedIndex
+                  ? "formula-suggestions__item--selected"
+                  : ""
               }`}
               onClick={() => onSelect(suggestion.insert)}
               onMouseEnter={() => setSelectedIndex(index)}
             >
-              <span className={`formula-suggestions__icon formula-suggestions__icon--${suggestion.type}`}>
+              <span
+                className={`formula-suggestions__icon formula-suggestions__icon--${suggestion.type}`}
+              >
                 {getIcon(suggestion.type)}
               </span>
               <span className="formula-suggestions__text">
@@ -116,7 +123,7 @@ export const FormulaSuggestions: React.FC<FormulaSuggestionsProps> = ({
                   </span>
                 )}
               </span>
-              {suggestion.type === 'function' && (
+              {suggestion.type === "function" && (
                 <span className="formula-suggestions__badge">fx</span>
               )}
             </li>
@@ -129,8 +136,8 @@ export const FormulaSuggestions: React.FC<FormulaSuggestionsProps> = ({
         <span>Esc Close</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helper
@@ -138,19 +145,19 @@ export const FormulaSuggestions: React.FC<FormulaSuggestionsProps> = ({
 
 function getIcon(type: string): string {
   switch (type) {
-    case 'function':
-      return 'ƒ';
-    case 'reference':
-      return '⊞';
-    case 'template':
-      return '☆';
-    case 'recent':
-      return '↻';
-    case 'nl_formula':
-      return '💬';
+    case "function":
+      return "ƒ"
+    case "reference":
+      return "⊞"
+    case "template":
+      return "☆"
+    case "recent":
+      return "↻"
+    case "nl_formula":
+      return "💬"
     default:
-      return '•';
+      return "•"
   }
 }
 
-export default FormulaSuggestions;
+export default FormulaSuggestions

@@ -1,15 +1,15 @@
 // Phase 10: Offline Indicator Component
 // Displays network connection status
 
-import React from 'react';
-import { useNetworkStatus } from '../../hooks/useNetworkStatus';
-import { useSyncStore } from '../../stores/syncStore';
+import React from "react"
+import { useNetworkStatus } from "../../hooks/useNetworkStatus"
+import { useSyncStore } from "../../stores/syncStore"
 
 export const OfflineIndicator: React.FC = () => {
-  const { isOnline, effectiveType } = useNetworkStatus();
-  const pendingCount = useSyncStore((state) => state.globalPendingCount);
+  const { isOnline, effectiveType } = useNetworkStatus()
+  const pendingCount = useSyncStore((state) => state.globalPendingCount)
 
-  if (isOnline && pendingCount === 0) return null;
+  if (isOnline && pendingCount === 0) return null
 
   return (
     <div className="flex items-center gap-2">
@@ -31,7 +31,7 @@ export const OfflineIndicator: React.FC = () => {
           </svg>
           <span>Offline</span>
         </div>
-      ) : effectiveType === 'slow-2g' || effectiveType === '2g' ? (
+      ) : effectiveType === "slow-2g" || effectiveType === "2g" ? (
         <div className="flex items-center gap-2 px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
           <svg
             className="w-4 h-4"
@@ -71,25 +71,35 @@ export const OfflineIndicator: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Compact version for toolbar
 export const OfflineIndicatorCompact: React.FC = () => {
-  const { isOnline } = useNetworkStatus();
-  const pendingCount = useSyncStore((state) => state.globalPendingCount);
+  const { isOnline } = useNetworkStatus()
+  const pendingCount = useSyncStore((state) => state.globalPendingCount)
 
   return (
     <div className="flex items-center gap-1">
       <div
         className={`w-2 h-2 rounded-full ${
-          isOnline ? (pendingCount > 0 ? 'bg-blue-500' : 'bg-green-500') : 'bg-red-500'
+          isOnline
+            ? pendingCount > 0
+              ? "bg-blue-500"
+              : "bg-green-500"
+            : "bg-red-500"
         }`}
-        title={isOnline ? (pendingCount > 0 ? `${pendingCount} changes pending` : 'Online') : 'Offline'}
+        title={
+          isOnline
+            ? pendingCount > 0
+              ? `${pendingCount} changes pending`
+              : "Online"
+            : "Offline"
+        }
       />
       {pendingCount > 0 && (
         <span className="text-xs text-gray-500">{pendingCount}</span>
       )}
     </div>
-  );
-};
+  )
+}

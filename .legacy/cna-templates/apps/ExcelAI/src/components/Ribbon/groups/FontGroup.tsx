@@ -1,26 +1,38 @@
-import React from 'react';
-import { RibbonGroup } from '../RibbonGroup';
-import { RibbonButton } from '../RibbonButton';
-import { FontPicker } from '../../Toolbar/FontPicker';
-import { FontSizePicker } from '../../Toolbar/FontSizePicker';
-import { ColorPicker } from '../../Toolbar/ColorPicker';
-import { BorderSelector } from '../../Toolbar/BorderSelector';
+import React from "react"
+import { RibbonGroup } from "../RibbonGroup"
+import { RibbonButton } from "../RibbonButton"
+import { FontPicker } from "../../Toolbar/FontPicker"
+import { FontSizePicker } from "../../Toolbar/FontSizePicker"
+import { ColorPicker } from "../../Toolbar/ColorPicker"
+import { BorderSelector } from "../../Toolbar/BorderSelector"
 import {
-  Bold, Italic, Underline,
-  ChevronUp, ChevronDown, PaintBucket, Type
-} from 'lucide-react';
-import { useFormatStore } from '../../../stores/formatStore';
+  Bold,
+  Italic,
+  Underline,
+  ChevronUp,
+  ChevronDown,
+  PaintBucket,
+  Type,
+} from "lucide-react"
+import { useFormatStore } from "../../../stores/formatStore"
 
 export const FontGroup: React.FC = () => {
   const {
-    fontFamily, setFontFamily,
-    fontSize, setFontSize,
-    bold, toggleBold,
-    italic, toggleItalic,
-    underline, toggleUnderline,
-    textColor, setTextColor,
-    backgroundColor, setBackgroundColor,
-  } = useFormatStore();
+    fontFamily,
+    setFontFamily,
+    fontSize,
+    setFontSize,
+    bold,
+    toggleBold,
+    italic,
+    toggleItalic,
+    underline,
+    toggleUnderline,
+    textColor,
+    setTextColor,
+    backgroundColor,
+    setBackgroundColor,
+  } = useFormatStore()
 
   return (
     <RibbonGroup label="Font" showDialogLauncher>
@@ -29,10 +41,18 @@ export const FontGroup: React.FC = () => {
         <div className="font-row">
           <FontPicker value={fontFamily} onChange={setFontFamily} />
           <FontSizePicker value={fontSize} onChange={setFontSize} />
-          <button className="size-button" onClick={() => setFontSize(fontSize + 1)} title="Increase Font Size">
+          <button
+            className="size-button"
+            onClick={() => setFontSize(fontSize + 1)}
+            title="Increase Font Size"
+          >
             <ChevronUp className="w-3 h-3" />
           </button>
-          <button className="size-button" onClick={() => setFontSize(Math.max(1, fontSize - 1))} title="Decrease Font Size">
+          <button
+            className="size-button"
+            onClick={() => setFontSize(Math.max(1, fontSize - 1))}
+            title="Decrease Font Size"
+          >
             <ChevronDown className="w-3 h-3" />
           </button>
         </div>
@@ -76,5 +96,5 @@ export const FontGroup: React.FC = () => {
         </div>
       </div>
     </RibbonGroup>
-  );
-};
+  )
+}

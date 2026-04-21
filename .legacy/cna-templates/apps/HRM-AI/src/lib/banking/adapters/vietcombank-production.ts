@@ -1,8 +1,8 @@
 // src/lib/banking/adapters/vietcombank-production.ts
 // Vietcombank Production Adapter with OAuth2 & Request Signing
 
-import crypto from 'crypto'
-import { v4 as uuidv4 } from 'uuid'
+import crypto from "crypto"
+import { v4 as uuidv4 } from "uuid"
 import type {
   IBankAdapter,
   BankApiConfig,
@@ -13,16 +13,16 @@ import type {
   BatchPaymentStatus,
   AccountValidation,
   BankCode,
-} from '../types'
-import { loadBankConfig, VCB_ERROR_CODES } from '../config'
+} from "../types"
+import { loadBankConfig, VCB_ERROR_CODES } from "../config"
 
 // ═══════════════════════════════════════════════════════════════
 // VIETCOMBANK PRODUCTION ADAPTER
 // ═══════════════════════════════════════════════════════════════
 
 export class VietcombankProductionAdapter implements IBankAdapter {
-  readonly bankCode: BankCode = 'VCB'
-  readonly bankName = 'Vietcombank'
+  readonly bankCode: BankCode = "VCB"
+  readonly bankName = "Vietcombank"
 
   private config: ReturnType<typeof loadBankConfig> | null = null
   private accessToken: string | null = null
@@ -30,7 +30,7 @@ export class VietcombankProductionAdapter implements IBankAdapter {
 
   constructor() {
     try {
-      this.config = loadBankConfig('VCB')
+      this.config = loadBankConfig("VCB")
     } catch {
       // Config will be set via configure()
     }
@@ -40,20 +40,26 @@ export class VietcombankProductionAdapter implements IBankAdapter {
   // Configuration
   // ─────────────────────────────────────────────────────────────
 
-  configure(config: BankApiConfig & { accountNumber?: string; accountName?: string; branchCode?: string }): void {
+  configure(
+    config: BankApiConfig & {
+      accountNumber?: string
+      accountName?: string
+      branchCode?: string
+    }
+  ): void {
     this.config = {
       ...this.config!,
       clientId: config.clientId,
       clientSecret: config.clientSecret,
-      accountNumber: config.accountNumber ?? this.config?.accountNumber ?? '',
-      accountName: config.accountName ?? this.config?.accountName ?? '',
-      branchCode: config.branchCode ?? this.config?.branchCode ?? '',
+      accountNumber: config.accountNumber ?? this.config?.accountNumber ?? "",
+      accountName: config.accountName ?? this.config?.accountName ?? "",
+      branchCode: config.branchCode ?? this.config?.branchCode ?? "",
     } as ReturnType<typeof loadBankConfig>
   }
 
   private ensureConfigured(): void {
     if (!this.config?.clientId) {
-      throw new Error('VCB adapter not configured. Call configure() first.')
+      throw new Error("VCB adapter not configured. Call configure() first.")
     }
   }
 
@@ -66,27 +72,31 @@ export class VietcombankProductionAdapter implements IBankAdapter {
 
     try {
       // Check if token is still valid
-      if (this.accessToken && this.tokenExpiry && this.tokenExpiry > new Date()) {
+      if (
+        this.accessToken &&
+        this.tokenExpiry &&
+        this.tokenExpiry > new Date()
+      ) {
         return true
       }
 
       const params = new URLSearchParams({
-        grant_type: 'client_credentials',
+        grant_type: "client_credentials",
         client_id: this.config!.clientId,
         client_secret: this.config!.clientSecret,
-        scope: 'payment transfer inquiry',
+        scope: "payment transfer inquiry",
       })
 
       const response = await fetch(this.config!.tokenUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: params.toString(),
       })
 
       if (!response.ok) {
-        console.error('VCB: OAuth failed', await response.text())
+        console.error("VCB: OAuth failed", await response.text())
         return false
       }
 
@@ -98,7 +108,7 @@ export class VietcombankProductionAdapter implements IBankAdapter {
 
       return true
     } catch (error) {
-      console.error('VCB: Failed to authenticate', error)
+      console.error("VCB: Failed to authenticate", error)
       return false
     }
   }
@@ -106,7 +116,7 @@ export class VietcombankProductionAdapter implements IBankAdapter {
   private async getAccessToken(): Promise<string> {
     const authenticated = await this.authenticate()
     if (!authenticated || !this.accessToken) {
-      throw new Error('Failed to authenticate with Vietcombank')
+      throw new Error("Failed to authenticate with Vietcombank")
     }
     return this.accessToken
   }
@@ -119,26 +129,28 @@ export class VietcombankProductionAdapter implements IBankAdapter {
     if (!this.config?.privateKey) {
       // Use HMAC if no private key
       return crypto
-        .createHmac('sha256', this.config!.clientSecret)
+        .createHmac("sha256", this.config!.clientSecret)
         .update(payload + timestamp)
-        .digest('base64')
+        .digest("base64")
     }
 
-    const sign = crypto.createSign('RSA-SHA256')
+    const sign = crypto.createSign("RSA-SHA256")
     sign.update(payload + timestamp)
-    return sign.sign(this.config.privateKey, 'base64')
+    return sign.sign(this.config.privateKey, "base64")
   }
 
   private verifySignature(payload: string, signature: string): boolean {
     if (!this.config?.publicKey) {
-      console.warn('VCB: Public key not configured, skipping signature verification')
+      console.warn(
+        "VCB: Public key not configured, skipping signature verification"
+      )
       return true
     }
 
     try {
-      const verify = crypto.createVerify('RSA-SHA256')
+      const verify = crypto.createVerify("RSA-SHA256")
       verify.update(payload)
-      return verify.verify(this.config.publicKey, signature, 'base64')
+      return verify.verify(this.config.publicKey, signature, "base64")
     } catch {
       return false
     }
@@ -149,7 +161,7 @@ export class VietcombankProductionAdapter implements IBankAdapter {
   // ─────────────────────────────────────────────────────────────
 
   private async apiRequest<T>(
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    method: "GET" | "POST" | "PUT" | "DELETE",
     endpoint: string,
     data?: Record<string, unknown>
   ): Promise<T> {
@@ -159,18 +171,18 @@ export class VietcombankProductionAdapter implements IBankAdapter {
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      'X-Request-ID': requestId,
-      'X-Timestamp': timestamp,
-      'X-Client-ID': this.config!.clientId,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "X-Request-ID": requestId,
+      "X-Timestamp": timestamp,
+      "X-Client-ID": this.config!.clientId,
     }
 
     // Sign request body if present
     if (data) {
       const payload = JSON.stringify(data)
       const signature = this.signPayload(payload, timestamp)
-      headers['X-Signature'] = signature
+      headers["X-Signature"] = signature
     }
 
     const url = `${this.config!.baseUrl}${endpoint}`
@@ -184,18 +196,27 @@ export class VietcombankProductionAdapter implements IBankAdapter {
     const responseData = await response.json()
 
     // Verify response signature
-    const responseSignature = response.headers.get('x-signature')
+    const responseSignature = response.headers.get("x-signature")
     if (responseSignature) {
-      const isValid = this.verifySignature(JSON.stringify(responseData), responseSignature)
+      const isValid = this.verifySignature(
+        JSON.stringify(responseData),
+        responseSignature
+      )
       if (!isValid) {
-        throw new Error('Invalid response signature from bank')
+        throw new Error("Invalid response signature from bank")
       }
     }
 
     if (!response.ok) {
-      const errorCode = responseData?.responseCode || 'E999'
-      const errorMessage = VCB_ERROR_CODES[errorCode] || responseData?.message || 'Lỗi kết nối ngân hàng'
-      const error = new Error(errorMessage) as Error & { code: string; friendlyMessage: string }
+      const errorCode = responseData?.responseCode || "E999"
+      const errorMessage =
+        VCB_ERROR_CODES[errorCode] ||
+        responseData?.message ||
+        "Lỗi kết nối ngân hàng"
+      const error = new Error(errorMessage) as Error & {
+        code: string
+        friendlyMessage: string
+      }
       error.code = errorCode
       error.friendlyMessage = errorMessage
       throw error
@@ -208,7 +229,10 @@ export class VietcombankProductionAdapter implements IBankAdapter {
   // Account Operations
   // ─────────────────────────────────────────────────────────────
 
-  async validateAccount(accountNumber: string, bankCode: BankCode): Promise<AccountValidation> {
+  async validateAccount(
+    accountNumber: string,
+    bankCode: BankCode
+  ): Promise<AccountValidation> {
     this.ensureConfigured()
 
     try {
@@ -219,19 +243,24 @@ export class VietcombankProductionAdapter implements IBankAdapter {
         message?: string
       }
 
-      const response = await this.apiRequest<InquiryResponse>('POST', '/account/inquiry', {
-        accountNumber,
-        bankCode,
-        inquiryType: 'NAME',
-      })
+      const response = await this.apiRequest<InquiryResponse>(
+        "POST",
+        "/account/inquiry",
+        {
+          accountNumber,
+          bankCode,
+          inquiryType: "NAME",
+        }
+      )
 
       return {
-        valid: response.responseCode === '00',
+        valid: response.responseCode === "00",
         accountNumber,
         accountName: response.accountName,
         bankCode,
         bankName: response.bankName,
-        errorMessage: response.responseCode !== '00' ? response.message : undefined,
+        errorMessage:
+          response.responseCode !== "00" ? response.message : undefined,
       }
     } catch (error) {
       const err = error as Error & { friendlyMessage?: string }
@@ -257,12 +286,15 @@ export class VietcombankProductionAdapter implements IBankAdapter {
       currency?: string
     }
 
-    const response = await this.apiRequest<BalanceResponse>('GET', '/account/balance')
+    const response = await this.apiRequest<BalanceResponse>(
+      "GET",
+      "/account/balance"
+    )
 
     return {
       available: response.availableBalance,
       current: response.currentBalance,
-      currency: response.currency || 'VND',
+      currency: response.currency || "VND",
     }
   }
 
@@ -276,16 +308,19 @@ export class VietcombankProductionAdapter implements IBankAdapter {
     try {
       // Check cutoff time
       const now = new Date()
-      const [cutoffHour, cutoffMin] = this.config!.cutoffTime.split(':').map(Number)
+      const [cutoffHour, cutoffMin] =
+        this.config!.cutoffTime.split(":").map(Number)
       const cutoff = new Date()
       cutoff.setHours(cutoffHour, cutoffMin, 0, 0)
 
       if (now > cutoff) {
-        console.warn('VCB: After cutoff time, payment will be processed next business day')
+        console.warn(
+          "VCB: After cutoff time, payment will be processed next business day"
+        )
       }
 
       const transferType =
-        request.destinationAccount.bankCode === 'VCB' ? 'INTERNAL' : 'NAPAS'
+        request.destinationAccount.bankCode === "VCB" ? "INTERNAL" : "NAPAS"
 
       interface TransferResponse {
         responseCode: string
@@ -294,50 +329,54 @@ export class VietcombankProductionAdapter implements IBankAdapter {
         fee?: number
       }
 
-      const response = await this.apiRequest<TransferResponse>('POST', '/transfer/internal', {
-        requestId: request.transactionId,
-        transactionDate: new Date().toISOString().split('T')[0],
+      const response = await this.apiRequest<TransferResponse>(
+        "POST",
+        "/transfer/internal",
+        {
+          requestId: request.transactionId,
+          transactionDate: new Date().toISOString().split("T")[0],
 
-        // Source account
-        sourceAccount: request.sourceAccount.accountNumber,
-        sourceAccountName: request.sourceAccount.accountName,
-        sourceBranchCode: request.sourceAccount.branchCode,
+          // Source account
+          sourceAccount: request.sourceAccount.accountNumber,
+          sourceAccountName: request.sourceAccount.accountName,
+          sourceBranchCode: request.sourceAccount.branchCode,
 
-        // Destination account
-        destinationAccount: request.destinationAccount.accountNumber,
-        destinationAccountName: request.destinationAccount.accountName,
-        destinationBankCode: request.destinationAccount.bankCode,
+          // Destination account
+          destinationAccount: request.destinationAccount.accountNumber,
+          destinationAccountName: request.destinationAccount.accountName,
+          destinationBankCode: request.destinationAccount.bankCode,
 
-        // Amount
-        amount: request.amount,
-        currency: request.currency || 'VND',
+          // Amount
+          amount: request.amount,
+          currency: request.currency || "VND",
 
-        // Description (VCB limit 140 chars)
-        description: request.description?.substring(0, 140),
-        referenceNumber: request.transactionId,
+          // Description (VCB limit 140 chars)
+          description: request.description?.substring(0, 140),
+          referenceNumber: request.transactionId,
 
-        // Transfer type
-        transferType,
-      })
+          // Transfer type
+          transferType,
+        }
+      )
 
       return {
-        success: response.responseCode === '00',
+        success: response.responseCode === "00",
         transactionId: request.transactionId,
         bankTransactionId: response.bankReferenceNo,
         responseCode: response.responseCode,
         responseMessage: response.responseMessage,
         processedAt: new Date(),
         fee: response.fee || 0,
-        status: response.responseCode === '00' ? 'SUCCESS' : 'FAILED',
+        status: response.responseCode === "00" ? "SUCCESS" : "FAILED",
       }
     } catch (error) {
       const err = error as Error & { code?: string; friendlyMessage?: string }
       return {
         success: false,
         transactionId: request.transactionId,
-        responseCode: err.code || 'ERROR',
+        responseCode: err.code || "ERROR",
         responseMessage: err.friendlyMessage || err.message,
-        status: 'FAILED',
+        status: "FAILED",
       }
     }
   }
@@ -346,13 +385,17 @@ export class VietcombankProductionAdapter implements IBankAdapter {
   // Batch Payment
   // ─────────────────────────────────────────────────────────────
 
-  async createBatchPayment(request: BatchPaymentRequest): Promise<BatchPaymentResponse> {
+  async createBatchPayment(
+    request: BatchPaymentRequest
+  ): Promise<BatchPaymentResponse> {
     this.ensureConfigured()
 
     try {
       // Validate batch size
       if (request.payments.length > this.config!.maxBatchSize) {
-        throw new Error(`Batch size exceeds limit of ${this.config!.maxBatchSize}`)
+        throw new Error(
+          `Batch size exceeds limit of ${this.config!.maxBatchSize}`
+        )
       }
 
       // Check balance
@@ -381,35 +424,41 @@ export class VietcombankProductionAdapter implements IBankAdapter {
         estimatedCompletionTime?: string
       }
 
-      const response = await this.apiRequest<BatchResponse>('POST', '/transfer/batch', {
-        batchId: request.batchId,
-        batchDate: new Date().toISOString().split('T')[0],
+      const response = await this.apiRequest<BatchResponse>(
+        "POST",
+        "/transfer/batch",
+        {
+          batchId: request.batchId,
+          batchDate: new Date().toISOString().split("T")[0],
 
-        // Source account
-        sourceAccount: request.sourceAccount.accountNumber,
-        sourceAccountName: request.sourceAccount.accountName,
+          // Source account
+          sourceAccount: request.sourceAccount.accountNumber,
+          sourceAccountName: request.sourceAccount.accountName,
 
-        // Batch details
-        totalCount: request.payments.length,
-        totalAmount,
-        currency: 'VND',
+          // Batch details
+          totalCount: request.payments.length,
+          totalAmount,
+          currency: "VND",
 
-        // Transactions
-        transactions,
+          // Transactions
+          transactions,
 
-        // Schedule
-        processImmediate: true,
-      })
+          // Schedule
+          processImmediate: true,
+        }
+      )
 
       return {
-        success: response.responseCode === '00',
+        success: response.responseCode === "00",
         batchId: request.batchId,
         bankBatchId: response.bankBatchNo,
-        successCount: response.responseCode === '00' ? request.payments.length : 0,
-        failedCount: response.responseCode === '00' ? 0 : request.payments.length,
+        successCount:
+          response.responseCode === "00" ? request.payments.length : 0,
+        failedCount:
+          response.responseCode === "00" ? 0 : request.payments.length,
         transactions: request.payments.map((p) => ({
           transactionId: p.transactionId,
-          status: response.responseCode === '00' ? 'PENDING' : 'FAILED',
+          status: response.responseCode === "00" ? "PENDING" : "FAILED",
           responseCode: response.responseCode,
           responseMessage: response.responseMessage,
         })),
@@ -423,15 +472,18 @@ export class VietcombankProductionAdapter implements IBankAdapter {
         failedCount: request.payments.length,
         transactions: request.payments.map((p) => ({
           transactionId: p.transactionId,
-          status: 'FAILED',
-          responseCode: err.code || 'ERROR',
+          status: "FAILED",
+          responseCode: err.code || "ERROR",
           responseMessage: err.friendlyMessage || err.message,
         })),
       }
     }
   }
 
-  async getBatchStatus(batchId: string, bankBatchId: string): Promise<BatchPaymentStatus> {
+  async getBatchStatus(
+    batchId: string,
+    bankBatchId: string
+  ): Promise<BatchPaymentStatus> {
     this.ensureConfigured()
 
     interface StatusResponse {
@@ -452,7 +504,10 @@ export class VietcombankProductionAdapter implements IBankAdapter {
       }>
     }
 
-    const response = await this.apiRequest<StatusResponse>('GET', `/transfer/batch/${bankBatchId}/status`)
+    const response = await this.apiRequest<StatusResponse>(
+      "GET",
+      `/transfer/batch/${bankBatchId}/status`
+    )
 
     return {
       batchId,
@@ -489,7 +544,7 @@ export class VietcombankProductionAdapter implements IBankAdapter {
       date: Date
       description: string
       amount: number
-      type: 'CREDIT' | 'DEBIT'
+      type: "CREDIT" | "DEBIT"
       balance: number
       referenceNo: string
     }>
@@ -501,20 +556,23 @@ export class VietcombankProductionAdapter implements IBankAdapter {
         transactionDate: string
         description: string
         amount: number
-        creditDebitIndicator: 'C' | 'D'
+        creditDebitIndicator: "C" | "D"
         balance: number
         referenceNo: string
       }>
     }
 
-    const response = await this.apiRequest<StatementResponse>('GET', '/account/statement')
+    const response = await this.apiRequest<StatementResponse>(
+      "GET",
+      "/account/statement"
+    )
 
     return {
       transactions: response.transactions.map((tx) => ({
         date: new Date(tx.transactionDate),
         description: tx.description,
         amount: tx.amount,
-        type: tx.creditDebitIndicator === 'C' ? 'CREDIT' : 'DEBIT',
+        type: tx.creditDebitIndicator === "C" ? "CREDIT" : "DEBIT",
         balance: tx.balance,
         referenceNo: tx.referenceNo,
       })),
@@ -525,28 +583,30 @@ export class VietcombankProductionAdapter implements IBankAdapter {
   // Helper Methods
   // ─────────────────────────────────────────────────────────────
 
-  private mapBatchStatus(status: string): BatchPaymentStatus['status'] {
-    const mapping: Record<string, BatchPaymentStatus['status']> = {
-      PENDING: 'PENDING',
-      PROCESSING: 'PROCESSING',
-      COMPLETED: 'COMPLETED',
-      PARTIAL_SUCCESS: 'PARTIAL',
-      FAILED: 'FAILED',
-      CANCELLED: 'CANCELLED',
+  private mapBatchStatus(status: string): BatchPaymentStatus["status"] {
+    const mapping: Record<string, BatchPaymentStatus["status"]> = {
+      PENDING: "PENDING",
+      PROCESSING: "PROCESSING",
+      COMPLETED: "COMPLETED",
+      PARTIAL_SUCCESS: "PARTIAL",
+      FAILED: "FAILED",
+      CANCELLED: "CANCELLED",
     }
-    return mapping[status] || 'PENDING'
+    return mapping[status] || "PENDING"
   }
 
-  private mapTransactionStatus(status: string): 'SUCCESS' | 'FAILED' | 'PENDING' {
-    const mapping: Record<string, 'SUCCESS' | 'FAILED' | 'PENDING'> = {
-      SUCCESS: 'SUCCESS',
-      COMPLETED: 'SUCCESS',
-      FAILED: 'FAILED',
-      REJECTED: 'FAILED',
-      PENDING: 'PENDING',
-      PROCESSING: 'PENDING',
+  private mapTransactionStatus(
+    status: string
+  ): "SUCCESS" | "FAILED" | "PENDING" {
+    const mapping: Record<string, "SUCCESS" | "FAILED" | "PENDING"> = {
+      SUCCESS: "SUCCESS",
+      COMPLETED: "SUCCESS",
+      FAILED: "FAILED",
+      REJECTED: "FAILED",
+      PENDING: "PENDING",
+      PROCESSING: "PENDING",
     }
-    return mapping[status] || 'PENDING'
+    return mapping[status] || "PENDING"
   }
 }
 

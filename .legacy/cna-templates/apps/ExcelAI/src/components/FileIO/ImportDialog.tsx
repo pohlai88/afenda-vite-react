@@ -1,264 +1,297 @@
-import React, { useState } from 'react';
-import { FileDropZone } from './FileDropZone';
-import { importExcelFile, importCSVFile } from '../../utils/excelIO';
+import React, { useState } from "react"
+import { FileDropZone } from "./FileDropZone"
+import { importExcelFile, importCSVFile } from "../../utils/excelIO"
 
 // Typed cell value for import
-type ImportedCellPrimitive = string | number | boolean | null | undefined;
+type ImportedCellPrimitive = string | number | boolean | null | undefined
 
 interface ImportedCellValue {
-  type: 'Empty' | 'String' | 'Number' | 'Bool' | 'DateTime' | 'Error';
-  value?: ImportedCellPrimitive;
+  type: "Empty" | "String" | "Number" | "Bool" | "DateTime" | "Error"
+  value?: ImportedCellPrimitive
 }
 
 interface ImportedSheet {
-  name: string;
+  name: string
   cells: Array<{
-    row: number;
-    col: number;
-    value: ImportedCellValue;
-  }>;
-  row_count: number;
-  col_count: number;
+    row: number
+    col: number
+    value: ImportedCellValue
+  }>
+  row_count: number
+  col_count: number
 }
 
 interface ImportPreviewData {
-  sheets: ImportedSheet[];
-  sheet_names: string[];
-  detected_format: string;
+  sheets: ImportedSheet[]
+  sheet_names: string[]
+  detected_format: string
 }
 
 interface CsvPreviewData {
-  rows: Array<{ index: number; cells: string[] }>;
-  column_count: number;
-  row_count: number;
-  detected_delimiter: string;
-  detected_encoding: string;
-  headers?: string[];
+  rows: Array<{ index: number; cells: string[] }>
+  column_count: number
+  row_count: number
+  detected_delimiter: string
+  detected_encoding: string
+  headers?: string[]
 }
 
 interface ImportDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onImport: (data: ImportPreviewData | CsvPreviewData, options: ImportOptions) => void;
+  isOpen: boolean
+  onClose: () => void
+  onImport: (
+    data: ImportPreviewData | CsvPreviewData,
+    options: ImportOptions
+  ) => void
 }
 
 interface ImportOptions {
-  selectedSheets?: string[];
-  hasHeader: boolean;
-  skipRows: number;
-  maxRows?: number;
+  selectedSheets?: string[]
+  hasHeader: boolean
+  skipRows: number
+  maxRows?: number
 }
 
-const MAX_RECOMMENDED_ROWS = 50000;
-const DEFAULT_MAX_ROWS = 50000;
+const MAX_RECOMMENDED_ROWS = 50000
+const DEFAULT_MAX_ROWS = 50000
 
 export const ImportDialog: React.FC<ImportDialogProps> = ({
   isOpen,
   onClose,
   onImport,
 }) => {
-  const [step, setStep] = useState<'upload' | 'preview' | 'options'>('upload');
-  const [file, setFile] = useState<File | null>(null);
-  const [previewData, setPreviewData] = useState<ImportPreviewData | null>(null);
-  const [csvPreviewData, setCsvPreviewData] = useState<CsvPreviewData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedSheets, setSelectedSheets] = useState<string[]>([]);
-  const [hasHeader, setHasHeader] = useState(true);
-  const [skipRows] = useState(0);
-  const [maxRows, setMaxRows] = useState(DEFAULT_MAX_ROWS);
-  const [totalRowCount, setTotalRowCount] = useState(0);
+  const [step, setStep] = useState<"upload" | "preview" | "options">("upload")
+  const [file, setFile] = useState<File | null>(null)
+  const [previewData, setPreviewData] = useState<ImportPreviewData | null>(null)
+  const [csvPreviewData, setCsvPreviewData] = useState<CsvPreviewData | null>(
+    null
+  )
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedSheets, setSelectedSheets] = useState<string[]>([])
+  const [hasHeader, setHasHeader] = useState(true)
+  const [skipRows] = useState(0)
+  const [maxRows, setMaxRows] = useState(DEFAULT_MAX_ROWS)
+  const [totalRowCount, setTotalRowCount] = useState(0)
 
   const handleFileDrop = async (droppedFile: File) => {
-    setFile(droppedFile);
-    setError(null);
-    setLoading(true);
+    setFile(droppedFile)
+    setError(null)
+    setLoading(true)
 
     try {
-      const isCSV = /\.(csv|tsv)$/i.test(droppedFile.name);
+      const isCSV = /\.(csv|tsv)$/i.test(droppedFile.name)
 
       if (isCSV) {
         // Client-side CSV parsing
-        const result = await importCSVFile(droppedFile);
-        const csvRows: Array<{ index: number; cells: string[] }> = [];
-        let maxCol = 0;
-        let maxRow = 0;
+        const result = await importCSVFile(droppedFile)
+        const csvRows: Array<{ index: number; cells: string[] }> = []
+        let maxCol = 0
+        let maxRow = 0
 
         for (const key of Object.keys(result.sheets[0].cells)) {
-          const [rowStr, colStr] = key.split(':');
-          maxRow = Math.max(maxRow, parseInt(rowStr));
-          maxCol = Math.max(maxCol, parseInt(colStr));
+          const [rowStr, colStr] = key.split(":")
+          maxRow = Math.max(maxRow, parseInt(rowStr))
+          maxCol = Math.max(maxCol, parseInt(colStr))
         }
 
         for (let r = 0; r <= Math.min(maxRow, 99); r++) {
-          const cells: string[] = [];
+          const cells: string[] = []
           for (let c = 0; c <= maxCol; c++) {
-            const cellData = result.sheets[0].cells[`${r}:${c}`];
-            cells.push(cellData ? String(cellData.value ?? '') : '');
+            const cellData = result.sheets[0].cells[`${r}:${c}`]
+            cells.push(cellData ? String(cellData.value ?? "") : "")
           }
-          csvRows.push({ index: r, cells });
+          csvRows.push({ index: r, cells })
         }
 
         setCsvPreviewData({
           rows: csvRows,
           column_count: maxCol + 1,
           row_count: maxRow + 1,
-          detected_delimiter: ',',
-          detected_encoding: 'utf-8',
-        });
-        setPreviewData(null);
-        setTotalRowCount(maxRow + 1);
+          detected_delimiter: ",",
+          detected_encoding: "utf-8",
+        })
+        setPreviewData(null)
+        setTotalRowCount(maxRow + 1)
       } else {
         // Client-side XLSX parsing via SheetJS
-        const result = await importExcelFile(droppedFile);
+        const result = await importExcelFile(droppedFile)
         const sheets: ImportedSheet[] = result.sheets.map((sheet) => {
-          const cells: ImportedSheet['cells'] = [];
-          let rowCount = 0;
-          let colCount = 0;
+          const cells: ImportedSheet["cells"] = []
+          let rowCount = 0
+          let colCount = 0
 
           for (const [key, cell] of Object.entries(sheet.cells)) {
-            const [rowStr, colStr] = key.split(':');
-            const row = parseInt(rowStr);
-            const col = parseInt(colStr);
-            rowCount = Math.max(rowCount, row + 1);
-            colCount = Math.max(colCount, col + 1);
+            const [rowStr, colStr] = key.split(":")
+            const row = parseInt(rowStr)
+            const col = parseInt(colStr)
+            rowCount = Math.max(rowCount, row + 1)
+            colCount = Math.max(colCount, col + 1)
 
             // Only preview first 100 rows
             if (row < 100) {
-              const cellValue = cell.value;
-              let typedValue: ImportedCellValue;
-              if (cellValue === null || cellValue === undefined || cellValue === '') {
-                typedValue = { type: 'Empty' };
-              } else if (typeof cellValue === 'number') {
-                typedValue = { type: 'Number', value: cellValue };
-              } else if (typeof cellValue === 'boolean') {
-                typedValue = { type: 'Bool', value: cellValue };
+              const cellValue = cell.value
+              let typedValue: ImportedCellValue
+              if (
+                cellValue === null ||
+                cellValue === undefined ||
+                cellValue === ""
+              ) {
+                typedValue = { type: "Empty" }
+              } else if (typeof cellValue === "number") {
+                typedValue = { type: "Number", value: cellValue }
+              } else if (typeof cellValue === "boolean") {
+                typedValue = { type: "Bool", value: cellValue }
               } else {
-                typedValue = { type: 'String', value: String(cellValue) };
+                typedValue = { type: "String", value: String(cellValue) }
               }
-              cells.push({ row, col, value: typedValue });
+              cells.push({ row, col, value: typedValue })
             }
           }
 
-          return { name: sheet.name, cells, row_count: rowCount, col_count: colCount };
-        });
+          return {
+            name: sheet.name,
+            cells,
+            row_count: rowCount,
+            col_count: colCount,
+          }
+        })
 
-        const sheetNames = result.sheets.map((s) => s.name);
-        setPreviewData({ sheets, sheet_names: sheetNames, detected_format: 'XLSX' });
-        setSelectedSheets(sheetNames);
-        setCsvPreviewData(null);
-        setTotalRowCount(sheets.reduce((sum, s) => sum + s.row_count, 0));
+        const sheetNames = result.sheets.map((s) => s.name)
+        setPreviewData({
+          sheets,
+          sheet_names: sheetNames,
+          detected_format: "XLSX",
+        })
+        setSelectedSheets(sheetNames)
+        setCsvPreviewData(null)
+        setTotalRowCount(sheets.reduce((sum, s) => sum + s.row_count, 0))
       }
 
-      setStep('preview');
+      setStep("preview")
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to process file');
+      setError(err instanceof Error ? err.message : "Failed to process file")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleImport = async () => {
-    if (!file) return;
+    if (!file) return
 
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
-      const isCSV = /\.(csv|tsv)$/i.test(file.name);
+      const isCSV = /\.(csv|tsv)$/i.test(file.name)
 
       if (isCSV) {
-        const result = await importCSVFile(file);
+        const result = await importCSVFile(file)
         // Convert to CsvPreviewData format for onImport
-        const csvRows: Array<{ index: number; cells: string[] }> = [];
-        let maxCol = 0;
-        let maxRow = 0;
+        const csvRows: Array<{ index: number; cells: string[] }> = []
+        let maxCol = 0
+        let maxRow = 0
 
         for (const key of Object.keys(result.sheets[0].cells)) {
-          const [rowStr, colStr] = key.split(':');
-          maxRow = Math.max(maxRow, parseInt(rowStr));
-          maxCol = Math.max(maxCol, parseInt(colStr));
+          const [rowStr, colStr] = key.split(":")
+          maxRow = Math.max(maxRow, parseInt(rowStr))
+          maxCol = Math.max(maxCol, parseInt(colStr))
         }
 
         for (let r = 0; r <= Math.min(maxRow, maxRows - 1); r++) {
-          const cells: string[] = [];
+          const cells: string[] = []
           for (let c = 0; c <= maxCol; c++) {
-            const cellData = result.sheets[0].cells[`${r}:${c}`];
-            cells.push(cellData ? String(cellData.value ?? '') : '');
+            const cellData = result.sheets[0].cells[`${r}:${c}`]
+            cells.push(cellData ? String(cellData.value ?? "") : "")
           }
-          csvRows.push({ index: r, cells });
+          csvRows.push({ index: r, cells })
         }
 
-        onImport({
-          rows: csvRows,
-          column_count: maxCol + 1,
-          row_count: Math.min(maxRow + 1, maxRows),
-          detected_delimiter: ',',
-          detected_encoding: 'utf-8',
-        }, { hasHeader, skipRows, maxRows });
+        onImport(
+          {
+            rows: csvRows,
+            column_count: maxCol + 1,
+            row_count: Math.min(maxRow + 1, maxRows),
+            detected_delimiter: ",",
+            detected_encoding: "utf-8",
+          },
+          { hasHeader, skipRows, maxRows }
+        )
       } else {
-        const result = await importExcelFile(file);
+        const result = await importExcelFile(file)
         const sheets: ImportedSheet[] = result.sheets.map((sheet) => {
-          const cells: ImportedSheet['cells'] = [];
-          let rowCount = 0;
-          let colCount = 0;
+          const cells: ImportedSheet["cells"] = []
+          let rowCount = 0
+          let colCount = 0
 
           for (const [key, cell] of Object.entries(sheet.cells)) {
-            const [rowStr, colStr] = key.split(':');
-            const row = parseInt(rowStr);
-            const col = parseInt(colStr);
-            if (row >= maxRows) continue;
-            rowCount = Math.max(rowCount, row + 1);
-            colCount = Math.max(colCount, col + 1);
+            const [rowStr, colStr] = key.split(":")
+            const row = parseInt(rowStr)
+            const col = parseInt(colStr)
+            if (row >= maxRows) continue
+            rowCount = Math.max(rowCount, row + 1)
+            colCount = Math.max(colCount, col + 1)
 
-            const cellValue = cell.value;
-            let typedValue: ImportedCellValue;
-            if (cellValue === null || cellValue === undefined || cellValue === '') {
-              typedValue = { type: 'Empty' };
-            } else if (typeof cellValue === 'number') {
-              typedValue = { type: 'Number', value: cellValue };
-            } else if (typeof cellValue === 'boolean') {
-              typedValue = { type: 'Bool', value: cellValue };
+            const cellValue = cell.value
+            let typedValue: ImportedCellValue
+            if (
+              cellValue === null ||
+              cellValue === undefined ||
+              cellValue === ""
+            ) {
+              typedValue = { type: "Empty" }
+            } else if (typeof cellValue === "number") {
+              typedValue = { type: "Number", value: cellValue }
+            } else if (typeof cellValue === "boolean") {
+              typedValue = { type: "Bool", value: cellValue }
             } else {
-              typedValue = { type: 'String', value: String(cellValue) };
+              typedValue = { type: "String", value: String(cellValue) }
             }
-            cells.push({ row, col, value: typedValue });
+            cells.push({ row, col, value: typedValue })
           }
 
-          return { name: sheet.name, cells, row_count: rowCount, col_count: colCount };
-        });
+          return {
+            name: sheet.name,
+            cells,
+            row_count: rowCount,
+            col_count: colCount,
+          }
+        })
 
-        const sheetNames = result.sheets.map((s) => s.name);
-        onImport({
-          sheets,
-          sheet_names: sheetNames,
-          detected_format: 'XLSX',
-        }, { selectedSheets, hasHeader, skipRows, maxRows });
+        const sheetNames = result.sheets.map((s) => s.name)
+        onImport(
+          {
+            sheets,
+            sheet_names: sheetNames,
+            detected_format: "XLSX",
+          },
+          { selectedSheets, hasHeader, skipRows, maxRows }
+        )
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to import file');
+      setError(err instanceof Error ? err.message : "Failed to import file")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const toggleSheet = (sheetName: string) => {
     setSelectedSheets((prev) =>
       prev.includes(sheetName)
         ? prev.filter((s) => s !== sheetName)
         : [...prev, sheetName]
-    );
-  };
+    )
+  }
 
   const renderCellValue = (value: ImportedCellValue): string => {
-    if (value.type === 'Empty') return '';
-    if (value.type === 'String') return String(value.value ?? '');
-    if (value.type === 'Number') return String(value.value ?? '');
-    if (value.type === 'Bool') return value.value ? 'TRUE' : 'FALSE';
-    return String(value.value ?? '');
-  };
+    if (value.type === "Empty") return ""
+    if (value.type === "String") return String(value.value ?? "")
+    if (value.type === "Number") return String(value.value ?? "")
+    if (value.type === "Bool") return value.value ? "TRUE" : "FALSE"
+    return String(value.value ?? "")
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -269,18 +302,25 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
 
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-          {step === 'upload' && (
-            <FileDropZone
-              onFileDrop={handleFileDrop}
-              disabled={loading}
-            />
+          {step === "upload" && (
+            <FileDropZone onFileDrop={handleFileDrop} disabled={loading} />
           )}
 
           {loading && (
@@ -295,8 +335,8 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
               <p className="text-red-600">{error}</p>
               <button
                 onClick={() => {
-                  setError(null);
-                  setStep('upload');
+                  setError(null)
+                  setStep("upload")
                 }}
                 className="mt-2 text-sm text-red-700 underline"
               >
@@ -305,7 +345,7 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
             </div>
           )}
 
-          {step === 'preview' && previewData && (
+          {step === "preview" && previewData && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <span>File:</span>
@@ -327,8 +367,8 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
                         onClick={() => toggleSheet(name)}
                         className={`px-3 py-1.5 rounded text-sm ${
                           selectedSheets.includes(name)
-                            ? 'bg-blue-100 text-blue-700 border border-blue-300'
-                            : 'bg-gray-100 text-gray-600 border border-gray-200'
+                            ? "bg-blue-100 text-blue-700 border border-blue-300"
+                            : "bg-gray-100 text-gray-600 border border-gray-200"
                         }`}
                       >
                         {name}
@@ -339,20 +379,24 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Preview:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Preview:
+                </label>
                 <div className="border rounded overflow-x-auto max-h-64">
                   <table className="w-full text-sm">
                     <tbody>
-                      {previewData.sheets[0]?.cells.slice(0, 10).map((cell, idx) => (
-                        <tr key={idx} className="border-b">
-                          <td className="px-3 py-1 bg-gray-50 text-gray-500 text-xs w-10">
-                            {cell.row + 1}
-                          </td>
-                          <td className="px-3 py-1">
-                            {renderCellValue(cell.value)}
-                          </td>
-                        </tr>
-                      ))}
+                      {previewData.sheets[0]?.cells
+                        .slice(0, 10)
+                        .map((cell, idx) => (
+                          <tr key={idx} className="border-b">
+                            <td className="px-3 py-1 bg-gray-50 text-gray-500 text-xs w-10">
+                              {cell.row + 1}
+                            </td>
+                            <td className="px-3 py-1">
+                              {renderCellValue(cell.value)}
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -360,14 +404,18 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
             </div>
           )}
 
-          {step === 'preview' && csvPreviewData && (
+          {step === "preview" && csvPreviewData && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <span>File:</span>
                 <span className="font-medium">{file?.name}</span>
                 <span className="px-2 py-0.5 bg-gray-100 rounded text-xs">
-                  Delimiter: {csvPreviewData.detected_delimiter === ',' ? 'Comma' :
-                    csvPreviewData.detected_delimiter === '\t' ? 'Tab' : csvPreviewData.detected_delimiter}
+                  Delimiter:{" "}
+                  {csvPreviewData.detected_delimiter === ","
+                    ? "Comma"
+                    : csvPreviewData.detected_delimiter === "\t"
+                      ? "Tab"
+                      : csvPreviewData.detected_delimiter}
                 </span>
                 <span className="px-2 py-0.5 bg-gray-100 rounded text-xs">
                   {csvPreviewData.detected_encoding}
@@ -390,7 +438,8 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
               <div className="bg-gray-50 rounded-lg p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">
-                    Total rows: <strong>{totalRowCount.toLocaleString()}</strong>
+                    Total rows:{" "}
+                    <strong>{totalRowCount.toLocaleString()}</strong>
                   </span>
                   {totalRowCount > MAX_RECOMMENDED_ROWS && (
                     <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">
@@ -414,21 +463,29 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
                 </div>
                 {maxRows < totalRowCount && (
                   <p className="text-xs text-gray-500">
-                    Will import first {maxRows.toLocaleString()} of {totalRowCount.toLocaleString()} rows
+                    Will import first {maxRows.toLocaleString()} of{" "}
+                    {totalRowCount.toLocaleString()} rows
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Preview:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Preview:
+                </label>
                 <div className="border rounded overflow-x-auto max-h-64">
                   <table className="w-full text-sm">
                     {csvPreviewData.headers && hasHeader && (
                       <thead>
                         <tr className="bg-gray-100">
-                          <th className="px-3 py-1 text-left text-gray-500 text-xs w-10">#</th>
+                          <th className="px-3 py-1 text-left text-gray-500 text-xs w-10">
+                            #
+                          </th>
                           {csvPreviewData.headers.map((header, idx) => (
-                            <th key={idx} className="px-3 py-1 text-left font-medium">
+                            <th
+                              key={idx}
+                              className="px-3 py-1 text-left font-medium"
+                            >
                               {header}
                             </th>
                           ))}
@@ -457,9 +514,9 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
         </div>
 
         <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
-          {step === 'preview' && (
+          {step === "preview" && (
             <button
-              onClick={() => setStep('upload')}
+              onClick={() => setStep("upload")}
               className="px-4 py-2 text-gray-600 hover:text-gray-800"
             >
               Back
@@ -471,7 +528,7 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
           >
             Cancel
           </button>
-          {step === 'preview' && (
+          {step === "preview" && (
             <button
               onClick={handleImport}
               disabled={selectedSheets.length === 0 && previewData !== null}
@@ -483,7 +540,7 @@ export const ImportDialog: React.FC<ImportDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ImportDialog;
+export default ImportDialog

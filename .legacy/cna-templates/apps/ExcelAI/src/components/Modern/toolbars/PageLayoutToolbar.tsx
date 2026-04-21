@@ -2,7 +2,7 @@
 // PAGE LAYOUT TOOLBAR
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState } from "react"
 import {
   Grid,
   Rows,
@@ -11,10 +11,10 @@ import {
   Printer,
   Eye,
   EyeOff,
-} from 'lucide-react';
-import { useWorkbookStore } from '../../../stores/workbookStore';
-import { usePrintStore } from '../../../stores/printStore';
-import { useUIStore } from '../../../stores/uiStore';
+} from "lucide-react"
+import { useWorkbookStore } from "../../../stores/workbookStore"
+import { usePrintStore } from "../../../stores/printStore"
+import { useUIStore } from "../../../stores/uiStore"
 import {
   ThemesDropdown,
   MarginsDropdown,
@@ -22,38 +22,38 @@ import {
   SizeDropdown,
   PrintTitlesDialog,
   BackgroundDialog,
-} from '../../PageLayout';
-import '../../PageLayout/PageLayout.css';
+} from "../../PageLayout"
+import "../../PageLayout/PageLayout.css"
 
 export const PageLayoutToolbar: React.FC = () => {
-  const { activeSheetId } = useWorkbookStore();
-  const { getSettings, setGridlines, setHeadings } = usePrintStore();
-  const { showToast } = useUIStore();
+  const { activeSheetId } = useWorkbookStore()
+  const { getSettings, setGridlines, setHeadings } = usePrintStore()
+  const { showToast } = useUIStore()
 
-  const [showPrintTitlesDialog, setShowPrintTitlesDialog] = useState(false);
-  const [showBackgroundDialog, setShowBackgroundDialog] = useState(false);
+  const [showPrintTitlesDialog, setShowPrintTitlesDialog] = useState(false)
+  const [showBackgroundDialog, setShowBackgroundDialog] = useState(false)
 
-  const settings = activeSheetId ? getSettings(activeSheetId) : null;
+  const settings = activeSheetId ? getSettings(activeSheetId) : null
 
   const handleToggleGridlines = () => {
     if (activeSheetId) {
-      const newValue = !settings?.printGridlines;
-      setGridlines(activeSheetId, newValue);
-      showToast(newValue ? 'Gridlines will print' : 'Gridlines hidden', 'info');
+      const newValue = !settings?.printGridlines
+      setGridlines(activeSheetId, newValue)
+      showToast(newValue ? "Gridlines will print" : "Gridlines hidden", "info")
     }
-  };
+  }
 
   const handleToggleHeadings = () => {
     if (activeSheetId) {
-      const newValue = !settings?.printRowColHeaders;
-      setHeadings(activeSheetId, newValue);
-      showToast(newValue ? 'Headings will print' : 'Headings hidden', 'info');
+      const newValue = !settings?.printRowColHeaders
+      setHeadings(activeSheetId, newValue)
+      showToast(newValue ? "Headings will print" : "Headings hidden", "info")
     }
-  };
+  }
 
   const handleInsertPageBreak = () => {
-    showToast('Page break inserted at selection', 'success');
-  };
+    showToast("Page break inserted at selection", "success")
+  }
 
   return (
     <>
@@ -78,7 +78,7 @@ export const PageLayoutToolbar: React.FC = () => {
         <div className="toolbar-2026__group">
           <button
             className="toolbar-2026__btn"
-            onClick={() => showToast('Set print area from selection', 'info')}
+            onClick={() => showToast("Set print area from selection", "info")}
             title="Print Area"
           >
             <Printer size={16} />
@@ -127,7 +127,7 @@ export const PageLayoutToolbar: React.FC = () => {
         {/* Sheet Options Section */}
         <div className="toolbar-2026__group">
           <button
-            className={`toolbar-2026__btn ${settings?.printGridlines ? 'active' : ''}`}
+            className={`toolbar-2026__btn ${settings?.printGridlines ? "active" : ""}`}
             onClick={handleToggleGridlines}
             title="Print Gridlines"
           >
@@ -135,11 +135,15 @@ export const PageLayoutToolbar: React.FC = () => {
             <span>Gridlines</span>
           </button>
           <button
-            className={`toolbar-2026__btn ${settings?.printRowColHeaders ? 'active' : ''}`}
+            className={`toolbar-2026__btn ${settings?.printRowColHeaders ? "active" : ""}`}
             onClick={handleToggleHeadings}
             title="Print Headings"
           >
-            {settings?.printRowColHeaders ? <Eye size={16} /> : <EyeOff size={16} />}
+            {settings?.printRowColHeaders ? (
+              <Eye size={16} />
+            ) : (
+              <EyeOff size={16} />
+            )}
             <span>Headings</span>
           </button>
         </div>
@@ -162,7 +166,7 @@ export const PageLayoutToolbar: React.FC = () => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default PageLayoutToolbar;
+export default PageLayoutToolbar

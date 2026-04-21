@@ -1,25 +1,42 @@
-'use client'
+"use client"
 
-import { useState, useRef } from 'react'
-import { FileUp, Download, Trash2, Upload, File, FileText, FileCheck, Shield, Cpu, Award, Receipt } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { useState, useRef } from "react"
+import {
+  FileUp,
+  Download,
+  Trash2,
+  Upload,
+  File,
+  FileText,
+  FileCheck,
+  Shield,
+  Cpu,
+  Award,
+  Receipt,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { useDocuments, useUploadDocument, useDeleteDocument, useUploadVersion } from '@/hooks/use-documents'
-import { toast } from '@/hooks/use-toast'
-import { useTranslation } from '@/i18n'
-import { DOCUMENT_CATEGORIES } from '@/lib/constants'
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import {
+  useDocuments,
+  useUploadDocument,
+  useDeleteDocument,
+  useUploadVersion,
+} from "@/hooks/use-documents"
+import { toast } from "@/hooks/use-toast"
+import { useTranslation } from "@/i18n"
+import { DOCUMENT_CATEGORIES } from "@/lib/constants"
 
 interface DocumentPanelProps {
-  entityType: 'deal' | 'company' | 'contact'
+  entityType: "deal" | "company" | "contact"
   entityId: string
 }
 
@@ -42,16 +59,16 @@ function formatFileSize(bytes: number): string {
 
 export function DocumentPanel({ entityType, entityId }: DocumentPanelProps) {
   const { t } = useTranslation()
-  const [categoryFilter, setCategoryFilter] = useState<string>('ALL')
+  const [categoryFilter, setCategoryFilter] = useState<string>("ALL")
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [uploadCategory, setUploadCategory] = useState('OTHER')
-  const [uploadName, setUploadName] = useState('')
+  const [uploadCategory, setUploadCategory] = useState("OTHER")
+  const [uploadName, setUploadName] = useState("")
 
   const queryParams = {
-    dealId: entityType === 'deal' ? entityId : undefined,
-    companyId: entityType === 'company' ? entityId : undefined,
-    contactId: entityType === 'contact' ? entityId : undefined,
-    category: categoryFilter !== 'ALL' ? categoryFilter : undefined,
+    dealId: entityType === "deal" ? entityId : undefined,
+    companyId: entityType === "company" ? entityId : undefined,
+    contactId: entityType === "contact" ? entityId : undefined,
+    category: categoryFilter !== "ALL" ? categoryFilter : undefined,
   }
 
   const { data: documents = [], isLoading } = useDocuments(queryParams)
@@ -64,21 +81,25 @@ export function DocumentPanel({ entityType, entityId }: DocumentPanelProps) {
     if (!file) return
 
     const formData = new FormData()
-    formData.append('file', file)
-    formData.append('name', uploadName || file.name)
-    formData.append('category', uploadCategory)
-    if (entityType === 'deal') formData.append('dealId', entityId)
-    if (entityType === 'company') formData.append('companyId', entityId)
-    if (entityType === 'contact') formData.append('contactId', entityId)
+    formData.append("file", file)
+    formData.append("name", uploadName || file.name)
+    formData.append("category", uploadCategory)
+    if (entityType === "deal") formData.append("dealId", entityId)
+    if (entityType === "company") formData.append("companyId", entityId)
+    if (entityType === "contact") formData.append("contactId", entityId)
 
     uploadDoc.mutate(formData, {
       onSuccess: () => {
-        toast({ title: t('document.uploaded') })
-        setUploadName('')
-        if (fileInputRef.current) fileInputRef.current.value = ''
+        toast({ title: t("document.uploaded") })
+        setUploadName("")
+        if (fileInputRef.current) fileInputRef.current.value = ""
       },
       onError: (err) => {
-        toast({ title: t('common.error'), description: err.message, variant: 'destructive' })
+        toast({
+          title: t("common.error"),
+          description: err.message,
+          variant: "destructive",
+        })
       },
     })
   }
@@ -88,32 +109,49 @@ export function DocumentPanel({ entityType, entityId }: DocumentPanelProps) {
       const res = await fetch(`/api/documents/${docId}`)
       const json = await res.json()
       if (json.url) {
-        window.open(json.url, '_blank')
+        window.open(json.url, "_blank")
       }
     } catch {
-      toast({ title: t('common.error'), description: 'Download failed', variant: 'destructive' })
+      toast({
+        title: t("common.error"),
+        description: "Download failed",
+        variant: "destructive",
+      })
     }
   }
 
   const handleDelete = (docId: string) => {
     deleteDoc.mutate(docId, {
-      onSuccess: () => toast({ title: t('document.deleted') }),
-      onError: (err) => toast({ title: t('common.error'), description: err.message, variant: 'destructive' }),
+      onSuccess: () => toast({ title: t("document.deleted") }),
+      onError: (err) =>
+        toast({
+          title: t("common.error"),
+          description: err.message,
+          variant: "destructive",
+        }),
     })
   }
 
   const handleUploadVersion = async (docId: string) => {
-    const input = document.createElement('input')
-    input.type = 'file'
+    const input = document.createElement("input")
+    input.type = "file"
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0]
       if (!file) return
       const formData = new FormData()
-      formData.append('file', file)
-      uploadVersion.mutate({ id: docId, formData }, {
-        onSuccess: () => toast({ title: t('document.versionUploaded') }),
-        onError: (err) => toast({ title: t('common.error'), description: err.message, variant: 'destructive' }),
-      })
+      formData.append("file", file)
+      uploadVersion.mutate(
+        { id: docId, formData },
+        {
+          onSuccess: () => toast({ title: t("document.versionUploaded") }),
+          onError: (err) =>
+            toast({
+              title: t("common.error"),
+              description: err.message,
+              variant: "destructive",
+            }),
+        }
+      )
     }
     input.click()
   }
@@ -123,16 +161,22 @@ export function DocumentPanel({ entityType, entityId }: DocumentPanelProps) {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold text-[var(--crm-text-primary)]">
-            {t('document.title')} ({documents.length})
+            {t("document.title")} ({documents.length})
           </CardTitle>
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
             <SelectTrigger className="w-[140px] h-8 text-xs bg-[var(--crm-bg-page)] border-[var(--crm-border)]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
-              <SelectItem value="ALL" className="text-xs">{t('common.all')}</SelectItem>
+              <SelectItem value="ALL" className="text-xs">
+                {t("common.all")}
+              </SelectItem>
               {DOCUMENT_CATEGORIES.map((cat) => (
-                <SelectItem key={cat.value} value={cat.value} className="text-xs">
+                <SelectItem
+                  key={cat.value}
+                  value={cat.value}
+                  className="text-xs"
+                >
                   {t(cat.labelKey)}
                 </SelectItem>
               ))}
@@ -145,7 +189,7 @@ export function DocumentPanel({ entityType, entityId }: DocumentPanelProps) {
         <div className="border border-dashed border-[var(--crm-border)] rounded-lg p-3 space-y-2">
           <div className="flex gap-2">
             <Input
-              placeholder={t('document.namePlaceholder')}
+              placeholder={t("document.namePlaceholder")}
               value={uploadName}
               onChange={(e) => setUploadName(e.target.value)}
               className="h-8 text-xs bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]"
@@ -156,14 +200,23 @@ export function DocumentPanel({ entityType, entityId }: DocumentPanelProps) {
               </SelectTrigger>
               <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                 {DOCUMENT_CATEGORIES.map((cat) => (
-                  <SelectItem key={cat.value} value={cat.value} className="text-xs">
+                  <SelectItem
+                    key={cat.value}
+                    value={cat.value}
+                    className="text-xs"
+                  >
                     {t(cat.labelKey)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileSelect} />
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            onChange={handleFileSelect}
+          />
           <Button
             variant="outline"
             size="sm"
@@ -172,16 +225,20 @@ export function DocumentPanel({ entityType, entityId }: DocumentPanelProps) {
             disabled={uploadDoc.isPending}
           >
             <FileUp className="w-3 h-3 mr-1" />
-            {uploadDoc.isPending ? t('common.processing') : t('document.upload')}
+            {uploadDoc.isPending
+              ? t("common.processing")
+              : t("document.upload")}
           </Button>
         </div>
 
         {/* Document list */}
         {isLoading ? (
-          <p className="text-xs text-[var(--crm-text-muted)]">{t('common.loading')}</p>
+          <p className="text-xs text-[var(--crm-text-muted)]">
+            {t("common.loading")}
+          </p>
         ) : documents.length === 0 ? (
           <p className="text-xs text-[var(--crm-text-muted)] text-center py-4">
-            {t('document.empty')}
+            {t("document.empty")}
           </p>
         ) : (
           <div className="space-y-2">
@@ -194,22 +251,43 @@ export function DocumentPanel({ entityType, entityId }: DocumentPanelProps) {
                 >
                   <IconComp className="w-4 h-4 text-[var(--crm-text-muted)] flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-[var(--crm-text-primary)] truncate">{doc.name}</p>
+                    <p className="text-xs font-medium text-[var(--crm-text-primary)] truncate">
+                      {doc.name}
+                    </p>
                     <p className="text-[10px] text-[var(--crm-text-muted)]">
-                      {formatFileSize(doc.fileSize)} · v{doc.version} · {new Date(doc.createdAt).toLocaleDateString()}
+                      {formatFileSize(doc.fileSize)} · v{doc.version} ·{" "}
+                      {new Date(doc.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                   <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                    {t(DOCUMENT_CATEGORIES.find((c) => c.value === doc.category)?.labelKey || 'document.other')}
+                    {t(
+                      DOCUMENT_CATEGORIES.find((c) => c.value === doc.category)
+                        ?.labelKey || "document.other"
+                    )}
                   </Badge>
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleDownload(doc.id)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => handleDownload(doc.id)}
+                    >
                       <Download className="w-3 h-3" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleUploadVersion(doc.id)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => handleUploadVersion(doc.id)}
+                    >
                       <Upload className="w-3 h-3" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 text-red-400 hover:text-red-500" onClick={() => handleDelete(doc.id)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 text-red-400 hover:text-red-500"
+                      onClick={() => handleDelete(doc.id)}
+                    >
                       <Trash2 className="w-3 h-3" />
                     </Button>
                   </div>

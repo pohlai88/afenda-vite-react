@@ -2,52 +2,56 @@
 // COLOR SCHEME SELECTOR — Select color scheme for charts
 // =============================================================================
 
-import React from 'react';
-import { COLOR_SCHEMES } from '../../autoviz/ColorSchemes';
+import React from "react"
+import { COLOR_SCHEMES } from "../../autoviz/ColorSchemes"
 
 interface ColorSchemeSelectorProps {
-  selectedScheme: string;
-  onChange: (schemeName: string) => void;
-  language?: 'en' | 'vi';
-  compact?: boolean;
+  selectedScheme: string
+  onChange: (schemeName: string) => void
+  language?: "en" | "vi"
+  compact?: boolean
 }
 
 const SCHEME_NAMES_VI: Record<string, string> = {
-  professional: 'Chuyên nghiệp',
-  modern: 'Hiện đại',
-  dark: 'Tối',
-  nature: 'Thiên nhiên',
-  sunset: 'Hoàng hôn',
-  ocean: 'Đại dương',
-  corporate: 'Doanh nghiệp',
-  vibrant: 'Sống động',
-  pastel: 'Pastel',
-  monochrome: 'Đơn sắc',
-  excel: 'Excel',
-  financial: 'Tài chính',
-};
+  professional: "Chuyên nghiệp",
+  modern: "Hiện đại",
+  dark: "Tối",
+  nature: "Thiên nhiên",
+  sunset: "Hoàng hôn",
+  ocean: "Đại dương",
+  corporate: "Doanh nghiệp",
+  vibrant: "Sống động",
+  pastel: "Pastel",
+  monochrome: "Đơn sắc",
+  excel: "Excel",
+  financial: "Tài chính",
+}
 
 export const ColorSchemeSelector: React.FC<ColorSchemeSelectorProps> = ({
   selectedScheme,
   onChange,
-  language = 'en',
+  language = "en",
   compact = false,
 }) => {
-  const schemeEntries = Object.entries(COLOR_SCHEMES);
+  const schemeEntries = Object.entries(COLOR_SCHEMES)
 
   return (
-    <div className={`color-scheme-selector ${compact ? 'compact' : ''}`}>
+    <div className={`color-scheme-selector ${compact ? "compact" : ""}`}>
       <h4 className="selector-title">
-        {language === 'vi' ? 'Bảng màu' : 'Color Scheme'}
+        {language === "vi" ? "Bảng màu" : "Color Scheme"}
       </h4>
 
       <div className="color-scheme-grid">
         {schemeEntries.map(([name, scheme]) => (
           <button
             key={name}
-            className={`color-scheme-option ${selectedScheme === name ? 'selected' : ''}`}
+            className={`color-scheme-option ${selectedScheme === name ? "selected" : ""}`}
             onClick={() => onChange(name)}
-            title={language === 'vi' ? SCHEME_NAMES_VI[name] || scheme.name : scheme.name}
+            title={
+              language === "vi"
+                ? SCHEME_NAMES_VI[name] || scheme.name
+                : scheme.name
+            }
           >
             <div className="scheme-preview">
               {scheme.colors.slice(0, 5).map((color, i) => (
@@ -60,7 +64,9 @@ export const ColorSchemeSelector: React.FC<ColorSchemeSelectorProps> = ({
             </div>
             {!compact && (
               <span className="scheme-name">
-                {language === 'vi' ? SCHEME_NAMES_VI[name] || scheme.name : scheme.name}
+                {language === "vi"
+                  ? SCHEME_NAMES_VI[name] || scheme.name
+                  : scheme.name}
               </span>
             )}
           </button>
@@ -85,29 +91,35 @@ export const ColorSchemeSelector: React.FC<ColorSchemeSelectorProps> = ({
             <div className="special-color">
               <span
                 className="color-swatch"
-                style={{ backgroundColor: COLOR_SCHEMES[selectedScheme]?.positive }}
+                style={{
+                  backgroundColor: COLOR_SCHEMES[selectedScheme]?.positive,
+                }}
               />
-              <span>{language === 'vi' ? 'Tích cực' : 'Positive'}</span>
+              <span>{language === "vi" ? "Tích cực" : "Positive"}</span>
             </div>
             <div className="special-color">
               <span
                 className="color-swatch"
-                style={{ backgroundColor: COLOR_SCHEMES[selectedScheme]?.negative }}
+                style={{
+                  backgroundColor: COLOR_SCHEMES[selectedScheme]?.negative,
+                }}
               />
-              <span>{language === 'vi' ? 'Tiêu cực' : 'Negative'}</span>
+              <span>{language === "vi" ? "Tiêu cực" : "Negative"}</span>
             </div>
             <div className="special-color">
               <span
                 className="color-swatch"
-                style={{ backgroundColor: COLOR_SCHEMES[selectedScheme]?.highlight }}
+                style={{
+                  backgroundColor: COLOR_SCHEMES[selectedScheme]?.highlight,
+                }}
               />
-              <span>{language === 'vi' ? 'Nổi bật' : 'Highlight'}</span>
+              <span>{language === "vi" ? "Nổi bật" : "Highlight"}</span>
             </div>
           </div>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ColorSchemeSelector;
+export default ColorSchemeSelector

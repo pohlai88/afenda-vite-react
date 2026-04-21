@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server'
-import { getPortalSession } from '@/lib/portal-auth'
-import { prisma } from '@/lib/prisma'
+import { NextResponse } from "next/server"
+import { getPortalSession } from "@/lib/portal-auth"
+import { prisma } from "@/lib/prisma"
 
 export async function GET() {
   const session = await getPortalSession()
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const orders = await prisma.salesOrder.findMany({
@@ -13,7 +13,7 @@ export async function GET() {
     include: {
       items: { include: { product: { select: { name: true } } } },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
     take: 50,
   })
 

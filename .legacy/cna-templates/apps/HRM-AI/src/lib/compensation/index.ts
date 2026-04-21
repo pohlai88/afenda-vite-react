@@ -6,8 +6,8 @@
  */
 
 // Types
-export * from './types/compensation.types';
+export * from "./types/compensation.types"
 
 // Services
-export { CompensationService } from './services/compensation.service';
-export { default as CompensationServiceDefault } from './services/compensation.service';
+export { CompensationService } from "./services/compensation.service"
+export { default as CompensationServiceDefault } from "./services/compensation.service"

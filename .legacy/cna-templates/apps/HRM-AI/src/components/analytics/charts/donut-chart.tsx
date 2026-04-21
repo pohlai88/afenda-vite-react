@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import {
   ResponsiveContainer,
@@ -7,22 +7,22 @@ import {
   Cell,
   Tooltip,
   Legend,
-} from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+} from "recharts"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface DonutDataItem {
-  name: string;
-  value: number;
-  color: string;
+  name: string
+  value: number
+  color: string
 }
 
 interface DonutChartProps {
-  title: string;
-  data: DonutDataItem[];
-  height?: number;
-  centerText?: string;
-  className?: string;
+  title: string
+  data: DonutDataItem[]
+  height?: number
+  centerText?: string
+  className?: string
 }
 
 export function DonutChart({
@@ -32,8 +32,8 @@ export function DonutChart({
   centerText,
   className,
 }: DonutChartProps) {
-  const outerRadius = height / 3;
-  const innerRadius = outerRadius * 0.6;
+  const outerRadius = height / 3
+  const innerRadius = outerRadius * 0.6
 
   return (
     <Card className={cn(className)}>
@@ -57,11 +57,11 @@ export function DonutChart({
               ))}
             </Pie>
             <Tooltip
-              formatter={(value) => Number(value).toLocaleString('vi-VN')}
+              formatter={(value) => Number(value).toLocaleString("vi-VN")}
               contentStyle={{
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '8px',
+                backgroundColor: "hsl(var(--card))",
+                border: "1px solid hsl(var(--border))",
+                borderRadius: "8px",
               }}
             />
             <Legend />
@@ -80,5 +80,5 @@ export function DonutChart({
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  );
+  )
 }

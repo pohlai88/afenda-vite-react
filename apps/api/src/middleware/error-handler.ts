@@ -4,7 +4,7 @@
  * platform · http · middleware · errors
  * Upstream: hono, hono/http-exception, zod. Env: none.
  * Downstream: `app.onError` / `app.notFound` in `app.ts` (or `registerErrorHandler`).
- * Side effects: `log("error", …)` on unhandled path (`lib/logger`).
+ * Side effects: request-scoped structured error log on unhandled path (`lib/logger`).
  * Coupling: `lib/response` `failure()`; `c.get("requestId")` from `request-context` middleware.
  * stable
  * @module middleware/error-handler
@@ -18,7 +18,7 @@ import type { ContentfulStatusCode } from "hono/utils/http-status"
 import { ZodError } from "zod"
 
 import { AppError } from "../lib/errors.js"
-import { log } from "../lib/logger.js"
+import { loggerForContext } from "../lib/logger.js"
 import { failure } from "../lib/response.js"
 
 const GENERIC_5XX_MESSAGE = "An unexpected error occurred."
@@ -99,12 +99,15 @@ export function onError(error: Error | HTTPResponseError, c: Context) {
     )
   }
 
-  log("error", "unhandled api error", {
-    requestId,
-    path: c.req.path,
-    method: c.req.method,
-    error: error.message,
-  })
+  loggerForContext(c).error(
+    {
+      requestId,
+      path: c.req.path,
+      method: c.req.method,
+      error: error.message,
+    },
+    "unhandled api error"
+  )
 
   return c.json(
     failure({

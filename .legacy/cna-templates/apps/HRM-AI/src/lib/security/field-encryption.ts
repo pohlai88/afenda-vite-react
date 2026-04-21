@@ -2,13 +2,13 @@
 // Field-level encryption for sensitive PII data (salary, CCCD, bank account)
 // Uses AES-256-GCM for authenticated encryption
 
-import crypto from 'crypto'
+import crypto from "crypto"
 
-const ALGORITHM = 'aes-256-gcm'
+const ALGORITHM = "aes-256-gcm"
 const IV_LENGTH = 16 // 128 bits
 const AUTH_TAG_LENGTH = 16 // 128 bits
-const ENCODING = 'base64' as const
-const PREFIX = 'enc:' // Prefix to identify encrypted values
+const ENCODING = "base64" as const
+const PREFIX = "enc:" // Prefix to identify encrypted values
 
 /**
  * Get the encryption key from environment.
@@ -19,14 +19,16 @@ function getEncryptionKey(): Buffer {
   const keyHex = process.env.FIELD_ENCRYPTION_KEY
   if (!keyHex) {
     throw new Error(
-      'FIELD_ENCRYPTION_KEY environment variable is not set. ' +
-      'Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'
+      "FIELD_ENCRYPTION_KEY environment variable is not set. " +
+        "Generate one with: node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""
     )
   }
   if (keyHex.length !== 64) {
-    throw new Error('FIELD_ENCRYPTION_KEY must be a 64-character hex string (32 bytes)')
+    throw new Error(
+      "FIELD_ENCRYPTION_KEY must be a 64-character hex string (32 bytes)"
+    )
   }
-  return Buffer.from(keyHex, 'hex')
+  return Buffer.from(keyHex, "hex")
 }
 
 /**
@@ -40,7 +42,7 @@ export function encryptField(plaintext: string): string {
   const iv = crypto.randomBytes(IV_LENGTH)
   const cipher = crypto.createCipheriv(ALGORITHM, key, iv)
 
-  let encrypted = cipher.update(plaintext, 'utf8', ENCODING)
+  let encrypted = cipher.update(plaintext, "utf8", ENCODING)
   encrypted += cipher.final(ENCODING)
 
   const authTag = cipher.getAuthTag()
@@ -59,10 +61,10 @@ export function decryptField(encrypted: string): string {
   }
 
   const key = getEncryptionKey()
-  const parts = encrypted.slice(PREFIX.length).split(':')
+  const parts = encrypted.slice(PREFIX.length).split(":")
 
   if (parts.length !== 3) {
-    throw new Error('Invalid encrypted field format')
+    throw new Error("Invalid encrypted field format")
   }
 
   const [ivBase64, authTagBase64, ciphertext] = parts
@@ -72,8 +74,8 @@ export function decryptField(encrypted: string): string {
   const decipher = crypto.createDecipheriv(ALGORITHM, key, iv)
   decipher.setAuthTag(authTag)
 
-  let decrypted = decipher.update(ciphertext, ENCODING, 'utf8')
-  decrypted += decipher.final('utf8')
+  let decrypted = decipher.update(ciphertext, ENCODING, "utf8")
+  decrypted += decipher.final("utf8")
 
   return decrypted
 }
@@ -82,15 +84,15 @@ export function decryptField(encrypted: string): string {
  * Check if a value is encrypted.
  */
 export function isEncrypted(value: string): boolean {
-  return typeof value === 'string' && value.startsWith(PREFIX)
+  return typeof value === "string" && value.startsWith(PREFIX)
 }
 
 /**
  * Mask a sensitive value for display (e.g. "123456789" → "***456789")
  */
 export function maskField(value: string, visibleChars: number = 4): string {
-  if (!value || value.length <= visibleChars) return '***'
-  return '***' + value.slice(-visibleChars)
+  if (!value || value.length <= visibleChars) return "***"
+  return "***" + value.slice(-visibleChars)
 }
 
 /**
@@ -104,8 +106,9 @@ export function encryptFields<T extends Record<string, unknown>>(
   const result = { ...data }
   for (const field of fieldNames) {
     const value = result[field]
-    if (typeof value === 'string' && value && !isEncrypted(value)) {
-      (result as Record<string, unknown>)[field as string] = encryptField(value)
+    if (typeof value === "string" && value && !isEncrypted(value)) {
+      ;(result as Record<string, unknown>)[field as string] =
+        encryptField(value)
     }
   }
   return result
@@ -122,8 +125,9 @@ export function decryptFields<T extends Record<string, unknown>>(
   const result = { ...data }
   for (const field of fieldNames) {
     const value = result[field]
-    if (typeof value === 'string' && isEncrypted(value)) {
-      (result as Record<string, unknown>)[field as string] = decryptField(value)
+    if (typeof value === "string" && isEncrypted(value)) {
+      ;(result as Record<string, unknown>)[field as string] =
+        decryptField(value)
     }
   }
   return result

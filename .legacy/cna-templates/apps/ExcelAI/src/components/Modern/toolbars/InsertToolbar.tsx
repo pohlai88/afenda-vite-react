@@ -1,106 +1,126 @@
-import React, { useState } from 'react';
+import React, { useState } from "react"
 import {
-  Table, BarChart3, LineChart, PieChart,
-  Image, Link, MessageSquare,
-  Plus, Minus, Rows, Columns,
-  TrendingUp, Activity, Table2
-} from 'lucide-react';
-import { useWorkbookStore } from '../../../stores/workbookStore';
-import { useUIStore } from '../../../stores/uiStore';
-import { InsertChartDialog } from '../../Dialogs/InsertChartDialog';
-import { InsertTableDialog } from '../../Dialogs/InsertTableDialog';
-import { CommentDialog } from '../../Dialogs/CommentDialog';
-import { ShapesDropdown } from '../../Shapes';
-import { PictureInsertDialog } from '../../Pictures';
-import { SparklineDialog } from '../../Sparklines';
-import { SparklineType } from '../../../types/sparkline';
-import { CreatePivotDialog } from '../../PivotTable';
+  Table,
+  BarChart3,
+  LineChart,
+  PieChart,
+  Image,
+  Link,
+  MessageSquare,
+  Plus,
+  Minus,
+  Rows,
+  Columns,
+  TrendingUp,
+  Activity,
+  Table2,
+} from "lucide-react"
+import { useWorkbookStore } from "../../../stores/workbookStore"
+import { useUIStore } from "../../../stores/uiStore"
+import { InsertChartDialog } from "../../Dialogs/InsertChartDialog"
+import { InsertTableDialog } from "../../Dialogs/InsertTableDialog"
+import { CommentDialog } from "../../Dialogs/CommentDialog"
+import { ShapesDropdown } from "../../Shapes"
+import { PictureInsertDialog } from "../../Pictures"
+import { SparklineDialog } from "../../Sparklines"
+import { SparklineType } from "../../../types/sparkline"
+import { CreatePivotDialog } from "../../PivotTable"
 
 export const InsertToolbar: React.FC = () => {
-  const [showChartDialog, setShowChartDialog] = useState(false);
-  const [showTableDialog, setShowTableDialog] = useState(false);
-  const [showPictureDialog, setShowPictureDialog] = useState(false);
-  const [showSparklineDialog, setShowSparklineDialog] = useState(false);
-  const [showPivotDialog, setShowPivotDialog] = useState(false);
-  const [showCommentDialog, setShowCommentDialog] = useState(false);
-  const [chartType, setChartType] = useState<'bar' | 'line' | 'pie'>('bar');
-  const [sparklineType, setSparklineType] = useState<SparklineType>('line');
+  const [showChartDialog, setShowChartDialog] = useState(false)
+  const [showTableDialog, setShowTableDialog] = useState(false)
+  const [showPictureDialog, setShowPictureDialog] = useState(false)
+  const [showSparklineDialog, setShowSparklineDialog] = useState(false)
+  const [showPivotDialog, setShowPivotDialog] = useState(false)
+  const [showCommentDialog, setShowCommentDialog] = useState(false)
+  const [chartType, setChartType] = useState<"bar" | "line" | "pie">("bar")
+  const [sparklineType, setSparklineType] = useState<SparklineType>("line")
 
-  const { insertRow, insertColumn, deleteRow, deleteColumn, selectedCell, activeSheetId, getComment } = useWorkbookStore();
-  const { showToast } = useUIStore();
+  const {
+    insertRow,
+    insertColumn,
+    deleteRow,
+    deleteColumn,
+    selectedCell,
+    activeSheetId,
+    getComment,
+  } = useWorkbookStore()
+  const { showToast } = useUIStore()
 
   const handleInsertRow = () => {
     if (selectedCell) {
-      insertRow(selectedCell.row);
-      showToast('Row inserted above', 'success');
+      insertRow(selectedCell.row)
+      showToast("Row inserted above", "success")
     } else {
-      insertRow(0);
-      showToast('Row inserted at top', 'success');
+      insertRow(0)
+      showToast("Row inserted at top", "success")
     }
-  };
+  }
 
   const handleInsertColumn = () => {
     if (selectedCell) {
-      insertColumn(selectedCell.col);
-      showToast('Column inserted left', 'success');
+      insertColumn(selectedCell.col)
+      showToast("Column inserted left", "success")
     } else {
-      insertColumn(0);
-      showToast('Column inserted at start', 'success');
+      insertColumn(0)
+      showToast("Column inserted at start", "success")
     }
-  };
+  }
 
   const handleDeleteRow = () => {
     if (selectedCell) {
-      deleteRow(selectedCell.row);
-      showToast('Row deleted', 'success');
+      deleteRow(selectedCell.row)
+      showToast("Row deleted", "success")
     } else {
-      showToast('Select a row first', 'warning');
+      showToast("Select a row first", "warning")
     }
-  };
+  }
 
   const handleDeleteColumn = () => {
     if (selectedCell) {
-      deleteColumn(selectedCell.col);
-      showToast('Column deleted', 'success');
+      deleteColumn(selectedCell.col)
+      showToast("Column deleted", "success")
     } else {
-      showToast('Select a column first', 'warning');
+      showToast("Select a column first", "warning")
     }
-  };
+  }
 
-  const handleInsertChart = (type: 'bar' | 'line' | 'pie') => {
-    setChartType(type);
-    setShowChartDialog(true);
-  };
+  const handleInsertChart = (type: "bar" | "line" | "pie") => {
+    setChartType(type)
+    setShowChartDialog(true)
+  }
 
   const handleInsertLink = () => {
-    const url = prompt('Enter URL:');
+    const url = prompt("Enter URL:")
     if (url && selectedCell) {
-      const { setCellValue, activeSheetId } = useWorkbookStore.getState();
+      const { setCellValue, activeSheetId } = useWorkbookStore.getState()
       if (activeSheetId) {
-        setCellValue(activeSheetId, selectedCell.row, selectedCell.col, url);
-        showToast('Link inserted', 'success');
+        setCellValue(activeSheetId, selectedCell.row, selectedCell.col, url)
+        showToast("Link inserted", "success")
       }
     }
-  };
+  }
 
   const handleInsertComment = () => {
     if (!selectedCell) {
-      showToast('Select a cell first', 'warning');
-      return;
+      showToast("Select a cell first", "warning")
+      return
     }
 
     // Check if cell already has a comment
-    const existingComment = getComment(selectedCell.row, selectedCell.col);
+    const existingComment = getComment(selectedCell.row, selectedCell.col)
     if (existingComment) {
-      const editComment = confirm('This cell already has a comment. Do you want to edit it?');
+      const editComment = confirm(
+        "This cell already has a comment. Do you want to edit it?"
+      )
       if (editComment) {
-        setShowCommentDialog(true);
+        setShowCommentDialog(true)
       }
-      return;
+      return
     }
 
-    setShowCommentDialog(true);
-  };
+    setShowCommentDialog(true)
+  }
 
   return (
     <>
@@ -171,7 +191,7 @@ export const InsertToolbar: React.FC = () => {
         <div className="toolbar-2026__group">
           <button
             className="toolbar-2026__btn"
-            onClick={() => handleInsertChart('bar')}
+            onClick={() => handleInsertChart("bar")}
             title="Bar Chart"
           >
             <BarChart3 size={16} />
@@ -179,7 +199,7 @@ export const InsertToolbar: React.FC = () => {
           </button>
           <button
             className="toolbar-2026__btn"
-            onClick={() => handleInsertChart('line')}
+            onClick={() => handleInsertChart("line")}
             title="Line Chart"
           >
             <LineChart size={16} />
@@ -187,7 +207,7 @@ export const InsertToolbar: React.FC = () => {
           </button>
           <button
             className="toolbar-2026__btn"
-            onClick={() => handleInsertChart('pie')}
+            onClick={() => handleInsertChart("pie")}
             title="Pie Chart"
           >
             <PieChart size={16} />
@@ -201,7 +221,10 @@ export const InsertToolbar: React.FC = () => {
         <div className="toolbar-2026__group">
           <button
             className="toolbar-2026__btn"
-            onClick={() => { setSparklineType('line'); setShowSparklineDialog(true); }}
+            onClick={() => {
+              setSparklineType("line")
+              setShowSparklineDialog(true)
+            }}
             title="Line Sparkline"
           >
             <TrendingUp size={16} />
@@ -209,7 +232,10 @@ export const InsertToolbar: React.FC = () => {
           </button>
           <button
             className="toolbar-2026__btn"
-            onClick={() => { setSparklineType('column'); setShowSparklineDialog(true); }}
+            onClick={() => {
+              setSparklineType("column")
+              setShowSparklineDialog(true)
+            }}
             title="Column Sparkline"
           >
             <BarChart3 size={16} />
@@ -217,7 +243,10 @@ export const InsertToolbar: React.FC = () => {
           </button>
           <button
             className="toolbar-2026__btn"
-            onClick={() => { setSparklineType('winloss'); setShowSparklineDialog(true); }}
+            onClick={() => {
+              setSparklineType("winloss")
+              setShowSparklineDialog(true)
+            }}
             title="Win/Loss Sparkline"
           >
             <Activity size={16} />
@@ -272,9 +301,7 @@ export const InsertToolbar: React.FC = () => {
       )}
 
       {showTableDialog && (
-        <InsertTableDialog
-          onClose={() => setShowTableDialog(false)}
-        />
+        <InsertTableDialog onClose={() => setShowTableDialog(false)} />
       )}
 
       {activeSheetId && (
@@ -307,5 +334,5 @@ export const InsertToolbar: React.FC = () => {
         />
       )}
     </>
-  );
-};
+  )
+}

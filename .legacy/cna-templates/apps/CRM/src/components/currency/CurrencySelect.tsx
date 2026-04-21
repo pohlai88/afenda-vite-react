@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import { SUPPORTED_CURRENCIES } from '@/lib/constants'
+import { SUPPORTED_CURRENCIES } from "@/lib/constants"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 
 interface CurrencySelectProps {
   value: string
@@ -16,10 +16,17 @@ interface CurrencySelectProps {
   className?: string
 }
 
-export function CurrencySelect({ value, onValueChange, disabled, className }: CurrencySelectProps) {
+export function CurrencySelect({
+  value,
+  onValueChange,
+  disabled,
+  className,
+}: CurrencySelectProps) {
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className={`bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] ${className ?? ''}`}>
+      <SelectTrigger
+        className={`bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] ${className ?? ""}`}
+      >
         <SelectValue placeholder="Currency" />
       </SelectTrigger>
       <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">

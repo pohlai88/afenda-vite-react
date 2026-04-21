@@ -1,15 +1,15 @@
 // src/lib/recruitment/services/posting.service.ts
 // Job Posting Service - Manage job postings and careers page
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   JobPostingStatus,
   RequisitionStatus,
   JobType,
   WorkMode,
-  Prisma
-} from '@prisma/client'
-import { generateUniqueSlug } from '../utils'
+  Prisma,
+} from "@prisma/client"
+import { generateUniqueSlug } from "../utils"
 
 // Types
 export interface CreatePostingInput {
@@ -27,7 +27,9 @@ export interface CreatePostingInput {
   expiresAt?: Date
 }
 
-export interface UpdatePostingInput extends Partial<Omit<CreatePostingInput, 'requisitionId'>> {
+export interface UpdatePostingInput extends Partial<
+  Omit<CreatePostingInput, "requisitionId">
+> {
   status?: JobPostingStatus
 }
 
@@ -66,7 +68,9 @@ export class JobPostingService {
     })
 
     if (!requisition) {
-      throw new Error('Requisition not found or not in valid status for posting')
+      throw new Error(
+        "Requisition not found or not in valid status for posting"
+      )
     }
 
     // Generate unique slug
@@ -133,7 +137,7 @@ export class JobPostingService {
     })
 
     if (!posting) {
-      throw new Error('Job posting not found')
+      throw new Error("Job posting not found")
     }
 
     return posting
@@ -149,10 +153,7 @@ export class JobPostingService {
         slug,
         status: JobPostingStatus.PUBLISHED,
         isPublic: true,
-        OR: [
-          { expiresAt: null },
-          { expiresAt: { gt: new Date() } },
-        ],
+        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
       },
       include: {
         requisition: {
@@ -166,7 +167,7 @@ export class JobPostingService {
     })
 
     if (!posting) {
-      throw new Error('Job posting not found')
+      throw new Error("Job posting not found")
     }
 
     // Increment view count
@@ -181,7 +182,11 @@ export class JobPostingService {
   /**
    * List postings with filters
    */
-  async list(filters: PostingFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: PostingFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.JobPostingWhereInput = {
@@ -214,16 +219,16 @@ export class JobPostingService {
 
     if (filters.search) {
       where.OR = [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
-        { location: { contains: filters.search, mode: 'insensitive' } },
+        { title: { contains: filters.search, mode: "insensitive" } },
+        { description: { contains: filters.search, mode: "insensitive" } },
+        { location: { contains: filters.search, mode: "insensitive" } },
       ]
     }
 
     const [postings, total] = await Promise.all([
       db.jobPosting.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -254,17 +259,18 @@ export class JobPostingService {
   /**
    * List public job postings (for careers page)
    */
-  async listPublic(filters: PublicJobFilters = {}, page: number = 1, pageSize: number = 20) {
+  async listPublic(
+    filters: PublicJobFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.JobPostingWhereInput = {
       tenantId: this.tenantId,
       status: JobPostingStatus.PUBLISHED,
       isPublic: true,
-      OR: [
-        { expiresAt: null },
-        { expiresAt: { gt: new Date() } },
-      ],
+      OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
     }
 
     if (filters.jobType) {
@@ -276,7 +282,7 @@ export class JobPostingService {
     }
 
     if (filters.location) {
-      where.location = { contains: filters.location, mode: 'insensitive' }
+      where.location = { contains: filters.location, mode: "insensitive" }
     }
 
     if (filters.departmentId) {
@@ -287,9 +293,9 @@ export class JobPostingService {
       where.AND = [
         {
           OR: [
-            { title: { contains: filters.search, mode: 'insensitive' } },
-            { description: { contains: filters.search, mode: 'insensitive' } },
-            { requirements: { contains: filters.search, mode: 'insensitive' } },
+            { title: { contains: filters.search, mode: "insensitive" } },
+            { description: { contains: filters.search, mode: "insensitive" } },
+            { requirements: { contains: filters.search, mode: "insensitive" } },
           ],
         },
       ]
@@ -298,7 +304,7 @@ export class JobPostingService {
     const [postings, total] = await Promise.all([
       db.jobPosting.findMany({
         where,
-        orderBy: [{ createdAt: 'desc' }],
+        orderBy: [{ createdAt: "desc" }],
         skip,
         take: pageSize,
         select: {
@@ -322,7 +328,7 @@ export class JobPostingService {
     ])
 
     return {
-      data: postings.map(p => ({
+      data: postings.map((p) => ({
         ...p,
         departmentName: p.requisition?.department?.name || null,
         requisition: undefined,
@@ -343,7 +349,7 @@ export class JobPostingService {
     })
 
     if (!posting) {
-      throw new Error('Job posting not found')
+      throw new Error("Job posting not found")
     }
 
     // Generate new slug if title changed
@@ -393,11 +399,11 @@ export class JobPostingService {
     })
 
     if (!posting) {
-      throw new Error('Job posting not found')
+      throw new Error("Job posting not found")
     }
 
     if (posting.status !== JobPostingStatus.DRAFT) {
-      throw new Error('Only draft postings can be published')
+      throw new Error("Only draft postings can be published")
     }
 
     // Verify requisition is open
@@ -409,7 +415,9 @@ export class JobPostingService {
           data: { status: RequisitionStatus.OPEN },
         })
       } else {
-        throw new Error('Requisition must be approved or open to publish posting')
+        throw new Error(
+          "Requisition must be approved or open to publish posting"
+        )
       }
     }
 
@@ -431,11 +439,11 @@ export class JobPostingService {
     })
 
     if (!posting) {
-      throw new Error('Job posting not found')
+      throw new Error("Job posting not found")
     }
 
     if (posting.status !== JobPostingStatus.PUBLISHED) {
-      throw new Error('Only published postings can be closed')
+      throw new Error("Only published postings can be closed")
     }
 
     return db.jobPosting.update({
@@ -453,7 +461,7 @@ export class JobPostingService {
     })
 
     if (!posting) {
-      throw new Error('Job posting not found')
+      throw new Error("Job posting not found")
     }
 
     return db.jobPosting.update({
@@ -471,10 +479,13 @@ export class JobPostingService {
     })
 
     if (!posting) {
-      throw new Error('Job posting not found')
+      throw new Error("Job posting not found")
     }
 
-    const newSlug = await generateUniqueSlug(this.tenantId, `${posting.title} (Copy)`)
+    const newSlug = await generateUniqueSlug(
+      this.tenantId,
+      `${posting.title} (Copy)`
+    )
 
     return db.jobPosting.create({
       data: {
@@ -503,7 +514,7 @@ export class JobPostingService {
     const [byStatus, topPerforming, expiringSoon] = await Promise.all([
       // By status
       db.jobPosting.groupBy({
-        by: ['status'],
+        by: ["status"],
         where: { tenantId: this.tenantId },
         _count: true,
         _sum: { viewCount: true, applicationCount: true },
@@ -515,7 +526,7 @@ export class JobPostingService {
           tenantId: this.tenantId,
           status: JobPostingStatus.PUBLISHED,
         },
-        orderBy: { applicationCount: 'desc' },
+        orderBy: { applicationCount: "desc" },
         take: 5,
         select: {
           id: true,
@@ -545,7 +556,7 @@ export class JobPostingService {
     ])
 
     return {
-      byStatus: byStatus.map(s => ({
+      byStatus: byStatus.map((s) => ({
         status: s.status,
         count: s._count,
         totalViews: s._sum.viewCount || 0,

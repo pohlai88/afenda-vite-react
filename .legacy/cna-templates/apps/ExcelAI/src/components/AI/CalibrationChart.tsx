@@ -2,18 +2,21 @@
 // CALIBRATION CHART — Visualize AI calibration (Blueprint §5.5)
 // =============================================================================
 
-import React from 'react';
-import type { CalibrationMetrics, CalibrationBucket } from '../../ai/trust/types';
+import React from "react"
+import type {
+  CalibrationMetrics,
+  CalibrationBucket,
+} from "../../ai/trust/types"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 interface CalibrationChartProps {
-  calibration: CalibrationMetrics;
-  width?: number;
-  height?: number;
-  className?: string;
+  calibration: CalibrationMetrics
+  width?: number
+  height?: number
+  className?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -24,15 +27,15 @@ export const CalibrationChart: React.FC<CalibrationChartProps> = ({
   calibration,
   width = 300,
   height = 200,
-  className = '',
+  className = "",
 }) => {
-  const padding = { top: 20, right: 20, bottom: 40, left: 50 };
-  const chartWidth = width - padding.left - padding.right;
-  const chartHeight = height - padding.top - padding.bottom;
+  const padding = { top: 20, right: 20, bottom: 40, left: 50 }
+  const chartWidth = width - padding.left - padding.right
+  const chartHeight = height - padding.top - padding.bottom
 
   // Scale functions
-  const xScale = (v: number) => padding.left + v * chartWidth;
-  const yScale = (v: number) => padding.top + (1 - v) * chartHeight;
+  const xScale = (v: number) => padding.left + v * chartWidth
+  const yScale = (v: number) => padding.top + (1 - v) * chartHeight
 
   return (
     <div className={`calibration-chart ${className}`}>
@@ -78,12 +81,12 @@ export const CalibrationChart: React.FC<CalibrationChartProps> = ({
         {/* Calibration buckets */}
         <g className="calibration-chart__buckets">
           {calibration.buckets.map((bucket, i) => {
-            const x = xScale((bucket.range[0] + bucket.range[1]) / 2);
-            const y = yScale(bucket.actualAccuracy);
-            const color = bucket.isCalibrated ? '#22c55e' : '#f97316';
+            const x = xScale((bucket.range[0] + bucket.range[1]) / 2)
+            const y = yScale(bucket.actualAccuracy)
+            const color = bucket.isCalibrated ? "#22c55e" : "#f97316"
 
             if (bucket.sampleCount === 0) {
-              return null;
+              return null
             }
 
             return (
@@ -93,7 +96,10 @@ export const CalibrationChart: React.FC<CalibrationChartProps> = ({
                   x={xScale(bucket.range[0]) + 2}
                   y={yScale(bucket.actualAccuracy)}
                   width={chartWidth / 5 - 4}
-                  height={Math.max(2, yScale(0) - yScale(bucket.actualAccuracy))}
+                  height={Math.max(
+                    2,
+                    yScale(0) - yScale(bucket.actualAccuracy)
+                  )}
                   fill={color}
                   opacity={0.3}
                   className="calibration-chart__bucket-bar"
@@ -118,7 +124,7 @@ export const CalibrationChart: React.FC<CalibrationChartProps> = ({
                   n={bucket.sampleCount}
                 </text>
               </g>
-            );
+            )
           })}
         </g>
 
@@ -195,42 +201,41 @@ export const CalibrationChart: React.FC<CalibrationChartProps> = ({
         <div className="calibration-chart__legend-item">
           <span
             className="calibration-chart__legend-line"
-            style={{ backgroundColor: '#6b7280' }}
+            style={{ backgroundColor: "#6b7280" }}
           />
           <span>Perfect Calibration</span>
         </div>
         <div className="calibration-chart__legend-item">
           <span
             className="calibration-chart__legend-dot"
-            style={{ backgroundColor: '#22c55e' }}
+            style={{ backgroundColor: "#22c55e" }}
           />
           <span>Well Calibrated</span>
         </div>
         <div className="calibration-chart__legend-item">
           <span
             className="calibration-chart__legend-dot"
-            style={{ backgroundColor: '#f97316' }}
+            style={{ backgroundColor: "#f97316" }}
           />
           <span>Needs Adjustment</span>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Calibration Buckets Table
 // -----------------------------------------------------------------------------
 
 interface CalibrationBucketsTableProps {
-  buckets: CalibrationBucket[];
-  className?: string;
+  buckets: CalibrationBucket[]
+  className?: string
 }
 
-export const CalibrationBucketsTable: React.FC<CalibrationBucketsTableProps> = ({
-  buckets,
-  className = '',
-}) => {
+export const CalibrationBucketsTable: React.FC<
+  CalibrationBucketsTableProps
+> = ({ buckets, className = "" }) => {
   return (
     <div className={`calibration-table ${className}`}>
       <table>
@@ -245,9 +250,15 @@ export const CalibrationBucketsTable: React.FC<CalibrationBucketsTableProps> = (
         </thead>
         <tbody>
           {buckets.map((bucket, i) => (
-            <tr key={i} className={bucket.isCalibrated ? '' : 'calibration-table__row--warning'}>
+            <tr
+              key={i}
+              className={
+                bucket.isCalibrated ? "" : "calibration-table__row--warning"
+              }
+            >
               <td>
-                {Math.round(bucket.range[0] * 100)}% - {Math.round(bucket.range[1] * 100)}%
+                {Math.round(bucket.range[0] * 100)}% -{" "}
+                {Math.round(bucket.range[1] * 100)}%
               </td>
               <td>{Math.round(bucket.predictedAccuracy * 100)}%</td>
               <td>{Math.round(bucket.actualAccuracy * 100)}%</td>
@@ -276,31 +287,33 @@ export const CalibrationBucketsTable: React.FC<CalibrationBucketsTableProps> = (
         </tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Mini Calibration Indicator
 // -----------------------------------------------------------------------------
 
 interface MiniCalibrationProps {
-  calibration: number;
-  trend: 'improving' | 'stable' | 'declining';
-  className?: string;
+  calibration: number
+  trend: "improving" | "stable" | "declining"
+  className?: string
 }
 
 export const MiniCalibration: React.FC<MiniCalibrationProps> = ({
   calibration,
   trend,
-  className = '',
+  className = "",
 }) => {
-  const color = calibration >= 0.8 ? '#22c55e' : calibration >= 0.6 ? '#eab308' : '#f97316';
-  const trendIcon = trend === 'improving' ? '↑' : trend === 'declining' ? '↓' : '→';
+  const color =
+    calibration >= 0.8 ? "#22c55e" : calibration >= 0.6 ? "#eab308" : "#f97316"
+  const trendIcon =
+    trend === "improving" ? "↑" : trend === "declining" ? "↓" : "→"
 
   return (
     <div
       className={`mini-calibration ${className}`}
-      style={{ '--cal-color': color } as React.CSSProperties}
+      style={{ "--cal-color": color } as React.CSSProperties}
     >
       <span className="mini-calibration__icon">🎯</span>
       <span className="mini-calibration__value">
@@ -308,24 +321,26 @@ export const MiniCalibration: React.FC<MiniCalibrationProps> = ({
       </span>
       <span className="mini-calibration__trend">{trendIcon}</span>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Calibration Status Bar
 // -----------------------------------------------------------------------------
 
 interface CalibrationStatusBarProps {
-  metrics: CalibrationMetrics;
-  className?: string;
+  metrics: CalibrationMetrics
+  className?: string
 }
 
 export const CalibrationStatusBar: React.FC<CalibrationStatusBarProps> = ({
   metrics,
-  className = '',
+  className = "",
 }) => {
-  const calibrated = metrics.buckets.filter((b) => b.isCalibrated && b.sampleCount > 0).length;
-  const total = metrics.buckets.filter((b) => b.sampleCount > 0).length;
+  const calibrated = metrics.buckets.filter(
+    (b) => b.isCalibrated && b.sampleCount > 0
+  ).length
+  const total = metrics.buckets.filter((b) => b.sampleCount > 0).length
 
   return (
     <div className={`calibration-status-bar ${className}`}>
@@ -342,11 +357,12 @@ export const CalibrationStatusBar: React.FC<CalibrationStatusBarProps> = ({
             key={i}
             className="calibration-status-bar__segment"
             style={{
-              backgroundColor: bucket.sampleCount === 0
-                ? '#e5e7eb'
-                : bucket.isCalibrated
-                  ? '#22c55e'
-                  : '#f97316',
+              backgroundColor:
+                bucket.sampleCount === 0
+                  ? "#e5e7eb"
+                  : bucket.isCalibrated
+                    ? "#22c55e"
+                    : "#f97316",
             }}
             title={`${Math.round(bucket.range[0] * 100)}-${Math.round(bucket.range[1] * 100)}%: ${bucket.sampleCount} samples`}
           />
@@ -358,8 +374,8 @@ export const CalibrationStatusBar: React.FC<CalibrationStatusBarProps> = ({
         <span>Trend: {formatTrend(metrics.trend)}</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -367,13 +383,13 @@ export const CalibrationStatusBar: React.FC<CalibrationStatusBarProps> = ({
 
 function formatTrend(trend: string): string {
   switch (trend) {
-    case 'improving':
-      return '📈';
-    case 'declining':
-      return '📉';
+    case "improving":
+      return "📈"
+    case "declining":
+      return "📉"
     default:
-      return '➡️';
+      return "➡️"
   }
 }
 
-export default CalibrationChart;
+export default CalibrationChart

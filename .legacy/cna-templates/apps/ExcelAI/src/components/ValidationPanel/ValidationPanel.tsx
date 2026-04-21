@@ -1,15 +1,22 @@
-import { useState } from 'react';
-import { useValidationStore } from '../../stores/validationStore';
-import { ValidationRule, ValidationType, ErrorStyle } from '../../types/cell';
+import { useState } from "react"
+import { useValidationStore } from "../../stores/validationStore"
+import { ValidationRule, ValidationType, ErrorStyle } from "../../types/cell"
 
 interface ValidationPanelProps {
-  sheetId: string;
-  selectedRow?: number;
-  selectedCol?: number;
-  onClose: () => void;
+  sheetId: string
+  selectedRow?: number
+  selectedCol?: number
+  onClose: () => void
 }
 
-type ValidationTypeOption = 'any' | 'wholeNumber' | 'decimal' | 'list' | 'textLength' | 'date' | 'custom';
+type ValidationTypeOption =
+  | "any"
+  | "wholeNumber"
+  | "decimal"
+  | "list"
+  | "textLength"
+  | "date"
+  | "custom"
 
 export const ValidationPanel: React.FC<ValidationPanelProps> = ({
   sheetId,
@@ -23,128 +30,141 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
     applyToRange,
     getRuleForCell,
     clearCellValidation,
-  } = useValidationStore();
+  } = useValidationStore()
 
-  const [activeTab, setActiveTab] = useState<'settings' | 'input' | 'error'>('settings');
-  const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"settings" | "input" | "error">(
+    "settings"
+  )
+  const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null)
 
   // Form state
-  const [validationType, setValidationType] = useState<ValidationTypeOption>('any');
-  const [allowBlank, setAllowBlank] = useState(true);
+  const [validationType, setValidationType] =
+    useState<ValidationTypeOption>("any")
+  const [allowBlank, setAllowBlank] = useState(true)
 
   // Number validation
-  const [minValue, setMinValue] = useState('');
-  const [maxValue, setMaxValue] = useState('');
+  const [minValue, setMinValue] = useState("")
+  const [maxValue, setMaxValue] = useState("")
 
   // List validation
-  const [listValues, setListValues] = useState('');
-  const [showDropdown, setShowDropdown] = useState(true);
+  const [listValues, setListValues] = useState("")
+  const [showDropdown, setShowDropdown] = useState(true)
 
   // Text length
-  const [maxLength, setMaxLength] = useState('');
+  const [maxLength, setMaxLength] = useState("")
 
   // Custom formula
-  const [customFormula, setCustomFormula] = useState('');
+  const [customFormula, setCustomFormula] = useState("")
 
   // Input message
-  const [inputTitle, setInputTitle] = useState('');
-  const [inputMessage, setInputMessage] = useState('');
-  const [showInputMessage, setShowInputMessage] = useState(false);
+  const [inputTitle, setInputTitle] = useState("")
+  const [inputMessage, setInputMessage] = useState("")
+  const [showInputMessage, setShowInputMessage] = useState(false)
 
   // Error alert
-  const [errorStyle, setErrorStyle] = useState<ErrorStyle>('stop');
-  const [errorTitle, setErrorTitle] = useState('Invalid Entry');
-  const [errorMessage, setErrorMessage] = useState('The value you entered is not valid.');
-  const [showErrorAlert, setShowErrorAlert] = useState(true);
+  const [errorStyle, setErrorStyle] = useState<ErrorStyle>("stop")
+  const [errorTitle, setErrorTitle] = useState("Invalid Entry")
+  const [errorMessage, setErrorMessage] = useState(
+    "The value you entered is not valid."
+  )
+  const [showErrorAlert, setShowErrorAlert] = useState(true)
 
   // Range application
-  const [applyMode] = useState<'cell' | 'range'>('cell');
-  const [rangeStart] = useState('');
-  const [rangeEnd] = useState('');
+  const [applyMode] = useState<"cell" | "range">("cell")
+  const [rangeStart] = useState("")
+  const [rangeEnd] = useState("")
 
-  const currentRule = selectedRow !== undefined && selectedCol !== undefined
-    ? getRuleForCell(sheetId, selectedRow, selectedCol)
-    : undefined;
+  const currentRule =
+    selectedRow !== undefined && selectedCol !== undefined
+      ? getRuleForCell(sheetId, selectedRow, selectedCol)
+      : undefined
 
   const handleCreateRule = () => {
-    const now = new Date().toISOString();
-    let validationTypeObj: ValidationType;
+    const now = new Date().toISOString()
+    let validationTypeObj: ValidationType
 
     switch (validationType) {
-      case 'wholeNumber':
-      case 'decimal':
-        const min = parseFloat(minValue) || 0;
-        const max = parseFloat(maxValue) || 100;
+      case "wholeNumber":
+      case "decimal":
+        const min = parseFloat(minValue) || 0
+        const max = parseFloat(maxValue) || 100
         validationTypeObj = {
           type: validationType,
-          operator: 'between',
+          operator: "between",
           value1: min,
           value2: max,
-        };
-        break;
+        }
+        break
 
-      case 'list':
-        const values = listValues.split(',').map(v => v.trim()).filter(Boolean);
+      case "list":
+        const values = listValues
+          .split(",")
+          .map((v) => v.trim())
+          .filter(Boolean)
         validationTypeObj = {
-          type: 'list',
-          source: { type: 'values', values },
+          type: "list",
+          source: { type: "values", values },
           dropdown: showDropdown,
-        };
-        break;
+        }
+        break
 
-      case 'textLength':
+      case "textLength":
         validationTypeObj = {
-          type: 'textLength',
-          operator: 'lessThanOrEqual',
+          type: "textLength",
+          operator: "lessThanOrEqual",
           value1: parseInt(maxLength) || 255,
-        };
-        break;
+        }
+        break
 
-      case 'custom':
+      case "custom":
         validationTypeObj = {
-          type: 'custom',
+          type: "custom",
           formula: customFormula,
-        };
-        break;
+        }
+        break
 
       default:
-        validationTypeObj = { type: 'any' };
+        validationTypeObj = { type: "any" }
     }
 
     const newRule: ValidationRule = {
       id: crypto.randomUUID(),
       validationType: validationTypeObj,
       allowBlank,
-      inputMessage: showInputMessage ? {
-        title: inputTitle,
-        message: inputMessage,
-        show: true,
-      } : undefined,
-      errorAlert: showErrorAlert ? {
-        style: errorStyle,
-        title: errorTitle,
-        message: errorMessage,
-        show: true,
-      } : undefined,
+      inputMessage: showInputMessage
+        ? {
+            title: inputTitle,
+            message: inputMessage,
+            show: true,
+          }
+        : undefined,
+      errorAlert: showErrorAlert
+        ? {
+            style: errorStyle,
+            title: errorTitle,
+            message: errorMessage,
+            show: true,
+          }
+        : undefined,
       createdAt: now,
       updatedAt: now,
-    };
+    }
 
-    addRule(newRule);
-    setSelectedRuleId(newRule.id);
-  };
+    addRule(newRule)
+    setSelectedRuleId(newRule.id)
+  }
 
   const handleApplyRule = () => {
-    if (!selectedRuleId) return;
+    if (!selectedRuleId) return
 
-    if (applyMode === 'cell') {
+    if (applyMode === "cell") {
       if (selectedRow !== undefined && selectedCol !== undefined) {
-        applyToCell(selectedRuleId, sheetId, selectedRow, selectedCol);
+        applyToCell(selectedRuleId, sheetId, selectedRow, selectedCol)
       }
     } else {
       // Parse range - simplified
-      const startMatch = rangeStart.match(/(\d+),(\d+)/);
-      const endMatch = rangeEnd.match(/(\d+),(\d+)/);
+      const startMatch = rangeStart.match(/(\d+),(\d+)/)
+      const endMatch = rangeEnd.match(/(\d+),(\d+)/)
       if (startMatch && endMatch) {
         applyToRange(
           selectedRuleId,
@@ -153,16 +173,16 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
           parseInt(startMatch[2]),
           parseInt(endMatch[1]),
           parseInt(endMatch[2])
-        );
+        )
       }
     }
-  };
+  }
 
   const handleClearValidation = () => {
     if (selectedRow !== undefined && selectedCol !== undefined) {
-      clearCellValidation(sheetId, selectedRow, selectedCol);
+      clearCellValidation(sheetId, selectedRow, selectedCol)
     }
-  };
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -170,7 +190,10 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
         {/* Header */}
         <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
           <h2 className="text-lg font-semibold">Data Validation</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
             ✕
           </button>
         </div>
@@ -178,20 +201,20 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
         {/* Tabs */}
         <div className="flex border-b">
           <button
-            onClick={() => setActiveTab('settings')}
-            className={`px-4 py-2 text-sm ${activeTab === 'settings' ? 'border-b-2 border-blue-500 font-medium' : 'text-gray-600'}`}
+            onClick={() => setActiveTab("settings")}
+            className={`px-4 py-2 text-sm ${activeTab === "settings" ? "border-b-2 border-blue-500 font-medium" : "text-gray-600"}`}
           >
             Settings
           </button>
           <button
-            onClick={() => setActiveTab('input')}
-            className={`px-4 py-2 text-sm ${activeTab === 'input' ? 'border-b-2 border-blue-500 font-medium' : 'text-gray-600'}`}
+            onClick={() => setActiveTab("input")}
+            className={`px-4 py-2 text-sm ${activeTab === "input" ? "border-b-2 border-blue-500 font-medium" : "text-gray-600"}`}
           >
             Input Message
           </button>
           <button
-            onClick={() => setActiveTab('error')}
-            className={`px-4 py-2 text-sm ${activeTab === 'error' ? 'border-b-2 border-blue-500 font-medium' : 'text-gray-600'}`}
+            onClick={() => setActiveTab("error")}
+            className={`px-4 py-2 text-sm ${activeTab === "error" ? "border-b-2 border-blue-500 font-medium" : "text-gray-600"}`}
           >
             Error Alert
           </button>
@@ -199,7 +222,7 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
 
         {/* Content */}
         <div className="flex-1 overflow-auto p-4">
-          {activeTab === 'settings' && (
+          {activeTab === "settings" && (
             <div className="space-y-4">
               {/* Current cell info */}
               {selectedRow !== undefined && selectedCol !== undefined && (
@@ -216,7 +239,9 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                 <label className="block text-sm font-medium mb-1">Allow</label>
                 <select
                   value={validationType}
-                  onChange={(e) => setValidationType(e.target.value as ValidationTypeOption)}
+                  onChange={(e) =>
+                    setValidationType(e.target.value as ValidationTypeOption)
+                  }
                   className="w-full px-2 py-1 border rounded"
                 >
                   <option value="any">Any value</option>
@@ -230,10 +255,13 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
               </div>
 
               {/* Type-specific fields */}
-              {(validationType === 'wholeNumber' || validationType === 'decimal') && (
+              {(validationType === "wholeNumber" ||
+                validationType === "decimal") && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Minimum</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Minimum
+                    </label>
                     <input
                       type="number"
                       value={minValue}
@@ -242,7 +270,9 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Maximum</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Maximum
+                    </label>
                     <input
                       type="number"
                       value={maxValue}
@@ -253,9 +283,11 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                 </div>
               )}
 
-              {validationType === 'list' && (
+              {validationType === "list" && (
                 <div>
-                  <label className="block text-sm font-medium mb-1">Source (comma-separated)</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Source (comma-separated)
+                  </label>
                   <input
                     type="text"
                     value={listValues}
@@ -274,9 +306,11 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                 </div>
               )}
 
-              {validationType === 'textLength' && (
+              {validationType === "textLength" && (
                 <div>
-                  <label className="block text-sm font-medium mb-1">Maximum length</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Maximum length
+                  </label>
                   <input
                     type="number"
                     value={maxLength}
@@ -286,9 +320,11 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                 </div>
               )}
 
-              {validationType === 'custom' && (
+              {validationType === "custom" && (
                 <div>
-                  <label className="block text-sm font-medium mb-1">Formula (must return TRUE)</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Formula (must return TRUE)
+                  </label>
                   <input
                     type="text"
                     value={customFormula}
@@ -300,7 +336,7 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
               )}
 
               {/* Allow blank */}
-              {validationType !== 'any' && (
+              {validationType !== "any" && (
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -313,7 +349,7 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
             </div>
           )}
 
-          {activeTab === 'input' && (
+          {activeTab === "input" && (
             <div className="space-y-4">
               <label className="flex items-center gap-2">
                 <input
@@ -321,13 +357,17 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                   checked={showInputMessage}
                   onChange={(e) => setShowInputMessage(e.target.checked)}
                 />
-                <span className="text-sm font-medium">Show input message when cell is selected</span>
+                <span className="text-sm font-medium">
+                  Show input message when cell is selected
+                </span>
               </label>
 
               {showInputMessage && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Title</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Title
+                    </label>
                     <input
                       type="text"
                       value={inputTitle}
@@ -336,7 +376,9 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Message</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Message
+                    </label>
                     <textarea
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
@@ -349,7 +391,7 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
             </div>
           )}
 
-          {activeTab === 'error' && (
+          {activeTab === "error" && (
             <div className="space-y-4">
               <label className="flex items-center gap-2">
                 <input
@@ -357,16 +399,22 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                   checked={showErrorAlert}
                   onChange={(e) => setShowErrorAlert(e.target.checked)}
                 />
-                <span className="text-sm font-medium">Show error alert after invalid data is entered</span>
+                <span className="text-sm font-medium">
+                  Show error alert after invalid data is entered
+                </span>
               </label>
 
               {showErrorAlert && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Style</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Style
+                    </label>
                     <select
                       value={errorStyle}
-                      onChange={(e) => setErrorStyle(e.target.value as ErrorStyle)}
+                      onChange={(e) =>
+                        setErrorStyle(e.target.value as ErrorStyle)
+                      }
                       className="w-full px-2 py-1 border rounded"
                     >
                       <option value="stop">Stop</option>
@@ -375,7 +423,9 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Title</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Title
+                    </label>
                     <input
                       type="text"
                       value={errorTitle}
@@ -384,7 +434,9 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Error message</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Error message
+                    </label>
                     <textarea
                       value={errorMessage}
                       onChange={(e) => setErrorMessage(e.target.value)}
@@ -416,7 +468,10 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
               Cancel
             </button>
             <button
-              onClick={() => { handleCreateRule(); handleApplyRule(); }}
+              onClick={() => {
+                handleCreateRule()
+                handleApplyRule()
+              }}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
               OK
@@ -425,5 +480,5 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

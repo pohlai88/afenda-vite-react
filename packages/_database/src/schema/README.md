@@ -34,13 +34,13 @@ New **domain tables** must be added under the right `pgSchema` folder, exported 
 
 These are **supporting** surfaces; some are re-exported from the **package root** [`src/index.ts`](../index.ts) or dedicated export paths:
 
-| Folder                                 | Role                                                                                                                  |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| [`constants/`](./constants/)           | `DATABASE_URL` / pool env key names + defaults (`runtime.ts`) — used by [`client.ts`](../client.ts)                   |
-| [`helpers/`](./helpers/)               | `readOptionalInteger`, optional integer Zod — env/config boundaries                                                   |
-| [`identity/`](./identity/)             | Better Auth ↔ Afenda **bootstrap**; re-exports IAM tables + `ensureIdentityLinkForBetterAuthUser`                     |
-| [`tenancy/`](./tenancy/)               | Active-tenant / “me” **services** + Zod; re-exports `tenant_memberships` + `tenants` — **`@afenda/database/tenancy`** |
-| [`pkg-governance/`](./pkg-governance/) | Migration filenames, PG identifier helpers, `*.schema.ts` convention — **`@afenda/database/governance`**              |
+| Folder                                           | Role                                                                                                                  |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| [`constants/`](./constants/)                     | `DATABASE_URL` / pool env key names + defaults (`runtime.ts`) — used by [`client.ts`](../client.ts)                   |
+| [`environment-support/`](./environment-support/) | `readOptionalInteger`, optional integer Zod — env/config boundaries                                                   |
+| [`identity/`](./identity/)                       | Better Auth ↔ Afenda **bootstrap**; re-exports IAM tables + `ensureIdentityLinkForBetterAuthUser`                     |
+| [`tenancy/`](./tenancy/)                         | Active-tenant / “me” **services** + Zod; re-exports `tenant_memberships` + `tenants` — **`@afenda/database/tenancy`** |
+| [`pkg-governance/`](./pkg-governance/)           | Migration filenames, PG identifier helpers, `*.schema.ts` convention — **`@afenda/database/governance`**              |
 
 Do **not** add new **DDL tables** under `identity/`, `tenancy/`, `helpers`, or `constants` unless the charter explicitly allows it — those folders are barrels, env helpers, or tooling (see practical discipline).
 

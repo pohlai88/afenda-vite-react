@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { create } from 'zustand'
+import { create } from "zustand"
 
 interface UIState {
   sidebarOpen: boolean
@@ -14,8 +14,8 @@ interface UIState {
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  sidebarOpen: typeof window !== 'undefined' ? window.innerWidth >= 768 : true,
-  isMobile: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
+  sidebarOpen: typeof window !== "undefined" ? window.innerWidth >= 768 : true,
+  isMobile: typeof window !== "undefined" ? window.innerWidth < 768 : false,
   searchOpen: false,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),

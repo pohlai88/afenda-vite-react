@@ -1,10 +1,10 @@
 // src/services/delegation.service.ts
 // Delegation Service
 
-import { db } from '@/lib/db'
-import { Prisma } from '@prisma/client'
-import type { WorkflowType } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
+import { db } from "@/lib/db"
+import { Prisma } from "@prisma/client"
+import type { WorkflowType } from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -38,9 +38,15 @@ export const delegationService = {
   async getAll(
     tenantId: string,
     filters: DelegationFilters = {}
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<PaginatedResponse<any>> {
-    const { delegatorId, delegateId, isActive, page = 1, pageSize = 20 } = filters
+    const {
+      delegatorId,
+      delegateId,
+      isActive,
+      page = 1,
+      pageSize = 20,
+    } = filters
     const skip = (page - 1) * pageSize
 
     const where: Prisma.DelegationWhereInput = {
@@ -61,7 +67,7 @@ export const delegationService = {
             select: { id: true, name: true, email: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
       }),
@@ -90,7 +96,7 @@ export const delegationService = {
           select: { id: true, name: true, email: true },
         },
       },
-      orderBy: { startDate: 'desc' },
+      orderBy: { startDate: "desc" },
     })
   },
 
@@ -105,7 +111,7 @@ export const delegationService = {
           select: { id: true, name: true, email: true },
         },
       },
-      orderBy: { startDate: 'desc' },
+      orderBy: { startDate: "desc" },
     })
   },
 
@@ -155,12 +161,12 @@ export const delegationService = {
   async create(tenantId: string, data: CreateDelegationInput) {
     // Validate delegator and delegate are different
     if (data.delegatorId === data.delegateId) {
-      throw new Error('Không thể ủy quyền cho chính mình')
+      throw new Error("Không thể ủy quyền cho chính mình")
     }
 
     // Validate dates
     if (data.endDate < data.startDate) {
-      throw new Error('Ngày kết thúc phải sau ngày bắt đầu')
+      throw new Error("Ngày kết thúc phải sau ngày bắt đầu")
     }
 
     // Check for overlapping delegations
@@ -193,7 +199,7 @@ export const delegationService = {
     })
 
     if (existing) {
-      throw new Error('Đã có ủy quyền trong khoảng thời gian này')
+      throw new Error("Đã có ủy quyền trong khoảng thời gian này")
     }
 
     // Create delegation
@@ -223,10 +229,10 @@ export const delegationService = {
       data: {
         tenantId,
         userId: data.delegateId,
-        type: 'DELEGATION_ASSIGNED',
-        title: 'Được ủy quyền',
+        type: "DELEGATION_ASSIGNED",
+        title: "Được ủy quyền",
         message: `Bạn được ủy quyền duyệt thay từ ${delegation.delegator.name}`,
-        referenceType: 'DELEGATION',
+        referenceType: "DELEGATION",
         referenceId: delegation.id,
       },
     })
@@ -240,15 +246,18 @@ export const delegationService = {
   async update(
     tenantId: string,
     id: string,
-    data: Partial<Omit<CreateDelegationInput, 'delegatorId'>>
+    data: Partial<Omit<CreateDelegationInput, "delegatorId">>
   ) {
     const delegation = await this.getById(tenantId, id)
     if (!delegation) {
-      throw new Error('Ủy quyền không tồn tại')
+      throw new Error("Ủy quyền không tồn tại")
     }
 
-    if (data.endDate && data.endDate < (data.startDate || delegation.startDate)) {
-      throw new Error('Ngày kết thúc phải sau ngày bắt đầu')
+    if (
+      data.endDate &&
+      data.endDate < (data.startDate || delegation.startDate)
+    ) {
+      throw new Error("Ngày kết thúc phải sau ngày bắt đầu")
     }
 
     return db.delegation.update({
@@ -257,7 +266,9 @@ export const delegationService = {
         ...(data.delegateId && { delegateId: data.delegateId }),
         ...(data.startDate && { startDate: data.startDate }),
         ...(data.endDate && { endDate: data.endDate }),
-        ...(data.workflowTypes !== undefined && { workflowTypes: data.workflowTypes || null }),
+        ...(data.workflowTypes !== undefined && {
+          workflowTypes: data.workflowTypes || null,
+        }),
         ...(data.reason !== undefined && { reason: data.reason }),
       },
     })
@@ -269,7 +280,7 @@ export const delegationService = {
   async deactivate(tenantId: string, id: string) {
     const delegation = await this.getById(tenantId, id)
     if (!delegation) {
-      throw new Error('Ủy quyền không tồn tại')
+      throw new Error("Ủy quyền không tồn tại")
     }
 
     return db.delegation.update({
@@ -284,7 +295,7 @@ export const delegationService = {
   async delete(tenantId: string, id: string) {
     const delegation = await this.getById(tenantId, id)
     if (!delegation) {
-      throw new Error('Ủy quyền không tồn tại')
+      throw new Error("Ủy quyền không tồn tại")
     }
 
     return db.delegation.delete({

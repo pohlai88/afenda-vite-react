@@ -18,9 +18,21 @@ export async function PUT(
     const body = await request.json()
     const validated = updateBranchSchema.parse({ ...body, id })
 
-    const branch = await branchService.update(session.user.tenantId, id, validated)
+    const branch = await branchService.update(
+      session.user.tenantId,
+      id,
+      validated
+    )
 
-    await audit.update({ tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' }, 'Branch', id)
+    await audit.update(
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Branch",
+      id
+    )
 
     return NextResponse.json(branch)
   } catch (error) {
@@ -48,7 +60,15 @@ export async function DELETE(
     const { id } = await params
     await branchService.delete(session.user.tenantId, id)
 
-    await audit.delete({ tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' }, 'Branch', id)
+    await audit.delete(
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Branch",
+      id
+    )
 
     return NextResponse.json({ success: true })
   } catch (error) {

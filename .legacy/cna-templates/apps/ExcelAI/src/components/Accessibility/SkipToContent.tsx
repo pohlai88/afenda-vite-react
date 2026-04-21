@@ -1,5 +1,5 @@
 // Stub: SkipToContent
 export function SkipToContent() {
-  return null;
+  return null
 }
-export default SkipToContent;
+export default SkipToContent

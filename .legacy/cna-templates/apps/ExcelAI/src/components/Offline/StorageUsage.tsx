@@ -1,36 +1,38 @@
 // Phase 10: Storage Usage Component
 // Displays local storage quota and usage
 
-import React from 'react';
-import { useStorageQuota } from '../../hooks/useOffline';
+import React from "react"
+import { useStorageQuota } from "../../hooks/useOffline"
 
 interface StorageUsageProps {
-  showDetails?: boolean;
+  showDetails?: boolean
 }
 
-export const StorageUsage: React.FC<StorageUsageProps> = ({ showDetails = false }) => {
-  const { usage, quota, usagePercent, loading } = useStorageQuota();
+export const StorageUsage: React.FC<StorageUsageProps> = ({
+  showDetails = false,
+}) => {
+  const { usage, quota, usagePercent, loading } = useStorageQuota()
 
   const formatBytes = (bytes: number): string => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-  };
+    if (bytes === 0) return "0 B"
+    const k = 1024
+    const sizes = ["B", "KB", "MB", "GB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
+  }
 
   const getColorClass = (): string => {
-    if (usagePercent < 50) return 'bg-green-500';
-    if (usagePercent < 80) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
+    if (usagePercent < 50) return "bg-green-500"
+    if (usagePercent < 80) return "bg-yellow-500"
+    return "bg-red-500"
+  }
 
   if (loading) {
     return (
       <div className="animate-pulse">
         <div className="h-2 bg-gray-200 rounded-full w-full" />
       </div>
-    );
+    )
   }
 
   return (
@@ -55,7 +57,12 @@ export const StorageUsage: React.FC<StorageUsageProps> = ({ showDetails = false 
 
       {showDetails && usagePercent > 80 && (
         <p className="text-xs text-yellow-600 flex items-center gap-1">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -68,31 +75,39 @@ export const StorageUsage: React.FC<StorageUsageProps> = ({ showDetails = false 
       )}
 
       {!showDetails && (
-        <span className="text-xs text-gray-400">{usagePercent.toFixed(0)}% used</span>
+        <span className="text-xs text-gray-400">
+          {usagePercent.toFixed(0)}% used
+        </span>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Compact storage indicator
 export const StorageIndicator: React.FC = () => {
-  const { usagePercent, loading } = useStorageQuota();
+  const { usagePercent, loading } = useStorageQuota()
 
-  if (loading) return null;
-  if (usagePercent < 70) return null;
+  if (loading) return null
+  if (usagePercent < 70) return null
 
   return (
     <div
       className={`
         flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
-        ${usagePercent > 90
-          ? 'bg-red-100 text-red-700'
-          : 'bg-yellow-100 text-yellow-700'
+        ${
+          usagePercent > 90
+            ? "bg-red-100 text-red-700"
+            : "bg-yellow-100 text-yellow-700"
         }
       `}
       title={`Storage: ${usagePercent.toFixed(0)}% used`}
     >
-      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-3 h-3"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -102,5 +117,5 @@ export const StorageIndicator: React.FC = () => {
       </svg>
       {usagePercent.toFixed(0)}%
     </div>
-  );
-};
+  )
+}

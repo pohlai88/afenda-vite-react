@@ -1,12 +1,16 @@
-'use client'
+"use client"
 
-import { Calendar, User } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { GoalProgress } from './goal-progress'
-import { GOAL_TYPE, GOAL_STATUS, GOAL_PRIORITY } from '@/lib/performance/constants'
-import type { Goal } from '@/types/performance'
+import { Calendar, User } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { GoalProgress } from "./goal-progress"
+import {
+  GOAL_TYPE,
+  GOAL_STATUS,
+  GOAL_PRIORITY,
+} from "@/lib/performance/constants"
+import type { Goal } from "@/types/performance"
 
 interface GoalCardProps {
   goal: Goal
@@ -14,25 +18,26 @@ interface GoalCardProps {
 }
 
 const colorMap: Record<string, string> = {
-  purple: 'bg-purple-500/15 text-purple-400',
-  blue: 'bg-blue-500/15 text-blue-400',
-  green: 'bg-success/15 text-success',
-  orange: 'bg-primary/15 text-primary',
-  gray: 'bg-muted text-muted-foreground',
-  red: 'bg-destructive/15 text-destructive',
-  yellow: 'bg-yellow-500/15 text-yellow-400',
+  purple: "bg-purple-500/15 text-purple-400",
+  blue: "bg-blue-500/15 text-blue-400",
+  green: "bg-success/15 text-success",
+  orange: "bg-primary/15 text-primary",
+  gray: "bg-muted text-muted-foreground",
+  red: "bg-destructive/15 text-destructive",
+  yellow: "bg-yellow-500/15 text-yellow-400",
 }
 
 export function GoalCard({ goal, onClick }: GoalCardProps) {
   const typeInfo = GOAL_TYPE[goal.goalType as keyof typeof GOAL_TYPE]
   const statusInfo = GOAL_STATUS[goal.status as keyof typeof GOAL_STATUS]
-  const priorityInfo = GOAL_PRIORITY[goal.priority as keyof typeof GOAL_PRIORITY]
+  const priorityInfo =
+    GOAL_PRIORITY[goal.priority as keyof typeof GOAL_PRIORITY]
 
   return (
     <Card
       className={cn(
-        'cursor-pointer transition-colors hover:border-primary/50',
-        onClick && 'cursor-pointer'
+        "cursor-pointer transition-colors hover:border-primary/50",
+        onClick && "cursor-pointer"
       )}
       onClick={onClick}
     >
@@ -43,12 +48,14 @@ export function GoalCard({ goal, onClick }: GoalCardProps) {
           </h4>
           <div className="flex items-center gap-1 shrink-0">
             {typeInfo && (
-              <Badge className={cn('text-[10px]', colorMap[typeInfo.color])}>
+              <Badge className={cn("text-[10px]", colorMap[typeInfo.color])}>
                 {typeInfo.label}
               </Badge>
             )}
             {priorityInfo && (
-              <Badge className={cn('text-[10px]', colorMap[priorityInfo.color])}>
+              <Badge
+                className={cn("text-[10px]", colorMap[priorityInfo.color])}
+              >
                 {priorityInfo.label}
               </Badge>
             )}
@@ -63,7 +70,7 @@ export function GoalCard({ goal, onClick }: GoalCardProps) {
             {statusInfo && (
               <Badge
                 variant="outline"
-                className={cn('text-[10px] py-0', colorMap[statusInfo.color])}
+                className={cn("text-[10px] py-0", colorMap[statusInfo.color])}
               >
                 {statusInfo.label}
               </Badge>
@@ -80,15 +87,23 @@ export function GoalCard({ goal, onClick }: GoalCardProps) {
           {goal.owner && (
             <div className="flex items-center gap-1">
               <User className="h-3 w-3" />
-              <span className="truncate max-w-[120px]">{goal.owner.fullName}</span>
+              <span className="truncate max-w-[120px]">
+                {goal.owner.fullName}
+              </span>
             </div>
           )}
           <div className="flex items-center gap-1">
             <Calendar className="h-3 w-3" />
             <span className="font-data">
-              {new Date(goal.startDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
-              {' - '}
-              {new Date(goal.endDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
+              {new Date(goal.startDate).toLocaleDateString("vi-VN", {
+                day: "2-digit",
+                month: "2-digit",
+              })}
+              {" - "}
+              {new Date(goal.endDate).toLocaleDateString("vi-VN", {
+                day: "2-digit",
+                month: "2-digit",
+              })}
             </span>
           </div>
         </div>

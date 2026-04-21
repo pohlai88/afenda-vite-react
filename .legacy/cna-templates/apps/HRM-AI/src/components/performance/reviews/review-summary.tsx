@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { cn } from '@/lib/utils'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { RatingBadge } from '../ratings/rating-badge'
-import { ReviewStatusBadge } from './review-status-badge'
-import type { PerformanceReview } from '@/types/performance'
+import { cn } from "@/lib/utils"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { RatingBadge } from "../ratings/rating-badge"
+import { ReviewStatusBadge } from "./review-status-badge"
+import type { PerformanceReview } from "@/types/performance"
 
 interface ReviewSummaryProps {
   review: PerformanceReview
@@ -16,14 +16,15 @@ function ScoreRow({ label, score }: { label: string; score?: number }) {
     <div className="flex items-center justify-between py-1.5">
       <span className="text-sm text-muted-foreground">{label}</span>
       <span className="font-data text-sm">
-        {score != null ? score.toFixed(2) : '-'}
+        {score != null ? score.toFixed(2) : "-"}
       </span>
     </div>
   )
 }
 
 export function ReviewSummary({ review }: ReviewSummaryProps) {
-  const finalRating = review.finalRating || review.calibratedRating || review.managerRating
+  const finalRating =
+    review.finalRating || review.calibratedRating || review.managerRating
 
   return (
     <Card>
@@ -39,7 +40,9 @@ export function ReviewSummary({ review }: ReviewSummaryProps) {
           <span className="text-sm font-medium">Điểm tổng</span>
           <div className="flex items-center gap-2">
             <span className="text-lg font-data font-bold">
-              {review.overallScore != null ? review.overallScore.toFixed(2) : '-'}
+              {review.overallScore != null
+                ? review.overallScore.toFixed(2)
+                : "-"}
             </span>
             {finalRating && <RatingBadge rating={finalRating} size="sm" />}
           </div>
@@ -48,8 +51,14 @@ export function ReviewSummary({ review }: ReviewSummaryProps) {
         {/* Section Scores */}
         <div className="space-y-0">
           <ScoreRow label="Mục tiêu (Goals)" score={review.goalScore} />
-          <ScoreRow label="Năng lực (Competency)" score={review.competencyScore} />
-          <ScoreRow label="Giá trị cốt lõi (Values)" score={review.valuesScore} />
+          <ScoreRow
+            label="Năng lực (Competency)"
+            score={review.competencyScore}
+          />
+          <ScoreRow
+            label="Giá trị cốt lõi (Values)"
+            score={review.valuesScore}
+          />
           <ScoreRow label="Phản hồi (Feedback)" score={review.feedbackScore} />
         </div>
 
@@ -88,13 +97,17 @@ export function ReviewSummary({ review }: ReviewSummaryProps) {
             <div className="space-y-2">
               {review.selfComments && (
                 <div>
-                  <span className="text-xs text-muted-foreground">Nhận xét nhân viên:</span>
+                  <span className="text-xs text-muted-foreground">
+                    Nhận xét nhân viên:
+                  </span>
                   <p className="text-sm mt-0.5">{review.selfComments}</p>
                 </div>
               )}
               {review.managerComments && (
                 <div>
-                  <span className="text-xs text-muted-foreground">Nhận xét quản lý:</span>
+                  <span className="text-xs text-muted-foreground">
+                    Nhận xét quản lý:
+                  </span>
                   <p className="text-sm mt-0.5">{review.managerComments}</p>
                 </div>
               )}

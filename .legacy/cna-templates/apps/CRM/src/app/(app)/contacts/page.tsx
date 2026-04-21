@@ -1,25 +1,33 @@
-'use client'
+"use client"
 
-import { Suspense, useState, useEffect, useCallback } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
+import { Suspense, useState, useEffect, useCallback } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
 import {
   useReactTable,
   getCoreRowModel,
   flexRender,
   createColumnHelper,
-} from '@tanstack/react-table'
-import { Plus, Search, Pencil, Trash2, Users, Download, Upload } from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
-import { vi } from 'date-fns/locale'
+} from "@tanstack/react-table"
+import {
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Users,
+  Download,
+  Upload,
+} from "lucide-react"
+import { formatDistanceToNow } from "date-fns"
+import { vi } from "date-fns/locale"
 
-import { useTranslation } from '@/i18n'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useTranslation } from "@/i18n"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -27,12 +35,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { ContactFilters } from '@/components/contacts/ContactFilters'
-import { useContacts, useDeleteContact } from '@/hooks/use-contacts'
-import { usePermissions } from '@/hooks/use-permissions'
-import { CONTACT_STATUSES } from '@/lib/constants'
-import type { ContactWithCompany } from '@/types'
+} from "@/components/ui/table"
+import { ContactFilters } from "@/components/contacts/ContactFilters"
+import { useContacts, useDeleteContact } from "@/hooks/use-contacts"
+import { usePermissions } from "@/hooks/use-permissions"
+import { CONTACT_STATUSES } from "@/lib/constants"
+import type { ContactWithCompany } from "@/types"
 
 const columnHelper = createColumnHelper<ContactWithCompany>()
 
@@ -47,7 +55,7 @@ export default function ContactsPageWrapper() {
 function ContactsPageSkeleton() {
   const { t } = useTranslation()
   return (
-    <PageShell title={t('contacts.title')}>
+    <PageShell title={t("contacts.title")}>
       <div className="space-y-3">
         {Array.from({ length: 8 }).map((_, i) => (
           <Skeleton key={i} className="h-12 w-full bg-[var(--crm-bg-subtle)]" />
@@ -60,18 +68,24 @@ function ContactsPageSkeleton() {
 function ContactsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { canCreate, canEditRecord, canDeleteRecord, canExport, isManagerOrAbove } = usePermissions()
+  const {
+    canCreate,
+    canEditRecord,
+    canDeleteRecord,
+    canExport,
+    isManagerOrAbove,
+  } = usePermissions()
   const { t } = useTranslation()
 
-  const [search, setSearch] = useState(searchParams.get('q') ?? '')
+  const [search, setSearch] = useState(searchParams.get("q") ?? "")
   const [debouncedSearch, setDebouncedSearch] = useState(search)
   const [filters, setFilters] = useState<{
     status?: string
     companyId?: string
     source?: string
   }>({
-    status: searchParams.get('status') ?? undefined,
-    companyId: searchParams.get('companyId') ?? undefined,
+    status: searchParams.get("status") ?? undefined,
+    companyId: searchParams.get("companyId") ?? undefined,
   })
   const [page, setPage] = useState(1)
   const limit = 20
@@ -88,17 +102,17 @@ function ContactsPage() {
   // Sync search to URL
   useEffect(() => {
     const params = new URLSearchParams()
-    if (debouncedSearch) params.set('q', debouncedSearch)
-    if (filters.status) params.set('status', filters.status)
-    if (filters.companyId) params.set('companyId', filters.companyId)
+    if (debouncedSearch) params.set("q", debouncedSearch)
+    if (filters.status) params.set("status", filters.status)
+    if (filters.companyId) params.set("companyId", filters.companyId)
     const qs = params.toString()
-    router.replace(`/contacts${qs ? `?${qs}` : ''}`, { scroll: false })
+    router.replace(`/contacts${qs ? `?${qs}` : ""}`, { scroll: false })
   }, [debouncedSearch, filters, router])
 
   const { data, isLoading } = useContacts({
     q: debouncedSearch || undefined,
-    status: filters.status === '__all__' ? undefined : filters.status,
-    companyId: filters.companyId === '__all__' ? undefined : filters.companyId,
+    status: filters.status === "__all__" ? undefined : filters.status,
+    companyId: filters.companyId === "__all__" ? undefined : filters.companyId,
     page,
     limit,
   })
@@ -108,13 +122,13 @@ function ContactsPage() {
   const handleExport = useCallback(async () => {
     setExporting(true)
     try {
-      const res = await fetch('/api/contacts/export')
-      if (!res.ok) throw new Error('Export failed')
+      const res = await fetch("/api/contacts/export")
+      if (!res.ok) throw new Error("Export failed")
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
+      const a = document.createElement("a")
       a.href = url
-      a.download = `contacts-${new Date().toISOString().split('T')[0]}.csv`
+      a.download = `contacts-${new Date().toISOString().split("T")[0]}.csv`
       a.click()
       URL.revokeObjectURL(url)
     } finally {
@@ -127,7 +141,7 @@ function ContactsPage() {
   const handleDelete = useCallback(
     (id: string, e: React.MouseEvent) => {
       e.stopPropagation()
-      if (window.confirm(t('contacts.confirmDelete'))) {
+      if (window.confirm(t("contacts.confirmDelete"))) {
         deleteContact.mutate(id)
       }
     },
@@ -135,43 +149,45 @@ function ContactsPage() {
   )
 
   const columns = [
-    columnHelper.accessor(
-      (row) => `${row.firstName} ${row.lastName}`,
-      {
-        id: 'name',
-        header: t('contacts.colName'),
-        cell: ({ row }) => {
-          const c = row.original
-          const initials = `${c.firstName.charAt(0)}${c.lastName.charAt(0)}`.toUpperCase()
-          return (
-            <div className="flex items-center gap-3">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-[#10B981]/20 text-[#10B981] text-xs font-medium">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-              <span className="font-medium text-[var(--crm-text-primary)]">
-                {c.firstName} {c.lastName}
-              </span>
-            </div>
-          )
-        },
-      }
-    ),
-    columnHelper.accessor('email', {
-      header: t('common.email'),
+    columnHelper.accessor((row) => `${row.firstName} ${row.lastName}`, {
+      id: "name",
+      header: t("contacts.colName"),
+      cell: ({ row }) => {
+        const c = row.original
+        const initials =
+          `${c.firstName.charAt(0)}${c.lastName.charAt(0)}`.toUpperCase()
+        return (
+          <div className="flex items-center gap-3">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="bg-[#10B981]/20 text-[#10B981] text-xs font-medium">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <span className="font-medium text-[var(--crm-text-primary)]">
+              {c.firstName} {c.lastName}
+            </span>
+          </div>
+        )
+      },
+    }),
+    columnHelper.accessor("email", {
+      header: t("common.email"),
       cell: ({ getValue }) => (
-        <span className="text-[var(--crm-text-secondary)]">{getValue() ?? '-'}</span>
+        <span className="text-[var(--crm-text-secondary)]">
+          {getValue() ?? "-"}
+        </span>
       ),
     }),
-    columnHelper.accessor('phone', {
-      header: t('contacts.colPhone'),
+    columnHelper.accessor("phone", {
+      header: t("contacts.colPhone"),
       cell: ({ getValue }) => (
-        <span className="text-[var(--crm-text-secondary)]">{getValue() ?? '-'}</span>
+        <span className="text-[var(--crm-text-secondary)]">
+          {getValue() ?? "-"}
+        </span>
       ),
     }),
-    columnHelper.accessor('company', {
-      header: t('contacts.colCompany'),
+    columnHelper.accessor("company", {
+      header: t("contacts.colCompany"),
       cell: ({ getValue }) => {
         const company = getValue()
         return company ? (
@@ -187,8 +203,8 @@ function ContactsPage() {
         )
       },
     }),
-    columnHelper.accessor('status', {
-      header: t('contacts.colStatus'),
+    columnHelper.accessor("status", {
+      header: t("contacts.colStatus"),
       cell: ({ getValue }) => {
         const status = CONTACT_STATUSES.find((s) => s.value === getValue())
         return status ? (
@@ -206,8 +222,8 @@ function ContactsPage() {
         )
       },
     }),
-    columnHelper.accessor('score', {
-      header: t('contacts.colScore'),
+    columnHelper.accessor("score", {
+      header: t("contacts.colScore"),
       cell: ({ getValue }) => {
         const score = getValue() ?? 0
         return (
@@ -218,13 +234,15 @@ function ContactsPage() {
                 style={{ width: `${Math.min(score, 100)}%` }}
               />
             </div>
-            <span className="text-xs text-[var(--crm-text-secondary)]">{score}</span>
+            <span className="text-xs text-[var(--crm-text-secondary)]">
+              {score}
+            </span>
           </div>
         )
       },
     }),
-    columnHelper.accessor('lastActivityAt', {
-      header: t('contacts.colLastActivity'),
+    columnHelper.accessor("lastActivityAt", {
+      header: t("contacts.colLastActivity"),
       cell: ({ getValue }) => {
         const date = getValue()
         return date ? (
@@ -240,8 +258,8 @@ function ContactsPage() {
       },
     }),
     columnHelper.display({
-      id: 'actions',
-      header: '',
+      id: "actions",
+      header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end gap-1">
           {canEditRecord(row.original.ownerId) && (
@@ -284,7 +302,7 @@ function ContactsPage() {
 
   return (
     <PageShell
-      title={t('contacts.title')}
+      title={t("contacts.title")}
       actions={
         <div className="flex items-center gap-2">
           {canExport && (
@@ -295,7 +313,7 @@ function ContactsPage() {
               className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
             >
               <Download className="h-4 w-4 mr-1" />
-              {exporting ? t('common.processing') : t('import.exportCSV')}
+              {exporting ? t("common.processing") : t("import.exportCSV")}
             </Button>
           )}
           {isManagerOrAbove && (
@@ -305,7 +323,7 @@ function ContactsPage() {
                 className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
               >
                 <Upload className="h-4 w-4 mr-1" />
-                {t('import.importCSV')}
+                {t("import.importCSV")}
               </Button>
             </Link>
           )}
@@ -313,7 +331,7 @@ function ContactsPage() {
             <Link href="/contacts/new">
               <Button className="btn-accent-glow">
                 <Plus className="h-4 w-4" />
-                {t('contacts.addContact')}
+                {t("contacts.addContact")}
               </Button>
             </Link>
           )}
@@ -326,7 +344,7 @@ function ContactsPage() {
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder={t('contacts.searchPlaceholder')}
+          placeholder={t("contacts.searchPlaceholder")}
           className="input-premium pl-10 bg-[var(--crm-bg-card)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)]"
         />
       </div>
@@ -338,23 +356,26 @@ function ContactsPage() {
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="h-12 w-full bg-[var(--crm-bg-subtle)]" />
+            <Skeleton
+              key={i}
+              className="h-12 w-full bg-[var(--crm-bg-subtle)]"
+            />
           ))}
         </div>
       ) : contacts.length === 0 ? (
         <div className="glass-card-static py-16 flex flex-col items-center justify-center">
           <Users className="h-12 w-12 text-[var(--crm-text-muted)]" />
           <p className="mt-4 text-sm font-medium text-[var(--crm-text-primary)]">
-            {t('contacts.empty')}
+            {t("contacts.empty")}
           </p>
           <p className="mt-1 text-xs text-[var(--crm-text-muted)]">
-            {t('contacts.emptyHint')}
+            {t("contacts.emptyHint")}
           </p>
           {canCreate && (
             <Link href="/contacts/new" className="mt-4">
               <Button className="btn-accent-glow">
                 <Plus className="h-4 w-4" />
-                {t('contacts.addContact')}
+                {t("contacts.addContact")}
               </Button>
             </Link>
           )}
@@ -410,8 +431,8 @@ function ContactsPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between pt-2">
               <p className="text-xs text-[var(--crm-text-muted)]">
-                {t('common.showing')} {(page - 1) * limit + 1}-
-                {Math.min(page * limit, total)} {t('common.of')} {total}
+                {t("common.showing")} {(page - 1) * limit + 1}-
+                {Math.min(page * limit, total)} {t("common.of")} {total}
               </p>
               <div className="flex items-center gap-2">
                 <Button
@@ -421,7 +442,7 @@ function ContactsPage() {
                   onClick={() => setPage((p) => p - 1)}
                   className="h-7 border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)]"
                 >
-                  {t('common.previous')}
+                  {t("common.previous")}
                 </Button>
                 <span className="text-xs text-[var(--crm-text-secondary)]">
                   {page} / {totalPages}
@@ -433,7 +454,7 @@ function ContactsPage() {
                   onClick={() => setPage((p) => p + 1)}
                   className="h-7 border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)]"
                 >
-                  {t('common.next')}
+                  {t("common.next")}
                 </Button>
               </div>
             </div>

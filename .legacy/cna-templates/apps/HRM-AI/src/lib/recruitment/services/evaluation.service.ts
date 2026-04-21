@@ -1,8 +1,8 @@
 // src/lib/recruitment/services/evaluation.service.ts
 // Evaluation Service - Manage candidate evaluations and feedback
 
-import { db } from '@/lib/db'
-import { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import { Prisma } from "@prisma/client"
 
 // Types
 export interface CreateEvaluationInput {
@@ -33,19 +33,39 @@ export interface EvaluationFilters {
 
 // Recommendation options
 export const RECOMMENDATIONS = {
-  STRONG_HIRE: 'STRONG_HIRE',
-  HIRE: 'HIRE',
-  NO_HIRE: 'NO_HIRE',
-  STRONG_NO_HIRE: 'STRONG_NO_HIRE',
+  STRONG_HIRE: "STRONG_HIRE",
+  HIRE: "HIRE",
+  NO_HIRE: "NO_HIRE",
+  STRONG_NO_HIRE: "STRONG_NO_HIRE",
 } as const
 
 // Rating criteria
 export const RATING_CRITERIA = [
-  { key: 'technicalSkills', label: 'Technical Skills', description: 'Technical knowledge and abilities' },
-  { key: 'communication', label: 'Communication', description: 'Verbal and written communication skills' },
-  { key: 'problemSolving', label: 'Problem Solving', description: 'Analytical and problem-solving abilities' },
-  { key: 'cultureFit', label: 'Culture Fit', description: 'Alignment with company values and culture' },
-  { key: 'experience', label: 'Experience', description: 'Relevant work experience' },
+  {
+    key: "technicalSkills",
+    label: "Technical Skills",
+    description: "Technical knowledge and abilities",
+  },
+  {
+    key: "communication",
+    label: "Communication",
+    description: "Verbal and written communication skills",
+  },
+  {
+    key: "problemSolving",
+    label: "Problem Solving",
+    description: "Analytical and problem-solving abilities",
+  },
+  {
+    key: "cultureFit",
+    label: "Culture Fit",
+    description: "Alignment with company values and culture",
+  },
+  {
+    key: "experience",
+    label: "Experience",
+    description: "Relevant work experience",
+  },
 ]
 
 export class EvaluationService {
@@ -64,7 +84,7 @@ export class EvaluationService {
     })
 
     if (!application) {
-      throw new Error('Application not found')
+      throw new Error("Application not found")
     }
 
     // Check if evaluator already submitted for this interview
@@ -80,7 +100,9 @@ export class EvaluationService {
       })
 
       if (existing) {
-        throw new Error('You have already submitted an evaluation for this interview')
+        throw new Error(
+          "You have already submitted an evaluation for this interview"
+        )
       }
     }
 
@@ -95,7 +117,7 @@ export class EvaluationService {
         problemSolving: input.problemSolving,
         cultureFit: input.cultureFit,
         experience: input.experience,
-        overallRating: (input.overallRating),
+        overallRating: input.overallRating,
         strengths: input.strengths,
         weaknesses: input.weaknesses,
         notes: input.notes,
@@ -118,7 +140,7 @@ export class EvaluationService {
     await db.applicationActivity.create({
       data: {
         applicationId: input.applicationId,
-        action: 'EVALUATION_SUBMITTED',
+        action: "EVALUATION_SUBMITTED",
         description: `Evaluation submitted with recommendation: ${input.recommendation}`,
         performedById: evaluatorId,
       },
@@ -151,13 +173,18 @@ export class EvaluationService {
           },
         },
         interview: {
-          select: { id: true, interviewType: true, round: true, scheduledAt: true },
+          select: {
+            id: true,
+            interviewType: true,
+            round: true,
+            scheduledAt: true,
+          },
         },
       },
     })
 
     if (!evaluation) {
-      throw new Error('Evaluation not found')
+      throw new Error("Evaluation not found")
     }
 
     return evaluation
@@ -166,7 +193,11 @@ export class EvaluationService {
   /**
    * List evaluations with filters
    */
-  async list(filters: EvaluationFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: EvaluationFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.CandidateEvaluationWhereInput = {
@@ -190,20 +221,20 @@ export class EvaluationService {
     }
 
     if (filters.minRating !== undefined) {
-      where.overallRating = { gte: (filters.minRating) }
+      where.overallRating = { gte: filters.minRating }
     }
 
     if (filters.maxRating !== undefined) {
       where.overallRating = {
-        ...(where.overallRating as object || {}),
-        lte: (filters.maxRating),
+        ...((where.overallRating as object) || {}),
+        lte: filters.maxRating,
       }
     }
 
     const [evaluations, total] = await Promise.all([
       db.candidateEvaluation.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -243,13 +274,18 @@ export class EvaluationService {
         applicationId,
         tenantId: this.tenantId,
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
       include: {
         evaluator: {
           select: { id: true, name: true, email: true },
         },
         interview: {
-          select: { id: true, interviewType: true, round: true, scheduledAt: true },
+          select: {
+            id: true,
+            interviewType: true,
+            round: true,
+            scheduledAt: true,
+          },
         },
       },
     })
@@ -300,7 +336,9 @@ export class EvaluationService {
     })
 
     if (!evaluation) {
-      throw new Error('Evaluation not found or you do not have permission to update')
+      throw new Error(
+        "Evaluation not found or you do not have permission to update"
+      )
     }
 
     const updated = await db.candidateEvaluation.update({
@@ -311,9 +349,8 @@ export class EvaluationService {
         problemSolving: input.problemSolving,
         cultureFit: input.cultureFit,
         experience: input.experience,
-        overallRating: input.overallRating !== undefined
-          ? (input.overallRating)
-          : undefined,
+        overallRating:
+          input.overallRating !== undefined ? input.overallRating : undefined,
         strengths: input.strengths,
         weaknesses: input.weaknesses,
         notes: input.notes,
@@ -345,7 +382,9 @@ export class EvaluationService {
     })
 
     if (!evaluation) {
-      throw new Error('Evaluation not found or you do not have permission to delete')
+      throw new Error(
+        "Evaluation not found or you do not have permission to delete"
+      )
     }
 
     await db.candidateEvaluation.delete({ where: { id } })
@@ -370,7 +409,7 @@ export class EvaluationService {
           none: { evaluatorId },
         },
       },
-      orderBy: { scheduledAt: 'desc' },
+      orderBy: { scheduledAt: "desc" },
       include: {
         application: {
           include: {
@@ -396,25 +435,38 @@ export class EvaluationService {
       return null
     }
 
-    const avgRating = evaluations.reduce((sum, e) => sum + Number(e.overallRating), 0) / evaluations.length
+    const avgRating =
+      evaluations.reduce((sum, e) => sum + Number(e.overallRating), 0) /
+      evaluations.length
 
     const avgCriteria = {
-      technicalSkills: this.avgField(evaluations, 'technicalSkills'),
-      communication: this.avgField(evaluations, 'communication'),
-      problemSolving: this.avgField(evaluations, 'problemSolving'),
-      cultureFit: this.avgField(evaluations, 'cultureFit'),
-      experience: this.avgField(evaluations, 'experience'),
+      technicalSkills: this.avgField(evaluations, "technicalSkills"),
+      communication: this.avgField(evaluations, "communication"),
+      problemSolving: this.avgField(evaluations, "problemSolving"),
+      cultureFit: this.avgField(evaluations, "cultureFit"),
+      experience: this.avgField(evaluations, "experience"),
     }
 
-    const recommendationCounts = evaluations.reduce((acc, e) => {
-      acc[e.recommendation] = (acc[e.recommendation] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const recommendationCounts = evaluations.reduce(
+      (acc, e) => {
+        acc[e.recommendation] = (acc[e.recommendation] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
     // Determine overall recommendation
-    const hireVotes = (recommendationCounts.STRONG_HIRE || 0) + (recommendationCounts.HIRE || 0)
-    const noHireVotes = (recommendationCounts.STRONG_NO_HIRE || 0) + (recommendationCounts.NO_HIRE || 0)
-    const overallRecommendation = hireVotes > noHireVotes ? 'HIRE' : noHireVotes > hireVotes ? 'NO_HIRE' : 'UNDECIDED'
+    const hireVotes =
+      (recommendationCounts.STRONG_HIRE || 0) + (recommendationCounts.HIRE || 0)
+    const noHireVotes =
+      (recommendationCounts.STRONG_NO_HIRE || 0) +
+      (recommendationCounts.NO_HIRE || 0)
+    const overallRecommendation =
+      hireVotes > noHireVotes
+        ? "HIRE"
+        : noHireVotes > hireVotes
+          ? "NO_HIRE"
+          : "UNDECIDED"
 
     return {
       totalEvaluations: evaluations.length,
@@ -429,9 +481,13 @@ export class EvaluationService {
    * Calculate average for a field
    */
   private avgField(evaluations: any[], field: string): number | null {
-    const values = evaluations.filter(e => e[field] !== null).map(e => e[field])
+    const values = evaluations
+      .filter((e) => e[field] !== null)
+      .map((e) => e[field])
     if (values.length === 0) return null
-    return Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 10) / 10
+    return (
+      Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 10) / 10
+    )
   }
 
   /**
@@ -450,11 +506,13 @@ export class EvaluationService {
       return
     }
 
-    const avgRating = evaluations.reduce((sum, e) => sum + Number(e.overallRating), 0) / evaluations.length
+    const avgRating =
+      evaluations.reduce((sum, e) => sum + Number(e.overallRating), 0) /
+      evaluations.length
 
     await db.application.update({
       where: { id: applicationId },
-      data: { overallRating: (Math.round(avgRating * 10) / 10) },
+      data: { overallRating: Math.round(avgRating * 10) / 10 },
     })
   }
 
@@ -477,37 +535,37 @@ export class EvaluationService {
       db.candidateEvaluation.count({ where }),
 
       db.candidateEvaluation.groupBy({
-        by: ['recommendation'],
+        by: ["recommendation"],
         where,
         _count: true,
       }),
 
       db.candidateEvaluation.groupBy({
-        by: ['evaluatorId'],
+        by: ["evaluatorId"],
         where,
         _count: true,
-        orderBy: { _count: { evaluatorId: 'desc' } },
+        orderBy: { _count: { evaluatorId: "desc" } },
         take: 10,
       }),
     ])
 
     // Get evaluator names
-    const evaluatorIds = topEvaluators.map(e => e.evaluatorId)
+    const evaluatorIds = topEvaluators.map((e) => e.evaluatorId)
     const evaluators = await db.user.findMany({
       where: { id: { in: evaluatorIds } },
       select: { id: true, name: true },
     })
-    const evaluatorMap = new Map(evaluators.map(e => [e.id, e.name]))
+    const evaluatorMap = new Map(evaluators.map((e) => [e.id, e.name]))
 
     return {
       total,
-      byRecommendation: byRecommendation.map(r => ({
+      byRecommendation: byRecommendation.map((r) => ({
         recommendation: r.recommendation,
         count: r._count,
       })),
-      topEvaluators: topEvaluators.map(e => ({
+      topEvaluators: topEvaluators.map((e) => ({
         evaluatorId: e.evaluatorId,
-        evaluatorName: evaluatorMap.get(e.evaluatorId) || 'Unknown',
+        evaluatorName: evaluatorMap.get(e.evaluatorId) || "Unknown",
         count: e._count,
       })),
     }

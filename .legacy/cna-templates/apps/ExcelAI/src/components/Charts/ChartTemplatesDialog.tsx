@@ -2,7 +2,7 @@
 // CHART TEMPLATES DIALOG — Browse and Apply Chart Templates
 // ============================================================
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from "react"
 import {
   X,
   Search,
@@ -19,33 +19,36 @@ import {
   Copy,
   Trash2,
   Check,
-} from 'lucide-react';
-import { useChartTemplateStore } from '../../stores/chartTemplateStore';
+} from "lucide-react"
+import { useChartTemplateStore } from "../../stores/chartTemplateStore"
 import {
   ChartTemplate,
   ChartTemplateCategory,
   ColorScheme,
   ChartType,
-} from '../../types/visualization';
-import './Charts.css';
+} from "../../types/visualization"
+import "./Charts.css"
 
 interface ChartTemplatesDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSelectTemplate: (template: ChartTemplate, colorScheme?: ColorScheme) => void;
+  isOpen: boolean
+  onClose: () => void
+  onSelectTemplate: (template: ChartTemplate, colorScheme?: ColorScheme) => void
 }
 
-type TabType = 'all' | 'favorites' | 'recent' | 'custom';
+type TabType = "all" | "favorites" | "recent" | "custom"
 
-const CATEGORY_CONFIG: Record<ChartTemplateCategory, { label: string; icon: React.ReactNode }> = {
-  basic: { label: 'Basic', icon: <Grid3X3 size={14} /> },
-  comparison: { label: 'Comparison', icon: <BarChart2 size={14} /> },
-  trend: { label: 'Trend', icon: <TrendingUp size={14} /> },
-  distribution: { label: 'Distribution', icon: <LineChart size={14} /> },
-  composition: { label: 'Composition', icon: <PieChart size={14} /> },
-  financial: { label: 'Financial', icon: <DollarSign size={14} /> },
-  custom: { label: 'Custom', icon: <Layers size={14} /> },
-};
+const CATEGORY_CONFIG: Record<
+  ChartTemplateCategory,
+  { label: string; icon: React.ReactNode }
+> = {
+  basic: { label: "Basic", icon: <Grid3X3 size={14} /> },
+  comparison: { label: "Comparison", icon: <BarChart2 size={14} /> },
+  trend: { label: "Trend", icon: <TrendingUp size={14} /> },
+  distribution: { label: "Distribution", icon: <LineChart size={14} /> },
+  composition: { label: "Composition", icon: <PieChart size={14} /> },
+  financial: { label: "Financial", icon: <DollarSign size={14} /> },
+  custom: { label: "Custom", icon: <Layers size={14} /> },
+}
 
 const CHART_TYPE_ICONS: Partial<Record<ChartType, React.ReactNode>> = {
   ColumnClustered: <BarChart2 size={24} />,
@@ -55,7 +58,7 @@ const CHART_TYPE_ICONS: Partial<Record<ChartType, React.ReactNode>> = {
   Area: <TrendingUp size={24} />,
   Scatter: <Grid3X3 size={24} />,
   Combo: <Layers size={24} />,
-};
+}
 
 export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
   isOpen,
@@ -73,44 +76,50 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
     deleteCustomTemplate,
     getColorSchemes,
     customTemplates,
-  } = useChartTemplateStore();
+  } = useChartTemplateStore()
 
-  const [activeTab, setActiveTab] = useState<TabType>('all');
-  const [selectedCategory, setSelectedCategory] = useState<ChartTemplateCategory | 'all'>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTemplate, setSelectedTemplate] = useState<ChartTemplate | null>(null);
-  const [selectedColorScheme, setSelectedColorScheme] = useState<ColorScheme | null>(null);
-  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabType>("all")
+  const [selectedCategory, setSelectedCategory] = useState<
+    ChartTemplateCategory | "all"
+  >("all")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ChartTemplate | null>(null)
+  const [selectedColorScheme, setSelectedColorScheme] =
+    useState<ColorScheme | null>(null)
+  const [showColorPicker, setShowColorPicker] = useState(false)
 
-  const colorSchemes = getColorSchemes();
+  const colorSchemes = getColorSchemes()
 
   const templates = useMemo(() => {
-    let result: ChartTemplate[] = [];
+    let result: ChartTemplate[] = []
 
     switch (activeTab) {
-      case 'favorites':
-        result = getFavoriteTemplates();
-        break;
-      case 'recent':
-        result = getRecentTemplates();
-        break;
-      case 'custom':
-        result = customTemplates;
-        break;
+      case "favorites":
+        result = getFavoriteTemplates()
+        break
+      case "recent":
+        result = getRecentTemplates()
+        break
+      case "custom":
+        result = customTemplates
+        break
       default:
-        result = getTemplates(selectedCategory === 'all' ? undefined : selectedCategory);
+        result = getTemplates(
+          selectedCategory === "all" ? undefined : selectedCategory
+        )
     }
 
     if (searchQuery) {
-      const lowerQuery = searchQuery.toLowerCase();
+      const lowerQuery = searchQuery.toLowerCase()
       result = result.filter(
-        t =>
+        (t) =>
           t.name.toLowerCase().includes(lowerQuery) ||
           t.description.toLowerCase().includes(lowerQuery)
-      );
+      )
     }
 
-    return result;
+    return result
   }, [
     activeTab,
     selectedCategory,
@@ -119,36 +128,36 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
     getFavoriteTemplates,
     getRecentTemplates,
     customTemplates,
-  ]);
+  ])
 
   const handleSelectTemplate = (template: ChartTemplate) => {
-    setSelectedTemplate(template);
-    setSelectedColorScheme(null);
-  };
+    setSelectedTemplate(template)
+    setSelectedColorScheme(null)
+  }
 
   const handleApplyTemplate = () => {
     if (selectedTemplate) {
-      addToRecent(selectedTemplate.id);
-      onSelectTemplate(selectedTemplate, selectedColorScheme || undefined);
-      onClose();
+      addToRecent(selectedTemplate.id)
+      onSelectTemplate(selectedTemplate, selectedColorScheme || undefined)
+      onClose()
     }
-  };
+  }
 
   const handleDuplicate = (template: ChartTemplate) => {
-    duplicateTemplate(template.id);
-  };
+    duplicateTemplate(template.id)
+  }
 
   const handleDelete = (template: ChartTemplate) => {
     if (!template.isBuiltIn) {
-      deleteCustomTemplate(template.id);
+      deleteCustomTemplate(template.id)
       if (selectedTemplate?.id === template.id) {
-        setSelectedTemplate(null);
+        setSelectedTemplate(null)
       }
     }
-  };
+  }
 
   const renderTemplatePreview = (template: ChartTemplate) => {
-    const isDark = template.style.backgroundColor === '#1E1E1E';
+    const isDark = template.style.backgroundColor === "#1E1E1E"
 
     return (
       <div
@@ -158,7 +167,10 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
           borderColor: template.style.borderColor,
         }}
       >
-        <div className="preview-chart-icon" style={{ color: isDark ? '#fff' : '#333' }}>
+        <div
+          className="preview-chart-icon"
+          style={{ color: isDark ? "#fff" : "#333" }}
+        >
           {CHART_TYPE_ICONS[template.chartType] || <BarChart2 size={24} />}
         </div>
         <div className="preview-color-bar">
@@ -171,14 +183,17 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
           ))}
         </div>
       </div>
-    );
-  };
+    )
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="chart-templates-overlay" onClick={onClose}>
-      <div className="chart-templates-dialog" onClick={e => e.stopPropagation()}>
+      <div
+        className="chart-templates-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="templates-header">
           <h2>Chart Templates</h2>
@@ -193,29 +208,29 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
             {/* Tabs */}
             <div className="sidebar-tabs">
               <button
-                className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
-                onClick={() => setActiveTab('all')}
+                className={`tab-btn ${activeTab === "all" ? "active" : ""}`}
+                onClick={() => setActiveTab("all")}
               >
                 <Grid3X3 size={14} />
                 <span>All Templates</span>
               </button>
               <button
-                className={`tab-btn ${activeTab === 'favorites' ? 'active' : ''}`}
-                onClick={() => setActiveTab('favorites')}
+                className={`tab-btn ${activeTab === "favorites" ? "active" : ""}`}
+                onClick={() => setActiveTab("favorites")}
               >
                 <Star size={14} />
                 <span>Favorites</span>
               </button>
               <button
-                className={`tab-btn ${activeTab === 'recent' ? 'active' : ''}`}
-                onClick={() => setActiveTab('recent')}
+                className={`tab-btn ${activeTab === "recent" ? "active" : ""}`}
+                onClick={() => setActiveTab("recent")}
               >
                 <Clock size={14} />
                 <span>Recent</span>
               </button>
               <button
-                className={`tab-btn ${activeTab === 'custom' ? 'active' : ''}`}
-                onClick={() => setActiveTab('custom')}
+                className={`tab-btn ${activeTab === "custom" ? "active" : ""}`}
+                onClick={() => setActiveTab("custom")}
               >
                 <Layers size={14} />
                 <span>My Templates</span>
@@ -223,25 +238,27 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
             </div>
 
             {/* Categories (only show for 'all' tab) */}
-            {activeTab === 'all' && (
+            {activeTab === "all" && (
               <div className="category-list">
                 <h4>Categories</h4>
                 <button
-                  className={`category-btn ${selectedCategory === 'all' ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory('all')}
+                  className={`category-btn ${selectedCategory === "all" ? "active" : ""}`}
+                  onClick={() => setSelectedCategory("all")}
                 >
                   All Categories
                 </button>
-                {(Object.keys(CATEGORY_CONFIG) as ChartTemplateCategory[]).map(category => (
-                  <button
-                    key={category}
-                    className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    {CATEGORY_CONFIG[category].icon}
-                    <span>{CATEGORY_CONFIG[category].label}</span>
-                  </button>
-                ))}
+                {(Object.keys(CATEGORY_CONFIG) as ChartTemplateCategory[]).map(
+                  (category) => (
+                    <button
+                      key={category}
+                      className={`category-btn ${selectedCategory === category ? "active" : ""}`}
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {CATEGORY_CONFIG[category].icon}
+                      <span>{CATEGORY_CONFIG[category].label}</span>
+                    </button>
+                  )
+                )}
               </div>
             )}
           </div>
@@ -255,7 +272,7 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
                 type="text"
                 placeholder="Search templates..."
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
 
@@ -266,10 +283,10 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
                   <p>No templates found</p>
                 </div>
               ) : (
-                templates.map(template => (
+                templates.map((template) => (
                   <div
                     key={template.id}
-                    className={`template-card ${selectedTemplate?.id === template.id ? 'selected' : ''}`}
+                    className={`template-card ${selectedTemplate?.id === template.id ? "selected" : ""}`}
                     onClick={() => handleSelectTemplate(template)}
                   >
                     {renderTemplatePreview(template)}
@@ -279,20 +296,25 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
                     </div>
                     <div className="template-actions">
                       <button
-                        className={`action-btn ${isFavorite(template.id) ? 'favorited' : ''}`}
-                        onClick={e => {
-                          e.stopPropagation();
-                          toggleFavorite(template.id);
+                        className={`action-btn ${isFavorite(template.id) ? "favorited" : ""}`}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleFavorite(template.id)
                         }}
                         title="Toggle favorite"
                       >
-                        <Star size={14} fill={isFavorite(template.id) ? 'currentColor' : 'none'} />
+                        <Star
+                          size={14}
+                          fill={
+                            isFavorite(template.id) ? "currentColor" : "none"
+                          }
+                        />
                       </button>
                       <button
                         className="action-btn"
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleDuplicate(template);
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDuplicate(template)
                         }}
                         title="Duplicate template"
                       >
@@ -301,9 +323,9 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
                       {!template.isBuiltIn && (
                         <button
                           className="action-btn danger"
-                          onClick={e => {
-                            e.stopPropagation();
-                            handleDelete(template);
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDelete(template)
                           }}
                           title="Delete template"
                         >
@@ -334,7 +356,9 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
                   </div>
                   <div className="detail-row">
                     <span>Category:</span>
-                    <span>{CATEGORY_CONFIG[selectedTemplate.category].label}</span>
+                    <span>
+                      {CATEGORY_CONFIG[selectedTemplate.category].label}
+                    </span>
                   </div>
                 </div>
 
@@ -350,10 +374,10 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
 
                   {showColorPicker && (
                     <div className="color-schemes-grid">
-                      {colorSchemes.map(scheme => (
+                      {colorSchemes.map((scheme) => (
                         <button
                           key={scheme.id}
-                          className={`color-scheme-option ${selectedColorScheme?.id === scheme.id ? 'selected' : ''}`}
+                          className={`color-scheme-option ${selectedColorScheme?.id === scheme.id ? "selected" : ""}`}
                           onClick={() => setSelectedColorScheme(scheme)}
                           title={scheme.name}
                         >
@@ -388,7 +412,7 @@ export const ChartTemplatesDialog: React.FC<ChartTemplatesDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChartTemplatesDialog;
+export default ChartTemplatesDialog

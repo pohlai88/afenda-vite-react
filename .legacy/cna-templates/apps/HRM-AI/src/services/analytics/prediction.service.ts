@@ -1,8 +1,8 @@
 // src/services/analytics/prediction.service.ts
 // Turnover Prediction Service
 
-import { predictTurnoverRisk } from '@/lib/analytics/predictors/turnover-risk'
-import { db } from '@/lib/db'
+import { predictTurnoverRisk } from "@/lib/analytics/predictors/turnover-risk"
+import { db } from "@/lib/db"
 
 export interface PredictionResult {
   employeeId: string
@@ -12,7 +12,7 @@ export interface PredictionResult {
   position: string
   tenure: number
   riskScore: number
-  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+  riskLevel: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
   factors: Record<string, unknown>[]
   recommendations: string[]
   predictedAt: Date
@@ -35,18 +35,18 @@ export async function getPredictions(
         },
       },
     },
-    orderBy: { riskScore: 'desc' },
+    orderBy: { riskScore: "desc" },
   })
 
   return predictions.map((p) => ({
     employeeId: p.employeeId,
     employeeName: p.employee.fullName,
     employeeCode: p.employee.employeeCode,
-    department: p.employee.department?.name || 'Chưa phân bổ',
-    position: p.employee.position?.name || 'Chưa xác định',
+    department: p.employee.department?.name || "Chưa phân bổ",
+    position: p.employee.position?.name || "Chưa xác định",
     tenure: 0,
     riskScore: Number(p.riskScore),
-    riskLevel: p.riskLevel as PredictionResult['riskLevel'],
+    riskLevel: p.riskLevel as PredictionResult["riskLevel"],
     factors: (p.factors as Record<string, unknown>[]) || [],
     recommendations: (p.recommendations as string[]) || [],
     predictedAt: p.predictedAt,
@@ -68,7 +68,7 @@ export async function calculatePredictions(
     position: r.position,
     tenure: r.tenure,
     riskScore: r.riskScore,
-    riskLevel: r.riskLevel as PredictionResult['riskLevel'],
+    riskLevel: r.riskLevel as PredictionResult["riskLevel"],
     factors: r.factors as Record<string, unknown>[],
     recommendations: r.recommendations,
     predictedAt: new Date(),

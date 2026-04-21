@@ -1,19 +1,19 @@
-'use client'
+"use client"
 
-import { useCallback } from 'react'
-import { Plus, X, Filter } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { useCallback } from "react"
+import { Plus, X, Filter } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { useTranslation } from '@/i18n'
-import { useCompanies } from '@/hooks/use-companies'
+} from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { useTranslation } from "@/i18n"
+import { useCompanies } from "@/hooks/use-companies"
 import {
   AUDIENCE_FIELDS,
   getFieldDef,
@@ -21,7 +21,7 @@ import {
   type AudienceRuleGroup,
   type AudienceRule,
   type Operator,
-} from '@/lib/audience-fields'
+} from "@/lib/audience-fields"
 
 interface RuleBuilderProps {
   rules: AudienceRules
@@ -34,7 +34,12 @@ function generateId() {
   return `r_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
 }
 
-export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: RuleBuilderProps) {
+export function RuleBuilder({
+  rules,
+  onChange,
+  previewCount,
+  previewLoading,
+}: RuleBuilderProps) {
   const { t } = useTranslation()
   const { data: companiesData } = useCompanies({ limit: 100 })
   const companies = companiesData?.data || []
@@ -56,8 +61,10 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
         ...rules.groups,
         {
           id: generateId(),
-          connector: 'AND',
-          rules: [{ id: generateId(), field: '', operator: 'equals', value: '' }],
+          connector: "AND",
+          rules: [
+            { id: generateId(), field: "", operator: "equals", value: "" },
+          ],
         },
       ],
     })
@@ -78,7 +85,10 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
     (groupId: string) => {
       updateGroup(groupId, (g) => ({
         ...g,
-        rules: [...g.rules, { id: generateId(), field: '', operator: 'equals', value: '' }],
+        rules: [
+          ...g.rules,
+          { id: generateId(), field: "", operator: "equals", value: "" },
+        ],
       }))
     },
     [updateGroup]
@@ -107,8 +117,8 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
   const handleFieldChange = useCallback(
     (groupId: string, ruleId: string, field: string) => {
       const def = getFieldDef(field)
-      const defaultOp = def?.operators[0] || 'equals'
-      updateRule(groupId, ruleId, { field, operator: defaultOp, value: '' })
+      const defaultOp = def?.operators[0] || "equals"
+      updateRule(groupId, ruleId, { field, operator: defaultOp, value: "" })
     },
     [updateRule]
   )
@@ -118,22 +128,24 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium text-[var(--crm-text-primary)] flex items-center gap-2">
           <Filter className="w-4 h-4 text-purple-400" />
-          {t('audiences.ruleBuilder')}
+          {t("audiences.ruleBuilder")}
         </h3>
         {previewCount !== undefined && previewCount !== null && (
           <Badge
             className="badge-premium border-0 text-xs"
-            style={{ backgroundColor: '#10B98120', color: '#10B981' }}
+            style={{ backgroundColor: "#10B98120", color: "#10B981" }}
           >
-            {previewLoading ? t('audiences.previewLoading') : t('audiences.previewCount', { n: previewCount })}
+            {previewLoading
+              ? t("audiences.previewLoading")
+              : t("audiences.previewCount", { n: previewCount })}
           </Badge>
         )}
         {previewLoading && previewCount === undefined && (
           <Badge
             className="badge-premium border-0 text-xs"
-            style={{ backgroundColor: '#6B728020', color: '#6B7280' }}
+            style={{ backgroundColor: "#6B728020", color: "#6B7280" }}
           >
-            {t('audiences.previewLoading')}
+            {t("audiences.previewLoading")}
           </Badge>
         )}
       </div>
@@ -142,8 +154,11 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
         <div key={group.id}>
           {gi > 0 && (
             <div className="flex items-center justify-center my-3">
-              <Badge className="badge-premium border-0 text-[10px] px-3" style={{ backgroundColor: '#8B5CF620', color: '#8B5CF6' }}>
-                {t('audiences.groupConnector')}
+              <Badge
+                className="badge-premium border-0 text-[10px] px-3"
+                style={{ backgroundColor: "#8B5CF620", color: "#8B5CF6" }}
+              >
+                {t("audiences.groupConnector")}
               </Badge>
             </div>
           )}
@@ -152,7 +167,7 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
               <button
                 onClick={() => removeGroup(group.id)}
                 className="absolute top-2 right-2 p-1 rounded hover:bg-[var(--crm-bg-subtle)] text-[var(--crm-text-muted)] hover:text-red-400 transition-colors"
-                title={t('audiences.removeGroup')}
+                title={t("audiences.removeGroup")}
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -164,19 +179,28 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
                   {ri > 0 && (
                     <div className="flex items-center justify-center my-1.5">
                       <span className="text-[10px] font-medium text-[var(--crm-text-muted)] uppercase">
-                        {t('audiences.ruleConnector')}
+                        {t("audiences.ruleConnector")}
                       </span>
                     </div>
                   )}
                   <div className="flex items-center gap-2">
                     {/* Field select */}
-                    <Select value={rule.field || undefined} onValueChange={(v) => handleFieldChange(group.id, rule.id, v)}>
+                    <Select
+                      value={rule.field || undefined}
+                      onValueChange={(v) =>
+                        handleFieldChange(group.id, rule.id, v)
+                      }
+                    >
                       <SelectTrigger className="w-[160px] h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs">
-                        <SelectValue placeholder={t('audiences.selectField')} />
+                        <SelectValue placeholder={t("audiences.selectField")} />
                       </SelectTrigger>
                       <SelectContent>
                         {AUDIENCE_FIELDS.map((f) => (
-                          <SelectItem key={f.key} value={f.key} className="text-xs">
+                          <SelectItem
+                            key={f.key}
+                            value={f.key}
+                            className="text-xs"
+                          >
                             {t(f.labelKey)}
                           </SelectItem>
                         ))}
@@ -187,37 +211,53 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
                     {rule.field && (
                       <Select
                         value={rule.operator}
-                        onValueChange={(v) => updateRule(group.id, rule.id, { operator: v as Operator })}
+                        onValueChange={(v) =>
+                          updateRule(group.id, rule.id, {
+                            operator: v as Operator,
+                          })
+                        }
                       >
                         <SelectTrigger className="w-[140px] h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs">
-                          <SelectValue placeholder={t('audiences.selectOperator')} />
+                          <SelectValue
+                            placeholder={t("audiences.selectOperator")}
+                          />
                         </SelectTrigger>
                         <SelectContent>
-                          {(getFieldDef(rule.field)?.operators || []).map((op) => (
-                            <SelectItem key={op} value={op} className="text-xs">
-                              {t(`operator.${op}`)}
-                            </SelectItem>
-                          ))}
+                          {(getFieldDef(rule.field)?.operators || []).map(
+                            (op) => (
+                              <SelectItem
+                                key={op}
+                                value={op}
+                                className="text-xs"
+                              >
+                                {t(`operator.${op}`)}
+                              </SelectItem>
+                            )
+                          )}
                         </SelectContent>
                       </Select>
                     )}
 
                     {/* Value input */}
-                    {rule.field && rule.operator !== 'is_empty' && rule.operator !== 'is_not_empty' && (
-                      <ValueInput
-                        rule={rule}
-                        companies={companies}
-                        onChange={(value) => updateRule(group.id, rule.id, { value })}
-                        t={t}
-                      />
-                    )}
+                    {rule.field &&
+                      rule.operator !== "is_empty" &&
+                      rule.operator !== "is_not_empty" && (
+                        <ValueInput
+                          rule={rule}
+                          companies={companies}
+                          onChange={(value) =>
+                            updateRule(group.id, rule.id, { value })
+                          }
+                          t={t}
+                        />
+                      )}
 
                     {/* Remove rule */}
                     {group.rules.length > 1 && (
                       <button
                         onClick={() => removeRule(group.id, rule.id)}
                         className="p-1 rounded hover:bg-[var(--crm-bg-subtle)] text-[var(--crm-text-muted)] hover:text-red-400 transition-colors flex-shrink-0"
-                        title={t('audiences.removeRule')}
+                        title={t("audiences.removeRule")}
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
@@ -234,7 +274,7 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
               className="mt-3 text-xs text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] h-7"
             >
               <Plus className="w-3 h-3 mr-1" />
-              {t('audiences.addRule')}
+              {t("audiences.addRule")}
             </Button>
           </div>
         </div>
@@ -247,7 +287,7 @@ export function RuleBuilder({ rules, onChange, previewCount, previewLoading }: R
         className="text-xs border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
       >
         <Plus className="w-3 h-3 mr-1" />
-        {t('audiences.addGroup')}
+        {t("audiences.addGroup")}
       </Button>
     </div>
   )
@@ -267,14 +307,14 @@ function ValueInput({ rule, companies, onChange, t }: ValueInputProps) {
   if (!fieldDef) return null
 
   // Between operator: two inputs
-  if (rule.operator === 'between') {
-    const val = Array.isArray(rule.value) ? rule.value : ['', '']
-    const inputType = fieldDef.type === 'date' ? 'date' : 'number'
+  if (rule.operator === "between") {
+    const val = Array.isArray(rule.value) ? rule.value : ["", ""]
+    const inputType = fieldDef.type === "date" ? "date" : "number"
     return (
       <div className="flex items-center gap-1 flex-1">
         <Input
           type={inputType}
-          value={val[0] || ''}
+          value={val[0] || ""}
           onChange={(e) => onChange([e.target.value, val[1]])}
           className="h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs flex-1"
           placeholder="From"
@@ -282,7 +322,7 @@ function ValueInput({ rule, companies, onChange, t }: ValueInputProps) {
         <span className="text-[10px] text-[var(--crm-text-muted)]">-</span>
         <Input
           type={inputType}
-          value={val[1] || ''}
+          value={val[1] || ""}
           onChange={(e) => onChange([val[0], e.target.value])}
           className="h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs flex-1"
           placeholder="To"
@@ -292,14 +332,23 @@ function ValueInput({ rule, companies, onChange, t }: ValueInputProps) {
   }
 
   // Enum field: select dropdown
-  if (fieldDef.type === 'enum' && fieldDef.options) {
-    if (rule.operator === 'in' || rule.operator === 'not_in') {
+  if (fieldDef.type === "enum" && fieldDef.options) {
+    if (rule.operator === "in" || rule.operator === "not_in") {
       // Multi-value: comma-separated or checkboxes
       return (
         <Input
-          value={Array.isArray(rule.value) ? rule.value.join(', ') : rule.value || ''}
-          onChange={(e) => onChange(e.target.value.split(',').map((s) => s.trim()).filter(Boolean))}
-          placeholder={fieldDef.options.map((o) => o.value).join(', ')}
+          value={
+            Array.isArray(rule.value) ? rule.value.join(", ") : rule.value || ""
+          }
+          onChange={(e) =>
+            onChange(
+              e.target.value
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean)
+            )
+          }
+          placeholder={fieldDef.options.map((o) => o.value).join(", ")}
           className="h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs flex-1"
         />
       )
@@ -307,7 +356,7 @@ function ValueInput({ rule, companies, onChange, t }: ValueInputProps) {
     return (
       <Select value={rule.value || undefined} onValueChange={onChange}>
         <SelectTrigger className="w-[160px] h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs">
-          <SelectValue placeholder={t('audiences.enterValue')} />
+          <SelectValue placeholder={t("audiences.enterValue")} />
         </SelectTrigger>
         <SelectContent>
           {fieldDef.options.map((opt) => (
@@ -321,11 +370,11 @@ function ValueInput({ rule, companies, onChange, t }: ValueInputProps) {
   }
 
   // Relation: companyId → company dropdown
-  if (fieldDef.type === 'relation' && rule.field === 'companyId') {
+  if (fieldDef.type === "relation" && rule.field === "companyId") {
     return (
       <Select value={rule.value || undefined} onValueChange={onChange}>
         <SelectTrigger className="w-[200px] h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs">
-          <SelectValue placeholder={t('audiences.enterValue')} />
+          <SelectValue placeholder={t("audiences.enterValue")} />
         </SelectTrigger>
         <SelectContent>
           {companies.map((c: any) => (
@@ -339,23 +388,32 @@ function ValueInput({ rule, companies, onChange, t }: ValueInputProps) {
   }
 
   // Relation: tags → text input
-  if (fieldDef.type === 'relation' && rule.field === 'tags') {
+  if (fieldDef.type === "relation" && rule.field === "tags") {
     return (
       <Input
-        value={Array.isArray(rule.value) ? rule.value.join(', ') : rule.value || ''}
-        onChange={(e) => onChange(e.target.value.split(',').map((s) => s.trim()).filter(Boolean))}
-        placeholder={t('audiences.enterValue')}
+        value={
+          Array.isArray(rule.value) ? rule.value.join(", ") : rule.value || ""
+        }
+        onChange={(e) =>
+          onChange(
+            e.target.value
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          )
+        }
+        placeholder={t("audiences.enterValue")}
         className="h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs flex-1"
       />
     )
   }
 
   // Date field
-  if (fieldDef.type === 'date') {
+  if (fieldDef.type === "date") {
     return (
       <Input
         type="date"
-        value={rule.value || ''}
+        value={rule.value || ""}
         onChange={(e) => onChange(e.target.value)}
         className="h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs flex-1"
       />
@@ -363,13 +421,13 @@ function ValueInput({ rule, companies, onChange, t }: ValueInputProps) {
   }
 
   // Number field
-  if (fieldDef.type === 'number') {
+  if (fieldDef.type === "number") {
     return (
       <Input
         type="number"
-        value={rule.value || ''}
-        onChange={(e) => onChange(e.target.value ? Number(e.target.value) : '')}
-        placeholder={t('audiences.enterValue')}
+        value={rule.value || ""}
+        onChange={(e) => onChange(e.target.value ? Number(e.target.value) : "")}
+        placeholder={t("audiences.enterValue")}
         className="h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs flex-1"
       />
     )
@@ -378,9 +436,9 @@ function ValueInput({ rule, companies, onChange, t }: ValueInputProps) {
   // Default: string input
   return (
     <Input
-      value={rule.value || ''}
+      value={rule.value || ""}
       onChange={(e) => onChange(e.target.value)}
-      placeholder={t('audiences.enterValue')}
+      placeholder={t("audiences.enterValue")}
       className="h-8 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-xs flex-1"
     />
   )

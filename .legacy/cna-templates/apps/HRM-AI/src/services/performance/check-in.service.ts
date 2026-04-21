@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { Prisma } from "@prisma/client"
 
 export async function createCheckIn(
   tenantId: string,
@@ -53,13 +53,16 @@ export async function getCheckIns(
     tenantId,
     ...(filters?.employeeId && { employeeId: filters.employeeId }),
     ...(filters?.managerId && { managerId: filters.managerId }),
-    ...(filters?.isCompleted !== undefined && { isCompleted: filters.isCompleted }),
-    ...(filters?.startDate && filters?.endDate && {
-      checkInDate: {
-        gte: filters.startDate,
-        lte: filters.endDate,
-      },
+    ...(filters?.isCompleted !== undefined && {
+      isCompleted: filters.isCompleted,
     }),
+    ...(filters?.startDate &&
+      filters?.endDate && {
+        checkInDate: {
+          gte: filters.startDate,
+          lte: filters.endDate,
+        },
+      }),
   }
 
   const [data, total] = await Promise.all([
@@ -73,7 +76,7 @@ export async function getCheckIns(
           select: { id: true, fullName: true },
         },
       },
-      orderBy: { checkInDate: 'desc' },
+      orderBy: { checkInDate: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -115,7 +118,12 @@ export async function updateCheckIn(
     supportNeeded?: string
     moodRating?: number
     managerNotes?: string
-    actionItems?: { task: string; assignee: string; dueDate?: string; completed: boolean }[]
+    actionItems?: {
+      task: string
+      assignee: string
+      dueDate?: string
+      completed: boolean
+    }[]
     isCompleted?: boolean
   }
 ) {
@@ -124,19 +132,27 @@ export async function updateCheckIn(
   })
 
   if (!checkIn) {
-    throw new Error('Check-in not found')
+    throw new Error("Check-in not found")
   }
 
   return db.checkIn.update({
     where: { id },
     data: {
-      ...(data.accomplishments !== undefined && { accomplishments: data.accomplishments }),
+      ...(data.accomplishments !== undefined && {
+        accomplishments: data.accomplishments,
+      }),
       ...(data.challenges !== undefined && { challenges: data.challenges }),
       ...(data.priorities !== undefined && { priorities: data.priorities }),
-      ...(data.supportNeeded !== undefined && { supportNeeded: data.supportNeeded }),
+      ...(data.supportNeeded !== undefined && {
+        supportNeeded: data.supportNeeded,
+      }),
       ...(data.moodRating !== undefined && { moodRating: data.moodRating }),
-      ...(data.managerNotes !== undefined && { managerNotes: data.managerNotes }),
-      ...(data.actionItems !== undefined && { actionItems: data.actionItems as any }),
+      ...(data.managerNotes !== undefined && {
+        managerNotes: data.managerNotes,
+      }),
+      ...(data.actionItems !== undefined && {
+        actionItems: data.actionItems as any,
+      }),
       ...(data.isCompleted !== undefined && { isCompleted: data.isCompleted }),
     },
     include: {

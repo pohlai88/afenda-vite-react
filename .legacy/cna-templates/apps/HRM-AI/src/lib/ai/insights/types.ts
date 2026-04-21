@@ -2,24 +2,24 @@
 // AI Insights Types
 
 export type InsightCategory =
-  | 'WORKFORCE'
-  | 'ATTENDANCE'
-  | 'LEAVE'
-  | 'PERFORMANCE'
-  | 'PAYROLL'
-  | 'RECRUITMENT'
-  | 'COMPLIANCE'
-  | 'GENERAL'
+  | "WORKFORCE"
+  | "ATTENDANCE"
+  | "LEAVE"
+  | "PERFORMANCE"
+  | "PAYROLL"
+  | "RECRUITMENT"
+  | "COMPLIANCE"
+  | "GENERAL"
 
-export type InsightSeverity = 'INFO' | 'WARNING' | 'CRITICAL' | 'SUCCESS'
+export type InsightSeverity = "INFO" | "WARNING" | "CRITICAL" | "SUCCESS"
 
 export type InsightActionType =
-  | 'navigate'
-  | 'create_report'
-  | 'send_notification'
-  | 'schedule_meeting'
-  | 'view_details'
-  | 'dismiss'
+  | "navigate"
+  | "create_report"
+  | "send_notification"
+  | "schedule_meeting"
+  | "view_details"
+  | "dismiss"
 
 export interface InsightAction {
   type: InsightActionType
@@ -37,7 +37,7 @@ export interface DashboardInsight {
   metric?: {
     value: number | string
     label: string
-    trend?: 'up' | 'down' | 'stable'
+    trend?: "up" | "down" | "stable"
     changePercent?: number
   }
   actions: InsightAction[]
@@ -88,5 +88,5 @@ Cảnh báo về các khoản chi bất thường.`,
   COMPLIANCE: `Kiểm tra compliance: hợp đồng sắp hết hạn, giấy phép lao động.
 Cảnh báo các deadline quan trọng.`,
 
-  GENERAL: `Tổng hợp tình hình HR chung, highlight các metrics quan trọng.`
+  GENERAL: `Tổng hợp tình hình HR chung, highlight các metrics quan trọng.`,
 }

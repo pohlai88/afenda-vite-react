@@ -1,22 +1,22 @@
 // src/app/api/admin/erasure/[requestId]/route.ts
 // GDPR Erasure Request - Review & Execute (P2-20)
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
 import {
   getErasureRequest,
   reviewErasureRequest,
   executeErasure,
-} from '@/services/erasure.service'
-import { z } from 'zod'
+} from "@/services/erasure.service"
+import { z } from "zod"
 
 const reviewSchema = z.object({
-  action: z.enum(['APPROVED', 'REJECTED']),
+  action: z.enum(["APPROVED", "REJECTED"]),
   notes: z.string().optional(),
 })
 
 const executeSchema = z.object({
-  confirm: z.literal(true, { message: 'Phải xác nhận trước khi xóa dữ liệu' }),
+  confirm: z.literal(true, { message: "Phải xác nhận trước khi xóa dữ liệu" }),
 })
 
 // GET - Get erasure request details
@@ -26,21 +26,24 @@ export async function GET(
 ) {
   try {
     const session = await auth()
-    if (!session?.user || !['SUPER_ADMIN', 'ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (
+      !session?.user ||
+      !["SUPER_ADMIN", "ADMIN"].includes(session.user.role)
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { requestId } = await params
     const request = await getErasureRequest(requestId)
 
     if (!request) {
-      return NextResponse.json({ error: 'Không tìm thấy' }, { status: 404 })
+      return NextResponse.json({ error: "Không tìm thấy" }, { status: 404 })
     }
 
     return NextResponse.json({ success: true, data: request })
   } catch (error) {
-    console.error('Get erasure request error:', error)
-    return NextResponse.json({ error: 'Lỗi server' }, { status: 500 })
+    console.error("Get erasure request error:", error)
+    return NextResponse.json({ error: "Lỗi server" }, { status: 500 })
   }
 }
 
@@ -51,8 +54,11 @@ export async function PATCH(
 ) {
   try {
     const session = await auth()
-    if (!session?.user || !['SUPER_ADMIN', 'ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (
+      !session?.user ||
+      !["SUPER_ADMIN", "ADMIN"].includes(session.user.role)
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { requestId } = await params
@@ -69,12 +75,15 @@ export async function PATCH(
     return NextResponse.json({ success: true, data: result })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Dữ liệu không hợp lệ', details: error.issues }, { status: 400 })
+      return NextResponse.json(
+        { error: "Dữ liệu không hợp lệ", details: error.issues },
+        { status: 400 }
+      )
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    return NextResponse.json({ error: 'Lỗi server' }, { status: 500 })
+    return NextResponse.json({ error: "Lỗi server" }, { status: 500 })
   }
 }
 
@@ -85,8 +94,11 @@ export async function POST(
 ) {
   try {
     const session = await auth()
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Chỉ SUPER_ADMIN mới có thể thực hiện xóa dữ liệu' }, { status: 403 })
+    if (!session?.user || session.user.role !== "SUPER_ADMIN") {
+      return NextResponse.json(
+        { error: "Chỉ SUPER_ADMIN mới có thể thực hiện xóa dữ liệu" },
+        { status: 403 }
+      )
     }
 
     const { requestId } = await params
@@ -98,11 +110,14 @@ export async function POST(
     return NextResponse.json({ success: true, data: result })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Dữ liệu không hợp lệ', details: error.issues }, { status: 400 })
+      return NextResponse.json(
+        { error: "Dữ liệu không hợp lệ", details: error.issues },
+        { status: 400 }
+      )
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    return NextResponse.json({ error: 'Lỗi server' }, { status: 500 })
+    return NextResponse.json({ error: "Lỗi server" }, { status: 500 })
   }
 }

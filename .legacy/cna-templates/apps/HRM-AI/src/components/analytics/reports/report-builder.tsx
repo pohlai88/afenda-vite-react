@@ -1,53 +1,53 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
-import { Play, Save } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ColumnSelector } from './column-selector';
-import { FilterBuilder } from './filter-builder';
-import { cn } from '@/lib/utils';
+import { useState } from "react"
+import { Play, Save } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ColumnSelector } from "./column-selector"
+import { FilterBuilder } from "./filter-builder"
+import { cn } from "@/lib/utils"
 
 interface ColumnOption {
-  key: string;
-  label: string;
-  group?: string;
+  key: string
+  label: string
+  group?: string
 }
 
 interface FilterField {
-  key: string;
-  label: string;
-  type: 'text' | 'number' | 'date' | 'select';
-  options?: { value: string; label: string }[];
+  key: string
+  label: string
+  type: "text" | "number" | "date" | "select"
+  options?: { value: string; label: string }[]
 }
 
 interface FilterRow {
-  id: string;
-  field: string;
-  operator: string;
-  value: string;
+  id: string
+  field: string
+  operator: string
+  value: string
 }
 
 interface DataSourceOption {
-  value: string;
-  label: string;
-  columns: ColumnOption[];
-  filterFields: FilterField[];
+  value: string
+  label: string
+  columns: ColumnOption[]
+  filterFields: FilterField[]
 }
 
 interface ReportConfig {
-  dataSource: string;
-  selectedColumns: string[];
-  filters: FilterRow[];
-  groupBy: string;
+  dataSource: string
+  selectedColumns: string[]
+  filters: FilterRow[]
+  groupBy: string
 }
 
 interface ReportBuilderProps {
-  dataSources: DataSourceOption[];
-  onRun: (config: ReportConfig) => void;
-  onSave?: (config: ReportConfig, name: string) => void;
-  loading?: boolean;
-  className?: string;
+  dataSources: DataSourceOption[]
+  onRun: (config: ReportConfig) => void
+  onSave?: (config: ReportConfig, name: string) => void
+  loading?: boolean
+  className?: string
 }
 
 export function ReportBuilder({
@@ -57,22 +57,22 @@ export function ReportBuilder({
   loading = false,
   className,
 }: ReportBuilderProps) {
-  const [dataSource, setDataSource] = useState(dataSources[0]?.value || '');
-  const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
-  const [filters, setFilters] = useState<FilterRow[]>([]);
-  const [groupBy, setGroupBy] = useState('');
-  const [reportName, setReportName] = useState('');
+  const [dataSource, setDataSource] = useState(dataSources[0]?.value || "")
+  const [selectedColumns, setSelectedColumns] = useState<string[]>([])
+  const [filters, setFilters] = useState<FilterRow[]>([])
+  const [groupBy, setGroupBy] = useState("")
+  const [reportName, setReportName] = useState("")
 
-  const currentSource = dataSources.find((ds) => ds.value === dataSource);
-  const columns = currentSource?.columns || [];
-  const filterFields = currentSource?.filterFields || [];
+  const currentSource = dataSources.find((ds) => ds.value === dataSource)
+  const columns = currentSource?.columns || []
+  const filterFields = currentSource?.filterFields || []
 
   const handleDataSourceChange = (value: string) => {
-    setDataSource(value);
-    setSelectedColumns([]);
-    setFilters([]);
-    setGroupBy('');
-  };
+    setDataSource(value)
+    setSelectedColumns([])
+    setFilters([])
+    setGroupBy("")
+  }
 
   const handleRun = () => {
     onRun({
@@ -80,18 +80,18 @@ export function ReportBuilder({
       selectedColumns,
       filters,
       groupBy,
-    });
-  };
+    })
+  }
 
   const handleSave = () => {
     if (onSave && reportName.trim()) {
       onSave(
         { dataSource, selectedColumns, filters, groupBy },
         reportName.trim()
-      );
-      setReportName('');
+      )
+      setReportName("")
     }
-  };
+  }
 
   return (
     <Card className={cn(className)}>
@@ -155,9 +155,12 @@ export function ReportBuilder({
 
         {/* Actions */}
         <div className="flex items-center gap-2 pt-2 border-t">
-          <Button onClick={handleRun} disabled={loading || selectedColumns.length === 0}>
+          <Button
+            onClick={handleRun}
+            disabled={loading || selectedColumns.length === 0}
+          >
             <Play className="h-3.5 w-3.5 mr-1.5" />
-            {loading ? 'Đang chạy...' : 'Chạy báo cáo'}
+            {loading ? "Đang chạy..." : "Chạy báo cáo"}
           </Button>
 
           {onSave && (
@@ -182,5 +185,5 @@ export function ReportBuilder({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

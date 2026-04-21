@@ -1,19 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { z } from "zod"
 
 const moveSchema = z.object({
   status: z.enum([
-    'NEW',
-    'SCREENING',
-    'PHONE_SCREEN',
-    'INTERVIEW',
-    'ASSESSMENT',
-    'OFFER',
-    'HIRED',
-    'REJECTED',
-    'WITHDRAWN',
+    "NEW",
+    "SCREENING",
+    "PHONE_SCREEN",
+    "INTERVIEW",
+    "ASSESSMENT",
+    "OFFER",
+    "HIRED",
+    "REJECTED",
+    "WITHDRAWN",
   ]),
   notes: z.string().optional(),
 })
@@ -26,7 +26,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -41,7 +41,10 @@ export async function POST(
     })
 
     if (!application) {
-      return NextResponse.json({ error: 'Application not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Application not found" },
+        { status: 404 }
+      )
     }
 
     const previousStatus = application.status
@@ -51,14 +54,21 @@ export async function POST(
       where: { id: params.id },
       data: {
         status: data.status,
-        hiredAt: data.status === 'HIRED' ? new Date() : application.hiredAt,
-        hiredById: data.status === 'HIRED' ? session.user.id : application.hiredById,
-        rejectedAt: data.status === 'REJECTED' ? new Date() : application.rejectedAt,
-        rejectedById: data.status === 'REJECTED' ? session.user.id : application.rejectedById,
+        hiredAt: data.status === "HIRED" ? new Date() : application.hiredAt,
+        hiredById:
+          data.status === "HIRED" ? session.user.id : application.hiredById,
+        rejectedAt:
+          data.status === "REJECTED" ? new Date() : application.rejectedAt,
+        rejectedById:
+          data.status === "REJECTED"
+            ? session.user.id
+            : application.rejectedById,
       },
       include: {
         candidate: true,
-        requisition: { select: { id: true, title: true, requisitionCode: true } },
+        requisition: {
+          select: { id: true, title: true, requisitionCode: true },
+        },
       },
     })
 
@@ -66,8 +76,8 @@ export async function POST(
     await db.applicationActivity.create({
       data: {
         applicationId: params.id,
-        action: 'stage_changed',
-        description: `Chuyển từ "${previousStatus}" sang "${data.status}"${data.notes ? `: ${data.notes}` : ''}`,
+        action: "stage_changed",
+        description: `Chuyển từ "${previousStatus}" sang "${data.status}"${data.notes ? `: ${data.notes}` : ""}`,
         oldValue: previousStatus,
         newValue: data.status,
         performedById: session.user.id,
@@ -82,13 +92,13 @@ export async function POST(
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    console.error('Error moving application:', error)
+    console.error("Error moving application:", error)
     return NextResponse.json(
-      { error: 'Failed to move application' },
+      { error: "Failed to move application" },
       { status: 500 }
     )
   }

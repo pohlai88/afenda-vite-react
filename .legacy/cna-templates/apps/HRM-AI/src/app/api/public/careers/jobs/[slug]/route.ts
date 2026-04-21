@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/db"
 
 export async function GET(
   request: NextRequest,
@@ -8,11 +8,11 @@ export async function GET(
   try {
     const { slug } = await params
     const { searchParams } = new URL(request.url)
-    const tenantId = searchParams.get('tenantId')
+    const tenantId = searchParams.get("tenantId")
 
     if (!tenantId) {
       return NextResponse.json(
-        { success: false, error: 'tenantId is required' },
+        { success: false, error: "tenantId is required" },
         { status: 400 }
       )
     }
@@ -21,7 +21,7 @@ export async function GET(
       where: {
         slug,
         tenantId,
-        status: 'PUBLISHED',
+        status: "PUBLISHED",
         isPublic: true,
       },
       select: {
@@ -51,22 +51,27 @@ export async function GET(
 
     if (!job) {
       return NextResponse.json(
-        { success: false, error: 'Job posting not found' },
+        { success: false, error: "Job posting not found" },
         { status: 404 }
       )
     }
 
     // Increment view count asynchronously
-    db.jobPosting.update({
-      where: { id: job.id },
-      data: { viewCount: { increment: 1 } },
-    }).catch((err) => {
-      console.error('Failed to increment view count:', err)
-    })
+    db.jobPosting
+      .update({
+        where: { id: job.id },
+        data: { viewCount: { increment: 1 } },
+      })
+      .catch((err) => {
+        console.error("Failed to increment view count:", err)
+      })
 
     return NextResponse.json({ success: true, data: job })
   } catch (error) {
-    console.error('GET /api/public/careers/jobs/[slug] error:', error)
-    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
+    console.error("GET /api/public/careers/jobs/[slug] error:", error)
+    return NextResponse.json(
+      { success: false, error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

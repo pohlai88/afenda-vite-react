@@ -1,22 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { handleApiError } from '@/lib/api/errors'
-import { replaceVariables } from '@/lib/campaigns/template-engine'
-import { renderTemplate, sendEmail } from '@/lib/email'
+import { NextRequest, NextResponse } from "next/server"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { handleApiError } from "@/lib/api/errors"
+import { replaceVariables } from "@/lib/campaigns/template-engine"
+import { renderTemplate, sendEmail } from "@/lib/email"
 
 // Preview variable values for test sends
 const PREVIEW_VARIABLES: Record<string, string> = {
-  firstName: 'Nguyễn',
-  lastName: 'Văn A',
-  fullName: 'Nguyễn Văn A',
-  email: 'a@email.com',
-  company: 'ABC Corp',
-  title: 'Giám đốc',
-  first_name: 'Nguyễn',
-  last_name: 'Văn A',
-  full_name: 'Nguyễn Văn A',
-  company_name: 'ABC Corp',
-  unsubscribeUrl: '#',
+  firstName: "Nguyễn",
+  lastName: "Văn A",
+  fullName: "Nguyễn Văn A",
+  email: "a@email.com",
+  company: "ABC Corp",
+  title: "Giám đốc",
+  first_name: "Nguyễn",
+  last_name: "Văn A",
+  full_name: "Nguyễn Văn A",
+  company_name: "ABC Corp",
+  unsubscribeUrl: "#",
 }
 
 // Simple in-memory rate limiter
@@ -39,13 +39,13 @@ function checkRateLimit(userId: string): boolean {
 // POST /api/campaigns/test-send
 export async function POST(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER'])
+    const result = await requireRole(["ADMIN", "MANAGER"])
     if (isErrorResponse(result)) return result
     const user = result
 
     if (!checkRateLimit(user.id)) {
       return NextResponse.json(
-        { error: 'Đã vượt giới hạn 10 email test/giờ' },
+        { error: "Đã vượt giới hạn 10 email test/giờ" },
         { status: 429 }
       )
     }
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     if (!subject || !emailBody) {
       return NextResponse.json(
-        { error: 'Thiếu tiêu đề hoặc nội dung' },
+        { error: "Thiếu tiêu đề hoặc nội dung" },
         { status: 400 }
       )
     }
@@ -65,17 +65,17 @@ export async function POST(req: NextRequest) {
     const processedBody = replaceVariables(emailBody, PREVIEW_VARIABLES)
 
     // Render through campaign template for consistent email wrapper
-    const html = await renderTemplate('campaign', {
+    const html = await renderTemplate("campaign", {
       content: processedBody,
       recipientName: PREVIEW_VARIABLES.fullName,
-      unsubscribeUrl: '#',
+      unsubscribeUrl: "#",
     })
 
     const emailResult = await sendEmail(
       {
         to: recipient,
         subject: `[TEST] ${processedSubject}`,
-        template: 'campaign',
+        template: "campaign",
         data: {},
         html,
       },
@@ -84,13 +84,13 @@ export async function POST(req: NextRequest) {
 
     if (!emailResult.success) {
       return NextResponse.json(
-        { error: emailResult.error || 'Gửi email test thất bại' },
+        { error: emailResult.error || "Gửi email test thất bại" },
         { status: 500 }
       )
     }
 
     return NextResponse.json({ success: true, to: recipient })
   } catch (error) {
-    return handleApiError(error, '/api/campaigns/test-send')
+    return handleApiError(error, "/api/campaigns/test-send")
   }
 }

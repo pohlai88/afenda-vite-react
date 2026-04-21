@@ -1,51 +1,51 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { Clock } from 'lucide-react';
-import { WidgetContainer } from './widget-container';
-import { cn } from '@/lib/utils';
+import { useEffect, useState } from "react"
+import { Clock } from "lucide-react"
+import { WidgetContainer } from "./widget-container"
+import { cn } from "@/lib/utils"
 
 interface AttendanceData {
-  rate: number;
-  present: number;
-  absent: number;
-  late: number;
-  onLeave: number;
+  rate: number
+  present: number
+  absent: number
+  late: number
+  onLeave: number
 }
 
 interface AttendanceRateWidgetProps {
-  id?: string;
-  onRemove?: (id: string) => void;
-  isDragging?: boolean;
-  className?: string;
+  id?: string
+  onRemove?: (id: string) => void
+  isDragging?: boolean
+  className?: string
 }
 
 export function AttendanceRateWidget({
-  id = 'attendance-rate',
+  id = "attendance-rate",
   onRemove,
   isDragging,
   className,
 }: AttendanceRateWidgetProps) {
-  const [data, setData] = useState<AttendanceData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<AttendanceData | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch('/api/analytics/attendance-rate');
+        const response = await fetch("/api/analytics/attendance-rate")
         if (response.ok) {
-          const result = await response.json();
-          setData(result);
+          const result = await response.json()
+          setData(result)
         }
       } catch (error) {
-        console.error('Failed to fetch attendance data:', error);
+        console.error("Failed to fetch attendance data:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   return (
     <WidgetContainer
@@ -76,8 +76,12 @@ export function AttendanceRateWidget({
           <div className="w-full bg-muted rounded-full h-2">
             <div
               className={cn(
-                'h-2 rounded-full transition-all',
-                data.rate >= 90 ? 'bg-green-500' : data.rate >= 75 ? 'bg-yellow-500' : 'bg-red-500'
+                "h-2 rounded-full transition-all",
+                data.rate >= 90
+                  ? "bg-green-500"
+                  : data.rate >= 75
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
               )}
               style={{ width: `${data.rate}%` }}
             />
@@ -106,5 +110,5 @@ export function AttendanceRateWidget({
         <p className="text-sm text-muted-foreground">Không có dữ liệu</p>
       )}
     </WidgetContainer>
-  );
+  )
 }

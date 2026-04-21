@@ -1,13 +1,27 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import { Check, X, Clock, User, Calendar, FileText, Loader2 } from 'lucide-react'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Textarea } from '@/components/ui/textarea'
+import { useState } from "react"
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
+import {
+  Check,
+  X,
+  Clock,
+  User,
+  Calendar,
+  FileText,
+  Loader2,
+} from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Dialog,
   DialogContent,
@@ -15,8 +29,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import type { RequestStatus } from '@prisma/client'
+} from "@/components/ui/dialog"
+import type { RequestStatus } from "@prisma/client"
 
 interface ApprovalItem {
   id: string
@@ -48,12 +62,16 @@ interface ApprovalCardProps {
   onReject: (id: string, reason: string) => Promise<void>
 }
 
-export function ApprovalCard({ approval, onApprove, onReject }: ApprovalCardProps) {
+export function ApprovalCard({
+  approval,
+  onApprove,
+  onReject,
+}: ApprovalCardProps) {
   const [isApproving, setIsApproving] = useState(false)
   const [isRejecting, setIsRejecting] = useState(false)
   const [showRejectDialog, setShowRejectDialog] = useState(false)
-  const [rejectReason, setRejectReason] = useState('')
-  const [comment, setComment] = useState('')
+  const [rejectReason, setRejectReason] = useState("")
+  const [comment, setComment] = useState("")
 
   const request = approval.workflowInstance.leaveRequest
   if (!request) return null
@@ -64,7 +82,7 @@ export function ApprovalCard({ approval, onApprove, onReject }: ApprovalCardProp
       await onApprove(approval.id, comment)
     } finally {
       setIsApproving(false)
-      setComment('')
+      setComment("")
     }
   }
 
@@ -76,7 +94,7 @@ export function ApprovalCard({ approval, onApprove, onReject }: ApprovalCardProp
       setShowRejectDialog(false)
     } finally {
       setIsRejecting(false)
-      setRejectReason('')
+      setRejectReason("")
     }
   }
 
@@ -114,9 +132,11 @@ export function ApprovalCard({ approval, onApprove, onReject }: ApprovalCardProp
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <span>
-              {format(new Date(request.startDate), 'dd/MM/yyyy', { locale: vi })}
-              {' - '}
-              {format(new Date(request.endDate), 'dd/MM/yyyy', { locale: vi })}
+              {format(new Date(request.startDate), "dd/MM/yyyy", {
+                locale: vi,
+              })}
+              {" - "}
+              {format(new Date(request.endDate), "dd/MM/yyyy", { locale: vi })}
             </span>
           </div>
 
@@ -176,7 +196,10 @@ export function ApprovalCard({ approval, onApprove, onReject }: ApprovalCardProp
             rows={3}
           />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowRejectDialog(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setShowRejectDialog(false)}
+            >
               Hủy
             </Button>
             <Button

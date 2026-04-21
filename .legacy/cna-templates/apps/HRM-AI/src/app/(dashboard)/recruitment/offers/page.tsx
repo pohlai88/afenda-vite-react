@@ -1,16 +1,16 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -18,10 +18,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { OFFER_STATUS } from '@/lib/recruitment/constants'
+} from "@/components/ui/table"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import { OFFER_STATUS } from "@/lib/recruitment/constants"
 
 interface Offer {
   id: string
@@ -38,21 +38,21 @@ export default function OffersPage() {
   const [offers, setOffers] = useState<Offer[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [statusFilter, setStatusFilter] = useState<string>("all")
 
   useEffect(() => {
     async function fetchOffers() {
       try {
         const params = new URLSearchParams()
-        if (statusFilter !== 'all') params.set('status', statusFilter)
+        if (statusFilter !== "all") params.set("status", statusFilter)
 
         const res = await fetch(`/api/recruitment/offers?${params.toString()}`)
-        if (!res.ok) throw new Error('Không thể tải danh sách offer')
+        if (!res.ok) throw new Error("Không thể tải danh sách offer")
         const json = await res.json()
         const result = json.data ?? json
-        setOffers(Array.isArray(result) ? result : result.offers ?? [])
+        setOffers(Array.isArray(result) ? result : (result.offers ?? []))
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -64,25 +64,22 @@ export default function OffersPage() {
     const info = OFFER_STATUS[status]
     if (!info) return <Badge variant="secondary">{status}</Badge>
     const colorMap: Record<string, string> = {
-      gray: 'bg-gray-100 text-gray-800',
-      yellow: 'bg-yellow-100 text-yellow-800',
-      blue: 'bg-blue-100 text-blue-800',
-      purple: 'bg-purple-100 text-purple-800',
-      green: 'bg-green-100 text-green-800',
-      red: 'bg-red-100 text-red-800',
-      orange: 'bg-orange-100 text-orange-800',
+      gray: "bg-gray-100 text-gray-800",
+      yellow: "bg-yellow-100 text-yellow-800",
+      blue: "bg-blue-100 text-blue-800",
+      purple: "bg-purple-100 text-purple-800",
+      green: "bg-green-100 text-green-800",
+      red: "bg-red-100 text-red-800",
+      orange: "bg-orange-100 text-orange-800",
     }
-    return <Badge className={colorMap[info.color] || ''}>{info.label}</Badge>
+    return <Badge className={colorMap[info.color] || ""}>{info.label}</Badge>
   }
 
   if (loading) return <LoadingPage />
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Offer"
-        description="Quản lý các offer tuyển dụng"
-      />
+      <PageHeader title="Offer" description="Quản lý các offer tuyển dụng" />
 
       {/* Filter */}
       <Card>
@@ -95,7 +92,9 @@ export default function OffersPage() {
               <SelectContent>
                 <SelectItem value="all">Tất cả trạng thái</SelectItem>
                 {Object.entries(OFFER_STATUS).map(([key, val]) => (
-                  <SelectItem key={key} value={key}>{val.label}</SelectItem>
+                  <SelectItem key={key} value={key}>
+                    {val.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -128,7 +127,10 @@ export default function OffersPage() {
               <TableBody>
                 {offers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    <TableCell
+                      colSpan={7}
+                      className="text-center py-8 text-muted-foreground"
+                    >
                       Chưa có offer nào
                     </TableCell>
                   </TableRow>
@@ -143,19 +145,25 @@ export default function OffersPage() {
                           {offer.code}
                         </Link>
                       </TableCell>
-                      <TableCell className="font-medium">{offer.candidateName}</TableCell>
-                      <TableCell className="text-sm">{offer.position}</TableCell>
+                      <TableCell className="font-medium">
+                        {offer.candidateName}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {offer.position}
+                      </TableCell>
                       <TableCell className="text-right text-sm font-medium">
-                        {offer.salary.toLocaleString('vi-VN')} VND
+                        {offer.salary.toLocaleString("vi-VN")} VND
                       </TableCell>
                       <TableCell>{getStatusBadge(offer.status)}</TableCell>
                       <TableCell className="text-sm">
                         {offer.expiresAt
-                          ? new Date(offer.expiresAt).toLocaleDateString('vi-VN')
-                          : '-'}
+                          ? new Date(offer.expiresAt).toLocaleDateString(
+                              "vi-VN"
+                            )
+                          : "-"}
                       </TableCell>
                       <TableCell className="text-sm">
-                        {new Date(offer.createdAt).toLocaleDateString('vi-VN')}
+                        {new Date(offer.createdAt).toLocaleDateString("vi-VN")}
                       </TableCell>
                     </TableRow>
                   ))

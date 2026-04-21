@@ -6,112 +6,112 @@
 // SUGGESTION TYPES
 // =============================================================================
 
-export type SuggestionType = 'issue' | 'insight' | 'optimization' | 'pattern';
-export type SuggestionPriority = 'critical' | 'high' | 'medium' | 'low';
-export type SuggestionStatus = 'pending' | 'dismissed' | 'applied' | 'snoozed';
+export type SuggestionType = "issue" | "insight" | "optimization" | "pattern"
+export type SuggestionPriority = "critical" | "high" | "medium" | "low"
+export type SuggestionStatus = "pending" | "dismissed" | "applied" | "snoozed"
 
 export interface ProactiveSuggestion {
-  id: string;
-  type: SuggestionType;
-  priority: SuggestionPriority;
-  status: SuggestionStatus;
+  id: string
+  type: SuggestionType
+  priority: SuggestionPriority
+  status: SuggestionStatus
 
   // Content
-  title: string;
-  description: string;
-  details?: string;
+  title: string
+  description: string
+  details?: string
 
   // Location
-  sheetId: string;
-  affectedCells: string[];
-  affectedRange?: string;
+  sheetId: string
+  affectedCells: string[]
+  affectedRange?: string
 
   // Confidence & impact
-  confidence: number;
-  impact: SuggestionImpact;
+  confidence: number
+  impact: SuggestionImpact
 
   // Actions
-  actions: SuggestionAction[];
+  actions: SuggestionAction[]
 
   // Timestamps
-  detectedAt: number;
-  expiresAt?: number;
+  detectedAt: number
+  expiresAt?: number
 
   // Metadata
-  category: string;
-  tags: string[];
-  metadata?: Record<string, unknown>;
+  category: string
+  tags: string[]
+  metadata?: Record<string, unknown>
 }
 
 export interface SuggestionImpact {
-  cellCount: number;
-  severity: 'low' | 'medium' | 'high';
-  description: string;
+  cellCount: number
+  severity: "low" | "medium" | "high"
+  description: string
 }
 
 export interface SuggestionAction {
-  id: string;
-  label: string;
-  type: 'primary' | 'secondary' | 'danger';
-  action: ActionType;
-  params?: Record<string, unknown>;
+  id: string
+  label: string
+  type: "primary" | "secondary" | "danger"
+  action: ActionType
+  params?: Record<string, unknown>
 }
 
 export type ActionType =
-  | 'apply_fix'
-  | 'remove_duplicates'
-  | 'fill_missing'
-  | 'fix_format'
-  | 'optimize_formula'
-  | 'create_chart'
-  | 'deep_analysis'
-  | 'automate'
-  | 'learn_more'
-  | 'dismiss'
-  | 'snooze';
+  | "apply_fix"
+  | "remove_duplicates"
+  | "fill_missing"
+  | "fix_format"
+  | "optimize_formula"
+  | "create_chart"
+  | "deep_analysis"
+  | "automate"
+  | "learn_more"
+  | "dismiss"
+  | "snooze"
 
 // =============================================================================
 // DATA ISSUES
 // =============================================================================
 
 export type IssueType =
-  | 'duplicates'
-  | 'missing_values'
-  | 'invalid_format'
-  | 'outliers'
-  | 'inconsistent_data'
-  | 'trailing_spaces'
-  | 'mixed_types'
-  | 'invalid_dates'
-  | 'negative_values'
-  | 'empty_rows';
+  | "duplicates"
+  | "missing_values"
+  | "invalid_format"
+  | "outliers"
+  | "inconsistent_data"
+  | "trailing_spaces"
+  | "mixed_types"
+  | "invalid_dates"
+  | "negative_values"
+  | "empty_rows"
 
 export interface DataIssue extends ProactiveSuggestion {
-  type: 'issue';
-  issueType: IssueType;
-  examples: IssueExample[];
-  autoFixAvailable: boolean;
+  type: "issue"
+  issueType: IssueType
+  examples: IssueExample[]
+  autoFixAvailable: boolean
 }
 
 export interface IssueExample {
-  cellRef: string;
-  value: unknown;
-  expected?: unknown;
-  reason: string;
+  cellRef: string
+  value: unknown
+  expected?: unknown
+  reason: string
 }
 
 export interface DuplicateInfo {
-  rowIndices: number[];
-  values: unknown[];
-  firstOccurrence: number;
+  rowIndices: number[]
+  values: unknown[]
+  firstOccurrence: number
 }
 
 export interface OutlierInfo {
-  cellRef: string;
-  value: number;
-  mean: number;
-  stdDev: number;
-  zScore: number;
+  cellRef: string
+  value: number
+  mean: number
+  stdDev: number
+  zScore: number
 }
 
 // =============================================================================
@@ -119,50 +119,50 @@ export interface OutlierInfo {
 // =============================================================================
 
 export type InsightType =
-  | 'trend'
-  | 'correlation'
-  | 'anomaly'
-  | 'milestone'
-  | 'distribution'
-  | 'seasonality'
-  | 'comparison'
-  | 'summary';
+  | "trend"
+  | "correlation"
+  | "anomaly"
+  | "milestone"
+  | "distribution"
+  | "seasonality"
+  | "comparison"
+  | "summary"
 
 export interface DataInsight extends ProactiveSuggestion {
-  type: 'insight';
-  insightType: InsightType;
-  metric?: InsightMetric;
-  visualization?: VisualizationSuggestion;
+  type: "insight"
+  insightType: InsightType
+  metric?: InsightMetric
+  visualization?: VisualizationSuggestion
 }
 
 export interface InsightMetric {
-  name: string;
-  value: number;
-  change?: number;
-  changePercent?: number;
-  trend?: 'up' | 'down' | 'stable';
-  period?: string;
+  name: string
+  value: number
+  change?: number
+  changePercent?: number
+  trend?: "up" | "down" | "stable"
+  period?: string
 }
 
 export interface VisualizationSuggestion {
-  chartType: 'line' | 'bar' | 'pie' | 'scatter' | 'area';
-  dataRange: string;
-  title: string;
+  chartType: "line" | "bar" | "pie" | "scatter" | "area"
+  dataRange: string
+  title: string
 }
 
 export interface TrendInfo {
-  direction: 'increasing' | 'decreasing' | 'stable' | 'volatile';
-  slope: number;
-  r2: number;
-  prediction?: number;
+  direction: "increasing" | "decreasing" | "stable" | "volatile"
+  slope: number
+  r2: number
+  prediction?: number
 }
 
 export interface CorrelationInfo {
-  column1: string;
-  column2: string;
-  coefficient: number;
-  strength: 'strong' | 'moderate' | 'weak' | 'none';
-  type: 'positive' | 'negative';
+  column1: string
+  column2: string
+  coefficient: number
+  strength: "strong" | "moderate" | "weak" | "none"
+  type: "positive" | "negative"
 }
 
 // =============================================================================
@@ -170,34 +170,34 @@ export interface CorrelationInfo {
 // =============================================================================
 
 export type OptimizationType =
-  | 'performance'
-  | 'simplification'
-  | 'error_prevention'
-  | 'best_practice'
-  | 'modernization';
+  | "performance"
+  | "simplification"
+  | "error_prevention"
+  | "best_practice"
+  | "modernization"
 
 export interface FormulaOptimization extends ProactiveSuggestion {
-  type: 'optimization';
-  optimizationType: OptimizationType;
-  originalFormula: string;
-  optimizedFormula: string;
-  improvement: OptimizationImprovement;
+  type: "optimization"
+  optimizationType: OptimizationType
+  originalFormula: string
+  optimizedFormula: string
+  improvement: OptimizationImprovement
 }
 
 export interface OptimizationImprovement {
-  type: 'speed' | 'readability' | 'reliability' | 'compatibility';
-  factor?: number;
-  description: string;
+  type: "speed" | "readability" | "reliability" | "compatibility"
+  factor?: number
+  description: string
 }
 
 export interface FormulaAnalysis {
-  formula: string;
-  cellRef: string;
-  complexity: number;
-  volatileFunctions: string[];
-  arrayFormula: boolean;
-  nestedDepth: number;
-  referencedRanges: string[];
+  formula: string
+  cellRef: string
+  complexity: number
+  volatileFunctions: string[]
+  arrayFormula: boolean
+  nestedDepth: number
+  referencedRanges: string[]
 }
 
 // =============================================================================
@@ -205,33 +205,33 @@ export interface FormulaAnalysis {
 // =============================================================================
 
 export type PatternType =
-  | 'repetitive_action'
-  | 'copy_paste'
-  | 'manual_calculation'
-  | 'data_entry'
-  | 'formatting';
+  | "repetitive_action"
+  | "copy_paste"
+  | "manual_calculation"
+  | "data_entry"
+  | "formatting"
 
 export interface UserPattern extends ProactiveSuggestion {
-  type: 'pattern';
-  patternType: PatternType;
-  frequency: number;
-  lastOccurrence: number;
-  automationSuggestion: AutomationSuggestion;
+  type: "pattern"
+  patternType: PatternType
+  frequency: number
+  lastOccurrence: number
+  automationSuggestion: AutomationSuggestion
 }
 
 export interface AutomationSuggestion {
-  description: string;
-  steps: string[];
-  macroCode?: string;
-  estimatedTimeSaved: string;
+  description: string
+  steps: string[]
+  macroCode?: string
+  estimatedTimeSaved: string
 }
 
 export interface ActionRecord {
-  type: string;
-  timestamp: number;
-  cellRef?: string;
-  value?: unknown;
-  formula?: string;
+  type: string
+  timestamp: number
+  cellRef?: string
+  value?: unknown
+  formula?: string
 }
 
 // =============================================================================
@@ -239,24 +239,24 @@ export interface ActionRecord {
 // =============================================================================
 
 export interface ScanConfig {
-  enabled: boolean;
-  interval: number;
+  enabled: boolean
+  interval: number
 
   // Feature toggles
-  scanIssues: boolean;
-  scanInsights: boolean;
-  scanOptimizations: boolean;
-  scanPatterns: boolean;
+  scanIssues: boolean
+  scanInsights: boolean
+  scanOptimizations: boolean
+  scanPatterns: boolean
 
   // Thresholds
-  duplicateThreshold: number;
-  outlierZScore: number;
-  correlationThreshold: number;
-  patternMinFrequency: number;
+  duplicateThreshold: number
+  outlierZScore: number
+  correlationThreshold: number
+  patternMinFrequency: number
 
   // Limits
-  maxSuggestions: number;
-  maxCellsToScan: number;
+  maxSuggestions: number
+  maxCellsToScan: number
 }
 
 export const DEFAULT_SCAN_CONFIG: ScanConfig = {
@@ -275,30 +275,30 @@ export const DEFAULT_SCAN_CONFIG: ScanConfig = {
 
   maxSuggestions: 50,
   maxCellsToScan: 10000,
-};
+}
 
 // =============================================================================
 // SCAN RESULTS
 // =============================================================================
 
 export interface ScanResult {
-  timestamp: number;
-  duration: number;
-  cellsScanned: number;
+  timestamp: number
+  duration: number
+  cellsScanned: number
 
-  issues: DataIssue[];
-  insights: DataInsight[];
-  optimizations: FormulaOptimization[];
-  patterns: UserPattern[];
+  issues: DataIssue[]
+  insights: DataInsight[]
+  optimizations: FormulaOptimization[]
+  patterns: UserPattern[]
 
-  summary: ScanSummary;
+  summary: ScanSummary
 }
 
 export interface ScanSummary {
-  totalSuggestions: number;
-  byType: Record<SuggestionType, number>;
-  byPriority: Record<SuggestionPriority, number>;
-  topIssues: string[];
+  totalSuggestions: number
+  byType: Record<SuggestionType, number>
+  byPriority: Record<SuggestionPriority, number>
+  topIssues: string[]
 }
 
 // =============================================================================
@@ -306,35 +306,41 @@ export interface ScanSummary {
 // =============================================================================
 
 export interface SheetData {
-  sheetId: string;
-  sheetName: string;
-  cells: CellData[][];
-  rowCount: number;
-  colCount: number;
-  headers: ColumnInfo[];
+  sheetId: string
+  sheetName: string
+  cells: CellData[][]
+  rowCount: number
+  colCount: number
+  headers: ColumnInfo[]
 }
 
 export interface CellData {
-  ref: string;
-  row: number;
-  col: number;
-  value: unknown;
-  formula?: string;
-  displayValue?: string;
-  type: CellType;
-  format?: string;
+  ref: string
+  row: number
+  col: number
+  value: unknown
+  formula?: string
+  displayValue?: string
+  type: CellType
+  format?: string
 }
 
-export type CellType = 'number' | 'text' | 'date' | 'boolean' | 'error' | 'empty';
+export type CellType =
+  | "number"
+  | "text"
+  | "date"
+  | "boolean"
+  | "error"
+  | "empty"
 
 export interface ColumnInfo {
-  index: number;
-  letter: string;
-  name: string;
-  type: CellType;
-  hasFormulas: boolean;
-  uniqueValues: number;
-  emptyCount: number;
+  index: number
+  letter: string
+  name: string
+  type: CellType
+  hasFormulas: boolean
+  uniqueValues: number
+  emptyCount: number
 }
 
 // =============================================================================
@@ -342,11 +348,11 @@ export interface ColumnInfo {
 // =============================================================================
 
 export type ProactiveEvent =
-  | { type: 'scan_started'; timestamp: number }
-  | { type: 'scan_completed'; result: ScanResult }
-  | { type: 'suggestion_added'; suggestion: ProactiveSuggestion }
-  | { type: 'suggestion_dismissed'; suggestionId: string }
-  | { type: 'action_executed'; actionId: string; success: boolean }
-  | { type: 'settings_changed'; config: Partial<ScanConfig> };
+  | { type: "scan_started"; timestamp: number }
+  | { type: "scan_completed"; result: ScanResult }
+  | { type: "suggestion_added"; suggestion: ProactiveSuggestion }
+  | { type: "suggestion_dismissed"; suggestionId: string }
+  | { type: "action_executed"; actionId: string; success: boolean }
+  | { type: "settings_changed"; config: Partial<ScanConfig> }
 
-export type ProactiveEventHandler = (event: ProactiveEvent) => void;
+export type ProactiveEventHandler = (event: ProactiveEvent) => void

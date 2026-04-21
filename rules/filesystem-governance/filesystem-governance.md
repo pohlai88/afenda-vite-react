@@ -52,6 +52,7 @@ Files must use semantic compound names.
 
 Rules:
 
+- tracked source files are expected to carry responsibility-shaped names
 - minimum: 2 semantic labels
 - preferred: 3 semantic labels
 - maximum: 4 semantic labels
@@ -73,6 +74,15 @@ Bad:
 - `helpers.ts`
 
 Generic names are forbidden unless explicitly justified and whitelisted.
+
+Conventional exceptions are narrow and deliberate:
+
+- `index.ts`
+- `README.md`
+- test harness files such as `vitest.config.ts`
+- explicit package export roots whose public contract is already established
+
+Those exceptions do not weaken the rule for files under the governed root.
 
 ## Rule 4: Nesting
 
@@ -133,8 +143,17 @@ Do not split for aesthetic neatness alone.
 The repository should enforce at least:
 
 - promoted shared-layer checks
+- tracked-file naming checks through denylisted generic stems
 - denylisted generic file names
+- denylisted generic directory names even when they are empty
 - max depth checks
+- governed-root config integrity checks
 - import boundary checks where practical
 
 The checker may begin narrow and become stricter over time, but the policy should remain stable.
+
+Minimum automation path:
+
+- run the filesystem governance checker in root `check`
+- run the filesystem governance checker in pre-commit
+- regenerate the screening report when widening scope or completing a refactor wave

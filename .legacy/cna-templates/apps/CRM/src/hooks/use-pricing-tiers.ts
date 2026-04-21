@@ -1,11 +1,7 @@
-'use client'
+"use client"
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import type { PricingTierInput } from '@/lib/validations/bundle'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import type { PricingTierInput } from "@/lib/validations/bundle"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -37,13 +33,16 @@ interface PricingTierListResponse {
 
 export function usePricingTiers(productId?: string, bundleId?: string) {
   const params = new URLSearchParams()
-  if (productId) params.set('productId', productId)
-  if (bundleId) params.set('bundleId', bundleId)
+  if (productId) params.set("productId", productId)
+  if (bundleId) params.set("bundleId", bundleId)
   const qs = params.toString()
 
   return useQuery<PricingTierListResponse>({
-    queryKey: ['pricing-tiers', productId, bundleId],
-    queryFn: () => fetchJson<PricingTierListResponse>(`/api/pricing-tiers${qs ? `?${qs}` : ''}`),
+    queryKey: ["pricing-tiers", productId, bundleId],
+    queryFn: () =>
+      fetchJson<PricingTierListResponse>(
+        `/api/pricing-tiers${qs ? `?${qs}` : ""}`
+      ),
     staleTime: 30_000,
   })
 }
@@ -54,14 +53,14 @@ export function useCreatePricingTier() {
   const qc = useQueryClient()
   return useMutation<PricingTier, Error, PricingTierInput>({
     mutationFn: (data) =>
-      fetchJson<PricingTier>('/api/pricing-tiers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetchJson<PricingTier>("/api/pricing-tiers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['pricing-tiers'] })
-      qc.invalidateQueries({ queryKey: ['bundles'] })
+      qc.invalidateQueries({ queryKey: ["pricing-tiers"] })
+      qc.invalidateQueries({ queryKey: ["bundles"] })
     },
   })
 }

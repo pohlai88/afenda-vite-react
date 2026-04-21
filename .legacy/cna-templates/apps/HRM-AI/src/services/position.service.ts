@@ -1,5 +1,8 @@
-import { db } from '@/lib/db'
-import type { CreatePositionInput, UpdatePositionInput } from '@/lib/validations/position'
+import { db } from "@/lib/db"
+import type {
+  CreatePositionInput,
+  UpdatePositionInput,
+} from "@/lib/validations/position"
 
 export const positionService = {
   async findAll(tenantId: string, includeInactive = false) {
@@ -13,7 +16,7 @@ export const positionService = {
           select: { employees: true },
         },
       },
-      orderBy: [{ level: 'asc' }, { name: 'asc' }],
+      orderBy: [{ level: "asc" }, { name: "asc" }],
     })
   },
 
@@ -35,7 +38,7 @@ export const positionService = {
     })
 
     if (existing) {
-      throw new Error('Mã chức danh đã tồn tại')
+      throw new Error("Mã chức danh đã tồn tại")
     }
 
     return db.position.create({
@@ -50,13 +53,17 @@ export const positionService = {
     })
   },
 
-  async update(tenantId: string, id: string, data: Partial<UpdatePositionInput>) {
+  async update(
+    tenantId: string,
+    id: string,
+    data: Partial<UpdatePositionInput>
+  ) {
     const current = await db.position.findFirst({
       where: { id, tenantId },
     })
 
     if (!current) {
-      throw new Error('Chức danh không tồn tại')
+      throw new Error("Chức danh không tồn tại")
     }
 
     // Check for duplicate code if code is being updated
@@ -66,7 +73,7 @@ export const positionService = {
       })
 
       if (existing) {
-        throw new Error('Mã chức danh đã tồn tại')
+        throw new Error("Mã chức danh đã tồn tại")
       }
     }
 
@@ -76,7 +83,9 @@ export const positionService = {
         ...(data.name !== undefined && { name: data.name }),
         ...(data.code !== undefined && { code: data.code }),
         ...(data.level !== undefined && { level: data.level }),
-        ...(data.description !== undefined && { description: data.description }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
       },
     })
@@ -93,11 +102,11 @@ export const positionService = {
     })
 
     if (!position) {
-      throw new Error('Chức danh không tồn tại')
+      throw new Error("Chức danh không tồn tại")
     }
 
     if (position._count.employees > 0) {
-      throw new Error('Không thể xóa chức danh đang có nhân viên')
+      throw new Error("Không thể xóa chức danh đang có nhân viên")
     }
 
     return db.position.delete({

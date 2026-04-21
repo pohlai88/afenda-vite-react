@@ -1,19 +1,23 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { cn } from '@/lib/utils'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { GoalProgress } from '../goals/goal-progress'
-import type { ReviewGoal } from '@/types/performance'
+import { useState } from "react"
+import { cn } from "@/lib/utils"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { GoalProgress } from "../goals/goal-progress"
+import type { ReviewGoal } from "@/types/performance"
 
 interface GoalRatingSectionProps {
   goals: ReviewGoal[]
-  mode: 'self' | 'manager' | 'view'
+  mode: "self" | "manager" | "view"
   onUpdate?: (goalId: string, score: number, comments: string) => void
 }
 
-export function GoalRatingSection({ goals, mode, onUpdate }: GoalRatingSectionProps) {
+export function GoalRatingSection({
+  goals,
+  mode,
+  onUpdate,
+}: GoalRatingSectionProps) {
   const [localState, setLocalState] = useState<
     Record<string, { score: number; comments: string }>
   >({})
@@ -21,12 +25,17 @@ export function GoalRatingSection({ goals, mode, onUpdate }: GoalRatingSectionPr
   const getLocalValue = (goalId: string) => {
     if (localState[goalId]) return localState[goalId]
     const g = goals.find((x) => x.goalId === goalId)
-    if (!g) return { score: 0, comments: '' }
-    if (mode === 'self') return { score: g.selfScore || 0, comments: g.selfComments || '' }
-    return { score: g.managerScore || 0, comments: g.managerComments || '' }
+    if (!g) return { score: 0, comments: "" }
+    if (mode === "self")
+      return { score: g.selfScore || 0, comments: g.selfComments || "" }
+    return { score: g.managerScore || 0, comments: g.managerComments || "" }
   }
 
-  const handleChange = (goalId: string, field: 'score' | 'comments', value: string | number) => {
+  const handleChange = (
+    goalId: string,
+    field: "score" | "comments",
+    value: string | number
+  ) => {
     const current = getLocalValue(goalId)
     const updated = { ...current, [field]: value }
     setLocalState((prev) => ({ ...prev, [goalId]: updated }))
@@ -47,7 +56,7 @@ export function GoalRatingSection({ goals, mode, onUpdate }: GoalRatingSectionPr
       {/* Rows */}
       {goals.map((reviewGoal) => {
         const local = getLocalValue(reviewGoal.goalId)
-        const isEditable = mode !== 'view'
+        const isEditable = mode !== "view"
 
         return (
           <div
@@ -78,15 +87,19 @@ export function GoalRatingSection({ goals, mode, onUpdate }: GoalRatingSectionPr
                   min={1}
                   max={5}
                   step={0.5}
-                  value={local.score || ''}
+                  value={local.score || ""}
                   onChange={(e) =>
-                    handleChange(reviewGoal.goalId, 'score', Number(e.target.value))
+                    handleChange(
+                      reviewGoal.goalId,
+                      "score",
+                      Number(e.target.value)
+                    )
                   }
                   className="h-7 w-14 text-center font-data text-xs mx-auto"
                 />
               ) : (
                 <span className="font-data text-sm">
-                  {reviewGoal.finalScore || local.score || '-'}
+                  {reviewGoal.finalScore || local.score || "-"}
                 </span>
               )}
             </div>
@@ -95,7 +108,7 @@ export function GoalRatingSection({ goals, mode, onUpdate }: GoalRatingSectionPr
                 <Textarea
                   value={local.comments}
                   onChange={(e) =>
-                    handleChange(reviewGoal.goalId, 'comments', e.target.value)
+                    handleChange(reviewGoal.goalId, "comments", e.target.value)
                   }
                   placeholder="Nhận xét..."
                   rows={1}
@@ -103,9 +116,11 @@ export function GoalRatingSection({ goals, mode, onUpdate }: GoalRatingSectionPr
                 />
               ) : (
                 <span className="text-xs text-muted-foreground">
-                  {mode === 'view'
-                    ? reviewGoal.managerComments || reviewGoal.selfComments || '-'
-                    : local.comments || '-'}
+                  {mode === "view"
+                    ? reviewGoal.managerComments ||
+                      reviewGoal.selfComments ||
+                      "-"
+                    : local.comments || "-"}
                 </span>
               )}
             </div>

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { z } from "zod"
 
 const approveSchema = z.object({
   approved: z.boolean(),
@@ -17,7 +17,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -31,27 +31,27 @@ export async function POST(
     })
 
     if (!goal) {
-      return NextResponse.json({ error: 'Goal not found' }, { status: 404 })
+      return NextResponse.json({ error: "Goal not found" }, { status: 404 })
     }
 
     // Check if user is the manager of the goal owner
     if (goal.owner?.directManagerId !== session.user.employeeId) {
       return NextResponse.json(
-        { error: 'Only the manager can approve/reject goals' },
+        { error: "Only the manager can approve/reject goals" },
         { status: 403 }
       )
     }
 
     // Check if goal is active (submitted for review)
-    if (goal.status !== 'ACTIVE') {
+    if (goal.status !== "ACTIVE") {
       return NextResponse.json(
-        { error: 'Goal is not pending approval' },
+        { error: "Goal is not pending approval" },
         { status: 400 }
       )
     }
 
     // Update goal status
-    const newStatus = data.approved ? 'ACTIVE' : 'DRAFT'
+    const newStatus = data.approved ? "ACTIVE" : "DRAFT"
     const updatedGoal = await db.goal.update({
       where: { id: params.id },
       data: {
@@ -68,8 +68,8 @@ export async function POST(
       data: {
         goalId: params.id,
         notes: data.approved
-          ? `Goal approved by manager${data.feedback ? `: ${data.feedback}` : ''}`
-          : `Goal returned for revision${data.feedback ? `: ${data.feedback}` : ''}`,
+          ? `Goal approved by manager${data.feedback ? `: ${data.feedback}` : ""}`
+          : `Goal returned for revision${data.feedback ? `: ${data.feedback}` : ""}`,
         updatedById: session.user.id,
       },
     })
@@ -80,11 +80,13 @@ export async function POST(
         data: {
           tenantId: session.user.tenantId,
           userId: goal.ownerId,
-          type: data.approved ? 'REQUEST_APPROVED' : 'REQUEST_REJECTED',
-          title: data.approved ? 'Mục tiêu được phê duyệt' : 'Mục tiêu cần chỉnh sửa',
+          type: data.approved ? "REQUEST_APPROVED" : "REQUEST_REJECTED",
+          title: data.approved
+            ? "Mục tiêu được phê duyệt"
+            : "Mục tiêu cần chỉnh sửa",
           message: data.approved
             ? `Mục tiêu "${goal.title}" đã được phê duyệt`
-            : `Mục tiêu "${goal.title}" cần chỉnh sửa: ${data.feedback || 'Không có ghi chú'}`,
+            : `Mục tiêu "${goal.title}" cần chỉnh sửa: ${data.feedback || "Không có ghi chú"}`,
           actionUrl: `/performance/goals/${goal.id}`,
         },
       })
@@ -93,18 +95,18 @@ export async function POST(
     return NextResponse.json({
       success: true,
       data: updatedGoal,
-      message: data.approved ? 'Goal approved' : 'Goal sent back for revision',
+      message: data.approved ? "Goal approved" : "Goal sent back for revision",
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    console.error('Error approving goal:', error)
+    console.error("Error approving goal:", error)
     return NextResponse.json(
-      { error: 'Failed to process approval' },
+      { error: "Failed to process approval" },
       { status: 500 }
     )
   }

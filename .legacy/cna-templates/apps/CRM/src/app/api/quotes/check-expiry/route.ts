@@ -1,12 +1,12 @@
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { canAccess } from '@/lib/auth/rbac'
-import { sendEmail } from '@/lib/email'
-import { daysUntilExpiry } from '@/lib/quotes/status'
-import { Forbidden, Unauthorized, handleApiError } from '@/lib/api/errors'
-import { apiSuccess } from '@/lib/api/response'
-import { logger } from '@/lib/logger'
-import { eventBus, CRM_EVENTS } from '@/lib/events'
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { canAccess } from "@/lib/auth/rbac"
+import { sendEmail } from "@/lib/email"
+import { daysUntilExpiry } from "@/lib/quotes/status"
+import { Forbidden, Unauthorized, handleApiError } from "@/lib/api/errors"
+import { apiSuccess } from "@/lib/api/response"
+import { logger } from "@/lib/logger"
+import { eventBus, CRM_EVENTS } from "@/lib/events"
 
 // POST /api/quotes/check-expiry — Check and expire overdue quotes, send reminders
 export async function POST() {
@@ -14,7 +14,7 @@ export async function POST() {
     const user = await getCurrentUser()
 
     // Only ADMIN or MANAGER can run this
-    if (!canAccess(user, 'view_all')) {
+    if (!canAccess(user, "view_all")) {
       throw Forbidden()
     }
 
@@ -25,7 +25,7 @@ export async function POST() {
     // ── 1. Auto-expire overdue quotes ──────────────────────────────────
     const expiredQuotes = await prisma.quote.findMany({
       where: {
-        status: 'SENT',
+        status: "SENT",
         validUntil: {
           not: null,
           lte: now,
@@ -42,14 +42,14 @@ export async function POST() {
     for (const quote of expiredQuotes) {
       await prisma.quote.update({
         where: { id: quote.id },
-        data: { status: 'EXPIRED' },
+        data: { status: "EXPIRED" },
       })
 
       await prisma.activity.create({
         data: {
-          type: 'NOTE',
+          type: "NOTE",
           subject: `Báo giá ${quote.quoteNumber} đã hết hạn`,
-          description: 'Tự động cập nhật bởi hệ thống',
+          description: "Tự động cập nhật bởi hệ thống",
           isCompleted: true,
           completedAt: new Date(),
           ...(quote.contactId && { contactId: quote.contactId }),
@@ -61,7 +61,7 @@ export async function POST() {
     // ── 2. Send reminder for quotes expiring within 3 days ─────────────
     const expiringQuotes = await prisma.quote.findMany({
       where: {
-        status: 'SENT',
+        status: "SENT",
         validUntil: {
           not: null,
           gt: now,
@@ -91,7 +91,7 @@ export async function POST() {
       // Check if we already sent a reminder for this quote (avoid duplicates)
       const existingReminder = await prisma.emailLog.findFirst({
         where: {
-          template: 'quote-expiring',
+          template: "quote-expiring",
           to: quote.contact.email,
           // Check if reminder sent in last 24 hours for this quote
           createdAt: {
@@ -103,19 +103,20 @@ export async function POST() {
 
       if (existingReminder) continue
 
-      const customerName = `${quote.contact.firstName} ${quote.contact.lastName}`.trim()
+      const customerName =
+        `${quote.contact.firstName} ${quote.contact.lastName}`.trim()
       const days = daysUntilExpiry(quote) ?? 0
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3018'
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3018"
       const viewUrl = `${appUrl}/quotes/${quote.id}`
       const validUntilStr = quote.validUntil
-        ? new Date(quote.validUntil).toLocaleDateString('vi-VN')
-        : ''
+        ? new Date(quote.validUntil).toLocaleDateString("vi-VN")
+        : ""
 
       const emailResult = await sendEmail(
         {
           to: quote.contact.email,
           subject: `Báo giá ${quote.quoteNumber} sắp hết hạn`,
-          template: 'quote-expiring',
+          template: "quote-expiring",
           data: {
             customerName,
             quoteNumber: quote.quoteNumber,
@@ -132,7 +133,7 @@ export async function POST() {
 
         await prisma.activity.create({
           data: {
-            type: 'EMAIL',
+            type: "EMAIL",
             subject: `Gửi nhắc nhở hết hạn báo giá ${quote.quoteNumber}`,
             description: `Tự động gửi đến ${quote.contact.email} — còn ${days} ngày`,
             isCompleted: true,
@@ -143,17 +144,19 @@ export async function POST() {
         })
 
         // Fire-and-forget: emit quote expiring event
-        eventBus.emit(CRM_EVENTS.QUOTE_EXPIRING, {
-          timestamp: new Date().toISOString(),
-          quoteId: quote.id,
-          quote: { quoteNumber: quote.quoteNumber },
-          ownerId: quote.createdById,
-          days,
-        }).catch(() => {})
+        eventBus
+          .emit(CRM_EVENTS.QUOTE_EXPIRING, {
+            timestamp: new Date().toISOString(),
+            quoteId: quote.id,
+            quote: { quoteNumber: quote.quoteNumber },
+            ownerId: quote.createdById,
+            days,
+          })
+          .catch(() => {})
       }
     }
 
-    logger.info('Quote expiry check completed', {
+    logger.info("Quote expiry check completed", {
       expired: expiredQuotes.length,
       reminders: remindersSent,
       userId: user.id,
@@ -165,8 +168,11 @@ export async function POST() {
     })
   } catch (error) {
     if (error instanceof AuthError) {
-      return handleApiError(Unauthorized(error.message), '/api/quotes/check-expiry')
+      return handleApiError(
+        Unauthorized(error.message),
+        "/api/quotes/check-expiry"
+      )
     }
-    return handleApiError(error, '/api/quotes/check-expiry')
+    return handleApiError(error, "/api/quotes/check-expiry")
   }
 }

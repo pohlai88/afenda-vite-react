@@ -2,24 +2,24 @@
 // SPARKLINE — Compact inline chart component
 // =============================================================================
 
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react"
 
 interface SparklineProps {
-  data: number[];
-  width?: number;
-  height?: number;
-  color?: string;
-  showArea?: boolean;
-  showPoints?: boolean;
-  showMinMax?: boolean;
-  animated?: boolean;
+  data: number[]
+  width?: number
+  height?: number
+  color?: string
+  showArea?: boolean
+  showPoints?: boolean
+  showMinMax?: boolean
+  animated?: boolean
 }
 
 export const Sparkline: React.FC<SparklineProps> = ({
   data,
   width = 100,
   height = 30,
-  color = '#3b82f6',
+  color = "#3b82f6",
   showArea = false,
   showPoints = false,
   showMinMax = false,
@@ -27,19 +27,25 @@ export const Sparkline: React.FC<SparklineProps> = ({
 }) => {
   const { linePath, areaPath, points, minPoint, maxPoint } = useMemo(() => {
     if (!data || data.length === 0) {
-      return { linePath: '', areaPath: '', points: [], minPoint: null, maxPoint: null };
+      return {
+        linePath: "",
+        areaPath: "",
+        points: [],
+        minPoint: null,
+        maxPoint: null,
+      }
     }
 
-    const padding = 2;
-    const plotWidth = width - padding * 2;
-    const plotHeight = height - padding * 2;
+    const padding = 2
+    const plotWidth = width - padding * 2
+    const plotHeight = height - padding * 2
 
-    const minValue = Math.min(...data);
-    const maxValue = Math.max(...data);
-    const range = maxValue - minValue || 1;
+    const minValue = Math.min(...data)
+    const maxValue = Math.max(...data)
+    const range = maxValue - minValue || 1
 
-    const xStep = plotWidth / Math.max(data.length - 1, 1);
-    const yScale = plotHeight / range;
+    const xStep = plotWidth / Math.max(data.length - 1, 1)
+    const yScale = plotHeight / range
 
     const pts = data.map((value, i) => ({
       x: padding + i * xStep,
@@ -47,21 +53,21 @@ export const Sparkline: React.FC<SparklineProps> = ({
       value,
       isMin: value === minValue,
       isMax: value === maxValue,
-    }));
+    }))
 
     // Line path
     const linePath = pts
-      .map((pt, i) => `${i === 0 ? 'M' : 'L'} ${pt.x} ${pt.y}`)
-      .join(' ');
+      .map((pt, i) => `${i === 0 ? "M" : "L"} ${pt.x} ${pt.y}`)
+      .join(" ")
 
     // Area path
     const areaPath = showArea
       ? `${linePath} L ${pts[pts.length - 1].x} ${padding + plotHeight} L ${padding} ${padding + plotHeight} Z`
-      : '';
+      : ""
 
     // Find min/max points
-    const minPtIndex = data.indexOf(minValue);
-    const maxPtIndex = data.indexOf(maxValue);
+    const minPtIndex = data.indexOf(minValue)
+    const maxPtIndex = data.indexOf(maxValue)
 
     return {
       linePath,
@@ -69,11 +75,11 @@ export const Sparkline: React.FC<SparklineProps> = ({
       points: pts,
       minPoint: pts[minPtIndex],
       maxPoint: pts[maxPtIndex],
-    };
-  }, [data, width, height, showArea]);
+    }
+  }, [data, width, height, showArea])
 
   if (!data || data.length === 0) {
-    return <div className="sparkline-empty" style={{ width, height }} />;
+    return <div className="sparkline-empty" style={{ width, height }} />
   }
 
   return (
@@ -81,7 +87,7 @@ export const Sparkline: React.FC<SparklineProps> = ({
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
-      className={`sparkline ${animated ? 'animated' : ''}`}
+      className={`sparkline ${animated ? "animated" : ""}`}
     >
       {/* Area fill */}
       {showArea && areaPath && (
@@ -89,7 +95,7 @@ export const Sparkline: React.FC<SparklineProps> = ({
           d={areaPath}
           fill={color}
           opacity={0.15}
-          className={animated ? 'animate-area' : ''}
+          className={animated ? "animate-area" : ""}
         />
       )}
 
@@ -101,7 +107,7 @@ export const Sparkline: React.FC<SparklineProps> = ({
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className={animated ? 'animate-line' : ''}
+        className={animated ? "animate-line" : ""}
       />
 
       {/* Points */}
@@ -113,7 +119,7 @@ export const Sparkline: React.FC<SparklineProps> = ({
             cy={pt.y}
             r={2}
             fill={color}
-            className={animated ? 'animate-point' : ''}
+            className={animated ? "animate-point" : ""}
             style={{ animationDelay: `${i * 20}ms` }}
           />
         ))}
@@ -121,19 +127,9 @@ export const Sparkline: React.FC<SparklineProps> = ({
       {/* Min/Max markers */}
       {showMinMax && minPoint && minPoint !== maxPoint && (
         <>
-          <circle
-            cx={minPoint.x}
-            cy={minPoint.y}
-            r={3}
-            fill="#ef4444"
-          />
+          <circle cx={minPoint.x} cy={minPoint.y} r={3} fill="#ef4444" />
           {maxPoint && (
-            <circle
-              cx={maxPoint.x}
-              cy={maxPoint.y}
-              r={3}
-              fill="#22c55e"
-            />
+            <circle cx={maxPoint.x} cy={maxPoint.y} r={3} fill="#22c55e" />
           )}
         </>
       )}
@@ -150,42 +146,42 @@ export const Sparkline: React.FC<SparklineProps> = ({
         />
       )}
     </svg>
-  );
-};
+  )
+}
 
 // Sparkline Bar variant
 interface SparklineBarProps {
-  data: number[];
-  width?: number;
-  height?: number;
-  positiveColor?: string;
-  negativeColor?: string;
-  gap?: number;
+  data: number[]
+  width?: number
+  height?: number
+  positiveColor?: string
+  negativeColor?: string
+  gap?: number
 }
 
 export const SparklineBar: React.FC<SparklineBarProps> = ({
   data,
   width = 100,
   height = 30,
-  positiveColor = '#22c55e',
-  negativeColor = '#ef4444',
+  positiveColor = "#22c55e",
+  negativeColor = "#ef4444",
   gap = 1,
 }) => {
   const bars = useMemo(() => {
-    if (!data || data.length === 0) return [];
+    if (!data || data.length === 0) return []
 
-    const padding = 2;
-    const plotWidth = width - padding * 2;
-    const plotHeight = height - padding * 2;
+    const padding = 2
+    const plotWidth = width - padding * 2
+    const plotHeight = height - padding * 2
 
-    const maxAbsValue = Math.max(...data.map(Math.abs), 1);
-    const barWidth = (plotWidth - gap * (data.length - 1)) / data.length;
-    const yCenter = padding + plotHeight / 2;
-    const yScale = (plotHeight / 2) / maxAbsValue;
+    const maxAbsValue = Math.max(...data.map(Math.abs), 1)
+    const barWidth = (plotWidth - gap * (data.length - 1)) / data.length
+    const yCenter = padding + plotHeight / 2
+    const yScale = plotHeight / 2 / maxAbsValue
 
     return data.map((value, i) => {
-      const barHeight = Math.abs(value) * yScale;
-      const isPositive = value >= 0;
+      const barHeight = Math.abs(value) * yScale
+      const isPositive = value >= 0
 
       return {
         x: padding + i * (barWidth + gap),
@@ -194,12 +190,12 @@ export const SparklineBar: React.FC<SparklineBarProps> = ({
         height: barHeight,
         color: isPositive ? positiveColor : negativeColor,
         value,
-      };
-    });
-  }, [data, width, height, positiveColor, negativeColor, gap]);
+      }
+    })
+  }, [data, width, height, positiveColor, negativeColor, gap])
 
   if (!data || data.length === 0) {
-    return <div className="sparkline-bar-empty" style={{ width, height }} />;
+    return <div className="sparkline-bar-empty" style={{ width, height }} />
   }
 
   return (
@@ -232,13 +228,13 @@ export const SparklineBar: React.FC<SparklineBarProps> = ({
         />
       ))}
     </svg>
-  );
-};
+  )
+}
 
 // Sparkline with reference line
 interface SparklineWithReferenceProps extends SparklineProps {
-  referenceValue?: number;
-  referenceLabel?: string;
+  referenceValue?: number
+  referenceLabel?: string
 }
 
 export const SparklineWithReference: React.FC<SparklineWithReferenceProps> = ({
@@ -246,24 +242,25 @@ export const SparklineWithReference: React.FC<SparklineWithReferenceProps> = ({
   referenceLabel,
   ...props
 }) => {
-  const { data, height = 30, color = '#3b82f6' } = props;
+  const { data, height = 30, color = "#3b82f6" } = props
 
   if (!data || data.length === 0 || referenceValue === undefined) {
-    return <Sparkline {...props} />;
+    return <Sparkline {...props} />
   }
 
-  const minValue = Math.min(...data, referenceValue);
-  const maxValue = Math.max(...data, referenceValue);
-  const range = maxValue - minValue || 1;
-  const padding = 2;
-  const plotHeight = height - padding * 2;
-  const refY = padding + plotHeight - ((referenceValue - minValue) / range) * plotHeight;
+  const minValue = Math.min(...data, referenceValue)
+  const maxValue = Math.max(...data, referenceValue)
+  const range = maxValue - minValue || 1
+  const padding = 2
+  const plotHeight = height - padding * 2
+  const refY =
+    padding + plotHeight - ((referenceValue - minValue) / range) * plotHeight
 
   return (
-    <div className="sparkline-with-reference" style={{ position: 'relative' }}>
+    <div className="sparkline-with-reference" style={{ position: "relative" }}>
       <Sparkline {...props} />
       <svg
-        style={{ position: 'absolute', top: 0, left: 0 }}
+        style={{ position: "absolute", top: 0, left: 0 }}
         width={props.width || 100}
         height={height}
       >
@@ -278,18 +275,13 @@ export const SparklineWithReference: React.FC<SparklineWithReferenceProps> = ({
           opacity={0.5}
         />
         {referenceLabel && (
-          <text
-            x={2}
-            y={refY - 3}
-            fontSize={8}
-            fill={color}
-          >
+          <text x={2} y={refY - 3} fontSize={8} fill={color}>
             {referenceLabel}
           </text>
         )}
       </svg>
     </div>
-  );
-};
+  )
+}
 
-export default Sparkline;
+export default Sparkline

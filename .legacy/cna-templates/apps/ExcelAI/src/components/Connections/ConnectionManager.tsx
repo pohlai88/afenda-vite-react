@@ -1,17 +1,25 @@
 // Phase 9: Connection Manager Component
 // UI for managing data connections
 
-import React, { useState, useEffect } from 'react';
-import { useConnectionStore, ConnectionType, ConnectionStatus, ConnectionConfig } from '../../stores/connectionStore';
-import * as connectionApi from '../../api/connectionApi';
-import { loggers } from '@/utils/logger';
+import React, { useState, useEffect } from "react"
+import {
+  useConnectionStore,
+  ConnectionType,
+  ConnectionStatus,
+  ConnectionConfig,
+} from "../../stores/connectionStore"
+import * as connectionApi from "../../api/connectionApi"
+import { loggers } from "@/utils/logger"
 
 interface ConnectionManagerProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
-export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, onClose }) => {
+export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const {
     connections,
     queries,
@@ -27,113 +35,119 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
     setError,
     updateConnection,
     removeConnection,
-  } = useConnectionStore();
+  } = useConnectionStore()
 
-  const [activeTab, setActiveTab] = useState<'connections' | 'queries' | 'schedule'>('connections');
-  const [showNewConnection, setShowNewConnection] = useState(false);
+  const [activeTab, setActiveTab] = useState<
+    "connections" | "queries" | "schedule"
+  >("connections")
+  const [showNewConnection, setShowNewConnection] = useState(false)
 
   // Load data on mount
   useEffect(() => {
     if (isOpen) {
-      loadData();
+      loadData()
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   const loadData = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
       const [conns, qs, js] = await Promise.all([
         connectionApi.listConnections(),
         connectionApi.listQueries(),
         connectionApi.listJobs(),
-      ]);
-      setConnections(conns);
-      setQueries(qs);
-      setJobs(js);
+      ])
+      setConnections(conns)
+      setQueries(qs)
+      setJobs(js)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load data');
+      setError(err instanceof Error ? err.message : "Failed to load data")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleTestConnection = async (id: string) => {
-    updateConnection(id, { status: 'testing' });
-    const success = await connectionApi.testConnection(id);
+    updateConnection(id, { status: "testing" })
+    const success = await connectionApi.testConnection(id)
     updateConnection(id, {
-      status: success ? 'disconnected' : 'error',
-      lastError: success ? undefined : 'Connection test failed',
-    });
-  };
+      status: success ? "disconnected" : "error",
+      lastError: success ? undefined : "Connection test failed",
+    })
+  }
 
   const handleConnect = async (id: string) => {
     try {
-      updateConnection(id, { status: 'connecting' });
-      await connectionApi.connect(id);
-      updateConnection(id, { status: 'connected' });
+      updateConnection(id, { status: "connecting" })
+      await connectionApi.connect(id)
+      updateConnection(id, { status: "connected" })
     } catch (err) {
       updateConnection(id, {
-        status: 'error',
-        lastError: err instanceof Error ? err.message : 'Connection failed',
-      });
+        status: "error",
+        lastError: err instanceof Error ? err.message : "Connection failed",
+      })
     }
-  };
+  }
 
   const handleDisconnect = async (id: string) => {
     try {
-      await connectionApi.disconnect(id);
-      updateConnection(id, { status: 'disconnected' });
+      await connectionApi.disconnect(id)
+      updateConnection(id, { status: "disconnected" })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Disconnect failed');
+      setError(err instanceof Error ? err.message : "Disconnect failed")
     }
-  };
+  }
 
   const handleDeleteConnection = async (id: string) => {
-    if (!confirm('Delete this connection? All associated queries will also be deleted.')) {
-      return;
+    if (
+      !confirm(
+        "Delete this connection? All associated queries will also be deleted."
+      )
+    ) {
+      return
     }
     try {
-      await connectionApi.deleteConnection(id);
-      removeConnection(id);
+      await connectionApi.deleteConnection(id)
+      removeConnection(id)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Delete failed');
+      setError(err instanceof Error ? err.message : "Delete failed")
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   const getStatusColor = (status: ConnectionStatus): string => {
     switch (status) {
-      case 'connected':
-        return 'text-green-600';
-      case 'disconnected':
-        return 'text-gray-500';
-      case 'error':
-        return 'text-red-600';
-      case 'connecting':
-      case 'testing':
-        return 'text-amber-600';
+      case "connected":
+        return "text-green-600"
+      case "disconnected":
+        return "text-gray-500"
+      case "error":
+        return "text-red-600"
+      case "connecting":
+      case "testing":
+        return "text-amber-600"
       default:
-        return 'text-gray-500';
+        return "text-gray-500"
     }
-  };
+  }
 
   const getTypeIcon = (type: ConnectionType): string => {
     switch (type) {
-      case 'postgres':
-        return 'PG';
-      case 'mysql':
-        return 'My';
-      case 'sqlite':
-        return 'SQ';
-      case 'rest_api':
-        return 'API';
-      case 'websocket':
-        return 'WS';
+      case "postgres":
+        return "PG"
+      case "mysql":
+        return "My"
+      case "sqlite":
+        return "SQ"
+      case "rest_api":
+        return "API"
+      case "websocket":
+        return "WS"
       default:
-        return '??';
+        return "??"
     }
-  };
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -153,31 +167,31 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
         <div className="flex border-b">
           <button
             className={`px-4 py-2 text-sm font-medium ${
-              activeTab === 'connections'
-                ? 'border-b-2 border-blue-500 text-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
+              activeTab === "connections"
+                ? "border-b-2 border-blue-500 text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
             }`}
-            onClick={() => setActiveTab('connections')}
+            onClick={() => setActiveTab("connections")}
           >
             Connections ({connections.length})
           </button>
           <button
             className={`px-4 py-2 text-sm font-medium ${
-              activeTab === 'queries'
-                ? 'border-b-2 border-blue-500 text-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
+              activeTab === "queries"
+                ? "border-b-2 border-blue-500 text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
             }`}
-            onClick={() => setActiveTab('queries')}
+            onClick={() => setActiveTab("queries")}
           >
             Queries ({queries.length})
           </button>
           <button
             className={`px-4 py-2 text-sm font-medium ${
-              activeTab === 'schedule'
-                ? 'border-b-2 border-blue-500 text-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
+              activeTab === "schedule"
+                ? "border-b-2 border-blue-500 text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
             }`}
-            onClick={() => setActiveTab('schedule')}
+            onClick={() => setActiveTab("schedule")}
           >
             Schedule ({jobs.length})
           </button>
@@ -200,7 +214,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
         <div className="flex-1 overflow-auto p-4">
           {isLoading ? (
             <div className="text-center text-gray-500 py-8">Loading...</div>
-          ) : activeTab === 'connections' ? (
+          ) : activeTab === "connections" ? (
             <div className="space-y-3">
               {/* New connection button */}
               <button
@@ -216,8 +230,8 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
                   key={conn.id}
                   className={`border rounded-lg p-4 ${
                     selectedConnectionId === conn.id
-                      ? 'border-blue-400 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? "border-blue-400 bg-blue-50"
+                      : "border-gray-200 hover:border-gray-300"
                   }`}
                   onClick={() => setSelectedConnectionId(conn.id)}
                 >
@@ -229,7 +243,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
                       <div>
                         <div className="font-medium">{conn.name}</div>
                         <div className="text-xs text-gray-500">
-                          {conn.connectionType} &bull;{' '}
+                          {conn.connectionType} &bull;{" "}
                           <span className={getStatusColor(conn.status)}>
                             {conn.status}
                           </span>
@@ -239,18 +253,18 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
                     <div className="flex items-center gap-2">
                       <button
                         onClick={(e) => {
-                          e.stopPropagation();
-                          handleTestConnection(conn.id);
+                          e.stopPropagation()
+                          handleTestConnection(conn.id)
                         }}
                         className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
                       >
                         Test
                       </button>
-                      {conn.status === 'connected' ? (
+                      {conn.status === "connected" ? (
                         <button
                           onClick={(e) => {
-                            e.stopPropagation();
-                            handleDisconnect(conn.id);
+                            e.stopPropagation()
+                            handleDisconnect(conn.id)
                           }}
                           className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
                         >
@@ -259,8 +273,8 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
                       ) : (
                         <button
                           onClick={(e) => {
-                            e.stopPropagation();
-                            handleConnect(conn.id);
+                            e.stopPropagation()
+                            handleConnect(conn.id)
                           }}
                           className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
@@ -269,8 +283,8 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
                       )}
                       <button
                         onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteConnection(conn.id);
+                          e.stopPropagation()
+                          handleDeleteConnection(conn.id)
                         }}
                         className="px-2 py-1 text-xs text-red-500 border border-red-200 rounded hover:bg-red-50"
                       >
@@ -292,7 +306,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
                 </div>
               )}
             </div>
-          ) : activeTab === 'queries' ? (
+          ) : activeTab === "queries" ? (
             <QueryList />
           ) : (
             <ScheduleList />
@@ -318,41 +332,44 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({ isOpen, on
 
       {/* New Connection Dialog */}
       {showNewConnection && (
-        <NewConnectionDialog onClose={() => setShowNewConnection(false)} onCreated={loadData} />
+        <NewConnectionDialog
+          onClose={() => setShowNewConnection(false)}
+          onCreated={loadData}
+        />
       )}
     </div>
-  );
-};
+  )
+}
 
 // Query List Component
 const QueryList: React.FC = () => {
-  const { queries, connections, setLastQueryResult } = useConnectionStore();
+  const { queries, connections, setLastQueryResult } = useConnectionStore()
 
   const handleExecute = async (queryId: string) => {
     try {
-      const result = await connectionApi.executeQuery(queryId);
-      setLastQueryResult(result);
+      const result = await connectionApi.executeQuery(queryId)
+      setLastQueryResult(result)
     } catch (err) {
-      loggers.ui.error('Query execution failed:', err);
+      loggers.ui.error("Query execution failed:", err)
     }
-  };
+  }
 
   const handleDelete = async (queryId: string) => {
-    if (!confirm('Delete this query?')) return;
-    await connectionApi.deleteQuery(queryId);
-  };
+    if (!confirm("Delete this query?")) return
+    await connectionApi.deleteQuery(queryId)
+  }
 
   return (
     <div className="space-y-3">
       {queries.map((query) => {
-        const connection = connections.find((c) => c.id === query.connectionId);
+        const connection = connections.find((c) => c.id === query.connectionId)
         return (
           <div key={query.id} className="border rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div>
                 <div className="font-medium">{query.name}</div>
                 <div className="text-xs text-gray-500">
-                  Connection: {connection?.name || 'Unknown'} &bull; Target:{' '}
+                  Connection: {connection?.name || "Unknown"} &bull; Target:{" "}
                   {query.targetSheet}!{query.targetRange}
                 </div>
               </div>
@@ -375,7 +392,7 @@ const QueryList: React.FC = () => {
               {query.query}
             </div>
           </div>
-        );
+        )
       })}
       {queries.length === 0 && (
         <div className="text-center text-gray-500 py-8">
@@ -383,60 +400,66 @@ const QueryList: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Schedule List Component
 const ScheduleList: React.FC = () => {
-  const { jobs, queries, updateJob } = useConnectionStore();
+  const { jobs, queries, updateJob } = useConnectionStore()
 
   const handleToggle = async (jobId: string, enabled: boolean) => {
     try {
       if (enabled) {
-        await connectionApi.enableJob(jobId);
+        await connectionApi.enableJob(jobId)
       } else {
-        await connectionApi.disableJob(jobId);
+        await connectionApi.disableJob(jobId)
       }
-      updateJob(jobId, { enabled });
+      updateJob(jobId, { enabled })
     } catch (err) {
-      loggers.ui.error('Toggle failed:', err);
+      loggers.ui.error("Toggle failed:", err)
     }
-  };
+  }
 
   const handleTrigger = async (jobId: string) => {
     try {
-      await connectionApi.triggerJob(jobId);
-      updateJob(jobId, { lastRun: new Date().toISOString() });
+      await connectionApi.triggerJob(jobId)
+      updateJob(jobId, { lastRun: new Date().toISOString() })
     } catch (err) {
-      loggers.ui.error('Trigger failed:', err);
+      loggers.ui.error("Trigger failed:", err)
     }
-  };
+  }
 
-  const formatSchedule = (schedule: { type: string; seconds?: number; expression?: string }) => {
+  const formatSchedule = (schedule: {
+    type: string
+    seconds?: number
+    expression?: string
+  }) => {
     switch (schedule.type) {
-      case 'manual':
-        return 'Manual';
-      case 'interval':
-        return `Every ${schedule.seconds} seconds`;
-      case 'cron':
-        return `Cron: ${schedule.expression}`;
+      case "manual":
+        return "Manual"
+      case "interval":
+        return `Every ${schedule.seconds} seconds`
+      case "cron":
+        return `Cron: ${schedule.expression}`
       default:
-        return 'Unknown';
+        return "Unknown"
     }
-  };
+  }
 
   return (
     <div className="space-y-3">
       {jobs.map((job) => {
-        const query = queries.find((q) => q.id === job.queryId);
+        const query = queries.find((q) => q.id === job.queryId)
         return (
           <div key={job.id} className="border rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="font-medium">{query?.name || 'Unknown Query'}</div>
+                <div className="font-medium">
+                  {query?.name || "Unknown Query"}
+                </div>
                 <div className="text-xs text-gray-500">
-                  {formatSchedule(job.schedule)} &bull; Runs: {job.runCount} &bull;
-                  Errors: {job.errorCount}
+                  {formatSchedule(job.schedule)} &bull; Runs: {job.runCount}{" "}
+                  &bull; Errors: {job.errorCount}
                 </div>
                 {job.nextRun && (
                   <div className="text-xs text-blue-500">
@@ -462,10 +485,12 @@ const ScheduleList: React.FC = () => {
               </div>
             </div>
             {job.lastError && (
-              <div className="mt-2 text-xs text-red-500">Last error: {job.lastError}</div>
+              <div className="mt-2 text-xs text-red-500">
+                Last error: {job.lastError}
+              </div>
             )}
           </div>
-        );
+        )
       })}
       {jobs.length === 0 && (
         <div className="text-center text-gray-500 py-8">
@@ -473,41 +498,44 @@ const ScheduleList: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // New Connection Dialog
 interface NewConnectionDialogProps {
-  onClose: () => void;
-  onCreated: () => void;
+  onClose: () => void
+  onCreated: () => void
 }
 
-const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({ onClose, onCreated }) => {
-  const [name, setName] = useState('');
-  const [type, setType] = useState<ConnectionType>('postgres');
-  const [host, setHost] = useState('localhost');
-  const [port, setPort] = useState(5432);
-  const [database, setDatabase] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [baseUrl, setBaseUrl] = useState('');
-  const [sqlitePath, setSqlitePath] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({
+  onClose,
+  onCreated,
+}) => {
+  const [name, setName] = useState("")
+  const [type, setType] = useState<ConnectionType>("postgres")
+  const [host, setHost] = useState("localhost")
+  const [port, setPort] = useState(5432)
+  const [database, setDatabase] = useState("")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [baseUrl, setBaseUrl] = useState("")
+  const [sqlitePath, setSqlitePath] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const { addConnection } = useConnectionStore();
+  const { addConnection } = useConnectionStore()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
+    e.preventDefault()
+    setIsSubmitting(true)
+    setError(null)
 
     try {
-      let config: ConnectionConfig;
+      let config: ConnectionConfig
 
       switch (type) {
-        case 'postgres':
-        case 'mysql':
+        case "postgres":
+        case "mysql":
           config = {
             type,
             [type]: {
@@ -516,70 +544,79 @@ const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({ onClose, onCr
               database,
               username,
               password,
-              ssl_mode: 'disable' as const,
+              ssl_mode: "disable" as const,
             },
-          };
-          break;
-        case 'sqlite':
+          }
+          break
+        case "sqlite":
           config = {
-            type: 'sqlite',
+            type: "sqlite",
             sqlite: {
               path: sqlitePath,
               read_only: false,
               create_if_missing: true,
             },
-          };
-          break;
-        case 'rest_api':
+          }
+          break
+        case "rest_api":
           config = {
-            type: 'rest_api',
+            type: "rest_api",
             rest_api: {
               base_url: baseUrl,
-              auth: { type: 'none' },
+              auth: { type: "none" },
             },
-          };
-          break;
-        case 'websocket':
+          }
+          break
+        case "websocket":
           config = {
-            type: 'websocket',
+            type: "websocket",
             websocket: {
               url: baseUrl,
-              auth: { type: 'none' },
+              auth: { type: "none" },
             },
-          };
-          break;
+          }
+          break
         default:
-          throw new Error('Invalid connection type');
+          throw new Error("Invalid connection type")
       }
 
-      const newConnection = await connectionApi.createConnection(name, config);
-      addConnection(newConnection);
-      onCreated();
-      onClose();
+      const newConnection = await connectionApi.createConnection(name, config)
+      addConnection(newConnection)
+      onCreated()
+      onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create connection');
+      setError(
+        err instanceof Error ? err.message : "Failed to create connection"
+      )
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
       <div className="bg-white rounded-lg shadow-xl w-[500px]">
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <h3 className="font-semibold">New Connection</h3>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
             &times;
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           {error && (
-            <div className="p-2 bg-red-50 text-red-600 text-sm rounded">{error}</div>
+            <div className="p-2 bg-red-50 text-red-600 text-sm rounded">
+              {error}
+            </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium mb-1">Connection Name</label>
+            <label className="block text-sm font-medium mb-1">
+              Connection Name
+            </label>
             <input
               type="text"
               value={name}
@@ -604,7 +641,7 @@ const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({ onClose, onCr
             </select>
           </div>
 
-          {(type === 'postgres' || type === 'mysql') && (
+          {(type === "postgres" || type === "mysql") && (
             <>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -627,7 +664,9 @@ const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({ onClose, onCr
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Database</label>
+                <label className="block text-sm font-medium mb-1">
+                  Database
+                </label>
                 <input
                   type="text"
                   value={database}
@@ -637,7 +676,9 @@ const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({ onClose, onCr
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Username</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Username
+                  </label>
                   <input
                     type="text"
                     value={username}
@@ -646,7 +687,9 @@ const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({ onClose, onCr
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Password</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Password
+                  </label>
                   <input
                     type="password"
                     value={password}
@@ -658,9 +701,11 @@ const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({ onClose, onCr
             </>
           )}
 
-          {type === 'sqlite' && (
+          {type === "sqlite" && (
             <div>
-              <label className="block text-sm font-medium mb-1">Database Path</label>
+              <label className="block text-sm font-medium mb-1">
+                Database Path
+              </label>
               <input
                 type="text"
                 value={sqlitePath}
@@ -671,17 +716,19 @@ const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({ onClose, onCr
             </div>
           )}
 
-          {(type === 'rest_api' || type === 'websocket') && (
+          {(type === "rest_api" || type === "websocket") && (
             <div>
               <label className="block text-sm font-medium mb-1">
-                {type === 'rest_api' ? 'Base URL' : 'WebSocket URL'}
+                {type === "rest_api" ? "Base URL" : "WebSocket URL"}
               </label>
               <input
                 type="url"
                 value={baseUrl}
                 onChange={(e) => setBaseUrl(e.target.value)}
                 placeholder={
-                  type === 'rest_api' ? 'https://api.example.com' : 'wss://ws.example.com'
+                  type === "rest_api"
+                    ? "https://api.example.com"
+                    : "wss://ws.example.com"
                 }
                 className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -701,13 +748,13 @@ const NewConnectionDialog: React.FC<NewConnectionDialogProps> = ({ onClose, onCr
               disabled={isSubmitting}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
             >
-              {isSubmitting ? 'Creating...' : 'Create Connection'}
+              {isSubmitting ? "Creating..." : "Create Connection"}
             </button>
           </div>
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ConnectionManager;
+export default ConnectionManager

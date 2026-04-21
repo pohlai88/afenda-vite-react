@@ -5,7 +5,7 @@
 // Types
 // ═══════════════════════════════════════════════════════════════
 
-export type Operator = '=' | '!=' | '>' | '<' | '>=' | '<=' | 'in' | 'not_in'
+export type Operator = "=" | "!=" | ">" | "<" | ">=" | "<=" | "in" | "not_in"
 
 export interface Condition {
   field: string
@@ -29,7 +29,7 @@ export function evaluateCondition(
 
   if (Array.isArray(conditions)) {
     // All conditions must be true (AND)
-    return conditions.every(c => evaluateSingle(c, context))
+    return conditions.every((c) => evaluateSingle(c, context))
   }
 
   return evaluateSingle(conditions, context)
@@ -38,36 +38,39 @@ export function evaluateCondition(
 /**
  * Evaluate a single condition
  */
-function evaluateSingle(condition: Condition, context: Record<string, unknown>): boolean {
+function evaluateSingle(
+  condition: Condition,
+  context: Record<string, unknown>
+): boolean {
   const { field, operator, value } = condition
   const actual = getNestedValue(context, field)
 
   switch (operator) {
-    case '=':
+    case "=":
       return actual === value
 
-    case '!=':
+    case "!=":
       return actual !== value
 
-    case '>':
+    case ">":
       return Number(actual) > Number(value)
 
-    case '<':
+    case "<":
       return Number(actual) < Number(value)
 
-    case '>=':
+    case ">=":
       return Number(actual) >= Number(value)
 
-    case '<=':
+    case "<=":
       return Number(actual) <= Number(value)
 
-    case 'in':
+    case "in":
       if (Array.isArray(value)) {
         return value.includes(actual)
       }
       return false
 
-    case 'not_in':
+    case "not_in":
       if (Array.isArray(value)) {
         return !value.includes(actual)
       }
@@ -83,8 +86,8 @@ function evaluateSingle(condition: Condition, context: Record<string, unknown>):
  * e.g., getNestedValue({a: {b: 1}}, 'a.b') => 1
  */
 function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
-  return path.split('.').reduce((acc: unknown, key: string) => {
-    if (acc && typeof acc === 'object' && key in acc) {
+  return path.split(".").reduce((acc: unknown, key: string) => {
+    if (acc && typeof acc === "object" && key in acc) {
       return (acc as Record<string, unknown>)[key]
     }
     return undefined
@@ -99,41 +102,43 @@ function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
  * Create a simple equality condition
  */
 export function equals(field: string, value: unknown): Condition {
-  return { field, operator: '=', value }
+  return { field, operator: "=", value }
 }
 
 /**
  * Create a greater than condition
  */
 export function greaterThan(field: string, value: number): Condition {
-  return { field, operator: '>', value }
+  return { field, operator: ">", value }
 }
 
 /**
  * Create a less than condition
  */
 export function lessThan(field: string, value: number): Condition {
-  return { field, operator: '<', value }
+  return { field, operator: "<", value }
 }
 
 /**
  * Create an "in list" condition
  */
 export function inList(field: string, values: unknown[]): Condition {
-  return { field, operator: 'in', value: values }
+  return { field, operator: "in", value: values }
 }
 
 /**
  * Validate condition format
  */
 export function isValidCondition(condition: unknown): condition is Condition {
-  if (!condition || typeof condition !== 'object') return false
+  if (!condition || typeof condition !== "object") return false
 
   const c = condition as Record<string, unknown>
   return (
-    typeof c.field === 'string' &&
-    typeof c.operator === 'string' &&
-    ['=', '!=', '>', '<', '>=', '<=', 'in', 'not_in'].includes(c.operator as string) &&
+    typeof c.field === "string" &&
+    typeof c.operator === "string" &&
+    ["=", "!=", ">", "<", ">=", "<=", "in", "not_in"].includes(
+      c.operator as string
+    ) &&
     c.value !== undefined
   )
 }

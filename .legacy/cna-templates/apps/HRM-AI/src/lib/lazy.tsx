@@ -26,28 +26,46 @@ function TableLoader() {
 }
 
 export const LazyAreaChart = dynamic(
-  () => import("@/components/charts").then((mod) => ({ default: mod.AreaChartTerminal })),
+  () =>
+    import("@/components/charts").then((mod) => ({
+      default: mod.AreaChartTerminal,
+    })),
   { loading: () => <ChartLoader />, ssr: false }
 )
 
 export const LazyBarChart = dynamic(
-  () => import("@/components/charts").then((mod) => ({ default: mod.BarChartTerminal })),
+  () =>
+    import("@/components/charts").then((mod) => ({
+      default: mod.BarChartTerminal,
+    })),
   { loading: () => <ChartLoader />, ssr: false }
 )
 
 export const LazyLineChart = dynamic(
-  () => import("@/components/charts").then((mod) => ({ default: mod.LineChartTerminal })),
+  () =>
+    import("@/components/charts").then((mod) => ({
+      default: mod.LineChartTerminal,
+    })),
   { loading: () => <ChartLoader />, ssr: false }
 )
 
 export const LazyPieChart = dynamic(
-  () => import("@/components/charts").then((mod) => ({ default: mod.PieChartTerminal })),
+  () =>
+    import("@/components/charts").then((mod) => ({
+      default: mod.PieChartTerminal,
+    })),
   { loading: () => <ChartLoader />, ssr: false }
 )
 
 export const LazySparkline = dynamic(
-  () => import("@/components/charts").then((mod) => ({ default: mod.Sparkline })),
-  { loading: () => <div className="h-8 w-20 bg-elevated rounded animate-pulse" />, ssr: false }
+  () =>
+    import("@/components/charts").then((mod) => ({ default: mod.Sparkline })),
+  {
+    loading: () => (
+      <div className="h-8 w-20 bg-elevated rounded animate-pulse" />
+    ),
+    ssr: false,
+  }
 )
 
 export { ChartLoader, TableLoader }

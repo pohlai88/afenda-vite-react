@@ -1,14 +1,20 @@
 // src/app/(dashboard)/analytics/predictive/page.tsx
 // Predictive Analytics Hub
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Brain,
   UserMinus,
@@ -17,7 +23,7 @@ import {
   AlertTriangle,
   TrendingUp,
   RefreshCw,
-} from 'lucide-react'
+} from "lucide-react"
 import {
   PieChart,
   Pie,
@@ -25,7 +31,7 @@ import {
   ResponsiveContainer,
   Tooltip,
   Legend,
-} from 'recharts'
+} from "recharts"
 
 interface RiskDistribution {
   LOW: number
@@ -35,20 +41,24 @@ interface RiskDistribution {
 }
 
 const RISK_COLORS = {
-  LOW: '#10b981',
-  MEDIUM: '#f59e0b',
-  HIGH: '#f97316',
-  CRITICAL: '#ef4444',
+  LOW: "#10b981",
+  MEDIUM: "#f59e0b",
+  HIGH: "#f97316",
+  CRITICAL: "#ef4444",
 }
 
 export default function PredictiveHubPage() {
   const [loading, setLoading] = useState(true)
-  const [distribution, setDistribution] = useState<RiskDistribution | null>(null)
-  const [highRiskEmployees, setHighRiskEmployees] = useState<Array<{
-    entityName: string
-    score: number
-    riskLevel: string
-  }>>([])
+  const [distribution, setDistribution] = useState<RiskDistribution | null>(
+    null
+  )
+  const [highRiskEmployees, setHighRiskEmployees] = useState<
+    Array<{
+      entityName: string
+      score: number
+      riskLevel: string
+    }>
+  >([])
 
   useEffect(() => {
     fetchData()
@@ -58,7 +68,7 @@ export default function PredictiveHubPage() {
     setLoading(true)
     try {
       const [predictionsRes] = await Promise.all([
-        fetch('/api/analytics/predictions?limit=100'),
+        fetch("/api/analytics/predictions?limit=100"),
       ])
 
       if (predictionsRes.ok) {
@@ -66,7 +76,12 @@ export default function PredictiveHubPage() {
         const predictions = predictionsData.data || []
 
         // Calculate distribution
-        const dist: RiskDistribution = { LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0 }
+        const dist: RiskDistribution = {
+          LOW: 0,
+          MEDIUM: 0,
+          HIGH: 0,
+          CRITICAL: 0,
+        }
         predictions.forEach((p: { riskLevel: keyof RiskDistribution }) => {
           if (dist[p.riskLevel] !== undefined) {
             dist[p.riskLevel]++
@@ -76,12 +91,15 @@ export default function PredictiveHubPage() {
 
         // Get high risk employees
         const highRisk = predictions
-          .filter((p: { riskLevel: string }) => p.riskLevel === 'HIGH' || p.riskLevel === 'CRITICAL')
+          .filter(
+            (p: { riskLevel: string }) =>
+              p.riskLevel === "HIGH" || p.riskLevel === "CRITICAL"
+          )
           .slice(0, 5)
         setHighRiskEmployees(highRisk)
       }
     } catch (error) {
-      console.error('Error fetching predictive data:', error)
+      console.error("Error fetching predictive data:", error)
     } finally {
       setLoading(false)
     }
@@ -90,44 +108,52 @@ export default function PredictiveHubPage() {
   const runPredictions = async () => {
     setLoading(true)
     try {
-      await fetch('/api/analytics/predictions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ modelType: 'TURNOVER_RISK' }),
+      await fetch("/api/analytics/predictions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ modelType: "TURNOVER_RISK" }),
       })
       await fetchData()
     } catch (error) {
-      console.error('Error running predictions:', error)
+      console.error("Error running predictions:", error)
     }
   }
 
   const pieData = distribution
     ? [
-        { name: 'Thấp', value: distribution.LOW, color: RISK_COLORS.LOW },
-        { name: 'Trung bình', value: distribution.MEDIUM, color: RISK_COLORS.MEDIUM },
-        { name: 'Cao', value: distribution.HIGH, color: RISK_COLORS.HIGH },
-        { name: 'Nghiêm trọng', value: distribution.CRITICAL, color: RISK_COLORS.CRITICAL },
-      ].filter(d => d.value > 0)
+        { name: "Thấp", value: distribution.LOW, color: RISK_COLORS.LOW },
+        {
+          name: "Trung bình",
+          value: distribution.MEDIUM,
+          color: RISK_COLORS.MEDIUM,
+        },
+        { name: "Cao", value: distribution.HIGH, color: RISK_COLORS.HIGH },
+        {
+          name: "Nghiêm trọng",
+          value: distribution.CRITICAL,
+          color: RISK_COLORS.CRITICAL,
+        },
+      ].filter((d) => d.value > 0)
     : []
 
   const quickLinks = [
     {
-      title: 'Nguy cơ nghỉ việc',
-      description: 'Dự đoán nhân viên có khả năng nghỉ việc cao',
-      href: '/analytics/predictive/turnover-risk',
+      title: "Nguy cơ nghỉ việc",
+      description: "Dự đoán nhân viên có khả năng nghỉ việc cao",
+      href: "/analytics/predictive/turnover-risk",
       icon: UserMinus,
-      color: 'bg-red-500',
+      color: "bg-red-500",
       stat: distribution ? distribution.HIGH + distribution.CRITICAL : 0,
-      statLabel: 'nguy cơ cao',
+      statLabel: "nguy cơ cao",
     },
     {
-      title: 'Dự báo tuyển dụng',
-      description: 'Dự đoán nhu cầu tuyển dụng trong tương lai',
-      href: '/analytics/predictive/hiring-forecast',
+      title: "Dự báo tuyển dụng",
+      description: "Dự đoán nhu cầu tuyển dụng trong tương lai",
+      href: "/analytics/predictive/hiring-forecast",
       icon: Calendar,
-      color: 'bg-blue-500',
-      stat: '8-12',
-      statLabel: 'cần tuyển Q1',
+      color: "bg-blue-500",
+      stat: "8-12",
+      statLabel: "cần tuyển Q1",
     },
   ]
 
@@ -165,7 +191,10 @@ export default function PredictiveHubPage() {
             ) : (
               <p className="text-2xl font-bold">
                 {distribution
-                  ? distribution.LOW + distribution.MEDIUM + distribution.HIGH + distribution.CRITICAL
+                  ? distribution.LOW +
+                    distribution.MEDIUM +
+                    distribution.HIGH +
+                    distribution.CRITICAL
                   : 0}
               </p>
             )}
@@ -177,7 +206,9 @@ export default function PredictiveHubPage() {
             {loading ? (
               <Skeleton className="h-8 w-16 mt-1" />
             ) : (
-              <p className="text-2xl font-bold text-green-600">{distribution?.LOW || 0}</p>
+              <p className="text-2xl font-bold text-green-600">
+                {distribution?.LOW || 0}
+              </p>
             )}
           </CardContent>
         </Card>
@@ -187,13 +218,17 @@ export default function PredictiveHubPage() {
             {loading ? (
               <Skeleton className="h-8 w-16 mt-1" />
             ) : (
-              <p className="text-2xl font-bold text-yellow-600">{distribution?.MEDIUM || 0}</p>
+              <p className="text-2xl font-bold text-yellow-600">
+                {distribution?.MEDIUM || 0}
+              </p>
             )}
           </CardContent>
         </Card>
         <Card className="border-red-200">
           <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground">Nguy cơ cao/Nghiêm trọng</p>
+            <p className="text-sm text-muted-foreground">
+              Nguy cơ cao/Nghiêm trọng
+            </p>
             {loading ? (
               <Skeleton className="h-8 w-16 mt-1" />
             ) : (
@@ -220,7 +255,9 @@ export default function PredictiveHubPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-bold">{link.stat}</p>
-                    <p className="text-xs text-muted-foreground">{link.statLabel}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {link.statLabel}
+                    </p>
                   </div>
                 </div>
               </CardHeader>
@@ -242,7 +279,9 @@ export default function PredictiveHubPage() {
         <Card>
           <CardHeader>
             <CardTitle>Phân bổ mức nguy cơ</CardTitle>
-            <CardDescription>Tổng quan về mức độ rủi ro nhân sự</CardDescription>
+            <CardDescription>
+              Tổng quan về mức độ rủi ro nhân sự
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -258,7 +297,9 @@ export default function PredictiveHubPage() {
                     outerRadius={100}
                     paddingAngle={5}
                     dataKey="value"
-                    label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                    label={({ name, percent }) =>
+                      `${name} ${((percent || 0) * 100).toFixed(0)}%`
+                    }
                   >
                     {pieData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
@@ -314,8 +355,12 @@ export default function PredictiveHubPage() {
                         </p>
                       </div>
                     </div>
-                    <Badge variant={emp.riskLevel === 'CRITICAL' ? 'destructive' : 'outline'}>
-                      {emp.riskLevel === 'CRITICAL' ? 'Nghiêm trọng' : 'Cao'}
+                    <Badge
+                      variant={
+                        emp.riskLevel === "CRITICAL" ? "destructive" : "outline"
+                      }
+                    >
+                      {emp.riskLevel === "CRITICAL" ? "Nghiêm trọng" : "Cao"}
                     </Badge>
                   </div>
                 ))}
@@ -345,8 +390,8 @@ export default function PredictiveHubPage() {
                 <span className="font-medium">Xu hướng nghỉ việc</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Dự kiến tỷ lệ nghỉ việc sẽ tăng 1.5% trong Q1 do mùa chuyển việc.
-                Phòng Kinh doanh và IT có nguy cơ cao nhất.
+                Dự kiến tỷ lệ nghỉ việc sẽ tăng 1.5% trong Q1 do mùa chuyển
+                việc. Phòng Kinh doanh và IT có nguy cơ cao nhất.
               </p>
             </div>
             <div className="p-4 border rounded-lg">
@@ -355,8 +400,8 @@ export default function PredictiveHubPage() {
                 <span className="font-medium">Nhu cầu tuyển dụng</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Cần tuyển 8-12 nhân viên trong Q1 để bù đắp nghỉ việc dự kiến
-                và đáp ứng tăng trưởng kinh doanh.
+                Cần tuyển 8-12 nhân viên trong Q1 để bù đắp nghỉ việc dự kiến và
+                đáp ứng tăng trưởng kinh doanh.
               </p>
             </div>
           </div>

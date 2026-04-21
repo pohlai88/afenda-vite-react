@@ -3,59 +3,61 @@
 // Compliant with: Nghị định 123/2020/NĐ-CP, Thông tư 78/2021/TT-BTC
 // ============================================================
 
-import { numberToVietnameseWords } from '../gl-engine';
+import { numberToVietnameseWords } from "../gl-engine"
 
 // ==================== Types ====================
 
 export interface EInvoiceInput {
-  invoiceTemplate: string;    // Mẫu hóa đơn: 01GTKT (GTGT), 02GTTT (Bán hàng)
-  invoiceSeries: string;      // Ký hiệu: 1C26TAA
+  invoiceTemplate: string // Mẫu hóa đơn: 01GTKT (GTGT), 02GTTT (Bán hàng)
+  invoiceSeries: string // Ký hiệu: 1C26TAA
   seller: {
-    taxCode: string;
-    name: string;
-    address: string;
-    phone?: string;
-    bankAccount?: string;
-    bankName?: string;
-  };
+    taxCode: string
+    name: string
+    address: string
+    phone?: string
+    bankAccount?: string
+    bankName?: string
+  }
   buyer: {
-    taxCode?: string;
-    name: string;
-    address?: string;
-    phone?: string;
-    paymentMethod?: string;   // TM (Cash), CK (Transfer), TM/CK
-  };
-  items: EInvoiceItemInput[];
-  currency?: string;
-  exchangeRate?: number;
-  notes?: string;
+    taxCode?: string
+    name: string
+    address?: string
+    phone?: string
+    paymentMethod?: string // TM (Cash), CK (Transfer), TM/CK
+  }
+  items: EInvoiceItemInput[]
+  currency?: string
+  exchangeRate?: number
+  notes?: string
 }
 
 export interface EInvoiceItemInput {
-  itemName: string;
-  itemCode?: string;
-  unit?: string;              // Đơn vị tính
-  quantity: number;
-  unitPrice: number;
-  vatRate: number;            // 0, 0.05, 0.08, 0.10, -1 (not subject)
-  discount?: number;
+  itemName: string
+  itemCode?: string
+  unit?: string // Đơn vị tính
+  quantity: number
+  unitPrice: number
+  vatRate: number // 0, 0.05, 0.08, 0.10, -1 (not subject)
+  discount?: number
 }
 
 export interface EInvoiceOutput {
-  invoiceNumber: string;
-  invoiceDate: Date;
-  subtotal: number;
-  vatAmount: number;
-  totalAmount: number;
-  amountInWords: string;
-  lookupCode: string;
-  xmlContent: string;
-  qrCodeData: string;
-  lines: Array<EInvoiceItemInput & {
-    amount: number;
-    vatAmount: number;
-    totalAmount: number;
-  }>;
+  invoiceNumber: string
+  invoiceDate: Date
+  subtotal: number
+  vatAmount: number
+  totalAmount: number
+  amountInWords: string
+  lookupCode: string
+  xmlContent: string
+  qrCodeData: string
+  lines: Array<
+    EInvoiceItemInput & {
+      amount: number
+      vatAmount: number
+      totalAmount: number
+    }
+  >
 }
 
 // ==================== Invoice Generation ====================
@@ -68,28 +70,28 @@ export function generateEInvoice(
   invoiceNumber: string,
   invoiceDate: Date = new Date()
 ): EInvoiceOutput {
-  let subtotal = 0;
-  let totalVat = 0;
+  let subtotal = 0
+  let totalVat = 0
 
-  const lines = input.items.map(item => {
-    const amount = item.quantity * item.unitPrice - (item.discount || 0);
-    const vatAmount = item.vatRate > 0 ? amount * item.vatRate : 0;
-    const totalAmount = amount + vatAmount;
+  const lines = input.items.map((item) => {
+    const amount = item.quantity * item.unitPrice - (item.discount || 0)
+    const vatAmount = item.vatRate > 0 ? amount * item.vatRate : 0
+    const totalAmount = amount + vatAmount
 
-    subtotal += amount;
-    totalVat += vatAmount;
+    subtotal += amount
+    totalVat += vatAmount
 
     return {
       ...item,
       amount,
       vatAmount,
       totalAmount,
-    };
-  });
+    }
+  })
 
-  const totalAmount = subtotal + totalVat;
-  const amountInWords = numberToVietnameseWords(totalAmount);
-  const lookupCode = generateLookupCode();
+  const totalAmount = subtotal + totalVat
+  const amountInWords = numberToVietnameseWords(totalAmount)
+  const lookupCode = generateLookupCode()
 
   const xmlContent = generateEInvoiceXML({
     ...input,
@@ -101,7 +103,7 @@ export function generateEInvoice(
     amountInWords,
     lookupCode,
     lines,
-  });
+  })
 
   const qrCodeData = generateQRCodeData({
     sellerTaxCode: input.seller.taxCode,
@@ -111,7 +113,7 @@ export function generateEInvoice(
     invoiceDate,
     totalAmount,
     lookupCode,
-  });
+  })
 
   return {
     invoiceNumber,
@@ -124,7 +126,7 @@ export function generateEInvoice(
     xmlContent,
     qrCodeData,
     lines,
-  };
+  }
 }
 
 // ==================== XML Generation ====================
@@ -133,36 +135,46 @@ export function generateEInvoice(
  * Generate e-Invoice XML per Thông tư 78/2021/TT-BTC
  */
 function generateEInvoiceXML(data: {
-  invoiceTemplate: string;
-  invoiceSeries: string;
-  invoiceNumber: string;
-  invoiceDate: Date;
-  seller: EInvoiceInput['seller'];
-  buyer: EInvoiceInput['buyer'];
-  lines: Array<EInvoiceItemInput & { amount: number; vatAmount: number; totalAmount: number }>;
-  subtotal: number;
-  vatAmount: number;
-  totalAmount: number;
-  amountInWords: string;
-  lookupCode: string;
-  currency?: string;
-  exchangeRate?: number;
+  invoiceTemplate: string
+  invoiceSeries: string
+  invoiceNumber: string
+  invoiceDate: Date
+  seller: EInvoiceInput["seller"]
+  buyer: EInvoiceInput["buyer"]
+  lines: Array<
+    EInvoiceItemInput & {
+      amount: number
+      vatAmount: number
+      totalAmount: number
+    }
+  >
+  subtotal: number
+  vatAmount: number
+  totalAmount: number
+  amountInWords: string
+  lookupCode: string
+  currency?: string
+  exchangeRate?: number
 }): string {
-  const dateStr = data.invoiceDate.toISOString().split('T')[0];
-  const currency = data.currency || 'VND';
+  const dateStr = data.invoiceDate.toISOString().split("T")[0]
+  const currency = data.currency || "VND"
 
-  const itemsXml = data.lines.map((line, idx) => `
+  const itemsXml = data.lines
+    .map(
+      (line, idx) => `
       <HHDVu>
         <STT>${idx + 1}</STT>
-        <MHHDVu>${line.itemCode || ''}</MHHDVu>
+        <MHHDVu>${line.itemCode || ""}</MHHDVu>
         <THHDVu>${escapeXml(line.itemName)}</THHDVu>
-        <DVTinh>${line.unit || ''}</DVTinh>
+        <DVTinh>${line.unit || ""}</DVTinh>
         <SLuong>${line.quantity}</SLuong>
         <DGia>${line.unitPrice}</DGia>
         <ThTien>${line.amount}</ThTien>
         <TSuat>${formatVATRate(line.vatRate)}</TSuat>
         <TThue>${line.vatAmount}</TThue>
-      </HHDVu>`).join('');
+      </HHDVu>`
+    )
+    .join("")
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <HDon>
@@ -174,7 +186,7 @@ function generateEInvoiceXML(data: {
       <NLap>${dateStr}</NLap>
       <DVTTe>${currency}</DVTTe>
       <TGia>${data.exchangeRate || 1}</TGia>
-      <HTTToan>${data.buyer.paymentMethod || 'CK'}</HTTToan>
+      <HTTToan>${data.buyer.paymentMethod || "CK"}</HTTToan>
       <MaCQTCap></MaCQTCap>
     </TTChung>
     <NDHDon>
@@ -182,14 +194,14 @@ function generateEInvoiceXML(data: {
         <Ten>${escapeXml(data.seller.name)}</Ten>
         <MST>${data.seller.taxCode}</MST>
         <DChi>${escapeXml(data.seller.address)}</DChi>
-        <SDThoai>${data.seller.phone || ''}</SDThoai>
-        <STKNHang>${data.seller.bankAccount || ''}</STKNHang>
-        <TNHang>${data.seller.bankName || ''}</TNHang>
+        <SDThoai>${data.seller.phone || ""}</SDThoai>
+        <STKNHang>${data.seller.bankAccount || ""}</STKNHang>
+        <TNHang>${data.seller.bankName || ""}</TNHang>
       </NBan>
       <NMua>
         <Ten>${escapeXml(data.buyer.name)}</Ten>
-        <MST>${data.buyer.taxCode || ''}</MST>
-        <DChi>${escapeXml(data.buyer.address || '')}</DChi>
+        <MST>${data.buyer.taxCode || ""}</MST>
+        <DChi>${escapeXml(data.buyer.address || "")}</DChi>
       </NMua>
       <DSHHDVu>${itemsXml}
       </DSHHDVu>
@@ -202,7 +214,7 @@ function generateEInvoiceXML(data: {
     </NDHDon>
   </DLHDon>
   <MCCQT>${data.lookupCode}</MCCQT>
-</HDon>`;
+</HDon>`
 }
 
 // ==================== QR Code ====================
@@ -213,15 +225,15 @@ function generateEInvoiceXML(data: {
  * series, number, total, lookup code, and verification URL
  */
 function generateQRCodeData(data: {
-  sellerTaxCode: string;
-  invoiceTemplate: string;
-  invoiceSeries: string;
-  invoiceNumber: string;
-  invoiceDate: Date;
-  totalAmount: number;
-  lookupCode: string;
+  sellerTaxCode: string
+  invoiceTemplate: string
+  invoiceSeries: string
+  invoiceNumber: string
+  invoiceDate: Date
+  totalAmount: number
+  lookupCode: string
 }): string {
-  const dateStr = data.invoiceDate.toISOString().split('T')[0];
+  const dateStr = data.invoiceDate.toISOString().split("T")[0]
   return [
     data.sellerTaxCode,
     data.invoiceTemplate,
@@ -231,7 +243,7 @@ function generateQRCodeData(data: {
     data.totalAmount.toString(),
     data.lookupCode,
     `https://hoadondientu.gdt.gov.vn/${data.lookupCode}`,
-  ].join('|');
+  ].join("|")
 }
 
 // ==================== Adjustment & Replacement ====================
@@ -244,19 +256,19 @@ export function generateAdjustmentInvoice(
   originalInvoice: { number: string; series: string; date: Date },
   adjustmentReason: string,
   adjustmentItems: EInvoiceItemInput[],
-  sellerInfo: EInvoiceInput['seller'],
-  buyerInfo: EInvoiceInput['buyer']
+  sellerInfo: EInvoiceInput["seller"],
+  buyerInfo: EInvoiceInput["buyer"]
 ): EInvoiceInput & { adjustmentOf: string; invoiceType: string } {
   return {
-    invoiceTemplate: '01GTKT',
+    invoiceTemplate: "01GTKT",
     invoiceSeries: originalInvoice.series,
     seller: sellerInfo,
     buyer: buyerInfo,
     items: adjustmentItems,
-    notes: `Điều chỉnh cho HĐ số ${originalInvoice.number} ngày ${originalInvoice.date.toLocaleDateString('vi-VN')}. Lý do: ${adjustmentReason}`,
+    notes: `Điều chỉnh cho HĐ số ${originalInvoice.number} ngày ${originalInvoice.date.toLocaleDateString("vi-VN")}. Lý do: ${adjustmentReason}`,
     adjustmentOf: originalInvoice.number,
-    invoiceType: 'ADJUSTMENT',
-  };
+    invoiceType: "ADJUSTMENT",
+  }
 }
 
 /**
@@ -267,43 +279,43 @@ export function generateReplacementInvoice(
   originalInvoice: { number: string; series: string; date: Date },
   replacementReason: string,
   newItems: EInvoiceItemInput[],
-  sellerInfo: EInvoiceInput['seller'],
-  buyerInfo: EInvoiceInput['buyer']
+  sellerInfo: EInvoiceInput["seller"],
+  buyerInfo: EInvoiceInput["buyer"]
 ): EInvoiceInput & { replacementOf: string; invoiceType: string } {
   return {
-    invoiceTemplate: '01GTKT',
+    invoiceTemplate: "01GTKT",
     invoiceSeries: originalInvoice.series,
     seller: sellerInfo,
     buyer: buyerInfo,
     items: newItems,
-    notes: `Thay thế cho HĐ số ${originalInvoice.number} ngày ${originalInvoice.date.toLocaleDateString('vi-VN')}. Lý do: ${replacementReason}`,
+    notes: `Thay thế cho HĐ số ${originalInvoice.number} ngày ${originalInvoice.date.toLocaleDateString("vi-VN")}. Lý do: ${replacementReason}`,
     replacementOf: originalInvoice.number,
-    invoiceType: 'REPLACEMENT',
-  };
+    invoiceType: "REPLACEMENT",
+  }
 }
 
 // ==================== Helpers ====================
 
 function generateLookupCode(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let code = '';
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  let code = ""
   for (let i = 0; i < 16; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
+    code += chars[Math.floor(Math.random() * chars.length)]
   }
-  return code;
+  return code
 }
 
 function formatVATRate(rate: number): string {
-  if (rate === -1) return 'KCT';     // Không chịu thuế
-  if (rate === 0) return '0%';
-  return `${(rate * 100).toFixed(0)}%`;
+  if (rate === -1) return "KCT" // Không chịu thuế
+  if (rate === 0) return "0%"
+  return `${(rate * 100).toFixed(0)}%`
 }
 
 function escapeXml(str: string): string {
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;")
 }

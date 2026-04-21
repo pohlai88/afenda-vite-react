@@ -1,11 +1,8 @@
 // src/lib/performance/services/performance-review.service.ts
 // Performance Review Service - Manage individual performance reviews
 
-import { db } from '@/lib/db'
-import {
-  ReviewStatus,
-  Prisma
-} from '@prisma/client'
+import { db } from "@/lib/db"
+import { ReviewStatus, Prisma } from "@prisma/client"
 
 // Types
 export interface SelfReviewInput {
@@ -86,7 +83,7 @@ export class PerformanceReviewService {
           include: {
             goal: {
               include: {
-                keyResults: { orderBy: { order: 'asc' } },
+                keyResults: { orderBy: { order: "asc" } },
               },
             },
           },
@@ -107,7 +104,7 @@ export class PerformanceReviewService {
     })
 
     if (!review) {
-      throw new Error('Review not found')
+      throw new Error("Review not found")
     }
 
     return review
@@ -135,7 +132,11 @@ export class PerformanceReviewService {
   /**
    * List reviews
    */
-  async list(filters: ReviewFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: ReviewFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.PerformanceReviewWhereInput = {
@@ -165,7 +166,7 @@ export class PerformanceReviewService {
     const [reviews, total] = await Promise.all([
       db.performanceReview.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -211,7 +212,7 @@ export class PerformanceReviewService {
 
     return db.performanceReview.findMany({
       where,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: {
         employee: {
           select: {
@@ -236,7 +237,7 @@ export class PerformanceReviewService {
         tenantId: this.tenantId,
         employeeId,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: {
         reviewCycle: {
           select: { id: true, name: true, year: true, cycleType: true },
@@ -256,12 +257,14 @@ export class PerformanceReviewService {
     })
 
     if (!review) {
-      throw new Error('Review not found')
+      throw new Error("Review not found")
     }
 
-    if (review.status !== ReviewStatus.NOT_STARTED &&
-        review.status !== ReviewStatus.SELF_REVIEW_PENDING) {
-      throw new Error('Self review cannot be submitted at this stage')
+    if (
+      review.status !== ReviewStatus.NOT_STARTED &&
+      review.status !== ReviewStatus.SELF_REVIEW_PENDING
+    ) {
+      throw new Error("Self review cannot be submitted at this stage")
     }
 
     return db.performanceReview.update({
@@ -286,7 +289,7 @@ export class PerformanceReviewService {
     })
 
     if (!review) {
-      throw new Error('Review not found')
+      throw new Error("Review not found")
     }
 
     // Upsert goal scores
@@ -317,13 +320,16 @@ export class PerformanceReviewService {
   /**
    * Score competencies (self assessment)
    */
-  async submitCompetencySelfScores(reviewId: string, scores: CompetencyScoreInput[]) {
+  async submitCompetencySelfScores(
+    reviewId: string,
+    scores: CompetencyScoreInput[]
+  ) {
     const review = await db.performanceReview.findFirst({
       where: { id: reviewId, tenantId: this.tenantId },
     })
 
     if (!review) {
-      throw new Error('Review not found')
+      throw new Error("Review not found")
     }
 
     // Upsert competency scores
@@ -363,12 +369,14 @@ export class PerformanceReviewService {
     })
 
     if (!review) {
-      throw new Error('Review not found')
+      throw new Error("Review not found")
     }
 
-    if (review.status !== ReviewStatus.SELF_REVIEW_DONE &&
-        review.status !== ReviewStatus.MANAGER_REVIEW_PENDING) {
-      throw new Error('Manager review cannot be submitted at this stage')
+    if (
+      review.status !== ReviewStatus.SELF_REVIEW_DONE &&
+      review.status !== ReviewStatus.MANAGER_REVIEW_PENDING
+    ) {
+      throw new Error("Manager review cannot be submitted at this stage")
     }
 
     return db.performanceReview.update({
@@ -378,7 +386,8 @@ export class PerformanceReviewService {
         managerComments: input.managerComments,
         strengths: input.strengths,
         developmentAreas: input.developmentAreas,
-        developmentPlan: input.developmentPlan as unknown as Prisma.InputJsonValue,
+        developmentPlan:
+          input.developmentPlan as unknown as Prisma.InputJsonValue,
         managerReviewAt: new Date(),
         status: ReviewStatus.MANAGER_REVIEW_DONE,
       },
@@ -414,7 +423,10 @@ export class PerformanceReviewService {
   /**
    * Score competencies (manager assessment)
    */
-  async submitCompetencyManagerScores(reviewId: string, scores: CompetencyScoreInput[]) {
+  async submitCompetencyManagerScores(
+    reviewId: string,
+    scores: CompetencyScoreInput[]
+  ) {
     for (const score of scores) {
       await db.reviewCompetency.update({
         where: {
@@ -448,7 +460,7 @@ export class PerformanceReviewService {
     })
 
     if (!review) {
-      throw new Error('Review not found')
+      throw new Error("Review not found")
     }
 
     return db.performanceReview.update({
@@ -489,11 +501,11 @@ export class PerformanceReviewService {
     })
 
     if (!review) {
-      throw new Error('Review not found')
+      throw new Error("Review not found")
     }
 
     if (review.status !== ReviewStatus.COMPLETED) {
-      throw new Error('Review must be completed before acknowledgement')
+      throw new Error("Review must be completed before acknowledgement")
     }
 
     return db.performanceReview.update({
@@ -523,10 +535,11 @@ export class PerformanceReviewService {
     const totalWeight = goals.reduce((sum, g) => sum + Number(g.goal.weight), 0)
     const weightedScore = goals.reduce((sum, g) => {
       const score = Number(g.finalScore || g.managerScore || 0)
-      return sum + (score * Number(g.goal.weight))
+      return sum + score * Number(g.goal.weight)
     }, 0)
 
-    const goalScore = totalWeight > 0 ? Math.round((weightedScore / totalWeight) * 10) / 10 : 0
+    const goalScore =
+      totalWeight > 0 ? Math.round((weightedScore / totalWeight) * 10) / 10 : 0
 
     await db.performanceReview.update({
       where: { id: reviewId },
@@ -546,9 +559,10 @@ export class PerformanceReviewService {
 
     if (competencies.length === 0) return 0
 
-    const avgRating = competencies.reduce((sum, c) => {
-      return sum + (c.finalRating || c.managerRating || 0)
-    }, 0) / competencies.length
+    const avgRating =
+      competencies.reduce((sum, c) => {
+        return sum + (c.finalRating || c.managerRating || 0)
+      }, 0) / competencies.length
 
     const competencyScore = Math.round(avgRating * 10) / 10
 
@@ -587,10 +601,11 @@ export class PerformanceReviewService {
       feedback: Number(review.feedbackScore || 0),
     }
 
-    const overallScore = (scores.goal * weights.goal) +
-      (scores.competency * weights.competency) +
-      (scores.values * weights.values) +
-      (scores.feedback * weights.feedback)
+    const overallScore =
+      scores.goal * weights.goal +
+      scores.competency * weights.competency +
+      scores.values * weights.values +
+      scores.feedback * weights.feedback
 
     return Math.round(overallScore * 10) / 10
   }
@@ -601,47 +616,49 @@ export class PerformanceReviewService {
    * Get review statistics for a cycle
    */
   async getCycleStats(reviewCycleId: string) {
-    const [total, byStatus, avgRatings, ratingDistribution] = await Promise.all([
-      db.performanceReview.count({
-        where: { reviewCycleId, tenantId: this.tenantId },
-      }),
+    const [total, byStatus, avgRatings, ratingDistribution] = await Promise.all(
+      [
+        db.performanceReview.count({
+          where: { reviewCycleId, tenantId: this.tenantId },
+        }),
 
-      db.performanceReview.groupBy({
-        by: ['status'],
-        where: { reviewCycleId, tenantId: this.tenantId },
-        _count: true,
-      }),
+        db.performanceReview.groupBy({
+          by: ["status"],
+          where: { reviewCycleId, tenantId: this.tenantId },
+          _count: true,
+        }),
 
-      db.performanceReview.aggregate({
-        where: {
-          reviewCycleId,
-          tenantId: this.tenantId,
-          finalRating: { not: null },
-        },
-        _avg: {
-          finalRating: true,
-          overallScore: true,
-        },
-      }),
+        db.performanceReview.aggregate({
+          where: {
+            reviewCycleId,
+            tenantId: this.tenantId,
+            finalRating: { not: null },
+          },
+          _avg: {
+            finalRating: true,
+            overallScore: true,
+          },
+        }),
 
-      db.performanceReview.groupBy({
-        by: ['finalRating'],
-        where: {
-          reviewCycleId,
-          tenantId: this.tenantId,
-          finalRating: { not: null },
-        },
-        _count: true,
-        orderBy: { finalRating: 'asc' },
-      }),
-    ])
+        db.performanceReview.groupBy({
+          by: ["finalRating"],
+          where: {
+            reviewCycleId,
+            tenantId: this.tenantId,
+            finalRating: { not: null },
+          },
+          _count: true,
+          orderBy: { finalRating: "asc" },
+        }),
+      ]
+    )
 
     return {
       total,
-      byStatus: byStatus.map(s => ({ status: s.status, count: s._count })),
+      byStatus: byStatus.map((s) => ({ status: s.status, count: s._count })),
       averageRating: avgRatings._avg.finalRating || 0,
       averageScore: avgRatings._avg.overallScore || 0,
-      ratingDistribution: ratingDistribution.map(r => ({
+      ratingDistribution: ratingDistribution.map((r) => ({
         rating: r.finalRating,
         count: r._count,
       })),
@@ -673,10 +690,14 @@ export class PerformanceReviewService {
         where: {
           tenantId: this.tenantId,
           employeeId,
-          status: { in: [ReviewStatus.NOT_STARTED, ReviewStatus.SELF_REVIEW_PENDING] },
+          status: {
+            in: [ReviewStatus.NOT_STARTED, ReviewStatus.SELF_REVIEW_PENDING],
+          },
         },
         include: {
-          reviewCycle: { select: { id: true, name: true, selfReviewEnd: true } },
+          reviewCycle: {
+            select: { id: true, name: true, selfReviewEnd: true },
+          },
         },
       })
 
@@ -698,11 +719,18 @@ export class PerformanceReviewService {
       where: {
         tenantId: this.tenantId,
         managerId: userId,
-        status: { in: [ReviewStatus.SELF_REVIEW_DONE, ReviewStatus.MANAGER_REVIEW_PENDING] },
+        status: {
+          in: [
+            ReviewStatus.SELF_REVIEW_DONE,
+            ReviewStatus.MANAGER_REVIEW_PENDING,
+          ],
+        },
       },
       include: {
         employee: { select: { id: true, fullName: true } },
-        reviewCycle: { select: { id: true, name: true, managerReviewEnd: true } },
+        reviewCycle: {
+          select: { id: true, name: true, managerReviewEnd: true },
+        },
       },
     })
 
@@ -711,6 +739,8 @@ export class PerformanceReviewService {
 }
 
 // Factory function
-export function createPerformanceReviewService(tenantId: string): PerformanceReviewService {
+export function createPerformanceReviewService(
+  tenantId: string
+): PerformanceReviewService {
   return new PerformanceReviewService(tenantId)
 }

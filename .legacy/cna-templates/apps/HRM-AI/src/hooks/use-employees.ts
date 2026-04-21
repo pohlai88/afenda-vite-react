@@ -1,11 +1,20 @@
 "use client"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import type { EmployeeFilters, EmployeeWithRelations, PaginatedResponse } from "@/types"
-import type { CreateEmployeeInput, UpdateEmployeeInput } from "@/lib/validations/employee"
+import type {
+  EmployeeFilters,
+  EmployeeWithRelations,
+  PaginatedResponse,
+} from "@/types"
+import type {
+  CreateEmployeeInput,
+  UpdateEmployeeInput,
+} from "@/lib/validations/employee"
 import { toast } from "sonner"
 
-async function fetchEmployees(filters: EmployeeFilters): Promise<PaginatedResponse<EmployeeWithRelations>> {
+async function fetchEmployees(
+  filters: EmployeeFilters
+): Promise<PaginatedResponse<EmployeeWithRelations>> {
   const params = new URLSearchParams()
   if (filters.search) params.set("search", filters.search)
   if (filters.departmentId) params.set("departmentId", filters.departmentId)
@@ -44,7 +53,9 @@ async function fetchEmployee(id: string): Promise<EmployeeWithRelations> {
   return json.data ?? json
 }
 
-async function createEmployee(data: CreateEmployeeInput): Promise<EmployeeWithRelations> {
+async function createEmployee(
+  data: CreateEmployeeInput
+): Promise<EmployeeWithRelations> {
   const res = await fetch("/api/employees", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -57,7 +68,9 @@ async function createEmployee(data: CreateEmployeeInput): Promise<EmployeeWithRe
   return res.json()
 }
 
-async function updateEmployee(data: UpdateEmployeeInput): Promise<EmployeeWithRelations> {
+async function updateEmployee(
+  data: UpdateEmployeeInput
+): Promise<EmployeeWithRelations> {
   const res = await fetch(`/api/employees/${data.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

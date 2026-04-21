@@ -2,7 +2,6 @@
 packages:
   - "apps/*"
   - "packages/*"
-  - "packages/features/*"
 
 onlyBuiltDependencies:
   - "@ast-grep/cli"

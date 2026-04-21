@@ -1,14 +1,14 @@
 // src/lib/employee-experience/offboarding/service.ts
 // Offboarding Service - Employee separation workflow
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   SeparationType,
   OffboardingStatus,
   OffboardingCategory,
   OnboardingTaskStatus,
-  Prisma
-} from '@prisma/client'
+  Prisma,
+} from "@prisma/client"
 
 // Types
 export interface StartOffboardingInput {
@@ -41,22 +41,22 @@ export interface UpdateTaskInput {
 export const DEFAULT_OFFBOARDING_TASKS: OffboardingTaskInput[] = [
   // IT Department Tasks
   {
-    title: 'Revoke system access',
-    description: 'Disable all system accounts (email, VPN, internal apps)',
+    title: "Revoke system access",
+    description: "Disable all system accounts (email, VPN, internal apps)",
     category: OffboardingCategory.IT,
     daysBeforeExit: 0,
     sortOrder: 1,
   },
   {
-    title: 'Collect laptop and equipment',
-    description: 'Retrieve company laptop, monitors, keyboard, mouse',
+    title: "Collect laptop and equipment",
+    description: "Retrieve company laptop, monitors, keyboard, mouse",
     category: OffboardingCategory.ASSETS,
     daysBeforeExit: 0,
     sortOrder: 2,
   },
   {
-    title: 'Transfer email and files',
-    description: 'Backup and transfer important emails and files to manager',
+    title: "Transfer email and files",
+    description: "Backup and transfer important emails and files to manager",
     category: OffboardingCategory.IT,
     daysBeforeExit: 3,
     sortOrder: 3,
@@ -64,29 +64,29 @@ export const DEFAULT_OFFBOARDING_TASKS: OffboardingTaskInput[] = [
 
   // HR Department Tasks
   {
-    title: 'Process final payroll',
-    description: 'Calculate final salary, unused leave payout, bonuses',
+    title: "Process final payroll",
+    description: "Calculate final salary, unused leave payout, bonuses",
     category: OffboardingCategory.HR,
     daysBeforeExit: 5,
     sortOrder: 4,
   },
   {
-    title: 'Prepare employment certificate',
-    description: 'Generate and sign employment verification letter',
+    title: "Prepare employment certificate",
+    description: "Generate and sign employment verification letter",
     category: OffboardingCategory.DOCUMENTATION,
     daysBeforeExit: 3,
     sortOrder: 5,
   },
   {
-    title: 'Update employee records',
-    description: 'Mark employee as inactive in HR system',
+    title: "Update employee records",
+    description: "Mark employee as inactive in HR system",
     category: OffboardingCategory.HR,
     daysBeforeExit: 0,
     sortOrder: 6,
   },
   {
-    title: 'Process benefits termination',
-    description: 'Terminate health insurance and other benefits',
+    title: "Process benefits termination",
+    description: "Terminate health insurance and other benefits",
     category: OffboardingCategory.BENEFITS,
     daysBeforeExit: 0,
     sortOrder: 7,
@@ -94,8 +94,8 @@ export const DEFAULT_OFFBOARDING_TASKS: OffboardingTaskInput[] = [
 
   // Finance Tasks
   {
-    title: 'Settle expense claims',
-    description: 'Process all pending expense reimbursements',
+    title: "Settle expense claims",
+    description: "Process all pending expense reimbursements",
     category: OffboardingCategory.FINANCE,
     daysBeforeExit: 7,
     sortOrder: 8,
@@ -103,8 +103,8 @@ export const DEFAULT_OFFBOARDING_TASKS: OffboardingTaskInput[] = [
 
   // Assets Tasks
   {
-    title: 'Collect access cards and keys',
-    description: 'Retrieve building access card, office keys, parking card',
+    title: "Collect access cards and keys",
+    description: "Retrieve building access card, office keys, parking card",
     category: OffboardingCategory.ASSETS,
     daysBeforeExit: 0,
     sortOrder: 9,
@@ -112,8 +112,8 @@ export const DEFAULT_OFFBOARDING_TASKS: OffboardingTaskInput[] = [
 
   // Knowledge Transfer Tasks
   {
-    title: 'Knowledge transfer documentation',
-    description: 'Document ongoing projects and processes',
+    title: "Knowledge transfer documentation",
+    description: "Document ongoing projects and processes",
     category: OffboardingCategory.KNOWLEDGE,
     daysBeforeExit: 7,
     sortOrder: 10,
@@ -150,19 +150,21 @@ export class OffboardingService {
     })
 
     if (!employee) {
-      throw new Error('Employee not found')
+      throw new Error("Employee not found")
     }
 
     // Check for existing active offboarding
     const existingOffboarding = await db.offboardingInstance.findFirst({
       where: {
         employeeId,
-        status: { notIn: [OffboardingStatus.COMPLETED, OffboardingStatus.CANCELLED] },
+        status: {
+          notIn: [OffboardingStatus.COMPLETED, OffboardingStatus.CANCELLED],
+        },
       },
     })
 
     if (existingOffboarding) {
-      throw new Error('Employee already has an active offboarding process')
+      throw new Error("Employee already has an active offboarding process")
     }
 
     // Create offboarding instance
@@ -239,7 +241,7 @@ export class OffboardingService {
           },
         },
         tasks: {
-          orderBy: [{ sortOrder: 'asc' }, { dueDate: 'asc' }],
+          orderBy: [{ sortOrder: "asc" }, { dueDate: "asc" }],
           include: {
             assignee: {
               select: {
@@ -254,7 +256,7 @@ export class OffboardingService {
     })
 
     if (!offboarding) {
-      throw new Error('Offboarding not found')
+      throw new Error("Offboarding not found")
     }
 
     // Calculate progress
@@ -262,7 +264,8 @@ export class OffboardingService {
     const completedTasks = offboarding.tasks.filter(
       (t) => t.status === OnboardingTaskStatus.COMPLETED
     ).length
-    const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+    const progress =
+      totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
     // Group tasks by category
     const tasksByCategory = offboarding.tasks.reduce(
@@ -299,7 +302,7 @@ export class OffboardingService {
     })
 
     if (!task || task.instance.tenantId !== this.tenantId) {
-      throw new Error('Task not found')
+      throw new Error("Task not found")
     }
 
     const updateData: Prisma.OffboardingTaskUpdateInput = {}
@@ -366,7 +369,7 @@ export class OffboardingService {
       await db.employee.update({
         where: { id: instance.employeeId },
         data: {
-          status: 'RESIGNED',
+          status: "RESIGNED",
           resignationDate: instance.lastWorkingDay,
         },
       })
@@ -381,12 +384,14 @@ export class OffboardingService {
       where: {
         id: instanceId,
         tenantId: this.tenantId,
-        status: { notIn: [OffboardingStatus.COMPLETED, OffboardingStatus.CANCELLED] },
+        status: {
+          notIn: [OffboardingStatus.COMPLETED, OffboardingStatus.CANCELLED],
+        },
       },
     })
 
     if (!instance) {
-      throw new Error('Offboarding not found or already completed')
+      throw new Error("Offboarding not found or already completed")
     }
 
     // Calculate due date if daysBeforeExit provided
@@ -444,12 +449,15 @@ export class OffboardingService {
     }
 
     if (filters?.toDate) {
-      where.lastWorkingDay = { ...(where.lastWorkingDay as any), lte: filters.toDate }
+      where.lastWorkingDay = {
+        ...(where.lastWorkingDay as any),
+        lte: filters.toDate,
+      }
     }
 
     const offboardings = await db.offboardingInstance.findMany({
       where,
-      orderBy: { lastWorkingDay: 'asc' },
+      orderBy: { lastWorkingDay: "asc" },
       include: {
         employee: {
           select: {
@@ -476,7 +484,10 @@ export class OffboardingService {
 
     return offboardings.map((o) => ({
       ...o,
-      progress: o._count.tasks > 0 ? Math.round((o.tasks.length / o._count.tasks) * 100) : 0,
+      progress:
+        o._count.tasks > 0
+          ? Math.round((o.tasks.length / o._count.tasks) * 100)
+          : 0,
       completedTasks: o.tasks.length,
       totalTasks: o._count.tasks,
       tasks: undefined,
@@ -493,10 +504,12 @@ export class OffboardingService {
         status: { not: OnboardingTaskStatus.COMPLETED },
         instance: {
           tenantId: this.tenantId,
-          status: { notIn: [OffboardingStatus.COMPLETED, OffboardingStatus.CANCELLED] },
+          status: {
+            notIn: [OffboardingStatus.COMPLETED, OffboardingStatus.CANCELLED],
+          },
         },
       },
-      orderBy: [{ dueDate: 'asc' }, { sortOrder: 'asc' }],
+      orderBy: [{ dueDate: "asc" }, { sortOrder: "asc" }],
       include: {
         instance: {
           include: {
@@ -527,12 +540,14 @@ export class OffboardingService {
       where: {
         id: instanceId,
         tenantId: this.tenantId,
-        status: { notIn: [OffboardingStatus.COMPLETED, OffboardingStatus.CANCELLED] },
+        status: {
+          notIn: [OffboardingStatus.COMPLETED, OffboardingStatus.CANCELLED],
+        },
       },
     })
 
     if (!instance) {
-      throw new Error('Offboarding not found or already completed/cancelled')
+      throw new Error("Offboarding not found or already completed/cancelled")
     }
 
     return db.offboardingInstance.update({
@@ -559,36 +574,37 @@ export class OffboardingService {
       }
     }
 
-    const [totalOffboardings, bySeparationType, byDepartment] = await Promise.all([
-      db.offboardingInstance.count({ where }),
+    const [totalOffboardings, bySeparationType, byDepartment] =
+      await Promise.all([
+        db.offboardingInstance.count({ where }),
 
-      db.offboardingInstance.groupBy({
-        by: ['separationType'],
-        where,
-        _count: true,
-      }),
+        db.offboardingInstance.groupBy({
+          by: ["separationType"],
+          where,
+          _count: true,
+        }),
 
-      db.offboardingInstance.findMany({
-        where,
-        include: {
-          employee: {
-            select: {
-              department: {
-                select: {
-                  id: true,
-                  name: true,
+        db.offboardingInstance.findMany({
+          where,
+          include: {
+            employee: {
+              select: {
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
                 },
               },
             },
           },
-        },
-      }),
-    ])
+        }),
+      ])
 
     // Process by department
     const departmentCounts = byDepartment.reduce(
       (acc: Record<string, number>, o) => {
-        const deptName = o.employee.department?.name || 'Unknown'
+        const deptName = o.employee.department?.name || "Unknown"
         acc[deptName] = (acc[deptName] || 0) + 1
         return acc
       },

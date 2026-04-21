@@ -1,6 +1,6 @@
-import nodemailer from 'nodemailer'
-import Handlebars from 'handlebars'
-import { db } from '@/lib/db'
+import nodemailer from "nodemailer"
+import Handlebars from "handlebars"
+import { db } from "@/lib/db"
 
 interface SmtpConfig {
   host: string
@@ -11,26 +11,32 @@ interface SmtpConfig {
   from: string
 }
 
-export async function getSmtpConfig(tenantId: string): Promise<SmtpConfig | null> {
+export async function getSmtpConfig(
+  tenantId: string
+): Promise<SmtpConfig | null> {
   const config = await db.systemConfig.findUnique({
     where: {
       tenantId_category_key: {
         tenantId,
-        category: 'email',
-        key: 'smtp',
+        category: "email",
+        key: "smtp",
       },
     },
   })
   return config?.value as unknown as SmtpConfig | null
 }
 
-export async function saveSmtpConfig(tenantId: string, config: SmtpConfig, userId: string) {
+export async function saveSmtpConfig(
+  tenantId: string,
+  config: SmtpConfig,
+  userId: string
+) {
   return db.systemConfig.upsert({
     where: {
       tenantId_category_key: {
         tenantId,
-        category: 'email',
-        key: 'smtp',
+        category: "email",
+        key: "smtp",
       },
     },
     update: {
@@ -39,8 +45,8 @@ export async function saveSmtpConfig(tenantId: string, config: SmtpConfig, userI
     },
     create: {
       tenantId,
-      category: 'email',
-      key: 'smtp',
+      category: "email",
+      key: "smtp",
       value: JSON.parse(JSON.stringify(config)),
       updatedBy: userId,
     },
@@ -71,7 +77,7 @@ export async function sendEmail(
 ): Promise<{ success: boolean; error?: string }> {
   const transporter = await createTransporter(tenantId)
   if (!transporter) {
-    return { success: false, error: 'Email chưa được cấu hình' }
+    return { success: false, error: "Email chưa được cấu hình" }
   }
 
   const config = await getSmtpConfig(tenantId)
@@ -86,17 +92,22 @@ export async function sendEmail(
     })
     return { success: true }
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? error.message : "Unknown error"
     return { success: false, error: message }
   }
 }
 
-export function renderTemplate(template: string, data: Record<string, unknown>): string {
+export function renderTemplate(
+  template: string,
+  data: Record<string, unknown>
+): string {
   const compiled = Handlebars.compile(template)
   return compiled(data)
 }
 
-export async function testSmtpConnection(config: SmtpConfig): Promise<{ success: boolean; error?: string }> {
+export async function testSmtpConnection(
+  config: SmtpConfig
+): Promise<{ success: boolean; error?: string }> {
   try {
     const transporter = nodemailer.createTransport({
       host: config.host,
@@ -111,7 +122,7 @@ export async function testSmtpConnection(config: SmtpConfig): Promise<{ success:
     await transporter.verify()
     return { success: true }
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? error.message : "Unknown error"
     return { success: false, error: message }
   }
 }

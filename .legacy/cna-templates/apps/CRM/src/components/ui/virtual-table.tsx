@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useRef, type ReactNode } from 'react'
-import { useVirtualizer } from '@tanstack/react-virtual'
+import { useRef, type ReactNode } from "react"
+import { useVirtualizer } from "@tanstack/react-virtual"
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table"
 
 interface VirtualTableProps<T> {
   data: T[]
@@ -17,7 +17,7 @@ interface VirtualTableProps<T> {
     key: string
     header: string
     width?: string
-    align?: 'left' | 'right' | 'center'
+    align?: "left" | "right" | "center"
     render: (item: T, index: number) => ReactNode
   }[]
   rowHeight?: number
@@ -32,7 +32,7 @@ export function VirtualTable<T extends { id: string }>({
   rowHeight = 48,
   maxHeight = 600,
   onRowClick,
-  emptyMessage = 'Không có dữ liệu',
+  emptyMessage = "Không có dữ liệu",
 }: VirtualTableProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null)
 
@@ -73,7 +73,12 @@ export function VirtualTable<T extends { id: string }>({
         className="overflow-auto"
         style={{ maxHeight: `${maxHeight}px` }}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }}>
+        <div
+          style={{
+            height: `${virtualizer.getTotalSize()}px`,
+            position: "relative",
+          }}
+        >
           {virtualizer.getVirtualItems().map((virtualRow) => {
             const item = data[virtualRow.index]
             return (
@@ -83,7 +88,7 @@ export function VirtualTable<T extends { id: string }>({
                 style={{
                   height: `${virtualRow.size}px`,
                   transform: `translateY(${virtualRow.start}px)`,
-                  cursor: onRowClick ? 'pointer' : undefined,
+                  cursor: onRowClick ? "pointer" : undefined,
                 }}
                 onClick={() => onRowClick?.(item)}
               >
@@ -91,7 +96,11 @@ export function VirtualTable<T extends { id: string }>({
                   <div
                     key={col.key}
                     className="px-4 text-sm truncate"
-                    style={{ width: col.width || 'auto', flex: col.width ? 'none' : 1, textAlign: col.align }}
+                    style={{
+                      width: col.width || "auto",
+                      flex: col.width ? "none" : 1,
+                      textAlign: col.align,
+                    }}
                   >
                     {col.render(item, virtualRow.index)}
                   </div>

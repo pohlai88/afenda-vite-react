@@ -1,15 +1,15 @@
-import { type Page, expect } from '@playwright/test'
-import { SELECTORS } from '../helpers/selectors'
+import { type Page, expect } from "@playwright/test"
+import { SELECTORS } from "../helpers/selectors"
 
 export class DashboardPage {
   constructor(private page: Page) {}
 
   async goto() {
-    await this.page.goto('/dashboard')
+    await this.page.goto("/dashboard")
   }
 
   async expectVisible() {
-    await expect(this.page.locator('main')).toBeVisible({ timeout: 10_000 })
+    await expect(this.page.locator("main")).toBeVisible({ timeout: 10_000 })
   }
 
   async expectKPICards(count = 4) {
@@ -19,7 +19,9 @@ export class DashboardPage {
   }
 
   async expectCharts() {
-    await expect(this.page.locator(SELECTORS.chartContainer).first()).toBeVisible({
+    await expect(
+      this.page.locator(SELECTORS.chartContainer).first()
+    ).toBeVisible({
       timeout: 10_000,
     })
   }

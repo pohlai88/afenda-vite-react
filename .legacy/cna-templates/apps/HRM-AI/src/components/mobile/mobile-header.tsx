@@ -1,23 +1,23 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useSession } from 'next-auth/react'
-import { Menu, Search, Bell, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+import { useState } from "react"
+import { useSession } from "next-auth/react"
+import { Menu, Search, Bell, X } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet'
-import { getInitials } from '@/lib/utils'
-import { useSidebarStore } from '@/stores/sidebar-store'
-import { useNotificationStore } from '@/stores/notification-store'
+} from "@/components/ui/sheet"
+import { getInitials } from "@/lib/utils"
+import { useSidebarStore } from "@/stores/sidebar-store"
+import { useNotificationStore } from "@/stores/notification-store"
 
 interface MobileHeaderProps {
   title?: string
@@ -27,12 +27,12 @@ interface MobileHeaderProps {
 }
 
 export function MobileHeader({
-  title = 'VietERP HRM',
+  title = "VietERP HRM",
   showSearch = true,
 }: MobileHeaderProps) {
   const { data: session } = useSession()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState("")
   const toggle = useSidebarStore((s) => s.toggle)
   const { unreadCount, setIsOpen } = useNotificationStore()
 
@@ -50,8 +50,8 @@ export function MobileHeader({
         {/* Main header */}
         <div
           className={cn(
-            'flex items-center justify-between h-14 px-4 bg-background/95 backdrop-blur-lg border-b',
-            isSearchOpen && 'hidden'
+            "flex items-center justify-between h-14 px-4 bg-background/95 backdrop-blur-lg border-b",
+            isSearchOpen && "hidden"
           )}
         >
           {/* Left: Menu button */}
@@ -92,14 +92,14 @@ export function MobileHeader({
                   className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 text-[10px]"
                   variant="destructive"
                 >
-                  {unreadCount > 9 ? '9+' : unreadCount}
+                  {unreadCount > 9 ? "9+" : unreadCount}
                 </Badge>
               )}
             </Button>
 
             <Avatar className="h-8 w-8 ml-1">
               <AvatarFallback className="bg-primary/20 text-primary text-xs">
-                {session?.user?.name ? getInitials(session.user.name) : 'U'}
+                {session?.user?.name ? getInitials(session.user.name) : "U"}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -124,7 +124,7 @@ export function MobileHeader({
               className="h-9 w-9 flex-shrink-0"
               onClick={() => {
                 setIsSearchOpen(false)
-                setSearchQuery('')
+                setSearchQuery("")
               }}
             >
               <X className="h-5 w-5" />

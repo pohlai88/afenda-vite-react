@@ -1,4 +1,4 @@
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 
 export async function createFramework(
   tenantId: string,
@@ -17,7 +17,7 @@ export async function createFramework(
     },
     include: {
       competencies: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
     },
   })
@@ -28,10 +28,10 @@ export async function getFrameworks(tenantId: string) {
     where: { tenantId },
     include: {
       competencies: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   })
 }
 
@@ -99,13 +99,16 @@ export async function updateCompetency(
   })
 }
 
-export async function listCompetencies(tenantId: string, params: {
-  category?: string
-  frameworkId?: string
-  search?: string
-  page?: number
-  pageSize?: number
-}) {
+export async function listCompetencies(
+  tenantId: string,
+  params: {
+    category?: string
+    frameworkId?: string
+    search?: string
+    page?: number
+    pageSize?: number
+  }
+) {
   const { category, frameworkId, search, page = 1, pageSize = 20 } = params
 
   const where: Record<string, unknown> = {
@@ -115,8 +118,8 @@ export async function listCompetencies(tenantId: string, params: {
   if (frameworkId) where.frameworkId = frameworkId
   if (search) {
     where.OR = [
-      { name: { contains: search, mode: 'insensitive' } },
-      { description: { contains: search, mode: 'insensitive' } },
+      { name: { contains: search, mode: "insensitive" } },
+      { description: { contains: search, mode: "insensitive" } },
     ]
   }
 
@@ -128,12 +131,18 @@ export async function listCompetencies(tenantId: string, params: {
       },
       skip: (page - 1) * pageSize,
       take: pageSize,
-      orderBy: { order: 'asc' },
+      orderBy: { order: "asc" },
     }),
     db.competency.count({ where }),
   ])
 
-  return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) }
+  return {
+    data,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  }
 }
 
 export async function getPositionCompetencies(
@@ -155,11 +164,11 @@ export async function getPositionCompetencies(
       },
     },
     orderBy: {
-      competency: { order: 'asc' },
+      competency: { order: "asc" },
     },
   })
 
-  return positionCompetencies.map(pc => ({
+  return positionCompetencies.map((pc) => ({
     id: pc.id,
     competencyId: pc.competencyId,
     position: pc.position,

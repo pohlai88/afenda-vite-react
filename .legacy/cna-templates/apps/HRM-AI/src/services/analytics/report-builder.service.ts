@@ -1,24 +1,33 @@
 // src/services/analytics/report-builder.service.ts
 // Custom Report Builder Service
 
-import { db } from '@/lib/db'
-import type { ReportExportFormat, ReportExportStatus } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { ReportExportFormat, ReportExportStatus } from "@prisma/client"
 
 export interface ReportColumn {
   field: string
   label: string
-  type: 'string' | 'number' | 'date' | 'boolean' | 'currency'
+  type: "string" | "number" | "date" | "boolean" | "currency"
   format?: string
   width?: number
   sortable?: boolean
   filterable?: boolean
-  aggregation?: 'sum' | 'avg' | 'count' | 'min' | 'max'
+  aggregation?: "sum" | "avg" | "count" | "min" | "max"
   formula?: string
 }
 
 export interface ReportFilter {
   field: string
-  operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'in' | 'between'
+  operator:
+    | "eq"
+    | "neq"
+    | "gt"
+    | "gte"
+    | "lt"
+    | "lte"
+    | "contains"
+    | "in"
+    | "between"
   value: unknown
   isParameter?: boolean
   parameterLabel?: string
@@ -37,7 +46,7 @@ export interface CreateReportInput {
   primarySource: string
   joinedSources?: Array<{
     source: string
-    joinType: 'inner' | 'left' | 'right'
+    joinType: "inner" | "left" | "right"
     joinOn: { left: string; right: string }
   }>
   columns: ReportColumn[]
@@ -45,21 +54,24 @@ export interface CreateReportInput {
   parameters?: Array<{
     name: string
     label: string
-    type: 'string' | 'number' | 'date' | 'select'
+    type: "string" | "number" | "date" | "select"
     options?: Array<{ label: string; value: string }>
     defaultValue?: unknown
     required?: boolean
   }>
-  sorting?: Array<{ field: string; direction: 'asc' | 'desc' }>
+  sorting?: Array<{ field: string; direction: "asc" | "desc" }>
   grouping?: ReportGrouping[]
-  aggregations?: Array<{ field: string; function: 'sum' | 'avg' | 'count' | 'min' | 'max' }>
+  aggregations?: Array<{
+    field: string
+    function: "sum" | "avg" | "count" | "min" | "max"
+  }>
   chartType?: string
   chartConfig?: Record<string, unknown>
   isPublic?: boolean
   sharedWith?: string[]
   isScheduled?: boolean
   schedule?: {
-    frequency: 'daily' | 'weekly' | 'monthly'
+    frequency: "daily" | "weekly" | "monthly"
     time: string
     dayOfWeek?: number
     dayOfMonth?: number
@@ -87,55 +99,157 @@ export interface ReportRunResult {
   parameters?: Record<string, unknown>
 }
 
-const DATA_SOURCES: Record<string, {
-  model: string
-  defaultIncludes: Record<string, unknown>
-  availableFields: string[]
-}> = {
+const DATA_SOURCES: Record<
+  string,
+  {
+    model: string
+    defaultIncludes: Record<string, unknown>
+    availableFields: string[]
+  }
+> = {
   employees: {
-    model: 'employee',
+    model: "employee",
     defaultIncludes: { department: true, position: true, branch: true },
-    availableFields: ['id', 'employeeCode', 'fullName', 'workEmail', 'phone', 'gender', 'dateOfBirth', 'hireDate', 'status', 'department', 'position', 'branch'],
+    availableFields: [
+      "id",
+      "employeeCode",
+      "fullName",
+      "workEmail",
+      "phone",
+      "gender",
+      "dateOfBirth",
+      "hireDate",
+      "status",
+      "department",
+      "position",
+      "branch",
+    ],
   },
   attendance: {
-    model: 'attendance',
+    model: "attendance",
     defaultIncludes: { employee: { include: { department: true } } },
-    availableFields: ['id', 'date', 'checkIn', 'checkOut', 'status', 'workingHours', 'employee', 'department'],
+    availableFields: [
+      "id",
+      "date",
+      "checkIn",
+      "checkOut",
+      "status",
+      "workingHours",
+      "employee",
+      "department",
+    ],
   },
   payroll: {
-    model: 'payroll',
-    defaultIncludes: { employee: { include: { department: true } }, period: true },
-    availableFields: ['id', 'baseSalary', 'grossSalary', 'netSalary', 'totalDeductions', 'employee', 'department', 'period'],
+    model: "payroll",
+    defaultIncludes: {
+      employee: { include: { department: true } },
+      period: true,
+    },
+    availableFields: [
+      "id",
+      "baseSalary",
+      "grossSalary",
+      "netSalary",
+      "totalDeductions",
+      "employee",
+      "department",
+      "period",
+    ],
   },
   contracts: {
-    model: 'contract',
+    model: "contract",
     defaultIncludes: { employee: { include: { department: true } } },
-    availableFields: ['id', 'contractNumber', 'contractType', 'startDate', 'endDate', 'baseSalary', 'status', 'employee', 'department'],
+    availableFields: [
+      "id",
+      "contractNumber",
+      "contractType",
+      "startDate",
+      "endDate",
+      "baseSalary",
+      "status",
+      "employee",
+      "department",
+    ],
   },
   leave_requests: {
-    model: 'leaveRequest',
-    defaultIncludes: { employee: { include: { department: true } }, leavePolicy: true },
-    availableFields: ['id', 'startDate', 'endDate', 'totalDays', 'status', 'reason', 'employee', 'department', 'leaveType'],
+    model: "leaveRequest",
+    defaultIncludes: {
+      employee: { include: { department: true } },
+      leavePolicy: true,
+    },
+    availableFields: [
+      "id",
+      "startDate",
+      "endDate",
+      "totalDays",
+      "status",
+      "reason",
+      "employee",
+      "department",
+      "leaveType",
+    ],
   },
   performance_reviews: {
-    model: 'performanceReview',
-    defaultIncludes: { reviewee: { include: { department: true } }, reviewer: true, cycle: true },
-    availableFields: ['id', 'overallRating', 'status', 'reviewee', 'reviewer', 'department', 'cycle'],
+    model: "performanceReview",
+    defaultIncludes: {
+      reviewee: { include: { department: true } },
+      reviewer: true,
+      cycle: true,
+    },
+    availableFields: [
+      "id",
+      "overallRating",
+      "status",
+      "reviewee",
+      "reviewer",
+      "department",
+      "cycle",
+    ],
   },
   goals: {
-    model: 'goal',
+    model: "goal",
     defaultIncludes: { owner: { include: { department: true } } },
-    availableFields: ['id', 'title', 'status', 'progress', 'dueDate', 'owner', 'department'],
+    availableFields: [
+      "id",
+      "title",
+      "status",
+      "progress",
+      "dueDate",
+      "owner",
+      "department",
+    ],
   },
   training: {
-    model: 'enrollment',
-    defaultIncludes: { employee: { include: { department: true } }, course: true },
-    availableFields: ['id', 'status', 'progress', 'completedAt', 'employee', 'department', 'course'],
+    model: "enrollment",
+    defaultIncludes: {
+      employee: { include: { department: true } },
+      course: true,
+    },
+    availableFields: [
+      "id",
+      "status",
+      "progress",
+      "completedAt",
+      "employee",
+      "department",
+      "course",
+    ],
   },
   applications: {
-    model: 'application',
-    defaultIncludes: { candidate: true, requisition: { include: { department: true } } },
-    availableFields: ['id', 'applicationCode', 'status', 'source', 'candidate', 'requisition', 'department'],
+    model: "application",
+    defaultIncludes: {
+      candidate: true,
+      requisition: { include: { department: true } },
+    },
+    availableFields: [
+      "id",
+      "applicationCode",
+      "status",
+      "source",
+      "candidate",
+      "requisition",
+      "department",
+    ],
   },
 }
 
@@ -183,35 +297,63 @@ export async function updateReport(
   })
 
   if (!existing) {
-    throw new Error('Report not found')
+    throw new Error("Report not found")
   }
 
   // Check if user owns the report or it's public
   if (existing.userId !== userId && !existing.isPublic) {
-    throw new Error('Not authorized to update this report')
+    throw new Error("Not authorized to update this report")
   }
 
   return db.customReport.update({
     where: { id: reportId },
     data: {
       ...(input.name !== undefined && { name: input.name }),
-      ...(input.description !== undefined && { description: input.description }),
+      ...(input.description !== undefined && {
+        description: input.description,
+      }),
       ...(input.category !== undefined && { category: input.category }),
-      ...(input.primarySource !== undefined && { primarySource: input.primarySource }),
-      ...(input.joinedSources !== undefined && { joinedSources: input.joinedSources as unknown as object }),
-      ...(input.columns !== undefined && { columns: input.columns as unknown as object }),
-      ...(input.filters !== undefined && { filters: input.filters as unknown as object }),
-      ...(input.parameters !== undefined && { parameters: input.parameters as unknown as object }),
-      ...(input.sorting !== undefined && { sorting: input.sorting as unknown as object }),
-      ...(input.grouping !== undefined && { grouping: input.grouping as unknown as object }),
-      ...(input.aggregations !== undefined && { aggregations: input.aggregations as unknown as object }),
+      ...(input.primarySource !== undefined && {
+        primarySource: input.primarySource,
+      }),
+      ...(input.joinedSources !== undefined && {
+        joinedSources: input.joinedSources as unknown as object,
+      }),
+      ...(input.columns !== undefined && {
+        columns: input.columns as unknown as object,
+      }),
+      ...(input.filters !== undefined && {
+        filters: input.filters as unknown as object,
+      }),
+      ...(input.parameters !== undefined && {
+        parameters: input.parameters as unknown as object,
+      }),
+      ...(input.sorting !== undefined && {
+        sorting: input.sorting as unknown as object,
+      }),
+      ...(input.grouping !== undefined && {
+        grouping: input.grouping as unknown as object,
+      }),
+      ...(input.aggregations !== undefined && {
+        aggregations: input.aggregations as unknown as object,
+      }),
       ...(input.chartType !== undefined && { chartType: input.chartType }),
-      ...(input.chartConfig !== undefined && { chartConfig: input.chartConfig as unknown as object }),
+      ...(input.chartConfig !== undefined && {
+        chartConfig: input.chartConfig as unknown as object,
+      }),
       ...(input.isPublic !== undefined && { isPublic: input.isPublic }),
-      ...(input.sharedWith !== undefined && { sharedWith: input.sharedWith as unknown as object }),
-      ...(input.isScheduled !== undefined && { isScheduled: input.isScheduled }),
-      ...(input.schedule !== undefined && { schedule: input.schedule as unknown as object }),
-      ...(input.recipients !== undefined && { recipients: input.recipients as unknown as object }),
+      ...(input.sharedWith !== undefined && {
+        sharedWith: input.sharedWith as unknown as object,
+      }),
+      ...(input.isScheduled !== undefined && {
+        isScheduled: input.isScheduled,
+      }),
+      ...(input.schedule !== undefined && {
+        schedule: input.schedule as unknown as object,
+      }),
+      ...(input.recipients !== undefined && {
+        recipients: input.recipients as unknown as object,
+      }),
     },
   })
 }
@@ -226,11 +368,11 @@ export async function deleteReport(
   })
 
   if (!existing) {
-    throw new Error('Report not found')
+    throw new Error("Report not found")
   }
 
   if (existing.userId !== userId) {
-    throw new Error('Not authorized to delete this report')
+    throw new Error("Not authorized to delete this report")
   }
 
   await db.customReport.delete({ where: { id: reportId } })
@@ -267,7 +409,7 @@ export async function listReports(
       user: { select: { id: true, name: true, email: true } },
       _count: { select: { exports: true } },
     },
-    orderBy: { updatedAt: 'desc' },
+    orderBy: { updatedAt: "desc" },
   })
 }
 
@@ -289,7 +431,7 @@ export async function getReportById(
   if (report.userId !== userId && !report.isPublic) {
     const sharedWith = report.sharedWith as string[] | null
     if (!sharedWith?.includes(userId)) {
-      throw new Error('Not authorized to view this report')
+      throw new Error("Not authorized to view this report")
     }
   }
 
@@ -308,7 +450,7 @@ export async function runReport(
   })
 
   if (!report) {
-    throw new Error('Report not found')
+    throw new Error("Report not found")
   }
 
   const sourceConfig = DATA_SOURCES[report.primarySource]
@@ -318,26 +460,32 @@ export async function runReport(
 
   const columns = report.columns as unknown as ReportColumn[]
   const filters = report.filters as unknown as ReportFilter[] | null
-  const sorting = report.sorting as unknown as Array<{ field: string; direction: 'asc' | 'desc' }> | null
+  const sorting = report.sorting as unknown as Array<{
+    field: string
+    direction: "asc" | "desc"
+  }> | null
   const grouping = report.grouping as unknown as ReportGrouping[] | null
-  const aggregations = report.aggregations as unknown as Array<{ field: string; function: string }> | null
+  const aggregations = report.aggregations as unknown as Array<{
+    field: string
+    function: string
+  }> | null
 
   // Build where clause
   const where: Record<string, unknown> = {}
 
   // Apply tenant filter based on data source
   switch (report.primarySource) {
-    case 'employees':
-    case 'contracts':
-    case 'leave_requests':
-    case 'goals':
-    case 'applications':
+    case "employees":
+    case "contracts":
+    case "leave_requests":
+    case "goals":
+    case "applications":
       where.tenantId = tenantId
       break
-    case 'attendance':
-    case 'payroll':
-    case 'performance_reviews':
-    case 'training':
+    case "attendance":
+    case "payroll":
+    case "performance_reviews":
+    case "training":
       where.employee = { tenantId, deletedAt: null }
       break
   }
@@ -346,36 +494,36 @@ export async function runReport(
   if (filters) {
     for (const filter of filters) {
       const value = filter.isParameter
-        ? options.parameters?.[filter.field] ?? filter.value
+        ? (options.parameters?.[filter.field] ?? filter.value)
         : filter.value
 
       if (value !== undefined && value !== null) {
         switch (filter.operator) {
-          case 'eq':
+          case "eq":
             where[filter.field] = value
             break
-          case 'neq':
+          case "neq":
             where[filter.field] = { not: value }
             break
-          case 'gt':
+          case "gt":
             where[filter.field] = { gt: value }
             break
-          case 'gte':
+          case "gte":
             where[filter.field] = { gte: value }
             break
-          case 'lt':
+          case "lt":
             where[filter.field] = { lt: value }
             break
-          case 'lte':
+          case "lte":
             where[filter.field] = { lte: value }
             break
-          case 'contains':
-            where[filter.field] = { contains: value, mode: 'insensitive' }
+          case "contains":
+            where[filter.field] = { contains: value, mode: "insensitive" }
             break
-          case 'in':
+          case "in":
             where[filter.field] = { in: value }
             break
-          case 'between':
+          case "between":
             if (Array.isArray(value) && value.length === 2) {
               where[filter.field] = { gte: value[0], lte: value[1] }
             }
@@ -392,7 +540,16 @@ export async function runReport(
   }
 
   // Execute query
-  const modelName = sourceConfig.model as 'employee' | 'attendance' | 'payroll' | 'contract' | 'leaveRequest' | 'performanceReview' | 'goal' | 'enrollment' | 'application'
+  const modelName = sourceConfig.model as
+    | "employee"
+    | "attendance"
+    | "payroll"
+    | "contract"
+    | "leaveRequest"
+    | "performanceReview"
+    | "goal"
+    | "enrollment"
+    | "application"
 
   // @ts-expect-error Dynamic model access
   const rawData = await db[modelName].findMany({
@@ -421,23 +578,30 @@ export async function runReport(
   if (aggregations && aggregations.length > 0) {
     calculatedAggregations = {}
     for (const agg of aggregations) {
-      const values = data.map((row: Record<string, unknown>) => Number(row[agg.field]) || 0)
+      const values = data.map(
+        (row: Record<string, unknown>) => Number(row[agg.field]) || 0
+      )
       switch (agg.function) {
-        case 'sum':
-          calculatedAggregations[`${agg.field}_sum`] = values.reduce((a: number, b: number) => a + b, 0)
+        case "sum":
+          calculatedAggregations[`${agg.field}_sum`] = values.reduce(
+            (a: number, b: number) => a + b,
+            0
+          )
           break
-        case 'avg':
-          calculatedAggregations[`${agg.field}_avg`] = values.length > 0
-            ? values.reduce((a: number, b: number) => a + b, 0) / values.length
-            : 0
+        case "avg":
+          calculatedAggregations[`${agg.field}_avg`] =
+            values.length > 0
+              ? values.reduce((a: number, b: number) => a + b, 0) /
+                values.length
+              : 0
           break
-        case 'count':
+        case "count":
           calculatedAggregations[`${agg.field}_count`] = values.length
           break
-        case 'min':
+        case "min":
           calculatedAggregations[`${agg.field}_min`] = Math.min(...values)
           break
-        case 'max':
+        case "max":
           calculatedAggregations[`${agg.field}_max`] = Math.max(...values)
           break
       }
@@ -449,7 +613,7 @@ export async function runReport(
   if (grouping && grouping.length > 0) {
     const groups = new Map<string, Record<string, unknown>[]>()
     for (const row of data) {
-      const groupKey = grouping.map(g => String(row[g.field] || '')).join('|')
+      const groupKey = grouping.map((g) => String(row[g.field] || "")).join("|")
       if (!groups.has(groupKey)) {
         groups.set(groupKey, [])
       }
@@ -457,7 +621,7 @@ export async function runReport(
     }
 
     groupedData = Array.from(groups.entries()).map(([key, rows]) => {
-      const groupValues = key.split('|')
+      const groupValues = key.split("|")
       const groupRow: Record<string, unknown> = {}
       grouping.forEach((g, i) => {
         groupRow[g.field] = groupValues[i]
@@ -489,7 +653,7 @@ export async function runReport(
 }
 
 function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
-  const parts = path.split('.')
+  const parts = path.split(".")
   let value: unknown = obj
   for (const part of parts) {
     if (value === null || value === undefined) return null
@@ -502,21 +666,23 @@ function formatValue(value: unknown, type: string, format?: string): unknown {
   if (value === null || value === undefined) return null
 
   switch (type) {
-    case 'date':
+    case "date":
       if (value instanceof Date) {
-        return format ? formatDate(value, format) : value.toISOString().split('T')[0]
+        return format
+          ? formatDate(value, format)
+          : value.toISOString().split("T")[0]
       }
       return value
-    case 'currency':
-      if (typeof value === 'number') {
-        return new Intl.NumberFormat('vi-VN', {
-          style: 'currency',
-          currency: 'VND',
+    case "currency":
+      if (typeof value === "number") {
+        return new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
         }).format(value)
       }
       return value
-    case 'number':
-      if (typeof value === 'number') {
+    case "number":
+      if (typeof value === "number") {
         return format ? value.toFixed(parseInt(format) || 0) : value
       }
       return value
@@ -527,13 +693,13 @@ function formatValue(value: unknown, type: string, format?: string): unknown {
 
 function formatDate(date: Date, format: string): string {
   const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
 
   return format
-    .replace('YYYY', String(year))
-    .replace('MM', month)
-    .replace('DD', day)
+    .replace("YYYY", String(year))
+    .replace("MM", month)
+    .replace("DD", day)
 }
 
 export async function exportReport(
@@ -548,7 +714,7 @@ export async function exportReport(
   })
 
   if (!report) {
-    throw new Error('Report not found')
+    throw new Error("Report not found")
   }
 
   // Create export record
@@ -558,8 +724,8 @@ export async function exportReport(
       reportId,
       userId,
       format,
-      fileName: `${report.name}_${new Date().toISOString().split('T')[0]}.${format.toLowerCase()}`,
-      status: 'PENDING',
+      fileName: `${report.name}_${new Date().toISOString().split("T")[0]}.${format.toLowerCase()}`,
+      status: "PENDING",
       parameters: parameters as unknown as object | undefined,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     },
@@ -569,7 +735,7 @@ export async function exportReport(
   // For now, we'll mark it as processing
   await db.reportExport.update({
     where: { id: exportRecord.id },
-    data: { status: 'PROCESSING' },
+    data: { status: "PROCESSING" },
   })
 
   // Simulate export completion
@@ -578,7 +744,7 @@ export async function exportReport(
       await db.reportExport.update({
         where: { id: exportRecord.id },
         data: {
-          status: 'COMPLETED',
+          status: "COMPLETED",
           completedAt: new Date(),
           fileUrl: `/exports/${exportRecord.id}.${format.toLowerCase()}`,
           fileSize: Math.floor(Math.random() * 1000000) + 10000,
@@ -606,7 +772,7 @@ export async function getExports(
     include: {
       report: { select: { id: true, name: true } },
     },
-    orderBy: { requestedAt: 'desc' },
+    orderBy: { requestedAt: "desc" },
     take: 50,
   })
 }
@@ -621,15 +787,15 @@ export async function getAvailableDataSources() {
 
 function getDataSourceDisplayName(source: string): string {
   const names: Record<string, string> = {
-    employees: 'Nhân viên',
-    attendance: 'Chấm công',
-    payroll: 'Bảng lương',
-    contracts: 'Hợp đồng',
-    leave_requests: 'Nghỉ phép',
-    performance_reviews: 'Đánh giá hiệu suất',
-    goals: 'Mục tiêu',
-    training: 'Đào tạo',
-    applications: 'Ứng viên',
+    employees: "Nhân viên",
+    attendance: "Chấm công",
+    payroll: "Bảng lương",
+    contracts: "Hợp đồng",
+    leave_requests: "Nghỉ phép",
+    performance_reviews: "Đánh giá hiệu suất",
+    goals: "Mục tiêu",
+    training: "Đào tạo",
+    applications: "Ứng viên",
   }
   return names[source] || source
 }

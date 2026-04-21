@@ -1,24 +1,45 @@
 # ═══════════════════════════════════════════════════════════════════════════════
-#                         🏗️ CODER PACK
-#                    SCAFFOLD NESTJS PROJECT
-#                    "Promo Master V3 Backend"
+
+# 🏗️ CODER PACK
+
+# SCAFFOLD NESTJS PROJECT
+
+# "Promo Master V3 Backend"
+
 # ═══════════════════════════════════════════════════════════════════════════════
+
 #
-#  📋 CONTEXT:
-#  - API Spec: 257 endpoints, 37 modules documented
-#  - Frontend: 100% complete, expects exact response shapes
-#  - Prisma Schema: Existing models in vierp-tpm-web
-#  - Contract: docs/api/api-contracts.json
+
+# 📋 CONTEXT:
+
+# - API Spec: 257 endpoints, 37 modules documented
+
+# - Frontend: 100% complete, expects exact response shapes
+
+# - Prisma Schema: Existing models in vierp-tpm-web
+
+# - Contract: docs/api/api-contracts.json
+
 #
-#  🎯 GOALS:
-#  - Scaffold NestJS project structure
-#  - Create all 37 modules (empty shells)
-#  - Setup auth, guards, interceptors
-#  - Copy existing Prisma schema
-#  - Docker development environment
+
+# 🎯 GOALS:
+
+# - Scaffold NestJS project structure
+
+# - Create all 37 modules (empty shells)
+
+# - Setup auth, guards, interceptors
+
+# - Copy existing Prisma schema
+
+# - Docker development environment
+
 #
-#  📅 Timeline: 1-2 days
+
+# 📅 Timeline: 1-2 days
+
 #
+
 # ═══════════════════════════════════════════════════════════════════════════════
 
 ## 🎭 VAI TRÒ
@@ -77,7 +98,7 @@ mkdir -p src/config
 # Core modules
 mkdir -p src/modules/{auth,users,budgets,promotions,claims,customers,products}
 
-# V3 Feature modules  
+# V3 Feature modules
 mkdir -p src/modules/{contracts,ai,monitoring}
 
 # Finance modules
@@ -117,34 +138,36 @@ mkdir -p test/{unit,integration,e2e}
 // FILE: src/main.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';
-import helmet from 'helmet';
-import compression from 'compression';
-import { AppModule } from './app.module';
+import { NestFactory } from "@nestjs/core"
+import { ValidationPipe, VersioningType } from "@nestjs/common"
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger"
+import { ConfigService } from "@nestjs/config"
+import helmet from "helmet"
+import compression from "compression"
+import { AppModule } from "./app.module"
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
+  const app = await NestFactory.create(AppModule)
+  const configService = app.get(ConfigService)
 
   // Security
-  app.use(helmet());
-  app.use(compression());
+  app.use(helmet())
+  app.use(compression())
 
   // CORS
   app.enableCors({
-    origin: configService.get('CORS_ORIGINS')?.split(',') || ['http://localhost:5173'],
+    origin: configService.get("CORS_ORIGINS")?.split(",") || [
+      "http://localhost:5173",
+    ],
     credentials: true,
-  });
+  })
 
   // API Versioning
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix("api")
   app.enableVersioning({
     type: VersioningType.URI,
-    defaultVersion: '1',
-  });
+    defaultVersion: "1",
+  })
 
   // Validation
   app.useGlobalPipes(
@@ -155,38 +178,38 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
-    }),
-  );
+    })
+  )
 
   // Swagger Documentation
   const config = new DocumentBuilder()
-    .setTitle('Promo Master V3 API')
-    .setDescription('Trade Promotion Management System API')
-    .setVersion('3.0.0')
+    .setTitle("Promo Master V3 API")
+    .setDescription("Trade Promotion Management System API")
+    .setVersion("3.0.0")
     .addBearerAuth()
-    .addTag('Auth', 'Authentication endpoints')
-    .addTag('Budgets', 'Budget management')
-    .addTag('Promotions', 'Promotion management')
-    .addTag('Claims', 'Claims processing')
-    .addTag('Contracts', 'Volume contracts (V3)')
-    .addTag('Customers', 'Customer management')
-    .addTag('Products', 'Product catalog')
-    .addTag('Analytics', 'Reports and analytics')
-    .addTag('AI', 'AI suggestions (V3)')
-    .addTag('Monitoring', 'Live monitoring (V3)')
-    .build();
+    .addTag("Auth", "Authentication endpoints")
+    .addTag("Budgets", "Budget management")
+    .addTag("Promotions", "Promotion management")
+    .addTag("Claims", "Claims processing")
+    .addTag("Contracts", "Volume contracts (V3)")
+    .addTag("Customers", "Customer management")
+    .addTag("Products", "Product catalog")
+    .addTag("Analytics", "Reports and analytics")
+    .addTag("AI", "AI suggestions (V3)")
+    .addTag("Monitoring", "Live monitoring (V3)")
+    .build()
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup("api/docs", app, document)
 
   // Start server
-  const port = configService.get('PORT') || 3000;
-  await app.listen(port);
-  console.log(`🚀 Promo Master API running on http://localhost:${port}`);
-  console.log(`📚 Swagger docs at http://localhost:${port}/api/docs`);
+  const port = configService.get("PORT") || 3000
+  await app.listen(port)
+  console.log(`🚀 Promo Master API running on http://localhost:${port}`)
+  console.log(`📚 Swagger docs at http://localhost:${port}/api/docs`)
 }
 
-bootstrap();
+bootstrap()
 ```
 
 ### 3.2 App Module
@@ -196,84 +219,84 @@ bootstrap();
 // FILE: src/app.module.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
+import { Module } from "@nestjs/common"
+import { ConfigModule } from "@nestjs/config"
+import { ThrottlerModule } from "@nestjs/throttler"
+import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from "@nestjs/core"
 
 // Database
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from "./database/database.module"
 
 // Common
-import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
-import { RolesGuard } from './common/guards/roles.guard';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
-import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { JwtAuthGuard } from "./common/guards/jwt-auth.guard"
+import { RolesGuard } from "./common/guards/roles.guard"
+import { TransformInterceptor } from "./common/interceptors/transform.interceptor"
+import { LoggingInterceptor } from "./common/interceptors/logging.interceptor"
+import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter"
 
 // Core Modules
-import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
-import { BudgetsModule } from './modules/budgets/budgets.module';
-import { PromotionsModule } from './modules/promotions/promotions.module';
-import { ClaimsModule } from './modules/claims/claims.module';
-import { CustomersModule } from './modules/customers/customers.module';
-import { ProductsModule } from './modules/products/products.module';
+import { AuthModule } from "./modules/auth/auth.module"
+import { UsersModule } from "./modules/users/users.module"
+import { BudgetsModule } from "./modules/budgets/budgets.module"
+import { PromotionsModule } from "./modules/promotions/promotions.module"
+import { ClaimsModule } from "./modules/claims/claims.module"
+import { CustomersModule } from "./modules/customers/customers.module"
+import { ProductsModule } from "./modules/products/products.module"
 
 // V3 Feature Modules
-import { ContractsModule } from './modules/contracts/contracts.module';
-import { AiModule } from './modules/ai/ai.module';
-import { MonitoringModule } from './modules/monitoring/monitoring.module';
+import { ContractsModule } from "./modules/contracts/contracts.module"
+import { AiModule } from "./modules/ai/ai.module"
+import { MonitoringModule } from "./modules/monitoring/monitoring.module"
 
 // Finance Modules
-import { SettlementsModule } from './modules/settlements/settlements.module';
-import { PaymentsModule } from './modules/payments/payments.module';
-import { ReconciliationModule } from './modules/reconciliation/reconciliation.module';
-import { FundsModule } from './modules/funds/funds.module';
-import { ChequesModule } from './modules/cheques/cheques.module';
-import { DeductionsModule } from './modules/deductions/deductions.module';
+import { SettlementsModule } from "./modules/settlements/settlements.module"
+import { PaymentsModule } from "./modules/payments/payments.module"
+import { ReconciliationModule } from "./modules/reconciliation/reconciliation.module"
+import { FundsModule } from "./modules/funds/funds.module"
+import { ChequesModule } from "./modules/cheques/cheques.module"
+import { DeductionsModule } from "./modules/deductions/deductions.module"
 
 // Planning & Operations Modules
-import { PlanningModule } from './modules/planning/planning.module';
-import { TargetsModule } from './modules/targets/targets.module';
-import { ExecutionModule } from './modules/execution/execution.module';
-import { OperationsModule } from './modules/operations/operations.module';
+import { PlanningModule } from "./modules/planning/planning.module"
+import { TargetsModule } from "./modules/targets/targets.module"
+import { ExecutionModule } from "./modules/execution/execution.module"
+import { OperationsModule } from "./modules/operations/operations.module"
 
 // Support Modules
-import { AnalyticsModule } from './modules/analytics/analytics.module';
-import { ReportsModule } from './modules/reports/reports.module';
-import { SettingsModule } from './modules/settings/settings.module';
-import { NotificationsModule } from './modules/notifications/notifications.module';
-import { AuditModule } from './modules/audit/audit.module';
+import { AnalyticsModule } from "./modules/analytics/analytics.module"
+import { ReportsModule } from "./modules/reports/reports.module"
+import { SettingsModule } from "./modules/settings/settings.module"
+import { NotificationsModule } from "./modules/notifications/notifications.module"
+import { AuditModule } from "./modules/audit/audit.module"
 
 // Additional Modules
-import { TemplatesModule } from './modules/templates/templates.module';
-import { RegionsModule } from './modules/regions/regions.module';
-import { ChannelsModule } from './modules/channels/channels.module';
-import { CategoriesModule } from './modules/categories/categories.module';
+import { TemplatesModule } from "./modules/templates/templates.module"
+import { RegionsModule } from "./modules/regions/regions.module"
+import { ChannelsModule } from "./modules/channels/channels.module"
+import { CategoriesModule } from "./modules/categories/categories.module"
 
 @Module({
   imports: [
     // Configuration
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local', '.env'],
+      envFilePath: [".env.local", ".env"],
     }),
 
     // Rate Limiting
     ThrottlerModule.forRoot([
       {
-        name: 'short',
+        name: "short",
         ttl: 1000,
         limit: 10,
       },
       {
-        name: 'medium',
+        name: "medium",
         ttl: 10000,
         limit: 50,
       },
       {
-        name: 'long',
+        name: "long",
         ttl: 60000,
         limit: 100,
       },
@@ -361,8 +384,8 @@ export class AppModule {}
 // FILE: src/database/database.module.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { Global, Module } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
+import { Global, Module } from "@nestjs/common"
+import { PrismaService } from "./prisma.service"
 
 @Global()
 @Module({
@@ -377,33 +400,37 @@ export class DatabaseModule {}
 // FILE: src/database/prisma.service.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common"
+import { PrismaClient } from "@prisma/client"
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   constructor() {
     super({
-      log: process.env.NODE_ENV === 'development' 
-        ? ['query', 'info', 'warn', 'error']
-        : ['error'],
-    });
+      log:
+        process.env.NODE_ENV === "development"
+          ? ["query", "info", "warn", "error"]
+          : ["error"],
+    })
   }
 
   async onModuleInit() {
-    await this.$connect();
+    await this.$connect()
   }
 
   async onModuleDestroy() {
-    await this.$disconnect();
+    await this.$disconnect()
   }
 
   async cleanDatabase() {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('cleanDatabase is not allowed in production');
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("cleanDatabase is not allowed in production")
     }
     // For testing - delete in correct order due to foreign keys
-    const models = Reflect.ownKeys(this).filter((key) => key[0] !== '_');
+    const models = Reflect.ownKeys(this).filter((key) => key[0] !== "_")
     // Implementation for test cleanup
   }
 }
@@ -425,34 +452,40 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+} from "@nestjs/common"
+import { Observable } from "rxjs"
+import { map } from "rxjs/operators"
 
 export interface Response<T> {
-  success: boolean;
-  data: T;
+  success: boolean
+  data: T
   meta?: {
-    timestamp: string;
-    requestId: string;
-  };
+    timestamp: string
+    requestId: string
+  }
 }
 
 @Injectable()
-export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<Response<T>> {
-    const request = context.switchToHttp().getRequest();
-    
+export class TransformInterceptor<T> implements NestInterceptor<
+  T,
+  Response<T>
+> {
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler
+  ): Observable<Response<T>> {
+    const request = context.switchToHttp().getRequest()
+
     return next.handle().pipe(
       map((data) => ({
         success: true,
         data,
         meta: {
           timestamp: new Date().toISOString(),
-          requestId: request.headers['x-request-id'] || crypto.randomUUID(),
+          requestId: request.headers["x-request-id"] || crypto.randomUUID(),
         },
-      })),
-    );
+      }))
+    )
   }
 }
 ```
@@ -471,64 +504,64 @@ import {
   HttpException,
   HttpStatus,
   Logger,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
-import { Prisma } from '@prisma/client';
+} from "@nestjs/common"
+import { Request, Response } from "express"
+import { Prisma } from "@prisma/client"
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  private readonly logger = new Logger(AllExceptionsFilter.name);
+  private readonly logger = new Logger(AllExceptionsFilter.name)
 
   catch(exception: unknown, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const ctx = host.switchToHttp()
+    const response = ctx.getResponse<Response>()
+    const request = ctx.getRequest<Request>()
 
-    let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Internal server error';
-    let code = 'INTERNAL_ERROR';
-    let details: any = undefined;
+    let status = HttpStatus.INTERNAL_SERVER_ERROR
+    let message = "Internal server error"
+    let code = "INTERNAL_ERROR"
+    let details: any = undefined
 
     // Handle different exception types
     if (exception instanceof HttpException) {
-      status = exception.getStatus();
-      const exceptionResponse = exception.getResponse();
-      
-      if (typeof exceptionResponse === 'object') {
-        message = (exceptionResponse as any).message || exception.message;
-        code = (exceptionResponse as any).error || 'HTTP_ERROR';
-        details = (exceptionResponse as any).details;
+      status = exception.getStatus()
+      const exceptionResponse = exception.getResponse()
+
+      if (typeof exceptionResponse === "object") {
+        message = (exceptionResponse as any).message || exception.message
+        code = (exceptionResponse as any).error || "HTTP_ERROR"
+        details = (exceptionResponse as any).details
       } else {
-        message = exceptionResponse;
+        message = exceptionResponse
       }
     } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       // Handle Prisma errors
       switch (exception.code) {
-        case 'P2002':
-          status = HttpStatus.CONFLICT;
-          code = 'DUPLICATE_ERROR';
-          message = 'A record with this value already exists';
-          break;
-        case 'P2025':
-          status = HttpStatus.NOT_FOUND;
-          code = 'NOT_FOUND';
-          message = 'Record not found';
-          break;
+        case "P2002":
+          status = HttpStatus.CONFLICT
+          code = "DUPLICATE_ERROR"
+          message = "A record with this value already exists"
+          break
+        case "P2025":
+          status = HttpStatus.NOT_FOUND
+          code = "NOT_FOUND"
+          message = "Record not found"
+          break
         default:
-          code = 'DATABASE_ERROR';
-          message = 'Database operation failed';
+          code = "DATABASE_ERROR"
+          message = "Database operation failed"
       }
     } else if (exception instanceof Prisma.PrismaClientValidationError) {
-      status = HttpStatus.BAD_REQUEST;
-      code = 'VALIDATION_ERROR';
-      message = 'Invalid data provided';
+      status = HttpStatus.BAD_REQUEST
+      code = "VALIDATION_ERROR"
+      message = "Invalid data provided"
     }
 
     // Log error
     this.logger.error(
       `${request.method} ${request.url} - ${status} - ${message}`,
-      exception instanceof Error ? exception.stack : undefined,
-    );
+      exception instanceof Error ? exception.stack : undefined
+    )
 
     // Send response matching frontend expectations
     response.status(status).json({
@@ -541,9 +574,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
       meta: {
         timestamp: new Date().toISOString(),
         path: request.url,
-        requestId: request.headers['x-request-id'] || crypto.randomUUID(),
+        requestId: request.headers["x-request-id"] || crypto.randomUUID(),
       },
-    });
+    })
   }
 }
 ```
@@ -559,15 +592,15 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+} from "@nestjs/common"
+import { Reflector } from "@nestjs/core"
+import { AuthGuard } from "@nestjs/passport"
+import { IS_PUBLIC_KEY } from "../decorators/public.decorator"
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
+export class JwtAuthGuard extends AuthGuard("jwt") {
   constructor(private reflector: Reflector) {
-    super();
+    super()
   }
 
   canActivate(context: ExecutionContext) {
@@ -575,20 +608,20 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
-    ]);
+    ])
 
     if (isPublic) {
-      return true;
+      return true
     }
 
-    return super.canActivate(context);
+    return super.canActivate(context)
   }
 
   handleRequest(err: any, user: any, info: any) {
     if (err || !user) {
-      throw err || new UnauthorizedException('Invalid or expired token');
+      throw err || new UnauthorizedException("Invalid or expired token")
     }
-    return user;
+    return user
   }
 }
 ```
@@ -600,10 +633,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 // FILE: src/common/guards/roles.guard.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { ROLES_KEY } from '../decorators/roles.decorator';
-import { Role } from '@prisma/client';
+import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common"
+import { Reflector } from "@nestjs/core"
+import { ROLES_KEY } from "../decorators/roles.decorator"
+import { Role } from "@prisma/client"
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -613,14 +646,14 @@ export class RolesGuard implements CanActivate {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
-    ]);
+    ])
 
     if (!requiredRoles) {
-      return true;
+      return true
     }
 
-    const { user } = context.switchToHttp().getRequest();
-    return requiredRoles.some((role) => user.role === role);
+    const { user } = context.switchToHttp().getRequest()
+    return requiredRoles.some((role) => user.role === role)
   }
 }
 ```
@@ -632,10 +665,10 @@ export class RolesGuard implements CanActivate {
 // FILE: src/common/decorators/public.decorator.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from "@nestjs/common"
 
-export const IS_PUBLIC_KEY = 'isPublic';
-export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
+export const IS_PUBLIC_KEY = "isPublic"
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true)
 ```
 
 ```typescript
@@ -643,11 +676,11 @@ export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 // FILE: src/common/decorators/roles.decorator.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { SetMetadata } from '@nestjs/common';
-import { Role } from '@prisma/client';
+import { SetMetadata } from "@nestjs/common"
+import { Role } from "@prisma/client"
 
-export const ROLES_KEY = 'roles';
-export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
+export const ROLES_KEY = "roles"
+export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles)
 ```
 
 ```typescript
@@ -655,16 +688,16 @@ export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
 // FILE: src/common/decorators/current-user.decorator.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common"
 
 export const CurrentUser = createParamDecorator(
   (data: string | undefined, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    const user = request.user;
+    const request = ctx.switchToHttp().getRequest()
+    const user = request.user
 
-    return data ? user?.[data] : user;
-  },
-);
+    return data ? user?.[data] : user
+  }
+)
 ```
 
 ### 4.6 Pagination DTO
@@ -674,9 +707,9 @@ export const CurrentUser = createParamDecorator(
 // FILE: src/common/dto/pagination.dto.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { IsOptional, IsInt, Min, Max, IsString } from 'class-validator';
-import { Type } from 'class-transformer';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsInt, Min, Max, IsString } from "class-validator"
+import { Type } from "class-transformer"
+import { ApiPropertyOptional } from "@nestjs/swagger"
 
 export class PaginationDto {
   @ApiPropertyOptional({ default: 1, minimum: 1 })
@@ -684,7 +717,7 @@ export class PaginationDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  page?: number = 1;
+  page?: number = 1
 
   @ApiPropertyOptional({ default: 10, minimum: 1, maximum: 100 })
   @IsOptional()
@@ -692,39 +725,39 @@ export class PaginationDto {
   @IsInt()
   @Min(1)
   @Max(100)
-  pageSize?: number = 10;
+  pageSize?: number = 10
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  search?: string;
+  search?: string
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  sortBy?: string;
+  sortBy?: string
 
-  @ApiPropertyOptional({ enum: ['asc', 'desc'], default: 'desc' })
+  @ApiPropertyOptional({ enum: ["asc", "desc"], default: "desc" })
   @IsOptional()
   @IsString()
-  sortOrder?: 'asc' | 'desc' = 'desc';
+  sortOrder?: "asc" | "desc" = "desc"
 }
 
 export class PaginatedResponse<T> {
-  data: T[];
+  data: T[]
   pagination: {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
+    page: number
+    pageSize: number
+    total: number
+    totalPages: number
+  }
 }
 
 export function createPaginatedResponse<T>(
   data: T[],
   total: number,
   page: number,
-  pageSize: number,
+  pageSize: number
 ): PaginatedResponse<T> {
   return {
     data,
@@ -734,7 +767,7 @@ export function createPaginatedResponse<T>(
       total,
       totalPages: Math.ceil(total / pageSize),
     },
-  };
+  }
 }
 ```
 
@@ -749,9 +782,9 @@ export function createPaginatedResponse<T>(
 // FILE: src/modules/budgets/budgets.module.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { Module } from '@nestjs/common';
-import { BudgetsController } from './budgets.controller';
-import { BudgetsService } from './budgets.service';
+import { Module } from "@nestjs/common"
+import { BudgetsController } from "./budgets.controller"
+import { BudgetsService } from "./budgets.service"
 
 @Module({
   controllers: [BudgetsController],
@@ -779,120 +812,122 @@ import {
   Query,
   HttpCode,
   HttpStatus,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { BudgetsService } from './budgets.service';
-import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
-import { BudgetQueryDto } from './dto/budget-query.dto';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { Role } from '@prisma/client';
+} from "@nestjs/common"
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiResponse,
+} from "@nestjs/swagger"
+import { BudgetsService } from "./budgets.service"
+import { CreateBudgetDto } from "./dto/create-budget.dto"
+import { UpdateBudgetDto } from "./dto/update-budget.dto"
+import { BudgetQueryDto } from "./dto/budget-query.dto"
+import { Roles } from "../../common/decorators/roles.decorator"
+import { CurrentUser } from "../../common/decorators/current-user.decorator"
+import { Role } from "@prisma/client"
 
-@ApiTags('Budgets')
+@ApiTags("Budgets")
 @ApiBearerAuth()
-@Controller('budgets')
+@Controller("budgets")
 export class BudgetsController {
   constructor(private readonly budgetsService: BudgetsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'List all budgets' })
-  @ApiResponse({ status: 200, description: 'Budget list with pagination' })
+  @ApiOperation({ summary: "List all budgets" })
+  @ApiResponse({ status: 200, description: "Budget list with pagination" })
   async findAll(@Query() query: BudgetQueryDto) {
-    return this.budgetsService.findAll(query);
+    return this.budgetsService.findAll(query)
   }
 
-  @Get('summary')
-  @ApiOperation({ summary: 'Get budget summary statistics' })
-  async getSummary(@Query('year') year?: number) {
-    return this.budgetsService.getSummary(year);
+  @Get("summary")
+  @ApiOperation({ summary: "Get budget summary statistics" })
+  async getSummary(@Query("year") year?: number) {
+    return this.budgetsService.getSummary(year)
   }
 
-  @Get('years')
-  @ApiOperation({ summary: 'Get available fiscal years' })
+  @Get("years")
+  @ApiOperation({ summary: "Get available fiscal years" })
   async getYears() {
-    return this.budgetsService.getAvailableYears();
+    return this.budgetsService.getAvailableYears()
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get budget by ID' })
-  @ApiResponse({ status: 200, description: 'Budget details' })
-  @ApiResponse({ status: 404, description: 'Budget not found' })
-  async findOne(@Param('id') id: string) {
-    return this.budgetsService.findOne(id);
+  @Get(":id")
+  @ApiOperation({ summary: "Get budget by ID" })
+  @ApiResponse({ status: 200, description: "Budget details" })
+  @ApiResponse({ status: 404, description: "Budget not found" })
+  async findOne(@Param("id") id: string) {
+    return this.budgetsService.findOne(id)
   }
 
   @Post()
   @Roles(Role.ADMIN, Role.MANAGER, Role.FINANCE)
-  @ApiOperation({ summary: 'Create a new budget' })
-  @ApiResponse({ status: 201, description: 'Budget created' })
-  @ApiResponse({ status: 400, description: 'Validation error' })
+  @ApiOperation({ summary: "Create a new budget" })
+  @ApiResponse({ status: 201, description: "Budget created" })
+  @ApiResponse({ status: 400, description: "Validation error" })
   async create(
     @Body() createBudgetDto: CreateBudgetDto,
-    @CurrentUser('id') userId: string,
+    @CurrentUser("id") userId: string
   ) {
-    return this.budgetsService.create(createBudgetDto, userId);
+    return this.budgetsService.create(createBudgetDto, userId)
   }
 
-  @Put(':id')
+  @Put(":id")
   @Roles(Role.ADMIN, Role.MANAGER, Role.FINANCE)
-  @ApiOperation({ summary: 'Update a budget' })
-  @ApiResponse({ status: 200, description: 'Budget updated' })
-  @ApiResponse({ status: 404, description: 'Budget not found' })
+  @ApiOperation({ summary: "Update a budget" })
+  @ApiResponse({ status: 200, description: "Budget updated" })
+  @ApiResponse({ status: 404, description: "Budget not found" })
   async update(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() updateBudgetDto: UpdateBudgetDto,
-    @CurrentUser('id') userId: string,
+    @CurrentUser("id") userId: string
   ) {
-    return this.budgetsService.update(id, updateBudgetDto, userId);
+    return this.budgetsService.update(id, updateBudgetDto, userId)
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete a budget' })
-  @ApiResponse({ status: 204, description: 'Budget deleted' })
-  @ApiResponse({ status: 404, description: 'Budget not found' })
-  async remove(@Param('id') id: string) {
-    return this.budgetsService.remove(id);
+  @ApiOperation({ summary: "Delete a budget" })
+  @ApiResponse({ status: 204, description: "Budget deleted" })
+  @ApiResponse({ status: 404, description: "Budget not found" })
+  async remove(@Param("id") id: string) {
+    return this.budgetsService.remove(id)
   }
 
-  @Post(':id/approve')
+  @Post(":id/approve")
   @Roles(Role.ADMIN, Role.MANAGER)
-  @ApiOperation({ summary: 'Approve a budget' })
-  async approve(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
-    return this.budgetsService.approve(id, userId);
+  @ApiOperation({ summary: "Approve a budget" })
+  async approve(@Param("id") id: string, @CurrentUser("id") userId: string) {
+    return this.budgetsService.approve(id, userId)
   }
 
-  @Post(':id/reject')
+  @Post(":id/reject")
   @Roles(Role.ADMIN, Role.MANAGER)
-  @ApiOperation({ summary: 'Reject a budget' })
+  @ApiOperation({ summary: "Reject a budget" })
   async reject(
-    @Param('id') id: string,
-    @Body('reason') reason: string,
-    @CurrentUser('id') userId: string,
+    @Param("id") id: string,
+    @Body("reason") reason: string,
+    @CurrentUser("id") userId: string
   ) {
-    return this.budgetsService.reject(id, reason, userId);
+    return this.budgetsService.reject(id, reason, userId)
   }
 
-  @Get(':id/allocations')
-  @ApiOperation({ summary: 'Get budget allocations' })
-  async getAllocations(@Param('id') id: string) {
-    return this.budgetsService.getAllocations(id);
+  @Get(":id/allocations")
+  @ApiOperation({ summary: "Get budget allocations" })
+  async getAllocations(@Param("id") id: string) {
+    return this.budgetsService.getAllocations(id)
   }
 
-  @Post(':id/allocations')
+  @Post(":id/allocations")
   @Roles(Role.ADMIN, Role.MANAGER, Role.FINANCE)
-  @ApiOperation({ summary: 'Create budget allocation' })
+  @ApiOperation({ summary: "Create budget allocation" })
   async createAllocation(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() allocationDto: any, // TODO: CreateAllocationDto
-    @CurrentUser('id') userId: string,
+    @CurrentUser("id") userId: string
   ) {
-    return this.budgetsService.createAllocation(id, allocationDto, userId);
+    return this.budgetsService.createAllocation(id, allocationDto, userId)
   }
 }
 ```
@@ -904,36 +939,48 @@ export class BudgetsController {
 // FILE: src/modules/budgets/budgets.service.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma.service';
-import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
-import { BudgetQueryDto } from './dto/budget-query.dto';
-import { createPaginatedResponse } from '../../common/dto/pagination.dto';
-import { BudgetStatus, Prisma } from '@prisma/client';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common"
+import { PrismaService } from "../../database/prisma.service"
+import { CreateBudgetDto } from "./dto/create-budget.dto"
+import { UpdateBudgetDto } from "./dto/update-budget.dto"
+import { BudgetQueryDto } from "./dto/budget-query.dto"
+import { createPaginatedResponse } from "../../common/dto/pagination.dto"
+import { BudgetStatus, Prisma } from "@prisma/client"
 
 @Injectable()
 export class BudgetsService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(query: BudgetQueryDto) {
-    const { page = 1, pageSize = 10, status, year, search, sortBy, sortOrder } = query;
+    const {
+      page = 1,
+      pageSize = 10,
+      status,
+      year,
+      search,
+      sortBy,
+      sortOrder,
+    } = query
 
-    const where: Prisma.BudgetWhereInput = {};
+    const where: Prisma.BudgetWhereInput = {}
 
     if (status) {
-      where.status = status as BudgetStatus;
+      where.status = status as BudgetStatus
     }
 
     if (year) {
-      where.fiscalYear = year;
+      where.fiscalYear = year
     }
 
     if (search) {
       where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { code: { contains: search, mode: 'insensitive' } },
-      ];
+        { name: { contains: search, mode: "insensitive" } },
+        { code: { contains: search, mode: "insensitive" } },
+      ]
     }
 
     const [data, total] = await Promise.all([
@@ -941,7 +988,9 @@ export class BudgetsService {
         where,
         skip: (page - 1) * pageSize,
         take: pageSize,
-        orderBy: sortBy ? { [sortBy]: sortOrder || 'desc' } : { createdAt: 'desc' },
+        orderBy: sortBy
+          ? { [sortBy]: sortOrder || "desc" }
+          : { createdAt: "desc" },
         include: {
           createdBy: {
             select: { id: true, name: true, email: true },
@@ -949,9 +998,9 @@ export class BudgetsService {
         },
       }),
       this.prisma.budget.count({ where }),
-    ]);
+    ])
 
-    return createPaginatedResponse(data, total, page, pageSize);
+    return createPaginatedResponse(data, total, page, pageSize)
   }
 
   async findOne(id: string) {
@@ -966,18 +1015,18 @@ export class BudgetsService {
           select: { id: true, name: true, status: true, allocatedBudget: true },
         },
       },
-    });
+    })
 
     if (!budget) {
-      throw new NotFoundException(`Budget with ID ${id} not found`);
+      throw new NotFoundException(`Budget with ID ${id} not found`)
     }
 
-    return budget;
+    return budget
   }
 
   async create(dto: CreateBudgetDto, userId: string) {
     // Generate unique code
-    const code = await this.generateBudgetCode(dto.fiscalYear, dto.quarter);
+    const code = await this.generateBudgetCode(dto.fiscalYear, dto.quarter)
 
     return this.prisma.budget.create({
       data: {
@@ -986,37 +1035,37 @@ export class BudgetsService {
         status: BudgetStatus.DRAFT,
         createdById: userId,
       },
-    });
+    })
   }
 
   async update(id: string, dto: UpdateBudgetDto, userId: string) {
-    const budget = await this.findOne(id);
+    const budget = await this.findOne(id)
 
     if (budget.status !== BudgetStatus.DRAFT) {
-      throw new BadRequestException('Only draft budgets can be updated');
+      throw new BadRequestException("Only draft budgets can be updated")
     }
 
     return this.prisma.budget.update({
       where: { id },
       data: dto,
-    });
+    })
   }
 
   async remove(id: string) {
-    const budget = await this.findOne(id);
+    const budget = await this.findOne(id)
 
     if (budget.status !== BudgetStatus.DRAFT) {
-      throw new BadRequestException('Only draft budgets can be deleted');
+      throw new BadRequestException("Only draft budgets can be deleted")
     }
 
-    return this.prisma.budget.delete({ where: { id } });
+    return this.prisma.budget.delete({ where: { id } })
   }
 
   async approve(id: string, userId: string) {
-    const budget = await this.findOne(id);
+    const budget = await this.findOne(id)
 
     if (budget.status !== BudgetStatus.PENDING_APPROVAL) {
-      throw new BadRequestException('Budget is not pending approval');
+      throw new BadRequestException("Budget is not pending approval")
     }
 
     return this.prisma.budget.update({
@@ -1026,14 +1075,14 @@ export class BudgetsService {
         approvedAt: new Date(),
         approvedBy: userId,
       },
-    });
+    })
   }
 
   async reject(id: string, reason: string, userId: string) {
-    const budget = await this.findOne(id);
+    const budget = await this.findOne(id)
 
     if (budget.status !== BudgetStatus.PENDING_APPROVAL) {
-      throw new BadRequestException('Budget is not pending approval');
+      throw new BadRequestException("Budget is not pending approval")
     }
 
     return this.prisma.budget.update({
@@ -1042,66 +1091,72 @@ export class BudgetsService {
         status: BudgetStatus.DRAFT,
         // Store rejection in audit log instead
       },
-    });
+    })
   }
 
   async getSummary(year?: number) {
-    const where: Prisma.BudgetWhereInput = year ? { fiscalYear: year } : {};
+    const where: Prisma.BudgetWhereInput = year ? { fiscalYear: year } : {}
 
-    const budgets = await this.prisma.budget.findMany({ where });
+    const budgets = await this.prisma.budget.findMany({ where })
 
     const summary = {
       totalBudget: budgets.reduce((sum, b) => sum + Number(b.totalAmount), 0),
-      totalAllocated: budgets.reduce((sum, b) => sum + Number(b.allocatedAmount), 0),
+      totalAllocated: budgets.reduce(
+        (sum, b) => sum + Number(b.allocatedAmount),
+        0
+      ),
       totalSpent: budgets.reduce((sum, b) => sum + Number(b.spentAmount), 0),
       budgetCount: budgets.length,
       byStatus: {} as Record<string, number>,
-    };
+    }
 
     // Count by status
     budgets.forEach((b) => {
-      summary.byStatus[b.status] = (summary.byStatus[b.status] || 0) + 1;
-    });
+      summary.byStatus[b.status] = (summary.byStatus[b.status] || 0) + 1
+    })
 
-    return summary;
+    return summary
   }
 
   async getAvailableYears() {
     const result = await this.prisma.budget.findMany({
       select: { fiscalYear: true },
-      distinct: ['fiscalYear'],
-      orderBy: { fiscalYear: 'desc' },
-    });
+      distinct: ["fiscalYear"],
+      orderBy: { fiscalYear: "desc" },
+    })
 
-    return result.map((r) => r.fiscalYear);
+    return result.map((r) => r.fiscalYear)
   }
 
   async getAllocations(budgetId: string) {
-    await this.findOne(budgetId); // Ensure budget exists
+    await this.findOne(budgetId) // Ensure budget exists
 
     return this.prisma.budgetAllocation.findMany({
       where: { budgetId },
-      orderBy: { createdAt: 'desc' },
-    });
+      orderBy: { createdAt: "desc" },
+    })
   }
 
   async createAllocation(budgetId: string, dto: any, userId: string) {
-    const budget = await this.findOne(budgetId);
+    const budget = await this.findOne(budgetId)
 
     return this.prisma.budgetAllocation.create({
       data: {
         ...dto,
         budgetId,
       },
-    });
+    })
   }
 
-  private async generateBudgetCode(year: number, quarter?: number): Promise<string> {
-    const prefix = quarter ? `BUD-${year}-Q${quarter}` : `BUD-${year}`;
+  private async generateBudgetCode(
+    year: number,
+    quarter?: number
+  ): Promise<string> {
+    const prefix = quarter ? `BUD-${year}-Q${quarter}` : `BUD-${year}`
     const count = await this.prisma.budget.count({
       where: { code: { startsWith: prefix } },
-    });
-    return `${prefix}-${String(count + 1).padStart(4, '0')}`;
+    })
+    return `${prefix}-${String(count + 1).padStart(4, "0")}`
   }
 }
 ```
@@ -1113,26 +1168,33 @@ export class BudgetsService {
 // FILE: src/modules/budgets/dto/create-budget.dto.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { IsString, IsInt, IsOptional, IsDateString, Min, Max } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import {
+  IsString,
+  IsInt,
+  IsOptional,
+  IsDateString,
+  Min,
+  Max,
+} from "class-validator"
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import { Type } from "class-transformer"
 
 export class CreateBudgetDto {
-  @ApiProperty({ example: 'Q1 2024 Marketing Budget' })
+  @ApiProperty({ example: "Q1 2024 Marketing Budget" })
   @IsString()
-  name: string;
+  name: string
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string
 
   @ApiProperty({ example: 2024 })
   @Type(() => Number)
   @IsInt()
   @Min(2020)
   @Max(2030)
-  fiscalYear: number;
+  fiscalYear: number
 
   @ApiPropertyOptional({ example: 1, minimum: 1, maximum: 4 })
   @IsOptional()
@@ -1140,21 +1202,21 @@ export class CreateBudgetDto {
   @IsInt()
   @Min(1)
   @Max(4)
-  quarter?: number;
+  quarter?: number
 
-  @ApiProperty({ example: 1000000000, description: 'Total amount in VND' })
+  @ApiProperty({ example: 1000000000, description: "Total amount in VND" })
   @Type(() => Number)
   @IsInt()
   @Min(0)
-  totalAmount: number;
+  totalAmount: number
 
-  @ApiProperty({ example: '2024-01-01' })
+  @ApiProperty({ example: "2024-01-01" })
   @IsDateString()
-  startDate: string;
+  startDate: string
 
-  @ApiProperty({ example: '2024-12-31' })
+  @ApiProperty({ example: "2024-12-31" })
   @IsDateString()
-  endDate: string;
+  endDate: string
 }
 ```
 
@@ -1163,8 +1225,8 @@ export class CreateBudgetDto {
 // FILE: src/modules/budgets/dto/update-budget.dto.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { PartialType } from '@nestjs/swagger';
-import { CreateBudgetDto } from './create-budget.dto';
+import { PartialType } from "@nestjs/swagger"
+import { CreateBudgetDto } from "./create-budget.dto"
 
 export class UpdateBudgetDto extends PartialType(CreateBudgetDto) {}
 ```
@@ -1174,31 +1236,31 @@ export class UpdateBudgetDto extends PartialType(CreateBudgetDto) {}
 // FILE: src/modules/budgets/dto/budget-query.dto.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { IsOptional, IsString, IsInt, IsEnum } from 'class-validator';
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { IsOptional, IsString, IsInt, IsEnum } from "class-validator"
+import { ApiPropertyOptional } from "@nestjs/swagger"
+import { Type } from "class-transformer"
+import { PaginationDto } from "../../../common/dto/pagination.dto"
 
 export enum BudgetStatus {
-  DRAFT = 'DRAFT',
-  PENDING_APPROVAL = 'PENDING_APPROVAL',
-  APPROVED = 'APPROVED',
-  ACTIVE = 'ACTIVE',
-  CLOSED = 'CLOSED',
-  CANCELLED = 'CANCELLED',
+  DRAFT = "DRAFT",
+  PENDING_APPROVAL = "PENDING_APPROVAL",
+  APPROVED = "APPROVED",
+  ACTIVE = "ACTIVE",
+  CLOSED = "CLOSED",
+  CANCELLED = "CANCELLED",
 }
 
 export class BudgetQueryDto extends PaginationDto {
   @ApiPropertyOptional({ enum: BudgetStatus })
   @IsOptional()
   @IsEnum(BudgetStatus)
-  status?: BudgetStatus;
+  status?: BudgetStatus
 
   @ApiPropertyOptional()
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  year?: number;
+  year?: number
 }
 ```
 
@@ -1211,24 +1273,24 @@ export class BudgetQueryDto extends PaginationDto {
 // FILE: src/modules/auth/auth.module.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { UsersModule } from '../users/users.module';
+import { Module } from "@nestjs/common"
+import { JwtModule } from "@nestjs/jwt"
+import { PassportModule } from "@nestjs/passport"
+import { ConfigModule, ConfigService } from "@nestjs/config"
+import { AuthController } from "./auth.controller"
+import { AuthService } from "./auth.service"
+import { JwtStrategy } from "./strategies/jwt.strategy"
+import { UsersModule } from "../users/users.module"
 
 @Module({
   imports: [
     UsersModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_ACCESS_SECRET'),
-        signOptions: { expiresIn: '15m' },
+        secret: configService.get("JWT_ACCESS_SECRET"),
+        signOptions: { expiresIn: "15m" },
       }),
       inject: [ConfigService],
     }),
@@ -1245,23 +1307,23 @@ export class AuthModule {}
 // FILE: src/modules/auth/strategies/jwt.strategy.ts
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../../../database/prisma.service';
+import { Injectable, UnauthorizedException } from "@nestjs/common"
+import { PassportStrategy } from "@nestjs/passport"
+import { ExtractJwt, Strategy } from "passport-jwt"
+import { ConfigService } from "@nestjs/config"
+import { PrismaService } from "../../../database/prisma.service"
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     configService: ConfigService,
-    private prisma: PrismaService,
+    private prisma: PrismaService
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_ACCESS_SECRET'),
-    });
+      secretOrKey: configService.get("JWT_ACCESS_SECRET"),
+    })
   }
 
   async validate(payload: { sub: string; email: string }) {
@@ -1274,13 +1336,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         role: true,
         isActive: true,
       },
-    });
+    })
 
     if (!user || !user.isActive) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException()
     }
 
-    return user;
+    return user
   }
 }
 ```
@@ -1294,7 +1356,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 # FILE: docker-compose.yml
 # ═══════════════════════════════════════════════════════════════════════════════
 
-version: '3.8'
+version: "3.8"
 
 services:
   api:
@@ -1519,4 +1581,5 @@ FINAL VERIFICATION
 ```
 
 ---
+
 # END OF CODER PACK

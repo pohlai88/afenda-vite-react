@@ -2,19 +2,19 @@
 // Smart Automation Types
 
 export type WorkflowType =
-  | 'LEAVE_REQUEST'
-  | 'OVERTIME_REQUEST'
-  | 'EMPLOYEE_ONBOARDING'
-  | 'CONTRACT_RENEWAL'
-  | 'PERFORMANCE_REVIEW'
-  | 'SALARY_ADJUSTMENT'
-  | 'TERMINATION'
+  | "LEAVE_REQUEST"
+  | "OVERTIME_REQUEST"
+  | "EMPLOYEE_ONBOARDING"
+  | "CONTRACT_RENEWAL"
+  | "PERFORMANCE_REVIEW"
+  | "SALARY_ADJUSTMENT"
+  | "TERMINATION"
 
 export type SuggestionTrigger =
-  | 'PAGE_LOAD'
-  | 'USER_ACTION'
-  | 'SCHEDULE'
-  | 'DATA_CHANGE'
+  | "PAGE_LOAD"
+  | "USER_ACTION"
+  | "SCHEDULE"
+  | "DATA_CHANGE"
 
 export interface WorkflowSuggestion {
   id: string
@@ -22,7 +22,7 @@ export interface WorkflowSuggestion {
   title: string
   description: string
   reason: string
-  priority: 'LOW' | 'MEDIUM' | 'HIGH'
+  priority: "LOW" | "MEDIUM" | "HIGH"
   actions: WorkflowAction[]
   metadata?: Record<string, unknown>
   createdAt: Date
@@ -30,7 +30,7 @@ export interface WorkflowSuggestion {
 }
 
 export interface WorkflowAction {
-  type: 'navigate' | 'create' | 'approve' | 'remind' | 'schedule'
+  type: "navigate" | "create" | "approve" | "remind" | "schedule"
   label: string
   url?: string
   params?: Record<string, unknown>

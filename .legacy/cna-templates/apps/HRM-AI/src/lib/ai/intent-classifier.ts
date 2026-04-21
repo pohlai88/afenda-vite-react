@@ -1,9 +1,9 @@
 // src/lib/ai/intent-classifier.ts
 // Quick intent detection for routing
 
-import { classify } from './client'
-import { INTENT_CLASSIFIER_PROMPT } from './prompts'
-import type { AIIntentType } from '@prisma/client'
+import { classify } from "./client"
+import { INTENT_CLASSIFIER_PROMPT } from "./prompts"
+import type { AIIntentType } from "@prisma/client"
 
 // Intent patterns for quick local classification
 const INTENT_PATTERNS: Record<AIIntentType, RegExp[]> = {
@@ -58,7 +58,7 @@ const INTENT_PATTERNS: Record<AIIntentType, RegExp[]> = {
  */
 export function classifyIntentLocal(message: string): AIIntentType | null {
   for (const [intent, patterns] of Object.entries(INTENT_PATTERNS)) {
-    if (intent === 'UNKNOWN') continue
+    if (intent === "UNKNOWN") continue
 
     for (const pattern of patterns) {
       if (pattern.test(message)) {
@@ -79,22 +79,22 @@ export async function classifyIntentAI(message: string): Promise<AIIntentType> {
 
     // Validate the intent
     const validIntents: AIIntentType[] = [
-      'FAQ',
-      'DATA_QUERY',
-      'ACTION_REQUEST',
-      'REPORT_REQUEST',
-      'GENERAL_CHAT',
-      'UNKNOWN',
+      "FAQ",
+      "DATA_QUERY",
+      "ACTION_REQUEST",
+      "REPORT_REQUEST",
+      "GENERAL_CHAT",
+      "UNKNOWN",
     ]
 
     if (validIntents.includes(intent as AIIntentType)) {
       return intent as AIIntentType
     }
 
-    return 'UNKNOWN'
+    return "UNKNOWN"
   } catch (error) {
-    console.error('Intent classification error:', error)
-    return 'UNKNOWN'
+    console.error("Intent classification error:", error)
+    return "UNKNOWN"
   }
 }
 

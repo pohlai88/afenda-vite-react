@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useState, useEffect, useCallback } from 'react'
-import type { OnboardingData, OnboardingTemplate } from '@/types/recruitment'
+import { useState, useEffect, useCallback } from "react"
+import type { OnboardingData, OnboardingTemplate } from "@/types/recruitment"
 
 export function useOnboardings(tenantId: string, status?: string) {
   const [onboardings, setOnboardings] = useState<OnboardingData[]>([])
@@ -11,7 +11,7 @@ export function useOnboardings(tenantId: string, status?: string) {
     setLoading(true)
     try {
       const params = new URLSearchParams({ tenantId })
-      if (status) params.set('status', status)
+      if (status) params.set("status", status)
 
       const res = await fetch(`/api/recruitment/onboarding?${params}`)
       const data = await res.json()
@@ -20,7 +20,7 @@ export function useOnboardings(tenantId: string, status?: string) {
         setOnboardings(data.data.onboardings)
       }
     } catch (err) {
-      console.error('Failed to fetch onboardings:', err)
+      console.error("Failed to fetch onboardings:", err)
     } finally {
       setLoading(false)
     }
@@ -48,7 +48,7 @@ export function useOnboardingTemplates(tenantId: string) {
         setTemplates(data.data)
       }
     } catch (err) {
-      console.error('Failed to fetch templates:', err)
+      console.error("Failed to fetch templates:", err)
     } finally {
       setLoading(false)
     }

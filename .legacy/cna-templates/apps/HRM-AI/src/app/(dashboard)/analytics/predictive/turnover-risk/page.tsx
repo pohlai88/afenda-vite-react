@@ -1,22 +1,34 @@
 // src/app/(dashboard)/analytics/predictive/turnover-risk/page.tsx
 // Turnover Risk Predictions
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useState, useEffect } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 import {
   Table,
   TableBody,
@@ -24,7 +36,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table"
 import {
   Brain,
   Search,
@@ -33,20 +45,20 @@ import {
   TrendingUp,
   TrendingDown,
   ChevronRight,
-} from 'lucide-react'
+} from "lucide-react"
 
 interface Prediction {
   id: string
   entityId: string
   entityName: string
   score: number
-  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+  riskLevel: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
   confidence: number
   factors: Array<{
     name: string
     value: number
     weight: number
-    impact: 'positive' | 'negative' | 'neutral'
+    impact: "positive" | "negative" | "neutral"
     description: string
   }>
   recommendations: string[]
@@ -54,26 +66,29 @@ interface Prediction {
 }
 
 const RISK_COLORS = {
-  LOW: 'bg-green-100 text-green-800',
-  MEDIUM: 'bg-yellow-100 text-yellow-800',
-  HIGH: 'bg-orange-100 text-orange-800',
-  CRITICAL: 'bg-red-100 text-red-800',
+  LOW: "bg-green-100 text-green-800",
+  MEDIUM: "bg-yellow-100 text-yellow-800",
+  HIGH: "bg-orange-100 text-orange-800",
+  CRITICAL: "bg-red-100 text-red-800",
 }
 
 const RISK_LABELS = {
-  LOW: 'Thấp',
-  MEDIUM: 'Trung bình',
-  HIGH: 'Cao',
-  CRITICAL: 'Nghiêm trọng',
+  LOW: "Thấp",
+  MEDIUM: "Trung bình",
+  HIGH: "Cao",
+  CRITICAL: "Nghiêm trọng",
 }
 
 export default function TurnoverRiskPage() {
   const [loading, setLoading] = useState(true)
   const [predictions, setPredictions] = useState<Prediction[]>([])
-  const [filteredPredictions, setFilteredPredictions] = useState<Prediction[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [riskFilter, setRiskFilter] = useState<string>('all')
-  const [selectedPrediction, setSelectedPrediction] = useState<Prediction | null>(null)
+  const [filteredPredictions, setFilteredPredictions] = useState<Prediction[]>(
+    []
+  )
+  const [searchQuery, setSearchQuery] = useState("")
+  const [riskFilter, setRiskFilter] = useState<string>("all")
+  const [selectedPrediction, setSelectedPrediction] =
+    useState<Prediction | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
 
   useEffect(() => {
@@ -87,13 +102,15 @@ export default function TurnoverRiskPage() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/analytics/predictions?modelType=TURNOVER_RISK&limit=200')
+      const response = await fetch(
+        "/api/analytics/predictions?modelType=TURNOVER_RISK&limit=200"
+      )
       if (response.ok) {
         const data = await response.json()
         setPredictions(data.data || [])
       }
     } catch (error) {
-      console.error('Error fetching predictions:', error)
+      console.error("Error fetching predictions:", error)
     } finally {
       setLoading(false)
     }
@@ -102,14 +119,14 @@ export default function TurnoverRiskPage() {
   const runPredictions = async () => {
     setLoading(true)
     try {
-      await fetch('/api/analytics/predictions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ modelType: 'TURNOVER_RISK' }),
+      await fetch("/api/analytics/predictions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ modelType: "TURNOVER_RISK" }),
       })
       await fetchData()
     } catch (error) {
-      console.error('Error running predictions:', error)
+      console.error("Error running predictions:", error)
     }
   }
 
@@ -122,7 +139,7 @@ export default function TurnoverRiskPage() {
       )
     }
 
-    if (riskFilter !== 'all') {
+    if (riskFilter !== "all") {
       filtered = filtered.filter((p) => p.riskLevel === riskFilter)
     }
 
@@ -185,7 +202,9 @@ export default function TurnoverRiskPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Nguy cơ TB</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.MEDIUM}</p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {stats.MEDIUM}
+                </p>
               </div>
               <div className="p-2 bg-yellow-100 rounded-full">
                 <AlertTriangle className="h-5 w-5 text-yellow-600" />
@@ -198,7 +217,9 @@ export default function TurnoverRiskPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Nguy cơ cao</p>
-                <p className="text-2xl font-bold text-orange-600">{stats.HIGH}</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {stats.HIGH}
+                </p>
               </div>
               <div className="p-2 bg-orange-100 rounded-full">
                 <TrendingUp className="h-5 w-5 text-orange-600" />
@@ -211,7 +232,9 @@ export default function TurnoverRiskPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Nghiêm trọng</p>
-                <p className="text-2xl font-bold text-red-600">{stats.CRITICAL}</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {stats.CRITICAL}
+                </p>
               </div>
               <div className="p-2 bg-red-100 rounded-full">
                 <AlertTriangle className="h-5 w-5 text-red-600" />
@@ -279,24 +302,28 @@ export default function TurnoverRiskPage() {
               <TableBody>
                 {filteredPredictions.map((prediction) => (
                   <TableRow key={prediction.id}>
-                    <TableCell className="font-medium">{prediction.entityName}</TableCell>
+                    <TableCell className="font-medium">
+                      {prediction.entityName}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-gray-200 rounded-full h-2">
                           <div
                             className={`h-2 rounded-full ${
                               prediction.score >= 70
-                                ? 'bg-red-500'
+                                ? "bg-red-500"
                                 : prediction.score >= 50
-                                ? 'bg-orange-500'
-                                : prediction.score >= 30
-                                ? 'bg-yellow-500'
-                                : 'bg-green-500'
+                                  ? "bg-orange-500"
+                                  : prediction.score >= 30
+                                    ? "bg-yellow-500"
+                                    : "bg-green-500"
                             }`}
                             style={{ width: `${prediction.score}%` }}
                           />
                         </div>
-                        <span className="text-sm">{prediction.score.toFixed(0)}</span>
+                        <span className="text-sm">
+                          {prediction.score.toFixed(0)}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -323,7 +350,7 @@ export default function TurnoverRiskPage() {
             <div className="text-center py-10 text-muted-foreground">
               {predictions.length === 0
                 ? 'Chưa có dữ liệu dự đoán. Nhấn "Chạy dự đoán mới" để bắt đầu.'
-                : 'Không tìm thấy kết quả phù hợp.'}
+                : "Không tìm thấy kết quả phù hợp."}
             </div>
           )}
         </CardContent>
@@ -348,9 +375,13 @@ export default function TurnoverRiskPage() {
               <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                 <div>
                   <p className="text-sm text-muted-foreground">Điểm rủi ro</p>
-                  <p className="text-3xl font-bold">{selectedPrediction.score.toFixed(0)}</p>
+                  <p className="text-3xl font-bold">
+                    {selectedPrediction.score.toFixed(0)}
+                  </p>
                 </div>
-                <Badge className={`text-lg py-1 px-3 ${RISK_COLORS[selectedPrediction.riskLevel]}`}>
+                <Badge
+                  className={`text-lg py-1 px-3 ${RISK_COLORS[selectedPrediction.riskLevel]}`}
+                >
                   {RISK_LABELS[selectedPrediction.riskLevel]}
                 </Badge>
               </div>
@@ -366,25 +397,29 @@ export default function TurnoverRiskPage() {
                         <Badge
                           variant="outline"
                           className={
-                            factor.impact === 'negative'
-                              ? 'text-red-600 border-red-600'
-                              : factor.impact === 'positive'
-                              ? 'text-green-600 border-green-600'
-                              : ''
+                            factor.impact === "negative"
+                              ? "text-red-600 border-red-600"
+                              : factor.impact === "positive"
+                                ? "text-green-600 border-green-600"
+                                : ""
                           }
                         >
-                          {factor.impact === 'negative'
-                            ? 'Tiêu cực'
-                            : factor.impact === 'positive'
-                            ? 'Tích cực'
-                            : 'Trung lập'}
+                          {factor.impact === "negative"
+                            ? "Tiêu cực"
+                            : factor.impact === "positive"
+                              ? "Tích cực"
+                              : "Trung lập"}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">{factor.description}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {factor.description}
+                      </p>
                       <div className="mt-2 flex items-center gap-2 text-sm">
                         <span>Giá trị: {factor.value}</span>
                         <span className="text-muted-foreground">|</span>
-                        <span>Trọng số: {(factor.weight * 100).toFixed(0)}%</span>
+                        <span>
+                          Trọng số: {(factor.weight * 100).toFixed(0)}%
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -399,7 +434,9 @@ export default function TurnoverRiskPage() {
                     {selectedPrediction.recommendations.map((rec, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-xs font-medium text-purple-600">{index + 1}</span>
+                          <span className="text-xs font-medium text-purple-600">
+                            {index + 1}
+                          </span>
                         </div>
                         <span className="text-sm">{rec}</span>
                       </li>

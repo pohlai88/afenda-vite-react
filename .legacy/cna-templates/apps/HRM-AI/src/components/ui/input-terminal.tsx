@@ -17,7 +17,10 @@ interface InputTerminalProps extends React.InputHTMLAttributes<HTMLInputElement>
   containerClassName?: string
 }
 
-export const InputTerminal = React.forwardRef<HTMLInputElement, InputTerminalProps>(
+export const InputTerminal = React.forwardRef<
+  HTMLInputElement,
+  InputTerminalProps
+>(
   (
     {
       className,
@@ -48,7 +51,9 @@ export const InputTerminal = React.forwardRef<HTMLInputElement, InputTerminalPro
         {label && (
           <label className="block text-sm font-medium text-foreground">
             {label}
-            {props.required && <span className="text-destructive ml-0.5">*</span>}
+            {props.required && (
+              <span className="text-destructive ml-0.5">*</span>
+            )}
           </label>
         )}
 
@@ -94,11 +99,14 @@ export const InputTerminal = React.forwardRef<HTMLInputElement, InputTerminalPro
           />
 
           {/* Right Icon */}
-          {icon && iconPosition === "right" && !clearable && !showPasswordToggle && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
-              {icon}
-            </div>
-          )}
+          {icon &&
+            iconPosition === "right" &&
+            !clearable &&
+            !showPasswordToggle && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+                {icon}
+              </div>
+            )}
 
           {/* Status Icon */}
           {(error || success) && !clearable && !showPasswordToggle && (
@@ -108,7 +116,11 @@ export const InputTerminal = React.forwardRef<HTMLInputElement, InputTerminalPro
                 error ? "text-destructive" : "text-success"
               )}
             >
-              {error ? <AlertCircle className="w-4 h-4" /> : <Check className="w-4 h-4" />}
+              {error ? (
+                <AlertCircle className="w-4 h-4" />
+              ) : (
+                <Check className="w-4 h-4" />
+              )}
             </div>
           )}
 
@@ -139,7 +151,11 @@ export const InputTerminal = React.forwardRef<HTMLInputElement, InputTerminalPro
                 "transition-colors duration-150"
               )}
             >
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showPassword ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
             </button>
           )}
 
@@ -171,7 +187,10 @@ InputTerminal.displayName = "InputTerminal"
 // SEARCH INPUT VARIANT
 // ═══════════════════════════════════════════════════════════════
 
-interface SearchInputProps extends Omit<InputTerminalProps, "icon" | "iconPosition"> {
+interface SearchInputProps extends Omit<
+  InputTerminalProps,
+  "icon" | "iconPosition"
+> {
   onSearch?: (value: string) => void
 }
 

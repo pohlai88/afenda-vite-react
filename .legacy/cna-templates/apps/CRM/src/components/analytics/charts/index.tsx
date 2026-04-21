@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import dynamic from 'next/dynamic'
-import { Skeleton } from '@/components/ui/skeleton'
+import dynamic from "next/dynamic"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const ChartSkeleton = () => (
   <div className="glass-card-static p-3">
@@ -11,31 +11,49 @@ const ChartSkeleton = () => (
 )
 
 export const LazyPipelineFunnelChart = dynamic(
-  () => import('./PipelineFunnelChart').then((mod) => ({ default: mod.PipelineFunnelChart })),
+  () =>
+    import("./PipelineFunnelChart").then((mod) => ({
+      default: mod.PipelineFunnelChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 export const LazyDealsOverTimeChart = dynamic(
-  () => import('./DealsOverTimeChart').then((mod) => ({ default: mod.DealsOverTimeChart })),
+  () =>
+    import("./DealsOverTimeChart").then((mod) => ({
+      default: mod.DealsOverTimeChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 export const LazyQuoteStatusChart = dynamic(
-  () => import('./QuoteStatusChart').then((mod) => ({ default: mod.QuoteStatusChart })),
+  () =>
+    import("./QuoteStatusChart").then((mod) => ({
+      default: mod.QuoteStatusChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 export const LazyTopContactsChart = dynamic(
-  () => import('./TopContactsChart').then((mod) => ({ default: mod.TopContactsChart })),
+  () =>
+    import("./TopContactsChart").then((mod) => ({
+      default: mod.TopContactsChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 export const LazyCampaignPerformanceChart = dynamic(
-  () => import('./CampaignPerformanceChart').then((mod) => ({ default: mod.CampaignPerformanceChart })),
+  () =>
+    import("./CampaignPerformanceChart").then((mod) => ({
+      default: mod.CampaignPerformanceChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 export const LazyActivityByTypeChart = dynamic(
-  () => import('./ActivityByTypeChart').then((mod) => ({ default: mod.ActivityByTypeChart })),
+  () =>
+    import("./ActivityByTypeChart").then((mod) => ({
+      default: mod.ActivityByTypeChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )

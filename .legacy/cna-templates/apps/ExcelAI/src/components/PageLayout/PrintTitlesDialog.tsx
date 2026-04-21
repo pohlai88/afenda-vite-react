@@ -2,15 +2,15 @@
 // PRINT TITLES DIALOG
 // ============================================================
 
-import React, { useState, useEffect } from 'react';
-import { X, Grid3X3 } from 'lucide-react';
-import { usePrintStore } from '../../stores/printStore';
-import './PageLayout.css';
+import React, { useState, useEffect } from "react"
+import { X, Grid3X3 } from "lucide-react"
+import { usePrintStore } from "../../stores/printStore"
+import "./PageLayout.css"
 
 interface PrintTitlesDialogProps {
-  sheetId: string;
-  isOpen: boolean;
-  onClose: () => void;
+  sheetId: string
+  isOpen: boolean
+  onClose: () => void
 }
 
 export const PrintTitlesDialog: React.FC<PrintTitlesDialogProps> = ({
@@ -18,32 +18,36 @@ export const PrintTitlesDialog: React.FC<PrintTitlesDialogProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { getSettings, setPrintTitles } = usePrintStore();
-  const settings = getSettings(sheetId);
+  const { getSettings, setPrintTitles } = usePrintStore()
+  const settings = getSettings(sheetId)
 
-  const [repeatRows, setRepeatRows] = useState(settings.printTitles?.repeatRows || '');
-  const [repeatCols, setRepeatCols] = useState(settings.printTitles?.repeatCols || '');
+  const [repeatRows, setRepeatRows] = useState(
+    settings.printTitles?.repeatRows || ""
+  )
+  const [repeatCols, setRepeatCols] = useState(
+    settings.printTitles?.repeatCols || ""
+  )
 
   useEffect(() => {
     if (isOpen) {
-      setRepeatRows(settings.printTitles?.repeatRows || '');
-      setRepeatCols(settings.printTitles?.repeatCols || '');
+      setRepeatRows(settings.printTitles?.repeatRows || "")
+      setRepeatCols(settings.printTitles?.repeatCols || "")
     }
-  }, [isOpen, settings.printTitles]);
+  }, [isOpen, settings.printTitles])
 
   const handleApply = () => {
     setPrintTitles(sheetId, {
       repeatRows: repeatRows || undefined,
       repeatCols: repeatCols || undefined,
-    });
-    onClose();
-  };
+    })
+    onClose()
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="print-titles-overlay" onClick={onClose}>
-      <div className="print-titles-dialog" onClick={e => e.stopPropagation()}>
+      <div className="print-titles-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="dialog-header">
           <h2>Print Titles</h2>
           <button className="close-btn" onClick={onClose}>
@@ -66,7 +70,7 @@ export const PrintTitlesDialog: React.FC<PrintTitlesDialogProps> = ({
                 <input
                   type="text"
                   value={repeatRows}
-                  onChange={e => setRepeatRows(e.target.value)}
+                  onChange={(e) => setRepeatRows(e.target.value)}
                   placeholder="e.g., $1:$2"
                 />
                 <span className="hint">Example: $1:$3 (rows 1-3)</span>
@@ -82,7 +86,7 @@ export const PrintTitlesDialog: React.FC<PrintTitlesDialogProps> = ({
                 <input
                   type="text"
                   value={repeatCols}
-                  onChange={e => setRepeatCols(e.target.value)}
+                  onChange={(e) => setRepeatCols(e.target.value)}
                   placeholder="e.g., $A:$B"
                 />
                 <span className="hint">Example: $A:$B (columns A-B)</span>
@@ -104,9 +108,7 @@ export const PrintTitlesDialog: React.FC<PrintTitlesDialogProps> = ({
                     Cols: {repeatCols}
                   </div>
                 )}
-                <div className="page-content">
-                  Page Content
-                </div>
+                <div className="page-content">Page Content</div>
               </div>
             </div>
           </div>
@@ -122,7 +124,7 @@ export const PrintTitlesDialog: React.FC<PrintTitlesDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PrintTitlesDialog;
+export default PrintTitlesDialog

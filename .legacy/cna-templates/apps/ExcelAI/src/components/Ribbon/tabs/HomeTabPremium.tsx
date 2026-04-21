@@ -1,24 +1,41 @@
-import React from 'react';
-import { RibbonGroupPremium } from '../RibbonGroupPremium';
-import { CompactButton, CompactSplitButton } from '../../Toolbar/CompactButton';
+import React from "react"
+import { RibbonGroupPremium } from "../RibbonGroupPremium"
+import { CompactButton, CompactSplitButton } from "../../Toolbar/CompactButton"
 import {
-  Clipboard, Scissors, Copy, ClipboardPaste,
-  Bold, Italic, Underline,
-  AlignLeft, AlignCenter, AlignRight,
-  Percent, DollarSign,
-  Plus, Trash2, Settings,
-  Search, SortAsc,
-  PaintBucket, Type, Palette
-} from 'lucide-react';
-import { useFormatStore } from '../../../stores/formatStore';
+  Clipboard,
+  Scissors,
+  Copy,
+  ClipboardPaste,
+  Bold,
+  Italic,
+  Underline,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Percent,
+  DollarSign,
+  Plus,
+  Trash2,
+  Settings,
+  Search,
+  SortAsc,
+  PaintBucket,
+  Type,
+  Palette,
+} from "lucide-react"
+import { useFormatStore } from "../../../stores/formatStore"
 
 export const HomeTabPremium: React.FC = () => {
   const {
-    bold, toggleBold,
-    italic, toggleItalic,
-    underline, toggleUnderline,
-    align, setAlign,
-  } = useFormatStore();
+    bold,
+    toggleBold,
+    italic,
+    toggleItalic,
+    underline,
+    toggleUnderline,
+    align,
+    setAlign,
+  } = useFormatStore()
 
   return (
     <>
@@ -32,20 +49,9 @@ export const HomeTabPremium: React.FC = () => {
           onMainClick={() => navigator.clipboard.readText()}
         />
         <div className="btn-group btn-group--vertical">
-          <CompactButton
-            icon={Scissors}
-            tooltip="Cut"
-            shortcut="Ctrl+X"
-          />
-          <CompactButton
-            icon={Copy}
-            tooltip="Copy"
-            shortcut="Ctrl+C"
-          />
-          <CompactButton
-            icon={Clipboard}
-            tooltip="Format Painter"
-          />
+          <CompactButton icon={Scissors} tooltip="Cut" shortcut="Ctrl+X" />
+          <CompactButton icon={Copy} tooltip="Copy" shortcut="Ctrl+C" />
+          <CompactButton icon={Clipboard} tooltip="Format Painter" />
         </div>
       </RibbonGroupPremium>
 
@@ -70,21 +76,21 @@ export const HomeTabPremium: React.FC = () => {
               icon={Bold}
               tooltip="Bold"
               shortcut="Ctrl+B"
-              variant={bold ? 'active' : 'default'}
+              variant={bold ? "active" : "default"}
               onClick={toggleBold}
             />
             <CompactButton
               icon={Italic}
               tooltip="Italic"
               shortcut="Ctrl+I"
-              variant={italic ? 'active' : 'default'}
+              variant={italic ? "active" : "default"}
               onClick={toggleItalic}
             />
             <CompactButton
               icon={Underline}
               tooltip="Underline"
               shortcut="Ctrl+U"
-              variant={underline ? 'active' : 'default'}
+              variant={underline ? "active" : "default"}
               onClick={toggleUnderline}
             />
             <div className="btn-divider" />
@@ -111,20 +117,20 @@ export const HomeTabPremium: React.FC = () => {
             <CompactButton
               icon={AlignLeft}
               tooltip="Align Left"
-              variant={align === 'left' ? 'active' : 'default'}
-              onClick={() => setAlign('left')}
+              variant={align === "left" ? "active" : "default"}
+              onClick={() => setAlign("left")}
             />
             <CompactButton
               icon={AlignCenter}
               tooltip="Center"
-              variant={align === 'center' ? 'active' : 'default'}
-              onClick={() => setAlign('center')}
+              variant={align === "center" ? "active" : "default"}
+              onClick={() => setAlign("center")}
             />
             <CompactButton
               icon={AlignRight}
               tooltip="Align Right"
-              variant={align === 'right' ? 'active' : 'default'}
-              onClick={() => setAlign('right')}
+              variant={align === "right" ? "active" : "default"}
+              onClick={() => setAlign("right")}
             />
           </div>
         </div>
@@ -148,14 +154,9 @@ export const HomeTabPremium: React.FC = () => {
               tooltip="Accounting Number Format"
               hasDropdown
             />
-            <CompactButton
-              icon={Percent}
-              tooltip="Percent Style"
-            />
-            <CompactButton
-              tooltip="Comma Style"
-            >
-              <span style={{ fontSize: '11px', fontWeight: 500 }}>,</span>
+            <CompactButton icon={Percent} tooltip="Percent Style" />
+            <CompactButton tooltip="Comma Style">
+              <span style={{ fontSize: "11px", fontWeight: 500 }}>,</span>
             </CompactButton>
           </div>
         </div>
@@ -228,5 +229,5 @@ export const HomeTabPremium: React.FC = () => {
         </div>
       </RibbonGroupPremium>
     </>
-  );
-};
+  )
+}

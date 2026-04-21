@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source": "frappe",
-  "generatedAt": "2026-04-14T22:39:40.543Z",
+  "generatedAt": "2026-04-21T18:00:27.610Z",
   "fetchedFrom": [
     "https://raw.githubusercontent.com/frappe/frappe/develop/frappe/locale/main.pot",
     "https://raw.githubusercontent.com/frappe/erpnext/develop/erpnext/locale/main.pot",
@@ -167,6 +167,12 @@
       "value": "Entri Persediaan"
     },
     {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Bút toán tồn kho"
+    },
+    {
       "afendaKey": "auth.login.title.label",
       "locale": "en",
       "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
@@ -197,6 +203,12 @@
       "value": "Pelanggan"
     },
     {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Khách hàng"
+    },
+    {
       "afendaKey": "dashboard.card.employees.title.label",
       "locale": "en",
       "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
@@ -225,6 +237,12 @@
       "locale": "id",
       "sourcePath": "erpnext/locale/id.po",
       "value": "Akun"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Tài khoản"
     },
     {
       "afendaKey": "dashboard.card.inventory.title.label",
@@ -273,6 +291,12 @@
       "locale": "id",
       "sourcePath": "erpnext/locale/id.po",
       "value": "Penjualan"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Bán hàng"
     },
     {
       "afendaKey": "dashboard.header.title.label",
@@ -359,6 +383,12 @@
       "value": "Dibayar"
     },
     {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Đã thanh toán"
+    },
+    {
       "afendaKey": "settlement.header.title.label",
       "locale": "en",
       "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
@@ -369,6 +399,12 @@
       "locale": "id",
       "sourcePath": "erpnext/locale/id.po",
       "value": "Masuk pembayaran"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Bút toán thanh toán"
     },
     {
       "afendaKey": "settlement.status.completed.label",
@@ -383,10 +419,22 @@
       "value": "Diselesaikan"
     },
     {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Đã thanh toán"
+    },
+    {
       "afendaKey": "settlement.status.pending.label",
       "locale": "en",
       "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
       "value": "Pending"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "value": "Tertunda"
     },
     {
       "afendaKey": "settlement.status.pending.label",
@@ -459,6 +507,12 @@
       "locale": "id",
       "sourcePath": "erpnext/locale/id.po",
       "value": "Penjualan"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Bán hàng"
     },
     {
       "afendaKey": "shell.erp_module.settings.page.title",

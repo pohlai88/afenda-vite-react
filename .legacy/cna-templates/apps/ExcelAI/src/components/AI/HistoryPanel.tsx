@@ -2,7 +2,7 @@
 // HISTORY PANEL — Action History
 // ═══════════════════════════════════════════════════════════════════════════
 
-import React from 'react';
+import React from "react"
 import {
   History,
   Check,
@@ -12,49 +12,49 @@ import {
   Trash2,
   Zap,
   Clock,
-} from 'lucide-react';
-import { useAIStore } from '../../stores/aiStore';
-import type { AIActionHistory } from '../../ai/types';
+} from "lucide-react"
+import { useAIStore } from "../../stores/aiStore"
+import type { AIActionHistory } from "../../ai/types"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // History Item Component
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface HistoryItemProps {
-  item: AIActionHistory;
+  item: AIActionHistory
 }
 
 const HistoryItem: React.FC<HistoryItemProps> = ({ item }) => {
   const getOutcomeIcon = () => {
     switch (item.outcome) {
-      case 'success':
-        return <Check size={14} className="text-green-500" />;
-      case 'failed':
-        return <X size={14} className="text-red-500" />;
-      case 'reverted':
-        return <RotateCcw size={14} className="text-yellow-500" />;
+      case "success":
+        return <Check size={14} className="text-green-500" />
+      case "failed":
+        return <X size={14} className="text-red-500" />
+      case "reverted":
+        return <RotateCcw size={14} className="text-yellow-500" />
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   const getTypeIcon = () => {
     switch (item.action.type) {
-      case 'write':
-        return <FileEdit size={14} />;
-      case 'delete':
-        return <Trash2 size={14} />;
+      case "write":
+        return <FileEdit size={14} />
+      case "delete":
+        return <Trash2 size={14} />
       default:
-        return <Zap size={14} />;
+        return <Zap size={14} />
     }
-  };
+  }
 
   const formatTime = (date: Date) => {
-    return new Date(date).toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+    return new Date(date).toLocaleTimeString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
 
   return (
     <div className={`ai-history-item ai-history-item--${item.outcome}`}>
@@ -82,20 +82,20 @@ const HistoryItem: React.FC<HistoryItemProps> = ({ item }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Main Component
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const HistoryPanel: React.FC = () => {
-  const actionHistory = useAIStore((state) => state.actionHistory);
+  const actionHistory = useAIStore((state) => state.actionHistory)
 
   // Sort by most recent first
   const sortedHistory = [...actionHistory].sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-  );
+  )
 
   return (
     <div className="ai-history-panel">
@@ -133,26 +133,26 @@ export const HistoryPanel: React.FC = () => {
             <div className="ai-history-stat ai-history-stat--success">
               <span className="label">Success</span>
               <span className="value">
-                {actionHistory.filter((h) => h.outcome === 'success').length}
+                {actionHistory.filter((h) => h.outcome === "success").length}
               </span>
             </div>
             <div className="ai-history-stat ai-history-stat--failed">
               <span className="label">Failed</span>
               <span className="value">
-                {actionHistory.filter((h) => h.outcome === 'failed').length}
+                {actionHistory.filter((h) => h.outcome === "failed").length}
               </span>
             </div>
             <div className="ai-history-stat ai-history-stat--reverted">
               <span className="label">Reverted</span>
               <span className="value">
-                {actionHistory.filter((h) => h.outcome === 'reverted').length}
+                {actionHistory.filter((h) => h.outcome === "reverted").length}
               </span>
             </div>
           </div>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default HistoryPanel;
+export default HistoryPanel

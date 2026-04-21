@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { z } from "zod"
 
 const enrollSchema = z.object({
   sessionId: z.string().optional(),
@@ -15,7 +15,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -29,18 +29,18 @@ export async function POST(
       where: { id: params.id },
       include: {
         modules: {
-          orderBy: { order: 'asc' },
+          orderBy: { order: "asc" },
         },
       },
     })
 
     if (!course) {
-      return NextResponse.json({ error: 'Course not found' }, { status: 404 })
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
 
-    if (course.status !== 'PUBLISHED') {
+    if (course.status !== "PUBLISHED") {
       return NextResponse.json(
-        { error: 'Course is not available for enrollment' },
+        { error: "Course is not available for enrollment" },
         { status: 400 }
       )
     }
@@ -50,13 +50,13 @@ export async function POST(
       where: {
         courseId: params.id,
         employeeId,
-        status: { notIn: ['CANCELLED', 'REJECTED'] },
+        status: { notIn: ["CANCELLED", "REJECTED"] },
       },
     })
 
     if (existingEnrollment) {
       return NextResponse.json(
-        { error: 'Already enrolled in this course' },
+        { error: "Already enrolled in this course" },
         { status: 400 }
       )
     }
@@ -72,16 +72,15 @@ export async function POST(
 
       if (!trainingSession) {
         return NextResponse.json(
-          { error: 'Training session not found' },
+          { error: "Training session not found" },
           { status: 404 }
         )
       }
 
-      if (trainingSession._count.enrollments >= trainingSession.maxParticipants) {
-        return NextResponse.json(
-          { error: 'Session is full' },
-          { status: 400 }
-        )
+      if (
+        trainingSession._count.enrollments >= trainingSession.maxParticipants
+      ) {
+        return NextResponse.json({ error: "Session is full" }, { status: 400 })
       }
     }
 
@@ -92,7 +91,7 @@ export async function POST(
         courseId: params.id,
         employeeId,
         sessionId: data.sessionId,
-        status: 'ENROLLED',
+        status: "ENROLLED",
         startedAt: new Date(),
         progress: 0,
       },
@@ -106,21 +105,24 @@ export async function POST(
       },
     })
 
-    return NextResponse.json({
-      success: true,
-      data: enrollment,
-      message: 'Enrolled successfully',
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: enrollment,
+        message: "Enrolled successfully",
+      },
+      { status: 201 }
+    )
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    console.error('Error enrolling in course:', error)
+    console.error("Error enrolling in course:", error)
     return NextResponse.json(
-      { error: 'Failed to enroll in course' },
+      { error: "Failed to enroll in course" },
       { status: 500 }
     )
   }

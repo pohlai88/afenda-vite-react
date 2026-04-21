@@ -6,12 +6,12 @@ This runbook provides procedures for handling production incidents.
 
 ## Severity Levels
 
-| Severity | Description | Response Time | Examples |
-|----------|-------------|---------------|----------|
-| **SEV1** | Critical - System down | 15 minutes | Complete outage, data loss |
-| **SEV2** | High - Major feature broken | 1 hour | Authentication failing, payments broken |
-| **SEV3** | Medium - Feature degraded | 4 hours | Slow performance, minor feature broken |
-| **SEV4** | Low - Minor issue | 24 hours | UI glitch, non-critical bug |
+| Severity | Description                 | Response Time | Examples                                |
+| -------- | --------------------------- | ------------- | --------------------------------------- |
+| **SEV1** | Critical - System down      | 15 minutes    | Complete outage, data loss              |
+| **SEV2** | High - Major feature broken | 1 hour        | Authentication failing, payments broken |
+| **SEV3** | Medium - Feature degraded   | 4 hours       | Slow performance, minor feature broken  |
+| **SEV4** | Low - Minor issue           | 24 hours      | UI glitch, non-critical bug             |
 
 ---
 
@@ -50,11 +50,13 @@ vercel rollback <previous-deployment-url>
 ```
 
 **Communication**
+
 - Slack: Post in #incidents with severity
 - Status page: Update status to "Investigating"
 - Stakeholders: Notify via email if > 30 min
 
 **Escalation**
+
 - 15 min: Page on-call engineer
 - 30 min: Page team lead
 - 1 hour: Page engineering director
@@ -74,6 +76,7 @@ vercel rollback <previous-deployment-url>
 **Common Fixes**
 
 1. **Database connection issues**
+
    ```bash
    # Check connection pool
    psql $DATABASE_URL -c "SELECT count(*) FROM pg_stat_activity"
@@ -83,6 +86,7 @@ vercel rollback <previous-deployment-url>
    ```
 
 2. **Memory issues**
+
    ```bash
    # Check memory usage via health endpoint
    curl -s https://api.tpm.company.com/api/health | jq '.metrics.memoryUsage'
@@ -92,6 +96,7 @@ vercel rollback <previous-deployment-url>
    ```
 
 3. **Rate limiting issues**
+
    ```bash
    # Check Redis
    redis-cli -u $REDIS_URL info clients
@@ -109,6 +114,7 @@ vercel rollback <previous-deployment-url>
 **Symptoms**: Users seeing "Something went wrong" messages
 
 **Diagnosis**:
+
 ```bash
 # Check Sentry for errors
 # Visit: https://sentry.io/organizations/company/issues/
@@ -121,6 +127,7 @@ curl -v https://api.tpm.company.com/api/promotions
 ```
 
 **Resolution**:
+
 1. Identify error in logs
 2. If database issue, check Neon status
 3. If code issue, identify bad deployment and rollback
@@ -133,6 +140,7 @@ curl -v https://api.tpm.company.com/api/promotions
 **Symptoms**: Users cannot authenticate
 
 **Diagnosis**:
+
 ```bash
 # Test auth endpoint
 curl -X POST https://api.tpm.company.com/api/auth/login \
@@ -147,6 +155,7 @@ redis-cli -u $REDIS_URL PING
 ```
 
 **Resolution**:
+
 1. If JWT_SECRET missing, restore from secrets manager
 2. If Redis down, restart or failover
 3. If database down, see database recovery runbook
@@ -158,6 +167,7 @@ redis-cli -u $REDIS_URL PING
 **Symptoms**: Pages taking > 5 seconds to load
 
 **Diagnosis**:
+
 ```bash
 # Check API response times
 curl -w "@curl-format.txt" -o /dev/null -s https://api.tpm.company.com/api/health
@@ -170,6 +180,7 @@ vercel logs --prod | grep "prisma:query"
 ```
 
 **Resolution**:
+
 1. Identify slow queries
 2. Add missing indexes
 3. Enable query caching
@@ -182,6 +193,7 @@ vercel logs --prod | grep "prisma:query"
 **Symptoms**: Error rate > 1% in monitoring
 
 **Diagnosis**:
+
 ```bash
 # Get error distribution
 # Via Sentry dashboard
@@ -191,6 +203,7 @@ curl -s https://api.tpm.company.com/api/health
 ```
 
 **Resolution**:
+
 1. Identify most common error
 2. Check if validation error (400) vs server error (500)
 3. For 500s, check logs and fix root cause
@@ -219,14 +232,17 @@ curl -s https://api.tpm.company.com/api/health
 **Author**: [Name]
 
 ## Summary
+
 Brief description of what happened.
 
 ## Impact
+
 - Users affected: X
 - Revenue impact: $Y
 - SLA impact: Z%
 
 ## Timeline
+
 - HH:MM - First alert
 - HH:MM - Incident declared
 - HH:MM - Root cause identified
@@ -234,42 +250,48 @@ Brief description of what happened.
 - HH:MM - Service restored
 
 ## Root Cause
+
 Technical explanation of what caused the incident.
 
 ## Resolution
+
 What was done to fix the issue.
 
 ## Lessons Learned
+
 What went well:
+
 - Item 1
 - Item 2
 
 What could be improved:
+
 - Item 1
 - Item 2
 
 ## Action Items
-| Item | Owner | Due Date |
-|------|-------|----------|
-| Add monitoring for X | @engineer | YYYY-MM-DD |
-| Improve runbook for Y | @sre | YYYY-MM-DD |
+
+| Item                  | Owner     | Due Date   |
+| --------------------- | --------- | ---------- |
+| Add monitoring for X  | @engineer | YYYY-MM-DD |
+| Improve runbook for Y | @sre      | YYYY-MM-DD |
 ```
 
 ---
 
 ## Contact Information
 
-| Role | Name | Contact |
-|------|------|---------|
+| Role             | Name     | Contact   |
+| ---------------- | -------- | --------- |
 | On-Call Engineer | Rotating | PagerDuty |
-| Engineering Lead | [Name] | [Phone] |
-| DevOps Lead | [Name] | [Phone] |
-| VP Engineering | [Name] | [Phone] |
+| Engineering Lead | [Name]   | [Phone]   |
+| DevOps Lead      | [Name]   | [Phone]   |
+| VP Engineering   | [Name]   | [Phone]   |
 
 ### External Support
 
-| Service | Support URL | Account ID |
-|---------|------------|------------|
-| Vercel | https://vercel.com/support | team_xxx |
-| Neon | https://neon.tech/support | org_xxx |
-| CloudFlare | https://support.cloudflare.com | xxx |
+| Service    | Support URL                    | Account ID |
+| ---------- | ------------------------------ | ---------- |
+| Vercel     | https://vercel.com/support     | team_xxx   |
+| Neon       | https://neon.tech/support      | org_xxx    |
+| CloudFlare | https://support.cloudflare.com | xxx        |

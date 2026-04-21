@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { handleApiError } from '@/lib/api/errors'
-import { uploadDocument, buildStoragePath } from '@/lib/supabase/storage'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { handleApiError } from "@/lib/api/errors"
+import { uploadDocument, buildStoragePath } from "@/lib/supabase/storage"
 
 // POST /api/documents/[id]/versions — Upload new version
 export async function POST(
@@ -15,17 +15,24 @@ export async function POST(
 
     const parentDoc = await prisma.document.findUnique({ where: { id } })
     if (!parentDoc) {
-      return NextResponse.json({ error: 'Document not found' }, { status: 404 })
+      return NextResponse.json({ error: "Document not found" }, { status: 404 })
     }
 
     const formData = await req.formData()
-    const file = formData.get('file') as File | null
+    const file = formData.get("file") as File | null
     if (!file) {
-      return NextResponse.json({ error: 'File is required' }, { status: 400 })
+      return NextResponse.json({ error: "File is required" }, { status: 400 })
     }
 
-    const entityType = parentDoc.dealId ? 'deals' : parentDoc.companyId ? 'companies' : parentDoc.contactId ? 'contacts' : 'general'
-    const entityId = parentDoc.dealId || parentDoc.companyId || parentDoc.contactId || 'misc'
+    const entityType = parentDoc.dealId
+      ? "deals"
+      : parentDoc.companyId
+        ? "companies"
+        : parentDoc.contactId
+          ? "contacts"
+          : "general"
+    const entityId =
+      parentDoc.dealId || parentDoc.companyId || parentDoc.contactId || "misc"
 
     const buffer = Buffer.from(await file.arrayBuffer())
     const storagePath = buildStoragePath(entityType, entityId, file.name)
@@ -35,10 +42,7 @@ export async function POST(
     // Find max version of this document chain
     const maxVersion = await prisma.document.aggregate({
       where: {
-        OR: [
-          { id: parentDoc.id },
-          { parentId: parentDoc.id },
-        ],
+        OR: [{ id: parentDoc.id }, { parentId: parentDoc.id }],
       },
       _max: { version: true },
     })
@@ -67,8 +71,11 @@ export async function POST(
     return NextResponse.json(newDoc, { status: 201 })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    return handleApiError(error, '/api/documents/[id]/versions')
+    return handleApiError(error, "/api/documents/[id]/versions")
   }
 }

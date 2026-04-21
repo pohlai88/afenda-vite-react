@@ -24,14 +24,20 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const body = await request.json()
   const validated = createDepartmentSchema.parse(body)
 
-  const department = await departmentService.create(session.user.tenantId, validated)
+  const department = await departmentService.create(
+    session.user.tenantId,
+    validated
+  )
 
   await audit.create(
-    { tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' },
-    'Department',
+    {
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      userEmail: session.user.email || "",
+    },
+    "Department",
     department.id
   )
 
   return successResponse(department, undefined, 201)
 })
-

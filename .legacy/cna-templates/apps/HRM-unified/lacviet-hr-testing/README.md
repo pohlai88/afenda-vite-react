@@ -87,31 +87,31 @@ npm run codegen:mobile
 
 ### Test Categories
 
-| Module | Tests | Description |
-|--------|-------|-------------|
-| Auth | 25+ | Login, logout, MFA, SSO, session management |
-| Employees | 30+ | CRUD, search, filter, bulk actions, import/export |
-| Leave | 25+ | Requests, approvals, calendar, policies |
-| Attendance | 35+ | Check-in/out, timesheet, overtime, shifts, reports |
-| Payroll | 40+ | Periods, calculation, payslips, bank transfer, reports |
-| Workflow | 25+ | Approvals, delegation, escalation, bulk actions |
-| Recruitment | 20+ | Jobs, candidates, pipeline, interviews |
-| Performance | 20+ | Goals, reviews, 360 feedback, competencies |
-| Dashboard | 15+ | Stats, charts, widgets, navigation |
-| LMS | 15+ | Courses, enrollments, progress tracking |
+| Module      | Tests | Description                                            |
+| ----------- | ----- | ------------------------------------------------------ |
+| Auth        | 25+   | Login, logout, MFA, SSO, session management            |
+| Employees   | 30+   | CRUD, search, filter, bulk actions, import/export      |
+| Leave       | 25+   | Requests, approvals, calendar, policies                |
+| Attendance  | 35+   | Check-in/out, timesheet, overtime, shifts, reports     |
+| Payroll     | 40+   | Periods, calculation, payslips, bank transfer, reports |
+| Workflow    | 25+   | Approvals, delegation, escalation, bulk actions        |
+| Recruitment | 20+   | Jobs, candidates, pipeline, interviews                 |
+| Performance | 20+   | Goals, reviews, 360 feedback, competencies             |
+| Dashboard   | 15+   | Stats, charts, widgets, navigation                     |
+| LMS         | 15+   | Courses, enrollments, progress tracking                |
 
 ## 📊 Stress Tests (K6)
 
 ### Test Scenarios
 
-| Scenario | Description | VUs | Duration |
-|----------|-------------|-----|----------|
-| **Smoke** | Basic functionality | 3 | 1m |
-| **Load** | Normal expected load | 50-100 | 16m |
-| **Stress** | Beyond normal capacity | 100-400 | 30m |
-| **Spike** | Sudden traffic surge | 10-500 | 7m |
-| **Soak** | Long duration stability | 100 | 30m |
-| **Breakpoint** | Find system limits | 50-600 req/s | 12m |
+| Scenario       | Description             | VUs          | Duration |
+| -------------- | ----------------------- | ------------ | -------- |
+| **Smoke**      | Basic functionality     | 3            | 1m       |
+| **Load**       | Normal expected load    | 50-100       | 16m      |
+| **Stress**     | Beyond normal capacity  | 100-400      | 30m      |
+| **Spike**      | Sudden traffic surge    | 10-500       | 7m       |
+| **Soak**       | Long duration stability | 100          | 30m      |
+| **Breakpoint** | Find system limits      | 50-600 req/s | 12m      |
 
 ### Running Stress Tests
 
@@ -164,22 +164,22 @@ npm run stress:write:transactions # Transaction-heavy operations
 
 ### Write Operations Metrics
 
-| Metric | Target |
-|--------|--------|
-| Create Success Rate | > 95% |
-| Update Success Rate | > 98% |
-| Transaction Success Rate | > 90% |
-| Data Integrity Errors | < 10 |
-| Deadlocks | 0 |
+| Metric                   | Target |
+| ------------------------ | ------ |
+| Create Success Rate      | > 95%  |
+| Update Success Rate      | > 98%  |
+| Transaction Success Rate | > 90%  |
+| Data Integrity Errors    | < 10   |
+| Deadlocks                | 0      |
 
 ### Performance Thresholds
 
-| Metric | Target |
-|--------|--------|
-| Response Time P95 | < 500ms |
-| Response Time P99 | < 1000ms |
-| Error Rate | < 1% |
-| Throughput | 100+ req/s |
+| Metric            | Target     |
+| ----------------- | ---------- |
+| Response Time P95 | < 500ms    |
+| Response Time P99 | < 1000ms   |
+| Error Rate        | < 1%       |
+| Throughput        | 100+ req/s |
 
 ## 📁 Test Structure
 
@@ -283,21 +283,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          
+          node-version: "20"
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Install Playwright
         run: npx playwright install --with-deps
-        
+
       - name: Run E2E tests
         run: npm run ci
-        
+
       - name: Upload reports
         uses: actions/upload-artifact@v4
         if: always()
@@ -325,33 +325,33 @@ e2e-tests:
 ### Page Object Pattern
 
 ```typescript
-import { EmployeePage } from '../pages/EmployeePage';
+import { EmployeePage } from "../pages/EmployeePage"
 
-test('should create employee', async ({ page }) => {
-  const employeePage = new EmployeePage(page);
-  
+test("should create employee", async ({ page }) => {
+  const employeePage = new EmployeePage(page)
+
   await employeePage.createEmployee({
-    firstName: 'Nguyen',
-    lastName: 'Van A',
-    email: 'a@company.com',
-    departmentId: 'Engineering',
-    positionId: 'Developer',
-    hireDate: '2025-01-01',
-  });
-  
-  await employeePage.expectCreateSuccess();
-});
+    firstName: "Nguyen",
+    lastName: "Van A",
+    email: "a@company.com",
+    departmentId: "Engineering",
+    positionId: "Developer",
+    hireDate: "2025-01-01",
+  })
+
+  await employeePage.expectCreateSuccess()
+})
 ```
 
 ### Test Data Generation
 
 ```typescript
-import { generateEmployeeData } from '../fixtures/test-data';
+import { generateEmployeeData } from "../fixtures/test-data"
 
-test('should create random employee', async ({ page }) => {
-  const employeeData = generateEmployeeData();
-  await employeePage.createEmployee(employeeData);
-});
+test("should create random employee", async ({ page }) => {
+  const employeeData = generateEmployeeData()
+  await employeePage.createEmployee(employeeData)
+})
 ```
 
 ### Tags
@@ -383,6 +383,7 @@ npx playwright show-trace test-results/trace.zip
 ### K6 Output
 
 Reports are generated in:
+
 - `reports/stress-test-results.json`
 - `reports/module-stress-results.json`
 

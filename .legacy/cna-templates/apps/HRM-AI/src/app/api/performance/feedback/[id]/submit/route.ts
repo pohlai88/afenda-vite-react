@@ -1,13 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { z } from "zod"
 
 const submitFeedbackSchema = z.object({
-  ratings: z.record(z.string(), z.object({
-    rating: z.number().int().min(1).max(5),
-    comment: z.string().optional(),
-  })).optional(),
+  ratings: z
+    .record(
+      z.string(),
+      z.object({
+        rating: z.number().int().min(1).max(5),
+        comment: z.string().optional(),
+      })
+    )
+    .optional(),
   overallRating: z.number().int().min(1).max(5).optional(),
   strengths: z.string().optional(),
   areasForImprovement: z.string().optional(),
@@ -23,7 +28,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -39,21 +44,24 @@ export async function POST(
     })
 
     if (!feedbackRequest) {
-      return NextResponse.json({ error: 'Feedback request not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Feedback request not found" },
+        { status: 404 }
+      )
     }
 
     // Check if user is the provider
     if (feedbackRequest.providerId !== session.user.id) {
       return NextResponse.json(
-        { error: 'You are not authorized to submit this feedback' },
+        { error: "You are not authorized to submit this feedback" },
         { status: 403 }
       )
     }
 
     // Check status
-    if (feedbackRequest.status === 'SUBMITTED') {
+    if (feedbackRequest.status === "SUBMITTED") {
       return NextResponse.json(
-        { error: 'Feedback has already been submitted' },
+        { error: "Feedback has already been submitted" },
         { status: 400 }
       )
     }
@@ -79,7 +87,7 @@ export async function POST(
     await db.feedbackRequest.update({
       where: { id: params.id },
       data: {
-        status: 'SUBMITTED',
+        status: "SUBMITTED",
         respondedAt: new Date(),
       },
     })
@@ -89,7 +97,7 @@ export async function POST(
       const pendingFeedback = await db.feedbackRequest.count({
         where: {
           reviewId: feedbackRequest.reviewId,
-          status: { in: ['REQUESTED', 'PENDING'] },
+          status: { in: ["REQUESTED", "PENDING"] },
         },
       })
 
@@ -102,8 +110,8 @@ export async function POST(
       data: {
         tenantId: session.user.tenantId,
         userId: feedbackRequest.subjectId,
-        type: 'GENERAL',
-        title: 'Nhận được feedback mới',
+        type: "GENERAL",
+        title: "Nhận được feedback mới",
         message: `Bạn đã nhận được feedback 360° từ một đồng nghiệp`,
         actionUrl: feedbackRequest.reviewId
           ? `/performance/reviews/${feedbackRequest.reviewId}`
@@ -114,18 +122,18 @@ export async function POST(
     return NextResponse.json({
       success: true,
       data: feedback,
-      message: 'Feedback submitted successfully',
+      message: "Feedback submitted successfully",
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    console.error('Error submitting feedback:', error)
+    console.error("Error submitting feedback:", error)
     return NextResponse.json(
-      { error: 'Failed to submit feedback' },
+      { error: "Failed to submit feedback" },
       { status: 500 }
     )
   }

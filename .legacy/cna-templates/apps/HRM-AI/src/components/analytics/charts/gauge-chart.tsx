@@ -1,20 +1,20 @@
-'use client';
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface Threshold {
-  value: number;
-  color: string;
-  label: string;
+  value: number
+  color: string
+  label: string
 }
 
 interface GaugeChartProps {
-  title: string;
-  value: number;
-  max: number;
-  thresholds: Threshold[];
-  className?: string;
+  title: string
+  value: number
+  max: number
+  thresholds: Threshold[]
+  className?: string
 }
 
 export function GaugeChart({
@@ -24,16 +24,16 @@ export function GaugeChart({
   thresholds,
   className,
 }: GaugeChartProps) {
-  const percentage = Math.min((value / max) * 100, 100);
-  const angle = (percentage / 100) * 180; // 0 to 180 degrees for semi-circle
+  const percentage = Math.min((value / max) * 100, 100)
+  const angle = (percentage / 100) * 180 // 0 to 180 degrees for semi-circle
 
   // SVG dimensions
-  const width = 200;
-  const height = 120;
-  const cx = width / 2;
-  const cy = height - 10;
-  const radius = 80;
-  const strokeWidth = 16;
+  const width = 200
+  const height = 120
+  const cx = width / 2
+  const cy = height - 10
+  const radius = 80
+  const strokeWidth = 16
 
   // Calculate arc path
   const polarToCartesian = (
@@ -42,30 +42,27 @@ export function GaugeChart({
     r: number,
     angleInDegrees: number
   ) => {
-    const angleInRadians = ((angleInDegrees - 180) * Math.PI) / 180;
+    const angleInRadians = ((angleInDegrees - 180) * Math.PI) / 180
     return {
       x: centerX + r * Math.cos(angleInRadians),
       y: centerY + r * Math.sin(angleInRadians),
-    };
-  };
+    }
+  }
 
-  const describeArc = (
-    startAngle: number,
-    endAngle: number
-  ) => {
-    const start = polarToCartesian(cx, cy, radius, endAngle);
-    const end = polarToCartesian(cx, cy, radius, startAngle);
-    const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
-    return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`;
-  };
+  const describeArc = (startAngle: number, endAngle: number) => {
+    const start = polarToCartesian(cx, cy, radius, endAngle)
+    const end = polarToCartesian(cx, cy, radius, startAngle)
+    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"
+    return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`
+  }
 
   // Get current threshold color
   const currentThreshold = thresholds
     .sort((a, b) => a.value - b.value)
-    .reduce((prev, curr) => (value >= curr.value ? curr : prev), thresholds[0]);
+    .reduce((prev, curr) => (value >= curr.value ? curr : prev), thresholds[0])
 
   // Needle end point
-  const needleEnd = polarToCartesian(cx, cy, radius - strokeWidth - 5, angle);
+  const needleEnd = polarToCartesian(cx, cy, radius - strokeWidth - 5, angle)
 
   return (
     <Card className={cn(className)}>
@@ -76,9 +73,9 @@ export function GaugeChart({
         <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
           {/* Background arc segments based on thresholds */}
           {thresholds.map((threshold, index) => {
-            const prevValue = index === 0 ? 0 : thresholds[index - 1].value;
-            const startAngle = (prevValue / max) * 180;
-            const endAngle = (threshold.value / max) * 180;
+            const prevValue = index === 0 ? 0 : thresholds[index - 1].value
+            const startAngle = (prevValue / max) * 180
+            const endAngle = (threshold.value / max) * 180
             return (
               <path
                 key={threshold.label}
@@ -89,14 +86,14 @@ export function GaugeChart({
                 opacity={0.3}
                 strokeLinecap="round"
               />
-            );
+            )
           })}
 
           {/* Value arc */}
           <path
             d={describeArc(0, angle)}
             fill="none"
-            stroke={currentThreshold?.color || '#3b82f6'}
+            stroke={currentThreshold?.color || "#3b82f6"}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
           />
@@ -121,7 +118,7 @@ export function GaugeChart({
             className="fill-foreground text-lg font-bold"
             fontSize={18}
           >
-            {value.toLocaleString('vi-VN')}
+            {value.toLocaleString("vi-VN")}
           </text>
 
           {/* Min/Max labels */}
@@ -159,5 +156,5 @@ export function GaugeChart({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

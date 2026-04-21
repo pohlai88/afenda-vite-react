@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { APPLICATION_STATUS } from '@/lib/recruitment/constants'
+import { useMemo } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { APPLICATION_STATUS } from "@/lib/recruitment/constants"
 
 interface FunnelStage {
   stage: string
@@ -14,17 +14,20 @@ interface HiringFunnelProps {
   title?: string
 }
 
-export function HiringFunnel({ data, title = 'Phễu tuyển dụng' }: HiringFunnelProps) {
+export function HiringFunnel({
+  data,
+  title = "Phễu tuyển dụng",
+}: HiringFunnelProps) {
   const stages = useMemo(() => {
     // Define pipeline order
     const stageOrder = [
-      'NEW',
-      'SCREENING',
-      'PHONE_SCREEN',
-      'INTERVIEW',
-      'ASSESSMENT',
-      'OFFER',
-      'HIRED',
+      "NEW",
+      "SCREENING",
+      "PHONE_SCREEN",
+      "INTERVIEW",
+      "ASSESSMENT",
+      "OFFER",
+      "HIRED",
     ]
 
     // Map and sort data
@@ -46,13 +49,13 @@ export function HiringFunnel({ data, title = 'Phễu tuyển dụng' }: HiringFu
 
   const getStageColor = (index: number) => {
     const colors = [
-      'bg-blue-500',
-      'bg-blue-400',
-      'bg-yellow-400',
-      'bg-purple-400',
-      'bg-indigo-400',
-      'bg-green-400',
-      'bg-emerald-500',
+      "bg-blue-500",
+      "bg-blue-400",
+      "bg-yellow-400",
+      "bg-purple-400",
+      "bg-indigo-400",
+      "bg-green-400",
+      "bg-emerald-500",
     ]
     return colors[index] || colors[colors.length - 1]
   }
@@ -86,10 +89,10 @@ export function HiringFunnel({ data, title = 'Phễu tuyển dụng' }: HiringFu
                       <span
                         className={`text-xs ${
                           conversionRate >= 50
-                            ? 'text-green-600'
+                            ? "text-green-600"
                             : conversionRate >= 25
-                            ? 'text-yellow-600'
-                            : 'text-red-600'
+                              ? "text-yellow-600"
+                              : "text-red-600"
                         }`}
                       >
                         ({conversionRate}%)
@@ -105,7 +108,7 @@ export function HiringFunnel({ data, title = 'Phễu tuyển dụng' }: HiringFu
                       )} flex items-center`}
                       style={{
                         width: `${widthPercentage}%`,
-                        marginLeft: `${((100 - widthPercentage) / 2)}%`,
+                        marginLeft: `${(100 - widthPercentage) / 2}%`,
                       }}
                     />
                   </div>
@@ -144,20 +147,22 @@ export function HiringFunnel({ data, title = 'Phễu tuyển dụng' }: HiringFu
             <p className="text-2xl font-bold text-primary">
               {stages[0]?.count > 0
                 ? `${Math.round(
-                    ((stages[stages.length - 1]?.count || 0) / stages[0].count) * 100
+                    ((stages[stages.length - 1]?.count || 0) /
+                      stages[0].count) *
+                      100
                   )}%`
-                : '0%'}
+                : "0%"}
             </p>
             <p className="text-xs text-muted-foreground">Tỷ lệ tuyển</p>
           </div>
         </div>
 
         {/* Rejected count if available */}
-        {data.find((d) => d.stage === 'REJECTED') && (
+        {data.find((d) => d.stage === "REJECTED") && (
           <div className="mt-3 p-2 bg-red-50 rounded-lg flex items-center justify-between">
             <span className="text-xs text-red-700">Từ chối / Rút hồ sơ:</span>
             <span className="text-sm font-bold text-red-700">
-              {data.find((d) => d.stage === 'REJECTED')?.count || 0}
+              {data.find((d) => d.stage === "REJECTED")?.count || 0}
             </span>
           </div>
         )}

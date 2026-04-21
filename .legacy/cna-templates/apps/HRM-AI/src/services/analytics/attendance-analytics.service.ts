@@ -1,15 +1,15 @@
 // src/services/analytics/attendance-analytics.service.ts
 // Attendance Analytics Service
 
-import { calculateAttendanceMetrics } from '@/lib/analytics/calculators/attendance'
-import { db } from '@/lib/db'
+import { calculateAttendanceMetrics } from "@/lib/analytics/calculators/attendance"
+import { db } from "@/lib/db"
 
 // Simple in-memory cache
 const cache = new Map<string, { data: unknown; expiresAt: number }>()
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 function getCacheKey(tenantId: string, date: Date): string {
-  return `attendance:${tenantId}:${date.toISOString().split('T')[0]}`
+  return `attendance:${tenantId}:${date.toISOString().split("T")[0]}`
 }
 
 export async function getAttendanceAnalytics(
@@ -50,8 +50,8 @@ export async function calculateAndStoreAttendance(
   const existing = await db.analyticsMetric.findFirst({
     where: {
       tenantId,
-      metricType: 'ATTENDANCE',
-      period: 'MONTHLY',
+      metricType: "ATTENDANCE",
+      period: "MONTHLY",
       periodStart,
       departmentId: null,
     },
@@ -77,8 +77,8 @@ export async function calculateAndStoreAttendance(
     await db.analyticsMetric.create({
       data: {
         tenantId,
-        metricType: 'ATTENDANCE',
-        period: 'MONTHLY',
+        metricType: "ATTENDANCE",
+        period: "MONTHLY",
         periodStart,
         periodEnd,
         value: result.rate,

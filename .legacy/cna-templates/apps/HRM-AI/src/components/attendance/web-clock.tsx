@@ -4,7 +4,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Clock, MapPin, Loader2, CheckCircle2, LogIn, LogOut } from "lucide-react"
+import {
+  Clock,
+  MapPin,
+  Loader2,
+  CheckCircle2,
+  LogIn,
+  LogOut,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useClockIn, useClockOut, useTodayStatus } from "@/hooks/use-attendance"
@@ -20,7 +27,11 @@ export function WebClock() {
   const [locationError, setLocationError] = useState<string | null>(null)
   const [isGettingLocation, setIsGettingLocation] = useState(false)
 
-  const { data: todayStatus, isLoading: isLoadingStatus, refetch } = useTodayStatus()
+  const {
+    data: todayStatus,
+    isLoading: isLoadingStatus,
+    refetch,
+  } = useTodayStatus()
   const clockIn = useClockIn()
   const clockOut = useClockOut()
 
@@ -115,7 +126,8 @@ export function WebClock() {
     } catch (error) {
       toast({
         title: "Lỗi",
-        description: error instanceof Error ? error.message : "Không thể check in",
+        description:
+          error instanceof Error ? error.message : "Không thể check in",
         variant: "destructive",
       })
     }
@@ -141,7 +153,8 @@ export function WebClock() {
     } catch (error) {
       toast({
         title: "Lỗi",
-        description: error instanceof Error ? error.message : "Không thể check out",
+        description:
+          error instanceof Error ? error.message : "Không thể check out",
         variant: "destructive",
       })
     }
@@ -214,7 +227,8 @@ export function WebClock() {
               <div className="flex items-start gap-2 p-3 bg-muted rounded-lg text-sm">
                 <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
                 <span className="text-muted-foreground truncate">
-                  {location.address || `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`}
+                  {location.address ||
+                    `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`}
                 </span>
               </div>
             )}
@@ -246,7 +260,11 @@ export function WebClock() {
             className="flex-1"
             variant="outline"
             onClick={handleClockOut}
-            disabled={isClockingOut || !todayStatus?.hasCheckedIn || todayStatus?.hasCheckedOut}
+            disabled={
+              isClockingOut ||
+              !todayStatus?.hasCheckedIn ||
+              todayStatus?.hasCheckedOut
+            }
           >
             {isClockingOut ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -260,7 +278,8 @@ export function WebClock() {
         {/* Shift Info */}
         {todayStatus?.shift && (
           <div className="text-center text-sm text-muted-foreground">
-            Ca làm việc: {todayStatus.shift.name} ({todayStatus.shift.startTime} - {todayStatus.shift.endTime})
+            Ca làm việc: {todayStatus.shift.name} ({todayStatus.shift.startTime}{" "}
+            - {todayStatus.shift.endTime})
           </div>
         )}
       </CardContent>

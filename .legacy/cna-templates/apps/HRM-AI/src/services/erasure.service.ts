@@ -1,8 +1,8 @@
 // src/services/erasure.service.ts
 // GDPR Right to Erasure - Data anonymization service (P2-20)
 
-import { db } from '@/lib/db'
-import type { ErasureStatus } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { ErasureStatus } from "@prisma/client"
 
 // ═══════════════════════════════════════════════════════════════
 // Constants
@@ -11,34 +11,42 @@ import type { ErasureStatus } from '@prisma/client'
 /** Field groups that can be erased */
 export const ERASURE_SCOPE_GROUPS = {
   personal: {
-    label: 'Thông tin cá nhân',
-    fields: ['fullName', 'dateOfBirth', 'gender', 'idNumber', 'idIssueDate', 'idIssuePlace', 'avatar'],
+    label: "Thông tin cá nhân",
+    fields: [
+      "fullName",
+      "dateOfBirth",
+      "gender",
+      "idNumber",
+      "idIssueDate",
+      "idIssuePlace",
+      "avatar",
+    ],
   },
   contact: {
-    label: 'Thông tin liên hệ',
-    fields: ['phone', 'personalEmail', 'permanentAddress', 'currentAddress'],
+    label: "Thông tin liên hệ",
+    fields: ["phone", "personalEmail", "permanentAddress", "currentAddress"],
   },
   bank: {
-    label: 'Thông tin ngân hàng',
-    fields: ['bankAccount', 'bankName', 'bankBranch'],
+    label: "Thông tin ngân hàng",
+    fields: ["bankAccount", "bankName", "bankBranch"],
   },
   tax: {
-    label: 'Thông tin thuế & BHXH',
-    fields: ['taxCode', 'socialInsuranceNumber', 'socialInsuranceDate'],
+    label: "Thông tin thuế & BHXH",
+    fields: ["taxCode", "socialInsuranceNumber", "socialInsuranceDate"],
   },
 } as const
 
 /** Fields that MUST be retained for legal compliance (Vietnamese labor law) */
 const LEGAL_RETENTION_FIELDS = [
-  'employeeCode',  // Mã nhân viên - cần cho báo cáo thuế
-  'hireDate',      // Ngày vào làm - cần cho BHXH
-  'resignationDate', // Ngày nghỉ việc
-  'tenantId',      // Liên kết tenant
+  "employeeCode", // Mã nhân viên - cần cho báo cáo thuế
+  "hireDate", // Ngày vào làm - cần cho BHXH
+  "resignationDate", // Ngày nghỉ việc
+  "tenantId", // Liên kết tenant
 ]
 
 /** Anonymized placeholder values */
 const ANONYMIZED_VALUES: Record<string, string | null> = {
-  fullName: '[Đã xóa]',
+  fullName: "[Đã xóa]",
   dateOfBirth: null,
   gender: null,
   idNumber: null,
@@ -80,11 +88,11 @@ export async function createErasureRequest(data: {
   })
 
   if (!employee) {
-    throw new Error('Nhân viên không tồn tại')
+    throw new Error("Nhân viên không tồn tại")
   }
 
-  if (!['RESIGNED', 'TERMINATED'].includes(employee.status)) {
-    throw new Error('Chỉ có thể xóa dữ liệu nhân viên đã nghỉ việc')
+  if (!["RESIGNED", "TERMINATED"].includes(employee.status)) {
+    throw new Error("Chỉ có thể xóa dữ liệu nhân viên đã nghỉ việc")
   }
 
   return db.erasureRequest.create({
@@ -95,7 +103,7 @@ export async function createErasureRequest(data: {
       reason: data.reason,
       legalBasis: data.legalBasis,
       scopeFields: data.scopeFields,
-      status: 'REQUESTED',
+      status: "REQUESTED",
     },
   })
 }
@@ -106,7 +114,7 @@ export async function createErasureRequest(data: {
 export async function reviewErasureRequest(
   requestId: string,
   reviewedBy: string,
-  action: 'APPROVED' | 'REJECTED',
+  action: "APPROVED" | "REJECTED",
   notes?: string
 ) {
   const request = await db.erasureRequest.findUnique({
@@ -114,11 +122,11 @@ export async function reviewErasureRequest(
   })
 
   if (!request) {
-    throw new Error('Không tìm thấy yêu cầu xóa')
+    throw new Error("Không tìm thấy yêu cầu xóa")
   }
 
-  if (request.status !== 'REQUESTED' && request.status !== 'REVIEWING') {
-    throw new Error('Yêu cầu đã được xử lý')
+  if (request.status !== "REQUESTED" && request.status !== "REVIEWING") {
+    throw new Error("Yêu cầu đã được xử lý")
   }
 
   return db.erasureRequest.update({
@@ -136,10 +144,7 @@ export async function reviewErasureRequest(
  * Execute the data erasure (anonymize PII fields)
  * Only runs on APPROVED requests.
  */
-export async function executeErasure(
-  requestId: string,
-  executedBy: string
-) {
+export async function executeErasure(requestId: string, executedBy: string) {
   const request = await db.erasureRequest.findUnique({
     where: { id: requestId },
     include: {
@@ -152,17 +157,17 @@ export async function executeErasure(
   })
 
   if (!request) {
-    throw new Error('Không tìm thấy yêu cầu xóa')
+    throw new Error("Không tìm thấy yêu cầu xóa")
   }
 
-  if (request.status !== 'APPROVED') {
-    throw new Error('Yêu cầu chưa được duyệt')
+  if (request.status !== "APPROVED") {
+    throw new Error("Yêu cầu chưa được duyệt")
   }
 
   // Mark as processing
   await db.erasureRequest.update({
     where: { id: requestId },
-    data: { status: 'PROCESSING' },
+    data: { status: "PROCESSING" },
   })
 
   const scopeFields = request.scopeFields as string[]
@@ -174,18 +179,19 @@ export async function executeErasure(
     const employeeLog: { field: string; action: string }[] = []
 
     for (const group of scopeFields) {
-      const groupDef = ERASURE_SCOPE_GROUPS[group as keyof typeof ERASURE_SCOPE_GROUPS]
+      const groupDef =
+        ERASURE_SCOPE_GROUPS[group as keyof typeof ERASURE_SCOPE_GROUPS]
       if (!groupDef) continue
 
       for (const field of groupDef.fields) {
         if (LEGAL_RETENTION_FIELDS.includes(field)) {
-          employeeLog.push({ field, action: 'retained_legal' })
+          employeeLog.push({ field, action: "retained_legal" })
           continue
         }
 
         if (field in ANONYMIZED_VALUES) {
           employeeUpdates[field] = ANONYMIZED_VALUES[field]
-          employeeLog.push({ field, action: 'anonymized' })
+          employeeLog.push({ field, action: "anonymized" })
         }
       }
     }
@@ -196,10 +202,10 @@ export async function executeErasure(
         data: employeeUpdates as any,
       })
     }
-    erasureLog['employee'] = employeeLog
+    erasureLog["employee"] = employeeLog
 
     // 2. Anonymize dependents
-    if (scopeFields.includes('personal')) {
+    if (scopeFields.includes("personal")) {
       const dependentCount = await db.dependent.count({
         where: { employeeId: request.employeeId },
       })
@@ -208,31 +214,31 @@ export async function executeErasure(
         await db.dependent.updateMany({
           where: { employeeId: request.employeeId },
           data: {
-            fullName: '[Đã xóa]',
+            fullName: "[Đã xóa]",
             idNumber: null,
           },
         })
-        erasureLog['dependents'] = [
-          { field: 'fullName', action: 'anonymized' },
-          { field: 'idNumber', action: 'anonymized' },
+        erasureLog["dependents"] = [
+          { field: "fullName", action: "anonymized" },
+          { field: "idNumber", action: "anonymized" },
         ]
       }
     }
 
     // 3. Anonymize payroll snapshots (keep amounts for tax compliance)
-    if (scopeFields.includes('bank')) {
+    if (scopeFields.includes("bank")) {
       await db.payroll.updateMany({
         where: { employeeId: request.employeeId },
         data: {
           bankAccount: null,
           bankName: null,
           bankCode: null,
-          employeeName: '[Đã xóa]',
+          employeeName: "[Đã xóa]",
         },
       })
-      erasureLog['payroll'] = [
-        { field: 'bankAccount', action: 'anonymized' },
-        { field: 'employeeName', action: 'anonymized' },
+      erasureLog["payroll"] = [
+        { field: "bankAccount", action: "anonymized" },
+        { field: "employeeName", action: "anonymized" },
       ]
     }
 
@@ -240,23 +246,23 @@ export async function executeErasure(
     await db.employeeChangeHistory.updateMany({
       where: { employeeId: request.employeeId },
       data: {
-        oldValue: '[Đã xóa]',
-        newValue: '[Đã xóa]',
+        oldValue: "[Đã xóa]",
+        newValue: "[Đã xóa]",
       },
     })
-    erasureLog['changeHistory'] = [{ field: '*', action: 'anonymized' }]
+    erasureLog["changeHistory"] = [{ field: "*", action: "anonymized" }]
 
     // 5. Record retention exceptions
     const retentionExceptions = LEGAL_RETENTION_FIELDS.map((field) => ({
       field,
-      reason: 'Bắt buộc lưu giữ theo pháp luật lao động Việt Nam',
+      reason: "Bắt buộc lưu giữ theo pháp luật lao động Việt Nam",
     }))
 
     // 6. Mark as completed
     await db.erasureRequest.update({
       where: { id: requestId },
       data: {
-        status: 'COMPLETED',
+        status: "COMPLETED",
         executedAt: new Date(),
         executedBy,
         erasureLog: erasureLog,
@@ -269,8 +275,8 @@ export async function executeErasure(
       data: {
         tenantId: request.tenantId,
         userId: executedBy,
-        action: 'DELETE',
-        entityType: 'ERASURE_REQUEST',
+        action: "DELETE",
+        entityType: "ERASURE_REQUEST",
         entityId: requestId,
         entityName: `Xóa dữ liệu nhân viên ${request.employee.employeeCode}`,
         newData: erasureLog,
@@ -282,7 +288,7 @@ export async function executeErasure(
     // Revert status on failure
     await db.erasureRequest.update({
       where: { id: requestId },
-      data: { status: 'APPROVED' },
+      data: { status: "APPROVED" },
     })
     throw error
   }
@@ -334,7 +340,7 @@ export async function listErasureRequests(
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),

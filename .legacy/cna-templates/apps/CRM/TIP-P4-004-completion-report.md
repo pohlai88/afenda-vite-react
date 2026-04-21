@@ -17,12 +17,12 @@
 
 **TEST COUNTS:**
 
-| Category | Tests | Status |
-|----------|-------|--------|
-| Pure logic (P4-003) | 130 | ✅ |
-| Async services (SLA, webhook, CSV) | 20 | ✅ |
-| API routes (contacts, orders, tickets, webhooks, notifications) | 39 | ✅ |
-| **TOTAL** | **189** | ✅ |
+| Category                                                        | Tests   | Status |
+| --------------------------------------------------------------- | ------- | ------ |
+| Pure logic (P4-003)                                             | 130     | ✅     |
+| Async services (SLA, webhook, CSV)                              | 20      | ✅     |
+| API routes (contacts, orders, tickets, webhooks, notifications) | 39      | ✅     |
+| **TOTAL**                                                       | **189** | ✅     |
 
 **MOCK APPROACH:** `vi.hoisted()` + `vi.mock()` factory pattern
 

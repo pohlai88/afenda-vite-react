@@ -1,7 +1,7 @@
 // src/services/attendance.service.ts
 // Attendance management service
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import type {
   AttendanceFilters,
   PaginatedResponse,
@@ -9,10 +9,10 @@ import type {
   ClockInRequest,
   ClockOutRequest,
   ClockResponse,
-} from '@/types'
-import type { Prisma, AttendanceStatus, DayType } from '@prisma/client'
-import { calculateWorkHours } from '@/lib/attendance'
-import { shiftService } from './shift.service'
+} from "@/types"
+import type { Prisma, AttendanceStatus, DayType } from "@prisma/client"
+import { calculateWorkHours } from "@/lib/attendance"
+import { shiftService } from "./shift.service"
 
 export const attendanceService = {
   // ═══════════════════════════════════════════════════════════════
@@ -46,23 +46,26 @@ export const attendanceService = {
       ...(search && {
         employee: {
           OR: [
-            { fullName: { contains: search, mode: 'insensitive' } },
-            { employeeCode: { contains: search, mode: 'insensitive' } },
+            { fullName: { contains: search, mode: "insensitive" } },
+            { employeeCode: { contains: search, mode: "insensitive" } },
           ],
         },
       }),
-      ...(dateFrom && dateTo && {
-        date: {
-          gte: new Date(dateFrom),
-          lte: new Date(dateTo),
-        },
-      }),
-      ...(dateFrom && !dateTo && {
-        date: { gte: new Date(dateFrom) },
-      }),
-      ...(!dateFrom && dateTo && {
-        date: { lte: new Date(dateTo) },
-      }),
+      ...(dateFrom &&
+        dateTo && {
+          date: {
+            gte: new Date(dateFrom),
+            lte: new Date(dateTo),
+          },
+        }),
+      ...(dateFrom &&
+        !dateTo && {
+          date: { gte: new Date(dateFrom) },
+        }),
+      ...(!dateFrom &&
+        dateTo && {
+          date: { lte: new Date(dateTo) },
+        }),
     }
 
     const [data, total] = await Promise.all([
@@ -81,7 +84,7 @@ export const attendanceService = {
           shift: true,
           anomalies: true,
         },
-        orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
+        orderBy: [{ date: "desc" }, { createdAt: "desc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -99,7 +102,10 @@ export const attendanceService = {
     }
   },
 
-  async findById(tenantId: string, id: string): Promise<AttendanceWithRelations | null> {
+  async findById(
+    tenantId: string,
+    id: string
+  ): Promise<AttendanceWithRelations | null> {
     return db.attendance.findFirst({
       where: { id, tenantId },
       include: {
@@ -153,10 +159,14 @@ export const attendanceService = {
     today.setHours(0, 0, 0, 0)
 
     // Check if already clocked in today
-    const existing = await this.findByEmployeeAndDate(tenantId, employeeId, today)
+    const existing = await this.findByEmployeeAndDate(
+      tenantId,
+      employeeId,
+      today
+    )
 
     if (existing?.checkIn) {
-      throw new Error('Bạn đã check in hôm nay rồi')
+      throw new Error("Bạn đã check in hôm nay rồi")
     }
 
     // Get employee's shift for today
@@ -181,7 +191,7 @@ export const attendanceService = {
 
       return {
         attendance,
-        message: 'Check in thành công',
+        message: "Check in thành công",
       }
     }
 
@@ -198,14 +208,14 @@ export const attendanceService = {
         checkInLat: data.latitude,
         checkInLng: data.longitude,
         checkInAddress: data.address,
-        status: 'PRESENT',
+        status: "PRESENT",
       },
       include: { shift: true },
     })
 
     return {
       attendance,
-      message: 'Check in thành công',
+      message: "Check in thành công",
     }
   },
 
@@ -219,18 +229,22 @@ export const attendanceService = {
     today.setHours(0, 0, 0, 0)
 
     // Find today's attendance record
-    const attendance = await this.findByEmployeeAndDate(tenantId, employeeId, today)
+    const attendance = await this.findByEmployeeAndDate(
+      tenantId,
+      employeeId,
+      today
+    )
 
     if (!attendance) {
-      throw new Error('Bạn chưa check in hôm nay')
+      throw new Error("Bạn chưa check in hôm nay")
     }
 
     if (!attendance.checkIn) {
-      throw new Error('Bạn chưa check in hôm nay')
+      throw new Error("Bạn chưa check in hôm nay")
     }
 
     if (attendance.checkOut) {
-      throw new Error('Bạn đã check out hôm nay rồi')
+      throw new Error("Bạn đã check out hôm nay rồi")
     }
 
     // Calculate work hours
@@ -271,7 +285,7 @@ export const attendanceService = {
 
     return {
       attendance: updated,
-      message: 'Check out thành công',
+      message: "Check out thành công",
     }
   },
 
@@ -296,14 +310,21 @@ export const attendanceService = {
     dateStart.setHours(0, 0, 0, 0)
 
     // Check for existing record
-    const existing = await this.findByEmployeeAndDate(tenantId, data.employeeId, dateStart)
+    const existing = await this.findByEmployeeAndDate(
+      tenantId,
+      data.employeeId,
+      dateStart
+    )
 
     if (existing) {
-      throw new Error('Đã có bản ghi chấm công cho ngày này')
+      throw new Error("Đã có bản ghi chấm công cho ngày này")
     }
 
     // Get shift
-    const shift = await shiftService.getEmployeeShift(data.employeeId, dateStart)
+    const shift = await shiftService.getEmployeeShift(
+      data.employeeId,
+      dateStart
+    )
 
     // Calculate work hours if both checkIn and checkOut provided
     let workHoursResult = null
@@ -312,7 +333,7 @@ export const attendanceService = {
         checkIn: data.checkIn,
         checkOut: data.checkOut,
         shift,
-        dayType: data.dayType || 'NORMAL',
+        dayType: data.dayType || "NORMAL",
       })
     }
 
@@ -325,8 +346,8 @@ export const attendanceService = {
         dayType: data.dayType || this.getDayType(dateStart),
         checkIn: data.checkIn,
         checkOut: data.checkOut,
-        checkInSource: 'MANUAL',
-        checkOutSource: data.checkOut ? 'MANUAL' : null,
+        checkInSource: "MANUAL",
+        checkOutSource: data.checkOut ? "MANUAL" : null,
         status: data.status,
         workHours: workHoursResult?.workHours,
         otHours: workHoursResult?.otHours,
@@ -362,7 +383,7 @@ export const attendanceService = {
     })
 
     if (!attendance) {
-      throw new Error('Bản ghi chấm công không tồn tại')
+      throw new Error("Bản ghi chấm công không tồn tại")
     }
 
     const checkIn = data.checkIn || attendance.checkIn
@@ -406,7 +427,7 @@ export const attendanceService = {
     })
 
     if (!attendance) {
-      throw new Error('Bản ghi chấm công không tồn tại')
+      throw new Error("Bản ghi chấm công không tồn tại")
     }
 
     return db.attendance.delete({
@@ -422,7 +443,11 @@ export const attendanceService = {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
-    const attendance = await this.findByEmployeeAndDate(tenantId, employeeId, today)
+    const attendance = await this.findByEmployeeAndDate(
+      tenantId,
+      employeeId,
+      today
+    )
     const shift = await shiftService.getEmployeeShift(employeeId, today)
 
     return {
@@ -445,32 +470,32 @@ export const attendanceService = {
         where: {
           tenantId,
           date: { gte: today, lt: tomorrow },
-          status: 'PRESENT',
+          status: "PRESENT",
         },
       }),
       db.attendance.count({
         where: {
           tenantId,
           date: { gte: today, lt: tomorrow },
-          status: 'ABSENT',
+          status: "ABSENT",
         },
       }),
       db.attendance.count({
         where: {
           tenantId,
           date: { gte: today, lt: tomorrow },
-          status: { in: ['LATE', 'LATE_AND_EARLY'] },
+          status: { in: ["LATE", "LATE_AND_EARLY"] },
         },
       }),
       db.attendance.count({
         where: {
           tenantId,
           date: { gte: today, lt: tomorrow },
-          status: 'ON_LEAVE',
+          status: "ON_LEAVE",
         },
       }),
       db.employee.count({
-        where: { tenantId, status: 'ACTIVE' },
+        where: { tenantId, status: "ACTIVE" },
       }),
     ])
 
@@ -491,9 +516,9 @@ export const attendanceService = {
   getDayType(date: Date): DayType {
     const day = date.getDay()
     if (day === 0 || day === 6) {
-      return 'WEEKEND'
+      return "WEEKEND"
     }
-    return 'NORMAL'
+    return "NORMAL"
   },
 
   async getEmployeeAttendanceByMonth(
@@ -518,7 +543,7 @@ export const attendanceService = {
         shift: true,
         anomalies: true,
       },
-      orderBy: { date: 'asc' },
+      orderBy: { date: "asc" },
     })
   },
 }

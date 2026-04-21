@@ -1,28 +1,36 @@
-import { test, expect } from '@playwright/test'
-import { TEST_ADDRESSES, SHIPPING_METHODS } from './fixtures/test-data'
+import { test, expect } from "@playwright/test"
+import { TEST_ADDRESSES, SHIPPING_METHODS } from "./fixtures/test-data"
 
-test.describe('Shipping and Delivery', () => {
-  test('should calculate GHN shipping fee', async ({ page }) => {
-    await page.goto('/cart')
+test.describe("Shipping and Delivery", () => {
+  test("should calculate GHN shipping fee", async ({ page }) => {
+    await page.goto("/cart")
 
     // Wait for cart items
-    await expect(page.locator('[data-testid="cart-item"], .cart-item, tr').first()).toBeVisible({
+    await expect(
+      page.locator('[data-testid="cart-item"], .cart-item, tr').first()
+    ).toBeVisible({
       timeout: 10_000,
     })
 
     // Proceed to checkout
-    const checkoutBtn = page.getByRole('button', { name: /thanh toán|checkout/i }).first()
+    const checkoutBtn = page
+      .getByRole("button", { name: /thanh toán|checkout/i })
+      .first()
 
     if (await checkoutBtn.isVisible()) {
       await checkoutBtn.click()
 
-      await page.waitForLoadState('networkidle')
+      await page.waitForLoadState("networkidle")
 
       // Fill address
       const address = TEST_ADDRESSES.hanoi
       const nameField = page.getByPlaceholder(/tên|name/i).first()
-      const phoneField = page.getByPlaceholder(/điện thoại|phone|số điện thoại/i).first()
-      const streetField = page.getByPlaceholder(/địa chỉ|address|đường|street/i).first()
+      const phoneField = page
+        .getByPlaceholder(/điện thoại|phone|số điện thoại/i)
+        .first()
+      const streetField = page
+        .getByPlaceholder(/địa chỉ|address|đường|street/i)
+        .first()
 
       if (await nameField.isVisible()) {
         await nameField.fill(address.fullName)
@@ -38,13 +46,17 @@ test.describe('Shipping and Delivery', () => {
 
       // Select GHN shipping method
       const shippingSelect = page
-        .getByRole('combobox', { name: /phương thức vận chuyển|shipping method|vận chuyển/i })
+        .getByRole("combobox", {
+          name: /phương thức vận chuyển|shipping method|vận chuyển/i,
+        })
         .first()
 
       if (await shippingSelect.isVisible({ timeout: 5_000 })) {
         await shippingSelect.click()
 
-        const ghnOption = page.getByRole('option', { name: /ghn|giao hàng nhanh/i }).first()
+        const ghnOption = page
+          .getByRole("option", { name: /ghn|giao hàng nhanh/i })
+          .first()
 
         if (await ghnOption.isVisible()) {
           await ghnOption.click()
@@ -66,12 +78,14 @@ test.describe('Shipping and Delivery', () => {
     }
   })
 
-  test('should track shipment status', async ({ page }) => {
+  test("should track shipment status", async ({ page }) => {
     // Navigate to orders list
-    await page.goto('/orders')
+    await page.goto("/orders")
 
     // Wait for orders to load
-    await expect(page.locator('[data-testid="order-item"], .order-item, tr').first()).toBeVisible({
+    await expect(
+      page.locator('[data-testid="order-item"], .order-item, tr').first()
+    ).toBeVisible({
       timeout: 10_000,
     })
 
@@ -84,11 +98,11 @@ test.describe('Shipping and Delivery', () => {
     if (await shippedOrder.isVisible()) {
       await shippedOrder.click()
 
-      await page.waitForLoadState('networkidle')
+      await page.waitForLoadState("networkidle")
 
       // Look for tracking information
       const trackingBtn = page
-        .getByRole('button', { name: /theo dõi|track|tracking/i })
+        .getByRole("button", { name: /theo dõi|track|tracking/i })
         .first()
 
       if (await trackingBtn.isVisible({ timeout: 5_000 })) {
@@ -107,23 +121,30 @@ test.describe('Shipping and Delivery', () => {
     }
   })
 
-  test('should update delivery status', async ({ page }) => {
+  test("should update delivery status", async ({ page }) => {
     // Navigate to orders list
-    await page.goto('/orders')
+    await page.goto("/orders")
 
     // Wait for orders to load
-    await expect(page.locator('[data-testid="order-item"], .order-item, tr').first()).toBeVisible({
+    await expect(
+      page.locator('[data-testid="order-item"], .order-item, tr').first()
+    ).toBeVisible({
       timeout: 10_000,
     })
 
     // Click on first order
-    await page.locator('[data-testid="order-item"], .order-item, tr').first().click()
+    await page
+      .locator('[data-testid="order-item"], .order-item, tr')
+      .first()
+      .click()
 
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState("networkidle")
 
     // Look for status update control
     const statusControl = page
-      .getByRole('button', { name: /cập nhật trạng thái|update status|giao hàng|delivery/i })
+      .getByRole("button", {
+        name: /cập nhật trạng thái|update status|giao hàng|delivery/i,
+      })
       .first()
 
     if (await statusControl.isVisible({ timeout: 5_000 })) {
@@ -133,7 +154,9 @@ test.describe('Shipping and Delivery', () => {
       await page.waitForTimeout(500)
 
       // Select delivery completed status
-      const deliveredStatus = page.getByRole('option', { name: /đã giao|delivered/i }).first()
+      const deliveredStatus = page
+        .getByRole("option", { name: /đã giao|delivered/i })
+        .first()
 
       if (await deliveredStatus.isVisible({ timeout: 3_000 })) {
         await deliveredStatus.click()
@@ -141,8 +164,8 @@ test.describe('Shipping and Delivery', () => {
         // Wait for update API call
         const responsePromise = page.waitForResponse(
           (resp) =>
-            resp.url().includes('/api/orders') ||
-            resp.url().includes('/api/shipping'),
+            resp.url().includes("/api/orders") ||
+            resp.url().includes("/api/shipping"),
           { timeout: 15_000 }
         )
 

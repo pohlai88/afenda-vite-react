@@ -6,8 +6,8 @@ test.describe("Attendance Module", () => {
     await page.waitForLoadState("networkidle")
 
     // Page should show the main attendance heading (h1)
-    await expect(
-      page.locator("h1", { hasText: /Chấm công/i })
-    ).toBeVisible({ timeout: 10000 })
+    await expect(page.locator("h1", { hasText: /Chấm công/i })).toBeVisible({
+      timeout: 10000,
+    })
   })
 })

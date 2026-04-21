@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import Link from "next/link"
 import {
   Briefcase,
   FileText,
@@ -10,14 +10,14 @@ import {
   Users,
   TrendingUp,
   ArrowRight,
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { PageHeader } from '@/components/shared/page-header'
-import { StatsCard } from '@/components/shared/stats-card'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { APPLICATION_STATUS } from '@/lib/recruitment/constants'
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { PageHeader } from "@/components/shared/page-header"
+import { StatsCard } from "@/components/shared/stats-card"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import { APPLICATION_STATUS } from "@/lib/recruitment/constants"
 
 interface RecruitmentAnalytics {
   openRequisitions: number
@@ -42,13 +42,13 @@ export default function RecruitmentDashboardPage() {
   useEffect(() => {
     async function fetchAnalytics() {
       try {
-        const res = await fetch('/api/recruitment/analytics')
-        if (!res.ok) throw new Error('Không thể tải dữ liệu')
+        const res = await fetch("/api/recruitment/analytics")
+        if (!res.ok) throw new Error("Không thể tải dữ liệu")
         const json = await res.json()
         // API returns { success: true, data: result }
         setData(json.data || json)
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -83,7 +83,8 @@ export default function RecruitmentDashboardPage() {
     recentApplications: data?.recentApplications ?? [],
   }
 
-  const funnelCounts = analytics.funnel.length > 0 ? analytics.funnel.map(f => f.count) : [1]
+  const funnelCounts =
+    analytics.funnel.length > 0 ? analytics.funnel.map((f) => f.count) : [1]
   const maxFunnelCount = Math.max(...funnelCounts, 1)
 
   return (
@@ -203,7 +204,7 @@ export default function RecruitmentDashboardPage() {
                           {statusInfo?.label || app.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
-                          {new Date(app.appliedAt).toLocaleDateString('vi-VN')}
+                          {new Date(app.appliedAt).toLocaleDateString("vi-VN")}
                         </span>
                       </div>
                     </Link>

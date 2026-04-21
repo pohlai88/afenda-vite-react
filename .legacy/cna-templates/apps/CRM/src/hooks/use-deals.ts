@@ -1,21 +1,17 @@
-'use client'
+"use client"
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import type { Deal, DealWithRelations } from '@/types'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import type { Deal, DealWithRelations } from "@/types"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 function buildUrl(
   base: string,
-  params?: Record<string, string | number | undefined | null>,
+  params?: Record<string, string | number | undefined | null>
 ) {
   const url = new URL(base, window.location.origin)
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
+      if (value !== undefined && value !== null && value !== "") {
         url.searchParams.set(key, String(value))
       }
     })
@@ -60,9 +56,14 @@ interface MoveDealPayload {
 /** List deals with optional search, filter, and pagination. */
 export function useDeals(params?: DealListParams) {
   return useQuery<DealListResponse>({
-    queryKey: ['deals', params],
+    queryKey: ["deals", params],
     queryFn: () =>
-      fetchJson<DealListResponse>(buildUrl('/api/deals', params as Record<string, string | number | undefined>)),
+      fetchJson<DealListResponse>(
+        buildUrl(
+          "/api/deals",
+          params as Record<string, string | number | undefined>
+        )
+      ),
     staleTime: 30_000,
   })
 }
@@ -70,7 +71,7 @@ export function useDeals(params?: DealListParams) {
 /** Fetch a single deal by ID. */
 export function useDeal(id: string) {
   return useQuery<DealWithRelations>({
-    queryKey: ['deals', id],
+    queryKey: ["deals", id],
     queryFn: () => fetchJson<DealWithRelations>(`/api/deals/${id}`),
     enabled: !!id,
     staleTime: 30_000,
@@ -85,13 +86,13 @@ export function useCreateDeal() {
 
   return useMutation<Deal, Error, Partial<Deal>>({
     mutationFn: (data) =>
-      fetchJson<Deal>('/api/deals', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetchJson<Deal>("/api/deals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['deals'] })
+      qc.invalidateQueries({ queryKey: ["deals"] })
     },
   })
 }
@@ -103,14 +104,14 @@ export function useUpdateDeal() {
   return useMutation<Deal, Error, { id: string } & Partial<Deal>>({
     mutationFn: ({ id, ...data }) =>
       fetchJson<Deal>(`/api/deals/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: (_data, variables) => {
-      qc.invalidateQueries({ queryKey: ['deals'] })
-      qc.invalidateQueries({ queryKey: ['deals', variables.id] })
-      qc.invalidateQueries({ queryKey: ['pipeline'] })
+      qc.invalidateQueries({ queryKey: ["deals"] })
+      qc.invalidateQueries({ queryKey: ["deals", variables.id] })
+      qc.invalidateQueries({ queryKey: ["pipeline"] })
     },
   })
 }
@@ -121,9 +122,9 @@ export function useDeleteDeal() {
 
   return useMutation<void, Error, string>({
     mutationFn: (id) =>
-      fetchJson<void>(`/api/deals/${id}`, { method: 'DELETE' }),
+      fetchJson<void>(`/api/deals/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['deals'] })
+      qc.invalidateQueries({ queryKey: ["deals"] })
     },
   })
 }
@@ -135,13 +136,13 @@ export function useMoveDeal() {
   return useMutation<Deal, Error, MoveDealPayload>({
     mutationFn: ({ id, stageId }) =>
       fetchJson<Deal>(`/api/deals/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ stageId }),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['pipeline'] })
-      qc.invalidateQueries({ queryKey: ['deals'] })
+      qc.invalidateQueries({ queryKey: ["pipeline"] })
+      qc.invalidateQueries({ queryKey: ["deals"] })
     },
   })
 }

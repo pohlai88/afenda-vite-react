@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import {
   LayoutDashboard,
   Users,
@@ -19,46 +19,70 @@ import {
   BookOpen,
   PanelLeftClose,
   PanelLeftOpen,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useTranslation } from '@/i18n'
-import { useUIStore } from '@/stores/ui-store'
-import { usePermissions } from '@/hooks/use-permissions'
+} from "lucide-react"
+import { cn } from "@/lib/utils"
+import { useTranslation } from "@/i18n"
+import { useUIStore } from "@/stores/ui-store"
+import { usePermissions } from "@/hooks/use-permissions"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
+} from "@/components/ui/tooltip"
 
 type NavItemDef = {
   href: string
   icon: typeof LayoutDashboard
   labelKey: string
-  requiredPermission?: 'canManageCampaigns' | 'canManageSettings' | 'canViewApiDocs'
+  requiredPermission?:
+    | "canManageCampaigns"
+    | "canManageSettings"
+    | "canViewApiDocs"
 }
 
 const navItemDefs: NavItemDef[] = [
-  { href: '/dashboard', icon: LayoutDashboard, labelKey: 'nav.dashboard' },
-  { href: '/contacts', icon: Users, labelKey: 'nav.contacts' },
-  { href: '/companies', icon: Building2, labelKey: 'nav.companies' },
-  { href: '/partners', icon: Handshake, labelKey: 'nav.partners' },
-  { href: '/pipeline', icon: Kanban, labelKey: 'nav.pipeline' },
-  { href: '/activities', icon: Activity, labelKey: 'nav.activities' },
-  { href: '/campaigns', icon: Megaphone, labelKey: 'nav.campaigns', requiredPermission: 'canManageCampaigns' },
-  { href: '/products', icon: Package, labelKey: 'nav.products' },
-  { href: '/quotes', icon: FileText, labelKey: 'nav.quotes' },
-  { href: '/orders', icon: ShoppingCart, labelKey: 'nav.orders' },
-  { href: '/tickets', icon: LifeBuoy, labelKey: 'nav.tickets' },
-  { href: '/reports', icon: BarChart3, labelKey: 'nav.reports' },
-  { href: '/settings', icon: Settings, labelKey: 'nav.settings', requiredPermission: 'canManageSettings' },
-  { href: '/api-docs', icon: BookOpen, labelKey: 'nav.apiDocs', requiredPermission: 'canViewApiDocs' },
+  { href: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
+  { href: "/contacts", icon: Users, labelKey: "nav.contacts" },
+  { href: "/companies", icon: Building2, labelKey: "nav.companies" },
+  { href: "/partners", icon: Handshake, labelKey: "nav.partners" },
+  { href: "/pipeline", icon: Kanban, labelKey: "nav.pipeline" },
+  { href: "/activities", icon: Activity, labelKey: "nav.activities" },
+  {
+    href: "/campaigns",
+    icon: Megaphone,
+    labelKey: "nav.campaigns",
+    requiredPermission: "canManageCampaigns",
+  },
+  { href: "/products", icon: Package, labelKey: "nav.products" },
+  { href: "/quotes", icon: FileText, labelKey: "nav.quotes" },
+  { href: "/orders", icon: ShoppingCart, labelKey: "nav.orders" },
+  { href: "/tickets", icon: LifeBuoy, labelKey: "nav.tickets" },
+  { href: "/reports", icon: BarChart3, labelKey: "nav.reports" },
+  {
+    href: "/settings",
+    icon: Settings,
+    labelKey: "nav.settings",
+    requiredPermission: "canManageSettings",
+  },
+  {
+    href: "/api-docs",
+    icon: BookOpen,
+    labelKey: "nav.apiDocs",
+    requiredPermission: "canViewApiDocs",
+  },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
-  const { sidebarOpen: expanded, toggleSidebar, isMobile, setSidebarOpen } = useUIStore()
-  const { canManageCampaigns, canManageSettings, canViewApiDocs, isLoading } = usePermissions()
+  const {
+    sidebarOpen: expanded,
+    toggleSidebar,
+    isMobile,
+    setSidebarOpen,
+  } = useUIStore()
+  const { canManageCampaigns, canManageSettings, canViewApiDocs, isLoading } =
+    usePermissions()
   const { t } = useTranslation()
 
   const permissionMap: Record<string, boolean> = {
@@ -88,12 +112,14 @@ export function Sidebar() {
       )}
       <aside
         className={cn(
-          'sidebar-premium h-screen flex flex-col transition-all duration-200',
+          "sidebar-premium h-screen flex flex-col transition-all duration-200",
           isMobile
-            ? 'fixed z-50 w-[240px] transition-transform duration-200'
-            : expanded ? 'w-[240px]' : 'w-[60px]',
-          isMobile && !expanded && '-translate-x-full',
-          isMobile && expanded && 'translate-x-0'
+            ? "fixed z-50 w-[240px] transition-transform duration-200"
+            : expanded
+              ? "w-[240px]"
+              : "w-[60px]",
+          isMobile && !expanded && "-translate-x-full",
+          isMobile && expanded && "translate-x-0"
         )}
       >
         {/* Header: Logo + Collapse toggle */}
@@ -101,12 +127,13 @@ export function Sidebar() {
           {expanded ? (
             <>
               <span className="text-sm font-bold whitespace-nowrap flex-1 pl-1">
-                <span className="text-[var(--crm-text-primary)]">RTR-</span><span className="text-[var(--crm-accent-text)]">CRM</span>
+                <span className="text-[var(--crm-text-primary)]">RTR-</span>
+                <span className="text-[var(--crm-accent-text)]">CRM</span>
               </span>
               <button
                 onClick={toggleSidebar}
                 className="p-1.5 rounded-md text-[var(--crm-text-muted)] hover:text-[var(--crm-text-secondary)] hover:bg-[var(--crm-bg-subtle)] transition-colors"
-                title={t('nav.collapse')}
+                title={t("nav.collapse")}
               >
                 <PanelLeftClose className="w-4 h-4" />
               </button>
@@ -116,7 +143,7 @@ export function Sidebar() {
               <button
                 onClick={toggleSidebar}
                 className="p-1.5 rounded-md text-[var(--crm-text-muted)] hover:text-[var(--crm-text-secondary)] hover:bg-[var(--crm-bg-subtle)] transition-colors"
-                title={t('nav.expand')}
+                title={t("nav.expand")}
               >
                 <PanelLeftOpen className="w-4 h-4" />
               </button>
@@ -126,13 +153,11 @@ export function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 py-2 px-1.5 space-y-px overflow-y-auto">
-          {expanded && (
-            <div className="section-label mt-0.5 mb-1">MENU</div>
-          )}
+          {expanded && <div className="section-label mt-0.5 mb-1">MENU</div>}
           {visibleItems.map((item) => {
             const isActive =
               pathname === item.href ||
-              (item.href !== '/dashboard' && pathname.startsWith(item.href))
+              (item.href !== "/dashboard" && pathname.startsWith(item.href))
 
             const isExpanded = isMobile || expanded
             const linkContent = (
@@ -140,9 +165,9 @@ export function Sidebar() {
                 href={item.href}
                 onClick={handleNavClick}
                 className={cn(
-                  'nav-item relative',
-                  isExpanded ? 'px-3 py-1.5' : 'justify-center px-2 py-1.5',
-                  isActive && 'active'
+                  "nav-item relative",
+                  isExpanded ? "px-3 py-1.5" : "justify-center px-2 py-1.5",
+                  isActive && "active"
                 )}
               >
                 {isActive && (
@@ -157,7 +182,10 @@ export function Sidebar() {
               return (
                 <Tooltip key={item.href}>
                   <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
-                  <TooltipContent side="right" className="bg-[var(--crm-bg-hover)] text-[var(--crm-text-primary)] border-[var(--crm-border)]">
+                  <TooltipContent
+                    side="right"
+                    className="bg-[var(--crm-bg-hover)] text-[var(--crm-text-primary)] border-[var(--crm-border)]"
+                  >
                     {t(item.labelKey)}
                   </TooltipContent>
                 </Tooltip>

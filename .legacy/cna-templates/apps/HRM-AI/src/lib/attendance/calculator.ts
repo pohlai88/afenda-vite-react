@@ -1,15 +1,15 @@
 // src/lib/attendance/calculator.ts
 // Work hours calculation engine
 
-import type { Shift, DayType, AttendanceStatus } from '@prisma/client'
-import type { WorkHoursResult } from '@/types'
+import type { Shift, DayType, AttendanceStatus } from "@prisma/client"
+import type { WorkHoursResult } from "@/types"
 import {
   setTimeOnDate,
   getTimeDiffInMinutes,
   calculateNightHoursOptimized,
   roundHours,
-} from './time-utils'
-import { DEFAULT_SHIFT } from '@/constants/attendance'
+} from "./time-utils"
+import { DEFAULT_SHIFT } from "@/constants/attendance"
 
 export interface CalculationInput {
   checkIn: Date
@@ -22,7 +22,7 @@ export interface CalculationInput {
  * Calculate work hours, OT hours, late/early minutes
  */
 export function calculateWorkHours(input: CalculationInput): WorkHoursResult {
-  const { checkIn, checkOut, shift, dayType = 'NORMAL' } = input
+  const { checkIn, checkOut, shift, dayType = "NORMAL" } = input
 
   // Use default shift settings if no shift assigned
   const shiftStartTime = shift?.startTime || DEFAULT_SHIFT.START_TIME
@@ -78,7 +78,10 @@ export function calculateWorkHours(input: CalculationInput): WorkHoursResult {
     if (checkIn < breakEnd && checkOut > breakStart) {
       const breakOverlapStart = checkIn > breakStart ? checkIn : breakStart
       const breakOverlapEnd = checkOut < breakEnd ? checkOut : breakEnd
-      const breakOverlap = getTimeDiffInMinutes(breakOverlapStart, breakOverlapEnd)
+      const breakOverlap = getTimeDiffInMinutes(
+        breakOverlapStart,
+        breakOverlapEnd
+      )
       if (breakOverlap > 0) {
         effectiveMinutes -= breakOverlap
       }
@@ -141,32 +144,32 @@ function determineAttendanceStatus(
   _standardHours: number
 ): AttendanceStatus {
   // Holiday
-  if (dayType === 'HOLIDAY') {
-    return 'HOLIDAY'
+  if (dayType === "HOLIDAY") {
+    return "HOLIDAY"
   }
 
   // Absent if no work hours recorded
   if (workHours === 0) {
-    return 'ABSENT'
+    return "ABSENT"
   }
 
   // Both late and early
   if (lateMinutes > 0 && earlyMinutes > 0) {
-    return 'LATE_AND_EARLY'
+    return "LATE_AND_EARLY"
   }
 
   // Late only
   if (lateMinutes > 0) {
-    return 'LATE'
+    return "LATE"
   }
 
   // Early leave only
   if (earlyMinutes > 0) {
-    return 'EARLY_LEAVE'
+    return "EARLY_LEAVE"
   }
 
   // Present (on time)
-  return 'PRESENT'
+  return "PRESENT"
 }
 
 /**
@@ -182,7 +185,10 @@ export function getExpectedWorkHours(shift: Shift | null): number {
 /**
  * Check if check-in is within allowed time range
  */
-export function isCheckInAllowed(shift: Shift | null, checkInTime: Date): boolean {
+export function isCheckInAllowed(
+  shift: Shift | null,
+  checkInTime: Date
+): boolean {
   const shiftStartTime = shift?.startTime || DEFAULT_SHIFT.START_TIME
   const shiftStart = setTimeOnDate(checkInTime, shiftStartTime)
 

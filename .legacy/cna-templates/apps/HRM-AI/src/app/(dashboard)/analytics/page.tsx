@@ -1,14 +1,20 @@
 // src/app/(dashboard)/analytics/page.tsx
 // Analytics Hub - Overview Page
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Users,
   TrendingUp,
@@ -21,7 +27,7 @@ import {
   CheckCircle,
   Clock,
   BarChart3,
-} from 'lucide-react'
+} from "lucide-react"
 
 interface QuickStats {
   totalEmployees: number
@@ -44,16 +50,24 @@ export default function AnalyticsHubPage() {
     try {
       // Fetch workforce metrics
       const endDate = new Date()
-      const startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 1, 1)
+      const startDate = new Date(
+        endDate.getFullYear(),
+        endDate.getMonth() - 1,
+        1
+      )
 
       const [workforceRes, predictionsRes, alertsRes] = await Promise.all([
-        fetch(`/api/analytics/workforce?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`),
-        fetch('/api/analytics/predictions?riskLevel=HIGH&limit=100'),
-        fetch('/api/analytics/alerts?status=ACTIVE'),
+        fetch(
+          `/api/analytics/workforce?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
+        ),
+        fetch("/api/analytics/predictions?riskLevel=HIGH&limit=100"),
+        fetch("/api/analytics/alerts?status=ACTIVE"),
       ])
 
       const workforceData = workforceRes.ok ? await workforceRes.json() : null
-      const predictionsData = predictionsRes.ok ? await predictionsRes.json() : null
+      const predictionsData = predictionsRes.ok
+        ? await predictionsRes.json()
+        : null
       const alertsData = alertsRes.ok ? await alertsRes.json() : null
 
       setStats({
@@ -61,11 +75,14 @@ export default function AnalyticsHubPage() {
         activeEmployees: workforceData?.data?.headcount?.active || 0,
         turnoverRate: workforceData?.data?.turnover?.rate || 0,
         highRiskCount: predictionsData?.data?.length || 0,
-        pendingAlerts: alertsData?.data?.filter((a: { status: string }) => a.status === 'ACTIVE').length || 0,
+        pendingAlerts:
+          alertsData?.data?.filter(
+            (a: { status: string }) => a.status === "ACTIVE"
+          ).length || 0,
         recentReports: 5, // Placeholder
       })
     } catch (error) {
-      console.error('Error fetching quick stats:', error)
+      console.error("Error fetching quick stats:", error)
     } finally {
       setLoading(false)
     }
@@ -73,39 +90,39 @@ export default function AnalyticsHubPage() {
 
   const quickAccessCards = [
     {
-      title: 'Executive Dashboard',
-      description: 'Tổng quan KPIs và metrics cho lãnh đạo',
-      href: '/analytics/executive',
+      title: "Executive Dashboard",
+      description: "Tổng quan KPIs và metrics cho lãnh đạo",
+      href: "/analytics/executive",
       icon: BarChart3,
-      color: 'bg-blue-500',
+      color: "bg-blue-500",
     },
     {
-      title: 'Phân tích nhân sự',
-      description: 'Số lượng, cơ cấu, biến động nhân sự',
-      href: '/analytics/workforce',
+      title: "Phân tích nhân sự",
+      description: "Số lượng, cơ cấu, biến động nhân sự",
+      href: "/analytics/workforce",
       icon: Users,
-      color: 'bg-green-500',
+      color: "bg-green-500",
     },
     {
-      title: 'Dự đoán thông minh',
-      description: 'AI dự báo nguy cơ nghỉ việc, tuyển dụng',
-      href: '/analytics/predictive',
+      title: "Dự đoán thông minh",
+      description: "AI dự báo nguy cơ nghỉ việc, tuyển dụng",
+      href: "/analytics/predictive",
       icon: Brain,
-      color: 'bg-purple-500',
+      color: "bg-purple-500",
     },
     {
-      title: 'Báo cáo tùy chỉnh',
-      description: 'Tạo và quản lý báo cáo theo nhu cầu',
-      href: '/analytics/reports',
+      title: "Báo cáo tùy chỉnh",
+      description: "Tạo và quản lý báo cáo theo nhu cầu",
+      href: "/analytics/reports",
       icon: FileText,
-      color: 'bg-orange-500',
+      color: "bg-orange-500",
     },
     {
-      title: 'Cảnh báo',
-      description: 'Thiết lập và quản lý cảnh báo tự động',
-      href: '/analytics/alerts',
+      title: "Cảnh báo",
+      description: "Thiết lập và quản lý cảnh báo tự động",
+      href: "/analytics/alerts",
       icon: Bell,
-      color: 'bg-red-500',
+      color: "bg-red-500",
     },
   ]
 
@@ -129,7 +146,9 @@ export default function AnalyticsHubPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold">{stats?.totalEmployees || 0}</p>
+                  <p className="text-2xl font-bold">
+                    {stats?.totalEmployees || 0}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
@@ -152,7 +171,9 @@ export default function AnalyticsHubPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold">{stats?.turnoverRate || 0}%</p>
+                  <p className="text-2xl font-bold">
+                    {stats?.turnoverRate || 0}%
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-red-100 rounded-full">
@@ -181,7 +202,9 @@ export default function AnalyticsHubPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold">{stats?.highRiskCount || 0}</p>
+                  <p className="text-2xl font-bold">
+                    {stats?.highRiskCount || 0}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-orange-100 rounded-full">
@@ -198,11 +221,15 @@ export default function AnalyticsHubPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Cảnh báo đang hoạt động</p>
+                <p className="text-sm text-muted-foreground">
+                  Cảnh báo đang hoạt động
+                </p>
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold">{stats?.pendingAlerts || 0}</p>
+                  <p className="text-2xl font-bold">
+                    {stats?.pendingAlerts || 0}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-yellow-100 rounded-full">
@@ -272,25 +299,43 @@ export default function AnalyticsHubPage() {
                     <AlertTriangle className="h-5 w-5 text-red-600" />
                     <div className="flex-1">
                       <p className="text-sm font-medium">Tỷ lệ nghỉ việc cao</p>
-                      <p className="text-xs text-muted-foreground">Phòng Kinh doanh - 2 giờ trước</p>
+                      <p className="text-xs text-muted-foreground">
+                        Phòng Kinh doanh - 2 giờ trước
+                      </p>
                     </div>
                     <Badge variant="destructive">Nghiêm trọng</Badge>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
                     <Clock className="h-5 w-5 text-yellow-600" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium">5 hợp đồng sắp hết hạn</p>
-                      <p className="text-xs text-muted-foreground">Cần xử lý trong 30 ngày</p>
+                      <p className="text-sm font-medium">
+                        5 hợp đồng sắp hết hạn
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Cần xử lý trong 30 ngày
+                      </p>
                     </div>
-                    <Badge variant="outline" className="text-yellow-600 border-yellow-600">Cảnh báo</Badge>
+                    <Badge
+                      variant="outline"
+                      className="text-yellow-600 border-yellow-600"
+                    >
+                      Cảnh báo
+                    </Badge>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
                     <CheckCircle className="h-5 w-5 text-green-600" />
                     <div className="flex-1">
                       <p className="text-sm font-medium">Mục tiêu Q4 đạt 95%</p>
-                      <p className="text-xs text-muted-foreground">Toàn công ty - 1 ngày trước</p>
+                      <p className="text-xs text-muted-foreground">
+                        Toàn công ty - 1 ngày trước
+                      </p>
                     </div>
-                    <Badge variant="outline" className="text-green-600 border-green-600">Thông tin</Badge>
+                    <Badge
+                      variant="outline"
+                      className="text-green-600 border-green-600"
+                    >
+                      Thông tin
+                    </Badge>
                   </div>
                 </>
               )}
@@ -322,21 +367,26 @@ export default function AnalyticsHubPage() {
                   <div className="p-4 border rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Brain className="h-4 w-4 text-purple-600" />
-                      <span className="text-sm font-medium">Dự báo nghỉ việc</span>
+                      <span className="text-sm font-medium">
+                        Dự báo nghỉ việc
+                      </span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {stats?.highRiskCount || 0} nhân viên có nguy cơ nghỉ việc cao trong 3 tháng tới.
-                      Phòng Kinh doanh và IT cần được chú ý đặc biệt.
+                      {stats?.highRiskCount || 0} nhân viên có nguy cơ nghỉ việc
+                      cao trong 3 tháng tới. Phòng Kinh doanh và IT cần được chú
+                      ý đặc biệt.
                     </p>
                   </div>
                   <div className="p-4 border rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <TrendingUp className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm font-medium">Xu hướng tuyển dụng</span>
+                      <span className="text-sm font-medium">
+                        Xu hướng tuyển dụng
+                      </span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Dựa trên phân tích, công ty cần tuyển thêm 8-12 nhân viên trong Q1
-                      để đảm bảo tiến độ dự án.
+                      Dựa trên phân tích, công ty cần tuyển thêm 8-12 nhân viên
+                      trong Q1 để đảm bảo tiến độ dự án.
                     </p>
                   </div>
                 </>

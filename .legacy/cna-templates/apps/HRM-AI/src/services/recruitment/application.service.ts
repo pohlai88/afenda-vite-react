@@ -1,10 +1,12 @@
-import { db } from '@/lib/db'
-import { ApplicationSource, Prisma } from '@prisma/client'
-import { audit } from '@/lib/recruitment/utils'
-import { APPLICATION_STATUS } from '@/lib/recruitment/constants'
-import type { AuditContext } from '@/types/audit'
+import { db } from "@/lib/db"
+import { ApplicationSource, Prisma } from "@prisma/client"
+import { audit } from "@/lib/recruitment/utils"
+import { APPLICATION_STATUS } from "@/lib/recruitment/constants"
+import type { AuditContext } from "@/types/audit"
 
-export async function generateApplicationCode(tenantId: string): Promise<string> {
+export async function generateApplicationCode(
+  tenantId: string
+): Promise<string> {
   const year = new Date().getFullYear()
   const count = await db.application.count({
     where: {
@@ -15,7 +17,7 @@ export async function generateApplicationCode(tenantId: string): Promise<string>
       },
     },
   })
-  return `APP-${year}-${String(count + 1).padStart(5, '0')}`
+  return `APP-${year}-${String(count + 1).padStart(5, "0")}`
 }
 
 export async function createApplication(
@@ -39,9 +41,10 @@ export async function createApplication(
       requisitionId: data.requisitionId,
       jobPostingId: data.jobPostingId,
       coverLetter: data.coverLetter,
-      source: (data.source as ApplicationSource) || ApplicationSource.CAREERS_PAGE,
+      source:
+        (data.source as ApplicationSource) || ApplicationSource.CAREERS_PAGE,
       answers: data.answers as Prisma.InputJsonValue,
-      status: 'NEW',
+      status: "NEW",
       stage: 1,
     },
     include: {
@@ -60,9 +63,9 @@ export async function createApplication(
   await db.applicationActivity.create({
     data: {
       applicationId: application.id,
-      action: 'application_created',
-      description: 'Ứng viên đã nộp hồ sơ',
-      newValue: 'NEW',
+      action: "application_created",
+      description: "Ứng viên đã nộp hồ sơ",
+      newValue: "NEW",
     },
   })
 
@@ -90,8 +93,8 @@ export async function getApplications(
   if (filters?.search) {
     where.candidate = {
       OR: [
-        { fullName: { contains: filters.search, mode: 'insensitive' } },
-        { email: { contains: filters.search, mode: 'insensitive' } },
+        { fullName: { contains: filters.search, mode: "insensitive" } },
+        { email: { contains: filters.search, mode: "insensitive" } },
       ],
     }
   }
@@ -105,7 +108,7 @@ export async function getApplications(
         assignedTo: { select: { id: true, name: true } },
         _count: { select: { interviews: true, evaluations: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -124,7 +127,7 @@ export async function getApplicationById(id: string, tenantId: string) {
       jobPosting: true,
       assignedTo: { select: { id: true, name: true, email: true } },
       interviews: {
-        orderBy: { scheduledAt: 'desc' },
+        orderBy: { scheduledAt: "desc" },
         include: {
           evaluations: {
             include: {
@@ -139,9 +142,9 @@ export async function getApplicationById(id: string, tenantId: string) {
           interview: true,
         },
       },
-      offers: { orderBy: { createdAt: 'desc' } },
+      offers: { orderBy: { createdAt: "desc" } },
       activities: {
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 20,
         include: {
           performedBy: { select: { id: true, name: true } },
@@ -179,13 +182,13 @@ export async function updateApplicationStatus(
     stage,
   }
 
-  if (newStatus === 'REJECTED') {
+  if (newStatus === "REJECTED") {
     updateData.rejectionReason = data?.rejectionReason
     updateData.rejectedAt = new Date()
     updateData.rejectedById = userId
   }
 
-  if (newStatus === 'HIRED') {
+  if (newStatus === "HIRED") {
     updateData.hiredAt = new Date()
     updateData.hiredById = userId
   }
@@ -207,7 +210,7 @@ export async function updateApplicationStatus(
   await db.applicationActivity.create({
     data: {
       applicationId: id,
-      action: 'status_changed',
+      action: "status_changed",
       description: `Trạng thái chuyển từ ${oldStatus} sang ${newStatus}`,
       oldValue: oldStatus,
       newValue: newStatus,
@@ -215,7 +218,7 @@ export async function updateApplicationStatus(
     },
   })
 
-  if (newStatus === 'HIRED') {
+  if (newStatus === "HIRED") {
     await db.jobRequisition.update({
       where: { id: application.requisitionId },
       data: { filledCount: { increment: 1 } },
@@ -223,16 +226,21 @@ export async function updateApplicationStatus(
   }
 
   if (ctx) {
-    await audit.update(ctx, 'Application', id, { status: { old: oldStatus, new: newStatus } })
+    await audit.update(ctx, "Application", id, {
+      status: { old: oldStatus, new: newStatus },
+    })
   }
 
   return updated
 }
 
-export async function getPipelineData(tenantId: string, requisitionId?: string) {
+export async function getPipelineData(
+  tenantId: string,
+  requisitionId?: string
+) {
   const where: Record<string, unknown> = {
     tenantId,
-    status: { notIn: ['REJECTED', 'WITHDRAWN', 'HIRED'] },
+    status: { notIn: ["REJECTED", "WITHDRAWN", "HIRED"] },
   }
   if (requisitionId) where.requisitionId = requisitionId
 
@@ -243,7 +251,7 @@ export async function getPipelineData(tenantId: string, requisitionId?: string) 
       requisition: { select: { id: true, title: true } },
       _count: { select: { interviews: true } },
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: "asc" },
   })
 
   const pipeline: Record<string, typeof applications> = {
@@ -255,7 +263,7 @@ export async function getPipelineData(tenantId: string, requisitionId?: string) 
     OFFER: [],
   }
 
-  applications.forEach(app => {
+  applications.forEach((app) => {
     if (pipeline[app.status]) {
       pipeline[app.status].push(app)
     }
@@ -287,7 +295,7 @@ export async function assignApplication(
   await db.applicationActivity.create({
     data: {
       applicationId: id,
-      action: 'assigned',
+      action: "assigned",
       description: `Hồ sơ được giao cho ${updated.assignedTo?.name}`,
       performedById: userId,
     },

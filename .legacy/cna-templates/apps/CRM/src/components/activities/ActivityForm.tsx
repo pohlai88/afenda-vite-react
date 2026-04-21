@@ -1,22 +1,25 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { FieldError } from '@/components/ui/field-error'
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { FieldError } from "@/components/ui/field-error"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { ACTIVITY_TYPES } from '@/lib/constants'
-import { useTranslation } from '@/i18n'
-import { useFormValidation } from '@/hooks/use-form-validation'
-import { createActivitySchema, type CreateActivityInput } from '@/lib/validations'
+} from "@/components/ui/select"
+import { ACTIVITY_TYPES } from "@/lib/constants"
+import { useTranslation } from "@/i18n"
+import { useFormValidation } from "@/hooks/use-form-validation"
+import {
+  createActivitySchema,
+  type CreateActivityInput,
+} from "@/lib/validations"
 
 // ── Types ───────────────────────────────────────────────────────────
 interface SimpleEntity {
@@ -34,7 +37,7 @@ interface ActivityFormData {
   contactId: string
   dealId: string
   dueAt: string
-  duration: number | ''
+  duration: number | ""
 }
 
 interface ActivityFormProps {
@@ -53,16 +56,17 @@ export function ActivityForm({
   isSubmitting,
 }: ActivityFormProps) {
   const { t } = useTranslation()
-  const { errors, validate, clearFieldError, hasError } = useFormValidation(createActivitySchema)
+  const { errors, validate, clearFieldError, hasError } =
+    useFormValidation(createActivitySchema)
 
   const [form, setForm] = useState<ActivityFormData>({
-    type: defaultValues?.type || '',
-    subject: defaultValues?.subject || '',
-    description: defaultValues?.description || '',
-    contactId: defaultValues?.contactId || '',
-    dealId: defaultValues?.dealId || '',
-    dueAt: defaultValues?.dueAt || '',
-    duration: defaultValues?.duration || '',
+    type: defaultValues?.type || "",
+    subject: defaultValues?.subject || "",
+    description: defaultValues?.description || "",
+    contactId: defaultValues?.contactId || "",
+    dealId: defaultValues?.dealId || "",
+    dueAt: defaultValues?.dueAt || "",
+    duration: defaultValues?.duration || "",
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -81,20 +85,34 @@ export function ActivityForm({
     onSubmit(payload)
   }
 
-  const isTask = form.type === 'TASK'
+  const isTask = form.type === "TASK"
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Type */}
       <div className="space-y-1.5">
-        <Label className="text-[var(--crm-text-secondary)] text-xs">{t('activities.type')} *</Label>
-        <Select value={form.type} onValueChange={(v) => { setForm({ ...form, type: v }); clearFieldError('type') }}>
-          <SelectTrigger className={`bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] ${hasError('type') ? 'border-red-500' : ''}`}>
-            <SelectValue placeholder={t('activities.selectType')} />
+        <Label className="text-[var(--crm-text-secondary)] text-xs">
+          {t("activities.type")} *
+        </Label>
+        <Select
+          value={form.type}
+          onValueChange={(v) => {
+            setForm({ ...form, type: v })
+            clearFieldError("type")
+          }}
+        >
+          <SelectTrigger
+            className={`bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] ${hasError("type") ? "border-red-500" : ""}`}
+          >
+            <SelectValue placeholder={t("activities.selectType")} />
           </SelectTrigger>
           <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
             {ACTIVITY_TYPES.map((type) => (
-              <SelectItem key={type.value} value={type.value} className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
+              <SelectItem
+                key={type.value}
+                value={type.value}
+                className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+              >
                 {t(type.labelKey)}
               </SelectItem>
             ))}
@@ -105,23 +123,30 @@ export function ActivityForm({
 
       {/* Subject */}
       <div className="space-y-1.5">
-        <Label className="text-[var(--crm-text-secondary)] text-xs">{t('activities.subject')} *</Label>
+        <Label className="text-[var(--crm-text-secondary)] text-xs">
+          {t("activities.subject")} *
+        </Label>
         <Input
           value={form.subject}
-          onChange={(e) => { setForm({ ...form, subject: e.target.value }); clearFieldError('subject') }}
-          placeholder={t('activities.subjectPlaceholder')}
-          className={`bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)] ${hasError('subject') ? 'border-red-500' : ''}`}
+          onChange={(e) => {
+            setForm({ ...form, subject: e.target.value })
+            clearFieldError("subject")
+          }}
+          placeholder={t("activities.subjectPlaceholder")}
+          className={`bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)] ${hasError("subject") ? "border-red-500" : ""}`}
         />
         <FieldError message={errors.subject} />
       </div>
 
       {/* Description */}
       <div className="space-y-1.5">
-        <Label className="text-[var(--crm-text-secondary)] text-xs">{t('common.description')}</Label>
+        <Label className="text-[var(--crm-text-secondary)] text-xs">
+          {t("common.description")}
+        </Label>
         <Textarea
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
-          placeholder={t('activities.descriptionPlaceholder')}
+          placeholder={t("activities.descriptionPlaceholder")}
           rows={3}
           className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)] resize-none"
         />
@@ -129,15 +154,26 @@ export function ActivityForm({
 
       {/* Contact */}
       <div className="space-y-1.5">
-        <Label className="text-[var(--crm-text-secondary)] text-xs">{t('activities.contact')}</Label>
-        <Select value={form.contactId} onValueChange={(v) => setForm({ ...form, contactId: v })}>
+        <Label className="text-[var(--crm-text-secondary)] text-xs">
+          {t("activities.contact")}
+        </Label>
+        <Select
+          value={form.contactId}
+          onValueChange={(v) => setForm({ ...form, contactId: v })}
+        >
           <SelectTrigger className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-            <SelectValue placeholder={t('activities.selectContact')} />
+            <SelectValue placeholder={t("activities.selectContact")} />
           </SelectTrigger>
           <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
             {contacts.map((c) => (
-              <SelectItem key={c.id} value={c.id} className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
-                {c.firstName && c.lastName ? `${c.firstName} ${c.lastName}` : c.name || c.id}
+              <SelectItem
+                key={c.id}
+                value={c.id}
+                className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+              >
+                {c.firstName && c.lastName
+                  ? `${c.firstName} ${c.lastName}`
+                  : c.name || c.id}
               </SelectItem>
             ))}
           </SelectContent>
@@ -146,14 +182,23 @@ export function ActivityForm({
 
       {/* Deal */}
       <div className="space-y-1.5">
-        <Label className="text-[var(--crm-text-secondary)] text-xs">{t('activities.deal')}</Label>
-        <Select value={form.dealId} onValueChange={(v) => setForm({ ...form, dealId: v })}>
+        <Label className="text-[var(--crm-text-secondary)] text-xs">
+          {t("activities.deal")}
+        </Label>
+        <Select
+          value={form.dealId}
+          onValueChange={(v) => setForm({ ...form, dealId: v })}
+        >
           <SelectTrigger className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-            <SelectValue placeholder={t('activities.selectDeal')} />
+            <SelectValue placeholder={t("activities.selectDeal")} />
           </SelectTrigger>
           <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
             {deals.map((d) => (
-              <SelectItem key={d.id} value={d.id} className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
+              <SelectItem
+                key={d.id}
+                value={d.id}
+                className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+              >
                 {d.title || d.name || d.id}
               </SelectItem>
             ))}
@@ -164,7 +209,9 @@ export function ActivityForm({
       {/* Due date (for tasks) */}
       {isTask && (
         <div className="space-y-1.5">
-          <Label className="text-[var(--crm-text-secondary)] text-xs">{t('activities.dueDate')}</Label>
+          <Label className="text-[var(--crm-text-secondary)] text-xs">
+            {t("activities.dueDate")}
+          </Label>
           <Input
             type="datetime-local"
             value={form.dueAt}
@@ -176,12 +223,19 @@ export function ActivityForm({
 
       {/* Duration */}
       <div className="space-y-1.5">
-        <Label className="text-[var(--crm-text-secondary)] text-xs">{t('activities.duration')}</Label>
+        <Label className="text-[var(--crm-text-secondary)] text-xs">
+          {t("activities.duration")}
+        </Label>
         <Input
           type="number"
           min={0}
           value={form.duration}
-          onChange={(e) => setForm({ ...form, duration: e.target.value ? Number(e.target.value) : '' })}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              duration: e.target.value ? Number(e.target.value) : "",
+            })
+          }
           placeholder="0"
           className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)]"
         />
@@ -193,7 +247,7 @@ export function ActivityForm({
         disabled={!form.type || !form.subject || isSubmitting}
         className="w-full bg-[#10B981] hover:bg-[#10B981]/90 text-white"
       >
-        {isSubmitting ? t('common.saving') : t('activities.saveActivity')}
+        {isSubmitting ? t("common.saving") : t("activities.saveActivity")}
       </Button>
     </form>
   )

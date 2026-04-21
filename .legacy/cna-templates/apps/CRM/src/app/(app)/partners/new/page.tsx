@@ -1,27 +1,27 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
 
-import { useTranslation } from '@/i18n'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent } from '@/components/ui/card'
+import { useTranslation } from "@/i18n"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent } from "@/components/ui/card"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { useCompanies } from '@/hooks/use-companies'
-import { useCreatePartner } from '@/hooks/use-partners'
-import { PARTNER_TYPES, CERTIFICATION_LEVELS } from '@/lib/constants'
+} from "@/components/ui/select"
+import { useCompanies } from "@/hooks/use-companies"
+import { useCreatePartner } from "@/hooks/use-partners"
+import { PARTNER_TYPES, CERTIFICATION_LEVELS } from "@/lib/constants"
 
 export default function NewPartnerPage() {
   const router = useRouter()
@@ -31,14 +31,14 @@ export default function NewPartnerPage() {
   const companies = companiesData?.data || []
 
   const [form, setForm] = useState({
-    companyId: '',
-    partnerType: 'RESELLER',
-    certificationLevel: 'BRONZE',
-    territory: '',
-    commissionRate: '10',
-    contractStartDate: '',
-    contractEndDate: '',
-    notes: '',
+    companyId: "",
+    partnerType: "RESELLER",
+    certificationLevel: "BRONZE",
+    territory: "",
+    commissionRate: "10",
+    contractStartDate: "",
+    contractEndDate: "",
+    notes: "",
   })
 
   function updateField(field: string, value: string) {
@@ -60,7 +60,7 @@ export default function NewPartnerPage() {
       },
       {
         onSuccess: () => {
-          router.push('/partners')
+          router.push("/partners")
         },
       }
     )
@@ -68,7 +68,7 @@ export default function NewPartnerPage() {
 
   return (
     <PageShell
-      title={t('partner.create')}
+      title={t("partner.create")}
       actions={
         <Link href="/partners">
           <Button
@@ -77,7 +77,7 @@ export default function NewPartnerPage() {
             className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)]"
           >
             <ArrowLeft className="h-4 w-4" />
-            {t('common.cancel')}
+            {t("common.cancel")}
           </Button>
         </Link>
       }
@@ -88,18 +88,22 @@ export default function NewPartnerPage() {
             {/* Company */}
             <div className="space-y-2">
               <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-                {t('partner.company')} <span className="text-red-400">*</span>
+                {t("partner.company")} <span className="text-red-400">*</span>
               </Label>
               <Select
                 value={form.companyId}
-                onValueChange={(val) => updateField('companyId', val)}
+                onValueChange={(val) => updateField("companyId", val)}
               >
                 <SelectTrigger className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
                   <SelectValue placeholder="Chọn công ty..." />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {companies.map((c: any) => (
-                    <SelectItem key={c.id} value={c.id} className="text-[var(--crm-text-primary)]">
+                    <SelectItem
+                      key={c.id}
+                      value={c.id}
+                      className="text-[var(--crm-text-primary)]"
+                    >
                       {c.name}
                     </SelectItem>
                   ))}
@@ -115,14 +119,18 @@ export default function NewPartnerPage() {
                 </Label>
                 <Select
                   value={form.partnerType}
-                  onValueChange={(val) => updateField('partnerType', val)}
+                  onValueChange={(val) => updateField("partnerType", val)}
                 >
                   <SelectTrigger className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                     {PARTNER_TYPES.map((pt) => (
-                      <SelectItem key={pt.value} value={pt.value} className="text-[var(--crm-text-primary)]">
+                      <SelectItem
+                        key={pt.value}
+                        value={pt.value}
+                        className="text-[var(--crm-text-primary)]"
+                      >
                         {t(pt.labelKey)}
                       </SelectItem>
                     ))}
@@ -135,14 +143,20 @@ export default function NewPartnerPage() {
                 </Label>
                 <Select
                   value={form.certificationLevel}
-                  onValueChange={(val) => updateField('certificationLevel', val)}
+                  onValueChange={(val) =>
+                    updateField("certificationLevel", val)
+                  }
                 >
                   <SelectTrigger className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                     {CERTIFICATION_LEVELS.map((cl) => (
-                      <SelectItem key={cl.value} value={cl.value} className="text-[var(--crm-text-primary)]">
+                      <SelectItem
+                        key={cl.value}
+                        value={cl.value}
+                        className="text-[var(--crm-text-primary)]"
+                      >
                         {t(cl.labelKey)}
                       </SelectItem>
                     ))}
@@ -155,18 +169,18 @@ export default function NewPartnerPage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-                  {t('partner.territory')}
+                  {t("partner.territory")}
                 </Label>
                 <Input
                   value={form.territory}
-                  onChange={(e) => updateField('territory', e.target.value)}
+                  onChange={(e) => updateField("territory", e.target.value)}
                   placeholder="e.g. US, APAC, EMEA"
                   className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)]"
                 />
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-                  {t('partner.commissionRate')} (%)
+                  {t("partner.commissionRate")} (%)
                 </Label>
                 <Input
                   type="number"
@@ -174,7 +188,9 @@ export default function NewPartnerPage() {
                   max="100"
                   step="0.5"
                   value={form.commissionRate}
-                  onChange={(e) => updateField('commissionRate', e.target.value)}
+                  onChange={(e) =>
+                    updateField("commissionRate", e.target.value)
+                  }
                   className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]"
                 />
               </div>
@@ -184,23 +200,27 @@ export default function NewPartnerPage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-                  {t('partner.contractStart')}
+                  {t("partner.contractStart")}
                 </Label>
                 <Input
                   type="date"
                   value={form.contractStartDate}
-                  onChange={(e) => updateField('contractStartDate', e.target.value)}
+                  onChange={(e) =>
+                    updateField("contractStartDate", e.target.value)
+                  }
                   className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]"
                 />
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-                  {t('partner.contractEnd')}
+                  {t("partner.contractEnd")}
                 </Label>
                 <Input
                   type="date"
                   value={form.contractEndDate}
-                  onChange={(e) => updateField('contractEndDate', e.target.value)}
+                  onChange={(e) =>
+                    updateField("contractEndDate", e.target.value)
+                  }
                   className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]"
                 />
               </div>
@@ -209,11 +229,11 @@ export default function NewPartnerPage() {
             {/* Notes */}
             <div className="space-y-2">
               <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-                {t('common.notes')}
+                {t("common.notes")}
               </Label>
               <Textarea
                 value={form.notes}
-                onChange={(e) => updateField('notes', e.target.value)}
+                onChange={(e) => updateField("notes", e.target.value)}
                 placeholder="Ghi chú về đối tác..."
                 rows={3}
                 className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] placeholder:text-[var(--crm-text-muted)]"
@@ -227,7 +247,9 @@ export default function NewPartnerPage() {
                 disabled={!form.companyId || createPartner.isPending}
                 className="btn-accent-glow"
               >
-                {createPartner.isPending ? t('common.saving') : t('partner.create')}
+                {createPartner.isPending
+                  ? t("common.saving")
+                  : t("partner.create")}
               </Button>
             </div>
           </CardContent>

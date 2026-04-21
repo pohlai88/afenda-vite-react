@@ -1,15 +1,18 @@
 // src/lib/recruitment/services/application.service.ts
 // Application Service - Manage job applications through the hiring pipeline
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   ApplicationStatus,
   ApplicationSource,
   RequisitionStatus,
-  Prisma
-} from '@prisma/client'
-import { createCandidateService, CreateCandidateInput } from './candidate.service'
-import { createJobPostingService } from './posting.service'
+  Prisma,
+} from "@prisma/client"
+import {
+  createCandidateService,
+  CreateCandidateInput,
+} from "./candidate.service"
+import { createJobPostingService } from "./posting.service"
 
 // Types
 export interface CreateApplicationInput {
@@ -54,16 +57,19 @@ async function generateApplicationCode(tenantId: string): Promise<string> {
 
   const lastApplication = await db.application.findFirst({
     where: { applicationCode: { startsWith: prefix } },
-    orderBy: { applicationCode: 'desc' }
+    orderBy: { applicationCode: "desc" },
   })
 
   let nextNumber = 1
   if (lastApplication) {
-    const lastNumber = parseInt(lastApplication.applicationCode.replace(prefix, ''), 10)
+    const lastNumber = parseInt(
+      lastApplication.applicationCode.replace(prefix, ""),
+      10
+    )
     nextNumber = lastNumber + 1
   }
 
-  return `${prefix}${nextNumber.toString().padStart(5, '0')}`
+  return `${prefix}${nextNumber.toString().padStart(5, "0")}`
 }
 
 // Status to stage mapping
@@ -96,7 +102,7 @@ export class ApplicationService {
     })
 
     if (!requisition) {
-      throw new Error('Job requisition not found or not accepting applications')
+      throw new Error("Job requisition not found or not accepting applications")
     }
 
     // Create or update candidate
@@ -111,12 +117,16 @@ export class ApplicationService {
       where: {
         candidateId: candidate.id,
         requisitionId: input.requisitionId,
-        status: { notIn: [ApplicationStatus.REJECTED, ApplicationStatus.WITHDRAWN] },
+        status: {
+          notIn: [ApplicationStatus.REJECTED, ApplicationStatus.WITHDRAWN],
+        },
       },
     })
 
     if (existingApplication) {
-      throw new Error('Candidate already has an active application for this position')
+      throw new Error(
+        "Candidate already has an active application for this position"
+      )
     }
 
     // Generate application code
@@ -150,7 +160,11 @@ export class ApplicationService {
     })
 
     // Create activity log
-    await this.createActivity(application.id, 'APPLICATION_CREATED', 'Application submitted')
+    await this.createActivity(
+      application.id,
+      "APPLICATION_CREATED",
+      "Application submitted"
+    )
 
     // Update job posting application count
     if (input.jobPostingId) {
@@ -198,7 +212,7 @@ export class ApplicationService {
           },
         },
         interviews: {
-          orderBy: { scheduledAt: 'asc' },
+          orderBy: { scheduledAt: "asc" },
           include: {
             evaluations: {
               include: {
@@ -210,7 +224,7 @@ export class ApplicationService {
           },
         },
         evaluations: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           include: {
             evaluator: {
               select: { id: true, name: true },
@@ -218,10 +232,10 @@ export class ApplicationService {
           },
         },
         offers: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
         },
         activities: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           take: 20,
           include: {
             performedBy: {
@@ -233,7 +247,7 @@ export class ApplicationService {
     })
 
     if (!application) {
-      throw new Error('Application not found')
+      throw new Error("Application not found")
     }
 
     return application
@@ -242,7 +256,11 @@ export class ApplicationService {
   /**
    * List applications with filters
    */
-  async list(filters: ApplicationFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: ApplicationFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.ApplicationWhereInput = {
@@ -275,9 +293,17 @@ export class ApplicationService {
 
     if (filters.search) {
       where.OR = [
-        { applicationCode: { contains: filters.search, mode: 'insensitive' } },
-        { candidate: { fullName: { contains: filters.search, mode: 'insensitive' } } },
-        { candidate: { email: { contains: filters.search, mode: 'insensitive' } } },
+        { applicationCode: { contains: filters.search, mode: "insensitive" } },
+        {
+          candidate: {
+            fullName: { contains: filters.search, mode: "insensitive" },
+          },
+        },
+        {
+          candidate: {
+            email: { contains: filters.search, mode: "insensitive" },
+          },
+        },
       ]
     }
 
@@ -286,13 +312,16 @@ export class ApplicationService {
     }
 
     if (filters.toDate) {
-      where.createdAt = { ...(where.createdAt as object || {}), lte: filters.toDate }
+      where.createdAt = {
+        ...((where.createdAt as object) || {}),
+        lte: filters.toDate,
+      }
     }
 
     const [applications, total] = await Promise.all([
       db.application.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -347,7 +376,7 @@ export class ApplicationService {
         tenantId: this.tenantId,
         requisitionId,
       },
-      orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
+      orderBy: [{ status: "asc" }, { createdAt: "desc" }],
       include: {
         candidate: {
           select: {
@@ -369,7 +398,7 @@ export class ApplicationService {
     // Group by status
     const pipeline: Record<string, typeof applications> = {}
     for (const status of Object.values(ApplicationStatus)) {
-      pipeline[status] = applications.filter(a => a.status === status)
+      pipeline[status] = applications.filter((a) => a.status === status)
     }
 
     return {
@@ -391,7 +420,7 @@ export class ApplicationService {
     })
 
     if (!application) {
-      throw new Error('Application not found')
+      throw new Error("Application not found")
     }
 
     const oldStatus = application.status
@@ -409,7 +438,7 @@ export class ApplicationService {
     // Create activity log
     await this.createActivity(
       input.applicationId,
-      'STATUS_CHANGED',
+      "STATUS_CHANGED",
       `Status changed from ${oldStatus} to ${input.newStatus}`,
       input.performedById,
       oldStatus,
@@ -431,12 +460,16 @@ export class ApplicationService {
     })
 
     if (!application) {
-      throw new Error('Application not found')
+      throw new Error("Application not found")
     }
 
-    const terminalStatuses = [ApplicationStatus.HIRED, ApplicationStatus.REJECTED, ApplicationStatus.WITHDRAWN]
-    if (terminalStatuses.some(s => s === application.status)) {
-      throw new Error('Cannot reject application in current status')
+    const terminalStatuses = [
+      ApplicationStatus.HIRED,
+      ApplicationStatus.REJECTED,
+      ApplicationStatus.WITHDRAWN,
+    ]
+    if (terminalStatuses.some((s) => s === application.status)) {
+      throw new Error("Cannot reject application in current status")
     }
 
     const oldStatus = application.status
@@ -454,7 +487,7 @@ export class ApplicationService {
 
     await this.createActivity(
       applicationId,
-      'REJECTED',
+      "REJECTED",
       `Application rejected: ${reason}`,
       rejectedById,
       oldStatus,
@@ -479,11 +512,11 @@ export class ApplicationService {
     })
 
     if (!application) {
-      throw new Error('Application not found')
+      throw new Error("Application not found")
     }
 
     if (application.status !== ApplicationStatus.OFFER) {
-      throw new Error('Application must be in OFFER status to hire')
+      throw new Error("Application must be in OFFER status to hire")
     }
 
     const oldStatus = application.status
@@ -521,8 +554,8 @@ export class ApplicationService {
 
     await this.createActivity(
       applicationId,
-      'HIRED',
-      'Candidate hired',
+      "HIRED",
+      "Candidate hired",
       hiredById,
       oldStatus,
       ApplicationStatus.HIRED
@@ -543,12 +576,16 @@ export class ApplicationService {
     })
 
     if (!application) {
-      throw new Error('Application not found')
+      throw new Error("Application not found")
     }
 
-    const terminalStatusList = [ApplicationStatus.HIRED, ApplicationStatus.REJECTED, ApplicationStatus.WITHDRAWN]
-    if (terminalStatusList.some(s => s === application.status)) {
-      throw new Error('Cannot withdraw application in current status')
+    const terminalStatusList = [
+      ApplicationStatus.HIRED,
+      ApplicationStatus.REJECTED,
+      ApplicationStatus.WITHDRAWN,
+    ]
+    if (terminalStatusList.some((s) => s === application.status)) {
+      throw new Error("Cannot withdraw application in current status")
     }
 
     const oldStatus = application.status
@@ -558,14 +595,18 @@ export class ApplicationService {
       data: {
         status: ApplicationStatus.WITHDRAWN,
         stage: STATUS_STAGE_MAP[ApplicationStatus.WITHDRAWN],
-        rejectionReason: reason ? `Withdrawn: ${reason}` : 'Withdrawn by candidate',
+        rejectionReason: reason
+          ? `Withdrawn: ${reason}`
+          : "Withdrawn by candidate",
       },
     })
 
     await this.createActivity(
       applicationId,
-      'WITHDRAWN',
-      reason ? `Application withdrawn: ${reason}` : 'Application withdrawn by candidate',
+      "WITHDRAWN",
+      reason
+        ? `Application withdrawn: ${reason}`
+        : "Application withdrawn by candidate",
       undefined,
       oldStatus,
       ApplicationStatus.WITHDRAWN
@@ -577,7 +618,12 @@ export class ApplicationService {
   /**
    * Update screening score
    */
-  async updateScreening(applicationId: string, score: number, notes: string, performedById: string) {
+  async updateScreening(
+    applicationId: string,
+    score: number,
+    notes: string,
+    performedById: string
+  ) {
     const application = await db.application.findFirst({
       where: {
         id: applicationId,
@@ -586,7 +632,7 @@ export class ApplicationService {
     })
 
     if (!application) {
-      throw new Error('Application not found')
+      throw new Error("Application not found")
     }
 
     const updated = await db.application.update({
@@ -599,7 +645,7 @@ export class ApplicationService {
 
     await this.createActivity(
       applicationId,
-      'SCREENING_UPDATED',
+      "SCREENING_UPDATED",
       `Screening score: ${score}/100`,
       performedById
     )
@@ -610,7 +656,11 @@ export class ApplicationService {
   /**
    * Assign application to recruiter
    */
-  async assign(applicationId: string, assignedToId: string, performedById: string) {
+  async assign(
+    applicationId: string,
+    assignedToId: string,
+    performedById: string
+  ) {
     const application = await db.application.findFirst({
       where: {
         id: applicationId,
@@ -619,7 +669,7 @@ export class ApplicationService {
     })
 
     if (!application) {
-      throw new Error('Application not found')
+      throw new Error("Application not found")
     }
 
     const assignee = await db.user.findUnique({
@@ -634,8 +684,8 @@ export class ApplicationService {
 
     await this.createActivity(
       applicationId,
-      'ASSIGNED',
-      `Assigned to ${assignee?.name || 'Unknown'}`,
+      "ASSIGNED",
+      `Assigned to ${assignee?.name || "Unknown"}`,
       performedById
     )
 
@@ -656,13 +706,13 @@ export class ApplicationService {
 
     const [byStatus, bySource, avgTimeInStage] = await Promise.all([
       db.application.groupBy({
-        by: ['status'],
+        by: ["status"],
         where,
         _count: true,
       }),
 
       db.application.groupBy({
-        by: ['source'],
+        by: ["source"],
         where,
         _count: true,
       }),
@@ -686,8 +736,12 @@ export class ApplicationService {
     if (avgTimeInStage.length > 0) {
       const totalDays = avgTimeInStage.reduce((sum, app) => {
         if (app.hiredAt) {
-          return sum + Math.floor(
-            (app.hiredAt.getTime() - app.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+          return (
+            sum +
+            Math.floor(
+              (app.hiredAt.getTime() - app.createdAt.getTime()) /
+                (1000 * 60 * 60 * 24)
+            )
           )
         }
         return sum
@@ -697,15 +751,16 @@ export class ApplicationService {
 
     // Calculate conversion rates
     const total = byStatus.reduce((sum, s) => sum + s._count, 0)
-    const hired = byStatus.find(s => s.status === ApplicationStatus.HIRED)?._count || 0
+    const hired =
+      byStatus.find((s) => s.status === ApplicationStatus.HIRED)?._count || 0
 
     return {
-      byStatus: byStatus.map(s => ({
+      byStatus: byStatus.map((s) => ({
         status: s.status,
         count: s._count,
         percentage: total > 0 ? Math.round((s._count / total) * 100) : 0,
       })),
-      bySource: bySource.map(s => ({
+      bySource: bySource.map((s) => ({
         source: s.source,
         count: s._count,
       })),
@@ -750,15 +805,10 @@ export class ApplicationService {
     })
 
     if (!application) {
-      throw new Error('Application not found')
+      throw new Error("Application not found")
     }
 
-    return this.createActivity(
-      applicationId,
-      'NOTE_ADDED',
-      note,
-      performedById
-    )
+    return this.createActivity(applicationId, "NOTE_ADDED", note, performedById)
   }
 }
 

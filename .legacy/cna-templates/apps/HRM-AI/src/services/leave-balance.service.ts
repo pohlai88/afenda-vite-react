@@ -1,9 +1,9 @@
 // src/services/leave-balance.service.ts
 // Leave Balance Service
 
-import { db } from '@/lib/db'
-import type { Prisma } from '@prisma/client'
-import { calculateAvailableBalance } from '@/lib/leave/calculator'
+import { db } from "@/lib/db"
+import type { Prisma } from "@prisma/client"
+import { calculateAvailableBalance } from "@/lib/leave/calculator"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -60,11 +60,11 @@ export const leaveBalanceService = {
         },
       },
       orderBy: {
-        policy: { leaveType: 'asc' },
+        policy: { leaveType: "asc" },
       },
     })
 
-    return balances.map(b => ({
+    return balances.map((b) => ({
       id: b.id,
       year: b.year,
       entitlement: Number(b.entitlement),
@@ -163,7 +163,7 @@ export const leaveBalanceService = {
     const currentYear = year || new Date().getFullYear()
 
     const employees = await db.employee.findMany({
-      where: { tenantId, status: { in: ['ACTIVE', 'PROBATION'] } },
+      where: { tenantId, status: { in: ["ACTIVE", "PROBATION"] } },
       select: { id: true },
     })
 
@@ -188,7 +188,7 @@ export const leaveBalanceService = {
   ) {
     const balance = await this.getByPolicy(tenantId, employeeId, policyId, year)
     if (!balance) {
-      throw new Error('Không tìm thấy số dư phép')
+      throw new Error("Không tìm thấy số dư phép")
     }
 
     const newAdjustment = Number(balance.adjustment) + adjustmentDays
@@ -221,7 +221,7 @@ export const leaveBalanceService = {
   ) {
     const balance = await this.getByPolicy(tenantId, employeeId, policyId, year)
     if (!balance) {
-      throw new Error('Không tìm thấy số dư phép')
+      throw new Error("Không tìm thấy số dư phép")
     }
 
     const newPending = Number(balance.pending) + days
@@ -254,7 +254,7 @@ export const leaveBalanceService = {
   ) {
     const balance = await this.getByPolicy(tenantId, employeeId, policyId, year)
     if (!balance) {
-      throw new Error('Không tìm thấy số dư phép')
+      throw new Error("Không tìm thấy số dư phép")
     }
 
     const newPending = Math.max(0, Number(balance.pending) - days)
@@ -284,13 +284,18 @@ export const leaveBalanceService = {
     })
 
     const employees = await db.employee.findMany({
-      where: { tenantId, status: { in: ['ACTIVE', 'PROBATION'] } },
+      where: { tenantId, status: { in: ["ACTIVE", "PROBATION"] } },
       select: { id: true },
     })
 
     for (const emp of employees) {
       for (const policy of policies) {
-        const oldBalance = await this.getByPolicy(tenantId, emp.id, policy.id, fromYear)
+        const oldBalance = await this.getByPolicy(
+          tenantId,
+          emp.id,
+          policy.id,
+          fromYear
+        )
         if (!oldBalance) continue
 
         const carryOverDays = Math.min(
@@ -354,8 +359,8 @@ export const leaveBalanceService = {
       ...(search && {
         employee: {
           OR: [
-            { fullName: { contains: search, mode: 'insensitive' } },
-            { employeeCode: { contains: search, mode: 'insensitive' } },
+            { fullName: { contains: search, mode: "insensitive" } },
+            { employeeCode: { contains: search, mode: "insensitive" } },
           ],
         },
       }),
@@ -378,8 +383,8 @@ export const leaveBalanceService = {
           },
         },
         orderBy: [
-          { employee: { fullName: 'asc' } },
-          { policy: { leaveType: 'asc' } },
+          { employee: { fullName: "asc" } },
+          { policy: { leaveType: "asc" } },
         ],
         skip,
         take: pageSize,

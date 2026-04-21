@@ -17,15 +17,15 @@ export const TAX_BRACKETS = [
     maxIncome: 5_000_000,
     rate: 0.05, // 5%
     quickDeduction: 0,
-    description: 'Đến 5 triệu đồng',
+    description: "Đến 5 triệu đồng",
   },
   {
     level: 2,
     minIncome: 5_000_000,
     maxIncome: 10_000_000,
-    rate: 0.10, // 10%
+    rate: 0.1, // 10%
     quickDeduction: 250_000,
-    description: 'Trên 5 triệu đến 10 triệu đồng',
+    description: "Trên 5 triệu đến 10 triệu đồng",
   },
   {
     level: 3,
@@ -33,15 +33,15 @@ export const TAX_BRACKETS = [
     maxIncome: 18_000_000,
     rate: 0.15, // 15%
     quickDeduction: 750_000,
-    description: 'Trên 10 triệu đến 18 triệu đồng',
+    description: "Trên 10 triệu đến 18 triệu đồng",
   },
   {
     level: 4,
     minIncome: 18_000_000,
     maxIncome: 32_000_000,
-    rate: 0.20, // 20%
+    rate: 0.2, // 20%
     quickDeduction: 1_650_000,
-    description: 'Trên 18 triệu đến 32 triệu đồng',
+    description: "Trên 18 triệu đến 32 triệu đồng",
   },
   {
     level: 5,
@@ -49,15 +49,15 @@ export const TAX_BRACKETS = [
     maxIncome: 52_000_000,
     rate: 0.25, // 25%
     quickDeduction: 3_250_000,
-    description: 'Trên 32 triệu đến 52 triệu đồng',
+    description: "Trên 32 triệu đến 52 triệu đồng",
   },
   {
     level: 6,
     minIncome: 52_000_000,
     maxIncome: 80_000_000,
-    rate: 0.30, // 30%
+    rate: 0.3, // 30%
     quickDeduction: 5_850_000,
-    description: 'Trên 52 triệu đến 80 triệu đồng',
+    description: "Trên 52 triệu đến 80 triệu đồng",
   },
   {
     level: 7,
@@ -65,7 +65,7 @@ export const TAX_BRACKETS = [
     maxIncome: Number.MAX_SAFE_INTEGER,
     rate: 0.35, // 35%
     quickDeduction: 9_850_000,
-    description: 'Trên 80 triệu đồng',
+    description: "Trên 80 triệu đồng",
   },
 ] as const
 
@@ -118,9 +118,9 @@ export const OTHER_DEDUCTIONS = {
 // ═══════════════════════════════════════════════════════════════
 
 export const TAX_SETTLEMENT_STATUS = {
-  DRAFT: { label: 'Nháp', color: 'gray' },
-  FINALIZED: { label: 'Hoàn thành', color: 'blue' },
-  SUBMITTED: { label: 'Đã nộp', color: 'green' },
+  DRAFT: { label: "Nháp", color: "gray" },
+  FINALIZED: { label: "Hoàn thành", color: "blue" },
+  SUBMITTED: { label: "Đã nộp", color: "green" },
 } as const
 
 // ═══════════════════════════════════════════════════════════════
@@ -129,34 +129,34 @@ export const TAX_SETTLEMENT_STATUS = {
 
 export const DEPENDENT_TYPES = {
   SPOUSE: {
-    code: '01',
-    name: 'Vợ/Chồng',
-    description: 'Không có thu nhập hoặc thu nhập < 1 triệu/tháng',
+    code: "01",
+    name: "Vợ/Chồng",
+    description: "Không có thu nhập hoặc thu nhập < 1 triệu/tháng",
   },
   CHILD_UNDER_18: {
-    code: '02',
-    name: 'Con dưới 18 tuổi',
-    description: 'Bao gồm con đẻ, con nuôi, con riêng',
+    code: "02",
+    name: "Con dưới 18 tuổi",
+    description: "Bao gồm con đẻ, con nuôi, con riêng",
   },
   CHILD_STUDENT: {
-    code: '03',
-    name: 'Con từ 18-23 tuổi đang học',
-    description: 'Đang học đại học, cao đẳng, trung cấp',
+    code: "03",
+    name: "Con từ 18-23 tuổi đang học",
+    description: "Đang học đại học, cao đẳng, trung cấp",
   },
   CHILD_DISABLED: {
-    code: '04',
-    name: 'Con bị khuyết tật',
-    description: 'Không có khả năng lao động',
+    code: "04",
+    name: "Con bị khuyết tật",
+    description: "Không có khả năng lao động",
   },
   PARENT: {
-    code: '05',
-    name: 'Cha mẹ',
-    description: 'Cha mẹ đẻ, cha mẹ vợ/chồng, cha mẹ nuôi',
+    code: "05",
+    name: "Cha mẹ",
+    description: "Cha mẹ đẻ, cha mẹ vợ/chồng, cha mẹ nuôi",
   },
   OTHER: {
-    code: '09',
-    name: 'Người phụ thuộc khác',
-    description: 'Anh chị em ruột, ông bà, cháu...',
+    code: "09",
+    name: "Người phụ thuộc khác",
+    description: "Anh chị em ruột, ông bà, cháu...",
   },
 } as const
 

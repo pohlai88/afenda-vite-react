@@ -1,4 +1,5 @@
 # TASK GRAPH — PRISMY CRM PHASE 2: FEATURE COMPLETE
+
 ## Vibecode Kit v5.0 — Generated 22/02/2026
 
 ---
@@ -8,6 +9,7 @@
 **Mục tiêu:** Hoàn thiện tất cả tính năng đã scaffold, nâng cấp trải nghiệm người dùng, đảm bảo chất lượng qua E2E tests. Kết thúc Phase 2 = sản phẩm có thể demo cho khách hàng thực tế.
 
 **Scope:**
+
 1. Quick wins từ VERIFY report
 2. Campaign scheduling UI (backend đã có)
 3. E2E test suites (Playwright)
@@ -55,19 +57,19 @@ TIP-P2-011: VERIFY Phase 2
 
 ## TIP SUMMARY TABLE
 
-| TIP | Tên | Priority | Depends On | Est. Effort | 
-|-----|-----|----------|------------|-------------|
-| P2-001 | Quick Wins (Portal PDF + Quote VIEWED) | P0 | None | 45-60 min |
-| P2-002 | Campaign Scheduling UI | P1 | None | 45-60 min |
-| P2-003 | E2E Test Infrastructure (Playwright setup) | P0 | None | 60-90 min |
-| P2-004 | E2E Tests: Auth + Core CRUD | P0 | P2-003 | 90-120 min |
-| P2-005 | E2E Tests: Quote → Email → Portal Flow | P1 | P2-004 | 90-120 min |
-| P2-006 | Dynamic Audiences (rule builder) | P1 | None | 120-150 min |
-| P2-007 | Import/Export (CSV contacts/companies) | P1 | None | 90-120 min |
-| P2-008 | Order Workflows (cancel/refund/fulfillment) | P1 | None | 60-90 min |
-| P2-009 | In-app Notifications | P2 | P2-008 | 90-120 min |
-| P2-010 | Reporting (advanced dashboard + export) | P2 | P2-007 | 120-150 min |
-| P2-011 | VERIFY Phase 2 | P0 | ALL | 90-120 min |
+| TIP    | Tên                                         | Priority | Depends On | Est. Effort |
+| ------ | ------------------------------------------- | -------- | ---------- | ----------- |
+| P2-001 | Quick Wins (Portal PDF + Quote VIEWED)      | P0       | None       | 45-60 min   |
+| P2-002 | Campaign Scheduling UI                      | P1       | None       | 45-60 min   |
+| P2-003 | E2E Test Infrastructure (Playwright setup)  | P0       | None       | 60-90 min   |
+| P2-004 | E2E Tests: Auth + Core CRUD                 | P0       | P2-003     | 90-120 min  |
+| P2-005 | E2E Tests: Quote → Email → Portal Flow      | P1       | P2-004     | 90-120 min  |
+| P2-006 | Dynamic Audiences (rule builder)            | P1       | None       | 120-150 min |
+| P2-007 | Import/Export (CSV contacts/companies)      | P1       | None       | 90-120 min  |
+| P2-008 | Order Workflows (cancel/refund/fulfillment) | P1       | None       | 60-90 min   |
+| P2-009 | In-app Notifications                        | P2       | P2-008     | 90-120 min  |
+| P2-010 | Reporting (advanced dashboard + export)     | P2       | P2-007     | 120-150 min |
+| P2-011 | VERIFY Phase 2                              | P0       | ALL        | 90-120 min  |
 
 **Total Estimated: ~14-18 hours Claude Code time**
 **Calendar time: 4-5 tuần (1 senior dev)**
@@ -77,30 +79,35 @@ TIP-P2-011: VERIFY Phase 2
 ## EXECUTION PLAN
 
 ### Tuần 1: Quick Wins + Test Foundation
+
 ```
 Parallel: TIP-P2-001 + TIP-P2-002 + TIP-P2-003
 Then: TIP-P2-004 (E2E auth + CRUD tests)
 ```
 
 ### Tuần 2: E2E + Campaign + Audiences
+
 ```
 TIP-P2-005 (E2E quote flow)
 Parallel: TIP-P2-006 (Dynamic Audiences)
 ```
 
 ### Tuần 3: Data Management
+
 ```
 TIP-P2-007 (Import/Export)
 TIP-P2-008 (Order Workflows)
 ```
 
 ### Tuần 4: UX Enhancement
+
 ```
 TIP-P2-009 (Notifications)
 TIP-P2-010 (Reporting)
 ```
 
 ### Tuần 5: Verify
+
 ```
 TIP-P2-011 (Full verify)
 ```
@@ -110,6 +117,7 @@ TIP-P2-011 (Full verify)
 ## TIP BRIEFS
 
 ### TIP-P2-001: Quick Wins
+
 ```
 SCOPE:
 1. Portal PDF download button
@@ -127,6 +135,7 @@ DEPENDENCIES: None
 ```
 
 ### TIP-P2-002: Campaign Scheduling UI
+
 ```
 SCOPE:
 - Backend already supports scheduledAt + /api/campaigns/process-scheduled
@@ -144,6 +153,7 @@ DEPENDENCIES: None (backend from TIP-010)
 ```
 
 ### TIP-P2-003: E2E Test Infrastructure
+
 ```
 SCOPE:
 - Playwright config (already has playwright.config.ts?)
@@ -160,6 +170,7 @@ DEPENDENCIES: None
 ```
 
 ### TIP-P2-004: E2E Tests — Auth + Core CRUD
+
 ```
 SCOPE:
 Test suites:
@@ -196,6 +207,7 @@ DEPENDENCIES: TIP-P2-003
 ```
 
 ### TIP-P2-005: E2E Tests — Quote → Email → Portal
+
 ```
 SCOPE:
 Test suites:
@@ -224,11 +236,12 @@ DEPENDENCIES: TIP-P2-004
 ```
 
 ### TIP-P2-006: Dynamic Audiences
+
 ```
 SCOPE:
 - Currently: only static audiences (manually add contacts)
 - Add: Dynamic audiences with rule builder
-- Rules: contact.status = X, contact.leadScore > Y, company.industry = Z, 
+- Rules: contact.status = X, contact.leadScore > Y, company.industry = Z,
   contact.createdAt > date, etc.
 - Rule builder UI: condition groups (AND/OR), field + operator + value
 - Auto-sync: when campaign sends, resolve contacts matching rules at send time
@@ -240,6 +253,7 @@ DEPENDENCIES: None (can parallel with tests)
 ```
 
 ### TIP-P2-007: Import/Export
+
 ```
 SCOPE:
 Import:
@@ -262,6 +276,7 @@ DEPENDENCIES: None
 ```
 
 ### TIP-P2-008: Order Workflows
+
 ```
 SCOPE:
 - Cancel order: PENDING/CONFIRMED → CANCELLED (with reason)
@@ -278,6 +293,7 @@ DEPENDENCIES: None
 ```
 
 ### TIP-P2-009: In-app Notifications
+
 ```
 SCOPE:
 - Notification model: userId, type, title, message, read, link, createdAt
@@ -295,6 +311,7 @@ DEPENDENCIES: TIP-P2-008 (order status triggers)
 ```
 
 ### TIP-P2-010: Reporting (Advanced Dashboard + Export)
+
 ```
 SCOPE:
 - Dashboard date range selector (last 7d, 30d, 90d, custom)
@@ -313,6 +330,7 @@ DEPENDENCIES: TIP-P2-007 (export utilities reusable)
 ```
 
 ### TIP-P2-011: VERIFY Phase 2
+
 ```
 SCOPE:
 - Run all E2E tests → pass rate
@@ -330,13 +348,13 @@ DEPENDENCIES: ALL
 
 ## MILESTONES
 
-| Milestone | Target | Criteria |
-|-----------|--------|----------|
-| M4: E2E Green | Tuần 2 | 25+ E2E tests passing, CI-ready |
-| M5: Feature Complete | Tuần 4 | All Phase 2 features implemented |
+| Milestone            | Target | Criteria                           |
+| -------------------- | ------ | ---------------------------------- |
+| M4: E2E Green        | Tuần 2 | 25+ E2E tests passing, CI-ready    |
+| M5: Feature Complete | Tuần 4 | All Phase 2 features implemented   |
 | M6: Phase 2 Verified | Tuần 5 | Verify report READY, E2E >90% pass |
 
 ---
 
-*Generated by Chủ thầu — Vibecode Kit v5.0*
-*Project: Prismy CRM | Phase: 2 Feature Complete*
+_Generated by Chủ thầu — Vibecode Kit v5.0_
+_Project: Prismy CRM | Phase: 2 Feature Complete_

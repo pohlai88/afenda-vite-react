@@ -2,7 +2,7 @@
 // Vietnam Personal Income Tax (TNCN) Module - Main export
 
 // Constants and types
-export * from './constants'
+export * from "./constants"
 
 // Calculator
 export {
@@ -13,5 +13,5 @@ export {
   grossToNet,
   netToGross,
   getTaxBracketInfo,
-} from './calculator'
-export type { TaxCalculatorOptions, MonthlyIncomeData } from './calculator'
+} from "./calculator"
+export type { TaxCalculatorOptions, MonthlyIncomeData } from "./calculator"

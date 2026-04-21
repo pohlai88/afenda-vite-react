@@ -1,6 +1,6 @@
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { Unauthorized, handleApiError } from '@/lib/api/errors'
-import { apiSuccess } from '@/lib/api/response'
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { Unauthorized, handleApiError } from "@/lib/api/errors"
+import { apiSuccess } from "@/lib/api/response"
 
 export async function GET() {
   try {
@@ -14,8 +14,8 @@ export async function GET() {
     })
   } catch (error) {
     if (error instanceof AuthError) {
-      return handleApiError(Unauthorized(error.message), '/api/auth/me')
+      return handleApiError(Unauthorized(error.message), "/api/auth/me")
     }
-    return handleApiError(error, '/api/auth/me')
+    return handleApiError(error, "/api/auth/me")
   }
 }

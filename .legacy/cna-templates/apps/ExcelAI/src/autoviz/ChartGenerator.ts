@@ -11,8 +11,8 @@ import type {
   SeriesConfig,
   AxisConfig,
   ColorScheme,
-} from './types';
-import { getRecommendedScheme, getColorByIndex } from './ColorSchemes';
+} from "./types"
+import { getRecommendedScheme, getColorByIndex } from "./ColorSchemes"
 
 /**
  * Generates chart configurations from data
@@ -26,25 +26,32 @@ export class ChartGenerator {
     data: DataRange,
     characteristics: DataCharacteristics,
     options: {
-      colorScheme?: ColorScheme;
-      title?: string;
-      subtitle?: string;
+      colorScheme?: ColorScheme
+      title?: string
+      subtitle?: string
     } = {}
   ): ChartConfig {
-    const colorScheme = options.colorScheme || getRecommendedScheme(type);
+    const colorScheme = options.colorScheme || getRecommendedScheme(type)
 
     // Build chart data
-    const chartData = this.buildChartData(data, characteristics, colorScheme);
+    const chartData = this.buildChartData(data, characteristics, colorScheme)
 
     // Build series configuration
-    const series = this.buildSeriesConfig(data, characteristics, colorScheme, type);
+    const series = this.buildSeriesConfig(
+      data,
+      characteristics,
+      colorScheme,
+      type
+    )
 
     // Build axis configuration
-    const { xAxis, yAxis } = this.buildAxisConfig(characteristics, type);
+    const { xAxis, yAxis } = this.buildAxisConfig(characteristics, type)
 
     // Generate title if not provided
-    const title = options.title || this.generateTitle(data, characteristics, type);
-    const subtitle = options.subtitle || this.generateSubtitle(data, characteristics);
+    const title =
+      options.title || this.generateTitle(data, characteristics, type)
+    const subtitle =
+      options.subtitle || this.generateSubtitle(data, characteristics)
 
     return {
       type,
@@ -55,9 +62,9 @@ export class ChartGenerator {
       yAxis,
       series,
       legend: {
-        show: series.length > 1 || ['pie', 'donut'].includes(type),
-        position: 'bottom',
-        align: 'center',
+        show: series.length > 1 || ["pie", "donut"].includes(type),
+        position: "bottom",
+        align: "center",
       },
       colorScheme,
       style: this.getDefaultStyle(colorScheme),
@@ -65,9 +72,9 @@ export class ChartGenerator {
       tooltip: {
         enabled: true,
         showTitle: true,
-        shared: !['scatter', 'bubble'].includes(type),
+        shared: !["scatter", "bubble"].includes(type),
       },
-    };
+    }
   }
 
   /**
@@ -80,29 +87,29 @@ export class ChartGenerator {
   ): ChartData {
     // Find category/label column
     const categoryCol = characteristics.columns.find(
-      (c) => c.suggestedRole === 'category' || c.suggestedRole === 'time'
-    );
+      (c) => c.suggestedRole === "category" || c.suggestedRole === "time"
+    )
 
     // Find value columns
     const valueCols = characteristics.columns.filter(
-      (c) => c.suggestedRole === 'value'
-    );
+      (c) => c.suggestedRole === "value"
+    )
 
     // Build labels
     const labels = categoryCol
-      ? data.data.map((row) => String(row[categoryCol.index] || ''))
-      : data.data.map((_, i) => `Row ${i + 1}`);
+      ? data.data.map((row) => String(row[categoryCol.index] || ""))
+      : data.data.map((_, i) => `Row ${i + 1}`)
 
     // Build datasets
     const datasets = valueCols.map((col, index) => {
       const values = data.data.map((row) => {
-        const value = row[col.index];
-        if (typeof value === 'number') return value;
-        const parsed = parseFloat(String(value).replace(/[$€¥£,\s%]/g, ''));
-        return isNaN(parsed) ? 0 : parsed;
-      });
+        const value = row[col.index]
+        if (typeof value === "number") return value
+        const parsed = parseFloat(String(value).replace(/[$€¥£,\s%]/g, ""))
+        return isNaN(parsed) ? 0 : parsed
+      })
 
-      const color = getColorByIndex(colorScheme, index);
+      const color = getColorByIndex(colorScheme, index)
 
       return {
         label: col.name,
@@ -111,20 +118,22 @@ export class ChartGenerator {
         backgroundColor: color,
         borderColor: color,
         fill: false,
-      };
-    });
+      }
+    })
 
     // If no value columns found, use all numeric columns
     if (datasets.length === 0) {
       for (let col = 0; col < data.colCount; col++) {
-        const colData = characteristics.columns[col];
-        if (colData?.dataType === 'number') {
+        const colData = characteristics.columns[col]
+        if (colData?.dataType === "number") {
           const values = data.data.map((row) => {
-            const value = row[col];
-            return typeof value === 'number' ? value : parseFloat(String(value)) || 0;
-          });
+            const value = row[col]
+            return typeof value === "number"
+              ? value
+              : parseFloat(String(value)) || 0
+          })
 
-          const color = getColorByIndex(colorScheme, datasets.length);
+          const color = getColorByIndex(colorScheme, datasets.length)
           datasets.push({
             label: data.headers[col] || `Series ${col + 1}`,
             data: values,
@@ -132,7 +141,7 @@ export class ChartGenerator {
             backgroundColor: color,
             borderColor: color,
             fill: false,
-          });
+          })
         }
       }
     }
@@ -141,7 +150,7 @@ export class ChartGenerator {
       labels,
       datasets,
       sourceRange: data.sourceRange,
-    };
+    }
   }
 
   /**
@@ -154,18 +163,19 @@ export class ChartGenerator {
     chartType: ChartType
   ): SeriesConfig[] {
     const valueCols = characteristics.columns.filter(
-      (c) => c.suggestedRole === 'value' || c.dataType === 'number'
-    );
+      (c) => c.suggestedRole === "value" || c.dataType === "number"
+    )
 
     return valueCols.map((col, index) => ({
       name: col.name || data.headers[col.index] || `Series ${index + 1}`,
       dataKey: `series${index}`,
       color: getColorByIndex(colorScheme, index),
-      lineStyle: 'solid',
-      showPoints: chartType === 'line' && data.rowCount <= 20,
-      chartType: chartType === 'combo' ? (index === 0 ? 'column' : 'line') : undefined,
-      fillOpacity: chartType === 'area' ? 0.3 : undefined,
-    }));
+      lineStyle: "solid",
+      showPoints: chartType === "line" && data.rowCount <= 20,
+      chartType:
+        chartType === "combo" ? (index === 0 ? "column" : "line") : undefined,
+      fillOpacity: chartType === "area" ? 0.3 : undefined,
+    }))
   }
 
   /**
@@ -176,37 +186,37 @@ export class ChartGenerator {
     type: ChartType
   ): { xAxis?: AxisConfig; yAxis?: AxisConfig } {
     // No axes for pie, donut, gauge, kpi
-    if (['pie', 'donut', 'gauge', 'kpi', 'treemap'].includes(type)) {
-      return {};
+    if (["pie", "donut", "gauge", "kpi", "treemap"].includes(type)) {
+      return {}
     }
 
     const categoryCol = characteristics.columns.find(
-      (c) => c.suggestedRole === 'category' || c.suggestedRole === 'time'
-    );
+      (c) => c.suggestedRole === "category" || c.suggestedRole === "time"
+    )
 
     const valueCol = characteristics.columns.find(
-      (c) => c.suggestedRole === 'value' || c.dataType === 'number'
-    );
+      (c) => c.suggestedRole === "value" || c.dataType === "number"
+    )
 
     const xAxis: AxisConfig = {
-      type: categoryCol?.dataType === 'date' ? 'time' : 'category',
+      type: categoryCol?.dataType === "date" ? "time" : "category",
       label: categoryCol?.name,
       showGrid: false,
-    };
-
-    const yAxis: AxisConfig = {
-      type: 'linear',
-      label: valueCol?.name,
-      showGrid: true,
-      gridColor: '#e5e7eb',
-    };
-
-    // Swap axes for horizontal bar chart
-    if (type === 'bar') {
-      return { xAxis: yAxis, yAxis: xAxis };
     }
 
-    return { xAxis, yAxis };
+    const yAxis: AxisConfig = {
+      type: "linear",
+      label: valueCol?.name,
+      showGrid: true,
+      gridColor: "#e5e7eb",
+    }
+
+    // Swap axes for horizontal bar chart
+    if (type === "bar") {
+      return { xAxis: yAxis, yAxis: xAxis }
+    }
+
+    return { xAxis, yAxis }
   }
 
   /**
@@ -218,42 +228,42 @@ export class ChartGenerator {
     type: ChartType
   ): string {
     const valueCol = characteristics.columns.find(
-      (c) => c.suggestedRole === 'value'
-    );
+      (c) => c.suggestedRole === "value"
+    )
     const categoryCol = characteristics.columns.find(
-      (c) => c.suggestedRole === 'category' || c.suggestedRole === 'time'
-    );
+      (c) => c.suggestedRole === "category" || c.suggestedRole === "time"
+    )
 
-    const valueName = valueCol?.name || data.headers[1] || 'Values';
-    const categoryName = categoryCol?.name || data.headers[0] || 'Categories';
+    const valueName = valueCol?.name || data.headers[1] || "Values"
+    const categoryName = categoryCol?.name || data.headers[0] || "Categories"
 
     switch (type) {
-      case 'line':
-      case 'area':
-        return `${valueName} Over ${categoryName}`;
-      case 'pie':
-      case 'donut':
-        return `${valueName} Distribution`;
-      case 'bar':
-      case 'column':
-        return `${valueName} by ${categoryName}`;
-      case 'scatter':
-      case 'bubble':
-        return `${valueName} vs ${categoryName}`;
-      case 'heatmap':
-        return `${valueName} Heatmap`;
-      case 'funnel':
-        return `${valueName} Funnel`;
-      case 'waterfall':
-        return `${valueName} Waterfall`;
-      case 'radar':
-        return `${valueName} Comparison`;
-      case 'gauge':
-        return valueName;
-      case 'kpi':
-        return valueName;
+      case "line":
+      case "area":
+        return `${valueName} Over ${categoryName}`
+      case "pie":
+      case "donut":
+        return `${valueName} Distribution`
+      case "bar":
+      case "column":
+        return `${valueName} by ${categoryName}`
+      case "scatter":
+      case "bubble":
+        return `${valueName} vs ${categoryName}`
+      case "heatmap":
+        return `${valueName} Heatmap`
+      case "funnel":
+        return `${valueName} Funnel`
+      case "waterfall":
+        return `${valueName} Waterfall`
+      case "radar":
+        return `${valueName} Comparison`
+      case "gauge":
+        return valueName
+      case "kpi":
+        return valueName
       default:
-        return `${valueName} Analysis`;
+        return `${valueName} Analysis`
     }
   }
 
@@ -264,7 +274,7 @@ export class ChartGenerator {
     data: DataRange,
     _characteristics: DataCharacteristics
   ): string {
-    return `${data.rowCount} data points`;
+    return `${data.rowCount} data points`
   }
 
   /**
@@ -272,36 +282,36 @@ export class ChartGenerator {
    */
   private getDefaultStyle(colorScheme: ColorScheme) {
     return {
-      backgroundColor: colorScheme.background || '#ffffff',
+      backgroundColor: colorScheme.background || "#ffffff",
       borderRadius: 8,
       padding: 20,
       titleFont: {
-        family: 'Inter, system-ui, sans-serif',
+        family: "Inter, system-ui, sans-serif",
         size: 18,
-        weight: '600',
-        color: colorScheme.textColor || '#1f2937',
+        weight: "600",
+        color: colorScheme.textColor || "#1f2937",
       },
       subtitleFont: {
-        family: 'Inter, system-ui, sans-serif',
+        family: "Inter, system-ui, sans-serif",
         size: 12,
-        weight: '400',
-        color: colorScheme.neutral || '#6b7280',
+        weight: "400",
+        color: colorScheme.neutral || "#6b7280",
       },
       labelFont: {
-        family: 'Inter, system-ui, sans-serif',
+        family: "Inter, system-ui, sans-serif",
         size: 12,
-        weight: '400',
-        color: colorScheme.textColor || '#374151',
+        weight: "400",
+        color: colorScheme.textColor || "#374151",
       },
       axisFont: {
-        family: 'Inter, system-ui, sans-serif',
+        family: "Inter, system-ui, sans-serif",
         size: 11,
-        weight: '400',
-        color: colorScheme.neutral || '#6b7280',
+        weight: "400",
+        color: colorScheme.neutral || "#6b7280",
       },
       animation: true,
       shadow: false,
-    };
+    }
   }
 
   /**
@@ -312,8 +322,8 @@ export class ChartGenerator {
     characteristics: DataCharacteristics
   ): ChartConfig {
     // Auto-detect best chart type
-    const type = this.detectBestChartType(characteristics);
-    return this.generate(type, data, characteristics);
+    const type = this.detectBestChartType(characteristics)
+    return this.generate(type, data, characteristics)
   }
 
   /**
@@ -322,35 +332,42 @@ export class ChartGenerator {
   private detectBestChartType(characteristics: DataCharacteristics): ChartType {
     // Time series -> line chart
     if (characteristics.hasTimeColumn) {
-      return 'line';
+      return "line"
     }
 
     // Multiple series -> grouped column
-    if (characteristics.hasMultipleSeries && characteristics.hasCategoryColumn) {
-      return 'column';
+    if (
+      characteristics.hasMultipleSeries &&
+      characteristics.hasCategoryColumn
+    ) {
+      return "column"
     }
 
     // Category with single value -> bar or pie
     if (characteristics.hasCategoryColumn) {
       const categoryCol = characteristics.columns.find(
-        (c) => c.suggestedRole === 'category'
-      );
-      if (categoryCol && categoryCol.uniqueValues && categoryCol.uniqueValues <= 6) {
-        return 'pie';
+        (c) => c.suggestedRole === "category"
+      )
+      if (
+        categoryCol &&
+        categoryCol.uniqueValues &&
+        categoryCol.uniqueValues <= 6
+      ) {
+        return "pie"
       }
-      return 'column';
+      return "column"
     }
 
     // Two numeric columns -> scatter
     const numericCols = characteristics.columns.filter(
-      (c) => c.dataType === 'number'
-    );
+      (c) => c.dataType === "number"
+    )
     if (numericCols.length >= 2) {
-      return 'scatter';
+      return "scatter"
     }
 
     // Default to column chart
-    return 'column';
+    return "column"
   }
 
   /**
@@ -370,7 +387,7 @@ export class ChartGenerator {
         ...config.style,
         ...(modifications.style || {}),
       },
-    };
+    }
   }
 
   /**
@@ -381,23 +398,23 @@ export class ChartGenerator {
     newType: ChartType,
     colorScheme?: ColorScheme
   ): ChartConfig {
-    const scheme = colorScheme || config.colorScheme;
+    const scheme = colorScheme || config.colorScheme
 
     // Rebuild axes for new type
-    let xAxis = config.xAxis;
-    let yAxis = config.yAxis;
+    let xAxis = config.xAxis
+    let yAxis = config.yAxis
 
-    if (['pie', 'donut', 'gauge', 'kpi', 'treemap'].includes(newType)) {
-      xAxis = undefined;
-      yAxis = undefined;
-    } else if (newType === 'bar' && config.type !== 'bar') {
+    if (["pie", "donut", "gauge", "kpi", "treemap"].includes(newType)) {
+      xAxis = undefined
+      yAxis = undefined
+    } else if (newType === "bar" && config.type !== "bar") {
       // Swap axes for bar chart
-      xAxis = config.yAxis;
-      yAxis = config.xAxis;
-    } else if (config.type === 'bar' && newType !== 'bar') {
+      xAxis = config.yAxis
+      yAxis = config.xAxis
+    } else if (config.type === "bar" && newType !== "bar") {
       // Swap back from bar chart
-      xAxis = config.yAxis;
-      yAxis = config.xAxis;
+      xAxis = config.yAxis
+      yAxis = config.xAxis
     }
 
     return {
@@ -407,22 +424,18 @@ export class ChartGenerator {
       yAxis,
       colorScheme: scheme,
       legend: {
-        show: config.series.length > 1 || ['pie', 'donut'].includes(newType),
-        position: config.legend?.position || 'bottom',
-        align: config.legend?.align || 'center',
+        show: config.series.length > 1 || ["pie", "donut"].includes(newType),
+        position: config.legend?.position || "bottom",
+        align: config.legend?.align || "center",
       },
-    };
+    }
   }
 
   /**
    * Add series to existing config
    */
-  addSeries(
-    config: ChartConfig,
-    data: number[],
-    name: string
-  ): ChartConfig {
-    const newColor = getColorByIndex(config.colorScheme, config.series.length);
+  addSeries(config: ChartConfig, data: number[], name: string): ChartConfig {
+    const newColor = getColorByIndex(config.colorScheme, config.series.length)
 
     const newDataset = {
       label: name,
@@ -430,15 +443,15 @@ export class ChartGenerator {
       color: newColor,
       backgroundColor: newColor,
       borderColor: newColor,
-      fill: config.type === 'area',
-    };
+      fill: config.type === "area",
+    }
 
     const newSeries: SeriesConfig = {
       name,
       dataKey: `series${config.series.length}`,
       color: newColor,
-      lineStyle: 'solid',
-    };
+      lineStyle: "solid",
+    }
 
     return {
       ...config,
@@ -449,17 +462,17 @@ export class ChartGenerator {
       series: [...config.series, newSeries],
       legend: {
         show: true,
-        position: config.legend?.position || 'bottom',
-        align: config.legend?.align || 'center',
+        position: config.legend?.position || "bottom",
+        align: config.legend?.align || "center",
       },
-    };
+    }
   }
 
   /**
    * Remove series from config
    */
   removeSeries(config: ChartConfig, seriesIndex: number): ChartConfig {
-    if (config.series.length <= 1) return config;
+    if (config.series.length <= 1) return config
 
     return {
       ...config,
@@ -468,6 +481,6 @@ export class ChartGenerator {
         datasets: config.data.datasets.filter((_, i) => i !== seriesIndex),
       },
       series: config.series.filter((_, i) => i !== seriesIndex),
-    };
+    }
   }
 }

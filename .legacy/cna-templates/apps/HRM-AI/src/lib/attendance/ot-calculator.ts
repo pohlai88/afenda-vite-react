@@ -1,15 +1,19 @@
 // src/lib/attendance/ot-calculator.ts
 // OT (Overtime) calculation engine based on Vietnam Labor Law
 
-import type { DayType } from '@prisma/client'
-import type { OTCalculationResult } from '@/types'
-import { OT_MULTIPLIERS, NIGHT_BONUS, NIGHT_SHIFT_HOURS } from '@/constants/attendance'
+import type { DayType } from "@prisma/client"
+import type { OTCalculationResult } from "@/types"
+import {
+  OT_MULTIPLIERS,
+  NIGHT_BONUS,
+  NIGHT_SHIFT_HOURS,
+} from "@/constants/attendance"
 import {
   getTimeDiffInHours,
   calculateNightHoursOptimized,
   roundHours,
   isWeekend,
-} from './time-utils'
+} from "./time-utils"
 
 /**
  * Calculate OT multiplier based on day type
@@ -19,11 +23,11 @@ import {
  */
 export function getOTMultiplier(dayType: DayType): number {
   switch (dayType) {
-    case 'HOLIDAY':
+    case "HOLIDAY":
       return OT_MULTIPLIERS.HOLIDAY
-    case 'WEEKEND':
+    case "WEEKEND":
       return OT_MULTIPLIERS.WEEKEND
-    case 'COMPENSATORY':
+    case "COMPENSATORY":
       return OT_MULTIPLIERS.WEEKDAY
     default:
       return OT_MULTIPLIERS.WEEKDAY
@@ -36,7 +40,7 @@ export function getOTMultiplier(dayType: DayType): number {
 export function calculateOT(
   startTime: Date,
   endTime: Date,
-  dayType: DayType = 'NORMAL'
+  dayType: DayType = "NORMAL"
 ): OTCalculationResult {
   // Calculate total OT hours
   const otHours = roundHours(getTimeDiffInHours(startTime, endTime))
@@ -78,10 +82,7 @@ export function calculateOTPay(
 /**
  * Determine day type from a date
  */
-export function determineDayType(
-  date: Date,
-  holidays: Date[] = []
-): DayType {
+export function determineDayType(date: Date, holidays: Date[] = []): DayType {
   // Check if holiday
   const isHoliday = holidays.some(
     (holiday) =>
@@ -91,15 +92,15 @@ export function determineDayType(
   )
 
   if (isHoliday) {
-    return 'HOLIDAY'
+    return "HOLIDAY"
   }
 
   // Check if weekend
   if (isWeekend(date)) {
-    return 'WEEKEND'
+    return "WEEKEND"
   }
 
-  return 'NORMAL'
+  return "NORMAL"
 }
 
 /**
@@ -136,10 +137,10 @@ export function calculateMonthlyOTSummary(
     const nightBonus = record.nightHours > 0 ? NIGHT_BONUS : 0
 
     switch (record.dayType) {
-      case 'HOLIDAY':
+      case "HOLIDAY":
         holidayOTHours += record.hours
         break
-      case 'WEEKEND':
+      case "WEEKEND":
         weekendOTHours += record.hours
         break
       default:
@@ -148,7 +149,8 @@ export function calculateMonthlyOTSummary(
 
     // Calculate multiplied hours (for pay calculation)
     const regularHours = record.hours - record.nightHours
-    const nightMultipliedHours = record.nightHours * (baseMultiplier + nightBonus)
+    const nightMultipliedHours =
+      record.nightHours * (baseMultiplier + nightBonus)
     const regularMultipliedHours = regularHours * baseMultiplier
     totalMultipliedHours += nightMultipliedHours + regularMultipliedHours
   }
@@ -190,7 +192,7 @@ export function validateOTRequest(
 
   // Check if end time is after start time
   if (endTime <= startTime) {
-    errors.push('Thời gian kết thúc phải sau thời gian bắt đầu')
+    errors.push("Thời gian kết thúc phải sau thời gian bắt đầu")
   }
 
   // Calculate requested hours
@@ -236,7 +238,7 @@ export function validateOTRequest(
 
   // Check minimum OT duration (at least 30 minutes)
   if (requestedHours < 0.5) {
-    errors.push('Thời gian tăng ca tối thiểu là 30 phút')
+    errors.push("Thời gian tăng ca tối thiểu là 30 phút")
   }
 
   return {
@@ -251,8 +253,8 @@ export function validateOTRequest(
  */
 export function isNightShiftTime(time: Date): boolean {
   const hours = time.getHours()
-  const nightStart = parseInt(NIGHT_SHIFT_HOURS.START.split(':')[0])
-  const nightEnd = parseInt(NIGHT_SHIFT_HOURS.END.split(':')[0])
+  const nightStart = parseInt(NIGHT_SHIFT_HOURS.START.split(":")[0])
+  const nightEnd = parseInt(NIGHT_SHIFT_HOURS.END.split(":")[0])
 
   return hours >= nightStart || hours < nightEnd
 }
@@ -267,22 +269,25 @@ export function formatMultiplier(multiplier: number): string {
 /**
  * Get OT rate description
  */
-export function getOTRateDescription(dayType: DayType, isNightShift: boolean): string {
-  let description = ''
+export function getOTRateDescription(
+  dayType: DayType,
+  isNightShift: boolean
+): string {
+  let description = ""
 
   switch (dayType) {
-    case 'HOLIDAY':
-      description = 'Ngày lễ (300%)'
+    case "HOLIDAY":
+      description = "Ngày lễ (300%)"
       break
-    case 'WEEKEND':
-      description = 'Cuối tuần (200%)'
+    case "WEEKEND":
+      description = "Cuối tuần (200%)"
       break
     default:
-      description = 'Ngày thường (150%)'
+      description = "Ngày thường (150%)"
   }
 
   if (isNightShift) {
-    description += ' + Ca đêm (+30%)'
+    description += " + Ca đêm (+30%)"
   }
 
   return description

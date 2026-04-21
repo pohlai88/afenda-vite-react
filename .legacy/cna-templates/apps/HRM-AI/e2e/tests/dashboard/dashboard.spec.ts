@@ -16,7 +16,9 @@ test.describe("Dashboard", () => {
   test("displays key metric cards", async ({ page }) => {
     const metrics = Object.values(UI_TEXT.dashboard.metrics)
     for (const metricLabel of metrics) {
-      await expect(page.getByText(metricLabel).first()).toBeVisible({ timeout: 10000 })
+      await expect(page.getByText(metricLabel).first()).toBeVisible({
+        timeout: 10000,
+      })
     }
   })
 

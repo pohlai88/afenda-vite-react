@@ -1,15 +1,27 @@
 // src/app/(dashboard)/analytics/workforce/page.tsx
 // Workforce Analytics Overview
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Badge } from '@/components/ui/badge'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge"
 import {
   Users,
   UserPlus,
@@ -20,7 +32,7 @@ import {
   BarChart3,
   PieChart as PieChartIcon,
   RefreshCw,
-} from 'lucide-react'
+} from "lucide-react"
 import {
   BarChart,
   Bar,
@@ -33,7 +45,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts'
+} from "recharts"
 
 interface WorkforceData {
   headcount: {
@@ -67,10 +79,19 @@ interface WorkforceData {
   }
 }
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16']
+const COLORS = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#06b6d4",
+  "#84cc16",
+]
 
 export default function WorkforceOverviewPage() {
-  const [period, setPeriod] = useState('month')
+  const [period, setPeriod] = useState("month")
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<WorkforceData | null>(null)
 
@@ -85,16 +106,16 @@ export default function WorkforceOverviewPage() {
       const startDate = new Date()
 
       switch (period) {
-        case 'week':
+        case "week":
           startDate.setDate(startDate.getDate() - 7)
           break
-        case 'month':
+        case "month":
           startDate.setMonth(startDate.getMonth() - 1)
           break
-        case 'quarter':
+        case "quarter":
           startDate.setMonth(startDate.getMonth() - 3)
           break
-        case 'year':
+        case "year":
           startDate.setFullYear(startDate.getFullYear() - 1)
           break
       }
@@ -108,7 +129,7 @@ export default function WorkforceOverviewPage() {
         setData(result.data)
       }
     } catch (error) {
-      console.error('Error fetching workforce data:', error)
+      console.error("Error fetching workforce data:", error)
     } finally {
       setLoading(false)
     }
@@ -116,25 +137,25 @@ export default function WorkforceOverviewPage() {
 
   const quickLinks = [
     {
-      title: 'Số lượng nhân sự',
-      description: 'Phân tích chi tiết số lượng theo phòng ban, vị trí',
-      href: '/analytics/workforce/headcount',
+      title: "Số lượng nhân sự",
+      description: "Phân tích chi tiết số lượng theo phòng ban, vị trí",
+      href: "/analytics/workforce/headcount",
       icon: BarChart3,
-      color: 'bg-blue-500',
+      color: "bg-blue-500",
     },
     {
-      title: 'Tỷ lệ nghỉ việc',
-      description: 'Phân tích xu hướng và nguyên nhân nghỉ việc',
-      href: '/analytics/workforce/turnover',
+      title: "Tỷ lệ nghỉ việc",
+      description: "Phân tích xu hướng và nguyên nhân nghỉ việc",
+      href: "/analytics/workforce/turnover",
       icon: TrendingDown,
-      color: 'bg-red-500',
+      color: "bg-red-500",
     },
     {
-      title: 'Nhân khẩu học',
-      description: 'Phân tích giới tính, tuổi, thâm niên',
-      href: '/analytics/workforce/demographics',
+      title: "Nhân khẩu học",
+      description: "Phân tích giới tính, tuổi, thâm niên",
+      href: "/analytics/workforce/demographics",
       icon: PieChartIcon,
-      color: 'bg-purple-500',
+      color: "bg-purple-500",
     },
   ]
 
@@ -176,7 +197,9 @@ export default function WorkforceOverviewPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold">{data?.headcount.total || 0}</p>
+                  <p className="text-2xl font-bold">
+                    {data?.headcount.total || 0}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
@@ -197,7 +220,9 @@ export default function WorkforceOverviewPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold text-green-600">+{data?.movement.newHires || 0}</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    +{data?.movement.newHires || 0}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-green-100 rounded-full">
@@ -218,7 +243,9 @@ export default function WorkforceOverviewPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold text-red-600">-{data?.movement.terminations || 0}</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    -{data?.movement.terminations || 0}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-red-100 rounded-full">
@@ -239,12 +266,17 @@ export default function WorkforceOverviewPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className={`text-2xl font-bold ${(data?.movement.netChange || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {(data?.movement.netChange || 0) >= 0 ? '+' : ''}{data?.movement.netChange || 0}
+                  <p
+                    className={`text-2xl font-bold ${(data?.movement.netChange || 0) >= 0 ? "text-green-600" : "text-red-600"}`}
+                  >
+                    {(data?.movement.netChange || 0) >= 0 ? "+" : ""}
+                    {data?.movement.netChange || 0}
                   </p>
                 )}
               </div>
-              <div className={`p-3 rounded-full ${(data?.movement.netChange || 0) >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
+              <div
+                className={`p-3 rounded-full ${(data?.movement.netChange || 0) >= 0 ? "bg-green-100" : "bg-red-100"}`}
+              >
                 {(data?.movement.netChange || 0) >= 0 ? (
                   <TrendingUp className="h-6 w-6 text-green-600" />
                 ) : (
@@ -300,7 +332,10 @@ export default function WorkforceOverviewPage() {
               <Skeleton className="h-[300px] w-full" />
             ) : (
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data?.headcount.byDepartment || []} layout="vertical">
+                <BarChart
+                  data={data?.headcount.byDepartment || []}
+                  layout="vertical"
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" />
                   <YAxis dataKey="department" type="category" width={120} />
@@ -326,17 +361,28 @@ export default function WorkforceOverviewPage() {
                 <PieChart>
                   <Pie
                     data={[
-                      { name: 'Đang làm việc', value: data?.headcount.active || 0 },
-                      { name: 'Thử việc', value: data?.headcount.probation || 0 },
-                      { name: 'Nghỉ phép', value: data?.headcount.onLeave || 0 },
-                    ].filter(item => item.value > 0)}
+                      {
+                        name: "Đang làm việc",
+                        value: data?.headcount.active || 0,
+                      },
+                      {
+                        name: "Thử việc",
+                        value: data?.headcount.probation || 0,
+                      },
+                      {
+                        name: "Nghỉ phép",
+                        value: data?.headcount.onLeave || 0,
+                      },
+                    ].filter((item) => item.value > 0)}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
                     outerRadius={100}
                     paddingAngle={5}
                     dataKey="value"
-                    label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                    label={({ name, percent }) =>
+                      `${name} ${((percent || 0) * 100).toFixed(0)}%`
+                    }
                   >
                     {[0, 1, 2].map((index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index]} />
@@ -366,7 +412,11 @@ export default function WorkforceOverviewPage() {
                   <XAxis dataKey="department" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="rate" fill="#ef4444" name="Tỷ lệ nghỉ việc (%)" />
+                  <Bar
+                    dataKey="rate"
+                    fill="#ef4444"
+                    name="Tỷ lệ nghỉ việc (%)"
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -377,14 +427,20 @@ export default function WorkforceOverviewPage() {
         <Card>
           <CardHeader>
             <CardTitle>Chỉ số giữ chân nhân viên</CardTitle>
-            <CardDescription>Các metrics liên quan đến retention</CardDescription>
+            <CardDescription>
+              Các metrics liên quan đến retention
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">Tỷ lệ giữ chân</span>
-                  <span className="font-medium">{data?.retention.rate.toFixed(1) || 0}%</span>
+                  <span className="text-sm text-muted-foreground">
+                    Tỷ lệ giữ chân
+                  </span>
+                  <span className="font-medium">
+                    {data?.retention.rate.toFixed(1) || 0}%
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
@@ -395,32 +451,50 @@ export default function WorkforceOverviewPage() {
               </div>
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">Retention 90 ngày (tuyển mới)</span>
-                  <span className="font-medium">{data?.retention.newHireRetention90Days || 0}%</span>
+                  <span className="text-sm text-muted-foreground">
+                    Retention 90 ngày (tuyển mới)
+                  </span>
+                  <span className="font-medium">
+                    {data?.retention.newHireRetention90Days || 0}%
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
                     className="bg-blue-500 h-3 rounded-full"
-                    style={{ width: `${data?.retention.newHireRetention90Days || 0}%` }}
+                    style={{
+                      width: `${data?.retention.newHireRetention90Days || 0}%`,
+                    }}
                   />
                 </div>
               </div>
               <div className="pt-4 border-t">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Thâm niên trung bình</span>
-                  <span className="font-medium">{data?.retention.avgTenure.toFixed(1) || 0} năm</span>
+                  <span className="text-sm text-muted-foreground">
+                    Thâm niên trung bình
+                  </span>
+                  <span className="font-medium">
+                    {data?.retention.avgTenure.toFixed(1) || 0} năm
+                  </span>
                 </div>
               </div>
               <div className="pt-4 border-t">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Tỷ lệ nghỉ tự nguyện</span>
-                  <Badge variant="outline">{data?.turnover.voluntaryRate.toFixed(1) || 0}%</Badge>
+                  <span className="text-sm text-muted-foreground">
+                    Tỷ lệ nghỉ tự nguyện
+                  </span>
+                  <Badge variant="outline">
+                    {data?.turnover.voluntaryRate.toFixed(1) || 0}%
+                  </Badge>
                 </div>
               </div>
               <div className="pt-4 border-t">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Tỷ lệ nghỉ không tự nguyện</span>
-                  <Badge variant="outline">{data?.turnover.involuntaryRate.toFixed(1) || 0}%</Badge>
+                  <span className="text-sm text-muted-foreground">
+                    Tỷ lệ nghỉ không tự nguyện
+                  </span>
+                  <Badge variant="outline">
+                    {data?.turnover.involuntaryRate.toFixed(1) || 0}%
+                  </Badge>
                 </div>
               </div>
             </div>

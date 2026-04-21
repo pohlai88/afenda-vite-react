@@ -1,22 +1,18 @@
-'use client'
+"use client"
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import type { Activity, ActivityWithRelations } from '@/types'
-import { authQueryConfig } from '@/lib/query-config'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import type { Activity, ActivityWithRelations } from "@/types"
+import { authQueryConfig } from "@/lib/query-config"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 function buildUrl(
   base: string,
-  params?: Record<string, string | number | undefined | null>,
+  params?: Record<string, string | number | undefined | null>
 ) {
   const url = new URL(base, window.location.origin)
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
+      if (value !== undefined && value !== null && value !== "") {
         url.searchParams.set(key, String(value))
       }
     })
@@ -55,12 +51,19 @@ interface ActivityListResponse {
 // ── Queries ──────────────────────────────────────────────────────────
 
 /** List activities with optional filters. */
-export function useActivities(params?: ActivityListParams & { enabled?: boolean }) {
+export function useActivities(
+  params?: ActivityListParams & { enabled?: boolean }
+) {
   const { enabled, ...queryParams } = params ?? {}
   return useQuery<ActivityListResponse>({
-    queryKey: ['activities', queryParams],
+    queryKey: ["activities", queryParams],
     queryFn: () =>
-      fetchJson<ActivityListResponse>(buildUrl('/api/activities', queryParams as Record<string, string | number | undefined>)),
+      fetchJson<ActivityListResponse>(
+        buildUrl(
+          "/api/activities",
+          queryParams as Record<string, string | number | undefined>
+        )
+      ),
     staleTime: 30_000,
     enabled: enabled ?? true,
     ...authQueryConfig,
@@ -75,13 +78,13 @@ export function useCreateActivity() {
 
   return useMutation<Activity, Error, Partial<Activity>>({
     mutationFn: (data) =>
-      fetchJson<Activity>('/api/activities', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetchJson<Activity>("/api/activities", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['activities'] })
+      qc.invalidateQueries({ queryKey: ["activities"] })
     },
   })
 }
@@ -93,12 +96,12 @@ export function useUpdateActivity() {
   return useMutation<Activity, Error, { id: string } & Partial<Activity>>({
     mutationFn: ({ id, ...data }) =>
       fetchJson<Activity>(`/api/activities/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['activities'] })
+      qc.invalidateQueries({ queryKey: ["activities"] })
     },
   })
 }
@@ -109,9 +112,9 @@ export function useDeleteActivity() {
 
   return useMutation<void, Error, string>({
     mutationFn: (id) =>
-      fetchJson<void>(`/api/activities/${id}`, { method: 'DELETE' }),
+      fetchJson<void>(`/api/activities/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['activities'] })
+      qc.invalidateQueries({ queryKey: ["activities"] })
     },
   })
 }

@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import Link from "next/link"
 import {
   Search,
   Eye,
@@ -11,27 +11,27 @@ import {
   FileText,
   Users,
   Clock,
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { JOB_POSTING_STATUS, JOB_TYPE } from '@/lib/recruitment/constants'
+} from "@/components/ui/dropdown-menu"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import { JOB_POSTING_STATUS, JOB_TYPE } from "@/lib/recruitment/constants"
 
 interface JobPosting {
   id: string
@@ -50,25 +50,26 @@ export default function JobPostingsPage() {
   const [jobs, setJobs] = useState<JobPosting[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards')
+  const [search, setSearch] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards")
 
   useEffect(() => {
     async function fetchJobs() {
       try {
         const params = new URLSearchParams()
-        if (statusFilter !== 'all') params.set('status', statusFilter)
-        if (search) params.set('search', search)
+        if (statusFilter !== "all") params.set("status", statusFilter)
+        if (search) params.set("search", search)
 
         const res = await fetch(`/api/recruitment/jobs?${params.toString()}`)
-        if (!res.ok) throw new Error('Không thể tải danh sách tin tuyển dụng')
+        if (!res.ok) throw new Error("Không thể tải danh sách tin tuyển dụng")
         const json = await res.json()
         // API returns { success: true, data: { postings, total, page, limit } }
-        const data = json.data?.postings || json.data || json.postings || json || []
+        const data =
+          json.data?.postings || json.data || json.postings || json || []
         setJobs(Array.isArray(data) ? data : [])
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -78,21 +79,29 @@ export default function JobPostingsPage() {
 
   const handlePublish = async (id: string) => {
     try {
-      const res = await fetch(`/api/recruitment/jobs/${id}/publish`, { method: 'POST' })
-      if (!res.ok) throw new Error('Không thể đăng tin')
-      setJobs(prev => prev.map(j => j.id === id ? { ...j, status: 'PUBLISHED' } : j))
+      const res = await fetch(`/api/recruitment/jobs/${id}/publish`, {
+        method: "POST",
+      })
+      if (!res.ok) throw new Error("Không thể đăng tin")
+      setJobs((prev) =>
+        prev.map((j) => (j.id === id ? { ...j, status: "PUBLISHED" } : j))
+      )
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     }
   }
 
   const handleClose = async (id: string) => {
     try {
-      const res = await fetch(`/api/recruitment/jobs/${id}/close`, { method: 'POST' })
-      if (!res.ok) throw new Error('Không thể đóng tin')
-      setJobs(prev => prev.map(j => j.id === id ? { ...j, status: 'CLOSED' } : j))
+      const res = await fetch(`/api/recruitment/jobs/${id}/close`, {
+        method: "POST",
+      })
+      if (!res.ok) throw new Error("Không thể đóng tin")
+      setJobs((prev) =>
+        prev.map((j) => (j.id === id ? { ...j, status: "CLOSED" } : j))
+      )
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     }
   }
 
@@ -100,11 +109,11 @@ export default function JobPostingsPage() {
     const info = JOB_POSTING_STATUS[status]
     if (!info) return <Badge variant="secondary">{status}</Badge>
     const colorMap: Record<string, string> = {
-      gray: 'bg-gray-100 text-gray-800',
-      green: 'bg-green-100 text-green-800',
-      red: 'bg-red-100 text-red-800',
+      gray: "bg-gray-100 text-gray-800",
+      green: "bg-green-100 text-green-800",
+      red: "bg-red-100 text-red-800",
     }
-    return <Badge className={colorMap[info.color] || ''}>{info.label}</Badge>
+    return <Badge className={colorMap[info.color] || ""}>{info.label}</Badge>
   }
 
   if (loading) return <LoadingPage />
@@ -136,22 +145,24 @@ export default function JobPostingsPage() {
               <SelectContent>
                 <SelectItem value="all">Tất cả</SelectItem>
                 {Object.entries(JOB_POSTING_STATUS).map(([key, val]) => (
-                  <SelectItem key={key} value={key}>{val.label}</SelectItem>
+                  <SelectItem key={key} value={key}>
+                    {val.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <div className="flex gap-1">
               <Button
-                variant={viewMode === 'cards' ? 'default' : 'outline'}
+                variant={viewMode === "cards" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setViewMode('cards')}
+                onClick={() => setViewMode("cards")}
               >
                 Cards
               </Button>
               <Button
-                variant={viewMode === 'table' ? 'default' : 'outline'}
+                variant={viewMode === "table" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setViewMode('table')}
+                onClick={() => setViewMode("table")}
               >
                 Bảng
               </Button>
@@ -172,7 +183,7 @@ export default function JobPostingsPage() {
             Chưa có tin tuyển dụng nào
           </CardContent>
         </Card>
-      ) : viewMode === 'cards' ? (
+      ) : viewMode === "cards" ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {jobs.map((job) => (
             <Card key={job.id} className="hover:shadow-md transition-shadow">
@@ -199,13 +210,13 @@ export default function JobPostingsPage() {
                           Xem chi tiết
                         </Link>
                       </DropdownMenuItem>
-                      {job.status === 'DRAFT' && (
+                      {job.status === "DRAFT" && (
                         <DropdownMenuItem onClick={() => handlePublish(job.id)}>
                           <Globe className="mr-2 h-4 w-4" />
                           Đăng tin
                         </DropdownMenuItem>
                       )}
-                      {job.status === 'PUBLISHED' && (
+                      {job.status === "PUBLISHED" && (
                         <DropdownMenuItem onClick={() => handleClose(job.id)}>
                           <XCircle className="mr-2 h-4 w-4" />
                           Đóng tin
@@ -222,7 +233,9 @@ export default function JobPostingsPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
-                  <span>{JOB_TYPE[job.jobType]?.shortLabel || job.jobType}</span>
+                  <span>
+                    {JOB_TYPE[job.jobType]?.shortLabel || job.jobType}
+                  </span>
                   {job.location && <span>- {job.location}</span>}
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -232,7 +245,7 @@ export default function JobPostingsPage() {
                 <div className="flex items-center justify-between pt-2">
                   {getStatusBadge(job.status)}
                   <span className="text-xs text-muted-foreground">
-                    {new Date(job.createdAt).toLocaleDateString('vi-VN')}
+                    {new Date(job.createdAt).toLocaleDateString("vi-VN")}
                   </span>
                 </div>
               </CardContent>
@@ -246,29 +259,46 @@ export default function JobPostingsPage() {
               <thead>
                 <tr className="border-b">
                   <th className="p-3 text-left text-sm font-medium">Tiêu đề</th>
-                  <th className="p-3 text-left text-sm font-medium">Phòng ban</th>
+                  <th className="p-3 text-left text-sm font-medium">
+                    Phòng ban
+                  </th>
                   <th className="p-3 text-left text-sm font-medium">Loại</th>
                   <th className="p-3 text-center text-sm font-medium">Hồ sơ</th>
-                  <th className="p-3 text-left text-sm font-medium">Trạng thái</th>
-                  <th className="p-3 text-right text-sm font-medium">Thao tác</th>
+                  <th className="p-3 text-left text-sm font-medium">
+                    Trạng thái
+                  </th>
+                  <th className="p-3 text-right text-sm font-medium">
+                    Thao tác
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {jobs.map((job) => (
                   <tr key={job.id} className="border-b hover:bg-accent/50">
                     <td className="p-3">
-                      <Link href={`/recruitment/jobs/${job.id}`} className="font-medium hover:underline">
+                      <Link
+                        href={`/recruitment/jobs/${job.id}`}
+                        className="font-medium hover:underline"
+                      >
                         {job.title}
                       </Link>
                     </td>
                     <td className="p-3 text-sm">{job.department}</td>
-                    <td className="p-3 text-sm">{JOB_TYPE[job.jobType]?.shortLabel || job.jobType}</td>
-                    <td className="p-3 text-center text-sm">{job.applicationsCount}</td>
+                    <td className="p-3 text-sm">
+                      {JOB_TYPE[job.jobType]?.shortLabel || job.jobType}
+                    </td>
+                    <td className="p-3 text-center text-sm">
+                      {job.applicationsCount}
+                    </td>
                     <td className="p-3">{getStatusBadge(job.status)}</td>
                     <td className="p-3 text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -279,14 +309,18 @@ export default function JobPostingsPage() {
                               Xem
                             </Link>
                           </DropdownMenuItem>
-                          {job.status === 'DRAFT' && (
-                            <DropdownMenuItem onClick={() => handlePublish(job.id)}>
+                          {job.status === "DRAFT" && (
+                            <DropdownMenuItem
+                              onClick={() => handlePublish(job.id)}
+                            >
                               <Globe className="mr-2 h-4 w-4" />
                               Đăng tin
                             </DropdownMenuItem>
                           )}
-                          {job.status === 'PUBLISHED' && (
-                            <DropdownMenuItem onClick={() => handleClose(job.id)}>
+                          {job.status === "PUBLISHED" && (
+                            <DropdownMenuItem
+                              onClick={() => handleClose(job.id)}
+                            >
                               <XCircle className="mr-2 h-4 w-4" />
                               Đóng tin
                             </DropdownMenuItem>

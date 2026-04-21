@@ -1,37 +1,42 @@
 /**
- * Structured JSON logs to stdout (application events). Complements Hono’s `logger()` middleware
- * (`hono/logger`), which prints request/response lines — see https://hono.dev/docs/middleware/builtin/logger
+ * Structured Pino logger and request-scoped Hono logging middleware.
  * platform · observability · logging
- * Upstream: none. Downstream: services, route handlers, middleware.
- * Side effects: writes to `console` only.
+ * Upstream: `@afenda/pino-logger`, `./env`. Downstream: app bootstrap, middleware, runtime entrypoint.
  * stable
  * @module lib/logger
  * @package @afenda/api
  */
+import type { Context } from "hono"
+import {
+  createHonoRequestLoggingMiddleware,
+  createServiceLogger,
+  getRequestLogger,
+} from "@afenda/pino-logger"
 
-export type LogLevel = "info" | "warn" | "error"
+import { env } from "./env.js"
 
-export function log(
-  level: LogLevel,
-  message: string,
-  context?: Record<string, unknown>
-) {
-  const payload = {
-    level,
-    message,
-    context,
-    timestamp: new Date().toISOString(),
-  }
+export const apiLogger = createServiceLogger({
+  service: "@afenda/api",
+  environment: env.NODE_ENV,
+})
 
-  if (level === "error") {
-    console.error(JSON.stringify(payload))
-    return
-  }
+export const requestLoggingMiddleware = createHonoRequestLoggingMiddleware({
+  rootLogger: apiLogger,
+  getBindings: (context) => {
+    const session = context.get("session")
 
-  if (level === "warn") {
-    console.warn(JSON.stringify(payload))
-    return
-  }
+    return {
+      authenticated: session.authenticated,
+      ...(session.authSessionId
+        ? { authSessionId: session.authSessionId }
+        : {}),
+      ...(session.userId ? { userId: session.userId } : {}),
+      ...(session.membershipId ? { membershipId: session.membershipId } : {}),
+      ...(session.tenantId ? { tenantId: session.tenantId } : {}),
+    }
+  },
+})
 
-  console.log(JSON.stringify(payload))
+export function loggerForContext(context: Context) {
+  return getRequestLogger(context, apiLogger)
 }

@@ -1,29 +1,31 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Calendar, Plus, CheckCircle, Circle } from 'lucide-react'
-import { CheckIn } from '@/types/performance'
-import { MOOD_OPTIONS } from '@/lib/performance/constants'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Calendar, Plus, CheckCircle, Circle } from "lucide-react"
+import { CheckIn } from "@/types/performance"
+import { MOOD_OPTIONS } from "@/lib/performance/constants"
 
 export default function CheckInsPage() {
   const [checkIns, setCheckIns] = useState<CheckIn[]>([])
   const [loading, setLoading] = useState(true)
-  const [dateFrom, setDateFrom] = useState('')
-  const [dateTo, setDateTo] = useState('')
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
 
   useEffect(() => {
     async function loadCheckIns() {
       try {
         const params = new URLSearchParams()
-        if (dateFrom) params.set('from', dateFrom)
-        if (dateTo) params.set('to', dateTo)
-        const res = await fetch(`/api/performance/check-ins?${params.toString()}`)
+        if (dateFrom) params.set("from", dateFrom)
+        if (dateTo) params.set("to", dateTo)
+        const res = await fetch(
+          `/api/performance/check-ins?${params.toString()}`
+        )
         if (res.ok) {
           const data = await res.json()
           setCheckIns(Array.isArray(data) ? data : data.data || [])
@@ -38,9 +40,9 @@ export default function CheckInsPage() {
   }, [dateFrom, dateTo])
 
   const getMoodEmoji = (rating?: number) => {
-    if (!rating) return ''
+    if (!rating) return ""
     const mood = MOOD_OPTIONS.find((m) => m.value === rating)
-    return mood?.emoji || ''
+    return mood?.emoji || ""
   }
 
   if (loading) {
@@ -90,28 +92,40 @@ export default function CheckInsPage() {
         <div className="flex flex-col items-center justify-center py-16 text-zinc-500">
           <Calendar className="h-16 w-16 mb-4 text-zinc-700" />
           <p className="text-lg">Chưa có check-in nào</p>
-          <p className="text-sm text-zinc-600 mt-1">Tạo check-in hàng tuần để cập nhật tiến độ</p>
+          <p className="text-sm text-zinc-600 mt-1">
+            Tạo check-in hàng tuần để cập nhật tiến độ
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
           {checkIns.map((checkIn) => (
-            <Link key={checkIn.id} href={`/performance/check-ins/${checkIn.id}`}>
+            <Link
+              key={checkIn.id}
+              href={`/performance/check-ins/${checkIn.id}`}
+            >
               <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors cursor-pointer">
                 <CardContent className="py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl">{getMoodEmoji(checkIn.moodRating)}</span>
+                      <span className="text-2xl">
+                        {getMoodEmoji(checkIn.moodRating)}
+                      </span>
                       <div>
                         <p className="text-sm font-medium text-zinc-200">
-                          {new Date(checkIn.checkInDate).toLocaleDateString('vi-VN', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
+                          {new Date(checkIn.checkInDate).toLocaleDateString(
+                            "vi-VN",
+                            {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
                         </p>
                         {checkIn.accomplishments && (
-                          <p className="text-xs text-zinc-500 mt-1 line-clamp-1">{checkIn.accomplishments}</p>
+                          <p className="text-xs text-zinc-500 mt-1 line-clamp-1">
+                            {checkIn.accomplishments}
+                          </p>
                         )}
                       </div>
                     </div>

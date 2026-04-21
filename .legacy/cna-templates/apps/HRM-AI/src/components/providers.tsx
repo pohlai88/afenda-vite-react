@@ -33,16 +33,16 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
-        <SWRConfig value={{
-          fetcher: swrFetcher,
-          revalidateOnFocus: false,
-          dedupingInterval: 5000,
-          keepPreviousData: true,
-          errorRetryCount: 2,
-        }}>
-          <ErrorBoundary>
-            {children}
-          </ErrorBoundary>
+        <SWRConfig
+          value={{
+            fetcher: swrFetcher,
+            revalidateOnFocus: false,
+            dedupingInterval: 5000,
+            keepPreviousData: true,
+            errorRetryCount: 2,
+          }}
+        >
+          <ErrorBoundary>{children}</ErrorBoundary>
           <Toaster position="top-right" richColors theme="dark" />
         </SWRConfig>
       </QueryClientProvider>

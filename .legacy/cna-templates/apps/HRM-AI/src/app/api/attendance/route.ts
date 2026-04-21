@@ -1,30 +1,35 @@
 // src/app/api/attendance/route.ts
 // Attendance management API
 
-import { NextRequest } from 'next/server'
-import { auth } from '@/lib/auth'
-import { attendanceService } from '@/services/attendance.service'
-import { z } from 'zod'
-import { withErrorHandler, Errors, successResponse, paginatedResponse } from '@/lib/errors'
-import { safeParseInt } from '@/lib/api/parse-params'
+import { NextRequest } from "next/server"
+import { auth } from "@/lib/auth"
+import { attendanceService } from "@/services/attendance.service"
+import { z } from "zod"
+import {
+  withErrorHandler,
+  Errors,
+  successResponse,
+  paginatedResponse,
+} from "@/lib/errors"
+import { safeParseInt } from "@/lib/api/parse-params"
 
 const createAttendanceSchema = z.object({
-  employeeId: z.string().min(1, 'Nhân viên là bắt buộc'),
+  employeeId: z.string().min(1, "Nhân viên là bắt buộc"),
   date: z.coerce.date(),
   checkIn: z.coerce.date().optional(),
   checkOut: z.coerce.date().optional(),
   status: z.enum([
-    'PRESENT',
-    'ABSENT',
-    'LATE',
-    'EARLY_LEAVE',
-    'LATE_AND_EARLY',
-    'ON_LEAVE',
-    'BUSINESS_TRIP',
-    'WORK_FROM_HOME',
-    'HOLIDAY',
+    "PRESENT",
+    "ABSENT",
+    "LATE",
+    "EARLY_LEAVE",
+    "LATE_AND_EARLY",
+    "ON_LEAVE",
+    "BUSINESS_TRIP",
+    "WORK_FROM_HOME",
+    "HOLIDAY",
   ]),
-  dayType: z.enum(['NORMAL', 'WEEKEND', 'HOLIDAY', 'COMPENSATORY']).optional(),
+  dayType: z.enum(["NORMAL", "WEEKEND", "HOLIDAY", "COMPENSATORY"]).optional(),
   notes: z.string().optional(),
 })
 
@@ -36,15 +41,25 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
   const { searchParams } = new URL(request.url)
   const filters = {
-    search: searchParams.get('search') || undefined,
-    employeeId: searchParams.get('employeeId') || undefined,
-    departmentId: searchParams.get('departmentId') || undefined,
-    shiftId: searchParams.get('shiftId') || undefined,
-    status: (searchParams.get('status') as "PRESENT" | "ABSENT" | "LATE" | "EARLY_LEAVE" | "LATE_AND_EARLY" | "ON_LEAVE" | "BUSINESS_TRIP" | "WORK_FROM_HOME" | "HOLIDAY") || undefined,
-    dateFrom: searchParams.get('dateFrom') || undefined,
-    dateTo: searchParams.get('dateTo') || undefined,
-    page: safeParseInt(searchParams.get('page'), 1),
-    pageSize: safeParseInt(searchParams.get('pageSize'), 20),
+    search: searchParams.get("search") || undefined,
+    employeeId: searchParams.get("employeeId") || undefined,
+    departmentId: searchParams.get("departmentId") || undefined,
+    shiftId: searchParams.get("shiftId") || undefined,
+    status:
+      (searchParams.get("status") as
+        | "PRESENT"
+        | "ABSENT"
+        | "LATE"
+        | "EARLY_LEAVE"
+        | "LATE_AND_EARLY"
+        | "ON_LEAVE"
+        | "BUSINESS_TRIP"
+        | "WORK_FROM_HOME"
+        | "HOLIDAY") || undefined,
+    dateFrom: searchParams.get("dateFrom") || undefined,
+    dateTo: searchParams.get("dateTo") || undefined,
+    page: safeParseInt(searchParams.get("page"), 1),
+    pageSize: safeParseInt(searchParams.get("pageSize"), 20),
   }
 
   const result = await attendanceService.findAll(session.user.tenantId, filters)
@@ -63,8 +78,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   }
 
   // RBAC check
-  if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'HR_STAFF'].includes(session.user.role)) {
-    throw Errors.forbidden('Bạn không có quyền tạo chấm công')
+  if (
+    !["SUPER_ADMIN", "ADMIN", "HR_MANAGER", "HR_STAFF"].includes(
+      session.user.role
+    )
+  ) {
+    throw Errors.forbidden("Bạn không có quyền tạo chấm công")
   }
 
   const body = await request.json()
@@ -78,4 +97,3 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   return successResponse(attendance, undefined, 201)
 })
-

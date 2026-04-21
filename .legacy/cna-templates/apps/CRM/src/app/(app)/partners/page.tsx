@@ -1,32 +1,36 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Plus, Search, Handshake, Building2, MapPin } from 'lucide-react'
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Plus, Search, Handshake, Building2, MapPin } from "lucide-react"
 
-import { useTranslation } from '@/i18n'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useTranslation } from "@/i18n"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { usePartners } from '@/hooks/use-partners'
-import { PARTNER_TYPES, CERTIFICATION_LEVELS, formatShortCurrency } from '@/lib/constants'
+} from "@/components/ui/select"
+import { usePartners } from "@/hooks/use-partners"
+import {
+  PARTNER_TYPES,
+  CERTIFICATION_LEVELS,
+  formatShortCurrency,
+} from "@/lib/constants"
 
 export default function PartnersPage() {
   const router = useRouter()
   const { t } = useTranslation()
-  const [typeFilter, setTypeFilter] = useState<string>('')
-  const [certFilter, setCertFilter] = useState<string>('')
+  const [typeFilter, setTypeFilter] = useState<string>("")
+  const [certFilter, setCertFilter] = useState<string>("")
 
   const { data, isLoading } = usePartners({
     partnerType: typeFilter || undefined,
@@ -37,12 +41,12 @@ export default function PartnersPage() {
 
   return (
     <PageShell
-      title={t('partner.title')}
+      title={t("partner.title")}
       actions={
         <Link href="/partners/new">
           <Button size="sm" className="btn-accent-glow">
             <Plus className="h-4 w-4" />
-            {t('partner.create')}
+            {t("partner.create")}
           </Button>
         </Link>
       }
@@ -51,15 +55,24 @@ export default function PartnersPage() {
       <div className="flex flex-wrap gap-3 mb-4">
         <Select
           value={typeFilter}
-          onValueChange={(val) => setTypeFilter(val === '__all__' ? '' : val)}
+          onValueChange={(val) => setTypeFilter(val === "__all__" ? "" : val)}
         >
           <SelectTrigger className="w-[180px] input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
             <SelectValue placeholder="Loại đối tác" />
           </SelectTrigger>
           <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
-            <SelectItem value="__all__" className="text-[var(--crm-text-secondary)]">Tất cả</SelectItem>
+            <SelectItem
+              value="__all__"
+              className="text-[var(--crm-text-secondary)]"
+            >
+              Tất cả
+            </SelectItem>
             {PARTNER_TYPES.map((pt) => (
-              <SelectItem key={pt.value} value={pt.value} className="text-[var(--crm-text-primary)]">
+              <SelectItem
+                key={pt.value}
+                value={pt.value}
+                className="text-[var(--crm-text-primary)]"
+              >
                 {t(pt.labelKey)}
               </SelectItem>
             ))}
@@ -68,15 +81,24 @@ export default function PartnersPage() {
 
         <Select
           value={certFilter}
-          onValueChange={(val) => setCertFilter(val === '__all__' ? '' : val)}
+          onValueChange={(val) => setCertFilter(val === "__all__" ? "" : val)}
         >
           <SelectTrigger className="w-[160px] input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
             <SelectValue placeholder="Cấp độ" />
           </SelectTrigger>
           <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
-            <SelectItem value="__all__" className="text-[var(--crm-text-secondary)]">Tất cả</SelectItem>
+            <SelectItem
+              value="__all__"
+              className="text-[var(--crm-text-secondary)]"
+            >
+              Tất cả
+            </SelectItem>
             {CERTIFICATION_LEVELS.map((cl) => (
-              <SelectItem key={cl.value} value={cl.value} className="text-[var(--crm-text-primary)]">
+              <SelectItem
+                key={cl.value}
+                value={cl.value}
+                className="text-[var(--crm-text-primary)]"
+              >
                 {t(cl.labelKey)}
               </SelectItem>
             ))}
@@ -105,8 +127,12 @@ export default function PartnersPage() {
       {!isLoading && partners.length > 0 && (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {partners.map((partner) => {
-            const typeConst = PARTNER_TYPES.find((pt) => pt.value === partner.partnerType)
-            const certConst = CERTIFICATION_LEVELS.find((cl) => cl.value === partner.certificationLevel)
+            const typeConst = PARTNER_TYPES.find(
+              (pt) => pt.value === partner.partnerType
+            )
+            const certConst = CERTIFICATION_LEVELS.find(
+              (cl) => cl.value === partner.certificationLevel
+            )
 
             return (
               <Card
@@ -136,11 +162,15 @@ export default function PartnersPage() {
                       variant="outline"
                       className="text-xs border-none"
                       style={{
-                        backgroundColor: partner.isActive ? 'rgba(16,185,129,0.15)' : 'rgba(107,114,128,0.15)',
-                        color: partner.isActive ? '#10B981' : '#6B7280',
+                        backgroundColor: partner.isActive
+                          ? "rgba(16,185,129,0.15)"
+                          : "rgba(107,114,128,0.15)",
+                        color: partner.isActive ? "#10B981" : "#6B7280",
                       }}
                     >
-                      {partner.isActive ? t('partner.active') : t('partner.inactive')}
+                      {partner.isActive
+                        ? t("partner.active")
+                        : t("partner.inactive")}
                     </Badge>
                   </div>
 
@@ -149,7 +179,10 @@ export default function PartnersPage() {
                       <Badge
                         variant="outline"
                         className="text-xs border-none"
-                        style={{ backgroundColor: `${typeConst.color}20`, color: typeConst.color }}
+                        style={{
+                          backgroundColor: `${typeConst.color}20`,
+                          color: typeConst.color,
+                        }}
                       >
                         {t(typeConst.labelKey)}
                       </Badge>
@@ -158,7 +191,10 @@ export default function PartnersPage() {
                       <Badge
                         variant="outline"
                         className="text-xs border-none"
-                        style={{ backgroundColor: `${certConst.color}20`, color: certConst.color }}
+                        style={{
+                          backgroundColor: `${certConst.color}20`,
+                          color: certConst.color,
+                        }}
                       >
                         {t(certConst.labelKey)}
                       </Badge>
@@ -170,19 +206,25 @@ export default function PartnersPage() {
                       <div className="text-lg font-bold text-[var(--crm-text-primary)]">
                         {partner._count?.deals || 0}
                       </div>
-                      <div className="text-xs text-[var(--crm-text-muted)]">Deals</div>
+                      <div className="text-xs text-[var(--crm-text-muted)]">
+                        Deals
+                      </div>
                     </div>
                     <div>
                       <div className="text-lg font-bold text-[var(--crm-text-primary)]">
                         {partner._count?.registrations || 0}
                       </div>
-                      <div className="text-xs text-[var(--crm-text-muted)]">Regs</div>
+                      <div className="text-xs text-[var(--crm-text-muted)]">
+                        Regs
+                      </div>
                     </div>
                     <div>
                       <div className="text-lg font-bold text-[var(--crm-accent-text)]">
                         {partner.commissionRate}%
                       </div>
-                      <div className="text-xs text-[var(--crm-text-muted)]">Rate</div>
+                      <div className="text-xs text-[var(--crm-text-muted)]">
+                        Rate
+                      </div>
                     </div>
                   </div>
                 </CardContent>

@@ -1,10 +1,16 @@
-'use client'
+"use client"
 
-import { useEffect, useState, createContext, useContext, useCallback } from 'react'
-import { toast } from 'sonner'
-import { Download, RefreshCw, Wifi, WifiOff, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import {
+  useEffect,
+  useState,
+  createContext,
+  useContext,
+  useCallback,
+} from "react"
+import { toast } from "sonner"
+import { Download, RefreshCw, Wifi, WifiOff, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -12,7 +18,7 @@ import { cn } from '@/lib/utils'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
 }
 
 interface PWAContextValue {
@@ -135,17 +141,19 @@ function OfflineIndicator({ isOnline }: { isOnline: boolean }) {
   return (
     <div
       className={cn(
-        'fixed top-0 left-0 right-0 z-[100] py-2 px-4 text-center text-sm font-medium transition-all',
+        "fixed top-0 left-0 right-0 z-[100] py-2 px-4 text-center text-sm font-medium transition-all",
         !isOnline
-          ? 'bg-amber-500 text-amber-950'
-          : 'bg-green-500 text-green-950'
+          ? "bg-amber-500 text-amber-950"
+          : "bg-green-500 text-green-950"
       )}
     >
       <div className="flex items-center justify-center gap-2">
         {!isOnline ? (
           <>
             <WifiOff className="h-4 w-4" />
-            <span>Bạn đang offline. Một số tính năng có thể không khả dụng.</span>
+            <span>
+              Bạn đang offline. Một số tính năng có thể không khả dụng.
+            </span>
           </>
         ) : (
           <>
@@ -168,27 +176,32 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
   const [isInstalled, setIsInstalled] = useState(false)
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false)
   const [showInstallBanner, setShowInstallBanner] = useState(false)
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null)
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null)
+  const [registration, setRegistration] =
+    useState<ServiceWorkerRegistration | null>(null)
 
   // Register service worker
   useEffect(() => {
-    if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
+    if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
       return
     }
 
     // Register SW
     navigator.serviceWorker
-      .register('/sw.js')
+      .register("/sw.js")
       .then((reg) => {
         setRegistration(reg)
 
         // Check for updates
-        reg.addEventListener('updatefound', () => {
+        reg.addEventListener("updatefound", () => {
           const newWorker = reg.installing
           if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            newWorker.addEventListener("statechange", () => {
+              if (
+                newWorker.state === "installed" &&
+                navigator.serviceWorker.controller
+              ) {
                 setIsUpdateAvailable(true)
               }
             })
@@ -196,30 +209,31 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
         })
       })
       .catch((error) => {
-        console.error('[PWA] Service worker registration failed:', error)
+        console.error("[PWA] Service worker registration failed:", error)
       })
 
     // Handle controller change (update applied)
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
       window.location.reload()
     })
   }, [])
 
   // Check if already installed
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return
 
     // Check display mode
     const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as Navigator & { standalone?: boolean }).standalone ===
+        true
 
     setIsInstalled(isStandalone)
   }, [])
 
   // Handle install prompt
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
@@ -227,41 +241,44 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
       setIsInstallable(true)
 
       // Show install banner after delay (if not dismissed before)
-      const dismissed = localStorage.getItem('pwa-install-dismissed')
+      const dismissed = localStorage.getItem("pwa-install-dismissed")
       if (!dismissed) {
         setTimeout(() => setShowInstallBanner(true), 5000)
       }
     }
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      )
     }
   }, [])
 
   // Handle online/offline status
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return
 
     setIsOnline(navigator.onLine)
 
     const handleOnline = () => {
       setIsOnline(true)
-      toast.success('Đã kết nối lại!')
+      toast.success("Đã kết nối lại!")
     }
 
     const handleOffline = () => {
       setIsOnline(false)
-      toast.warning('Mất kết nối mạng')
+      toast.warning("Mất kết nối mạng")
     }
 
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
+    window.addEventListener("online", handleOnline)
+    window.addEventListener("offline", handleOffline)
 
     return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
+      window.removeEventListener("online", handleOnline)
+      window.removeEventListener("offline", handleOffline)
     }
   }, [])
 
@@ -273,31 +290,31 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
       await deferredPrompt.prompt()
       const { outcome } = await deferredPrompt.userChoice
 
-      if (outcome === 'accepted') {
+      if (outcome === "accepted") {
         setIsInstalled(true)
-        toast.success('Đã cài đặt VietERP HRM!')
+        toast.success("Đã cài đặt VietERP HRM!")
       }
 
       setDeferredPrompt(null)
       setIsInstallable(false)
       setShowInstallBanner(false)
     } catch (error) {
-      console.error('[PWA] Install failed:', error)
-      toast.error('Không thể cài đặt ứng dụng')
+      console.error("[PWA] Install failed:", error)
+      toast.error("Không thể cài đặt ứng dụng")
     }
   }, [deferredPrompt])
 
   // Update app
   const updateApp = useCallback(() => {
     if (registration?.waiting) {
-      registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+      registration.waiting.postMessage({ type: "SKIP_WAITING" })
     }
   }, [registration])
 
   // Dismiss install banner
   const dismissInstallBanner = useCallback(() => {
     setShowInstallBanner(false)
-    localStorage.setItem('pwa-install-dismissed', 'true')
+    localStorage.setItem("pwa-install-dismissed", "true")
   }, [])
 
   const contextValue: PWAContextValue = {
@@ -318,7 +335,10 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
 
       {/* Install banner */}
       {showInstallBanner && !isInstalled && (
-        <InstallBanner onInstall={installApp} onDismiss={dismissInstallBanner} />
+        <InstallBanner
+          onInstall={installApp}
+          onDismiss={dismissInstallBanner}
+        />
       )}
 
       {/* Update banner */}

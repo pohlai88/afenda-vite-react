@@ -1,7 +1,7 @@
 // src/lib/monitoring/errors.ts
 // Error tracking and reporting utilities
 
-import { logger } from './logger'
+import { logger } from "./logger"
 
 // ═══════════════════════════════════════════════════════════════
 // CUSTOM ERROR CLASSES
@@ -23,7 +23,7 @@ export class AppError extends Error {
     }
   ) {
     super(message)
-    this.name = 'AppError'
+    this.name = "AppError"
     this.code = options.code
     this.statusCode = options.statusCode ?? 500
     this.isOperational = options.isOperational ?? true
@@ -36,56 +36,56 @@ export class AppError extends Error {
 export class ValidationError extends AppError {
   constructor(message: string, context?: Record<string, unknown>) {
     super(message, {
-      code: 'VALIDATION_ERROR',
+      code: "VALIDATION_ERROR",
       statusCode: 400,
       isOperational: true,
       context,
     })
-    this.name = 'ValidationError'
+    this.name = "ValidationError"
   }
 }
 
 export class AuthenticationError extends AppError {
-  constructor(message: string = 'Authentication required') {
+  constructor(message: string = "Authentication required") {
     super(message, {
-      code: 'AUTHENTICATION_ERROR',
+      code: "AUTHENTICATION_ERROR",
       statusCode: 401,
       isOperational: true,
     })
-    this.name = 'AuthenticationError'
+    this.name = "AuthenticationError"
   }
 }
 
 export class AuthorizationError extends AppError {
-  constructor(message: string = 'Access denied') {
+  constructor(message: string = "Access denied") {
     super(message, {
-      code: 'AUTHORIZATION_ERROR',
+      code: "AUTHORIZATION_ERROR",
       statusCode: 403,
       isOperational: true,
     })
-    this.name = 'AuthorizationError'
+    this.name = "AuthorizationError"
   }
 }
 
 export class NotFoundError extends AppError {
-  constructor(resource: string = 'Resource') {
+  constructor(resource: string = "Resource") {
     super(`${resource} not found`, {
-      code: 'NOT_FOUND',
+      code: "NOT_FOUND",
       statusCode: 404,
       isOperational: true,
     })
-    this.name = 'NotFoundError'
+    this.name = "NotFoundError"
   }
 }
 
 export class ConflictError extends AppError {
-  constructor(message: string = 'Resource already exists') {
+  constructor(message: string = "Resource already exists") {
     super(message, {
-      code: 'CONFLICT',
+      code: "CONFLICT",
       statusCode: 409,
       isOperational: true,
     })
-    this.name = 'ConflictError'
+    this.name = "ConflictError"
   }
 }
 
@@ -93,12 +93,12 @@ export class RateLimitError extends AppError {
   public readonly retryAfter: number
 
   constructor(retryAfter: number = 60) {
-    super('Too many requests', {
-      code: 'RATE_LIMITED',
+    super("Too many requests", {
+      code: "RATE_LIMITED",
       statusCode: 429,
       isOperational: true,
     })
-    this.name = 'RateLimitError'
+    this.name = "RateLimitError"
     this.retryAfter = retryAfter
   }
 }
@@ -106,7 +106,7 @@ export class RateLimitError extends AppError {
 export class ExternalServiceError extends AppError {
   constructor(service: string, originalError?: Error) {
     super(`External service error: ${service}`, {
-      code: 'EXTERNAL_SERVICE_ERROR',
+      code: "EXTERNAL_SERVICE_ERROR",
       statusCode: 502,
       isOperational: true,
       context: {
@@ -114,7 +114,7 @@ export class ExternalServiceError extends AppError {
         originalError: originalError?.message,
       },
     })
-    this.name = 'ExternalServiceError'
+    this.name = "ExternalServiceError"
   }
 }
 
@@ -147,7 +147,7 @@ class ErrorTracker {
   capture(error: Error, context?: ErrorContext): void {
     // Log the error
     logger.error(error.message, {
-      context: 'ErrorTracker',
+      context: "ErrorTracker",
       error,
       data: context as Record<string, unknown>,
     })
@@ -171,7 +171,9 @@ class ErrorTracker {
   /**
    * Get recent errors (for debugging)
    */
-  getRecent(count: number = 10): Array<{ timestamp: Date; message: string; code?: string }> {
+  getRecent(
+    count: number = 10
+  ): Array<{ timestamp: Date; message: string; code?: string }> {
     return this.errors.slice(-count).map((e) => ({
       timestamp: e.timestamp,
       message: e.error.message,
@@ -194,7 +196,7 @@ class ErrorTracker {
     let last24h = 0
 
     for (const entry of this.errors) {
-      const type = entry.error.name || 'Unknown'
+      const type = entry.error.name || "Unknown"
       byType[type] = (byType[type] || 0) + 1
 
       if (entry.timestamp.getTime() > dayAgo) {
@@ -225,18 +227,22 @@ export const errorTracker = new ErrorTracker()
 // ═══════════════════════════════════════════════════════════════
 
 export function setupGlobalErrorHandlers(): void {
-  if (typeof process !== 'undefined') {
-    process.on('uncaughtException', (error: Error) => {
-      errorTracker.capture(error, { additionalData: { type: 'uncaughtException' } })
-      logger.error('Uncaught exception', { error })
+  if (typeof process !== "undefined") {
+    process.on("uncaughtException", (error: Error) => {
+      errorTracker.capture(error, {
+        additionalData: { type: "uncaughtException" },
+      })
+      logger.error("Uncaught exception", { error })
       // Give time for logging before exit
       setTimeout(() => process.exit(1), 1000)
     })
 
-    process.on('unhandledRejection', (reason: unknown) => {
+    process.on("unhandledRejection", (reason: unknown) => {
       const error = reason instanceof Error ? reason : new Error(String(reason))
-      errorTracker.capture(error, { additionalData: { type: 'unhandledRejection' } })
-      logger.error('Unhandled rejection', { error })
+      errorTracker.capture(error, {
+        additionalData: { type: "unhandledRejection" },
+      })
+      logger.error("Unhandled rejection", { error })
     })
   }
 }

@@ -1,20 +1,20 @@
-'use client'
+"use client"
 
-import { useState, useMemo } from 'react'
-import { Input } from '@/components/ui/input'
+import { useState, useMemo } from "react"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { JOB_TYPE, WORK_MODE } from '@/lib/recruitment/constants'
-import type { JobPosting } from '@/types/recruitment'
-import { JobListingCard } from './job-listing-card'
-import { Search, X, Briefcase } from 'lucide-react'
+} from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { JOB_TYPE, WORK_MODE } from "@/lib/recruitment/constants"
+import type { JobPosting } from "@/types/recruitment"
+import { JobListingCard } from "./job-listing-card"
+import { Search, X, Briefcase } from "lucide-react"
 
 interface JobListingsProps {
   postings: JobPosting[]
@@ -29,10 +29,10 @@ export function JobListings({
   onViewDetails,
   isLoading = false,
 }: JobListingsProps) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [jobTypeFilter, setJobTypeFilter] = useState<string>('ALL')
-  const [workModeFilter, setWorkModeFilter] = useState<string>('ALL')
-  const [locationFilter, setLocationFilter] = useState<string>('ALL')
+  const [searchQuery, setSearchQuery] = useState("")
+  const [jobTypeFilter, setJobTypeFilter] = useState<string>("ALL")
+  const [workModeFilter, setWorkModeFilter] = useState<string>("ALL")
+  const [locationFilter, setLocationFilter] = useState<string>("ALL")
 
   // Get unique locations
   const locations = useMemo(() => {
@@ -46,28 +46,32 @@ export function JobListings({
   const filteredPostings = useMemo(() => {
     return postings.filter((posting) => {
       const matchesSearch =
-        searchQuery === '' ||
+        searchQuery === "" ||
         posting.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         posting.description?.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesJobType = jobTypeFilter === 'ALL' || posting.jobType === jobTypeFilter
-      const matchesWorkMode = workModeFilter === 'ALL' || posting.workMode === workModeFilter
+      const matchesJobType =
+        jobTypeFilter === "ALL" || posting.jobType === jobTypeFilter
+      const matchesWorkMode =
+        workModeFilter === "ALL" || posting.workMode === workModeFilter
       const matchesLocation =
-        locationFilter === 'ALL' || posting.location === locationFilter
-      return matchesSearch && matchesJobType && matchesWorkMode && matchesLocation
+        locationFilter === "ALL" || posting.location === locationFilter
+      return (
+        matchesSearch && matchesJobType && matchesWorkMode && matchesLocation
+      )
     })
   }, [postings, searchQuery, jobTypeFilter, workModeFilter, locationFilter])
 
   const activeFilters = [
-    jobTypeFilter !== 'ALL' ? JOB_TYPE[jobTypeFilter]?.label : null,
-    workModeFilter !== 'ALL' ? WORK_MODE[workModeFilter]?.label : null,
-    locationFilter !== 'ALL' ? locationFilter : null,
+    jobTypeFilter !== "ALL" ? JOB_TYPE[jobTypeFilter]?.label : null,
+    workModeFilter !== "ALL" ? WORK_MODE[workModeFilter]?.label : null,
+    locationFilter !== "ALL" ? locationFilter : null,
   ].filter(Boolean)
 
   const clearFilters = () => {
-    setSearchQuery('')
-    setJobTypeFilter('ALL')
-    setWorkModeFilter('ALL')
-    setLocationFilter('ALL')
+    setSearchQuery("")
+    setJobTypeFilter("ALL")
+    setWorkModeFilter("ALL")
+    setLocationFilter("ALL")
   }
 
   return (
@@ -169,10 +173,7 @@ export function JobListings({
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="h-32 bg-muted animate-pulse rounded-lg"
-              />
+              <div key={i} className="h-32 bg-muted animate-pulse rounded-lg" />
             ))}
           </div>
         ) : filteredPostings.length > 0 ? (
@@ -194,11 +195,7 @@ export function JobListings({
               Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm
             </p>
             {activeFilters.length > 0 && (
-              <Button
-                variant="outline"
-                className="mt-4"
-                onClick={clearFilters}
-              >
+              <Button variant="outline" className="mt-4" onClick={clearFilters}>
                 Xóa bộ lọc
               </Button>
             )}

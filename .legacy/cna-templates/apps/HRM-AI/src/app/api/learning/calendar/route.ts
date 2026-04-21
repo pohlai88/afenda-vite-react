@@ -1,18 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
 
     const { searchParams } = new URL(request.url)
-    const month = parseInt(searchParams.get('month') || String(new Date().getMonth() + 1))
-    const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()))
+    const month = parseInt(
+      searchParams.get("month") || String(new Date().getMonth() + 1)
+    )
+    const year = parseInt(
+      searchParams.get("year") || String(new Date().getFullYear())
+    )
 
     // Get the start and end of the month
     const startDate = new Date(year, month - 1, 1)
@@ -41,14 +45,14 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      orderBy: { startDate: 'asc' },
+      orderBy: { startDate: "asc" },
     })
 
     // Format calendar events
     const events = sessions.map((s) => ({
       id: s.id,
-      type: 'session' as const,
-      title: s.title || s.course?.title || 'Training Session',
+      type: "session" as const,
+      title: s.title || s.course?.title || "Training Session",
       date: s.startDate,
       endDate: s.endDate,
       location: s.location,
@@ -67,7 +71,10 @@ export async function GET(request: NextRequest) {
       events,
     })
   } catch (error) {
-    console.error('Error fetching learning calendar:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error fetching learning calendar:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

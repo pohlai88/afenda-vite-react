@@ -2,26 +2,26 @@
 // APPROVAL CONTROLS — Approve/reject buttons for sandbox (Blueprint §2.2.3)
 // =============================================================================
 
-import React, { useState } from 'react';
-import { Check, X, RotateCcw, AlertTriangle, Clock } from 'lucide-react';
-import type { Sandbox, SandboxStatus } from '../../ai/sandbox/types';
+import React, { useState } from "react"
+import { Check, X, RotateCcw, AlertTriangle, Clock } from "lucide-react"
+import type { Sandbox, SandboxStatus } from "../../ai/sandbox/types"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 interface ApprovalControlsProps {
-  sandbox: Sandbox;
-  onApprove: () => void;
-  onReject: () => void;
-  onRollback?: () => void;
-  canRollback?: boolean;
-  isLoading?: boolean;
-  compact?: boolean;
+  sandbox: Sandbox
+  onApprove: () => void
+  onReject: () => void
+  onRollback?: () => void
+  canRollback?: boolean
+  isLoading?: boolean
+  compact?: boolean
 }
 
 interface StatusIndicatorProps {
-  status: SandboxStatus;
+  status: SandboxStatus
 }
 
 // -----------------------------------------------------------------------------
@@ -31,54 +31,54 @@ interface StatusIndicatorProps {
 export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status }) => {
   const getStatusConfig = () => {
     switch (status) {
-      case 'pending':
+      case "pending":
         return {
           icon: <Clock size={14} />,
-          label: 'Pending Review',
-          className: 'status--pending',
-        };
-      case 'approved':
+          label: "Pending Review",
+          className: "status--pending",
+        }
+      case "approved":
         return {
           icon: <Check size={14} />,
-          label: 'Approved',
-          className: 'status--approved',
-        };
-      case 'merged':
+          label: "Approved",
+          className: "status--approved",
+        }
+      case "merged":
         return {
           icon: <Check size={14} />,
-          label: 'Merged',
-          className: 'status--merged',
-        };
-      case 'rejected':
+          label: "Merged",
+          className: "status--merged",
+        }
+      case "rejected":
         return {
           icon: <X size={14} />,
-          label: 'Rejected',
-          className: 'status--rejected',
-        };
-      case 'discarded':
+          label: "Rejected",
+          className: "status--rejected",
+        }
+      case "discarded":
         return {
           icon: <X size={14} />,
-          label: 'Discarded',
-          className: 'status--discarded',
-        };
-      case 'rolled_back':
+          label: "Discarded",
+          className: "status--discarded",
+        }
+      case "rolled_back":
         return {
           icon: <RotateCcw size={14} />,
-          label: 'Rolled Back',
-          className: 'status--rolled-back',
-        };
+          label: "Rolled Back",
+          className: "status--rolled-back",
+        }
     }
-  };
+  }
 
-  const config = getStatusConfig();
+  const config = getStatusConfig()
 
   return (
     <div className={`sandbox-status ${config.className}`}>
       {config.icon}
       <span>{config.label}</span>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Main Approval Controls Component
@@ -93,45 +93,45 @@ export const ApprovalControls: React.FC<ApprovalControlsProps> = ({
   isLoading = false,
   compact = false,
 }) => {
-  const [isConfirmingReject, setIsConfirmingReject] = useState(false);
-  const [isConfirmingRollback, setIsConfirmingRollback] = useState(false);
+  const [isConfirmingReject, setIsConfirmingReject] = useState(false)
+  const [isConfirmingRollback, setIsConfirmingRollback] = useState(false)
 
-  const isPending = sandbox.status === 'pending';
-  const isMerged = sandbox.status === 'merged';
-  const isHighRisk = sandbox.riskAssessment?.overallRisk === 'high';
+  const isPending = sandbox.status === "pending"
+  const isMerged = sandbox.status === "merged"
+  const isHighRisk = sandbox.riskAssessment?.overallRisk === "high"
 
   // Handle approve
   const handleApprove = () => {
     if (!isLoading && isPending) {
-      onApprove();
+      onApprove()
     }
-  };
+  }
 
   // Handle reject
   const handleReject = () => {
     if (isConfirmingReject) {
-      onReject();
-      setIsConfirmingReject(false);
+      onReject()
+      setIsConfirmingReject(false)
     } else {
-      setIsConfirmingReject(true);
+      setIsConfirmingReject(true)
     }
-  };
+  }
 
   // Handle rollback
   const handleRollback = () => {
     if (isConfirmingRollback) {
-      onRollback?.();
-      setIsConfirmingRollback(false);
+      onRollback?.()
+      setIsConfirmingRollback(false)
     } else {
-      setIsConfirmingRollback(true);
+      setIsConfirmingRollback(true)
     }
-  };
+  }
 
   // Cancel confirmation
   const cancelConfirmation = () => {
-    setIsConfirmingReject(false);
-    setIsConfirmingRollback(false);
-  };
+    setIsConfirmingReject(false)
+    setIsConfirmingRollback(false)
+  }
 
   // Compact view for merged/completed sandboxes
   if (!isPending && !isMerged) {
@@ -139,7 +139,7 @@ export const ApprovalControls: React.FC<ApprovalControlsProps> = ({
       <div className="approval-controls approval-controls--completed">
         <StatusIndicator status={sandbox.status} />
       </div>
-    );
+    )
   }
 
   // Rollback view for merged sandboxes
@@ -181,7 +181,7 @@ export const ApprovalControls: React.FC<ApprovalControlsProps> = ({
           </div>
         )}
       </div>
-    );
+    )
   }
 
   // Pending view with approve/reject
@@ -205,7 +205,7 @@ export const ApprovalControls: React.FC<ApprovalControlsProps> = ({
           <X size={16} />
         </button>
       </div>
-    );
+    )
   }
 
   return (
@@ -252,7 +252,7 @@ export const ApprovalControls: React.FC<ApprovalControlsProps> = ({
               disabled={isLoading}
             >
               <Check size={14} />
-              {isLoading ? 'Applying...' : 'Approve & Apply'}
+              {isLoading ? "Applying..." : "Approve & Apply"}
             </button>
             <button
               className="approval-btn approval-btn--reject"
@@ -273,7 +273,7 @@ export const ApprovalControls: React.FC<ApprovalControlsProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ApprovalControls;
+export default ApprovalControls

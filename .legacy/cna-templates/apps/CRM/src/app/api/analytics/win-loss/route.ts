@@ -1,25 +1,27 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { handleApiError } from '@/lib/api/errors'
-import { apiSuccess } from '@/lib/api/response'
+import { NextRequest } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { handleApiError } from "@/lib/api/errors"
+import { apiSuccess } from "@/lib/api/response"
 
 // GET /api/analytics/win-loss — Win/Loss analysis
 export async function GET(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER'])
+    const result = await requireRole(["ADMIN", "MANAGER"])
     if (isErrorResponse(result)) return result
 
     const { searchParams } = req.nextUrl
-    const periodDays = parseInt(searchParams.get('period') || '365')
-    const segment = searchParams.get('segment')
-    const baseCurrency = searchParams.get('baseCurrency') || 'USD'
+    const periodDays = parseInt(searchParams.get("period") || "365")
+    const segment = searchParams.get("segment")
+    const baseCurrency = searchParams.get("baseCurrency") || "USD"
 
     const since = new Date()
     since.setDate(since.getDate() - periodDays)
 
     // Load exchange rates
-    const exchangeRates = await prisma.exchangeRate.findMany({ where: { isActive: true } })
+    const exchangeRates = await prisma.exchangeRate.findMany({
+      where: { isActive: true },
+    })
     const rateMap: Record<string, number> = {}
     for (const r of exchangeRates) {
       rateMap[r.currency] = Number(r.rateToBase)
@@ -33,8 +35,14 @@ export async function GET(req: NextRequest) {
     }
 
     // Get won and lost stage IDs
-    const wonStages = await prisma.stage.findMany({ where: { isWon: true }, select: { id: true } })
-    const lostStages = await prisma.stage.findMany({ where: { isLost: true }, select: { id: true } })
+    const wonStages = await prisma.stage.findMany({
+      where: { isWon: true },
+      select: { id: true },
+    })
+    const lostStages = await prisma.stage.findMany({
+      where: { isLost: true },
+      select: { id: true },
+    })
     const wonStageIds = wonStages.map((s) => s.id)
     const lostStageIds = lostStages.map((s) => s.id)
 
@@ -47,13 +55,24 @@ export async function GET(req: NextRequest) {
     const [wonDeals, lostDeals] = await Promise.all([
       prisma.deal.findMany({
         where: { ...baseWhere, stageId: { in: wonStageIds } } as any,
-        select: { id: true, value: true, currency: true, dealType: true, closedAt: true },
+        select: {
+          id: true,
+          value: true,
+          currency: true,
+          dealType: true,
+          closedAt: true,
+        },
       }),
       prisma.deal.findMany({
         where: { ...baseWhere, stageId: { in: lostStageIds } } as any,
         select: {
-          id: true, value: true, currency: true, dealType: true,
-          lostReason: true, competitorName: true, closedAt: true,
+          id: true,
+          value: true,
+          currency: true,
+          dealType: true,
+          lostReason: true,
+          competitorName: true,
+          closedAt: true,
         },
       }),
     ])
@@ -63,20 +82,31 @@ export async function GET(req: NextRequest) {
     const total = wonCount + lostCount
     const winRate = total > 0 ? Math.round((wonCount / total) * 100) / 100 : 0
 
-    const totalWonValue = wonDeals.reduce((s, d) => s + convertToBase(Number(d.value), d.currency), 0)
-    const totalLostValue = lostDeals.reduce((s, d) => s + convertToBase(Number(d.value), d.currency), 0)
+    const totalWonValue = wonDeals.reduce(
+      (s, d) => s + convertToBase(Number(d.value), d.currency),
+      0
+    )
+    const totalLostValue = lostDeals.reduce(
+      (s, d) => s + convertToBase(Number(d.value), d.currency),
+      0
+    )
 
     // By segment
-    const segmentMap: Record<string, { won: number; lost: number; wonValue: number; lostValue: number }> = {}
+    const segmentMap: Record<
+      string,
+      { won: number; lost: number; wonValue: number; lostValue: number }
+    > = {}
     for (const d of wonDeals) {
-      const seg = d.dealType || 'UNKNOWN'
-      if (!segmentMap[seg]) segmentMap[seg] = { won: 0, lost: 0, wonValue: 0, lostValue: 0 }
+      const seg = d.dealType || "UNKNOWN"
+      if (!segmentMap[seg])
+        segmentMap[seg] = { won: 0, lost: 0, wonValue: 0, lostValue: 0 }
       segmentMap[seg].won += 1
       segmentMap[seg].wonValue += convertToBase(Number(d.value), d.currency)
     }
     for (const d of lostDeals) {
-      const seg = d.dealType || 'UNKNOWN'
-      if (!segmentMap[seg]) segmentMap[seg] = { won: 0, lost: 0, wonValue: 0, lostValue: 0 }
+      const seg = d.dealType || "UNKNOWN"
+      if (!segmentMap[seg])
+        segmentMap[seg] = { won: 0, lost: 0, wonValue: 0, lostValue: 0 }
       segmentMap[seg].lost += 1
       segmentMap[seg].lostValue += convertToBase(Number(d.value), d.currency)
     }
@@ -85,16 +115,17 @@ export async function GET(req: NextRequest) {
       segment: seg,
       won: data.won,
       lost: data.lost,
-      winRate: (data.won + data.lost) > 0
-        ? Math.round((data.won / (data.won + data.lost)) * 100) / 100
-        : 0,
+      winRate:
+        data.won + data.lost > 0
+          ? Math.round((data.won / (data.won + data.lost)) * 100) / 100
+          : 0,
       avgValue: data.won > 0 ? Math.round(data.wonValue / data.won) : 0,
     }))
 
     // Loss reasons
     const reasonMap: Record<string, { count: number; totalValue: number }> = {}
     for (const d of lostDeals) {
-      const reason = d.lostReason || 'OTHER'
+      const reason = d.lostReason || "OTHER"
       if (!reasonMap[reason]) reasonMap[reason] = { count: 0, totalValue: 0 }
       reasonMap[reason].count += 1
       reasonMap[reason].totalValue += convertToBase(Number(d.value), d.currency)
@@ -105,17 +136,25 @@ export async function GET(req: NextRequest) {
         reason,
         count: data.count,
         totalValue: Math.round(data.totalValue),
-        percentage: lostCount > 0 ? Math.round((data.count / lostCount) * 100) / 100 : 0,
+        percentage:
+          lostCount > 0 ? Math.round((data.count / lostCount) * 100) / 100 : 0,
       }))
       .sort((a, b) => b.count - a.count)
 
     // Competitor analysis
-    const competitorMap: Record<string, { dealsLost: number; totalValueLost: number }> = {}
+    const competitorMap: Record<
+      string,
+      { dealsLost: number; totalValueLost: number }
+    > = {}
     for (const d of lostDeals) {
       if (!d.competitorName) continue
-      if (!competitorMap[d.competitorName]) competitorMap[d.competitorName] = { dealsLost: 0, totalValueLost: 0 }
+      if (!competitorMap[d.competitorName])
+        competitorMap[d.competitorName] = { dealsLost: 0, totalValueLost: 0 }
       competitorMap[d.competitorName].dealsLost += 1
-      competitorMap[d.competitorName].totalValueLost += convertToBase(Number(d.value), d.currency)
+      competitorMap[d.competitorName].totalValueLost += convertToBase(
+        Number(d.value),
+        d.currency
+      )
     }
 
     const competitors = Object.entries(competitorMap)
@@ -130,13 +169,13 @@ export async function GET(req: NextRequest) {
     const trendMap: Record<string, { won: number; lost: number }> = {}
     for (const d of wonDeals) {
       if (!d.closedAt) continue
-      const month = `${d.closedAt.getFullYear()}-${String(d.closedAt.getMonth() + 1).padStart(2, '0')}`
+      const month = `${d.closedAt.getFullYear()}-${String(d.closedAt.getMonth() + 1).padStart(2, "0")}`
       if (!trendMap[month]) trendMap[month] = { won: 0, lost: 0 }
       trendMap[month].won += 1
     }
     for (const d of lostDeals) {
       if (!d.closedAt) continue
-      const month = `${d.closedAt.getFullYear()}-${String(d.closedAt.getMonth() + 1).padStart(2, '0')}`
+      const month = `${d.closedAt.getFullYear()}-${String(d.closedAt.getMonth() + 1).padStart(2, "0")}`
       if (!trendMap[month]) trendMap[month] = { won: 0, lost: 0 }
       trendMap[month].lost += 1
     }
@@ -145,9 +184,10 @@ export async function GET(req: NextRequest) {
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([month, data]) => ({
         month,
-        winRate: (data.won + data.lost) > 0
-          ? Math.round((data.won / (data.won + data.lost)) * 100) / 100
-          : 0,
+        winRate:
+          data.won + data.lost > 0
+            ? Math.round((data.won / (data.won + data.lost)) * 100) / 100
+            : 0,
         won: data.won,
         lost: data.lost,
       }))
@@ -168,6 +208,6 @@ export async function GET(req: NextRequest) {
       baseCurrency,
     })
   } catch (error) {
-    return handleApiError(error, '/api/analytics/win-loss')
+    return handleApiError(error, "/api/analytics/win-loss")
   }
 }

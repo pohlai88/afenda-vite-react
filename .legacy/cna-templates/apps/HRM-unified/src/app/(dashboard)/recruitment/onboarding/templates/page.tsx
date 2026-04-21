@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import Link from "next/link"
 import {
   Plus,
   Trash2,
@@ -10,10 +10,10 @@ import {
   FileText,
   CheckSquare,
   ArrowLeft,
-} from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+} from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import {
   Table,
   TableBody,
@@ -21,25 +21,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
 
 interface OnboardingTemplate {
   id: string
@@ -57,7 +57,7 @@ export default function OnboardingTemplatesPage() {
   const [error, setError] = useState<string | null>(null)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [creating, setCreating] = useState(false)
-  const [newTemplate, setNewTemplate] = useState({ name: '', description: '' })
+  const [newTemplate, setNewTemplate] = useState({ name: "", description: "" })
 
   useEffect(() => {
     fetchTemplates()
@@ -65,12 +65,12 @@ export default function OnboardingTemplatesPage() {
 
   async function fetchTemplates() {
     try {
-      const res = await fetch('/api/recruitment/onboarding/templates')
-      if (!res.ok) throw new Error('Không thể tải danh sách template')
+      const res = await fetch("/api/recruitment/onboarding/templates")
+      if (!res.ok) throw new Error("Không thể tải danh sách template")
       const json = await res.json()
       setTemplates(json.data || json)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
     } finally {
       setLoading(false)
     }
@@ -80,44 +80,47 @@ export default function OnboardingTemplatesPage() {
     if (!newTemplate.name.trim()) return
     setCreating(true)
     try {
-      const res = await fetch('/api/recruitment/onboarding/templates', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/recruitment/onboarding/templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTemplate),
       })
-      if (!res.ok) throw new Error('Không thể tạo template')
+      if (!res.ok) throw new Error("Không thể tạo template")
       await fetchTemplates()
       setShowCreateDialog(false)
-      setNewTemplate({ name: '', description: '' })
+      setNewTemplate({ name: "", description: "" })
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     } finally {
       setCreating(false)
     }
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Bạn có chắc muốn xóa template này?')) return
+    if (!confirm("Bạn có chắc muốn xóa template này?")) return
     try {
       const res = await fetch(`/api/recruitment/onboarding/templates/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       })
-      if (!res.ok) throw new Error('Không thể xóa template')
-      setTemplates(prev => prev.filter(t => t.id !== id))
+      if (!res.ok) throw new Error("Không thể xóa template")
+      setTemplates((prev) => prev.filter((t) => t.id !== id))
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     }
   }
 
   const handleDuplicate = async (id: string) => {
     try {
-      const res = await fetch(`/api/recruitment/onboarding/templates/${id}/duplicate`, {
-        method: 'POST',
-      })
-      if (!res.ok) throw new Error('Không thể nhân bản template')
+      const res = await fetch(
+        `/api/recruitment/onboarding/templates/${id}/duplicate`,
+        {
+          method: "POST",
+        }
+      )
+      if (!res.ok) throw new Error("Không thể nhân bản template")
       await fetchTemplates()
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     }
   }
 
@@ -166,7 +169,10 @@ export default function OnboardingTemplatesPage() {
               <TableBody>
                 {templates.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell
+                      colSpan={6}
+                      className="text-center py-8 text-muted-foreground"
+                    >
                       Chưa có template nào
                     </TableCell>
                   </TableRow>
@@ -180,7 +186,7 @@ export default function OnboardingTemplatesPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
-                        {template.description || '-'}
+                        {template.description || "-"}
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex items-center justify-center gap-1">
@@ -194,7 +200,9 @@ export default function OnboardingTemplatesPage() {
                         )}
                       </TableCell>
                       <TableCell className="text-sm">
-                        {new Date(template.updatedAt).toLocaleDateString('vi-VN')}
+                        {new Date(template.updatedAt).toLocaleDateString(
+                          "vi-VN"
+                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
@@ -204,7 +212,9 @@ export default function OnboardingTemplatesPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleDuplicate(template.id)}>
+                            <DropdownMenuItem
+                              onClick={() => handleDuplicate(template.id)}
+                            >
                               <Copy className="mr-2 h-4 w-4" />
                               Nhân bản
                             </DropdownMenuItem>
@@ -239,7 +249,9 @@ export default function OnboardingTemplatesPage() {
               <Input
                 id="templateName"
                 value={newTemplate.name}
-                onChange={(e) => setNewTemplate(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setNewTemplate((prev) => ({ ...prev, name: e.target.value }))
+                }
                 placeholder="VD: Onboarding kỹ thuật"
               />
             </div>
@@ -248,18 +260,29 @@ export default function OnboardingTemplatesPage() {
               <Textarea
                 id="templateDescription"
                 value={newTemplate.description}
-                onChange={(e) => setNewTemplate(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setNewTemplate((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
                 placeholder="Mô tả template..."
                 rows={3}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setShowCreateDialog(false)}
+            >
               Hủy
             </Button>
-            <Button onClick={handleCreate} disabled={creating || !newTemplate.name.trim()}>
-              {creating ? 'Đang tạo...' : 'Tạo'}
+            <Button
+              onClick={handleCreate}
+              disabled={creating || !newTemplate.name.trim()}
+            >
+              {creating ? "Đang tạo..." : "Tạo"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,36 +1,51 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
-import { ArrowLeft, ArrowRight, Check, Send, CalendarIcon, Clock, Info, Eye, Pencil, TestTube2 } from 'lucide-react'
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import dynamic from "next/dynamic"
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Send,
+  CalendarIcon,
+  Clock,
+  Info,
+  Eye,
+  Pencil,
+  TestTube2,
+} from "lucide-react"
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Calendar } from '@/components/ui/calendar'
+} from "@/components/ui/select"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { useAudiences, useCreateCampaign } from '@/hooks/use-campaigns'
-import { useEmailTemplates, useSendTestEmail } from '@/hooks/use-email-templates'
-import { useTranslation } from '@/i18n'
-import { CAMPAIGN_VARIABLES } from '@/components/editor'
-import { useToast } from '@/hooks/use-toast'
+} from "@/components/ui/popover"
+import { useAudiences, useCreateCampaign } from "@/hooks/use-campaigns"
+import {
+  useEmailTemplates,
+  useSendTestEmail,
+} from "@/hooks/use-email-templates"
+import { useTranslation } from "@/i18n"
+import { CAMPAIGN_VARIABLES } from "@/components/editor"
+import { useToast } from "@/hooks/use-toast"
 
 const RichTextEditor = dynamic(
-  () => import('@/components/editor').then((m) => ({ default: m.RichTextEditor })),
+  () =>
+    import("@/components/editor").then((m) => ({ default: m.RichTextEditor })),
   {
     ssr: false,
     loading: () => (
@@ -40,17 +55,19 @@ const RichTextEditor = dynamic(
 )
 
 const STEP_KEYS = [
-  { labelKey: 'campaigns.stepBasics', key: 'basics' },
-  { labelKey: 'campaigns.stepAudience', key: 'audience' },
-  { labelKey: 'campaigns.stepContent', key: 'content' },
-  { labelKey: 'campaigns.stepSend', key: 'send' },
+  { labelKey: "campaigns.stepBasics", key: "basics" },
+  { labelKey: "campaigns.stepAudience", key: "audience" },
+  { labelKey: "campaigns.stepContent", key: "content" },
+  { labelKey: "campaigns.stepSend", key: "send" },
 ] as const
 
 // Generate time options in 15-min increments
 const TIME_OPTIONS: string[] = []
 for (let h = 0; h < 24; h++) {
   for (let m = 0; m < 60; m += 15) {
-    TIME_OPTIONS.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
+    TIME_OPTIONS.push(
+      `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`
+    )
   }
 }
 
@@ -65,34 +82,37 @@ export default function NewCampaignPage() {
   const sendTest = useSendTestEmail()
 
   const [form, setForm] = useState({
-    name: '',
-    subject: '',
-    type: 'EMAIL',
-    audienceId: '',
-    content: '',
+    name: "",
+    subject: "",
+    type: "EMAIL",
+    audienceId: "",
+    content: "",
     enableAB: false,
-    variantBSubject: '',
-    variantBContent: '',
+    variantBSubject: "",
+    variantBContent: "",
     splitPercent: 50,
   })
 
-  const [sendMode, setSendMode] = useState<'immediate' | 'scheduled'>('immediate')
+  const [sendMode, setSendMode] = useState<"immediate" | "scheduled">(
+    "immediate"
+  )
   const [scheduleDate, setScheduleDate] = useState<Date | undefined>(undefined)
-  const [scheduleTime, setScheduleTime] = useState('09:00')
-  const [contentTab, setContentTab] = useState<'compose' | 'preview'>('compose')
+  const [scheduleTime, setScheduleTime] = useState("09:00")
+  const [contentTab, setContentTab] = useState<"compose" | "preview">("compose")
 
-  const update = (key: string, value: any) => setForm((prev) => ({ ...prev, [key]: value }))
+  const update = (key: string, value: any) =>
+    setForm((prev) => ({ ...prev, [key]: value }))
 
   const getScheduledAt = (): string | null => {
-    if (sendMode !== 'scheduled' || !scheduleDate) return null
-    const [hours, minutes] = scheduleTime.split(':').map(Number)
+    if (sendMode !== "scheduled" || !scheduleDate) return null
+    const [hours, minutes] = scheduleTime.split(":").map(Number)
     const dt = new Date(scheduleDate)
     dt.setHours(hours, minutes, 0, 0)
     return dt.toISOString()
   }
 
   const isScheduleValid = (): boolean => {
-    if (sendMode === 'immediate') return true
+    if (sendMode === "immediate") return true
     if (!scheduleDate) return false
     const scheduledAt = getScheduledAt()
     if (!scheduledAt) return false
@@ -122,8 +142,8 @@ export default function NewCampaignPage() {
     const tpl = templates?.find((t: any) => t.id === templateId)
     if (!tpl) return
 
-    if (form.content && form.content !== '<p></p>') {
-      if (!confirm(t('templates.overwriteConfirm'))) return
+    if (form.content && form.content !== "<p></p>") {
+      if (!confirm(t("templates.overwriteConfirm"))) return
     }
 
     setForm((prev) => ({
@@ -140,14 +160,14 @@ export default function NewCampaignPage() {
       {
         onSuccess: (data) => {
           toast({
-            title: t('templates.testSent'),
-            description: t('templates.testSentTo', { email: data.to }),
+            title: t("templates.testSent"),
+            description: t("templates.testSentTo", { email: data.to }),
           })
         },
         onError: () => {
           toast({
-            title: t('templates.testError'),
-            variant: 'destructive',
+            title: t("templates.testError"),
+            variant: "destructive",
           })
         },
       }
@@ -160,7 +180,7 @@ export default function NewCampaignPage() {
 
   return (
     <PageShell
-      title={t('campaigns.create')}
+      title={t("campaigns.create")}
       actions={
         <Button
           variant="outline"
@@ -168,7 +188,7 @@ export default function NewCampaignPage() {
           className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
         >
           <ArrowLeft className="w-4 h-4 mr-1.5" />
-          {t('common.back')}
+          {t("common.back")}
         </Button>
       }
     >
@@ -180,16 +200,22 @@ export default function NewCampaignPage() {
               onClick={() => setStep(idx)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 idx === step
-                  ? 'bg-[#10B981]/10 text-[#10B981]'
+                  ? "bg-[#10B981]/10 text-[#10B981]"
                   : idx < step
-                  ? 'bg-[#10B981]/5 text-[#10B981]/60'
-                  : 'bg-[var(--crm-bg-subtle)] text-[var(--crm-text-muted)]'
+                    ? "bg-[#10B981]/5 text-[#10B981]/60"
+                    : "bg-[var(--crm-bg-subtle)] text-[var(--crm-text-muted)]"
               }`}
             >
-              {idx < step ? <Check className="w-3 h-3" /> : <span>{idx + 1}</span>}
+              {idx < step ? (
+                <Check className="w-3 h-3" />
+              ) : (
+                <span>{idx + 1}</span>
+              )}
               {t(s.labelKey)}
             </button>
-            {idx < STEP_KEYS.length - 1 && <div className="w-8 h-px bg-[var(--crm-border)]" />}
+            {idx < STEP_KEYS.length - 1 && (
+              <div className="w-8 h-px bg-[var(--crm-border)]" />
+            )}
           </div>
         ))}
       </div>
@@ -199,32 +225,51 @@ export default function NewCampaignPage() {
         {step === 0 && (
           <div className="space-y-5 max-w-lg">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">{t('campaigns.campaignName')}</Label>
+              <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
+                {t("campaigns.campaignName")}
+              </Label>
               <Input
                 value={form.name}
-                onChange={(e) => update('name', e.target.value)}
-                placeholder={t('campaigns.campaignNamePlaceholder')}
+                onChange={(e) => update("name", e.target.value)}
+                placeholder={t("campaigns.campaignNamePlaceholder")}
                 className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">{t('campaigns.emailSubject')}</Label>
+              <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
+                {t("campaigns.emailSubject")}
+              </Label>
               <Input
                 value={form.subject}
-                onChange={(e) => update('subject', e.target.value)}
-                placeholder={t('campaigns.emailSubjectPlaceholder')}
+                onChange={(e) => update("subject", e.target.value)}
+                placeholder={t("campaigns.emailSubjectPlaceholder")}
                 className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">{t('campaigns.typeLabel')}</Label>
-              <Select value={form.type} onValueChange={(v) => update('type', v)}>
+              <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
+                {t("campaigns.typeLabel")}
+              </Label>
+              <Select
+                value={form.type}
+                onValueChange={(v) => update("type", v)}
+              >
                 <SelectTrigger className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
-                  <SelectItem value="EMAIL" className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">Email</SelectItem>
-                  <SelectItem value="SMS" className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">SMS</SelectItem>
+                  <SelectItem
+                    value="EMAIL"
+                    className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                  >
+                    Email
+                  </SelectItem>
+                  <SelectItem
+                    value="SMS"
+                    className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                  >
+                    SMS
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -234,15 +279,25 @@ export default function NewCampaignPage() {
         {step === 1 && (
           <div className="space-y-5 max-w-lg">
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">{t('campaigns.audienceLabel')}</Label>
-              <Select value={form.audienceId} onValueChange={(v) => update('audienceId', v)}>
+              <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
+                {t("campaigns.audienceLabel")}
+              </Label>
+              <Select
+                value={form.audienceId}
+                onValueChange={(v) => update("audienceId", v)}
+              >
                 <SelectTrigger className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                  <SelectValue placeholder={t('campaigns.selectAudience')} />
+                  <SelectValue placeholder={t("campaigns.selectAudience")} />
                 </SelectTrigger>
                 <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                   {audiences?.map((a: any) => (
-                    <SelectItem key={a.id} value={a.id} className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
-                      {a.name} ({t('campaigns.nContacts', { n: a._count?.members || 0 })})
+                    <SelectItem
+                      key={a.id}
+                      value={a.id}
+                      className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                    >
+                      {a.name} (
+                      {t("campaigns.nContacts", { n: a._count?.members || 0 })})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -250,7 +305,7 @@ export default function NewCampaignPage() {
             </div>
             {!audiences || audiences.length === 0 ? (
               <p className="text-sm text-[var(--crm-text-muted)]">
-                {t('campaigns.noAudience')}
+                {t("campaigns.noAudience")}
               </p>
             ) : null}
           </div>
@@ -261,62 +316,70 @@ export default function NewCampaignPage() {
             {/* Template selector */}
             {templates && templates.length > 0 && (
               <div className="flex items-center gap-3 text-sm">
-                <span className="text-[var(--crm-text-secondary)]">{t('templates.fromTemplate')}</span>
+                <span className="text-[var(--crm-text-secondary)]">
+                  {t("templates.fromTemplate")}
+                </span>
                 <Select onValueChange={handleSelectTemplate}>
                   <SelectTrigger className="w-64 input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
-                    <SelectValue placeholder={t('templates.selectTemplate')} />
+                    <SelectValue placeholder={t("templates.selectTemplate")} />
                   </SelectTrigger>
                   <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
                     {templates.map((tpl: any) => (
-                      <SelectItem key={tpl.id} value={tpl.id} className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
+                      <SelectItem
+                        key={tpl.id}
+                        value={tpl.id}
+                        className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                      >
                         {tpl.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <span className="text-[var(--crm-text-muted)]">{t('templates.startFromScratch')}</span>
+                <span className="text-[var(--crm-text-muted)]">
+                  {t("templates.startFromScratch")}
+                </span>
               </div>
             )}
 
             {/* Compose / Preview toggle */}
             <div className="flex items-center justify-between">
               <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide">
-                {t('campaigns.emailContent')}
+                {t("campaigns.emailContent")}
               </Label>
               <div className="flex items-center gap-1">
                 <button
                   type="button"
-                  onClick={() => setContentTab('compose')}
+                  onClick={() => setContentTab("compose")}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    contentTab === 'compose'
-                      ? 'bg-[#10B981]/10 text-[#10B981]'
-                      : 'text-[var(--crm-text-muted)] hover:text-[var(--crm-text-primary)]'
+                    contentTab === "compose"
+                      ? "bg-[#10B981]/10 text-[#10B981]"
+                      : "text-[var(--crm-text-muted)] hover:text-[var(--crm-text-primary)]"
                   }`}
                 >
                   <Pencil className="w-3 h-3" />
-                  {t('templates.compose')}
+                  {t("templates.compose")}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setContentTab('preview')}
+                  onClick={() => setContentTab("preview")}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    contentTab === 'preview'
-                      ? 'bg-[#10B981]/10 text-[#10B981]'
-                      : 'text-[var(--crm-text-muted)] hover:text-[var(--crm-text-primary)]'
+                    contentTab === "preview"
+                      ? "bg-[#10B981]/10 text-[#10B981]"
+                      : "text-[var(--crm-text-muted)] hover:text-[var(--crm-text-primary)]"
                   }`}
                 >
                   <Eye className="w-3 h-3" />
-                  {t('templates.preview')}
+                  {t("templates.preview")}
                 </button>
               </div>
             </div>
 
-            {contentTab === 'compose' ? (
+            {contentTab === "compose" ? (
               <RichTextEditor
                 value={form.content}
-                onChange={(html) => update('content', html)}
+                onChange={(html) => update("content", html)}
                 variables={CAMPAIGN_VARIABLES}
-                placeholder={t('campaigns.emailContentPlaceholder')}
+                placeholder={t("campaigns.emailContentPlaceholder")}
                 minHeight={300}
               />
             ) : (
@@ -341,7 +404,7 @@ export default function NewCampaignPage() {
                 className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)]"
               >
                 <TestTube2 className="w-3.5 h-3.5 mr-1.5" />
-                {sendTest.isPending ? '...' : t('templates.testSend')}
+                {sendTest.isPending ? "..." : t("templates.testSend")}
               </Button>
             </div>
           </div>
@@ -350,20 +413,33 @@ export default function NewCampaignPage() {
         {step === 3 && (
           <div className="space-y-5 max-w-lg">
             <div className="glass-card-static p-4 space-y-3">
-              <h3 className="text-sm font-medium text-[var(--crm-text-primary)]">{t('campaigns.overview')}</h3>
+              <h3 className="text-sm font-medium text-[var(--crm-text-primary)]">
+                {t("campaigns.overview")}
+              </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-[var(--crm-text-muted)]">{t('campaigns.nameLabel')}</span>
-                  <span className="text-[var(--crm-text-primary)]">{form.name || '--'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[var(--crm-text-muted)]">{t('campaigns.subjectLabel')}</span>
-                  <span className="text-[var(--crm-text-primary)]">{form.subject || '--'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[var(--crm-text-muted)]">{t('campaigns.audienceLabel')}</span>
+                  <span className="text-[var(--crm-text-muted)]">
+                    {t("campaigns.nameLabel")}
+                  </span>
                   <span className="text-[var(--crm-text-primary)]">
-                    {audiences?.find((a: any) => a.id === form.audienceId)?.name || t('campaigns.notSelected')}
+                    {form.name || "--"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--crm-text-muted)]">
+                    {t("campaigns.subjectLabel")}
+                  </span>
+                  <span className="text-[var(--crm-text-primary)]">
+                    {form.subject || "--"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--crm-text-muted)]">
+                    {t("campaigns.audienceLabel")}
+                  </span>
+                  <span className="text-[var(--crm-text-primary)]">
+                    {audiences?.find((a: any) => a.id === form.audienceId)
+                      ?.name || t("campaigns.notSelected")}
                   </span>
                 </div>
               </div>
@@ -371,19 +447,21 @@ export default function NewCampaignPage() {
 
             {/* Scheduling section */}
             <div className="glass-card-static p-4 space-y-4">
-              <h3 className="text-sm font-medium text-[var(--crm-text-primary)]">{t('campaigns.sendTiming')}</h3>
+              <h3 className="text-sm font-medium text-[var(--crm-text-primary)]">
+                {t("campaigns.sendTiming")}
+              </h3>
 
               <div className="space-y-3">
                 <label className="flex items-center gap-3 cursor-pointer group">
                   <input
                     type="radio"
                     name="sendMode"
-                    checked={sendMode === 'immediate'}
-                    onChange={() => setSendMode('immediate')}
+                    checked={sendMode === "immediate"}
+                    onChange={() => setSendMode("immediate")}
                     className="w-4 h-4 accent-[#10B981]"
                   />
                   <span className="text-sm text-[var(--crm-text-primary)] group-hover:text-[#10B981] transition-colors">
-                    {t('campaigns.sendImmediately')}
+                    {t("campaigns.sendImmediately")}
                   </span>
                 </label>
 
@@ -391,23 +469,23 @@ export default function NewCampaignPage() {
                   <input
                     type="radio"
                     name="sendMode"
-                    checked={sendMode === 'scheduled'}
-                    onChange={() => setSendMode('scheduled')}
+                    checked={sendMode === "scheduled"}
+                    onChange={() => setSendMode("scheduled")}
                     className="w-4 h-4 accent-[#10B981]"
                   />
                   <span className="text-sm text-[var(--crm-text-primary)] group-hover:text-[#10B981] transition-colors">
-                    {t('campaigns.scheduleForLater')}
+                    {t("campaigns.scheduleForLater")}
                   </span>
                 </label>
               </div>
 
-              {sendMode === 'scheduled' && (
+              {sendMode === "scheduled" && (
                 <div className="space-y-3 pl-7">
                   <div className="flex items-center gap-3">
                     {/* Date picker */}
                     <div className="flex-1">
                       <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide mb-1.5 block">
-                        {t('campaigns.scheduleDateLabel')}
+                        {t("campaigns.scheduleDateLabel")}
                       </Label>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -416,13 +494,19 @@ export default function NewCampaignPage() {
                             className="w-full justify-start text-left font-normal border-[var(--crm-border)] bg-[var(--crm-bg-page)] text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
                           >
                             <CalendarIcon className="w-4 h-4 mr-2 text-[var(--crm-text-muted)]" />
-                            {scheduleDate
-                              ? format(scheduleDate, 'dd/MM/yyyy', { locale: vi })
-                              : <span className="text-[var(--crm-text-muted)]">--/--/----</span>
-                            }
+                            {scheduleDate ? (
+                              format(scheduleDate, "dd/MM/yyyy", { locale: vi })
+                            ) : (
+                              <span className="text-[var(--crm-text-muted)]">
+                                --/--/----
+                              </span>
+                            )}
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 bg-[var(--crm-bg-card)] border-[var(--crm-border)]" align="start">
+                        <PopoverContent
+                          className="w-auto p-0 bg-[var(--crm-bg-card)] border-[var(--crm-border)]"
+                          align="start"
+                        >
                           <Calendar
                             mode="single"
                             selected={scheduleDate}
@@ -436,16 +520,23 @@ export default function NewCampaignPage() {
                     {/* Time picker */}
                     <div className="w-32">
                       <Label className="text-xs font-medium text-[var(--crm-text-secondary)] uppercase tracking-wide mb-1.5 block">
-                        {t('campaigns.scheduleTimeLabel')}
+                        {t("campaigns.scheduleTimeLabel")}
                       </Label>
-                      <Select value={scheduleTime} onValueChange={setScheduleTime}>
+                      <Select
+                        value={scheduleTime}
+                        onValueChange={setScheduleTime}
+                      >
                         <SelectTrigger className="input-premium bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)]">
                           <Clock className="w-4 h-4 mr-2 text-[var(--crm-text-muted)]" />
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)] max-h-60">
                           {TIME_OPTIONS.map((time) => (
-                            <SelectItem key={time} value={time} className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]">
+                            <SelectItem
+                              key={time}
+                              value={time}
+                              className="text-[var(--crm-text-primary)] focus:bg-[var(--crm-bg-subtle)] focus:text-[var(--crm-text-primary)]"
+                            >
                               {time}
                             </SelectItem>
                           ))}
@@ -456,13 +547,15 @@ export default function NewCampaignPage() {
 
                   {/* Schedule validation error */}
                   {scheduleDate && !isScheduleValid() && (
-                    <p className="text-xs text-red-400">{t('campaigns.pastDateError')}</p>
+                    <p className="text-xs text-red-400">
+                      {t("campaigns.pastDateError")}
+                    </p>
                   )}
 
                   {/* Hint */}
                   <div className="flex items-start gap-2 text-xs text-[var(--crm-text-muted)]">
                     <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                    <span>{t('campaigns.scheduleHint')}</span>
+                    <span>{t("campaigns.scheduleHint")}</span>
                   </div>
                 </div>
               )}
@@ -470,11 +563,18 @@ export default function NewCampaignPage() {
 
             <Button
               onClick={handleCreate}
-              disabled={createCampaign.isPending || !form.name || !form.subject || (sendMode === 'scheduled' && !isScheduleValid())}
+              disabled={
+                createCampaign.isPending ||
+                !form.name ||
+                !form.subject ||
+                (sendMode === "scheduled" && !isScheduleValid())
+              }
               className="btn-accent-glow w-full"
             >
               <Send className="w-4 h-4 mr-1.5" />
-              {createCampaign.isPending ? t('common.creating') : t('campaigns.create')}
+              {createCampaign.isPending
+                ? t("common.creating")
+                : t("campaigns.create")}
             </Button>
           </div>
         )}
@@ -489,14 +589,16 @@ export default function NewCampaignPage() {
           className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
         >
           <ArrowLeft className="w-4 h-4 mr-1.5" />
-          {t('common.back')}
+          {t("common.back")}
         </Button>
         {step < STEP_KEYS.length - 1 && (
           <Button
-            onClick={() => setStep((s) => Math.min(STEP_KEYS.length - 1, s + 1))}
+            onClick={() =>
+              setStep((s) => Math.min(STEP_KEYS.length - 1, s + 1))
+            }
             className="btn-accent-glow"
           >
-            {t('campaigns.continue')}
+            {t("campaigns.continue")}
             <ArrowRight className="w-4 h-4 ml-1.5" />
           </Button>
         )}

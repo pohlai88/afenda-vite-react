@@ -36,23 +36,23 @@ Earlier drafts that used **`packages/db/src/...`** are **superseded** by the act
 
 ## 2. Domain placement map
 
-| Concern                                                                   | Correct place                |
-| ------------------------------------------------------------------------- | ---------------------------- |
-| Shared column builders / enums / SQL fragments                            | `src/schema/shared/`         |
-| Reference masters                                                         | `src/schema/ref/`            |
-| Tenant root, structure, MDM masters, customization                        | `src/schema/mdm/`            |
-| Identities, memberships, roles, authority                                 | `src/schema/iam/`            |
-| Calendars, COA, accounts                                                  | `src/schema/finance/`        |
-| Audit + governance **DDL** (tables/enums in `governance` PG schema)       | `src/schema/governance/`     |
-| Drizzle `relations()` barrels                                             | `src/relations/`             |
-| 7W1H audit (DDL + services + Zod; tables remain `governance` in Postgres) | `src/7w1h-audit/`            |
-| Identity barrel + services                                                | `src/schema/identity/`       |
-| Tenancy barrel + services                                                 | `src/schema/tenancy/`        |
-| Package governance manifests / constants / guards                         | `src/schema/pkg-governance/` |
-| Schema env/column helpers (non-`*.schema.ts`)                             | `src/schema/helpers/`        |
-| Runtime constants                                                         | `src/schema/constants/`      |
+| Concern                                                                   | Correct place                     |
+| ------------------------------------------------------------------------- | --------------------------------- |
+| Shared column builders / enums / SQL fragments                            | `src/schema/shared/`              |
+| Reference masters                                                         | `src/schema/ref/`                 |
+| Tenant root, structure, MDM masters, customization                        | `src/schema/mdm/`                 |
+| Identities, memberships, roles, authority                                 | `src/schema/iam/`                 |
+| Calendars, COA, accounts                                                  | `src/schema/finance/`             |
+| Audit + governance **DDL** (tables/enums in `governance` PG schema)       | `src/schema/governance/`          |
+| Drizzle `relations()` barrels                                             | `src/relations/`                  |
+| 7W1H audit (DDL + services + Zod; tables remain `governance` in Postgres) | `src/7w1h-audit/`                 |
+| Identity barrel + services                                                | `src/schema/identity/`            |
+| Tenancy barrel + services                                                 | `src/schema/tenancy/`             |
+| Package governance manifests / constants / guards                         | `src/schema/pkg-governance/`      |
+| Schema env/column helpers (non-`*.schema.ts`)                             | `src/schema/environment-support/` |
+| Runtime constants                                                         | `src/schema/constants/`           |
 
-**Path freeze (same as [`008-db-tree.md`](./guideline/008-db-tree.md)):** `identity`, `tenancy`, `pkg-governance`, `helpers`, and `constants` appear **only** as `src/schema/<folder>/`. **7W1H audit** lives at **`src/7w1h-audit/`** (sibling of `src/schema/`, export `@afenda/database/7w1h-audit`); audit DDL modules are **not** under `src/schema/governance/` anymore—they are co-located in `7w1h-audit/` and re-exported from `governance/index.ts` for Drizzle Kit.
+**Path freeze (same as [`008-db-tree.md`](./guideline/008-db-tree.md)):** `identity`, `tenancy`, `pkg-governance`, `environment-support`, and `constants` appear **only** as `src/schema/<folder>/`. **7W1H audit** lives at **`src/7w1h-audit/`** (sibling of `src/schema/`, export `@afenda/database/7w1h-audit`); audit DDL modules are **not** under `src/schema/governance/` anymore—they are co-located in `7w1h-audit/` and re-exported from `governance/index.ts` for Drizzle Kit.
 
 ---
 
@@ -133,9 +133,9 @@ Treat this as the **shape** to follow (authoritative file lists: **`008-db-tree.
 **Relational DDL** (tables, enums, `pgSchema` handles for the five registered PostgreSQL domains) lives only under:
 
 `src/schema/{ref,mdm,iam,finance,governance}/`  
-plus **`src/schema/shared/`** (shared builders/enums/helpers).
+plus **`src/schema/shared/`** (shared builders/enums/shared SQL defaults).
 
-Everything else under `src/schema/` is **supporting** (barrels, pkg-governance, helpers, constants, identity/tenancy services—not alternate DDL roots).
+Everything else under `src/schema/` is **supporting** (barrels, pkg-governance, environment-support, constants, identity/tenancy services—not alternate DDL roots).
 
 ```text
 packages/_database/
@@ -154,10 +154,10 @@ packages/_database/
       identity/            # barrel + services (no extra DDL root)
       tenancy/             # barrel + services (no extra DDL root)
       pkg-governance/      # constants, schema filter, tooling
-      helpers/
+      environment-support/
       constants/
     relations/             # Drizzle relations() barrels — NOT DDL
-    queries/               # canonical resolvers + helpers
+    queries/               # canonical resolvers + query primitives
     studio/                # glossary / snapshots (not Postgres DDL)
     migrations/            # `index.ts` — layout metadata only; Drizzle output is `packages/_database/drizzle/`
     views/                   # Drizzle pgView canonical read models (re-exported from schema/index.ts)

@@ -1,11 +1,20 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 export const partnerSchema = z.object({
   companyId: z.string(),
-  partnerType: z.enum(['RESELLER', 'INTEGRATOR', 'DISTRIBUTOR', 'REFERRAL', 'OEM', 'CONSULTANT']),
+  partnerType: z.enum([
+    "RESELLER",
+    "INTEGRATOR",
+    "DISTRIBUTOR",
+    "REFERRAL",
+    "OEM",
+    "CONSULTANT",
+  ]),
   territory: z.string().max(100).optional(),
   commissionRate: z.number().min(0).max(100),
-  certificationLevel: z.enum(['BRONZE', 'SILVER', 'GOLD', 'PLATINUM']).default('BRONZE'),
+  certificationLevel: z
+    .enum(["BRONZE", "SILVER", "GOLD", "PLATINUM"])
+    .default("BRONZE"),
   contractStartDate: z.string().optional(),
   contractEndDate: z.string().optional(),
   isActive: z.boolean().default(true),
@@ -22,12 +31,12 @@ export const dealRegistrationSchema = z.object({
 })
 
 export const registrationActionSchema = z.object({
-  status: z.enum(['APPROVED', 'REJECTED']),
+  status: z.enum(["APPROVED", "REJECTED"]),
   rejectionNote: z.string().max(500).optional(),
 })
 
 export const commissionUpdateSchema = z.object({
-  status: z.enum(['APPROVED', 'PAID', 'CANCELLED']),
+  status: z.enum(["APPROVED", "PAID", "CANCELLED"]),
   invoiceNumber: z.string().max(100).optional(),
   notes: z.string().max(500).optional(),
 })

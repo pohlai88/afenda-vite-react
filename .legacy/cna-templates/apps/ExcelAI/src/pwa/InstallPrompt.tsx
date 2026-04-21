@@ -1,20 +1,20 @@
 // Phase 10: Install Prompt Component
 // Banner encouraging users to install the PWA
 
-import React, { useState } from 'react';
-import { usePWA } from './usePWA';
+import React, { useState } from "react"
+import { usePWA } from "./usePWA"
 
 export const InstallPrompt: React.FC = () => {
-  const { isInstallable, install, dismissInstall } = usePWA();
-  const [installing, setInstalling] = useState(false);
+  const { isInstallable, install, dismissInstall } = usePWA()
+  const [installing, setInstalling] = useState(false)
 
-  if (!isInstallable) return null;
+  if (!isInstallable) return null
 
   const handleInstall = async () => {
-    setInstalling(true);
-    await install();
-    setInstalling(false);
-  };
+    setInstalling(true)
+    await install()
+    setInstalling(false)
+  }
 
   return (
     <div className="fixed bottom-4 right-4 z-50 max-w-sm animate-slide-up">
@@ -47,8 +47,18 @@ export const InstallPrompt: React.FC = () => {
               onClick={dismissInstall}
               className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -56,20 +66,50 @@ export const InstallPrompt: React.FC = () => {
           {/* Features list */}
           <div className="mt-4 space-y-2">
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span>Works offline</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span>Quick launch from home screen</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span>Auto-sync when online</span>
             </div>
@@ -91,7 +131,12 @@ export const InstallPrompt: React.FC = () => {
           >
             {installing ? (
               <span className="flex items-center justify-center gap-2">
-                <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-4 h-4 animate-spin"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -102,27 +147,32 @@ export const InstallPrompt: React.FC = () => {
                 Installing...
               </span>
             ) : (
-              'Install'
+              "Install"
             )}
           </button>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Compact install button for toolbar
 export const InstallButton: React.FC = () => {
-  const { isInstallable, install } = usePWA();
+  const { isInstallable, install } = usePWA()
 
-  if (!isInstallable) return null;
+  if (!isInstallable) return null
 
   return (
     <button
       onClick={install}
       className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
     >
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -132,5 +182,5 @@ export const InstallButton: React.FC = () => {
       </svg>
       Install App
     </button>
-  );
-};
+  )
+}

@@ -14,7 +14,7 @@ export {
   AnnotationEngine,
   NLQueryParser,
   DashboardGenerator,
-} from './AutoVizEngine';
+} from "./AutoVizEngine"
 
 // Types
 export type {
@@ -70,7 +70,7 @@ export type {
   // Event types
   AutoVizEvent,
   AutoVizEventHandler,
-} from './types';
+} from "./types"
 
 // Options types
 export type {
@@ -79,7 +79,7 @@ export type {
   DashboardOptions,
   DashboardTemplate,
   QuickVizOptions,
-} from './AutoVizEngine';
+} from "./AutoVizEngine"
 
 // Color schemes
 export {
@@ -99,4 +99,4 @@ export {
   getSequentialPalette,
   DIVERGING_PALETTES,
   getDivergingPalette,
-} from './ColorSchemes';
+} from "./ColorSchemes"

@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import Link from 'next/link'
-import { Calendar, Heart, Percent } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { formatShortCurrency } from '@/lib/constants'
-import { getHealthColor } from '@/lib/analytics/health-score'
-import type { DealWithRelations } from '@/types'
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import Link from "next/link"
+import { Calendar, Heart, Percent } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { formatShortCurrency } from "@/lib/constants"
+import { getHealthColor } from "@/lib/analytics/health-score"
+import type { DealWithRelations } from "@/types"
 
 interface DealCardProps {
   deal: DealWithRelations
@@ -23,7 +23,7 @@ export function DealCard({ deal }: DealCardProps) {
     isDragging,
   } = useSortable({
     id: deal.id,
-    data: { type: 'deal', deal },
+    data: { type: "deal", deal },
   })
 
   const style = {
@@ -34,17 +34,17 @@ export function DealCard({ deal }: DealCardProps) {
 
   const ownerInitials = deal.owner?.name
     ? deal.owner.name
-        .split(' ')
+        .split(" ")
         .map((n) => n[0])
-        .join('')
+        .join("")
         .toUpperCase()
         .slice(0, 2)
-    : '?'
+    : "?"
 
   const expectedClose = deal.expectedCloseAt
-    ? new Date(deal.expectedCloseAt).toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
+    ? new Date(deal.expectedCloseAt).toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
       })
     : null
 
@@ -67,7 +67,9 @@ export function DealCard({ deal }: DealCardProps) {
         <div className="deal-card space-y-2.5">
           {/* Company name */}
           {deal.company && (
-            <p className="text-[11px] text-[var(--crm-text-secondary)] uppercase tracking-wide truncate">{deal.company.name}</p>
+            <p className="text-[11px] text-[var(--crm-text-secondary)] uppercase tracking-wide truncate">
+              {deal.company.name}
+            </p>
           )}
 
           {/* Deal title */}

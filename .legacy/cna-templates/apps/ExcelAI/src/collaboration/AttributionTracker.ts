@@ -2,21 +2,24 @@
 // ATTRIBUTION TRACKER — Track who changed what (Blueprint §6.5)
 // =============================================================================
 
-import type { CellAttribution, EditRecord, CollaborationUser } from './types';
+import type { CellAttribution, EditRecord, CollaborationUser } from "./types"
 
 // -----------------------------------------------------------------------------
 // Attribution Tracker Class
 // -----------------------------------------------------------------------------
 
-type AttributionHandler = (cellRef: string, attribution: CellAttribution) => void;
+type AttributionHandler = (
+  cellRef: string,
+  attribution: CellAttribution
+) => void
 
 /**
  * Track who made each change for accountability
  */
 export class AttributionTracker {
-  private attributions: Map<string, CellAttribution> = new Map();
-  private handlers: Set<AttributionHandler> = new Set();
-  private maxHistorySize = 50;
+  private attributions: Map<string, CellAttribution> = new Map()
+  private handlers: Set<AttributionHandler> = new Set()
+  private maxHistorySize = 50
 
   /**
    * Record a cell edit
@@ -26,12 +29,12 @@ export class AttributionTracker {
     cellRef: string,
     user: CollaborationUser,
     eventId: string,
-    changeType: EditRecord['changeType']
+    changeType: EditRecord["changeType"]
   ): void {
-    const key = `${sheetId}:${cellRef}`;
-    const now = new Date();
+    const key = `${sheetId}:${cellRef}`
+    const now = new Date()
 
-    let attribution = this.attributions.get(key);
+    let attribution = this.attributions.get(key)
 
     if (!attribution) {
       attribution = {
@@ -40,13 +43,13 @@ export class AttributionTracker {
         lastEditedBy: user,
         lastEditedAt: now,
         editHistory: [],
-      };
-      this.attributions.set(key, attribution);
+      }
+      this.attributions.set(key, attribution)
     }
 
     // Update last edited
-    attribution.lastEditedBy = user;
-    attribution.lastEditedAt = now;
+    attribution.lastEditedBy = user
+    attribution.lastEditedAt = now
 
     // Add to history
     attribution.editHistory.push({
@@ -54,15 +57,17 @@ export class AttributionTracker {
       timestamp: now,
       eventId,
       changeType,
-    });
+    })
 
     // Limit history size
     if (attribution.editHistory.length > this.maxHistorySize) {
-      attribution.editHistory = attribution.editHistory.slice(-this.maxHistorySize);
+      attribution.editHistory = attribution.editHistory.slice(
+        -this.maxHistorySize
+      )
     }
 
     // Notify handlers
-    this.handlers.forEach((h) => h(cellRef, attribution!));
+    this.handlers.forEach((h) => h(cellRef, attribution!))
   }
 
   /**
@@ -76,12 +81,12 @@ export class AttributionTracker {
     endCol: number,
     user: CollaborationUser,
     eventId: string,
-    changeType: EditRecord['changeType']
+    changeType: EditRecord["changeType"]
   ): void {
     for (let row = startRow; row <= endRow; row++) {
       for (let col = startCol; col <= endCol; col++) {
-        const cellRef = this.getCellRef(row, col);
-        this.recordEdit(sheetId, cellRef, user, eventId, changeType);
+        const cellRef = this.getCellRef(row, col)
+        this.recordEdit(sheetId, cellRef, user, eventId, changeType)
       }
     }
   }
@@ -90,31 +95,31 @@ export class AttributionTracker {
    * Get attribution for a cell
    */
   getAttribution(sheetId: string, cellRef: string): CellAttribution | null {
-    return this.attributions.get(`${sheetId}:${cellRef}`) || null;
+    return this.attributions.get(`${sheetId}:${cellRef}`) || null
   }
 
   /**
    * Get last editor for a cell
    */
   getLastEditor(sheetId: string, cellRef: string): CollaborationUser | null {
-    const attr = this.getAttribution(sheetId, cellRef);
-    return attr?.lastEditedBy || null;
+    const attr = this.getAttribution(sheetId, cellRef)
+    return attr?.lastEditedBy || null
   }
 
   /**
    * Get edit history for a cell
    */
   getEditHistory(sheetId: string, cellRef: string): EditRecord[] {
-    const attr = this.getAttribution(sheetId, cellRef);
-    return attr?.editHistory || [];
+    const attr = this.getAttribution(sheetId, cellRef)
+    return attr?.editHistory || []
   }
 
   /**
    * Get last edit time for a cell
    */
   getLastEditTime(sheetId: string, cellRef: string): Date | null {
-    const attr = this.getAttribution(sheetId, cellRef);
-    return attr?.lastEditedAt || null;
+    const attr = this.getAttribution(sheetId, cellRef)
+    return attr?.lastEditedAt || null
   }
 
   /**
@@ -123,7 +128,7 @@ export class AttributionTracker {
   getCellsEditedBy(userId: string): CellAttribution[] {
     return Array.from(this.attributions.values()).filter(
       (a) => a.lastEditedBy.id === userId
-    );
+    )
   }
 
   /**
@@ -132,75 +137,75 @@ export class AttributionTracker {
   getCellsEditedSince(since: Date): CellAttribution[] {
     return Array.from(this.attributions.values()).filter(
       (a) => a.lastEditedAt >= since
-    );
+    )
   }
 
   /**
    * Get unique editors for a sheet
    */
   getEditors(sheetId: string): CollaborationUser[] {
-    const editorsMap = new Map<string, CollaborationUser>();
+    const editorsMap = new Map<string, CollaborationUser>()
 
     for (const [key, attr] of this.attributions) {
       if (key.startsWith(`${sheetId}:`)) {
-        editorsMap.set(attr.lastEditedBy.id, attr.lastEditedBy);
+        editorsMap.set(attr.lastEditedBy.id, attr.lastEditedBy)
       }
     }
 
-    return Array.from(editorsMap.values());
+    return Array.from(editorsMap.values())
   }
 
   /**
    * Get edit statistics
    */
   getStatistics(sheetId?: string): {
-    totalCells: number;
-    uniqueEditors: number;
-    editsByUser: Record<string, number>;
-    recentEdits: EditRecord[];
+    totalCells: number
+    uniqueEditors: number
+    editsByUser: Record<string, number>
+    recentEdits: EditRecord[]
   } {
     const attributions = sheetId
       ? Array.from(this.attributions.entries())
           .filter(([key]) => key.startsWith(`${sheetId}:`))
           .map(([, v]) => v)
-      : Array.from(this.attributions.values());
+      : Array.from(this.attributions.values())
 
-    const editsByUser: Record<string, number> = {};
-    const editors = new Set<string>();
-    const allEdits: EditRecord[] = [];
+    const editsByUser: Record<string, number> = {}
+    const editors = new Set<string>()
+    const allEdits: EditRecord[] = []
 
     for (const attr of attributions) {
-      editors.add(attr.lastEditedBy.id);
+      editors.add(attr.lastEditedBy.id)
       editsByUser[attr.lastEditedBy.id] =
-        (editsByUser[attr.lastEditedBy.id] || 0) + 1;
-      allEdits.push(...attr.editHistory);
+        (editsByUser[attr.lastEditedBy.id] || 0) + 1
+      allEdits.push(...attr.editHistory)
     }
 
     // Sort edits by time and get recent ones
-    allEdits.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-    const recentEdits = allEdits.slice(0, 20);
+    allEdits.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+    const recentEdits = allEdits.slice(0, 20)
 
     return {
       totalCells: attributions.length,
       uniqueEditors: editors.size,
       editsByUser,
       recentEdits,
-    };
+    }
   }
 
   /**
    * Subscribe to attribution changes
    */
   subscribe(handler: AttributionHandler): () => void {
-    this.handlers.add(handler);
-    return () => this.handlers.delete(handler);
+    this.handlers.add(handler)
+    return () => this.handlers.delete(handler)
   }
 
   /**
    * Clear all attributions
    */
   clear(): void {
-    this.attributions.clear();
+    this.attributions.clear()
   }
 
   /**
@@ -209,7 +214,7 @@ export class AttributionTracker {
   clearSheet(sheetId: string): void {
     for (const key of this.attributions.keys()) {
       if (key.startsWith(`${sheetId}:`)) {
-        this.attributions.delete(key);
+        this.attributions.delete(key)
       }
     }
   }
@@ -219,26 +224,26 @@ export class AttributionTracker {
   // ---------------------------------------------------------------------------
 
   private getCellRef(row: number, col: number): string {
-    const letter = this.colToLetter(col);
-    return `${letter}${row + 1}`;
+    const letter = this.colToLetter(col)
+    return `${letter}${row + 1}`
   }
 
   private colToLetter(col: number): string {
-    let result = '';
-    col++;
+    let result = ""
+    col++
     while (col > 0) {
-      col--;
-      result = String.fromCharCode(65 + (col % 26)) + result;
-      col = Math.floor(col / 26);
+      col--
+      result = String.fromCharCode(65 + (col % 26)) + result
+      col = Math.floor(col / 26)
     }
-    return result;
+    return result
   }
 }
 
 // Export singleton
-export const attributionTracker = new AttributionTracker();
+export const attributionTracker = new AttributionTracker()
 
 // Factory function
 export function createAttributionTracker(): AttributionTracker {
-  return new AttributionTracker();
+  return new AttributionTracker()
 }

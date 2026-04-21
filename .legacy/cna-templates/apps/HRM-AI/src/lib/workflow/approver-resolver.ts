@@ -1,8 +1,8 @@
 // src/lib/workflow/approver-resolver.ts
 // Workflow Approver Resolver
 
-import { db } from '@/lib/db'
-import type { ApproverType } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { ApproverType } from "@prisma/client"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -37,23 +37,23 @@ export async function resolveApprover(
   let approverId: string | null = null
 
   switch (step.approverType) {
-    case 'SPECIFIC_USER':
+    case "SPECIFIC_USER":
       approverId = step.specificUserId || null
       break
 
-    case 'DIRECT_MANAGER':
+    case "DIRECT_MANAGER":
       approverId = await getDirectManager(requesterId)
       break
 
-    case 'DEPARTMENT_HEAD':
+    case "DEPARTMENT_HEAD":
       approverId = await getDepartmentHead(requesterId)
       break
 
-    case 'HR_MANAGER':
+    case "HR_MANAGER":
       approverId = await getHRManager(tenantId)
       break
 
-    case 'ROLE_BASED':
+    case "ROLE_BASED":
       if (step.specificRole) {
         approverId = await getUserByRole(tenantId, step.specificRole)
       }
@@ -66,7 +66,7 @@ export async function resolveApprover(
   }
 
   if (!approverId) {
-    throw new Error('Không thể xác định người duyệt')
+    throw new Error("Không thể xác định người duyệt")
   }
 
   // Check for active delegation
@@ -141,7 +141,7 @@ async function getHRManager(tenantId: string): Promise<string | null> {
   const user = await db.user.findFirst({
     where: {
       tenantId,
-      role: 'HR_MANAGER',
+      role: "HR_MANAGER",
       isActive: true,
     },
   })
@@ -152,7 +152,10 @@ async function getHRManager(tenantId: string): Promise<string | null> {
 /**
  * Get a user by role
  */
-async function getUserByRole(tenantId: string, role: string): Promise<string | null> {
+async function getUserByRole(
+  tenantId: string,
+  role: string
+): Promise<string | null> {
   const user = await db.user.findFirst({
     where: {
       tenantId,

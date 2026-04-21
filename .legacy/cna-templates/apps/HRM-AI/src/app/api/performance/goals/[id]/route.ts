@@ -1,6 +1,6 @@
-import { auth } from '@/lib/auth'
-import { NextRequest, NextResponse } from 'next/server'
-import * as goalService from '@/services/performance/goal.service'
+import { auth } from "@/lib/auth"
+import { NextRequest, NextResponse } from "next/server"
+import * as goalService from "@/services/performance/goal.service"
 
 export async function GET(
   request: NextRequest,
@@ -9,18 +9,21 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
 
     const result = await goalService.getGoalById(params.id, tenantId)
     if (!result) {
-      return NextResponse.json({ error: 'Goal not found' }, { status: 404 })
+      return NextResponse.json({ error: "Goal not found" }, { status: 404 })
     }
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error fetching goal:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error fetching goal:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -31,7 +34,7 @@ export async function PUT(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
     const userId = session.user.id
@@ -43,8 +46,11 @@ export async function PUT(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error updating goal:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error updating goal:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -55,7 +61,7 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
     const userId = session.user.id
@@ -66,7 +72,10 @@ export async function DELETE(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error deleting goal:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error deleting goal:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

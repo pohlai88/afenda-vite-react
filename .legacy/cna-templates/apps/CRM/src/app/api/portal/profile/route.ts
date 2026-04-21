@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getPortalSession } from '@/lib/portal-auth'
-import { prisma } from '@/lib/prisma'
-import { portalProfileSchema } from '@/lib/validations/portal'
-import { formatZodErrors } from '@/lib/validations/utils'
+import { NextRequest, NextResponse } from "next/server"
+import { getPortalSession } from "@/lib/portal-auth"
+import { prisma } from "@/lib/prisma"
+import { portalProfileSchema } from "@/lib/validations/portal"
+import { formatZodErrors } from "@/lib/validations/utils"
 
 // PUT /api/portal/profile — Update portal user profile
 export async function PUT(req: NextRequest) {
   const session = await getPortalSession()
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   try {
@@ -16,7 +16,10 @@ export async function PUT(req: NextRequest) {
     const parsed = portalProfileSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Dữ liệu không hợp lệ', details: formatZodErrors(parsed.error) },
+        {
+          error: "Dữ liệu không hợp lệ",
+          details: formatZodErrors(parsed.error),
+        },
         { status: 400 }
       )
     }
@@ -35,7 +38,7 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json(updated)
   } catch (error) {
-    console.error('PUT /api/portal/profile error:', error)
-    return NextResponse.json({ error: 'Cập nhật thất bại' }, { status: 500 })
+    console.error("PUT /api/portal/profile error:", error)
+    return NextResponse.json({ error: "Cập nhật thất bại" }, { status: 500 })
   }
 }

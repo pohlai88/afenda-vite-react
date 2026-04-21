@@ -1,13 +1,13 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useUndoStore } from '../../stores/undoStore';
-import { useShortcut } from '../../shortcuts/useShortcut';
+import React, { useRef, useEffect, useState } from "react"
+import { useUndoStore } from "../../stores/undoStore"
+import { useShortcut } from "../../shortcuts/useShortcut"
 
 export const UndoRedoButtons: React.FC = () => {
-  const { undo, redo, canUndo, canRedo, past, future } = useUndoStore();
-  const [showHistory, setShowHistory] = useState(false);
+  const { undo, redo, canUndo, canRedo, past, future } = useUndoStore()
+  const [showHistory, setShowHistory] = useState(false)
 
-  useShortcut('UNDO', undo, [undo]);
-  useShortcut('REDO', redo, [redo]);
+  useShortcut("UNDO", undo, [undo])
+  useShortcut("REDO", redo, [redo])
 
   return (
     <div className="flex items-center gap-1 relative">
@@ -16,10 +16,20 @@ export const UndoRedoButtons: React.FC = () => {
           onClick={undo}
           disabled={!canUndo()}
           className="p-2 hover:bg-gray-100 rounded-l disabled:opacity-50 disabled:cursor-not-allowed"
-          title={`Undo${past.length > 0 ? `: ${past[past.length - 1].description}` : ''} (Ctrl+Z)`}
+          title={`Undo${past.length > 0 ? `: ${past[past.length - 1].description}` : ""} (Ctrl+Z)`}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+            />
           </svg>
         </button>
         <button
@@ -27,8 +37,18 @@ export const UndoRedoButtons: React.FC = () => {
           disabled={!canUndo()}
           className="p-1 hover:bg-gray-100 rounded-r border-l disabled:opacity-50"
         >
-          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <svg
+            className="w-3 h-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
       </div>
@@ -37,10 +57,20 @@ export const UndoRedoButtons: React.FC = () => {
         onClick={redo}
         disabled={!canRedo()}
         className="p-2 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-        title={`Redo${future.length > 0 ? `: ${future[0].description}` : ''} (Ctrl+Y)`}
+        title={`Redo${future.length > 0 ? `: ${future[0].description}` : ""} (Ctrl+Y)`}
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6" />
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"
+          />
         </svg>
       </button>
 
@@ -48,20 +78,20 @@ export const UndoRedoButtons: React.FC = () => {
         <HistoryDropdown
           actions={past}
           onSelect={(id) => {
-            useUndoStore.getState().jumpTo(id);
-            setShowHistory(false);
+            useUndoStore.getState().jumpTo(id)
+            setShowHistory(false)
           }}
           onClose={() => setShowHistory(false)}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
 interface HistoryDropdownProps {
-  actions: Array<{ id: string; description: string; timestamp: number }>;
-  onSelect: (id: string) => void;
-  onClose: () => void;
+  actions: Array<{ id: string; description: string; timestamp: number }>
+  onSelect: (id: string) => void
+  onClose: () => void
 }
 
 const HistoryDropdown: React.FC<HistoryDropdownProps> = ({
@@ -69,23 +99,23 @@ const HistoryDropdown: React.FC<HistoryDropdownProps> = ({
   onSelect,
   onClose,
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        onClose();
+        onClose()
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose]);
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [onClose])
 
   const formatTime = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
+    const date = new Date(timestamp)
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  }
 
   return (
     <div
@@ -111,7 +141,7 @@ const HistoryDropdown: React.FC<HistoryDropdownProps> = ({
           </button>
         ))}
     </div>
-  );
-};
+  )
+}
 
-export default UndoRedoButtons;
+export default UndoRedoButtons

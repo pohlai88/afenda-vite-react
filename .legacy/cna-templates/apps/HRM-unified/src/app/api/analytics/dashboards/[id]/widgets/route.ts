@@ -1,9 +1,9 @@
 // src/app/api/analytics/dashboards/[id]/widgets/route.ts
 // Dashboard Widget Operations API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { dashboardService } from '@/services/analytics/dashboard.service'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { dashboardService } from "@/services/analytics/dashboard.service"
 
 export async function POST(
   request: NextRequest,
@@ -12,20 +12,32 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['ADMIN', 'HR_MANAGER', 'MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["ADMIN", "HR_MANAGER", "MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id: dashboardId } = await params
     const body = await request.json()
     const { widgetType, title, x, y, width, height, config, dataSource } = body
 
-    if (!widgetType || !title || x === undefined || y === undefined || !width || !height || !config || !dataSource) {
+    if (
+      !widgetType ||
+      !title ||
+      x === undefined ||
+      y === undefined ||
+      !width ||
+      !height ||
+      !config ||
+      !dataSource
+    ) {
       return NextResponse.json(
-        { error: 'Thiếu thông tin bắt buộc: widgetType, title, x, y, width, height, config, dataSource' },
+        {
+          error:
+            "Thiếu thông tin bắt buộc: widgetType, title, x, y, width, height, config, dataSource",
+        },
         { status: 400 }
       )
     }
@@ -39,12 +51,12 @@ export async function POST(
 
     return NextResponse.json(widget, { status: 201 })
   } catch (error) {
-    if (error instanceof Error && error.message.includes('không tồn tại')) {
+    if (error instanceof Error && error.message.includes("không tồn tại")) {
       return NextResponse.json({ error: error.message }, { status: 404 })
     }
-    console.error('Error adding widget:', error)
+    console.error("Error adding widget:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -57,11 +69,11 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['ADMIN', 'HR_MANAGER', 'MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["ADMIN", "HR_MANAGER", "MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id: dashboardId } = await params
@@ -69,10 +81,7 @@ export async function PATCH(
     const { widgetId, ...updateData } = body
 
     if (!widgetId) {
-      return NextResponse.json(
-        { error: 'Thiếu widgetId' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Thiếu widgetId" }, { status: 400 })
     }
 
     const widget = await dashboardService.updateWidget(
@@ -85,12 +94,12 @@ export async function PATCH(
 
     return NextResponse.json(widget)
   } catch (error) {
-    if (error instanceof Error && error.message.includes('không tồn tại')) {
+    if (error instanceof Error && error.message.includes("không tồn tại")) {
       return NextResponse.json({ error: error.message }, { status: 404 })
     }
-    console.error('Error updating widget:', error)
+    console.error("Error updating widget:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -103,22 +112,19 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['ADMIN', 'HR_MANAGER', 'MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["ADMIN", "HR_MANAGER", "MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id: dashboardId } = await params
     const { searchParams } = new URL(request.url)
-    const widgetId = searchParams.get('widgetId')
+    const widgetId = searchParams.get("widgetId")
 
     if (!widgetId) {
-      return NextResponse.json(
-        { error: 'Thiếu widgetId' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Thiếu widgetId" }, { status: 400 })
     }
 
     await dashboardService.removeWidget(
@@ -128,14 +134,14 @@ export async function DELETE(
       widgetId
     )
 
-    return NextResponse.json({ message: 'Đã xóa widget thành công' })
+    return NextResponse.json({ message: "Đã xóa widget thành công" })
   } catch (error) {
-    if (error instanceof Error && error.message.includes('không tồn tại')) {
+    if (error instanceof Error && error.message.includes("không tồn tại")) {
       return NextResponse.json({ error: error.message }, { status: 404 })
     }
-    console.error('Error removing widget:', error)
+    console.error("Error removing widget:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

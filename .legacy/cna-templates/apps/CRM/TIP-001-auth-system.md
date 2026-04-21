@@ -1,10 +1,12 @@
 # Vibecode Kit v5.0 — Task Instruction Pack
 
 ## VAI TRÒ
+
 Bạn là THỢ THI CÔNG trong hệ thống Vibecode Kit v5.0.
 Chủ thầu (Claude Chat) và Chủ nhà đã THỐNG NHẤT bản thiết kế.
 
 ## QUY TẮC TUYỆT ĐỐI
+
 1. IMPLEMENT ĐÚNG TIP specification bên dưới
 2. KHÔNG thay đổi kiến trúc / structure
 3. KHÔNG thêm features ngoài TIP
@@ -25,6 +27,7 @@ Chủ thầu (Claude Chat) và Chủ nhà đã THỐNG NHẤT bản thiết kế
 # TIP-001: Authentication System — Supabase Auth Email/Password
 
 ## HEADER
+
 - **TIP-ID:** TIP-001
 - **Project:** Prismy CRM
 - **Module:** Authentication
@@ -33,6 +36,7 @@ Chủ thầu (Claude Chat) và Chủ nhà đã THỐNG NHẤT bản thiết kế
 - **Estimated effort:** 120-180 minutes
 
 ## CONTEXT
+
 - Working directory: project root (Prismy CRM)
 - Key files to reference:
   - `middleware.ts` (Supabase middleware đã config)
@@ -177,10 +181,11 @@ TẠO HOẶC CẬP NHẬT: prisma/seed.ts
 ## ACCEPTANCE CRITERIA
 
 ### AC-1: Register Flow
+
 ```
 Given: User chưa có tài khoản
 When: Truy cập /register, điền đầy đủ thông tin, nhấn "Đăng ký"
-Then: 
+Then:
   - Tạo auth user trong Supabase
   - Tạo User record trong Prisma DB
   - Redirect đến /dashboard
@@ -188,6 +193,7 @@ Then:
 ```
 
 ### AC-2: Login Flow
+
 ```
 Given: User đã có tài khoản
 When: Truy cập /login, điền email + password, nhấn "Đăng nhập"
@@ -198,6 +204,7 @@ Then:
 ```
 
 ### AC-3: Login Error
+
 ```
 Given: User điền sai email hoặc password
 When: Nhấn "Đăng nhập"
@@ -208,6 +215,7 @@ Then:
 ```
 
 ### AC-4: Route Protection
+
 ```
 Given: User CHƯA đăng nhập
 When: Truy cập /dashboard hoặc bất kỳ protected route
@@ -219,6 +227,7 @@ Then: Redirect về /dashboard
 ```
 
 ### AC-5: Logout
+
 ```
 Given: User đang đăng nhập
 When: Click "Đăng xuất" từ header dropdown
@@ -229,6 +238,7 @@ Then:
 ```
 
 ### AC-6: API Protection
+
 ```
 Given: Request đến /api/* KHÔNG có valid session
 When: API được gọi
@@ -240,10 +250,11 @@ Then: Business logic chạy bình thường với userId từ session
 ```
 
 ### AC-7: Existing Features Intact
+
 ```
 Given: Auth đã được implement
 When: Sử dụng các features hiện có (contacts, companies, deals, quotes, etc.)
-Then: 
+Then:
   - Tất cả CRUD operations hoạt động bình thường
   - Data được gắn với userId đúng
   - Không có regression bugs
@@ -254,7 +265,7 @@ Then:
 1. **KHÔNG thay đổi Prisma schema** (User model + UserRole enum đã có) — chỉ sync data
 2. **KHÔNG implement OAuth** (Google, GitHub, etc.) — chỉ email/password cho MVP
 3. **KHÔNG implement "Quên mật khẩu"** thực tế — chỉ tạo UI placeholder
-4. **KHÔNG thay đổi Portal auth** (/portal/*) — portal có auth riêng, giữ nguyên
+4. **KHÔNG thay đổi Portal auth** (/portal/\*) — portal có auth riêng, giữ nguyên
 5. **PHẢI giữ nguyên** toàn bộ business logic hiện có — chỉ thay source of user identity
 6. **PHẢI dùng Shadcn/UI components** cho Login/Register pages (Input, Button, Card, Label, etc.)
 7. **Design phải match** với existing dark mode / glass-morphism style của app
@@ -267,10 +278,12 @@ Then:
 **STATUS:** DONE / PARTIAL / BLOCKED
 
 **FILES CHANGED:**
+
 - Created: [list + purpose]
 - Modified: [list + change description]
 
 **TEST RESULTS:**
+
 - AC-1 Register Flow: PASS / FAIL — [details]
 - AC-2 Login Flow: PASS / FAIL — [details]
 - AC-3 Login Error: PASS / FAIL — [details]
@@ -280,14 +293,18 @@ Then:
 - AC-7 Existing Features: PASS / FAIL — [details]
 
 **ISSUES DISCOVERED:**
+
 - [Issue]: [severity] — [description] — [suggestion]
 
 **DEVIATIONS FROM SPEC:**
+
 - [Deviation]: [what] — [why] — [impact]
 
 **SUGGESTIONS FOR CHỦ THẦU:**
+
 - [Suggestion]: [observation] — [recommendation]
 
 **ENV VARIABLES NEEDED:**
+
 - [list biến môi trường cần cấu hình]
 ```

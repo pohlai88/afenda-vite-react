@@ -1,9 +1,15 @@
-import { db } from '@/lib/db'
-import type { CreateDepartmentInput, UpdateDepartmentInput } from '@/lib/validations/department'
-import type { DepartmentWithRelations } from '@/types'
+import { db } from "@/lib/db"
+import type {
+  CreateDepartmentInput,
+  UpdateDepartmentInput,
+} from "@/lib/validations/department"
+import type { DepartmentWithRelations } from "@/types"
 
 export const departmentService = {
-  async findAll(tenantId: string, includeInactive = false): Promise<DepartmentWithRelations[]> {
+  async findAll(
+    tenantId: string,
+    includeInactive = false
+  ): Promise<DepartmentWithRelations[]> {
     return db.department.findMany({
       where: {
         tenantId,
@@ -25,11 +31,14 @@ export const departmentService = {
           select: { employees: true },
         },
       },
-      orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }) as Promise<DepartmentWithRelations[]>
   },
 
-  async findById(tenantId: string, id: string): Promise<DepartmentWithRelations | null> {
+  async findById(
+    tenantId: string,
+    id: string
+  ): Promise<DepartmentWithRelations | null> {
     return db.department.findFirst({
       where: { id, tenantId },
       include: {
@@ -50,7 +59,7 @@ export const departmentService = {
     })
 
     if (existing) {
-      throw new Error('Mã phòng ban đã tồn tại')
+      throw new Error("Mã phòng ban đã tồn tại")
     }
 
     return db.department.create({
@@ -72,13 +81,17 @@ export const departmentService = {
     })
   },
 
-  async update(tenantId: string, id: string, data: Partial<UpdateDepartmentInput>) {
+  async update(
+    tenantId: string,
+    id: string,
+    data: Partial<UpdateDepartmentInput>
+  ) {
     const current = await db.department.findFirst({
       where: { id, tenantId },
     })
 
     if (!current) {
-      throw new Error('Phòng ban không tồn tại')
+      throw new Error("Phòng ban không tồn tại")
     }
 
     // Check for duplicate code if code is being updated
@@ -88,13 +101,13 @@ export const departmentService = {
       })
 
       if (existing) {
-        throw new Error('Mã phòng ban đã tồn tại')
+        throw new Error("Mã phòng ban đã tồn tại")
       }
     }
 
     // Prevent circular parent reference
     if (data.parentId === id) {
-      throw new Error('Không thể chọn chính phòng ban này làm phòng ban cha')
+      throw new Error("Không thể chọn chính phòng ban này làm phòng ban cha")
     }
 
     return db.department.update({
@@ -102,10 +115,14 @@ export const departmentService = {
       data: {
         ...(data.name !== undefined && { name: data.name }),
         ...(data.code !== undefined && { code: data.code }),
-        ...(data.description !== undefined && { description: data.description }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
         ...(data.parentId !== undefined && { parentId: data.parentId }),
         ...(data.managerId !== undefined && { managerId: data.managerId }),
-        ...(data.costCenterCode !== undefined && { costCenterCode: data.costCenterCode }),
+        ...(data.costCenterCode !== undefined && {
+          costCenterCode: data.costCenterCode,
+        }),
         ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
       },
@@ -128,15 +145,15 @@ export const departmentService = {
     })
 
     if (!department) {
-      throw new Error('Phòng ban không tồn tại')
+      throw new Error("Phòng ban không tồn tại")
     }
 
     if (department.children.length > 0) {
-      throw new Error('Không thể xóa phòng ban có phòng ban con')
+      throw new Error("Không thể xóa phòng ban có phòng ban con")
     }
 
     if (department._count.employees > 0) {
-      throw new Error('Không thể xóa phòng ban đang có nhân viên')
+      throw new Error("Không thể xóa phòng ban đang có nhân viên")
     }
 
     return db.department.delete({

@@ -1,11 +1,16 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 export const branchSchema = z.object({
-  name: z.string().min(1, 'Tên chi nhánh là bắt buộc').max(100),
-  code: z.string().min(1, 'Mã chi nhánh là bắt buộc').max(20),
+  name: z.string().min(1, "Tên chi nhánh là bắt buộc").max(100),
+  code: z.string().min(1, "Mã chi nhánh là bắt buộc").max(20),
   address: z.string().max(500).optional().nullable(),
   phone: z.string().max(20).optional().nullable(),
-  email: z.string().email('Email không hợp lệ').optional().nullable().or(z.literal('')),
+  email: z
+    .string()
+    .email("Email không hợp lệ")
+    .optional()
+    .nullable()
+    .or(z.literal("")),
   isHeadquarters: z.boolean().default(false),
   isActive: z.boolean().default(true),
 })

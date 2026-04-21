@@ -6,8 +6,8 @@
  */
 
 // Types
-export * from './types/engagement.types';
+export * from "./types/engagement.types"
 
 // Services
-export { EngagementService } from './services/engagement.service';
-export { default as EngagementServiceDefault } from './services/engagement.service';
+export { EngagementService } from "./services/engagement.service"
+export { default as EngagementServiceDefault } from "./services/engagement.service"

@@ -1,74 +1,77 @@
-'use client';
+"use client"
 
-import { useState, useRef, useEffect } from 'react';
-import { Check, ChevronDown, X } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { useState, useRef, useEffect } from "react"
+import { Check, ChevronDown, X } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 
 interface MetricOption {
-  value: string;
-  label: string;
-  group?: string;
+  value: string
+  label: string
+  group?: string
 }
 
 interface MetricFilterProps {
-  options: MetricOption[];
-  selected: string[];
-  onChange: (selected: string[]) => void;
-  placeholder?: string;
-  className?: string;
+  options: MetricOption[]
+  selected: string[]
+  onChange: (selected: string[]) => void
+  placeholder?: string
+  className?: string
 }
 
 export function MetricFilter({
   options,
   selected,
   onChange,
-  placeholder = 'Chọn chỉ số...',
+  placeholder = "Chọn chỉ số...",
   className,
 }: MetricFilterProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false)
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const toggleOption = (value: string) => {
     if (selected.includes(value)) {
-      onChange(selected.filter((s) => s !== value));
+      onChange(selected.filter((s) => s !== value))
     } else {
-      onChange([...selected, value]);
+      onChange([...selected, value])
     }
-  };
+  }
 
   const removeOption = (value: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    onChange(selected.filter((s) => s !== value));
-  };
+    e.stopPropagation()
+    onChange(selected.filter((s) => s !== value))
+  }
 
-  const selectedLabels = options.filter((o) => selected.includes(o.value));
+  const selectedLabels = options.filter((o) => selected.includes(o.value))
 
   // Group options
   const groups = options.reduce<Record<string, MetricOption[]>>((acc, opt) => {
-    const group = opt.group || 'Khác';
-    if (!acc[group]) acc[group] = [];
-    acc[group].push(opt);
-    return acc;
-  }, {});
+    const group = opt.group || "Khác"
+    if (!acc[group]) acc[group] = []
+    acc[group].push(opt)
+    return acc
+  }, {})
 
   return (
-    <div ref={containerRef} className={cn('relative', className)}>
+    <div ref={containerRef} className={cn("relative", className)}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex min-h-[36px] w-full items-center justify-between gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-sm shadow-sm transition-colors',
-          'hover:bg-accent focus:outline-none focus:ring-1 focus:ring-ring'
+          "flex min-h-[36px] w-full items-center justify-between gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-sm shadow-sm transition-colors",
+          "hover:bg-accent focus:outline-none focus:ring-1 focus:ring-ring"
         )}
       >
         <div className="flex flex-wrap gap-1 flex-1">
@@ -90,7 +93,12 @@ export function MetricFilter({
             <span className="text-muted-foreground">{placeholder}</span>
           )}
         </div>
-        <ChevronDown className={cn('h-4 w-4 shrink-0 transition-transform', isOpen && 'rotate-180')} />
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 shrink-0 transition-transform",
+            isOpen && "rotate-180"
+          )}
+        />
       </button>
 
       {isOpen && (
@@ -104,26 +112,32 @@ export function MetricFilter({
                   </div>
                 )}
                 {groupOptions.map((option) => {
-                  const isSelected = selected.includes(option.value);
+                  const isSelected = selected.includes(option.value)
                   return (
                     <button
                       key={option.value}
                       onClick={() => toggleOption(option.value)}
                       className={cn(
-                        'flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors',
-                        'hover:bg-accent',
-                        isSelected && 'bg-accent/50'
+                        "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors",
+                        "hover:bg-accent",
+                        isSelected && "bg-accent/50"
                       )}
                     >
-                      <div className={cn(
-                        'flex h-4 w-4 items-center justify-center rounded border',
-                        isSelected ? 'bg-primary border-primary' : 'border-input'
-                      )}>
-                        {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
+                      <div
+                        className={cn(
+                          "flex h-4 w-4 items-center justify-center rounded border",
+                          isSelected
+                            ? "bg-primary border-primary"
+                            : "border-input"
+                        )}
+                      >
+                        {isSelected && (
+                          <Check className="h-3 w-3 text-primary-foreground" />
+                        )}
                       </div>
                       {option.label}
                     </button>
-                  );
+                  )
                 })}
               </div>
             ))}
@@ -131,5 +145,5 @@ export function MetricFilter({
         </div>
       )}
     </div>
-  );
+  )
 }

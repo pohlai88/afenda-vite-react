@@ -13,4 +13,4 @@ export {
   getDatabasePool,
   getPrismaClient,
   prisma,
-} from './connection-pool';
+} from "./connection-pool"

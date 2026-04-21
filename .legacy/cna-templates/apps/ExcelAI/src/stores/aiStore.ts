@@ -2,8 +2,8 @@
 // AI COPILOT STORE — State Management for AI Features
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
 import type {
   AIMessage,
   AIProposedAction,
@@ -11,9 +11,9 @@ import type {
   AIConfig,
   AIContext,
   AICopilotTab,
-} from '../ai/types';
-import { DEFAULT_AI_CONFIG } from '../ai/types';
-import { getAIRuntime } from '../ai/AIRuntime';
+} from "../ai/types"
+import { DEFAULT_AI_CONFIG } from "../ai/types"
+import { getAIRuntime } from "../ai/AIRuntime"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Store State Interface
@@ -21,54 +21,54 @@ import { getAIRuntime } from '../ai/AIRuntime';
 
 interface AIState {
   // UI State
-  isOpen: boolean;
-  isDocked: boolean;
-  activeTab: AICopilotTab;
+  isOpen: boolean
+  isDocked: boolean
+  activeTab: AICopilotTab
 
   // Chat State
-  messages: AIMessage[];
-  isLoading: boolean;
-  isStreaming: boolean;
-  streamingText: string;
-  currentInput: string;
-  error: string | null;
+  messages: AIMessage[]
+  isLoading: boolean
+  isStreaming: boolean
+  streamingText: string
+  currentInput: string
+  error: string | null
 
   // Actions State
-  pendingActions: AIProposedAction[];
-  selectedAction: AIProposedAction | null;
-  actionHistory: AIActionHistory[];
+  pendingActions: AIProposedAction[]
+  selectedAction: AIProposedAction | null
+  actionHistory: AIActionHistory[]
 
   // Context
-  context: AIContext | null;
+  context: AIContext | null
 
   // Config
-  config: AIConfig;
+  config: AIConfig
 
   // Actions
-  togglePanel: () => void;
-  openPanel: () => void;
-  closePanel: () => void;
-  setDocked: (docked: boolean) => void;
-  setActiveTab: (tab: AICopilotTab) => void;
+  togglePanel: () => void
+  openPanel: () => void
+  closePanel: () => void
+  setDocked: (docked: boolean) => void
+  setActiveTab: (tab: AICopilotTab) => void
 
   // Chat Actions
-  setCurrentInput: (input: string) => void;
-  sendMessage: (content: string) => Promise<void>;
-  streamMessage: (content: string) => Promise<void>;
-  clearMessages: () => void;
-  clearError: () => void;
+  setCurrentInput: (input: string) => void
+  sendMessage: (content: string) => Promise<void>
+  streamMessage: (content: string) => Promise<void>
+  clearMessages: () => void
+  clearError: () => void
 
   // Action Management
-  selectAction: (action: AIProposedAction | null) => void;
-  approveAction: (actionId: string) => Promise<void>;
-  rejectAction: (actionId: string) => Promise<void>;
+  selectAction: (action: AIProposedAction | null) => void
+  approveAction: (actionId: string) => Promise<void>
+  rejectAction: (actionId: string) => Promise<void>
 
   // Config
-  setApiKey: (key: string) => void;
-  updateConfig: (config: Partial<AIConfig>) => void;
+  setApiKey: (key: string) => void
+  updateConfig: (config: Partial<AIConfig>) => void
 
   // Reset
-  reset: () => void;
+  reset: () => void
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -78,19 +78,19 @@ interface AIState {
 const initialState = {
   isOpen: false,
   isDocked: true,
-  activeTab: 'chat' as AICopilotTab,
+  activeTab: "chat" as AICopilotTab,
   messages: [] as AIMessage[],
   isLoading: false,
   isStreaming: false,
-  streamingText: '',
-  currentInput: '',
+  streamingText: "",
+  currentInput: "",
   error: null as string | null,
   pendingActions: [] as AIProposedAction[],
   selectedAction: null as AIProposedAction | null,
   actionHistory: [] as AIActionHistory[],
   context: null as AIContext | null,
   config: DEFAULT_AI_CONFIG,
-};
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Store
@@ -106,23 +106,23 @@ export const useAIStore = create<AIState>()(
       // ─────────────────────────────────────────────────────────────────────
 
       togglePanel: () => {
-        set((state) => ({ isOpen: !state.isOpen }));
+        set((state) => ({ isOpen: !state.isOpen }))
       },
 
       openPanel: () => {
-        set({ isOpen: true });
+        set({ isOpen: true })
       },
 
       closePanel: () => {
-        set({ isOpen: false });
+        set({ isOpen: false })
       },
 
       setDocked: (docked) => {
-        set({ isDocked: docked });
+        set({ isDocked: docked })
       },
 
       setActiveTab: (tab) => {
-        set({ activeTab: tab });
+        set({ activeTab: tab })
       },
 
       // ─────────────────────────────────────────────────────────────────────
@@ -130,20 +130,20 @@ export const useAIStore = create<AIState>()(
       // ─────────────────────────────────────────────────────────────────────
 
       setCurrentInput: (input) => {
-        set({ currentInput: input });
+        set({ currentInput: input })
       },
 
       sendMessage: async (content) => {
-        if (!content.trim()) return;
+        if (!content.trim()) return
 
-        set({ isLoading: true, error: null, currentInput: '' });
+        set({ isLoading: true, error: null, currentInput: "" })
 
         try {
-          const runtime = getAIRuntime();
-          await runtime.sendMessage(content);
+          const runtime = getAIRuntime()
+          await runtime.sendMessage(content)
 
           // Get all messages from runtime conversation
-          const conversation = runtime.getConversation();
+          const conversation = runtime.getConversation()
           if (conversation) {
             set({
               messages: [...conversation.messages],
@@ -151,38 +151,39 @@ export const useAIStore = create<AIState>()(
               actionHistory: [...conversation.history],
               context: conversation.context,
               isLoading: false,
-            });
+            })
           }
         } catch (error) {
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'Failed to send message',
-          });
+            error:
+              error instanceof Error ? error.message : "Failed to send message",
+          })
         }
       },
 
       streamMessage: async (content) => {
-        if (!content.trim()) return;
+        if (!content.trim()) return
 
         set({
           isLoading: true,
           isStreaming: true,
-          streamingText: '',
+          streamingText: "",
           error: null,
-          currentInput: '',
-        });
+          currentInput: "",
+        })
 
         try {
-          const runtime = getAIRuntime();
+          const runtime = getAIRuntime()
 
           for await (const chunk of runtime.streamMessage(content)) {
-            if (chunk.type === 'text') {
+            if (chunk.type === "text") {
               set((state) => ({
                 streamingText: state.streamingText + chunk.content,
-              }));
-            } else if (chunk.type === 'done') {
+              }))
+            } else if (chunk.type === "done") {
               // Get final state from runtime
-              const conversation = runtime.getConversation();
+              const conversation = runtime.getConversation()
               if (conversation) {
                 set({
                   messages: [...conversation.messages],
@@ -191,8 +192,8 @@ export const useAIStore = create<AIState>()(
                   context: conversation.context,
                   isLoading: false,
                   isStreaming: false,
-                  streamingText: '',
-                });
+                  streamingText: "",
+                })
               }
             }
           }
@@ -200,25 +201,28 @@ export const useAIStore = create<AIState>()(
           set({
             isLoading: false,
             isStreaming: false,
-            streamingText: '',
-            error: error instanceof Error ? error.message : 'Failed to stream message',
-          });
+            streamingText: "",
+            error:
+              error instanceof Error
+                ? error.message
+                : "Failed to stream message",
+          })
         }
       },
 
       clearMessages: () => {
-        const runtime = getAIRuntime();
-        runtime.clearConversation();
+        const runtime = getAIRuntime()
+        runtime.clearConversation()
         set({
           messages: [],
           pendingActions: [],
           actionHistory: [],
           context: null,
-        });
+        })
       },
 
       clearError: () => {
-        set({ error: null });
+        set({ error: null })
       },
 
       // ─────────────────────────────────────────────────────────────────────
@@ -226,36 +230,36 @@ export const useAIStore = create<AIState>()(
       // ─────────────────────────────────────────────────────────────────────
 
       selectAction: (action) => {
-        set({ selectedAction: action });
+        set({ selectedAction: action })
       },
 
       approveAction: async (actionId) => {
-        const runtime = getAIRuntime();
-        const success = await runtime.approveAction(actionId);
+        const runtime = getAIRuntime()
+        const success = await runtime.approveAction(actionId)
 
         if (success) {
-          const conversation = runtime.getConversation();
+          const conversation = runtime.getConversation()
           if (conversation) {
             set({
               pendingActions: [...conversation.pendingActions],
               actionHistory: [...conversation.history],
               selectedAction: null,
-            });
+            })
           }
         }
       },
 
       rejectAction: async (actionId) => {
-        const runtime = getAIRuntime();
-        const success = await runtime.rejectAction(actionId);
+        const runtime = getAIRuntime()
+        const success = await runtime.rejectAction(actionId)
 
         if (success) {
-          const conversation = runtime.getConversation();
+          const conversation = runtime.getConversation()
           if (conversation) {
             set({
               pendingActions: [...conversation.pendingActions],
               selectedAction: null,
-            });
+            })
           }
         }
       },
@@ -265,19 +269,19 @@ export const useAIStore = create<AIState>()(
       // ─────────────────────────────────────────────────────────────────────
 
       setApiKey: (key) => {
-        const runtime = getAIRuntime();
-        runtime.setApiKey(key);
+        const runtime = getAIRuntime()
+        runtime.setApiKey(key)
         set((state) => ({
           config: { ...state.config, apiKey: key, mockMode: false },
-        }));
+        }))
       },
 
       updateConfig: (newConfig) => {
-        const runtime = getAIRuntime();
-        runtime.updateConfig(newConfig);
+        const runtime = getAIRuntime()
+        runtime.updateConfig(newConfig)
         set((state) => ({
           config: { ...state.config, ...newConfig },
-        }));
+        }))
       },
 
       // ─────────────────────────────────────────────────────────────────────
@@ -285,13 +289,13 @@ export const useAIStore = create<AIState>()(
       // ─────────────────────────────────────────────────────────────────────
 
       reset: () => {
-        const runtime = getAIRuntime();
-        runtime.clearConversation();
-        set(initialState);
+        const runtime = getAIRuntime()
+        runtime.clearConversation()
+        set(initialState)
       },
     }),
     {
-      name: 'ai-copilot-storage',
+      name: "ai-copilot-storage",
       partialize: (state) => ({
         // Only persist these fields
         isDocked: state.isDocked,
@@ -302,14 +306,14 @@ export const useAIStore = create<AIState>()(
       }),
     }
   )
-);
+)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Selectors
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const selectIsAIOpen = (state: AIState) => state.isOpen;
-export const selectAIMessages = (state: AIState) => state.messages;
-export const selectIsAILoading = (state: AIState) => state.isLoading;
-export const selectAIPendingActions = (state: AIState) => state.pendingActions;
-export const selectAIConfig = (state: AIState) => state.config;
+export const selectIsAIOpen = (state: AIState) => state.isOpen
+export const selectAIMessages = (state: AIState) => state.messages
+export const selectIsAILoading = (state: AIState) => state.isLoading
+export const selectAIPendingActions = (state: AIState) => state.pendingActions
+export const selectAIConfig = (state: AIState) => state.config

@@ -23,7 +23,10 @@
     "test:run": "vitest run --configLoader bundle"
   },
   "dependencies": {
+    "@afenda/better-auth": "workspace:*",
+    "@afenda/database": "workspace:*",
     "@afenda/env-loader": "workspace:*",
+    "@afenda/pino-logger": "workspace:*",
     "@hono/node-server": "^1.14.1",
     "@hono/zod-validator": "^0.7.6",
     "hono": "^4.7.4",

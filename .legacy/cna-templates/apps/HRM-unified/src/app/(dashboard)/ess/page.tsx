@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { Loader2 } from 'lucide-react'
-import { ESSProfileCard, ESSQuickActions } from '@/components/ess'
-import { LeaveBalanceCard } from '@/components/leave'
+import { useEffect, useState } from "react"
+import { Loader2 } from "lucide-react"
+import { ESSProfileCard, ESSQuickActions } from "@/components/ess"
+import { LeaveBalanceCard } from "@/components/leave"
 
 interface DashboardData {
   employee: {
@@ -43,14 +43,14 @@ export default function ESSPage() {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const response = await fetch('/api/ess/dashboard')
+        const response = await fetch("/api/ess/dashboard")
         if (!response.ok) {
-          throw new Error('Failed to fetch dashboard data')
+          throw new Error("Failed to fetch dashboard data")
         }
         const result = await response.json()
         setData(result.data ?? result)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
+        setError(err instanceof Error ? err.message : "An error occurred")
       } finally {
         setIsLoading(false)
       }
@@ -70,7 +70,7 @@ export default function ESSPage() {
   if (error || !data) {
     return (
       <div className="text-center py-8">
-        <p className="text-destructive">{error || 'Không thể tải dữ liệu'}</p>
+        <p className="text-destructive">{error || "Không thể tải dữ liệu"}</p>
       </div>
     )
   }
@@ -80,7 +80,8 @@ export default function ESSPage() {
       <div>
         <h1 className="text-2xl font-bold">Cổng thông tin nhân viên</h1>
         <p className="text-muted-foreground">
-          Xin chào, {data.employee.firstName}! Đây là tổng quan thông tin của bạn.
+          Xin chào, {data.employee.firstName}! Đây là tổng quan thông tin của
+          bạn.
         </p>
       </div>
 

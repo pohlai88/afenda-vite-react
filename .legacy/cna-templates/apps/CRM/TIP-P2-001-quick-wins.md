@@ -1,10 +1,12 @@
 # Vibecode Kit v5.0 — Task Instruction Pack
 
 ## VAI TRÒ
+
 Bạn là THỢ THI CÔNG trong hệ thống Vibecode Kit v5.0.
 Chủ thầu (Claude Chat) và Chủ nhà đã THỐNG NHẤT bản thiết kế.
 
 ## QUY TẮC TUYỆT ĐỐI
+
 1. IMPLEMENT ĐÚNG TIP specification bên dưới
 2. KHÔNG thay đổi kiến trúc / structure
 3. KHÔNG thêm features ngoài TIP
@@ -20,20 +22,22 @@ Chủ thầu (Claude Chat) và Chủ nhà đã THỐNG NHẤT bản thiết kế
 **Phase 1 Status:** COMPLETE (12/12 TIPs, VERIFY PASSED)
 
 **Relevant completed work:**
-  - TIP-006: PDF Generation — generateQuotePDF(quoteId) returns Buffer, /api/quotes/[id]/pdf endpoint
-  - TIP-007: Quote status flow — DRAFT → SENT → ACCEPTED/REJECTED/EXPIRED
-  - TIP-011: Portal — magic link auth, /portal/quotes/[id] page, verifyPortalSession()
-  - src/lib/pdf/generate.ts — generateQuotePDF(), generateOrderPDF()
-  - src/app/api/quotes/[id]/pdf/route.ts — PDF download with CRM auth
-  - src/app/portal/quotes/[id]/ — portal quote detail page
-  - src/lib/portal/auth.ts — verifyPortalSession()
-  - src/components/pdf-download-button.tsx — reusable download button component
+
+- TIP-006: PDF Generation — generateQuotePDF(quoteId) returns Buffer, /api/quotes/[id]/pdf endpoint
+- TIP-007: Quote status flow — DRAFT → SENT → ACCEPTED/REJECTED/EXPIRED
+- TIP-011: Portal — magic link auth, /portal/quotes/[id] page, verifyPortalSession()
+- src/lib/pdf/generate.ts — generateQuotePDF(), generateOrderPDF()
+- src/app/api/quotes/[id]/pdf/route.ts — PDF download with CRM auth
+- src/app/portal/quotes/[id]/ — portal quote detail page
+- src/lib/portal/auth.ts — verifyPortalSession()
+- src/components/pdf-download-button.tsx — reusable download button component
 
 ---
 
 # TIP-P2-001: Quick Wins — Portal PDF Download + Quote VIEWED Tracking
 
 ## HEADER
+
 - **TIP-ID:** TIP-P2-001
 - **Project:** Prismy CRM Phase 2
 - **Module:** Portal + Quotes
@@ -61,7 +65,7 @@ GET /api/portal/quotes/[id]/pdf
 │   Content-Disposition: attachment; filename="QUO-{number}.pdf"
 ├── Error: 403 nếu quote không thuộc về portal user, 404 nếu không tồn tại
 
-GHI CHÚ: 
+GHI CHÚ:
 - KHÔNG reuse /api/quotes/[id]/pdf trực tiếp (nó yêu cầu CRM auth)
 - Tạo endpoint riêng cho portal với portal auth
 - Logic generate PDF giống nhau (gọi generateQuotePDF)
@@ -136,6 +140,7 @@ POST /api/portal/quotes/[id]/viewed
 ## ACCEPTANCE CRITERIA
 
 ### AC-1: Portal PDF Download
+
 ```
 Given: Portal user viewing a quote at /portal/quotes/[id]
 When: Click "Tải PDF" button
@@ -146,6 +151,7 @@ Then:
 ```
 
 ### AC-2: Portal PDF Auth
+
 ```
 Given: Portal user A viewing quote belonging to company B
 When: Try to download PDF
@@ -157,6 +163,7 @@ Then: 401 or redirect to login
 ```
 
 ### AC-3: Quote VIEWED Tracking
+
 ```
 Given: Portal user opens /portal/quotes/[id] for FIRST time
 When: Page loads
@@ -171,15 +178,17 @@ Then: NO duplicate activity created (idempotent)
 ```
 
 ### AC-4: VIEWED Doesn't Block Page
+
 ```
 Given: Activity creation fails (DB error, etc.)
 When: Portal user opens quote
-Then: 
+Then:
   - Quote page loads normally (tracking failure is silent)
   - No error shown to user
 ```
 
 ### AC-5: Build & No Regression
+
 ```
 When: tsc --noEmit && next build
 Then: PASS
@@ -201,12 +210,14 @@ Then: PASS
 **STATUS:** DONE / PARTIAL / BLOCKED
 
 **FILES CHANGED:**
+
 - Created: [list + purpose]
 - Modified: [list + change description]
 
 **VIEWED APPROACH:** [Option A Activity / Option B Status enum]
 
 **TEST RESULTS:**
+
 - AC-1 Portal PDF Download: PASS / FAIL
 - AC-2 Portal PDF Auth: PASS / FAIL
 - AC-3 Quote VIEWED Tracking: PASS / FAIL
@@ -214,8 +225,10 @@ Then: PASS
 - AC-5 Build: PASS / FAIL
 
 **ISSUES DISCOVERED:**
+
 - [Issue]: [severity] — [description] — [suggestion]
 
 **DEVIATIONS FROM SPEC:**
+
 - [Deviation]: [what] — [why] — [impact]
 ```

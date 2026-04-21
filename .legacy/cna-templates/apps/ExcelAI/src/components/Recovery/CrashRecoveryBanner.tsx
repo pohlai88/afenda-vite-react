@@ -1,5 +1,5 @@
 // Stub: CrashRecoveryBanner
 export function CrashRecoveryBanner() {
-  return null;
+  return null
 }
-export default CrashRecoveryBanner;
+export default CrashRecoveryBanner

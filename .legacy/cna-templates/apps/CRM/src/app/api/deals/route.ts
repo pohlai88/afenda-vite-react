@@ -1,30 +1,33 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse, canAccess } from '@/lib/auth/rbac'
-import { validateRequest, createDealSchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
-import { sanitizeObject } from '@/lib/api/sanitize'
-import { removeDiacritics } from '@/lib/utils/vietnamese'
-import { getChecklistTemplate } from '@/lib/compliance/checklist-templates'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse, canAccess } from "@/lib/auth/rbac"
+import { validateRequest, createDealSchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
+import { sanitizeObject } from "@/lib/api/sanitize"
+import { removeDiacritics } from "@/lib/utils/vietnamese"
+import { getChecklistTemplate } from "@/lib/compliance/checklist-templates"
 
 // GET /api/deals — List deals with filters, pagination
 export async function GET(req: NextRequest) {
   try {
     const user = await getCurrentUser()
     const { searchParams } = req.nextUrl
-    const q = searchParams.get('q') || ''
-    const stageId = searchParams.get('stageId')
-    const companyId = searchParams.get('companyId')
-    const ownerId = searchParams.get('ownerId')
-    const cursor = searchParams.get('cursor')
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
+    const q = searchParams.get("q") || ""
+    const stageId = searchParams.get("stageId")
+    const companyId = searchParams.get("companyId")
+    const ownerId = searchParams.get("ownerId")
+    const cursor = searchParams.get("cursor")
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"))
+    const limit = Math.min(
+      100,
+      Math.max(1, parseInt(searchParams.get("limit") || "20"))
+    )
 
     const where: Prisma.DealWhereInput = {}
 
-    if (!canAccess(user, 'view_all')) {
+    if (!canAccess(user, "view_all")) {
       where.ownerId = user.id
     }
 
@@ -33,21 +36,38 @@ export async function GET(req: NextRequest) {
       const terms = [q]
       if (normalized !== q) terms.push(normalized)
       where.OR = terms.flatMap((term) => [
-        { title: { contains: term, mode: 'insensitive' as const } },
-        { notes: { contains: term, mode: 'insensitive' as const } },
+        { title: { contains: term, mode: "insensitive" as const } },
+        { notes: { contains: term, mode: "insensitive" as const } },
       ])
     }
 
     if (stageId) where.stageId = stageId
     if (companyId) where.companyId = companyId
-    if (ownerId && canAccess(user, 'view_all')) where.ownerId = ownerId
+    if (ownerId && canAccess(user, "view_all")) where.ownerId = ownerId
 
     const includeClause = {
-      stage: { select: { id: true, name: true, color: true, probability: true, isWon: true, isLost: true } },
+      stage: {
+        select: {
+          id: true,
+          name: true,
+          color: true,
+          probability: true,
+          isWon: true,
+          isLost: true,
+        },
+      },
       company: { select: { id: true, name: true, country: true } },
       contacts: {
         include: {
-          contact: { select: { id: true, firstName: true, lastName: true, email: true, avatarUrl: true } },
+          contact: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              avatarUrl: true,
+            },
+          },
         },
       },
       owner: { select: { id: true, name: true, avatarUrl: true } },
@@ -58,7 +78,7 @@ export async function GET(req: NextRequest) {
       const data = await prisma.deal.findMany({
         where,
         include: includeClause,
-        orderBy: { updatedAt: 'desc' },
+        orderBy: { updatedAt: "desc" },
         take: limit + 1,
         cursor: { id: cursor },
         skip: 1,
@@ -77,7 +97,7 @@ export async function GET(req: NextRequest) {
       prisma.deal.findMany({
         where,
         include: includeClause,
-        orderBy: { updatedAt: 'desc' },
+        orderBy: { updatedAt: "desc" },
         skip,
         take: limit,
       }),
@@ -87,17 +107,23 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ data, total, page, limit })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/deals error:', error)
-    return NextResponse.json({ error: 'Failed to fetch deals' }, { status: 500 })
+    console.error("GET /api/deals error:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch deals" },
+      { status: 500 }
+    )
   }
 }
 
 // POST /api/deals — Create deal
 export async function POST(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER', 'MEMBER'])
+    const result = await requireRole(["ADMIN", "MANAGER", "MEMBER"])
     if (isErrorResponse(result)) return result
     const user = result
 
@@ -107,11 +133,13 @@ export async function POST(req: NextRequest) {
 
     // Build contacts create from new contacts array or legacy contactIds
     const contactsCreate = data.contacts?.length
-      ? data.contacts.map((c: { contactId: string; role?: string; isPrimary?: boolean }) => ({
-          contactId: c.contactId,
-          role: c.role || 'OTHER',
-          isPrimary: c.isPrimary || false,
-        }))
+      ? data.contacts.map(
+          (c: { contactId: string; role?: string; isPrimary?: boolean }) => ({
+            contactId: c.contactId,
+            role: c.role || "OTHER",
+            isPrimary: c.isPrimary || false,
+          })
+        )
       : data.contactIds?.length
         ? data.contactIds.map((contactId: string) => ({ contactId }))
         : undefined
@@ -122,7 +150,7 @@ export async function POST(req: NextRequest) {
         stageId: data.stageId,
         pipelineId: data.pipelineId,
         value: data.value,
-        currency: data.currency || 'VND',
+        currency: data.currency || "VND",
         dealType: data.dealType || undefined,
         companyId: data.companyId || undefined,
         partnerId: data.partnerId || undefined,
@@ -155,7 +183,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(deal, { status: 201 })
   } catch (error) {
-    return handleApiError(error, '/api/deals')
+    return handleApiError(error, "/api/deals")
   }
 }
 
@@ -167,16 +195,26 @@ export async function PATCH(req: NextRequest) {
     const { id, stageId } = body
 
     if (!id || !stageId) {
-      return NextResponse.json({ error: 'id and stageId are required' }, { status: 400 })
+      return NextResponse.json(
+        { error: "id and stageId are required" },
+        { status: 400 }
+      )
     }
 
     // Check ownership for stage moves
-    const existing = await prisma.deal.findUnique({ where: { id }, select: { ownerId: true } })
-    if (!existing) return NextResponse.json({ error: 'Deal not found' }, { status: 404 })
+    const existing = await prisma.deal.findUnique({
+      where: { id },
+      select: { ownerId: true },
+    })
+    if (!existing)
+      return NextResponse.json({ error: "Deal not found" }, { status: 404 })
 
-    if (!canAccess(user, 'edit_any') && existing.ownerId !== user.id) {
+    if (!canAccess(user, "edit_any") && existing.ownerId !== user.id) {
       return NextResponse.json(
-        { error: 'Forbidden', message: 'Bạn không có quyền thực hiện thao tác này' },
+        {
+          error: "Forbidden",
+          message: "Bạn không có quyền thực hiện thao tác này",
+        },
         { status: 403 }
       )
     }
@@ -185,7 +223,15 @@ export async function PATCH(req: NextRequest) {
       where: { id },
       data: { stageId },
       include: {
-        stage: { select: { id: true, name: true, color: true, isWon: true, isLost: true } },
+        stage: {
+          select: {
+            id: true,
+            name: true,
+            color: true,
+            isWon: true,
+            isLost: true,
+          },
+        },
         company: { select: { id: true, name: true } },
         contacts: {
           include: {
@@ -199,12 +245,18 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json(deal)
   } catch (error: any) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    if (error?.code === 'P2025') {
-      return NextResponse.json({ error: 'Deal not found' }, { status: 404 })
+    if (error?.code === "P2025") {
+      return NextResponse.json({ error: "Deal not found" }, { status: 404 })
     }
-    console.error('PATCH /api/deals error:', error)
-    return NextResponse.json({ error: 'Failed to update deal' }, { status: 500 })
+    console.error("PATCH /api/deals error:", error)
+    return NextResponse.json(
+      { error: "Failed to update deal" },
+      { status: 500 }
+    )
   }
 }

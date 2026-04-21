@@ -6,8 +6,8 @@
  */
 
 // Types
-export * from './types/succession.types';
+export * from "./types/succession.types"
 
 // Services
-export { SuccessionService } from './services/succession.service';
-export { default as SuccessionServiceDefault } from './services/succession.service';
+export { SuccessionService } from "./services/succession.service"
+export { default as SuccessionServiceDefault } from "./services/succession.service"

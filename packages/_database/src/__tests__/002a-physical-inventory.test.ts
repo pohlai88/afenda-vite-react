@@ -47,9 +47,9 @@ const L2_QUERIES = [
   "src/queries/resolve-current-tenant-policy.ts",
   "src/queries/resolve-item-settings.ts",
   "src/queries/resolve-membership-scope.ts",
-  "src/queries/helpers/effective-row.ts",
-  "src/queries/helpers/iso-date.ts",
-  "src/queries/helpers/scope-utils.ts",
+  "src/queries/query-primitives/effective-date-predicate.ts",
+  "src/queries/query-primitives/iso-date-assertions.ts",
+  "src/queries/query-primitives/scope-matching.ts",
 ] as const
 
 /** 002A §1 L5 — studio / metadata */

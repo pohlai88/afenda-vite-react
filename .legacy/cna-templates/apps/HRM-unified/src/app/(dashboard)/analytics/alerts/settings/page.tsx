@@ -1,33 +1,32 @@
 // src/app/(dashboard)/analytics/alerts/settings/page.tsx
 // Alert Settings Page
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
-import { Checkbox } from '@/components/ui/checkbox'
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  ArrowLeft,
-  Save,
-  Plus,
-  Bell,
-  Mail,
-  Trash2,
-} from 'lucide-react'
+} from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ArrowLeft, Save, Plus, Bell, Mail, Trash2 } from "lucide-react"
 
 interface MetricType {
   id: string
@@ -48,17 +47,17 @@ export default function AlertSettingsPage() {
   const [departments, setDepartments] = useState<Department[]>([])
 
   // Form state
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [metricType, setMetricType] = useState('')
-  const [condition, setCondition] = useState('gt')
-  const [threshold, setThreshold] = useState('')
-  const [severity, setSeverity] = useState('MEDIUM')
-  const [departmentId, setDepartmentId] = useState('')
+  const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
+  const [metricType, setMetricType] = useState("")
+  const [condition, setCondition] = useState("gt")
+  const [threshold, setThreshold] = useState("")
+  const [severity, setSeverity] = useState("MEDIUM")
+  const [departmentId, setDepartmentId] = useState("")
   const [notifyEmail, setNotifyEmail] = useState(true)
   const [notifyInApp, setNotifyInApp] = useState(true)
-  const [cooldownMinutes, setCooldownMinutes] = useState('60')
-  const [notifyRoles, setNotifyRoles] = useState<string[]>(['HR_MANAGER'])
+  const [cooldownMinutes, setCooldownMinutes] = useState("60")
+  const [notifyRoles, setNotifyRoles] = useState<string[]>(["HR_MANAGER"])
 
   useEffect(() => {
     fetchMetricTypes()
@@ -67,43 +66,78 @@ export default function AlertSettingsPage() {
 
   const fetchMetricTypes = async () => {
     try {
-      const response = await fetch('/api/analytics/alerts/metric-types')
+      const response = await fetch("/api/analytics/alerts/metric-types")
       if (response.ok) {
         const data = await response.json()
         setMetricTypes(data.data || [])
       } else {
         // Mock data
         setMetricTypes([
-          { id: 'turnover_rate', name: 'Tỷ lệ nghỉ việc', unit: '%', defaultThreshold: 15 },
-          { id: 'attendance_rate', name: 'Tỷ lệ chuyên cần', unit: '%', defaultThreshold: 90 },
-          { id: 'overtime_hours', name: 'Giờ làm thêm TB', unit: 'giờ', defaultThreshold: 30 },
-          { id: 'headcount', name: 'Tổng nhân sự', unit: 'người', defaultThreshold: 100 },
-          { id: 'high_risk_employees', name: 'NV nguy cơ cao', unit: 'người', defaultThreshold: 5 },
-          { id: 'expiring_contracts', name: 'HĐ sắp hết hạn', unit: 'hợp đồng', defaultThreshold: 10 },
-          { id: 'open_positions', name: 'Vị trí tuyển dụng', unit: 'vị trí', defaultThreshold: 20 },
+          {
+            id: "turnover_rate",
+            name: "Tỷ lệ nghỉ việc",
+            unit: "%",
+            defaultThreshold: 15,
+          },
+          {
+            id: "attendance_rate",
+            name: "Tỷ lệ chuyên cần",
+            unit: "%",
+            defaultThreshold: 90,
+          },
+          {
+            id: "overtime_hours",
+            name: "Giờ làm thêm TB",
+            unit: "giờ",
+            defaultThreshold: 30,
+          },
+          {
+            id: "headcount",
+            name: "Tổng nhân sự",
+            unit: "người",
+            defaultThreshold: 100,
+          },
+          {
+            id: "high_risk_employees",
+            name: "NV nguy cơ cao",
+            unit: "người",
+            defaultThreshold: 5,
+          },
+          {
+            id: "expiring_contracts",
+            name: "HĐ sắp hết hạn",
+            unit: "hợp đồng",
+            defaultThreshold: 10,
+          },
+          {
+            id: "open_positions",
+            name: "Vị trí tuyển dụng",
+            unit: "vị trí",
+            defaultThreshold: 20,
+          },
         ])
       }
     } catch (error) {
-      console.error('Error fetching metric types:', error)
+      console.error("Error fetching metric types:", error)
     }
   }
 
   const fetchDepartments = async () => {
     try {
-      const response = await fetch('/api/departments')
+      const response = await fetch("/api/departments")
       if (response.ok) {
         const data = await response.json()
         setDepartments(data.data || data || [])
       } else {
         setDepartments([
-          { id: '1', name: 'Phòng Kinh doanh' },
-          { id: '2', name: 'Phòng IT' },
-          { id: '3', name: 'Phòng Nhân sự' },
-          { id: '4', name: 'Phòng Marketing' },
+          { id: "1", name: "Phòng Kinh doanh" },
+          { id: "2", name: "Phòng IT" },
+          { id: "3", name: "Phòng Nhân sự" },
+          { id: "4", name: "Phòng Marketing" },
         ])
       }
     } catch (error) {
-      console.error('Error fetching departments:', error)
+      console.error("Error fetching departments:", error)
     }
   }
 
@@ -124,9 +158,9 @@ export default function AlertSettingsPage() {
   const saveAlert = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/analytics/alerts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/analytics/alerts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
           description,
@@ -143,10 +177,10 @@ export default function AlertSettingsPage() {
       })
 
       if (response.ok) {
-        router.push('/analytics/alerts')
+        router.push("/analytics/alerts")
       }
     } catch (error) {
-      console.error('Error saving alert:', error)
+      console.error("Error saving alert:", error)
     } finally {
       setLoading(false)
     }
@@ -268,10 +302,14 @@ export default function AlertSettingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="gt">Lớn hơn ({'>'})</SelectItem>
-                      <SelectItem value="gte">Lớn hơn hoặc bằng ({'>'}=)</SelectItem>
-                      <SelectItem value="lt">Nhỏ hơn ({'<'})</SelectItem>
-                      <SelectItem value="lte">Nhỏ hơn hoặc bằng ({'<'}=)</SelectItem>
+                      <SelectItem value="gt">Lớn hơn ({">"})</SelectItem>
+                      <SelectItem value="gte">
+                        Lớn hơn hoặc bằng ({">"}=)
+                      </SelectItem>
+                      <SelectItem value="lt">Nhỏ hơn ({"<"})</SelectItem>
+                      <SelectItem value="lte">
+                        Nhỏ hơn hoặc bằng ({"<"}=)
+                      </SelectItem>
                       <SelectItem value="eq">Bằng (=)</SelectItem>
                     </SelectContent>
                   </Select>
@@ -295,7 +333,10 @@ export default function AlertSettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label>Thời gian chờ giữa các lần cảnh báo</Label>
-                <Select value={cooldownMinutes} onValueChange={setCooldownMinutes}>
+                <Select
+                  value={cooldownMinutes}
+                  onValueChange={setCooldownMinutes}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -337,7 +378,10 @@ export default function AlertSettingsPage() {
                       </p>
                     </div>
                   </div>
-                  <Switch checked={notifyInApp} onCheckedChange={setNotifyInApp} />
+                  <Switch
+                    checked={notifyInApp}
+                    onCheckedChange={setNotifyInApp}
+                  />
                 </div>
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex items-center gap-3">
@@ -349,7 +393,10 @@ export default function AlertSettingsPage() {
                       </p>
                     </div>
                   </div>
-                  <Switch checked={notifyEmail} onCheckedChange={setNotifyEmail} />
+                  <Switch
+                    checked={notifyEmail}
+                    onCheckedChange={setNotifyEmail}
+                  />
                 </div>
               </div>
 
@@ -357,17 +404,17 @@ export default function AlertSettingsPage() {
                 <Label>Gửi thông báo đến vai trò</Label>
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { id: 'SUPER_ADMIN', label: 'Super Admin' },
-                    { id: 'ADMIN', label: 'Admin' },
-                    { id: 'HR_MANAGER', label: 'HR Manager' },
-                    { id: 'HR_STAFF', label: 'HR Staff' },
+                    { id: "SUPER_ADMIN", label: "Super Admin" },
+                    { id: "ADMIN", label: "Admin" },
+                    { id: "HR_MANAGER", label: "HR Manager" },
+                    { id: "HR_STAFF", label: "HR Staff" },
                   ].map((role) => (
                     <div
                       key={role.id}
                       className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                         notifyRoles.includes(role.id)
-                          ? 'border-primary bg-primary/5'
-                          : 'hover:bg-muted'
+                          ? "border-primary bg-primary/5"
+                          : "hover:bg-muted"
                       }`}
                       onClick={() => toggleRole(role.id)}
                     >
@@ -389,7 +436,10 @@ export default function AlertSettingsPage() {
         <Button variant="outline" onClick={() => router.back()}>
           Hủy
         </Button>
-        <Button onClick={saveAlert} disabled={loading || !name || !metricType || !threshold}>
+        <Button
+          onClick={saveAlert}
+          disabled={loading || !name || !metricType || !threshold}
+        >
           <Save className="h-4 w-4 mr-2" />
           Lưu cảnh báo
         </Button>

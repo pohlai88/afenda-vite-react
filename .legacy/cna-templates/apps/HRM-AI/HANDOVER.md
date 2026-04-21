@@ -12,24 +12,25 @@ Your Company HR la he thong quan ly nhan su toan dien (HRM/HRIS) xay dung tren n
 
 ### Tech Stack
 
-| Thanh phan | Cong nghe | Phien ban |
-|------------|-----------|-----------|
-| Framework | Next.js (App Router) | 14.2.35 |
-| Language | TypeScript | 5.x |
-| Database | PostgreSQL + Prisma | 5.22.0 |
-| Auth | NextAuth v5 (Credentials) | 5.0.0-beta.30 |
-| UI | Radix UI + Tailwind CSS | 3.4.1 |
-| State | Zustand + React Query + SWR | 5.0.10 / 5.90.19 / 2.3.8 |
-| Charts | Recharts | 3.7.0 |
-| AI | Anthropic Claude SDK | 0.71.2 |
-| Testing | Playwright + K6 | 1.58.0 |
-| Cache | Redis | 4.x |
-| Fonts | IBM Plex Sans / Mono | - |
-| DnD | @dnd-kit | 6.3.1 |
-| Virtual Scroll | @tanstack/react-virtual | 3.13.18 |
-| Command | cmdk | 1.1.1 |
+| Thanh phan     | Cong nghe                   | Phien ban                |
+| -------------- | --------------------------- | ------------------------ |
+| Framework      | Next.js (App Router)        | 14.2.35                  |
+| Language       | TypeScript                  | 5.x                      |
+| Database       | PostgreSQL + Prisma         | 5.22.0                   |
+| Auth           | NextAuth v5 (Credentials)   | 5.0.0-beta.30            |
+| UI             | Radix UI + Tailwind CSS     | 3.4.1                    |
+| State          | Zustand + React Query + SWR | 5.0.10 / 5.90.19 / 2.3.8 |
+| Charts         | Recharts                    | 3.7.0                    |
+| AI             | Anthropic Claude SDK        | 0.71.2                   |
+| Testing        | Playwright + K6             | 1.58.0                   |
+| Cache          | Redis                       | 4.x                      |
+| Fonts          | IBM Plex Sans / Mono        | -                        |
+| DnD            | @dnd-kit                    | 6.3.1                    |
+| Virtual Scroll | @tanstack/react-virtual     | 3.13.18                  |
+| Command        | cmdk                        | 1.1.1                    |
 
 ### Repo & Environment
+
 - **GitHub:** https://github.com/nclamvn/vierp-hrm
 - **Thu muc:** `/Users/mac/HRMinh/vierp-hrm`
 - **Port dev:** 3000 (default)
@@ -44,6 +45,7 @@ Your Company HR la he thong quan ly nhan su toan dien (HRM/HRIS) xay dung tren n
 ### Da Hoan Thanh
 
 #### Phase 1-4: Core Modules
+
 - [x] Authentication (NextAuth v5 Credentials, JWT, multi-tenant)
 - [x] Employee Management (CRUD, form, list, detail)
 - [x] Organization (Departments, Positions, Branches)
@@ -61,6 +63,7 @@ Your Company HR la he thong quan ly nhan su toan dien (HRM/HRIS) xay dung tren n
 - [x] Notifications (In-app, email queue)
 
 #### Phase 5: Compensation & Succession Planning
+
 - [x] **Compensation Planning** (95%)
   - Compensation Cycles (Annual/Mid-year/Quarterly)
   - Budget Management (Department pools)
@@ -79,6 +82,7 @@ Your Company HR la he thong quan ly nhan su toan dien (HRM/HRIS) xay dung tren n
   - Talent Pools
 
 #### Phase 6: Enterprise Modules
+
 - [x] **Benefits Administration** (95%)
   - Benefit Plans (Health, Dental, Vision, Life, Retirement)
   - Enrollment Periods (Open, New hire, Life events)
@@ -110,6 +114,7 @@ Your Company HR la he thong quan ly nhan su toan dien (HRM/HRIS) xay dung tren n
   - Planning Dashboard
 
 #### Performance Optimization
+
 - [x] **Caching Layer**
   - Redis Client Integration
   - Cache Key Management
@@ -129,6 +134,7 @@ Your Company HR la he thong quan ly nhan su toan dien (HRM/HRIS) xay dung tren n
   - Service Worker (PWA ready)
 
 #### Testing Suite
+
 - [x] **E2E Tests (Playwright)**
   - Auth tests (8 tests)
   - Dashboard tests (4 tests)
@@ -144,6 +150,7 @@ Your Company HR la he thong quan ly nhan su toan dien (HRM/HRIS) xay dung tren n
   - Transaction integrity tests
 
 #### UI/UX Bloomberg Design
+
 - [x] Dark/Light theme voi CSS variables
 - [x] IBM Plex Sans/Mono fonts
 - [x] 39 base UI components (Radix-based)
@@ -156,24 +163,24 @@ Your Company HR la he thong quan ly nhan su toan dien (HRM/HRIS) xay dung tren n
 
 ### Module Completion Matrix
 
-| Module | Phase | Before | After | Status |
-|--------|-------|--------|-------|--------|
-| Core HR | 1-4 | - | 100% | Done |
-| Attendance | 1-4 | - | 100% | Done |
-| Payroll | 1-4 | - | 100% | Done |
-| Leave Management | 1-4 | - | 100% | Done |
-| Recruitment (ATS) | 1-4 | - | 100% | Done |
-| Performance Management | 1-4 | - | 100% | Done |
-| Learning (LMS) | 1-4 | - | 100% | Done |
-| Analytics | 1-4 | - | 100% | Done |
-| Workflow Engine | 1-4 | - | 100% | Done |
-| AI Features | 1-4 | - | 100% | Done |
-| Compensation Planning | 5 | 60% | 95% | Done |
-| Succession Planning | 5 | 50% | 95% | Done |
-| Benefits Administration | 6 | 40% | 95% | Done |
-| Employee Engagement | 6 | 0% | 95% | Done |
-| Internal Job Marketplace | 6 | 0% | 95% | Done |
-| Workforce Planning | 6 | 0% | 90% | Done |
+| Module                   | Phase | Before | After | Status |
+| ------------------------ | ----- | ------ | ----- | ------ |
+| Core HR                  | 1-4   | -      | 100%  | Done   |
+| Attendance               | 1-4   | -      | 100%  | Done   |
+| Payroll                  | 1-4   | -      | 100%  | Done   |
+| Leave Management         | 1-4   | -      | 100%  | Done   |
+| Recruitment (ATS)        | 1-4   | -      | 100%  | Done   |
+| Performance Management   | 1-4   | -      | 100%  | Done   |
+| Learning (LMS)           | 1-4   | -      | 100%  | Done   |
+| Analytics                | 1-4   | -      | 100%  | Done   |
+| Workflow Engine          | 1-4   | -      | 100%  | Done   |
+| AI Features              | 1-4   | -      | 100%  | Done   |
+| Compensation Planning    | 5     | 60%    | 95%   | Done   |
+| Succession Planning      | 5     | 50%    | 95%   | Done   |
+| Benefits Administration  | 6     | 40%    | 95%   | Done   |
+| Employee Engagement      | 6     | 0%     | 95%   | Done   |
+| Internal Job Marketplace | 6     | 0%     | 95%   | Done   |
+| Workforce Planning       | 6     | 0%     | 90%   | Done   |
 
 ---
 
@@ -232,6 +239,7 @@ vierp-hrm/
 ### New Modules Architecture
 
 #### Benefits Administration (`src/lib/benefits/`)
+
 ```
 benefits/
 ├── types/benefits.types.ts        # 975 lines - Enums, interfaces
@@ -241,6 +249,7 @@ benefits/
 ```
 
 #### Employee Engagement (`src/lib/engagement/`)
+
 ```
 engagement/
 ├── types/engagement.types.ts      # 857 lines - Survey types
@@ -250,6 +259,7 @@ engagement/
 ```
 
 #### Internal Job Marketplace (`src/lib/marketplace/`)
+
 ```
 marketplace/
 ├── types/marketplace.types.ts     # 635 lines - Job posting types
@@ -259,6 +269,7 @@ marketplace/
 ```
 
 #### Workforce Planning (`src/lib/workforce/`)
+
 ```
 workforce/
 ├── types/workforce.types.ts       # 956 lines - Planning types
@@ -268,6 +279,7 @@ workforce/
 ```
 
 #### Performance Optimization (`src/lib/optimization/`)
+
 ```
 optimization/
 ├── lazy-loading.ts               # Component lazy loading
@@ -279,6 +291,7 @@ optimization/
 ```
 
 #### Caching Layer (`src/lib/cache/`)
+
 ```
 cache/
 ├── redis-client.ts               # Redis connection
@@ -294,6 +307,7 @@ cache/
 ## 4. API ENDPOINTS (New Modules)
 
 ### Benefits Administration
+
 ```
 GET    /api/benefits/plans
 POST   /api/benefits/plans
@@ -310,6 +324,7 @@ GET    /api/benefits/summary/employee/:employeeId
 ```
 
 ### Employee Engagement
+
 ```
 GET    /api/engagement/surveys
 POST   /api/engagement/surveys
@@ -323,6 +338,7 @@ POST   /api/engagement/recognitions
 ```
 
 ### Internal Job Marketplace
+
 ```
 GET    /api/marketplace/postings
 GET    /api/marketplace/postings/available
@@ -336,6 +352,7 @@ GET    /api/marketplace/analytics
 ```
 
 ### Workforce Planning
+
 ```
 GET    /api/workforce/metrics
 GET    /api/workforce/dashboard
@@ -352,6 +369,7 @@ POST   /api/workforce/scenarios/compare
 ## 5. TINH TRANG HIEN TAI
 
 ### Hoat Dong Tot
+
 - Dev server chay on dinh tren port 3000
 - Authentication hoat dong chinh xac
 - 131+ page routes render dung
@@ -365,50 +383,51 @@ POST   /api/workforce/scenarios/compare
 
 ### Demo Accounts
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@demo.com | Admin@123 |
-| HR Manager | hr@demo.com | HRManager@123 |
+| Role       | Email          | Password      |
+| ---------- | -------------- | ------------- |
+| Admin      | admin@demo.com | Admin@123     |
+| HR Manager | hr@demo.com    | HRManager@123 |
 
 ---
 
 ## 6. THONG KE DU AN
 
-| Metric | Gia tri |
-|--------|---------|
-| Dashboard Pages | 131+ routes |
-| API Route Groups | 35+ |
-| UI Components | 39 |
-| Feature Component Dirs | 30+ |
-| Custom Hooks | 29 |
-| Utility/Lib Files | 90+ |
-| Database Models | 150+ |
-| Animations | 24 |
-| E2E Tests | 24+ (all pass) |
-| Total Lines of Code | 100,000+ |
-| Enterprise Modules | 15 |
-| HRM Completeness | 97% |
+| Metric                 | Gia tri        |
+| ---------------------- | -------------- |
+| Dashboard Pages        | 131+ routes    |
+| API Route Groups       | 35+            |
+| UI Components          | 39             |
+| Feature Component Dirs | 30+            |
+| Custom Hooks           | 29             |
+| Utility/Lib Files      | 90+            |
+| Database Models        | 150+           |
+| Animations             | 24             |
+| E2E Tests              | 24+ (all pass) |
+| Total Lines of Code    | 100,000+       |
+| Enterprise Modules     | 15             |
+| HRM Completeness       | 97%            |
 
 ### Code Distribution (New Modules)
 
-| Module | Lines | Files |
-|--------|-------|-------|
-| Benefits Administration | 2,175 | 4 |
-| Employee Engagement | 1,833 | 4 |
-| Internal Job Marketplace | 1,855 | 4 |
-| Workforce Planning | 1,927 | 4 |
-| Compensation Planning | 3,090 | 5 |
-| Succession Planning | 3,876 | 5 |
-| Performance Optimization | 2,400 | 6 |
-| Caching Layer | 1,200 | 6 |
-| React Hooks | 802 | 1 |
-| **Total New Code** | **~22,500** | **39** |
+| Module                   | Lines       | Files  |
+| ------------------------ | ----------- | ------ |
+| Benefits Administration  | 2,175       | 4      |
+| Employee Engagement      | 1,833       | 4      |
+| Internal Job Marketplace | 1,855       | 4      |
+| Workforce Planning       | 1,927       | 4      |
+| Compensation Planning    | 3,090       | 5      |
+| Succession Planning      | 3,876       | 5      |
+| Performance Optimization | 2,400       | 6      |
+| Caching Layer            | 1,200       | 6      |
+| React Hooks              | 802         | 1      |
+| **Total New Code**       | **~22,500** | **39** |
 
 ---
 
 ## 7. HUONG DAN SETUP & CHAY
 
 ### Yeu Cau He Thong
+
 - Node.js 18+ (khuyen nghi 20+)
 - PostgreSQL 14+
 - Redis 6+ (optional, for caching)
@@ -442,24 +461,25 @@ npm run dev
 
 ### Scripts
 
-| Script | Mo ta |
-|--------|-------|
-| `npm run dev` | Start dev server (port 3000) |
-| `npm run build` | Production build |
-| `npm run start` | Start production server |
-| `npm run lint` | ESLint check |
-| `npm run db:generate` | Generate Prisma client |
-| `npm run db:push` | Push schema to DB |
-| `npm run db:seed` | Seed demo data |
-| `npm run db:studio` | Prisma Studio GUI |
-| `npm run test:e2e` | Run E2E tests |
-| `npm run test:stress` | Run K6 stress tests |
+| Script                | Mo ta                        |
+| --------------------- | ---------------------------- |
+| `npm run dev`         | Start dev server (port 3000) |
+| `npm run build`       | Production build             |
+| `npm run start`       | Start production server      |
+| `npm run lint`        | ESLint check                 |
+| `npm run db:generate` | Generate Prisma client       |
+| `npm run db:push`     | Push schema to DB            |
+| `npm run db:seed`     | Seed demo data               |
+| `npm run db:studio`   | Prisma Studio GUI            |
+| `npm run test:e2e`    | Run E2E tests                |
+| `npm run test:stress` | Run K6 stress tests          |
 
 ---
 
 ## 8. HUONG PHAT TRIEN TIEP THEO
 
 ### Con Lai (3%)
+
 1. Unit tests (component tests voi Vitest)
 2. API integration tests
 3. Mobile apps (React Native)
@@ -467,6 +487,7 @@ npm run dev
 5. External integrations (Job boards, Insurance providers)
 
 ### Future Enhancements
+
 - ML-based attrition prediction
 - Smart job matching AI
 - Sentiment analysis for surveys
@@ -478,15 +499,15 @@ npm run dev
 
 ## 9. COMMIT HISTORY (Recent)
 
-| Commit | Mo ta | Date |
-|--------|-------|------|
-| `6d94ef0` | Add Phase 5-6 Enterprise Modules | 2026-01-25 |
-| `88426fe` | Fix recruitment page crash | 2026-01-24 |
+| Commit    | Mo ta                                        | Date       |
+| --------- | -------------------------------------------- | ---------- |
+| `6d94ef0` | Add Phase 5-6 Enterprise Modules             | 2026-01-25 |
+| `88426fe` | Fix recruitment page crash                   | 2026-01-24 |
 | `6ec0639` | Your Company HR v1.0 - Complete AI-First HRM | 2026-01-24 |
-| `850979c` | Bloomberg-style UI/UX upgrade | 2026-01-23 |
+| `850979c` | Bloomberg-style UI/UX upgrade                | 2026-01-23 |
 
 ---
 
-*Cap nhat lan cuoi: 2026-01-25*
-*Nguoi thuc hien: AI Assistant (Claude Opus 4.5)*
-*Trang thai: Production Ready - 97% Complete*
+_Cap nhat lan cuoi: 2026-01-25_
+_Nguoi thuc hien: AI Assistant (Claude Opus 4.5)_
+_Trang thai: Production Ready - 97% Complete_

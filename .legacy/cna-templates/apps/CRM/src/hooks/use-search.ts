@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from "react"
 
 // ── Result Types ──────────────────────────────────────────────────
 
@@ -96,7 +96,7 @@ export function useSearch(query: string, debounceMs = 300) {
       const data: SearchResults = await res.json()
       setResults(data)
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {
+      if (err instanceof DOMException && err.name === "AbortError") {
         return // Cancelled — ignore
       }
       setResults(EMPTY_RESULTS)

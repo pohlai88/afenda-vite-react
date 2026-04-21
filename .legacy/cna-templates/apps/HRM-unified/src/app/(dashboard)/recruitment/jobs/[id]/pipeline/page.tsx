@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useEffect, useState, useCallback } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useEffect, useState, useCallback } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
 import {
   ArrowLeft,
   Filter,
@@ -11,23 +11,23 @@ import {
   Clock,
   TrendingUp,
   RefreshCw,
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { ApplicationPipeline } from '@/components/recruitment/applications/application-pipeline'
-import type { Application } from '@/types/recruitment'
-import { PIPELINE_STAGES } from '@/lib/recruitment/constants'
+} from "@/components/ui/select"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import { ApplicationPipeline } from "@/components/recruitment/applications/application-pipeline"
+import type { Application } from "@/types/recruitment"
+import { PIPELINE_STAGES } from "@/lib/recruitment/constants"
 
 interface JobPosting {
   id: string
@@ -60,20 +60,22 @@ export default function JobPipelinePage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [sourceFilter, setSourceFilter] = useState<string>('all')
+  const [searchTerm, setSearchTerm] = useState("")
+  const [sourceFilter, setSourceFilter] = useState<string>("all")
 
   const fetchPipelineData = useCallback(async () => {
     try {
       // Fetch job details
       const jobRes = await fetch(`/api/recruitment/jobs/${jobId}`)
-      if (!jobRes.ok) throw new Error('Không thể tải thông tin công việc')
+      if (!jobRes.ok) throw new Error("Không thể tải thông tin công việc")
       const jobData = await jobRes.json()
       setJob(jobData.data ?? jobData)
 
       // Fetch applications for this job
-      const appsRes = await fetch(`/api/recruitment/applications?jobId=${jobId}`)
-      if (!appsRes.ok) throw new Error('Không thể tải danh sách ứng viên')
+      const appsRes = await fetch(
+        `/api/recruitment/applications?jobId=${jobId}`
+      )
+      if (!appsRes.ok) throw new Error("Không thể tải danh sách ứng viên")
       const appsData = await appsRes.json()
       const applications: Application[] = appsData.data || appsData || []
 
@@ -84,7 +86,7 @@ export default function JobPipelinePage() {
       })
 
       applications.forEach((app: Application) => {
-        const status = app.status || 'NEW'
+        const status = app.status || "NEW"
         if (!grouped[status]) {
           grouped[status] = []
         }
@@ -100,10 +102,13 @@ export default function JobPipelinePage() {
         (app: Application) => new Date(app.createdAt) >= weekAgo
       ).length
 
-      const hired = applications.filter((app: Application) => app.status === 'HIRED')
-      const conversionRate = applications.length > 0
-        ? Math.round((hired.length / applications.length) * 100)
-        : 0
+      const hired = applications.filter(
+        (app: Application) => app.status === "HIRED"
+      )
+      const conversionRate =
+        applications.length > 0
+          ? Math.round((hired.length / applications.length) * 100)
+          : 0
 
       // Calculate average time to hire for hired candidates
       let avgTimeToHire = 0
@@ -111,7 +116,12 @@ export default function JobPipelinePage() {
         const totalDays = hired.reduce((sum: number, app: Application) => {
           const start = new Date(app.createdAt)
           // Use current date as estimate since we don't have hiredAt timestamp
-          return sum + Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+          return (
+            sum +
+            Math.floor(
+              (now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+            )
+          )
         }, 0)
         avgTimeToHire = Math.round(totalDays / hired.length)
       }
@@ -123,7 +133,7 @@ export default function JobPipelinePage() {
         conversionRate,
       })
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
     } finally {
       setLoading(false)
       setRefreshing(false)
@@ -139,15 +149,21 @@ export default function JobPipelinePage() {
     await fetchPipelineData()
   }
 
-  const handleStatusChange = async (applicationId: string, newStatus: string) => {
+  const handleStatusChange = async (
+    applicationId: string,
+    newStatus: string
+  ) => {
     try {
-      const res = await fetch(`/api/recruitment/applications/${applicationId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
-      })
+      const res = await fetch(
+        `/api/recruitment/applications/${applicationId}/status`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      )
 
-      if (!res.ok) throw new Error('Không thể cập nhật trạng thái')
+      if (!res.ok) throw new Error("Không thể cập nhật trạng thái")
 
       // Update local state
       setPipeline((prev) => {
@@ -176,7 +192,7 @@ export default function JobPipelinePage() {
         return newPipeline
       })
     } catch (err: unknown) {
-      console.error('Status change error:', err)
+      console.error("Status change error:", err)
       // Refresh to get correct state
       fetchPipelineData()
     }
@@ -200,7 +216,7 @@ export default function JobPipelinePage() {
         )
       }
 
-      if (sourceFilter !== 'all') {
+      if (sourceFilter !== "all") {
         filtered = filtered.filter((app) => app.source === sourceFilter)
       }
 
@@ -218,7 +234,7 @@ export default function JobPipelinePage() {
         <PageHeader title="Pipeline tuyển dụng" />
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            {error || 'Không tìm thấy công việc'}
+            {error || "Không tìm thấy công việc"}
           </CardContent>
         </Card>
       </div>
@@ -229,8 +245,15 @@ export default function JobPipelinePage() {
     <div className="space-y-6">
       <PageHeader title={`Pipeline: ${job.title}`} description={job.department}>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
-            <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}
+          >
+            <RefreshCw
+              className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
+            />
             Làm mới
           </Button>
           <Link href={`/recruitment/jobs/${jobId}`}>
@@ -264,7 +287,9 @@ export default function JobPipelinePage() {
             <TrendingUp className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">+{stats.newThisWeek}</div>
+            <div className="text-2xl font-bold text-green-600">
+              +{stats.newThisWeek}
+            </div>
           </CardContent>
         </Card>
 
@@ -328,7 +353,11 @@ export default function JobPipelinePage() {
             {/* Stage counts */}
             <div className="flex items-center gap-2 ml-auto">
               {PIPELINE_STAGES.slice(0, 6).map((stage) => (
-                <Badge key={stage.id} variant="secondary" className={stage.color}>
+                <Badge
+                  key={stage.id}
+                  variant="secondary"
+                  className={stage.color}
+                >
                   {stage.label}: {filteredPipeline[stage.id]?.length || 0}
                 </Badge>
               ))}

@@ -1,51 +1,51 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { UserMinus, TrendingUp, TrendingDown } from 'lucide-react';
-import { WidgetContainer } from './widget-container';
-import { cn } from '@/lib/utils';
+import { useEffect, useState } from "react"
+import { UserMinus, TrendingUp, TrendingDown } from "lucide-react"
+import { WidgetContainer } from "./widget-container"
+import { cn } from "@/lib/utils"
 
 interface TurnoverData {
-  rate: number;
-  previousRate: number;
-  trend: 'up' | 'down' | 'neutral';
-  resigned: number;
-  hired: number;
+  rate: number
+  previousRate: number
+  trend: "up" | "down" | "neutral"
+  resigned: number
+  hired: number
 }
 
 interface TurnoverWidgetProps {
-  id?: string;
-  onRemove?: (id: string) => void;
-  isDragging?: boolean;
-  className?: string;
+  id?: string
+  onRemove?: (id: string) => void
+  isDragging?: boolean
+  className?: string
 }
 
 export function TurnoverWidget({
-  id = 'turnover',
+  id = "turnover",
   onRemove,
   isDragging,
   className,
 }: TurnoverWidgetProps) {
-  const [data, setData] = useState<TurnoverData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<TurnoverData | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch('/api/analytics/turnover');
+        const response = await fetch("/api/analytics/turnover")
         if (response.ok) {
-          const result = await response.json();
-          setData(result);
+          const result = await response.json()
+          setData(result)
         }
       } catch (error) {
-        console.error('Failed to fetch turnover data:', error);
+        console.error("Failed to fetch turnover data:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   return (
     <WidgetContainer
@@ -68,17 +68,24 @@ export function TurnoverWidget({
             </div>
             <div>
               <p className="text-2xl font-bold">{data.rate.toFixed(1)}%</p>
-              <div className={cn(
-                'flex items-center gap-1 text-xs',
-                data.trend === 'down' ? 'text-green-600' : data.trend === 'up' ? 'text-red-600' : 'text-muted-foreground'
-              )}>
-                {data.trend === 'up' ? (
+              <div
+                className={cn(
+                  "flex items-center gap-1 text-xs",
+                  data.trend === "down"
+                    ? "text-green-600"
+                    : data.trend === "up"
+                      ? "text-red-600"
+                      : "text-muted-foreground"
+                )}
+              >
+                {data.trend === "up" ? (
                   <TrendingUp className="h-3 w-3" />
                 ) : (
                   <TrendingDown className="h-3 w-3" />
                 )}
                 <span>
-                  {Math.abs(data.rate - data.previousRate).toFixed(1)}% so với tháng trước
+                  {Math.abs(data.rate - data.previousRate).toFixed(1)}% so với
+                  tháng trước
                 </span>
               </div>
             </div>
@@ -86,11 +93,15 @@ export function TurnoverWidget({
 
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="rounded-md bg-red-50 dark:bg-red-950 p-2 text-center">
-              <p className="text-lg font-semibold text-red-600">{data.resigned}</p>
+              <p className="text-lg font-semibold text-red-600">
+                {data.resigned}
+              </p>
               <p className="text-xs text-muted-foreground">Nghỉ việc</p>
             </div>
             <div className="rounded-md bg-green-50 dark:bg-green-950 p-2 text-center">
-              <p className="text-lg font-semibold text-green-600">{data.hired}</p>
+              <p className="text-lg font-semibold text-green-600">
+                {data.hired}
+              </p>
               <p className="text-xs text-muted-foreground">Tuyển mới</p>
             </div>
           </div>
@@ -99,5 +110,5 @@ export function TurnoverWidget({
         <p className="text-sm text-muted-foreground">Không có dữ liệu</p>
       )}
     </WidgetContainer>
-  );
+  )
 }

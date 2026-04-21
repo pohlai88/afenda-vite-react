@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { SheetContextMenu } from '../SheetTabs/SheetContextMenu';
+import React, { useState } from "react"
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { SheetContextMenu } from "../SheetTabs/SheetContextMenu"
 
 export const SheetTabs2026: React.FC = () => {
-  const { sheets, activeSheetId, setActiveSheet, addSheet } = useWorkbookStore();
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; sheetId: string } | null>(null);
+  const { sheets, activeSheetId, setActiveSheet, addSheet } = useWorkbookStore()
+  const [contextMenu, setContextMenu] = useState<{
+    x: number
+    y: number
+    sheetId: string
+  } | null>(null)
 
-  const sheetList = Object.values(sheets);
+  const sheetList = Object.values(sheets)
 
   const handleContextMenu = (e: React.MouseEvent, sheetId: string) => {
-    e.preventDefault();
-    setContextMenu({ x: e.clientX, y: e.clientY, sheetId });
-  };
+    e.preventDefault()
+    setContextMenu({ x: e.clientX, y: e.clientY, sheetId })
+  }
 
   const handleAddSheet = () => {
     const newSheet = {
@@ -20,9 +24,9 @@ export const SheetTabs2026: React.FC = () => {
       name: `Sheet${sheetList.length + 1}`,
       index: sheetList.length,
       cells: {},
-    };
-    addSheet(newSheet);
-  };
+    }
+    addSheet(newSheet)
+  }
 
   return (
     <div className="sheet-tabs-2026">
@@ -39,7 +43,7 @@ export const SheetTabs2026: React.FC = () => {
         {sheetList.map((sheet) => (
           <button
             key={sheet.id}
-            className={`sheet-tab-2026 ${sheet.id === activeSheetId ? 'sheet-tab-2026--active' : ''}`}
+            className={`sheet-tab-2026 ${sheet.id === activeSheetId ? "sheet-tab-2026--active" : ""}`}
             onClick={() => setActiveSheet(sheet.id)}
             onContextMenu={(e) => handleContextMenu(e, sheet.id)}
           >
@@ -65,5 +69,5 @@ export const SheetTabs2026: React.FC = () => {
         />
       )}
     </div>
-  );
-};
+  )
+}

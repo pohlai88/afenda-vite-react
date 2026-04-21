@@ -6,8 +6,8 @@
  */
 
 // Types
-export * from './types/benefits.types';
+export * from "./types/benefits.types"
 
 // Services
-export { BenefitsService } from './services/benefits.service';
-export { default as BenefitsServiceDefault } from './services/benefits.service';
+export { BenefitsService } from "./services/benefits.service"
+export { default as BenefitsServiceDefault } from "./services/benefits.service"

@@ -1,35 +1,35 @@
-'use client'
+"use client"
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { JOB_TYPE, WORK_MODE } from '@/lib/recruitment/constants'
-import type { JobPosting, JobRequisition } from '@/types/recruitment'
-import { Loader2 } from 'lucide-react'
+} from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { JOB_TYPE, WORK_MODE } from "@/lib/recruitment/constants"
+import type { JobPosting, JobRequisition } from "@/types/recruitment"
+import { Loader2 } from "lucide-react"
 
 const jobPostingSchema = z.object({
-  requisitionId: z.string().min(1, 'Vui lòng chọn yêu cầu tuyển dụng'),
-  title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
-  description: z.string().min(1, 'Vui lòng nhập mô tả'),
-  requirements: z.string().min(1, 'Vui lòng nhập yêu cầu'),
+  requisitionId: z.string().min(1, "Vui lòng chọn yêu cầu tuyển dụng"),
+  title: z.string().min(1, "Vui lòng nhập tiêu đề"),
+  description: z.string().min(1, "Vui lòng nhập mô tả"),
+  requirements: z.string().min(1, "Vui lòng nhập yêu cầu"),
   benefits: z.string().optional(),
   location: z.string().optional(),
-  jobType: z.string().min(1, 'Vui lòng chọn loại công việc'),
-  workMode: z.string().min(1, 'Vui lòng chọn hình thức'),
+  jobType: z.string().min(1, "Vui lòng chọn loại công việc"),
+  workMode: z.string().min(1, "Vui lòng chọn hình thức"),
   salaryDisplay: z.string().optional(),
   isInternal: z.boolean(),
   isPublic: z.boolean(),
@@ -62,35 +62,35 @@ export function JobPostingForm({
   } = useForm<JobPostingFormData>({
     resolver: zodResolver(jobPostingSchema),
     defaultValues: {
-      requisitionId: jobPosting?.requisitionId || '',
-      title: jobPosting?.title || '',
-      description: jobPosting?.description || '',
-      requirements: jobPosting?.requirements || '',
-      benefits: jobPosting?.benefits || '',
-      location: jobPosting?.location || '',
-      jobType: jobPosting?.jobType || '',
-      workMode: jobPosting?.workMode || '',
-      salaryDisplay: jobPosting?.salaryDisplay || '',
+      requisitionId: jobPosting?.requisitionId || "",
+      title: jobPosting?.title || "",
+      description: jobPosting?.description || "",
+      requirements: jobPosting?.requirements || "",
+      benefits: jobPosting?.benefits || "",
+      location: jobPosting?.location || "",
+      jobType: jobPosting?.jobType || "",
+      workMode: jobPosting?.workMode || "",
+      salaryDisplay: jobPosting?.salaryDisplay || "",
       isInternal: jobPosting?.isInternal ?? false,
       isPublic: jobPosting?.isPublic ?? true,
       expiresAt: jobPosting?.expiresAt
-        ? new Date(jobPosting.expiresAt).toISOString().split('T')[0]
-        : '',
+        ? new Date(jobPosting.expiresAt).toISOString().split("T")[0]
+        : "",
     },
   })
 
   const handleRequisitionChange = (requisitionId: string) => {
-    setValue('requisitionId', requisitionId)
+    setValue("requisitionId", requisitionId)
     const req = requisitions.find((r) => r.id === requisitionId)
     if (req && !jobPosting) {
-      setValue('title', req.title)
-      setValue('description', req.description || '')
-      setValue('requirements', req.requirements || '')
-      setValue('benefits', req.benefits || '')
-      setValue('location', req.location || '')
-      setValue('jobType', req.jobType)
-      setValue('workMode', req.workMode)
-      setValue('salaryDisplay', req.salaryDisplay || '')
+      setValue("title", req.title)
+      setValue("description", req.description || "")
+      setValue("requirements", req.requirements || "")
+      setValue("benefits", req.benefits || "")
+      setValue("location", req.location || "")
+      setValue("jobType", req.jobType)
+      setValue("workMode", req.workMode)
+      setValue("salaryDisplay", req.salaryDisplay || "")
     }
   }
 
@@ -104,7 +104,7 @@ export function JobPostingForm({
           <div className="space-y-2">
             <Label>Yêu cầu tuyển dụng *</Label>
             <Select
-              value={watch('requisitionId')}
+              value={watch("requisitionId")}
               onValueChange={handleRequisitionChange}
             >
               <SelectTrigger>
@@ -119,7 +119,9 @@ export function JobPostingForm({
               </SelectContent>
             </Select>
             {errors.requisitionId && (
-              <p className="text-sm text-red-500">{errors.requisitionId.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.requisitionId.message}
+              </p>
             )}
           </div>
 
@@ -128,7 +130,7 @@ export function JobPostingForm({
             <Input
               id="title"
               placeholder="VD: Tuyển Senior Frontend Developer"
-              {...register('title')}
+              {...register("title")}
             />
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title.message}</p>
@@ -139,8 +141,8 @@ export function JobPostingForm({
             <div className="space-y-2">
               <Label>Loại công việc *</Label>
               <Select
-                value={watch('jobType')}
-                onValueChange={(val) => setValue('jobType', val)}
+                value={watch("jobType")}
+                onValueChange={(val) => setValue("jobType", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn loại" />
@@ -161,8 +163,8 @@ export function JobPostingForm({
             <div className="space-y-2">
               <Label>Hình thức *</Label>
               <Select
-                value={watch('workMode')}
-                onValueChange={(val) => setValue('workMode', val)}
+                value={watch("workMode")}
+                onValueChange={(val) => setValue("workMode", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn hình thức" />
@@ -176,7 +178,9 @@ export function JobPostingForm({
                 </SelectContent>
               </Select>
               {errors.workMode && (
-                <p className="text-sm text-red-500">{errors.workMode.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.workMode.message}
+                </p>
               )}
             </div>
 
@@ -185,7 +189,7 @@ export function JobPostingForm({
               <Input
                 id="location"
                 placeholder="VD: TP.HCM"
-                {...register('location')}
+                {...register("location")}
               />
             </div>
           </div>
@@ -196,17 +200,13 @@ export function JobPostingForm({
               <Input
                 id="salaryDisplay"
                 placeholder="VD: 20-35 triệu"
-                {...register('salaryDisplay')}
+                {...register("salaryDisplay")}
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="expiresAt">Ngày hết hạn</Label>
-              <Input
-                id="expiresAt"
-                type="date"
-                {...register('expiresAt')}
-              />
+              <Input id="expiresAt" type="date" {...register("expiresAt")} />
             </div>
           </div>
         </CardContent>
@@ -223,10 +223,12 @@ export function JobPostingForm({
               id="description"
               placeholder="Mô tả chi tiết công việc..."
               rows={6}
-              {...register('description')}
+              {...register("description")}
             />
             {errors.description && (
-              <p className="text-sm text-red-500">{errors.description.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.description.message}
+              </p>
             )}
           </div>
 
@@ -236,10 +238,12 @@ export function JobPostingForm({
               id="requirements"
               placeholder="Yêu cầu ứng viên..."
               rows={6}
-              {...register('requirements')}
+              {...register("requirements")}
             />
             {errors.requirements && (
-              <p className="text-sm text-red-500">{errors.requirements.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.requirements.message}
+              </p>
             )}
           </div>
 
@@ -249,7 +253,7 @@ export function JobPostingForm({
               id="benefits"
               placeholder="Quyền lợi khi làm việc..."
               rows={4}
-              {...register('benefits')}
+              {...register("benefits")}
             />
           </div>
         </CardContent>
@@ -263,8 +267,8 @@ export function JobPostingForm({
           <div className="flex items-center space-x-2">
             <Checkbox
               id="isPublic"
-              checked={watch('isPublic')}
-              onCheckedChange={(checked) => setValue('isPublic', !!checked)}
+              checked={watch("isPublic")}
+              onCheckedChange={(checked) => setValue("isPublic", !!checked)}
             />
             <Label htmlFor="isPublic" className="cursor-pointer">
               Hiển thị trên trang tuyển dụng công khai
@@ -273,8 +277,8 @@ export function JobPostingForm({
           <div className="flex items-center space-x-2">
             <Checkbox
               id="isInternal"
-              checked={watch('isInternal')}
-              onCheckedChange={(checked) => setValue('isInternal', !!checked)}
+              checked={watch("isInternal")}
+              onCheckedChange={(checked) => setValue("isInternal", !!checked)}
             />
             <Label htmlFor="isInternal" className="cursor-pointer">
               Tin tuyển dụng nội bộ
@@ -291,7 +295,7 @@ export function JobPostingForm({
         </Button>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {jobPosting ? 'Cập nhật' : 'Tạo tin tuyển dụng'}
+          {jobPosting ? "Cập nhật" : "Tạo tin tuyển dụng"}
         </Button>
       </div>
     </form>

@@ -341,13 +341,13 @@ curl -s https://api.tpm.company.com/api/admin/jobs/{jobId} \
 
 ### Scheduled Job Schedule
 
-| Job | Schedule | Description |
-|-----|----------|-------------|
-| Accrual Calculation | Daily 2:00 AM | Calculate daily accruals |
-| Report Generation | Monthly 1st, 6:00 AM | Generate monthly reports |
-| Data Cleanup | Weekly Sunday, 3:00 AM | Archive old data |
-| ERP Sync | Hourly | Sync customer/product data |
-| Email Digest | Daily 8:00 AM | Send pending notifications |
+| Job                 | Schedule               | Description                |
+| ------------------- | ---------------------- | -------------------------- |
+| Accrual Calculation | Daily 2:00 AM          | Calculate daily accruals   |
+| Report Generation   | Monthly 1st, 6:00 AM   | Generate monthly reports   |
+| Data Cleanup        | Weekly Sunday, 3:00 AM | Archive old data           |
+| ERP Sync            | Hourly                 | Sync customer/product data |
+| Email Digest        | Daily 8:00 AM          | Send pending notifications |
 
 ---
 
@@ -386,11 +386,11 @@ echo "=== Check Complete ==="
 
 ### Monitoring Endpoints
 
-| Endpoint | Purpose | Expected Response |
-|----------|---------|-------------------|
-| `/api/health` | Full health status | `{"status": "healthy"}` |
-| `/api/health/live` | Liveness probe | `{"status": "ok"}` |
-| `/api/health/ready` | Readiness probe | `{"status": "ready"}` |
+| Endpoint            | Purpose            | Expected Response       |
+| ------------------- | ------------------ | ----------------------- |
+| `/api/health`       | Full health status | `{"status": "healthy"}` |
+| `/api/health/live`  | Liveness probe     | `{"status": "ok"}`      |
+| `/api/health/ready` | Readiness probe    | `{"status": "ready"}`   |
 
 ---
 
@@ -398,11 +398,11 @@ echo "=== Check Complete ==="
 
 ### Common URLs
 
-| Environment | Web | API |
-|-------------|-----|-----|
-| Production | https://tpm.company.com | https://api.tpm.company.com |
-| Staging | https://staging.tpm.company.com | https://api-staging.tpm.company.com |
-| Local | http://localhost:5173 | http://localhost:3001 |
+| Environment | Web                             | API                                 |
+| ----------- | ------------------------------- | ----------------------------------- |
+| Production  | https://tpm.company.com         | https://api.tpm.company.com         |
+| Staging     | https://staging.tpm.company.com | https://api-staging.tpm.company.com |
+| Local       | http://localhost:5173           | http://localhost:3001               |
 
 ### Common Commands
 
@@ -429,8 +429,8 @@ redis-cli -u $REDIS_URL     # Connect to Redis
 
 ### Emergency Contacts
 
-| Role | Name | Contact |
-|------|------|---------|
-| On-Call | Rotating | PagerDuty |
-| DevOps Lead | [Name] | [Phone] |
-| Engineering Lead | [Name] | [Phone] |
+| Role             | Name     | Contact   |
+| ---------------- | -------- | --------- |
+| On-Call          | Rotating | PagerDuty |
+| DevOps Lead      | [Name]   | [Phone]   |
+| Engineering Lead | [Name]   | [Phone]   |

@@ -3,6 +3,7 @@
 ## 📋 Overview
 
 Phase 5 bổ sung 2 module enterprise-grade cho LAC VIET HR:
+
 1. **Compensation Planning** - Quản lý lương thưởng và ngân sách
 2. **Succession Planning** - Quản lý kế nhiệm và phát triển nhân tài
 
@@ -37,26 +38,26 @@ vierp-hrm-phase5/
 
 ### Features
 
-| Feature | Description |
-|---------|-------------|
-| **Compensation Cycles** | Annual/Mid-year/Quarterly cycles với workflow |
-| **Budget Management** | Phân bổ ngân sách theo department, theo pool |
-| **Merit Matrix** | Ma trận tăng lương theo performance & compa-ratio |
-| **Salary Structure** | Quản lý salary grades, bands, ranges |
-| **Adjustments** | Merit increase, promotion, bonus, equity |
-| **Total Rewards** | Báo cáo tổng thu nhập cho nhân viên |
-| **Analytics** | Phân tích compa-ratio, budget utilization |
+| Feature                 | Description                                       |
+| ----------------------- | ------------------------------------------------- |
+| **Compensation Cycles** | Annual/Mid-year/Quarterly cycles với workflow     |
+| **Budget Management**   | Phân bổ ngân sách theo department, theo pool      |
+| **Merit Matrix**        | Ma trận tăng lương theo performance & compa-ratio |
+| **Salary Structure**    | Quản lý salary grades, bands, ranges              |
+| **Adjustments**         | Merit increase, promotion, bonus, equity          |
+| **Total Rewards**       | Báo cáo tổng thu nhập cho nhân viên               |
+| **Analytics**           | Phân tích compa-ratio, budget utilization         |
 
 ### Data Models
 
 ```typescript
 // Core entities
-- CompensationCycle       // Chu kỳ điều chỉnh lương
-- BudgetPoolAllocation    // Phân bổ ngân sách
-- MeritMatrix             // Ma trận merit increase
-- SalaryGrade             // Bậc lương
-- CompensationAdjustment  // Đề xuất điều chỉnh
-- TotalRewardsStatement   // Báo cáo tổng thu nhập
+;-CompensationCycle - // Chu kỳ điều chỉnh lương
+  BudgetPoolAllocation - // Phân bổ ngân sách
+  MeritMatrix - // Ma trận merit increase
+  SalaryGrade - // Bậc lương
+  CompensationAdjustment - // Đề xuất điều chỉnh
+  TotalRewardsStatement // Báo cáo tổng thu nhập
 ```
 
 ### API Endpoints
@@ -104,28 +105,28 @@ Performance   ┌─────────────────────
 
 ### Features
 
-| Feature | Description |
-|---------|-------------|
+| Feature                | Description                                 |
+| ---------------------- | ------------------------------------------- |
 | **Critical Positions** | Xác định vị trí quan trọng, đánh giá rủi ro |
-| **Talent Profiles** | Hồ sơ nhân tài với competency, experience |
-| **9-Box Grid** | Performance vs Potential matrix |
-| **Succession Plans** | Kế hoạch kế nhiệm với successor pipeline |
-| **Development Plans** | Lộ trình phát triển cá nhân |
-| **Talent Pools** | Nhóm nhân tài (HiPo, Leadership, etc.) |
-| **Analytics** | Dashboard & báo cáo toàn diện |
+| **Talent Profiles**    | Hồ sơ nhân tài với competency, experience   |
+| **9-Box Grid**         | Performance vs Potential matrix             |
+| **Succession Plans**   | Kế hoạch kế nhiệm với successor pipeline    |
+| **Development Plans**  | Lộ trình phát triển cá nhân                 |
+| **Talent Pools**       | Nhóm nhân tài (HiPo, Leadership, etc.)      |
+| **Analytics**          | Dashboard & báo cáo toàn diện               |
 
 ### Data Models
 
 ```typescript
 // Core entities
-- CriticalPosition        // Vị trí quan trọng
-- TalentProfile           // Hồ sơ nhân tài
-- SuccessionPlan          // Kế hoạch kế nhiệm
-- SuccessorCandidate      // Ứng viên kế nhiệm
-- DevelopmentPlan         // Kế hoạch phát triển
-- DevelopmentActivity     // Hoạt động phát triển
-- TalentPool              // Nhóm nhân tài
-- NineBoxGrid             // 9-box matrix
+;-CriticalPosition - // Vị trí quan trọng
+  TalentProfile - // Hồ sơ nhân tài
+  SuccessionPlan - // Kế hoạch kế nhiệm
+  SuccessorCandidate - // Ứng viên kế nhiệm
+  DevelopmentPlan - // Kế hoạch phát triển
+  DevelopmentActivity - // Hoạt động phát triển
+  TalentPool - // Nhóm nhân tài
+  NineBoxGrid // 9-box matrix
 ```
 
 ### 9-Box Grid
@@ -146,13 +147,13 @@ LOW PERF    │  Inconsistent   │  Up or Out          │  Talent Risk    │
 
 ### Successor Readiness Levels
 
-| Level | Description | Development Time |
-|-------|-------------|------------------|
-| Ready Now | Có thể đảm nhận ngay | 0-3 months |
-| Ready 1 Year | Cần phát triển thêm | 6-12 months |
-| Ready 2 Years | Pipeline tiềm năng | 12-24 months |
-| Ready 3+ Years | Long-term potential | 24+ months |
-| Not Ready | Gaps đáng kể | Significant development |
+| Level          | Description          | Development Time        |
+| -------------- | -------------------- | ----------------------- |
+| Ready Now      | Có thể đảm nhận ngay | 0-3 months              |
+| Ready 1 Year   | Cần phát triển thêm  | 6-12 months             |
+| Ready 2 Years  | Pipeline tiềm năng   | 12-24 months            |
+| Ready 3+ Years | Long-term potential  | 24+ months              |
+| Not Ready      | Gaps đáng kể         | Significant development |
 
 ### API Endpoints
 
@@ -277,18 +278,22 @@ model SuccessionPlan {
 ## 📈 Integration with Existing Modules
 
 ### Performance Management
+
 - Sync performance ratings to Talent Profiles
 - Link reviews to Merit Matrix recommendations
 
 ### Recruitment (ATS)
+
 - Source from Talent Pools
 - Track internal vs external hires
 
 ### Learning (LMS)
+
 - Link courses to Development Activities
 - Track competency development
 
 ### Payroll
+
 - Implement approved Compensation Adjustments
 - Generate salary change records
 
@@ -297,12 +302,14 @@ model SuccessionPlan {
 ## 🇻🇳 Vietnam-Specific Considerations
 
 ### Compensation
+
 - VND currency support
 - PIT (Personal Income Tax) integration
 - Social insurance contribution tracking
 - 13th month salary handling
 
 ### Succession
+
 - Vietnamese naming conventions
 - Local competency frameworks
 - Cultural factors in talent assessment
@@ -311,14 +318,14 @@ model SuccessionPlan {
 
 ## 📁 File Summary
 
-| File | Lines | Description |
-|------|-------|-------------|
-| compensation.types.ts | ~650 | Types, enums, interfaces |
-| compensation.service.ts | ~750 | Business logic |
-| compensation.controller.ts | ~350 | REST API |
-| succession.types.ts | ~850 | Types, enums, interfaces |
-| succession.service.ts | ~900 | Business logic |
-| succession.controller.ts | ~280 | REST API |
+| File                       | Lines | Description              |
+| -------------------------- | ----- | ------------------------ |
+| compensation.types.ts      | ~650  | Types, enums, interfaces |
+| compensation.service.ts    | ~750  | Business logic           |
+| compensation.controller.ts | ~350  | REST API                 |
+| succession.types.ts        | ~850  | Types, enums, interfaces |
+| succession.service.ts      | ~900  | Business logic           |
+| succession.controller.ts   | ~280  | REST API                 |
 
 **Total: ~3,780 lines of code**
 
@@ -326,11 +333,11 @@ model SuccessionPlan {
 
 ## 🎯 Product Maturity After Phase 5
 
-| Module | Before | After |
-|--------|--------|-------|
-| Compensation Planning | 60% | **95%** |
-| Succession Planning | 50% | **95%** |
-| Overall HRM Completeness | 85% | **92%** |
+| Module                   | Before | After   |
+| ------------------------ | ------ | ------- |
+| Compensation Planning    | 60%    | **95%** |
+| Succession Planning      | 50%    | **95%** |
+| Overall HRM Completeness | 85%    | **92%** |
 
 ---
 

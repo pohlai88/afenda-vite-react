@@ -13,14 +13,31 @@ import type {
   RequestContext,
   SessionContext,
 } from "../contract/request-context.js"
-import type { MiddlewareHandler } from "hono"
+import type { Context, MiddlewareHandler } from "hono"
 
-function defaultSession(): SessionContext {
+export function createAnonymousSessionContext(): SessionContext {
   return {
     authenticated: false,
+    authSessionId: null,
     userId: null,
     membershipId: null,
     tenantId: null,
+  }
+}
+
+export function setSessionContext(
+  context: Context,
+  session: SessionContext
+): void {
+  context.set("session", session)
+
+  const requestContext = context.get("requestContext") as
+    | RequestContext
+    | undefined
+
+  if (requestContext) {
+    requestContext.session = session
+    context.set("requestContext", requestContext)
   }
 }
 
@@ -30,7 +47,7 @@ export const requestContextMiddleware: MiddlewareHandler = async (c, next) => {
   c.header("x-request-id", requestId)
   c.set("requestId", requestId)
 
-  const session = defaultSession()
+  const session = createAnonymousSessionContext()
 
   const requestContext: RequestContext = {
     requestId,
@@ -40,7 +57,7 @@ export const requestContextMiddleware: MiddlewareHandler = async (c, next) => {
   }
 
   c.set("requestContext", requestContext)
-  c.set("session", session)
+  setSessionContext(c, session)
 
   await next()
 }

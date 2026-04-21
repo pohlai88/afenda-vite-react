@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react"
 
 interface SelectionProps {
-  row: number;
-  col: number;
-  cellWidth: number;
-  cellHeight: number;
-  headerWidth: number;
-  headerHeight: number;
+  row: number
+  col: number
+  cellWidth: number
+  cellHeight: number
+  headerWidth: number
+  headerHeight: number
 }
 
 export const Selection: React.FC<SelectionProps> = ({
@@ -27,18 +27,18 @@ export const Selection: React.FC<SelectionProps> = ({
         height: cellHeight + 2,
       }}
     />
-  );
-};
+  )
+}
 
 interface RangeSelectionProps {
-  startRow: number;
-  startCol: number;
-  endRow: number;
-  endCol: number;
-  cellWidth: number;
-  cellHeight: number;
-  headerWidth: number;
-  headerHeight: number;
+  startRow: number
+  startCol: number
+  endRow: number
+  endCol: number
+  cellWidth: number
+  cellHeight: number
+  headerWidth: number
+  headerHeight: number
 }
 
 export const RangeSelection: React.FC<RangeSelectionProps> = ({
@@ -51,13 +51,13 @@ export const RangeSelection: React.FC<RangeSelectionProps> = ({
   headerWidth,
   headerHeight,
 }) => {
-  const minRow = Math.min(startRow, endRow);
-  const maxRow = Math.max(startRow, endRow);
-  const minCol = Math.min(startCol, endCol);
-  const maxCol = Math.max(startCol, endCol);
+  const minRow = Math.min(startRow, endRow)
+  const maxRow = Math.max(startRow, endRow)
+  const minCol = Math.min(startCol, endCol)
+  const maxCol = Math.max(startCol, endCol)
 
-  const width = (maxCol - minCol + 1) * cellWidth;
-  const height = (maxRow - minRow + 1) * cellHeight;
+  const width = (maxCol - minCol + 1) * cellWidth
+  const height = (maxRow - minRow + 1) * cellHeight
 
   return (
     <div
@@ -69,5 +69,5 @@ export const RangeSelection: React.FC<RangeSelectionProps> = ({
         height,
       }}
     />
-  );
-};
+  )
+}

@@ -1,20 +1,20 @@
 // src/app/api/admin/retention/route.ts
 // Data Retention Policy API (P2-21)
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
 import {
   getRetentionPolicies,
   updateRetentionPolicy,
   initDefaultPolicies,
   executeRetentionPolicies,
-} from '@/services/retention.service'
-import { z } from 'zod'
+} from "@/services/retention.service"
+import { z } from "zod"
 
 const updateSchema = z.object({
   policyId: z.string().min(1),
   retentionDays: z.number().min(1).optional(),
-  action: z.enum(['archive', 'anonymize', 'delete']).optional(),
+  action: z.enum(["archive", "anonymize", "delete"]).optional(),
   isActive: z.boolean().optional(),
 })
 
@@ -22,8 +22,11 @@ const updateSchema = z.object({
 export async function GET() {
   try {
     const session = await auth()
-    if (!session?.user || !['SUPER_ADMIN', 'ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (
+      !session?.user ||
+      !["SUPER_ADMIN", "ADMIN"].includes(session.user.role)
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const tenantId = session.user.tenantId
@@ -34,8 +37,8 @@ export async function GET() {
     const policies = await getRetentionPolicies(tenantId)
     return NextResponse.json({ success: true, data: policies })
   } catch (error) {
-    console.error('List retention policies error:', error)
-    return NextResponse.json({ error: 'Lỗi server' }, { status: 500 })
+    console.error("List retention policies error:", error)
+    return NextResponse.json({ error: "Lỗi server" }, { status: 500 })
   }
 }
 
@@ -43,8 +46,11 @@ export async function GET() {
 export async function PATCH(request: NextRequest) {
   try {
     const session = await auth()
-    if (!session?.user || !['SUPER_ADMIN', 'ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (
+      !session?.user ||
+      !["SUPER_ADMIN", "ADMIN"].includes(session.user.role)
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const body = await request.json()
@@ -59,12 +65,15 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ success: true, data: policy })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Dữ liệu không hợp lệ', details: error.issues }, { status: 400 })
+      return NextResponse.json(
+        { error: "Dữ liệu không hợp lệ", details: error.issues },
+        { status: 400 }
+      )
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    return NextResponse.json({ error: 'Lỗi server' }, { status: 500 })
+    return NextResponse.json({ error: "Lỗi server" }, { status: 500 })
   }
 }
 
@@ -72,8 +81,8 @@ export async function PATCH(request: NextRequest) {
 export async function POST() {
   try {
     const session = await auth()
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!session?.user || session.user.role !== "SUPER_ADMIN") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const results = await executeRetentionPolicies(session.user.tenantId)
@@ -81,10 +90,10 @@ export async function POST() {
     return NextResponse.json({
       success: true,
       data: results,
-      message: 'Đã chạy chính sách lưu trữ thành công',
+      message: "Đã chạy chính sách lưu trữ thành công",
     })
   } catch (error) {
-    console.error('Execute retention error:', error)
-    return NextResponse.json({ error: 'Lỗi server' }, { status: 500 })
+    console.error("Execute retention error:", error)
+    return NextResponse.json({ error: "Lỗi server" }, { status: 500 })
   }
 }

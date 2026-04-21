@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import Link from "next/link"
 import {
   ArrowLeft,
   Mail,
@@ -11,14 +11,17 @@ import {
   Briefcase,
   GraduationCap,
   FileText,
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { APPLICATION_STATUS, APPLICATION_SOURCE } from '@/lib/recruitment/constants'
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import {
+  APPLICATION_STATUS,
+  APPLICATION_SOURCE,
+} from "@/lib/recruitment/constants"
 
 interface CandidateDetail {
   id: string
@@ -64,11 +67,11 @@ export default function CandidateDetailPage() {
     async function fetchCandidate() {
       try {
         const res = await fetch(`/api/recruitment/candidates/${id}`)
-        if (!res.ok) throw new Error('Không thể tải thông tin ứng viên')
+        if (!res.ok) throw new Error("Không thể tải thông tin ứng viên")
         const json = await res.json()
         setCandidate(json.data ?? json)
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -80,17 +83,17 @@ export default function CandidateDetailPage() {
     const info = APPLICATION_STATUS[status]
     if (!info) return <Badge variant="secondary">{status}</Badge>
     const colorMap: Record<string, string> = {
-      blue: 'bg-blue-100 text-blue-800',
-      yellow: 'bg-yellow-100 text-yellow-800',
-      orange: 'bg-orange-100 text-orange-800',
-      purple: 'bg-purple-100 text-purple-800',
-      indigo: 'bg-indigo-100 text-indigo-800',
-      green: 'bg-green-100 text-green-800',
-      emerald: 'bg-emerald-100 text-emerald-800',
-      red: 'bg-red-100 text-red-800',
-      gray: 'bg-gray-100 text-gray-800',
+      blue: "bg-blue-100 text-blue-800",
+      yellow: "bg-yellow-100 text-yellow-800",
+      orange: "bg-orange-100 text-orange-800",
+      purple: "bg-purple-100 text-purple-800",
+      indigo: "bg-indigo-100 text-indigo-800",
+      green: "bg-green-100 text-green-800",
+      emerald: "bg-emerald-100 text-emerald-800",
+      red: "bg-red-100 text-red-800",
+      gray: "bg-gray-100 text-gray-800",
     }
-    return <Badge className={colorMap[info.color] || ''}>{info.label}</Badge>
+    return <Badge className={colorMap[info.color] || ""}>{info.label}</Badge>
   }
 
   if (loading) return <LoadingPage />
@@ -101,7 +104,7 @@ export default function CandidateDetailPage() {
         <PageHeader title="Hồ sơ ứng viên" />
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            {error || 'Không tìm thấy ứng viên'}
+            {error || "Không tìm thấy ứng viên"}
           </CardContent>
         </Card>
       </div>
@@ -143,7 +146,9 @@ export default function CandidateDetailPage() {
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {candidate.skills.map((skill, idx) => (
-                    <Badge key={idx} variant="secondary">{skill}</Badge>
+                    <Badge key={idx} variant="secondary">
+                      {skill}
+                    </Badge>
                   ))}
                 </div>
               </CardContent>
@@ -162,14 +167,19 @@ export default function CandidateDetailPage() {
               {candidate.workHistory && candidate.workHistory.length > 0 ? (
                 <div className="space-y-4">
                   {candidate.workHistory.map((work, idx) => (
-                    <div key={idx} className="border-l-2 border-primary/20 pl-4">
+                    <div
+                      key={idx}
+                      className="border-l-2 border-primary/20 pl-4"
+                    >
                       <h4 className="font-medium">{work.position}</h4>
-                      <p className="text-sm text-muted-foreground">{work.company}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {work.company}
+                      </p>
                       <p className="text-xs text-muted-foreground">
-                        {new Date(work.startDate).toLocaleDateString('vi-VN')} -{' '}
+                        {new Date(work.startDate).toLocaleDateString("vi-VN")} -{" "}
                         {work.endDate
-                          ? new Date(work.endDate).toLocaleDateString('vi-VN')
-                          : 'Hiện tại'}
+                          ? new Date(work.endDate).toLocaleDateString("vi-VN")
+                          : "Hiện tại"}
                       </p>
                       {work.description && (
                         <p className="mt-1 text-sm">{work.description}</p>
@@ -197,13 +207,16 @@ export default function CandidateDetailPage() {
               {candidate.education && candidate.education.length > 0 ? (
                 <div className="space-y-4">
                   {candidate.education.map((edu, idx) => (
-                    <div key={idx} className="border-l-2 border-primary/20 pl-4">
+                    <div
+                      key={idx}
+                      className="border-l-2 border-primary/20 pl-4"
+                    >
                       <h4 className="font-medium">{edu.school}</h4>
                       <p className="text-sm text-muted-foreground">
                         {edu.degree} - {edu.field}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {edu.startYear} - {edu.endYear || 'Hiện tại'}
+                        {edu.startYear} - {edu.endYear || "Hiện tại"}
                       </p>
                     </div>
                   ))}
@@ -236,7 +249,7 @@ export default function CandidateDetailPage() {
                       <div>
                         <p className="font-medium">{app.position}</p>
                         <p className="text-xs text-muted-foreground">
-                          {new Date(app.appliedAt).toLocaleDateString('vi-VN')}
+                          {new Date(app.appliedAt).toLocaleDateString("vi-VN")}
                         </p>
                       </div>
                       {getStatusBadge(app.status)}
@@ -261,7 +274,10 @@ export default function CandidateDetailPage() {
             <CardContent className="space-y-3">
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <a href={`mailto:${candidate.email}`} className="hover:underline">
+                <a
+                  href={`mailto:${candidate.email}`}
+                  className="hover:underline"
+                >
                   {candidate.email}
                 </a>
               </div>
@@ -279,13 +295,14 @@ export default function CandidateDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Nguồn</p>
                 <Badge variant="secondary" className="mt-1">
-                  {APPLICATION_SOURCE[candidate.source]?.label || candidate.source}
+                  {APPLICATION_SOURCE[candidate.source]?.label ||
+                    candidate.source}
                 </Badge>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Ngày tạo hồ sơ</p>
                 <p className="text-sm font-medium">
-                  {new Date(candidate.createdAt).toLocaleDateString('vi-VN')}
+                  {new Date(candidate.createdAt).toLocaleDateString("vi-VN")}
                 </p>
               </div>
               {candidate.cvUrl && (

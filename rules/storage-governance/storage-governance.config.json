@@ -1,0 +1,50 @@
+{
+  "$schema": "./storage-governance.schema-note.json",
+  "version": 1,
+  "storageRoots": [
+    {
+      "root": ".legacy",
+      "requiredRootFiles": ["README.md"],
+      "allowedRootFiles": ["README.md"],
+      "entries": [
+        {
+          "name": "cna-templates",
+          "kind": "legacy-reference",
+          "description": "Legacy upstream template material preserved for comparison and recovery."
+        },
+        {
+          "name": "cna-templates-pre-git-backup-2026-04-21",
+          "kind": "snapshot",
+          "description": "Point-in-time backup captured before the template material was committed."
+        },
+        {
+          "name": "eslint-github-reference-2026-04-22",
+          "kind": "legacy-reference",
+          "description": "Upstream ESLint source references retained after extracting the Afenda-owned workspace package."
+        },
+        {
+          "name": "pino-github-reference-2026-04-22",
+          "kind": "legacy-reference",
+          "description": "Upstream Pino source reference retained after activating the Afenda-owned logger package."
+        },
+        {
+          "name": "vitest-github-reference-2026-04-22",
+          "kind": "legacy-reference",
+          "description": "Upstream Vitest source reference retained after normalizing the Afenda-owned shared test-config package."
+        }
+      ]
+    },
+    {
+      "root": "archives",
+      "requiredRootFiles": ["README.md"],
+      "allowedRootFiles": ["README.md"],
+      "entries": [
+        {
+          "name": "apps-api-backup-2026-04-19",
+          "kind": "snapshot",
+          "description": "Full backup of apps/api taken before scaffold reset work."
+        }
+      ]
+    }
+  ]
+}

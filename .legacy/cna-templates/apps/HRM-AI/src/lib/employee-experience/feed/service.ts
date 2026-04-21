@@ -1,15 +1,15 @@
 // src/lib/employee-experience/feed/service.ts
 // Company Feed Service - News, Announcements, Events
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   PostType,
   PostVisibility,
   PostStatus,
   EventType,
   RsvpStatus,
-  Prisma
-} from '@prisma/client'
+  Prisma,
+} from "@prisma/client"
 
 // Types
 export interface CreatePostInput {
@@ -151,8 +151,8 @@ export class CompanyFeedService {
 
     if (filters.search) {
       where.OR = [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { content: { contains: filters.search, mode: 'insensitive' } },
+        { title: { contains: filters.search, mode: "insensitive" } },
+        { content: { contains: filters.search, mode: "insensitive" } },
       ]
     }
 
@@ -161,14 +161,17 @@ export class CompanyFeedService {
     }
 
     if (filters.toDate) {
-      where.publishedAt = { ...(where.publishedAt as any || {}), lte: filters.toDate }
+      where.publishedAt = {
+        ...((where.publishedAt as any) || {}),
+        lte: filters.toDate,
+      }
     }
 
     // Get posts with pinned first
     const [posts, total, unreadCount] = await Promise.all([
       db.companyPost.findMany({
         where,
-        orderBy: [{ isPinned: 'desc' }, { publishedAt: 'desc' }],
+        orderBy: [{ isPinned: "desc" }, { publishedAt: "desc" }],
         skip,
         take: pageSize,
         include: {
@@ -194,7 +197,7 @@ export class CompanyFeedService {
           },
           comments: {
             take: 3,
-            orderBy: { createdAt: 'desc' },
+            orderBy: { createdAt: "desc" },
             include: {
               author: {
                 select: {
@@ -226,7 +229,9 @@ export class CompanyFeedService {
     const transformedPosts = posts.map((post: any) => ({
       ...post,
       isRead: post.readBy.length > 0,
-      userReaction: post.reactions.find((r: any) => r.employeeId === employeeId),
+      userReaction: post.reactions.find(
+        (r: any) => r.employeeId === employeeId
+      ),
       readBy: undefined,
     }))
 
@@ -275,7 +280,7 @@ export class CompanyFeedService {
           },
         },
         comments: {
-          orderBy: { createdAt: 'asc' },
+          orderBy: { createdAt: "asc" },
           include: {
             author: {
               select: {
@@ -297,7 +302,7 @@ export class CompanyFeedService {
     })
 
     if (!post) {
-      throw new Error('Post not found')
+      throw new Error("Post not found")
     }
 
     // Mark as read if employeeId provided
@@ -361,7 +366,7 @@ export class CompanyFeedService {
     })
 
     if (!post) {
-      throw new Error('Post not found')
+      throw new Error("Post not found")
     }
 
     return db.postComment.create({
@@ -459,7 +464,7 @@ export class CompanyFeedService {
     })
 
     if (!post) {
-      throw new Error('Post not found or you are not the author')
+      throw new Error("Post not found or you are not the author")
     }
 
     return db.companyPost.update({
@@ -490,7 +495,7 @@ export class CompanyFeedService {
     })
 
     if (!post) {
-      throw new Error('Post not found or you do not have permission')
+      throw new Error("Post not found or you do not have permission")
     }
 
     return db.companyPost.update({
@@ -504,11 +509,7 @@ export class CompanyFeedService {
   /**
    * RSVP to an event
    */
-  async rsvpEvent(
-    eventId: string,
-    employeeId: string,
-    status: RsvpStatus
-  ) {
+  async rsvpEvent(eventId: string, employeeId: string, status: RsvpStatus) {
     const event = await db.companyEvent.findFirst({
       where: {
         id: eventId,
@@ -522,7 +523,7 @@ export class CompanyFeedService {
     })
 
     if (!event) {
-      throw new Error('Event not found')
+      throw new Error("Event not found")
     }
 
     // Check max attendees for ATTENDING status
@@ -531,7 +532,7 @@ export class CompanyFeedService {
       event.maxAttendees &&
       event._count.attendees >= event.maxAttendees
     ) {
-      throw new Error('Event is at full capacity')
+      throw new Error("Event is at full capacity")
     }
 
     // Upsert attendance
@@ -563,7 +564,7 @@ export class CompanyFeedService {
         tenantId: this.tenantId,
         startDate: { gte: new Date() },
       },
-      orderBy: { startDate: 'asc' },
+      orderBy: { startDate: "asc" },
       take: limit,
       include: {
         organizer: {
@@ -590,7 +591,7 @@ export class CompanyFeedService {
         status: PostStatus.PUBLISHED,
         type: PostType.ANNOUNCEMENT,
       },
-      orderBy: [{ isPinned: 'desc' }, { publishedAt: 'desc' }],
+      orderBy: [{ isPinned: "desc" }, { publishedAt: "desc" }],
       take: limit,
       include: {
         author: {
@@ -614,20 +615,23 @@ export class CompanyFeedService {
   /**
    * Create an event
    */
-  async createEvent(organizerId: string, input: {
-    title: string
-    description?: string
-    type: EventType
-    startDate: Date
-    endDate: Date
-    isAllDay?: boolean
-    location?: string
-    isVirtual?: boolean
-    virtualLink?: string
-    maxAttendees?: number
-    requiresRsvp?: boolean
-    rsvpDeadline?: Date
-  }) {
+  async createEvent(
+    organizerId: string,
+    input: {
+      title: string
+      description?: string
+      type: EventType
+      startDate: Date
+      endDate: Date
+      isAllDay?: boolean
+      location?: string
+      isVirtual?: boolean
+      virtualLink?: string
+      maxAttendees?: number
+      requiresRsvp?: boolean
+      rsvpDeadline?: Date
+    }
+  ) {
     return db.companyEvent.create({
       data: {
         tenantId: this.tenantId,

@@ -1,7 +1,7 @@
-import { db } from '@/lib/db'
-import type { JobType, WorkMode } from '@prisma/client'
-import { audit, generateUniqueSlug } from '@/lib/recruitment/utils'
-import type { AuditContext } from '@/types/audit'
+import { db } from "@/lib/db"
+import type { JobType, WorkMode } from "@prisma/client"
+import { audit, generateUniqueSlug } from "@/lib/recruitment/utils"
+import type { AuditContext } from "@/types/audit"
 
 export async function createJobPosting(
   tenantId: string,
@@ -33,20 +33,20 @@ export async function createJobPosting(
       requirements: data.requirements,
       benefits: data.benefits,
       location: data.location,
-      jobType: (data.jobType as JobType) || 'FULL_TIME',
-      workMode: (data.workMode as WorkMode) || 'ONSITE',
+      jobType: (data.jobType as JobType) || "FULL_TIME",
+      workMode: (data.workMode as WorkMode) || "ONSITE",
       salaryDisplay: data.salaryDisplay,
       isInternal: data.isInternal || false,
       isPublic: data.isPublic ?? true,
       expiresAt: data.expiresAt,
-      status: 'DRAFT',
+      status: "DRAFT",
     },
     include: {
       requisition: { include: { department: true } },
     },
   })
 
-  await audit.create(ctx, 'JobPosting', posting.id, posting.title)
+  await audit.create(ctx, "JobPosting", posting.id, posting.title)
 
   return posting
 }
@@ -66,7 +66,7 @@ export async function getJobPostings(
   if (filters?.status) where.status = filters.status
   if (filters?.isPublic !== undefined) where.isPublic = filters.isPublic
   if (filters?.search) {
-    where.title = { contains: filters.search, mode: 'insensitive' }
+    where.title = { contains: filters.search, mode: "insensitive" }
   }
 
   const [postings, total] = await Promise.all([
@@ -76,7 +76,7 @@ export async function getJobPostings(
         requisition: { include: { department: true } },
         _count: { select: { applications: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -93,7 +93,7 @@ export async function getJobPostingById(id: string, tenantId: string) {
       requisition: { include: { department: true } },
       applications: {
         include: { candidate: true },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 10,
       },
     },
@@ -118,14 +118,18 @@ export async function updateJobPosting(
     include: { requisition: { include: { department: true } } },
   })
 
-  await audit.update(ctx, 'JobPosting', id, data, existing.title)
+  await audit.update(ctx, "JobPosting", id, data, existing.title)
 
   return updated
 }
 
-export async function publishJobPosting(id: string, tenantId: string, ctx: AuditContext) {
+export async function publishJobPosting(
+  id: string,
+  tenantId: string,
+  ctx: AuditContext
+) {
   const posting = await db.jobPosting.findFirst({
-    where: { id, tenantId, status: 'DRAFT' },
+    where: { id, tenantId, status: "DRAFT" },
   })
 
   if (!posting) return null
@@ -133,35 +137,51 @@ export async function publishJobPosting(id: string, tenantId: string, ctx: Audit
   const updated = await db.jobPosting.update({
     where: { id },
     data: {
-      status: 'PUBLISHED',
+      status: "PUBLISHED",
       publishedAt: new Date(),
     },
   })
 
   // Also open the requisition if it's approved
   await db.jobRequisition.updateMany({
-    where: { id: posting.requisitionId, status: 'APPROVED' },
-    data: { status: 'OPEN' },
+    where: { id: posting.requisitionId, status: "APPROVED" },
+    data: { status: "OPEN" },
   })
 
-  await audit.update(ctx, 'JobPosting', id, { status: { old: 'DRAFT', new: 'PUBLISHED' } }, posting.title)
+  await audit.update(
+    ctx,
+    "JobPosting",
+    id,
+    { status: { old: "DRAFT", new: "PUBLISHED" } },
+    posting.title
+  )
 
   return updated
 }
 
-export async function closeJobPosting(id: string, tenantId: string, ctx: AuditContext) {
+export async function closeJobPosting(
+  id: string,
+  tenantId: string,
+  ctx: AuditContext
+) {
   const posting = await db.jobPosting.findFirst({
-    where: { id, tenantId, status: 'PUBLISHED' },
+    where: { id, tenantId, status: "PUBLISHED" },
   })
 
   if (!posting) return null
 
   const updated = await db.jobPosting.update({
     where: { id },
-    data: { status: 'CLOSED' },
+    data: { status: "CLOSED" },
   })
 
-  await audit.update(ctx, 'JobPosting', id, { status: { old: 'PUBLISHED', new: 'CLOSED' } }, posting.title)
+  await audit.update(
+    ctx,
+    "JobPosting",
+    id,
+    { status: { old: "PUBLISHED", new: "CLOSED" } },
+    posting.title
+  )
 
   return updated
 }

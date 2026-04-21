@@ -9,7 +9,7 @@
 // - Non-intrusive, dismissable
 // ============================================================
 
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import {
   Sparkles,
   X,
@@ -31,17 +31,17 @@ import {
   CheckCircle,
   Grid3X3,
   Table2,
-} from 'lucide-react';
-import { useSelectionStore } from '../../stores/selectionStore';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { useAIStore } from '../../stores/aiStore';
+} from "lucide-react"
+import { useSelectionStore } from "../../stores/selectionStore"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { useAIStore } from "../../stores/aiStore"
 import {
   analyzeSelectionContext,
   generateContextualSuggestions,
   getApplicableQuickActions,
   type AISuggestion,
   type ContextAnalysis,
-} from '../../ai/contextual/AIContextTriggers';
+} from "../../ai/contextual/AIContextTriggers"
 
 // Icon mapping - use any to avoid LucideIcon type issues
 const ICON_MAP: Record<string, React.FC<{ size?: number | string }>> = {
@@ -64,12 +64,12 @@ const ICON_MAP: Record<string, React.FC<{ size?: number | string }>> = {
   CheckCircle: CheckCircle as React.FC<{ size?: number | string }>,
   Grid3X3: Grid3X3 as React.FC<{ size?: number | string }>,
   Table2: Table2 as React.FC<{ size?: number | string }>,
-};
+}
 
 interface FloatingAIButtonProps {
-  gridRef: React.RefObject<HTMLDivElement>;
-  cellWidth?: number;
-  cellHeight?: number;
+  gridRef: React.RefObject<HTMLDivElement>
+  cellWidth?: number
+  cellHeight?: number
 }
 
 export const FloatingAIButton: React.FC<FloatingAIButtonProps> = ({
@@ -77,23 +77,23 @@ export const FloatingAIButton: React.FC<FloatingAIButtonProps> = ({
   cellWidth = 100,
   cellHeight = 24,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [suggestions, setSuggestions] = useState<AISuggestion[]>([]);
-  const [context, setContext] = useState<ContextAnalysis | null>(null);
-  const buttonRef = useRef<HTMLDivElement>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [suggestions, setSuggestions] = useState<AISuggestion[]>([])
+  const [context, setContext] = useState<ContextAnalysis | null>(null)
+  const buttonRef = useRef<HTMLDivElement>(null)
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const { selectionRange } = useSelectionStore();
-  const { activeSheetId } = useWorkbookStore();
-  const { openPanel, setCurrentInput } = useAIStore();
+  const { selectionRange } = useSelectionStore()
+  const { activeSheetId } = useWorkbookStore()
+  const { openPanel, setCurrentInput } = useAIStore()
 
   // Analyze context when selection changes
   useEffect(() => {
     if (!selectionRange || !activeSheetId) {
-      setIsVisible(false);
-      return;
+      setIsVisible(false)
+      return
     }
 
     // Convert CellRange to the format expected by context triggers
@@ -102,102 +102,108 @@ export const FloatingAIButton: React.FC<FloatingAIButtonProps> = ({
       startCol: selectionRange.start.col,
       endRow: selectionRange.end.row,
       endCol: selectionRange.end.col,
-    };
+    }
 
     // Debounce to avoid too frequent updates
     const timer = setTimeout(() => {
-      const ctx = analyzeSelectionContext(range, activeSheetId);
-      setContext(ctx);
+      const ctx = analyzeSelectionContext(range, activeSheetId)
+      setContext(ctx)
 
       if (ctx && (ctx.hasData || ctx.hasFormulas || ctx.hasErrors)) {
-        const newSuggestions = generateContextualSuggestions(ctx, range);
-        setSuggestions(newSuggestions);
-        setIsVisible(true);
-        setIsExpanded(false);
+        const newSuggestions = generateContextualSuggestions(ctx, range)
+        setSuggestions(newSuggestions)
+        setIsVisible(true)
+        setIsExpanded(false)
 
         // Calculate position based on selection
         if (gridRef.current) {
-          const gridRect = gridRef.current.getBoundingClientRect();
-          const endCol = range.endCol;
-          const startRow = range.startRow;
+          const gridRect = gridRef.current.getBoundingClientRect()
+          const endCol = range.endCol
+          const startRow = range.startRow
 
           // Position to the right of selection
           const x = Math.min(
             (endCol + 1) * cellWidth + 8,
             gridRect.width - 250 // Keep within grid bounds
-          );
-          const y = startRow * cellHeight;
+          )
+          const y = startRow * cellHeight
 
-          setPosition({ x, y });
+          setPosition({ x, y })
         }
       } else {
         // Hide after a delay if no relevant context
         hideTimeoutRef.current = setTimeout(() => {
-          setIsVisible(false);
-        }, 500);
+          setIsVisible(false)
+        }, 500)
       }
-    }, 300);
+    }, 300)
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timer)
       if (hideTimeoutRef.current) {
-        clearTimeout(hideTimeoutRef.current);
+        clearTimeout(hideTimeoutRef.current)
       }
-    };
-  }, [selectionRange, activeSheetId, gridRef, cellWidth, cellHeight]);
+    }
+  }, [selectionRange, activeSheetId, gridRef, cellWidth, cellHeight])
 
   // Get quick actions based on context
   const quickActions = useMemo(() => {
-    return getApplicableQuickActions(context).slice(0, 4);
-  }, [context]);
+    return getApplicableQuickActions(context).slice(0, 4)
+  }, [context])
 
   // Handle quick action click
-  const handleQuickAction = useCallback((prompt: string) => {
-    openPanel();
-    setCurrentInput(prompt);
-    // Optionally auto-send
-    // sendMessage(prompt);
-    setIsExpanded(false);
-  }, [openPanel, setCurrentInput]);
+  const handleQuickAction = useCallback(
+    (prompt: string) => {
+      openPanel()
+      setCurrentInput(prompt)
+      // Optionally auto-send
+      // sendMessage(prompt);
+      setIsExpanded(false)
+    },
+    [openPanel, setCurrentInput]
+  )
 
   // Handle suggestion click
-  const handleSuggestion = useCallback((suggestion: AISuggestion) => {
-    openPanel();
-    setCurrentInput(suggestion.prompt);
-    setIsExpanded(false);
-  }, [openPanel, setCurrentInput]);
+  const handleSuggestion = useCallback(
+    (suggestion: AISuggestion) => {
+      openPanel()
+      setCurrentInput(suggestion.prompt)
+      setIsExpanded(false)
+    },
+    [openPanel, setCurrentInput]
+  )
 
   // Handle main button click
   const handleMainClick = useCallback(() => {
     if (suggestions.length > 0 || quickActions.length > 0) {
-      setIsExpanded(!isExpanded);
+      setIsExpanded(!isExpanded)
     } else {
-      openPanel();
+      openPanel()
     }
-  }, [suggestions, quickActions, isExpanded, openPanel]);
+  }, [suggestions, quickActions, isExpanded, openPanel])
 
   // Close when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (buttonRef.current && !buttonRef.current.contains(e.target as Node)) {
-        setIsExpanded(false);
+        setIsExpanded(false)
       }
-    };
+    }
 
     if (isExpanded) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [isExpanded]);
+  }, [isExpanded])
 
-  if (!isVisible) return null;
+  if (!isVisible) return null
 
   return (
     <div
       ref={buttonRef}
       className="floating-ai-button"
       style={{
-        position: 'absolute',
+        position: "absolute",
         left: position.x,
         top: position.y,
         zIndex: 100,
@@ -205,7 +211,7 @@ export const FloatingAIButton: React.FC<FloatingAIButtonProps> = ({
     >
       {/* Main FAB Button */}
       <button
-        className={`fab-main ${isExpanded ? 'expanded' : ''} ${suggestions.some(s => s.priority === 'high') ? 'has-priority' : ''}`}
+        className={`fab-main ${isExpanded ? "expanded" : ""} ${suggestions.some((s) => s.priority === "high") ? "has-priority" : ""}`}
         onClick={handleMainClick}
         title="AI Assistant"
       >
@@ -231,8 +237,8 @@ export const FloatingAIButton: React.FC<FloatingAIButtonProps> = ({
           {suggestions.length > 0 && (
             <div className="fab-section">
               <div className="fab-section-title">Based on your selection</div>
-              {suggestions.slice(0, 3).map(suggestion => {
-                const Icon = ICON_MAP[suggestion.icon] || Sparkles;
+              {suggestions.slice(0, 3).map((suggestion) => {
+                const Icon = ICON_MAP[suggestion.icon] || Sparkles
                 return (
                   <button
                     key={suggestion.id}
@@ -243,12 +249,16 @@ export const FloatingAIButton: React.FC<FloatingAIButtonProps> = ({
                       <Icon size={14} />
                     </div>
                     <div className="fab-suggestion-content">
-                      <div className="fab-suggestion-title">{suggestion.title}</div>
-                      <div className="fab-suggestion-desc">{suggestion.description}</div>
+                      <div className="fab-suggestion-title">
+                        {suggestion.title}
+                      </div>
+                      <div className="fab-suggestion-desc">
+                        {suggestion.description}
+                      </div>
                     </div>
                     <ChevronRight size={14} className="fab-arrow" />
                   </button>
-                );
+                )
               })}
             </div>
           )}
@@ -257,8 +267,8 @@ export const FloatingAIButton: React.FC<FloatingAIButtonProps> = ({
           <div className="fab-section">
             <div className="fab-section-title">Quick Actions</div>
             <div className="fab-quick-actions">
-              {quickActions.map(action => {
-                const Icon = ICON_MAP[action.icon] || Sparkles;
+              {quickActions.map((action) => {
+                const Icon = ICON_MAP[action.icon] || Sparkles
                 return (
                   <button
                     key={action.id}
@@ -269,13 +279,19 @@ export const FloatingAIButton: React.FC<FloatingAIButtonProps> = ({
                     <Icon size={14} />
                     <span>{action.label}</span>
                   </button>
-                );
+                )
               })}
             </div>
           </div>
 
           {/* Open full AI panel */}
-          <button className="fab-open-panel" onClick={() => { openPanel(); setIsExpanded(false); }}>
+          <button
+            className="fab-open-panel"
+            onClick={() => {
+              openPanel()
+              setIsExpanded(false)
+            }}
+          >
             <Sparkles size={14} />
             Open AI Copilot
             <span className="fab-shortcut">⌘J</span>
@@ -283,7 +299,7 @@ export const FloatingAIButton: React.FC<FloatingAIButtonProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default FloatingAIButton;
+export default FloatingAIButton

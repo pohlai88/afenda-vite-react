@@ -1,5 +1,5 @@
-import { eventBus } from '../event-bus'
-import { CRM_EVENTS } from '../types'
+import { eventBus } from "../event-bus"
+import { CRM_EVENTS } from "../types"
 import type {
   QuoteEventPayload,
   QuoteExpiringPayload,
@@ -7,15 +7,18 @@ import type {
   TicketStaffRepliedPayload,
   OrderStatusEventPayload,
   CampaignEventPayload,
-} from '../types'
-import { notifyUser, notifyRole } from '@/lib/notifications'
-import { prisma } from '@/lib/prisma'
+} from "../types"
+import { notifyUser, notifyRole } from "@/lib/notifications"
+import { prisma } from "@/lib/prisma"
 
 /**
  * Check if in-app notification is enabled for a user+event.
  * Default (no preference record): inApp = true
  */
-async function isInAppEnabled(userId: string, eventType: string): Promise<boolean> {
+async function isInAppEnabled(
+  userId: string,
+  eventType: string
+): Promise<boolean> {
   const pref = await prisma.notificationPreference.findUnique({
     where: { userId_eventType: { userId, eventType } },
   })
@@ -41,7 +44,7 @@ async function notifyUserIfEnabled(
  * notifyRole with preference check per user.
  */
 async function notifyRoleIfEnabled(
-  role: 'ADMIN' | 'MANAGER',
+  role: "ADMIN" | "MANAGER",
   eventType: string,
   notifType: Parameters<typeof notifyUser>[1],
   vars: Record<string, string>,
@@ -52,7 +55,9 @@ async function notifyRoleIfEnabled(
     select: { id: true },
   })
   await Promise.all(
-    users.map((u) => notifyUserIfEnabled(u.id, eventType, notifType, vars, link))
+    users.map((u) =>
+      notifyUserIfEnabled(u.id, eventType, notifType, vars, link)
+    )
   )
 }
 
@@ -68,8 +73,11 @@ export function registerNotificationHandlers(): void {
     await notifyUserIfEnabled(
       p.ownerId,
       CRM_EVENTS.QUOTE_ACCEPTED,
-      'QUOTE_ACCEPTED',
-      { quoteNumber: p.quote.quoteNumber, contactName: p.quote.contactName || '' },
+      "QUOTE_ACCEPTED",
+      {
+        quoteNumber: p.quote.quoteNumber,
+        contactName: p.quote.contactName || "",
+      },
       `/quotes/${p.quoteId}`
     )
   })
@@ -80,8 +88,11 @@ export function registerNotificationHandlers(): void {
     await notifyUserIfEnabled(
       p.ownerId,
       CRM_EVENTS.QUOTE_REJECTED,
-      'QUOTE_REJECTED',
-      { quoteNumber: p.quote.quoteNumber, contactName: p.quote.contactName || '' },
+      "QUOTE_REJECTED",
+      {
+        quoteNumber: p.quote.quoteNumber,
+        contactName: p.quote.contactName || "",
+      },
       `/quotes/${p.quoteId}`
     )
   })
@@ -92,7 +103,7 @@ export function registerNotificationHandlers(): void {
     await notifyUserIfEnabled(
       p.ownerId,
       CRM_EVENTS.QUOTE_EXPIRING,
-      'QUOTE_EXPIRING',
+      "QUOTE_EXPIRING",
       { quoteNumber: p.quote.quoteNumber, days: String(p.days) },
       `/quotes/${p.quoteId}`
     )
@@ -102,9 +113,9 @@ export function registerNotificationHandlers(): void {
   eventBus.on(CRM_EVENTS.TICKET_CREATED, async (payload) => {
     const p = payload as TicketEventPayload
     await notifyRoleIfEnabled(
-      'MANAGER',
+      "MANAGER",
       CRM_EVENTS.TICKET_CREATED,
-      'TICKET_NEW',
+      "TICKET_NEW",
       { subject: p.ticket.subject, contactName: p.contactName },
       `/tickets/${p.ticketId}`
     )
@@ -117,7 +128,7 @@ export function registerNotificationHandlers(): void {
     await notifyUserIfEnabled(
       p.assigneeId,
       CRM_EVENTS.TICKET_ASSIGNED,
-      'TICKET_NEW',
+      "TICKET_NEW",
       { subject: p.ticket.subject, contactName: p.contactName },
       `/tickets/${p.ticketId}`
     )
@@ -130,15 +141,15 @@ export function registerNotificationHandlers(): void {
       await notifyUserIfEnabled(
         p.assigneeId,
         CRM_EVENTS.TICKET_REPLIED,
-        'TICKET_REPLY',
+        "TICKET_REPLY",
         { subject: p.ticket.subject, contactName: p.contactName },
         `/tickets/${p.ticketId}`
       )
     } else {
       await notifyRoleIfEnabled(
-        'MANAGER',
+        "MANAGER",
         CRM_EVENTS.TICKET_REPLIED,
-        'TICKET_REPLY',
+        "TICKET_REPLY",
         { subject: p.ticket.subject, contactName: p.contactName },
         `/tickets/${p.ticketId}`
       )
@@ -149,9 +160,9 @@ export function registerNotificationHandlers(): void {
   eventBus.on(CRM_EVENTS.TICKET_STAFF_REPLIED, async (payload) => {
     const p = payload as TicketStaffRepliedPayload
     await notifyRoleIfEnabled(
-      'MANAGER',
+      "MANAGER",
       CRM_EVENTS.TICKET_STAFF_REPLIED,
-      'TICKET_REPLY',
+      "TICKET_REPLY",
       { subject: p.ticket.subject, contactName: p.staffName },
       `/tickets/${p.ticketId}`
     )
@@ -163,7 +174,7 @@ export function registerNotificationHandlers(): void {
     await notifyUserIfEnabled(
       p.ownerId,
       CRM_EVENTS.ORDER_STATUS_CHANGED,
-      'ORDER_STATUS_CHANGED',
+      "ORDER_STATUS_CHANGED",
       { orderNumber: p.order.orderNumber, statusLabel: p.statusLabel },
       `/orders/${p.orderId}`
     )
@@ -175,7 +186,7 @@ export function registerNotificationHandlers(): void {
     await notifyUserIfEnabled(
       p.createdById,
       CRM_EVENTS.CAMPAIGN_SENT,
-      'CAMPAIGN_SENT',
+      "CAMPAIGN_SENT",
       { campaignName: p.campaign.name, sentCount: String(p.sentCount) },
       `/campaigns/${p.campaignId}`
     )

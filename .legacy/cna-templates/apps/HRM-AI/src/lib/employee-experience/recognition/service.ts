@@ -1,8 +1,8 @@
 // src/lib/employee-experience/recognition/service.ts
 // Recognition & Kudos Service with Points System
 
-import { db } from '@/lib/db'
-import { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import { Prisma } from "@prisma/client"
 
 // Use db as prisma alias for consistency
 const prisma = db
@@ -101,7 +101,7 @@ export class RecognitionService {
     const { giverId, receiverId, categoryId, message, isPublic = true } = input
 
     if (giverId === receiverId) {
-      throw new Error('Không thể gửi kudos cho chính mình')
+      throw new Error("Không thể gửi kudos cho chính mình")
     }
 
     // Get category
@@ -110,7 +110,7 @@ export class RecognitionService {
     })
 
     if (!category || !category.isActive) {
-      throw new Error('Danh mục không hợp lệ')
+      throw new Error("Danh mục không hợp lệ")
     }
 
     // Check giver's monthly allowance
@@ -118,7 +118,10 @@ export class RecognitionService {
 
     // Reset allowance if new month
     const now = new Date()
-    if (!giverPoints.allowanceResetAt || giverPoints.allowanceResetAt.getMonth() !== now.getMonth()) {
+    if (
+      !giverPoints.allowanceResetAt ||
+      giverPoints.allowanceResetAt.getMonth() !== now.getMonth()
+    ) {
       await prisma.employeePoints.update({
         where: { id: giverPoints.id },
         data: {
@@ -129,9 +132,12 @@ export class RecognitionService {
       giverPoints.monthlyUsed = 0
     }
 
-    const remainingAllowance = giverPoints.monthlyAllowance - giverPoints.monthlyUsed
+    const remainingAllowance =
+      giverPoints.monthlyAllowance - giverPoints.monthlyUsed
     if (remainingAllowance < category.pointsValue) {
-      throw new Error(`Bạn đã hết điểm kudos tháng này. Còn lại: ${remainingAllowance} điểm`)
+      throw new Error(
+        `Bạn đã hết điểm kudos tháng này. Còn lại: ${remainingAllowance} điểm`
+      )
     }
 
     // Create recognition
@@ -175,18 +181,18 @@ export class RecognitionService {
       data: [
         {
           employeePointsId: giverPoints.id,
-          type: 'GAVE_RECOGNITION',
+          type: "GAVE_RECOGNITION",
           amount: -category.pointsValue,
           description: `Gửi kudos cho ${recognition.receiver.fullName}`,
-          referenceType: 'recognition',
+          referenceType: "recognition",
           referenceId: recognition.id,
         },
         {
           employeePointsId: receiverPoints.id,
-          type: 'EARNED_RECOGNITION',
+          type: "EARNED_RECOGNITION",
           amount: category.pointsValue,
           description: `Nhận kudos từ ${recognition.giver.fullName}`,
-          referenceType: 'recognition',
+          referenceType: "recognition",
           referenceId: recognition.id,
         },
       ],
@@ -254,14 +260,14 @@ export class RecognitionService {
           include: {
             author: { select: { id: true, fullName: true, avatar: true } },
           },
-          orderBy: { createdAt: 'asc' },
+          orderBy: { createdAt: "asc" },
           take: 3,
         },
         _count: {
           select: { comments: true, reactions: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: limit + 1,
     })
 
@@ -271,7 +277,9 @@ export class RecognitionService {
     return {
       items: items as RecognitionWithDetails[],
       hasMore,
-      nextCursor: hasMore ? items[items.length - 1].createdAt.toISOString() : null,
+      nextCursor: hasMore
+        ? items[items.length - 1].createdAt.toISOString()
+        : null,
     }
   }
 
@@ -291,13 +299,22 @@ export class RecognitionService {
       category: { name: string; nameVi: string; icon: string | null }
     }>
     breakdown: Array<{
-      category: { name: string; nameVi: string; icon: string | null; color: string | null } | null
+      category: {
+        name: string
+        nameVi: string
+        icon: string | null
+        color: string | null
+      } | null
       count: number
     }>
   }> {
     const [given, received, points] = await Promise.all([
-      prisma.recognition.count({ where: { tenantId: this.tenantId, giverId: employeeId } }),
-      prisma.recognition.count({ where: { tenantId: this.tenantId, receiverId: employeeId } }),
+      prisma.recognition.count({
+        where: { tenantId: this.tenantId, giverId: employeeId },
+      }),
+      prisma.recognition.count({
+        where: { tenantId: this.tenantId, receiverId: employeeId },
+      }),
       this.getOrCreatePoints(employeeId),
     ])
 
@@ -308,13 +325,13 @@ export class RecognitionService {
         giver: { select: { id: true, fullName: true, avatar: true } },
         category: { select: { name: true, nameVi: true, icon: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: 5,
     })
 
     // Get recognition breakdown by category
     const categoryBreakdown = await prisma.recognition.groupBy({
-      by: ['categoryId'],
+      by: ["categoryId"],
       where: { tenantId: this.tenantId, receiverId: employeeId },
       _count: { id: true },
     })
@@ -347,7 +364,11 @@ export class RecognitionService {
   // Reactions & Comments
   // ─────────────────────────────────────────────────────────────
 
-  async addReaction(recognitionId: string, employeeId: string, emoji: string): Promise<void> {
+  async addReaction(
+    recognitionId: string,
+    employeeId: string,
+    emoji: string
+  ): Promise<void> {
     await prisma.recognitionReaction.upsert({
       where: {
         recognitionId_employeeId: { recognitionId, employeeId },
@@ -357,13 +378,20 @@ export class RecognitionService {
     })
   }
 
-  async removeReaction(recognitionId: string, employeeId: string): Promise<void> {
+  async removeReaction(
+    recognitionId: string,
+    employeeId: string
+  ): Promise<void> {
     await prisma.recognitionReaction.deleteMany({
       where: { recognitionId, employeeId },
     })
   }
 
-  async addComment(recognitionId: string, authorId: string, content: string): Promise<string> {
+  async addComment(
+    recognitionId: string,
+    authorId: string,
+    content: string
+  ): Promise<string> {
     const comment = await prisma.recognitionComment.create({
       data: { recognitionId, authorId, content },
     })
@@ -376,16 +404,16 @@ export class RecognitionService {
   // ─────────────────────────────────────────────────────────────
 
   async getLeaderboard(
-    type: 'received' | 'given' = 'received',
+    type: "received" | "given" = "received",
     limit: number = 10
   ): Promise<LeaderboardEntry[]> {
-    if (type === 'received') {
+    if (type === "received") {
       const leaders = await prisma.recognition.groupBy({
-        by: ['receiverId'],
+        by: ["receiverId"],
         where: { tenantId: this.tenantId },
         _count: { id: true },
         _sum: { pointsAwarded: true },
-        orderBy: { _sum: { pointsAwarded: 'desc' } },
+        orderBy: { _sum: { pointsAwarded: "desc" } },
         take: limit,
       })
 
@@ -410,10 +438,10 @@ export class RecognitionService {
 
     // Given leaderboard
     const leaders = await prisma.recognition.groupBy({
-      by: ['giverId'],
+      by: ["giverId"],
       where: { tenantId: this.tenantId },
       _count: { id: true },
-      orderBy: { _count: { id: 'desc' } },
+      orderBy: { _count: { id: "desc" } },
       take: limit,
     })
 
@@ -442,81 +470,81 @@ export class RecognitionService {
   async getCategories() {
     return prisma.recognitionCategory.findMany({
       where: { tenantId: this.tenantId, isActive: true },
-      orderBy: { sortOrder: 'asc' },
+      orderBy: { sortOrder: "asc" },
     })
   }
 
   async seedDefaultCategories(): Promise<void> {
     const defaultCategories = [
       {
-        name: 'Team Player',
-        nameVi: 'Tinh thần đồng đội',
-        description: 'Hỗ trợ đồng nghiệp, làm việc nhóm hiệu quả',
-        icon: '🤝',
-        color: '#3B82F6',
+        name: "Team Player",
+        nameVi: "Tinh thần đồng đội",
+        description: "Hỗ trợ đồng nghiệp, làm việc nhóm hiệu quả",
+        icon: "🤝",
+        color: "#3B82F6",
         pointsValue: 10,
         sortOrder: 1,
       },
       {
-        name: 'Innovation',
-        nameVi: 'Sáng tạo',
-        description: 'Đưa ra ý tưởng mới, cải tiến quy trình',
-        icon: '💡',
-        color: '#F59E0B',
+        name: "Innovation",
+        nameVi: "Sáng tạo",
+        description: "Đưa ra ý tưởng mới, cải tiến quy trình",
+        icon: "💡",
+        color: "#F59E0B",
         pointsValue: 15,
         sortOrder: 2,
       },
       {
-        name: 'Going Above & Beyond',
-        nameVi: 'Vượt xa kỳ vọng',
-        description: 'Nỗ lực vượt trội, làm việc extra mile',
-        icon: '🚀',
-        color: '#8B5CF6',
+        name: "Going Above & Beyond",
+        nameVi: "Vượt xa kỳ vọng",
+        description: "Nỗ lực vượt trội, làm việc extra mile",
+        icon: "🚀",
+        color: "#8B5CF6",
         pointsValue: 20,
         sortOrder: 3,
       },
       {
-        name: 'Problem Solver',
-        nameVi: 'Giải quyết vấn đề',
-        description: 'Tìm ra giải pháp cho các vấn đề khó',
-        icon: '🔧',
-        color: '#10B981',
+        name: "Problem Solver",
+        nameVi: "Giải quyết vấn đề",
+        description: "Tìm ra giải pháp cho các vấn đề khó",
+        icon: "🔧",
+        color: "#10B981",
         pointsValue: 15,
         sortOrder: 4,
       },
       {
-        name: 'Customer Focus',
-        nameVi: 'Tận tâm với khách hàng',
-        description: 'Chăm sóc khách hàng xuất sắc',
-        icon: '⭐',
-        color: '#EC4899',
+        name: "Customer Focus",
+        nameVi: "Tận tâm với khách hàng",
+        description: "Chăm sóc khách hàng xuất sắc",
+        icon: "⭐",
+        color: "#EC4899",
         pointsValue: 15,
         sortOrder: 5,
       },
       {
-        name: 'Mentorship',
-        nameVi: 'Hướng dẫn & Đào tạo',
-        description: 'Hỗ trợ, hướng dẫn đồng nghiệp phát triển',
-        icon: '🎓',
-        color: '#6366F1',
+        name: "Mentorship",
+        nameVi: "Hướng dẫn & Đào tạo",
+        description: "Hỗ trợ, hướng dẫn đồng nghiệp phát triển",
+        icon: "🎓",
+        color: "#6366F1",
         pointsValue: 15,
         sortOrder: 6,
       },
       {
-        name: 'Thank You',
-        nameVi: 'Cảm ơn',
-        description: 'Ghi nhận sự giúp đỡ, hỗ trợ',
-        icon: '🙏',
-        color: '#14B8A6',
+        name: "Thank You",
+        nameVi: "Cảm ơn",
+        description: "Ghi nhận sự giúp đỡ, hỗ trợ",
+        icon: "🙏",
+        color: "#14B8A6",
         pointsValue: 5,
         sortOrder: 7,
       },
       {
-        name: 'Great Job',
-        nameVi: 'Làm tốt lắm',
-        description: 'Hoàn thành công việc xuất sắc',
-        icon: '👏',
-        color: '#F97316',
+        name: "Great Job",
+        nameVi: "Làm tốt lắm",
+        description: "Hoàn thành công việc xuất sắc",
+        icon: "👏",
+        color: "#F97316",
         pointsValue: 10,
         sortOrder: 8,
       },
@@ -531,7 +559,6 @@ export class RecognitionService {
         create: { tenantId: this.tenantId, ...category },
       })
     }
-
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -561,7 +588,7 @@ export class RecognitionService {
 
     return prisma.pointTransaction.findMany({
       where: { employeePointsId: points.id },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: limit,
     })
   }

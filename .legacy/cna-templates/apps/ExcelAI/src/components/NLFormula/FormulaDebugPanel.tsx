@@ -2,19 +2,19 @@
 // FORMULA DEBUG PANEL — Debug interface for formula errors
 // =============================================================================
 
-import React, { useState, useEffect } from 'react';
-import { nlFormulaEngine } from '../../nlformula';
-import type { DebugResult } from '../../nlformula/types';
+import React, { useState, useEffect } from "react"
+import { nlFormulaEngine } from "../../nlformula"
+import type { DebugResult } from "../../nlformula/types"
 
 // -----------------------------------------------------------------------------
 // Props
 // -----------------------------------------------------------------------------
 
 interface FormulaDebugPanelProps {
-  formula: string;
-  errorValue?: string;
-  onApplyFix: (fixedFormula: string) => void;
-  onClose?: () => void;
+  formula: string
+  errorValue?: string
+  onApplyFix: (fixedFormula: string) => void
+  onClose?: () => void
 }
 
 // -----------------------------------------------------------------------------
@@ -27,32 +27,32 @@ export const FormulaDebugPanel: React.FC<FormulaDebugPanelProps> = ({
   onApplyFix,
   onClose,
 }) => {
-  const [debugResult, setDebugResult] = useState<DebugResult | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedFix, setSelectedFix] = useState(0);
+  const [debugResult, setDebugResult] = useState<DebugResult | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedFix, setSelectedFix] = useState(0)
 
   // Debug the formula
   useEffect(() => {
     const debugFormula = async () => {
-      if (!formula || !formula.startsWith('=')) {
-        setDebugResult(null);
-        return;
+      if (!formula || !formula.startsWith("=")) {
+        setDebugResult(null)
+        return
       }
 
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const result = await nlFormulaEngine.debug(formula, errorValue || '');
-        setDebugResult(result);
-        setSelectedFix(0);
+        const result = await nlFormulaEngine.debug(formula, errorValue || "")
+        setDebugResult(result)
+        setSelectedFix(0)
       } catch {
-        setDebugResult(null);
+        setDebugResult(null)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    debugFormula();
-  }, [formula, errorValue]);
+    debugFormula()
+  }, [formula, errorValue])
 
   if (isLoading) {
     return (
@@ -60,11 +60,11 @@ export const FormulaDebugPanel: React.FC<FormulaDebugPanelProps> = ({
         <div className="formula-debug-panel__spinner" />
         <span>Analyzing formula...</span>
       </div>
-    );
+    )
   }
 
   if (!debugResult) {
-    return null;
+    return null
   }
 
   // No errors found
@@ -86,10 +86,10 @@ export const FormulaDebugPanel: React.FC<FormulaDebugPanelProps> = ({
           This formula appears to be correct.
         </p>
       </div>
-    );
+    )
   }
 
-  const suggestedFixes = debugResult.suggestedFixes || [];
+  const suggestedFixes = debugResult.suggestedFixes || []
 
   return (
     <div className="formula-debug-panel">
@@ -117,7 +117,9 @@ export const FormulaDebugPanel: React.FC<FormulaDebugPanelProps> = ({
         <div className="formula-debug-panel__errors">
           <div className="formula-debug-panel__error">
             <div className="formula-debug-panel__error-header">
-              <span className={`formula-debug-panel__error-type formula-debug-panel__error-type--${debugResult.errorType.toLowerCase()}`}>
+              <span
+                className={`formula-debug-panel__error-type formula-debug-panel__error-type--${debugResult.errorType.toLowerCase()}`}
+              >
                 {getErrorTypeLabel(debugResult.errorType)}
               </span>
               {debugResult.errorLocation && (
@@ -127,7 +129,9 @@ export const FormulaDebugPanel: React.FC<FormulaDebugPanelProps> = ({
               )}
             </div>
             {debugResult.errorMessage && (
-              <p className="formula-debug-panel__error-message">{debugResult.errorMessage}</p>
+              <p className="formula-debug-panel__error-message">
+                {debugResult.errorMessage}
+              </p>
             )}
             {debugResult.rootCause && (
               <p className="formula-debug-panel__root-cause">
@@ -149,7 +153,9 @@ export const FormulaDebugPanel: React.FC<FormulaDebugPanelProps> = ({
               <div
                 key={index}
                 className={`formula-debug-panel__fix ${
-                  index === selectedFix ? 'formula-debug-panel__fix--selected' : ''
+                  index === selectedFix
+                    ? "formula-debug-panel__fix--selected"
+                    : ""
                 }`}
                 onClick={() => setSelectedFix(index)}
               >
@@ -174,7 +180,7 @@ export const FormulaDebugPanel: React.FC<FormulaDebugPanelProps> = ({
               className="formula-debug-panel__action formula-debug-panel__action--primary"
               onClick={() => {
                 if (suggestedFixes[selectedFix]) {
-                  onApplyFix(suggestedFixes[selectedFix].fix);
+                  onApplyFix(suggestedFixes[selectedFix].fix)
                 }
               }}
             >
@@ -200,8 +206,8 @@ export const FormulaDebugPanel: React.FC<FormulaDebugPanelProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -209,26 +215,26 @@ export const FormulaDebugPanel: React.FC<FormulaDebugPanelProps> = ({
 
 function getErrorTypeLabel(type: string): string {
   switch (type) {
-    case 'SYNTAX':
-      return 'Syntax Error';
-    case 'REFERENCE':
-      return 'Reference Error';
-    case 'VALUE':
-      return 'Value Error';
-    case 'NAME':
-      return 'Name Error';
-    case 'DIV_ZERO':
-      return 'Division by Zero';
-    case 'NULL':
-      return 'Null Error';
-    case 'NUM':
-      return 'Number Error';
-    case 'NA':
-      return 'N/A Error';
-    case 'CIRCULAR':
-      return 'Circular Reference';
+    case "SYNTAX":
+      return "Syntax Error"
+    case "REFERENCE":
+      return "Reference Error"
+    case "VALUE":
+      return "Value Error"
+    case "NAME":
+      return "Name Error"
+    case "DIV_ZERO":
+      return "Division by Zero"
+    case "NULL":
+      return "Null Error"
+    case "NUM":
+      return "Number Error"
+    case "NA":
+      return "N/A Error"
+    case "CIRCULAR":
+      return "Circular Reference"
     default:
-      return 'Error';
+      return "Error"
   }
 }
 
@@ -237,11 +243,18 @@ function getErrorTypeLabel(type: string): string {
 // -----------------------------------------------------------------------------
 
 const LightbulbIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M9 18h6" />
     <path d="M10 22h4" />
     <path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" />
   </svg>
-);
+)
 
-export default FormulaDebugPanel;
+export default FormulaDebugPanel

@@ -1,27 +1,29 @@
-import React, { useState } from 'react';
-import { X, Printer, FileText } from 'lucide-react';
+import React, { useState } from "react"
+import { X, Printer, FileText } from "lucide-react"
 
 interface PrintDialogProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
 export const PrintDialog: React.FC<PrintDialogProps> = ({ onClose }) => {
-  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
-  const [paperSize, setPaperSize] = useState('a4');
-  const [printArea, setPrintArea] = useState<'all' | 'selection'>('all');
-  const [showGridlines, setShowGridlines] = useState(true);
-  const [showHeadings, setShowHeadings] = useState(false);
-  const [scale, setScale] = useState(100);
+  const [orientation, setOrientation] = useState<"portrait" | "landscape">(
+    "portrait"
+  )
+  const [paperSize, setPaperSize] = useState("a4")
+  const [printArea, setPrintArea] = useState<"all" | "selection">("all")
+  const [showGridlines, setShowGridlines] = useState(true)
+  const [showHeadings, setShowHeadings] = useState(false)
+  const [scale, setScale] = useState(100)
 
   const handlePrint = () => {
     // Add print styles dynamically
-    const printStyleId = 'excel-print-styles';
-    let printStyle = document.getElementById(printStyleId) as HTMLStyleElement;
+    const printStyleId = "excel-print-styles"
+    let printStyle = document.getElementById(printStyleId) as HTMLStyleElement
 
     if (!printStyle) {
-      printStyle = document.createElement('style');
-      printStyle.id = printStyleId;
-      document.head.appendChild(printStyle);
+      printStyle = document.createElement("style")
+      printStyle.id = printStyleId
+      document.head.appendChild(printStyle)
     }
 
     printStyle.textContent = `
@@ -65,7 +67,7 @@ export const PrintDialog: React.FC<PrintDialogProps> = ({ onClose }) => {
 
         /* Cell styling */
         .grid-cell {
-          border: ${showGridlines ? '1px solid #ccc' : 'none'} !important;
+          border: ${showGridlines ? "1px solid #ccc" : "none"} !important;
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
           color-adjust: exact;
@@ -73,30 +75,34 @@ export const PrintDialog: React.FC<PrintDialogProps> = ({ onClose }) => {
 
         /* Row/Column headers */
         .grid-header {
-          display: ${showHeadings ? 'block' : 'none'} !important;
+          display: ${showHeadings ? "block" : "none"} !important;
         }
 
         .row-header,
         .column-header {
-          display: ${showHeadings ? 'flex' : 'none'} !important;
+          display: ${showHeadings ? "flex" : "none"} !important;
         }
       }
-    `;
+    `
 
     // Trigger print
-    window.print();
+    window.print()
 
     // Clean up after print
     setTimeout(() => {
-      printStyle.remove();
-    }, 1000);
+      printStyle.remove()
+    }, 1000)
 
-    onClose();
-  };
+    onClose()
+  }
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog print-dialog" onClick={(e) => e.stopPropagation()} style={{ width: 400 }}>
+      <div
+        className="dialog print-dialog"
+        onClick={(e) => e.stopPropagation()}
+        style={{ width: 400 }}
+      >
         <div className="dialog-header">
           <h2>Print</h2>
           <button className="dialog-close" onClick={onClose}>
@@ -117,8 +123,8 @@ export const PrintDialog: React.FC<PrintDialogProps> = ({ onClose }) => {
                 <input
                   type="radio"
                   name="printArea"
-                  checked={printArea === 'all'}
-                  onChange={() => setPrintArea('all')}
+                  checked={printArea === "all"}
+                  onChange={() => setPrintArea("all")}
                 />
                 Entire sheet
               </label>
@@ -126,8 +132,8 @@ export const PrintDialog: React.FC<PrintDialogProps> = ({ onClose }) => {
                 <input
                   type="radio"
                   name="printArea"
-                  checked={printArea === 'selection'}
-                  onChange={() => setPrintArea('selection')}
+                  checked={printArea === "selection"}
+                  onChange={() => setPrintArea("selection")}
                 />
                 Selection only
               </label>
@@ -145,7 +151,9 @@ export const PrintDialog: React.FC<PrintDialogProps> = ({ onClose }) => {
               <label>Orientation:</label>
               <select
                 value={orientation}
-                onChange={(e) => setOrientation(e.target.value as 'portrait' | 'landscape')}
+                onChange={(e) =>
+                  setOrientation(e.target.value as "portrait" | "landscape")
+                }
                 className="dialog-input"
               >
                 <option value="portrait">Portrait</option>
@@ -213,5 +221,5 @@ export const PrintDialog: React.FC<PrintDialogProps> = ({ onClose }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

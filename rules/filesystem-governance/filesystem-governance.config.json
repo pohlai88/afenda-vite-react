@@ -82,12 +82,69 @@
       "root": "apps/api/src/lib",
       "maxDirectoryDepth": 3,
       "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/design-system/utils",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/eslint-config/src",
+      "maxDirectoryDepth": 2,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/contracts/src",
+      "maxDirectoryDepth": 2,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/pino-logger/src",
+      "maxDirectoryDepth": 2,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/vitest-config/src",
+      "maxDirectoryDepth": 2,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/env-loader/src",
+      "maxDirectoryDepth": 2,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/typescript-config",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/better-auth/src",
+      "maxDirectoryDepth": 2,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/better-auth/scripts",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/_database/src/queries",
+      "maxDirectoryDepth": 2,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/_database/src/schema",
+      "maxDirectoryDepth": 3,
+      "allowedPromotedSharedRoots": ["shared"]
     }
   ],
   "notes": [
     "This config is functional-first and intentionally narrow.",
     "It targets app source subroots where ownership and naming drift are highest.",
     "Web marketing, app ownership roots, promoted share, route surfaces, RPC, and API source boundaries are now in active governance.",
-    "Package governance and import-boundary linting should be layered in after the current app-and-api wave remains stable."
+    "Strict naming applies to tracked source files inside governed roots: generic stems are denied even when the rest of the name is technically valid.",
+    "Explicit package export surfaces may keep established root names such as packages/design-system/utils, but internal files beneath those roots must still use responsibility-shaped names.",
+    "Package governance now covers contracts, eslint-config, pino-logger, vitest-config, env-loader, typescript-config, better-auth source/scripts, the database query/schema layers, and the design-system utility export surface."
   ]
 }

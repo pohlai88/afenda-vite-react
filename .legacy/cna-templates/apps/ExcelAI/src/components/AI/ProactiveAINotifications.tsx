@@ -10,7 +10,7 @@
 // - Repeated action automation suggestions
 // ============================================================
 
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback, useRef } from "react"
 import {
   Sparkles,
   X,
@@ -22,48 +22,50 @@ import {
   ChevronRight,
   Bell,
   BellOff,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { useAIStore } from '../../stores/aiStore';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { create } from 'zustand';
+} from "lucide-react"
+import type { LucideIcon } from "lucide-react"
+import { useAIStore } from "../../stores/aiStore"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { create } from "zustand"
 
 // Notification types
 export type AINotificationType =
-  | 'data_quality'
-  | 'pattern_detected'
-  | 'optimization'
-  | 'automation'
-  | 'insight'
-  | 'warning';
+  | "data_quality"
+  | "pattern_detected"
+  | "optimization"
+  | "automation"
+  | "insight"
+  | "warning"
 
 // Notification priority
-export type NotificationPriority = 'low' | 'medium' | 'high';
+export type NotificationPriority = "low" | "medium" | "high"
 
 // Notification interface
 export interface AINotification {
-  id: string;
-  type: AINotificationType;
-  priority: NotificationPriority;
-  title: string;
-  message: string;
+  id: string
+  type: AINotificationType
+  priority: NotificationPriority
+  title: string
+  message: string
   action?: {
-    label: string;
-    prompt: string;
-  };
-  dismissible: boolean;
-  autoHide?: number; // ms
-  createdAt: number;
+    label: string
+    prompt: string
+  }
+  dismissible: boolean
+  autoHide?: number // ms
+  createdAt: number
 }
 
 // Notification store
 interface NotificationStore {
-  notifications: AINotification[];
-  muted: boolean;
-  addNotification: (notification: Omit<AINotification, 'id' | 'createdAt'>) => void;
-  removeNotification: (id: string) => void;
-  clearAll: () => void;
-  toggleMute: () => void;
+  notifications: AINotification[]
+  muted: boolean
+  addNotification: (
+    notification: Omit<AINotification, "id" | "createdAt">
+  ) => void
+  removeNotification: (id: string) => void
+  clearAll: () => void
+  toggleMute: () => void
 }
 
 export const useAINotificationStore = create<NotificationStore>((set, get) => ({
@@ -71,40 +73,40 @@ export const useAINotificationStore = create<NotificationStore>((set, get) => ({
   muted: false,
 
   addNotification: (notification) => {
-    if (get().muted) return;
+    if (get().muted) return
 
     const newNotification: AINotification = {
       ...notification,
       id: `notif-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       createdAt: Date.now(),
-    };
+    }
 
-    set(state => ({
+    set((state) => ({
       notifications: [newNotification, ...state.notifications].slice(0, 5), // Max 5 notifications
-    }));
+    }))
 
     // Auto-hide if specified
     if (notification.autoHide) {
       setTimeout(() => {
-        get().removeNotification(newNotification.id);
-      }, notification.autoHide);
+        get().removeNotification(newNotification.id)
+      }, notification.autoHide)
     }
   },
 
   removeNotification: (id) => {
-    set(state => ({
-      notifications: state.notifications.filter(n => n.id !== id),
-    }));
+    set((state) => ({
+      notifications: state.notifications.filter((n) => n.id !== id),
+    }))
   },
 
   clearAll: () => {
-    set({ notifications: [] });
+    set({ notifications: [] })
   },
 
   toggleMute: () => {
-    set(state => ({ muted: !state.muted }));
+    set((state) => ({ muted: !state.muted }))
   },
-}));
+}))
 
 // Icon mapping
 const TYPE_ICONS: Record<AINotificationType, LucideIcon> = {
@@ -114,18 +116,20 @@ const TYPE_ICONS: Record<AINotificationType, LucideIcon> = {
   automation: RefreshCw,
   insight: Lightbulb,
   warning: AlertCircle,
-};
+}
 
 // Notification item component
 const NotificationItem: React.FC<{
-  notification: AINotification;
-  onDismiss: () => void;
-  onAction: () => void;
+  notification: AINotification
+  onDismiss: () => void
+  onAction: () => void
 }> = ({ notification, onDismiss, onAction }) => {
-  const Icon = TYPE_ICONS[notification.type];
+  const Icon = TYPE_ICONS[notification.type]
 
   return (
-    <div className={`ai-notification ${notification.type} ${notification.priority}`}>
+    <div
+      className={`ai-notification ${notification.type} ${notification.priority}`}
+    >
       <div className="ai-notification-icon">
         <Icon size={16} />
       </div>
@@ -145,23 +149,27 @@ const NotificationItem: React.FC<{
         </button>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Main notifications container
 export const ProactiveAINotifications: React.FC = () => {
-  const { notifications, removeNotification, clearAll, muted, toggleMute } = useAINotificationStore();
-  const { openPanel, setCurrentInput } = useAIStore();
+  const { notifications, removeNotification, clearAll, muted, toggleMute } =
+    useAINotificationStore()
+  const { openPanel, setCurrentInput } = useAIStore()
 
-  const handleAction = useCallback((notification: AINotification) => {
-    if (notification.action?.prompt) {
-      openPanel();
-      setCurrentInput(notification.action.prompt);
-    }
-    removeNotification(notification.id);
-  }, [openPanel, setCurrentInput, removeNotification]);
+  const handleAction = useCallback(
+    (notification: AINotification) => {
+      if (notification.action?.prompt) {
+        openPanel()
+        setCurrentInput(notification.action.prompt)
+      }
+      removeNotification(notification.id)
+    },
+    [openPanel, setCurrentInput, removeNotification]
+  )
 
-  if (notifications.length === 0 && !muted) return null;
+  if (notifications.length === 0 && !muted) return null
 
   return (
     <div className="ai-notifications-container">
@@ -171,14 +179,16 @@ export const ProactiveAINotifications: React.FC = () => {
           <Sparkles size={14} />
           <span>AI Insights</span>
           {notifications.length > 0 && (
-            <span className="ai-notifications-count">{notifications.length}</span>
+            <span className="ai-notifications-count">
+              {notifications.length}
+            </span>
           )}
         </div>
         <div className="ai-notifications-actions">
           <button
-            className={`ai-notifications-mute ${muted ? 'muted' : ''}`}
+            className={`ai-notifications-mute ${muted ? "muted" : ""}`}
             onClick={toggleMute}
-            title={muted ? 'Unmute notifications' : 'Mute notifications'}
+            title={muted ? "Unmute notifications" : "Mute notifications"}
           >
             {muted ? <BellOff size={14} /> : <Bell size={14} />}
           </button>
@@ -201,7 +211,7 @@ export const ProactiveAINotifications: React.FC = () => {
       {/* Notifications list */}
       {!muted && (
         <div className="ai-notifications-list">
-          {notifications.map(notification => (
+          {notifications.map((notification) => (
             <NotificationItem
               key={notification.id}
               notification={notification}
@@ -212,107 +222,120 @@ export const ProactiveAINotifications: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Hook to trigger proactive notifications based on user actions
 export function useProactiveAITriggers() {
-  const { addNotification } = useAINotificationStore();
-  const { sheets, activeSheetId } = useWorkbookStore();
-  const lastActionRef = useRef<{ type: string; count: number; timestamp: number } | null>(null);
+  const { addNotification } = useAINotificationStore()
+  const { sheets, activeSheetId } = useWorkbookStore()
+  const lastActionRef = useRef<{
+    type: string
+    count: number
+    timestamp: number
+  } | null>(null)
 
   // Track repeated actions for automation suggestions
-  const trackAction = useCallback((actionType: string) => {
-    const now = Date.now();
-    const last = lastActionRef.current;
+  const trackAction = useCallback(
+    (actionType: string) => {
+      const now = Date.now()
+      const last = lastActionRef.current
 
-    if (last && last.type === actionType && now - last.timestamp < 5000) {
-      last.count++;
-      last.timestamp = now;
+      if (last && last.type === actionType && now - last.timestamp < 5000) {
+        last.count++
+        last.timestamp = now
 
-      // Suggest automation after 3 repeated actions
-      if (last.count === 3) {
-        addNotification({
-          type: 'automation',
-          priority: 'medium',
-          title: 'Repeated Action Detected',
-          message: `You've done this ${last.count} times. Want to automate it?`,
-          action: {
-            label: 'Automate with AI',
-            prompt: `I've been repeating this action: ${actionType}. Help me automate it or create a more efficient workflow.`,
-          },
-          dismissible: true,
-          autoHide: 10000,
-        });
+        // Suggest automation after 3 repeated actions
+        if (last.count === 3) {
+          addNotification({
+            type: "automation",
+            priority: "medium",
+            title: "Repeated Action Detected",
+            message: `You've done this ${last.count} times. Want to automate it?`,
+            action: {
+              label: "Automate with AI",
+              prompt: `I've been repeating this action: ${actionType}. Help me automate it or create a more efficient workflow.`,
+            },
+            dismissible: true,
+            autoHide: 10000,
+          })
+        }
+      } else {
+        lastActionRef.current = { type: actionType, count: 1, timestamp: now }
       }
-    } else {
-      lastActionRef.current = { type: actionType, count: 1, timestamp: now };
-    }
-  }, [addNotification]);
+    },
+    [addNotification]
+  )
 
   // Check for data quality issues periodically
   useEffect(() => {
-    if (!activeSheetId) return;
+    if (!activeSheetId) return
 
     const checkDataQuality = () => {
-      const sheet = sheets[activeSheetId];
-      if (!sheet) return;
+      const sheet = sheets[activeSheetId]
+      if (!sheet) return
 
-      const cells = Object.values(sheet.cells);
-      let errorCount = 0;
+      const cells = Object.values(sheet.cells)
+      let errorCount = 0
 
-      cells.forEach(cell => {
-        if (typeof cell.value === 'string' && cell.value.startsWith('#')) {
-          errorCount++;
+      cells.forEach((cell) => {
+        if (typeof cell.value === "string" && cell.value.startsWith("#")) {
+          errorCount++
         }
-      });
+      })
 
       if (errorCount > 5) {
         addNotification({
-          type: 'data_quality',
-          priority: 'high',
-          title: 'Multiple Formula Errors',
+          type: "data_quality",
+          priority: "high",
+          title: "Multiple Formula Errors",
           message: `Found ${errorCount} formula errors in this sheet`,
           action: {
-            label: 'Fix with AI',
+            label: "Fix with AI",
             prompt: `I have ${errorCount} formula errors in my spreadsheet. Help me identify and fix them.`,
           },
           dismissible: true,
-        });
+        })
       }
-    };
+    }
 
     // Check on sheet change
-    const timer = setTimeout(checkDataQuality, 2000);
-    return () => clearTimeout(timer);
-  }, [activeSheetId, sheets, addNotification]);
+    const timer = setTimeout(checkDataQuality, 2000)
+    return () => clearTimeout(timer)
+  }, [activeSheetId, sheets, addNotification])
 
-  return { trackAction };
+  return { trackAction }
 }
 
 // Quick insight generator
 export function generateInsight(data: {
-  type: 'trend' | 'outlier' | 'pattern' | 'correlation';
-  description: string;
-  details?: string;
+  type: "trend" | "outlier" | "pattern" | "correlation"
+  description: string
+  details?: string
 }): void {
-  const { addNotification } = useAINotificationStore.getState();
+  const { addNotification } = useAINotificationStore.getState()
 
   addNotification({
-    type: 'insight',
-    priority: 'low',
-    title: data.type === 'trend' ? 'Trend Detected' :
-           data.type === 'outlier' ? 'Outlier Found' :
-           data.type === 'pattern' ? 'Pattern Recognized' :
-           'Correlation Found',
+    type: "insight",
+    priority: "low",
+    title:
+      data.type === "trend"
+        ? "Trend Detected"
+        : data.type === "outlier"
+          ? "Outlier Found"
+          : data.type === "pattern"
+            ? "Pattern Recognized"
+            : "Correlation Found",
     message: data.description,
-    action: data.details ? {
-      label: 'Learn more',
-      prompt: `Tell me more about this insight: ${data.description}. ${data.details}`,
-    } : undefined,
+    action: data.details
+      ? {
+          label: "Learn more",
+          prompt: `Tell me more about this insight: ${data.description}. ${data.details}`,
+        }
+      : undefined,
     dismissible: true,
     autoHide: 15000,
-  });
+  })
 }
 
-export default ProactiveAINotifications;
+export default ProactiveAINotifications

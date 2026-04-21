@@ -1,6 +1,6 @@
 # Query layer (`@afenda/database/queries`)
 
-Canonical **read-model resolvers** and **pure helpers** for tenant policy, scoped item settings, and membership + role scopes. Everything here expects a server-side **`DatabaseClient`** (Drizzle over `pg`). **Not** for browser bundles.
+Canonical **read-model resolvers** and **query primitives** for tenant policy, scoped item settings, and membership + role scopes. Everything here expects a server-side **`DatabaseClient`** (Drizzle over `pg`). **Not** for browser bundles.
 
 **Imports:** `@afenda/database` (queries are re-exported from the root) or `@afenda/database/queries`. Prefer package exports; do not deep-import `src/` from apps.
 
@@ -23,16 +23,16 @@ These modules are the **single place** for that SQL shape and ordering.
 
 ## Layout
 
-| Path                               | Role                                                                                                                                                                                                           |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `index.ts`                         | Barrel — re-exports helpers + all resolvers                                                                                                                                                                    |
-| `helpers/iso-date.ts`              | **`todayIsoDateUtc`**, **`assertIsoDateOnly`**, **`isIsoDateOnly`** — resolver `asOfDate` must be **`YYYY-MM-DD`** (UTC day default where documented)                                                          |
-| `helpers/effective-row.ts`         | **`effectiveOnAsOfDatePredicate`** — one calendar day inside an `effective_from` / `effective_to` bracket (align with [`src/views/mdm-canonical-views.ts`](../views/mdm-canonical-views.ts) where views exist) |
-| `helpers/scope-utils.ts`           | **`matchesScope`** — pure check that a role assignment’s `scope_type` / `scope_id` covers runtime LE / BU / location (after you load assignments)                                                              |
-| `resolve-current-tenant-policy.ts` | Effective row for **`mdm.tenant_policies`** by domain + key on **`asOfDate`**                                                                                                                                  |
-| `resolve-item-settings.ts`         | **`mdm.item_entity_settings`** with effective dating; fallback **location → business unit → legal entity**; **location tier requires both `locationId` and `businessUnitId`**                                  |
-| `resolve-membership-scope.ts`      | One round-trip: membership + left-joined role assignments and roles; membership lifecycle vs **`asOfDate`**                                                                                                    |
-| `__tests__/`                       | Vitest for **`iso-date`** and **`scope-utils`** (included in `pnpm run db:guard` in `packages/_database`)                                                                                                      |
+| Path                                           | Role                                                                                                                                                                                                           |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.ts`                                     | Barrel — re-exports query primitives + all resolvers                                                                                                                                                           |
+| `query-primitives/iso-date-assertions.ts`      | **`todayIsoDateUtc`**, **`assertIsoDateOnly`**, **`isIsoDateOnly`** — resolver `asOfDate` must be **`YYYY-MM-DD`** (UTC day default where documented)                                                          |
+| `query-primitives/effective-date-predicate.ts` | **`effectiveOnAsOfDatePredicate`** — one calendar day inside an `effective_from` / `effective_to` bracket (align with [`src/views/mdm-canonical-views.ts`](../views/mdm-canonical-views.ts) where views exist) |
+| `query-primitives/scope-matching.ts`           | **`matchesScope`** — pure check that a role assignment’s `scope_type` / `scope_id` covers runtime LE / BU / location (after you load assignments)                                                              |
+| `resolve-current-tenant-policy.ts`             | Effective row for **`mdm.tenant_policies`** by domain + key on **`asOfDate`**                                                                                                                                  |
+| `resolve-item-settings.ts`                     | **`mdm.item_entity_settings`** with effective dating; fallback **location → business unit → legal entity**; **location tier requires both `locationId` and `businessUnitId`**                                  |
+| `resolve-membership-scope.ts`                  | One round-trip: membership + left-joined role assignments and roles; membership lifecycle vs **`asOfDate`**                                                                                                    |
+| `__tests__/`                                   | Vitest for **`iso-date-assertions`** and **`scope-matching`** (included in `pnpm run db:guard` in `packages/_database`)                                                                                        |
 
 ---
 

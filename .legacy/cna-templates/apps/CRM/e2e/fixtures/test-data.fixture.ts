@@ -1,5 +1,5 @@
-import { test as base } from './auth.fixture'
-import { TEST_PREFIX } from '../helpers/seed.helper'
+import { test as base } from "./auth.fixture"
+import { TEST_PREFIX } from "../helpers/seed.helper"
 
 /**
  * Extended fixture that provides test data context.
@@ -17,4 +17,4 @@ export const test = base.extend<TestDataFixtures>({
   testContactName: `${TEST_PREFIX} Nguyễn`,
 })
 
-export { expect } from '@playwright/test'
+export { expect } from "@playwright/test"

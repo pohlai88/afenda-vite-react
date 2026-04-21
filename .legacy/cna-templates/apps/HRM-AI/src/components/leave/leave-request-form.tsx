@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import { CalendarIcon, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
+import { CalendarIcon, Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Dialog,
   DialogContent,
@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -24,30 +24,30 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { Textarea } from '@/components/ui/textarea'
-import { Checkbox } from '@/components/ui/checkbox'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/popover"
+import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
+import { cn } from "@/lib/utils"
 
 const formSchema = z.object({
-  policyId: z.string().min(1, 'Vui lòng chọn loại phép'),
-  startDate: z.date({ message: 'Vui lòng chọn ngày bắt đầu' }),
-  endDate: z.date({ message: 'Vui lòng chọn ngày kết thúc' }),
+  policyId: z.string().min(1, "Vui lòng chọn loại phép"),
+  startDate: z.date({ message: "Vui lòng chọn ngày bắt đầu" }),
+  endDate: z.date({ message: "Vui lòng chọn ngày kết thúc" }),
   isHalfDayStart: z.boolean(),
   isHalfDayEnd: z.boolean(),
-  reason: z.string().min(1, 'Vui lòng nhập lý do'),
+  reason: z.string().min(1, "Vui lòng nhập lý do"),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -64,17 +64,21 @@ interface LeaveRequestFormProps {
   trigger?: React.ReactNode
 }
 
-export function LeaveRequestForm({ policies, onSubmit, trigger }: LeaveRequestFormProps) {
+export function LeaveRequestForm({
+  policies,
+  onSubmit,
+  trigger,
+}: LeaveRequestFormProps) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      policyId: '',
+      policyId: "",
       isHalfDayStart: false,
       isHalfDayEnd: false,
-      reason: '',
+      reason: "",
     },
   })
 
@@ -110,7 +114,10 @@ export function LeaveRequestForm({ policies, onSubmit, trigger }: LeaveRequestFo
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Loại phép</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn loại phép" />
@@ -142,12 +149,12 @@ export function LeaveRequestForm({ policies, onSubmit, trigger }: LeaveRequestFo
                           <Button
                             variant="outline"
                             className={cn(
-                              'pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
                             )}
                           >
                             {field.value ? (
-                              format(field.value, 'dd/MM/yyyy', { locale: vi })
+                              format(field.value, "dd/MM/yyyy", { locale: vi })
                             ) : (
                               <span>Chọn ngày</span>
                             )}
@@ -182,12 +189,12 @@ export function LeaveRequestForm({ policies, onSubmit, trigger }: LeaveRequestFo
                           <Button
                             variant="outline"
                             className={cn(
-                              'pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
                             )}
                           >
                             {field.value ? (
-                              format(field.value, 'dd/MM/yyyy', { locale: vi })
+                              format(field.value, "dd/MM/yyyy", { locale: vi })
                             ) : (
                               <span>Chọn ngày</span>
                             )}
@@ -202,7 +209,8 @@ export function LeaveRequestForm({ policies, onSubmit, trigger }: LeaveRequestFo
                           onSelect={field.onChange}
                           disabled={(date) =>
                             date < new Date() ||
-                            (form.watch('startDate') && date < form.watch('startDate'))
+                            (form.watch("startDate") &&
+                              date < form.watch("startDate"))
                           }
                           initialFocus
                         />
@@ -274,18 +282,26 @@ export function LeaveRequestForm({ policies, onSubmit, trigger }: LeaveRequestFo
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => form.handleSubmit((data) => handleSubmit(data, false))()}
+                onClick={() =>
+                  form.handleSubmit((data) => handleSubmit(data, false))()
+                }
                 disabled={isSubmitting}
               >
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 Lưu nháp
               </Button>
               <Button
                 type="button"
-                onClick={() => form.handleSubmit((data) => handleSubmit(data, true))()}
+                onClick={() =>
+                  form.handleSubmit((data) => handleSubmit(data, true))()
+                }
                 disabled={isSubmitting}
               >
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 Gửi duyệt
               </Button>
             </div>

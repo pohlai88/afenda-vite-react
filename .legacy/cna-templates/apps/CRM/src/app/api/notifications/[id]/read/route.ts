@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { markAsRead } from '@/lib/notifications'
+import { NextRequest, NextResponse } from "next/server"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { markAsRead } from "@/lib/notifications"
 
 // PATCH /api/notifications/[id]/read — Mark a notification as read
 export async function PATCH(
@@ -13,9 +13,15 @@ export async function PATCH(
     return NextResponse.json({ success: true })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('PATCH /api/notifications/[id]/read error:', error)
-    return NextResponse.json({ error: 'Failed to mark notification as read' }, { status: 500 })
+    console.error("PATCH /api/notifications/[id]/read error:", error)
+    return NextResponse.json(
+      { error: "Failed to mark notification as read" },
+      { status: 500 }
+    )
   }
 }

@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react"
 
 interface RibbonTabProps {
-  id: string;
-  label: string;
-  isActive: boolean;
-  onClick: () => void;
+  id: string
+  label: string
+  isActive: boolean
+  onClick: () => void
 }
 
 export const RibbonTab: React.FC<RibbonTabProps> = ({
@@ -15,11 +15,11 @@ export const RibbonTab: React.FC<RibbonTabProps> = ({
 }) => {
   return (
     <button
-      className={`ribbon-tab ${isActive ? 'active' : ''}`}
+      className={`ribbon-tab ${isActive ? "active" : ""}`}
       onClick={onClick}
       data-tab={id}
     >
       {label}
     </button>
-  );
-};
+  )
+}

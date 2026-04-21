@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-04-14T22:39:46.918Z",
+  "generatedAt": "2026-04-21T18:00:57.208Z",
   "items": [
     {
       "afendaKey": "allocation.error.over_allocated.message",
@@ -20,6 +20,1105 @@
       "odooCandidate": "Stock Move",
       "glossaryValue": "Allocations",
       "notes": "Primary platform matches glossary canonical English value."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.apiKeys.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Programmatic access uses Better Auth API keys when enabled for your workspace. Create and revoke keys from your organization or admin settings when available.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.apiKeys.heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "API keys",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.apiKeys.hint",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Requires the full auth stack (`AFENDA_AUTH_ALL_PLUGINS` not false) and the API key plugin on the server.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.ack",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "I understand this account will be permanently deleted.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.error",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not delete the account.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Delete account",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.need_ack",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Confirm that you understand permanent deletion.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.oauth_only",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "We will email a confirmation link to your address on file.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.password_help_oauth",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "If you use Google or another provider only, leave this empty — we will email a confirmation link.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.password_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Current password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.submit",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Delete my account",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.submitting",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Working…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.success",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "If a confirmation email was required, check your inbox and open the link. Otherwise your session has ended.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.delete.warning",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "This permanently removes your sign-in and app access. Some workspace data may be retained under governance policies.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.current_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Current email:",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.error",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not start email change.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Email address",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.help",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "We email your current address to approve the change, then send verification to the new address.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.invalid",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter a new email that differs from your current address.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.new_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "New email",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.placeholder",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "you@company.com",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.submit",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Request email change",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.submitting",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sending…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.email.success",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Check your current inbox to approve the change, then verify the new address.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.loading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Loading…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.password.current_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Current password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.password.error",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not update password.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.password.heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.password.new_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "New password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.password.required",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter your current and new password.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.password.revoke_others",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sign out other sessions after change",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.password.submit",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Update password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.password.submitting",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Updating…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.password.success",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Password updated.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.signed_out",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sign in to manage your account.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.subtitle",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Update your sign-in email, password, or permanently delete your account.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.accountSecurity.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Account security",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.controls_body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Recovery, session revocation, and provider changes stay inside governed account controls.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.controls_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Managed Controls",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.eyebrow",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Trusted Access",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.feature_intro",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "The shell is meant to orient, not advertise. It explains the task, shortens recovery, and keeps control surfaces explicit.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.feature_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "What This Entry Prioritizes",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.features.clarity.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Each auth view states what is required, what happens next, and where recovery starts if you need a different route.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.features.clarity.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Clear Task Framing",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.features.continuity.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Password, passkey, email-link, and provider flows all resolve back into the same workspace entry pattern.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.features.continuity.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Consistent Handoff",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.features.governance.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Linked providers, sessions, passkeys, and destructive actions stay explicit so account changes remain easier to review.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.features.governance.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Governed Account Changes",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.methods_body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Availability depends on the methods enabled for this account and the controls your organization has approved.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.methods_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Authentication Methods",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.return_body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Pick up where you left off with the same approved route, whether you return by password, passkey, or link.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.return_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Continuous Access",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.capabilities_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Available Controls",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.empty.passkeys_body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Add a passkey to shorten future sign-ins and keep a device-bound recovery option available.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.empty.passkeys_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No Passkeys Added Yet",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.empty.sessions_body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "When a session is active, Afenda lists it here so you can review trust and revoke access when needed.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.empty.sessions_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No Active Sessions Found",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.eyebrow",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Account Management",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.tabs_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Settings sections",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.views.account.description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Manage the identity details people see, the address used for sign-in, visual preferences, and session continuity.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.views.account.summary",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Profile, email, and workspace continuity controls stay together so routine updates are quick to review.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.views.account.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Account Preferences",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.views.security.description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Review passwords, linked providers, passkeys, active sessions, and destructive actions from one governed surface.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.views.security.summary",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Security controls stay explicit, reversible where possible, and easy to audit across devices and providers.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.settings.views.security.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Security & Sessions",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.profile.continue_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Continue To App",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.profile.description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Add the identity details your teammates will see. This step is recommended, not required, before app entry.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.profile.next_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "{{organization}} is ready. Continue to the app now or refine your account details first.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.profile.next_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Continue",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.profile.organization_fallback",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Your workspace",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.profile.settings_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Open Account Settings",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.profile.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Review Your Profile",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.shell.footer",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Complete the required account state, then continue into the app.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.shell.label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Setup",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.account_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Confirm the identity that will own the first workspace binding.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.account_labels.email",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Email",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.account_labels.missing",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Not provided",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.account_labels.name",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Name",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.account_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Current Account",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.binding_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "The first workspace becomes the active organization context for subsequent app entry.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.binding_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Context Binding",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.create_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create Workspace",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.create_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use a clear internal name. Afenda derives the routing slug automatically.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.create_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create Workspace",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create the first workspace or reactivate an existing one. Afenda uses this binding as the required operating context for the app.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.errors.invalid_name",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter a valid workspace name.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.errors.name_taken",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "That workspace name is already in use. Try a more specific name.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.loading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Loading workspaces…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.name_help",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use the operational name your team will recognize.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.name_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Workspace Name",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.name_placeholder",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Acme Operations",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.owner_note",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "You become the workspace owner.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.resume_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use This Workspace",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.resume_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "If your account already belongs to a workspace, activate it and continue.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.resume_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Resume Existing Workspace",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Set Your Workspace Context",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.shared.social",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Social SSO",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.story_intro",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Afenda keeps sign-in operational: confirm identity, return to the right workspace, and keep account controls nearby after entry.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.story_steps.continue.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Once access is confirmed, Afenda hands you back to the intended route instead of sending you through a generic detour.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.story_steps.continue.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Return To The Working Surface",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.story_steps.manage.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sessions, providers, recovery, and account changes remain available from settings when your workspace enables them.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.story_steps.manage.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Keep Security Controls Close",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.story_steps.verify.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use the method configured for this account, whether that is password, passkey, email link, or a connected provider.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.story_steps.verify.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verify Through The Approved Route",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.story_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Access Sequence",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.support_body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Every step is designed to be clear for operators, secure for auditors, and easy to recover.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.support_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Support Readiness",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.surface_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Current Surface",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.forgotPassword.hero_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Reset password access through a short recovery step designed for fast return and clear confirmation.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.forgotPassword.hero_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Recover Access Without Losing Momentum.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.forgotPassword.panel_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter the address tied to your account. If it exists, recovery instructions arrive there shortly.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.forgotPassword.panel_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Reset Password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.forgotPassword.topics.resume.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "After recovery, return through the normal sign-in route.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.forgotPassword.topics.resume.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Resume Quickly",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.forgotPassword.topics.start.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter the account address and let the reset route continue from email.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.forgotPassword.topics.start.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Start Recovery",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.magicLink.hero_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Send a governed sign-in link to the address on file and continue without handling a permanent secret on this screen.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.magicLink.hero_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use an Email Link When Speed Matters.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.magicLink.panel_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "We send a one-time link to your inbox and keep the rest of the sign-in surface available if you need another method.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.magicLink.panel_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Email a Magic Link",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.magicLink.topics.fallback.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Password or passkey routes stay available if you switch methods.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.magicLink.topics.fallback.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Fallback Ready",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.magicLink.topics.inbox.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Send a one-time link to the address already tied to the account.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.magicLink.topics.inbox.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Inbox Entry",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.resetPassword.hero_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Choose a replacement password, confirm it once, and return to the workspace through the normal sign-in path.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.resetPassword.hero_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Set a New Credential & Continue.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.resetPassword.panel_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use a strong replacement password and confirm it inline before the credential is updated.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.resetPassword.panel_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create a New Password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.resetPassword.topics.reentry.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Once the reset completes, continue through the standard sign-in path.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.resetPassword.topics.reentry.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Re-enter Normally",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.resetPassword.topics.replace.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Set one new password and confirm it inline before update.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.resetPassword.topics.replace.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Replace The Secret",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signIn.hero_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Move from identity check to workspace access in one clear flow built for security-sensitive operations.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signIn.hero_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter Afenda With Confidence.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signIn.panel_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use the approved method for your account. The panel stays focused, traceable, and ready for recovery.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signIn.panel_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sign In",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signIn.topics.approved.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use the method already configured for this account.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signIn.topics.approved.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Approved Route",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signIn.topics.return.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Successful sign-in sends you back to the intended workspace path.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signIn.topics.return.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Return Fast",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signOut.hero_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Afenda clears the current session and returns you to a safe re-entry point for the next sign-in.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signOut.hero_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Close This Session Cleanly.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signOut.panel_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "We are ending the current session and redirecting you to the secure sign-in entry.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signOut.panel_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Signing You Out",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signOut.status_message",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Ending the current session…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signOut.topics.close.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Close the current session without changing the account itself.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signOut.topics.close.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "End This Session",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signOut.topics.return.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Afenda sends you back to a secure re-entry point for the next sign-in.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signOut.topics.return.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Leave A Safe Return",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signUp.hero_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create access with the same control standards used across the operating workspace.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signUp.hero_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Open Your Afenda Account.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signUp.panel_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Set your primary credentials once, then keep recovery and secondary methods available from account settings.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signUp.panel_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create Account",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signUp.topics.primary.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create the first credential set for your Afenda account.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signUp.topics.primary.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Primary Access",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signUp.topics.recovery.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Add alternate entry methods later from account settings when available.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.views.signUp.topics.recovery.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Recovery Ready",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
       "afendaKey": "auth.login.placeholder.message",
@@ -418,6 +1517,517 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.auth_security.beacon_tooltip",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Trust: {{trust}} / Score: {{score}}",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.challenge_expires",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Challenge expires at {{time}}",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.challenge_preparing",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Preparing secure challenge…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.challenge_switch_totp",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Continue with one-time code",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.challenge_use_another",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use another method",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.challenge_verifying",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verifying challenge…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.continuity_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Session continuity",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.current_flow",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Current flow",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.device",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Device posture",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.factor_disabled",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Disabled",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.factor_enabled",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enabled",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.factor.mfa",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "MFA",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.factor.passkey",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passkey",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.factor.password",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.factor.social",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Social sign-in",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.factors_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Authentication factors",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.fast_lane",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Fast lane",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.flow_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Step: {{step}} / Method: {{method}}",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.hud_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Identity intelligence",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.identify_continue",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Continue to method selection",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.last_trusted_session",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Last trusted session",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.menu_item",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Security & sessions",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.method.passkey",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passkey",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.method.password",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.method.social",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Social",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_back_passkey",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Back to email",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_back_password",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Back to password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_client_missing",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Authenticator sign-in is not enabled in this build. Enable MFA in environment config.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_invalid_totp_format",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter a 6-digit code from your authenticator app.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_otp_only_not_supported",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "This sign-in expects an email one-time code, but email OTP is not configured for this environment. Use an authenticator app (TOTP) or contact support.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_totp_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Open your authenticator app and enter the 6-digit code for this account.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_totp_prompt",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter your authenticator code to finish signing in.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_totp_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Two-factor authentication",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_trust_device",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Trust this device (skip 2FA on this browser for a while)",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_verify_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verify and continue",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_verify_failed",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verification failed. Check the code and try again.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.mfa_verifying",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verifying code…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.otp_code_placeholder",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "6-digit code",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.panel_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Review trust posture, active sessions, and authentication factors.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.panel_error",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Security data could not be loaded.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.panel_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Security & Sessions",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.passkey_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verify passkey challenge",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.passkey_challenge_deprecated",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passkey sign-in no longer uses a one-time code here. Go back and sign in with your passkey again, or choose password or email code.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.passkey_client_missing",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passkey sign-in is not enabled in this build. Enable passkey in environment config.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.passkey_not_ready",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passkey fast lane not enabled",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.passkey_prompt",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passkey assertion challenge is ready. Continue to verify device-bound credentials.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.passkey_ready",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passkey fast lane ready",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.passkey_signing_in",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Signing in with passkey…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.passkey_unavailable",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passkeys are not available on this device or browser.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.passkey_wave1_body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passkey WebAuthn verification is enabled in the next wave. Use a server-issued one-time code instead. In development, the API prints the OTP to the server log when the challenge starts.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.receipt_generating",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Generating security receipt…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.receipt_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Security receipt",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.recovery_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Open recovery options",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.redirecting",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verification complete. Redirecting to workspace…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.region",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Region profile",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.register_subtitle",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create an account with the same trust-aware flow used in operations-grade authentication.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.resume_reset",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Reset challenge state",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.revoke_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Revoke session",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.revoke_failed",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not revoke this session.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.revoke_success",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Session revoked successfully.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.risk_reasons",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Risk rationale",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.sessions_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Active sessions",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.shell_subtitle",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Adaptive command-center authentication with explainable trust and challenge continuity.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.social_prompt",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Choose a federated provider to continue.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.timeline_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Recent auth timeline",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.trust_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Current trust posture",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.trust_score",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Trust score",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.trust.high",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "High trust",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.trust.low",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Low trust",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.trust.medium",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Medium trust",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.trust.verified",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verified",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.auth_security.verify_otp_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verify code",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.breadcrumb.account",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Account",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.breadcrumb.app",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -436,6 +2046,13 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Audit trail",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.breadcrumb.db_studio",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "DB Studio",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -492,6 +2109,13 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Search subsidiaries...",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.breadcrumb.security",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Security",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -978,6 +2602,300 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.db_studio.artifact_bindings_heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Artifact bindings",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.audit_card_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Append-only audit evidence for the selected tenant.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.audit_heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Recent audit (tenant)",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.audit_need_tenant",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Select a tenant to load recent audit rows.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.bindings_col_artifact",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Artifact",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.bindings_col_notes",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Notes",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.bindings_col_scope",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Scope",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.bindings_col_time",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Time",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.bindings_col_truth",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Truth class",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Read-only catalogs: business ↔ technical glossary, separate truth/scope/time governance registry, domain-module coverage, allowlisted PostgreSQL enums, and recent audit evidence for the active tenant.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.enums_card_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enum labels from PostgreSQL (allowlisted types only).",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.enums_heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Allowlisted enums",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.error",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not load data. Check the API and your session.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.glossary_card_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Business terms mapped to tables, enums, and Drizzle modules.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.glossary_heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Business glossary",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.layer_nav_aria",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Jump to modeling layer",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.loading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Loading…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.matrix_card_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "How many glossary entries fall under each domain module.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.matrix_class",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Domain module",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.matrix_count",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Terms",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.matrix_heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Domain module matrix",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.meta_commit",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Commit",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.meta_content_hash",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "YAML hash",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.meta_generated",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Generated",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.meta_glossary_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Glossary snapshot",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.meta_strip_aria",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Snapshot freshness",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.meta_truth_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Truth governance snapshot",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.meta_unavailable",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Not loaded",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.nav_catalog",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Catalog",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.nav_evidence",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Audit evidence",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.nav_governance",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Governance",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.nav_logical",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Logical coverage",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.nav_physical",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Physical enums",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.scope_models_heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Scope models",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.search_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Search terms, aliases, or ids",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.time_models_heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Time models",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "DB Studio",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.truth_classes_heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Truth classes",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.truth_column_empty",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "None defined",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.truth_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Truth class, scope model, and time model overlays — distinct from the business glossary.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.truth_empty",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No truth, scope, or time registry rows yet. They are loaded from the database package governance snapshot when present.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.db_studio.truth_heading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Truth governance registry",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.erp_module.customers.page.description",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -1412,6 +3330,55 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.marketing.forgot_password.back_login",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Back to sign in",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.forgot_password.description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter your email address. If an account exists, we will send reset instructions.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.forgot_password.email_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Email",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.forgot_password.error_generic",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not start password reset. Try again.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.forgot_password.submit",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Send reset link",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.forgot_password.success",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "If an account exists for that email, you will receive reset instructions shortly.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.forgot_password.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Reset password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.marketing.index_css.capability_layers_body",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -1671,6 +3638,20 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.marketing.landing.create_account",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create account",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.cta_role_showcase",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Explore the role showcase",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.marketing.landing.cta_workspace",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -1696,6 +3677,13 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Jump into the workspace today—formal authentication flows arrive incrementally.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.landing.hero_eyebrow",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Tenant-aware clarity for operators at scale",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -1766,6 +3754,286 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Afenda ERP Platform",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.back",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Back to home",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.divider",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "or",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.email_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Email",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.email_required",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter an email address to continue.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.error_generic",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sign-in failed. Check your credentials and try again.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.forgot_password",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Forgot password?",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.github",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Continue with GitHub",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.google",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Continue with Google",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.google_one_tap_hint",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "You may see Google’s quick sign-in prompt above this form.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.magic_link_button",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Email me a sign-in link",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.magic_link_sending",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sending…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.magic_link_sent",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "If an account exists for that address, we sent a sign-in link. Check your inbox.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.no_account",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No account yet?",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.password_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.register_link",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create account",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.resend_verification_cooldown",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Wait {{seconds}}s before resending.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.resend_verification_email",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Resend verification email",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.submit",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Continue",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sign in",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.verification_email_resent",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Verification email sent. Check your inbox.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.login.verify_email_first",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Please verify your email before signing in.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.back",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Back to home",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.email_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Email",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.error_generic",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not create your account. Try again.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.have_account",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Already have an account?",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.name_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Full name",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.password_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.pending_verification",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Check your email to verify your address, then sign in.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.sign_in_link",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sign in",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.submit",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create account",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.register.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create account",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.reset_password.back_login",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Back to sign in",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.reset_password.confirm_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Confirm password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.reset_password.error_generic",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not reset your password. Try again.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.reset_password.error_mismatch",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Passwords do not match.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.reset_password.error_token",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "This reset link is missing, invalid, or expired.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.reset_password.new_password_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "New password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.reset_password.request_new_link",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Request a new link",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.reset_password.submit",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Update password",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.marketing.reset_password.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Choose a new password",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -2301,6 +4569,13 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.nav.items.db_studio",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "DB Studio",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.nav.items.events",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -2466,6 +4741,13 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Show on rail",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.nav.widgets.db_studio",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "DB Studio",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -2875,6 +5157,34 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.sidebar.labels_column.toggle_nesting_collapse",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Collapse nested views for {{module}}",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.sidebar.labels_column.toggle_nesting_expand",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Expand nested views for {{module}}",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.sidebar.labels_column.widget_shelf_collapse",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Collapse widgets",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.sidebar.labels_column.widget_shelf_expand",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Expand widgets",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.sidebar.mode_collapsed",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -2917,6 +5227,34 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.states.error.default_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "We could not load this content right now.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.error.default_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Something went wrong",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.loading.default_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Please wait while content is being prepared.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.loading.default_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Loading",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.states.outlet_error.description",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -2945,6 +5283,41 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.states.root_error.description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "The app hit an error. You can try again, go home, or reload the page.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.root_error.home",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Back to home",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.root_error.reload",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Reload page",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.root_error.retry",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Try again",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.root_error.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Something went wrong",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.states.route_error.description",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -2970,6 +5343,111 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Something went wrong",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.api_session.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "The browser session does not match the API (HTTP {{status}}). For local development, leave VITE_BETTER_AUTH_BASE_URL unset so Better Auth uses /api/auth on the same origin, and run pnpm --filter @afenda/api dev. Cookies from remote Neon Auth are not sent to localhost.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.api_session.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "API session not recognized",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.api_unavailable.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "The BFF returned HTTP {{status}}. Start @afenda/api on the port Vite proxies to (default 8787). If the Vite terminal shows ECONNREFUSED, the API process is not running.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.api_unavailable.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "API unavailable",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.forbidden.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "The API refused this request (HTTP {{status}}) for a reason other than the identity bridge. Check roles, tenant access, or server logs.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.forbidden.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Access denied",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.hint_status",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "HTTP {{status}}",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.identity_bridge.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No Afenda identity link for this account (HTTP {{status}}). Sign-up hooks must use the same DATABASE_URL as apps/api, and identity_links must exist.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.identity_bridge.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Identity bridge missing",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.network.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Network or timeout error — the API may be stopped, unreachable, or slow. Start pnpm --filter @afenda/api dev and confirm the dev server proxy target (VITE_API_URL).",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.network.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Cannot reach API",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.retry",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Retry",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.sign_out",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Sign out",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.unknown.body",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not load tenant scope (HTTP {{status}}). Retry, sign out, or verify DATABASE_URL and Better Auth configuration.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.states.tenant_scope.unknown.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Workspace scope failed to load",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -3050,6 +5528,13 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.top_nav.enter_fullscreen",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Enter fullscreen",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.top_nav.environment_label",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -3064,10 +5549,38 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.top_nav.exit_focus_mode",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Exit focus mode",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.exit_fullscreen",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Exit fullscreen",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.focus_hover_expand_hint",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Hover the top edge to show the full workspace header.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.top_nav.no_other_scopes",
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "No other scopes",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.open_focus_window",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Open focus window",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {

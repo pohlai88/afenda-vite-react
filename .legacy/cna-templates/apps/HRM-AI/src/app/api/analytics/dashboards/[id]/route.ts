@@ -1,9 +1,9 @@
 // src/app/api/analytics/dashboards/[id]/route.ts
 // Single Dashboard Operations API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { dashboardService } from '@/services/analytics/dashboard.service'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { dashboardService } from "@/services/analytics/dashboard.service"
 
 export async function GET(
   request: NextRequest,
@@ -12,11 +12,11 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['ADMIN', 'HR_MANAGER', 'MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["ADMIN", "HR_MANAGER", "MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -29,16 +29,16 @@ export async function GET(
 
     if (!dashboard) {
       return NextResponse.json(
-        { error: 'Dashboard không tồn tại' },
+        { error: "Dashboard không tồn tại" },
         { status: 404 }
       )
     }
 
     return NextResponse.json(dashboard)
   } catch (error) {
-    console.error('Error fetching dashboard:', error)
+    console.error("Error fetching dashboard:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -51,11 +51,11 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['ADMIN', 'HR_MANAGER', 'MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["ADMIN", "HR_MANAGER", "MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -70,12 +70,12 @@ export async function PATCH(
 
     return NextResponse.json(dashboard)
   } catch (error) {
-    if (error instanceof Error && error.message.includes('không tồn tại')) {
+    if (error instanceof Error && error.message.includes("không tồn tại")) {
       return NextResponse.json({ error: error.message }, { status: 404 })
     }
-    console.error('Error updating dashboard:', error)
+    console.error("Error updating dashboard:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -88,29 +88,25 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['ADMIN', 'HR_MANAGER', 'MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["ADMIN", "HR_MANAGER", "MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
 
-    await dashboardService.delete(
-      session.user.tenantId,
-      session.user.id,
-      id
-    )
+    await dashboardService.delete(session.user.tenantId, session.user.id, id)
 
-    return NextResponse.json({ message: 'Đã xóa dashboard thành công' })
+    return NextResponse.json({ message: "Đã xóa dashboard thành công" })
   } catch (error) {
-    if (error instanceof Error && error.message.includes('không tồn tại')) {
+    if (error instanceof Error && error.message.includes("không tồn tại")) {
       return NextResponse.json({ error: error.message }, { status: 404 })
     }
-    console.error('Error deleting dashboard:', error)
+    console.error("Error deleting dashboard:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

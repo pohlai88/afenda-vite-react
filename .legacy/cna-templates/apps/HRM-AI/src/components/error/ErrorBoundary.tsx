@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { Component, ReactNode } from 'react'
-import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Component, ReactNode } from "react"
+import { AlertTriangle, RefreshCw, Home, Bug } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 interface Props {
   children: ReactNode
@@ -27,9 +27,9 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Error caught by boundary:', error)
-      console.error('Error info:', errorInfo)
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error caught by boundary:", error)
+      console.error("Error info:", errorInfo)
     }
 
     // TODO: Send to error tracking service (Sentry, etc.)
@@ -59,14 +59,17 @@ export class ErrorBoundary extends Component<Props, State> {
               </h2>
 
               <p className="text-zinc-400 mb-6">
-                Ứng dụng gặp sự cố không mong muốn. Vui lòng thử lại hoặc quay về trang chủ.
+                Ứng dụng gặp sự cố không mong muốn. Vui lòng thử lại hoặc quay
+                về trang chủ.
               </p>
 
-              {process.env.NODE_ENV === 'development' && this.state.error && (
+              {process.env.NODE_ENV === "development" && this.state.error && (
                 <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 mb-6 text-left">
                   <div className="flex items-center gap-2 mb-2">
                     <Bug className="w-4 h-4 text-amber-400" />
-                    <span className="text-sm font-medium text-amber-400">Chi tiết lỗi (Dev only)</span>
+                    <span className="text-sm font-medium text-amber-400">
+                      Chi tiết lỗi (Dev only)
+                    </span>
                   </div>
                   <p className="text-sm text-red-400 font-mono break-all">
                     {this.state.error.message}
@@ -89,7 +92,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   Thử lại
                 </Button>
                 <Button
-                  onClick={() => window.location.href = '/'}
+                  onClick={() => (window.location.href = "/")}
                   className="gap-2 bg-amber-500 hover:bg-amber-600 text-black"
                 >
                   <Home className="w-4 h-4" />

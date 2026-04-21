@@ -1,118 +1,144 @@
-import React, { useState, useMemo } from 'react';
-import { X, SplitSquareHorizontal, AlertTriangle } from 'lucide-react';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { useUIStore } from '../../stores/uiStore';
-import { colToLetter, getCellKey } from '../../types/cell';
+import React, { useState, useMemo } from "react"
+import { X, SplitSquareHorizontal, AlertTriangle } from "lucide-react"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { useUIStore } from "../../stores/uiStore"
+import { colToLetter, getCellKey } from "../../types/cell"
 
 interface TextToColumnsDialogProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
-type DelimiterType = 'tab' | 'semicolon' | 'comma' | 'space' | 'custom';
+type DelimiterType = "tab" | "semicolon" | "comma" | "space" | "custom"
 
-export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClose }) => {
-  const { activeSheetId, sheets, selectionRange, selectedCell, batchUpdateCells } = useWorkbookStore();
-  const { showToast } = useUIStore();
+export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({
+  onClose,
+}) => {
+  const {
+    activeSheetId,
+    sheets,
+    selectionRange,
+    selectedCell,
+    batchUpdateCells,
+  } = useWorkbookStore()
+  const { showToast } = useUIStore()
 
-  const sheet = activeSheetId ? sheets[activeSheetId] : null;
+  const sheet = activeSheetId ? sheets[activeSheetId] : null
 
   // Step state
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2>(1)
 
   // Delimiter options
-  const [delimiterType, setDelimiterType] = useState<DelimiterType>('comma');
-  const [customDelimiter, setCustomDelimiter] = useState('');
-  const [treatConsecutive, setTreatConsecutive] = useState(false);
+  const [delimiterType, setDelimiterType] = useState<DelimiterType>("comma")
+  const [customDelimiter, setCustomDelimiter] = useState("")
+  const [treatConsecutive, setTreatConsecutive] = useState(false)
 
   // Get the actual delimiter character
   const delimiter = useMemo(() => {
     switch (delimiterType) {
-      case 'tab':
-        return '\t';
-      case 'semicolon':
-        return ';';
-      case 'comma':
-        return ',';
-      case 'space':
-        return ' ';
-      case 'custom':
-        return customDelimiter;
+      case "tab":
+        return "\t"
+      case "semicolon":
+        return ";"
+      case "comma":
+        return ","
+      case "space":
+        return " "
+      case "custom":
+        return customDelimiter
       default:
-        return ',';
+        return ","
     }
-  }, [delimiterType, customDelimiter]);
+  }, [delimiterType, customDelimiter])
 
   // Determine the range to work with
   const range = useMemo(() => {
     if (selectionRange) {
-      return selectionRange;
+      return selectionRange
     }
     if (selectedCell) {
-      return { start: selectedCell, end: selectedCell };
+      return { start: selectedCell, end: selectedCell }
     }
-    return null;
-  }, [selectionRange, selectedCell]);
+    return null
+  }, [selectionRange, selectedCell])
 
   // Get source data and preview
   const previewData = useMemo(() => {
-    if (!range || !sheet || !delimiter) return [];
+    if (!range || !sheet || !delimiter) return []
 
-    const preview: Array<{ row: number; original: string; split: string[] }> = [];
-    const maxPreview = 5;
+    const preview: Array<{ row: number; original: string; split: string[] }> =
+      []
+    const maxPreview = 5
 
-    for (let row = range.start.row; row <= Math.min(range.end.row, range.start.row + maxPreview - 1); row++) {
-      const cellKey = getCellKey(row, range.start.col);
-      const cell = sheet.cells[cellKey];
-      const value = String(cell?.value ?? '');
+    for (
+      let row = range.start.row;
+      row <= Math.min(range.end.row, range.start.row + maxPreview - 1);
+      row++
+    ) {
+      const cellKey = getCellKey(row, range.start.col)
+      const cell = sheet.cells[cellKey]
+      const value = String(cell?.value ?? "")
 
-      let splitValues: string[];
+      let splitValues: string[]
       if (treatConsecutive && delimiter) {
         // Treat consecutive delimiters as one
-        const regex = new RegExp(delimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '+', 'g');
-        splitValues = value.split(regex);
+        const regex = new RegExp(
+          delimiter.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "+",
+          "g"
+        )
+        splitValues = value.split(regex)
       } else {
-        splitValues = delimiter ? value.split(delimiter) : [value];
+        splitValues = delimiter ? value.split(delimiter) : [value]
       }
 
       preview.push({
         row,
         original: value,
         split: splitValues,
-      });
+      })
     }
 
-    return preview;
-  }, [range, sheet, delimiter, treatConsecutive]);
+    return preview
+  }, [range, sheet, delimiter, treatConsecutive])
 
   // Calculate max columns needed
   const maxColumns = useMemo(() => {
-    return previewData.reduce((max, item) => Math.max(max, item.split.length), 0);
-  }, [previewData]);
+    return previewData.reduce(
+      (max, item) => Math.max(max, item.split.length),
+      0
+    )
+  }, [previewData])
 
   const handleApply = () => {
     if (!range || !sheet || !activeSheetId || !delimiter) {
-      showToast('No data range selected', 'warning');
-      return;
+      showToast("No data range selected", "warning")
+      return
     }
 
-    const updates: Array<{ row: number; col: number; data: { value: string; displayValue: string; formula: null } }> = [];
+    const updates: Array<{
+      row: number
+      col: number
+      data: { value: string; displayValue: string; formula: null }
+    }> = []
 
     for (let row = range.start.row; row <= range.end.row; row++) {
-      const cellKey = getCellKey(row, range.start.col);
-      const cell = sheet.cells[cellKey];
-      const value = String(cell?.value ?? '');
+      const cellKey = getCellKey(row, range.start.col)
+      const cell = sheet.cells[cellKey]
+      const value = String(cell?.value ?? "")
 
-      let splitValues: string[];
+      let splitValues: string[]
       if (treatConsecutive && delimiter) {
-        const regex = new RegExp(delimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '+', 'g');
-        splitValues = value.split(regex);
+        const regex = new RegExp(
+          delimiter.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "+",
+          "g"
+        )
+        splitValues = value.split(regex)
       } else {
-        splitValues = delimiter ? value.split(delimiter) : [value];
+        splitValues = delimiter ? value.split(delimiter) : [value]
       }
 
       // Update cells starting from the source column
       splitValues.forEach((val, idx) => {
-        const trimmedVal = val.trim();
+        const trimmedVal = val.trim()
         updates.push({
           row,
           col: range.start.col + idx,
@@ -121,23 +147,26 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
             displayValue: trimmedVal,
             formula: null,
           },
-        });
-      });
+        })
+      })
     }
 
     if (updates.length > 0) {
-      batchUpdateCells(activeSheetId, updates);
+      batchUpdateCells(activeSheetId, updates)
     }
 
-    const rowCount = range.end.row - range.start.row + 1;
-    showToast(`Split ${rowCount} rows into ${maxColumns} columns`, 'success');
-    onClose();
-  };
+    const rowCount = range.end.row - range.start.row + 1
+    showToast(`Split ${rowCount} rows into ${maxColumns} columns`, "success")
+    onClose()
+  }
 
   if (!range) {
     return (
       <div className="dialog-overlay" onClick={onClose}>
-        <div className="dialog text-to-columns-dialog" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="dialog text-to-columns-dialog"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="dialog-header">
             <h3>
               <SplitSquareHorizontal className="w-4 h-4" />
@@ -160,12 +189,15 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog text-to-columns-dialog" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="dialog text-to-columns-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h3>
             <SplitSquareHorizontal className="w-4 h-4" />
@@ -193,15 +225,17 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
               </div>
 
               <div className="delimiter-section">
-                <label className="field-label">Choose the delimiter that separates your data:</label>
+                <label className="field-label">
+                  Choose the delimiter that separates your data:
+                </label>
 
                 <div className="delimiter-options">
                   <label className="radio-label">
                     <input
                       type="radio"
                       name="delimiter"
-                      checked={delimiterType === 'comma'}
-                      onChange={() => setDelimiterType('comma')}
+                      checked={delimiterType === "comma"}
+                      onChange={() => setDelimiterType("comma")}
                     />
                     <span>Comma (,)</span>
                   </label>
@@ -210,8 +244,8 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
                     <input
                       type="radio"
                       name="delimiter"
-                      checked={delimiterType === 'semicolon'}
-                      onChange={() => setDelimiterType('semicolon')}
+                      checked={delimiterType === "semicolon"}
+                      onChange={() => setDelimiterType("semicolon")}
                     />
                     <span>Semicolon (;)</span>
                   </label>
@@ -220,8 +254,8 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
                     <input
                       type="radio"
                       name="delimiter"
-                      checked={delimiterType === 'tab'}
-                      onChange={() => setDelimiterType('tab')}
+                      checked={delimiterType === "tab"}
+                      onChange={() => setDelimiterType("tab")}
                     />
                     <span>Tab</span>
                   </label>
@@ -230,8 +264,8 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
                     <input
                       type="radio"
                       name="delimiter"
-                      checked={delimiterType === 'space'}
-                      onChange={() => setDelimiterType('space')}
+                      checked={delimiterType === "space"}
+                      onChange={() => setDelimiterType("space")}
                     />
                     <span>Space</span>
                   </label>
@@ -240,8 +274,8 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
                     <input
                       type="radio"
                       name="delimiter"
-                      checked={delimiterType === 'custom'}
-                      onChange={() => setDelimiterType('custom')}
+                      checked={delimiterType === "custom"}
+                      onChange={() => setDelimiterType("custom")}
                     />
                     <span>Custom:</span>
                     <input
@@ -249,7 +283,7 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
                       className="custom-delimiter-input"
                       value={customDelimiter}
                       onChange={(e) => setCustomDelimiter(e.target.value)}
-                      disabled={delimiterType !== 'custom'}
+                      disabled={delimiterType !== "custom"}
                       placeholder="Enter delimiter"
                       maxLength={5}
                     />
@@ -286,7 +320,9 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
                       <tr>
                         <th>Original</th>
                         {Array.from({ length: maxColumns }).map((_, idx) => (
-                          <th key={idx}>{colToLetter(range.start.col + idx)}</th>
+                          <th key={idx}>
+                            {colToLetter(range.start.col + idx)}
+                          </th>
                         ))}
                       </tr>
                     </thead>
@@ -294,11 +330,13 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
                       {previewData.map((item, idx) => (
                         <tr key={idx}>
                           <td className="original-cell">{item.original}</td>
-                          {Array.from({ length: maxColumns }).map((_, colIdx) => (
-                            <td key={colIdx} className="split-cell">
-                              {item.split[colIdx] ?? ''}
-                            </td>
-                          ))}
+                          {Array.from({ length: maxColumns }).map(
+                            (_, colIdx) => (
+                              <td key={colIdx} className="split-cell">
+                                {item.split[colIdx] ?? ""}
+                              </td>
+                            )
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -307,13 +345,15 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
 
                 <div className="preview-info">
                   <p>
-                    This will split data into <strong>{maxColumns}</strong> columns starting from column{' '}
+                    This will split data into <strong>{maxColumns}</strong>{" "}
+                    columns starting from column{" "}
                     <strong>{colToLetter(range.start.col)}</strong>.
                   </p>
                   <p className="warning-text">
-                    Note: Existing data in columns{' '}
-                    {colToLetter(range.start.col + 1)} to {colToLetter(range.start.col + maxColumns - 1)}{' '}
-                    will be overwritten.
+                    Note: Existing data in columns{" "}
+                    {colToLetter(range.start.col + 1)} to{" "}
+                    {colToLetter(range.start.col + maxColumns - 1)} will be
+                    overwritten.
                   </p>
                 </div>
               </div>
@@ -330,7 +370,7 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
               <button
                 className="btn btn-primary"
                 onClick={() => setStep(2)}
-                disabled={delimiterType === 'custom' && !customDelimiter}
+                disabled={delimiterType === "custom" && !customDelimiter}
               >
                 Next
               </button>
@@ -348,5 +388,5 @@ export const TextToColumnsDialog: React.FC<TextToColumnsDialogProps> = ({ onClos
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

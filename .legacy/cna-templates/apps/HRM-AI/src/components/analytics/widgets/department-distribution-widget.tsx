@@ -1,60 +1,69 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { WidgetContainer } from './widget-container';
+import { useEffect, useState } from "react"
+import { WidgetContainer } from "./widget-container"
 
 interface DepartmentData {
-  name: string;
-  count: number;
-  percentage: number;
-  color: string;
+  name: string
+  count: number
+  percentage: number
+  color: string
 }
 
 interface DepartmentDistributionWidgetProps {
-  id?: string;
-  onRemove?: (id: string) => void;
-  isDragging?: boolean;
-  className?: string;
+  id?: string
+  onRemove?: (id: string) => void
+  isDragging?: boolean
+  className?: string
 }
 
 const DEFAULT_COLORS = [
-  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-  '#06b6d4', '#ec4899', '#84cc16', '#f97316', '#6366f1',
-];
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#06b6d4",
+  "#ec4899",
+  "#84cc16",
+  "#f97316",
+  "#6366f1",
+]
 
 export function DepartmentDistributionWidget({
-  id = 'department-distribution',
+  id = "department-distribution",
   onRemove,
   isDragging,
   className,
 }: DepartmentDistributionWidgetProps) {
-  const [departments, setDepartments] = useState<DepartmentData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [departments, setDepartments] = useState<DepartmentData[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch('/api/analytics/department-distribution');
+        const response = await fetch("/api/analytics/department-distribution")
         if (response.ok) {
-          const result = await response.json();
+          const result = await response.json()
           setDepartments(
             result.map((dept: DepartmentData, index: number) => ({
               ...dept,
-              color: dept.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
+              color:
+                dept.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
             }))
-          );
+          )
         }
       } catch (error) {
-        console.error('Failed to fetch department distribution:', error);
+        console.error("Failed to fetch department distribution:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
-  const maxCount = Math.max(...departments.map((d) => d.count), 1);
+  const maxCount = Math.max(...departments.map((d) => d.count), 1)
 
   return (
     <WidgetContainer
@@ -78,8 +87,12 @@ export function DepartmentDistributionWidget({
           {departments.map((dept) => (
             <div key={dept.name} className="space-y-1">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground truncate max-w-[60%]">{dept.name}</span>
-                <span className="font-medium">{dept.count} ({dept.percentage.toFixed(0)}%)</span>
+                <span className="text-muted-foreground truncate max-w-[60%]">
+                  {dept.name}
+                </span>
+                <span className="font-medium">
+                  {dept.count} ({dept.percentage.toFixed(0)}%)
+                </span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div
@@ -99,5 +112,5 @@ export function DepartmentDistributionWidget({
         </p>
       )}
     </WidgetContainer>
-  );
+  )
 }

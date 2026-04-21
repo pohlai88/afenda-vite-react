@@ -1,34 +1,37 @@
 // Phase 10: Sync Status Component
 // Displays sync progress and provides sync controls
 
-import React from 'react';
-import { useSyncStore } from '../../stores/syncStore';
-import { useNetworkStatus } from '../../hooks/useNetworkStatus';
+import React from "react"
+import { useSyncStore } from "../../stores/syncStore"
+import { useNetworkStatus } from "../../hooks/useNetworkStatus"
 
 interface SyncStatusProps {
-  workbookId: string;
-  onSync: () => void;
+  workbookId: string
+  onSync: () => void
 }
 
-export const SyncStatus: React.FC<SyncStatusProps> = ({ workbookId, onSync }) => {
-  const { isOnline } = useNetworkStatus();
-  const status = useSyncStore((state) => state.getSyncStatus(workbookId));
+export const SyncStatus: React.FC<SyncStatusProps> = ({
+  workbookId,
+  onSync,
+}) => {
+  const { isOnline } = useNetworkStatus()
+  const status = useSyncStore((state) => state.getSyncStatus(workbookId))
 
-  const isSyncing = status?.isSyncing || false;
-  const pendingChanges = status?.pendingChanges || 0;
-  const lastSyncedAt = status?.lastSyncedAt;
-  const lastError = status?.lastError;
-  const progress = status?.progress || 0;
-  const total = status?.total || 0;
+  const isSyncing = status?.isSyncing || false
+  const pendingChanges = status?.pendingChanges || 0
+  const lastSyncedAt = status?.lastSyncedAt
+  const lastError = status?.lastError
+  const progress = status?.progress || 0
+  const total = status?.total || 0
 
   const formatTime = (timestamp: number | null | undefined): string => {
-    if (!timestamp) return 'Never';
-    const diff = Date.now() - timestamp;
-    if (diff < 60000) return 'Just now';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-    return new Date(timestamp).toLocaleDateString();
-  };
+    if (!timestamp) return "Never"
+    const diff = Date.now() - timestamp
+    if (diff < 60000) return "Just now"
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`
+    return new Date(timestamp).toLocaleDateString()
+  }
 
   return (
     <div className="flex items-center gap-4 text-sm">
@@ -38,16 +41,17 @@ export const SyncStatus: React.FC<SyncStatusProps> = ({ workbookId, onSync }) =>
         disabled={isSyncing || !isOnline}
         className={`
           flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all
-          ${isSyncing
-            ? 'bg-blue-100 text-blue-700 cursor-not-allowed'
-            : isOnline
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+          ${
+            isSyncing
+              ? "bg-blue-100 text-blue-700 cursor-not-allowed"
+              : isOnline
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
           }
         `}
       >
         <svg
-          className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`}
+          className={`w-4 h-4 ${isSyncing ? "animate-spin" : ""}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -59,7 +63,7 @@ export const SyncStatus: React.FC<SyncStatusProps> = ({ workbookId, onSync }) =>
             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
           />
         </svg>
-        {isSyncing ? 'Syncing...' : 'Sync'}
+        {isSyncing ? "Syncing..." : "Sync"}
       </button>
 
       {/* Progress */}
@@ -80,7 +84,12 @@ export const SyncStatus: React.FC<SyncStatusProps> = ({ workbookId, onSync }) =>
       {/* Pending Count */}
       {!isSyncing && pendingChanges > 0 && (
         <div className="flex items-center gap-1 text-yellow-600">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -102,7 +111,12 @@ export const SyncStatus: React.FC<SyncStatusProps> = ({ workbookId, onSync }) =>
       {/* Error */}
       {lastError && (
         <div className="flex items-center gap-1 text-red-600" title={lastError}>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -114,18 +128,18 @@ export const SyncStatus: React.FC<SyncStatusProps> = ({ workbookId, onSync }) =>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Compact sync button for toolbar
-export const SyncButton: React.FC<{ workbookId: string; onSync: () => void }> = ({
-  workbookId,
-  onSync,
-}) => {
-  const { isOnline } = useNetworkStatus();
-  const status = useSyncStore((state) => state.getSyncStatus(workbookId));
-  const isSyncing = status?.isSyncing || false;
-  const pendingChanges = status?.pendingChanges || 0;
+export const SyncButton: React.FC<{
+  workbookId: string
+  onSync: () => void
+}> = ({ workbookId, onSync }) => {
+  const { isOnline } = useNetworkStatus()
+  const status = useSyncStore((state) => state.getSyncStatus(workbookId))
+  const isSyncing = status?.isSyncing || false
+  const pendingChanges = status?.pendingChanges || 0
 
   return (
     <button
@@ -133,17 +147,18 @@ export const SyncButton: React.FC<{ workbookId: string; onSync: () => void }> = 
       disabled={isSyncing || !isOnline}
       className={`
         relative p-2 rounded-lg transition-all
-        ${isSyncing
-          ? 'bg-blue-100 text-blue-700'
-          : isOnline
-            ? 'hover:bg-gray-100 text-gray-600'
-            : 'text-gray-300 cursor-not-allowed'
+        ${
+          isSyncing
+            ? "bg-blue-100 text-blue-700"
+            : isOnline
+              ? "hover:bg-gray-100 text-gray-600"
+              : "text-gray-300 cursor-not-allowed"
         }
       `}
-      title={isSyncing ? 'Syncing...' : isOnline ? 'Sync now' : 'Offline'}
+      title={isSyncing ? "Syncing..." : isOnline ? "Sync now" : "Offline"}
     >
       <svg
-        className={`w-5 h-5 ${isSyncing ? 'animate-spin' : ''}`}
+        className={`w-5 h-5 ${isSyncing ? "animate-spin" : ""}`}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -157,9 +172,9 @@ export const SyncButton: React.FC<{ workbookId: string; onSync: () => void }> = 
       </svg>
       {pendingChanges > 0 && (
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
-          {pendingChanges > 9 ? '9+' : pendingChanges}
+          {pendingChanges > 9 ? "9+" : pendingChanges}
         </span>
       )}
     </button>
-  );
-};
+  )
+}

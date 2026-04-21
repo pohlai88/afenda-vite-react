@@ -1,11 +1,11 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 // Form schema uses string/Date union for form compatibility
 export const employeeFormSchema = z.object({
-  employeeCode: z.string().min(1, 'Mã nhân viên là bắt buộc').max(20),
-  fullName: z.string().min(1, 'Họ tên là bắt buộc').max(100),
+  employeeCode: z.string().min(1, "Mã nhân viên là bắt buộc").max(20),
+  fullName: z.string().min(1, "Họ tên là bắt buộc").max(100),
   dateOfBirth: z.union([z.string(), z.date()]).optional().nullable(),
-  gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional().nullable(),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional().nullable(),
   idNumber: z.string().max(20).optional().nullable(),
   idIssueDate: z.union([z.string(), z.date()]).optional().nullable(),
   idIssuePlace: z.string().max(200).optional().nullable(),
@@ -13,8 +13,18 @@ export const employeeFormSchema = z.object({
   socialInsuranceNumber: z.string().max(20).optional().nullable(),
   socialInsuranceDate: z.union([z.string(), z.date()]).optional().nullable(),
   phone: z.string().max(20).optional().nullable(),
-  personalEmail: z.string().email('Email không hợp lệ').optional().nullable().or(z.literal('')),
-  workEmail: z.string().email('Email không hợp lệ').optional().nullable().or(z.literal('')),
+  personalEmail: z
+    .string()
+    .email("Email không hợp lệ")
+    .optional()
+    .nullable()
+    .or(z.literal("")),
+  workEmail: z
+    .string()
+    .email("Email không hợp lệ")
+    .optional()
+    .nullable()
+    .or(z.literal("")),
   permanentAddress: z.string().max(500).optional().nullable(),
   currentAddress: z.string().max(500).optional().nullable(),
   bankAccount: z.string().max(50).optional().nullable(),
@@ -26,7 +36,7 @@ export const employeeFormSchema = z.object({
   directManagerId: z.string().optional().nullable(),
   hireDate: z.union([z.string(), z.date()]),
   probationEndDate: z.union([z.string(), z.date()]).optional().nullable(),
-  status: z.enum(['ACTIVE', 'PROBATION', 'ON_LEAVE', 'RESIGNED', 'TERMINATED']),
+  status: z.enum(["ACTIVE", "PROBATION", "ON_LEAVE", "RESIGNED", "TERMINATED"]),
   resignationDate: z.union([z.string(), z.date()]).optional().nullable(),
   resignationReason: z.string().max(500).optional().nullable(),
   avatar: z.string().optional().nullable(),
@@ -35,10 +45,10 @@ export const employeeFormSchema = z.object({
 
 // API schema uses Date types
 export const employeeSchema = z.object({
-  employeeCode: z.string().min(1, 'Mã nhân viên là bắt buộc').max(20),
-  fullName: z.string().min(1, 'Họ tên là bắt buộc').max(100),
+  employeeCode: z.string().min(1, "Mã nhân viên là bắt buộc").max(20),
+  fullName: z.string().min(1, "Họ tên là bắt buộc").max(100),
   dateOfBirth: z.coerce.date().optional().nullable(),
-  gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional().nullable(),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional().nullable(),
   idNumber: z.string().max(20).optional().nullable(),
   idIssueDate: z.coerce.date().optional().nullable(),
   idIssuePlace: z.string().max(200).optional().nullable(),
@@ -46,8 +56,18 @@ export const employeeSchema = z.object({
   socialInsuranceNumber: z.string().max(20).optional().nullable(),
   socialInsuranceDate: z.coerce.date().optional().nullable(),
   phone: z.string().max(20).optional().nullable(),
-  personalEmail: z.string().email('Email không hợp lệ').optional().nullable().or(z.literal('')),
-  workEmail: z.string().email('Email không hợp lệ').optional().nullable().or(z.literal('')),
+  personalEmail: z
+    .string()
+    .email("Email không hợp lệ")
+    .optional()
+    .nullable()
+    .or(z.literal("")),
+  workEmail: z
+    .string()
+    .email("Email không hợp lệ")
+    .optional()
+    .nullable()
+    .or(z.literal("")),
   permanentAddress: z.string().max(500).optional().nullable(),
   currentAddress: z.string().max(500).optional().nullable(),
   bankAccount: z.string().max(50).optional().nullable(),
@@ -57,9 +77,11 @@ export const employeeSchema = z.object({
   positionId: z.string().optional().nullable(),
   branchId: z.string().optional().nullable(),
   directManagerId: z.string().optional().nullable(),
-  hireDate: z.coerce.date({ message: 'Ngày vào làm là bắt buộc' }),
+  hireDate: z.coerce.date({ message: "Ngày vào làm là bắt buộc" }),
   probationEndDate: z.coerce.date().optional().nullable(),
-  status: z.enum(['ACTIVE', 'PROBATION', 'ON_LEAVE', 'RESIGNED', 'TERMINATED']).default('ACTIVE'),
+  status: z
+    .enum(["ACTIVE", "PROBATION", "ON_LEAVE", "RESIGNED", "TERMINATED"])
+    .default("ACTIVE"),
   resignationDate: z.coerce.date().optional().nullable(),
   resignationReason: z.string().max(500).optional().nullable(),
   avatar: z.string().optional().nullable(),

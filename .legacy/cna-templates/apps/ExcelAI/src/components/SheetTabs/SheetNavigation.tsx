@@ -1,11 +1,16 @@
-import React from 'react';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import React from "react"
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react"
 
 interface SheetNavigationProps {
-  onFirst?: () => void;
-  onPrev?: () => void;
-  onNext?: () => void;
-  onLast?: () => void;
+  onFirst?: () => void
+  onPrev?: () => void
+  onNext?: () => void
+  onLast?: () => void
 }
 
 export const SheetNavigation: React.FC<SheetNavigationProps> = ({
@@ -29,5 +34,5 @@ export const SheetNavigation: React.FC<SheetNavigationProps> = ({
         <ChevronsRight className="w-4 h-4" />
       </button>
     </div>
-  );
-};
+  )
+}

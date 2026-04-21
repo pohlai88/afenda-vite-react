@@ -1,15 +1,15 @@
 // src/services/analytics/turnover.service.ts
 // Turnover Metrics Service
 
-import { calculateTurnoverMetrics } from '@/lib/analytics/calculators/turnover'
-import { db } from '@/lib/db'
+import { calculateTurnoverMetrics } from "@/lib/analytics/calculators/turnover"
+import { db } from "@/lib/db"
 
 // Simple in-memory cache
 const cache = new Map<string, { data: unknown; expiresAt: number }>()
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 function getCacheKey(tenantId: string, date: Date): string {
-  return `turnover:${tenantId}:${date.toISOString().split('T')[0]}`
+  return `turnover:${tenantId}:${date.toISOString().split("T")[0]}`
 }
 
 export async function getTurnoverMetrics(
@@ -46,8 +46,8 @@ export async function calculateAndStoreTurnover(
   const existing = await db.analyticsMetric.findFirst({
     where: {
       tenantId,
-      metricType: 'TURNOVER',
-      period: 'MONTHLY',
+      metricType: "TURNOVER",
+      period: "MONTHLY",
       periodStart,
       departmentId: null,
     },
@@ -74,8 +74,8 @@ export async function calculateAndStoreTurnover(
     await db.analyticsMetric.create({
       data: {
         tenantId,
-        metricType: 'TURNOVER',
-        period: 'MONTHLY',
+        metricType: "TURNOVER",
+        period: "MONTHLY",
         periodStart,
         periodEnd,
         value: result.rate,

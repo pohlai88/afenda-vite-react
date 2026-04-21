@@ -22,14 +22,14 @@ export interface WebhookDeliveryInfo {
 }
 
 export const WEBHOOK_EVENTS = [
-  'employee.created',
-  'employee.updated',
-  'employee.terminated',
-  'attendance.clock_in',
-  'attendance.clock_out',
-  'leave.requested',
-  'leave.approved',
-  'leave.rejected',
-  'payroll.processed',
-  'payroll.paid',
+  "employee.created",
+  "employee.updated",
+  "employee.terminated",
+  "attendance.clock_in",
+  "attendance.clock_out",
+  "leave.requested",
+  "leave.approved",
+  "leave.rejected",
+  "payroll.processed",
+  "payroll.paid",
 ] as const

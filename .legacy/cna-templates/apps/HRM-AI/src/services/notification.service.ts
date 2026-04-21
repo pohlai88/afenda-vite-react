@@ -1,9 +1,9 @@
 // src/services/notification.service.ts
 // Notification Service
 
-import { db } from '@/lib/db'
-import type { NotificationType, Prisma } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
+import { db } from "@/lib/db"
+import type { NotificationType, Prisma } from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -54,7 +54,7 @@ export const notificationService = {
    */
   async createMany(tenantId: string, notifications: CreateNotificationInput[]) {
     return db.notification.createMany({
-      data: notifications.map(n => ({
+      data: notifications.map((n) => ({
         tenantId,
         userId: n.userId,
         type: n.type,
@@ -73,7 +73,7 @@ export const notificationService = {
   async getByUser(
     userId: string,
     filters: NotificationFilters = {}
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<PaginatedResponse<any>> {
     const { isRead, type, page = 1, pageSize = 20 } = filters
     const skip = (page - 1) * pageSize
@@ -87,7 +87,7 @@ export const notificationService = {
     const [data, total] = await Promise.all([
       db.notification.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
       }),
@@ -170,10 +170,10 @@ export const notificationService = {
   ) {
     return this.create(tenantId, {
       userId: approverId,
-      type: 'PENDING_APPROVAL',
-      title: 'Yêu cầu cần duyệt',
+      type: "PENDING_APPROVAL",
+      title: "Yêu cầu cần duyệt",
       message: `${requesterName} có ${requestType} cần bạn xử lý`,
-      referenceType: 'APPROVAL',
+      referenceType: "APPROVAL",
       referenceId: approvalId,
       actionUrl: `/approvals/${approvalId}`,
     })
@@ -190,8 +190,8 @@ export const notificationService = {
   ) {
     return this.create(tenantId, {
       userId,
-      type: 'REQUEST_APPROVED',
-      title: 'Yêu cầu được duyệt',
+      type: "REQUEST_APPROVED",
+      title: "Yêu cầu được duyệt",
       message: `${requestType} của bạn đã được duyệt`,
       referenceType: requestType,
       referenceId,
@@ -210,8 +210,8 @@ export const notificationService = {
   ) {
     return this.create(tenantId, {
       userId,
-      type: 'REQUEST_REJECTED',
-      title: 'Yêu cầu bị từ chối',
+      type: "REQUEST_REJECTED",
+      title: "Yêu cầu bị từ chối",
       message: reason
         ? `${requestType} của bạn bị từ chối: ${reason}`
         : `${requestType} của bạn bị từ chối`,

@@ -1,15 +1,20 @@
 // src/stores/notification-store.ts
 // Notification Store with AI-powered features
 
-import { create } from 'zustand'
-import type { NotificationType } from '@prisma/client'
+import { create } from "zustand"
+import type { NotificationType } from "@prisma/client"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
 // ═══════════════════════════════════════════════════════════════
 
-export type NotificationPriority = 'critical' | 'high' | 'medium' | 'low'
-export type NotificationCategory = 'approval' | 'system' | 'ai_insight' | 'reminder' | 'update'
+export type NotificationPriority = "critical" | "high" | "medium" | "low"
+export type NotificationCategory =
+  | "approval"
+  | "system"
+  | "ai_insight"
+  | "reminder"
+  | "update"
 
 export interface Notification {
   id: string
@@ -27,23 +32,23 @@ export interface Notification {
   category?: NotificationCategory
   aiSummary?: string
   suggestedActions?: SuggestedAction[]
-  sentiment?: 'positive' | 'neutral' | 'negative' | 'urgent'
+  sentiment?: "positive" | "neutral" | "negative" | "urgent"
 }
 
 export interface SuggestedAction {
   id: string
   label: string
-  action: 'navigate' | 'approve' | 'reject' | 'dismiss' | 'snooze' | 'view'
+  action: "navigate" | "approve" | "reject" | "dismiss" | "snooze" | "view"
   url?: string
-  variant?: 'default' | 'primary' | 'destructive'
+  variant?: "default" | "primary" | "destructive"
 }
 
 export interface AIInsight {
   id: string
-  type: 'trend' | 'anomaly' | 'prediction' | 'recommendation'
+  type: "trend" | "anomaly" | "prediction" | "recommendation"
   title: string
   description: string
-  severity: 'info' | 'warning' | 'critical'
+  severity: "info" | "warning" | "critical"
   actionUrl?: string
   createdAt: Date
   isRead: boolean
@@ -72,16 +77,16 @@ interface NotificationState {
   // UI State
   isOpen: boolean
   isLoading: boolean
-  activeTab: 'all' | 'unread' | 'ai_insights'
-  filter: NotificationCategory | 'all'
+  activeTab: "all" | "unread" | "ai_insights"
+  filter: NotificationCategory | "all"
 
   // Preferences
   preferences: NotificationPreferences
 
   // Actions
   setIsOpen: (isOpen: boolean) => void
-  setActiveTab: (tab: 'all' | 'unread' | 'ai_insights') => void
-  setFilter: (filter: NotificationCategory | 'all') => void
+  setActiveTab: (tab: "all" | "unread" | "ai_insights") => void
+  setFilter: (filter: NotificationCategory | "all") => void
   setNotifications: (notifications: Notification[]) => void
   setAIInsights: (insights: AIInsight[]) => void
   setUnreadCount: (count: number) => void
@@ -110,82 +115,112 @@ function inferPriority(notification: Notification): NotificationPriority {
   const message = notification.message.toLowerCase()
 
   // Critical priority
-  if (type === 'PENDING_APPROVAL' || message.includes('khẩn') || message.includes('urgent')) {
-    return 'critical'
+  if (
+    type === "PENDING_APPROVAL" ||
+    message.includes("khẩn") ||
+    message.includes("urgent")
+  ) {
+    return "critical"
   }
 
   // High priority
-  if (type === 'REQUEST_REJECTED' || type === 'BALANCE_LOW') {
-    return 'high'
+  if (type === "REQUEST_REJECTED" || type === "BALANCE_LOW") {
+    return "high"
   }
 
   // Medium priority
-  if (type === 'REQUEST_APPROVED' || type === 'DELEGATION_ASSIGNED') {
-    return 'medium'
+  if (type === "REQUEST_APPROVED" || type === "DELEGATION_ASSIGNED") {
+    return "medium"
   }
 
-  return 'low'
+  return "low"
 }
 
 function inferCategory(notification: Notification): NotificationCategory {
   switch (notification.type) {
-    case 'PENDING_APPROVAL':
-    case 'REQUEST_APPROVED':
-    case 'REQUEST_REJECTED':
-    case 'REQUEST_SUBMITTED':
-    case 'REQUEST_CANCELLED':
-      return 'approval'
-    case 'DELEGATION_ASSIGNED':
-      return 'system'
-    case 'BALANCE_LOW':
-      return 'reminder'
+    case "PENDING_APPROVAL":
+    case "REQUEST_APPROVED":
+    case "REQUEST_REJECTED":
+    case "REQUEST_SUBMITTED":
+    case "REQUEST_CANCELLED":
+      return "approval"
+    case "DELEGATION_ASSIGNED":
+      return "system"
+    case "BALANCE_LOW":
+      return "reminder"
     default:
-      return 'update'
+      return "update"
   }
 }
 
-function inferSentiment(notification: Notification): 'positive' | 'neutral' | 'negative' | 'urgent' {
+function inferSentiment(
+  notification: Notification
+): "positive" | "neutral" | "negative" | "urgent" {
   switch (notification.type) {
-    case 'REQUEST_APPROVED':
-      return 'positive'
-    case 'REQUEST_REJECTED':
-      return 'negative'
-    case 'PENDING_APPROVAL':
-    case 'BALANCE_LOW':
-      return 'urgent'
+    case "REQUEST_APPROVED":
+      return "positive"
+    case "REQUEST_REJECTED":
+      return "negative"
+    case "PENDING_APPROVAL":
+    case "BALANCE_LOW":
+      return "urgent"
     default:
-      return 'neutral'
+      return "neutral"
   }
 }
 
-function generateSuggestedActions(notification: Notification): SuggestedAction[] {
+function generateSuggestedActions(
+  notification: Notification
+): SuggestedAction[] {
   const actions: SuggestedAction[] = []
 
   switch (notification.type) {
-    case 'PENDING_APPROVAL':
+    case "PENDING_APPROVAL":
       actions.push(
-        { id: '1', label: 'Duyệt', action: 'approve', variant: 'primary' },
-        { id: '2', label: 'Từ chối', action: 'reject', variant: 'destructive' },
-        { id: '3', label: 'Xem chi tiết', action: 'view', url: notification.actionUrl || undefined }
+        { id: "1", label: "Duyệt", action: "approve", variant: "primary" },
+        { id: "2", label: "Từ chối", action: "reject", variant: "destructive" },
+        {
+          id: "3",
+          label: "Xem chi tiết",
+          action: "view",
+          url: notification.actionUrl || undefined,
+        }
       )
       break
-    case 'REQUEST_APPROVED':
-    case 'REQUEST_REJECTED':
-      actions.push(
-        { id: '1', label: 'Xem chi tiết', action: 'view', url: notification.actionUrl || undefined }
-      )
+    case "REQUEST_APPROVED":
+    case "REQUEST_REJECTED":
+      actions.push({
+        id: "1",
+        label: "Xem chi tiết",
+        action: "view",
+        url: notification.actionUrl || undefined,
+      })
       break
-    case 'BALANCE_LOW':
+    case "BALANCE_LOW":
       actions.push(
-        { id: '1', label: 'Đăng ký nghỉ phép', action: 'navigate', url: '/leave/request', variant: 'primary' },
-        { id: '2', label: 'Xem số dư', action: 'navigate', url: '/leave/balances' }
+        {
+          id: "1",
+          label: "Đăng ký nghỉ phép",
+          action: "navigate",
+          url: "/leave/request",
+          variant: "primary",
+        },
+        {
+          id: "2",
+          label: "Xem số dư",
+          action: "navigate",
+          url: "/leave/balances",
+        }
       )
       break
     default:
       if (notification.actionUrl) {
-        actions.push(
-          { id: '1', label: 'Xem', action: 'view', url: notification.actionUrl }
-        )
+        actions.push({
+          id: "1",
+          label: "Xem",
+          action: "view",
+          url: notification.actionUrl,
+        })
       }
   }
 
@@ -198,7 +233,8 @@ function enhanceNotification(notification: Notification): Notification {
     priority: notification.priority || inferPriority(notification),
     category: notification.category || inferCategory(notification),
     sentiment: notification.sentiment || inferSentiment(notification),
-    suggestedActions: notification.suggestedActions || generateSuggestedActions(notification),
+    suggestedActions:
+      notification.suggestedActions || generateSuggestedActions(notification),
   }
 }
 
@@ -215,8 +251,8 @@ const defaultPreferences: NotificationPreferences = {
   showAIInsights: true,
   quietHours: {
     enabled: false,
-    start: '22:00',
-    end: '07:00',
+    start: "22:00",
+    end: "07:00",
   },
 }
 
@@ -227,8 +263,8 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
   unreadCount: 0,
   isOpen: false,
   isLoading: false,
-  activeTab: 'all',
-  filter: 'all',
+  activeTab: "all",
+  filter: "all",
   preferences: defaultPreferences,
 
   // Actions
@@ -236,29 +272,33 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
   setActiveTab: (activeTab) => set({ activeTab }),
   setFilter: (filter) => set({ filter }),
 
-  setNotifications: (notifications) => set({
-    notifications: notifications.map(enhanceNotification),
-  }),
+  setNotifications: (notifications) =>
+    set({
+      notifications: notifications.map(enhanceNotification),
+    }),
 
   setAIInsights: (aiInsights) => set({ aiInsights }),
   setUnreadCount: (unreadCount) => set({ unreadCount }),
   setIsLoading: (isLoading) => set({ isLoading }),
 
-  markAsRead: (id) => set((state) => ({
-    notifications: state.notifications.map((n) =>
-      n.id === id ? { ...n, isRead: true } : n
-    ),
-    unreadCount: Math.max(0, state.unreadCount - 1),
-  })),
+  markAsRead: (id) =>
+    set((state) => ({
+      notifications: state.notifications.map((n) =>
+        n.id === id ? { ...n, isRead: true } : n
+      ),
+      unreadCount: Math.max(0, state.unreadCount - 1),
+    })),
 
-  markAllAsRead: () => set((state) => ({
-    notifications: state.notifications.map((n) => ({ ...n, isRead: true })),
-    unreadCount: 0,
-  })),
+  markAllAsRead: () =>
+    set((state) => ({
+      notifications: state.notifications.map((n) => ({ ...n, isRead: true })),
+      unreadCount: 0,
+    })),
 
-  dismissNotification: (id) => set((state) => ({
-    notifications: state.notifications.filter((n) => n.id !== id),
-  })),
+  dismissNotification: (id) =>
+    set((state) => ({
+      notifications: state.notifications.filter((n) => n.id !== id),
+    })),
 
   snoozeNotification: (id, duration) => {
     // In a real app, this would schedule a reminder
@@ -267,36 +307,40 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
     }))
   },
 
-  updatePreferences: (prefs) => set((state) => ({
-    preferences: { ...state.preferences, ...prefs },
-  })),
+  updatePreferences: (prefs) =>
+    set((state) => ({
+      preferences: { ...state.preferences, ...prefs },
+    })),
 
-  addAIInsight: (insight) => set((state) => ({
-    aiInsights: [insight, ...state.aiInsights],
-  })),
+  addAIInsight: (insight) =>
+    set((state) => ({
+      aiInsights: [insight, ...state.aiInsights],
+    })),
 
-  dismissAIInsight: (id) => set((state) => ({
-    aiInsights: state.aiInsights.filter((i) => i.id !== id),
-  })),
+  dismissAIInsight: (id) =>
+    set((state) => ({
+      aiInsights: state.aiInsights.filter((i) => i.id !== id),
+    })),
 
   getFilteredNotifications: () => {
     const { notifications, activeTab, filter } = get()
     let filtered = [...notifications]
 
     // Filter by read status
-    if (activeTab === 'unread') {
+    if (activeTab === "unread") {
       filtered = filtered.filter((n) => !n.isRead)
     }
 
     // Filter by category
-    if (filter !== 'all') {
+    if (filter !== "all") {
       filtered = filtered.filter((n) => n.category === filter)
     }
 
     // Sort by priority and date
     filtered.sort((a, b) => {
       const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 }
-      const priorityDiff = priorityOrder[a.priority || 'low'] - priorityOrder[b.priority || 'low']
+      const priorityDiff =
+        priorityOrder[a.priority || "low"] - priorityOrder[b.priority || "low"]
       if (priorityDiff !== 0) return priorityDiff
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
@@ -315,7 +359,7 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
     }
 
     notifications.forEach((n) => {
-      const category = n.category || 'update'
+      const category = n.category || "update"
       grouped[category].push(n)
     })
 

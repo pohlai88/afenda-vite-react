@@ -1,4 +1,4 @@
-import { vi } from 'vitest'
+import { vi } from "vitest"
 
 // ── Mock Prisma Client ──────────────────────────────────────────────
 
@@ -39,43 +39,47 @@ export function mockPrismaClient() {
 
 // ── Mock User ───────────────────────────────────────────────────────
 
-export function mockCurrentUser(overrides?: Partial<{
-  id: string
-  email: string
-  name: string
-  firstName: string
-  lastName: string
-  role: string
-  organizationId: string
-  avatarUrl: string | null
-  createdAt: Date
-  updatedAt: Date
-}>) {
+export function mockCurrentUser(
+  overrides?: Partial<{
+    id: string
+    email: string
+    name: string
+    firstName: string
+    lastName: string
+    role: string
+    organizationId: string
+    avatarUrl: string | null
+    createdAt: Date
+    updatedAt: Date
+  }>
+) {
   return {
-    id: 'user-1',
-    email: 'test@your-domain.com',
-    name: 'Test User',
-    firstName: 'Test',
-    lastName: 'User',
-    role: 'MANAGER',
-    organizationId: 'org-1',
+    id: "user-1",
+    email: "test@your-domain.com",
+    name: "Test User",
+    firstName: "Test",
+    lastName: "User",
+    role: "MANAGER",
+    organizationId: "org-1",
     avatarUrl: null,
-    createdAt: new Date('2025-01-01'),
-    updatedAt: new Date('2025-01-01'),
+    createdAt: new Date("2025-01-01"),
+    updatedAt: new Date("2025-01-01"),
     ...overrides,
   }
 }
 
 // ── Mock NextRequest ────────────────────────────────────────────────
 
-export function mockRequest(options: {
-  method?: string
-  body?: unknown
-  params?: Record<string, string>
-  searchParams?: Record<string, string>
-  url?: string
-} = {}) {
-  const url = new URL(options.url || 'http://localhost:3018/api/test')
+export function mockRequest(
+  options: {
+    method?: string
+    body?: unknown
+    params?: Record<string, string>
+    searchParams?: Record<string, string>
+    url?: string
+  } = {}
+) {
+  const url = new URL(options.url || "http://localhost:3018/api/test")
   if (options.searchParams) {
     for (const [k, v] of Object.entries(options.searchParams)) {
       url.searchParams.set(k, v)
@@ -83,7 +87,7 @@ export function mockRequest(options: {
   }
 
   return {
-    method: options.method || 'GET',
+    method: options.method || "GET",
     url: url.toString(),
     nextUrl: url,
     json: vi.fn().mockResolvedValue(options.body || {}),

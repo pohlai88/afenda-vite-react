@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { DEAL_CONTACT_ROLES } from '@/lib/constants'
-import { useTranslation } from '@/i18n'
+import { DEAL_CONTACT_ROLES } from "@/lib/constants"
+import { useTranslation } from "@/i18n"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 
 interface DealContactRoleSelectProps {
   value: string
@@ -17,12 +17,19 @@ interface DealContactRoleSelectProps {
   compact?: boolean
 }
 
-export function DealContactRoleSelect({ value, onValueChange, disabled, compact }: DealContactRoleSelectProps) {
+export function DealContactRoleSelect({
+  value,
+  onValueChange,
+  disabled,
+  compact,
+}: DealContactRoleSelectProps) {
   const { t } = useTranslation()
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className={`bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] ${compact ? 'h-7 text-xs' : ''}`}>
+      <SelectTrigger
+        className={`bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] ${compact ? "h-7 text-xs" : ""}`}
+      >
         <SelectValue />
       </SelectTrigger>
       <SelectContent className="bg-[var(--crm-bg-hover)] border-[var(--crm-border)]">
@@ -37,7 +44,9 @@ export function DealContactRoleSelect({ value, onValueChange, disabled, compact 
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{ backgroundColor: role.color }}
               />
-              <span className={compact ? 'text-xs' : ''}>{t(role.labelKey)}</span>
+              <span className={compact ? "text-xs" : ""}>
+                {t(role.labelKey)}
+              </span>
             </span>
           </SelectItem>
         ))}

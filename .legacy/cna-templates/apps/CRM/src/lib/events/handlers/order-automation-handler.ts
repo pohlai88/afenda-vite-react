@@ -1,9 +1,9 @@
-import { eventBus } from '../event-bus'
-import { CRM_EVENTS } from '../types'
-import type { QuoteEventPayload } from '../types'
-import { prisma } from '@/lib/prisma'
-import { getSettingOrDefault } from '@/lib/settings'
-import { notifyUser } from '@/lib/notifications'
+import { eventBus } from "../event-bus"
+import { CRM_EVENTS } from "../types"
+import type { QuoteEventPayload } from "../types"
+import { prisma } from "@/lib/prisma"
+import { getSettingOrDefault } from "@/lib/settings"
+import { notifyUser } from "@/lib/notifications"
 
 /**
  * Auto-generate order number: ORD-YYYY-NNNN
@@ -14,17 +14,17 @@ async function generateOrderNumber(): Promise<string> {
 
   const lastOrder = await prisma.salesOrder.findFirst({
     where: { orderNumber: { startsWith: prefix } },
-    orderBy: { orderNumber: 'desc' },
+    orderBy: { orderNumber: "desc" },
     select: { orderNumber: true },
   })
 
   let nextNum = 1
   if (lastOrder) {
-    const lastNum = parseInt(lastOrder.orderNumber.replace(prefix, ''))
+    const lastNum = parseInt(lastOrder.orderNumber.replace(prefix, ""))
     if (!isNaN(lastNum)) nextNum = lastNum + 1
   }
 
-  return `${prefix}${String(nextNum).padStart(4, '0')}`
+  return `${prefix}${String(nextNum).padStart(4, "0")}`
 }
 
 /**
@@ -37,7 +37,7 @@ export function registerOrderAutomationHandlers(): void {
 
     try {
       // Check if auto-order is enabled
-      const orderSettings = await getSettingOrDefault('order')
+      const orderSettings = await getSettingOrDefault("order")
       if (!orderSettings.autoOrderFromQuote) return
 
       // Check if order already exists for this quote
@@ -63,8 +63,11 @@ export function registerOrderAutomationHandlers(): void {
         productId: item.productId || undefined,
       }))
 
-      const subtotal = orderItems.reduce((sum, item) => sum + Number(item.total), 0)
-      const taxAmount = subtotal * Number(quote.taxPercent) / 100
+      const subtotal = orderItems.reduce(
+        (sum, item) => sum + Number(item.total),
+        0
+      )
+      const taxAmount = (subtotal * Number(quote.taxPercent)) / 100
       const total = subtotal + taxAmount
 
       const order = await prisma.salesOrder.create({
@@ -85,18 +88,24 @@ export function registerOrderAutomationHandlers(): void {
       })
 
       // Emit ORDER_CREATED event
-      eventBus.emit(CRM_EVENTS.ORDER_CREATED, {
-        timestamp: new Date().toISOString(),
-        userId: quote.createdById,
-        orderId: order.id,
-        order: { orderNumber: order.orderNumber, total: Number(order.total), status: order.status },
-        ownerId: quote.createdById,
-      }).catch(() => {})
+      eventBus
+        .emit(CRM_EVENTS.ORDER_CREATED, {
+          timestamp: new Date().toISOString(),
+          userId: quote.createdById,
+          orderId: order.id,
+          order: {
+            orderNumber: order.orderNumber,
+            total: Number(order.total),
+            status: order.status,
+          },
+          ownerId: quote.createdById,
+        })
+        .catch(() => {})
 
       // Notify quote owner
       await notifyUser(
         quote.createdById,
-        'ORDER_STATUS_CHANGED',
+        "ORDER_STATUS_CHANGED",
         {
           orderNumber: order.orderNumber,
           statusLabel: `Tự động tạo từ ${quote.quoteNumber}`,
@@ -104,7 +113,7 @@ export function registerOrderAutomationHandlers(): void {
         `/orders/${order.id}`
       )
     } catch (err) {
-      console.error('[OrderAutomation] Failed to auto-create order:', err)
+      console.error("[OrderAutomation] Failed to auto-create order:", err)
     }
   })
 }

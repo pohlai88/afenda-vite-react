@@ -1,16 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { alertService } from '@/services/analytics'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { alertService } from "@/services/analytics"
+import { z } from "zod"
 
 const updateAlertSchema = z.object({
   name: z.string().min(1).optional(),
   description: z.string().optional(),
   metricType: z.string().optional(),
-  condition: z.enum(['gt', 'lt', 'eq', 'gte', 'lte', 'change_percent']).optional(),
+  condition: z
+    .enum(["gt", "lt", "eq", "gte", "lte", "change_percent"])
+    .optional(),
   threshold: z.number().optional(),
-  compareWith: z.enum(['previous_period', 'same_period_last_year', 'fixed_value']).optional(),
-  severity: z.enum(['INFO', 'WARNING', 'CRITICAL']).optional(),
+  compareWith: z
+    .enum(["previous_period", "same_period_last_year", "fixed_value"])
+    .optional(),
+  severity: z.enum(["INFO", "WARNING", "CRITICAL"]).optional(),
   departmentId: z.string().optional(),
   notifyUsers: z.array(z.string()).optional(),
   notifyRoles: z.array(z.string()).optional(),
@@ -27,14 +31,14 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const tenantId = session.user.tenantId
     const alert = await alertService.getAlertById(tenantId, params.id)
 
     if (!alert) {
-      return NextResponse.json({ error: 'Alert not found' }, { status: 404 })
+      return NextResponse.json({ error: "Alert not found" }, { status: 404 })
     }
 
     return NextResponse.json({
@@ -42,9 +46,9 @@ export async function GET(
       data: alert,
     })
   } catch (error) {
-    console.error('Error fetching alert:', error)
+    console.error("Error fetching alert:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch alert' },
+      { error: "Failed to fetch alert" },
       { status: 500 }
     )
   }
@@ -58,12 +62,12 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Only allow admin/HR roles
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const tenantId = session.user.tenantId
@@ -75,21 +79,21 @@ export async function PATCH(
     return NextResponse.json({
       success: true,
       data: alert,
-      message: 'Alert updated successfully',
+      message: "Alert updated successfully",
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    if (error instanceof Error && error.message.includes('not found')) {
-      return NextResponse.json({ error: 'Alert not found' }, { status: 404 })
+    if (error instanceof Error && error.message.includes("not found")) {
+      return NextResponse.json({ error: "Alert not found" }, { status: 404 })
     }
-    console.error('Error updating alert:', error)
+    console.error("Error updating alert:", error)
     return NextResponse.json(
-      { error: 'Failed to update alert' },
+      { error: "Failed to update alert" },
       { status: 500 }
     )
   }
@@ -103,12 +107,12 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Only allow admin/HR roles
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const tenantId = session.user.tenantId
@@ -116,15 +120,15 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: 'Alert deleted successfully',
+      message: "Alert deleted successfully",
     })
   } catch (error) {
-    if (error instanceof Error && error.message.includes('not found')) {
-      return NextResponse.json({ error: 'Alert not found' }, { status: 404 })
+    if (error instanceof Error && error.message.includes("not found")) {
+      return NextResponse.json({ error: "Alert not found" }, { status: 404 })
     }
-    console.error('Error deleting alert:', error)
+    console.error("Error deleting alert:", error)
     return NextResponse.json(
-      { error: 'Failed to delete alert' },
+      { error: "Failed to delete alert" },
       { status: 500 }
     )
   }

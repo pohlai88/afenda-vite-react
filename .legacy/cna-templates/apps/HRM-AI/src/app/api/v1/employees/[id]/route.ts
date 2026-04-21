@@ -1,9 +1,12 @@
-import { NextRequest } from 'next/server'
-import { authenticateApiRequest, apiResponse, apiError } from '@/lib/api/auth'
-import { db } from '@/lib/db'
+import { NextRequest } from "next/server"
+import { authenticateApiRequest, apiResponse, apiError } from "@/lib/api/auth"
+import { db } from "@/lib/db"
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const auth = await authenticateApiRequest(request, 'read:employees')
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const auth = await authenticateApiRequest(request, "read:employees")
   if (!auth.success) return apiError(auth.error!, auth.statusCode)
 
   const employee = await db.employee.findFirst({
@@ -14,6 +17,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     },
   })
 
-  if (!employee) return apiError('Employee not found', 404)
+  if (!employee) return apiError("Employee not found", 404)
   return apiResponse(employee)
 }

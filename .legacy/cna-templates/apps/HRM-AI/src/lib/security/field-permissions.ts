@@ -2,13 +2,13 @@
 // Field-level access control for sensitive data (P2-18)
 // Controls visibility of fields like salary, CCCD, bank account per role
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
 // ═══════════════════════════════════════════════════════════════
 
-export type FieldAccess = 'hidden' | 'masked' | 'read' | 'write'
+export type FieldAccess = "hidden" | "masked" | "read" | "write"
 
 export interface FieldPermissionRule {
   entity: string
@@ -23,42 +23,38 @@ export interface FieldPermissionRule {
 /** Fields considered sensitive per entity type */
 export const SENSITIVE_FIELDS: Record<string, string[]> = {
   employee: [
-    'idNumber',        // CCCD/CMND
-    'taxCode',         // Mã số thuế
-    'socialInsuranceNumber',
-    'bankAccount',
-    'bankName',
-    'bankBranch',
-    'personalEmail',
-    'phone',
-    'permanentAddress',
-    'currentAddress',
-    'dateOfBirth',
+    "idNumber", // CCCD/CMND
+    "taxCode", // Mã số thuế
+    "socialInsuranceNumber",
+    "bankAccount",
+    "bankName",
+    "bankBranch",
+    "personalEmail",
+    "phone",
+    "permanentAddress",
+    "currentAddress",
+    "dateOfBirth",
   ],
   payroll: [
-    'baseSalary',
-    'insuranceSalary',
-    'grossSalary',
-    'netSalary',
-    'pit',
-    'totalDeductions',
-    'totalInsuranceEmployee',
-    'bankAccount',
+    "baseSalary",
+    "insuranceSalary",
+    "grossSalary",
+    "netSalary",
+    "pit",
+    "totalDeductions",
+    "totalInsuranceEmployee",
+    "bankAccount",
   ],
-  contract: [
-    'baseSalary',
-    'insuranceSalary',
-    'allowances',
-  ],
+  contract: ["baseSalary", "insuranceSalary", "allowances"],
 }
 
 // Default access for legacy roles (roles without custom field permissions)
 const DEFAULT_FIELD_ACCESS: Record<string, FieldAccess> = {
-  SUPER_ADMIN: 'write',
-  ADMIN: 'write',
-  HR_MANAGER: 'write',
-  HR_STAFF: 'read',
-  VIEWER: 'hidden',
+  SUPER_ADMIN: "write",
+  ADMIN: "write",
+  HR_MANAGER: "write",
+  HR_STAFF: "read",
+  VIEWER: "hidden",
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -76,7 +72,7 @@ export async function getUserFieldPermissions(
   const result = new Map<string, FieldAccess>()
 
   // Start with legacy role defaults for all sensitive fields
-  const defaultAccess = DEFAULT_FIELD_ACCESS[legacyRole] || 'hidden'
+  const defaultAccess = DEFAULT_FIELD_ACCESS[legacyRole] || "hidden"
   for (const [entity, fields] of Object.entries(SENSITIVE_FIELDS)) {
     for (const field of fields) {
       result.set(`${entity}.${field}`, defaultAccess)
@@ -107,11 +103,16 @@ export async function getUserFieldPermissions(
 
 function accessPriority(access: FieldAccess): number {
   switch (access) {
-    case 'write': return 4
-    case 'read': return 3
-    case 'masked': return 2
-    case 'hidden': return 1
-    default: return 0
+    case "write":
+      return 4
+    case "read":
+      return 3
+    case "masked":
+      return 2
+    case "hidden":
+      return 1
+    default:
+      return 0
   }
 }
 
@@ -133,13 +134,13 @@ export function applyFieldAccess<T extends Record<string, unknown>>(
     if (!(field in result)) continue
 
     const key = `${entity}.${field}`
-    const access = fieldPermissions.get(key) || 'hidden'
+    const access = fieldPermissions.get(key) || "hidden"
 
     switch (access) {
-      case 'hidden':
+      case "hidden":
         delete result[field]
         break
-      case 'masked':
+      case "masked":
         result[field] = maskValue(result[field])
         break
       // 'read' and 'write' - leave as-is
@@ -174,7 +175,7 @@ export function canWriteField(
   // Non-sensitive fields are always writable
   if (!sensitiveFields?.includes(fieldName)) return true
 
-  return fieldPermissions.get(key) === 'write'
+  return fieldPermissions.get(key) === "write"
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -184,12 +185,12 @@ export function canWriteField(
 function maskValue(value: unknown): unknown {
   if (value === null || value === undefined) return value
 
-  if (typeof value === 'string') {
-    if (value.length <= 4) return '***'
-    return '***' + value.slice(-4)
+  if (typeof value === "string") {
+    if (value.length <= 4) return "***"
+    return "***" + value.slice(-4)
   }
 
-  if (typeof value === 'number') {
+  if (typeof value === "number") {
     return 0 // Mask salary as 0
   }
 
@@ -223,6 +224,6 @@ export async function setFieldPermissions(
 export async function getFieldPermissionsForRole(roleId: string) {
   return db.fieldPermission.findMany({
     where: { roleId },
-    orderBy: [{ entity: 'asc' }, { fieldName: 'asc' }],
+    orderBy: [{ entity: "asc" }, { fieldName: "asc" }],
   })
 }

@@ -1,27 +1,33 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Badge } from '@/components/ui/badge'
-import { Sparkles, RefreshCw, ChevronRight, AlertCircle } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { AIInsightCard, AIInsightCardCompact } from './AIInsightCard'
-import Link from 'next/link'
-import type { InsightsResult } from '@/lib/ai/insights/types'
+import { useState, useEffect } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge"
+import { Sparkles, RefreshCw, ChevronRight, AlertCircle } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { AIInsightCard, AIInsightCardCompact } from "./AIInsightCard"
+import Link from "next/link"
+import type { InsightsResult } from "@/lib/ai/insights/types"
 
 interface AIInsightsWidgetProps {
-  variant?: 'full' | 'compact'
+  variant?: "full" | "compact"
   maxItems?: number
   className?: string
 }
 
 export function AIInsightsWidget({
-  variant = 'full',
+  variant = "full",
   maxItems = 5,
-  className
+  className,
 }: AIInsightsWidgetProps) {
   const [data, setData] = useState<InsightsResult | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -33,17 +39,17 @@ export function AIInsightsWidget({
     setError(null)
 
     try {
-      const res = await fetch('/api/ai/insights')
+      const res = await fetch("/api/ai/insights")
 
       if (!res.ok) {
         const errData = await res.json()
-        throw new Error(errData.error || 'Failed to fetch insights')
+        throw new Error(errData.error || "Failed to fetch insights")
       }
 
       const result = await res.json()
       setData(result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error')
+      setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
       setIsLoading(false)
     }
@@ -54,12 +60,12 @@ export function AIInsightsWidget({
   }, [])
 
   const handleDismiss = (id: string) => {
-    setDismissedIds(prev => new Set(Array.from(prev).concat(id)))
+    setDismissedIds((prev) => new Set(Array.from(prev).concat(id)))
   }
 
-  const visibleInsights = data?.insights
-    .filter(i => !dismissedIds.has(i.id))
-    .slice(0, maxItems) || []
+  const visibleInsights =
+    data?.insights.filter((i) => !dismissedIds.has(i.id)).slice(0, maxItems) ||
+    []
 
   if (isLoading) {
     return <InsightsWidgetSkeleton variant={variant} className={className} />
@@ -81,7 +87,7 @@ export function AIInsightsWidget({
     )
   }
 
-  if (variant === 'compact') {
+  if (variant === "compact") {
     return (
       <Card className={className}>
         <CardHeader className="pb-2">
@@ -101,7 +107,7 @@ export function AIInsightsWidget({
           <div className="space-y-2">
             {visibleInsights.length > 0 ? (
               <>
-                {visibleInsights.map(insight => (
+                {visibleInsights.map((insight) => (
                   <AIInsightCardCompact
                     key={insight.id}
                     insight={insight}
@@ -167,7 +173,9 @@ export function AIInsightsWidget({
               onClick={fetchInsights}
               disabled={isLoading}
             >
-              <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
+              <RefreshCw
+                className={cn("h-4 w-4", isLoading && "animate-spin")}
+              />
             </Button>
           </div>
         </div>
@@ -176,7 +184,7 @@ export function AIInsightsWidget({
         <ScrollArea className="h-[400px] pr-4">
           <div className="space-y-3">
             {visibleInsights.length > 0 ? (
-              visibleInsights.map(insight => (
+              visibleInsights.map((insight) => (
                 <AIInsightCard
                   key={insight.id}
                   insight={insight}
@@ -199,12 +207,12 @@ export function AIInsightsWidget({
 
 function InsightsWidgetSkeleton({
   variant,
-  className
+  className,
 }: {
-  variant: 'full' | 'compact'
+  variant: "full" | "compact"
   className?: string
 }) {
-  if (variant === 'compact') {
+  if (variant === "compact") {
     return (
       <Card className={className}>
         <CardHeader className="pb-2">

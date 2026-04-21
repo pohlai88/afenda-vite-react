@@ -1,10 +1,10 @@
 // src/lib/esignature/signature-service-production.ts
 // E-Signature Production Service with Multi-Signer Workflow
 
-import prisma from '@/lib/db'
-import crypto from 'crypto'
-import { vnptCAProductionProvider } from './providers/vnpt-ca-production'
-import type { DocumentType } from './types'
+import prisma from "@/lib/db"
+import crypto from "crypto"
+import { vnptCAProductionProvider } from "./providers/vnpt-ca-production"
+import type { DocumentType } from "./types"
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -95,9 +95,9 @@ export class ESignatureProductionService {
       const signer = signers.find((s) => s.id === signerId)
       return {
         employeeId: signerId,
-        employeeName: signer?.fullName || 'Unknown',
+        employeeName: signer?.fullName || "Unknown",
         order: index + 1,
-        role: index === 0 ? 'CREATOR' : 'APPROVER',
+        role: index === 0 ? "CREATOR" : "APPROVER",
         position: input.signaturePositions?.[signerId],
       }
     })
@@ -113,9 +113,9 @@ export class ESignatureProductionService {
         sourceType: input.sourceType,
         sourceId: input.sourceId,
         requiredSigners: requiredSigners as unknown as object,
-        status: 'PENDING',
+        status: "PENDING",
         expiresAt: input.expiresAt,
-        notes: `${input.message || ''}\n[hash:${hash}]`.trim(),
+        notes: `${input.message || ""}\n[hash:${hash}]`.trim(),
       },
     })
 
@@ -129,26 +129,29 @@ export class ESignatureProductionService {
   // Signing Initiation
   // ─────────────────────────────────────────────────────────────
 
-  async initiateSign(documentId: string, signerId: string): Promise<SigningResult> {
+  async initiateSign(
+    documentId: string,
+    signerId: string
+  ): Promise<SigningResult> {
     const document = await prisma.signableDocument.findUnique({
       where: { id: documentId, tenantId: this.tenantId },
     })
 
     if (!document) {
-      return { success: false, error: 'Không tìm thấy tài liệu' }
+      return { success: false, error: "Không tìm thấy tài liệu" }
     }
 
-    if (document.status === 'COMPLETED') {
-      return { success: false, error: 'Tài liệu đã được ký hoàn tất' }
+    if (document.status === "COMPLETED") {
+      return { success: false, error: "Tài liệu đã được ký hoàn tất" }
     }
 
-    if (document.status === 'CANCELLED') {
-      return { success: false, error: 'Tài liệu đã bị hủy' }
+    if (document.status === "CANCELLED") {
+      return { success: false, error: "Tài liệu đã bị hủy" }
     }
 
     // Check expiry
     if (document.expiresAt && document.expiresAt < new Date()) {
-      return { success: false, error: 'Tài liệu đã hết hạn ký' }
+      return { success: false, error: "Tài liệu đã hết hạn ký" }
     }
 
     // Get signer info
@@ -157,29 +160,40 @@ export class ESignatureProductionService {
       employeeName: string
       order: number
       role: string
-      position?: { page: number; x: number; y: number; width?: number; height?: number }
+      position?: {
+        page: number
+        x: number
+        y: number
+        width?: number
+        height?: number
+      }
     }>
 
     const signerInfo = requiredSigners.find((s) => s.employeeId === signerId)
     if (!signerInfo) {
-      return { success: false, error: 'Bạn không có quyền ký tài liệu này' }
+      return { success: false, error: "Bạn không có quyền ký tài liệu này" }
     }
 
     // Check signing order
     const existingSignatures = await prisma.documentSignature.findMany({
       where: { documentId },
-      orderBy: { signatureOrder: 'asc' },
+      orderBy: { signatureOrder: "asc" },
     })
 
-    const highestSignedOrder = Math.max(0, ...existingSignatures.map((s) => s.signatureOrder))
+    const highestSignedOrder = Math.max(
+      0,
+      ...existingSignatures.map((s) => s.signatureOrder)
+    )
     if (signerInfo.order > highestSignedOrder + 1) {
-      return { success: false, error: 'Chưa đến lượt ký của bạn' }
+      return { success: false, error: "Chưa đến lượt ký của bạn" }
     }
 
     // Check if already signed
-    const alreadySigned = existingSignatures.find((s) => s.signerId === signerId)
+    const alreadySigned = existingSignatures.find(
+      (s) => s.signerId === signerId
+    )
     if (alreadySigned) {
-      return { success: false, error: 'Bạn đã ký tài liệu này' }
+      return { success: false, error: "Bạn đã ký tài liệu này" }
     }
 
     // Get signer's employee info
@@ -193,7 +207,9 @@ export class ESignatureProductionService {
       const session = await vnptCAProductionProvider.createSigningSession({
         documentId,
         documentTitle: document.documentName,
-        documentHash: this.extractHashFromNotes(document.notes) || await this.calculateFileHash(document.originalFile),
+        documentHash:
+          this.extractHashFromNotes(document.notes) ||
+          (await this.calculateFileHash(document.originalFile)),
         signerId,
         signerName: employee?.fullName || signerInfo.employeeName,
         signerEmail: employee?.workEmail || undefined,
@@ -205,11 +221,11 @@ export class ESignatureProductionService {
       await prisma.documentSignature.create({
         data: {
           documentId,
-          certificateId: '', // Will be filled after signing
+          certificateId: "", // Will be filled after signing
           signerId,
           signatureOrder: signerInfo.order,
           signerRole: signerInfo.role,
-          status: 'PENDING',
+          status: "PENDING",
         },
       })
 
@@ -220,7 +236,7 @@ export class ESignatureProductionService {
         expiresAt: session.expiresAt,
       }
     } catch (error) {
-      console.error('Failed to initiate signing', error)
+      console.error("Failed to initiate signing", error)
       return {
         success: false,
         error: (error as Error).message,
@@ -240,14 +256,15 @@ export class ESignatureProductionService {
     signature: string
   }): Promise<void> {
     try {
-      const callbackData = await vnptCAProductionProvider.handleCallback(payload)
+      const callbackData =
+        await vnptCAProductionProvider.handleCallback(payload)
 
       // Find the signature record by session ID (stored in notes or metadata)
       // For now, we'll use a direct lookup based on pending status
       const pendingSignatures = await prisma.documentSignature.findMany({
-        where: { status: 'PENDING' },
+        where: { status: "PENDING" },
         include: { document: true },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 10,
       })
 
@@ -255,38 +272,44 @@ export class ESignatureProductionService {
       const signature = pendingSignatures[0]
 
       if (!signature) {
-        console.error('No pending signature found for callback', {
+        console.error("No pending signature found for callback", {
           sessionId: callbackData.sessionId,
         })
         return
       }
 
-      if (callbackData.status === 'COMPLETED' && callbackData.signature) {
+      if (callbackData.status === "COMPLETED" && callbackData.signature) {
         // Update signature record
         await prisma.documentSignature.update({
           where: { id: signature.id },
           data: {
-            status: 'SIGNED',
+            status: "SIGNED",
             signedAt: callbackData.signedAt || new Date(),
             signatureData: callbackData.signature,
-            signatureHash: crypto.createHash('sha256').update(callbackData.signature).digest('hex'),
+            signatureHash: crypto
+              .createHash("sha256")
+              .update(callbackData.signature)
+              .digest("hex"),
             providerTransactionId: callbackData.sessionId,
           },
         })
 
         // Check if all signatures complete
         await this.checkDocumentCompletion(signature.documentId)
-      } else if (['FAILED', 'CANCELLED', 'EXPIRED'].includes(callbackData.status)) {
+      } else if (
+        ["FAILED", "CANCELLED", "EXPIRED"].includes(callbackData.status)
+      ) {
         await prisma.documentSignature.update({
           where: { id: signature.id },
           data: {
-            status: callbackData.status === 'CANCELLED' ? 'REJECTED' : 'PENDING',
+            status:
+              callbackData.status === "CANCELLED" ? "REJECTED" : "PENDING",
             rejectedReason: callbackData.status,
           },
         })
       }
     } catch (error) {
-      console.error('Failed to process callback', error)
+      console.error("Failed to process callback", error)
       throw error
     }
   }
@@ -302,11 +325,13 @@ export class ESignatureProductionService {
 
     if (!document) return
 
-    const requiredSigners = document.requiredSigners as Array<{ employeeId: string }>
+    const requiredSigners = document.requiredSigners as Array<{
+      employeeId: string
+    }>
     const totalSigners = requiredSigners.length
 
     const signedCount = await prisma.documentSignature.count({
-      where: { documentId, status: 'SIGNED' },
+      where: { documentId, status: "SIGNED" },
     })
 
     if (signedCount >= totalSigners) {
@@ -316,7 +341,7 @@ export class ESignatureProductionService {
       await prisma.signableDocument.update({
         where: { id: documentId },
         data: {
-          status: 'COMPLETED',
+          status: "COMPLETED",
           completedAt: new Date(),
           signedFile: signedFileUrl,
         },
@@ -327,7 +352,7 @@ export class ESignatureProductionService {
     } else {
       await prisma.signableDocument.update({
         where: { id: documentId },
-        data: { status: 'PARTIAL' },
+        data: { status: "PARTIAL" },
       })
 
       // Notify next signer
@@ -344,13 +369,13 @@ export class ESignatureProductionService {
       where: { id: documentId },
       include: {
         signatures: {
-          where: { status: 'SIGNED' },
+          where: { status: "SIGNED" },
         },
       },
     })
 
     if (!document) {
-      throw new Error('Document not found')
+      throw new Error("Document not found")
     }
 
     // In production, use pdf-lib to add visual signatures
@@ -358,7 +383,7 @@ export class ESignatureProductionService {
     const signedFileName = `signed-${document.documentCode}.pdf`
 
     // Return the signed file URL (in production, upload to storage)
-    return document.originalFile.replace('.pdf', '-signed.pdf')
+    return document.originalFile.replace(".pdf", "-signed.pdf")
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -370,13 +395,13 @@ export class ESignatureProductionService {
       where: { id: documentId, tenantId: this.tenantId },
       include: {
         signatures: {
-          where: { status: 'SIGNED' },
+          where: { status: "SIGNED" },
         },
       },
     })
 
     if (!document) {
-      throw new Error('Không tìm thấy tài liệu')
+      throw new Error("Không tìm thấy tài liệu")
     }
 
     // Verify document hash
@@ -384,7 +409,7 @@ export class ESignatureProductionService {
       ? await this.calculateFileHash(document.signedFile)
       : await this.calculateFileHash(document.originalFile)
 
-    const expectedHash = this.extractHashFromNotes(document.notes) || ''
+    const expectedHash = this.extractHashFromNotes(document.notes) || ""
     const documentIntegrity = currentHash === expectedHash
 
     // Verify each signature
@@ -400,7 +425,7 @@ export class ESignatureProductionService {
         const isValid = !!sig.signatureData && !!sig.signedAt
 
         return {
-          signerName: signer?.fullName || 'Unknown',
+          signerName: signer?.fullName || "Unknown",
           signedAt: sig.signedAt,
           valid: isValid,
           verificationDetails: {
@@ -432,10 +457,10 @@ export class ESignatureProductionService {
     try {
       // In production, fetch the file and calculate hash
       // For now, return a deterministic hash based on URL
-      return crypto.createHash('sha256').update(fileUrl).digest('hex')
+      return crypto.createHash("sha256").update(fileUrl).digest("hex")
     } catch (error) {
-      console.error('Failed to calculate file hash', error)
-      return ''
+      console.error("Failed to calculate file hash", error)
+      return ""
     }
   }
 
@@ -474,14 +499,14 @@ export class ESignatureProductionService {
     const documents = await prisma.signableDocument.findMany({
       where: {
         tenantId: this.tenantId,
-        status: { in: ['PENDING', 'PARTIAL'] },
+        status: { in: ["PENDING", "PARTIAL"] },
       },
       include: {
         signatures: {
           select: { signerId: true, signatureOrder: true, status: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
 
     const result = []
@@ -493,15 +518,22 @@ export class ESignatureProductionService {
         role: string
       }>
 
-      const mySignerInfo = requiredSigners.find((s) => s.employeeId === employeeId)
+      const mySignerInfo = requiredSigners.find(
+        (s) => s.employeeId === employeeId
+      )
       if (!mySignerInfo) continue
 
       // Check if already signed
-      const alreadySigned = doc.signatures.find((s) => s.signerId === employeeId)
+      const alreadySigned = doc.signatures.find(
+        (s) => s.signerId === employeeId
+      )
       if (alreadySigned) continue
 
       // Check if can sign (previous signers have signed)
-      const highestSignedOrder = Math.max(0, ...doc.signatures.map((s) => s.signatureOrder))
+      const highestSignedOrder = Math.max(
+        0,
+        ...doc.signatures.map((s) => s.signatureOrder)
+      )
       const canSign = mySignerInfo.order <= highestSignedOrder + 1
 
       result.push({
@@ -529,7 +561,7 @@ export class ESignatureProductionService {
     }>
   > {
     const signatures = await prisma.documentSignature.findMany({
-      where: { signerId: employeeId, status: 'SIGNED' },
+      where: { signerId: employeeId, status: "SIGNED" },
       include: {
         document: {
           select: {
@@ -540,7 +572,7 @@ export class ESignatureProductionService {
           },
         },
       },
-      orderBy: { signedAt: 'desc' },
+      orderBy: { signedAt: "desc" },
     })
 
     return signatures.map((sig) => ({
@@ -557,6 +589,8 @@ export class ESignatureProductionService {
 // FACTORY FUNCTION
 // ═══════════════════════════════════════════════════════════════
 
-export function createESignatureProductionService(tenantId: string): ESignatureProductionService {
+export function createESignatureProductionService(
+  tenantId: string
+): ESignatureProductionService {
   return new ESignatureProductionService(tenantId)
 }

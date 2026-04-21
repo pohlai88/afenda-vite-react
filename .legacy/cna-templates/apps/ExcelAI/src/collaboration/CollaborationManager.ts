@@ -2,11 +2,11 @@
 // COLLABORATION MANAGER — Main orchestrator (Blueprint §6)
 // =============================================================================
 
-import { WebSocketClient, MockWebSocketClient } from './WebSocketClient';
-import { CRDTEngine } from './CRDTEngine';
-import { PresenceManager } from './PresenceManager';
-import { CommentManager } from './CommentManager';
-import { AttributionTracker } from './AttributionTracker';
+import { WebSocketClient, MockWebSocketClient } from "./WebSocketClient"
+import { CRDTEngine } from "./CRDTEngine"
+import { PresenceManager } from "./PresenceManager"
+import { CommentManager } from "./CommentManager"
+import { AttributionTracker } from "./AttributionTracker"
 import type {
   CollaborationUser,
   UserSession,
@@ -19,21 +19,21 @@ import type {
   CommentThread,
   CellAttribution,
   VectorClock,
-} from './types';
-import { getColorForUser } from './types';
+} from "./types"
+import { getColorForUser } from "./types"
 
 // -----------------------------------------------------------------------------
 // Collaboration Manager Config
 // -----------------------------------------------------------------------------
 
 export interface CollaborationConfig {
-  wsUrl: string;
-  documentId: string;
-  userId: string;
-  userName: string;
-  userEmail?: string;
-  userAvatar?: string;
-  useMock?: boolean;
+  wsUrl: string
+  documentId: string
+  userId: string
+  userName: string
+  userEmail?: string
+  userAvatar?: string
+  useMock?: boolean
 }
 
 // -----------------------------------------------------------------------------
@@ -44,13 +44,13 @@ export interface CollaborationConfig {
  * Main orchestrator for all collaboration features
  */
 export class CollaborationManager {
-  private wsClient: WebSocketClient;
-  private crdtEngine: CRDTEngine;
-  private presenceManager: PresenceManager;
-  private commentManager: CommentManager;
-  private attributionTracker: AttributionTracker;
-  private currentUser: CollaborationUser;
-  private isInitialized = false;
+  private wsClient: WebSocketClient
+  private crdtEngine: CRDTEngine
+  private presenceManager: PresenceManager
+  private commentManager: CommentManager
+  private attributionTracker: AttributionTracker
+  private currentUser: CollaborationUser
+  private isInitialized = false
 
   constructor(config: CollaborationConfig) {
     // Create current user
@@ -60,18 +60,18 @@ export class CollaborationManager {
       email: config.userEmail,
       avatar: config.userAvatar,
       color: getColorForUser(config.userId),
-    };
+    }
 
     // Create WebSocket client
     this.wsClient = config.useMock
       ? new MockWebSocketClient(config.documentId, config.userId)
-      : new WebSocketClient(config.wsUrl, config.documentId, config.userId);
+      : new WebSocketClient(config.wsUrl, config.documentId, config.userId)
 
     // Create managers
-    this.crdtEngine = new CRDTEngine(config.userId);
-    this.presenceManager = new PresenceManager(this.wsClient, this.currentUser);
-    this.commentManager = new CommentManager(this.wsClient, this.currentUser);
-    this.attributionTracker = new AttributionTracker();
+    this.crdtEngine = new CRDTEngine(config.userId)
+    this.presenceManager = new PresenceManager(this.wsClient, this.currentUser)
+    this.commentManager = new CommentManager(this.wsClient, this.currentUser)
+    this.attributionTracker = new AttributionTracker()
   }
 
   // ---------------------------------------------------------------------------
@@ -82,36 +82,36 @@ export class CollaborationManager {
    * Connect to collaboration server
    */
   async connect(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) return
 
-    await this.wsClient.connect();
-    this.presenceManager.announcePresence();
-    this.isInitialized = true;
+    await this.wsClient.connect()
+    this.presenceManager.announcePresence()
+    this.isInitialized = true
   }
 
   /**
    * Disconnect from collaboration server
    */
   disconnect(): void {
-    if (!this.isInitialized) return;
+    if (!this.isInitialized) return
 
-    this.presenceManager.leave();
-    this.wsClient.disconnect();
-    this.isInitialized = false;
+    this.presenceManager.leave()
+    this.wsClient.disconnect()
+    this.isInitialized = false
   }
 
   /**
    * Check if connected
    */
   isConnected(): boolean {
-    return this.wsClient.isConnected();
+    return this.wsClient.isConnected()
   }
 
   /**
    * Get connection status
    */
   getConnectionStatus(): ConnectionStatus {
-    return this.wsClient.getStatus();
+    return this.wsClient.getStatus()
   }
 
   // ---------------------------------------------------------------------------
@@ -122,21 +122,21 @@ export class CollaborationManager {
    * Get current user
    */
   getCurrentUser(): CollaborationUser {
-    return this.currentUser;
+    return this.currentUser
   }
 
   /**
    * Get all online users
    */
   getOnlineUsers(): UserSession[] {
-    return this.presenceManager.getOnlineUsers();
+    return this.presenceManager.getOnlineUsers()
   }
 
   /**
    * Get user count
    */
   getUserCount(): number {
-    return this.presenceManager.getUserCount();
+    return this.presenceManager.getUserCount()
   }
 
   /**
@@ -148,8 +148,8 @@ export class CollaborationManager {
       row,
       col,
       timestamp: Date.now(),
-    };
-    this.presenceManager.updateCursor(position);
+    }
+    this.presenceManager.updateCursor(position)
   }
 
   /**
@@ -169,36 +169,36 @@ export class CollaborationManager {
       endRow,
       endCol,
       timestamp: Date.now(),
-    };
-    this.presenceManager.updateSelection(selection);
+    }
+    this.presenceManager.updateSelection(selection)
   }
 
   /**
    * Clear selection
    */
   clearSelection(): void {
-    this.presenceManager.updateSelection(null);
+    this.presenceManager.updateSelection(null)
   }
 
   /**
    * Get remote cursors for a sheet
    */
   getRemoteCursors(sheetId?: string): RemoteCursor[] {
-    return this.presenceManager.getRemoteCursors(sheetId);
+    return this.presenceManager.getRemoteCursors(sheetId)
   }
 
   /**
    * Get remote selections for a sheet
    */
   getRemoteSelections(sheetId?: string): RemoteSelection[] {
-    return this.presenceManager.getRemoteSelections(sheetId);
+    return this.presenceManager.getRemoteSelections(sheetId)
   }
 
   /**
    * Subscribe to presence changes
    */
   onPresenceChange(handler: (users: UserSession[]) => void): () => void {
-    return this.presenceManager.subscribe(handler);
+    return this.presenceManager.subscribe(handler)
   }
 
   // ---------------------------------------------------------------------------
@@ -209,63 +209,63 @@ export class CollaborationManager {
    * Add a comment to a cell
    */
   addComment(sheetId: string, cellRef: string, content: string): Comment {
-    return this.commentManager.addComment(sheetId, cellRef, content);
+    return this.commentManager.addComment(sheetId, cellRef, content)
   }
 
   /**
    * Reply to a comment
    */
   replyToComment(parentId: string, content: string): Comment | null {
-    return this.commentManager.reply(parentId, content);
+    return this.commentManager.reply(parentId, content)
   }
 
   /**
    * Update a comment
    */
   updateComment(commentId: string, content: string): boolean {
-    return this.commentManager.updateComment(commentId, content);
+    return this.commentManager.updateComment(commentId, content)
   }
 
   /**
    * Delete a comment
    */
   deleteComment(commentId: string): boolean {
-    return this.commentManager.deleteComment(commentId);
+    return this.commentManager.deleteComment(commentId)
   }
 
   /**
    * Resolve a comment thread
    */
   resolveThread(threadId: string): boolean {
-    return this.commentManager.resolveThread(threadId);
+    return this.commentManager.resolveThread(threadId)
   }
 
   /**
    * Get comments for a cell
    */
   getCommentsForCell(sheetId: string, cellRef: string): CommentThread[] {
-    return this.commentManager.getThreadsForCell(sheetId, cellRef);
+    return this.commentManager.getThreadsForCell(sheetId, cellRef)
   }
 
   /**
    * Get all comment threads
    */
   getAllComments(): CommentThread[] {
-    return this.commentManager.getAllThreads();
+    return this.commentManager.getAllThreads()
   }
 
   /**
    * Check if cell has comments
    */
   cellHasComments(sheetId: string, cellRef: string): boolean {
-    return this.commentManager.cellHasComments(sheetId, cellRef);
+    return this.commentManager.cellHasComments(sheetId, cellRef)
   }
 
   /**
    * Subscribe to comment changes
    */
   onCommentChange(handler: () => void): () => void {
-    return this.commentManager.subscribe(handler);
+    return this.commentManager.subscribe(handler)
   }
 
   // ---------------------------------------------------------------------------
@@ -279,7 +279,7 @@ export class CollaborationManager {
     sheetId: string,
     cellRef: string,
     eventId: string,
-    changeType: 'value' | 'formula' | 'format' | 'clear'
+    changeType: "value" | "formula" | "format" | "clear"
   ): void {
     this.attributionTracker.recordEdit(
       sheetId,
@@ -287,21 +287,21 @@ export class CollaborationManager {
       this.currentUser,
       eventId,
       changeType
-    );
+    )
   }
 
   /**
    * Get attribution for a cell
    */
   getAttribution(sheetId: string, cellRef: string): CellAttribution | null {
-    return this.attributionTracker.getAttribution(sheetId, cellRef);
+    return this.attributionTracker.getAttribution(sheetId, cellRef)
   }
 
   /**
    * Get last editor for a cell
    */
   getLastEditor(sheetId: string, cellRef: string): CollaborationUser | null {
-    return this.attributionTracker.getLastEditor(sheetId, cellRef);
+    return this.attributionTracker.getLastEditor(sheetId, cellRef)
   }
 
   /**
@@ -310,7 +310,7 @@ export class CollaborationManager {
   onAttributionChange(
     handler: (cellRef: string, attribution: CellAttribution) => void
   ): () => void {
-    return this.attributionTracker.subscribe(handler);
+    return this.attributionTracker.subscribe(handler)
   }
 
   // ---------------------------------------------------------------------------
@@ -321,7 +321,7 @@ export class CollaborationManager {
    * Get current vector clock
    */
   getVectorClock(): VectorClock {
-    return this.crdtEngine.getVectorClock();
+    return this.crdtEngine.getVectorClock()
   }
 
   // ---------------------------------------------------------------------------
@@ -332,7 +332,7 @@ export class CollaborationManager {
    * Subscribe to connection status changes
    */
   onConnectionChange(handler: (status: ConnectionStatus) => void): () => void {
-    return this.wsClient.onStatus(handler);
+    return this.wsClient.onStatus(handler)
   }
 
   // ---------------------------------------------------------------------------
@@ -343,10 +343,10 @@ export class CollaborationManager {
    * Destroy and cleanup
    */
   destroy(): void {
-    this.disconnect();
-    this.presenceManager.destroy();
-    this.commentManager.destroy();
-    this.attributionTracker.clear();
+    this.disconnect()
+    this.presenceManager.destroy()
+    this.commentManager.destroy()
+    this.attributionTracker.clear()
   }
 }
 
@@ -354,22 +354,24 @@ export class CollaborationManager {
 // Factory & Singleton
 // -----------------------------------------------------------------------------
 
-let instance: CollaborationManager | null = null;
+let instance: CollaborationManager | null = null
 
 export function createCollaborationManager(
   config: CollaborationConfig
 ): CollaborationManager {
-  return new CollaborationManager(config);
+  return new CollaborationManager(config)
 }
 
-export function initCollaboration(config: CollaborationConfig): CollaborationManager {
+export function initCollaboration(
+  config: CollaborationConfig
+): CollaborationManager {
   if (instance) {
-    instance.destroy();
+    instance.destroy()
   }
-  instance = new CollaborationManager(config);
-  return instance;
+  instance = new CollaborationManager(config)
+  return instance
 }
 
 export function getCollaborationManager(): CollaborationManager | null {
-  return instance;
+  return instance
 }

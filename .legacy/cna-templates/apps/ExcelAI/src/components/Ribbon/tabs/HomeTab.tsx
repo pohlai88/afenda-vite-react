@@ -1,11 +1,11 @@
-import React from 'react';
-import { ClipboardGroup } from '../groups/ClipboardGroup';
-import { FontGroup } from '../groups/FontGroup';
-import { AlignmentGroup } from '../groups/AlignmentGroup';
-import { NumberGroup } from '../groups/NumberGroup';
-import { StylesGroup } from '../groups/StylesGroup';
-import { CellsGroup } from '../groups/CellsGroup';
-import { EditingGroup } from '../groups/EditingGroup';
+import React from "react"
+import { ClipboardGroup } from "../groups/ClipboardGroup"
+import { FontGroup } from "../groups/FontGroup"
+import { AlignmentGroup } from "../groups/AlignmentGroup"
+import { NumberGroup } from "../groups/NumberGroup"
+import { StylesGroup } from "../groups/StylesGroup"
+import { CellsGroup } from "../groups/CellsGroup"
+import { EditingGroup } from "../groups/EditingGroup"
 
 export const HomeTab: React.FC = () => {
   return (
@@ -24,5 +24,5 @@ export const HomeTab: React.FC = () => {
       <div className="ribbon-separator" />
       <EditingGroup />
     </div>
-  );
-};
+  )
+}

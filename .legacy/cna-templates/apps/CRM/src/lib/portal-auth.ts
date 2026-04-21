@@ -1,5 +1,5 @@
-import { cookies } from 'next/headers'
-import { prisma } from '@/lib/prisma'
+import { cookies } from "next/headers"
+import { prisma } from "@/lib/prisma"
 
 export interface PortalContext {
   portalUser: {
@@ -15,7 +15,7 @@ export interface PortalContext {
 export async function getPortalSession(): Promise<PortalContext | null> {
   try {
     const cookieStore = await cookies()
-    const token = cookieStore.get('portal_session')?.value
+    const token = cookieStore.get("portal_session")?.value
     if (!token) return null
 
     const session = await prisma.portalSession.findUnique({
@@ -27,11 +27,15 @@ export async function getPortalSession(): Promise<PortalContext | null> {
       },
     })
 
-    if (!session || session.expiresAt < new Date() || !session.portalUser.isActive) {
+    if (
+      !session ||
+      session.expiresAt < new Date() ||
+      !session.portalUser.isActive
+    ) {
       return null
     }
 
-    return { portalUser: session.portalUser as PortalContext['portalUser'] }
+    return { portalUser: session.portalUser as PortalContext["portalUser"] }
   } catch {
     return null
   }

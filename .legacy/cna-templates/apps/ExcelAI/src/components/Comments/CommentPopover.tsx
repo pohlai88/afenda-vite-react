@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { X, Send, Trash2, MessageSquare } from 'lucide-react';
-import { useWorkbookStore } from '../../stores/workbookStore';
+import React, { useState } from "react"
+import { X, Send, Trash2, MessageSquare } from "lucide-react"
+import { useWorkbookStore } from "../../stores/workbookStore"
 
 interface CommentPopoverProps {
-  row: number;
-  col: number;
-  position: { x: number; y: number };
-  onClose: () => void;
+  row: number
+  col: number
+  position: { x: number; y: number }
+  onClose: () => void
 }
 
 export const CommentPopover: React.FC<CommentPopoverProps> = ({
@@ -15,35 +15,36 @@ export const CommentPopover: React.FC<CommentPopoverProps> = ({
   position,
   onClose,
 }) => {
-  const { addComment, editComment, deleteComment, getComment } = useWorkbookStore();
-  const existingComment = getComment(row, col);
+  const { addComment, editComment, deleteComment, getComment } =
+    useWorkbookStore()
+  const existingComment = getComment(row, col)
 
-  const [text, setText] = useState(existingComment?.text || '');
-  const isEditing = !!existingComment;
+  const [text, setText] = useState(existingComment?.text || "")
+  const isEditing = !!existingComment
 
   const handleSave = () => {
     if (text.trim()) {
       if (isEditing) {
-        editComment(row, col, text.trim());
+        editComment(row, col, text.trim())
       } else {
-        addComment(row, col, text.trim());
+        addComment(row, col, text.trim())
       }
-      onClose();
+      onClose()
     }
-  };
+  }
 
   const handleDelete = () => {
-    deleteComment(row, col);
-    onClose();
-  };
+    deleteComment(row, col)
+    onClose()
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-      handleSave();
-    } else if (e.key === 'Escape') {
-      onClose();
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      handleSave()
+    } else if (e.key === "Escape") {
+      onClose()
     }
-  };
+  }
 
   return (
     <div
@@ -58,7 +59,7 @@ export const CommentPopover: React.FC<CommentPopoverProps> = ({
         <div className="comment-header-left">
           <MessageSquare size={14} />
           <span className="comment-author">
-            {existingComment?.author || 'New Comment'}
+            {existingComment?.author || "New Comment"}
           </span>
         </div>
         <button className="comment-close" onClick={onClose}>
@@ -95,15 +96,15 @@ export const CommentPopover: React.FC<CommentPopoverProps> = ({
             disabled={!text.trim()}
           >
             <Send size={14} />
-            {isEditing ? 'Update' : 'Save'}
+            {isEditing ? "Update" : "Save"}
           </button>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Comment indicator for cells with comments
 export const CommentIndicator: React.FC = () => (
   <div className="comment-indicator" />
-);
+)

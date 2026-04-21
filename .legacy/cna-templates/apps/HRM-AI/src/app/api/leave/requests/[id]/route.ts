@@ -1,8 +1,8 @@
 // src/app/api/leave/requests/[id]/route.ts
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { leaveRequestService } from '@/services/leave-request.service'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { leaveRequestService } from "@/services/leave-request.service"
 
 export async function GET(
   request: NextRequest,
@@ -11,20 +11,26 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
-    const leaveRequest = await leaveRequestService.getById(session.user.tenantId, id)
+    const leaveRequest = await leaveRequestService.getById(
+      session.user.tenantId,
+      id
+    )
 
     if (!leaveRequest) {
-      return NextResponse.json({ error: 'Request not found' }, { status: 404 })
+      return NextResponse.json({ error: "Request not found" }, { status: 404 })
     }
 
     return NextResponse.json(leaveRequest)
   } catch (error) {
-    console.error('Error fetching request:', error)
-    return NextResponse.json({ error: 'Failed to fetch request' }, { status: 500 })
+    console.error("Error fetching request:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch request" },
+      { status: 500 }
+    )
   }
 }
 
@@ -35,7 +41,7 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
@@ -48,13 +54,20 @@ export async function PATCH(
       ...(body.endDate && { endDate: new Date(body.endDate) }),
     }
 
-    const leaveRequest = await leaveRequestService.update(session.user.tenantId, id, data)
+    const leaveRequest = await leaveRequestService.update(
+      session.user.tenantId,
+      id,
+      data
+    )
 
     return NextResponse.json(leaveRequest)
   } catch (error) {
-    console.error('Error updating request:', error)
+    console.error("Error updating request:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to update request' },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to update request",
+      },
       { status: 400 }
     )
   }
@@ -67,7 +80,7 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
@@ -75,9 +88,12 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting request:', error)
+    console.error("Error deleting request:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to delete request' },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to delete request",
+      },
       { status: 400 }
     )
   }

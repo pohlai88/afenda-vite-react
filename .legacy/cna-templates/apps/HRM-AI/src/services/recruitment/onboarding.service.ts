@@ -1,6 +1,6 @@
-import { db } from '@/lib/db'
-import type { OnboardingStatus } from '@prisma/client'
-import { addDays } from 'date-fns'
+import { db } from "@/lib/db"
+import type { OnboardingStatus } from "@prisma/client"
+import { addDays } from "date-fns"
 
 export async function createOnboarding(
   tenantId: string,
@@ -23,7 +23,7 @@ export async function createOnboarding(
       expectedEndDate,
       buddyId: data.buddyId,
       hrContactId: data.hrContactId,
-      status: 'NOT_STARTED',
+      status: "NOT_STARTED",
       progress: 0,
     },
   })
@@ -31,7 +31,7 @@ export async function createOnboarding(
   if (data.templateId) {
     const template = await db.onboardingTemplate.findUnique({
       where: { id: data.templateId },
-      include: { tasks: { orderBy: { order: 'asc' } } },
+      include: { tasks: { orderBy: { order: "asc" } } },
     })
 
     if (template) {
@@ -48,7 +48,7 @@ export async function createOnboarding(
             assigneeType: task.assigneeType,
             isRequired: task.isRequired,
             order: task.order,
-            status: 'PENDING',
+            status: "PENDING",
           },
         })
       }
@@ -58,8 +58,15 @@ export async function createOnboarding(
   return db.onboarding.findUnique({
     where: { id: onboarding.id },
     include: {
-      employee: { select: { id: true, fullName: true, employeeCode: true, position: { select: { name: true } } } },
-      tasks: { orderBy: { order: 'asc' } },
+      employee: {
+        select: {
+          id: true,
+          fullName: true,
+          employeeCode: true,
+          position: { select: { name: true } },
+        },
+      },
+      tasks: { orderBy: { order: "asc" } },
     },
   })
 }
@@ -82,12 +89,19 @@ export async function getOnboardings(
     db.onboarding.findMany({
       where,
       include: {
-        employee: { select: { id: true, fullName: true, employeeCode: true, position: { select: { name: true } } } },
+        employee: {
+          select: {
+            id: true,
+            fullName: true,
+            employeeCode: true,
+            position: { select: { name: true } },
+          },
+        },
         buddy: { select: { id: true, fullName: true } },
         hrContact: { select: { id: true, name: true } },
         _count: { select: { tasks: true } },
       },
-      orderBy: { startDate: 'desc' },
+      orderBy: { startDate: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -101,12 +115,19 @@ export async function getOnboardingById(id: string, tenantId: string) {
   return db.onboarding.findFirst({
     where: { id, tenantId },
     include: {
-      employee: { select: { id: true, fullName: true, employeeCode: true, position: { select: { name: true } } } },
+      employee: {
+        select: {
+          id: true,
+          fullName: true,
+          employeeCode: true,
+          position: { select: { name: true } },
+        },
+      },
       buddy: { select: { id: true, fullName: true } },
       hrContact: { select: { id: true, name: true, email: true } },
       template: true,
       tasks: {
-        orderBy: [{ category: 'asc' }, { order: 'asc' }],
+        orderBy: [{ category: "asc" }, { order: "asc" }],
         include: {
           assignee: { select: { id: true, name: true } },
           completedBy: { select: { id: true, name: true } },
@@ -131,7 +152,7 @@ export async function updateTaskStatus(
 
   const updateData: Record<string, unknown> = { status, notes }
 
-  if (status === 'COMPLETED') {
+  if (status === "COMPLETED") {
     updateData.completedAt = new Date()
     updateData.completedById = userId
   }
@@ -151,12 +172,13 @@ export async function updateOnboardingProgress(onboardingId: string) {
     where: { onboardingId, isRequired: true },
   })
 
-  const completedCount = tasks.filter(t => t.status === 'COMPLETED').length
-  const progress = tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0
+  const completedCount = tasks.filter((t) => t.status === "COMPLETED").length
+  const progress =
+    tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0
 
-  let status: string = 'IN_PROGRESS'
-  if (progress === 0) status = 'NOT_STARTED'
-  if (progress === 100) status = 'COMPLETED'
+  let status: string = "IN_PROGRESS"
+  if (progress === 0) status = "NOT_STARTED"
+  if (progress === 100) status = "COMPLETED"
 
   await db.onboarding.update({
     where: { id: onboardingId },
@@ -175,7 +197,7 @@ export async function getOnboardingTemplates(tenantId: string) {
       department: { select: { id: true, name: true } },
       _count: { select: { tasks: true } },
     },
-    orderBy: { name: 'asc' },
+    orderBy: { name: "asc" },
   })
 }
 
@@ -224,6 +246,6 @@ export async function createOnboardingTemplate(
 
   return db.onboardingTemplate.findUnique({
     where: { id: template.id },
-    include: { tasks: { orderBy: { order: 'asc' } } },
+    include: { tasks: { orderBy: { order: "asc" } } },
   })
 }

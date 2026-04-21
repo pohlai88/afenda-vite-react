@@ -1,40 +1,40 @@
-'use client'
+"use client"
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { JOB_TYPE, WORK_MODE, PRIORITY } from '@/lib/recruitment/constants'
-import type { JobRequisition } from '@/types/recruitment'
-import { Loader2 } from 'lucide-react'
+} from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { JOB_TYPE, WORK_MODE, PRIORITY } from "@/lib/recruitment/constants"
+import type { JobRequisition } from "@/types/recruitment"
+import { Loader2 } from "lucide-react"
 
 const requisitionSchema = z.object({
-  title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
-  departmentId: z.string().min(1, 'Vui lòng chọn phòng ban'),
+  title: z.string().min(1, "Vui lòng nhập tiêu đề"),
+  departmentId: z.string().min(1, "Vui lòng chọn phòng ban"),
   reportingToId: z.string().optional(),
-  jobType: z.string().min(1, 'Vui lòng chọn loại công việc'),
-  workMode: z.string().min(1, 'Vui lòng chọn hình thức làm việc'),
+  jobType: z.string().min(1, "Vui lòng chọn loại công việc"),
+  workMode: z.string().min(1, "Vui lòng chọn hình thức làm việc"),
   location: z.string().optional(),
-  headcount: z.coerce.number().min(1, 'Số lượng tối thiểu là 1'),
+  headcount: z.coerce.number().min(1, "Số lượng tối thiểu là 1"),
   salaryMin: z.coerce.number().min(0).optional(),
   salaryMax: z.coerce.number().min(0).optional(),
   salaryDisplay: z.string().optional(),
   description: z.string().optional(),
   requirements: z.string().optional(),
   benefits: z.string().optional(),
-  priority: z.string().min(1, 'Vui lòng chọn mức ưu tiên'),
+  priority: z.string().min(1, "Vui lòng chọn mức ưu tiên"),
   targetHireDate: z.string().optional(),
 })
 
@@ -76,23 +76,23 @@ export function RequisitionForm({
   } = useForm<RequisitionFormData>({
     resolver: zodResolver(requisitionSchema) as never,
     defaultValues: {
-      title: requisition?.title || '',
-      departmentId: requisition?.departmentId || '',
-      reportingToId: requisition?.reportingToId || '',
-      jobType: requisition?.jobType || '',
-      workMode: requisition?.workMode || '',
-      location: requisition?.location || '',
+      title: requisition?.title || "",
+      departmentId: requisition?.departmentId || "",
+      reportingToId: requisition?.reportingToId || "",
+      jobType: requisition?.jobType || "",
+      workMode: requisition?.workMode || "",
+      location: requisition?.location || "",
       headcount: requisition?.headcount || 1,
       salaryMin: requisition?.salaryMin || undefined,
       salaryMax: requisition?.salaryMax || undefined,
-      salaryDisplay: requisition?.salaryDisplay || '',
-      description: requisition?.description || '',
-      requirements: requisition?.requirements || '',
-      benefits: requisition?.benefits || '',
-      priority: requisition?.priority || 'NORMAL',
+      salaryDisplay: requisition?.salaryDisplay || "",
+      description: requisition?.description || "",
+      requirements: requisition?.requirements || "",
+      benefits: requisition?.benefits || "",
+      priority: requisition?.priority || "NORMAL",
       targetHireDate: requisition?.targetHireDate
-        ? new Date(requisition.targetHireDate).toISOString().split('T')[0]
-        : '',
+        ? new Date(requisition.targetHireDate).toISOString().split("T")[0]
+        : "",
     },
   })
 
@@ -108,7 +108,7 @@ export function RequisitionForm({
             <Input
               id="title"
               placeholder="VD: Senior Frontend Developer"
-              {...register('title')}
+              {...register("title")}
             />
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title.message}</p>
@@ -119,8 +119,8 @@ export function RequisitionForm({
             <div className="space-y-2">
               <Label>Phòng ban *</Label>
               <Select
-                value={watch('departmentId')}
-                onValueChange={(val) => setValue('departmentId', val)}
+                value={watch("departmentId")}
+                onValueChange={(val) => setValue("departmentId", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn phòng ban" />
@@ -134,15 +134,17 @@ export function RequisitionForm({
                 </SelectContent>
               </Select>
               {errors.departmentId && (
-                <p className="text-sm text-red-500">{errors.departmentId.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.departmentId.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
               <Label>Báo cáo cho</Label>
               <Select
-                value={watch('reportingToId') || ''}
-                onValueChange={(val) => setValue('reportingToId', val)}
+                value={watch("reportingToId") || ""}
+                onValueChange={(val) => setValue("reportingToId", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn quản lý" />
@@ -162,8 +164,8 @@ export function RequisitionForm({
             <div className="space-y-2">
               <Label>Loại công việc *</Label>
               <Select
-                value={watch('jobType')}
-                onValueChange={(val) => setValue('jobType', val)}
+                value={watch("jobType")}
+                onValueChange={(val) => setValue("jobType", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn loại" />
@@ -184,8 +186,8 @@ export function RequisitionForm({
             <div className="space-y-2">
               <Label>Hình thức làm việc *</Label>
               <Select
-                value={watch('workMode')}
-                onValueChange={(val) => setValue('workMode', val)}
+                value={watch("workMode")}
+                onValueChange={(val) => setValue("workMode", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn hình thức" />
@@ -199,7 +201,9 @@ export function RequisitionForm({
                 </SelectContent>
               </Select>
               {errors.workMode && (
-                <p className="text-sm text-red-500">{errors.workMode.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.workMode.message}
+                </p>
               )}
             </div>
 
@@ -208,7 +212,7 @@ export function RequisitionForm({
               <Input
                 id="location"
                 placeholder="VD: TP.HCM"
-                {...register('location')}
+                {...register("location")}
               />
             </div>
           </div>
@@ -220,18 +224,20 @@ export function RequisitionForm({
                 id="headcount"
                 type="number"
                 min={1}
-                {...register('headcount')}
+                {...register("headcount")}
               />
               {errors.headcount && (
-                <p className="text-sm text-red-500">{errors.headcount.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.headcount.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
               <Label>Mức ưu tiên *</Label>
               <Select
-                value={watch('priority')}
-                onValueChange={(val) => setValue('priority', val)}
+                value={watch("priority")}
+                onValueChange={(val) => setValue("priority", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn mức ưu tiên" />
@@ -245,7 +251,9 @@ export function RequisitionForm({
                 </SelectContent>
               </Select>
               {errors.priority && (
-                <p className="text-sm text-red-500">{errors.priority.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.priority.message}
+                </p>
               )}
             </div>
 
@@ -254,7 +262,7 @@ export function RequisitionForm({
               <Input
                 id="targetHireDate"
                 type="date"
-                {...register('targetHireDate')}
+                {...register("targetHireDate")}
               />
             </div>
           </div>
@@ -273,7 +281,7 @@ export function RequisitionForm({
                 id="salaryMin"
                 type="number"
                 placeholder="VD: 20000000"
-                {...register('salaryMin')}
+                {...register("salaryMin")}
               />
             </div>
             <div className="space-y-2">
@@ -282,7 +290,7 @@ export function RequisitionForm({
                 id="salaryMax"
                 type="number"
                 placeholder="VD: 35000000"
-                {...register('salaryMax')}
+                {...register("salaryMax")}
               />
             </div>
             <div className="space-y-2">
@@ -290,7 +298,7 @@ export function RequisitionForm({
               <Input
                 id="salaryDisplay"
                 placeholder="VD: 20-35 triệu"
-                {...register('salaryDisplay')}
+                {...register("salaryDisplay")}
               />
             </div>
           </div>
@@ -308,7 +316,7 @@ export function RequisitionForm({
               id="description"
               placeholder="Mô tả chi tiết về vị trí công việc..."
               rows={5}
-              {...register('description')}
+              {...register("description")}
             />
           </div>
           <div className="space-y-2">
@@ -317,7 +325,7 @@ export function RequisitionForm({
               id="requirements"
               placeholder="Các yêu cầu cho ứng viên..."
               rows={5}
-              {...register('requirements')}
+              {...register("requirements")}
             />
           </div>
           <div className="space-y-2">
@@ -326,7 +334,7 @@ export function RequisitionForm({
               id="benefits"
               placeholder="Quyền lợi khi làm việc..."
               rows={4}
-              {...register('benefits')}
+              {...register("benefits")}
             />
           </div>
         </CardContent>
@@ -340,7 +348,7 @@ export function RequisitionForm({
         </Button>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {requisition ? 'Cập nhật' : 'Tạo yêu cầu tuyển dụng'}
+          {requisition ? "Cập nhật" : "Tạo yêu cầu tuyển dụng"}
         </Button>
       </div>
     </form>

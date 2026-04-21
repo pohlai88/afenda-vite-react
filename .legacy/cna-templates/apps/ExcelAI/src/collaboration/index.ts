@@ -3,18 +3,18 @@
 // =============================================================================
 
 // Types
-export * from './types';
+export * from "./types"
 
 // Core classes
-export { WebSocketClient, MockWebSocketClient } from './WebSocketClient';
-export { CRDTEngine, createCRDTEngine } from './CRDTEngine';
-export { PresenceManager } from './PresenceManager';
-export { CommentManager } from './CommentManager';
+export { WebSocketClient, MockWebSocketClient } from "./WebSocketClient"
+export { CRDTEngine, createCRDTEngine } from "./CRDTEngine"
+export { PresenceManager } from "./PresenceManager"
+export { CommentManager } from "./CommentManager"
 export {
   AttributionTracker,
   attributionTracker,
   createAttributionTracker,
-} from './AttributionTracker';
+} from "./AttributionTracker"
 
 // Main manager
 export {
@@ -23,4 +23,4 @@ export {
   initCollaboration,
   getCollaborationManager,
   type CollaborationConfig,
-} from './CollaborationManager';
+} from "./CollaborationManager"

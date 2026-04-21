@@ -1,15 +1,22 @@
-'use client'
+"use client"
 
-import { Shield, ShieldCheck, ShieldAlert, AlertTriangle, RefreshCw, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ComplianceBadge } from './ComplianceBadge'
-import { useComplianceChecks, useScreenEntity } from '@/hooks/use-compliance'
-import { toast } from '@/hooks/use-toast'
-import { useTranslation } from '@/i18n'
+import {
+  Shield,
+  ShieldCheck,
+  ShieldAlert,
+  AlertTriangle,
+  RefreshCw,
+  Loader2,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ComplianceBadge } from "./ComplianceBadge"
+import { useComplianceChecks, useScreenEntity } from "@/hooks/use-compliance"
+import { toast } from "@/hooks/use-toast"
+import { useTranslation } from "@/i18n"
 
 interface CompliancePanelProps {
-  entityType: 'DEAL' | 'COMPANY' | 'CONTACT'
+  entityType: "DEAL" | "COMPANY" | "CONTACT"
   entityId: string
   entityName: string
   country: string
@@ -29,10 +36,13 @@ export function CompliancePanel({
   entityId,
   entityName,
   country,
-  complianceStatus = 'NOT_CHECKED',
+  complianceStatus = "NOT_CHECKED",
 }: CompliancePanelProps) {
   const { t } = useTranslation()
-  const { data: checks = [], isLoading } = useComplianceChecks(entityType, entityId)
+  const { data: checks = [], isLoading } = useComplianceChecks(
+    entityType,
+    entityId
+  )
   const screenMutation = useScreenEntity()
 
   const handleScreen = () => {
@@ -41,16 +51,26 @@ export function CompliancePanel({
       {
         onSuccess: (result) => {
           const status = result.screening?.status
-          if (status === 'CLEAR') {
-            toast({ title: t('compliance.screenClear') })
-          } else if (status === 'BLOCKED') {
-            toast({ title: t('compliance.screenBlocked'), variant: 'destructive' })
+          if (status === "CLEAR") {
+            toast({ title: t("compliance.screenClear") })
+          } else if (status === "BLOCKED") {
+            toast({
+              title: t("compliance.screenBlocked"),
+              variant: "destructive",
+            })
           } else {
-            toast({ title: t('compliance.screenFlagged'), variant: 'destructive' })
+            toast({
+              title: t("compliance.screenFlagged"),
+              variant: "destructive",
+            })
           }
         },
         onError: (err) => {
-          toast({ title: t('common.error'), description: err.message, variant: 'destructive' })
+          toast({
+            title: t("common.error"),
+            description: err.message,
+            variant: "destructive",
+          })
         },
       }
     )
@@ -64,7 +84,7 @@ export function CompliancePanel({
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold text-[var(--crm-text-primary)] flex items-center gap-2">
             <StatusIcon className="w-4 h-4" />
-            {t('compliance.title')}
+            {t("compliance.title")}
           </CardTitle>
           <ComplianceBadge status={complianceStatus} />
         </div>
@@ -82,14 +102,16 @@ export function CompliancePanel({
           ) : (
             <RefreshCw className="w-3 h-3 mr-1" />
           )}
-          {t('compliance.runScreening')}
+          {t("compliance.runScreening")}
         </Button>
 
         {isLoading ? (
-          <p className="text-xs text-[var(--crm-text-muted)]">{t('common.loading')}</p>
+          <p className="text-xs text-[var(--crm-text-muted)]">
+            {t("common.loading")}
+          </p>
         ) : checks.length === 0 ? (
           <p className="text-xs text-[var(--crm-text-muted)] text-center py-2">
-            {t('compliance.noChecks')}
+            {t("compliance.noChecks")}
           </p>
         ) : (
           <div className="space-y-2">
@@ -102,13 +124,19 @@ export function CompliancePanel({
                   <span className="text-xs font-medium text-[var(--crm-text-primary)]">
                     {check.checkType}
                   </span>
-                  <ComplianceBadge status={check.status} className="text-[10px]" />
+                  <ComplianceBadge
+                    status={check.status}
+                    className="text-[10px]"
+                  />
                 </div>
                 {check.result?.message && (
-                  <p className="text-[10px] text-[var(--crm-text-muted)]">{check.result.message}</p>
+                  <p className="text-[10px] text-[var(--crm-text-muted)]">
+                    {check.result.message}
+                  </p>
                 )}
                 <p className="text-[10px] text-[var(--crm-text-muted)] mt-1">
-                  {new Date(check.checkedAt).toLocaleDateString()} · {check.checkedBy?.name ?? 'System'}
+                  {new Date(check.checkedAt).toLocaleDateString()} ·{" "}
+                  {check.checkedBy?.name ?? "System"}
                 </p>
               </div>
             ))}

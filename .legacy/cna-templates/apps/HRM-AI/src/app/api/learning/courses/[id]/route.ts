@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import * as courseService from '@/services/learning/course.service'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import * as courseService from "@/services/learning/course.service"
 
 export async function GET(
   request: NextRequest,
@@ -9,7 +9,7 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
     const userId = session.user.id
@@ -17,12 +17,15 @@ export async function GET(
     const { id } = await params
     const result = await courseService.getCourseById(id, tenantId)
     if (!result) {
-      return NextResponse.json({ error: 'Course not found' }, { status: 404 })
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error fetching course:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error fetching course:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -33,7 +36,7 @@ export async function PUT(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
     const userId = session.user.id
@@ -43,7 +46,10 @@ export async function PUT(
     const result = await courseService.updateCourse(id, tenantId, body)
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error updating course:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error updating course:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

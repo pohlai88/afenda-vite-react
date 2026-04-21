@@ -2,31 +2,38 @@
 // SANDBOX PREVIEW — Main sandbox preview panel (Blueprint §2.2.3)
 // =============================================================================
 
-import React, { useState, useCallback } from 'react';
-import { GitBranch, Clock, User, Bot, ChevronDown, ChevronUp } from 'lucide-react';
-import type { Sandbox } from '../../ai/sandbox/types';
-import { sandboxManager } from '../../ai/sandbox';
-import { RiskBadge, RiskDetails, RiskSummary } from './RiskBadge';
-import { DiffViewer } from './DiffViewer';
-import { ApprovalControls, StatusIndicator } from './ApprovalControls';
-import { loggers } from '@/utils/logger';
+import React, { useState, useCallback } from "react"
+import {
+  GitBranch,
+  Clock,
+  User,
+  Bot,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react"
+import type { Sandbox } from "../../ai/sandbox/types"
+import { sandboxManager } from "../../ai/sandbox"
+import { RiskBadge, RiskDetails, RiskSummary } from "./RiskBadge"
+import { DiffViewer } from "./DiffViewer"
+import { ApprovalControls, StatusIndicator } from "./ApprovalControls"
+import { loggers } from "@/utils/logger"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 interface SandboxPreviewProps {
-  sandbox: Sandbox;
-  onApproved?: (sandbox: Sandbox) => void;
-  onRejected?: (sandbox: Sandbox) => void;
-  onRolledBack?: (sandboxId: string) => void;
-  compact?: boolean;
+  sandbox: Sandbox
+  onApproved?: (sandbox: Sandbox) => void
+  onRejected?: (sandbox: Sandbox) => void
+  onRolledBack?: (sandboxId: string) => void
+  compact?: boolean
 }
 
 interface SandboxCardProps {
-  sandbox: Sandbox;
-  onClick?: () => void;
-  selected?: boolean;
+  sandbox: Sandbox
+  onClick?: () => void
+  selected?: boolean
 }
 
 // -----------------------------------------------------------------------------
@@ -38,11 +45,11 @@ export const SandboxCard: React.FC<SandboxCardProps> = ({
   onClick,
   selected = false,
 }) => {
-  const timeAgo = getTimeAgo(sandbox.createdAt);
+  const timeAgo = getTimeAgo(sandbox.createdAt)
 
   return (
     <div
-      className={`sandbox-card ${selected ? 'sandbox-card--selected' : ''}`}
+      className={`sandbox-card ${selected ? "sandbox-card--selected" : ""}`}
       onClick={onClick}
     >
       <div className="sandbox-card-header">
@@ -59,8 +66,8 @@ export const SandboxCard: React.FC<SandboxCardProps> = ({
           {timeAgo}
         </span>
         <span className="sandbox-card-creator">
-          {sandbox.createdBy === 'ai' ? <Bot size={12} /> : <User size={12} />}
-          {sandbox.createdBy === 'ai' ? 'AI' : 'User'}
+          {sandbox.createdBy === "ai" ? <Bot size={12} /> : <User size={12} />}
+          {sandbox.createdBy === "ai" ? "AI" : "User"}
         </span>
         {sandbox.diff && (
           <span className="sandbox-card-changes">
@@ -75,8 +82,8 @@ export const SandboxCard: React.FC<SandboxCardProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Main Sandbox Preview Component
@@ -89,67 +96,67 @@ export const SandboxPreview: React.FC<SandboxPreviewProps> = ({
   onRolledBack,
   compact = false,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   const [expandedSections, setExpandedSections] = useState({
     diff: true,
     risk: true,
     metadata: false,
-  });
+  })
 
   // Toggle section
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({
       ...prev,
       [section]: !prev[section],
-    }));
-  };
+    }))
+  }
 
   // Handle approve
   const handleApprove = useCallback(async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const result = sandboxManager.approveAndMerge(sandbox.id);
+      const result = sandboxManager.approveAndMerge(sandbox.id)
       if (result.success && result.sandbox) {
-        onApproved?.(result.sandbox);
+        onApproved?.(result.sandbox)
       } else {
-        loggers.ui.error('Merge failed:', result.errors);
+        loggers.ui.error("Merge failed:", result.errors)
       }
     } catch (error) {
-      loggers.ui.error('Approval failed:', error);
+      loggers.ui.error("Approval failed:", error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [sandbox.id, onApproved]);
+  }, [sandbox.id, onApproved])
 
   // Handle reject
   const handleReject = useCallback(() => {
     try {
-      sandboxManager.reject(sandbox.id);
-      onRejected?.(sandbox);
+      sandboxManager.reject(sandbox.id)
+      onRejected?.(sandbox)
     } catch (error) {
-      loggers.ui.error('Rejection failed:', error);
+      loggers.ui.error("Rejection failed:", error)
     }
-  }, [sandbox.id, onRejected]);
+  }, [sandbox.id, onRejected])
 
   // Handle rollback
   const handleRollback = useCallback(async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const result = sandboxManager.rollback(sandbox.id);
+      const result = sandboxManager.rollback(sandbox.id)
       if (result.success) {
-        onRolledBack?.(sandbox.id);
+        onRolledBack?.(sandbox.id)
       } else {
-        loggers.ui.error('Rollback failed:', result.errors);
+        loggers.ui.error("Rollback failed:", result.errors)
       }
     } catch (error) {
-      loggers.ui.error('Rollback failed:', error);
+      loggers.ui.error("Rollback failed:", error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [sandbox.id, onRolledBack]);
+  }, [sandbox.id, onRolledBack])
 
-  const canRollback = sandboxManager.canRollback(sandbox.id);
-  const timeAgo = getTimeAgo(sandbox.createdAt);
+  const canRollback = sandboxManager.canRollback(sandbox.id)
+  const timeAgo = getTimeAgo(sandbox.createdAt)
 
   // Compact view
   if (compact) {
@@ -188,7 +195,7 @@ export const SandboxPreview: React.FC<SandboxPreviewProps> = ({
           compact
         />
       </div>
-    );
+    )
   }
 
   // Full view
@@ -213,8 +220,8 @@ export const SandboxPreview: React.FC<SandboxPreviewProps> = ({
           {timeAgo}
         </span>
         <span className="sandbox-meta-item">
-          {sandbox.createdBy === 'ai' ? <Bot size={14} /> : <User size={14} />}
-          Created by {sandbox.createdBy === 'ai' ? 'AI Copilot' : 'User'}
+          {sandbox.createdBy === "ai" ? <Bot size={14} /> : <User size={14} />}
+          Created by {sandbox.createdBy === "ai" ? "AI Copilot" : "User"}
         </span>
         {sandbox.diff && (
           <span className="sandbox-meta-item">
@@ -228,7 +235,7 @@ export const SandboxPreview: React.FC<SandboxPreviewProps> = ({
         <div className="sandbox-section">
           <div
             className="sandbox-section-header"
-            onClick={() => toggleSection('risk')}
+            onClick={() => toggleSection("risk")}
           >
             <span>Risk Assessment</span>
             {expandedSections.risk ? (
@@ -256,7 +263,7 @@ export const SandboxPreview: React.FC<SandboxPreviewProps> = ({
         <div className="sandbox-section">
           <div
             className="sandbox-section-header"
-            onClick={() => toggleSection('diff')}
+            onClick={() => toggleSection("diff")}
           >
             <span>Changes Preview</span>
             {expandedSections.diff ? (
@@ -274,37 +281,40 @@ export const SandboxPreview: React.FC<SandboxPreviewProps> = ({
       )}
 
       {/* Metadata (AI reasoning, etc.) */}
-      {sandbox.metadata && (sandbox.metadata.intent || sandbox.metadata.reasoning) && (
-        <div className="sandbox-section">
-          <div
-            className="sandbox-section-header"
-            onClick={() => toggleSection('metadata')}
-          >
-            <span>AI Context</span>
-            {expandedSections.metadata ? (
-              <ChevronUp size={16} />
-            ) : (
-              <ChevronDown size={16} />
-            )}
-          </div>
-          {expandedSections.metadata && (
-            <div className="sandbox-section-content sandbox-metadata">
-              {sandbox.metadata.intent && (
-                <div className="sandbox-metadata-item">
-                  <span className="sandbox-metadata-label">User Intent:</span>
-                  <p>{sandbox.metadata.intent}</p>
-                </div>
-              )}
-              {sandbox.metadata.reasoning && (
-                <div className="sandbox-metadata-item">
-                  <span className="sandbox-metadata-label">AI Reasoning:</span>
-                  <p>{sandbox.metadata.reasoning}</p>
-                </div>
+      {sandbox.metadata &&
+        (sandbox.metadata.intent || sandbox.metadata.reasoning) && (
+          <div className="sandbox-section">
+            <div
+              className="sandbox-section-header"
+              onClick={() => toggleSection("metadata")}
+            >
+              <span>AI Context</span>
+              {expandedSections.metadata ? (
+                <ChevronUp size={16} />
+              ) : (
+                <ChevronDown size={16} />
               )}
             </div>
-          )}
-        </div>
-      )}
+            {expandedSections.metadata && (
+              <div className="sandbox-section-content sandbox-metadata">
+                {sandbox.metadata.intent && (
+                  <div className="sandbox-metadata-item">
+                    <span className="sandbox-metadata-label">User Intent:</span>
+                    <p>{sandbox.metadata.intent}</p>
+                  </div>
+                )}
+                {sandbox.metadata.reasoning && (
+                  <div className="sandbox-metadata-item">
+                    <span className="sandbox-metadata-label">
+                      AI Reasoning:
+                    </span>
+                    <p>{sandbox.metadata.reasoning}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
       {/* Approval Controls */}
       <div className="sandbox-preview-actions">
@@ -318,20 +328,20 @@ export const SandboxPreview: React.FC<SandboxPreviewProps> = ({
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helper Functions
 // -----------------------------------------------------------------------------
 
 function getTimeAgo(date: Date): string {
-  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000)
 
-  if (seconds < 60) return 'Just now';
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-  return `${Math.floor(seconds / 86400)}d ago`;
+  if (seconds < 60) return "Just now"
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`
+  return `${Math.floor(seconds / 86400)}d ago`
 }
 
-export default SandboxPreview;
+export default SandboxPreview

@@ -8,38 +8,17 @@ import { mkdirSync, writeFileSync } from "node:fs"
 import path from "node:path"
 
 import {
-  collectFilesystemGovernanceViolations,
+  evaluateFilesystemGovernance,
   loadFilesystemGovernanceConfig,
 } from "./lib/filesystem-governance"
-
-type ZoneSummary = {
-  readonly root: string
-  readonly fileCount: number
-  readonly violationCount: number
-}
 
 const REPORT_PATH = path.resolve(
   "rules/filesystem-governance/repo-screening.md"
 )
 
 const config = loadFilesystemGovernanceConfig()
-const violations = collectFilesystemGovernanceViolations(config)
-
-const zoneSummaries: readonly ZoneSummary[] = config.governedRoots.map(
-  (root) => {
-    const normalizedRoot = root.root.replaceAll("\\", "/")
-
-    return {
-      root: normalizedRoot,
-      fileCount: violations.filter((violation) =>
-        violation.path.startsWith(normalizedRoot)
-      ).length,
-      violationCount: violations.filter((violation) =>
-        violation.path.startsWith(normalizedRoot)
-      ).length,
-    }
-  }
-)
+const evaluation = evaluateFilesystemGovernance(config)
+const violations = evaluation.violations
 
 const groupedViolations = groupViolationsByRule(violations)
 
@@ -55,9 +34,20 @@ const lines = [
   "",
   "## Governed Roots",
   "",
-  ...config.governedRoots.map(
-    (root) =>
-      `- \`${root.root}\` : max depth ${String(root.maxDirectoryDepth)}, promoted shared roots [${root.allowedPromotedSharedRoots.join(", ")}]`
+  ...config.governedRoots.map((root) => {
+    const normalizedRoot = root.root.replaceAll("\\", "/")
+    const summary = evaluation.rootSummaries.find(
+      (item) => item.root === normalizedRoot
+    )
+
+    return `- \`${root.root}\` : max depth ${String(root.maxDirectoryDepth)}, promoted shared roots [${root.allowedPromotedSharedRoots.join(", ")}], directories ${String(summary?.directoryCount ?? 0)}, files ${String(summary?.fileCount ?? 0)}, violations ${String(summary?.violationCount ?? 0)}`
+  }),
+  "",
+  "## Violation Counts By Root",
+  "",
+  ...evaluation.rootSummaries.map(
+    (summary) =>
+      `- \`${summary.root}\`: ${String(summary.violationCount)} violation(s)`
   ),
   "",
   "## Violation Counts By Rule",

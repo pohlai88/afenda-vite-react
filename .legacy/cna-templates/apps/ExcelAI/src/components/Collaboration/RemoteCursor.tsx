@@ -2,28 +2,31 @@
 // REMOTE CURSOR — Shows other users' cursor positions (Blueprint §6.3)
 // =============================================================================
 
-import React, { useEffect, useState } from 'react';
-import type { RemoteCursor as RemoteCursorType, CollaborationUser } from '../../collaboration/types';
+import React, { useEffect, useState } from "react"
+import type {
+  RemoteCursor as RemoteCursorType,
+  CollaborationUser,
+} from "../../collaboration/types"
 
 // -----------------------------------------------------------------------------
 // Props
 // -----------------------------------------------------------------------------
 
 interface RemoteCursorProps {
-  cursor: RemoteCursorType;
-  cellWidth: number;
-  cellHeight: number;
-  getCellPosition: (row: number, col: number) => { x: number; y: number } | null;
-  showLabel?: boolean;
-  fadeTimeout?: number;
+  cursor: RemoteCursorType
+  cellWidth: number
+  cellHeight: number
+  getCellPosition: (row: number, col: number) => { x: number; y: number } | null
+  showLabel?: boolean
+  fadeTimeout?: number
 }
 
 interface RemoteCursorsOverlayProps {
-  cursors: RemoteCursorType[];
-  cellWidth: number;
-  cellHeight: number;
-  getCellPosition: (row: number, col: number) => { x: number; y: number } | null;
-  showLabels?: boolean;
+  cursors: RemoteCursorType[]
+  cellWidth: number
+  cellHeight: number
+  getCellPosition: (row: number, col: number) => { x: number; y: number } | null
+  showLabels?: boolean
 }
 
 // -----------------------------------------------------------------------------
@@ -38,43 +41,50 @@ export const RemoteCursor: React.FC<RemoteCursorProps> = ({
   showLabel = true,
   fadeTimeout = 3000,
 }) => {
-  const [isActive, setIsActive] = useState(true);
-  const [isFading, setIsFading] = useState(false);
+  const [isActive, setIsActive] = useState(true)
+  const [isFading, setIsFading] = useState(false)
 
   // Fade out cursor after inactivity
   useEffect(() => {
-    setIsActive(true);
-    setIsFading(false);
+    setIsActive(true)
+    setIsFading(false)
 
     const fadeTimer = setTimeout(() => {
-      setIsFading(true);
-    }, fadeTimeout);
+      setIsFading(true)
+    }, fadeTimeout)
 
     const hideTimer = setTimeout(() => {
-      setIsActive(false);
-    }, fadeTimeout + 500);
+      setIsActive(false)
+    }, fadeTimeout + 500)
 
     return () => {
-      clearTimeout(fadeTimer);
-      clearTimeout(hideTimer);
-    };
-  }, [cursor.position.row, cursor.position.col, cursor.position.timestamp, fadeTimeout]);
+      clearTimeout(fadeTimer)
+      clearTimeout(hideTimer)
+    }
+  }, [
+    cursor.position.row,
+    cursor.position.col,
+    cursor.position.timestamp,
+    fadeTimeout,
+  ])
 
-  const position = getCellPosition(cursor.position.row, cursor.position.col);
-  if (!position || !isActive) return null;
+  const position = getCellPosition(cursor.position.row, cursor.position.col)
+  if (!position || !isActive) return null
 
-  const { user } = cursor;
+  const { user } = cursor
 
   return (
     <div
-      className={`remote-cursor ${isFading ? 'remote-cursor--fading' : ''} ${cursor.isTyping ? 'remote-cursor--typing' : ''}`}
-      style={{
-        left: position.x,
-        top: position.y,
-        width: cellWidth,
-        height: cellHeight,
-        '--cursor-color': user.color,
-      } as React.CSSProperties}
+      className={`remote-cursor ${isFading ? "remote-cursor--fading" : ""} ${cursor.isTyping ? "remote-cursor--typing" : ""}`}
+      style={
+        {
+          left: position.x,
+          top: position.y,
+          width: cellWidth,
+          height: cellHeight,
+          "--cursor-color": user.color,
+        } as React.CSSProperties
+      }
     >
       {/* Cursor border */}
       <div
@@ -105,8 +115,8 @@ export const RemoteCursor: React.FC<RemoteCursorProps> = ({
         style={{ backgroundColor: user.color }}
       />
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Remote Cursors Overlay (for grid)
@@ -119,7 +129,7 @@ export const RemoteCursorsOverlay: React.FC<RemoteCursorsOverlayProps> = ({
   getCellPosition,
   showLabels = true,
 }) => {
-  if (cursors.length === 0) return null;
+  if (cursors.length === 0) return null
 
   return (
     <div className="remote-cursors-overlay">
@@ -134,17 +144,17 @@ export const RemoteCursorsOverlay: React.FC<RemoteCursorsOverlayProps> = ({
         />
       ))}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Cursor Label Only (for minimap or compact view)
 // -----------------------------------------------------------------------------
 
 interface CursorLabelProps {
-  user: CollaborationUser;
-  position: string; // e.g., "A1", "B5"
-  isTyping?: boolean;
+  user: CollaborationUser
+  position: string // e.g., "A1", "B5"
+  isTyping?: boolean
 }
 
 export const CursorLabel: React.FC<CursorLabelProps> = ({
@@ -153,26 +163,23 @@ export const CursorLabel: React.FC<CursorLabelProps> = ({
   isTyping = false,
 }) => {
   return (
-    <div
-      className="cursor-label"
-      style={{ backgroundColor: user.color }}
-    >
+    <div className="cursor-label" style={{ backgroundColor: user.color }}>
       <span className="cursor-label__name">{user.name}</span>
       <span className="cursor-label__position">{position}</span>
       {isTyping && <span className="cursor-label__typing">typing...</span>}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Hook for cursor position calculation
 // -----------------------------------------------------------------------------
 
 interface CellBounds {
-  startRow: number;
-  startCol: number;
-  endRow: number;
-  endCol: number;
+  startRow: number
+  startCol: number
+  endRow: number
+  endCol: number
 }
 
 export function useVisibleCursors(
@@ -182,17 +189,17 @@ export function useVisibleCursors(
 ): RemoteCursorType[] {
   return allCursors.filter((cursor) => {
     // Only show cursors on current sheet
-    if (cursor.position.sheetId !== currentSheetId) return false;
+    if (cursor.position.sheetId !== currentSheetId) return false
 
     // Check if cursor is within visible bounds
-    const { row, col } = cursor.position;
+    const { row, col } = cursor.position
     return (
       row >= visibleBounds.startRow &&
       row <= visibleBounds.endRow &&
       col >= visibleBounds.startCol &&
       col <= visibleBounds.endCol
-    );
-  });
+    )
+  })
 }
 
-export default RemoteCursor;
+export default RemoteCursor

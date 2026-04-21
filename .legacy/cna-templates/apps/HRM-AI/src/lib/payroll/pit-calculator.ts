@@ -2,7 +2,7 @@
 // Vietnam Personal Income Tax Calculator (Thuế TNCN)
 // Based on Circular 111/2013/TT-BTC
 
-import { PIT_BRACKETS, PIT_DEDUCTIONS, type PITBracket } from './constants'
+import { PIT_BRACKETS, PIT_DEDUCTIONS, type PITBracket } from "./constants"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -98,9 +98,8 @@ export function calculatePIT(input: PITInput): PITResult {
 
   for (let i = 0; i < brackets.length; i++) {
     const bracket = brackets[i]
-    const bracketWidth = bracket.to === Infinity
-      ? remainingIncome
-      : bracket.to - bracket.from
+    const bracketWidth =
+      bracket.to === Infinity ? remainingIncome : bracket.to - bracket.from
 
     if (remainingIncome <= 0) {
       bracketDetails.push({
@@ -134,9 +133,8 @@ export function calculatePIT(input: PITInput): PITResult {
   const pitAmount = Math.round(totalTax)
 
   // Calculate effective rate
-  const effectiveRate = taxableIncome > 0
-    ? (pitAmount / taxableIncome) * 100
-    : 0
+  const effectiveRate =
+    taxableIncome > 0 ? (pitAmount / taxableIncome) * 100 : 0
 
   return {
     taxableIncome,
@@ -216,7 +214,9 @@ export function getMarginalTaxRate(
 ): number {
   const assessableIncome = Math.max(
     0,
-    taxableIncome - PIT_DEDUCTIONS.PERSONAL - (PIT_DEDUCTIONS.DEPENDENT * dependentCount)
+    taxableIncome -
+      PIT_DEDUCTIONS.PERSONAL -
+      PIT_DEDUCTIONS.DEPENDENT * dependentCount
   )
 
   const bracket = getTaxBracket(assessableIncome)
@@ -271,13 +271,13 @@ export function validateDependentCount(count: number): boolean {
  */
 export function formatPITResult(result: PITResult): string {
   const lines = [
-    `Thu nhập chịu thuế: ${result.taxableIncome.toLocaleString('vi-VN')} VND`,
-    `Giảm trừ bản thân: ${result.personalDeduction.toLocaleString('vi-VN')} VND`,
-    `Giảm trừ người phụ thuộc (${result.dependentCount}): ${result.dependentDeduction.toLocaleString('vi-VN')} VND`,
-    `Thu nhập tính thuế: ${result.assessableIncome.toLocaleString('vi-VN')} VND`,
+    `Thu nhập chịu thuế: ${result.taxableIncome.toLocaleString("vi-VN")} VND`,
+    `Giảm trừ bản thân: ${result.personalDeduction.toLocaleString("vi-VN")} VND`,
+    `Giảm trừ người phụ thuộc (${result.dependentCount}): ${result.dependentDeduction.toLocaleString("vi-VN")} VND`,
+    `Thu nhập tính thuế: ${result.assessableIncome.toLocaleString("vi-VN")} VND`,
     `---`,
-    `Thuế TNCN: ${result.pitAmount.toLocaleString('vi-VN')} VND`,
+    `Thuế TNCN: ${result.pitAmount.toLocaleString("vi-VN")} VND`,
     `Thuế suất thực tế: ${result.effectiveRate}%`,
   ]
-  return lines.join('\n')
+  return lines.join("\n")
 }

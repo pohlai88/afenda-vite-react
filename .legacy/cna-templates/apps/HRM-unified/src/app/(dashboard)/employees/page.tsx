@@ -66,7 +66,10 @@ export default function EmployeesPage() {
       <PageHeader title="Nhân viên" description="Quản lý danh sách nhân viên">
         <ExportButton
           endpoint="/api/admin/export/employees"
-          params={{ departmentId: filters.departmentId, status: filters.status }}
+          params={{
+            departmentId: filters.departmentId,
+            status: filters.status,
+          }}
           label="Xuất Excel"
           fileName="danh-sach-nhan-vien.xlsx"
         />
@@ -126,7 +129,10 @@ export default function EmployeesPage() {
           onValueChange={(value) =>
             setFilters((prev) => ({
               ...prev,
-              status: value === "all" ? undefined : (value as EmployeeFilters["status"]),
+              status:
+                value === "all"
+                  ? undefined
+                  : (value as EmployeeFilters["status"]),
               page: 1,
             }))
           }

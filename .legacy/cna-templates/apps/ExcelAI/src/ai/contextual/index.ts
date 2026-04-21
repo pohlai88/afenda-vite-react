@@ -1,2 +1,2 @@
 // AI Contextual Triggers
-export * from './AIContextTriggers';
+export * from "./AIContextTriggers"

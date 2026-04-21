@@ -1,11 +1,11 @@
 // GET /api/internal/departments
 // Return all departments with head count and manager info
 
-import { NextRequest, NextResponse } from 'next/server'
-import { validateInternalRequest } from '@/lib/api/internal-auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { validateInternalRequest } from "@/lib/api/internal-auth"
+import { db } from "@/lib/db"
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic"
 
 export async function GET(req: NextRequest) {
   const authError = validateInternalRequest(req)
@@ -32,13 +32,13 @@ export async function GET(req: NextRequest) {
             employees: {
               where: {
                 deletedAt: null,
-                status: 'ACTIVE',
+                status: "ACTIVE",
               },
             },
           },
         },
       },
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
     })
 
     const result = departments.map((dept) => ({
@@ -57,9 +57,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ data: result, total: result.length })
   } catch (error) {
-    console.error('[Internal API] Departments error:', error)
+    console.error("[Internal API] Departments error:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

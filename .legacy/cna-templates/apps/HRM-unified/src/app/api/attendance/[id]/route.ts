@@ -1,25 +1,27 @@
 // src/app/api/attendance/[id]/route.ts
 // Single attendance record API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { attendanceService } from '@/services/attendance.service'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { attendanceService } from "@/services/attendance.service"
+import { z } from "zod"
 
 const updateAttendanceSchema = z.object({
   checkIn: z.coerce.date().optional(),
   checkOut: z.coerce.date().optional(),
-  status: z.enum([
-    'PRESENT',
-    'ABSENT',
-    'LATE',
-    'EARLY_LEAVE',
-    'LATE_AND_EARLY',
-    'ON_LEAVE',
-    'BUSINESS_TRIP',
-    'WORK_FROM_HOME',
-    'HOLIDAY',
-  ]).optional(),
+  status: z
+    .enum([
+      "PRESENT",
+      "ABSENT",
+      "LATE",
+      "EARLY_LEAVE",
+      "LATE_AND_EARLY",
+      "ON_LEAVE",
+      "BUSINESS_TRIP",
+      "WORK_FROM_HOME",
+      "HOLIDAY",
+    ])
+    .optional(),
   notes: z.string().optional(),
 })
 
@@ -30,21 +32,27 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
-    const attendance = await attendanceService.findById(session.user.tenantId, id)
+    const attendance = await attendanceService.findById(
+      session.user.tenantId,
+      id
+    )
 
     if (!attendance) {
-      return NextResponse.json({ error: 'Không tìm thấy bản ghi chấm công' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Không tìm thấy bản ghi chấm công" },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json(attendance)
   } catch (error) {
-    console.error('Error fetching attendance:', error)
+    console.error("Error fetching attendance:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -57,11 +65,15 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'HR_STAFF'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (
+      !["SUPER_ADMIN", "ADMIN", "HR_MANAGER", "HR_STAFF"].includes(
+        session.user.role
+      )
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -85,9 +97,9 @@ export async function PATCH(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error updating attendance:', error)
+    console.error("Error updating attendance:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -100,11 +112,11 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -114,9 +126,9 @@ export async function DELETE(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error deleting attendance:', error)
+    console.error("Error deleting attendance:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

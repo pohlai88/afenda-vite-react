@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { Package, Wrench, Shield } from 'lucide-react'
-import { formatCurrency } from '@/lib/constants'
-import { useTranslation } from '@/i18n'
-import type { Bundle } from '@/hooks/use-bundles'
+import { Package, Wrench, Shield } from "lucide-react"
+import { formatCurrency } from "@/lib/constants"
+import { useTranslation } from "@/i18n"
+import type { Bundle } from "@/hooks/use-bundles"
 
 interface BundleCardProps {
   bundle: Bundle
@@ -17,15 +17,18 @@ const TYPE_ICONS = {
 }
 
 const TYPE_COLORS = {
-  PACKAGE: 'bg-blue-500/20 text-blue-400',
-  KIT: 'bg-purple-500/20 text-purple-400',
-  SERVICE_PLAN: 'bg-emerald-500/20 text-emerald-400',
+  PACKAGE: "bg-blue-500/20 text-blue-400",
+  KIT: "bg-purple-500/20 text-purple-400",
+  SERVICE_PLAN: "bg-emerald-500/20 text-emerald-400",
 }
 
 export function BundleCard({ bundle, onClick }: BundleCardProps) {
   const { t } = useTranslation()
-  const Icon = TYPE_ICONS[bundle.bundleType as keyof typeof TYPE_ICONS] || Package
-  const colorCls = TYPE_COLORS[bundle.bundleType as keyof typeof TYPE_COLORS] || TYPE_COLORS.PACKAGE
+  const Icon =
+    TYPE_ICONS[bundle.bundleType as keyof typeof TYPE_ICONS] || Package
+  const colorCls =
+    TYPE_COLORS[bundle.bundleType as keyof typeof TYPE_COLORS] ||
+    TYPE_COLORS.PACKAGE
 
   return (
     <div
@@ -37,13 +40,15 @@ export function BundleCard({ bundle, onClick }: BundleCardProps) {
           <div className={`p-1.5 rounded-md ${colorCls}`}>
             <Icon className="w-4 h-4" />
           </div>
-          <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${colorCls}`}>
+          <span
+            className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${colorCls}`}
+          >
             {t(`bundles.type.${bundle.bundleType}`)}
           </span>
         </div>
         {!bundle.isActive && (
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-500/20 text-gray-400">
-            {t('common.inactive')}
+            {t("common.inactive")}
           </span>
         )}
       </div>
@@ -53,7 +58,8 @@ export function BundleCard({ bundle, onClick }: BundleCardProps) {
       </h3>
 
       <p className="text-xs text-[var(--crm-text-muted)] mb-3">
-        {bundle.items.length} {t('bundles.items').toLowerCase()} &middot; {bundle.sku}
+        {bundle.items.length} {t("bundles.items").toLowerCase()} &middot;{" "}
+        {bundle.sku}
       </p>
 
       <div className="flex items-center justify-between">
@@ -61,7 +67,8 @@ export function BundleCard({ bundle, onClick }: BundleCardProps) {
           {formatCurrency(bundle.basePrice, bundle.currency)}
         </span>
         <span className="text-[10px] text-[var(--crm-text-muted)]">
-          {bundle.items.filter((i) => i.isRequired).length} {t('bundles.required').toLowerCase()}
+          {bundle.items.filter((i) => i.isRequired).length}{" "}
+          {t("bundles.required").toLowerCase()}
         </span>
       </div>
     </div>

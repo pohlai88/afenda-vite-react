@@ -1,8 +1,13 @@
-import { callModule } from '@/lib/integration'
+import { callModule } from "@/lib/integration"
 
-export async function getActivePromotions(tpmCustomerId: string): Promise<any[]> {
+export async function getActivePromotions(
+  tpmCustomerId: string
+): Promise<any[]> {
   try {
-    const data = await callModule('tpm', `/api/internal/promotions?customerId=${tpmCustomerId}`)
+    const data = await callModule(
+      "tpm",
+      `/api/internal/promotions?customerId=${tpmCustomerId}`
+    )
     return data?.promotions || []
   } catch {
     return []
@@ -15,9 +20,9 @@ export async function syncCustomerSegments(segments: {
   churning: string[]
 }): Promise<boolean> {
   try {
-    await callModule('tpm', '/api/internal/segments', {
-      method: 'POST',
-      body: JSON.stringify({ source: 'vierp-crm', ...segments }),
+    await callModule("tpm", "/api/internal/segments", {
+      method: "POST",
+      body: JSON.stringify({ source: "vierp-crm", ...segments }),
     })
     return true
   } catch {

@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useState, useCallback } from 'react'
-import { z } from 'zod'
+import { useState, useCallback } from "react"
+import { z } from "zod"
 
 type FieldErrors = Record<string, string>
 
@@ -41,11 +41,13 @@ interface UseFormValidationReturn {
  * {errors.email && <FieldError message={errors.email} />}
  * ```
  */
-export function useFormValidation(schema: z.ZodSchema): UseFormValidationReturn {
+export function useFormValidation(
+  schema: z.ZodSchema
+): UseFormValidationReturn {
   const [errors, setErrors] = useState<FieldErrors>({})
 
   const validate = useCallback(
-    <T,>(data: unknown): T | null => {
+    <T>(data: unknown): T | null => {
       const result = schema.safeParse(data)
       if (result.success) {
         setErrors({})
@@ -54,7 +56,7 @@ export function useFormValidation(schema: z.ZodSchema): UseFormValidationReturn 
 
       const fieldErrors: FieldErrors = {}
       for (const issue of result.error.issues) {
-        const path = issue.path.join('.')
+        const path = issue.path.join(".")
         if (path && !fieldErrors[path]) {
           fieldErrors[path] = issue.message
         }
@@ -111,10 +113,14 @@ export function useFormValidation(schema: z.ZodSchema): UseFormValidationReturn 
     setErrors({})
   }, [])
 
-  const hasError = useCallback(
-    (field: string) => !!errors[field],
-    [errors]
-  )
+  const hasError = useCallback((field: string) => !!errors[field], [errors])
 
-  return { errors, validate, validateField, clearFieldError, clearErrors, hasError }
+  return {
+    errors,
+    validate,
+    validateField,
+    clearFieldError,
+    clearErrors,
+    hasError,
+  }
 }

@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useState, useEffect, useCallback } from 'react'
-import type { Goal } from '@/types/performance'
+import { useState, useEffect, useCallback } from "react"
+import type { Goal } from "@/types/performance"
 
 interface UseGoalsOptions {
   goalType?: string
@@ -22,23 +22,29 @@ export function useGoals(options: UseGoalsOptions = {}) {
     setError(null)
     try {
       const params = new URLSearchParams()
-      if (options.goalType) params.set('goalType', options.goalType)
-      if (options.status) params.set('status', options.status)
-      if (options.ownerId) params.set('ownerId', options.ownerId)
-      if (options.page) params.set('page', String(options.page))
-      if (options.limit) params.set('limit', String(options.limit))
+      if (options.goalType) params.set("goalType", options.goalType)
+      if (options.status) params.set("status", options.status)
+      if (options.ownerId) params.set("ownerId", options.ownerId)
+      if (options.page) params.set("page", String(options.page))
+      if (options.limit) params.set("limit", String(options.limit))
 
       const res = await fetch(`/api/performance/goals?${params}`)
-      if (!res.ok) throw new Error('Failed to fetch goals')
+      if (!res.ok) throw new Error("Failed to fetch goals")
       const data = await res.json()
       setGoals(data.goals || [])
       setTotal(data.total || 0)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error')
+      setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
       setLoading(false)
     }
-  }, [options.goalType, options.status, options.ownerId, options.page, options.limit])
+  }, [
+    options.goalType,
+    options.status,
+    options.ownerId,
+    options.page,
+    options.limit,
+  ])
 
   useEffect(() => {
     fetchGoals()
@@ -57,11 +63,11 @@ export function useGoal(id: string | null) {
     setLoading(true)
     try {
       const res = await fetch(`/api/performance/goals/${id}`)
-      if (!res.ok) throw new Error('Failed to fetch goal')
+      if (!res.ok) throw new Error("Failed to fetch goal")
       const data = await res.json()
       setGoal(data)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error')
+      setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
       setLoading(false)
     }

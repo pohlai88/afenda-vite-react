@@ -1,20 +1,29 @@
-import React from 'react';
+import React from "react"
 import {
-  Grid, Columns, ZoomIn, ZoomOut,
-  Maximize, Sun, Moon
-} from 'lucide-react';
-import { useWorkbookStore } from '../../../stores/workbookStore';
-import { useUIStore } from '../../../stores/uiStore';
+  Grid,
+  Columns,
+  ZoomIn,
+  ZoomOut,
+  Maximize,
+  Sun,
+  Moon,
+} from "lucide-react"
+import { useWorkbookStore } from "../../../stores/workbookStore"
+import { useUIStore } from "../../../stores/uiStore"
 
 export const ViewToolbar: React.FC = () => {
   const {
-    zoom, setZoom,
-    showGridlines, setShowGridlines,
-    showHeadings, setShowHeadings,
-  } = useWorkbookStore();
+    zoom,
+    setZoom,
+    showGridlines,
+    setShowGridlines,
+    showHeadings,
+    setShowHeadings,
+  } = useWorkbookStore()
 
-  const { resolvedTheme, toggleTheme, formulaBarVisible, toggleFormulaBar } = useUIStore();
-  const isDark = resolvedTheme === 'dark';
+  const { resolvedTheme, toggleTheme, formulaBarVisible, toggleFormulaBar } =
+    useUIStore()
+  const isDark = resolvedTheme === "dark"
 
   return (
     <div className="toolbar-2026">
@@ -86,12 +95,12 @@ export const ViewToolbar: React.FC = () => {
         <button
           className="toolbar-2026__btn"
           onClick={toggleTheme}
-          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
           {isDark ? <Moon size={16} /> : <Sun size={16} />}
-          <span>{isDark ? 'Dark' : 'Light'}</span>
+          <span>{isDark ? "Dark" : "Light"}</span>
         </button>
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,2 +1,2 @@
-export { ApprovalCard } from './approval-card'
-export { DelegationForm } from './delegation-form'
+export { ApprovalCard } from "./approval-card"
+export { DelegationForm } from "./delegation-form"

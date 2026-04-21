@@ -1,46 +1,45 @@
-import { useState } from 'react';
-import { useNamedRangeStore } from '../../stores/namedRangeStore';
-import { NamedRange, RangeScope } from '../../types/cell';
+import { useState } from "react"
+import { useNamedRangeStore } from "../../stores/namedRangeStore"
+import { NamedRange, RangeScope } from "../../types/cell"
 
 interface NameManagerProps {
-  sheetId: string;
-  onClose: () => void;
+  sheetId: string
+  onClose: () => void
 }
 
-export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) => {
-  const {
-    ranges,
-    listAll,
-    addRange,
-    removeRange,
-    updateRange,
-  } = useNamedRangeStore();
+export const NameManager: React.FC<NameManagerProps> = ({
+  sheetId,
+  onClose,
+}) => {
+  const { ranges, listAll, addRange, removeRange, updateRange } =
+    useNamedRangeStore()
 
-  const [selectedRangeId, setSelectedRangeId] = useState<string | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
-  const [filter, setFilter] = useState<'all' | 'workbook' | 'sheet'>('all');
+  const [selectedRangeId, setSelectedRangeId] = useState<string | null>(null)
+  const [isCreating, setIsCreating] = useState(false)
+  const [filter, setFilter] = useState<"all" | "workbook" | "sheet">("all")
 
   // New range form state
-  const [newName, setNewName] = useState('');
-  const [newRefersTo, setNewRefersTo] = useState('');
-  const [newScope, setNewScope] = useState<'workbook' | 'sheet'>('workbook');
-  const [newComment, setNewComment] = useState('');
+  const [newName, setNewName] = useState("")
+  const [newRefersTo, setNewRefersTo] = useState("")
+  const [newScope, setNewScope] = useState<"workbook" | "sheet">("workbook")
+  const [newComment, setNewComment] = useState("")
 
-  const allRanges = listAll();
-  const selectedRange = selectedRangeId ? ranges[selectedRangeId] : null;
+  const allRanges = listAll()
+  const selectedRange = selectedRangeId ? ranges[selectedRangeId] : null
 
   // Filter ranges
   const filteredRanges = allRanges.filter((range) => {
-    if (filter === 'workbook') return range.scope === 'workbook';
-    if (filter === 'sheet') return range.scope !== 'workbook';
-    return true;
-  });
+    if (filter === "workbook") return range.scope === "workbook"
+    if (filter === "sheet") return range.scope !== "workbook"
+    return true
+  })
 
   const handleCreate = () => {
-    if (!newName.trim() || !newRefersTo.trim()) return;
+    if (!newName.trim() || !newRefersTo.trim()) return
 
-    const now = new Date().toISOString();
-    const scope: RangeScope = newScope === 'workbook' ? 'workbook' : { sheet: sheetId };
+    const now = new Date().toISOString()
+    const scope: RangeScope =
+      newScope === "workbook" ? "workbook" : { sheet: sheetId }
 
     const newRange: NamedRange = {
       id: crypto.randomUUID(),
@@ -51,33 +50,33 @@ export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) =>
       hidden: false,
       createdAt: now,
       updatedAt: now,
-    };
+    }
 
-    addRange(newRange);
-    setSelectedRangeId(newRange.id);
-    resetForm();
-    setIsCreating(false);
-  };
+    addRange(newRange)
+    setSelectedRangeId(newRange.id)
+    resetForm()
+    setIsCreating(false)
+  }
 
   const resetForm = () => {
-    setNewName('');
-    setNewRefersTo('');
-    setNewScope('workbook');
-    setNewComment('');
-  };
+    setNewName("")
+    setNewRefersTo("")
+    setNewScope("workbook")
+    setNewComment("")
+  }
 
   const handleDelete = (rangeId: string) => {
-    if (confirm('Are you sure you want to delete this named range?')) {
-      removeRange(rangeId);
+    if (confirm("Are you sure you want to delete this named range?")) {
+      removeRange(rangeId)
       if (selectedRangeId === rangeId) {
-        setSelectedRangeId(null);
+        setSelectedRangeId(null)
       }
     }
-  };
+  }
 
   const getScopeLabel = (scope: RangeScope): string => {
-    return scope === 'workbook' ? 'Workbook' : 'Sheet';
-  };
+    return scope === "workbook" ? "Workbook" : "Sheet"
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -85,7 +84,10 @@ export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) =>
         {/* Header */}
         <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
           <h2 className="text-lg font-semibold">Name Manager</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
             ✕
           </button>
         </div>
@@ -143,7 +145,9 @@ export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) =>
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Refers To</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Refers To
+                  </label>
                   <input
                     type="text"
                     value={newRefersTo}
@@ -153,10 +157,14 @@ export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) =>
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Scope</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Scope
+                  </label>
                   <select
                     value={newScope}
-                    onChange={(e) => setNewScope(e.target.value as 'workbook' | 'sheet')}
+                    onChange={(e) =>
+                      setNewScope(e.target.value as "workbook" | "sheet")
+                    }
                     className="w-full px-2 py-1 border rounded"
                   >
                     <option value="workbook">Workbook</option>
@@ -164,7 +172,9 @@ export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) =>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Comment (optional)</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Comment (optional)
+                  </label>
                   <input
                     type="text"
                     value={newComment}
@@ -181,7 +191,10 @@ export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) =>
                     Create
                   </button>
                   <button
-                    onClick={() => { setIsCreating(false); resetForm(); }}
+                    onClick={() => {
+                      setIsCreating(false)
+                      resetForm()
+                    }}
                     className="px-3 py-1 text-sm bg-gray-300 rounded hover:bg-gray-400"
                   >
                     Cancel
@@ -212,14 +225,22 @@ export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) =>
                     <tr
                       key={range.id}
                       className={`border-b cursor-pointer ${
-                        selectedRangeId === range.id ? 'bg-blue-100' : 'hover:bg-gray-50'
+                        selectedRangeId === range.id
+                          ? "bg-blue-100"
+                          : "hover:bg-gray-50"
                       }`}
                       onClick={() => setSelectedRangeId(range.id)}
                     >
                       <td className="py-2 px-2 font-medium">{range.name}</td>
-                      <td className="py-2 px-2 font-mono text-xs">{range.refersTo}</td>
-                      <td className="py-2 px-2">{getScopeLabel(range.scope)}</td>
-                      <td className="py-2 px-2 text-gray-500">{range.comment || '-'}</td>
+                      <td className="py-2 px-2 font-mono text-xs">
+                        {range.refersTo}
+                      </td>
+                      <td className="py-2 px-2">
+                        {getScopeLabel(range.scope)}
+                      </td>
+                      <td className="py-2 px-2 text-gray-500">
+                        {range.comment || "-"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -233,20 +254,30 @@ export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) =>
               <h3 className="font-medium mb-3">Edit: {selectedRange.name}</h3>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Refers To</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Refers To
+                  </label>
                   <input
                     type="text"
                     value={selectedRange.refersTo}
-                    onChange={(e) => updateRange(selectedRange.id, { refersTo: e.target.value })}
+                    onChange={(e) =>
+                      updateRange(selectedRange.id, {
+                        refersTo: e.target.value,
+                      })
+                    }
                     className="w-full px-2 py-1 border rounded"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Comment</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Comment
+                  </label>
                   <input
                     type="text"
-                    value={selectedRange.comment || ''}
-                    onChange={(e) => updateRange(selectedRange.id, { comment: e.target.value })}
+                    value={selectedRange.comment || ""}
+                    onChange={(e) =>
+                      updateRange(selectedRange.id, { comment: e.target.value })
+                    }
                     className="w-full px-2 py-1 border rounded"
                   />
                 </div>
@@ -266,5 +297,5 @@ export const NameManager: React.FC<NameManagerProps> = ({ sheetId, onClose }) =>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,10 +1,10 @@
 // src/hooks/use-unsaved-changes.ts
 // Warn users before navigating away from forms with unsaved changes
 
-'use client'
+"use client"
 
-import { useEffect, useCallback, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useCallback, useRef } from "react"
+import { useRouter } from "next/navigation"
 
 interface UseUnsavedChangesOptions {
   /** Whether the form has unsaved changes */
@@ -15,7 +15,7 @@ interface UseUnsavedChangesOptions {
   enabled?: boolean
 }
 
-const DEFAULT_MESSAGE = 'Bạn có thay đổi chưa lưu. Bạn có chắc muốn rời trang?'
+const DEFAULT_MESSAGE = "Bạn có thay đổi chưa lưu. Bạn có chắc muốn rời trang?"
 
 /**
  * Hook to warn users before navigating away from a page with unsaved changes.
@@ -59,8 +59,8 @@ export function useUnsavedChanges({
       return message
     }
 
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload)
   }, [enabled, message])
 
   // Next.js popstate event (handles browser back/forward within SPA)
@@ -71,13 +71,13 @@ export function useUnsavedChanges({
       if (hasChangesRef.current) {
         if (!window.confirm(message)) {
           // Push the current URL back to prevent navigation
-          window.history.pushState(null, '', window.location.href)
+          window.history.pushState(null, "", window.location.href)
         }
       }
     }
 
-    window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
+    window.addEventListener("popstate", handlePopState)
+    return () => window.removeEventListener("popstate", handlePopState)
   }, [enabled, message])
 }
 

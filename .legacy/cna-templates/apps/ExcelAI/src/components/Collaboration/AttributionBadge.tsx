@@ -2,23 +2,23 @@
 // ATTRIBUTION BADGE — Shows who edited a cell (Blueprint §6.5)
 // =============================================================================
 
-import React from 'react';
-import type { CellAttribution, EditRecord } from '../../collaboration/types';
-import { UserAvatar } from './CollaboratorsList';
+import React from "react"
+import type { CellAttribution, EditRecord } from "../../collaboration/types"
+import { UserAvatar } from "./CollaboratorsList"
 
 // -----------------------------------------------------------------------------
 // Props
 // -----------------------------------------------------------------------------
 
 interface AttributionBadgeProps {
-  attribution: CellAttribution;
-  compact?: boolean;
-  showTime?: boolean;
+  attribution: CellAttribution
+  compact?: boolean
+  showTime?: boolean
 }
 
 interface AttributionTooltipProps {
-  attribution: CellAttribution;
-  position?: { x: number; y: number };
+  attribution: CellAttribution
+  position?: { x: number; y: number }
 }
 
 // -----------------------------------------------------------------------------
@@ -26,25 +26,25 @@ interface AttributionTooltipProps {
 // -----------------------------------------------------------------------------
 
 function formatRelativeTime(date: Date): string {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const seconds = Math.floor(diff / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
 
-  if (seconds < 60) return 'just now';
-  if (minutes < 60) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  if (days < 7) return `${days}d ago`;
-  return date.toLocaleDateString();
+  if (seconds < 60) return "just now"
+  if (minutes < 60) return `${minutes}m ago`
+  if (hours < 24) return `${hours}h ago`
+  if (days < 7) return `${days}d ago`
+  return date.toLocaleDateString()
 }
 
 function formatDateTime(date: Date): string {
   return date.toLocaleString(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  });
+    dateStyle: "medium",
+    timeStyle: "short",
+  })
 }
 
 // -----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ export const AttributionBadge: React.FC<AttributionBadgeProps> = ({
   compact = false,
   showTime = true,
 }) => {
-  const { lastEditedBy, lastEditedAt } = attribution;
+  const { lastEditedBy, lastEditedAt } = attribution
 
   if (compact) {
     return (
@@ -69,7 +69,7 @@ export const AttributionBadge: React.FC<AttributionBadgeProps> = ({
           style={{ backgroundColor: lastEditedBy.color }}
         />
       </div>
-    );
+    )
   }
 
   return (
@@ -84,8 +84,8 @@ export const AttributionBadge: React.FC<AttributionBadgeProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Attribution Tooltip (detailed view)
@@ -95,12 +95,10 @@ export const AttributionTooltip: React.FC<AttributionTooltipProps> = ({
   attribution,
   position,
 }) => {
-  const { lastEditedBy, lastEditedAt, editHistory } = attribution;
-  const recentHistory = editHistory.slice(-5).reverse();
+  const { lastEditedBy, lastEditedAt, editHistory } = attribution
+  const recentHistory = editHistory.slice(-5).reverse()
 
-  const style = position
-    ? { left: position.x, top: position.y }
-    : {};
+  const style = position ? { left: position.x, top: position.y } : {}
 
   return (
     <div className="attribution-tooltip" style={style}>
@@ -123,7 +121,10 @@ export const AttributionTooltip: React.FC<AttributionTooltipProps> = ({
           <h4 className="attribution-tooltip__history-title">Recent edits</h4>
           <ul className="attribution-tooltip__history-list">
             {recentHistory.map((record, index) => (
-              <li key={`${record.eventId}-${index}`} className="attribution-tooltip__history-item">
+              <li
+                key={`${record.eventId}-${index}`}
+                className="attribution-tooltip__history-item"
+              >
                 <span
                   className="attribution-tooltip__history-dot"
                   style={{ backgroundColor: record.user.color }}
@@ -143,17 +144,17 @@ export const AttributionTooltip: React.FC<AttributionTooltipProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Edit History Panel (sidebar)
 // -----------------------------------------------------------------------------
 
 interface EditHistoryPanelProps {
-  cellRef: string;
-  history: EditRecord[];
-  onClose?: () => void;
+  cellRef: string
+  history: EditRecord[]
+  onClose?: () => void
 }
 
 export const EditHistoryPanel: React.FC<EditHistoryPanelProps> = ({
@@ -163,14 +164,12 @@ export const EditHistoryPanel: React.FC<EditHistoryPanelProps> = ({
 }) => {
   const sortedHistory = [...history].sort(
     (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
-  );
+  )
 
   return (
     <div className="edit-history-panel">
       <div className="edit-history-panel__header">
-        <h3 className="edit-history-panel__title">
-          Edit History: {cellRef}
-        </h3>
+        <h3 className="edit-history-panel__title">Edit History: {cellRef}</h3>
         {onClose && (
           <button
             className="edit-history-panel__close"
@@ -189,7 +188,10 @@ export const EditHistoryPanel: React.FC<EditHistoryPanelProps> = ({
       ) : (
         <ul className="edit-history-panel__list">
           {sortedHistory.map((record, index) => (
-            <li key={`${record.eventId}-${index}`} className="edit-history-panel__item">
+            <li
+              key={`${record.eventId}-${index}`}
+              className="edit-history-panel__item"
+            >
               <UserAvatar user={record.user} size="sm" />
               <div className="edit-history-panel__info">
                 <span className="edit-history-panel__name">
@@ -207,15 +209,15 @@ export const EditHistoryPanel: React.FC<EditHistoryPanelProps> = ({
         </ul>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Attribution Summary (for cell info)
 // -----------------------------------------------------------------------------
 
 interface AttributionSummaryProps {
-  attribution: CellAttribution | null;
+  attribution: CellAttribution | null
 }
 
 export const AttributionSummary: React.FC<AttributionSummaryProps> = ({
@@ -226,7 +228,7 @@ export const AttributionSummary: React.FC<AttributionSummaryProps> = ({
       <div className="attribution-summary attribution-summary--empty">
         <span>No edit history</span>
       </div>
-    );
+    )
   }
 
   return (
@@ -234,25 +236,25 @@ export const AttributionSummary: React.FC<AttributionSummaryProps> = ({
       <span className="attribution-summary__label">Last edited by</span>
       <AttributionBadge attribution={attribution} />
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
 
-function formatChangeType(type: EditRecord['changeType']): string {
+function formatChangeType(type: EditRecord["changeType"]): string {
   switch (type) {
-    case 'value':
-      return 'changed value';
-    case 'formula':
-      return 'changed formula';
-    case 'format':
-      return 'changed format';
-    case 'clear':
-      return 'cleared cell';
+    case "value":
+      return "changed value"
+    case "formula":
+      return "changed formula"
+    case "format":
+      return "changed format"
+    case "clear":
+      return "cleared cell"
     default:
-      return 'edited';
+      return "edited"
   }
 }
 
@@ -261,9 +263,16 @@ function formatChangeType(type: EditRecord['changeType']): string {
 // -----------------------------------------------------------------------------
 
 const CloseIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M18 6L6 18M6 6l12 12" />
   </svg>
-);
+)
 
-export default AttributionBadge;
+export default AttributionBadge

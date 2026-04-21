@@ -1,90 +1,101 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export default function EditCoursePage() {
-  const params = useParams();
-  const router = useRouter();
+  const params = useParams()
+  const router = useRouter()
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    category: '',
-    type: '',
-    level: '',
-    duration: '',
-    provider: '',
-    maxEnrollment: '',
-    status: '',
-  });
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
+    title: "",
+    description: "",
+    category: "",
+    type: "",
+    level: "",
+    duration: "",
+    provider: "",
+    maxEnrollment: "",
+    status: "",
+  })
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
   useEffect(() => {
     async function fetchCourse() {
       try {
-        const res = await fetch(`/api/learning/admin/courses/${params.id}`);
+        const res = await fetch(`/api/learning/admin/courses/${params.id}`)
         if (res.ok) {
-          const data = await res.json();
-          const course = data.data || data;
+          const data = await res.json()
+          const course = data.data || data
           setFormData({
-            title: course.title || '',
-            description: course.description || '',
-            category: course.category || '',
-            type: course.type || '',
-            level: course.level || '',
-            duration: String(course.duration || ''),
-            provider: course.provider || '',
-            maxEnrollment: String(course.maxEnrollment || ''),
-            status: course.status || '',
-          });
+            title: course.title || "",
+            description: course.description || "",
+            category: course.category || "",
+            type: course.type || "",
+            level: course.level || "",
+            duration: String(course.duration || ""),
+            provider: course.provider || "",
+            maxEnrollment: String(course.maxEnrollment || ""),
+            status: course.status || "",
+          })
         } else {
-          setError('Khong tim thay khoa hoc');
+          setError("Khong tim thay khoa hoc")
         }
       } catch (err) {
-        setError('Khong the tai thong tin khoa hoc');
+        setError("Khong the tai thong tin khoa hoc")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchCourse();
-  }, [params.id]);
+    fetchCourse()
+  }, [params.id])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError('');
+    e.preventDefault()
+    setSubmitting(true)
+    setError("")
     try {
       const res = await fetch(`/api/learning/admin/courses/${params.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
           duration: Number(formData.duration),
           maxEnrollment: Number(formData.maxEnrollment),
         }),
-      });
+      })
       if (res.ok) {
-        router.push('/learning/admin/courses');
+        router.push("/learning/admin/courses")
       } else {
-        const data = await res.json();
-        setError(data.message || 'Khong the cap nhat khoa hoc');
+        const data = await res.json()
+        setError(data.message || "Khong the cap nhat khoa hoc")
       }
     } catch (err) {
-      setError('Loi ket noi, vui long thu lai');
+      setError("Loi ket noi, vui long thu lai")
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
-  if (loading) return <div className="flex items-center justify-center h-64"><p>Dang tai...</p></div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p>Dang tai...</p>
+      </div>
+    )
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -97,21 +108,47 @@ export default function EditCoursePage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
-          <CardHeader><CardTitle>Thong tin co ban</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Thong tin co ban</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="title">Ten khoa hoc *</Label>
-              <Input id="title" value={formData.title} onChange={(e) => setFormData(prev => ({...prev, title: e.target.value}))} required />
+              <Input
+                id="title"
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, title: e.target.value }))
+                }
+                required
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="description">Mo ta</Label>
-              <Textarea id="description" value={formData.description} onChange={(e) => setFormData(prev => ({...prev, description: e.target.value}))} rows={4} />
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+                rows={4}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Danh muc</Label>
-                <Select value={formData.category} onValueChange={(val) => setFormData(prev => ({...prev, category: val}))}>
-                  <SelectTrigger><SelectValue placeholder="Chon" /></SelectTrigger>
+                <Select
+                  value={formData.category}
+                  onValueChange={(val) =>
+                    setFormData((prev) => ({ ...prev, category: val }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chon" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="technology">Cong nghe</SelectItem>
                     <SelectItem value="management">Quan ly</SelectItem>
@@ -123,8 +160,15 @@ export default function EditCoursePage() {
               </div>
               <div className="space-y-2">
                 <Label>Loai hinh</Label>
-                <Select value={formData.type} onValueChange={(val) => setFormData(prev => ({...prev, type: val}))}>
-                  <SelectTrigger><SelectValue placeholder="Chon" /></SelectTrigger>
+                <Select
+                  value={formData.type}
+                  onValueChange={(val) =>
+                    setFormData((prev) => ({ ...prev, type: val }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chon" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="online">Online</SelectItem>
                     <SelectItem value="classroom">Lop hoc</SelectItem>
@@ -137,8 +181,15 @@ export default function EditCoursePage() {
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Cap do</Label>
-                <Select value={formData.level} onValueChange={(val) => setFormData(prev => ({...prev, level: val}))}>
-                  <SelectTrigger><SelectValue placeholder="Chon" /></SelectTrigger>
+                <Select
+                  value={formData.level}
+                  onValueChange={(val) =>
+                    setFormData((prev) => ({ ...prev, level: val }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chon" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="beginner">Co ban</SelectItem>
                     <SelectItem value="intermediate">Trung cap</SelectItem>
@@ -148,12 +199,29 @@ export default function EditCoursePage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="duration">Thoi luong (gio)</Label>
-                <Input id="duration" type="number" value={formData.duration} onChange={(e) => setFormData(prev => ({...prev, duration: e.target.value}))} />
+                <Input
+                  id="duration"
+                  type="number"
+                  value={formData.duration}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      duration: e.target.value,
+                    }))
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label>Trang thai</Label>
-                <Select value={formData.status} onValueChange={(val) => setFormData(prev => ({...prev, status: val}))}>
-                  <SelectTrigger><SelectValue placeholder="Chon" /></SelectTrigger>
+                <Select
+                  value={formData.status}
+                  onValueChange={(val) =>
+                    setFormData((prev) => ({ ...prev, status: val }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chon" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="draft">Nhap</SelectItem>
                     <SelectItem value="active">Hoat dong</SelectItem>
@@ -164,18 +232,26 @@ export default function EditCoursePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="provider">Nha cung cap</Label>
-              <Input id="provider" value={formData.provider} onChange={(e) => setFormData(prev => ({...prev, provider: e.target.value}))} />
+              <Input
+                id="provider"
+                value={formData.provider}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, provider: e.target.value }))
+                }
+              />
             </div>
           </CardContent>
         </Card>
 
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={() => router.back()}>Huy</Button>
+          <Button type="button" variant="outline" onClick={() => router.back()}>
+            Huy
+          </Button>
           <Button type="submit" disabled={submitting}>
-            {submitting ? 'Dang luu...' : 'Luu thay doi'}
+            {submitting ? "Dang luu..." : "Luu thay doi"}
           </Button>
         </div>
       </form>
     </div>
-  );
+  )
 }

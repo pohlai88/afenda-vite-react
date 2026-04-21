@@ -2,15 +2,15 @@
 // BACKGROUND DIALOG
 // ============================================================
 
-import React, { useState, useRef } from 'react';
-import { X, Upload, Trash2 } from 'lucide-react';
-import { usePrintStore } from '../../stores/printStore';
-import './PageLayout.css';
+import React, { useState, useRef } from "react"
+import { X, Upload, Trash2 } from "lucide-react"
+import { usePrintStore } from "../../stores/printStore"
+import "./PageLayout.css"
 
 interface BackgroundDialogProps {
-  sheetId: string;
-  isOpen: boolean;
-  onClose: () => void;
+  sheetId: string
+  isOpen: boolean
+  onClose: () => void
 }
 
 export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
@@ -18,60 +18,60 @@ export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { getSettings, setBackground } = usePrintStore();
-  const settings = getSettings(sheetId);
+  const { getSettings, setBackground } = usePrintStore()
+  const settings = getSettings(sheetId)
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     settings.background || null
-  );
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  )
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (event) => {
-        const dataUrl = event.target?.result as string;
-        setPreviewUrl(dataUrl);
-      };
-      reader.readAsDataURL(file);
+        const dataUrl = event.target?.result as string
+        setPreviewUrl(dataUrl)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
+    e.preventDefault()
+    const file = e.dataTransfer.files[0]
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader()
       reader.onload = (event) => {
-        const dataUrl = event.target?.result as string;
-        setPreviewUrl(dataUrl);
-      };
-      reader.readAsDataURL(file);
+        const dataUrl = event.target?.result as string
+        setPreviewUrl(dataUrl)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
 
   const handleRemove = () => {
-    setPreviewUrl(null);
+    setPreviewUrl(null)
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = ""
     }
-  };
+  }
 
   const handleApply = () => {
-    setBackground(sheetId, previewUrl || undefined);
-    onClose();
-  };
+    setBackground(sheetId, previewUrl || undefined)
+    onClose()
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="background-overlay" onClick={onClose}>
-      <div className="background-dialog" onClick={e => e.stopPropagation()}>
+      <div className="background-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="dialog-header">
           <h2>Sheet Background</h2>
           <button className="close-btn" onClick={onClose}>
@@ -97,8 +97,8 @@ export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
                 <button
                   className="remove-btn"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemove();
+                    e.stopPropagation()
+                    handleRemove()
                   }}
                 >
                   <Trash2 size={16} />
@@ -116,7 +116,7 @@ export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
               type="file"
               accept="image/*"
               onChange={handleFileSelect}
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
             />
           </div>
 
@@ -126,8 +126,8 @@ export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
               <div
                 className="preview-grid"
                 style={{
-                  backgroundImage: previewUrl ? `url(${previewUrl})` : 'none',
-                  backgroundSize: '50px 50px',
+                  backgroundImage: previewUrl ? `url(${previewUrl})` : "none",
+                  backgroundSize: "50px 50px",
                 }}
               >
                 <div className="preview-cells">
@@ -153,7 +153,7 @@ export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BackgroundDialog;
+export default BackgroundDialog

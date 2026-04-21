@@ -2,15 +2,18 @@
 // Main Payroll Calculator - Integrates PIT, Insurance, OT
 // Vietnam Payroll Rules 2024-2026
 
-import { calculatePIT, type PITResult } from './pit-calculator'
-import { calculateInsurance, type InsuranceResult } from './insurance-calculator'
+import { calculatePIT, type PITResult } from "./pit-calculator"
+import {
+  calculateInsurance,
+  type InsuranceResult,
+} from "./insurance-calculator"
 import {
   OT_RATES,
   WORK_SETTINGS,
   PIT_DEDUCTIONS,
   INSURANCE_RATES,
   INSURANCE_SALARY_CAP,
-} from './constants'
+} from "./constants"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -164,7 +167,7 @@ export interface PayrollItem {
   code: string
   name: string
   category: string
-  itemType: 'EARNING' | 'DEDUCTION' | 'EMPLOYER_COST'
+  itemType: "EARNING" | "DEDUCTION" | "EMPLOYER_COST"
   amount: number
   quantity?: number
   rate?: number
@@ -238,16 +241,15 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   // ═══════════════════════════════════════════════════════════════
   // 1. Calculate Pro-Rated Salary
   // ═══════════════════════════════════════════════════════════════
-  const workRatio = input.standardDays > 0
-    ? input.workDays / input.standardDays
-    : 1
+  const workRatio =
+    input.standardDays > 0 ? input.workDays / input.standardDays : 1
   const proRatedSalary = Math.round(input.baseSalary * workRatio)
 
   allItems.push({
-    code: 'BASE',
-    name: 'Lương cơ bản',
-    category: 'BASE_SALARY',
-    itemType: 'EARNING',
+    code: "BASE",
+    name: "Lương cơ bản",
+    category: "BASE_SALARY",
+    itemType: "EARNING",
     amount: proRatedSalary,
     quantity: input.workDays,
     rate: input.baseSalary / config.standardWorkDays,
@@ -259,16 +261,19 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   // ═══════════════════════════════════════════════════════════════
   // 2. Calculate Overtime
   // ═══════════════════════════════════════════════════════════════
-  const hourlyRate = input.baseSalary / (config.standardWorkDays * config.standardWorkHours)
+  const hourlyRate =
+    input.baseSalary / (config.standardWorkDays * config.standardWorkHours)
 
   // OT Weekday (150%)
-  const otWeekday = Math.round(input.otHoursWeekday * hourlyRate * config.otWeekdayRate)
+  const otWeekday = Math.round(
+    input.otHoursWeekday * hourlyRate * config.otWeekdayRate
+  )
   if (input.otHoursWeekday > 0) {
     allItems.push({
-      code: 'OT_WEEKDAY',
-      name: 'Tăng ca ngày thường',
-      category: 'OVERTIME',
-      itemType: 'EARNING',
+      code: "OT_WEEKDAY",
+      name: "Tăng ca ngày thường",
+      category: "OVERTIME",
+      itemType: "EARNING",
       amount: otWeekday,
       quantity: input.otHoursWeekday,
       rate: hourlyRate,
@@ -280,13 +285,15 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   }
 
   // OT Weekend (200%)
-  const otWeekend = Math.round(input.otHoursWeekend * hourlyRate * config.otWeekendRate)
+  const otWeekend = Math.round(
+    input.otHoursWeekend * hourlyRate * config.otWeekendRate
+  )
   if (input.otHoursWeekend > 0) {
     allItems.push({
-      code: 'OT_WEEKEND',
-      name: 'Tăng ca cuối tuần',
-      category: 'OVERTIME',
-      itemType: 'EARNING',
+      code: "OT_WEEKEND",
+      name: "Tăng ca cuối tuần",
+      category: "OVERTIME",
+      itemType: "EARNING",
       amount: otWeekend,
       quantity: input.otHoursWeekend,
       rate: hourlyRate,
@@ -298,13 +305,15 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   }
 
   // OT Holiday (300%)
-  const otHoliday = Math.round(input.otHoursHoliday * hourlyRate * config.otHolidayRate)
+  const otHoliday = Math.round(
+    input.otHoursHoliday * hourlyRate * config.otHolidayRate
+  )
   if (input.otHoursHoliday > 0) {
     allItems.push({
-      code: 'OT_HOLIDAY',
-      name: 'Tăng ca ngày lễ',
-      category: 'OVERTIME',
-      itemType: 'EARNING',
+      code: "OT_HOLIDAY",
+      name: "Tăng ca ngày lễ",
+      category: "OVERTIME",
+      itemType: "EARNING",
       amount: otHoliday,
       quantity: input.otHoursHoliday,
       rate: hourlyRate,
@@ -316,13 +325,15 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   }
 
   // Night bonus (+30%)
-  const otNight = Math.round(input.otHoursNight * hourlyRate * config.otNightBonus)
+  const otNight = Math.round(
+    input.otHoursNight * hourlyRate * config.otNightBonus
+  )
   if (input.otHoursNight > 0) {
     allItems.push({
-      code: 'OT_NIGHT',
-      name: 'Phụ cấp đêm',
-      category: 'OVERTIME',
-      itemType: 'EARNING',
+      code: "OT_NIGHT",
+      name: "Phụ cấp đêm",
+      category: "OVERTIME",
+      itemType: "EARNING",
       amount: otNight,
       quantity: input.otHoursNight,
       rate: hourlyRate,
@@ -353,8 +364,10 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
       allowanceItems.push({
         code: allowance.code,
         name: allowance.name,
-        category: allowance.isTaxable ? 'ALLOWANCE_TAXABLE' : 'ALLOWANCE_NON_TAXABLE',
-        itemType: 'EARNING',
+        category: allowance.isTaxable
+          ? "ALLOWANCE_TAXABLE"
+          : "ALLOWANCE_NON_TAXABLE",
+        itemType: "EARNING",
         amount: allowance.amount,
         isTaxable: allowance.isTaxable,
         isInsuranceable: allowance.isInsuranceable,
@@ -387,10 +400,10 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
 
   // Add insurance items (employee)
   allItems.push({
-    code: 'BHXH_EE',
-    name: 'BHXH (8%)',
-    category: 'INSURANCE_EMPLOYEE',
-    itemType: 'DEDUCTION',
+    code: "BHXH_EE",
+    name: "BHXH (8%)",
+    category: "INSURANCE_EMPLOYEE",
+    itemType: "DEDUCTION",
     amount: insurance.bhxh.employee,
     isTaxable: false,
     isInsuranceable: false,
@@ -398,10 +411,10 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   })
 
   allItems.push({
-    code: 'BHYT_EE',
-    name: 'BHYT (1.5%)',
-    category: 'INSURANCE_EMPLOYEE',
-    itemType: 'DEDUCTION',
+    code: "BHYT_EE",
+    name: "BHYT (1.5%)",
+    category: "INSURANCE_EMPLOYEE",
+    itemType: "DEDUCTION",
     amount: insurance.bhyt.employee,
     isTaxable: false,
     isInsuranceable: false,
@@ -409,10 +422,10 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   })
 
   allItems.push({
-    code: 'BHTN_EE',
-    name: 'BHTN (1%)',
-    category: 'INSURANCE_EMPLOYEE',
-    itemType: 'DEDUCTION',
+    code: "BHTN_EE",
+    name: "BHTN (1%)",
+    category: "INSURANCE_EMPLOYEE",
+    itemType: "DEDUCTION",
     amount: insurance.bhtn.employee,
     isTaxable: false,
     isInsuranceable: false,
@@ -421,10 +434,10 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
 
   // Add insurance items (employer)
   allItems.push({
-    code: 'BHXH_ER',
-    name: 'BHXH công ty (17.5%)',
-    category: 'INSURANCE_EMPLOYER',
-    itemType: 'EMPLOYER_COST',
+    code: "BHXH_ER",
+    name: "BHXH công ty (17.5%)",
+    category: "INSURANCE_EMPLOYER",
+    itemType: "EMPLOYER_COST",
     amount: insurance.bhxh.employer,
     isTaxable: false,
     isInsuranceable: false,
@@ -432,10 +445,10 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   })
 
   allItems.push({
-    code: 'BHYT_ER',
-    name: 'BHYT công ty (3%)',
-    category: 'INSURANCE_EMPLOYER',
-    itemType: 'EMPLOYER_COST',
+    code: "BHYT_ER",
+    name: "BHYT công ty (3%)",
+    category: "INSURANCE_EMPLOYER",
+    itemType: "EMPLOYER_COST",
     amount: insurance.bhyt.employer,
     isTaxable: false,
     isInsuranceable: false,
@@ -443,10 +456,10 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   })
 
   allItems.push({
-    code: 'BHTN_ER',
-    name: 'BHTN công ty (1%)',
-    category: 'INSURANCE_EMPLOYER',
-    itemType: 'EMPLOYER_COST',
+    code: "BHTN_ER",
+    name: "BHTN công ty (1%)",
+    category: "INSURANCE_EMPLOYER",
+    itemType: "EMPLOYER_COST",
     amount: insurance.bhtn.employer,
     isTaxable: false,
     isInsuranceable: false,
@@ -457,7 +470,8 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   // 6. Calculate PIT
   // ═══════════════════════════════════════════════════════════════
   // Taxable income = Gross - Insurance - Non-taxable allowances
-  const taxableIncome = grossSalary - insurance.totals.employee - allowancesNonTaxable
+  const taxableIncome =
+    grossSalary - insurance.totals.employee - allowancesNonTaxable
 
   const pit = calculatePIT({
     taxableIncome,
@@ -467,10 +481,10 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   })
 
   allItems.push({
-    code: 'PIT',
-    name: 'Thuế TNCN',
-    category: 'PIT',
-    itemType: 'DEDUCTION',
+    code: "PIT",
+    name: "Thuế TNCN",
+    category: "PIT",
+    itemType: "DEDUCTION",
     amount: pit.pitAmount,
     isTaxable: false,
     isInsuranceable: false,
@@ -490,8 +504,8 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
       otherDeductionItems.push({
         code: deduction.code,
         name: deduction.name,
-        category: 'OTHER_DEDUCTION',
-        itemType: 'DEDUCTION',
+        category: "OTHER_DEDUCTION",
+        itemType: "DEDUCTION",
         amount: deduction.amount,
         isTaxable: false,
         isInsuranceable: false,
@@ -504,7 +518,8 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
   // ═══════════════════════════════════════════════════════════════
   // 8. Calculate NET
   // ═══════════════════════════════════════════════════════════════
-  const totalDeductions = insurance.totals.employee + pit.pitAmount + otherDeductionsTotal
+  const totalDeductions =
+    insurance.totals.employee + pit.pitAmount + otherDeductionsTotal
   const netSalary = grossSalary - totalDeductions
 
   // ═══════════════════════════════════════════════════════════════
@@ -547,7 +562,7 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
       allowancesTaxable,
       allowancesNonTaxable,
       totalAllowances,
-      items: allItems.filter(i => i.itemType === 'EARNING'),
+      items: allItems.filter((i) => i.itemType === "EARNING"),
     },
 
     // Gross
@@ -597,20 +612,30 @@ export function calculatePayroll(input: PayrollInput): PayrollResult {
 /**
  * Calculate payroll for multiple employees
  */
-export function calculatePayrollBatch(
-  inputs: PayrollInput[]
-): { results: PayrollResult[]; totals: PayrollTotals } {
+export function calculatePayrollBatch(inputs: PayrollInput[]): {
+  results: PayrollResult[]
+  totals: PayrollTotals
+} {
   const results = inputs.map(calculatePayroll)
 
   const totals: PayrollTotals = {
     totalEmployees: results.length,
     totalGross: results.reduce((sum, r) => sum + r.grossSalary, 0),
-    totalInsuranceEmployee: results.reduce((sum, r) => sum + r.totalInsuranceEmployee, 0),
+    totalInsuranceEmployee: results.reduce(
+      (sum, r) => sum + r.totalInsuranceEmployee,
+      0
+    ),
     totalPIT: results.reduce((sum, r) => sum + r.pitAmount, 0),
-    totalOtherDeductions: results.reduce((sum, r) => sum + r.otherDeductions.total, 0),
+    totalOtherDeductions: results.reduce(
+      (sum, r) => sum + r.otherDeductions.total,
+      0
+    ),
     totalDeductions: results.reduce((sum, r) => sum + r.totalDeductions, 0),
     totalNet: results.reduce((sum, r) => sum + r.netSalary, 0),
-    totalInsuranceEmployer: results.reduce((sum, r) => sum + r.totalEmployerCost, 0),
+    totalInsuranceEmployer: results.reduce(
+      (sum, r) => sum + r.totalEmployerCost,
+      0
+    ),
   }
 
   return { results, totals }

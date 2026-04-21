@@ -7,6 +7,7 @@ Thank you for your interest in contributing to VietERP! This guide will help you
 ## Chào mừng / Welcome
 
 VietERP Platform là một dự án mã nguồn mở hướng tới cộng đồng. Chúng tôi hoan nghênh mọi đóng góp từ:
+
 - 🐛 Báo cáo và sửa lỗi / Bug reports and fixes
 - ✨ Tính năng mới / New features
 - 📚 Cải tiến tài liệu / Documentation improvements
@@ -15,6 +16,7 @@ VietERP Platform là một dự án mã nguồn mở hướng tới cộng đồ
 - 💬 Feedback về thiết kế / Design feedback
 
 VietERP Platform is an open-source community-driven project. We welcome contributions of all kinds:
+
 - Bug reports and fixes
 - New features and enhancements
 - Documentation improvements
@@ -78,20 +80,20 @@ Tất cả lệnh đều dùng `npm` — hoạt động trên **Windows, macOS, 
 
 All commands use `npm` — works on **Windows, macOS, Linux** without extra tools.
 
-| Lệnh / Command | Mô tả / Description |
-|---|---|
-| `npm run setup` | Setup toàn bộ môi trường / Full environment setup |
-| `npm run dev` | Khởi động dev server / Start dev server |
-| `npm run build` | Build tất cả modules / Build all modules |
-| `npm test` | Chạy unit tests / Run unit tests |
-| `npm run test:e2e` | Chạy E2E tests / Run E2E tests |
-| `npm run lint` | Kiểm tra code / Lint code |
-| `npm run typecheck` | Kiểm tra TypeScript / Type check |
-| `npm run clean` | Xoá build artifacts / Remove build artifacts |
-| `npm run docker:up` | Khởi động Docker services |
-| `npm run docker:down` | Dừng Docker services |
-| `npm run db:migrate` | Chạy database migrations |
-| `npm run db:seed` | Seed dữ liệu mẫu / Seed sample data |
+| Lệnh / Command        | Mô tả / Description                               |
+| --------------------- | ------------------------------------------------- |
+| `npm run setup`       | Setup toàn bộ môi trường / Full environment setup |
+| `npm run dev`         | Khởi động dev server / Start dev server           |
+| `npm run build`       | Build tất cả modules / Build all modules          |
+| `npm test`            | Chạy unit tests / Run unit tests                  |
+| `npm run test:e2e`    | Chạy E2E tests / Run E2E tests                    |
+| `npm run lint`        | Kiểm tra code / Lint code                         |
+| `npm run typecheck`   | Kiểm tra TypeScript / Type check                  |
+| `npm run clean`       | Xoá build artifacts / Remove build artifacts      |
+| `npm run docker:up`   | Khởi động Docker services                         |
+| `npm run docker:down` | Dừng Docker services                              |
+| `npm run db:migrate`  | Chạy database migrations                          |
+| `npm run db:seed`     | Seed dữ liệu mẫu / Seed sample data               |
 
 > **Note for macOS/Linux users**: `make` commands are also available (e.g., `make dev`, `make setup`). See `make help` for the full list.
 
@@ -125,6 +127,7 @@ git checkout -b docs/update-migration-guide-125
 ```
 
 **Quy ước đặt tên nhánh / Branch Naming Convention:**
+
 - `feature/<description>-<issue-number>` — Tính năng mới
 - `fix/<description>-<issue-number>` — Sửa lỗi
 - `docs/<description>-<issue-number>` — Tài liệu
@@ -146,6 +149,7 @@ git commit -m "feat(crm): add customer segmentation field
 ```
 
 **Format Commit Message:**
+
 ```
 <type>(<scope>): <description>
 
@@ -155,6 +159,7 @@ git commit -m "feat(crm): add customer segmentation field
 ```
 
 **Types:**
+
 - `feat` — Tính năng mới / New feature
 - `fix` — Sửa lỗi / Bug fix
 - `docs` — Tài liệu / Documentation
@@ -166,6 +171,7 @@ git commit -m "feat(crm): add customer segmentation field
 - `ci` — CI/CD
 
 **Scopes:**
+
 - `hrm` — Human Resource Management
 - `crm` — Customer Relationship Management
 - `mrp` — Manufacturing Resource Planning
@@ -203,6 +209,7 @@ npx prisma db push
 ```
 
 **Test Coverage Requirements:**
+
 - 80%+ code coverage for new features
 - All public APIs must be tested
 - E2E tests for critical user flows
@@ -210,6 +217,7 @@ npx prisma db push
 ### 5. Cập nhật Tài liệu / Update Documentation
 
 Nếu thay đổi API hoặc tính năng, cập nhật:
+
 - README.md cho repository
 - docs/ folder cho detailed documentation
 - Inline code comments cho complex logic
@@ -231,22 +239,28 @@ gh pr create \
 ```
 
 **PR Template / Mẫu Pull Request:**
+
 ```markdown
 ## 📝 Description
+
 Brief description of changes
 
 ## 🔗 Related Issue
+
 Resolves #issue-number
 
 ## 🧪 Testing Done
+
 - [ ] Unit tests added/updated
 - [ ] E2E tests added/updated
 - [ ] Manual testing completed
 
 ## 📸 Screenshots (if UI change)
+
 Add screenshots for frontend changes
 
 ## ✅ Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated
@@ -262,29 +276,29 @@ Add screenshots for frontend changes
 // ✅ DO - Use strict types, avoid any
 const getCustomer = (id: string): Promise<Customer> => {
   // ...
-};
+}
 
 // ❌ DON'T - Avoid any type
 const getCustomer = (id: any): Promise<any> => {
   // ...
-};
+}
 
 // ✅ DO - Export interfaces for public APIs
 export interface CreateCustomerInput {
-  name: string;
-  email: string;
-  code: string;
+  name: string
+  email: string
+  code: string
 }
 
 // ✅ DO - Use Prisma types
-import { Customer, Prisma } from '@prisma/client';
+import { Customer, Prisma } from "@prisma/client"
 
 // ✅ DO - Prefer const over let
-const customer = { name: 'ABC Inc' };
+const customer = { name: "ABC Inc" }
 
 // ❌ DON'T - Reassign variables unnecessarily
-let customer = { name: 'ABC Inc' };
-customer = { name: 'XYZ Inc' };
+let customer = { name: "ABC Inc" }
+customer = { name: "XYZ Inc" }
 ```
 
 ### File Organization / Tổ chức Tệp
@@ -326,6 +340,7 @@ model Customer {
 ```
 
 **Schema Best Practices:**
+
 - Add comments on important fields
 - Use appropriate field types (never TEXT for codes/IDs)
 - Include indexes for foreign keys and filtering
@@ -380,54 +395,54 @@ export const customerLabels = {
 
 ```typescript
 // Example: customerService.test.ts
-import { describe, it, expect } from 'vitest';
-import { createCustomer } from './customerService';
+import { describe, it, expect } from "vitest"
+import { createCustomer } from "./customerService"
 
-describe('CustomerService', () => {
-  it('should create customer with valid input', async () => {
+describe("CustomerService", () => {
+  it("should create customer with valid input", async () => {
     const result = await createCustomer({
-      code: 'CUST001',
-      name: 'ABC Inc',
-      tenantId: 'tenant-1',
-    });
+      code: "CUST001",
+      name: "ABC Inc",
+      tenantId: "tenant-1",
+    })
 
-    expect(result.id).toBeDefined();
-    expect(result.code).toBe('CUST001');
-  });
+    expect(result.id).toBeDefined()
+    expect(result.code).toBe("CUST001")
+  })
 
-  it('should reject duplicate customer code', async () => {
+  it("should reject duplicate customer code", async () => {
     // Existing customer
-    await createCustomer({ code: 'CUST001', name: 'ABC', tenantId: 't1' });
+    await createCustomer({ code: "CUST001", name: "ABC", tenantId: "t1" })
 
     // Should fail
     expect(
-      createCustomer({ code: 'CUST001', name: 'XYZ', tenantId: 't1' })
-    ).rejects.toThrow('Duplicate code');
-  });
-});
+      createCustomer({ code: "CUST001", name: "XYZ", tenantId: "t1" })
+    ).rejects.toThrow("Duplicate code")
+  })
+})
 ```
 
 ### E2E Tests
 
 ```typescript
 // Example: customer-flow.e2e.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test"
 
-test.describe('Customer Management', () => {
-  test('should create and view customer', async ({ page }) => {
+test.describe("Customer Management", () => {
+  test("should create and view customer", async ({ page }) => {
     // Navigate to customer page
-    await page.goto('/crm/customers');
+    await page.goto("/crm/customers")
 
     // Create new customer
-    await page.click('button:has-text("Add Customer")');
-    await page.fill('input[placeholder="Customer Code"]', 'CUST001');
-    await page.fill('input[placeholder="Customer Name"]', 'ABC Inc');
-    await page.click('button:has-text("Save")');
+    await page.click('button:has-text("Add Customer")')
+    await page.fill('input[placeholder="Customer Code"]', "CUST001")
+    await page.fill('input[placeholder="Customer Name"]', "ABC Inc")
+    await page.click('button:has-text("Save")')
 
     // Verify customer created
-    await expect(page.locator('text=ABC Inc')).toBeVisible();
-  });
-});
+    await expect(page.locator("text=ABC Inc")).toBeVisible()
+  })
+})
 ```
 
 ## Database Migrations / Migration Cơ sở dữ liệu
@@ -473,6 +488,7 @@ Xem [Migration Guide](./docs/database/migrations.md) cho chi tiết.
 ## Recognition / Vinh danh
 
 Chúng tôi vinh danh tất cả những đóng góp! Contributors sẽ được:
+
 - Liệt kê trong [CONTRIBUTORS.md](./CONTRIBUTORS.md)
 - Được ghi tên trong release notes
 - Nhận badge "Contributor" trên GitHub profile

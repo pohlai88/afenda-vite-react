@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { useState, useRef, useEffect, useCallback } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { useState, useRef, useEffect, useCallback } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import {
   Bot,
   Send,
@@ -19,14 +19,14 @@ import {
   Clock,
   HelpCircle,
   FileText,
-  Calendar
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import Link from 'next/link'
+  Calendar,
+} from "lucide-react"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 interface Message {
   id?: string
-  role: 'user' | 'assistant'
+  role: "user" | "assistant"
   content: string
   intent?: string
   actions?: Array<{
@@ -47,15 +47,31 @@ interface Conversation {
 }
 
 const QUICK_ACTIONS = [
-  { icon: Calendar, label: 'Xem ngày phép', message: 'Tôi còn bao nhiêu ngày phép?' },
-  { icon: Clock, label: 'Chấm công tháng này', message: 'Thống kê chấm công tháng này' },
-  { icon: FileText, label: 'Tạo đơn nghỉ phép', message: 'Tôi muốn tạo đơn xin nghỉ phép' },
-  { icon: HelpCircle, label: 'Chính sách nghỉ phép', message: 'Quy định nghỉ phép năm như thế nào?' }
+  {
+    icon: Calendar,
+    label: "Xem ngày phép",
+    message: "Tôi còn bao nhiêu ngày phép?",
+  },
+  {
+    icon: Clock,
+    label: "Chấm công tháng này",
+    message: "Thống kê chấm công tháng này",
+  },
+  {
+    icon: FileText,
+    label: "Tạo đơn nghỉ phép",
+    message: "Tôi muốn tạo đơn xin nghỉ phép",
+  },
+  {
+    icon: HelpCircle,
+    label: "Chính sách nghỉ phép",
+    message: "Quy định nghỉ phép năm như thế nào?",
+  },
 ]
 
 export default function HRCopilotPage() {
   const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [conversations, setConversations] = useState<Conversation[]>([])
@@ -73,13 +89,13 @@ export default function HRCopilotPage() {
   // Load conversation history
   const loadConversations = useCallback(async () => {
     try {
-      const res = await fetch('/api/ai/copilot')
+      const res = await fetch("/api/ai/copilot")
       if (res.ok) {
         const data = await res.json()
         setConversations(data.conversations || [])
       }
     } catch (error) {
-      console.error('Failed to load conversations:', error)
+      console.error("Failed to load conversations:", error)
     }
   }, [])
 
@@ -92,7 +108,7 @@ export default function HRCopilotPage() {
     if (messages.length === 0 && !conversationId) {
       setMessages([
         {
-          role: 'assistant',
+          role: "assistant",
           content: `Xin chào! Tôi là **HR Copilot** - trợ lý AI thông minh của Lạc Việt HR.
 
 Tôi có thể giúp bạn:
@@ -103,12 +119,12 @@ Tôi có thể giúp bạn:
 
 Bạn cần hỗ trợ gì hôm nay?`,
           suggestions: [
-            'Còn bao nhiêu ngày phép?',
-            'Quy trình nghỉ thai sản',
-            'Tạo đơn xin nghỉ phép ngày mai'
+            "Còn bao nhiêu ngày phép?",
+            "Quy trình nghỉ thai sản",
+            "Tạo đơn xin nghỉ phép ngày mai",
           ],
-          createdAt: new Date()
-        }
+          createdAt: new Date(),
+        },
       ])
     }
   }, [messages.length, conversationId])
@@ -117,27 +133,27 @@ Bạn cần hỗ trợ gì hôm nay?`,
     if (!content.trim() || isLoading) return
 
     const userMessage: Message = {
-      role: 'user',
+      role: "user",
       content: content.trim(),
-      createdAt: new Date()
+      createdAt: new Date(),
     }
 
-    setMessages(prev => [...prev, userMessage])
-    setInput('')
+    setMessages((prev) => [...prev, userMessage])
+    setInput("")
     setIsLoading(true)
 
     try {
-      const res = await fetch('/api/ai/copilot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/ai/copilot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           conversationId,
-          message: content.trim()
-        })
+          message: content.trim(),
+        }),
       })
 
       if (!res.ok) {
-        throw new Error('Failed to send message')
+        throw new Error("Failed to send message")
       }
 
       const data = await res.json()
@@ -146,27 +162,27 @@ Bạn cần hỗ trợ gì hôm nay?`,
         setConversationId(data.conversationId)
       }
 
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
           id: data.message.id,
-          role: 'assistant',
+          role: "assistant",
           content: data.message.content,
           intent: data.message.intent,
           actions: data.message.actions,
           suggestions: data.message.suggestions,
-          createdAt: new Date(data.message.createdAt)
-        }
+          createdAt: new Date(data.message.createdAt),
+        },
       ])
     } catch (error) {
-      console.error('Chat error:', error)
-      setMessages(prev => [
+      console.error("Chat error:", error)
+      setMessages((prev) => [
         ...prev,
         {
-          role: 'assistant',
-          content: 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.',
-          createdAt: new Date()
-        }
+          role: "assistant",
+          content: "Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.",
+          createdAt: new Date(),
+        },
       ])
     } finally {
       setIsLoading(false)
@@ -188,24 +204,24 @@ Bạn cần hỗ trợ gì hôm nay?`,
         setMessages(
           data.messages.map((m: Message) => ({
             ...m,
-            createdAt: new Date(m.createdAt)
+            createdAt: new Date(m.createdAt),
           }))
         )
         setShowHistory(false)
       }
     } catch (error) {
-      console.error('Failed to load conversation:', error)
+      console.error("Failed to load conversation:", error)
     }
   }
 
-  const getActionUrl = (action: NonNullable<Message['actions']>[0]): string => {
+  const getActionUrl = (action: NonNullable<Message["actions"]>[0]): string => {
     const urls: Record<string, string> = {
       navigate: action.params.page as string,
-      create_leave_request: '/leave/requests/new',
-      view_attendance: '/attendance',
-      view_payslip: '/payroll/payslips'
+      create_leave_request: "/leave/requests/new",
+      view_attendance: "/attendance",
+      view_payslip: "/payroll/payslips",
     }
-    return urls[action.type] || '/dashboard'
+    return urls[action.type] || "/dashboard"
   }
 
   return (
@@ -213,8 +229,8 @@ Bạn cần hỗ trợ gì hôm nay?`,
       {/* Sidebar - Conversation History */}
       <div
         className={cn(
-          'w-64 flex-shrink-0 border-r border-border bg-card transition-all',
-          showHistory ? 'block' : 'hidden lg:block'
+          "w-64 flex-shrink-0 border-r border-border bg-card transition-all",
+          showHistory ? "block" : "hidden lg:block"
         )}
       >
         <div className="flex h-full flex-col">
@@ -233,13 +249,13 @@ Bạn cần hỗ trợ gì hôm nay?`,
 
           <ScrollArea className="flex-1">
             <div className="p-2 space-y-1">
-              {conversations.map(conv => (
+              {conversations.map((conv) => (
                 <button
                   key={conv.id}
                   onClick={() => loadConversation(conv.id)}
                   className={cn(
-                    'w-full text-left px-3 py-2 rounded-sm text-sm hover:bg-muted transition-colors',
-                    conversationId === conv.id && 'bg-muted'
+                    "w-full text-left px-3 py-2 rounded-sm text-sm hover:bg-muted transition-colors",
+                    conversationId === conv.id && "bg-muted"
                   )}
                 >
                   <div className="flex items-center gap-2">
@@ -272,7 +288,9 @@ Bạn cần hỗ trợ gì hôm nay?`,
             </div>
             <div>
               <h1 className="font-semibold">HR Copilot</h1>
-              <p className="text-xs text-muted-foreground">Trợ lý AI thông minh</p>
+              <p className="text-xs text-muted-foreground">
+                Trợ lý AI thông minh
+              </p>
             </div>
           </div>
 
@@ -302,11 +320,11 @@ Bạn cần hỗ trợ gì hôm nay?`,
               <div
                 key={index}
                 className={cn(
-                  'flex gap-3',
-                  message.role === 'user' && 'justify-end'
+                  "flex gap-3",
+                  message.role === "user" && "justify-end"
                 )}
               >
-                {message.role === 'assistant' && (
+                {message.role === "assistant" && (
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-gradient-to-br from-amber-500 to-orange-500">
                     <Bot className="h-4 w-4 text-white" />
                   </div>
@@ -314,21 +332,21 @@ Bạn cần hỗ trợ gì hôm nay?`,
 
                 <div
                   className={cn(
-                    'max-w-[80%] rounded-sm p-3',
-                    message.role === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
+                    "max-w-[80%] rounded-sm p-3",
+                    message.role === "user"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted"
                   )}
                 >
                   <div className="prose prose-sm max-w-none dark:prose-invert">
-                    {message.content.split('\n').map((line, i) => (
+                    {message.content.split("\n").map((line, i) => (
                       <p key={i} className="mb-1 last:mb-0">
-                        {line.startsWith('- ') ? (
+                        {line.startsWith("- ") ? (
                           <span className="flex items-start gap-2">
                             <span className="text-primary">•</span>
                             {line.slice(2)}
                           </span>
-                        ) : line.startsWith('**') && line.endsWith('**') ? (
+                        ) : line.startsWith("**") && line.endsWith("**") ? (
                           <strong>{line.slice(2, -2)}</strong>
                         ) : (
                           line
@@ -338,7 +356,7 @@ Bạn cần hỗ trợ gì hôm nay?`,
                   </div>
 
                   {/* Intent Badge */}
-                  {message.intent && message.role === 'assistant' && (
+                  {message.intent && message.role === "assistant" && (
                     <div className="mt-2">
                       <Badge variant="outline" className="text-xs">
                         {message.intent}
@@ -350,12 +368,7 @@ Bạn cần hỗ trợ gì hôm nay?`,
                   {message.actions && message.actions.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {message.actions.map((action, i) => (
-                        <Button
-                          key={i}
-                          variant="secondary"
-                          size="sm"
-                          asChild
-                        >
+                        <Button key={i} variant="secondary" size="sm" asChild>
                           <Link href={getActionUrl(action)}>
                             {action.label}
                             <ArrowRight className="h-3 w-3 ml-1" />
@@ -383,7 +396,7 @@ Bạn cần hỗ trợ gì hôm nay?`,
                   )}
                 </div>
 
-                {message.role === 'user' && (
+                {message.role === "user" && (
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-primary">
                     <User className="h-4 w-4 text-primary-foreground" />
                   </div>
@@ -434,7 +447,7 @@ Bạn cần hỗ trợ gì hôm nay?`,
         <div className="border-t border-border p-4">
           <div className="max-w-3xl mx-auto">
             <form
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.preventDefault()
                 handleSend(input)
               }}
@@ -443,7 +456,7 @@ Bạn cần hỗ trợ gì hôm nay?`,
               <Input
                 ref={inputRef}
                 value={input}
-                onChange={e => setInput(e.target.value)}
+                onChange={(e) => setInput(e.target.value)}
                 placeholder="Hỏi HR Copilot bất cứ điều gì..."
                 disabled={isLoading}
                 className="flex-1"

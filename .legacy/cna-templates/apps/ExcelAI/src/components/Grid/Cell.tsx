@@ -1,20 +1,20 @@
-import React, { memo } from 'react';
-import type { CellValue, CellFormat } from '../../types/cell';
-import { formatToStyle } from '../../utils/cellFormatting';
+import React, { memo } from "react"
+import type { CellValue, CellFormat } from "../../types/cell"
+import { formatToStyle } from "../../utils/cellFormatting"
 
 interface CellProps {
-  row: number;
-  col: number;
-  value: CellValue;
-  formula: string | null;
-  displayValue: string;
-  format?: CellFormat;
-  isSelected: boolean;
-  isInRange: boolean;
-  onMouseDown: (e: React.MouseEvent) => void;
-  onMouseEnter: (e: React.MouseEvent) => void;
-  onDoubleClick: () => void;
-  style: React.CSSProperties;
+  row: number
+  col: number
+  value: CellValue
+  formula: string | null
+  displayValue: string
+  format?: CellFormat
+  isSelected: boolean
+  isInRange: boolean
+  onMouseDown: (e: React.MouseEvent) => void
+  onMouseEnter: (e: React.MouseEvent) => void
+  onDoubleClick: () => void
+  style: React.CSSProperties
 }
 
 export const Cell: React.FC<CellProps> = memo(
@@ -29,31 +29,31 @@ export const Cell: React.FC<CellProps> = memo(
     style,
   }) => {
     const className = [
-      'cell',
-      isSelected && 'selected',
-      isInRange && 'in-range',
+      "cell",
+      isSelected && "selected",
+      isInRange && "in-range",
     ]
       .filter(Boolean)
-      .join(' ');
+      .join(" ")
 
     // Get format styles
-    const formatStyles = formatToStyle(format);
+    const formatStyles = formatToStyle(format)
 
     // Merge styles
     const cellStyle: React.CSSProperties = {
       ...style,
-      display: 'flex',
-      alignItems: 'center',
-      padding: '0 4px',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
+      display: "flex",
+      alignItems: "center",
+      padding: "0 4px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
       ...formatStyles,
-    };
+    }
 
     // Handle selection/range background (format background takes precedence if set)
     if (isInRange && !isSelected && !format?.backgroundColor) {
-      cellStyle.backgroundColor = '#e3f2fd';
+      cellStyle.backgroundColor = "#e3f2fd"
     }
 
     return (
@@ -66,12 +66,12 @@ export const Cell: React.FC<CellProps> = memo(
       >
         {displayValue}
       </div>
-    );
+    )
   },
   (prevProps, nextProps) => {
     // Check if format changed
-    const prevFormat = prevProps.format;
-    const nextFormat = nextProps.format;
+    const prevFormat = prevProps.format
+    const nextFormat = nextProps.format
     const formatChanged =
       prevFormat?.bold !== nextFormat?.bold ||
       prevFormat?.italic !== nextFormat?.italic ||
@@ -81,7 +81,7 @@ export const Cell: React.FC<CellProps> = memo(
       prevFormat?.fontSize !== nextFormat?.fontSize ||
       prevFormat?.fontFamily !== nextFormat?.fontFamily ||
       prevFormat?.align !== nextFormat?.align ||
-      prevFormat?.numberFormat !== nextFormat?.numberFormat;
+      prevFormat?.numberFormat !== nextFormat?.numberFormat
 
     return (
       prevProps.row === nextProps.row &&
@@ -92,8 +92,8 @@ export const Cell: React.FC<CellProps> = memo(
       prevProps.style.left === nextProps.style.left &&
       prevProps.style.top === nextProps.style.top &&
       !formatChanged
-    );
+    )
   }
-);
+)
 
-Cell.displayName = 'Cell';
+Cell.displayName = "Cell"

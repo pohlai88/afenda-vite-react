@@ -18,12 +18,12 @@ pnpm test:e2e:report    # Open last HTML report
 
 ## Test Users
 
-| Role    | Email                    | Password        |
-|---------|--------------------------|-----------------|
-| Admin   | admin@test.rtr.com     | TestAdmin123!   |
-| Manager | manager@test.rtr.com   | TestManager123! |
-| Member  | member@test.rtr.com    | TestMember123!  |
-| Viewer  | viewer@test.rtr.com    | TestViewer123!  |
+| Role    | Email                | Password        |
+| ------- | -------------------- | --------------- |
+| Admin   | admin@test.rtr.com   | TestAdmin123!   |
+| Manager | manager@test.rtr.com | TestManager123! |
+| Member  | member@test.rtr.com  | TestMember123!  |
+| Viewer  | viewer@test.rtr.com  | TestViewer123!  |
 
 Override via environment variables: `E2E_ADMIN_EMAIL`, `E2E_ADMIN_PASSWORD`, etc.
 
@@ -54,22 +54,22 @@ e2e/
 ### Using auth fixture (recommended)
 
 ```typescript
-import { test, expect } from '../fixtures/auth.fixture'
+import { test, expect } from "../fixtures/auth.fixture"
 
-test('admin can access settings', async ({ adminPage }) => {
-  await adminPage.goto('/settings')
-  await expect(adminPage.locator('h1')).toBeVisible()
+test("admin can access settings", async ({ adminPage }) => {
+  await adminPage.goto("/settings")
+  await expect(adminPage.locator("h1")).toBeVisible()
 })
 ```
 
 ### Using page objects
 
 ```typescript
-import { test, expect } from '@playwright/test'
-import { LoginPage } from './pages/login.page'
-import { TEST_USERS } from './helpers/auth.helper'
+import { test, expect } from "@playwright/test"
+import { LoginPage } from "./pages/login.page"
+import { TEST_USERS } from "./helpers/auth.helper"
 
-test('manual login flow', async ({ page }) => {
+test("manual login flow", async ({ page }) => {
   const loginPage = new LoginPage(page)
   await loginPage.goto()
   await loginPage.login(TEST_USERS.member.email, TEST_USERS.member.password)
@@ -80,6 +80,7 @@ test('manual login flow', async ({ page }) => {
 ## Test Data Convention
 
 All test data uses the `[TEST]` prefix:
+
 - Companies: `[TEST] Công ty ABC`
 - Contacts: `[TEST] Nguyễn Test A`
 - Deals: `[TEST] Deal phần mềm`
@@ -88,9 +89,9 @@ This allows cleanup to target only test data without affecting real data.
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `SUPABASE_SERVICE_ROLE_KEY` | For auto-seed | Creates test users in Supabase Auth |
-| `PLAYWRIGHT_BASE_URL` | No | Override app URL (default: `http://localhost:3018`) |
-| `E2E_ADMIN_EMAIL` | No | Override admin test email |
-| `E2E_ADMIN_PASSWORD` | No | Override admin test password |
+| Variable                    | Required      | Description                                         |
+| --------------------------- | ------------- | --------------------------------------------------- |
+| `SUPABASE_SERVICE_ROLE_KEY` | For auto-seed | Creates test users in Supabase Auth                 |
+| `PLAYWRIGHT_BASE_URL`       | No            | Override app URL (default: `http://localhost:3018`) |
+| `E2E_ADMIN_EMAIL`           | No            | Override admin test email                           |
+| `E2E_ADMIN_PASSWORD`        | No            | Override admin test password                        |

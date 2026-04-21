@@ -1,21 +1,26 @@
 // src/lib/security/index.ts
 // Security utilities barrel export
 
-export * from './rate-limiter'
-export * from './validation'
-export * from './headers'
-export * from './audit'
-export * from './csrf'
+export * from "./rate-limiter"
+export * from "./validation"
+export * from "./headers"
+export * from "./audit"
+export * from "./csrf"
 
 // ═══════════════════════════════════════════════════════════════
 // API ROUTE WRAPPER WITH SECURITY
 // ═══════════════════════════════════════════════════════════════
 
-import { NextRequest, NextResponse } from 'next/server'
-import { ZodSchema } from 'zod'
-import { rateLimiter, RATE_LIMITS, getClientIP, getRateLimitKey } from './rate-limiter'
-import { applySecurityHeaders, handlePreflight } from './headers'
-import { rateLimitResponse, handleApiError } from '@/lib/api/response'
+import { NextRequest, NextResponse } from "next/server"
+import { ZodSchema } from "zod"
+import {
+  rateLimiter,
+  RATE_LIMITS,
+  getClientIP,
+  getRateLimitKey,
+} from "./rate-limiter"
+import { applySecurityHeaders, handlePreflight } from "./headers"
+import { rateLimitResponse, handleApiError } from "@/lib/api/response"
 
 type RateLimitType = keyof typeof RATE_LIMITS
 
@@ -45,7 +50,7 @@ export function secureApi<T = unknown>(
     context: { params: Record<string, string> }
   ): Promise<NextResponse> => {
     // Handle preflight
-    if (request.method === 'OPTIONS') {
+    if (request.method === "OPTIONS") {
       return handlePreflight()
     }
 
@@ -58,9 +63,13 @@ export function secureApi<T = unknown>(
         const limitConfig = RATE_LIMITS[options.rateLimit]
 
         // Handle nested rate limit configs (e.g., auth.login)
-        const limit = 'limit' in limitConfig ? limitConfig : null
+        const limit = "limit" in limitConfig ? limitConfig : null
         if (limit) {
-          const result = await rateLimiter.checkLimit(key, limit.maxRequests, limit.windowMs)
+          const result = await rateLimiter.checkLimit(
+            key,
+            limit.maxRequests,
+            limit.windowMs
+          )
 
           if (!result.success) {
             return rateLimitResponse(result.retryAfter)
@@ -70,7 +79,7 @@ export function secureApi<T = unknown>(
 
       // Body validation
       let validatedBody: T | undefined
-      if (options.schema && ['POST', 'PUT', 'PATCH'].includes(request.method)) {
+      if (options.schema && ["POST", "PUT", "PATCH"].includes(request.method)) {
         const body = await request.json()
         validatedBody = options.schema.parse(body)
       }
@@ -93,7 +102,7 @@ export function secureApi<T = unknown>(
 // AUTHENTICATED API WRAPPER
 // ═══════════════════════════════════════════════════════════════
 
-import { auth } from '@/lib/auth'
+import { auth } from "@/lib/auth"
 
 type AuthenticatedApiHandler<T> = (
   request: NextRequest,
@@ -117,7 +126,7 @@ export function secureAuthenticatedApi<T = unknown>(
     context: { params: Record<string, string> }
   ): Promise<NextResponse> => {
     // Handle preflight
-    if (request.method === 'OPTIONS') {
+    if (request.method === "OPTIONS") {
       return handlePreflight()
     }
 
@@ -128,7 +137,13 @@ export function secureAuthenticatedApi<T = unknown>(
       if (!session?.user) {
         return applySecurityHeaders(
           NextResponse.json(
-            { success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
+            {
+              success: false,
+              error: {
+                code: "UNAUTHORIZED",
+                message: "Authentication required",
+              },
+            },
             { status: 401 }
           )
         )
@@ -138,7 +153,10 @@ export function secureAuthenticatedApi<T = unknown>(
       if (options.requiredRole && session.user.role !== options.requiredRole) {
         return applySecurityHeaders(
           NextResponse.json(
-            { success: false, error: { code: 'FORBIDDEN', message: 'Insufficient permissions' } },
+            {
+              success: false,
+              error: { code: "FORBIDDEN", message: "Insufficient permissions" },
+            },
             { status: 403 }
           )
         )
@@ -149,13 +167,17 @@ export function secureAuthenticatedApi<T = unknown>(
       // Rate limiting (per-user)
       if (options.rateLimit) {
         const endpoint = request.nextUrl.pathname
-        const key = getRateLimitKey('', endpoint, userId)
+        const key = getRateLimitKey("", endpoint, userId)
         const limitConfig = RATE_LIMITS[options.rateLimit]
 
         // Handle nested rate limit configs (e.g., auth.login)
-        const limit = 'limit' in limitConfig ? limitConfig : null
+        const limit = "limit" in limitConfig ? limitConfig : null
         if (limit) {
-          const result = await rateLimiter.checkLimit(key, limit.maxRequests, limit.windowMs)
+          const result = await rateLimiter.checkLimit(
+            key,
+            limit.maxRequests,
+            limit.windowMs
+          )
 
           if (!result.success) {
             return rateLimitResponse(result.retryAfter)
@@ -165,7 +187,7 @@ export function secureAuthenticatedApi<T = unknown>(
 
       // Body validation
       let validatedBody: T | undefined
-      if (options.schema && ['POST', 'PUT', 'PATCH'].includes(request.method)) {
+      if (options.schema && ["POST", "PUT", "PATCH"].includes(request.method)) {
         const body = await request.json()
         validatedBody = options.schema.parse(body)
       }

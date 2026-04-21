@@ -1,13 +1,13 @@
 // src/services/anomaly.service.ts
 // Attendance anomaly detection and management service
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import type {
   AttendanceAnomalyFilters,
   PaginatedResponse,
   AttendanceAnomalyWithRelations,
-} from '@/types'
-import type { Prisma, AnomalyType, AnomalySeverity } from '@prisma/client'
+} from "@/types"
+import type { Prisma, AnomalyType, AnomalySeverity } from "@prisma/client"
 
 export const anomalyService = {
   // ═══════════════════════════════════════════════════════════════
@@ -62,7 +62,7 @@ export const anomalyService = {
           },
           attendance: true,
         },
-        orderBy: [{ detectedAt: 'desc' }],
+        orderBy: [{ detectedAt: "desc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -80,7 +80,10 @@ export const anomalyService = {
     }
   },
 
-  async findById(tenantId: string, id: string): Promise<AttendanceAnomalyWithRelations | null> {
+  async findById(
+    tenantId: string,
+    id: string
+  ): Promise<AttendanceAnomalyWithRelations | null> {
     return db.attendanceAnomaly.findFirst({
       where: { id, tenantId },
       include: {
@@ -113,9 +116,9 @@ export const anomalyService = {
         attendanceId: data.attendanceId,
         employeeId: data.employeeId,
         type: data.type,
-        severity: data.severity || 'MEDIUM',
+        severity: data.severity || "MEDIUM",
         description: data.description,
-        detectedBy: data.detectedBy || 'SYSTEM',
+        detectedBy: data.detectedBy || "SYSTEM",
       },
       include: {
         employee: true,
@@ -135,11 +138,11 @@ export const anomalyService = {
     })
 
     if (!anomaly) {
-      throw new Error('Bất thường không tồn tại')
+      throw new Error("Bất thường không tồn tại")
     }
 
     if (anomaly.isResolved) {
-      throw new Error('Bất thường đã được xử lý')
+      throw new Error("Bất thường đã được xử lý")
     }
 
     return db.attendanceAnomaly.update({
@@ -184,7 +187,7 @@ export const anomalyService = {
     })
 
     if (!anomaly) {
-      throw new Error('Bất thường không tồn tại')
+      throw new Error("Bất thường không tồn tại")
     }
 
     return db.attendanceAnomaly.delete({
@@ -231,9 +234,9 @@ export const anomalyService = {
           detected.push({
             attendanceId: att.id,
             employeeId: att.employeeId,
-            type: 'MISSING_CHECKOUT',
-            severity: 'HIGH',
-            description: `Nhân viên ${att.employee.fullName} check in lúc ${att.checkIn.toLocaleTimeString('vi-VN')} nhưng chưa check out`,
+            type: "MISSING_CHECKOUT",
+            severity: "HIGH",
+            description: `Nhân viên ${att.employee.fullName} check in lúc ${att.checkIn.toLocaleTimeString("vi-VN")} nhưng chưa check out`,
           })
         }
       }
@@ -241,12 +244,16 @@ export const anomalyService = {
       // Late check-in (more than 30 minutes)
       if (att.lateMinutes && att.lateMinutes > 30) {
         const severity: AnomalySeverity =
-          att.lateMinutes > 60 ? 'HIGH' : att.lateMinutes > 30 ? 'MEDIUM' : 'LOW'
+          att.lateMinutes > 60
+            ? "HIGH"
+            : att.lateMinutes > 30
+              ? "MEDIUM"
+              : "LOW"
 
         detected.push({
           attendanceId: att.id,
           employeeId: att.employeeId,
-          type: 'MISSING_CHECKIN', // Using as "Very late"
+          type: "MISSING_CHECKIN", // Using as "Very late"
           severity,
           description: `Nhân viên ${att.employee.fullName} đi trễ ${att.lateMinutes} phút`,
         })
@@ -259,7 +266,7 @@ export const anomalyService = {
             tenantId,
             employeeId: att.employeeId,
             date: dateStart,
-            status: 'APPROVED',
+            status: "APPROVED",
           },
         })
 
@@ -267,8 +274,8 @@ export const anomalyService = {
           detected.push({
             attendanceId: att.id,
             employeeId: att.employeeId,
-            type: 'OVERTIME_NO_REQUEST',
-            severity: 'MEDIUM',
+            type: "OVERTIME_NO_REQUEST",
+            severity: "MEDIUM",
             description: `Nhân viên ${att.employee.fullName} có ${att.otHours} giờ tăng ca nhưng chưa có đơn`,
           })
         }
@@ -315,7 +322,7 @@ export const anomalyService = {
     const activeEmployees = await db.employee.findMany({
       where: {
         tenantId,
-        status: { in: ['ACTIVE', 'PROBATION'] },
+        status: { in: ["ACTIVE", "PROBATION"] },
       },
       select: { id: true, employeeCode: true, fullName: true },
     })
@@ -357,7 +364,7 @@ export const anomalyService = {
     const monthEnd = new Date(year, month, 0)
 
     const anomalies = await db.attendanceAnomaly.groupBy({
-      by: ['type', 'isResolved'],
+      by: ["type", "isResolved"],
       where: {
         tenantId,
         detectedAt: { gte: monthStart, lte: monthEnd },

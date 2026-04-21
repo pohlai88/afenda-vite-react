@@ -1,27 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
 
 // GET /api/performance/stats
 export async function GET(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
-    const scope = searchParams.get('scope') || 'personal' // 'personal' or 'team' or 'org'
+    const scope = searchParams.get("scope") || "personal" // 'personal' or 'team' or 'org'
     const employeeId = session.user.employeeId
     const tenantId = session.user.tenantId
 
     // Get current active review cycle (IN_PROGRESS)
     const currentCycle = await db.reviewCycle.findFirst({
-      where: { tenantId, status: 'IN_PROGRESS' },
-      orderBy: { startDate: 'desc' },
+      where: { tenantId, status: "IN_PROGRESS" },
+      orderBy: { startDate: "desc" },
     })
 
-    if (scope === 'personal') {
+    if (scope === "personal") {
       const cycleFilter = currentCycle ? { reviewCycleId: currentCycle.id } : {}
 
       const [
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
         db.goal.count({
           where: {
             ownerId: employeeId,
-            status: 'ACTIVE',
+            status: "ACTIVE",
             ...cycleFilter,
           },
         }),
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
         db.goal.count({
           where: {
             ownerId: employeeId,
-            status: 'COMPLETED',
+            status: "COMPLETED",
             ...cycleFilter,
           },
         }),
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
         db.performanceReview.count({
           where: {
             employeeId,
-            status: { in: ['NOT_STARTED', 'SELF_REVIEW_PENDING'] },
+            status: { in: ["NOT_STARTED", "SELF_REVIEW_PENDING"] },
           },
         }),
 
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
         db.feedbackRequest.count({
           where: {
             providerId: session.user.id,
-            status: { in: ['REQUESTED', 'PENDING'] },
+            status: { in: ["REQUESTED", "PENDING"] },
           },
         }),
 
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
         db.goal.findMany({
           where: {
             ownerId: employeeId,
-            status: { in: ['ACTIVE', 'COMPLETED'] },
+            status: { in: ["ACTIVE", "COMPLETED"] },
             ...cycleFilter,
           },
           select: { progress: true, status: true },
@@ -80,23 +80,26 @@ export async function GET(request: NextRequest) {
         db.performanceReview.findFirst({
           where: {
             employeeId,
-            status: 'ACKNOWLEDGED',
+            status: "ACKNOWLEDGED",
             finalRating: { not: null },
           },
-          orderBy: { updatedAt: 'desc' },
+          orderBy: { updatedAt: "desc" },
           select: { finalRating: true, overallScore: true },
         }),
       ])
 
       // Calculate overall progress
-      const overallProgress = goals.length > 0
-        ? Math.round(goals.reduce((sum, g) => sum + g.progress, 0) / goals.length)
-        : 0
+      const overallProgress =
+        goals.length > 0
+          ? Math.round(
+              goals.reduce((sum, g) => sum + g.progress, 0) / goals.length
+            )
+          : 0
 
       // Goals by status
       const goalsByStatus = {
-        active: goals.filter((g) => g.status === 'ACTIVE').length,
-        completed: goals.filter((g) => g.status === 'COMPLETED').length,
+        active: goals.filter((g) => g.status === "ACTIVE").length,
+        completed: goals.filter((g) => g.status === "COMPLETED").length,
       }
 
       return NextResponse.json({
@@ -112,14 +115,16 @@ export async function GET(request: NextRequest) {
             ? Number(latestReview.overallScore)
             : null,
           goalsByStatus,
-          currentCycle: currentCycle ? {
-            id: currentCycle.id,
-            name: currentCycle.name,
-            endDate: currentCycle.endDate,
-          } : null,
+          currentCycle: currentCycle
+            ? {
+                id: currentCycle.id,
+                name: currentCycle.name,
+                endDate: currentCycle.endDate,
+              }
+            : null,
         },
       })
-    } else if (scope === 'team') {
+    } else if (scope === "team") {
       // Team stats (for managers)
       const teamMembers = await db.employee.findMany({
         where: { directManagerId: employeeId, tenantId },
@@ -129,45 +134,45 @@ export async function GET(request: NextRequest) {
       const teamMemberIds = teamMembers.map((m) => m.id)
       const cycleFilter = currentCycle ? { reviewCycleId: currentCycle.id } : {}
 
-      const [
-        teamGoals,
-        pendingApprovals,
-        teamReviews,
-        teamFeedbackPending,
-      ] = await Promise.all([
-        db.goal.findMany({
-          where: {
-            ownerId: { in: teamMemberIds },
-            ...cycleFilter,
-          },
-          select: { status: true, progress: true },
-        }),
+      const [teamGoals, pendingApprovals, teamReviews, teamFeedbackPending] =
+        await Promise.all([
+          db.goal.findMany({
+            where: {
+              ownerId: { in: teamMemberIds },
+              ...cycleFilter,
+            },
+            select: { status: true, progress: true },
+          }),
 
-        db.goal.count({
-          where: {
-            ownerId: { in: teamMemberIds },
-            status: 'DRAFT',
-          },
-        }),
+          db.goal.count({
+            where: {
+              ownerId: { in: teamMemberIds },
+              status: "DRAFT",
+            },
+          }),
 
-        db.performanceReview.count({
-          where: {
-            employeeId: { in: teamMemberIds },
-            status: { in: ['SELF_REVIEW_DONE', 'MANAGER_REVIEW_PENDING'] },
-          },
-        }),
+          db.performanceReview.count({
+            where: {
+              employeeId: { in: teamMemberIds },
+              status: { in: ["SELF_REVIEW_DONE", "MANAGER_REVIEW_PENDING"] },
+            },
+          }),
 
-        db.feedbackRequest.count({
-          where: {
-            subjectId: { in: teamMemberIds },
-            status: { in: ['REQUESTED', 'PENDING'] },
-          },
-        }),
-      ])
+          db.feedbackRequest.count({
+            where: {
+              subjectId: { in: teamMemberIds },
+              status: { in: ["REQUESTED", "PENDING"] },
+            },
+          }),
+        ])
 
-      const teamAvgProgress = teamGoals.length > 0
-        ? Math.round(teamGoals.reduce((sum, g) => sum + g.progress, 0) / teamGoals.length)
-        : 0
+      const teamAvgProgress =
+        teamGoals.length > 0
+          ? Math.round(
+              teamGoals.reduce((sum, g) => sum + g.progress, 0) /
+                teamGoals.length
+            )
+          : 0
 
       return NextResponse.json({
         success: true,
@@ -178,14 +183,16 @@ export async function GET(request: NextRequest) {
           teamReviewsPending: teamReviews,
           teamFeedbackPending,
           teamGoalsByStatus: {
-            active: teamGoals.filter((g) => g.status === 'ACTIVE').length,
-            completed: teamGoals.filter((g) => g.status === 'COMPLETED').length,
-            draft: teamGoals.filter((g) => g.status === 'DRAFT').length,
+            active: teamGoals.filter((g) => g.status === "ACTIVE").length,
+            completed: teamGoals.filter((g) => g.status === "COMPLETED").length,
+            draft: teamGoals.filter((g) => g.status === "DRAFT").length,
           },
-          currentCycle: currentCycle ? {
-            id: currentCycle.id,
-            name: currentCycle.name,
-          } : null,
+          currentCycle: currentCycle
+            ? {
+                id: currentCycle.id,
+                name: currentCycle.name,
+              }
+            : null,
         },
       })
     } else {
@@ -206,7 +213,7 @@ export async function GET(request: NextRequest) {
         db.goal.count({
           where: {
             tenantId,
-            status: 'COMPLETED',
+            status: "COMPLETED",
             ...cycleFilter,
           },
         }),
@@ -218,7 +225,7 @@ export async function GET(request: NextRequest) {
         db.performanceReview.count({
           where: {
             tenantId,
-            status: 'ACKNOWLEDGED',
+            status: "ACKNOWLEDGED",
             ...cycleFilter,
           },
         }),
@@ -234,22 +241,30 @@ export async function GET(request: NextRequest) {
         data: {
           totalGoals,
           completedGoals,
-          goalCompletionRate: totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0,
+          goalCompletionRate:
+            totalGoals > 0
+              ? Math.round((completedGoals / totalGoals) * 100)
+              : 0,
           avgGoalProgress: Math.round(avgGoalProgress._avg.progress || 0),
           totalReviews,
           completedReviews,
-          reviewCompletionRate: totalReviews > 0 ? Math.round((completedReviews / totalReviews) * 100) : 0,
-          currentCycle: currentCycle ? {
-            id: currentCycle.id,
-            name: currentCycle.name,
-          } : null,
+          reviewCompletionRate:
+            totalReviews > 0
+              ? Math.round((completedReviews / totalReviews) * 100)
+              : 0,
+          currentCycle: currentCycle
+            ? {
+                id: currentCycle.id,
+                name: currentCycle.name,
+              }
+            : null,
         },
       })
     }
   } catch (error) {
-    console.error('Error fetching performance stats:', error)
+    console.error("Error fetching performance stats:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch stats' },
+      { error: "Failed to fetch stats" },
       { status: 500 }
     )
   }

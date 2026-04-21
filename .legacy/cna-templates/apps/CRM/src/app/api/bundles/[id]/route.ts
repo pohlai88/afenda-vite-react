@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { handleApiError, NotFound } from '@/lib/api/errors'
-import { updateBundleSchema } from '@/lib/validations/bundle'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { handleApiError, NotFound } from "@/lib/api/errors"
+import { updateBundleSchema } from "@/lib/validations/bundle"
 
 // GET /api/bundles/[id] — Single bundle with items, compatibility, pricing
 export async function GET(
@@ -18,25 +18,34 @@ export async function GET(
           include: {
             product: {
               select: {
-                id: true, name: true, sku: true, unitPrice: true,
-                category: true, currency: true, itar: true, eccn: true,
+                id: true,
+                name: true,
+                sku: true,
+                unitPrice: true,
+                category: true,
+                currency: true,
+                itar: true,
+                eccn: true,
               },
             },
           },
-          orderBy: { sortOrder: 'asc' },
+          orderBy: { sortOrder: "asc" },
         },
         pricingTiers: true,
       },
     })
 
-    if (!bundle) return handleApiError(NotFound('Bundle'), '/api/bundles/[id]')
+    if (!bundle) return handleApiError(NotFound("Bundle"), "/api/bundles/[id]")
 
     // Fetch compatibility warnings for products in this bundle
     const productIds = bundle.items.map((i) => i.productId)
     const compatRules = await prisma.productCompatibility.findMany({
       where: {
         OR: [
-          { productId: { in: productIds }, relatedProductId: { in: productIds } },
+          {
+            productId: { in: productIds },
+            relatedProductId: { in: productIds },
+          },
         ],
       },
       include: {
@@ -48,9 +57,12 @@ export async function GET(
     return NextResponse.json({ ...bundle, compatibilityWarnings: compatRules })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    return handleApiError(error, '/api/bundles/[id]')
+    return handleApiError(error, "/api/bundles/[id]")
   }
 }
 
@@ -60,25 +72,32 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER'])
+    const result = await requireRole(["ADMIN", "MANAGER"])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
     const data = updateBundleSchema.parse(body)
 
-    const existing = await prisma.productBundle.findUnique({ where: { id: params.id } })
-    if (!existing) return handleApiError(NotFound('Bundle'), '/api/bundles/[id]')
+    const existing = await prisma.productBundle.findUnique({
+      where: { id: params.id },
+    })
+    if (!existing)
+      return handleApiError(NotFound("Bundle"), "/api/bundles/[id]")
 
     // If items provided, replace all items
     if (data.items) {
-      await prisma.productBundleItem.deleteMany({ where: { bundleId: params.id } })
+      await prisma.productBundleItem.deleteMany({
+        where: { bundleId: params.id },
+      })
     }
 
     const bundle = await prisma.productBundle.update({
       where: { id: params.id },
       data: {
         ...(data.name !== undefined && { name: data.name }),
-        ...(data.description !== undefined && { description: data.description }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
         ...(data.sku !== undefined && { sku: data.sku }),
         ...(data.bundleType !== undefined && { bundleType: data.bundleType }),
         ...(data.basePrice !== undefined && { basePrice: data.basePrice }),
@@ -98,8 +117,18 @@ export async function PATCH(
       },
       include: {
         items: {
-          include: { product: { select: { id: true, name: true, sku: true, unitPrice: true, category: true } } },
-          orderBy: { sortOrder: 'asc' },
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                sku: true,
+                unitPrice: true,
+                category: true,
+              },
+            },
+          },
+          orderBy: { sortOrder: "asc" },
         },
         pricingTiers: true,
       },
@@ -107,7 +136,7 @@ export async function PATCH(
 
     return NextResponse.json(bundle)
   } catch (error) {
-    return handleApiError(error, '/api/bundles/[id]')
+    return handleApiError(error, "/api/bundles/[id]")
   }
 }
 
@@ -117,11 +146,14 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
 
-    const existing = await prisma.productBundle.findUnique({ where: { id: params.id } })
-    if (!existing) return handleApiError(NotFound('Bundle'), '/api/bundles/[id]')
+    const existing = await prisma.productBundle.findUnique({
+      where: { id: params.id },
+    })
+    if (!existing)
+      return handleApiError(NotFound("Bundle"), "/api/bundles/[id]")
 
     const bundle = await prisma.productBundle.update({
       where: { id: params.id },
@@ -130,6 +162,6 @@ export async function DELETE(
 
     return NextResponse.json(bundle)
   } catch (error) {
-    return handleApiError(error, '/api/bundles/[id]')
+    return handleApiError(error, "/api/bundles/[id]")
   }
 }

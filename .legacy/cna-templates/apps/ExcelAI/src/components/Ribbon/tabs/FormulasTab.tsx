@@ -1,27 +1,38 @@
-import React from 'react';
-import { RibbonGroup } from '../RibbonGroup';
-import { RibbonButton } from '../RibbonButton';
-import { RibbonDropdown } from '../RibbonDropdown';
+import React from "react"
+import { RibbonGroup } from "../RibbonGroup"
+import { RibbonButton } from "../RibbonButton"
+import { RibbonDropdown } from "../RibbonDropdown"
 import {
-  FunctionSquare, Calculator, FileText, Clock, Database,
-  Search, GitBranch, AlertTriangle, CheckCircle
-} from 'lucide-react';
+  FunctionSquare,
+  Calculator,
+  FileText,
+  Clock,
+  Database,
+  Search,
+  GitBranch,
+  AlertTriangle,
+  CheckCircle,
+} from "lucide-react"
 
 export const FormulasTab: React.FC = () => {
   return (
     <div className="ribbon-tab-content formulas-tab">
       {/* Function Library */}
       <RibbonGroup label="Function Library">
-        <RibbonButton icon={FunctionSquare} label="Insert Function" size="large" />
+        <RibbonButton
+          icon={FunctionSquare}
+          label="Insert Function"
+          size="large"
+        />
         <RibbonDropdown
           icon={Calculator}
           label="AutoSum"
           options={[
-            { id: 'sum', label: 'Sum', onClick: () => {} },
-            { id: 'average', label: 'Average', onClick: () => {} },
-            { id: 'count', label: 'Count', onClick: () => {} },
-            { id: 'max', label: 'Max', onClick: () => {} },
-            { id: 'min', label: 'Min', onClick: () => {} },
+            { id: "sum", label: "Sum", onClick: () => {} },
+            { id: "average", label: "Average", onClick: () => {} },
+            { id: "count", label: "Count", onClick: () => {} },
+            { id: "max", label: "Max", onClick: () => {} },
+            { id: "min", label: "Min", onClick: () => {} },
           ]}
         />
         <RibbonButton icon={Calculator} label="Financial" />
@@ -61,13 +72,13 @@ export const FormulasTab: React.FC = () => {
           icon={Calculator}
           label="Calculation Options"
           options={[
-            { id: 'automatic', label: 'Automatic', onClick: () => {} },
-            { id: 'manual', label: 'Manual', onClick: () => {} },
+            { id: "automatic", label: "Automatic", onClick: () => {} },
+            { id: "manual", label: "Manual", onClick: () => {} },
           ]}
         />
         <RibbonButton icon={Calculator} label="Calculate Now" />
         <RibbonButton icon={Calculator} label="Calculate Sheet" />
       </RibbonGroup>
     </div>
-  );
-};
+  )
+}

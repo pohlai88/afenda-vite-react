@@ -65,9 +65,7 @@ export default function PayrollPaymentsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">BIDV</div>
-            <p className="text-xs text-muted-foreground">
-              Format CSV Excel
-            </p>
+            <p className="text-xs text-muted-foreground">Format CSV Excel</p>
           </CardContent>
         </Card>
         <Card>
@@ -77,9 +75,7 @@ export default function PayrollPaymentsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">CSV</div>
-            <p className="text-xs text-muted-foreground">
-              Format CSV chung
-            </p>
+            <p className="text-xs text-muted-foreground">Format CSV chung</p>
           </CardContent>
         </Card>
       </div>

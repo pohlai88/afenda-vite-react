@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
 
 // POST /api/recruitment/offers/[id]/accept
 export async function POST(
@@ -10,7 +10,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const offer = await db.offer.findUnique({
@@ -31,12 +31,12 @@ export async function POST(
     })
 
     if (!offer) {
-      return NextResponse.json({ error: 'Offer not found' }, { status: 404 })
+      return NextResponse.json({ error: "Offer not found" }, { status: 404 })
     }
 
-    if (offer.status !== 'SENT' && offer.status !== 'APPROVED') {
+    if (offer.status !== "SENT" && offer.status !== "APPROVED") {
       return NextResponse.json(
-        { error: 'Offer must be sent or approved before accepting' },
+        { error: "Offer must be sent or approved before accepting" },
         { status: 400 }
       )
     }
@@ -47,7 +47,7 @@ export async function POST(
       await tx.offer.update({
         where: { id: params.id },
         data: {
-          status: 'ACCEPTED',
+          status: "ACCEPTED",
           respondedAt: new Date(),
         },
       })
@@ -56,7 +56,7 @@ export async function POST(
       await tx.application.update({
         where: { id: offer.applicationId },
         data: {
-          status: 'HIRED',
+          status: "HIRED",
           hiredAt: new Date(),
           hiredById: session.user.id,
         },
@@ -66,7 +66,7 @@ export async function POST(
       const employeeCount = await tx.employee.count({
         where: { tenantId: session.user.tenantId },
       })
-      const employeeCode = `NV${String(employeeCount + 1).padStart(5, '0')}`
+      const employeeCode = `NV${String(employeeCount + 1).padStart(5, "0")}`
 
       // 4. Create employee record
       const employee = await tx.employee.create({
@@ -78,7 +78,7 @@ export async function POST(
           phone: offer.application.candidate.phone,
           departmentId: offer.departmentId,
           hireDate: offer.startDate,
-          status: 'ACTIVE',
+          status: "ACTIVE",
         },
       })
 
@@ -94,7 +94,7 @@ export async function POST(
       if (requisition.filledCount >= requisition.headcount) {
         await tx.jobRequisition.update({
           where: { id: requisition.id },
-          data: { status: 'FILLED' },
+          data: { status: "FILLED" },
         })
       }
 
@@ -102,7 +102,7 @@ export async function POST(
       await tx.applicationActivity.create({
         data: {
           applicationId: offer.applicationId,
-          action: 'hired',
+          action: "hired",
           description: `Đã tuyển dụng. Mã nhân viên: ${employeeCode}`,
           performedById: session.user.id,
         },
@@ -119,9 +119,9 @@ export async function POST(
       },
     })
   } catch (error) {
-    console.error('Error accepting offer:', error)
+    console.error("Error accepting offer:", error)
     return NextResponse.json(
-      { error: 'Failed to accept offer' },
+      { error: "Failed to accept offer" },
       { status: 500 }
     )
   }

@@ -23,13 +23,13 @@ This guide covers development setup, architecture, and best practices for the TP
 
 ### Prerequisites
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| Node.js | 20.x LTS | Runtime |
-| pnpm | 8.x | Package manager |
-| Docker | 24.x | Containers |
-| Git | 2.x | Version control |
-| VS Code | Latest | Recommended IDE |
+| Tool    | Version  | Purpose         |
+| ------- | -------- | --------------- |
+| Node.js | 20.x LTS | Runtime         |
+| pnpm    | 8.x      | Package manager |
+| Docker  | 24.x     | Containers      |
+| Git     | 2.x      | Version control |
+| VS Code | Latest   | Recommended IDE |
 
 ### Quick Start
 
@@ -160,8 +160,8 @@ Workspace configuration (`pnpm-workspace.yaml`):
 
 ```yaml
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - "apps/*"
+  - "packages/*"
 ```
 
 Run commands across workspaces:
@@ -225,6 +225,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation
@@ -248,17 +249,17 @@ Types:
 
 ### Tech Stack
 
-| Library | Purpose |
-|---------|---------|
-| React 18 | UI framework |
-| TypeScript 5 | Type safety |
-| Vite 5 | Build tool |
-| TanStack Query | Server state |
-| Zustand | Client state |
+| Library         | Purpose       |
+| --------------- | ------------- |
+| React 18        | UI framework  |
+| TypeScript 5    | Type safety   |
+| Vite 5          | Build tool    |
+| TanStack Query  | Server state  |
+| Zustand         | Client state  |
 | React Hook Form | Form handling |
-| Zod | Validation |
-| Tailwind CSS | Styling |
-| shadcn/ui | UI components |
+| Zod             | Validation    |
+| Tailwind CSS    | Styling       |
+| shadcn/ui       | UI components |
 
 ### Component Structure
 
@@ -284,13 +285,13 @@ components/
 
 ```tsx
 // components/features/promotions/PromotionCard.tsx
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import type { Promotion } from '@/types';
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import type { Promotion } from "@/types"
 
 interface PromotionCardProps {
-  promotion: Promotion;
-  onSelect?: (id: string) => void;
+  promotion: Promotion
+  onSelect?: (id: string) => void
 }
 
 export function PromotionCard({ promotion, onSelect }: PromotionCardProps) {
@@ -308,12 +309,10 @@ export function PromotionCard({ promotion, onSelect }: PromotionCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">
-          {promotion.description}
-        </p>
+        <p className="text-sm text-muted-foreground">{promotion.description}</p>
       </CardContent>
     </Card>
-  );
+  )
 }
 ```
 
@@ -323,25 +322,25 @@ export function PromotionCard({ promotion, onSelect }: PromotionCardProps) {
 
 ```tsx
 // hooks/usePromotions.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { api } from "@/lib/api"
 
 export function usePromotions(filters?: PromotionFilters) {
   return useQuery({
-    queryKey: ['promotions', filters],
+    queryKey: ["promotions", filters],
     queryFn: () => api.promotions.list(filters),
-  });
+  })
 }
 
 export function useCreatePromotion() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: api.promotions.create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['promotions'] });
+      queryClient.invalidateQueries({ queryKey: ["promotions"] })
     },
-  });
+  })
 }
 ```
 
@@ -349,14 +348,14 @@ export function useCreatePromotion() {
 
 ```tsx
 // stores/uiStore.ts
-import { create } from 'zustand';
+import { create } from "zustand"
 
 interface UIState {
-  sidebarOpen: boolean;
-  toggleSidebar: () => void;
-  activeModal: string | null;
-  openModal: (name: string) => void;
-  closeModal: () => void;
+  sidebarOpen: boolean
+  toggleSidebar: () => void
+  activeModal: string | null
+  openModal: (name: string) => void
+  closeModal: () => void
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -365,42 +364,42 @@ export const useUIStore = create<UIState>((set) => ({
   activeModal: null,
   openModal: (name) => set({ activeModal: name }),
   closeModal: () => set({ activeModal: null }),
-}));
+}))
 ```
 
 ### Form Handling
 
 ```tsx
 // features/promotions/PromotionForm.tsx
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
 const promotionSchema = z.object({
-  name: z.string().min(3, 'Name must be at least 3 characters'),
-  code: z.string().regex(/^[A-Z0-9-]+$/, 'Invalid code format'),
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  code: z.string().regex(/^[A-Z0-9-]+$/, "Invalid code format"),
   startDate: z.string().datetime(),
   endDate: z.string().datetime(),
-  budget: z.number().positive('Budget must be positive'),
-});
+  budget: z.number().positive("Budget must be positive"),
+})
 
-type PromotionFormData = z.infer<typeof promotionSchema>;
+type PromotionFormData = z.infer<typeof promotionSchema>
 
-export function PromotionForm({ onSubmit }: { onSubmit: (data: PromotionFormData) => void }) {
+export function PromotionForm({
+  onSubmit,
+}: {
+  onSubmit: (data: PromotionFormData) => void
+}) {
   const form = useForm<PromotionFormData>({
     resolver: zodResolver(promotionSchema),
     defaultValues: {
-      name: '',
-      code: '',
+      name: "",
+      code: "",
       budget: 0,
     },
-  });
+  })
 
-  return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      {/* Form fields */}
-    </form>
-  );
+  return <form onSubmit={form.handleSubmit(onSubmit)}>{/* Form fields */}</form>
 }
 ```
 
@@ -410,15 +409,15 @@ export function PromotionForm({ onSubmit }: { onSubmit: (data: PromotionFormData
 
 ### Tech Stack
 
-| Library | Purpose |
-|---------|---------|
-| Express/Hono | HTTP framework |
-| TypeScript 5 | Type safety |
-| Prisma | Database ORM |
-| Zod | Validation |
-| Pino | Logging |
-| rate-limiter-flexible | Rate limiting |
-| helmet | Security headers |
+| Library               | Purpose          |
+| --------------------- | ---------------- |
+| Express/Hono          | HTTP framework   |
+| TypeScript 5          | Type safety      |
+| Prisma                | Database ORM     |
+| Zod                   | Validation       |
+| Pino                  | Logging          |
+| rate-limiter-flexible | Rate limiting    |
+| helmet                | Security headers |
 
 ### API Route Structure
 
@@ -443,58 +442,51 @@ api/
 
 ```typescript
 // api/promotions/route.ts
-import { Router } from 'express';
-import { rateLimit } from '@/middleware/rateLimit';
-import { authenticate, authorize } from '@/middleware/auth';
-import { validate } from '@/middleware/validate';
-import { promotionSchema, updatePromotionSchema } from './validators';
-import * as handlers from './handlers';
+import { Router } from "express"
+import { rateLimit } from "@/middleware/rateLimit"
+import { authenticate, authorize } from "@/middleware/auth"
+import { validate } from "@/middleware/validate"
+import { promotionSchema, updatePromotionSchema } from "./validators"
+import * as handlers from "./handlers"
 
-const router = Router();
+const router = Router()
 
-router.use(authenticate);
+router.use(authenticate)
 
-router.get('/',
-  authorize('promotions:read'),
-  handlers.list
-);
+router.get("/", authorize("promotions:read"), handlers.list)
 
-router.get('/:id',
-  authorize('promotions:read'),
-  handlers.getById
-);
+router.get("/:id", authorize("promotions:read"), handlers.getById)
 
-router.post('/',
-  authorize('promotions:create'),
+router.post(
+  "/",
+  authorize("promotions:create"),
   validate(promotionSchema),
   handlers.create
-);
+)
 
-router.put('/:id',
-  authorize('promotions:update'),
+router.put(
+  "/:id",
+  authorize("promotions:update"),
   validate(updatePromotionSchema),
   handlers.update
-);
+)
 
-router.delete('/:id',
-  authorize('promotions:delete'),
-  handlers.remove
-);
+router.delete("/:id", authorize("promotions:delete"), handlers.remove)
 
-export default router;
+export default router
 ```
 
 ### Handler Implementation
 
 ```typescript
 // api/promotions/handlers.ts
-import type { Request, Response, NextFunction } from 'express';
-import { promotionService } from '@/services/promotions';
-import { logger } from '@/middleware/logging';
+import type { Request, Response, NextFunction } from "express"
+import { promotionService } from "@/services/promotions"
+import { logger } from "@/middleware/logging"
 
 export async function list(req: Request, res: Response, next: NextFunction) {
   try {
-    const { page = 1, limit = 20, status, region } = req.query;
+    const { page = 1, limit = 20, status, region } = req.query
 
     const result = await promotionService.list({
       page: Number(page),
@@ -502,7 +494,7 @@ export async function list(req: Request, res: Response, next: NextFunction) {
       status: status as string,
       region: region as string,
       userId: req.user.id,
-    });
+    })
 
     res.json({
       success: true,
@@ -513,9 +505,9 @@ export async function list(req: Request, res: Response, next: NextFunction) {
         total: result.total,
         totalPages: result.totalPages,
       },
-    });
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
 }
 
@@ -524,16 +516,16 @@ export async function create(req: Request, res: Response, next: NextFunction) {
     const promotion = await promotionService.create({
       ...req.body,
       createdBy: req.user.id,
-    });
+    })
 
-    logger.info({ promotionId: promotion.id }, 'Promotion created');
+    logger.info({ promotionId: promotion.id }, "Promotion created")
 
     res.status(201).json({
       success: true,
       data: promotion,
-    });
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
 }
 ```
@@ -542,31 +534,31 @@ export async function create(req: Request, res: Response, next: NextFunction) {
 
 ```typescript
 // services/promotions.ts
-import { prisma } from '@/lib/prisma';
-import { NotFoundError, ValidationError } from '@/lib/errors';
-import type { CreatePromotionInput, UpdatePromotionInput } from './types';
+import { prisma } from "@/lib/prisma"
+import { NotFoundError, ValidationError } from "@/lib/errors"
+import type { CreatePromotionInput, UpdatePromotionInput } from "./types"
 
 export const promotionService = {
   async list(params: ListParams) {
-    const { page, limit, status, region, userId } = params;
+    const { page, limit, status, region, userId } = params
 
     const where = {
       ...(status && { status }),
       ...(region && { region }),
-    };
+    }
 
     const [items, total] = await Promise.all([
       prisma.promotion.findMany({
         where,
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         include: {
           createdBy: { select: { id: true, name: true } },
         },
       }),
       prisma.promotion.count({ where }),
-    ]);
+    ])
 
     return {
       items,
@@ -574,32 +566,32 @@ export const promotionService = {
       limit,
       total,
       totalPages: Math.ceil(total / limit),
-    };
+    }
   },
 
   async create(input: CreatePromotionInput) {
     // Validate business rules
-    await this.validateDateRange(input.startDate, input.endDate);
-    await this.validateBudget(input.budget, input.region);
+    await this.validateDateRange(input.startDate, input.endDate)
+    await this.validateBudget(input.budget, input.region)
 
     return prisma.promotion.create({
       data: input,
-    });
+    })
   },
 
   async validateDateRange(start: Date, end: Date) {
     if (end <= start) {
-      throw new ValidationError('End date must be after start date');
+      throw new ValidationError("End date must be after start date")
     }
   },
 
   async validateBudget(budget: number, region: string) {
-    const available = await this.getAvailableBudget(region);
+    const available = await this.getAvailableBudget(region)
     if (budget > available) {
-      throw new ValidationError('Budget exceeds available balance');
+      throw new ValidationError("Budget exceeds available balance")
     }
   },
-};
+}
 ```
 
 ---
@@ -682,44 +674,44 @@ pnpm db:generate
 
 ```typescript
 // packages/database/prisma/seed.ts
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client"
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 async function main() {
   // Create admin user
   await prisma.user.upsert({
-    where: { email: 'admin@company.com' },
+    where: { email: "admin@company.com" },
     update: {},
     create: {
-      email: 'admin@company.com',
-      name: 'Admin User',
-      role: 'ADMIN',
+      email: "admin@company.com",
+      name: "Admin User",
+      role: "ADMIN",
     },
-  });
+  })
 
   // Create sample promotions
   await prisma.promotion.createMany({
     data: [
       {
-        code: 'PROMO-2024-001',
-        name: 'Q1 Sales Boost',
-        type: 'DISCOUNT',
-        status: 'ACTIVE',
-        startDate: new Date('2024-01-01'),
-        endDate: new Date('2024-03-31'),
+        code: "PROMO-2024-001",
+        name: "Q1 Sales Boost",
+        type: "DISCOUNT",
+        status: "ACTIVE",
+        startDate: new Date("2024-01-01"),
+        endDate: new Date("2024-03-31"),
         budget: 100000000,
-        region: 'MB',
+        region: "MB",
         createdById: adminUser.id,
       },
     ],
     skipDuplicates: true,
-  });
+  })
 }
 
 main()
   .catch(console.error)
-  .finally(() => prisma.$disconnect());
+  .finally(() => prisma.$disconnect())
 ```
 
 ---
@@ -743,29 +735,29 @@ Example test:
 
 ```typescript
 // __tests__/lib/validators.test.ts
-import { describe, it, expect } from 'vitest';
-import { validateEmail, validateTaxCode } from '@/lib/validators';
+import { describe, it, expect } from "vitest"
+import { validateEmail, validateTaxCode } from "@/lib/validators"
 
-describe('validateEmail', () => {
-  it('should accept valid email', () => {
-    expect(validateEmail('user@example.com')).toBe(true);
-  });
+describe("validateEmail", () => {
+  it("should accept valid email", () => {
+    expect(validateEmail("user@example.com")).toBe(true)
+  })
 
-  it('should reject invalid email', () => {
-    expect(validateEmail('invalid')).toBe(false);
-    expect(validateEmail('')).toBe(false);
-  });
-});
+  it("should reject invalid email", () => {
+    expect(validateEmail("invalid")).toBe(false)
+    expect(validateEmail("")).toBe(false)
+  })
+})
 
-describe('validateTaxCode', () => {
-  it('should accept 10-digit tax code', () => {
-    expect(validateTaxCode('0123456789')).toBe(true);
-  });
+describe("validateTaxCode", () => {
+  it("should accept 10-digit tax code", () => {
+    expect(validateTaxCode("0123456789")).toBe(true)
+  })
 
-  it('should accept 13-digit tax code', () => {
-    expect(validateTaxCode('0123456789-001')).toBe(true);
-  });
-});
+  it("should accept 13-digit tax code", () => {
+    expect(validateTaxCode("0123456789-001")).toBe(true)
+  })
+})
 ```
 
 ### E2E Tests (Playwright)
@@ -785,30 +777,30 @@ Example E2E test:
 
 ```typescript
 // e2e/promotions.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test"
 
-test.describe('Promotions', () => {
+test.describe("Promotions", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[name="email"]', 'test@example.com');
-    await page.fill('[name="password"]', 'password');
-    await page.click('button[type="submit"]');
-    await expect(page).toHaveURL('/dashboard');
-  });
+    await page.goto("/login")
+    await page.fill('[name="email"]', "test@example.com")
+    await page.fill('[name="password"]', "password")
+    await page.click('button[type="submit"]')
+    await expect(page).toHaveURL("/dashboard")
+  })
 
-  test('should create new promotion', async ({ page }) => {
-    await page.click('text=Promotions');
-    await page.click('text=Create New');
+  test("should create new promotion", async ({ page }) => {
+    await page.click("text=Promotions")
+    await page.click("text=Create New")
 
-    await page.fill('[name="name"]', 'Test Promotion');
-    await page.fill('[name="code"]', 'TEST-001');
-    await page.fill('[name="budget"]', '1000000');
+    await page.fill('[name="name"]', "Test Promotion")
+    await page.fill('[name="code"]', "TEST-001")
+    await page.fill('[name="budget"]', "1000000")
 
-    await page.click('button[type="submit"]');
+    await page.click('button[type="submit"]')
 
-    await expect(page.locator('text=Promotion created')).toBeVisible();
-  });
-});
+    await expect(page.locator("text=Promotion created")).toBeVisible()
+  })
+})
 ```
 
 ---
@@ -828,17 +820,17 @@ test.describe('Promotions', () => {
 // .eslintrc.cjs
 module.exports = {
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react-hooks/recommended',
-    'prettier',
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier",
   ],
   rules: {
-    '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "no-console": ["warn", { allow: ["warn", "error"] }],
   },
-};
+}
 ```
 
 ### Prettier
@@ -871,11 +863,11 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 ```typescript
 // Debug logging
-import { logger } from '@/middleware/logging';
+import { logger } from "@/middleware/logging"
 
-logger.debug({ data }, 'Processing request');
-logger.info({ result }, 'Operation completed');
-logger.error({ error }, 'Operation failed');
+logger.debug({ data }, "Processing request")
+logger.info({ result }, "Operation completed")
+logger.error({ error }, "Operation failed")
 ```
 
 ### VS Code Launch Config

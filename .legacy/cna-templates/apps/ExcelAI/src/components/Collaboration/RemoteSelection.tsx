@@ -2,27 +2,30 @@
 // REMOTE SELECTION — Shows other users' selected ranges (Blueprint §6.3)
 // =============================================================================
 
-import React from 'react';
-import type { RemoteSelection as RemoteSelectionType, CollaborationUser } from '../../collaboration/types';
+import React from "react"
+import type {
+  RemoteSelection as RemoteSelectionType,
+  CollaborationUser,
+} from "../../collaboration/types"
 
 // -----------------------------------------------------------------------------
 // Props
 // -----------------------------------------------------------------------------
 
 interface RemoteSelectionProps {
-  selection: RemoteSelectionType;
-  cellWidth: number;
-  cellHeight: number;
-  getCellPosition: (row: number, col: number) => { x: number; y: number } | null;
-  showLabel?: boolean;
+  selection: RemoteSelectionType
+  cellWidth: number
+  cellHeight: number
+  getCellPosition: (row: number, col: number) => { x: number; y: number } | null
+  showLabel?: boolean
 }
 
 interface RemoteSelectionsOverlayProps {
-  selections: RemoteSelectionType[];
-  cellWidth: number;
-  cellHeight: number;
-  getCellPosition: (row: number, col: number) => { x: number; y: number } | null;
-  showLabels?: boolean;
+  selections: RemoteSelectionType[]
+  cellWidth: number
+  cellHeight: number
+  getCellPosition: (row: number, col: number) => { x: number; y: number } | null
+  showLabels?: boolean
 }
 
 // -----------------------------------------------------------------------------
@@ -36,37 +39,39 @@ export const RemoteSelection: React.FC<RemoteSelectionProps> = ({
   getCellPosition,
   showLabel = true,
 }) => {
-  const { user, range } = selection;
+  const { user, range } = selection
 
   // Get positions for start and end cells
-  const startPos = getCellPosition(range.startRow, range.startCol);
-  const endPos = getCellPosition(range.endRow, range.endCol);
+  const startPos = getCellPosition(range.startRow, range.startCol)
+  const endPos = getCellPosition(range.endRow, range.endCol)
 
-  if (!startPos || !endPos) return null;
+  if (!startPos || !endPos) return null
 
   // Calculate selection bounds
-  const left = Math.min(startPos.x, endPos.x);
-  const top = Math.min(startPos.y, endPos.y);
-  const width = Math.abs(endPos.x - startPos.x) + cellWidth;
-  const height = Math.abs(endPos.y - startPos.y) + cellHeight;
+  const left = Math.min(startPos.x, endPos.x)
+  const top = Math.min(startPos.y, endPos.y)
+  const width = Math.abs(endPos.x - startPos.x) + cellWidth
+  const height = Math.abs(endPos.y - startPos.y) + cellHeight
 
   // Calculate cell count
-  const rowCount = Math.abs(range.endRow - range.startRow) + 1;
-  const colCount = Math.abs(range.endCol - range.startCol) + 1;
-  const cellCount = rowCount * colCount;
+  const rowCount = Math.abs(range.endRow - range.startRow) + 1
+  const colCount = Math.abs(range.endCol - range.startCol) + 1
+  const cellCount = rowCount * colCount
 
   return (
     <div
       className="remote-selection"
-      style={{
-        left,
-        top,
-        width,
-        height,
-        '--selection-color': user.color,
-        backgroundColor: `${user.color}20`,
-        borderColor: user.color,
-      } as React.CSSProperties}
+      style={
+        {
+          left,
+          top,
+          width,
+          height,
+          "--selection-color": user.color,
+          backgroundColor: `${user.color}20`,
+          borderColor: user.color,
+        } as React.CSSProperties
+      }
     >
       {/* Selection border */}
       <div
@@ -107,21 +112,23 @@ export const RemoteSelection: React.FC<RemoteSelectionProps> = ({
         style={{ backgroundColor: user.color }}
       />
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Remote Selections Overlay (for grid)
 // -----------------------------------------------------------------------------
 
-export const RemoteSelectionsOverlay: React.FC<RemoteSelectionsOverlayProps> = ({
+export const RemoteSelectionsOverlay: React.FC<
+  RemoteSelectionsOverlayProps
+> = ({
   selections,
   cellWidth,
   cellHeight,
   getCellPosition,
   showLabels = true,
 }) => {
-  if (selections.length === 0) return null;
+  if (selections.length === 0) return null
 
   return (
     <div className="remote-selections-overlay">
@@ -136,38 +143,41 @@ export const RemoteSelectionsOverlay: React.FC<RemoteSelectionsOverlayProps> = (
         />
       ))}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Selection Info (for status bar)
 // -----------------------------------------------------------------------------
 
 interface SelectionInfoProps {
-  user: CollaborationUser;
+  user: CollaborationUser
   range: {
-    startRow: number;
-    startCol: number;
-    endRow: number;
-    endCol: number;
-  };
+    startRow: number
+    startCol: number
+    endRow: number
+    endCol: number
+  }
 }
 
-export const SelectionInfo: React.FC<SelectionInfoProps> = ({ user, range }) => {
+export const SelectionInfo: React.FC<SelectionInfoProps> = ({
+  user,
+  range,
+}) => {
   const colToLetter = (col: number): string => {
-    let result = '';
-    let c = col + 1;
+    let result = ""
+    let c = col + 1
     while (c > 0) {
-      c--;
-      result = String.fromCharCode(65 + (c % 26)) + result;
-      c = Math.floor(c / 26);
+      c--
+      result = String.fromCharCode(65 + (c % 26)) + result
+      c = Math.floor(c / 26)
     }
-    return result;
-  };
+    return result
+  }
 
-  const startRef = `${colToLetter(range.startCol)}${range.startRow + 1}`;
-  const endRef = `${colToLetter(range.endCol)}${range.endRow + 1}`;
-  const rangeText = startRef === endRef ? startRef : `${startRef}:${endRef}`;
+  const startRef = `${colToLetter(range.startCol)}${range.startRow + 1}`
+  const endRef = `${colToLetter(range.endCol)}${range.endRow + 1}`
+  const rangeText = startRef === endRef ? startRef : `${startRef}:${endRef}`
 
   return (
     <div className="selection-info" style={{ borderColor: user.color }}>
@@ -178,18 +188,18 @@ export const SelectionInfo: React.FC<SelectionInfoProps> = ({ user, range }) => 
       <span className="selection-info__name">{user.name}</span>
       <span className="selection-info__range">{rangeText}</span>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Hook for visible selections
 // -----------------------------------------------------------------------------
 
 interface CellBounds {
-  startRow: number;
-  startCol: number;
-  endRow: number;
-  endCol: number;
+  startRow: number
+  startCol: number
+  endRow: number
+  endCol: number
 }
 
 export function useVisibleSelections(
@@ -199,17 +209,17 @@ export function useVisibleSelections(
 ): RemoteSelectionType[] {
   return allSelections.filter((selection) => {
     // Only show selections on current sheet
-    if (selection.range.sheetId !== currentSheetId) return false;
+    if (selection.range.sheetId !== currentSheetId) return false
 
     // Check if selection intersects with visible bounds
-    const { startRow, startCol, endRow, endCol } = selection.range;
+    const { startRow, startCol, endRow, endCol } = selection.range
     return !(
       endRow < visibleBounds.startRow ||
       startRow > visibleBounds.endRow ||
       endCol < visibleBounds.startCol ||
       startCol > visibleBounds.endCol
-    );
-  });
+    )
+  })
 }
 
-export default RemoteSelection;
+export default RemoteSelection

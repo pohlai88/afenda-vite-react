@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useQuery } from '@tanstack/react-query'
-import type { DashboardStats, FunnelData, RevenueData } from '@/types'
+import { useQuery } from "@tanstack/react-query"
+import type { DashboardStats, FunnelData, RevenueData } from "@/types"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -18,8 +18,8 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
 /** Fetch dashboard summary statistics. */
 export function useDashboardStats() {
   return useQuery<DashboardStats>({
-    queryKey: ['dashboard', 'stats'],
-    queryFn: () => fetchJson<DashboardStats>('/api/reports?type=dashboard'),
+    queryKey: ["dashboard", "stats"],
+    queryFn: () => fetchJson<DashboardStats>("/api/reports?type=dashboard"),
     staleTime: 30_000,
   })
 }
@@ -27,8 +27,8 @@ export function useDashboardStats() {
 /** Fetch pipeline funnel data for chart rendering. */
 export function useFunnelData() {
   return useQuery<FunnelData[]>({
-    queryKey: ['dashboard', 'funnel'],
-    queryFn: () => fetchJson<FunnelData[]>('/api/reports?type=funnel'),
+    queryKey: ["dashboard", "funnel"],
+    queryFn: () => fetchJson<FunnelData[]>("/api/reports?type=funnel"),
     staleTime: 30_000,
   })
 }
@@ -36,8 +36,8 @@ export function useFunnelData() {
 /** Fetch monthly revenue data for chart rendering. */
 export function useRevenueData() {
   return useQuery<RevenueData[]>({
-    queryKey: ['dashboard', 'revenue'],
-    queryFn: () => fetchJson<RevenueData[]>('/api/reports?type=revenue'),
+    queryKey: ["dashboard", "revenue"],
+    queryFn: () => fetchJson<RevenueData[]>("/api/reports?type=revenue"),
     staleTime: 30_000,
   })
 }

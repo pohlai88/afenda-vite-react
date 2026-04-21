@@ -1,17 +1,17 @@
-'use client'
+"use client"
 
-import { useCallback, useState } from 'react'
-import Link from 'next/link'
-import { Plus } from 'lucide-react'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { KanbanBoard } from '@/components/pipeline/KanbanBoard'
-import { usePipeline } from '@/hooks/use-pipeline'
-import { useMoveDeal } from '@/hooks/use-deals'
-import { usePermissions } from '@/hooks/use-permissions'
-import { toast } from '@/hooks/use-toast'
-import { useTranslation } from '@/i18n'
+import { useCallback, useState } from "react"
+import Link from "next/link"
+import { Plus } from "lucide-react"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { KanbanBoard } from "@/components/pipeline/KanbanBoard"
+import { usePipeline } from "@/hooks/use-pipeline"
+import { useMoveDeal } from "@/hooks/use-deals"
+import { usePermissions } from "@/hooks/use-permissions"
+import { toast } from "@/hooks/use-toast"
+import { useTranslation } from "@/i18n"
 
 export default function PipelinePage() {
   const { t } = useTranslation()
@@ -26,9 +26,9 @@ export default function PipelinePage() {
         {
           onError: (err) => {
             toast({
-              title: 'Lỗi',
-              description: err.message || 'Không thể di chuyển deal',
-              variant: 'destructive',
+              title: "Lỗi",
+              description: err.message || "Không thể di chuyển deal",
+              variant: "destructive",
             })
           },
         }
@@ -47,7 +47,7 @@ export default function PipelinePage() {
           <Button asChild size="sm">
             <Link href="/pipeline/new">
               <Plus className="w-4 h-4" />
-              {t('pipeline.addDeal')}
+              {t("pipeline.addDeal")}
             </Link>
           </Button>
         ) : undefined
@@ -67,10 +67,10 @@ export default function PipelinePage() {
         <div className="glass-card-static">
           <div className="p-8 text-center space-y-3">
             <p className="text-sm text-[var(--crm-text-secondary)]">
-              {t('pipeline.empty')}
+              {t("pipeline.empty")}
             </p>
             <Button asChild size="sm">
-              <Link href="/settings">{t('pipeline.setupPipeline')}</Link>
+              <Link href="/settings">{t("pipeline.setupPipeline")}</Link>
             </Button>
           </div>
         </div>
@@ -85,20 +85,14 @@ function PipelineSkeleton() {
   return (
     <div className="flex gap-3 overflow-hidden">
       {Array.from({ length: 5 }).map((_, i) => (
-        <div
-          key={i}
-          className="kanban-column flex flex-col"
-        >
+        <div key={i} className="kanban-column flex flex-col">
           <div className="px-3 py-3 border-b border-[var(--crm-border-subtle)] space-y-2">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-3 w-16" />
           </div>
           <div className="p-2 space-y-2">
-            {Array.from({ length: 3 - i % 2 }).map((_, j) => (
-              <div
-                key={j}
-                className="deal-card space-y-2"
-              >
+            {Array.from({ length: 3 - (i % 2) }).map((_, j) => (
+              <div key={j} className="deal-card space-y-2">
                 <Skeleton className="h-3 w-16" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-20" />

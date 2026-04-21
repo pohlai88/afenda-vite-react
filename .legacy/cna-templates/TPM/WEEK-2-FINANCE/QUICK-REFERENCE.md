@@ -2,19 +2,20 @@
 
 ## 🗓️ DAILY TASKS
 
-| Day | Focus | Deliverables |
-|-----|-------|--------------|
-| **Day 1** | Accrual API | 6 endpoints implemented |
-| **Day 2** | Accrual UI | 3 pages + components |
-| **Day 3** | Deduction API | 5 endpoints + matching logic |
-| **Day 4** | Deduction UI | 3 pages + matcher |
-| **Day 5** | GL + Chequebook | 4 pages + 9 endpoints |
+| Day       | Focus           | Deliverables                 |
+| --------- | --------------- | ---------------------------- |
+| **Day 1** | Accrual API     | 6 endpoints implemented      |
+| **Day 2** | Accrual UI      | 3 pages + components         |
+| **Day 3** | Deduction API   | 5 endpoints + matching logic |
+| **Day 4** | Deduction UI    | 3 pages + matcher            |
+| **Day 5** | GL + Chequebook | 4 pages + 9 endpoints        |
 
 ---
 
 ## 🔌 API ENDPOINTS CHECKLIST
 
 ### Accruals (6)
+
 ```
 [ ] GET    /api/finance/accruals
 [ ] GET    /api/finance/accruals/:id
@@ -25,6 +26,7 @@
 ```
 
 ### Deductions (5)
+
 ```
 [ ] GET    /api/finance/deductions
 [ ] POST   /api/finance/deductions
@@ -34,6 +36,7 @@
 ```
 
 ### GL Journals (5)
+
 ```
 [ ] GET    /api/finance/gl-journals
 [ ] POST   /api/finance/gl-journals
@@ -43,6 +46,7 @@
 ```
 
 ### Chequebook (4)
+
 ```
 [ ] GET    /api/finance/chequebook
 [ ] POST   /api/finance/chequebook
@@ -55,6 +59,7 @@
 ## 📄 PAGES CHECKLIST
 
 ### Accruals (3)
+
 ```
 [ ] /finance/accruals          - List page
 [ ] /finance/accruals/:id      - Detail page
@@ -62,6 +67,7 @@
 ```
 
 ### Deductions (3)
+
 ```
 [ ] /finance/deductions        - List page
 [ ] /finance/deductions/:id    - Detail page
@@ -69,12 +75,14 @@
 ```
 
 ### GL Journals (2)
+
 ```
 [ ] /finance/gl-journals       - List page
 [ ] /finance/gl-journals/:id   - Detail/Entry page
 ```
 
 ### Chequebook (2)
+
 ```
 [ ] /finance/chequebook        - List page
 [ ] /finance/chequebook/new    - Issue cheque page
@@ -85,6 +93,7 @@
 ## 🧩 COMPONENTS CHECKLIST
 
 ### Accruals
+
 ```
 [ ] AccrualCard.tsx
 [ ] AccrualForm.tsx
@@ -93,6 +102,7 @@
 ```
 
 ### Deductions
+
 ```
 [ ] DeductionCard.tsx
 [ ] DeductionForm.tsx
@@ -101,6 +111,7 @@
 ```
 
 ### GL Journals
+
 ```
 [ ] GLJournalEntry.tsx
 [ ] GLJournalForm.tsx
@@ -108,6 +119,7 @@
 ```
 
 ### Chequebook
+
 ```
 [ ] ChequeCard.tsx
 [ ] ChequeForm.tsx
@@ -115,6 +127,7 @@
 ```
 
 ### Shared
+
 ```
 [ ] FinanceStats.tsx
 [ ] FinanceDashboard.tsx
@@ -158,21 +171,22 @@
 
 ## 📊 GL ACCOUNT CODES
 
-| Code | Name | Type |
-|------|------|------|
-| 1000 | Cash | Asset |
-| 1100 | Accounts Receivable | Asset |
-| 2000 | Accounts Payable | Liability |
+| Code | Name                | Type      |
+| ---- | ------------------- | --------- |
+| 1000 | Cash                | Asset     |
+| 1100 | Accounts Receivable | Asset     |
+| 2000 | Accounts Payable    | Liability |
 | 2100 | Accrued Liabilities | Liability |
-| 6100 | Promotion Expense | Expense |
-| 6200 | Trade Spend | Expense |
-| 6300 | Rebate Expense | Expense |
+| 6100 | Promotion Expense   | Expense   |
+| 6200 | Trade Spend         | Expense   |
+| 6300 | Rebate Expense      | Expense   |
 
 ---
 
 ## 🔄 WORKFLOWS
 
 ### Accrual Posting
+
 ```
 1. Calculate accruals for period
 2. Review calculated amounts
@@ -183,6 +197,7 @@
 ```
 
 ### Deduction Matching
+
 ```
 1. Record deduction from customer
 2. View matching suggestions
@@ -193,6 +208,7 @@
 ```
 
 ### Cheque Issuance
+
 ```
 1. Select payee (customer)
 2. Enter amount
@@ -206,6 +222,7 @@
 ## 🧪 TEST SCENARIOS
 
 ### Accruals
+
 ```
 1. Calculate accruals for 2026-01
 2. Post accrual to GL (6100 Dr, 2100 Cr)
@@ -214,6 +231,7 @@
 ```
 
 ### Deductions
+
 ```
 1. Create deduction for customer
 2. Check matching suggestions
@@ -222,6 +240,7 @@
 ```
 
 ### Chequebook
+
 ```
 1. Issue cheque for claim payment
 2. Clear cheque

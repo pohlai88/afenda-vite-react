@@ -3,28 +3,28 @@
 // ============================================================
 
 export interface SheetProtection {
-  enabled: boolean;
-  passwordHash?: string;
+  enabled: boolean
+  passwordHash?: string
   allowedActions: {
-    selectLockedCells: boolean;
-    selectUnlockedCells: boolean;
-    formatCells: boolean;
-    formatColumns: boolean;
-    formatRows: boolean;
-    insertColumns: boolean;
-    insertRows: boolean;
-    deleteColumns: boolean;
-    deleteRows: boolean;
-    sort: boolean;
-    useAutoFilter: boolean;
-  };
+    selectLockedCells: boolean
+    selectUnlockedCells: boolean
+    formatCells: boolean
+    formatColumns: boolean
+    formatRows: boolean
+    insertColumns: boolean
+    insertRows: boolean
+    deleteColumns: boolean
+    deleteRows: boolean
+    sort: boolean
+    useAutoFilter: boolean
+  }
 }
 
 export interface WorkbookProtection {
-  enabled: boolean;
-  passwordHash?: string;
-  protectStructure: boolean;
-  protectWindows: boolean;
+  enabled: boolean
+  passwordHash?: string
+  protectStructure: boolean
+  protectWindows: boolean
 }
 
 export const DEFAULT_SHEET_PROTECTION: SheetProtection = {
@@ -42,4 +42,4 @@ export const DEFAULT_SHEET_PROTECTION: SheetProtection = {
     sort: false,
     useAutoFilter: false,
   },
-};
+}

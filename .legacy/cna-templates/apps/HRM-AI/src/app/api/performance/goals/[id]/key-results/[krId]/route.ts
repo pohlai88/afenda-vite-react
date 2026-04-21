@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { z } from "zod"
 
 const updateKRSchema = z.object({
   currentValue: z.number(),
@@ -16,7 +16,7 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const keyResult = await db.keyResult.findUnique({
@@ -24,7 +24,7 @@ export async function GET(
       include: {
         goal: { select: { id: true, title: true, ownerId: true } },
         updates: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           take: 10,
           include: {
             updatedBy: { select: { id: true, name: true } },
@@ -34,7 +34,10 @@ export async function GET(
     })
 
     if (!keyResult) {
-      return NextResponse.json({ error: 'Key result not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Key result not found" },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json({
@@ -42,9 +45,9 @@ export async function GET(
       data: keyResult,
     })
   } catch (error) {
-    console.error('Error fetching key result:', error)
+    console.error("Error fetching key result:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch key result' },
+      { error: "Failed to fetch key result" },
       { status: 500 }
     )
   }
@@ -58,7 +61,7 @@ export async function PUT(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -68,18 +71,23 @@ export async function PUT(
     const keyResult = await db.keyResult.findUnique({
       where: { id: params.krId },
       include: {
-        goal: { select: { id: true, ownerId: true, status: true, endDate: true } },
+        goal: {
+          select: { id: true, ownerId: true, status: true, endDate: true },
+        },
       },
     })
 
     if (!keyResult) {
-      return NextResponse.json({ error: 'Key result not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Key result not found" },
+        { status: 404 }
+      )
     }
 
     // Check if user owns the goal
     if (keyResult.goal.ownerId !== session.user.employeeId) {
       return NextResponse.json(
-        { error: 'You can only update your own key results' },
+        { error: "You can only update your own key results" },
         { status: 403 }
       )
     }
@@ -87,7 +95,8 @@ export async function PUT(
     // Calculate progress (assuming start value is 0 if not tracked)
     const targetValue = Number(keyResult.targetValue)
     const currentValue = data.currentValue
-    const progress = targetValue !== 0 ? Math.round((currentValue / targetValue) * 100) : 0
+    const progress =
+      targetValue !== 0 ? Math.round((currentValue / targetValue) * 100) : 0
     const clampedProgress = Math.min(100, Math.max(0, progress))
 
     // Update key result
@@ -117,9 +126,12 @@ export async function PUT(
     })
 
     if (allKeyResults.length > 0) {
-      const totalWeight = allKeyResults.reduce((sum, kr) => sum + Number(kr.weight), 0)
+      const totalWeight = allKeyResults.reduce(
+        (sum, kr) => sum + Number(kr.weight),
+        0
+      )
       const weightedProgress = allKeyResults.reduce(
-        (sum, kr) => sum + (kr.progress * Number(kr.weight)),
+        (sum, kr) => sum + kr.progress * Number(kr.weight),
         0
       )
       const goalProgress = Math.round(weightedProgress / totalWeight)
@@ -127,7 +139,7 @@ export async function PUT(
       // Determine goal status based on progress
       let goalStatus = keyResult.goal.status
       if (goalProgress === 100) {
-        goalStatus = 'COMPLETED'
+        goalStatus = "COMPLETED"
       }
 
       await db.goal.update({
@@ -142,18 +154,18 @@ export async function PUT(
     return NextResponse.json({
       success: true,
       data: updatedKR,
-      message: 'Key result updated successfully',
+      message: "Key result updated successfully",
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    console.error('Error updating key result:', error)
+    console.error("Error updating key result:", error)
     return NextResponse.json(
-      { error: 'Failed to update key result' },
+      { error: "Failed to update key result" },
       { status: 500 }
     )
   }

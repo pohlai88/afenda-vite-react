@@ -1,10 +1,10 @@
 // src/app/api/payroll/adjustments/[id]/route.ts
 // Single Payroll Adjustment API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { payrollAdjustmentService } from '@/services/payroll-adjustment.service'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { payrollAdjustmentService } from "@/services/payroll-adjustment.service"
+import { z } from "zod"
 
 const updateAdjustmentSchema = z.object({
   name: z.string().min(1).optional(),
@@ -15,7 +15,7 @@ const updateAdjustmentSchema = z.object({
 })
 
 const approvalSchema = z.object({
-  action: z.enum(['approve', 'reject']),
+  action: z.enum(["approve", "reject"]),
   rejectionReason: z.string().optional(),
 })
 
@@ -26,7 +26,7 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
@@ -37,16 +37,16 @@ export async function GET(
 
     if (!adjustment) {
       return NextResponse.json(
-        { error: 'Điều chỉnh không tồn tại' },
+        { error: "Điều chỉnh không tồn tại" },
         { status: 404 }
       )
     }
 
     return NextResponse.json(adjustment)
   } catch (error) {
-    console.error('Error fetching payroll adjustment:', error)
+    console.error("Error fetching payroll adjustment:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -59,11 +59,15 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'HR_STAFF'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (
+      !["SUPER_ADMIN", "ADMIN", "HR_MANAGER", "HR_STAFF"].includes(
+        session.user.role
+      )
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -73,14 +77,14 @@ export async function PATCH(
     if (body.action) {
       const { action, rejectionReason } = approvalSchema.parse(body)
 
-      if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
+      if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
         return NextResponse.json(
-          { error: 'Không có quyền duyệt điều chỉnh' },
+          { error: "Không có quyền duyệt điều chỉnh" },
           { status: 403 }
         )
       }
 
-      if (action === 'approve') {
+      if (action === "approve") {
         const adjustment = await payrollAdjustmentService.approve(
           session.user.tenantId,
           id,
@@ -90,7 +94,7 @@ export async function PATCH(
       } else {
         if (!rejectionReason) {
           return NextResponse.json(
-            { error: 'Vui lòng nhập lý do từ chối' },
+            { error: "Vui lòng nhập lý do từ chối" },
             { status: 400 }
           )
         }
@@ -123,9 +127,9 @@ export async function PATCH(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error updating payroll adjustment:', error)
+    console.error("Error updating payroll adjustment:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -138,11 +142,15 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'HR_STAFF'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (
+      !["SUPER_ADMIN", "ADMIN", "HR_MANAGER", "HR_STAFF"].includes(
+        session.user.role
+      )
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -153,9 +161,9 @@ export async function DELETE(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error deleting payroll adjustment:', error)
+    console.error("Error deleting payroll adjustment:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

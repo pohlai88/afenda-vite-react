@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { handleApiError, NotFound } from '@/lib/api/errors'
-import { dealRegistrationSchema } from '@/lib/validations/partner'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { handleApiError, NotFound } from "@/lib/api/errors"
+import { dealRegistrationSchema } from "@/lib/validations/partner"
 
 // GET /api/partners/[id]/registrations — List registrations
 export async function GET(
@@ -10,21 +10,23 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER'])
+    const result = await requireRole(["ADMIN", "MANAGER"])
     if (isErrorResponse(result)) return result
 
     const registrations = await prisma.dealRegistration.findMany({
       where: { partnerId: params.id },
       include: {
-        deal: { select: { id: true, title: true, value: true, currency: true } },
+        deal: {
+          select: { id: true, title: true, value: true, currency: true },
+        },
         approvedBy: { select: { id: true, name: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
 
     return NextResponse.json({ data: registrations })
   } catch (error) {
-    return handleApiError(error, '/api/partners/[id]/registrations')
+    return handleApiError(error, "/api/partners/[id]/registrations")
   }
 }
 
@@ -34,26 +36,32 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER'])
+    const result = await requireRole(["ADMIN", "MANAGER"])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
     const data = dealRegistrationSchema.parse({ ...body, partnerId: params.id })
 
     // Validate partner exists
-    const partner = await prisma.partner.findUnique({ where: { id: params.id } })
-    if (!partner) return handleApiError(NotFound('Partner'), '/api/partners/[id]/registrations')
+    const partner = await prisma.partner.findUnique({
+      where: { id: params.id },
+    })
+    if (!partner)
+      return handleApiError(
+        NotFound("Partner"),
+        "/api/partners/[id]/registrations"
+      )
 
     // Check deal not already registered by another partner
     const existingReg = await prisma.dealRegistration.findFirst({
       where: {
         dealId: data.dealId,
-        status: { in: ['PENDING', 'APPROVED'] },
+        status: { in: ["PENDING", "APPROVED"] },
       },
     })
     if (existingReg) {
       return NextResponse.json(
-        { error: 'Deal already has an active registration' },
+        { error: "Deal already has an active registration" },
         { status: 400 }
       )
     }
@@ -78,6 +86,6 @@ export async function POST(
 
     return NextResponse.json(registration, { status: 201 })
   } catch (error) {
-    return handleApiError(error, '/api/partners/[id]/registrations')
+    return handleApiError(error, "/api/partners/[id]/registrations")
   }
 }

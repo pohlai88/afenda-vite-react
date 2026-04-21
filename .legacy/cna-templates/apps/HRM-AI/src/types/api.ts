@@ -29,11 +29,11 @@ export interface ApiResponse<T = unknown> {
 }
 
 export const API_PERMISSIONS = [
-  'read:employees',
-  'write:employees',
-  'read:attendance',
-  'write:attendance',
-  'read:leave',
-  'read:payroll',
-  'webhooks:manage',
+  "read:employees",
+  "write:employees",
+  "read:attendance",
+  "write:attendance",
+  "read:leave",
+  "read:payroll",
+  "webhooks:manage",
 ] as const

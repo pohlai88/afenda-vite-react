@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from "react"
 
 // ═══════════════════════════════════════════════════════════════
 // MEDIA QUERY HOOK
@@ -21,10 +21,10 @@ export function useMediaQuery(query: string): boolean {
     }
 
     // Add listener
-    media.addEventListener('change', listener)
+    media.addEventListener("change", listener)
 
     // Cleanup
-    return () => media.removeEventListener('change', listener)
+    return () => media.removeEventListener("change", listener)
   }, [query])
 
   return matches
@@ -36,18 +36,18 @@ export function useMediaQuery(query: string): boolean {
 
 // Tailwind default breakpoints
 const breakpoints = {
-  sm: '640px',
-  md: '768px',
-  lg: '1024px',
-  xl: '1280px',
-  '2xl': '1536px'
+  sm: "640px",
+  md: "768px",
+  lg: "1024px",
+  xl: "1280px",
+  "2xl": "1536px",
 }
 
 export function useBreakpoint() {
-  const isMobile = useMediaQuery('(max-width: 639px)')
-  const isTablet = useMediaQuery('(min-width: 640px) and (max-width: 1023px)')
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const isLargeDesktop = useMediaQuery('(min-width: 1280px)')
+  const isMobile = useMediaQuery("(max-width: 639px)")
+  const isTablet = useMediaQuery("(min-width: 640px) and (max-width: 1023px)")
+  const isDesktop = useMediaQuery("(min-width: 1024px)")
+  const isLargeDesktop = useMediaQuery("(min-width: 1280px)")
 
   return {
     isMobile,
@@ -56,7 +56,7 @@ export function useBreakpoint() {
     isLargeDesktop,
     // Utility checks
     isMobileOrTablet: isMobile || isTablet,
-    isDesktopOrLarger: isDesktop || isLargeDesktop
+    isDesktopOrLarger: isDesktop || isLargeDesktop,
   }
 }
 
@@ -66,7 +66,9 @@ export function useIsMobile() {
 }
 
 export function useIsTablet() {
-  return useMediaQuery(`(min-width: ${breakpoints.sm}) and (max-width: ${breakpoints.lg})`)
+  return useMediaQuery(
+    `(min-width: ${breakpoints.sm}) and (max-width: ${breakpoints.lg})`
+  )
 }
 
 export function useIsDesktop() {
@@ -78,15 +80,15 @@ export function useIsDesktop() {
 // ═══════════════════════════════════════════════════════════════
 
 export function usePrefersDarkMode(): boolean {
-  return useMediaQuery('(prefers-color-scheme: dark)')
+  return useMediaQuery("(prefers-color-scheme: dark)")
 }
 
 export function usePrefersReducedMotion(): boolean {
-  return useMediaQuery('(prefers-reduced-motion: reduce)')
+  return useMediaQuery("(prefers-reduced-motion: reduce)")
 }
 
 export function useIsTouch(): boolean {
-  return useMediaQuery('(hover: none) and (pointer: coarse)')
+  return useMediaQuery("(hover: none) and (pointer: coarse)")
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -100,20 +102,20 @@ interface WindowSize {
 
 export function useWindowSize(): WindowSize {
   const [size, setSize] = useState<WindowSize>({
-    width: typeof window !== 'undefined' ? window.innerWidth : 0,
-    height: typeof window !== 'undefined' ? window.innerHeight : 0
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
   })
 
   useEffect(() => {
     const handleResize = () => {
       setSize({
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
       })
     }
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   return size

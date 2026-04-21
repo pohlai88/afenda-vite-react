@@ -75,7 +75,11 @@ import {
 } from "@/hooks/use-overtime"
 import { useDepartments } from "@/hooks/use-departments"
 import { useToast } from "@/hooks/use-toast"
-import { OT_STATUS_LABELS, OT_STATUS_COLORS, DAY_TYPE_LABELS } from "@/constants/attendance"
+import {
+  OT_STATUS_LABELS,
+  OT_STATUS_COLORS,
+  DAY_TYPE_LABELS,
+} from "@/constants/attendance"
 import type { OvertimeRequestFormData } from "@/lib/validations/attendance"
 
 export default function OvertimePage() {
@@ -97,7 +101,9 @@ export default function OvertimePage() {
   const { data: overtimeData, isLoading } = useOvertimeRequests({
     search: search || undefined,
     departmentId: departmentId || undefined,
-    status: (status as "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED") || undefined,
+    status:
+      (status as "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED") ||
+      undefined,
     dateFrom: dateFrom?.toISOString(),
     dateTo: dateTo?.toISOString(),
     page,
@@ -117,7 +123,8 @@ export default function OvertimePage() {
     } catch (error) {
       toast({
         title: "Lỗi",
-        description: error instanceof Error ? error.message : "Không thể gửi đơn",
+        description:
+          error instanceof Error ? error.message : "Không thể gửi đơn",
         variant: "destructive",
       })
     }
@@ -130,7 +137,8 @@ export default function OvertimePage() {
     } catch (error) {
       toast({
         title: "Lỗi",
-        description: error instanceof Error ? error.message : "Không thể duyệt đơn",
+        description:
+          error instanceof Error ? error.message : "Không thể duyệt đơn",
         variant: "destructive",
       })
     }
@@ -140,14 +148,18 @@ export default function OvertimePage() {
     if (!rejectingId || !rejectReason) return
 
     try {
-      await rejectOvertime.mutateAsync({ id: rejectingId, reason: rejectReason })
+      await rejectOvertime.mutateAsync({
+        id: rejectingId,
+        reason: rejectReason,
+      })
       toast({ title: "Từ chối đơn thành công" })
       setRejectingId(null)
       setRejectReason("")
     } catch (error) {
       toast({
         title: "Lỗi",
-        description: error instanceof Error ? error.message : "Không thể từ chối đơn",
+        description:
+          error instanceof Error ? error.message : "Không thể từ chối đơn",
         variant: "destructive",
       })
     }
@@ -163,7 +175,8 @@ export default function OvertimePage() {
     } catch (error) {
       toast({
         title: "Lỗi",
-        description: error instanceof Error ? error.message : "Không thể xóa đơn",
+        description:
+          error instanceof Error ? error.message : "Không thể xóa đơn",
         variant: "destructive",
       })
     }
@@ -205,7 +218,10 @@ export default function OvertimePage() {
               />
             </div>
 
-            <Select value={departmentId || "all"} onValueChange={(v) => setDepartmentId(v === "all" ? "" : v)}>
+            <Select
+              value={departmentId || "all"}
+              onValueChange={(v) => setDepartmentId(v === "all" ? "" : v)}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Phòng ban" />
               </SelectTrigger>
@@ -219,7 +235,10 @@ export default function OvertimePage() {
               </SelectContent>
             </Select>
 
-            <Select value={status || "all"} onValueChange={(v) => setStatus(v === "all" ? "" : v)}>
+            <Select
+              value={status || "all"}
+              onValueChange={(v) => setStatus(v === "all" ? "" : v)}
+            >
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Trạng thái" />
               </SelectTrigger>
@@ -292,7 +311,10 @@ export default function OvertimePage() {
                   </TableRow>
                 ) : !overtimeData?.data.length ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                    <TableCell
+                      colSpan={8}
+                      className="text-center py-8 text-muted-foreground"
+                    >
                       Không có đơn tăng ca nào
                     </TableCell>
                   </TableRow>
@@ -301,14 +323,18 @@ export default function OvertimePage() {
                     <TableRow key={ot.id}>
                       <TableCell>
                         <div>
-                          <div className="font-medium">{ot.employee?.fullName}</div>
+                          <div className="font-medium">
+                            {ot.employee?.fullName}
+                          </div>
                           <div className="text-sm text-muted-foreground">
                             {ot.employee?.employeeCode}
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        {format(new Date(ot.date), "dd/MM/yyyy", { locale: vi })}
+                        {format(new Date(ot.date), "dd/MM/yyyy", {
+                          locale: vi,
+                        })}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
@@ -318,16 +344,22 @@ export default function OvertimePage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="font-medium">{Number(ot.plannedHours)}h</span>
-                        {ot.actualHours && Number(ot.actualHours) !== Number(ot.plannedHours) && (
-                          <span className="text-sm text-muted-foreground ml-1">
-                            (thực tế: {Number(ot.actualHours)}h)
-                          </span>
-                        )}
+                        <span className="font-medium">
+                          {Number(ot.plannedHours)}h
+                        </span>
+                        {ot.actualHours &&
+                          Number(ot.actualHours) !==
+                            Number(ot.plannedHours) && (
+                            <span className="text-sm text-muted-foreground ml-1">
+                              (thực tế: {Number(ot.actualHours)}h)
+                            </span>
+                          )}
                       </TableCell>
                       <TableCell>{DAY_TYPE_LABELS[ot.dayType]}</TableCell>
                       <TableCell>
-                        <span className="font-medium">{Math.round(Number(ot.multiplier) * 100)}%</span>
+                        <span className="font-medium">
+                          {Math.round(Number(ot.multiplier) * 100)}%
+                        </span>
                         {ot.isNightShift && (
                           <Badge variant="outline" className="ml-1 text-xs">
                             Đêm
@@ -363,7 +395,11 @@ export default function OvertimePage() {
                           )}
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                              >
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -417,7 +453,10 @@ export default function OvertimePage() {
       </Dialog>
 
       {/* Reject Dialog */}
-      <AlertDialog open={!!rejectingId} onOpenChange={() => setRejectingId(null)}>
+      <AlertDialog
+        open={!!rejectingId}
+        onOpenChange={() => setRejectingId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Từ chối đơn tăng ca</AlertDialogTitle>

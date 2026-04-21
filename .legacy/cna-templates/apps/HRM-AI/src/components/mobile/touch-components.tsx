@@ -1,28 +1,37 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { cn } from '@/lib/utils'
-import { ChevronRight } from 'lucide-react'
+import * as React from "react"
+import { cn } from "@/lib/utils"
+import { ChevronRight } from "lucide-react"
 
 // ═══════════════════════════════════════════════════════════════
 // Touch Button - Larger hit area for mobile
 // ═══════════════════════════════════════════════════════════════
 
 interface TouchButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'
-  size?: 'sm' | 'md' | 'lg'
+  variant?:
+    | "default"
+    | "primary"
+    | "secondary"
+    | "outline"
+    | "ghost"
+    | "destructive"
+  size?: "sm" | "md" | "lg"
   fullWidth?: boolean
   loading?: boolean
   leftIcon?: React.ReactNode
   rightIcon?: React.ReactNode
 }
 
-export const TouchButton = React.forwardRef<HTMLButtonElement, TouchButtonProps>(
+export const TouchButton = React.forwardRef<
+  HTMLButtonElement,
+  TouchButtonProps
+>(
   (
     {
       className,
-      variant = 'default',
-      size = 'md',
+      variant = "default",
+      size = "md",
       fullWidth = false,
       loading = false,
       leftIcon,
@@ -34,21 +43,26 @@ export const TouchButton = React.forwardRef<HTMLButtonElement, TouchButtonProps>
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all touch-manipulation active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none select-none'
+      "inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all touch-manipulation active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none select-none"
 
     const variants = {
-      default: 'bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80',
-      primary: 'bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80',
-      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70',
-      outline: 'border-2 border-input bg-background hover:bg-accent hover:text-accent-foreground',
-      ghost: 'hover:bg-accent hover:text-accent-foreground',
-      destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+      default:
+        "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80",
+      primary:
+        "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80",
+      secondary:
+        "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70",
+      outline:
+        "border-2 border-input bg-background hover:bg-accent hover:text-accent-foreground",
+      ghost: "hover:bg-accent hover:text-accent-foreground",
+      destructive:
+        "bg-destructive text-destructive-foreground hover:bg-destructive/90",
     }
 
     const sizes = {
-      sm: 'h-10 px-4 text-sm min-w-[80px]',
-      md: 'h-12 px-6 text-base min-w-[100px]',
-      lg: 'h-14 px-8 text-lg min-w-[120px]',
+      sm: "h-10 px-4 text-sm min-w-[80px]",
+      md: "h-12 px-6 text-base min-w-[100px]",
+      lg: "h-14 px-8 text-lg min-w-[120px]",
     }
 
     return (
@@ -58,7 +72,7 @@ export const TouchButton = React.forwardRef<HTMLButtonElement, TouchButtonProps>
           baseStyles,
           variants[variant],
           sizes[size],
-          fullWidth && 'w-full',
+          fullWidth && "w-full",
           className
         )}
         disabled={disabled || loading}
@@ -77,37 +91,37 @@ export const TouchButton = React.forwardRef<HTMLButtonElement, TouchButtonProps>
     )
   }
 )
-TouchButton.displayName = 'TouchButton'
+TouchButton.displayName = "TouchButton"
 
 // ═══════════════════════════════════════════════════════════════
 // Touch Card - Tappable card for lists
 // ═══════════════════════════════════════════════════════════════
 
 interface TouchCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  as?: 'div' | 'button' | 'a'
+  as?: "div" | "button" | "a"
   href?: string
   showArrow?: boolean
   isPressed?: boolean
-  variant?: 'default' | 'elevated' | 'outlined'
+  variant?: "default" | "elevated" | "outlined"
 }
 
 export function TouchCard({
   className,
-  as = 'div',
+  as = "div",
   href,
   showArrow = false,
   isPressed = false,
-  variant = 'default',
+  variant = "default",
   children,
   ...props
 }: TouchCardProps) {
   const baseStyles =
-    'relative block w-full text-left rounded-xl transition-all touch-manipulation'
+    "relative block w-full text-left rounded-xl transition-all touch-manipulation"
 
   const variants = {
-    default: 'bg-card border hover:bg-accent/50 active:bg-accent',
-    elevated: 'bg-card shadow-md hover:shadow-lg active:shadow-sm',
-    outlined: 'border-2 hover:border-primary/50 active:border-primary',
+    default: "bg-card border hover:bg-accent/50 active:bg-accent",
+    elevated: "bg-card shadow-md hover:shadow-lg active:shadow-sm",
+    outlined: "border-2 hover:border-primary/50 active:border-primary",
   }
 
   const content = (
@@ -126,7 +140,7 @@ export function TouchCard({
         className={cn(
           baseStyles,
           variants[variant],
-          isPressed && 'scale-[0.98] bg-accent',
+          isPressed && "scale-[0.98] bg-accent",
           className
         )}
         {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
@@ -136,13 +150,13 @@ export function TouchCard({
     )
   }
 
-  if (as === 'button') {
+  if (as === "button") {
     return (
       <button
         className={cn(
           baseStyles,
           variants[variant],
-          isPressed && 'scale-[0.98] bg-accent',
+          isPressed && "scale-[0.98] bg-accent",
           className
         )}
         {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
@@ -157,7 +171,7 @@ export function TouchCard({
       className={cn(
         baseStyles,
         variants[variant],
-        isPressed && 'scale-[0.98] bg-accent',
+        isPressed && "scale-[0.98] bg-accent",
         className
       )}
       {...(props as React.HTMLAttributes<HTMLDivElement>)}
@@ -196,9 +210,9 @@ export function TouchListItem({
   const content = (
     <div
       className={cn(
-        'flex items-center gap-4 p-4 rounded-xl transition-all touch-manipulation',
-        'hover:bg-accent/50 active:bg-accent active:scale-[0.99]',
-        destructive && 'text-destructive',
+        "flex items-center gap-4 p-4 rounded-xl transition-all touch-manipulation",
+        "hover:bg-accent/50 active:bg-accent active:scale-[0.99]",
+        destructive && "text-destructive",
         className
       )}
       onClick={onClick}
@@ -207,8 +221,8 @@ export function TouchListItem({
       {icon && (
         <div
           className={cn(
-            'flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center',
-            destructive ? 'bg-destructive/10' : 'bg-muted'
+            "flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center",
+            destructive ? "bg-destructive/10" : "bg-muted"
           )}
         >
           {icon}
@@ -241,7 +255,7 @@ export function TouchListItem({
 interface TouchFabProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon: React.ReactNode
   label?: string
-  position?: 'bottom-right' | 'bottom-center' | 'bottom-left'
+  position?: "bottom-right" | "bottom-center" | "bottom-left"
   extended?: boolean
 }
 
@@ -249,26 +263,26 @@ export function TouchFab({
   className,
   icon,
   label,
-  position = 'bottom-right',
+  position = "bottom-right",
   extended = false,
   ...props
 }: TouchFabProps) {
   const positions = {
-    'bottom-right': 'right-4 bottom-20',
-    'bottom-center': 'left-1/2 -translate-x-1/2 bottom-20',
-    'bottom-left': 'left-4 bottom-20',
+    "bottom-right": "right-4 bottom-20",
+    "bottom-center": "left-1/2 -translate-x-1/2 bottom-20",
+    "bottom-left": "left-4 bottom-20",
   }
 
   return (
     <button
       className={cn(
-        'fixed z-40 flex items-center justify-center gap-2',
-        'bg-primary text-primary-foreground shadow-lg',
-        'rounded-full transition-all touch-manipulation',
-        'hover:shadow-xl active:scale-95',
-        extended ? 'h-14 px-6' : 'h-14 w-14',
+        "fixed z-40 flex items-center justify-center gap-2",
+        "bg-primary text-primary-foreground shadow-lg",
+        "rounded-full transition-all touch-manipulation",
+        "hover:shadow-xl active:scale-95",
+        extended ? "h-14 px-6" : "h-14 w-14",
         positions[position],
-        'md:hidden', // Only show on mobile
+        "md:hidden", // Only show on mobile
         className
       )}
       {...props}
@@ -321,7 +335,10 @@ export function TouchSwipeActions({
     const limitedDiff = Math.max(-maxSwipe, Math.min(maxSwipe, diff))
 
     // Only allow swipe if we have actions in that direction
-    if ((diff > 0 && leftActions.length === 0) || (diff < 0 && rightActions.length === 0)) {
+    if (
+      (diff > 0 && leftActions.length === 0) ||
+      (diff < 0 && rightActions.length === 0)
+    ) {
       return
     }
 
@@ -366,7 +383,7 @@ export function TouchSwipeActions({
         className="relative bg-background transition-transform"
         style={{
           transform: `translateX(${translateX}px)`,
-          transition: isSwiping ? 'none' : 'transform 0.2s ease-out',
+          transition: isSwiping ? "none" : "transform 0.2s ease-out",
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -444,8 +461,8 @@ export function TouchPullToRefresh({
       >
         <div
           className={cn(
-            'h-8 w-8 rounded-full border-2 border-primary',
-            isRefreshing ? 'animate-spin border-t-transparent' : ''
+            "h-8 w-8 rounded-full border-2 border-primary",
+            isRefreshing ? "animate-spin border-t-transparent" : ""
           )}
         />
       </div>
@@ -454,7 +471,7 @@ export function TouchPullToRefresh({
       <div
         style={{
           transform: `translateY(${pullDistance}px)`,
-          transition: pullDistance === 0 ? 'transform 0.2s ease-out' : 'none',
+          transition: pullDistance === 0 ? "transform 0.2s ease-out" : "none",
         }}
       >
         {children}

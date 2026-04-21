@@ -1,26 +1,26 @@
-import React from 'react';
-import { RibbonGroup } from '../RibbonGroup';
-import { RibbonButton } from '../RibbonButton';
-import { NumberFormatDropdown } from '../../Toolbar/NumberFormatDropdown';
-import { DollarSign, Percent, Hash } from 'lucide-react';
-import { useFormatStore } from '../../../stores/formatStore';
+import React from "react"
+import { RibbonGroup } from "../RibbonGroup"
+import { RibbonButton } from "../RibbonButton"
+import { NumberFormatDropdown } from "../../Toolbar/NumberFormatDropdown"
+import { DollarSign, Percent, Hash } from "lucide-react"
+import { useFormatStore } from "../../../stores/formatStore"
 
 const NUMBER_FORMATS = [
-  { id: 'general', label: 'General' },
-  { id: 'number', label: 'Number' },
-  { id: 'currency', label: 'Currency' },
-  { id: 'accounting', label: 'Accounting' },
-  { id: 'short-date', label: 'Short Date' },
-  { id: 'long-date', label: 'Long Date' },
-  { id: 'time', label: 'Time' },
-  { id: 'percentage', label: 'Percentage' },
-  { id: 'fraction', label: 'Fraction' },
-  { id: 'scientific', label: 'Scientific' },
-  { id: 'text', label: 'Text' },
-];
+  { id: "general", label: "General" },
+  { id: "number", label: "Number" },
+  { id: "currency", label: "Currency" },
+  { id: "accounting", label: "Accounting" },
+  { id: "short-date", label: "Short Date" },
+  { id: "long-date", label: "Long Date" },
+  { id: "time", label: "Time" },
+  { id: "percentage", label: "Percentage" },
+  { id: "fraction", label: "Fraction" },
+  { id: "scientific", label: "Scientific" },
+  { id: "text", label: "Text" },
+]
 
 export const NumberGroup: React.FC = () => {
-  const { numberFormat, setNumberFormat } = useFormatStore();
+  const { numberFormat, setNumberFormat } = useFormatStore()
 
   return (
     <RibbonGroup label="Number" showDialogLauncher>
@@ -38,22 +38,22 @@ export const NumberGroup: React.FC = () => {
             icon={DollarSign}
             label="Accounting"
             title="Accounting Number Format"
-            onClick={() => setNumberFormat('$#,##0.00')}
+            onClick={() => setNumberFormat("$#,##0.00")}
           />
           <RibbonButton
             icon={Percent}
             label="Percent"
             title="Percent Style"
-            onClick={() => setNumberFormat('0.00%')}
+            onClick={() => setNumberFormat("0.00%")}
           />
           <RibbonButton
             icon={Hash}
             label="Comma"
             title="Comma Style"
-            onClick={() => setNumberFormat('#,##0.00')}
+            onClick={() => setNumberFormat("#,##0.00")}
           />
         </div>
       </div>
     </RibbonGroup>
-  );
-};
+  )
+}

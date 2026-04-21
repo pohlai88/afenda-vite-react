@@ -1,8 +1,8 @@
 // tests/utils/test-utils.tsx
-import React, { ReactElement } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React, { ReactElement } from "react"
+import { render, RenderOptions } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 /**
  * LAC VIET HR - Custom Test Utilities
@@ -14,7 +14,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // ════════════════════════════════════════════════════════════════════════════════
 
 interface AllProvidersProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 function createTestQueryClient() {
@@ -29,42 +29,37 @@ function createTestQueryClient() {
         retry: false,
       },
     },
-  });
+  })
 }
 
 function AllProviders({ children }: AllProvidersProps) {
-  const queryClient = createTestQueryClient();
+  const queryClient = createTestQueryClient()
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  );
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  )
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
 // CUSTOM RENDER
 // ════════════════════════════════════════════════════════════════════════════════
 
-interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
-  withUser?: boolean;
+interface CustomRenderOptions extends Omit<RenderOptions, "wrapper"> {
+  withUser?: boolean
 }
 
-function customRender(
-  ui: ReactElement,
-  options?: CustomRenderOptions
-) {
-  const { withUser = true, ...renderOptions } = options || {};
+function customRender(ui: ReactElement, options?: CustomRenderOptions) {
+  const { withUser = true, ...renderOptions } = options || {}
 
   const result = render(ui, {
     wrapper: AllProviders,
     ...renderOptions,
-  });
+  })
 
   return {
     ...result,
     user: withUser ? userEvent.setup() : undefined,
-  };
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -75,14 +70,14 @@ function customRender(
  * Wait for component to finish loading
  */
 async function waitForLoadingToFinish() {
-  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 0))
 }
 
 /**
  * Create mock props with required fields
  */
 function createMockProps<T extends object>(overrides: Partial<T> = {}): T {
-  return overrides as T;
+  return overrides as T
 }
 
 /**
@@ -92,9 +87,9 @@ function createMockEvent<T extends Event>(
   type: string,
   properties: Partial<T> = {}
 ): T {
-  const event = new Event(type, { bubbles: true, cancelable: true }) as T;
-  Object.assign(event, properties);
-  return event;
+  const event = new Event(type, { bubbles: true, cancelable: true }) as T
+  Object.assign(event, properties)
+  return event
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -102,11 +97,11 @@ function createMockEvent<T extends Event>(
 // ════════════════════════════════════════════════════════════════════════════════
 
 // Re-export everything from testing-library
-export * from '@testing-library/react';
-export { customRender as render };
+export * from "@testing-library/react"
+export { customRender as render }
 export {
   createTestQueryClient,
   waitForLoadingToFinish,
   createMockProps,
   createMockEvent,
-};
+}

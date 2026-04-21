@@ -1,11 +1,11 @@
-'use client';
+"use client"
 
-import { useEffect, useState, useCallback } from 'react';
-import { useParams, useSearchParams, useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert } from '@/components/ui/alert';
+import { useEffect, useState, useCallback } from "react"
+import { useParams, useSearchParams, useRouter } from "next/navigation"
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Alert } from "@/components/ui/alert"
 import {
   DndContext,
   closestCenter,
@@ -14,18 +14,18 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core"
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   rectSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { BarChart } from '@/components/analytics/charts/BarChart';
-import { LineChart } from '@/components/analytics/charts/LineChart';
-import { PieChart } from '@/components/analytics/charts/PieChart';
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { BarChart } from "@/components/analytics/charts/BarChart"
+import { LineChart } from "@/components/analytics/charts/LineChart"
+import { PieChart } from "@/components/analytics/charts/PieChart"
 import {
   AlertTriangle,
   Pencil,
@@ -39,24 +39,24 @@ import {
   Users,
   DollarSign,
   Clock,
-} from 'lucide-react';
+} from "lucide-react"
 
 interface Widget {
-  id: string;
-  widgetTypeId: string;
-  name: string;
-  config: Record<string, unknown>;
-  order: number;
-  data?: unknown;
+  id: string
+  widgetTypeId: string
+  name: string
+  config: Record<string, unknown>
+  order: number
+  data?: unknown
 }
 
 interface DashboardConfig {
-  id: string;
-  name: string;
-  description: string;
-  widgets: Widget[];
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  name: string
+  description: string
+  widgets: Widget[]
+  createdAt: string
+  updatedAt: string
 }
 
 function SortableWidget({
@@ -64,9 +64,9 @@ function SortableWidget({
   isEditMode,
   onRemove,
 }: {
-  widget: Widget;
-  isEditMode: boolean;
-  onRemove: (id: string) => void;
+  widget: Widget
+  isEditMode: boolean
+  onRemove: (id: string) => void
 }) {
   const {
     attributes,
@@ -75,34 +75,36 @@ function SortableWidget({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: widget.id });
+  } = useSortable({ id: widget.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-  };
+  }
 
   const getWidgetIcon = (typeId: string) => {
     switch (typeId) {
-      case 'bar_chart':
-        return <BarChart3 className="h-5 w-5 text-blue-600" />;
-      case 'line_chart':
-        return <TrendingUp className="h-5 w-5 text-green-600" />;
-      case 'headcount':
-        return <Users className="h-5 w-5 text-purple-600" />;
-      case 'compensation':
-        return <DollarSign className="h-5 w-5 text-yellow-600" />;
-      case 'attendance':
-        return <Clock className="h-5 w-5 text-orange-600" />;
+      case "bar_chart":
+        return <BarChart3 className="h-5 w-5 text-blue-600" />
+      case "line_chart":
+        return <TrendingUp className="h-5 w-5 text-green-600" />
+      case "headcount":
+        return <Users className="h-5 w-5 text-purple-600" />
+      case "compensation":
+        return <DollarSign className="h-5 w-5 text-yellow-600" />
+      case "attendance":
+        return <Clock className="h-5 w-5 text-orange-600" />
       default:
-        return <BarChart3 className="h-5 w-5 text-gray-600" />;
+        return <BarChart3 className="h-5 w-5 text-gray-600" />
     }
-  };
+  }
 
   return (
     <div ref={setNodeRef} style={style} className="relative">
-      <Card className={`p-4 h-full ${isEditMode ? 'border-dashed border-2' : ''}`}>
+      <Card
+        className={`p-4 h-full ${isEditMode ? "border-dashed border-2" : ""}`}
+      >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             {isEditMode && (
@@ -127,24 +129,28 @@ function SortableWidget({
             <WidgetContent widget={widget} />
           ) : (
             <span className="text-sm text-muted-foreground">
-              {isEditMode ? 'Widget preview' : 'Đang tải...'}
+              {isEditMode ? "Widget preview" : "Đang tải..."}
             </span>
           )}
         </div>
       </Card>
     </div>
-  );
+  )
 }
 
 function WidgetContent({ widget }: { widget: Widget }) {
-  const chartData = widget.data as { labels?: string[]; values?: number[] } | undefined;
+  const chartData = widget.data as
+    | { labels?: string[]; values?: number[] }
+    | undefined
 
   if (!chartData || !chartData.labels || !chartData.values) {
-    return <span className="text-sm text-muted-foreground">Không có dữ liệu</span>;
+    return (
+      <span className="text-sm text-muted-foreground">Không có dữ liệu</span>
+    )
   }
 
   switch (widget.widgetTypeId) {
-    case 'bar_chart':
+    case "bar_chart":
       return (
         <BarChart
           data={{
@@ -152,8 +158,8 @@ function WidgetContent({ widget }: { widget: Widget }) {
             datasets: [{ label: widget.name, data: chartData.values }],
           }}
         />
-      );
-    case 'line_chart':
+      )
+    case "line_chart":
       return (
         <LineChart
           data={{
@@ -161,8 +167,8 @@ function WidgetContent({ widget }: { widget: Widget }) {
             datasets: [{ label: widget.name, data: chartData.values }],
           }}
         />
-      );
-    case 'pie_chart':
+      )
+    case "pie_chart":
       return (
         <PieChart
           data={{
@@ -170,93 +176,93 @@ function WidgetContent({ widget }: { widget: Widget }) {
             datasets: [{ label: widget.name, data: chartData.values }],
           }}
         />
-      );
+      )
     default:
       return (
         <div className="text-center">
           <div className="text-2xl font-bold">
-            {chartData.values[0]?.toLocaleString() ?? '-'}
+            {chartData.values[0]?.toLocaleString() ?? "-"}
           </div>
           <div className="text-sm text-muted-foreground">{widget.name}</div>
         </div>
-      );
+      )
   }
 }
 
 export default function DashboardViewPage() {
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const dashboardId = params.id as string;
+  const params = useParams()
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const dashboardId = params.id as string
 
-  const [dashboard, setDashboard] = useState<DashboardConfig | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [dashboard, setDashboard] = useState<DashboardConfig | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [isEditMode, setIsEditMode] = useState(
-    searchParams.get('edit') === 'true'
-  );
-  const [saving, setSaving] = useState(false);
-  const [widgets, setWidgets] = useState<Widget[]>([]);
+    searchParams.get("edit") === "true"
+  )
+  const [saving, setSaving] = useState(false)
+  const [widgets, setWidgets] = useState<Widget[]>([])
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
-  );
+  )
 
   useEffect(() => {
     async function fetchDashboard() {
       try {
-        setLoading(true);
-        const response = await fetch(`/api/analytics/dashboards/${dashboardId}`);
-        if (!response.ok) throw new Error('Không thể tải dashboard');
-        const result = await response.json();
-        setDashboard(result);
-        setWidgets(result.widgets || []);
+        setLoading(true)
+        const response = await fetch(`/api/analytics/dashboards/${dashboardId}`)
+        if (!response.ok) throw new Error("Không thể tải dashboard")
+        const result = await response.json()
+        setDashboard(result)
+        setWidgets(result.widgets || [])
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi');
+        setError(err instanceof Error ? err.message : "Đã xảy ra lỗi")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchDashboard();
-  }, [dashboardId]);
+    fetchDashboard()
+  }, [dashboardId])
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
+    const { active, over } = event
     if (over && active.id !== over.id) {
       setWidgets((items) => {
-        const oldIndex = items.findIndex((i) => i.id === active.id);
-        const newIndex = items.findIndex((i) => i.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
+        const oldIndex = items.findIndex((i) => i.id === active.id)
+        const newIndex = items.findIndex((i) => i.id === over.id)
+        return arrayMove(items, oldIndex, newIndex)
+      })
     }
-  }, []);
+  }, [])
 
   function removeWidget(widgetId: string) {
-    setWidgets((prev) => prev.filter((w) => w.id !== widgetId));
+    setWidgets((prev) => prev.filter((w) => w.id !== widgetId))
   }
 
   async function handleSave() {
     try {
-      setSaving(true);
+      setSaving(true)
       const response = await fetch(`/api/analytics/dashboards/${dashboardId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...dashboard,
           widgets: widgets.map((w, index) => ({ ...w, order: index })),
         }),
-      });
-      if (!response.ok) throw new Error('Không thể lưu dashboard');
-      const result = await response.json();
-      setDashboard(result);
-      setIsEditMode(false);
+      })
+      if (!response.ok) throw new Error("Không thể lưu dashboard")
+      const result = await response.json()
+      setDashboard(result)
+      setIsEditMode(false)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi khi lưu');
+      setError(err instanceof Error ? err.message : "Đã xảy ra lỗi khi lưu")
     } finally {
-      setSaving(false);
+      setSaving(false)
     }
   }
 
@@ -276,7 +282,7 @@ export default function DashboardViewPage() {
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -287,10 +293,10 @@ export default function DashboardViewPage() {
           <span>{error}</span>
         </Alert>
       </div>
-    );
+    )
   }
 
-  if (!dashboard) return null;
+  if (!dashboard) return null
 
   return (
     <div className="space-y-6 p-6">
@@ -300,7 +306,7 @@ export default function DashboardViewPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => router.push('/analytics/dashboards')}
+            onClick={() => router.push("/analytics/dashboards")}
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
             Quay lại
@@ -308,23 +314,28 @@ export default function DashboardViewPage() {
           <div>
             <h1 className="text-2xl font-bold">{dashboard.name}</h1>
             {dashboard.description && (
-              <p className="text-sm text-muted-foreground">{dashboard.description}</p>
+              <p className="text-sm text-muted-foreground">
+                {dashboard.description}
+              </p>
             )}
           </div>
         </div>
         <div className="flex gap-2">
           {isEditMode ? (
             <>
-              <Button variant="outline" onClick={() => {
-                setWidgets(dashboard.widgets || []);
-                setIsEditMode(false);
-              }}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setWidgets(dashboard.widgets || [])
+                  setIsEditMode(false)
+                }}
+              >
                 <X className="h-4 w-4 mr-1" />
                 Hủy
               </Button>
               <Button onClick={handleSave} disabled={saving}>
                 <Save className="h-4 w-4 mr-1" />
-                {saving ? 'Đang lưu...' : 'Lưu'}
+                {saving ? "Đang lưu..." : "Lưu"}
               </Button>
             </>
           ) : (
@@ -378,5 +389,5 @@ export default function DashboardViewPage() {
         </DndContext>
       )}
     </div>
-  );
+  )
 }

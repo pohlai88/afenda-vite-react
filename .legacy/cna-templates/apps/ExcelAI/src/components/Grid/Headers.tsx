@@ -1,19 +1,19 @@
-import React, { memo } from 'react';
-import { colToLetter } from '../../types/cell';
+import React, { memo } from "react"
+import { colToLetter } from "../../types/cell"
 
 interface HeadersProps {
-  startRow: number;
-  endRow: number;
-  startCol: number;
-  endCol: number;
-  scrollLeft: number;
-  scrollTop: number;
-  cellWidth: number;
-  cellHeight: number;
-  headerWidth: number;
-  headerHeight: number;
-  selectedRow?: number;
-  selectedCol?: number;
+  startRow: number
+  endRow: number
+  startCol: number
+  endCol: number
+  scrollLeft: number
+  scrollTop: number
+  cellWidth: number
+  cellHeight: number
+  headerWidth: number
+  headerHeight: number
+  selectedRow?: number
+  selectedCol?: number
 }
 
 export const Headers: React.FC<HeadersProps> = memo(
@@ -32,15 +32,15 @@ export const Headers: React.FC<HeadersProps> = memo(
     selectedCol,
   }) => {
     // Column headers
-    const columnHeaders = [];
+    const columnHeaders = []
     for (let col = startCol; col < endCol; col++) {
-      const isSelected = selectedCol === col;
+      const isSelected = selectedCol === col
       columnHeaders.push(
         <div
           key={`col-${col}`}
-          className={`header-cell ${isSelected ? 'header-cell--selected' : ''}`}
+          className={`header-cell ${isSelected ? "header-cell--selected" : ""}`}
           style={{
-            position: 'absolute',
+            position: "absolute",
             left: col * cellWidth,
             top: 0,
             width: cellWidth,
@@ -50,19 +50,19 @@ export const Headers: React.FC<HeadersProps> = memo(
         >
           {colToLetter(col)}
         </div>
-      );
+      )
     }
 
     // Row headers
-    const rowHeaders = [];
+    const rowHeaders = []
     for (let row = startRow; row < endRow; row++) {
-      const isSelected = selectedRow === row;
+      const isSelected = selectedRow === row
       rowHeaders.push(
         <div
           key={`row-${row}`}
-          className={`header-cell ${isSelected ? 'header-cell--selected' : ''}`}
+          className={`header-cell ${isSelected ? "header-cell--selected" : ""}`}
           style={{
-            position: 'absolute',
+            position: "absolute",
             left: 0,
             top: row * cellHeight,
             width: headerWidth,
@@ -72,7 +72,7 @@ export const Headers: React.FC<HeadersProps> = memo(
         >
           {row + 1}
         </div>
-      );
+      )
     }
 
     return (
@@ -100,7 +100,7 @@ export const Headers: React.FC<HeadersProps> = memo(
         >
           <div
             style={{
-              position: 'relative',
+              position: "relative",
               transform: `translateX(-${scrollLeft}px)`,
             }}
           >
@@ -120,7 +120,7 @@ export const Headers: React.FC<HeadersProps> = memo(
         >
           <div
             style={{
-              position: 'relative',
+              position: "relative",
               transform: `translateY(-${scrollTop}px)`,
             }}
           >
@@ -128,8 +128,8 @@ export const Headers: React.FC<HeadersProps> = memo(
           </div>
         </div>
       </>
-    );
+    )
   }
-);
+)
 
-Headers.displayName = 'Headers';
+Headers.displayName = "Headers"

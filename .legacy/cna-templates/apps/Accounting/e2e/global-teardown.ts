@@ -1,4 +1,4 @@
-import { type FullConfig } from '@playwright/test'
+import { type FullConfig } from "@playwright/test"
 
 /**
  * Global teardown for E2E tests.
@@ -10,7 +10,7 @@ async function globalTeardown(config: FullConfig) {
   // - Clean up temporary files
   // - Generate reports
 
-  console.log('E2E Test Suite for Accounting Module - Global Teardown')
+  console.log("E2E Test Suite for Accounting Module - Global Teardown")
 }
 
 export default globalTeardown

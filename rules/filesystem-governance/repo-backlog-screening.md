@@ -21,61 +21,59 @@ Current governed roots:
 - `apps/api/src/middleware`
 - `apps/api/src/contract`
 - `apps/api/src/lib`
+- `packages/design-system/utils`
+- `packages/eslint-config/src`
+- `packages/contracts/src`
+- `packages/pino-logger/src`
+- `packages/vitest-config/src`
+- `packages/env-loader/src`
+- `packages/typescript-config`
+- `packages/better-auth/src`
+- `packages/better-auth/scripts`
+- `packages/_database/src/queries`
+- `packages/_database/src/schema`
 
 Current status:
 
 - the scoped checker is clean
 - the scoped screening report shows zero violations
+- the checker is now wired into root `check` and pre-commit
+- stale empty generic directories in the first web rollout were removed
+- package-wave governance now covers the contracts package, eslint-config, pino-logger, the design-system utility export surface, and the database query/schema layers
 
 ## Known Follow-Up Hotspots
 
 ### Packages
 
-#### `packages/design-system/utils`
+#### Vendor material inside active roots
 
 Current observation:
 
-- root-level `utils/` exists
-- candidate files include `cn.ts`, `font-definitions.ts`, and `slug.ts`
+- the first vendor-reference cleanup wave is complete for `packages/pino-logger`, `packages/eslint-config`, and `packages/vitest-config`
+- any future upstream checkouts inside active package roots should be treated as violations and moved into declared storage
 
 Required outcome:
 
-- decide which files are true package-level primitives
-- rename or redistribute files whose names are too generic for a governed design-system boundary
+- move vendor/reference material into declared storage roots so package boundaries remain clean
 
-#### `packages/_database/src/queries/helpers`
+#### Root topology storage policy
 
 Current observation:
 
-- helper files include `effective-row.ts`, `iso-date.ts`, and `scope-utils.ts`
+- `.legacy/` and `archives/` are now classified as storage roots, but archive lifecycle and review rules are still documentation-only
 
 Required outcome:
 
-- replace generic `helpers/` naming with query-responsibility naming
-- keep query support near query ownership when possible
+- formalize storage-root handling in repo documentation and any future cleanup automation
 
-#### `packages/_database/src/schema/helpers`
+## Guardrail Hardening Opportunities
 
-Current observation:
+The next machine-hardening steps should target:
 
-- helper files include `env-boundary.schema.ts`, `env.ts`, and `index.ts`
-
-Required outcome:
-
-- determine whether this should remain schema-owned support or move to a more specific boundary such as schema-environment support
-
-## Structural Cleanup Notes
-
-Stale empty directories still exist from completed refactor slices:
-
-- `apps/web/src/app/_features/db-studio/utils`
-- `apps/web/src/app/_features/_template/utils`
-- `apps/web/src/app/_platform/runtime/utils`
-- `apps/web/src/app/_platform/shell/utils`
-- `apps/web/src/app/_platform/_template/utils`
-- `apps/web/src/marketing/pages/landing/flagship/sections`
-
-These directories are empty and no longer contain governed source files. Remove them when the local workspace allows directory cleanup safely.
+- ESLint import-boundary enforcement between `routes`, `features`, `share`, and API module ownership
+- package-level governance rollout for `packages/contracts` and any remaining shared libraries
+- tighter root-topology governance for storage zones such as `.legacy/` and `archives/`
+- optional whitelist support only if a real exception survives architecture review
 
 ## Root Topology Note
 

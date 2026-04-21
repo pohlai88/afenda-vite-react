@@ -34,7 +34,10 @@ import {
 // ═══════════════════════════════════════════════════════════════
 
 function useContainerSize(ref: React.RefObject<HTMLDivElement | null>) {
-  const [size, setSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 })
+  const [size, setSize] = React.useState<{ width: number; height: number }>({
+    width: 0,
+    height: 0,
+  })
 
   React.useEffect(() => {
     const el = ref.current
@@ -68,24 +71,36 @@ interface CustomTooltipProps {
   formatValue?: (value: number) => string
 }
 
-export function ChartTooltip({ active, payload, label, formatValue }: CustomTooltipProps) {
+export function ChartTooltip({
+  active,
+  payload,
+  label,
+  formatValue,
+}: CustomTooltipProps) {
   if (!active || !payload?.length) return null
 
   return (
     <div style={TOOLTIP_STYLE} className="animate-fade-in-fast">
       <p className="font-medium text-foreground mb-1 text-xs">{label}</p>
-      {payload.map((entry: { color?: string; name?: string; value?: number }, index: number) => (
-        <div key={index} className="flex items-center gap-2 text-xs">
-          <div
-            className="w-2 h-2 rounded-full"
-            style={{ backgroundColor: entry.color }}
-          />
-          <span className="text-muted-foreground">{entry.name}:</span>
-          <span className="font-mono font-medium text-foreground">
-            {formatValue && entry.value != null ? formatValue(entry.value) : entry.value}
-          </span>
-        </div>
-      ))}
+      {payload.map(
+        (
+          entry: { color?: string; name?: string; value?: number },
+          index: number
+        ) => (
+          <div key={index} className="flex items-center gap-2 text-xs">
+            <div
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span className="text-muted-foreground">{entry.name}:</span>
+            <span className="font-mono font-medium text-foreground">
+              {formatValue && entry.value != null
+                ? formatValue(entry.value)
+                : entry.value}
+            </span>
+          </div>
+        )
+      )}
     </div>
   )
 }
@@ -124,9 +139,18 @@ export function AreaChartTerminal({
   const { width: cw, height: ch } = useContainerSize(containerRef)
 
   return (
-    <div ref={containerRef} className={cn("w-full", className)} style={{ height }}>
+    <div
+      ref={containerRef}
+      className={cn("w-full", className)}
+      style={{ height }}
+    >
       {cw > 0 && ch > 0 && (
-        <AreaChart width={cw} height={ch} data={data} margin={CHART_THEME.margin}>
+        <AreaChart
+          width={cw}
+          height={ch}
+          data={data}
+          margin={CHART_THEME.margin}
+        >
           {gradient && (
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -136,7 +160,11 @@ export function AreaChartTerminal({
             </defs>
           )}
           {showGrid && <CartesianGrid {...GRID_STYLE} />}
-          <XAxis dataKey={xAxisKey} {...AXIS_STYLE} tickFormatter={formatXAxis} />
+          <XAxis
+            dataKey={xAxisKey}
+            {...AXIS_STYLE}
+            tickFormatter={formatXAxis}
+          />
           <YAxis {...AXIS_STYLE} tickFormatter={formatValue} />
           <Tooltip content={<ChartTooltip formatValue={formatValue} />} />
           <Area
@@ -191,7 +219,11 @@ export function BarChartTerminal({
   const { width: cw, height: ch } = useContainerSize(containerRef)
 
   return (
-    <div ref={containerRef} className={cn("w-full", className)} style={{ height }}>
+    <div
+      ref={containerRef}
+      className={cn("w-full", className)}
+      style={{ height }}
+    >
       {cw > 0 && ch > 0 && (
         <BarChart
           width={cw}
@@ -203,8 +235,17 @@ export function BarChartTerminal({
           {showGrid && <CartesianGrid {...GRID_STYLE} />}
           {horizontal ? (
             <>
-              <XAxis type="number" {...AXIS_STYLE} tickFormatter={formatValue} />
-              <YAxis type="category" dataKey={xAxisKey} {...AXIS_STYLE} width={80} />
+              <XAxis
+                type="number"
+                {...AXIS_STYLE}
+                tickFormatter={formatValue}
+              />
+              <YAxis
+                type="category"
+                dataKey={xAxisKey}
+                {...AXIS_STYLE}
+                width={80}
+              />
             </>
           ) : (
             <>
@@ -265,9 +306,18 @@ export function LineChartTerminal({
   const { width: cw, height: ch } = useContainerSize(containerRef)
 
   return (
-    <div ref={containerRef} className={cn("w-full", className)} style={{ height }}>
+    <div
+      ref={containerRef}
+      className={cn("w-full", className)}
+      style={{ height }}
+    >
       {cw > 0 && ch > 0 && (
-        <LineChart width={cw} height={ch} data={data} margin={CHART_THEME.margin}>
+        <LineChart
+          width={cw}
+          height={ch}
+          data={data}
+          margin={CHART_THEME.margin}
+        >
           {showGrid && <CartesianGrid {...GRID_STYLE} />}
           <XAxis dataKey={xAxisKey} {...AXIS_STYLE} />
           <YAxis {...AXIS_STYLE} tickFormatter={formatValue} />
@@ -355,7 +405,11 @@ export function PieChartTerminal({
   }
 
   return (
-    <div ref={containerRef} className={cn("w-full", className)} style={{ height }}>
+    <div
+      ref={containerRef}
+      className={cn("w-full", className)}
+      style={{ height }}
+    >
       {cw > 0 && ch > 0 && (
         <PieChart width={cw} height={ch}>
           <Pie
@@ -413,9 +467,18 @@ export function Sparkline({
   const { width: cw, height: ch } = useContainerSize(containerRef)
 
   return (
-    <div ref={containerRef} className={cn("inline-block", className)} style={{ width, height }}>
+    <div
+      ref={containerRef}
+      className={cn("inline-block", className)}
+      style={{ width, height }}
+    >
       {cw > 0 && ch > 0 && (
-        <AreaChart width={cw} height={ch} data={chartData} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+        <AreaChart
+          width={cw}
+          height={ch}
+          data={chartData}
+          margin={{ top: 2, right: 2, bottom: 2, left: 2 }}
+        >
           <defs>
             <linearGradient id={sparkId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={trendColor} stopOpacity={0.3} />

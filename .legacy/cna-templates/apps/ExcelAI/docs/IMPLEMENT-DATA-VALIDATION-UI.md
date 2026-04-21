@@ -1,15 +1,17 @@
 # ✓ IMPLEMENTATION GUIDE: Data Validation UI
+
 ## ExcelAI — Cell Input Validation System
 
 ---
 
 ## 🎯 Overview
 
-| Feature | Est. Time | Files | Impact |
-|---------|-----------|-------|--------|
-| Data Validation UI | 1.5 days | 7 | +0.5% |
+| Feature            | Est. Time | Files | Impact |
+| ------------------ | --------- | ----- | ------ |
+| Data Validation UI | 1.5 days  | 7     | +0.5%  |
 
 **Validation Types:**
+
 - Whole Number (min, max, between)
 - Decimal (min, max, between)
 - List (dropdown options)
@@ -47,116 +49,116 @@ src/
 // DATA VALIDATION TYPE DEFINITIONS
 // ============================================================
 
-export type ValidationType = 
-  | 'any'
-  | 'wholeNumber'
-  | 'decimal'
-  | 'list'
-  | 'date'
-  | 'time'
-  | 'textLength'
-  | 'custom';
+export type ValidationType =
+  | "any"
+  | "wholeNumber"
+  | "decimal"
+  | "list"
+  | "date"
+  | "time"
+  | "textLength"
+  | "custom"
 
 export type ValidationOperator =
-  | 'between'
-  | 'notBetween'
-  | 'equal'
-  | 'notEqual'
-  | 'greaterThan'
-  | 'lessThan'
-  | 'greaterThanOrEqual'
-  | 'lessThanOrEqual';
+  | "between"
+  | "notBetween"
+  | "equal"
+  | "notEqual"
+  | "greaterThan"
+  | "lessThan"
+  | "greaterThanOrEqual"
+  | "lessThanOrEqual"
 
 export interface ValidationRule {
-  id: string;
-  type: ValidationType;
-  operator?: ValidationOperator;
-  
+  id: string
+  type: ValidationType
+  operator?: ValidationOperator
+
   // Values (depending on type and operator)
-  value1?: string | number;
-  value2?: string | number;  // For 'between' operators
-  
+  value1?: string | number
+  value2?: string | number // For 'between' operators
+
   // List options
-  listSource?: string;       // Comma-separated or range reference
-  listItems?: string[];      // Parsed list items
-  
+  listSource?: string // Comma-separated or range reference
+  listItems?: string[] // Parsed list items
+
   // Custom formula
-  formula?: string;
-  
+  formula?: string
+
   // Options
-  ignoreBlank: boolean;
-  showDropdown: boolean;     // For list type
-  
+  ignoreBlank: boolean
+  showDropdown: boolean // For list type
+
   // Input message
-  showInputMessage: boolean;
-  inputTitle?: string;
-  inputMessage?: string;
-  
+  showInputMessage: boolean
+  inputTitle?: string
+  inputMessage?: string
+
   // Error alert
-  showErrorAlert: boolean;
-  errorStyle: 'stop' | 'warning' | 'information';
-  errorTitle?: string;
-  errorMessage?: string;
-  
+  showErrorAlert: boolean
+  errorStyle: "stop" | "warning" | "information"
+  errorTitle?: string
+  errorMessage?: string
+
   // Applied range
-  range: string;             // e.g., "A1:A100"
+  range: string // e.g., "A1:A100"
 }
 
 export interface CellValidation {
-  ruleId: string;
-  isValid: boolean;
-  errorMessage?: string;
+  ruleId: string
+  isValid: boolean
+  errorMessage?: string
 }
 
 export const VALIDATION_TYPE_LABELS: Record<ValidationType, string> = {
-  any: 'Any value',
-  wholeNumber: 'Whole number',
-  decimal: 'Decimal',
-  list: 'List',
-  date: 'Date',
-  time: 'Time',
-  textLength: 'Text length',
-  custom: 'Custom',
-};
+  any: "Any value",
+  wholeNumber: "Whole number",
+  decimal: "Decimal",
+  list: "List",
+  date: "Date",
+  time: "Time",
+  textLength: "Text length",
+  custom: "Custom",
+}
 
 export const VALIDATION_OPERATOR_LABELS: Record<ValidationOperator, string> = {
-  between: 'between',
-  notBetween: 'not between',
-  equal: 'equal to',
-  notEqual: 'not equal to',
-  greaterThan: 'greater than',
-  lessThan: 'less than',
-  greaterThanOrEqual: 'greater than or equal to',
-  lessThanOrEqual: 'less than or equal to',
-};
+  between: "between",
+  notBetween: "not between",
+  equal: "equal to",
+  notEqual: "not equal to",
+  greaterThan: "greater than",
+  lessThan: "less than",
+  greaterThanOrEqual: "greater than or equal to",
+  lessThanOrEqual: "less than or equal to",
+}
 
 export const DEFAULT_VALIDATION_RULE: Partial<ValidationRule> = {
-  type: 'any',
-  operator: 'between',
+  type: "any",
+  operator: "between",
   ignoreBlank: true,
   showDropdown: true,
   showInputMessage: false,
   showErrorAlert: true,
-  errorStyle: 'stop',
-};
+  errorStyle: "stop",
+}
 
 export const ERROR_STYLE_CONFIG = {
   stop: {
-    icon: '🛑',
-    title: 'Invalid Entry',
+    icon: "🛑",
+    title: "Invalid Entry",
     allowRetry: false,
   },
   warning: {
-    icon: '⚠️',
-    title: 'Warning',
+    icon: "⚠️",
+    title: "Warning",
     allowRetry: true,
   },
   information: {
-    icon: 'ℹ️',
-    title: 'Information',
+    icon: "ℹ️",
+    title: "Information",
     allowRetry: true,
   },
-};
+}
 ```
 
 ---
@@ -168,239 +170,310 @@ export const ERROR_STYLE_CONFIG = {
 // VALIDATION STORE — Zustand Store for Data Validation
 // ============================================================
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { nanoid } from 'nanoid';
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
+import { nanoid } from "nanoid"
 import {
   ValidationRule,
   ValidationType,
   ValidationOperator,
   CellValidation,
   DEFAULT_VALIDATION_RULE,
-} from '../types/validation';
+} from "../types/validation"
 
 interface ValidationStore {
   // Rules per sheet
-  rules: Record<string, ValidationRule[]>;  // sheetId -> rules
-  
+  rules: Record<string, ValidationRule[]> // sheetId -> rules
+
   // Validation results cache
-  validationCache: Record<string, Record<string, CellValidation>>;  // sheetId -> cellKey -> validation
-  
+  validationCache: Record<string, Record<string, CellValidation>> // sheetId -> cellKey -> validation
+
   // Circle invalid cells mode
-  showInvalidCircles: boolean;
-  
+  showInvalidCircles: boolean
+
   // CRUD
-  addRule: (sheetId: string, rule: Partial<ValidationRule>) => string;
-  updateRule: (sheetId: string, ruleId: string, updates: Partial<ValidationRule>) => void;
-  deleteRule: (sheetId: string, ruleId: string) => void;
-  
+  addRule: (sheetId: string, rule: Partial<ValidationRule>) => string
+  updateRule: (
+    sheetId: string,
+    ruleId: string,
+    updates: Partial<ValidationRule>
+  ) => void
+  deleteRule: (sheetId: string, ruleId: string) => void
+
   // Get rules
-  getRulesForSheet: (sheetId: string) => ValidationRule[];
-  getRuleForCell: (sheetId: string, row: number, col: number) => ValidationRule | undefined;
-  getRuleById: (sheetId: string, ruleId: string) => ValidationRule | undefined;
-  
+  getRulesForSheet: (sheetId: string) => ValidationRule[]
+  getRuleForCell: (
+    sheetId: string,
+    row: number,
+    col: number
+  ) => ValidationRule | undefined
+  getRuleById: (sheetId: string, ruleId: string) => ValidationRule | undefined
+
   // Validation
-  validateCell: (sheetId: string, row: number, col: number, value: any) => CellValidation | null;
-  validateRange: (sheetId: string, range: string) => void;
-  clearValidationCache: (sheetId: string) => void;
-  
+  validateCell: (
+    sheetId: string,
+    row: number,
+    col: number,
+    value: any
+  ) => CellValidation | null
+  validateRange: (sheetId: string, range: string) => void
+  clearValidationCache: (sheetId: string) => void
+
   // Invalid circles
-  toggleInvalidCircles: () => void;
-  getInvalidCells: (sheetId: string) => { row: number; col: number }[];
-  
+  toggleInvalidCircles: () => void
+  getInvalidCells: (sheetId: string) => { row: number; col: number }[]
+
   // Clear
-  clearRulesForRange: (sheetId: string, range: string) => void;
-  clearAllRules: (sheetId: string) => void;
+  clearRulesForRange: (sheetId: string, range: string) => void
+  clearAllRules: (sheetId: string) => void
 }
 
 // Helper: Parse range string to cells
-const parseRange = (range: string): { startRow: number; endRow: number; startCol: number; endCol: number } | null => {
-  const match = range.match(/^([A-Z]+)(\d+):([A-Z]+)(\d+)$/i);
-  if (!match) return null;
-  
-  const startCol = match[1].toUpperCase().charCodeAt(0) - 65;
-  const startRow = parseInt(match[2]) - 1;
-  const endCol = match[3].toUpperCase().charCodeAt(0) - 65;
-  const endRow = parseInt(match[4]) - 1;
-  
-  return { startRow, endRow, startCol, endCol };
-};
+const parseRange = (
+  range: string
+): {
+  startRow: number
+  endRow: number
+  startCol: number
+  endCol: number
+} | null => {
+  const match = range.match(/^([A-Z]+)(\d+):([A-Z]+)(\d+)$/i)
+  if (!match) return null
+
+  const startCol = match[1].toUpperCase().charCodeAt(0) - 65
+  const startRow = parseInt(match[2]) - 1
+  const endCol = match[3].toUpperCase().charCodeAt(0) - 65
+  const endRow = parseInt(match[4]) - 1
+
+  return { startRow, endRow, startCol, endCol }
+}
 
 // Helper: Check if cell is in range
 const isCellInRange = (row: number, col: number, range: string): boolean => {
-  const parsed = parseRange(range);
-  if (!parsed) return false;
-  
+  const parsed = parseRange(range)
+  if (!parsed) return false
+
   return (
-    row >= parsed.startRow && row <= parsed.endRow &&
-    col >= parsed.startCol && col <= parsed.endCol
-  );
-};
+    row >= parsed.startRow &&
+    row <= parsed.endRow &&
+    col >= parsed.startCol &&
+    col <= parsed.endCol
+  )
+}
 
 // Helper: Validate value against rule
-const validateValue = (value: any, rule: ValidationRule): { isValid: boolean; errorMessage?: string } => {
+const validateValue = (
+  value: any,
+  rule: ValidationRule
+): { isValid: boolean; errorMessage?: string } => {
   // Ignore blank if configured
-  if (rule.ignoreBlank && (value === '' || value === null || value === undefined)) {
-    return { isValid: true };
+  if (
+    rule.ignoreBlank &&
+    (value === "" || value === null || value === undefined)
+  ) {
+    return { isValid: true }
   }
-  
-  const numValue = parseFloat(String(value));
-  const strValue = String(value);
-  
+
+  const numValue = parseFloat(String(value))
+  const strValue = String(value)
+
   switch (rule.type) {
-    case 'any':
-      return { isValid: true };
-      
-    case 'wholeNumber':
+    case "any":
+      return { isValid: true }
+
+    case "wholeNumber":
       if (!Number.isInteger(numValue)) {
-        return { isValid: false, errorMessage: 'Value must be a whole number' };
+        return { isValid: false, errorMessage: "Value must be a whole number" }
       }
-      return validateNumeric(numValue, rule);
-      
-    case 'decimal':
+      return validateNumeric(numValue, rule)
+
+    case "decimal":
       if (isNaN(numValue)) {
-        return { isValid: false, errorMessage: 'Value must be a number' };
+        return { isValid: false, errorMessage: "Value must be a number" }
       }
-      return validateNumeric(numValue, rule);
-      
-    case 'list':
-      const items = rule.listItems || rule.listSource?.split(',').map(s => s.trim()) || [];
+      return validateNumeric(numValue, rule)
+
+    case "list":
+      const items =
+        rule.listItems || rule.listSource?.split(",").map((s) => s.trim()) || []
       if (!items.includes(strValue)) {
-        return { isValid: false, errorMessage: 'Value must be from the list' };
+        return { isValid: false, errorMessage: "Value must be from the list" }
       }
-      return { isValid: true };
-      
-    case 'date':
-      const dateValue = new Date(value);
+      return { isValid: true }
+
+    case "date":
+      const dateValue = new Date(value)
       if (isNaN(dateValue.getTime())) {
-        return { isValid: false, errorMessage: 'Value must be a valid date' };
+        return { isValid: false, errorMessage: "Value must be a valid date" }
       }
-      return validateDate(dateValue, rule);
-      
-    case 'time':
+      return validateDate(dateValue, rule)
+
+    case "time":
       // Simplified time validation
-      const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
+      const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/
       if (!timeRegex.test(strValue)) {
-        return { isValid: false, errorMessage: 'Value must be a valid time' };
+        return { isValid: false, errorMessage: "Value must be a valid time" }
       }
-      return { isValid: true };
-      
-    case 'textLength':
-      return validateTextLength(strValue.length, rule);
-      
-    case 'custom':
+      return { isValid: true }
+
+    case "textLength":
+      return validateTextLength(strValue.length, rule)
+
+    case "custom":
       // Custom formula would need formula evaluation
-      return { isValid: true };
-      
+      return { isValid: true }
+
     default:
-      return { isValid: true };
+      return { isValid: true }
   }
-};
+}
 
-const validateNumeric = (value: number, rule: ValidationRule): { isValid: boolean; errorMessage?: string } => {
-  const v1 = parseFloat(String(rule.value1));
-  const v2 = parseFloat(String(rule.value2));
-  
+const validateNumeric = (
+  value: number,
+  rule: ValidationRule
+): { isValid: boolean; errorMessage?: string } => {
+  const v1 = parseFloat(String(rule.value1))
+  const v2 = parseFloat(String(rule.value2))
+
   switch (rule.operator) {
-    case 'between':
+    case "between":
       if (value < v1 || value > v2) {
-        return { isValid: false, errorMessage: `Value must be between ${v1} and ${v2}` };
+        return {
+          isValid: false,
+          errorMessage: `Value must be between ${v1} and ${v2}`,
+        }
       }
-      break;
-    case 'notBetween':
+      break
+    case "notBetween":
       if (value >= v1 && value <= v2) {
-        return { isValid: false, errorMessage: `Value must not be between ${v1} and ${v2}` };
+        return {
+          isValid: false,
+          errorMessage: `Value must not be between ${v1} and ${v2}`,
+        }
       }
-      break;
-    case 'equal':
+      break
+    case "equal":
       if (value !== v1) {
-        return { isValid: false, errorMessage: `Value must equal ${v1}` };
+        return { isValid: false, errorMessage: `Value must equal ${v1}` }
       }
-      break;
-    case 'notEqual':
+      break
+    case "notEqual":
       if (value === v1) {
-        return { isValid: false, errorMessage: `Value must not equal ${v1}` };
+        return { isValid: false, errorMessage: `Value must not equal ${v1}` }
       }
-      break;
-    case 'greaterThan':
+      break
+    case "greaterThan":
       if (value <= v1) {
-        return { isValid: false, errorMessage: `Value must be greater than ${v1}` };
+        return {
+          isValid: false,
+          errorMessage: `Value must be greater than ${v1}`,
+        }
       }
-      break;
-    case 'lessThan':
+      break
+    case "lessThan":
       if (value >= v1) {
-        return { isValid: false, errorMessage: `Value must be less than ${v1}` };
+        return { isValid: false, errorMessage: `Value must be less than ${v1}` }
       }
-      break;
-    case 'greaterThanOrEqual':
+      break
+    case "greaterThanOrEqual":
       if (value < v1) {
-        return { isValid: false, errorMessage: `Value must be greater than or equal to ${v1}` };
+        return {
+          isValid: false,
+          errorMessage: `Value must be greater than or equal to ${v1}`,
+        }
       }
-      break;
-    case 'lessThanOrEqual':
+      break
+    case "lessThanOrEqual":
       if (value > v1) {
-        return { isValid: false, errorMessage: `Value must be less than or equal to ${v1}` };
+        return {
+          isValid: false,
+          errorMessage: `Value must be less than or equal to ${v1}`,
+        }
       }
-      break;
+      break
   }
-  
-  return { isValid: true };
-};
 
-const validateDate = (value: Date, rule: ValidationRule): { isValid: boolean; errorMessage?: string } => {
-  const d1 = rule.value1 ? new Date(rule.value1) : null;
-  const d2 = rule.value2 ? new Date(rule.value2) : null;
-  
+  return { isValid: true }
+}
+
+const validateDate = (
+  value: Date,
+  rule: ValidationRule
+): { isValid: boolean; errorMessage?: string } => {
+  const d1 = rule.value1 ? new Date(rule.value1) : null
+  const d2 = rule.value2 ? new Date(rule.value2) : null
+
   switch (rule.operator) {
-    case 'between':
+    case "between":
       if (d1 && d2 && (value < d1 || value > d2)) {
-        return { isValid: false, errorMessage: `Date must be between ${d1.toLocaleDateString()} and ${d2.toLocaleDateString()}` };
+        return {
+          isValid: false,
+          errorMessage: `Date must be between ${d1.toLocaleDateString()} and ${d2.toLocaleDateString()}`,
+        }
       }
-      break;
-    case 'greaterThan':
+      break
+    case "greaterThan":
       if (d1 && value <= d1) {
-        return { isValid: false, errorMessage: `Date must be after ${d1.toLocaleDateString()}` };
+        return {
+          isValid: false,
+          errorMessage: `Date must be after ${d1.toLocaleDateString()}`,
+        }
       }
-      break;
-    case 'lessThan':
+      break
+    case "lessThan":
       if (d1 && value >= d1) {
-        return { isValid: false, errorMessage: `Date must be before ${d1.toLocaleDateString()}` };
+        return {
+          isValid: false,
+          errorMessage: `Date must be before ${d1.toLocaleDateString()}`,
+        }
       }
-      break;
+      break
   }
-  
-  return { isValid: true };
-};
 
-const validateTextLength = (length: number, rule: ValidationRule): { isValid: boolean; errorMessage?: string } => {
-  const v1 = parseInt(String(rule.value1));
-  const v2 = parseInt(String(rule.value2));
-  
+  return { isValid: true }
+}
+
+const validateTextLength = (
+  length: number,
+  rule: ValidationRule
+): { isValid: boolean; errorMessage?: string } => {
+  const v1 = parseInt(String(rule.value1))
+  const v2 = parseInt(String(rule.value2))
+
   switch (rule.operator) {
-    case 'between':
+    case "between":
       if (length < v1 || length > v2) {
-        return { isValid: false, errorMessage: `Text length must be between ${v1} and ${v2}` };
+        return {
+          isValid: false,
+          errorMessage: `Text length must be between ${v1} and ${v2}`,
+        }
       }
-      break;
-    case 'equal':
+      break
+    case "equal":
       if (length !== v1) {
-        return { isValid: false, errorMessage: `Text length must be ${v1}` };
+        return { isValid: false, errorMessage: `Text length must be ${v1}` }
       }
-      break;
-    case 'greaterThan':
+      break
+    case "greaterThan":
       if (length <= v1) {
-        return { isValid: false, errorMessage: `Text length must be greater than ${v1}` };
+        return {
+          isValid: false,
+          errorMessage: `Text length must be greater than ${v1}`,
+        }
       }
-      break;
-    case 'lessThan':
+      break
+    case "lessThan":
       if (length >= v1) {
-        return { isValid: false, errorMessage: `Text length must be less than ${v1}` };
+        return {
+          isValid: false,
+          errorMessage: `Text length must be less than ${v1}`,
+        }
       }
-      break;
+      break
   }
-  
-  return { isValid: true };
-};
+
+  return { isValid: true }
+}
 
 export const useValidationStore = create<ValidationStore>()(
   persist(
@@ -410,70 +483,72 @@ export const useValidationStore = create<ValidationStore>()(
       showInvalidCircles: false,
 
       addRule: (sheetId, rule) => {
-        const id = nanoid(8);
+        const id = nanoid(8)
         const newRule: ValidationRule = {
           ...DEFAULT_VALIDATION_RULE,
           ...rule,
           id,
-        } as ValidationRule;
+        } as ValidationRule
 
-        set(state => ({
+        set((state) => ({
           rules: {
             ...state.rules,
             [sheetId]: [...(state.rules[sheetId] || []), newRule],
           },
-        }));
+        }))
 
-        return id;
+        return id
       },
 
       updateRule: (sheetId, ruleId, updates) => {
-        set(state => ({
+        set((state) => ({
           rules: {
             ...state.rules,
-            [sheetId]: (state.rules[sheetId] || []).map(rule =>
+            [sheetId]: (state.rules[sheetId] || []).map((rule) =>
               rule.id === ruleId ? { ...rule, ...updates } : rule
             ),
           },
-        }));
-        
+        }))
+
         // Clear cache for affected range
-        get().clearValidationCache(sheetId);
+        get().clearValidationCache(sheetId)
       },
 
       deleteRule: (sheetId, ruleId) => {
-        set(state => ({
+        set((state) => ({
           rules: {
             ...state.rules,
-            [sheetId]: (state.rules[sheetId] || []).filter(r => r.id !== ruleId),
+            [sheetId]: (state.rules[sheetId] || []).filter(
+              (r) => r.id !== ruleId
+            ),
           },
-        }));
-        
-        get().clearValidationCache(sheetId);
+        }))
+
+        get().clearValidationCache(sheetId)
       },
 
       getRulesForSheet: (sheetId) => {
-        return get().rules[sheetId] || [];
+        return get().rules[sheetId] || []
       },
 
       getRuleForCell: (sheetId, row, col) => {
-        const rules = get().rules[sheetId] || [];
-        return rules.find(rule => isCellInRange(row, col, rule.range));
+        const rules = get().rules[sheetId] || []
+        return rules.find((rule) => isCellInRange(row, col, rule.range))
       },
 
       getRuleById: (sheetId, ruleId) => {
-        return (get().rules[sheetId] || []).find(r => r.id === ruleId);
+        return (get().rules[sheetId] || []).find((r) => r.id === ruleId)
       },
 
       validateCell: (sheetId, row, col, value) => {
-        const rule = get().getRuleForCell(sheetId, row, col);
-        if (!rule) return null;
-        
-        const result = validateValue(value, rule);
-        const cellKey = `${row}-${col}`;
-        
+        const rule = get().getRuleForCell(sheetId, row, col)
+        if (!rule) return null
+
+        const result = validateValue(value, rule)
+        const cellKey = `${row}-${col}`
+
         // Cache result
-        set(state => ({
+        set((state) => ({
           validationCache: {
             ...state.validationCache,
             [sheetId]: {
@@ -485,13 +560,13 @@ export const useValidationStore = create<ValidationStore>()(
               },
             },
           },
-        }));
-        
+        }))
+
         return {
           ruleId: rule.id,
           isValid: result.isValid,
           errorMessage: result.errorMessage,
-        };
+        }
       },
 
       validateRange: (sheetId, range) => {
@@ -500,59 +575,59 @@ export const useValidationStore = create<ValidationStore>()(
       },
 
       clearValidationCache: (sheetId) => {
-        set(state => ({
+        set((state) => ({
           validationCache: {
             ...state.validationCache,
             [sheetId]: {},
           },
-        }));
+        }))
       },
 
       toggleInvalidCircles: () => {
-        set(state => ({ showInvalidCircles: !state.showInvalidCircles }));
+        set((state) => ({ showInvalidCircles: !state.showInvalidCircles }))
       },
 
       getInvalidCells: (sheetId) => {
-        const cache = get().validationCache[sheetId] || {};
-        const invalidCells: { row: number; col: number }[] = [];
-        
+        const cache = get().validationCache[sheetId] || {}
+        const invalidCells: { row: number; col: number }[] = []
+
         Object.entries(cache).forEach(([key, validation]) => {
           if (!validation.isValid) {
-            const [row, col] = key.split('-').map(Number);
-            invalidCells.push({ row, col });
+            const [row, col] = key.split("-").map(Number)
+            invalidCells.push({ row, col })
           }
-        });
-        
-        return invalidCells;
+        })
+
+        return invalidCells
       },
 
       clearRulesForRange: (sheetId, range) => {
-        const parsed = parseRange(range);
-        if (!parsed) return;
-        
-        set(state => ({
+        const parsed = parseRange(range)
+        if (!parsed) return
+
+        set((state) => ({
           rules: {
             ...state.rules,
-            [sheetId]: (state.rules[sheetId] || []).filter(rule => {
-              const ruleRange = parseRange(rule.range);
-              if (!ruleRange) return true;
-              
+            [sheetId]: (state.rules[sheetId] || []).filter((rule) => {
+              const ruleRange = parseRange(rule.range)
+              if (!ruleRange) return true
+
               // Check if ranges overlap
               const overlaps = !(
                 ruleRange.endCol < parsed.startCol ||
                 ruleRange.startCol > parsed.endCol ||
                 ruleRange.endRow < parsed.startRow ||
                 ruleRange.startRow > parsed.endRow
-              );
-              
-              return !overlaps;
+              )
+
+              return !overlaps
             }),
           },
-        }));
+        }))
       },
 
       clearAllRules: (sheetId) => {
-        set(state => ({
+        set((state) => ({
           rules: {
             ...state.rules,
             [sheetId]: [],
@@ -561,19 +636,19 @@ export const useValidationStore = create<ValidationStore>()(
             ...state.validationCache,
             [sheetId]: {},
           },
-        }));
+        }))
       },
     }),
     {
-      name: 'excelai-validation',
+      name: "excelai-validation",
       partialize: (state) => ({
         rules: state.rules,
       }),
     }
   )
-);
+)
 
-export default useValidationStore;
+export default useValidationStore
 ```
 
 ---
@@ -585,10 +660,10 @@ export default useValidationStore;
 // DATA VALIDATION DIALOG
 // ============================================================
 
-import React, { useState, useEffect } from 'react';
-import { X, AlertCircle, Info, AlertTriangle } from 'lucide-react';
-import { useValidationStore } from '../../stores/validationStore';
-import { useWorkbookStore } from '../../stores/workbookStore';
+import React, { useState, useEffect } from "react"
+import { X, AlertCircle, Info, AlertTriangle } from "lucide-react"
+import { useValidationStore } from "../../stores/validationStore"
+import { useWorkbookStore } from "../../stores/workbookStore"
 import {
   ValidationType,
   ValidationOperator,
@@ -596,17 +671,17 @@ import {
   VALIDATION_TYPE_LABELS,
   VALIDATION_OPERATOR_LABELS,
   DEFAULT_VALIDATION_RULE,
-} from '../../types/validation';
-import './DataValidation.css';
+} from "../../types/validation"
+import "./DataValidation.css"
 
 interface DataValidationDialogProps {
-  sheetId: string;
-  isOpen: boolean;
-  onClose: () => void;
-  editRuleId?: string;
+  sheetId: string
+  isOpen: boolean
+  onClose: () => void
+  editRuleId?: string
 }
 
-type TabType = 'settings' | 'inputMessage' | 'errorAlert';
+type TabType = "settings" | "inputMessage" | "errorAlert"
 
 export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
   sheetId,
@@ -614,81 +689,90 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
   onClose,
   editRuleId,
 }) => {
-  const [activeTab, setActiveTab] = useState<TabType>('settings');
-  
-  // Form state
-  const [validationType, setValidationType] = useState<ValidationType>('any');
-  const [operator, setOperator] = useState<ValidationOperator>('between');
-  const [value1, setValue1] = useState('');
-  const [value2, setValue2] = useState('');
-  const [listSource, setListSource] = useState('');
-  const [formula, setFormula] = useState('');
-  const [ignoreBlank, setIgnoreBlank] = useState(true);
-  const [showDropdown, setShowDropdown] = useState(true);
-  
-  // Input message
-  const [showInputMessage, setShowInputMessage] = useState(false);
-  const [inputTitle, setInputTitle] = useState('');
-  const [inputMessage, setInputMessage] = useState('');
-  
-  // Error alert
-  const [showErrorAlert, setShowErrorAlert] = useState(true);
-  const [errorStyle, setErrorStyle] = useState<'stop' | 'warning' | 'information'>('stop');
-  const [errorTitle, setErrorTitle] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [activeTab, setActiveTab] = useState<TabType>("settings")
 
-  const { selection } = useWorkbookStore();
-  const { addRule, updateRule, getRuleById, clearRulesForRange } = useValidationStore();
+  // Form state
+  const [validationType, setValidationType] = useState<ValidationType>("any")
+  const [operator, setOperator] = useState<ValidationOperator>("between")
+  const [value1, setValue1] = useState("")
+  const [value2, setValue2] = useState("")
+  const [listSource, setListSource] = useState("")
+  const [formula, setFormula] = useState("")
+  const [ignoreBlank, setIgnoreBlank] = useState(true)
+  const [showDropdown, setShowDropdown] = useState(true)
+
+  // Input message
+  const [showInputMessage, setShowInputMessage] = useState(false)
+  const [inputTitle, setInputTitle] = useState("")
+  const [inputMessage, setInputMessage] = useState("")
+
+  // Error alert
+  const [showErrorAlert, setShowErrorAlert] = useState(true)
+  const [errorStyle, setErrorStyle] = useState<
+    "stop" | "warning" | "information"
+  >("stop")
+  const [errorTitle, setErrorTitle] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
+
+  const { selection } = useWorkbookStore()
+  const { addRule, updateRule, getRuleById, clearRulesForRange } =
+    useValidationStore()
 
   // Load existing rule if editing
   useEffect(() => {
     if (editRuleId) {
-      const rule = getRuleById(sheetId, editRuleId);
+      const rule = getRuleById(sheetId, editRuleId)
       if (rule) {
-        setValidationType(rule.type);
-        setOperator(rule.operator || 'between');
-        setValue1(String(rule.value1 || ''));
-        setValue2(String(rule.value2 || ''));
-        setListSource(rule.listSource || '');
-        setFormula(rule.formula || '');
-        setIgnoreBlank(rule.ignoreBlank);
-        setShowDropdown(rule.showDropdown);
-        setShowInputMessage(rule.showInputMessage);
-        setInputTitle(rule.inputTitle || '');
-        setInputMessage(rule.inputMessage || '');
-        setShowErrorAlert(rule.showErrorAlert);
-        setErrorStyle(rule.errorStyle);
-        setErrorTitle(rule.errorTitle || '');
-        setErrorMessage(rule.errorMessage || '');
+        setValidationType(rule.type)
+        setOperator(rule.operator || "between")
+        setValue1(String(rule.value1 || ""))
+        setValue2(String(rule.value2 || ""))
+        setListSource(rule.listSource || "")
+        setFormula(rule.formula || "")
+        setIgnoreBlank(rule.ignoreBlank)
+        setShowDropdown(rule.showDropdown)
+        setShowInputMessage(rule.showInputMessage)
+        setInputTitle(rule.inputTitle || "")
+        setInputMessage(rule.inputMessage || "")
+        setShowErrorAlert(rule.showErrorAlert)
+        setErrorStyle(rule.errorStyle)
+        setErrorTitle(rule.errorTitle || "")
+        setErrorMessage(rule.errorMessage || "")
       }
     }
-  }, [editRuleId, sheetId, getRuleById]);
+  }, [editRuleId, sheetId, getRuleById])
 
   // Get range string from selection
   const getRangeString = (): string => {
-    if (!selection) return '';
-    const startCol = String.fromCharCode(65 + selection.start.col);
-    const endCol = String.fromCharCode(65 + selection.end.col);
-    return `${startCol}${selection.start.row + 1}:${endCol}${selection.end.row + 1}`;
-  };
+    if (!selection) return ""
+    const startCol = String.fromCharCode(65 + selection.start.col)
+    const endCol = String.fromCharCode(65 + selection.end.col)
+    return `${startCol}${selection.start.row + 1}:${endCol}${selection.end.row + 1}`
+  }
 
   // Check if operator needs two values
-  const needsTwoValues = operator === 'between' || operator === 'notBetween';
+  const needsTwoValues = operator === "between" || operator === "notBetween"
 
   // Get operators based on validation type
   const getOperators = (): ValidationOperator[] => {
-    if (validationType === 'list' || validationType === 'custom') {
-      return [];
+    if (validationType === "list" || validationType === "custom") {
+      return []
     }
     return [
-      'between', 'notBetween', 'equal', 'notEqual',
-      'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual',
-    ];
-  };
+      "between",
+      "notBetween",
+      "equal",
+      "notEqual",
+      "greaterThan",
+      "lessThan",
+      "greaterThanOrEqual",
+      "lessThanOrEqual",
+    ]
+  }
 
   const handleApply = () => {
-    const range = getRangeString();
-    if (!range) return;
+    const range = getRangeString()
+    if (!range) return
 
     const rule: Partial<ValidationRule> = {
       type: validationType,
@@ -707,32 +791,35 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
       errorTitle: errorTitle || undefined,
       errorMessage: errorMessage || undefined,
       range,
-    };
+    }
 
     if (editRuleId) {
-      updateRule(sheetId, editRuleId, rule);
+      updateRule(sheetId, editRuleId, rule)
     } else {
       // Clear any existing rules for this range first
-      clearRulesForRange(sheetId, range);
-      addRule(sheetId, rule);
+      clearRulesForRange(sheetId, range)
+      addRule(sheetId, rule)
     }
 
-    onClose();
-  };
+    onClose()
+  }
 
   const handleClearAll = () => {
-    const range = getRangeString();
+    const range = getRangeString()
     if (range) {
-      clearRulesForRange(sheetId, range);
+      clearRulesForRange(sheetId, range)
     }
-    onClose();
-  };
+    onClose()
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog validation-dialog" onClick={e => e.stopPropagation()}>
+      <div
+        className="dialog validation-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h3>Data Validation</h3>
           <button className="close-btn" onClick={onClose}>
@@ -742,21 +829,21 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
 
         {/* Tabs */}
         <div className="validation-tabs">
-          <button 
-            className={activeTab === 'settings' ? 'active' : ''}
-            onClick={() => setActiveTab('settings')}
+          <button
+            className={activeTab === "settings" ? "active" : ""}
+            onClick={() => setActiveTab("settings")}
           >
             Settings
           </button>
-          <button 
-            className={activeTab === 'inputMessage' ? 'active' : ''}
-            onClick={() => setActiveTab('inputMessage')}
+          <button
+            className={activeTab === "inputMessage" ? "active" : ""}
+            onClick={() => setActiveTab("inputMessage")}
           >
             Input Message
           </button>
-          <button 
-            className={activeTab === 'errorAlert' ? 'active' : ''}
-            onClick={() => setActiveTab('errorAlert')}
+          <button
+            className={activeTab === "errorAlert" ? "active" : ""}
+            onClick={() => setActiveTab("errorAlert")}
           >
             Error Alert
           </button>
@@ -764,35 +851,47 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
 
         <div className="dialog-content">
           {/* Settings Tab */}
-          {activeTab === 'settings' && (
+          {activeTab === "settings" && (
             <div className="tab-content">
               <div className="form-group">
                 <label>Allow:</label>
-                <select 
+                <select
                   value={validationType}
-                  onChange={(e) => setValidationType(e.target.value as ValidationType)}
+                  onChange={(e) =>
+                    setValidationType(e.target.value as ValidationType)
+                  }
                 >
-                  {Object.entries(VALIDATION_TYPE_LABELS).map(([key, label]) => (
-                    <option key={key} value={key}>{label}</option>
-                  ))}
+                  {Object.entries(VALIDATION_TYPE_LABELS).map(
+                    ([key, label]) => (
+                      <option key={key} value={key}>
+                        {label}
+                      </option>
+                    )
+                  )}
                 </select>
               </div>
 
-              {validationType !== 'any' && validationType !== 'list' && validationType !== 'custom' && (
-                <div className="form-group">
-                  <label>Data:</label>
-                  <select 
-                    value={operator}
-                    onChange={(e) => setOperator(e.target.value as ValidationOperator)}
-                  >
-                    {getOperators().map(op => (
-                      <option key={op} value={op}>{VALIDATION_OPERATOR_LABELS[op]}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
+              {validationType !== "any" &&
+                validationType !== "list" &&
+                validationType !== "custom" && (
+                  <div className="form-group">
+                    <label>Data:</label>
+                    <select
+                      value={operator}
+                      onChange={(e) =>
+                        setOperator(e.target.value as ValidationOperator)
+                      }
+                    >
+                      {getOperators().map((op) => (
+                        <option key={op} value={op}>
+                          {VALIDATION_OPERATOR_LABELS[op]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
-              {validationType === 'list' && (
+              {validationType === "list" && (
                 <div className="form-group">
                   <label>Source:</label>
                   <input
@@ -802,11 +901,13 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
                     placeholder="Option1, Option2, Option3"
                     className="text-input"
                   />
-                  <span className="input-hint">Enter comma-separated values or a range reference</span>
+                  <span className="input-hint">
+                    Enter comma-separated values or a range reference
+                  </span>
                 </div>
               )}
 
-              {validationType === 'custom' && (
+              {validationType === "custom" && (
                 <div className="form-group">
                   <label>Formula:</label>
                   <input
@@ -819,45 +920,59 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
                 </div>
               )}
 
-              {validationType !== 'any' && validationType !== 'list' && validationType !== 'custom' && (
-                <>
-                  <div className="form-group">
-                    <label>{needsTwoValues ? 'Minimum:' : 'Value:'}</label>
-                    <input
-                      type={validationType === 'date' ? 'date' : validationType === 'time' ? 'time' : 'text'}
-                      value={value1}
-                      onChange={(e) => setValue1(e.target.value)}
-                      className="text-input"
-                    />
-                  </div>
-
-                  {needsTwoValues && (
+              {validationType !== "any" &&
+                validationType !== "list" &&
+                validationType !== "custom" && (
+                  <>
                     <div className="form-group">
-                      <label>Maximum:</label>
+                      <label>{needsTwoValues ? "Minimum:" : "Value:"}</label>
                       <input
-                        type={validationType === 'date' ? 'date' : validationType === 'time' ? 'time' : 'text'}
-                        value={value2}
-                        onChange={(e) => setValue2(e.target.value)}
+                        type={
+                          validationType === "date"
+                            ? "date"
+                            : validationType === "time"
+                              ? "time"
+                              : "text"
+                        }
+                        value={value1}
+                        onChange={(e) => setValue1(e.target.value)}
                         className="text-input"
                       />
                     </div>
-                  )}
-                </>
-              )}
+
+                    {needsTwoValues && (
+                      <div className="form-group">
+                        <label>Maximum:</label>
+                        <input
+                          type={
+                            validationType === "date"
+                              ? "date"
+                              : validationType === "time"
+                                ? "time"
+                                : "text"
+                          }
+                          value={value2}
+                          onChange={(e) => setValue2(e.target.value)}
+                          className="text-input"
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
 
               <div className="checkbox-group">
                 <label>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={ignoreBlank}
                     onChange={(e) => setIgnoreBlank(e.target.checked)}
                   />
                   Ignore blank
                 </label>
-                {validationType === 'list' && (
+                {validationType === "list" && (
                   <label>
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={showDropdown}
                       onChange={(e) => setShowDropdown(e.target.checked)}
                     />
@@ -869,11 +984,11 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
           )}
 
           {/* Input Message Tab */}
-          {activeTab === 'inputMessage' && (
+          {activeTab === "inputMessage" && (
             <div className="tab-content">
               <label className="checkbox-standalone">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   checked={showInputMessage}
                   onChange={(e) => setShowInputMessage(e.target.checked)}
                 />
@@ -907,11 +1022,11 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
           )}
 
           {/* Error Alert Tab */}
-          {activeTab === 'errorAlert' && (
+          {activeTab === "errorAlert" && (
             <div className="tab-content">
               <label className="checkbox-standalone">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   checked={showErrorAlert}
                   onChange={(e) => setShowErrorAlert(e.target.checked)}
                 />
@@ -922,24 +1037,24 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
                 <label>Style:</label>
                 <div className="style-options">
                   <button
-                    className={`style-btn ${errorStyle === 'stop' ? 'active' : ''}`}
-                    onClick={() => setErrorStyle('stop')}
+                    className={`style-btn ${errorStyle === "stop" ? "active" : ""}`}
+                    onClick={() => setErrorStyle("stop")}
                     disabled={!showErrorAlert}
                   >
                     <AlertCircle size={20} className="error-icon" />
                     <span>Stop</span>
                   </button>
                   <button
-                    className={`style-btn ${errorStyle === 'warning' ? 'active' : ''}`}
-                    onClick={() => setErrorStyle('warning')}
+                    className={`style-btn ${errorStyle === "warning" ? "active" : ""}`}
+                    onClick={() => setErrorStyle("warning")}
                     disabled={!showErrorAlert}
                   >
                     <AlertTriangle size={20} className="warning-icon" />
                     <span>Warning</span>
                   </button>
                   <button
-                    className={`style-btn ${errorStyle === 'information' ? 'active' : ''}`}
-                    onClick={() => setErrorStyle('information')}
+                    className={`style-btn ${errorStyle === "information" ? "active" : ""}`}
+                    onClick={() => setErrorStyle("information")}
                     disabled={!showErrorAlert}
                   >
                     <Info size={20} className="info-icon" />
@@ -990,10 +1105,10 @@ export const DataValidationDialog: React.FC<DataValidationDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DataValidationDialog;
+export default DataValidationDialog
 ```
 
 ---
@@ -1005,19 +1120,19 @@ export default DataValidationDialog;
 // VALIDATION DROPDOWN — In-cell dropdown for list validation
 // ============================================================
 
-import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { useValidationStore } from '../../stores/validationStore';
-import { useClickOutside } from '../../hooks/useClickOutside';
-import './DataValidation.css';
+import React, { useState, useRef, useEffect } from "react"
+import { ChevronDown } from "lucide-react"
+import { useValidationStore } from "../../stores/validationStore"
+import { useClickOutside } from "../../hooks/useClickOutside"
+import "./DataValidation.css"
 
 interface ValidationDropdownProps {
-  sheetId: string;
-  row: number;
-  col: number;
-  value: string;
-  onChange: (value: string) => void;
-  cellRect: DOMRect;
+  sheetId: string
+  row: number
+  col: number
+  value: string
+  onChange: (value: string) => void
+  cellRect: DOMRect
 }
 
 export const ValidationDropdown: React.FC<ValidationDropdownProps> = ({
@@ -1028,29 +1143,30 @@ export const ValidationDropdown: React.FC<ValidationDropdownProps> = ({
   onChange,
   cellRect,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const { getRuleForCell } = useValidationStore();
-  const rule = getRuleForCell(sheetId, row, col);
+  const { getRuleForCell } = useValidationStore()
+  const rule = getRuleForCell(sheetId, row, col)
 
-  useClickOutside(dropdownRef, () => setIsOpen(false));
+  useClickOutside(dropdownRef, () => setIsOpen(false))
 
   // Only show for list validation with dropdown enabled
-  if (!rule || rule.type !== 'list' || !rule.showDropdown) {
-    return null;
+  if (!rule || rule.type !== "list" || !rule.showDropdown) {
+    return null
   }
 
-  const items = rule.listItems || rule.listSource?.split(',').map(s => s.trim()) || [];
+  const items =
+    rule.listItems || rule.listSource?.split(",").map((s) => s.trim()) || []
 
   const handleSelect = (item: string) => {
-    onChange(item);
-    setIsOpen(false);
-  };
+    onChange(item)
+    setIsOpen(false)
+  }
 
   return (
     <div className="validation-dropdown-wrapper" ref={dropdownRef}>
-      <button 
+      <button
         className="validation-dropdown-btn"
         onClick={() => setIsOpen(!isOpen)}
         style={{
@@ -1063,7 +1179,7 @@ export const ValidationDropdown: React.FC<ValidationDropdownProps> = ({
       </button>
 
       {isOpen && (
-        <div 
+        <div
           className="validation-dropdown-menu"
           style={{
             top: cellRect.height,
@@ -1073,7 +1189,7 @@ export const ValidationDropdown: React.FC<ValidationDropdownProps> = ({
           {items.map((item, index) => (
             <button
               key={index}
-              className={`dropdown-item ${item === value ? 'active' : ''}`}
+              className={`dropdown-item ${item === value ? "active" : ""}`}
               onClick={() => handleSelect(item)}
             >
               {item}
@@ -1082,10 +1198,10 @@ export const ValidationDropdown: React.FC<ValidationDropdownProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ValidationDropdown;
+export default ValidationDropdown
 ```
 
 ---
@@ -1097,15 +1213,15 @@ export default ValidationDropdown;
 // VALIDATION INDICATOR — Shows validation errors on cells
 // ============================================================
 
-import React from 'react';
-import { AlertCircle } from 'lucide-react';
-import { useValidationStore } from '../../stores/validationStore';
-import './DataValidation.css';
+import React from "react"
+import { AlertCircle } from "lucide-react"
+import { useValidationStore } from "../../stores/validationStore"
+import "./DataValidation.css"
 
 interface ValidationIndicatorProps {
-  sheetId: string;
-  row: number;
-  col: number;
+  sheetId: string
+  row: number
+  col: number
 }
 
 export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
@@ -1113,10 +1229,10 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
   row,
   col,
 }) => {
-  const { validationCache, showInvalidCircles } = useValidationStore();
-  
-  const cellKey = `${row}-${col}`;
-  const validation = validationCache[sheetId]?.[cellKey];
+  const { validationCache, showInvalidCircles } = useValidationStore()
+
+  const cellKey = `${row}-${col}`
+  const validation = validationCache[sheetId]?.[cellKey]
 
   // Show circle for invalid cells if enabled
   if (showInvalidCircles && validation && !validation.isValid) {
@@ -1134,22 +1250,25 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
           />
         </svg>
       </div>
-    );
+    )
   }
 
   // Show small error indicator in corner
   if (validation && !validation.isValid) {
     return (
-      <div className="validation-error-indicator" title={validation.errorMessage}>
+      <div
+        className="validation-error-indicator"
+        title={validation.errorMessage}
+      >
         <div className="error-triangle" />
       </div>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 
-export default ValidationIndicator;
+export default ValidationIndicator
 ```
 
 ---
@@ -1305,9 +1424,15 @@ export default ValidationIndicator;
   cursor: not-allowed;
 }
 
-.style-btn .error-icon { color: #dc2626; }
-.style-btn .warning-icon { color: #f59e0b; }
-.style-btn .info-icon { color: #3b82f6; }
+.style-btn .error-icon {
+  color: #dc2626;
+}
+.style-btn .warning-icon {
+  color: #f59e0b;
+}
+.style-btn .info-icon {
+  color: #3b82f6;
+}
 
 .style-btn span {
   font-size: 12px;
@@ -1461,9 +1586,9 @@ export default ValidationIndicator;
 ## 📄 File 7: `src/components/DataValidation/index.ts`
 
 ```typescript
-export { DataValidationDialog } from './DataValidationDialog';
-export { ValidationDropdown } from './ValidationDropdown';
-export { ValidationIndicator } from './ValidationIndicator';
+export { DataValidationDialog } from "./DataValidationDialog"
+export { ValidationDropdown } from "./ValidationDropdown"
+export { ValidationIndicator } from "./ValidationIndicator"
 ```
 
 ---
@@ -1489,15 +1614,15 @@ export { ValidationIndicator } from './ValidationIndicator';
 
 ```tsx
 // In Cell.tsx
-import { ValidationIndicator, ValidationDropdown } from '../DataValidation';
+import { ValidationIndicator, ValidationDropdown } from "../DataValidation"
 
 // In cell render
-<div className="cell">
+;<div className="cell">
   {/* Cell content */}
   <ValidationIndicator sheetId={sheetId} row={row} col={col} />
-  <ValidationDropdown 
-    sheetId={sheetId} 
-    row={row} 
+  <ValidationDropdown
+    sheetId={sheetId}
+    row={row}
     col={col}
     value={value}
     onChange={handleChange}
@@ -1511,15 +1636,15 @@ import { ValidationIndicator, ValidationDropdown } from '../DataValidation';
 ```tsx
 // In cell edit handler
 const handleCellChange = (row: number, col: number, value: any) => {
-  setCellValue(sheetId, row, col, value);
-  
+  setCellValue(sheetId, row, col, value)
+
   // Validate
-  const result = validateCell(sheetId, row, col, value);
+  const result = validateCell(sheetId, row, col, value)
   if (result && !result.isValid && result.errorMessage) {
     // Show error alert based on rule settings
-    showValidationError(result);
+    showValidationError(result)
   }
-};
+}
 ```
 
 ---

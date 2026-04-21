@@ -1,7 +1,7 @@
 // src/lib/ai/prompts.ts
 // System Prompts for HR AI Assistant
 
-import type { UserContext } from '@/types/ai'
+import type { UserContext } from "@/types/ai"
 
 /**
  * Build the main HR Assistant system prompt with user context
@@ -42,7 +42,7 @@ Nhiệm vụ của bạn là hỗ trợ nhân viên về các vấn đề nhân 
 
   // Leave balances
   if (context.leaveBalances && context.leaveBalances.length > 0) {
-    parts.push('\n## Số ngày phép còn lại:')
+    parts.push("\n## Số ngày phép còn lại:")
     context.leaveBalances.forEach((lb) => {
       parts.push(`- ${lb.typeName}: ${lb.available}/${lb.entitlement} ngày`)
     })
@@ -91,7 +91,7 @@ Ví dụ:
 {"leaveType": "ANNUAL", "startDate": "2024-01-15", "endDate": "2024-01-16", "reason": "Việc cá nhân"}
 [/ACTION]`)
 
-  return parts.join('\n')
+  return parts.join("\n")
 }
 
 /**

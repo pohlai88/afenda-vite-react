@@ -1,15 +1,13 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
-import {
-  ONBOARDING_CATEGORY,
-} from '@/lib/recruitment/constants'
-import type { OnboardingTask } from '@/types/recruitment'
-import { CheckCircle2, Clock, AlertCircle } from 'lucide-react'
+import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Badge } from "@/components/ui/badge"
+import { Label } from "@/components/ui/label"
+import { ONBOARDING_CATEGORY } from "@/lib/recruitment/constants"
+import type { OnboardingTask } from "@/types/recruitment"
+import { CheckCircle2, Clock, AlertCircle } from "lucide-react"
 
 interface OnboardingChecklistProps {
   tasks: OnboardingTask[]
@@ -25,14 +23,17 @@ export function OnboardingChecklist({
   const [loadingTasks, setLoadingTasks] = useState<Set<string>>(new Set())
 
   // Group tasks by category
-  const groupedTasks = tasks.reduce((groups, task) => {
-    const category = task.category
-    if (!groups[category]) {
-      groups[category] = []
-    }
-    groups[category].push(task)
-    return groups
-  }, {} as Record<string, OnboardingTask[]>)
+  const groupedTasks = tasks.reduce(
+    (groups, task) => {
+      const category = task.category
+      if (!groups[category]) {
+        groups[category] = []
+      }
+      groups[category].push(task)
+      return groups
+    },
+    {} as Record<string, OnboardingTask[]>
+  )
 
   // Sort categories by order
   const sortedCategories = Object.entries(groupedTasks).sort(([a], [b]) => {
@@ -41,7 +42,10 @@ export function OnboardingChecklist({
     return orderA - orderB
   })
 
-  const handleTaskToggle = async (taskId: string, currentlyCompleted: boolean) => {
+  const handleTaskToggle = async (
+    taskId: string,
+    currentlyCompleted: boolean
+  ) => {
     setLoadingTasks((prev) => new Set(prev).add(taskId))
     try {
       await onTaskComplete(taskId, !currentlyCompleted)
@@ -55,22 +59,24 @@ export function OnboardingChecklist({
   }
 
   const getTaskStatusIcon = (task: OnboardingTask) => {
-    if (task.status === 'COMPLETED') {
+    if (task.status === "COMPLETED") {
       return <CheckCircle2 className="h-4 w-4 text-green-500" />
     }
-    if (task.status === 'OVERDUE') {
+    if (task.status === "OVERDUE") {
       return <AlertCircle className="h-4 w-4 text-red-500" />
     }
     return <Clock className="h-4 w-4 text-muted-foreground" />
   }
 
   const getCategoryProgress = (categoryTasks: OnboardingTask[]) => {
-    const completed = categoryTasks.filter((t) => t.status === 'COMPLETED').length
+    const completed = categoryTasks.filter(
+      (t) => t.status === "COMPLETED"
+    ).length
     return { completed, total: categoryTasks.length }
   }
 
   const isTaskOverdue = (task: OnboardingTask) => {
-    return task.status !== 'COMPLETED' && new Date(task.dueDate) < new Date()
+    return task.status !== "COMPLETED" && new Date(task.dueDate) < new Date()
   }
 
   return (
@@ -105,7 +111,7 @@ export function OnboardingChecklist({
             </CardHeader>
             <CardContent className="space-y-3">
               {sortedTasks.map((task) => {
-                const isCompleted = task.status === 'COMPLETED'
+                const isCompleted = task.status === "COMPLETED"
                 const isLoading = loadingTasks.has(task.id)
                 const overdue = isTaskOverdue(task)
 
@@ -114,24 +120,28 @@ export function OnboardingChecklist({
                     key={task.id}
                     className={`flex items-start gap-3 p-2 rounded-md transition-colors ${
                       isCompleted
-                        ? 'bg-green-50/50'
+                        ? "bg-green-50/50"
                         : overdue
-                        ? 'bg-red-50/50'
-                        : 'hover:bg-muted/50'
+                          ? "bg-red-50/50"
+                          : "hover:bg-muted/50"
                     }`}
                   >
                     <Checkbox
                       id={`task-${task.id}`}
                       checked={isCompleted}
                       disabled={readOnly || isLoading}
-                      onCheckedChange={() => handleTaskToggle(task.id, isCompleted)}
+                      onCheckedChange={() =>
+                        handleTaskToggle(task.id, isCompleted)
+                      }
                       className="mt-0.5"
                     />
                     <div className="flex-1 min-w-0">
                       <Label
                         htmlFor={`task-${task.id}`}
                         className={`text-sm cursor-pointer ${
-                          isCompleted ? 'line-through text-muted-foreground' : ''
+                          isCompleted
+                            ? "line-through text-muted-foreground"
+                            : ""
                         }`}
                       >
                         {task.title}
@@ -146,16 +156,23 @@ export function OnboardingChecklist({
                       )}
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-xs text-muted-foreground">
-                          Hạn: {new Date(task.dueDate).toLocaleDateString('vi-VN')}
+                          Hạn:{" "}
+                          {new Date(task.dueDate).toLocaleDateString("vi-VN")}
                         </span>
                         {overdue && !isCompleted && (
-                          <Badge variant="destructive" className="text-[10px] px-1 py-0">
+                          <Badge
+                            variant="destructive"
+                            className="text-[10px] px-1 py-0"
+                          >
                             Quá hạn
                           </Badge>
                         )}
                         {task.completedAt && (
                           <span className="text-xs text-green-600">
-                            Xong: {new Date(task.completedAt).toLocaleDateString('vi-VN')}
+                            Xong:{" "}
+                            {new Date(task.completedAt).toLocaleDateString(
+                              "vi-VN"
+                            )}
                           </span>
                         )}
                       </div>

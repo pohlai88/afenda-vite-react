@@ -1,10 +1,10 @@
 // src/app/api/devices/gps-checkin/route.ts
 // API endpoint for GPS check-in
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { createGPSCheckInService } from '@/lib/devices'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { createGPSCheckInService } from "@/lib/devices"
+import { z } from "zod"
 
 // ═══════════════════════════════════════════════════════════════
 // REQUEST SCHEMA
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     const employeeId = session.user.employeeId
     if (!employeeId) {
       return NextResponse.json(
-        { error: 'Không tìm thấy thông tin nhân viên' },
+        { error: "Không tìm thấy thông tin nhân viên" },
         { status: 400 }
       )
     }
@@ -76,14 +76,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Dữ liệu không hợp lệ', details: error.issues },
+        { error: "Dữ liệu không hợp lệ", details: error.issues },
         { status: 400 }
       )
     }
 
-    console.error('GPS check-in error:', error)
+    console.error("GPS check-in error:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Không thể chấm công' },
+      { error: error instanceof Error ? error.message : "Không thể chấm công" },
       { status: 500 }
     )
   }
@@ -97,19 +97,19 @@ export async function GET(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
-    const type = searchParams.get('type') || 'locations'
+    const type = searchParams.get("type") || "locations"
 
     const service = createGPSCheckInService(session.user.tenantId)
 
-    if (type === 'history') {
+    if (type === "history") {
       const employeeId = session.user.employeeId
       if (!employeeId) {
         return NextResponse.json(
-          { error: 'Không tìm thấy thông tin nhân viên' },
+          { error: "Không tìm thấy thông tin nhân viên" },
           { status: 400 }
         )
       }
@@ -127,9 +127,9 @@ export async function GET(request: NextRequest) {
       data: locations,
     })
   } catch (error) {
-    console.error('Get GPS data error:', error)
+    console.error("Get GPS data error:", error)
     return NextResponse.json(
-      { error: 'Không thể tải dữ liệu' },
+      { error: "Không thể tải dữ liệu" },
       { status: 500 }
     )
   }

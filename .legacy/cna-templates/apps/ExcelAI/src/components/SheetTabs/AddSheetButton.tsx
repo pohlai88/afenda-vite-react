@@ -1,8 +1,8 @@
-import React from 'react';
-import { Plus } from 'lucide-react';
+import React from "react"
+import { Plus } from "lucide-react"
 
 interface AddSheetButtonProps {
-  onClick: () => void;
+  onClick: () => void
 }
 
 export const AddSheetButton: React.FC<AddSheetButtonProps> = ({ onClick }) => {
@@ -14,5 +14,5 @@ export const AddSheetButton: React.FC<AddSheetButtonProps> = ({ onClick }) => {
     >
       <Plus className="w-4 h-4" />
     </button>
-  );
-};
+  )
+}

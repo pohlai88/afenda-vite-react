@@ -1,9 +1,11 @@
-import { db } from '@/lib/db'
-import type { JobType, WorkMode } from '@prisma/client'
-import { audit } from '@/lib/recruitment/utils'
-import type { AuditContext } from '@/types/audit'
+import { db } from "@/lib/db"
+import type { JobType, WorkMode } from "@prisma/client"
+import { audit } from "@/lib/recruitment/utils"
+import type { AuditContext } from "@/types/audit"
 
-export async function generateRequisitionCode(tenantId: string): Promise<string> {
+export async function generateRequisitionCode(
+  tenantId: string
+): Promise<string> {
   const year = new Date().getFullYear()
   const count = await db.jobRequisition.count({
     where: {
@@ -14,7 +16,7 @@ export async function generateRequisitionCode(tenantId: string): Promise<string>
       },
     },
   })
-  return `REQ-${year}-${String(count + 1).padStart(4, '0')}`
+  return `REQ-${year}-${String(count + 1).padStart(4, "0")}`
 }
 
 export async function createRequisition(
@@ -48,8 +50,8 @@ export async function createRequisition(
       title: data.title,
       departmentId: data.departmentId,
       reportingToId: data.reportingToId,
-      jobType: (data.jobType as JobType) || 'FULL_TIME',
-      workMode: (data.workMode as WorkMode) || 'ONSITE',
+      jobType: (data.jobType as JobType) || "FULL_TIME",
+      workMode: (data.workMode as WorkMode) || "ONSITE",
       location: data.location,
       headcount: data.headcount || 1,
       salaryMin: data.salaryMin,
@@ -58,10 +60,10 @@ export async function createRequisition(
       description: data.description,
       requirements: data.requirements,
       benefits: data.benefits,
-      priority: data.priority || 'NORMAL',
+      priority: data.priority || "NORMAL",
       targetHireDate: data.targetHireDate,
       requestedById: userId,
-      status: 'DRAFT',
+      status: "DRAFT",
     },
     include: {
       department: true,
@@ -69,7 +71,7 @@ export async function createRequisition(
     },
   })
 
-  await audit.create(ctx, 'JobRequisition', requisition.id, requisition.title)
+  await audit.create(ctx, "JobRequisition", requisition.id, requisition.title)
 
   return requisition
 }
@@ -92,8 +94,8 @@ export async function getRequisitions(
   if (filters?.priority) where.priority = filters.priority
   if (filters?.search) {
     where.OR = [
-      { title: { contains: filters.search, mode: 'insensitive' } },
-      { requisitionCode: { contains: filters.search, mode: 'insensitive' } },
+      { title: { contains: filters.search, mode: "insensitive" } },
+      { requisitionCode: { contains: filters.search, mode: "insensitive" } },
     ]
   }
 
@@ -106,7 +108,7 @@ export async function getRequisitions(
         requestedBy: { select: { id: true, name: true } },
         _count: { select: { applications: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -127,7 +129,7 @@ export async function getRequisitionById(id: string, tenantId: string) {
       jobPostings: true,
       applications: {
         include: { candidate: true },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 10,
       },
     },
@@ -152,24 +154,34 @@ export async function updateRequisition(
     include: { department: true },
   })
 
-  await audit.update(ctx, 'JobRequisition', id, data, existing.title)
+  await audit.update(ctx, "JobRequisition", id, data, existing.title)
 
   return updated
 }
 
-export async function submitForApproval(id: string, tenantId: string, ctx: AuditContext) {
+export async function submitForApproval(
+  id: string,
+  tenantId: string,
+  ctx: AuditContext
+) {
   const requisition = await db.jobRequisition.findFirst({
-    where: { id, tenantId, status: 'DRAFT' },
+    where: { id, tenantId, status: "DRAFT" },
   })
 
   if (!requisition) return null
 
   const updated = await db.jobRequisition.update({
     where: { id },
-    data: { status: 'PENDING_APPROVAL' },
+    data: { status: "PENDING_APPROVAL" },
   })
 
-  await audit.update(ctx, 'JobRequisition', id, { status: { old: 'DRAFT', new: 'PENDING_APPROVAL' } }, requisition.title)
+  await audit.update(
+    ctx,
+    "JobRequisition",
+    id,
+    { status: { old: "DRAFT", new: "PENDING_APPROVAL" } },
+    requisition.title
+  )
 
   return updated
 }
@@ -183,12 +195,12 @@ export async function approveRequisition(
   ctx?: AuditContext
 ) {
   const requisition = await db.jobRequisition.findFirst({
-    where: { id, tenantId, status: 'PENDING_APPROVAL' },
+    where: { id, tenantId, status: "PENDING_APPROVAL" },
   })
 
   if (!requisition) return null
 
-  const newStatus = approved ? 'APPROVED' : 'REJECTED'
+  const newStatus = approved ? "APPROVED" : "REJECTED"
 
   const updated = await db.jobRequisition.update({
     where: { id },
@@ -202,28 +214,38 @@ export async function approveRequisition(
 
   if (ctx) {
     if (approved) {
-      await audit.approve(ctx, 'JobRequisition', id, requisition.title)
+      await audit.approve(ctx, "JobRequisition", id, requisition.title)
     } else {
-      await audit.reject(ctx, 'JobRequisition', id, requisition.title)
+      await audit.reject(ctx, "JobRequisition", id, requisition.title)
     }
   }
 
   return updated
 }
 
-export async function openRequisition(id: string, tenantId: string, ctx: AuditContext) {
+export async function openRequisition(
+  id: string,
+  tenantId: string,
+  ctx: AuditContext
+) {
   const requisition = await db.jobRequisition.findFirst({
-    where: { id, tenantId, status: 'APPROVED' },
+    where: { id, tenantId, status: "APPROVED" },
   })
 
   if (!requisition) return null
 
   const updated = await db.jobRequisition.update({
     where: { id },
-    data: { status: 'OPEN' },
+    data: { status: "OPEN" },
   })
 
-  await audit.update(ctx, 'JobRequisition', id, { status: { old: 'APPROVED', new: 'OPEN' } }, requisition.title)
+  await audit.update(
+    ctx,
+    "JobRequisition",
+    id,
+    { status: { old: "APPROVED", new: "OPEN" } },
+    requisition.title
+  )
 
   return updated
 }

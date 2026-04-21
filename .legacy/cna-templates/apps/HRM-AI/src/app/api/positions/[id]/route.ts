@@ -18,9 +18,21 @@ export async function PUT(
     const body = await request.json()
     const validated = updatePositionSchema.parse({ ...body, id })
 
-    const position = await positionService.update(session.user.tenantId, id, validated)
+    const position = await positionService.update(
+      session.user.tenantId,
+      id,
+      validated
+    )
 
-    await audit.update({ tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' }, 'Position', id)
+    await audit.update(
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Position",
+      id
+    )
 
     return NextResponse.json(position)
   } catch (error) {
@@ -48,7 +60,15 @@ export async function DELETE(
     const { id } = await params
     await positionService.delete(session.user.tenantId, id)
 
-    await audit.delete({ tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' }, 'Position', id)
+    await audit.delete(
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Position",
+      id
+    )
 
     return NextResponse.json({ success: true })
   } catch (error) {

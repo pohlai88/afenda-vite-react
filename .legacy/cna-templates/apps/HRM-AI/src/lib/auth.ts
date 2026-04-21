@@ -1,10 +1,10 @@
-import NextAuth from 'next-auth'
-import Credentials from 'next-auth/providers/credentials'
-import bcrypt from 'bcryptjs'
-import crypto from 'crypto'
-import { db } from './db'
-import { authConfig } from './auth.config'
-import type { UserRole } from '@prisma/client'
+import NextAuth from "next-auth"
+import Credentials from "next-auth/providers/credentials"
+import bcrypt from "bcryptjs"
+import crypto from "crypto"
+import { db } from "./db"
+import { authConfig } from "./auth.config"
+import type { UserRole } from "@prisma/client"
 
 /**
  * Full auth configuration with Credentials provider
@@ -26,10 +26,10 @@ interface AppUser {
 
 /** Create a short hash of the user agent for session fingerprinting */
 function hashUserAgent(ua: string): string {
-  return crypto.createHash('sha256').update(ua).digest('hex').slice(0, 16)
+  return crypto.createHash("sha256").update(ua).digest("hex").slice(0, 16)
 }
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface Session {
     user: AppUser
   }
@@ -53,67 +53,78 @@ interface ExtendedJWT {
 // =============================================================================
 
 function getSSOProvider() {
-  if (process.env.ENABLE_SUPABASE_SSO !== 'true') return []
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return []
+  if (process.env.ENABLE_SUPABASE_SSO !== "true") return []
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY)
+    return []
 
-  const { createSupabaseSSOProvider } = require('@prismy/sso')
+  const { createSupabaseSSOProvider } = require("@prismy/sso")
 
-  return [createSupabaseSSOProvider({
-    appId: 'hrm' as const,
-    supabaseUrl: process.env.SUPABASE_URL,
-    supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
-    findLocalUser: async ({ id }: { id: string }) => {
-      const user = await db.user.findUnique({
-        where: { id },
-        include: { tenant: true },
-      })
-      return user ? { id: user.id, tenantId: user.tenantId } : null
-    },
-    createLocalUser: async ({ email, name, role, organizationId }: {
-      email: string; name: string; role: string; organizationId: string
-    }) => {
-      // Find or create tenant mapped to this Supabase organization
-      let tenant = await db.tenant.findFirst({
-        where: { code: `sso-${organizationId}` },
-      })
-      if (!tenant) {
-        tenant = await db.tenant.create({
+  return [
+    createSupabaseSSOProvider({
+      appId: "hrm" as const,
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+      findLocalUser: async ({ id }: { id: string }) => {
+        const user = await db.user.findUnique({
+          where: { id },
+          include: { tenant: true },
+        })
+        return user ? { id: user.id, tenantId: user.tenantId } : null
+      },
+      createLocalUser: async ({
+        email,
+        name,
+        role,
+        organizationId,
+      }: {
+        email: string
+        name: string
+        role: string
+        organizationId: string
+      }) => {
+        // Find or create tenant mapped to this Supabase organization
+        let tenant = await db.tenant.findFirst({
+          where: { code: `sso-${organizationId}` },
+        })
+        if (!tenant) {
+          tenant = await db.tenant.create({
+            data: {
+              name: `SSO Organization`,
+              code: `sso-${organizationId}`,
+              isActive: true,
+            },
+          })
+        }
+
+        const bcryptLib = await import("bcryptjs")
+        const user = await db.user.create({
           data: {
-            name: `SSO Organization`,
-            code: `sso-${organizationId}`,
+            email,
+            name,
+            passwordHash: await bcryptLib.default.hash(crypto.randomUUID(), 10),
+            role: (role as UserRole) || "VIEWER",
+            tenantId: tenant.id,
             isActive: true,
           },
         })
-      }
-
-      const bcryptLib = await import('bcryptjs')
-      const user = await db.user.create({
-        data: {
-          email,
-          name,
-          passwordHash: await bcryptLib.default.hash(crypto.randomUUID(), 10),
-          role: (role as UserRole) || 'VIEWER',
-          tenantId: tenant.id,
-          isActive: true,
-        },
-      })
-      return { id: user.id, tenantId: tenant.id }
-    },
-  })]
+        return { id: user.id, tenantId: tenant.id }
+      },
+    }),
+  ]
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
-      name: 'credentials',
+      name: "credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials, request) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email và mật khẩu là bắt buộc')
+          throw new Error("Email và mật khẩu là bắt buộc")
         }
 
         const email = credentials.email as string
@@ -130,17 +141,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         })
 
         if (!user) {
-          throw new Error('Email hoặc mật khẩu không chính xác')
+          throw new Error("Email hoặc mật khẩu không chính xác")
         }
 
         if (!user.tenant.isActive) {
-          throw new Error('Tài khoản công ty đã bị vô hiệu hóa')
+          throw new Error("Tài khoản công ty đã bị vô hiệu hóa")
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.passwordHash)
+        const isPasswordValid = await bcrypt.compare(
+          password,
+          user.passwordHash
+        )
 
         if (!isPasswordValid) {
-          throw new Error('Email hoặc mật khẩu không chính xác')
+          throw new Error("Email hoặc mật khẩu không chính xác")
         }
 
         // Update last login
@@ -150,7 +164,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         })
 
         // Capture user agent fingerprint for session binding
-        const userAgent = request?.headers?.get?.('user-agent') || ''
+        const userAgent = request?.headers?.get?.("user-agent") || ""
         const uaHash = userAgent ? hashUserAgent(userAgent) : undefined
 
         return {
@@ -186,8 +200,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             extToken.tenantName = user.tenantName
           } else {
             // Fetch tenant name for SSO users
-            const tenant = await db.tenant.findUnique({ where: { id: user.tenantId } })
-            extToken.tenantName = tenant?.name || 'SSO Organization'
+            const tenant = await db.tenant.findUnique({
+              where: { id: user.tenantId },
+            })
+            extToken.tenantName = tenant?.name || "SSO Organization"
           }
         }
       }

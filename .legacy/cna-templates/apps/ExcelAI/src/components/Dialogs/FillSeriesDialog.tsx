@@ -1,50 +1,58 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { useUIStore } from '../../stores/uiStore';
-import { FillSeriesConfig, DateUnit } from '../../utils/fillSeriesUtils';
+import React, { useState } from "react"
+import { X } from "lucide-react"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { useUIStore } from "../../stores/uiStore"
+import { FillSeriesConfig, DateUnit } from "../../utils/fillSeriesUtils"
 
 interface FillSeriesDialogProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
-export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) => {
-  const [direction, setDirection] = useState<'rows' | 'columns'>('columns');
-  const [type, setType] = useState<'linear' | 'growth' | 'date' | 'autofill'>('linear');
-  const [dateUnit, setDateUnit] = useState<DateUnit>('day');
-  const [stepValue, setStepValue] = useState(1);
-  const [stopValue, setStopValue] = useState<string>('');
-  const [trend, setTrend] = useState(false);
+export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({
+  onClose,
+}) => {
+  const [direction, setDirection] = useState<"rows" | "columns">("columns")
+  const [type, setType] = useState<"linear" | "growth" | "date" | "autofill">(
+    "linear"
+  )
+  const [dateUnit, setDateUnit] = useState<DateUnit>("day")
+  const [stepValue, setStepValue] = useState(1)
+  const [stopValue, setStopValue] = useState<string>("")
+  const [trend, setTrend] = useState(false)
 
-  const { fillSeries, selectionRange } = useWorkbookStore();
-  const { showToast } = useUIStore();
+  const { fillSeries, selectionRange } = useWorkbookStore()
+  const { showToast } = useUIStore()
 
   const handleApply = () => {
     if (!selectionRange) {
-      showToast('Please select a range first', 'warning');
-      onClose();
-      return;
+      showToast("Please select a range first", "warning")
+      onClose()
+      return
     }
 
     const config: FillSeriesConfig = {
       type,
       direction,
       step: stepValue,
-      dateUnit: type === 'date' ? dateUnit : undefined,
+      dateUnit: type === "date" ? dateUnit : undefined,
       stopValue: stopValue ? parseFloat(stopValue) : undefined,
       trend,
-    };
+    }
 
-    fillSeries(config);
-    showToast('Series filled successfully', 'success');
-    onClose();
-  };
+    fillSeries(config)
+    showToast("Series filled successfully", "success")
+    onClose()
+  }
 
-  const isDateType = type === 'date';
+  const isDateType = type === "date"
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog fill-series-dialog" onClick={(e) => e.stopPropagation()} style={{ width: 380 }}>
+      <div
+        className="dialog fill-series-dialog"
+        onClick={(e) => e.stopPropagation()}
+        style={{ width: 380 }}
+      >
         <div className="dialog-header">
           <h2>Series</h2>
           <button className="dialog-close" onClick={onClose}>
@@ -62,8 +70,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                   <input
                     type="radio"
                     name="direction"
-                    checked={direction === 'rows'}
-                    onChange={() => setDirection('rows')}
+                    checked={direction === "rows"}
+                    onChange={() => setDirection("rows")}
                   />
                   <span>Rows</span>
                 </label>
@@ -71,8 +79,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                   <input
                     type="radio"
                     name="direction"
-                    checked={direction === 'columns'}
-                    onChange={() => setDirection('columns')}
+                    checked={direction === "columns"}
+                    onChange={() => setDirection("columns")}
                   />
                   <span>Columns</span>
                 </label>
@@ -87,8 +95,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                   <input
                     type="radio"
                     name="type"
-                    checked={type === 'linear'}
-                    onChange={() => setType('linear')}
+                    checked={type === "linear"}
+                    onChange={() => setType("linear")}
                   />
                   <span>Linear</span>
                 </label>
@@ -96,8 +104,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                   <input
                     type="radio"
                     name="type"
-                    checked={type === 'growth'}
-                    onChange={() => setType('growth')}
+                    checked={type === "growth"}
+                    onChange={() => setType("growth")}
                   />
                   <span>Growth</span>
                 </label>
@@ -105,8 +113,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                   <input
                     type="radio"
                     name="type"
-                    checked={type === 'date'}
-                    onChange={() => setType('date')}
+                    checked={type === "date"}
+                    onChange={() => setType("date")}
                   />
                   <span>Date</span>
                 </label>
@@ -114,8 +122,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                   <input
                     type="radio"
                     name="type"
-                    checked={type === 'autofill'}
-                    onChange={() => setType('autofill')}
+                    checked={type === "autofill"}
+                    onChange={() => setType("autofill")}
                   />
                   <span>AutoFill</span>
                 </label>
@@ -131,8 +139,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                     <input
                       type="radio"
                       name="dateUnit"
-                      checked={dateUnit === 'day'}
-                      onChange={() => setDateUnit('day')}
+                      checked={dateUnit === "day"}
+                      onChange={() => setDateUnit("day")}
                     />
                     <span>Day</span>
                   </label>
@@ -140,8 +148,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                     <input
                       type="radio"
                       name="dateUnit"
-                      checked={dateUnit === 'weekday'}
-                      onChange={() => setDateUnit('weekday')}
+                      checked={dateUnit === "weekday"}
+                      onChange={() => setDateUnit("weekday")}
                     />
                     <span>Weekday</span>
                   </label>
@@ -149,8 +157,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                     <input
                       type="radio"
                       name="dateUnit"
-                      checked={dateUnit === 'month'}
-                      onChange={() => setDateUnit('month')}
+                      checked={dateUnit === "month"}
+                      onChange={() => setDateUnit("month")}
                     />
                     <span>Month</span>
                   </label>
@@ -158,8 +166,8 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                     <input
                       type="radio"
                       name="dateUnit"
-                      checked={dateUnit === 'year'}
-                      onChange={() => setDateUnit('year')}
+                      checked={dateUnit === "year"}
+                      onChange={() => setDateUnit("year")}
                     />
                     <span>Year</span>
                   </label>
@@ -174,7 +182,9 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
                 <input
                   type="number"
                   value={stepValue}
-                  onChange={(e) => setStepValue(parseFloat(e.target.value) || 1)}
+                  onChange={(e) =>
+                    setStepValue(parseFloat(e.target.value) || 1)
+                  }
                   className="dialog-input"
                   step="any"
                 />
@@ -216,5 +226,5 @@ export const FillSeriesDialog: React.FC<FillSeriesDialogProps> = ({ onClose }) =
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

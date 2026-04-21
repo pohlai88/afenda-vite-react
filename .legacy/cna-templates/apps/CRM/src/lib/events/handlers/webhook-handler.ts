@@ -1,6 +1,6 @@
-import { eventBus } from '../event-bus'
-import { prisma } from '@/lib/prisma'
-import { deliverWithRetry } from '@/lib/webhooks/delivery'
+import { eventBus } from "../event-bus"
+import { prisma } from "@/lib/prisma"
+import { deliverWithRetry } from "@/lib/webhooks/delivery"
 
 /**
  * Register webhook handler that delivers events to subscribed webhooks.
@@ -27,7 +27,7 @@ export function registerWebhookHandlers(): void {
         })
       }
     } catch (err) {
-      console.error('[Webhook] Handler error:', err)
+      console.error("[Webhook] Handler error:", err)
     }
   })
 }

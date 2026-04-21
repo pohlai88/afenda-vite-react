@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
 // ═══════════════════════════════════════════════════════════════
 // VISUALLY HIDDEN
@@ -14,16 +14,16 @@ interface VisuallyHiddenProps {
 
 export function VisuallyHidden({ children, asChild }: VisuallyHiddenProps) {
   const style: React.CSSProperties = {
-    position: 'absolute',
+    position: "absolute",
     border: 0,
     width: 1,
     height: 1,
     padding: 0,
     margin: -1,
-    overflow: 'hidden',
-    clip: 'rect(0, 0, 0, 0)',
-    whiteSpace: 'nowrap',
-    wordWrap: 'normal'
+    overflow: "hidden",
+    clip: "rect(0, 0, 0, 0)",
+    whiteSpace: "nowrap",
+    wordWrap: "normal",
   }
 
   if (asChild && React.isValidElement(children)) {
@@ -42,15 +42,18 @@ interface SkipToMainProps {
   className?: string
 }
 
-export function SkipToMain({ mainId = 'main-content', className }: SkipToMainProps) {
+export function SkipToMain({
+  mainId = "main-content",
+  className,
+}: SkipToMainProps) {
   return (
     <a
       href={`#${mainId}`}
       className={cn(
-        'sr-only focus:not-sr-only',
-        'focus:absolute focus:top-4 focus:left-4 focus:z-50',
-        'focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground',
-        'focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring',
+        "sr-only focus:not-sr-only",
+        "focus:absolute focus:top-4 focus:left-4 focus:z-50",
+        "focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground",
+        "focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring",
         className
       )}
     >
@@ -85,7 +88,7 @@ export function FocusTrap({ children, active = true }: FocusTrapProps) {
     const lastElement = focusableElements[focusableElements.length - 1]
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return
+      if (e.key !== "Tab") return
 
       if (e.shiftKey) {
         if (document.activeElement === firstElement) {
@@ -100,10 +103,10 @@ export function FocusTrap({ children, active = true }: FocusTrapProps) {
       }
     }
 
-    container.addEventListener('keydown', handleKeyDown)
+    container.addEventListener("keydown", handleKeyDown)
     firstElement?.focus()
 
-    return () => container.removeEventListener('keydown', handleKeyDown)
+    return () => container.removeEventListener("keydown", handleKeyDown)
   }, [active])
 
   return <div ref={containerRef}>{children}</div>
@@ -115,17 +118,21 @@ export function FocusTrap({ children, active = true }: FocusTrapProps) {
 
 interface LiveRegionProps {
   message: string
-  politeness?: 'polite' | 'assertive'
+  politeness?: "polite" | "assertive"
   className?: string
 }
 
-export function LiveRegion({ message, politeness = 'polite', className }: LiveRegionProps) {
+export function LiveRegion({
+  message,
+  politeness = "polite",
+  className,
+}: LiveRegionProps) {
   return (
     <div
       role="status"
       aria-live={politeness}
       aria-atomic="true"
-      className={cn('sr-only', className)}
+      className={cn("sr-only", className)}
     >
       {message}
     </div>
@@ -137,11 +144,11 @@ export function LiveRegion({ message, politeness = 'polite', className }: LiveRe
 // ═══════════════════════════════════════════════════════════════
 
 export function useAnnounce() {
-  const [message, setMessage] = React.useState('')
+  const [message, setMessage] = React.useState("")
 
   const announce = React.useCallback((text: string, delay: number = 100) => {
     // Clear first to ensure re-announcement
-    setMessage('')
+    setMessage("")
     setTimeout(() => setMessage(text), delay)
   }, [])
 
@@ -161,15 +168,15 @@ export function useReducedMotion(): boolean {
   const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(false)
 
   React.useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
     setPrefersReducedMotion(mediaQuery.matches)
 
     const listener = (event: MediaQueryListEvent) => {
       setPrefersReducedMotion(event.matches)
     }
 
-    mediaQuery.addEventListener('change', listener)
-    return () => mediaQuery.removeEventListener('change', listener)
+    mediaQuery.addEventListener("change", listener)
+    return () => mediaQuery.removeEventListener("change", listener)
   }, [])
 
   return prefersReducedMotion
@@ -182,50 +189,51 @@ export function useReducedMotion(): boolean {
 export function useKeyboardNavigation<T extends HTMLElement>(
   items: T[],
   options: {
-    orientation?: 'horizontal' | 'vertical' | 'both'
+    orientation?: "horizontal" | "vertical" | "both"
     loop?: boolean
   } = {}
 ) {
-  const { orientation = 'vertical', loop = true } = options
+  const { orientation = "vertical", loop = true } = options
   const [activeIndex, setActiveIndex] = React.useState(0)
 
   const handleKeyDown = React.useCallback(
     (e: React.KeyboardEvent) => {
-      const isVertical = orientation === 'vertical' || orientation === 'both'
-      const isHorizontal = orientation === 'horizontal' || orientation === 'both'
+      const isVertical = orientation === "vertical" || orientation === "both"
+      const isHorizontal =
+        orientation === "horizontal" || orientation === "both"
 
       let newIndex = activeIndex
 
       switch (e.key) {
-        case 'ArrowDown':
+        case "ArrowDown":
           if (isVertical) {
             e.preventDefault()
             newIndex = activeIndex + 1
           }
           break
-        case 'ArrowUp':
+        case "ArrowUp":
           if (isVertical) {
             e.preventDefault()
             newIndex = activeIndex - 1
           }
           break
-        case 'ArrowRight':
+        case "ArrowRight":
           if (isHorizontal) {
             e.preventDefault()
             newIndex = activeIndex + 1
           }
           break
-        case 'ArrowLeft':
+        case "ArrowLeft":
           if (isHorizontal) {
             e.preventDefault()
             newIndex = activeIndex - 1
           }
           break
-        case 'Home':
+        case "Home":
           e.preventDefault()
           newIndex = 0
           break
-        case 'End':
+        case "End":
           e.preventDefault()
           newIndex = items.length - 1
           break

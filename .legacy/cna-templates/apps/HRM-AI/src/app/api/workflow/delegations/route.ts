@@ -1,15 +1,15 @@
 // src/app/api/workflow/delegations/route.ts
 // Delegations API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { delegationService } from '@/services/delegation.service'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { delegationService } from "@/services/delegation.service"
 
 export async function GET() {
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const delegations = await delegationService.getByDelegator(
@@ -19,9 +19,9 @@ export async function GET() {
 
     return NextResponse.json({ data: delegations })
   } catch (error) {
-    console.error('Error fetching delegations:', error)
+    console.error("Error fetching delegations:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch delegations' },
+      { error: "Failed to fetch delegations" },
       { status: 500 }
     )
   }
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -49,9 +49,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(delegation, { status: 201 })
   } catch (error) {
-    console.error('Error creating delegation:', error)
+    console.error("Error creating delegation:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to create delegation' },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to create delegation",
+      },
       { status: 400 }
     )
   }

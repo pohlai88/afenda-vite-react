@@ -23,7 +23,10 @@ export function useData<T = unknown>(
     isLoading,
     isValidating,
     mutate,
-    isEmpty: !isLoading && !error && (!data || (Array.isArray(data) && data.length === 0)),
+    isEmpty:
+      !isLoading &&
+      !error &&
+      (!data || (Array.isArray(data) && data.length === 0)),
   }
 }
 
@@ -64,5 +67,8 @@ export async function optimisticUpdate<T>(
 }
 
 export function prefetch<T = unknown>(key: string) {
-  return globalMutate<T>(key, fetch(key).then(r => r.json()))
+  return globalMutate<T>(
+    key,
+    fetch(key).then((r) => r.json())
+  )
 }

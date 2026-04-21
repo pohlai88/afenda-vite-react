@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useState, useEffect, useCallback } from 'react'
-import type { CheckIn } from '@/types/performance'
+import { useState, useEffect, useCallback } from "react"
+import type { CheckIn } from "@/types/performance"
 
 export function useCheckIns() {
   const [checkIns, setCheckIns] = useState<CheckIn[]>([])
@@ -10,8 +10,8 @@ export function useCheckIns() {
   const fetchCheckIns = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/performance/check-ins')
-      if (!res.ok) throw new Error('Failed to fetch check-ins')
+      const res = await fetch("/api/performance/check-ins")
+      if (!res.ok) throw new Error("Failed to fetch check-ins")
       const data = await res.json()
       setCheckIns(data.checkIns || data || [])
     } catch {
@@ -37,7 +37,7 @@ export function useCheckIn(id: string | null) {
     setLoading(true)
     try {
       const res = await fetch(`/api/performance/check-ins/${id}`)
-      if (!res.ok) throw new Error('Failed to fetch check-in')
+      if (!res.ok) throw new Error("Failed to fetch check-in")
       const data = await res.json()
       setCheckIn(data)
     } catch {

@@ -1,93 +1,94 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert } from '@/components/ui/alert';
-import { BarChart } from '@/components/analytics/charts/BarChart';
+import { useEffect, useState } from "react"
+import { Card } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Alert } from "@/components/ui/alert"
+import { BarChart } from "@/components/analytics/charts/BarChart"
 import {
   AlertTriangle,
   DollarSign,
   TrendingUp,
   Users,
   BarChart3,
-} from 'lucide-react';
+} from "lucide-react"
 
 interface SalaryRange {
-  range: string;
-  count: number;
-  percentage: number;
+  range: string
+  count: number
+  percentage: number
 }
 
 interface GenderPayGap {
-  maleAvg: number;
-  femaleAvg: number;
-  gap: number;
-  gapPercentage: number;
+  maleAvg: number
+  femaleAvg: number
+  gap: number
+  gapPercentage: number
 }
 
 interface CompaRatioLevel {
-  level: string;
-  compaRatio: number;
-  marketMin: number;
-  marketMid: number;
-  marketMax: number;
-  avgSalary: number;
+  level: string
+  compaRatio: number
+  marketMin: number
+  marketMid: number
+  marketMax: number
+  avgSalary: number
 }
 
 interface DepartmentSalary {
-  department: string;
-  avgSalary: number;
-  minSalary: number;
-  maxSalary: number;
-  headcount: number;
+  department: string
+  avgSalary: number
+  minSalary: number
+  maxSalary: number
+  headcount: number
 }
 
 interface DistributionData {
-  salaryRanges: SalaryRange[];
-  compaRatioByLevel: CompaRatioLevel[];
-  departmentSalary: DepartmentSalary[];
+  salaryRanges: SalaryRange[]
+  compaRatioByLevel: CompaRatioLevel[]
+  departmentSalary: DepartmentSalary[]
 }
 
 interface EquityData {
-  genderPayGap: GenderPayGap;
+  genderPayGap: GenderPayGap
 }
 
 export default function CompensationPage() {
-  const [distributionData, setDistributionData] = useState<DistributionData | null>(null);
-  const [equityData, setEquityData] = useState<EquityData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [distributionData, setDistributionData] =
+    useState<DistributionData | null>(null)
+  const [equityData, setEquityData] = useState<EquityData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        setLoading(true);
+        setLoading(true)
         const [distRes, equityRes] = await Promise.all([
-          fetch('/api/analytics/compensation/distribution'),
-          fetch('/api/analytics/compensation/equity'),
-        ]);
+          fetch("/api/analytics/compensation/distribution"),
+          fetch("/api/analytics/compensation/equity"),
+        ])
 
         if (!distRes.ok || !equityRes.ok) {
-          throw new Error('Không thể tải dữ liệu');
+          throw new Error("Không thể tải dữ liệu")
         }
 
         const [dist, equity] = await Promise.all([
           distRes.json(),
           equityRes.json(),
-        ]);
+        ])
 
-        setDistributionData(dist);
-        setEquityData(equity);
+        setDistributionData(dist)
+        setEquityData(equity)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi');
+        setError(err instanceof Error ? err.message : "Đã xảy ra lỗi")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   if (loading) {
     return (
@@ -106,7 +107,7 @@ export default function CompensationPage() {
           <Skeleton className="h-[250px] w-full" />
         </Card>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -117,17 +118,17 @@ export default function CompensationPage() {
           <span>{error}</span>
         </Alert>
       </div>
-    );
+    )
   }
 
-  if (!distributionData || !equityData) return null;
+  if (!distributionData || !equityData) return null
 
   const formatCurrency = (value: number) => {
     if (value >= 1_000_000) {
-      return `${(value / 1_000_000).toFixed(1)}tr`;
+      return `${(value / 1_000_000).toFixed(1)}tr`
     }
-    return `${(value / 1_000).toFixed(0)}k`;
-  };
+    return `${(value / 1_000).toFixed(0)}k`
+  }
 
   return (
     <div className="space-y-6 p-6">
@@ -144,7 +145,7 @@ export default function CompensationPage() {
             labels: distributionData.salaryRanges.map((r) => r.range),
             datasets: [
               {
-                label: 'Số nhân viên',
+                label: "Số nhân viên",
                 data: distributionData.salaryRanges.map((r) => r.count),
               },
             ],
@@ -156,7 +157,9 @@ export default function CompensationPage() {
       <Card className="p-4">
         <div className="flex items-center gap-2 mb-4">
           <Users className="h-5 w-5 text-pink-600" />
-          <h3 className="text-lg font-semibold">Công bằng lương theo giới tính</h3>
+          <h3 className="text-lg font-semibold">
+            Công bằng lương theo giới tính
+          </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
@@ -174,8 +177,14 @@ export default function CompensationPage() {
           <div className="text-center p-4 bg-gray-50 rounded-lg">
             <div className="text-sm text-muted-foreground">Khoảng cách</div>
             <div className="text-xl font-bold">
-              <Badge variant={equityData.genderPayGap.gapPercentage > 5 ? 'destructive' : 'default'}>
-                {equityData.genderPayGap.gapPercentage > 0 ? '+' : ''}
+              <Badge
+                variant={
+                  equityData.genderPayGap.gapPercentage > 5
+                    ? "destructive"
+                    : "default"
+                }
+              >
+                {equityData.genderPayGap.gapPercentage > 0 ? "+" : ""}
                 {equityData.genderPayGap.gapPercentage.toFixed(1)}%
               </Badge>
             </div>
@@ -194,16 +203,22 @@ export default function CompensationPage() {
             labels: distributionData.compaRatioByLevel.map((l) => l.level),
             datasets: [
               {
-                label: 'Lương TB',
-                data: distributionData.compaRatioByLevel.map((l) => l.avgSalary),
+                label: "Lương TB",
+                data: distributionData.compaRatioByLevel.map(
+                  (l) => l.avgSalary
+                ),
               },
               {
-                label: 'Thị trường (Min)',
-                data: distributionData.compaRatioByLevel.map((l) => l.marketMin),
+                label: "Thị trường (Min)",
+                data: distributionData.compaRatioByLevel.map(
+                  (l) => l.marketMin
+                ),
               },
               {
-                label: 'Thị trường (Max)',
-                data: distributionData.compaRatioByLevel.map((l) => l.marketMax),
+                label: "Thị trường (Max)",
+                data: distributionData.compaRatioByLevel.map(
+                  (l) => l.marketMax
+                ),
               },
             ],
           }}
@@ -226,10 +241,10 @@ export default function CompensationPage() {
                     <Badge
                       variant={
                         level.compaRatio >= 0.95 && level.compaRatio <= 1.05
-                          ? 'default'
+                          ? "default"
                           : level.compaRatio < 0.95
-                          ? 'destructive'
-                          : 'secondary'
+                            ? "destructive"
+                            : "secondary"
                       }
                     >
                       {level.compaRatio.toFixed(2)}
@@ -252,7 +267,9 @@ export default function CompensationPage() {
       <Card className="p-4">
         <div className="flex items-center gap-2 mb-4">
           <DollarSign className="h-5 w-5 text-yellow-600" />
-          <h3 className="text-lg font-semibold">So sánh lương theo phòng ban</h3>
+          <h3 className="text-lg font-semibold">
+            So sánh lương theo phòng ban
+          </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -267,7 +284,10 @@ export default function CompensationPage() {
             </thead>
             <tbody>
               {distributionData.departmentSalary.map((dept) => (
-                <tr key={dept.department} className="border-b hover:bg-muted/50">
+                <tr
+                  key={dept.department}
+                  className="border-b hover:bg-muted/50"
+                >
                   <td className="py-2 px-3">{dept.department}</td>
                   <td className="text-right py-2 px-3">{dept.headcount}</td>
                   <td className="text-right py-2 px-3 font-medium">
@@ -286,5 +306,5 @@ export default function CompensationPage() {
         </div>
       </Card>
     </div>
-  );
+  )
 }

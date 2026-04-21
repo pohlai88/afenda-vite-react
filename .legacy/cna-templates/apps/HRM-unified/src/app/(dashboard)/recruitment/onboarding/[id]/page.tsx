@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import Link from "next/link"
 import {
   ArrowLeft,
   User,
@@ -13,19 +13,19 @@ import {
   Circle,
   Clock,
   AlertCircle,
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
 import {
   ONBOARDING_STATUS,
   ONBOARDING_TASK_STATUS,
   ONBOARDING_CATEGORY,
   ASSIGNEE_TYPE,
-} from '@/lib/recruitment/constants'
+} from "@/lib/recruitment/constants"
 
 interface OnboardingTask {
   id: string
@@ -71,11 +71,11 @@ export default function OnboardingDetailPage() {
     async function fetchOnboarding() {
       try {
         const res = await fetch(`/api/recruitment/onboarding/${id}`)
-        if (!res.ok) throw new Error('Không thể tải thông tin onboarding')
+        if (!res.ok) throw new Error("Không thể tải thông tin onboarding")
         const json = await res.json()
         setOnboarding(json)
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -84,30 +84,33 @@ export default function OnboardingDetailPage() {
   }, [id])
 
   const handleToggleTask = async (taskId: string, currentStatus: string) => {
-    const newStatus = currentStatus === 'COMPLETED' ? 'PENDING' : 'COMPLETED'
+    const newStatus = currentStatus === "COMPLETED" ? "PENDING" : "COMPLETED"
     try {
-      const res = await fetch(`/api/recruitment/onboarding/${id}/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
-      })
-      if (!res.ok) throw new Error('Không thể cập nhật công việc')
+      const res = await fetch(
+        `/api/recruitment/onboarding/${id}/tasks/${taskId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      )
+      if (!res.ok) throw new Error("Không thể cập nhật công việc")
       const updated = await res.json()
       setOnboarding(updated)
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     }
   }
 
   const getTaskStatusIcon = (status: string) => {
     switch (status) {
-      case 'COMPLETED':
+      case "COMPLETED":
         return <CheckCircle className="h-5 w-5 text-green-600" />
-      case 'IN_PROGRESS':
+      case "IN_PROGRESS":
         return <Clock className="h-5 w-5 text-blue-600" />
-      case 'OVERDUE':
+      case "OVERDUE":
         return <AlertCircle className="h-5 w-5 text-red-600" />
-      case 'SKIPPED':
+      case "SKIPPED":
         return <Circle className="h-5 w-5 text-yellow-600" />
       default:
         return <Circle className="h-5 w-5 text-gray-400" />
@@ -118,12 +121,12 @@ export default function OnboardingDetailPage() {
     const info = ONBOARDING_STATUS[status]
     if (!info) return <Badge variant="secondary">{status}</Badge>
     const colorMap: Record<string, string> = {
-      gray: 'bg-gray-100 text-gray-800',
-      blue: 'bg-blue-100 text-blue-800',
-      green: 'bg-green-100 text-green-800',
-      red: 'bg-red-100 text-red-800',
+      gray: "bg-gray-100 text-gray-800",
+      blue: "bg-blue-100 text-blue-800",
+      green: "bg-green-100 text-green-800",
+      red: "bg-red-100 text-red-800",
     }
-    return <Badge className={colorMap[info.color] || ''}>{info.label}</Badge>
+    return <Badge className={colorMap[info.color] || ""}>{info.label}</Badge>
   }
 
   if (loading) return <LoadingPage />
@@ -134,7 +137,7 @@ export default function OnboardingDetailPage() {
         <PageHeader title="Chi tiết Onboarding" />
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            {error || 'Không tìm thấy onboarding'}
+            {error || "Không tìm thấy onboarding"}
           </CardContent>
         </Card>
       </div>
@@ -142,12 +145,15 @@ export default function OnboardingDetailPage() {
   }
 
   // Group tasks by category
-  const tasksByCategory = onboarding.tasks.reduce((acc, task) => {
-    const cat = task.category || 'OTHER'
-    if (!acc[cat]) acc[cat] = []
-    acc[cat].push(task)
-    return acc
-  }, {} as Record<string, OnboardingTask[]>)
+  const tasksByCategory = onboarding.tasks.reduce(
+    (acc, task) => {
+      const cat = task.category || "OTHER"
+      if (!acc[cat]) acc[cat] = []
+      acc[cat].push(task)
+      return acc
+    },
+    {} as Record<string, OnboardingTask[]>
+  )
 
   // Sort categories by order
   const sortedCategories = Object.entries(tasksByCategory).sort((a, b) => {
@@ -177,7 +183,8 @@ export default function OnboardingDetailPage() {
             <div className="flex items-center gap-2">
               {getStatusBadge(onboarding.status)}
               <span className="text-sm text-muted-foreground">
-                {onboarding.completedTasks}/{onboarding.totalTasks} công việc hoàn thành
+                {onboarding.completedTasks}/{onboarding.totalTasks} công việc
+                hoàn thành
               </span>
             </div>
             <span className="font-medium">{onboarding.progress}%</span>
@@ -203,8 +210,8 @@ export default function OnboardingDetailPage() {
                     <div
                       key={task.id}
                       className={`flex items-start gap-3 rounded-lg border p-3 ${
-                        task.status === 'COMPLETED' ? 'bg-green-50/50' : ''
-                      } ${task.status === 'OVERDUE' ? 'border-red-200' : ''}`}
+                        task.status === "COMPLETED" ? "bg-green-50/50" : ""
+                      } ${task.status === "OVERDUE" ? "border-red-200" : ""}`}
                     >
                       <button
                         onClick={() => handleToggleTask(task.id, task.status)}
@@ -213,9 +220,13 @@ export default function OnboardingDetailPage() {
                         {getTaskStatusIcon(task.status)}
                       </button>
                       <div className="flex-1 min-w-0">
-                        <p className={`font-medium text-sm ${
-                          task.status === 'COMPLETED' ? 'line-through text-muted-foreground' : ''
-                        }`}>
+                        <p
+                          className={`font-medium text-sm ${
+                            task.status === "COMPLETED"
+                              ? "line-through text-muted-foreground"
+                              : ""
+                          }`}
+                        >
                           {task.title}
                         </p>
                         {task.description && (
@@ -225,7 +236,8 @@ export default function OnboardingDetailPage() {
                         )}
                         <div className="flex items-center gap-3 mt-1.5">
                           <Badge variant="outline" className="text-xs">
-                            {ASSIGNEE_TYPE[task.assigneeType]?.label || task.assigneeType}
+                            {ASSIGNEE_TYPE[task.assigneeType]?.label ||
+                              task.assigneeType}
                           </Badge>
                           {task.assigneeName && (
                             <span className="text-xs text-muted-foreground">
@@ -235,7 +247,9 @@ export default function OnboardingDetailPage() {
                           {task.dueDate && (
                             <span className="text-xs text-muted-foreground flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
-                              {new Date(task.dueDate).toLocaleDateString('vi-VN')}
+                              {new Date(task.dueDate).toLocaleDateString(
+                                "vi-VN"
+                              )}
                             </span>
                           )}
                         </div>
@@ -243,10 +257,13 @@ export default function OnboardingDetailPage() {
                       <Badge
                         variant="secondary"
                         className={`text-xs flex-shrink-0 ${
-                          task.status === 'OVERDUE' ? 'bg-red-100 text-red-800' : ''
+                          task.status === "OVERDUE"
+                            ? "bg-red-100 text-red-800"
+                            : ""
                         }`}
                       >
-                        {ONBOARDING_TASK_STATUS[task.status]?.label || task.status}
+                        {ONBOARDING_TASK_STATUS[task.status]?.label ||
+                          task.status}
                       </Badge>
                     </div>
                   ))}
@@ -292,13 +309,15 @@ export default function OnboardingDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Ngày bắt đầu</p>
                 <p className="text-sm">
-                  {new Date(onboarding.startDate).toLocaleDateString('vi-VN')}
+                  {new Date(onboarding.startDate).toLocaleDateString("vi-VN")}
                 </p>
               </div>
             </CardContent>
           </Card>
 
-          {(onboarding.buddyName || onboarding.hrContactName || onboarding.managerName) && (
+          {(onboarding.buddyName ||
+            onboarding.hrContactName ||
+            onboarding.managerName) && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -309,8 +328,12 @@ export default function OnboardingDetailPage() {
               <CardContent className="space-y-4">
                 {onboarding.buddyName && (
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase">Buddy</p>
-                    <p className="font-medium text-sm">{onboarding.buddyName}</p>
+                    <p className="text-xs text-muted-foreground uppercase">
+                      Buddy
+                    </p>
+                    <p className="font-medium text-sm">
+                      {onboarding.buddyName}
+                    </p>
                     {onboarding.buddyEmail && (
                       <p className="text-xs text-muted-foreground flex items-center gap-1">
                         <Mail className="h-3 w-3" />
@@ -321,8 +344,12 @@ export default function OnboardingDetailPage() {
                 )}
                 {onboarding.hrContactName && (
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase">HR</p>
-                    <p className="font-medium text-sm">{onboarding.hrContactName}</p>
+                    <p className="text-xs text-muted-foreground uppercase">
+                      HR
+                    </p>
+                    <p className="font-medium text-sm">
+                      {onboarding.hrContactName}
+                    </p>
                     {onboarding.hrContactEmail && (
                       <p className="text-xs text-muted-foreground flex items-center gap-1">
                         <Mail className="h-3 w-3" />
@@ -333,8 +360,12 @@ export default function OnboardingDetailPage() {
                 )}
                 {onboarding.managerName && (
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase">Quản lý</p>
-                    <p className="font-medium text-sm">{onboarding.managerName}</p>
+                    <p className="text-xs text-muted-foreground uppercase">
+                      Quản lý
+                    </p>
+                    <p className="font-medium text-sm">
+                      {onboarding.managerName}
+                    </p>
                   </div>
                 )}
               </CardContent>

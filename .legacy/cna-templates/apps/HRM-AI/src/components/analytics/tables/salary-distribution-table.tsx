@@ -1,21 +1,21 @@
-'use client';
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface SalaryRange {
-  range: string;
-  minSalary: number;
-  maxSalary: number;
-  count: number;
-  percentage: number;
-  color: string;
+  range: string
+  minSalary: number
+  maxSalary: number
+  count: number
+  percentage: number
+  color: string
 }
 
 interface SalaryDistributionTableProps {
-  data: SalaryRange[];
-  totalEmployees: number;
-  className?: string;
+  data: SalaryRange[]
+  totalEmployees: number
+  className?: string
 }
 
 export function SalaryDistributionTable({
@@ -23,14 +23,12 @@ export function SalaryDistributionTable({
   totalEmployees,
   className,
 }: SalaryDistributionTableProps) {
-  const maxCount = Math.max(...data.map((d) => d.count), 1);
+  const maxCount = Math.max(...data.map((d) => d.count), 1)
 
   return (
     <Card className={cn(className)}>
       <CardHeader>
-        <CardTitle className="text-base font-semibold">
-          Phân bố lương
-        </CardTitle>
+        <CardTitle className="text-base font-semibold">Phân bố lương</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
@@ -51,7 +49,7 @@ export function SalaryDistributionTable({
                   style={{
                     width: `${(range.count / maxCount) * 100}%`,
                     backgroundColor: range.color,
-                    minWidth: range.count > 0 ? '20px' : '0px',
+                    minWidth: range.count > 0 ? "20px" : "0px",
                   }}
                 >
                   {range.percentage >= 10 && (
@@ -71,5 +69,5 @@ export function SalaryDistributionTable({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

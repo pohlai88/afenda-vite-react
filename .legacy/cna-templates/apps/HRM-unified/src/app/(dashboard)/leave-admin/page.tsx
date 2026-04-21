@@ -1,10 +1,16 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { Loader2, FileText, Settings, Users, ArrowRight } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { Loader2, FileText, Settings, Users, ArrowRight } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 interface Stats {
   totalPolicies: number
@@ -24,8 +30,8 @@ export default function LeaveAdminPage() {
     const fetchStats = async () => {
       try {
         const [policiesRes, requestsRes] = await Promise.all([
-          fetch('/api/leave/policies'),
-          fetch('/api/leave/requests?status=PENDING'),
+          fetch("/api/leave/policies"),
+          fetch("/api/leave/requests?status=PENDING"),
         ])
 
         let totalPolicies = 0
@@ -38,7 +44,8 @@ export default function LeaveAdminPage() {
 
         if (requestsRes.ok) {
           const data = await requestsRes.json()
-          pendingRequests = data.meta?.total ?? data.pagination?.total ?? data.data?.length ?? 0
+          pendingRequests =
+            data.meta?.total ?? data.pagination?.total ?? data.data?.length ?? 0
         }
 
         setStats({
@@ -66,25 +73,25 @@ export default function LeaveAdminPage() {
 
   const adminCards = [
     {
-      title: 'Chính sách nghỉ phép',
-      description: 'Quản lý các loại phép và quy định',
+      title: "Chính sách nghỉ phép",
+      description: "Quản lý các loại phép và quy định",
       icon: <FileText className="h-6 w-6" />,
-      href: '/leave-admin/policies',
+      href: "/leave-admin/policies",
       stat: `${stats.totalPolicies} chính sách`,
     },
     {
-      title: 'Đơn xin nghỉ',
-      description: 'Xem và quản lý tất cả đơn nghỉ',
+      title: "Đơn xin nghỉ",
+      description: "Xem và quản lý tất cả đơn nghỉ",
       icon: <Users className="h-6 w-6" />,
-      href: '/leave-admin/requests',
+      href: "/leave-admin/requests",
       stat: `${stats.pendingRequests} chờ duyệt`,
     },
     {
-      title: 'Cấu hình',
-      description: 'Thiết lập workflow và quy trình',
+      title: "Cấu hình",
+      description: "Thiết lập workflow và quy trình",
       icon: <Settings className="h-6 w-6" />,
-      href: '/leave-admin/settings',
-      stat: 'Workflow',
+      href: "/leave-admin/settings",
+      stat: "Workflow",
     },
   ]
 
@@ -105,7 +112,9 @@ export default function LeaveAdminPage() {
                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
                   {card.icon}
                 </div>
-                <span className="text-sm text-muted-foreground">{card.stat}</span>
+                <span className="text-sm text-muted-foreground">
+                  {card.stat}
+                </span>
               </div>
               <CardTitle className="mt-4">{card.title}</CardTitle>
               <CardDescription>{card.description}</CardDescription>

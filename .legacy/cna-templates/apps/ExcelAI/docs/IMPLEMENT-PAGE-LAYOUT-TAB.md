@@ -1,15 +1,17 @@
 # 📐 IMPLEMENTATION GUIDE: Page Layout Tab
+
 ## ExcelAI — Page Setup & Layout Features
 
 ---
 
 ## 🎯 Overview
 
-| Feature | Est. Time | Files | Impact |
-|---------|-----------|-------|--------|
-| Page Layout Tab | 1.5 days | 6 | +0.5% |
+| Feature         | Est. Time | Files | Impact |
+| --------------- | --------- | ----- | ------ |
+| Page Layout Tab | 1.5 days  | 6     | +0.5%  |
 
 **Features:**
+
 - Themes (colors, fonts, effects)
 - Page Setup (margins, orientation, size)
 - Scale to Fit
@@ -49,7 +51,7 @@ src/
 // PAGE LAYOUT TOOLBAR
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState } from "react"
 import {
   Palette,
   FileText,
@@ -60,40 +62,43 @@ import {
   Printer,
   RotateCcw,
   SeparatorHorizontal,
-} from 'lucide-react';
-import { ThemesDropdown } from '../../PageLayout/ThemesDropdown';
-import { MarginsDropdown } from '../../PageLayout/MarginsDropdown';
-import { OrientationDropdown } from '../../PageLayout/OrientationDropdown';
-import { SizeDropdown } from '../../PageLayout/SizeDropdown';
-import { PrintTitlesDialog } from '../../PageLayout/PrintTitlesDialog';
-import { BackgroundDialog } from '../../PageLayout/BackgroundDialog';
-import { usePrintStore } from '../../../stores/printStore';
-import { useWorkbookStore } from '../../../stores/workbookStore';
-import './ToolbarStyles.css';
+} from "lucide-react"
+import { ThemesDropdown } from "../../PageLayout/ThemesDropdown"
+import { MarginsDropdown } from "../../PageLayout/MarginsDropdown"
+import { OrientationDropdown } from "../../PageLayout/OrientationDropdown"
+import { SizeDropdown } from "../../PageLayout/SizeDropdown"
+import { PrintTitlesDialog } from "../../PageLayout/PrintTitlesDialog"
+import { BackgroundDialog } from "../../PageLayout/BackgroundDialog"
+import { usePrintStore } from "../../../stores/printStore"
+import { useWorkbookStore } from "../../../stores/workbookStore"
+import "./ToolbarStyles.css"
 
 interface PageLayoutToolbarProps {
-  sheetId: string;
+  sheetId: string
 }
 
-export const PageLayoutToolbar: React.FC<PageLayoutToolbarProps> = ({ sheetId }) => {
-  const [showPrintTitles, setShowPrintTitles] = useState(false);
-  const [showBackground, setShowBackground] = useState(false);
+export const PageLayoutToolbar: React.FC<PageLayoutToolbarProps> = ({
+  sheetId,
+}) => {
+  const [showPrintTitles, setShowPrintTitles] = useState(false)
+  const [showBackground, setShowBackground] = useState(false)
 
-  const { getSettings, updateSettings, addPageBreak, clearPageBreaks } = usePrintStore();
-  const { selection } = useWorkbookStore();
-  const settings = getSettings(sheetId);
+  const { getSettings, updateSettings, addPageBreak, clearPageBreaks } =
+    usePrintStore()
+  const { selection } = useWorkbookStore()
+  const settings = getSettings(sheetId)
 
   // Insert page break at current selection
   const handleInsertPageBreak = () => {
-    if (!selection) return;
-    addPageBreak(sheetId, 'row', selection.start.row);
-    addPageBreak(sheetId, 'column', selection.start.col);
-  };
+    if (!selection) return
+    addPageBreak(sheetId, "row", selection.start.row)
+    addPageBreak(sheetId, "column", selection.start.col)
+  }
 
   // Remove all page breaks
   const handleResetPageBreaks = () => {
-    clearPageBreaks(sheetId);
-  };
+    clearPageBreaks(sheetId)
+  }
 
   return (
     <div className="toolbar page-layout-toolbar">
@@ -126,24 +131,24 @@ export const PageLayoutToolbar: React.FC<PageLayoutToolbarProps> = ({ sheetId })
             <Printer size={16} />
             <span>Print Area</span>
           </button>
-          <button 
-            className="toolbar-btn" 
+          <button
+            className="toolbar-btn"
             title="Page Breaks"
             onClick={handleInsertPageBreak}
           >
             <SeparatorHorizontal size={16} />
             <span>Breaks</span>
           </button>
-          <button 
-            className="toolbar-btn" 
+          <button
+            className="toolbar-btn"
             title="Background"
             onClick={() => setShowBackground(true)}
           >
             <Image size={16} />
             <span>Background</span>
           </button>
-          <button 
-            className="toolbar-btn" 
+          <button
+            className="toolbar-btn"
             title="Print Titles"
             onClick={() => setShowPrintTitles(true)}
           >
@@ -161,12 +166,14 @@ export const PageLayoutToolbar: React.FC<PageLayoutToolbarProps> = ({ sheetId })
         <div className="group-content scale-controls">
           <div className="scale-item">
             <label>Width:</label>
-            <select 
+            <select
               value={settings.fitToPagesWide}
-              onChange={(e) => updateSettings(sheetId, { 
-                fitToPagesWide: parseInt(e.target.value),
-                scalingMode: 'fitToPage',
-              })}
+              onChange={(e) =>
+                updateSettings(sheetId, {
+                  fitToPagesWide: parseInt(e.target.value),
+                  scalingMode: "fitToPage",
+                })
+              }
             >
               <option value={0}>Automatic</option>
               <option value={1}>1 page</option>
@@ -176,12 +183,14 @@ export const PageLayoutToolbar: React.FC<PageLayoutToolbarProps> = ({ sheetId })
           </div>
           <div className="scale-item">
             <label>Height:</label>
-            <select 
+            <select
               value={settings.fitToPagesTall}
-              onChange={(e) => updateSettings(sheetId, { 
-                fitToPagesTall: parseInt(e.target.value),
-                scalingMode: 'fitToPage',
-              })}
+              onChange={(e) =>
+                updateSettings(sheetId, {
+                  fitToPagesTall: parseInt(e.target.value),
+                  scalingMode: "fitToPage",
+                })
+              }
             >
               <option value={0}>Automatic</option>
               <option value={1}>1 page</option>
@@ -192,15 +201,17 @@ export const PageLayoutToolbar: React.FC<PageLayoutToolbarProps> = ({ sheetId })
           <div className="scale-item">
             <label>Scale:</label>
             <div className="scale-input">
-              <input 
-                type="number" 
-                min="10" 
+              <input
+                type="number"
+                min="10"
                 max="400"
                 value={settings.customScale}
-                onChange={(e) => updateSettings(sheetId, { 
-                  customScale: parseInt(e.target.value),
-                  scalingMode: 'custom',
-                })}
+                onChange={(e) =>
+                  updateSettings(sheetId, {
+                    customScale: parseInt(e.target.value),
+                    scalingMode: "custom",
+                  })
+                }
               />
               <span>%</span>
             </div>
@@ -217,18 +228,20 @@ export const PageLayoutToolbar: React.FC<PageLayoutToolbarProps> = ({ sheetId })
           <div className="options-column">
             <span className="options-header">Gridlines</span>
             <label className="checkbox-label">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={true} // View gridlines (always on in app)
                 disabled
               />
               View
             </label>
             <label className="checkbox-label">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={settings.printGridlines}
-                onChange={(e) => updateSettings(sheetId, { printGridlines: e.target.checked })}
+                onChange={(e) =>
+                  updateSettings(sheetId, { printGridlines: e.target.checked })
+                }
               />
               Print
             </label>
@@ -236,18 +249,22 @@ export const PageLayoutToolbar: React.FC<PageLayoutToolbarProps> = ({ sheetId })
           <div className="options-column">
             <span className="options-header">Headings</span>
             <label className="checkbox-label">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={true} // View headings (always on in app)
                 disabled
               />
               View
             </label>
             <label className="checkbox-label">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={settings.printRowColHeaders}
-                onChange={(e) => updateSettings(sheetId, { printRowColHeaders: e.target.checked })}
+                onChange={(e) =>
+                  updateSettings(sheetId, {
+                    printRowColHeaders: e.target.checked,
+                  })
+                }
               />
               Print
             </label>
@@ -257,22 +274,22 @@ export const PageLayoutToolbar: React.FC<PageLayoutToolbarProps> = ({ sheetId })
 
       {/* Dialogs */}
       {showPrintTitles && (
-        <PrintTitlesDialog 
+        <PrintTitlesDialog
           sheetId={sheetId}
           onClose={() => setShowPrintTitles(false)}
         />
       )}
       {showBackground && (
-        <BackgroundDialog 
+        <BackgroundDialog
           sheetId={sheetId}
           onClose={() => setShowBackground(false)}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default PageLayoutToolbar;
+export default PageLayoutToolbar
 ```
 
 ---
@@ -284,125 +301,131 @@ export default PageLayoutToolbar;
 // THEMES DROPDOWN
 // ============================================================
 
-import React, { useState, useRef } from 'react';
-import { Palette, ChevronDown } from 'lucide-react';
-import { useClickOutside } from '../../hooks/useClickOutside';
-import './PageLayout.css';
+import React, { useState, useRef } from "react"
+import { Palette, ChevronDown } from "lucide-react"
+import { useClickOutside } from "../../hooks/useClickOutside"
+import "./PageLayout.css"
 
 interface Theme {
-  id: string;
-  name: string;
+  id: string
+  name: string
   colors: {
-    primary: string;
-    secondary: string;
-    accent1: string;
-    accent2: string;
-    accent3: string;
-    accent4: string;
-  };
+    primary: string
+    secondary: string
+    accent1: string
+    accent2: string
+    accent3: string
+    accent4: string
+  }
   fonts: {
-    heading: string;
-    body: string;
-  };
+    heading: string
+    body: string
+  }
 }
 
 const THEMES: Theme[] = [
   {
-    id: 'office',
-    name: 'Office',
+    id: "office",
+    name: "Office",
     colors: {
-      primary: '#4472C4',
-      secondary: '#ED7D31',
-      accent1: '#A5A5A5',
-      accent2: '#FFC000',
-      accent3: '#5B9BD5',
-      accent4: '#70AD47',
+      primary: "#4472C4",
+      secondary: "#ED7D31",
+      accent1: "#A5A5A5",
+      accent2: "#FFC000",
+      accent3: "#5B9BD5",
+      accent4: "#70AD47",
     },
-    fonts: { heading: 'Calibri Light', body: 'Calibri' },
+    fonts: { heading: "Calibri Light", body: "Calibri" },
   },
   {
-    id: 'excel-green',
-    name: 'Excel Green',
+    id: "excel-green",
+    name: "Excel Green",
     colors: {
-      primary: '#217346',
-      secondary: '#33A852',
-      accent1: '#93C47D',
-      accent2: '#76A5AF',
-      accent3: '#6FA8DC',
-      accent4: '#8E7CC3',
+      primary: "#217346",
+      secondary: "#33A852",
+      accent1: "#93C47D",
+      accent2: "#76A5AF",
+      accent3: "#6FA8DC",
+      accent4: "#8E7CC3",
     },
-    fonts: { heading: 'Arial', body: 'Arial' },
+    fonts: { heading: "Arial", body: "Arial" },
   },
   {
-    id: 'blue-warm',
-    name: 'Blue Warm',
+    id: "blue-warm",
+    name: "Blue Warm",
     colors: {
-      primary: '#2563EB',
-      secondary: '#3B82F6',
-      accent1: '#60A5FA',
-      accent2: '#93C5FD',
-      accent3: '#BFDBFE',
-      accent4: '#1E40AF',
+      primary: "#2563EB",
+      secondary: "#3B82F6",
+      accent1: "#60A5FA",
+      accent2: "#93C5FD",
+      accent3: "#BFDBFE",
+      accent4: "#1E40AF",
     },
-    fonts: { heading: 'Segoe UI', body: 'Segoe UI' },
+    fonts: { heading: "Segoe UI", body: "Segoe UI" },
   },
   {
-    id: 'grayscale',
-    name: 'Grayscale',
+    id: "grayscale",
+    name: "Grayscale",
     colors: {
-      primary: '#374151',
-      secondary: '#6B7280',
-      accent1: '#9CA3AF',
-      accent2: '#D1D5DB',
-      accent3: '#E5E7EB',
-      accent4: '#1F2937',
+      primary: "#374151",
+      secondary: "#6B7280",
+      accent1: "#9CA3AF",
+      accent2: "#D1D5DB",
+      accent3: "#E5E7EB",
+      accent4: "#1F2937",
     },
-    fonts: { heading: 'Arial', body: 'Arial' },
+    fonts: { heading: "Arial", body: "Arial" },
   },
   {
-    id: 'colorful',
-    name: 'Colorful',
+    id: "colorful",
+    name: "Colorful",
     colors: {
-      primary: '#DC2626',
-      secondary: '#F59E0B',
-      accent1: '#10B981',
-      accent2: '#3B82F6',
-      accent3: '#8B5CF6',
-      accent4: '#EC4899',
+      primary: "#DC2626",
+      secondary: "#F59E0B",
+      accent1: "#10B981",
+      accent2: "#3B82F6",
+      accent3: "#8B5CF6",
+      accent4: "#EC4899",
     },
-    fonts: { heading: 'Verdana', body: 'Verdana' },
+    fonts: { heading: "Verdana", body: "Verdana" },
   },
-];
+]
 
 interface ThemesDropdownProps {
-  sheetId: string;
+  sheetId: string
 }
 
 export const ThemesDropdown: React.FC<ThemesDropdownProps> = ({ sheetId }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState<string>('office');
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedTheme, setSelectedTheme] = useState<string>("office")
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  useClickOutside(dropdownRef, () => setIsOpen(false));
+  useClickOutside(dropdownRef, () => setIsOpen(false))
 
   const handleSelectTheme = (themeId: string) => {
-    setSelectedTheme(themeId);
+    setSelectedTheme(themeId)
     // Apply theme colors to workbook (could be implemented via a themeStore)
-    setIsOpen(false);
-  };
+    setIsOpen(false)
+  }
 
-  const currentTheme = THEMES.find(t => t.id === selectedTheme) || THEMES[0];
+  const currentTheme = THEMES.find((t) => t.id === selectedTheme) || THEMES[0]
 
   return (
     <div className="themes-dropdown" ref={dropdownRef}>
-      <button 
+      <button
         className="toolbar-btn themes-btn"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="theme-preview-mini">
-          {Object.values(currentTheme.colors).slice(0, 4).map((color, i) => (
-            <div key={i} className="color-dot" style={{ backgroundColor: color }} />
-          ))}
+          {Object.values(currentTheme.colors)
+            .slice(0, 4)
+            .map((color, i) => (
+              <div
+                key={i}
+                className="color-dot"
+                style={{ backgroundColor: color }}
+              />
+            ))}
         </div>
         <span>Themes</span>
         <ChevronDown size={14} />
@@ -412,15 +435,19 @@ export const ThemesDropdown: React.FC<ThemesDropdownProps> = ({ sheetId }) => {
         <div className="themes-menu">
           <div className="menu-title">Office Themes</div>
           <div className="themes-grid">
-            {THEMES.map(theme => (
+            {THEMES.map((theme) => (
               <button
                 key={theme.id}
-                className={`theme-item ${selectedTheme === theme.id ? 'active' : ''}`}
+                className={`theme-item ${selectedTheme === theme.id ? "active" : ""}`}
                 onClick={() => handleSelectTheme(theme.id)}
               >
                 <div className="theme-colors">
                   {Object.values(theme.colors).map((color, i) => (
-                    <div key={i} className="color-block" style={{ backgroundColor: color }} />
+                    <div
+                      key={i}
+                      className="color-block"
+                      style={{ backgroundColor: color }}
+                    />
                   ))}
                 </div>
                 <span className="theme-name">{theme.name}</span>
@@ -430,10 +457,10 @@ export const ThemesDropdown: React.FC<ThemesDropdownProps> = ({ sheetId }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ThemesDropdown;
+export default ThemesDropdown
 ```
 
 ---
@@ -445,70 +472,70 @@ export default ThemesDropdown;
 // MARGINS DROPDOWN
 // ============================================================
 
-import React, { useState, useRef } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { useClickOutside } from '../../hooks/useClickOutside';
-import { usePrintStore } from '../../stores/printStore';
-import { MARGIN_PRESETS, PageMargins } from '../../types/print';
-import './PageLayout.css';
+import React, { useState, useRef } from "react"
+import { ChevronDown } from "lucide-react"
+import { useClickOutside } from "../../hooks/useClickOutside"
+import { usePrintStore } from "../../stores/printStore"
+import { MARGIN_PRESETS, PageMargins } from "../../types/print"
+import "./PageLayout.css"
 
 interface MarginPreset {
-  id: string;
-  name: string;
-  margins: PageMargins;
-  description: string;
+  id: string
+  name: string
+  margins: PageMargins
+  description: string
 }
 
 const MARGIN_OPTIONS: MarginPreset[] = [
   {
-    id: 'normal',
-    name: 'Normal',
+    id: "normal",
+    name: "Normal",
     margins: MARGIN_PRESETS.normal,
     description: 'Top: 0.75" Bottom: 0.75" Left: 0.7" Right: 0.7"',
   },
   {
-    id: 'wide',
-    name: 'Wide',
+    id: "wide",
+    name: "Wide",
     margins: MARGIN_PRESETS.wide,
     description: 'Top: 1" Bottom: 1" Left: 1" Right: 1"',
   },
   {
-    id: 'narrow',
-    name: 'Narrow',
+    id: "narrow",
+    name: "Narrow",
     margins: MARGIN_PRESETS.narrow,
     description: 'Top: 0.5" Bottom: 0.5" Left: 0.5" Right: 0.5"',
   },
-];
+]
 
 interface MarginsDropdownProps {
-  sheetId: string;
+  sheetId: string
 }
 
-export const MarginsDropdown: React.FC<MarginsDropdownProps> = ({ sheetId }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+export const MarginsDropdown: React.FC<MarginsDropdownProps> = ({
+  sheetId,
+}) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const { getSettings, setMargins } = usePrintStore();
-  const settings = getSettings(sheetId);
+  const { getSettings, setMargins } = usePrintStore()
+  const settings = getSettings(sheetId)
 
-  useClickOutside(dropdownRef, () => setIsOpen(false));
+  useClickOutside(dropdownRef, () => setIsOpen(false))
 
   const handleSelectMargin = (margins: PageMargins) => {
-    setMargins(sheetId, margins);
-    setIsOpen(false);
-  };
+    setMargins(sheetId, margins)
+    setIsOpen(false)
+  }
 
   // Determine current preset
-  const currentPreset = MARGIN_OPTIONS.find(
-    opt => JSON.stringify(opt.margins) === JSON.stringify(settings.margins)
-  )?.name || 'Custom';
+  const currentPreset =
+    MARGIN_OPTIONS.find(
+      (opt) => JSON.stringify(opt.margins) === JSON.stringify(settings.margins)
+    )?.name || "Custom"
 
   return (
     <div className="margins-dropdown" ref={dropdownRef}>
-      <button 
-        className="toolbar-btn"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <button className="toolbar-btn" onClick={() => setIsOpen(!isOpen)}>
         <div className="margin-icon">
           <div className="margin-box">
             <div className="margin-inner" />
@@ -521,15 +548,15 @@ export const MarginsDropdown: React.FC<MarginsDropdownProps> = ({ sheetId }) => 
       {isOpen && (
         <div className="margins-menu">
           <div className="menu-title">Page Margins</div>
-          {MARGIN_OPTIONS.map(option => (
+          {MARGIN_OPTIONS.map((option) => (
             <button
               key={option.id}
-              className={`margin-item ${currentPreset === option.name ? 'active' : ''}`}
+              className={`margin-item ${currentPreset === option.name ? "active" : ""}`}
               onClick={() => handleSelectMargin(option.margins)}
             >
               <div className="margin-preview">
                 <div className="page-preview">
-                  <div 
+                  <div
                     className="content-preview"
                     style={{
                       top: `${option.margins.top / 10}%`,
@@ -553,10 +580,10 @@ export const MarginsDropdown: React.FC<MarginsDropdownProps> = ({ sheetId }) => 
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default MarginsDropdown;
+export default MarginsDropdown
 ```
 
 ---
@@ -568,40 +595,39 @@ export default MarginsDropdown;
 // ORIENTATION DROPDOWN
 // ============================================================
 
-import React, { useState, useRef } from 'react';
-import { FileText, ChevronDown } from 'lucide-react';
-import { useClickOutside } from '../../hooks/useClickOutside';
-import { usePrintStore } from '../../stores/printStore';
-import { PageOrientation } from '../../types/print';
-import './PageLayout.css';
+import React, { useState, useRef } from "react"
+import { FileText, ChevronDown } from "lucide-react"
+import { useClickOutside } from "../../hooks/useClickOutside"
+import { usePrintStore } from "../../stores/printStore"
+import { PageOrientation } from "../../types/print"
+import "./PageLayout.css"
 
 interface OrientationDropdownProps {
-  sheetId: string;
+  sheetId: string
 }
 
-export const OrientationDropdown: React.FC<OrientationDropdownProps> = ({ sheetId }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+export const OrientationDropdown: React.FC<OrientationDropdownProps> = ({
+  sheetId,
+}) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const { getSettings, setOrientation } = usePrintStore();
-  const settings = getSettings(sheetId);
+  const { getSettings, setOrientation } = usePrintStore()
+  const settings = getSettings(sheetId)
 
-  useClickOutside(dropdownRef, () => setIsOpen(false));
+  useClickOutside(dropdownRef, () => setIsOpen(false))
 
   const handleSelect = (orientation: PageOrientation) => {
-    setOrientation(sheetId, orientation);
-    setIsOpen(false);
-  };
+    setOrientation(sheetId, orientation)
+    setIsOpen(false)
+  }
 
   return (
     <div className="orientation-dropdown" ref={dropdownRef}>
-      <button 
-        className="toolbar-btn"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <FileText 
-          size={16} 
-          className={settings.orientation === 'landscape' ? 'rotate-90' : ''} 
+      <button className="toolbar-btn" onClick={() => setIsOpen(!isOpen)}>
+        <FileText
+          size={16}
+          className={settings.orientation === "landscape" ? "rotate-90" : ""}
         />
         <span>Orientation</span>
         <ChevronDown size={14} />
@@ -610,23 +636,27 @@ export const OrientationDropdown: React.FC<OrientationDropdownProps> = ({ sheetI
       {isOpen && (
         <div className="orientation-menu">
           <button
-            className={`orientation-item ${settings.orientation === 'portrait' ? 'active' : ''}`}
-            onClick={() => handleSelect('portrait')}
+            className={`orientation-item ${settings.orientation === "portrait" ? "active" : ""}`}
+            onClick={() => handleSelect("portrait")}
           >
             <div className="orientation-preview portrait">
               <div className="page-lines">
-                <div /><div /><div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
             <span>Portrait</span>
           </button>
           <button
-            className={`orientation-item ${settings.orientation === 'landscape' ? 'active' : ''}`}
-            onClick={() => handleSelect('landscape')}
+            className={`orientation-item ${settings.orientation === "landscape" ? "active" : ""}`}
+            onClick={() => handleSelect("landscape")}
           >
             <div className="orientation-preview landscape">
               <div className="page-lines">
-                <div /><div /><div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
             <span>Landscape</span>
@@ -634,10 +664,10 @@ export const OrientationDropdown: React.FC<OrientationDropdownProps> = ({ sheetI
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default OrientationDropdown;
+export default OrientationDropdown
 ```
 
 ---
@@ -649,39 +679,36 @@ export default OrientationDropdown;
 // SIZE DROPDOWN — Paper Size Selection
 // ============================================================
 
-import React, { useState, useRef } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { useClickOutside } from '../../hooks/useClickOutside';
-import { usePrintStore } from '../../stores/printStore';
-import { PAPER_SIZES, PaperSize } from '../../types/print';
-import './PageLayout.css';
+import React, { useState, useRef } from "react"
+import { ChevronDown } from "lucide-react"
+import { useClickOutside } from "../../hooks/useClickOutside"
+import { usePrintStore } from "../../stores/printStore"
+import { PAPER_SIZES, PaperSize } from "../../types/print"
+import "./PageLayout.css"
 
 interface SizeDropdownProps {
-  sheetId: string;
+  sheetId: string
 }
 
 export const SizeDropdown: React.FC<SizeDropdownProps> = ({ sheetId }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const { getSettings, setPaperSize } = usePrintStore();
-  const settings = getSettings(sheetId);
+  const { getSettings, setPaperSize } = usePrintStore()
+  const settings = getSettings(sheetId)
 
-  useClickOutside(dropdownRef, () => setIsOpen(false));
+  useClickOutside(dropdownRef, () => setIsOpen(false))
 
   const handleSelect = (size: PaperSize) => {
-    setPaperSize(sheetId, size);
-    setIsOpen(false);
-  };
+    setPaperSize(sheetId, size)
+    setIsOpen(false)
+  }
 
-  const currentSize = PAPER_SIZES[settings.paperSize];
+  const currentSize = PAPER_SIZES[settings.paperSize]
 
   return (
     <div className="size-dropdown" ref={dropdownRef}>
-      <button 
-        className="toolbar-btn"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <button className="toolbar-btn" onClick={() => setIsOpen(!isOpen)}>
         <div className="size-icon">
           <div className="page-outline" />
         </div>
@@ -692,14 +719,19 @@ export const SizeDropdown: React.FC<SizeDropdownProps> = ({ sheetId }) => {
       {isOpen && (
         <div className="size-menu">
           <div className="menu-title">Paper Size</div>
-          {(Object.entries(PAPER_SIZES) as [PaperSize, typeof PAPER_SIZES[PaperSize]][]).map(([key, value]) => (
+          {(
+            Object.entries(PAPER_SIZES) as [
+              PaperSize,
+              (typeof PAPER_SIZES)[PaperSize],
+            ][]
+          ).map(([key, value]) => (
             <button
               key={key}
-              className={`size-item ${settings.paperSize === key ? 'active' : ''}`}
+              className={`size-item ${settings.paperSize === key ? "active" : ""}`}
               onClick={() => handleSelect(key)}
             >
               <div className="size-preview">
-                <div 
+                <div
                   className="page-mini"
                   style={{
                     aspectRatio: `${value.width} / ${value.height}`,
@@ -714,10 +746,10 @@ export const SizeDropdown: React.FC<SizeDropdownProps> = ({ sheetId }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default SizeDropdown;
+export default SizeDropdown
 ```
 
 ---
@@ -729,36 +761,39 @@ export default SizeDropdown;
 // PRINT TITLES DIALOG
 // ============================================================
 
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import { usePrintStore } from '../../stores/printStore';
-import './PageLayout.css';
+import React, { useState } from "react"
+import { X } from "lucide-react"
+import { usePrintStore } from "../../stores/printStore"
+import "./PageLayout.css"
 
 interface PrintTitlesDialogProps {
-  sheetId: string;
-  onClose: () => void;
+  sheetId: string
+  onClose: () => void
 }
 
 export const PrintTitlesDialog: React.FC<PrintTitlesDialogProps> = ({
   sheetId,
   onClose,
 }) => {
-  const { getSettings, updateSettings } = usePrintStore();
-  const settings = getSettings(sheetId);
+  const { getSettings, updateSettings } = usePrintStore()
+  const settings = getSettings(sheetId)
 
-  const [repeatRows, setRepeatRows] = useState(settings.printArea || '');
-  const [repeatCols, setRepeatCols] = useState('');
+  const [repeatRows, setRepeatRows] = useState(settings.printArea || "")
+  const [repeatCols, setRepeatCols] = useState("")
 
   const handleApply = () => {
     updateSettings(sheetId, {
       // Store repeat rows/cols (would need to extend print types)
-    });
-    onClose();
-  };
+    })
+    onClose()
+  }
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog print-titles-dialog" onClick={e => e.stopPropagation()}>
+      <div
+        className="dialog print-titles-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h3>Print Titles</h3>
           <button className="close-btn" onClick={onClose}>
@@ -792,7 +827,9 @@ export const PrintTitlesDialog: React.FC<PrintTitlesDialogProps> = ({
               placeholder="e.g., $A:$B"
               className="range-input"
             />
-            <span className="input-hint">Example: $A:$B repeats columns A-B</span>
+            <span className="input-hint">
+              Example: $A:$B repeats columns A-B
+            </span>
           </div>
         </div>
 
@@ -806,10 +843,10 @@ export const PrintTitlesDialog: React.FC<PrintTitlesDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PrintTitlesDialog;
+export default PrintTitlesDialog
 ```
 
 ---
@@ -821,46 +858,49 @@ export default PrintTitlesDialog;
 // BACKGROUND DIALOG — Sheet Background Image
 // ============================================================
 
-import React, { useState, useRef } from 'react';
-import { X, Upload, Trash2, Image } from 'lucide-react';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import './PageLayout.css';
+import React, { useState, useRef } from "react"
+import { X, Upload, Trash2, Image } from "lucide-react"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import "./PageLayout.css"
 
 interface BackgroundDialogProps {
-  sheetId: string;
-  onClose: () => void;
+  sheetId: string
+  onClose: () => void
 }
 
 export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
   sheetId,
   onClose,
 }) => {
-  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const file = e.target.files?.[0]
+    if (!file) return
 
-    const reader = new FileReader();
+    const reader = new FileReader()
     reader.onload = () => {
-      setBackgroundImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
+      setBackgroundImage(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
 
   const handleRemove = () => {
-    setBackgroundImage(null);
-  };
+    setBackgroundImage(null)
+  }
 
   const handleApply = () => {
     // Apply background to sheet (would need to extend workbook store)
-    onClose();
-  };
+    onClose()
+  }
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog background-dialog" onClick={e => e.stopPropagation()}>
+      <div
+        className="dialog background-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h3>Sheet Background</h3>
           <button className="close-btn" onClick={onClose}>
@@ -869,10 +909,12 @@ export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
         </div>
 
         <div className="dialog-content">
-          <div 
+          <div
             className="background-preview"
             style={{
-              backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
+              backgroundImage: backgroundImage
+                ? `url(${backgroundImage})`
+                : "none",
             }}
           >
             {!backgroundImage && (
@@ -891,7 +933,7 @@ export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
               onChange={handleFileSelect}
               hidden
             />
-            <button 
+            <button
               className="btn-secondary"
               onClick={() => fileInputRef.current?.click()}
             >
@@ -899,10 +941,7 @@ export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
               Select Image
             </button>
             {backgroundImage && (
-              <button 
-                className="btn-secondary delete"
-                onClick={handleRemove}
-              >
+              <button className="btn-secondary delete" onClick={handleRemove}>
                 <Trash2 size={16} />
                 Remove
               </button>
@@ -924,10 +963,10 @@ export const BackgroundDialog: React.FC<BackgroundDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BackgroundDialog;
+export default BackgroundDialog
 ```
 
 ---
@@ -1296,12 +1335,12 @@ export default BackgroundDialog;
 ## 📄 File 9: `src/components/PageLayout/index.ts`
 
 ```typescript
-export { ThemesDropdown } from './ThemesDropdown';
-export { MarginsDropdown } from './MarginsDropdown';
-export { OrientationDropdown } from './OrientationDropdown';
-export { SizeDropdown } from './SizeDropdown';
-export { PrintTitlesDialog } from './PrintTitlesDialog';
-export { BackgroundDialog } from './BackgroundDialog';
+export { ThemesDropdown } from "./ThemesDropdown"
+export { MarginsDropdown } from "./MarginsDropdown"
+export { OrientationDropdown } from "./OrientationDropdown"
+export { SizeDropdown } from "./SizeDropdown"
+export { PrintTitlesDialog } from "./PrintTitlesDialog"
+export { BackgroundDialog } from "./BackgroundDialog"
 ```
 
 ---
@@ -1312,9 +1351,9 @@ Add Page Layout tab to ribbon:
 
 ```tsx
 // In RibbonTabs or App.tsx
-{activeTab === 'pageLayout' && (
-  <PageLayoutToolbar sheetId={activeSheetId} />
-)}
+{
+  activeTab === "pageLayout" && <PageLayoutToolbar sheetId={activeSheetId} />
+}
 ```
 
 ---

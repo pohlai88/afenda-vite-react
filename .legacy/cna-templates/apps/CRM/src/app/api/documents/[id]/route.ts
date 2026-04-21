@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { handleApiError } from '@/lib/api/errors'
-import { getSignedUrl, deleteFile } from '@/lib/supabase/storage'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { handleApiError } from "@/lib/api/errors"
+import { getSignedUrl, deleteFile } from "@/lib/supabase/storage"
 
 // GET /api/documents/[id] — Get signed download URL
 export async function GET(
@@ -15,20 +15,26 @@ export async function GET(
 
     const doc = await prisma.document.findUnique({ where: { id } })
     if (!doc) {
-      return NextResponse.json({ error: 'Document not found' }, { status: 404 })
+      return NextResponse.json({ error: "Document not found" }, { status: 404 })
     }
 
     const signedUrl = await getSignedUrl(doc.storagePath, 3600) // 1 hour
     if (!signedUrl) {
-      return NextResponse.json({ error: 'Failed to generate download URL' }, { status: 500 })
+      return NextResponse.json(
+        { error: "Failed to generate download URL" },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({ url: signedUrl, document: doc })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    return handleApiError(error, '/api/documents/[id]')
+    return handleApiError(error, "/api/documents/[id]")
   }
 }
 
@@ -56,10 +62,10 @@ export async function PATCH(
 
     return NextResponse.json(doc)
   } catch (error: any) {
-    if (error?.code === 'P2025') {
-      return NextResponse.json({ error: 'Document not found' }, { status: 404 })
+    if (error?.code === "P2025") {
+      return NextResponse.json({ error: "Document not found" }, { status: 404 })
     }
-    return handleApiError(error, '/api/documents/[id]')
+    return handleApiError(error, "/api/documents/[id]")
   }
 }
 
@@ -74,7 +80,7 @@ export async function DELETE(
 
     const doc = await prisma.document.findUnique({ where: { id } })
     if (!doc) {
-      return NextResponse.json({ error: 'Document not found' }, { status: 404 })
+      return NextResponse.json({ error: "Document not found" }, { status: 404 })
     }
 
     // Delete from storage
@@ -90,8 +96,11 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    return handleApiError(error, '/api/documents/[id]')
+    return handleApiError(error, "/api/documents/[id]")
   }
 }

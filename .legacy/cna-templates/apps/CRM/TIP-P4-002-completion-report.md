@@ -16,6 +16,7 @@
 - Modified: `src/app/(app)/settings/page.tsx` — Added `OrderAutomationSection` component with toggle switch in Notifications tab
 
 **AUTOMATION FLOW:**
+
 ```
 Portal: Quote ACCEPTED
   → QUOTE_ACCEPTED event emitted
@@ -32,16 +33,19 @@ Portal: Quote ACCEPTED
 ```
 
 **SETTINGS TOGGLE:**
+
 - Settings → Notifications tab → "Tự động hóa" section
 - Toggle: "Tự động tạo đơn hàng khi báo giá được chấp nhận"
 - Default: ON
 - ADMIN only
 
 **BIDIRECTIONAL LINKS:**
+
 - Quote detail → "Đơn hàng liên kết: ORD-xxxx" card (clickable, shows total)
 - Order detail → "Từ báo giá: QUO-xxxx" card (clickable, shows total)
 
 **TEST RESULTS:**
+
 - AC-1: Quote accepted → SalesOrder auto-created with items + total ✅
 - AC-2: Order linked to quote (bidirectional links in UI) ✅
 - AC-3: Notification sent to quote owner about auto-created order ✅
@@ -52,6 +56,7 @@ Portal: Quote ACCEPTED
 **APP BUGS FOUND:** None
 
 **DEVIATIONS FROM SPEC:**
+
 - Settings toggle placed in Notifications tab (under "Tự động hóa" heading) instead of a separate Order Settings tab — keeps settings page simpler
 - Tax calculation uses quote's taxPercent instead of hardcoded 10% — more accurate
 - Idempotent: handler checks for existing order before creating (prevents duplicates on event replay)

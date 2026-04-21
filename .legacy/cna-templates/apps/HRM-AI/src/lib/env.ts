@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 /**
  * Environment Variables Schema
@@ -6,17 +6,21 @@ import { z } from 'zod'
  */
 const envSchema = z.object({
   // Database
-  DATABASE_URL: z.string().url('DATABASE_URL must be a valid PostgreSQL URL'),
+  DATABASE_URL: z.string().url("DATABASE_URL must be a valid PostgreSQL URL"),
 
   // Authentication
-  NEXTAUTH_URL: z.string().url('NEXTAUTH_URL must be a valid URL'),
-  NEXTAUTH_SECRET: z.string().min(32, 'NEXTAUTH_SECRET must be at least 32 characters'),
-  AUTH_SECRET: z.string().min(32, 'AUTH_SECRET must be at least 32 characters'),
+  NEXTAUTH_URL: z.string().url("NEXTAUTH_URL must be a valid URL"),
+  NEXTAUTH_SECRET: z
+    .string()
+    .min(32, "NEXTAUTH_SECRET must be at least 32 characters"),
+  AUTH_SECRET: z.string().min(32, "AUTH_SECRET must be at least 32 characters"),
 
   // App
-  NODE_ENV: z.enum(['development', 'test', 'staging', 'production']).default('development'),
-  NEXT_PUBLIC_APP_NAME: z.string().default('VietERP HRM'),
-  NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
+  NODE_ENV: z
+    .enum(["development", "test", "staging", "production"])
+    .default("development"),
+  NEXT_PUBLIC_APP_NAME: z.string().default("VietERP HRM"),
+  NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
 
   // AI (Optional)
   ANTHROPIC_API_KEY: z.string().optional(),
@@ -49,7 +53,7 @@ export type Env = z.infer<typeof envSchema>
  */
 function validateEnv(): Env {
   // Skip validation during build time
-  if (process.env.SKIP_ENV_VALIDATION === 'true') {
+  if (process.env.SKIP_ENV_VALIDATION === "true") {
     return process.env as unknown as Env
   }
 
@@ -58,17 +62,19 @@ function validateEnv(): Env {
   if (!parsed.success) {
     const errors = parsed.error.flatten().fieldErrors
     const errorMessages = Object.entries(errors)
-      .map(([field, messages]) => `  - ${field}: ${messages?.join(', ')}`)
-      .join('\n')
+      .map(([field, messages]) => `  - ${field}: ${messages?.join(", ")}`)
+      .join("\n")
 
-    console.error('❌ Invalid environment variables:\n' + errorMessages)
+    console.error("❌ Invalid environment variables:\n" + errorMessages)
 
     // In development, show a helpful message
-    if (process.env.NODE_ENV === 'development') {
-      console.error('\n💡 Tip: Copy .env.example to .env.local and update the values.')
+    if (process.env.NODE_ENV === "development") {
+      console.error(
+        "\n💡 Tip: Copy .env.example to .env.local and update the values."
+      )
     }
 
-    throw new Error('Invalid environment variables')
+    throw new Error("Invalid environment variables")
   }
 
   return parsed.data
@@ -83,12 +89,12 @@ export const env = validateEnv()
 /**
  * Helper to check if we're in production
  */
-export const isProd = env.NODE_ENV === 'production'
+export const isProd = env.NODE_ENV === "production"
 
 /**
  * Helper to check if we're in development
  */
-export const isDev = env.NODE_ENV === 'development'
+export const isDev = env.NODE_ENV === "development"
 
 /**
  * Helper to check if AI features are enabled

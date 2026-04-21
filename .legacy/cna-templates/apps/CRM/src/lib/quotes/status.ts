@@ -1,4 +1,4 @@
-import type { QuoteStatus } from '@prisma/client'
+import type { QuoteStatus } from "@prisma/client"
 
 interface QuoteLike {
   status: string
@@ -6,7 +6,7 @@ interface QuoteLike {
 }
 
 export function isQuoteExpired(quote: QuoteLike): boolean {
-  if (quote.status !== 'SENT') return false
+  if (quote.status !== "SENT") return false
   if (!quote.validUntil) return false
   return new Date(quote.validUntil) < new Date()
 }
@@ -21,25 +21,25 @@ export function daysUntilExpiry(quote: QuoteLike): number | null {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  DRAFT: '#6B7280',
-  SENT: '#3B82F6',
-  VIEWED: '#8B5CF6',
-  ACCEPTED: '#10B981',
-  REJECTED: '#EF4444',
-  EXPIRED: '#F59E0B',
+  DRAFT: "#6B7280",
+  SENT: "#3B82F6",
+  VIEWED: "#8B5CF6",
+  ACCEPTED: "#10B981",
+  REJECTED: "#EF4444",
+  EXPIRED: "#F59E0B",
 }
 
 export function getQuoteStatusColor(status: QuoteStatus | string): string {
-  return STATUS_COLORS[status] || '#6B7280'
+  return STATUS_COLORS[status] || "#6B7280"
 }
 
 const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Nháp',
-  SENT: 'Đã gửi',
-  VIEWED: 'Đã xem',
-  ACCEPTED: 'Chấp nhận',
-  REJECTED: 'Từ chối',
-  EXPIRED: 'Hết hạn',
+  DRAFT: "Nháp",
+  SENT: "Đã gửi",
+  VIEWED: "Đã xem",
+  ACCEPTED: "Chấp nhận",
+  REJECTED: "Từ chối",
+  EXPIRED: "Hết hạn",
 }
 
 export function getQuoteStatusLabel(status: QuoteStatus | string): string {

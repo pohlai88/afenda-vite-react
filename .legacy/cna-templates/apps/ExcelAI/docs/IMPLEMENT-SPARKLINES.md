@@ -1,15 +1,17 @@
 # ✨ IMPLEMENTATION GUIDE: Sparklines
+
 ## ExcelAI — Mini Charts in Cells
 
 ---
 
 ## 🎯 Overview
 
-| Feature | Est. Time | Files | Impact |
-|---------|-----------|-------|--------|
-| Sparklines | 1 day | 5 | +0.5% |
+| Feature    | Est. Time | Files | Impact |
+| ---------- | --------- | ----- | ------ |
+| Sparklines | 1 day     | 5     | +0.5%  |
 
 **Sparkline Types:**
+
 - Line Sparkline
 - Column Sparkline
 - Win/Loss Sparkline
@@ -41,136 +43,136 @@ src/
 // SPARKLINE TYPE DEFINITIONS
 // ============================================================
 
-export type SparklineType = 'line' | 'column' | 'winloss';
+export type SparklineType = "line" | "column" | "winloss"
 
 export interface SparklineStyle {
   // Line style
-  lineColor: string;
-  lineWeight: number;
-  
+  lineColor: string
+  lineWeight: number
+
   // Column style
-  columnColor: string;
-  negativeColor: string;
-  
+  columnColor: string
+  negativeColor: string
+
   // Markers (for line sparklines)
-  showMarkers: boolean;
-  markerColor: string;
-  showHighPoint: boolean;
-  highPointColor: string;
-  showLowPoint: boolean;
-  lowPointColor: string;
-  showFirstPoint: boolean;
-  firstPointColor: string;
-  showLastPoint: boolean;
-  lastPointColor: string;
-  showNegativePoints: boolean;
-  negativePointColor: string;
-  
+  showMarkers: boolean
+  markerColor: string
+  showHighPoint: boolean
+  highPointColor: string
+  showLowPoint: boolean
+  lowPointColor: string
+  showFirstPoint: boolean
+  firstPointColor: string
+  showLastPoint: boolean
+  lastPointColor: string
+  showNegativePoints: boolean
+  negativePointColor: string
+
   // Win/Loss colors
-  winColor: string;
-  lossColor: string;
-  
+  winColor: string
+  lossColor: string
+
   // Axis
-  showAxis: boolean;
-  axisColor: string;
+  showAxis: boolean
+  axisColor: string
 }
 
 export interface Sparkline {
-  id: string;
-  sheetId: string;
-  type: SparklineType;
-  
+  id: string
+  sheetId: string
+  type: SparklineType
+
   // Data source
-  dataRange: string;        // e.g., "B2:B10"
-  
+  dataRange: string // e.g., "B2:B10"
+
   // Location (cell where sparkline is displayed)
-  locationCell: string;     // e.g., "A2"
-  locationRow: number;
-  locationCol: number;
-  
+  locationCell: string // e.g., "A2"
+  locationRow: number
+  locationCol: number
+
   // Style
-  style: SparklineStyle;
-  
+  style: SparklineStyle
+
   // Options
-  minValue?: number;        // Custom min (auto if undefined)
-  maxValue?: number;        // Custom max (auto if undefined)
-  rightToLeft: boolean;
-  dateAxis: boolean;
-  
+  minValue?: number // Custom min (auto if undefined)
+  maxValue?: number // Custom max (auto if undefined)
+  rightToLeft: boolean
+  dateAxis: boolean
+
   // Grouping
-  groupId?: string;         // For grouped sparklines
+  groupId?: string // For grouped sparklines
 }
 
 export interface SparklineGroup {
-  id: string;
-  sparklineIds: string[];
-  sharedStyle: boolean;
+  id: string
+  sparklineIds: string[]
+  sharedStyle: boolean
 }
 
 export const DEFAULT_SPARKLINE_STYLE: SparklineStyle = {
   // Line
-  lineColor: '#2563eb',
+  lineColor: "#2563eb",
   lineWeight: 1.5,
-  
+
   // Column
-  columnColor: '#2563eb',
-  negativeColor: '#dc2626',
-  
+  columnColor: "#2563eb",
+  negativeColor: "#dc2626",
+
   // Markers
   showMarkers: false,
-  markerColor: '#2563eb',
+  markerColor: "#2563eb",
   showHighPoint: false,
-  highPointColor: '#16a34a',
+  highPointColor: "#16a34a",
   showLowPoint: false,
-  lowPointColor: '#dc2626',
+  lowPointColor: "#dc2626",
   showFirstPoint: false,
-  firstPointColor: '#f59e0b',
+  firstPointColor: "#f59e0b",
   showLastPoint: false,
-  lastPointColor: '#f59e0b',
+  lastPointColor: "#f59e0b",
   showNegativePoints: true,
-  negativePointColor: '#dc2626',
-  
+  negativePointColor: "#dc2626",
+
   // Win/Loss
-  winColor: '#2563eb',
-  lossColor: '#dc2626',
-  
+  winColor: "#2563eb",
+  lossColor: "#dc2626",
+
   // Axis
   showAxis: false,
-  axisColor: '#9ca3af',
-};
+  axisColor: "#9ca3af",
+}
 
 export const SPARKLINE_PRESETS = {
   blue: {
-    lineColor: '#2563eb',
-    columnColor: '#2563eb',
-    markerColor: '#2563eb',
-    winColor: '#2563eb',
+    lineColor: "#2563eb",
+    columnColor: "#2563eb",
+    markerColor: "#2563eb",
+    winColor: "#2563eb",
   },
   green: {
-    lineColor: '#16a34a',
-    columnColor: '#16a34a',
-    markerColor: '#16a34a',
-    winColor: '#16a34a',
+    lineColor: "#16a34a",
+    columnColor: "#16a34a",
+    markerColor: "#16a34a",
+    winColor: "#16a34a",
   },
   orange: {
-    lineColor: '#f59e0b',
-    columnColor: '#f59e0b',
-    markerColor: '#f59e0b',
-    winColor: '#f59e0b',
+    lineColor: "#f59e0b",
+    columnColor: "#f59e0b",
+    markerColor: "#f59e0b",
+    winColor: "#f59e0b",
   },
   red: {
-    lineColor: '#dc2626',
-    columnColor: '#dc2626',
-    markerColor: '#dc2626',
-    winColor: '#dc2626',
+    lineColor: "#dc2626",
+    columnColor: "#dc2626",
+    markerColor: "#dc2626",
+    winColor: "#dc2626",
   },
   purple: {
-    lineColor: '#9333ea',
-    columnColor: '#9333ea',
-    markerColor: '#9333ea',
-    winColor: '#9333ea',
+    lineColor: "#9333ea",
+    columnColor: "#9333ea",
+    markerColor: "#9333ea",
+    winColor: "#9333ea",
   },
-};
+}
 ```
 
 ---
@@ -182,22 +184,22 @@ export const SPARKLINE_PRESETS = {
 // SPARKLINE STORE — Zustand Store for Sparkline Management
 // ============================================================
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { nanoid } from 'nanoid';
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
+import { nanoid } from "nanoid"
 import {
   Sparkline,
   SparklineType,
   SparklineStyle,
   SparklineGroup,
   DEFAULT_SPARKLINE_STYLE,
-} from '../types/sparkline';
+} from "../types/sparkline"
 
 interface SparklineStore {
   // State
-  sparklines: Record<string, Sparkline[]>;  // sheetId -> sparklines
-  groups: Record<string, SparklineGroup>;
-  
+  sparklines: Record<string, Sparkline[]> // sheetId -> sparklines
+  groups: Record<string, SparklineGroup>
+
   // CRUD
   addSparkline: (
     sheetId: string,
@@ -206,52 +208,64 @@ interface SparklineStore {
     locationCell: string,
     row: number,
     col: number
-  ) => string;
-  updateSparkline: (sheetId: string, id: string, updates: Partial<Sparkline>) => void;
-  deleteSparkline: (sheetId: string, id: string) => void;
-  
+  ) => string
+  updateSparkline: (
+    sheetId: string,
+    id: string,
+    updates: Partial<Sparkline>
+  ) => void
+  deleteSparkline: (sheetId: string, id: string) => void
+
   // Batch operations
   addSparklineRange: (
     sheetId: string,
     type: SparklineType,
     dataRanges: string[],
     locationCells: { cell: string; row: number; col: number }[]
-  ) => string[];
-  deleteSparklineRange: (sheetId: string, ids: string[]) => void;
-  
+  ) => string[]
+  deleteSparklineRange: (sheetId: string, ids: string[]) => void
+
   // Style
-  updateSparklineStyle: (sheetId: string, id: string, style: Partial<SparklineStyle>) => void;
-  applyStyleToGroup: (groupId: string, style: Partial<SparklineStyle>) => void;
-  
+  updateSparklineStyle: (
+    sheetId: string,
+    id: string,
+    style: Partial<SparklineStyle>
+  ) => void
+  applyStyleToGroup: (groupId: string, style: Partial<SparklineStyle>) => void
+
   // Grouping
-  createGroup: (sparklineIds: string[]) => string;
-  ungroupSparklines: (groupId: string) => void;
-  
+  createGroup: (sparklineIds: string[]) => string
+  ungroupSparklines: (groupId: string) => void
+
   // Getters
-  getSparklinesForSheet: (sheetId: string) => Sparkline[];
-  getSparklineAtCell: (sheetId: string, row: number, col: number) => Sparkline | undefined;
-  getSparklineById: (sheetId: string, id: string) => Sparkline | undefined;
-  
+  getSparklinesForSheet: (sheetId: string) => Sparkline[]
+  getSparklineAtCell: (
+    sheetId: string,
+    row: number,
+    col: number
+  ) => Sparkline | undefined
+  getSparklineById: (sheetId: string, id: string) => Sparkline | undefined
+
   // Clear
-  clearSparklinesForSheet: (sheetId: string) => void;
+  clearSparklinesForSheet: (sheetId: string) => void
 }
 
 // Parse cell reference to row/col
 const parseCell = (cell: string): { row: number; col: number } => {
-  const match = cell.match(/^([A-Z]+)(\d+)$/i);
-  if (!match) return { row: 0, col: 0 };
-  
-  const colStr = match[1].toUpperCase();
-  const row = parseInt(match[2]) - 1;
-  
-  let col = 0;
+  const match = cell.match(/^([A-Z]+)(\d+)$/i)
+  if (!match) return { row: 0, col: 0 }
+
+  const colStr = match[1].toUpperCase()
+  const row = parseInt(match[2]) - 1
+
+  let col = 0
   for (let i = 0; i < colStr.length; i++) {
-    col = col * 26 + (colStr.charCodeAt(i) - 64);
+    col = col * 26 + (colStr.charCodeAt(i) - 64)
   }
-  col -= 1;
-  
-  return { row, col };
-};
+  col -= 1
+
+  return { row, col }
+}
 
 export const useSparklineStore = create<SparklineStore>()(
   persist(
@@ -260,8 +274,8 @@ export const useSparklineStore = create<SparklineStore>()(
       groups: {},
 
       addSparkline: (sheetId, type, dataRange, locationCell, row, col) => {
-        const id = nanoid(8);
-        
+        const id = nanoid(8)
+
         const newSparkline: Sparkline = {
           id,
           sheetId,
@@ -273,46 +287,48 @@ export const useSparklineStore = create<SparklineStore>()(
           style: { ...DEFAULT_SPARKLINE_STYLE },
           rightToLeft: false,
           dateAxis: false,
-        };
+        }
 
-        set(state => ({
+        set((state) => ({
           sparklines: {
             ...state.sparklines,
             [sheetId]: [...(state.sparklines[sheetId] || []), newSparkline],
           },
-        }));
+        }))
 
-        return id;
+        return id
       },
 
       updateSparkline: (sheetId, id, updates) => {
-        set(state => ({
+        set((state) => ({
           sparklines: {
             ...state.sparklines,
-            [sheetId]: (state.sparklines[sheetId] || []).map(sp =>
+            [sheetId]: (state.sparklines[sheetId] || []).map((sp) =>
               sp.id === id ? { ...sp, ...updates } : sp
             ),
           },
-        }));
+        }))
       },
 
       deleteSparkline: (sheetId, id) => {
-        set(state => ({
+        set((state) => ({
           sparklines: {
             ...state.sparklines,
-            [sheetId]: (state.sparklines[sheetId] || []).filter(sp => sp.id !== id),
+            [sheetId]: (state.sparklines[sheetId] || []).filter(
+              (sp) => sp.id !== id
+            ),
           },
-        }));
+        }))
       },
 
       addSparklineRange: (sheetId, type, dataRanges, locationCells) => {
-        const ids: string[] = [];
-        const groupId = nanoid(8);
-        
+        const ids: string[] = []
+        const groupId = nanoid(8)
+
         const newSparklines: Sparkline[] = dataRanges.map((dataRange, i) => {
-          const id = nanoid(8);
-          ids.push(id);
-          
+          const id = nanoid(8)
+          ids.push(id)
+
           return {
             id,
             sheetId,
@@ -325,10 +341,10 @@ export const useSparklineStore = create<SparklineStore>()(
             rightToLeft: false,
             dateAxis: false,
             groupId,
-          };
-        });
+          }
+        })
 
-        set(state => ({
+        set((state) => ({
           sparklines: {
             ...state.sparklines,
             [sheetId]: [...(state.sparklines[sheetId] || []), ...newSparklines],
@@ -341,49 +357,49 @@ export const useSparklineStore = create<SparklineStore>()(
               sharedStyle: true,
             },
           },
-        }));
+        }))
 
-        return ids;
+        return ids
       },
 
       deleteSparklineRange: (sheetId, ids) => {
-        set(state => ({
+        set((state) => ({
           sparklines: {
             ...state.sparklines,
             [sheetId]: (state.sparklines[sheetId] || []).filter(
-              sp => !ids.includes(sp.id)
+              (sp) => !ids.includes(sp.id)
             ),
           },
-        }));
+        }))
       },
 
       updateSparklineStyle: (sheetId, id, style) => {
-        const sparkline = get().getSparklineById(sheetId, id);
-        if (!sparkline) return;
+        const sparkline = get().getSparklineById(sheetId, id)
+        if (!sparkline) return
 
         get().updateSparkline(sheetId, id, {
           style: { ...sparkline.style, ...style },
-        });
+        })
       },
 
       applyStyleToGroup: (groupId, style) => {
-        const group = get().groups[groupId];
-        if (!group) return;
+        const group = get().groups[groupId]
+        if (!group) return
 
         // Find all sparklines in group and update their styles
         Object.entries(get().sparklines).forEach(([sheetId, sparklines]) => {
-          sparklines.forEach(sp => {
+          sparklines.forEach((sp) => {
             if (sp.groupId === groupId) {
-              get().updateSparklineStyle(sheetId, sp.id, style);
+              get().updateSparklineStyle(sheetId, sp.id, style)
             }
-          });
-        });
+          })
+        })
       },
 
       createGroup: (sparklineIds) => {
-        const groupId = nanoid(8);
-        
-        set(state => ({
+        const groupId = nanoid(8)
+
+        set((state) => ({
           groups: {
             ...state.groups,
             [groupId]: {
@@ -392,74 +408,74 @@ export const useSparklineStore = create<SparklineStore>()(
               sharedStyle: true,
             },
           },
-        }));
+        }))
 
         // Update sparklines with group ID
         Object.entries(get().sparklines).forEach(([sheetId, sparklines]) => {
-          sparklines.forEach(sp => {
+          sparklines.forEach((sp) => {
             if (sparklineIds.includes(sp.id)) {
-              get().updateSparkline(sheetId, sp.id, { groupId });
+              get().updateSparkline(sheetId, sp.id, { groupId })
             }
-          });
-        });
+          })
+        })
 
-        return groupId;
+        return groupId
       },
 
       ungroupSparklines: (groupId) => {
-        const group = get().groups[groupId];
-        if (!group) return;
+        const group = get().groups[groupId]
+        if (!group) return
 
         // Remove group ID from sparklines
         Object.entries(get().sparklines).forEach(([sheetId, sparklines]) => {
-          sparklines.forEach(sp => {
+          sparklines.forEach((sp) => {
             if (sp.groupId === groupId) {
-              get().updateSparkline(sheetId, sp.id, { groupId: undefined });
+              get().updateSparkline(sheetId, sp.id, { groupId: undefined })
             }
-          });
-        });
+          })
+        })
 
         // Remove group
-        set(state => {
-          const { [groupId]: _, ...rest } = state.groups;
-          return { groups: rest };
-        });
+        set((state) => {
+          const { [groupId]: _, ...rest } = state.groups
+          return { groups: rest }
+        })
       },
 
       getSparklinesForSheet: (sheetId) => {
-        return get().sparklines[sheetId] || [];
+        return get().sparklines[sheetId] || []
       },
 
       getSparklineAtCell: (sheetId, row, col) => {
         return (get().sparklines[sheetId] || []).find(
-          sp => sp.locationRow === row && sp.locationCol === col
-        );
+          (sp) => sp.locationRow === row && sp.locationCol === col
+        )
       },
 
       getSparklineById: (sheetId, id) => {
-        return (get().sparklines[sheetId] || []).find(sp => sp.id === id);
+        return (get().sparklines[sheetId] || []).find((sp) => sp.id === id)
       },
 
       clearSparklinesForSheet: (sheetId) => {
-        set(state => ({
+        set((state) => ({
           sparklines: {
             ...state.sparklines,
             [sheetId]: [],
           },
-        }));
+        }))
       },
     }),
     {
-      name: 'excelai-sparklines',
+      name: "excelai-sparklines",
       partialize: (state) => ({
         sparklines: state.sparklines,
         groups: state.groups,
       }),
     }
   )
-);
+)
 
-export default useSparklineStore;
+export default useSparklineStore
 ```
 
 ---
@@ -471,15 +487,15 @@ export default useSparklineStore;
 // SPARKLINE RENDERER — Renders sparklines in cells
 // ============================================================
 
-import React, { useMemo } from 'react';
-import { Sparkline, SparklineType } from '../../types/sparkline';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import './Sparklines.css';
+import React, { useMemo } from "react"
+import { Sparkline, SparklineType } from "../../types/sparkline"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import "./Sparklines.css"
 
 interface SparklineRendererProps {
-  sparkline: Sparkline;
-  width: number;
-  height: number;
+  sparkline: Sparkline
+  width: number
+  height: number
 }
 
 export const SparklineRenderer: React.FC<SparklineRendererProps> = ({
@@ -487,115 +503,119 @@ export const SparklineRenderer: React.FC<SparklineRendererProps> = ({
   width,
   height,
 }) => {
-  const { getCellValue } = useWorkbookStore();
+  const { getCellValue } = useWorkbookStore()
 
   // Parse data range and get values
   const data = useMemo(() => {
-    const values: number[] = [];
-    const range = sparkline.dataRange;
-    
+    const values: number[] = []
+    const range = sparkline.dataRange
+
     // Parse range like "B2:B10" or "B2:H2"
-    const match = range.match(/^([A-Z]+)(\d+):([A-Z]+)(\d+)$/i);
-    if (!match) return values;
-    
-    const startCol = match[1].toUpperCase().charCodeAt(0) - 65;
-    const startRow = parseInt(match[2]) - 1;
-    const endCol = match[3].toUpperCase().charCodeAt(0) - 65;
-    const endRow = parseInt(match[4]) - 1;
-    
+    const match = range.match(/^([A-Z]+)(\d+):([A-Z]+)(\d+)$/i)
+    if (!match) return values
+
+    const startCol = match[1].toUpperCase().charCodeAt(0) - 65
+    const startRow = parseInt(match[2]) - 1
+    const endCol = match[3].toUpperCase().charCodeAt(0) - 65
+    const endRow = parseInt(match[4]) - 1
+
     // Determine if horizontal or vertical range
     if (startRow === endRow) {
       // Horizontal range
       for (let col = startCol; col <= endCol; col++) {
-        const val = getCellValue(sparkline.sheetId, startRow, col);
-        const num = parseFloat(String(val));
-        if (!isNaN(num)) values.push(num);
+        const val = getCellValue(sparkline.sheetId, startRow, col)
+        const num = parseFloat(String(val))
+        if (!isNaN(num)) values.push(num)
       }
     } else {
       // Vertical range
       for (let row = startRow; row <= endRow; row++) {
-        const val = getCellValue(sparkline.sheetId, row, startCol);
-        const num = parseFloat(String(val));
-        if (!isNaN(num)) values.push(num);
+        const val = getCellValue(sparkline.sheetId, row, startCol)
+        const num = parseFloat(String(val))
+        if (!isNaN(num)) values.push(num)
       }
     }
-    
-    return sparkline.rightToLeft ? values.reverse() : values;
-  }, [sparkline, getCellValue]);
+
+    return sparkline.rightToLeft ? values.reverse() : values
+  }, [sparkline, getCellValue])
 
   // Calculate min/max
-  const { min, max, range: valueRange } = useMemo(() => {
-    if (data.length === 0) return { min: 0, max: 1, range: 1 };
-    
-    const dataMin = sparkline.minValue ?? Math.min(...data);
-    const dataMax = sparkline.maxValue ?? Math.max(...data);
-    const range = dataMax - dataMin || 1;
-    
-    return { min: dataMin, max: dataMax, range };
-  }, [data, sparkline.minValue, sparkline.maxValue]);
+  const {
+    min,
+    max,
+    range: valueRange,
+  } = useMemo(() => {
+    if (data.length === 0) return { min: 0, max: 1, range: 1 }
+
+    const dataMin = sparkline.minValue ?? Math.min(...data)
+    const dataMax = sparkline.maxValue ?? Math.max(...data)
+    const range = dataMax - dataMin || 1
+
+    return { min: dataMin, max: dataMax, range }
+  }, [data, sparkline.minValue, sparkline.maxValue])
 
   // Normalize value to 0-1 range
   const normalize = (value: number): number => {
-    return (value - min) / valueRange;
-  };
+    return (value - min) / valueRange
+  }
 
   // Padding
-  const padding = 4;
-  const chartWidth = width - padding * 2;
-  const chartHeight = height - padding * 2;
+  const padding = 4
+  const chartWidth = width - padding * 2
+  const chartHeight = height - padding * 2
 
   if (data.length === 0) {
-    return <div className="sparkline-empty" />;
+    return <div className="sparkline-empty" />
   }
 
   // Render based on type
   switch (sparkline.type) {
-    case 'line':
-      return renderLineSparkline();
-    case 'column':
-      return renderColumnSparkline();
-    case 'winloss':
-      return renderWinLossSparkline();
+    case "line":
+      return renderLineSparkline()
+    case "column":
+      return renderColumnSparkline()
+    case "winloss":
+      return renderWinLossSparkline()
     default:
-      return null;
+      return null
   }
 
   function renderLineSparkline() {
-    const { style } = sparkline;
-    const points: string[] = [];
-    const markerPoints: { x: number; y: number; color: string }[] = [];
-    
+    const { style } = sparkline
+    const points: string[] = []
+    const markerPoints: { x: number; y: number; color: string }[] = []
+
     data.forEach((value, i) => {
-      const x = padding + (i / (data.length - 1 || 1)) * chartWidth;
-      const y = padding + (1 - normalize(value)) * chartHeight;
-      points.push(`${x},${y}`);
-      
+      const x = padding + (i / (data.length - 1 || 1)) * chartWidth
+      const y = padding + (1 - normalize(value)) * chartHeight
+      points.push(`${x},${y}`)
+
       // Determine marker color
-      let markerColor: string | null = null;
-      
+      let markerColor: string | null = null
+
       if (style.showMarkers) {
-        markerColor = style.markerColor;
+        markerColor = style.markerColor
       }
       if (style.showHighPoint && value === Math.max(...data)) {
-        markerColor = style.highPointColor;
+        markerColor = style.highPointColor
       }
       if (style.showLowPoint && value === Math.min(...data)) {
-        markerColor = style.lowPointColor;
+        markerColor = style.lowPointColor
       }
       if (style.showFirstPoint && i === 0) {
-        markerColor = style.firstPointColor;
+        markerColor = style.firstPointColor
       }
       if (style.showLastPoint && i === data.length - 1) {
-        markerColor = style.lastPointColor;
+        markerColor = style.lastPointColor
       }
       if (style.showNegativePoints && value < 0) {
-        markerColor = style.negativePointColor;
+        markerColor = style.negativePointColor
       }
-      
+
       if (markerColor) {
-        markerPoints.push({ x, y, color: markerColor });
+        markerPoints.push({ x, y, color: markerColor })
       }
-    });
+    })
 
     return (
       <svg className="sparkline-svg" viewBox={`0 0 ${width} ${height}`}>
@@ -611,38 +631,33 @@ export const SparklineRenderer: React.FC<SparklineRendererProps> = ({
             strokeDasharray="2,2"
           />
         )}
-        
+
         {/* Line */}
         <polyline
-          points={points.join(' ')}
+          points={points.join(" ")}
           fill="none"
           stroke={style.lineColor}
           strokeWidth={style.lineWeight}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        
+
         {/* Markers */}
         {markerPoints.map((point, i) => (
-          <circle
-            key={i}
-            cx={point.x}
-            cy={point.y}
-            r={3}
-            fill={point.color}
-          />
+          <circle key={i} cx={point.x} cy={point.y} r={3} fill={point.color} />
         ))}
       </svg>
-    );
+    )
   }
 
   function renderColumnSparkline() {
-    const { style } = sparkline;
-    const barWidth = Math.max(2, (chartWidth / data.length) - 2);
-    const gap = 1;
-    
+    const { style } = sparkline
+    const barWidth = Math.max(2, chartWidth / data.length - 2)
+    const gap = 1
+
     // Calculate zero line position
-    const zeroY = min >= 0 ? chartHeight : (max <= 0 ? 0 : normalize(0) * chartHeight);
+    const zeroY =
+      min >= 0 ? chartHeight : max <= 0 ? 0 : normalize(0) * chartHeight
 
     return (
       <svg className="sparkline-svg" viewBox={`0 0 ${width} ${height}`}>
@@ -657,36 +672,36 @@ export const SparklineRenderer: React.FC<SparklineRendererProps> = ({
             strokeWidth="1"
           />
         )}
-        
+
         {/* Bars */}
         {data.map((value, i) => {
-          const x = padding + (i / data.length) * chartWidth + gap;
-          const normalizedValue = normalize(value);
-          const isNegative = value < 0;
-          
-          let barHeight: number;
-          let barY: number;
-          
+          const x = padding + (i / data.length) * chartWidth + gap
+          const normalizedValue = normalize(value)
+          const isNegative = value < 0
+
+          let barHeight: number
+          let barY: number
+
           if (min >= 0) {
             // All positive
-            barHeight = normalizedValue * chartHeight;
-            barY = padding + chartHeight - barHeight;
+            barHeight = normalizedValue * chartHeight
+            barY = padding + chartHeight - barHeight
           } else if (max <= 0) {
             // All negative
-            barHeight = (1 - normalizedValue) * chartHeight;
-            barY = padding;
+            barHeight = (1 - normalizedValue) * chartHeight
+            barY = padding
           } else {
             // Mixed
-            const zeroNormalized = normalize(0);
+            const zeroNormalized = normalize(0)
             if (value >= 0) {
-              barHeight = (normalizedValue - zeroNormalized) * chartHeight;
-              barY = padding + (1 - normalizedValue) * chartHeight;
+              barHeight = (normalizedValue - zeroNormalized) * chartHeight
+              barY = padding + (1 - normalizedValue) * chartHeight
             } else {
-              barHeight = (zeroNormalized - normalizedValue) * chartHeight;
-              barY = padding + (1 - zeroNormalized) * chartHeight;
+              barHeight = (zeroNormalized - normalizedValue) * chartHeight
+              barY = padding + (1 - zeroNormalized) * chartHeight
             }
           }
-          
+
           return (
             <rect
               key={i}
@@ -697,17 +712,17 @@ export const SparklineRenderer: React.FC<SparklineRendererProps> = ({
               fill={isNegative ? style.negativeColor : style.columnColor}
               rx={1}
             />
-          );
+          )
         })}
       </svg>
-    );
+    )
   }
 
   function renderWinLossSparkline() {
-    const { style } = sparkline;
-    const barWidth = Math.max(2, (chartWidth / data.length) - 2);
-    const gap = 1;
-    const halfHeight = chartHeight / 2;
+    const { style } = sparkline
+    const barWidth = Math.max(2, chartWidth / data.length - 2)
+    const gap = 1
+    const halfHeight = chartHeight / 2
 
     return (
       <svg className="sparkline-svg" viewBox={`0 0 ${width} ${height}`}>
@@ -720,16 +735,16 @@ export const SparklineRenderer: React.FC<SparklineRendererProps> = ({
           stroke={style.axisColor}
           strokeWidth="1"
         />
-        
+
         {/* Win/Loss bars */}
         {data.map((value, i) => {
-          const x = padding + (i / data.length) * chartWidth + gap;
-          const isWin = value > 0;
-          const isLoss = value < 0;
-          const barHeight = halfHeight - 4;
-          
-          if (value === 0) return null;
-          
+          const x = padding + (i / data.length) * chartWidth + gap
+          const isWin = value > 0
+          const isLoss = value < 0
+          const barHeight = halfHeight - 4
+
+          if (value === 0) return null
+
           return (
             <rect
               key={i}
@@ -740,14 +755,14 @@ export const SparklineRenderer: React.FC<SparklineRendererProps> = ({
               fill={isWin ? style.winColor : style.lossColor}
               rx={1}
             />
-          );
+          )
         })}
       </svg>
-    );
+    )
   }
-};
+}
 
-export default SparklineRenderer;
+export default SparklineRenderer
 ```
 
 ---
@@ -759,97 +774,99 @@ export default SparklineRenderer;
 // SPARKLINE DIALOG — Insert/Edit Sparklines
 // ============================================================
 
-import React, { useState } from 'react';
-import { 
-  X, 
-  TrendingUp, 
-  BarChart3, 
-  Activity,
-} from 'lucide-react';
-import { useSparklineStore } from '../../stores/sparklineStore';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { 
-  SparklineType, 
+import React, { useState } from "react"
+import { X, TrendingUp, BarChart3, Activity } from "lucide-react"
+import { useSparklineStore } from "../../stores/sparklineStore"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import {
+  SparklineType,
   DEFAULT_SPARKLINE_STYLE,
   SPARKLINE_PRESETS,
-} from '../../types/sparkline';
-import { SparklineRenderer } from './SparklineRenderer';
-import './Sparklines.css';
+} from "../../types/sparkline"
+import { SparklineRenderer } from "./SparklineRenderer"
+import "./Sparklines.css"
 
 interface SparklineDialogProps {
-  sheetId: string;
-  isOpen: boolean;
-  onClose: () => void;
-  initialType?: SparklineType;
+  sheetId: string
+  isOpen: boolean
+  onClose: () => void
+  initialType?: SparklineType
 }
 
 export const SparklineDialog: React.FC<SparklineDialogProps> = ({
   sheetId,
   isOpen,
   onClose,
-  initialType = 'line',
+  initialType = "line",
 }) => {
-  const [type, setType] = useState<SparklineType>(initialType);
-  const [dataRange, setDataRange] = useState('');
-  const [locationRange, setLocationRange] = useState('');
-  const [selectedColor, setSelectedColor] = useState('blue');
-  const [showMarkers, setShowMarkers] = useState(false);
-  const [showHighLow, setShowHighLow] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [type, setType] = useState<SparklineType>(initialType)
+  const [dataRange, setDataRange] = useState("")
+  const [locationRange, setLocationRange] = useState("")
+  const [selectedColor, setSelectedColor] = useState("blue")
+  const [showMarkers, setShowMarkers] = useState(false)
+  const [showHighLow, setShowHighLow] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const { addSparkline, addSparklineRange } = useSparklineStore();
-  const { selection } = useWorkbookStore();
+  const { addSparkline, addSparklineRange } = useSparklineStore()
+  const { selection } = useWorkbookStore()
 
   // Auto-fill location from selection
   React.useEffect(() => {
     if (selection && isOpen) {
-      const startCol = String.fromCharCode(65 + selection.start.col);
-      const startRow = selection.start.row + 1;
-      const endCol = String.fromCharCode(65 + selection.end.col);
-      const endRow = selection.end.row + 1;
-      
-      if (selection.start.row === selection.end.row && selection.start.col === selection.end.col) {
-        setLocationRange(`${startCol}${startRow}`);
+      const startCol = String.fromCharCode(65 + selection.start.col)
+      const startRow = selection.start.row + 1
+      const endCol = String.fromCharCode(65 + selection.end.col)
+      const endRow = selection.end.row + 1
+
+      if (
+        selection.start.row === selection.end.row &&
+        selection.start.col === selection.end.col
+      ) {
+        setLocationRange(`${startCol}${startRow}`)
       } else {
-        setLocationRange(`${startCol}${startRow}:${endCol}${endRow}`);
+        setLocationRange(`${startCol}${startRow}:${endCol}${endRow}`)
       }
     }
-  }, [selection, isOpen]);
+  }, [selection, isOpen])
 
   const handleInsert = () => {
-    setError(null);
+    setError(null)
 
     // Validate inputs
     if (!dataRange.trim()) {
-      setError('Please enter a data range.');
-      return;
+      setError("Please enter a data range.")
+      return
     }
     if (!locationRange.trim()) {
-      setError('Please enter a location range.');
-      return;
+      setError("Please enter a location range.")
+      return
     }
 
     // Parse location range
-    const locMatch = locationRange.match(/^([A-Z]+)(\d+)(?::([A-Z]+)(\d+))?$/i);
+    const locMatch = locationRange.match(/^([A-Z]+)(\d+)(?::([A-Z]+)(\d+))?$/i)
     if (!locMatch) {
-      setError('Invalid location range format. Use format like A1 or A1:A5');
-      return;
+      setError("Invalid location range format. Use format like A1 or A1:A5")
+      return
     }
 
-    const startCol = locMatch[1].toUpperCase().charCodeAt(0) - 65;
-    const startRow = parseInt(locMatch[2]) - 1;
-    const endCol = locMatch[3] ? locMatch[3].toUpperCase().charCodeAt(0) - 65 : startCol;
-    const endRow = locMatch[4] ? parseInt(locMatch[4]) - 1 : startRow;
+    const startCol = locMatch[1].toUpperCase().charCodeAt(0) - 65
+    const startRow = parseInt(locMatch[2]) - 1
+    const endCol = locMatch[3]
+      ? locMatch[3].toUpperCase().charCodeAt(0) - 65
+      : startCol
+    const endRow = locMatch[4] ? parseInt(locMatch[4]) - 1 : startRow
 
     // Get style based on color preset
-    const colorPreset = SPARKLINE_PRESETS[selectedColor as keyof typeof SPARKLINE_PRESETS] || SPARKLINE_PRESETS.blue;
+    const colorPreset =
+      SPARKLINE_PRESETS[selectedColor as keyof typeof SPARKLINE_PRESETS] ||
+      SPARKLINE_PRESETS.blue
     const style = {
       ...DEFAULT_SPARKLINE_STYLE,
       ...colorPreset,
       showMarkers,
       showHighPoint: showHighLow,
       showLowPoint: showHighLow,
-    };
+    }
 
     // Single sparkline or multiple
     if (startRow === endRow && startCol === endCol) {
@@ -861,69 +878,73 @@ export const SparklineDialog: React.FC<SparklineDialogProps> = ({
         locationRange.toUpperCase(),
         startRow,
         startCol
-      );
+      )
     } else {
       // Multiple sparklines - parse data ranges for each
-      const dataRanges: string[] = [];
-      const locations: { cell: string; row: number; col: number }[] = [];
-      
+      const dataRanges: string[] = []
+      const locations: { cell: string; row: number; col: number }[] = []
+
       // Determine if vertical or horizontal range
       if (startCol === endCol) {
         // Vertical range of sparklines
         for (let row = startRow; row <= endRow; row++) {
           // Assume data is in adjacent columns
-          const dataRangeForRow = dataRange.replace(/(\d+)/g, String(row + 1));
-          dataRanges.push(dataRangeForRow.toUpperCase());
+          const dataRangeForRow = dataRange.replace(/(\d+)/g, String(row + 1))
+          dataRanges.push(dataRangeForRow.toUpperCase())
           locations.push({
             cell: `${String.fromCharCode(65 + startCol)}${row + 1}`,
             row,
             col: startCol,
-          });
+          })
         }
       } else {
         // Horizontal range of sparklines
         for (let col = startCol; col <= endCol; col++) {
-          const colLetter = String.fromCharCode(65 + col);
-          dataRanges.push(dataRange.toUpperCase());
+          const colLetter = String.fromCharCode(65 + col)
+          dataRanges.push(dataRange.toUpperCase())
           locations.push({
             cell: `${colLetter}${startRow + 1}`,
             row: startRow,
             col,
-          });
+          })
         }
       }
-      
-      addSparklineRange(sheetId, type, dataRanges, locations);
+
+      addSparklineRange(sheetId, type, dataRanges, locations)
     }
 
-    onClose();
-  };
+    onClose()
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   // Create preview sparkline
   const previewSparkline = {
-    id: 'preview',
+    id: "preview",
     sheetId,
     type,
-    dataRange: 'A1:A5', // Dummy range
-    locationCell: 'Z1',
+    dataRange: "A1:A5", // Dummy range
+    locationCell: "Z1",
     locationRow: 0,
     locationCol: 25,
     style: {
       ...DEFAULT_SPARKLINE_STYLE,
-      ...(SPARKLINE_PRESETS[selectedColor as keyof typeof SPARKLINE_PRESETS] || SPARKLINE_PRESETS.blue),
+      ...(SPARKLINE_PRESETS[selectedColor as keyof typeof SPARKLINE_PRESETS] ||
+        SPARKLINE_PRESETS.blue),
       showMarkers,
       showHighPoint: showHighLow,
       showLowPoint: showHighLow,
     },
     rightToLeft: false,
     dateAxis: false,
-  };
+  }
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog sparkline-dialog" onClick={e => e.stopPropagation()}>
+      <div
+        className="dialog sparkline-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h3>Insert Sparklines</h3>
           <button className="close-btn" onClick={onClose}>
@@ -934,23 +955,23 @@ export const SparklineDialog: React.FC<SparklineDialogProps> = ({
         <div className="dialog-content">
           {/* Type Selection */}
           <div className="sparkline-types">
-            <button 
-              className={`type-btn ${type === 'line' ? 'active' : ''}`}
-              onClick={() => setType('line')}
+            <button
+              className={`type-btn ${type === "line" ? "active" : ""}`}
+              onClick={() => setType("line")}
             >
               <TrendingUp size={24} />
               <span>Line</span>
             </button>
-            <button 
-              className={`type-btn ${type === 'column' ? 'active' : ''}`}
-              onClick={() => setType('column')}
+            <button
+              className={`type-btn ${type === "column" ? "active" : ""}`}
+              onClick={() => setType("column")}
             >
               <BarChart3 size={24} />
               <span>Column</span>
             </button>
-            <button 
-              className={`type-btn ${type === 'winloss' ? 'active' : ''}`}
-              onClick={() => setType('winloss')}
+            <button
+              className={`type-btn ${type === "winloss" ? "active" : ""}`}
+              onClick={() => setType("winloss")}
             >
               <Activity size={24} />
               <span>Win/Loss</span>
@@ -967,7 +988,9 @@ export const SparklineDialog: React.FC<SparklineDialogProps> = ({
               placeholder="e.g., B2:B10"
               className="range-input"
             />
-            <span className="input-hint">Enter the range containing the data values</span>
+            <span className="input-hint">
+              Enter the range containing the data values
+            </span>
           </div>
 
           {/* Location Range */}
@@ -990,9 +1013,11 @@ export const SparklineDialog: React.FC<SparklineDialogProps> = ({
               {Object.keys(SPARKLINE_PRESETS).map((color) => (
                 <button
                   key={color}
-                  className={`color-btn ${selectedColor === color ? 'active' : ''}`}
-                  style={{ 
-                    backgroundColor: SPARKLINE_PRESETS[color as keyof typeof SPARKLINE_PRESETS].lineColor 
+                  className={`color-btn ${selectedColor === color ? "active" : ""}`}
+                  style={{
+                    backgroundColor:
+                      SPARKLINE_PRESETS[color as keyof typeof SPARKLINE_PRESETS]
+                        .lineColor,
                   }}
                   onClick={() => setSelectedColor(color)}
                 />
@@ -1001,21 +1026,21 @@ export const SparklineDialog: React.FC<SparklineDialogProps> = ({
           </div>
 
           {/* Options */}
-          {type === 'line' && (
+          {type === "line" && (
             <div className="form-group">
               <label>Options:</label>
               <div className="checkbox-options">
                 <label>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={showMarkers}
                     onChange={(e) => setShowMarkers(e.target.checked)}
                   />
                   Show markers
                 </label>
                 <label>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={showHighLow}
                     onChange={(e) => setShowHighLow(e.target.checked)}
                   />
@@ -1029,14 +1054,16 @@ export const SparklineDialog: React.FC<SparklineDialogProps> = ({
           <div className="form-group">
             <label>Preview:</label>
             <div className="sparkline-preview">
-              <SparklinePreview type={type} color={selectedColor} showMarkers={showMarkers} />
+              <SparklinePreview
+                type={type}
+                color={selectedColor}
+                showMarkers={showMarkers}
+              />
             </div>
           </div>
 
           {/* Error */}
-          {error && (
-            <div className="error-message">{error}</div>
-          )}
+          {error && <div className="error-message">{error}</div>}
         </div>
 
         <div className="dialog-footer">
@@ -1049,35 +1076,39 @@ export const SparklineDialog: React.FC<SparklineDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Simple preview component with mock data
-const SparklinePreview: React.FC<{ 
-  type: SparklineType; 
-  color: string;
-  showMarkers: boolean;
+const SparklinePreview: React.FC<{
+  type: SparklineType
+  color: string
+  showMarkers: boolean
 }> = ({ type, color, showMarkers }) => {
-  const mockData = [3, 7, 2, 9, 4, 6, 8, 5];
-  const width = 200;
-  const height = 40;
-  const padding = 4;
-  const chartWidth = width - padding * 2;
-  const chartHeight = height - padding * 2;
-  
-  const colorPreset = SPARKLINE_PRESETS[color as keyof typeof SPARKLINE_PRESETS] || SPARKLINE_PRESETS.blue;
-  const min = Math.min(...mockData);
-  const max = Math.max(...mockData);
-  const range = max - min;
-  
-  const normalize = (v: number) => (v - min) / range;
+  const mockData = [3, 7, 2, 9, 4, 6, 8, 5]
+  const width = 200
+  const height = 40
+  const padding = 4
+  const chartWidth = width - padding * 2
+  const chartHeight = height - padding * 2
 
-  if (type === 'line') {
-    const points = mockData.map((v, i) => {
-      const x = padding + (i / (mockData.length - 1)) * chartWidth;
-      const y = padding + (1 - normalize(v)) * chartHeight;
-      return `${x},${y}`;
-    }).join(' ');
+  const colorPreset =
+    SPARKLINE_PRESETS[color as keyof typeof SPARKLINE_PRESETS] ||
+    SPARKLINE_PRESETS.blue
+  const min = Math.min(...mockData)
+  const max = Math.max(...mockData)
+  const range = max - min
+
+  const normalize = (v: number) => (v - min) / range
+
+  if (type === "line") {
+    const points = mockData
+      .map((v, i) => {
+        const x = padding + (i / (mockData.length - 1)) * chartWidth
+        const y = padding + (1 - normalize(v)) * chartHeight
+        return `${x},${y}`
+      })
+      .join(" ")
 
     return (
       <svg width={width} height={height}>
@@ -1088,22 +1119,31 @@ const SparklinePreview: React.FC<{
           strokeWidth="2"
           strokeLinecap="round"
         />
-        {showMarkers && mockData.map((v, i) => {
-          const x = padding + (i / (mockData.length - 1)) * chartWidth;
-          const y = padding + (1 - normalize(v)) * chartHeight;
-          return <circle key={i} cx={x} cy={y} r={3} fill={colorPreset.markerColor} />;
-        })}
+        {showMarkers &&
+          mockData.map((v, i) => {
+            const x = padding + (i / (mockData.length - 1)) * chartWidth
+            const y = padding + (1 - normalize(v)) * chartHeight
+            return (
+              <circle
+                key={i}
+                cx={x}
+                cy={y}
+                r={3}
+                fill={colorPreset.markerColor}
+              />
+            )
+          })}
       </svg>
-    );
+    )
   }
 
-  if (type === 'column') {
-    const barWidth = (chartWidth / mockData.length) - 2;
+  if (type === "column") {
+    const barWidth = chartWidth / mockData.length - 2
     return (
       <svg width={width} height={height}>
         {mockData.map((v, i) => {
-          const x = padding + (i / mockData.length) * chartWidth + 1;
-          const barHeight = normalize(v) * chartHeight;
+          const x = padding + (i / mockData.length) * chartWidth + 1
+          const barHeight = normalize(v) * chartHeight
           return (
             <rect
               key={i}
@@ -1114,17 +1154,17 @@ const SparklinePreview: React.FC<{
               fill={colorPreset.columnColor}
               rx={1}
             />
-          );
+          )
         })}
       </svg>
-    );
+    )
   }
 
-  if (type === 'winloss') {
-    const winLossData = [1, 1, -1, 1, -1, -1, 1, 1];
-    const barWidth = (chartWidth / winLossData.length) - 2;
-    const halfHeight = chartHeight / 2;
-    
+  if (type === "winloss") {
+    const winLossData = [1, 1, -1, 1, -1, -1, 1, 1]
+    const barWidth = chartWidth / winLossData.length - 2
+    const halfHeight = chartHeight / 2
+
     return (
       <svg width={width} height={height}>
         <line
@@ -1136,8 +1176,8 @@ const SparklinePreview: React.FC<{
           strokeWidth="1"
         />
         {winLossData.map((v, i) => {
-          const x = padding + (i / winLossData.length) * chartWidth + 1;
-          const isWin = v > 0;
+          const x = padding + (i / winLossData.length) * chartWidth + 1
+          const isWin = v > 0
           return (
             <rect
               key={i}
@@ -1145,19 +1185,19 @@ const SparklinePreview: React.FC<{
               y={isWin ? padding + 2 : padding + halfHeight + 2}
               width={barWidth}
               height={halfHeight - 4}
-              fill={isWin ? colorPreset.winColor : '#dc2626'}
+              fill={isWin ? colorPreset.winColor : "#dc2626"}
               rx={1}
             />
-          );
+          )
         })}
       </svg>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 
-export default SparklineDialog;
+export default SparklineDialog
 ```
 
 ---
@@ -1288,7 +1328,9 @@ export default SparklineDialog;
 
 .color-btn.active {
   border-color: var(--text-primary, #333);
-  box-shadow: 0 0 0 2px white, 0 0 0 4px var(--text-primary, #333);
+  box-shadow:
+    0 0 0 2px white,
+    0 0 0 4px var(--text-primary, #333);
 }
 
 /* Checkbox Options */
@@ -1358,7 +1400,9 @@ export default SparklineDialog;
 
 [data-theme="dark"] .color-btn.active {
   border-color: var(--text-primary-dark, #fff);
-  box-shadow: 0 0 0 2px var(--bg-primary-dark, #1e1e1e), 0 0 0 4px var(--text-primary-dark, #fff);
+  box-shadow:
+    0 0 0 2px var(--bg-primary-dark, #1e1e1e),
+    0 0 0 4px var(--text-primary-dark, #fff);
 }
 ```
 
@@ -1367,8 +1411,8 @@ export default SparklineDialog;
 ## 📄 File 6: `src/components/Sparklines/index.ts`
 
 ```typescript
-export { SparklineRenderer } from './SparklineRenderer';
-export { SparklineDialog } from './SparklineDialog';
+export { SparklineRenderer } from "./SparklineRenderer"
+export { SparklineDialog } from "./SparklineDialog"
 ```
 
 ---
@@ -1413,22 +1457,24 @@ const [sparklineType, setSparklineType] = useState<'line' | 'column' | 'winloss'
 
 ```tsx
 // In Cell.tsx or CellRenderer.tsx
-import { useSparklineStore } from '../../stores/sparklineStore';
-import { SparklineRenderer } from '../Sparklines';
+import { useSparklineStore } from "../../stores/sparklineStore"
+import { SparklineRenderer } from "../Sparklines"
 
-const { getSparklineAtCell } = useSparklineStore();
-const sparkline = getSparklineAtCell(sheetId, row, col);
+const { getSparklineAtCell } = useSparklineStore()
+const sparkline = getSparklineAtCell(sheetId, row, col)
 
 // In render
-{sparkline && (
-  <div className="sparkline-container">
-    <SparklineRenderer 
-      sparkline={sparkline}
-      width={cellWidth}
-      height={cellHeight}
-    />
-  </div>
-)}
+{
+  sparkline && (
+    <div className="sparkline-container">
+      <SparklineRenderer
+        sparkline={sparkline}
+        width={cellWidth}
+        height={cellHeight}
+      />
+    </div>
+  )
+}
 ```
 
 ---
@@ -1449,18 +1495,18 @@ const sparkline = getSparklineAtCell(sheetId, row, col);
 
 ## 🎯 Features Summary
 
-| Feature | Description |
-|---------|-------------|
-| **Line Sparkline** | Trend line with optional markers |
-| **Column Sparkline** | Bar chart with negative value support |
-| **Win/Loss Sparkline** | Binary positive/negative bars |
-| **Color Presets** | 5 color themes |
-| **Markers** | Show data point markers |
-| **High/Low Points** | Highlight min/max values |
-| **Negative Values** | Different color for negatives |
-| **Axis Line** | Optional zero axis |
-| **Grouping** | Group multiple sparklines |
-| **Persist** | localStorage persistence |
+| Feature                | Description                           |
+| ---------------------- | ------------------------------------- |
+| **Line Sparkline**     | Trend line with optional markers      |
+| **Column Sparkline**   | Bar chart with negative value support |
+| **Win/Loss Sparkline** | Binary positive/negative bars         |
+| **Color Presets**      | 5 color themes                        |
+| **Markers**            | Show data point markers               |
+| **High/Low Points**    | Highlight min/max values              |
+| **Negative Values**    | Different color for negatives         |
+| **Axis Line**          | Optional zero axis                    |
+| **Grouping**           | Group multiple sparklines             |
+| **Persist**            | localStorage persistence              |
 
 ---
 

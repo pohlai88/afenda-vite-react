@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import * as courseService from '@/services/learning/course.service'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import * as courseService from "@/services/learning/course.service"
 
 export async function POST(
   request: NextRequest,
@@ -9,7 +9,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
     const userId = session.user.id
@@ -18,7 +18,10 @@ export async function POST(
     const result = await courseService.publishCourse(id, tenantId)
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error publishing course:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error publishing course:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

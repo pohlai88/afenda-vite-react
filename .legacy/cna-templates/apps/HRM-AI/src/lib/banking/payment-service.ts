@@ -1,8 +1,8 @@
 // src/lib/banking/payment-service.ts
 // Payment Batch Service
 
-import prisma from '@/lib/db'
-import { VCBAdapter } from './adapters/vcb'
+import prisma from "@/lib/db"
+import { VCBAdapter } from "./adapters/vcb"
 import type {
   BankCode,
   IBankAdapter,
@@ -10,7 +10,7 @@ import type {
   PaymentRequest,
   BatchPaymentRequest,
   PaymentTransactionStatus,
-} from './types'
+} from "./types"
 
 // ═══════════════════════════════════════════════════════════════
 // PAYMENT SERVICE
@@ -36,15 +36,15 @@ export class PaymentService {
     let adapter: IBankAdapter
 
     switch (bankCode) {
-      case 'VCB':
+      case "VCB":
         adapter = new VCBAdapter()
         break
-      case 'TCB':
+      case "TCB":
         // TODO: Implement Techcombank adapter
-        throw new Error('Techcombank adapter not implemented')
-      case 'MB':
+        throw new Error("Techcombank adapter not implemented")
+      case "MB":
         // TODO: Implement MB Bank adapter
-        throw new Error('MB Bank adapter not implemented')
+        throw new Error("MB Bank adapter not implemented")
       default:
         throw new Error(`Bank adapter not available for: ${bankCode}`)
     }
@@ -53,20 +53,23 @@ export class PaymentService {
     return adapter
   }
 
-  private async configureAdapter(adapter: IBankAdapter, bankConfigId: string): Promise<void> {
+  private async configureAdapter(
+    adapter: IBankAdapter,
+    bankConfigId: string
+  ): Promise<void> {
     const bankConfig = await prisma.bankConfiguration.findUnique({
       where: { id: bankConfigId },
     })
 
     if (!bankConfig) {
-      throw new Error('Bank configuration not found')
+      throw new Error("Bank configuration not found")
     }
 
     const config: BankApiConfig = {
-      apiEndpoint: bankConfig.apiEndpoint || '',
+      apiEndpoint: bankConfig.apiEndpoint || "",
       apiVersion: bankConfig.apiVersion || undefined,
-      clientId: bankConfig.clientId || '',
-      clientSecret: bankConfig.encryptedSecret || '', // In production, decrypt this
+      clientId: bankConfig.clientId || "",
+      clientSecret: bankConfig.encryptedSecret || "", // In production, decrypt this
     }
 
     adapter.configure(config)
@@ -90,7 +93,7 @@ export class PaymentService {
     })
 
     if (!bankConfig) {
-      throw new Error('Không tìm thấy cấu hình ngân hàng')
+      throw new Error("Không tìm thấy cấu hình ngân hàng")
     }
 
     // Get payroll records for the period
@@ -113,7 +116,7 @@ export class PaymentService {
     })
 
     if (payrolls.length === 0) {
-      throw new Error('Không có dữ liệu lương để thanh toán')
+      throw new Error("Không có dữ liệu lương để thanh toán")
     }
 
     // Create payment batch
@@ -124,12 +127,14 @@ export class PaymentService {
         tenantId: this.tenantId,
         bankConfigId,
         batchCode,
-        batchName: options?.batchName || `Thanh toán lương - ${new Date().toLocaleDateString('vi-VN')}`,
-        batchType: 'SALARY',
+        batchName:
+          options?.batchName ||
+          `Thanh toán lương - ${new Date().toLocaleDateString("vi-VN")}`,
+        batchType: "SALARY",
         payrollPeriodId,
         totalTransactions: payrolls.length,
         totalAmount: payrolls.reduce((sum, p) => sum + Number(p.netSalary), 0),
-        status: 'DRAFT',
+        status: "DRAFT",
       },
     })
 
@@ -139,12 +144,12 @@ export class PaymentService {
         batchId: batch.id,
         employeeId: payroll.employeeId,
         recipientName: payroll.employee.fullName,
-        recipientBank: payroll.employee.bankName || '',
-        recipientAccount: payroll.employee.bankAccount || '',
+        recipientBank: payroll.employee.bankName || "",
+        recipientAccount: payroll.employee.bankAccount || "",
         amount: Number(payroll.netSalary),
-        currency: 'VND',
+        currency: "VND",
         description: `Luong thang ${new Date().getMonth() + 1}`,
-        status: 'PENDING',
+        status: "PENDING",
       })),
     })
 
@@ -169,11 +174,11 @@ export class PaymentService {
     })
 
     if (!batch) {
-      throw new Error('Không tìm thấy batch thanh toán')
+      throw new Error("Không tìm thấy batch thanh toán")
     }
 
-    if (batch.status !== 'APPROVED') {
-      throw new Error('Batch chưa được duyệt')
+    if (batch.status !== "APPROVED") {
+      throw new Error("Batch chưa được duyệt")
     }
 
     // Get and configure adapter
@@ -183,7 +188,7 @@ export class PaymentService {
     // Update batch status
     await prisma.paymentBatch.update({
       where: { id: batchId },
-      data: { status: 'PROCESSING', processedAt: new Date() },
+      data: { status: "PROCESSING", processedAt: new Date() },
     })
 
     // Prepare batch payment request
@@ -200,7 +205,7 @@ export class PaymentService {
         transactionId: tx.id,
         amount: Number(tx.amount),
         currency: tx.currency,
-        description: tx.description || '',
+        description: tx.description || "",
         sourceAccount: {
           accountNumber: batch.bankConfig.accountNumber,
           accountName: batch.bankConfig.accountName,
@@ -209,7 +214,7 @@ export class PaymentService {
         destinationAccount: {
           accountNumber: tx.recipientAccount,
           accountName: tx.recipientName,
-          bankCode: (tx.recipientBank as BankCode) || 'OTHER',
+          bankCode: (tx.recipientBank as BankCode) || "OTHER",
           branchCode: tx.recipientBranch || undefined,
         },
       })),
@@ -237,7 +242,7 @@ export class PaymentService {
       await prisma.paymentBatch.update({
         where: { id: batchId },
         data: {
-          status: result.success ? 'COMPLETED' : 'FAILED',
+          status: result.success ? "COMPLETED" : "FAILED",
           successCount: result.successCount,
           failedCount: result.failedCount,
           bankReferenceId: result.bankBatchId,
@@ -257,8 +262,10 @@ export class PaymentService {
       await prisma.paymentBatch.update({
         where: { id: batchId },
         data: {
-          status: 'FAILED',
-          bankResponseData: { error: error instanceof Error ? error.message : 'Unknown error' },
+          status: "FAILED",
+          bankResponseData: {
+            error: error instanceof Error ? error.message : "Unknown error",
+          },
         },
       })
 
@@ -266,7 +273,7 @@ export class PaymentService {
         success: false,
         successCount: 0,
         failedCount: batch.transactions.length,
-        errors: [error instanceof Error ? error.message : 'Unknown error'],
+        errors: [error instanceof Error ? error.message : "Unknown error"],
       }
     }
   }
@@ -278,7 +285,7 @@ export class PaymentService {
     await prisma.paymentBatch.update({
       where: { id: batchId, tenantId: this.tenantId },
       data: {
-        status: 'APPROVED',
+        status: "APPROVED",
         approvedAt: new Date(),
         approvedBy: approverId,
       },
@@ -294,21 +301,21 @@ export class PaymentService {
     })
 
     if (!batch) {
-      throw new Error('Không tìm thấy batch thanh toán')
+      throw new Error("Không tìm thấy batch thanh toán")
     }
 
-    if (!['DRAFT', 'PENDING_APPROVAL', 'APPROVED'].includes(batch.status)) {
-      throw new Error('Không thể hủy batch ở trạng thái này')
+    if (!["DRAFT", "PENDING_APPROVAL", "APPROVED"].includes(batch.status)) {
+      throw new Error("Không thể hủy batch ở trạng thái này")
     }
 
     await prisma.paymentBatch.update({
       where: { id: batchId },
-      data: { status: 'CANCELLED' },
+      data: { status: "CANCELLED" },
     })
 
     await prisma.paymentTransaction.updateMany({
       where: { batchId },
-      data: { status: 'CANCELLED' },
+      data: { status: "CANCELLED" },
     })
   }
 
@@ -340,7 +347,7 @@ export class PaymentService {
 
     const batches = await prisma.paymentBatch.findMany({
       where,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: options?.limit || 50,
     })
 
@@ -388,17 +395,20 @@ export class PaymentService {
         results.push({
           employeeId: emp.id,
           valid: false,
-          errorMessage: 'Chưa có số tài khoản ngân hàng',
+          errorMessage: "Chưa có số tài khoản ngân hàng",
         })
         continue
       }
 
       // Get appropriate adapter
       try {
-        const bankCode = (emp.bankName as BankCode) || 'OTHER'
+        const bankCode = (emp.bankName as BankCode) || "OTHER"
         const adapter = this.getAdapter(bankCode)
 
-        const validation = await adapter.validateAccount(emp.bankAccount, bankCode)
+        const validation = await adapter.validateAccount(
+          emp.bankAccount,
+          bankCode
+        )
         results.push({
           employeeId: emp.id,
           valid: validation.valid,
@@ -409,7 +419,7 @@ export class PaymentService {
         results.push({
           employeeId: emp.id,
           valid: false,
-          errorMessage: 'Không thể xác thực tài khoản',
+          errorMessage: "Không thể xác thực tài khoản",
         })
       }
     }

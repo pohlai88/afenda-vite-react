@@ -6,15 +6,35 @@
     { "formula": "=10/2", "expected": 5 },
     { "formula": "=2^3", "expected": 8 },
     { "formula": "=10%3", "expected": 1 },
-    { "formula": "=5+3*2", "expected": 11, "description": "Order of operations" },
+    {
+      "formula": "=5+3*2",
+      "expected": 11,
+      "description": "Order of operations"
+    },
     { "formula": "=(5+3)*2", "expected": 16, "description": "Parentheses" },
     { "formula": "=-5+3", "expected": -2, "description": "Unary minus" },
     { "formula": "=+5", "expected": 5, "description": "Unary plus" },
-    { "formula": "=10/3", "expected": 3.333333333333333, "description": "Division with decimals" },
-    { "formula": "=0.1+0.2", "expected": 0.3, "description": "Floating point addition" },
-    { "formula": "=1E3+1", "expected": 1001, "description": "Scientific notation" },
+    {
+      "formula": "=10/3",
+      "expected": 3.333333333333333,
+      "description": "Division with decimals"
+    },
+    {
+      "formula": "=0.1+0.2",
+      "expected": 0.3,
+      "description": "Floating point addition"
+    },
+    {
+      "formula": "=1E3+1",
+      "expected": 1001,
+      "description": "Scientific notation"
+    },
     { "formula": "=50%", "expected": 0.5, "description": "Percentage" },
-    { "formula": "=100*50%", "expected": 50, "description": "Percentage in calculation" }
+    {
+      "formula": "=100*50%",
+      "expected": 50,
+      "description": "Percentage in calculation"
+    }
   ],
   "comparison": [
     { "formula": "=1=1", "expected": true },
@@ -32,7 +52,11 @@
     { "formula": "=1<>2", "expected": true },
     { "formula": "=1<>1", "expected": false },
     { "formula": "=\"abc\"=\"abc\"", "expected": true },
-    { "formula": "=\"abc\"<>\"ABC\"", "expected": true, "description": "Case sensitive comparison" }
+    {
+      "formula": "=\"abc\"<>\"ABC\"",
+      "expected": true,
+      "description": "Case sensitive comparison"
+    }
   ],
   "text": [
     { "formula": "=\"Hello\"&\" \"&\"World\"", "expected": "Hello World" },
@@ -50,7 +74,11 @@
     { "formula": "=SUBSTITUTE(\"Hello\",\"l\",\"L\")", "expected": "HeLLo" },
     { "formula": "=REPLACE(\"Hello\",2,3,\"XYZ\")", "expected": "HXYZo" },
     { "formula": "=FIND(\"l\",\"Hello\")", "expected": 3 },
-    { "formula": "=SEARCH(\"L\",\"Hello\")", "expected": 3, "description": "Case insensitive search" },
+    {
+      "formula": "=SEARCH(\"L\",\"Hello\")",
+      "expected": 3,
+      "description": "Case insensitive search"
+    },
     { "formula": "=TEXT(1234.5,\"#,##0.00\")", "expected": "1,234.50" },
     { "formula": "=VALUE(\"123\")", "expected": 123 },
     { "formula": "=T(123)", "expected": "" },
@@ -86,7 +114,12 @@
     { "formula": "=PRODUCT(2,3,4)", "expected": 24 },
     { "formula": "=QUOTIENT(10,3)", "expected": 3 },
     { "formula": "=RAND()", "expectedType": "number", "min": 0, "max": 1 },
-    { "formula": "=RANDBETWEEN(1,10)", "expectedType": "number", "min": 1, "max": 10 }
+    {
+      "formula": "=RANDBETWEEN(1,10)",
+      "expectedType": "number",
+      "min": 1,
+      "max": 10
+    }
   ],
   "logical": [
     { "formula": "=IF(TRUE,\"yes\",\"no\")", "expected": "yes" },
@@ -106,7 +139,10 @@
     { "formula": "=IFERROR(10/2,\"Error\")", "expected": 5 },
     { "formula": "=IFNA(#N/A,\"Not Found\")", "expected": "Not Found" },
     { "formula": "=IFS(1>2,\"A\",2>1,\"B\",TRUE,\"C\")", "expected": "B" },
-    { "formula": "=SWITCH(2,1,\"One\",2,\"Two\",3,\"Three\")", "expected": "Two" }
+    {
+      "formula": "=SWITCH(2,1,\"One\",2,\"Two\",3,\"Three\")",
+      "expected": "Two"
+    }
   ],
   "lookup": [
     { "formula": "=CHOOSE(2,\"a\",\"b\",\"c\")", "expected": "b" },
@@ -132,30 +168,66 @@
     { "formula": "=QUARTILE({1,2,3,4,5},2)", "expected": 3 }
   ],
   "date": [
-    { "formula": "=DATE(2024,1,15)", "expectedDescription": "Date serial number for Jan 15, 2024" },
+    {
+      "formula": "=DATE(2024,1,15)",
+      "expectedDescription": "Date serial number for Jan 15, 2024"
+    },
     { "formula": "=YEAR(DATE(2024,1,15))", "expected": 2024 },
     { "formula": "=MONTH(DATE(2024,1,15))", "expected": 1 },
     { "formula": "=DAY(DATE(2024,1,15))", "expected": 15 },
     { "formula": "=TODAY()", "expectedDescription": "Current date" },
     { "formula": "=NOW()", "expectedDescription": "Current date and time" },
-    { "formula": "=WEEKDAY(DATE(2024,1,15))", "expectedDescription": "Day of week" },
-    { "formula": "=WEEKNUM(DATE(2024,1,15))", "expectedDescription": "Week number" },
-    { "formula": "=EOMONTH(DATE(2024,1,15),0)", "expectedDescription": "End of month" },
-    { "formula": "=EDATE(DATE(2024,1,15),1)", "expectedDescription": "Date plus 1 month" },
+    {
+      "formula": "=WEEKDAY(DATE(2024,1,15))",
+      "expectedDescription": "Day of week"
+    },
+    {
+      "formula": "=WEEKNUM(DATE(2024,1,15))",
+      "expectedDescription": "Week number"
+    },
+    {
+      "formula": "=EOMONTH(DATE(2024,1,15),0)",
+      "expectedDescription": "End of month"
+    },
+    {
+      "formula": "=EDATE(DATE(2024,1,15),1)",
+      "expectedDescription": "Date plus 1 month"
+    },
     { "formula": "=DAYS(DATE(2024,2,1),DATE(2024,1,1))", "expected": 31 },
-    { "formula": "=DATEDIF(DATE(2024,1,1),DATE(2024,12,31),\"D\")", "expected": 365 }
+    {
+      "formula": "=DATEDIF(DATE(2024,1,1),DATE(2024,12,31),\"D\")",
+      "expected": 365
+    }
   ],
   "financial": [
-    { "formula": "=PMT(0.05/12,360,100000)", "expectedDescription": "Monthly payment" },
+    {
+      "formula": "=PMT(0.05/12,360,100000)",
+      "expectedDescription": "Monthly payment"
+    },
     { "formula": "=PV(0.05,10,1000)", "expectedDescription": "Present value" },
     { "formula": "=FV(0.05,10,1000)", "expectedDescription": "Future value" },
-    { "formula": "=NPV(0.1,1000,2000,3000)", "expectedDescription": "Net present value" },
-    { "formula": "=IRR({-1000,300,400,500})", "expectedDescription": "Internal rate of return" },
-    { "formula": "=RATE(10,-1000,8000)", "expectedDescription": "Interest rate" },
-    { "formula": "=NPER(0.05,-1000,10000)", "expectedDescription": "Number of periods" },
+    {
+      "formula": "=NPV(0.1,1000,2000,3000)",
+      "expectedDescription": "Net present value"
+    },
+    {
+      "formula": "=IRR({-1000,300,400,500})",
+      "expectedDescription": "Internal rate of return"
+    },
+    {
+      "formula": "=RATE(10,-1000,8000)",
+      "expectedDescription": "Interest rate"
+    },
+    {
+      "formula": "=NPER(0.05,-1000,10000)",
+      "expectedDescription": "Number of periods"
+    },
     { "formula": "=SLN(10000,1000,10)", "expected": 900 },
     { "formula": "=SYD(10000,1000,10,1)", "expected": 1636.3636363636363 },
-    { "formula": "=DB(10000,1000,10,1)", "expectedDescription": "Declining balance depreciation" }
+    {
+      "formula": "=DB(10000,1000,10,1)",
+      "expectedDescription": "Declining balance depreciation"
+    }
   ],
   "errors": [
     { "formula": "=1/0", "expected": "#DIV/0!" },
@@ -173,15 +245,37 @@
     { "formula": "=SUM(IF(TRUE,{1,2,3},{4,5,6}))", "expected": 6 },
     { "formula": "=MAX(MIN(5,10),MIN(3,8))", "expected": 5 },
     { "formula": "=IF(ISNUMBER(\"abc\"),1,0)", "expected": 0 },
-    { "formula": "=CONCATENATE(LEFT(\"Hello\",2),RIGHT(\"World\",3))", "expected": "Herld" }
+    {
+      "formula": "=CONCATENATE(LEFT(\"Hello\",2),RIGHT(\"World\",3))",
+      "expected": "Herld"
+    }
   ],
   "arrays": [
-    { "formula": "={1,2,3}", "expected": [[1,2,3]], "description": "Horizontal array" },
-    { "formula": "={1;2;3}", "expected": [[1],[2],[3]], "description": "Vertical array" },
-    { "formula": "={1,2;3,4}", "expected": [[1,2],[3,4]], "description": "2D array" },
+    {
+      "formula": "={1,2,3}",
+      "expected": [[1, 2, 3]],
+      "description": "Horizontal array"
+    },
+    {
+      "formula": "={1;2;3}",
+      "expected": [[1], [2], [3]],
+      "description": "Vertical array"
+    },
+    {
+      "formula": "={1,2;3,4}",
+      "expected": [
+        [1, 2],
+        [3, 4]
+      ],
+      "description": "2D array"
+    },
     { "formula": "=SUM({1,2,3})", "expected": 6 },
     { "formula": "=AVERAGE({1,2,3,4,5})", "expected": 3 },
-    { "formula": "=SUM({1,2,3}*{1,2,3})", "expected": 14, "description": "Array multiplication" }
+    {
+      "formula": "=SUM({1,2,3}*{1,2,3})",
+      "expected": 14,
+      "description": "Array multiplication"
+    }
   ],
   "typeChecking": [
     { "formula": "=ISNUMBER(1)", "expected": true },

@@ -19,6 +19,9 @@ import {
 } from "@afenda/design-system/ui-primitives"
 import { authOrganizationClient, useAfendaSession } from "@/app/_platform/auth"
 import { useAuthPostLoginDestination } from "@/app/_platform/auth/hooks/use-auth-post-login-destination"
+import { mapAuthErrorToUserMessage } from "@/app/_platform/auth/mappers/map-auth-error-to-user-message"
+import { resolveAuthErrorCode } from "@/app/_platform/auth/services/auth-error-service"
+import { activateAuthTenantContext } from "@/app/_platform/auth/services/auth-tenant-context-service"
 import { SetupShell } from "./setup-shell"
 
 function createWorkspaceSlug(name: string): string {
@@ -49,6 +52,7 @@ export function WorkspaceSetupPage() {
   const hasOrganizations = organizations.length > 0
 
   async function finalizeSetupNavigation() {
+    await activateAuthTenantContext()
     await sessionQuery.refetch()
     void navigate(destinationPath, { replace: true })
   }
@@ -70,7 +74,16 @@ export function WorkspaceSetupPage() {
       return
     }
 
-    await finalizeSetupNavigation()
+    try {
+      await finalizeSetupNavigation()
+    } catch (error) {
+      setSubmitError(
+        mapAuthErrorToUserMessage(
+          resolveAuthErrorCode(error),
+          "Workspace was selected, but tenant activation is not complete yet."
+        )
+      )
+    }
   }
 
   async function handleCreateWorkspace(e: SyntheticEvent<HTMLFormElement>) {
@@ -110,7 +123,16 @@ export function WorkspaceSetupPage() {
       return
     }
 
-    await finalizeSetupNavigation()
+    try {
+      await finalizeSetupNavigation()
+    } catch (error) {
+      setSubmitError(
+        mapAuthErrorToUserMessage(
+          resolveAuthErrorCode(error),
+          "Workspace was created, but tenant activation is not complete yet."
+        )
+      )
+    }
   }
 
   const accountSummary = [

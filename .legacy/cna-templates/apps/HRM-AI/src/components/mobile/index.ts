@@ -1,8 +1,8 @@
 // src/components/mobile/index.ts
 // Mobile Components Exports
 
-export { BottomNavigation } from './bottom-navigation'
-export { MobileHeader } from './mobile-header'
+export { BottomNavigation } from "./bottom-navigation"
+export { MobileHeader } from "./mobile-header"
 export {
   TouchButton,
   TouchCard,
@@ -10,4 +10,4 @@ export {
   TouchFab,
   TouchSwipeActions,
   TouchPullToRefresh,
-} from './touch-components'
+} from "./touch-components"

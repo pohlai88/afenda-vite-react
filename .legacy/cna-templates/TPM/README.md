@@ -27,13 +27,13 @@
 
 ### Vấn Đề Giải Quyết
 
-| Thách Thức | Giải Pháp Promo Master |
-|------------|------------------------|
-| Quản lý khuyến mãi phân tán trên Excel | Hệ thống tập trung, real-time |
-| Theo dõi ngân sách thủ công | Tự động cập nhật, cảnh báo vượt mức |
-| Quy trình phê duyệt chậm | Workflow tự động, thông báo tức thì |
-| Báo cáo thiếu chính xác | Dashboard real-time, tích hợp Power BI |
-| Khó đo lường ROI khuyến mãi | Phân tích chi tiết, so sánh hiệu quả |
+| Thách Thức                             | Giải Pháp Promo Master                 |
+| -------------------------------------- | -------------------------------------- |
+| Quản lý khuyến mãi phân tán trên Excel | Hệ thống tập trung, real-time          |
+| Theo dõi ngân sách thủ công            | Tự động cập nhật, cảnh báo vượt mức    |
+| Quy trình phê duyệt chậm               | Workflow tự động, thông báo tức thì    |
+| Báo cáo thiếu chính xác                | Dashboard real-time, tích hợp Power BI |
+| Khó đo lường ROI khuyến mãi            | Phân tích chi tiết, so sánh hiệu quả   |
 
 ### Đối Tượng Sử Dụng
 
@@ -120,18 +120,18 @@
 
 ### Công Nghệ Sử Dụng
 
-| Tầng | Công Nghệ | Mô Tả |
-|------|-----------|-------|
-| **Frontend** | React 18, TypeScript, Vite | SPA hiện đại, build nhanh |
-| **UI Framework** | Tailwind CSS v4, Lucide Icons, CVA | Design system nhất quán |
-| **State Management** | Zustand, TanStack React Query | Quản lý state hiệu quả |
-| **Backend Option 1** | Vercel Functions (Serverless) | `apps/api` - Lightweight, serverless |
-| **Backend Option 2** | NestJS (Full Framework) | `apps/api-nestjs` - Full-featured, Swagger |
-| **ORM** | Prisma | Type-safe database access |
-| **Database** | PostgreSQL | Local hoặc cloud (Neon, Render) |
-| **Authentication** | JWT, bcrypt | Bảo mật cao |
-| **Deployment** | Render, Vercel | Auto-deploy từ GitHub |
-| **Testing** | Playwright, Vitest | E2E và Unit tests |
+| Tầng                 | Công Nghệ                          | Mô Tả                                      |
+| -------------------- | ---------------------------------- | ------------------------------------------ |
+| **Frontend**         | React 18, TypeScript, Vite         | SPA hiện đại, build nhanh                  |
+| **UI Framework**     | Tailwind CSS v4, Lucide Icons, CVA | Design system nhất quán                    |
+| **State Management** | Zustand, TanStack React Query      | Quản lý state hiệu quả                     |
+| **Backend Option 1** | Vercel Functions (Serverless)      | `apps/api` - Lightweight, serverless       |
+| **Backend Option 2** | NestJS (Full Framework)            | `apps/api-nestjs` - Full-featured, Swagger |
+| **ORM**              | Prisma                             | Type-safe database access                  |
+| **Database**         | PostgreSQL                         | Local hoặc cloud (Neon, Render)            |
+| **Authentication**   | JWT, bcrypt                        | Bảo mật cao                                |
+| **Deployment**       | Render, Vercel                     | Auto-deploy từ GitHub                      |
+| **Testing**          | Playwright, Vitest                 | E2E và Unit tests                          |
 
 ---
 
@@ -176,10 +176,10 @@ npm run dev
 
 Dự án hỗ trợ **2 backend** (chọn 1 tùy nhu cầu):
 
-| Backend | Thư mục | Port | Khi nào dùng |
-|---------|---------|------|-------------|
-| **NestJS** (Khuyến nghị) | `apps/api-nestjs` | 3000 | Full-featured, Swagger docs, Docker-ready |
-| **Vercel Functions** | `apps/api` | 3000 | Serverless, lightweight, deploy lên Vercel |
+| Backend                  | Thư mục           | Port | Khi nào dùng                               |
+| ------------------------ | ----------------- | ---- | ------------------------------------------ |
+| **NestJS** (Khuyến nghị) | `apps/api-nestjs` | 3000 | Full-featured, Swagger docs, Docker-ready  |
+| **Vercel Functions**     | `apps/api`        | 3000 | Serverless, lightweight, deploy lên Vercel |
 
 ```bash
 # Option 1: NestJS (khuyến nghị cho local dev)
@@ -195,20 +195,20 @@ npm run dev
 
 ### Truy Cập Ứng Dụng
 
-| Dịch Vụ | URL | Mô Tả |
-|---------|-----|-------|
-| Web App | http://localhost:5173 | Giao diện người dùng |
-| API (NestJS) | http://localhost:3000 | Backend API |
-| Swagger Docs | http://localhost:3000/api/docs | API documentation |
-| Prisma Studio | http://localhost:5555 | Công cụ quản lý database |
+| Dịch Vụ       | URL                            | Mô Tả                    |
+| ------------- | ------------------------------ | ------------------------ |
+| Web App       | http://localhost:5173          | Giao diện người dùng     |
+| API (NestJS)  | http://localhost:3000          | Backend API              |
+| Swagger Docs  | http://localhost:3000/api/docs | API documentation        |
+| Prisma Studio | http://localhost:5555          | Công cụ quản lý database |
 
 ### Tài Khoản Mặc Định
 
-| Email | Mật Khẩu | Vai Trò | Quyền Hạn |
-|-------|----------|---------|-----------|
-| admin@your-domain.com | admin123 | ADMIN | Toàn quyền |
+| Email                   | Mật Khẩu   | Vai Trò | Quyền Hạn          |
+| ----------------------- | ---------- | ------- | ------------------ |
+| admin@your-domain.com   | admin123   | ADMIN   | Toàn quyền         |
 | manager@your-domain.com | manager123 | MANAGER | Phê duyệt, báo cáo |
-| user@your-domain.com | user123 | USER | Tạo, xem |
+| user@your-domain.com    | user123    | USER    | Tạo, xem           |
 
 ---
 
@@ -312,36 +312,36 @@ Authorization: Bearer eyJhbG...
 
 #### Promotions (Khuyến Mãi)
 
-| Phương Thức | Endpoint | Mô Tả |
-|-------------|----------|-------|
-| GET | `/api/promotions` | Danh sách khuyến mãi |
-| GET | `/api/promotions/:id` | Chi tiết khuyến mãi |
-| POST | `/api/promotions` | Tạo khuyến mãi mới |
-| PUT | `/api/promotions/:id` | Cập nhật khuyến mãi |
-| DELETE | `/api/promotions/:id` | Xóa khuyến mãi |
-| POST | `/api/promotions/:id/submit` | Gửi yêu cầu phê duyệt |
-| POST | `/api/promotions/:id/approve` | Phê duyệt |
-| POST | `/api/promotions/:id/reject` | Từ chối |
+| Phương Thức | Endpoint                      | Mô Tả                 |
+| ----------- | ----------------------------- | --------------------- |
+| GET         | `/api/promotions`             | Danh sách khuyến mãi  |
+| GET         | `/api/promotions/:id`         | Chi tiết khuyến mãi   |
+| POST        | `/api/promotions`             | Tạo khuyến mãi mới    |
+| PUT         | `/api/promotions/:id`         | Cập nhật khuyến mãi   |
+| DELETE      | `/api/promotions/:id`         | Xóa khuyến mãi        |
+| POST        | `/api/promotions/:id/submit`  | Gửi yêu cầu phê duyệt |
+| POST        | `/api/promotions/:id/approve` | Phê duyệt             |
+| POST        | `/api/promotions/:id/reject`  | Từ chối               |
 
 #### Claims (Yêu Cầu Thanh Toán)
 
-| Phương Thức | Endpoint | Mô Tả |
-|-------------|----------|-------|
-| GET | `/api/claims` | Danh sách claims |
-| GET | `/api/claims/:id` | Chi tiết claim |
-| POST | `/api/claims` | Tạo claim mới |
-| POST | `/api/claims/:id/approve` | Phê duyệt claim |
-| POST | `/api/claims/:id/reject` | Từ chối claim |
-| POST | `/api/claims/:id/pay` | Đánh dấu đã thanh toán |
+| Phương Thức | Endpoint                  | Mô Tả                  |
+| ----------- | ------------------------- | ---------------------- |
+| GET         | `/api/claims`             | Danh sách claims       |
+| GET         | `/api/claims/:id`         | Chi tiết claim         |
+| POST        | `/api/claims`             | Tạo claim mới          |
+| POST        | `/api/claims/:id/approve` | Phê duyệt claim        |
+| POST        | `/api/claims/:id/reject`  | Từ chối claim          |
+| POST        | `/api/claims/:id/pay`     | Đánh dấu đã thanh toán |
 
 #### Dashboard
 
-| Phương Thức | Endpoint | Mô Tả |
-|-------------|----------|-------|
-| GET | `/api/dashboard/stats` | Thống kê KPI tổng quan |
-| GET | `/api/dashboard/charts/spend-trend` | Xu hướng chi tiêu |
-| GET | `/api/dashboard/charts/status-distribution` | Phân bố trạng thái |
-| GET | `/api/dashboard/charts/top-customers` | Top khách hàng |
+| Phương Thức | Endpoint                                    | Mô Tả                  |
+| ----------- | ------------------------------------------- | ---------------------- |
+| GET         | `/api/dashboard/stats`                      | Thống kê KPI tổng quan |
+| GET         | `/api/dashboard/charts/spend-trend`         | Xu hướng chi tiêu      |
+| GET         | `/api/dashboard/charts/status-distribution` | Phân bố trạng thái     |
+| GET         | `/api/dashboard/charts/top-customers`       | Top khách hàng         |
 
 ---
 
@@ -384,6 +384,7 @@ Promo Master được thiết kế với **kiến trúc API-first**, cho phép t
 #### 1️⃣ REST API (Khuyến Nghị)
 
 **Ưu điểm:**
+
 - 🔒 Bảo mật cao với JWT authentication
 - 📦 Dữ liệu đã được xử lý, sẵn sàng báo cáo
 - 🚫 Không cần expose database trực tiếp
@@ -406,21 +407,22 @@ Promo Master được thiết kế với **kiến trúc API-first**, cho phép t
 
 **Danh sách Endpoints cho Power BI:**
 
-| Endpoint | Mô Tả | Tần Suất Refresh Khuyến Nghị |
-|----------|-------|------------------------------|
-| `/api/dashboard/stats` | KPIs tổng quan | 15 phút |
-| `/api/dashboard/charts/spend-trend` | Xu hướng chi tiêu theo thời gian | 1 giờ |
-| `/api/dashboard/charts/status-distribution` | Phân bố trạng thái khuyến mãi | 1 giờ |
-| `/api/dashboard/charts/top-customers` | Top 10 khách hàng | 1 giờ |
-| `/api/promotions?limit=1000` | Danh sách đầy đủ khuyến mãi | 1 giờ |
-| `/api/claims?limit=1000` | Danh sách đầy đủ claims | 1 giờ |
-| `/api/funds` | Danh sách quỹ ngân sách | 1 giờ |
-| `/api/customers` | Danh sách khách hàng | 1 ngày |
-| `/api/products` | Danh sách sản phẩm | 1 ngày |
+| Endpoint                                    | Mô Tả                            | Tần Suất Refresh Khuyến Nghị |
+| ------------------------------------------- | -------------------------------- | ---------------------------- |
+| `/api/dashboard/stats`                      | KPIs tổng quan                   | 15 phút                      |
+| `/api/dashboard/charts/spend-trend`         | Xu hướng chi tiêu theo thời gian | 1 giờ                        |
+| `/api/dashboard/charts/status-distribution` | Phân bố trạng thái khuyến mãi    | 1 giờ                        |
+| `/api/dashboard/charts/top-customers`       | Top 10 khách hàng                | 1 giờ                        |
+| `/api/promotions?limit=1000`                | Danh sách đầy đủ khuyến mãi      | 1 giờ                        |
+| `/api/claims?limit=1000`                    | Danh sách đầy đủ claims          | 1 giờ                        |
+| `/api/funds`                                | Danh sách quỹ ngân sách          | 1 giờ                        |
+| `/api/customers`                            | Danh sách khách hàng             | 1 ngày                       |
+| `/api/products`                             | Danh sách sản phẩm               | 1 ngày                       |
 
 #### 2️⃣ Kết Nối Database Trực Tiếp
 
 **Ưu điểm:**
+
 - 🔍 Truy vấn SQL linh hoạt
 - ⚡ Real-time data
 - 📊 Truy cập toàn bộ tables
@@ -445,18 +447,19 @@ Host=ep-xxx.neon.tech;Database=promo_master;Username=your_user;Password=your_pas
 
 **Danh sách Tables:**
 
-| Table | Mô Tả | Số Lượng Records |
-|-------|-------|------------------|
+| Table       | Mô Tả                   | Số Lượng Records  |
+| ----------- | ----------------------- | ----------------- |
 | `Promotion` | Chương trình khuyến mãi | Động (100-10,000) |
-| `Claim` | Yêu cầu thanh toán | Động (500-50,000) |
-| `Fund` | Quỹ ngân sách | 10-50 |
-| `Customer` | Khách hàng | 100-1,000 |
-| `Product` | Sản phẩm | 100-10,000 |
-| `User` | Người dùng hệ thống | 10-100 |
+| `Claim`     | Yêu cầu thanh toán      | Động (500-50,000) |
+| `Fund`      | Quỹ ngân sách           | 10-50             |
+| `Customer`  | Khách hàng              | 100-1,000         |
+| `Product`   | Sản phẩm                | 100-10,000        |
+| `User`      | Người dùng hệ thống     | 10-100            |
 
 #### 3️⃣ Export File (Thủ Công)
 
 **Ưu điểm:**
+
 - ✅ Đơn giản, không cần cấu hình
 - ✅ Phù hợp báo cáo ad-hoc
 
@@ -733,13 +736,13 @@ in
 
 ### Lịch Refresh Data Khuyến Nghị
 
-| Loại Báo Cáo | Tần Suất | Thời Điểm | Ghi Chú |
-|--------------|----------|-----------|---------|
-| Executive Dashboard | 15 phút | Liên tục | DirectQuery |
-| Operational Reports | 1 giờ | Mỗi giờ chẵn | Import |
-| Daily Summary | 1 ngày | 6:00 AM | Import |
-| Weekly Analysis | 1 tuần | Thứ 2, 7:00 AM | Import |
-| Monthly Report | 1 tháng | Ngày 1, 8:00 AM | Import |
+| Loại Báo Cáo        | Tần Suất | Thời Điểm       | Ghi Chú     |
+| ------------------- | -------- | --------------- | ----------- |
+| Executive Dashboard | 15 phút  | Liên tục        | DirectQuery |
+| Operational Reports | 1 giờ    | Mỗi giờ chẵn    | Import      |
+| Daily Summary       | 1 ngày   | 6:00 AM         | Import      |
+| Weekly Analysis     | 1 tuần   | Thứ 2, 7:00 AM  | Import      |
+| Monthly Report      | 1 tháng  | Ngày 1, 8:00 AM | Import      |
 
 ---
 
@@ -789,6 +792,7 @@ Dự án có sẵn `render.yaml` để deploy lên Render:
 4. Deploy!
 
 **Services được tạo:**
+
 - `vierp-tpm-db` - PostgreSQL database
 - `vierp-tpm-api` - NestJS backend (port 3000)
 - `vierp-tpm-web` - Vite frontend
@@ -831,11 +835,11 @@ npm run test:report
 
 ### Kết Quả Test
 
-| Test Suite | Số Tests | Tỷ Lệ Pass |
-|------------|----------|------------|
-| API Integration | 25 | 100% ✅ |
-| E2E Playwright | 78 | 100% ✅ |
-| Unit Tests | 150+ | 98%+ ✅ |
+| Test Suite      | Số Tests | Tỷ Lệ Pass |
+| --------------- | -------- | ---------- |
+| API Integration | 25       | 100% ✅    |
+| E2E Playwright  | 78       | 100% ✅    |
+| Unit Tests      | 150+     | 98%+ ✅    |
 
 ---
 

@@ -10,7 +10,9 @@
  */
 
 function diffDays(a: Date, b: Date): number {
-  return Math.abs(Math.floor((a.getTime() - b.getTime()) / (1000 * 60 * 60 * 24)))
+  return Math.abs(
+    Math.floor((a.getTime() - b.getTime()) / (1000 * 60 * 60 * 24))
+  )
 }
 
 export interface HealthScoreInput {
@@ -52,20 +54,20 @@ export function calculateHealthScore(deal: HealthScoreInput): number {
   else if (deal.documentCount >= 1) score += 5
 
   // 5. Compliance (max ±5)
-  if (deal.complianceStatus === 'CLEAR') score += 5
-  else if (deal.complianceStatus === 'FLAGGED') score -= 5
+  if (deal.complianceStatus === "CLEAR") score += 5
+  else if (deal.complianceStatus === "FLAGGED") score -= 5
 
   return Math.max(0, Math.min(100, score))
 }
 
-export function getHealthColor(score: number): 'green' | 'yellow' | 'red' {
-  if (score >= 70) return 'green'
-  if (score >= 40) return 'yellow'
-  return 'red'
+export function getHealthColor(score: number): "green" | "yellow" | "red" {
+  if (score >= 70) return "green"
+  if (score >= 40) return "yellow"
+  return "red"
 }
 
 export const HEALTH_COLORS = {
-  green: '#10B981',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: "#10B981",
+  yellow: "#F59E0B",
+  red: "#EF4444",
 } as const

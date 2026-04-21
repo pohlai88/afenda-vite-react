@@ -1,12 +1,16 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { Loader2, Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { LeaveBalanceCard, LeaveRequestForm, LeaveRequestList } from '@/components/leave'
-import { useToast } from '@/hooks/use-toast'
-import type { LeaveType, RequestStatus } from '@prisma/client'
+import { useEffect, useState } from "react"
+import { Loader2, Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  LeaveBalanceCard,
+  LeaveRequestForm,
+  LeaveRequestList,
+} from "@/components/leave"
+import { useToast } from "@/hooks/use-toast"
+import type { LeaveType, RequestStatus } from "@prisma/client"
 
 interface LeavePolicy {
   id: string
@@ -53,9 +57,9 @@ export default function LeavePage() {
   const fetchData = async () => {
     try {
       const [policiesRes, balancesRes, requestsRes] = await Promise.all([
-        fetch('/api/leave/policies'),
-        fetch('/api/leave/balances/my'),
-        fetch('/api/leave/requests/my'),
+        fetch("/api/leave/policies"),
+        fetch("/api/leave/balances/my"),
+        fetch("/api/leave/requests/my"),
       ])
 
       if (policiesRes.ok) {
@@ -74,9 +78,9 @@ export default function LeavePage() {
       }
     } catch {
       toast({
-        title: 'Lỗi',
-        description: 'Không thể tải dữ liệu',
-        variant: 'destructive',
+        title: "Lỗi",
+        description: "Không thể tải dữ liệu",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -98,9 +102,9 @@ export default function LeavePage() {
     submitNow?: boolean
   }) => {
     try {
-      const response = await fetch('/api/leave/requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/leave/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           policyId: data.policyId,
           startDate: data.startDate.toISOString(),
@@ -113,30 +117,31 @@ export default function LeavePage() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to create request')
+        throw new Error(error.error || "Failed to create request")
       }
 
       const newRequest = await response.json()
 
       if (data.submitNow) {
         await fetch(`/api/leave/requests/${newRequest.id}/submit`, {
-          method: 'POST',
+          method: "POST",
         })
       }
 
       toast({
-        title: 'Thành công',
+        title: "Thành công",
         description: data.submitNow
-          ? 'Đơn xin nghỉ đã được gửi duyệt'
-          : 'Đơn xin nghỉ đã được lưu nháp',
+          ? "Đơn xin nghỉ đã được gửi duyệt"
+          : "Đơn xin nghỉ đã được lưu nháp",
       })
 
       fetchData()
     } catch (error) {
       toast({
-        title: 'Lỗi',
-        description: error instanceof Error ? error.message : 'Không thể tạo đơn',
-        variant: 'destructive',
+        title: "Lỗi",
+        description:
+          error instanceof Error ? error.message : "Không thể tạo đơn",
+        variant: "destructive",
       })
       throw error
     }
@@ -145,25 +150,26 @@ export default function LeavePage() {
   const handleSubmit = async (id: string) => {
     try {
       const response = await fetch(`/api/leave/requests/${id}/submit`, {
-        method: 'POST',
+        method: "POST",
       })
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to submit request')
+        throw new Error(error.error || "Failed to submit request")
       }
 
       toast({
-        title: 'Thành công',
-        description: 'Đơn xin nghỉ đã được gửi duyệt',
+        title: "Thành công",
+        description: "Đơn xin nghỉ đã được gửi duyệt",
       })
 
       fetchData()
     } catch (error) {
       toast({
-        title: 'Lỗi',
-        description: error instanceof Error ? error.message : 'Không thể gửi đơn',
-        variant: 'destructive',
+        title: "Lỗi",
+        description:
+          error instanceof Error ? error.message : "Không thể gửi đơn",
+        variant: "destructive",
       })
     }
   }
@@ -171,25 +177,26 @@ export default function LeavePage() {
   const handleCancel = async (id: string) => {
     try {
       const response = await fetch(`/api/leave/requests/${id}/cancel`, {
-        method: 'POST',
+        method: "POST",
       })
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to cancel request')
+        throw new Error(error.error || "Failed to cancel request")
       }
 
       toast({
-        title: 'Thành công',
-        description: 'Đơn xin nghỉ đã được hủy',
+        title: "Thành công",
+        description: "Đơn xin nghỉ đã được hủy",
       })
 
       fetchData()
     } catch (error) {
       toast({
-        title: 'Lỗi',
-        description: error instanceof Error ? error.message : 'Không thể hủy đơn',
-        variant: 'destructive',
+        title: "Lỗi",
+        description:
+          error instanceof Error ? error.message : "Không thể hủy đơn",
+        variant: "destructive",
       })
     }
   }

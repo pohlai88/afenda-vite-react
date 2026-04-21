@@ -1,47 +1,47 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert } from '@/components/ui/alert';
-import { BarChart } from '@/components/analytics/charts/BarChart';
-import { AlertTriangle, Clock, UserCheck, Timer } from 'lucide-react';
+import { useEffect, useState } from "react"
+import { Card } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Alert } from "@/components/ui/alert"
+import { BarChart } from "@/components/analytics/charts/BarChart"
+import { AlertTriangle, Clock, UserCheck, Timer } from "lucide-react"
 
 interface AttendanceData {
-  rate: number;
-  totalWorkDays: number;
-  totalActualDays: number;
-  lateCount: number;
-  lateRate: number;
-  byDepartment: Record<string, { rate: number; lateRate: number }>;
-  heatmap: { day: number; hour: number; value: number }[];
-  dailyPattern: { day: string; rate: number }[];
+  rate: number
+  totalWorkDays: number
+  totalActualDays: number
+  lateCount: number
+  lateRate: number
+  byDepartment: Record<string, { rate: number; lateRate: number }>
+  heatmap: { day: number; hour: number; value: number }[]
+  dailyPattern: { day: string; rate: number }[]
 }
 
-const DAY_NAMES = ['', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6'];
+const DAY_NAMES = ["", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6"]
 
 export default function AttendancePage() {
-  const [data, setData] = useState<AttendanceData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<AttendanceData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        setLoading(true);
-        const response = await fetch('/api/analytics/metrics/attendance');
-        if (!response.ok) throw new Error('Không thể tải dữ liệu');
-        const result = await response.json();
-        setData(result.data ?? result);
+        setLoading(true)
+        const response = await fetch("/api/analytics/metrics/attendance")
+        if (!response.ok) throw new Error("Không thể tải dữ liệu")
+        const result = await response.json()
+        setData(result.data ?? result)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi');
+        setError(err instanceof Error ? err.message : "Đã xảy ra lỗi")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   if (loading) {
     return (
@@ -65,7 +65,7 @@ export default function AttendancePage() {
           <Skeleton className="h-[200px] w-full" />
         </Card>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -76,27 +76,29 @@ export default function AttendancePage() {
           <span>{error}</span>
         </Alert>
       </div>
-    );
+    )
   }
 
-  if (!data) return null;
+  if (!data) return null
 
   const getHeatmapColor = (value: number) => {
-    if (value >= 90) return 'bg-green-500';
-    if (value >= 75) return 'bg-green-300';
-    if (value >= 60) return 'bg-yellow-300';
-    if (value >= 40) return 'bg-orange-300';
-    return 'bg-red-300';
-  };
+    if (value >= 90) return "bg-green-500"
+    if (value >= 75) return "bg-green-300"
+    if (value >= 60) return "bg-yellow-300"
+    if (value >= 40) return "bg-orange-300"
+    return "bg-red-300"
+  }
 
   // Transform flat heatmap array into matrix for rendering
-  const heatmapData = data.heatmap ?? [];
-  const heatmapDays = [...new Set(heatmapData.map((h) => h.day))].sort();
-  const heatmapHours = [...new Set(heatmapData.map((h) => h.hour))].sort((a, b) => a - b);
-  const heatmapMatrix: Record<string, Record<string, number>> = {};
+  const heatmapData = data.heatmap ?? []
+  const heatmapDays = [...new Set(heatmapData.map((h) => h.day))].sort()
+  const heatmapHours = [...new Set(heatmapData.map((h) => h.hour))].sort(
+    (a, b) => a - b
+  )
+  const heatmapMatrix: Record<string, Record<string, number>> = {}
   for (const item of heatmapData) {
-    if (!heatmapMatrix[item.day]) heatmapMatrix[item.day] = {};
-    heatmapMatrix[item.day][item.hour] = item.value;
+    if (!heatmapMatrix[item.day]) heatmapMatrix[item.day] = {}
+    heatmapMatrix[item.day][item.hour] = item.value
   }
 
   // Transform dailyPattern for BarChart
@@ -104,11 +106,11 @@ export default function AttendancePage() {
     labels: (data.dailyPattern ?? []).map((p) => p.day),
     datasets: [
       {
-        label: 'Tỷ lệ chấm công (%)',
+        label: "Tỷ lệ chấm công (%)",
         data: (data.dailyPattern ?? []).map((p) => p.rate),
       },
     ],
-  };
+  }
 
   // Transform byDepartment into array for table
   const departmentList = Object.entries(data.byDepartment ?? {}).map(
@@ -117,7 +119,7 @@ export default function AttendancePage() {
       attendanceRate: stats.rate,
       lateRate: stats.lateRate,
     })
-  );
+  )
 
   return (
     <div className="space-y-6 p-6">
@@ -131,7 +133,9 @@ export default function AttendancePage() {
               <UserCheck className="h-6 w-6 text-green-600" />
             </div>
             <div>
-              <div className="text-sm text-muted-foreground">Tỷ lệ chuyên cần</div>
+              <div className="text-sm text-muted-foreground">
+                Tỷ lệ chuyên cần
+              </div>
               <div className="text-3xl font-bold">{data.rate}%</div>
             </div>
           </div>
@@ -153,7 +157,9 @@ export default function AttendancePage() {
               <Clock className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <div className="text-sm text-muted-foreground">Ngày công chuẩn</div>
+              <div className="text-sm text-muted-foreground">
+                Ngày công chuẩn
+              </div>
               <div className="text-3xl font-bold">{data.totalWorkDays}</div>
             </div>
           </div>
@@ -164,7 +170,9 @@ export default function AttendancePage() {
               <UserCheck className="h-6 w-6 text-purple-600" />
             </div>
             <div>
-              <div className="text-sm text-muted-foreground">Ngày công thực tế</div>
+              <div className="text-sm text-muted-foreground">
+                Ngày công thực tế
+              </div>
               <div className="text-3xl font-bold">{data.totalActualDays}</div>
             </div>
           </div>
@@ -184,7 +192,10 @@ export default function AttendancePage() {
               <div className="flex gap-1 mb-1">
                 <div className="w-16" />
                 {heatmapHours.map((hour) => (
-                  <div key={hour} className="flex-1 text-center text-xs text-muted-foreground">
+                  <div
+                    key={hour}
+                    className="flex-1 text-center text-xs text-muted-foreground"
+                  >
                     {hour}h
                   </div>
                 ))}
@@ -196,7 +207,7 @@ export default function AttendancePage() {
                     {DAY_NAMES[day] || `Ngày ${day}`}
                   </div>
                   {heatmapHours.map((hour) => {
-                    const value = heatmapMatrix[day]?.[hour] ?? 0;
+                    const value = heatmapMatrix[day]?.[hour] ?? 0
                     return (
                       <div
                         key={`${day}-${hour}`}
@@ -204,10 +215,10 @@ export default function AttendancePage() {
                         title={`${DAY_NAMES[day] || `Ngày ${day}`} ${hour}h: ${value}%`}
                       >
                         <span className="text-xs text-white font-medium">
-                          {value > 0 ? value : ''}
+                          {value > 0 ? value : ""}
                         </span>
                       </div>
-                    );
+                    )
                   })}
                 </div>
               ))}
@@ -230,7 +241,9 @@ export default function AttendancePage() {
 
       {/* Daily Pattern */}
       <Card className="p-4">
-        <h3 className="text-lg font-semibold mb-4">Mô hình chấm công theo ngày</h3>
+        <h3 className="text-lg font-semibold mb-4">
+          Mô hình chấm công theo ngày
+        </h3>
         {dailyPatternChart.labels.length > 0 ? (
           <BarChart data={dailyPatternChart} />
         ) : (
@@ -255,15 +268,24 @@ export default function AttendancePage() {
               </thead>
               <tbody>
                 {departmentList.map((dept) => (
-                  <tr key={dept.department} className="border-b hover:bg-muted/50">
+                  <tr
+                    key={dept.department}
+                    className="border-b hover:bg-muted/50"
+                  >
                     <td className="py-2 px-3">{dept.department}</td>
                     <td className="text-right py-2 px-3">
-                      <Badge variant={dept.attendanceRate >= 95 ? 'default' : 'secondary'}>
+                      <Badge
+                        variant={
+                          dept.attendanceRate >= 95 ? "default" : "secondary"
+                        }
+                      >
                         {dept.attendanceRate}%
                       </Badge>
                     </td>
                     <td className="text-right py-2 px-3">
-                      <Badge variant={dept.lateRate <= 5 ? 'default' : 'destructive'}>
+                      <Badge
+                        variant={dept.lateRate <= 5 ? "default" : "destructive"}
+                      >
                         {dept.lateRate}%
                       </Badge>
                     </td>
@@ -275,5 +297,5 @@ export default function AttendancePage() {
         </Card>
       )}
     </div>
-  );
+  )
 }

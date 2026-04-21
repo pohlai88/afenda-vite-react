@@ -1,17 +1,17 @@
 // Phase 4: Selection Overlay - Shows other users' selections
-import React from 'react';
-import { useSelectionOverlays } from '../../hooks/usePresence';
+import React from "react"
+import { useSelectionOverlays } from "../../hooks/usePresence"
 
 interface SelectionOverlayProps {
-  sheetId: string;
-  visibleRows: { start: number; end: number };
-  visibleCols: { start: number; end: number };
+  sheetId: string
+  visibleRows: { start: number; end: number }
+  visibleCols: { start: number; end: number }
   getSelectionBounds: (
     startRow: number,
     startCol: number,
     endRow: number,
     endCol: number
-  ) => { x: number; y: number; width: number; height: number } | null;
+  ) => { x: number; y: number; width: number; height: number } | null
 }
 
 export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({
@@ -20,18 +20,21 @@ export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({
   visibleCols,
   getSelectionBounds,
 }) => {
-  const overlays = useSelectionOverlays({ sheetId, visibleRows, visibleCols });
+  const overlays = useSelectionOverlays({ sheetId, visibleRows, visibleCols })
 
   return (
-    <div className="selection-overlays" style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+    <div
+      className="selection-overlays"
+      style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}
+    >
       {overlays.map((overlay) => {
         const bounds = getSelectionBounds(
           overlay.startRow,
           overlay.startCol,
           overlay.endRow,
           overlay.endCol
-        );
-        if (!bounds) return null;
+        )
+        if (!bounds) return null
 
         return (
           <SelectionHighlight
@@ -43,19 +46,19 @@ export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({
             width={bounds.width}
             height={bounds.height}
           />
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
 interface SelectionHighlightProps {
-  displayName: string;
-  color: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  displayName: string
+  color: string
+  x: number
+  y: number
+  width: number
+  height: number
 }
 
 const SelectionHighlight: React.FC<SelectionHighlightProps> = ({
@@ -69,18 +72,18 @@ const SelectionHighlight: React.FC<SelectionHighlightProps> = ({
   return (
     <div
       style={{
-        position: 'absolute',
+        position: "absolute",
         left: x,
         top: y,
         width,
         height,
-        pointerEvents: 'none',
+        pointerEvents: "none",
       }}
     >
       {/* Selection fill */}
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           inset: 0,
           backgroundColor: `${color}20`,
           border: `2px solid ${color}`,
@@ -91,29 +94,29 @@ const SelectionHighlight: React.FC<SelectionHighlightProps> = ({
       {/* User label at top-right corner */}
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: -18,
           right: 0,
-          padding: '2px 6px',
+          padding: "2px 6px",
           backgroundColor: color,
           borderRadius: 4,
           fontSize: 10,
           fontWeight: 500,
-          color: 'white',
-          whiteSpace: 'nowrap',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+          color: "white",
+          whiteSpace: "nowrap",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
         }}
       >
         {displayName}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Component for showing cell-level editing indicators
 interface CellEditingIndicatorProps {
-  color: string;
-  userName: string;
+  color: string
+  userName: string
 }
 
 export const CellEditingIndicator: React.FC<CellEditingIndicatorProps> = ({
@@ -123,25 +126,25 @@ export const CellEditingIndicator: React.FC<CellEditingIndicatorProps> = ({
   return (
     <div
       style={{
-        position: 'absolute',
+        position: "absolute",
         inset: 0,
         border: `2px solid ${color}`,
         borderRadius: 2,
-        pointerEvents: 'none',
-        animation: 'pulse 2s infinite',
+        pointerEvents: "none",
+        animation: "pulse 2s infinite",
       }}
     >
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: -16,
           left: 0,
-          padding: '1px 4px',
+          padding: "1px 4px",
           backgroundColor: color,
           borderRadius: 2,
           fontSize: 9,
-          color: 'white',
-          whiteSpace: 'nowrap',
+          color: "white",
+          whiteSpace: "nowrap",
         }}
       >
         {userName} editing...
@@ -155,7 +158,7 @@ export const CellEditingIndicator: React.FC<CellEditingIndicatorProps> = ({
         `}
       </style>
     </div>
-  );
-};
+  )
+}
 
-export default SelectionOverlay;
+export default SelectionOverlay

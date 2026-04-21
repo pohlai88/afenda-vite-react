@@ -1,20 +1,20 @@
-import React, { useState, useRef } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { PremiumTooltip } from '../Premium/PremiumTooltip';
+import React, { useState, useRef } from "react"
+import { ChevronDown } from "lucide-react"
+import { PremiumTooltip } from "../Premium/PremiumTooltip"
 
 interface CompactButtonProps {
-  icon?: React.ElementType;
-  label?: string;
-  tooltip?: string;
-  shortcut?: string;
-  description?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'primary' | 'active';
-  hasDropdown?: boolean;
-  onClick?: () => void;
-  disabled?: boolean;
-  className?: string;
-  children?: React.ReactNode;
+  icon?: React.ElementType
+  label?: string
+  tooltip?: string
+  shortcut?: string
+  description?: string
+  size?: "xs" | "sm" | "md" | "lg"
+  variant?: "default" | "primary" | "active"
+  hasDropdown?: boolean
+  onClick?: () => void
+  disabled?: boolean
+  className?: string
+  children?: React.ReactNode
 }
 
 export const CompactButton: React.FC<CompactButtonProps> = ({
@@ -23,20 +23,20 @@ export const CompactButton: React.FC<CompactButtonProps> = ({
   tooltip,
   shortcut,
   description,
-  size = 'sm',
-  variant = 'default',
+  size = "sm",
+  variant = "default",
   hasDropdown = false,
   onClick,
   disabled = false,
-  className = '',
+  className = "",
   children,
 }) => {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [showTooltip, setShowTooltip] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
-  const sizeClass = size !== 'sm' ? `compact-btn--${size}` : '';
-  const variantClass = variant !== 'default' ? `compact-btn--${variant}` : '';
-  const dropdownClass = hasDropdown ? 'compact-btn--dropdown' : '';
+  const sizeClass = size !== "sm" ? `compact-btn--${size}` : ""
+  const variantClass = variant !== "default" ? `compact-btn--${variant}` : ""
+  const dropdownClass = hasDropdown ? "compact-btn--dropdown" : ""
 
   return (
     <div className="relative inline-flex">
@@ -63,19 +63,19 @@ export const CompactButton: React.FC<CompactButtonProps> = ({
         />
       )}
     </div>
-  );
-};
+  )
+}
 
 interface CompactSplitButtonProps {
-  icon?: React.ElementType;
-  label?: string;
-  tooltip?: string;
-  shortcut?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'primary';
-  onMainClick?: () => void;
-  onDropdownClick?: () => void;
-  disabled?: boolean;
+  icon?: React.ElementType
+  label?: string
+  tooltip?: string
+  shortcut?: string
+  size?: "xs" | "sm" | "md" | "lg"
+  variant?: "default" | "primary"
+  onMainClick?: () => void
+  onDropdownClick?: () => void
+  disabled?: boolean
 }
 
 export const CompactSplitButton: React.FC<CompactSplitButtonProps> = ({
@@ -83,17 +83,17 @@ export const CompactSplitButton: React.FC<CompactSplitButtonProps> = ({
   label,
   tooltip,
   shortcut,
-  size = 'sm',
-  variant = 'default',
+  size = "sm",
+  variant = "default",
   onMainClick,
   onDropdownClick,
   disabled = false,
 }) => {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const buttonRef = useRef<HTMLDivElement>(null);
+  const [showTooltip, setShowTooltip] = useState(false)
+  const buttonRef = useRef<HTMLDivElement>(null)
 
-  const sizeClass = size !== 'sm' ? `compact-btn--${size}` : '';
-  const variantClass = variant !== 'default' ? `compact-btn--${variant}` : '';
+  const sizeClass = size !== "sm" ? `compact-btn--${size}` : ""
+  const variantClass = variant !== "default" ? `compact-btn--${variant}` : ""
 
   return (
     <div
@@ -126,5 +126,5 @@ export const CompactSplitButton: React.FC<CompactSplitButtonProps> = ({
         />
       )}
     </div>
-  );
-};
+  )
+}

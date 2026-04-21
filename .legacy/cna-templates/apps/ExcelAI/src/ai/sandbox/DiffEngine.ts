@@ -8,9 +8,9 @@ import type {
   SandboxDiff,
   DiffSummary,
   ChangeType,
-} from './types';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { getCellKey, colToLetter, parseCellRef } from '../../types/cell';
+} from "./types"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { getCellKey, colToLetter, parseCellRef } from "../../types/cell"
 
 // -----------------------------------------------------------------------------
 // Diff Engine Class
@@ -24,30 +24,30 @@ export class DiffEngine {
     sandboxId: string,
     proposedChanges: Map<string, CellState>
   ): SandboxDiff {
-    const changes: CellChange[] = [];
-    const sheetsAffected = new Set<string>();
-    let formulaChanges = 0;
+    const changes: CellChange[] = []
+    const sheetsAffected = new Set<string>()
+    let formulaChanges = 0
 
-    const store = useWorkbookStore.getState();
+    const store = useWorkbookStore.getState()
 
     // Process each proposed change
     for (const [key, proposedState] of proposedChanges) {
-      const [sheetId, cellRef] = this.parseChangeKey(key);
-      const sheet = store.sheets[sheetId];
+      const [sheetId, cellRef] = this.parseChangeKey(key)
+      const sheet = store.sheets[sheetId]
 
-      if (!sheet) continue;
+      if (!sheet) continue
 
-      sheetsAffected.add(sheet.name);
+      sheetsAffected.add(sheet.name)
 
       // Get current cell state
-      const currentState = this.getCellState(sheetId, cellRef);
+      const currentState = this.getCellState(sheetId, cellRef)
 
       // Determine change type
-      const changeType = this.determineChangeType(currentState, proposedState);
+      const changeType = this.determineChangeType(currentState, proposedState)
 
       // Track formula changes
       if (this.hasFormulaChange(currentState, proposedState)) {
-        formulaChanges++;
+        formulaChanges++
       }
 
       changes.push({
@@ -57,11 +57,15 @@ export class DiffEngine {
         changeType,
         before: currentState,
         after: proposedState,
-      });
+      })
     }
 
     // Calculate summary
-    const summary = this.calculateSummary(changes, sheetsAffected, formulaChanges);
+    const summary = this.calculateSummary(
+      changes,
+      sheetsAffected,
+      formulaChanges
+    )
 
     return {
       id: crypto.randomUUID(),
@@ -69,7 +73,7 @@ export class DiffEngine {
       changes,
       summary,
       createdAt: new Date(),
-    };
+    }
   }
 
   /**
@@ -81,55 +85,55 @@ export class DiffEngine {
     startRef: string,
     values: unknown[][]
   ): SandboxDiff {
-    const proposedChanges = new Map<string, CellState>();
+    const proposedChanges = new Map<string, CellState>()
 
-    const startPos = parseCellRef(startRef);
+    const startPos = parseCellRef(startRef)
     if (!startPos) {
-      return this.emptyDiff(sandboxId);
+      return this.emptyDiff(sandboxId)
     }
 
     // Build proposed changes from values array
     for (let rowOffset = 0; rowOffset < values.length; rowOffset++) {
-      const row = values[rowOffset];
+      const row = values[rowOffset]
       for (let colOffset = 0; colOffset < row.length; colOffset++) {
-        const cellRow = startPos.row + rowOffset;
-        const cellCol = startPos.col + colOffset;
-        const cellRef = `${colToLetter(cellCol)}${cellRow + 1}`;
-        const value = row[colOffset];
+        const cellRow = startPos.row + rowOffset
+        const cellCol = startPos.col + colOffset
+        const cellRef = `${colToLetter(cellCol)}${cellRow + 1}`
+        const value = row[colOffset]
 
         // Determine if it's a formula
-        const isFormula = typeof value === 'string' && value.startsWith('=');
+        const isFormula = typeof value === "string" && value.startsWith("=")
 
         const cellState: CellState = {
           ref: cellRef,
           value: isFormula ? null : value,
           formula: isFormula ? value : null,
-        };
+        }
 
-        proposedChanges.set(`${sheetId}:${cellRef}`, cellState);
+        proposedChanges.set(`${sheetId}:${cellRef}`, cellState)
       }
     }
 
-    return this.calculateDiff(sandboxId, proposedChanges);
+    return this.calculateDiff(sandboxId, proposedChanges)
   }
 
   /**
    * Get current state of a cell
    */
   private getCellState(sheetId: string, cellRef: string): CellState | null {
-    const store = useWorkbookStore.getState();
-    const sheet = store.sheets[sheetId];
+    const store = useWorkbookStore.getState()
+    const sheet = store.sheets[sheetId]
 
-    if (!sheet) return null;
+    if (!sheet) return null
 
-    const pos = parseCellRef(cellRef);
-    if (!pos) return null;
+    const pos = parseCellRef(cellRef)
+    if (!pos) return null
 
-    const key = getCellKey(pos.row, pos.col);
-    const cell = sheet.cells[key];
+    const key = getCellKey(pos.row, pos.col)
+    const cell = sheet.cells[key]
 
     if (!cell || (cell.value === null && !cell.formula)) {
-      return null; // Empty cell
+      return null // Empty cell
     }
 
     return {
@@ -137,7 +141,7 @@ export class DiffEngine {
       value: cell.value,
       formula: cell.formula || null,
       format: cell.format ? JSON.stringify(cell.format) : undefined,
-    };
+    }
   }
 
   /**
@@ -147,16 +151,16 @@ export class DiffEngine {
     before: CellState | null,
     after: CellState | null
   ): ChangeType {
-    const beforeEmpty = !before || (before.value === null && !before.formula);
-    const afterEmpty = !after || (after.value === null && !after.formula);
+    const beforeEmpty = !before || (before.value === null && !before.formula)
+    const afterEmpty = !after || (after.value === null && !after.formula)
 
     if (beforeEmpty && !afterEmpty) {
-      return 'added';
+      return "added"
     }
     if (!beforeEmpty && afterEmpty) {
-      return 'deleted';
+      return "deleted"
     }
-    return 'modified';
+    return "modified"
   }
 
   /**
@@ -166,10 +170,10 @@ export class DiffEngine {
     before: CellState | null,
     after: CellState | null
   ): boolean {
-    const beforeFormula = before?.formula || null;
-    const afterFormula = after?.formula || null;
+    const beforeFormula = before?.formula || null
+    const afterFormula = after?.formula || null
 
-    return beforeFormula !== afterFormula;
+    return beforeFormula !== afterFormula
   }
 
   /**
@@ -180,21 +184,21 @@ export class DiffEngine {
     sheetsAffected: Set<string>,
     formulaChanges: number
   ): DiffSummary {
-    let added = 0;
-    let modified = 0;
-    let deleted = 0;
+    let added = 0
+    let modified = 0
+    let deleted = 0
 
     for (const change of changes) {
       switch (change.changeType) {
-        case 'added':
-          added++;
-          break;
-        case 'modified':
-          modified++;
-          break;
-        case 'deleted':
-          deleted++;
-          break;
+        case "added":
+          added++
+          break
+        case "modified":
+          modified++
+          break
+        case "deleted":
+          deleted++
+          break
       }
     }
 
@@ -205,18 +209,18 @@ export class DiffEngine {
       deleted,
       formulaChanges,
       sheetsAffected: Array.from(sheetsAffected),
-    };
+    }
   }
 
   /**
    * Parse a change key into sheetId and cellRef
    */
   private parseChangeKey(key: string): [string, string] {
-    const colonIndex = key.indexOf(':');
+    const colonIndex = key.indexOf(":")
     if (colonIndex === -1) {
-      return ['', key];
+      return ["", key]
     }
-    return [key.substring(0, colonIndex), key.substring(colonIndex + 1)];
+    return [key.substring(0, colonIndex), key.substring(colonIndex + 1)]
   }
 
   /**
@@ -236,7 +240,7 @@ export class DiffEngine {
         sheetsAffected: [],
       },
       createdAt: new Date(),
-    };
+    }
   }
 
   /**
@@ -244,46 +248,47 @@ export class DiffEngine {
    */
   formatDiffAsTable(diff: SandboxDiff): string {
     if (diff.changes.length === 0) {
-      return 'No changes detected.';
+      return "No changes detected."
     }
 
-    const lines: string[] = [];
-    lines.push('| Cell | Before | After | Type |');
-    lines.push('|------|--------|-------|------|');
+    const lines: string[] = []
+    lines.push("| Cell | Before | After | Type |")
+    lines.push("|------|--------|-------|------|")
 
-    for (const change of diff.changes.slice(0, 50)) { // Limit to 50 rows
-      const before = this.formatCellValue(change.before);
-      const after = this.formatCellValue(change.after);
-      const typeIcon = this.getChangeTypeIcon(change.changeType);
+    for (const change of diff.changes.slice(0, 50)) {
+      // Limit to 50 rows
+      const before = this.formatCellValue(change.before)
+      const after = this.formatCellValue(change.after)
+      const typeIcon = this.getChangeTypeIcon(change.changeType)
 
-      lines.push(`| ${change.ref} | ${before} | ${after} | ${typeIcon} |`);
+      lines.push(`| ${change.ref} | ${before} | ${after} | ${typeIcon} |`)
     }
 
     if (diff.changes.length > 50) {
-      lines.push(`| ... | ... | ... | +${diff.changes.length - 50} more |`);
+      lines.push(`| ... | ... | ... | +${diff.changes.length - 50} more |`)
     }
 
-    return lines.join('\n');
+    return lines.join("\n")
   }
 
   /**
    * Format cell value for display
    */
   private formatCellValue(state: CellState | null): string {
-    if (!state) return '(empty)';
+    if (!state) return "(empty)"
 
     if (state.formula) {
       return state.formula.length > 20
-        ? state.formula.substring(0, 17) + '...'
-        : state.formula;
+        ? state.formula.substring(0, 17) + "..."
+        : state.formula
     }
 
     if (state.value === null || state.value === undefined) {
-      return '(empty)';
+      return "(empty)"
     }
 
-    const str = String(state.value);
-    return str.length > 20 ? str.substring(0, 17) + '...' : str;
+    const str = String(state.value)
+    return str.length > 20 ? str.substring(0, 17) + "..." : str
   }
 
   /**
@@ -291,15 +296,15 @@ export class DiffEngine {
    */
   private getChangeTypeIcon(type: ChangeType): string {
     switch (type) {
-      case 'added':
-        return '+ added';
-      case 'modified':
-        return '~ modified';
-      case 'deleted':
-        return '- deleted';
+      case "added":
+        return "+ added"
+      case "modified":
+        return "~ modified"
+      case "deleted":
+        return "- deleted"
     }
   }
 }
 
 // Export singleton
-export const diffEngine = new DiffEngine();
+export const diffEngine = new DiffEngine()

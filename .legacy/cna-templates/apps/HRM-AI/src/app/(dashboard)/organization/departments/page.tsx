@@ -2,7 +2,12 @@
 
 import { useState } from "react"
 import { Plus, MoreHorizontal, Pencil, Trash2, Building2 } from "lucide-react"
-import { useDepartments, useCreateDepartment, useUpdateDepartment, useDeleteDepartment } from "@/hooks/use-departments"
+import {
+  useDepartments,
+  useCreateDepartment,
+  useUpdateDepartment,
+  useDeleteDepartment,
+} from "@/hooks/use-departments"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -37,9 +42,16 @@ import type { DepartmentWithRelations } from "@/types"
 
 export default function DepartmentsPage() {
   const [isOpen, setIsOpen] = useState(false)
-  const [editingDept, setEditingDept] = useState<DepartmentWithRelations | null>(null)
+  const [editingDept, setEditingDept] =
+    useState<DepartmentWithRelations | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ name: "", code: "", description: "", sortOrder: 0, isActive: true })
+  const [formData, setFormData] = useState({
+    name: "",
+    code: "",
+    description: "",
+    sortOrder: 0,
+    isActive: true,
+  })
 
   const { data: departments, isLoading } = useDepartments()
   const createDepartment = useCreateDepartment()
@@ -48,7 +60,13 @@ export default function DepartmentsPage() {
 
   const handleOpenCreate = () => {
     setEditingDept(null)
-    setFormData({ name: "", code: "", description: "", sortOrder: 0, isActive: true })
+    setFormData({
+      name: "",
+      code: "",
+      description: "",
+      sortOrder: 0,
+      isActive: true,
+    })
     setIsOpen(true)
   }
 
@@ -176,7 +194,9 @@ export default function DepartmentsPage() {
               <Input
                 id="code"
                 value={formData.code}
-                onChange={(e) => setFormData((p) => ({ ...p, code: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, code: e.target.value }))
+                }
                 placeholder="VD: HR, IT, KT"
                 required
               />
@@ -186,7 +206,9 @@ export default function DepartmentsPage() {
               <Input
                 id="name"
                 value={formData.name}
-                onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, name: e.target.value }))
+                }
                 placeholder="VD: Phòng Nhân sự"
                 required
               />
@@ -196,17 +218,25 @@ export default function DepartmentsPage() {
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, description: e.target.value }))
+                }
                 placeholder="Mô tả về phòng ban..."
               />
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsOpen(false)}
+              >
                 Hủy
               </Button>
               <Button
                 type="submit"
-                disabled={createDepartment.isPending || updateDepartment.isPending}
+                disabled={
+                  createDepartment.isPending || updateDepartment.isPending
+                }
               >
                 {editingDept ? "Cập nhật" : "Tạo mới"}
               </Button>

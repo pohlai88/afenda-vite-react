@@ -1,13 +1,13 @@
 // src/lib/learning/services/enrollment.service.ts
 // Enrollment Service - Manage course and session enrollments
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   EnrollmentStatus,
   CourseStatus,
   SessionStatus,
-  Prisma
-} from '@prisma/client'
+  Prisma,
+} from "@prisma/client"
 
 // Types
 export interface EnrollInput {
@@ -50,7 +50,7 @@ export class EnrollmentService {
     })
 
     if (!course) {
-      throw new Error('Course not found or not available')
+      throw new Error("Course not found or not available")
     }
 
     // Check for existing enrollment
@@ -59,13 +59,13 @@ export class EnrollmentService {
         employeeId_courseId_sessionId: {
           employeeId: input.employeeId,
           courseId: input.courseId,
-          sessionId: input.sessionId || '',
+          sessionId: input.sessionId || "",
         },
       },
     })
 
     if (existing) {
-      throw new Error('Employee already enrolled in this course')
+      throw new Error("Employee already enrolled in this course")
     }
 
     // If session specified, verify it
@@ -82,12 +82,12 @@ export class EnrollmentService {
       })
 
       if (!session) {
-        throw new Error('Session not found or not available')
+        throw new Error("Session not found or not available")
       }
 
       // Check capacity
       if (session._count.enrollments >= session.maxParticipants) {
-        throw new Error('Session is full')
+        throw new Error("Session is full")
       }
     }
 
@@ -143,7 +143,7 @@ export class EnrollmentService {
         },
         course: {
           include: {
-            modules: { orderBy: { order: 'asc' } },
+            modules: { orderBy: { order: "asc" } },
           },
         },
         session: {
@@ -167,13 +167,13 @@ export class EnrollmentService {
           },
         },
         assessmentAttempts: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
         },
       },
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     return enrollment
@@ -182,7 +182,11 @@ export class EnrollmentService {
   /**
    * List enrollments with filters
    */
-  async list(filters: EnrollmentFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: EnrollmentFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.EnrollmentWhereInput = {
@@ -210,13 +214,16 @@ export class EnrollmentService {
     }
 
     if (filters.toDate) {
-      where.createdAt = { ...(where.createdAt as object || {}), lte: filters.toDate }
+      where.createdAt = {
+        ...((where.createdAt as object) || {}),
+        lte: filters.toDate,
+      }
     }
 
     const [enrollments, total] = await Promise.all([
       db.enrollment.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -264,7 +271,7 @@ export class EnrollmentService {
 
     return db.enrollment.findMany({
       where,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: {
         course: {
           select: {
@@ -295,11 +302,11 @@ export class EnrollmentService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     if (enrollment.status !== EnrollmentStatus.PENDING) {
-      throw new Error('Enrollment is not pending approval')
+      throw new Error("Enrollment is not pending approval")
     }
 
     return db.enrollment.update({
@@ -321,11 +328,11 @@ export class EnrollmentService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     if (enrollment.status !== EnrollmentStatus.PENDING) {
-      throw new Error('Enrollment is not pending')
+      throw new Error("Enrollment is not pending")
     }
 
     return db.enrollment.update({
@@ -348,11 +355,11 @@ export class EnrollmentService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     if (enrollment.status !== EnrollmentStatus.ENROLLED) {
-      throw new Error('Enrollment is not in enrolled status')
+      throw new Error("Enrollment is not in enrolled status")
     }
 
     return db.enrollment.update({
@@ -367,7 +374,11 @@ export class EnrollmentService {
   /**
    * Complete a module
    */
-  async completeModule(enrollmentId: string, moduleId: string, timeSpentMinutes?: number) {
+  async completeModule(
+    enrollmentId: string,
+    moduleId: string,
+    timeSpentMinutes?: number
+  ) {
     const enrollment = await db.enrollment.findFirst({
       where: { id: enrollmentId, tenantId: this.tenantId },
       include: {
@@ -379,7 +390,7 @@ export class EnrollmentService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     // Create module completion
@@ -404,9 +415,8 @@ export class EnrollmentService {
     // Calculate new progress
     const totalModules = enrollment.course.modules.length
     const completedModules = enrollment.moduleCompletions.length + 1
-    const progress = totalModules > 0
-      ? Math.round((completedModules / totalModules) * 100)
-      : 0
+    const progress =
+      totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0
 
     // Update enrollment progress
     await db.enrollment.update({
@@ -430,7 +440,7 @@ export class EnrollmentService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     const updateData: Prisma.EnrollmentUpdateInput = {}
@@ -468,7 +478,7 @@ export class EnrollmentService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     return db.enrollment.update({
@@ -492,11 +502,11 @@ export class EnrollmentService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     if (enrollment.status === EnrollmentStatus.COMPLETED) {
-      throw new Error('Cannot cancel completed enrollment')
+      throw new Error("Cannot cancel completed enrollment")
     }
 
     return db.enrollment.update({
@@ -517,11 +527,11 @@ export class EnrollmentService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     if (enrollment.status !== EnrollmentStatus.COMPLETED) {
-      throw new Error('Can only submit feedback for completed courses')
+      throw new Error("Can only submit feedback for completed courses")
     }
 
     return db.enrollment.update({
@@ -542,11 +552,14 @@ export class EnrollmentService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
-    if (enrollment.status !== EnrollmentStatus.COMPLETED || !enrollment.passed) {
-      throw new Error('Certificate can only be issued for passed courses')
+    if (
+      enrollment.status !== EnrollmentStatus.COMPLETED ||
+      !enrollment.passed
+    ) {
+      throw new Error("Certificate can only be issued for passed courses")
     }
 
     return db.enrollment.update({
@@ -577,7 +590,7 @@ export class EnrollmentService {
       db.enrollment.count({ where }),
 
       db.enrollment.groupBy({
-        by: ['status'],
+        by: ["status"],
         where,
         _count: true,
       }),
@@ -591,7 +604,11 @@ export class EnrollmentService {
           where: {
             ...where,
             status: {
-              in: [EnrollmentStatus.COMPLETED, EnrollmentStatus.IN_PROGRESS, EnrollmentStatus.ENROLLED],
+              in: [
+                EnrollmentStatus.COMPLETED,
+                EnrollmentStatus.IN_PROGRESS,
+                EnrollmentStatus.ENROLLED,
+              ],
             },
           },
         }),
@@ -612,7 +629,7 @@ export class EnrollmentService {
 
     return {
       total,
-      byStatus: byStatus.map(s => ({ status: s.status, count: s._count })),
+      byStatus: byStatus.map((s) => ({ status: s.status, count: s._count })),
       completionRate: rate,
       avgRating: avgRating._avg.rating || 0,
     }
@@ -635,7 +652,7 @@ export class EnrollmentService {
 
     return db.enrollment.findMany({
       where,
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
       include: {
         employee: {
           select: {

@@ -21,11 +21,13 @@
 **SCHEMA CHANGES:** None needed — SlaConfig model + firstResponseAt/slaBreached fields already existed from prior work
 
 **AUTO-ASSIGN STRATEGY:**
+
 - `autoAssignTicket()` called fire-and-forget after portal ticket creation
 - Strategies: round_robin (default), least_loaded, manual — selectable in Settings → Support tab
 - Strategy stored in `Setting` table with key `ticket_assign_strategy`
 
 **SLA ENGINE:**
+
 - Server-side calculation via `calculateSlaStatus()` — fetches SlaConfig from DB, computes timers
 - Included in ticket detail API response (full SlaStatus object)
 - Ticket list API includes worst-case `slaStatus` string per ticket
@@ -33,23 +35,27 @@
 - At-risk threshold: 25% of time remaining or 30min (whichever is larger)
 
 **FIRST RESPONSE TRACKING:**
+
 - `firstResponseAt` set automatically in POST /api/tickets/[id]/messages when:
   - Message is public (not internal note)
   - Ticket has no prior firstResponseAt
 
 **SLA SETTINGS UI:**
+
 - Support tab in Settings with:
   - Radio buttons for auto-assign strategy (manual / round-robin / least-loaded)
   - Editable SLA targets table (firstResponse + resolution hours per priority)
   - Save via PUT /api/settings/sla
 
 **DASHBOARD KPIs:**
+
 - 2 new KPI cards: "Ticket mở" (open tickets count) + "SLA trễ hạn" (breached count)
 - Period comparison (vs previous period) with percentage change
 - Grid updated from 4-col to 3-col to accommodate 6 KPIs
 - SLA breached uses inverted color logic (increase = red, decrease = green)
 
 **TEST RESULTS:**
+
 - AC-1: Auto-Assign Round Robin — ✅ Implemented via `roundRobin()` in auto-assign.ts, hooked into portal creation
 - AC-2: Auto-Assign Least Loaded — ✅ Implemented via `leastLoaded()` in auto-assign.ts
 - AC-3: SLA Calculation — ✅ `calculateSlaStatus()` computes on_track/at_risk/breached/met

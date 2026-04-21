@@ -1,50 +1,52 @@
-import React, { useState } from 'react';
-import { LayoutGrid, Table2, BarChart3, Minus, Plus } from 'lucide-react';
-import { useSelectionStore } from '../../stores/selectionStore';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { getCellKey } from '../../types/cell';
+import React, { useState } from "react"
+import { LayoutGrid, Table2, BarChart3, Minus, Plus } from "lucide-react"
+import { useSelectionStore } from "../../stores/selectionStore"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { getCellKey } from "../../types/cell"
 
 export const StatusBarPremium: React.FC = () => {
-  const [zoom, setZoom] = useState(100);
-  const [viewMode, setViewMode] = useState<'normal' | 'page' | 'break'>('normal');
+  const [zoom, setZoom] = useState(100)
+  const [viewMode, setViewMode] = useState<"normal" | "page" | "break">(
+    "normal"
+  )
 
-  const { selectedCell, selectionRange } = useSelectionStore();
-  const { activeSheetId, sheets } = useWorkbookStore();
+  const { selectedCell, selectionRange } = useSelectionStore()
+  const { activeSheetId, sheets } = useWorkbookStore()
 
   // Calculate selection stats
   const stats = React.useMemo(() => {
-    if (!activeSheetId || !sheets[activeSheetId]) return null;
+    if (!activeSheetId || !sheets[activeSheetId]) return null
 
-    const sheet = sheets[activeSheetId];
-    const values: number[] = [];
+    const sheet = sheets[activeSheetId]
+    const values: number[] = []
 
     if (selectionRange) {
-      const { start, end } = selectionRange;
+      const { start, end } = selectionRange
       for (let row = start.row; row <= end.row; row++) {
         for (let col = start.col; col <= end.col; col++) {
-          const cellKey = getCellKey(row, col);
-          const cell = sheet.cells[cellKey];
+          const cellKey = getCellKey(row, col)
+          const cell = sheet.cells[cellKey]
           if (cell?.value !== null && cell?.value !== undefined) {
-            const num = parseFloat(String(cell.value));
+            const num = parseFloat(String(cell.value))
             if (!isNaN(num)) {
-              values.push(num);
+              values.push(num)
             }
           }
         }
       }
     }
 
-    if (values.length <= 1) return null;
+    if (values.length <= 1) return null
 
-    const sum = values.reduce((a, b) => a + b, 0);
-    const avg = sum / values.length;
+    const sum = values.reduce((a, b) => a + b, 0)
+    const avg = sum / values.length
 
-    return { sum, avg, count: values.length };
-  }, [selectedCell, selectionRange, activeSheetId, sheets]);
+    return { sum, avg, count: values.length }
+  }, [selectedCell, selectionRange, activeSheetId, sheets])
 
   const handleZoomChange = (newZoom: number) => {
-    setZoom(Math.min(200, Math.max(50, newZoom)));
-  };
+    setZoom(Math.min(200, Math.max(50, newZoom)))
+  }
 
   return (
     <div className="status-bar-premium">
@@ -56,7 +58,9 @@ export const StatusBarPremium: React.FC = () => {
         <div className="status-bar__section">
           <span className="status-bar__stat">
             <span className="status-bar__stat-label">Average:</span>
-            <span className="status-bar__stat-value">{stats.avg.toFixed(2)}</span>
+            <span className="status-bar__stat-value">
+              {stats.avg.toFixed(2)}
+            </span>
           </span>
           <span className="status-bar__stat">
             <span className="status-bar__stat-label">Count:</span>
@@ -64,7 +68,9 @@ export const StatusBarPremium: React.FC = () => {
           </span>
           <span className="status-bar__stat">
             <span className="status-bar__stat-label">Sum:</span>
-            <span className="status-bar__stat-value">{stats.sum.toFixed(2)}</span>
+            <span className="status-bar__stat-value">
+              {stats.sum.toFixed(2)}
+            </span>
           </span>
         </div>
       )}
@@ -72,22 +78,22 @@ export const StatusBarPremium: React.FC = () => {
       <div className="status-bar__section status-bar__section--right">
         <div className="status-bar__view-btns">
           <button
-            className={`status-bar__view-btn ${viewMode === 'normal' ? 'status-bar__view-btn--active' : ''}`}
-            onClick={() => setViewMode('normal')}
+            className={`status-bar__view-btn ${viewMode === "normal" ? "status-bar__view-btn--active" : ""}`}
+            onClick={() => setViewMode("normal")}
             title="Normal View"
           >
             <LayoutGrid />
           </button>
           <button
-            className={`status-bar__view-btn ${viewMode === 'page' ? 'status-bar__view-btn--active' : ''}`}
-            onClick={() => setViewMode('page')}
+            className={`status-bar__view-btn ${viewMode === "page" ? "status-bar__view-btn--active" : ""}`}
+            onClick={() => setViewMode("page")}
             title="Page Layout View"
           >
             <Table2 />
           </button>
           <button
-            className={`status-bar__view-btn ${viewMode === 'break' ? 'status-bar__view-btn--active' : ''}`}
-            onClick={() => setViewMode('break')}
+            className={`status-bar__view-btn ${viewMode === "break" ? "status-bar__view-btn--active" : ""}`}
+            onClick={() => setViewMode("break")}
             title="Page Break Preview"
           >
             <BarChart3 />
@@ -123,5 +129,5 @@ export const StatusBarPremium: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

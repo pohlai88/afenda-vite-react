@@ -2,153 +2,196 @@
 // TOP/BOTTOM RULES - Submenu for top/bottom rules
 // ============================================================
 
-import React, { useState } from 'react';
-import { useConditionalFormattingStore } from '../../stores/conditionalFormattingStore';
-import { useSelectionStore } from '../../stores/selectionStore';
-import { HIGHLIGHT_STYLES, CFTopBottomType, CFAverageType } from '../../types/conditionalFormatting';
+import React, { useState } from "react"
+import { useConditionalFormattingStore } from "../../stores/conditionalFormattingStore"
+import { useSelectionStore } from "../../stores/selectionStore"
+import {
+  HIGHLIGHT_STYLES,
+  CFTopBottomType,
+  CFAverageType,
+} from "../../types/conditionalFormatting"
 import {
   ArrowUp,
   TrendingUp,
   ArrowDown,
   TrendingDown,
   ArrowUpRight,
-  ArrowDownRight
-} from 'lucide-react';
+  ArrowDownRight,
+} from "lucide-react"
 
 interface TopBottomRulesProps {
-  onSelect: () => void;
+  onSelect: () => void
 }
 
-type RuleType = 'top10' | 'top10Percent' | 'bottom10' | 'bottom10Percent' | 'aboveAverage' | 'belowAverage';
+type RuleType =
+  | "top10"
+  | "top10Percent"
+  | "bottom10"
+  | "bottom10Percent"
+  | "aboveAverage"
+  | "belowAverage"
 
 interface RuleConfig {
-  label: string;
-  icon: React.ReactNode;
-  bgColor: string;
-  type: RuleType;
+  label: string
+  icon: React.ReactNode
+  bgColor: string
+  type: RuleType
 }
 
 const RULE_CONFIGS: RuleConfig[] = [
-  { label: 'Top 10 Items...', icon: <ArrowUp size={14} color="#16a34a" strokeWidth={2.5} />, bgColor: '#C6EFCE', type: 'top10' },
-  { label: 'Top 10%...', icon: <TrendingUp size={14} color="#16a34a" strokeWidth={2.5} />, bgColor: '#C6EFCE', type: 'top10Percent' },
-  { label: 'Bottom 10 Items...', icon: <ArrowDown size={14} color="#dc2626" strokeWidth={2.5} />, bgColor: '#FFC7CE', type: 'bottom10' },
-  { label: 'Bottom 10%...', icon: <TrendingDown size={14} color="#dc2626" strokeWidth={2.5} />, bgColor: '#FFC7CE', type: 'bottom10Percent' },
-  { label: 'Above Average...', icon: <ArrowUpRight size={14} color="#ca8a04" strokeWidth={2.5} />, bgColor: '#FFEB9C', type: 'aboveAverage' },
-  { label: 'Below Average...', icon: <ArrowDownRight size={14} color="#ca8a04" strokeWidth={2.5} />, bgColor: '#FFEB9C', type: 'belowAverage' },
-];
+  {
+    label: "Top 10 Items...",
+    icon: <ArrowUp size={14} color="#16a34a" strokeWidth={2.5} />,
+    bgColor: "#C6EFCE",
+    type: "top10",
+  },
+  {
+    label: "Top 10%...",
+    icon: <TrendingUp size={14} color="#16a34a" strokeWidth={2.5} />,
+    bgColor: "#C6EFCE",
+    type: "top10Percent",
+  },
+  {
+    label: "Bottom 10 Items...",
+    icon: <ArrowDown size={14} color="#dc2626" strokeWidth={2.5} />,
+    bgColor: "#FFC7CE",
+    type: "bottom10",
+  },
+  {
+    label: "Bottom 10%...",
+    icon: <TrendingDown size={14} color="#dc2626" strokeWidth={2.5} />,
+    bgColor: "#FFC7CE",
+    type: "bottom10Percent",
+  },
+  {
+    label: "Above Average...",
+    icon: <ArrowUpRight size={14} color="#ca8a04" strokeWidth={2.5} />,
+    bgColor: "#FFEB9C",
+    type: "aboveAverage",
+  },
+  {
+    label: "Below Average...",
+    icon: <ArrowDownRight size={14} color="#ca8a04" strokeWidth={2.5} />,
+    bgColor: "#FFEB9C",
+    type: "belowAverage",
+  },
+]
 
 export const TopBottomRules: React.FC<TopBottomRulesProps> = ({ onSelect }) => {
-  const { addRule } = useConditionalFormattingStore();
-  const { selectionRange } = useSelectionStore();
-  const [showDialog, setShowDialog] = useState<RuleType | null>(null);
-  const [value, setValue] = useState('10');
-  const [selectedStyle, setSelectedStyle] = useState(0);
+  const { addRule } = useConditionalFormattingStore()
+  const { selectionRange } = useSelectionStore()
+  const [showDialog, setShowDialog] = useState<RuleType | null>(null)
+  const [value, setValue] = useState("10")
+  const [selectedStyle, setSelectedStyle] = useState(0)
 
   const getSelectionRangeString = (): string | null => {
-    if (!selectionRange) return null;
-    const { start, end } = selectionRange;
-    const startCol = String.fromCharCode(65 + start.col);
-    const endCol = String.fromCharCode(65 + end.col);
-    return `${startCol}${start.row + 1}:${endCol}${end.row + 1}`;
-  };
+    if (!selectionRange) return null
+    const { start, end } = selectionRange
+    const startCol = String.fromCharCode(65 + start.col)
+    const endCol = String.fromCharCode(65 + end.col)
+    return `${startCol}${start.row + 1}:${endCol}${end.row + 1}`
+  }
 
   const handleApply = () => {
-    const range = getSelectionRangeString();
-    if (!range || !showDialog) return;
+    const range = getSelectionRangeString()
+    if (!range || !showDialog) return
 
-    const style = HIGHLIGHT_STYLES[selectedStyle].style;
-    const numValue = parseInt(value) || 10;
+    const style = HIGHLIGHT_STYLES[selectedStyle].style
+    const numValue = parseInt(value) || 10
 
     switch (showDialog) {
-      case 'top10':
+      case "top10":
         addRule({
-          type: 'topBottom',
+          type: "topBottom",
           range,
           enabled: true,
           stopIfTrue: false,
-          topBottomType: 'top' as CFTopBottomType,
+          topBottomType: "top" as CFTopBottomType,
           topBottomValue: numValue,
           style,
-        });
-        break;
-      case 'top10Percent':
+        })
+        break
+      case "top10Percent":
         addRule({
-          type: 'topBottom',
+          type: "topBottom",
           range,
           enabled: true,
           stopIfTrue: false,
-          topBottomType: 'topPercent' as CFTopBottomType,
+          topBottomType: "topPercent" as CFTopBottomType,
           topBottomValue: numValue,
           style,
-        });
-        break;
-      case 'bottom10':
+        })
+        break
+      case "bottom10":
         addRule({
-          type: 'topBottom',
+          type: "topBottom",
           range,
           enabled: true,
           stopIfTrue: false,
-          topBottomType: 'bottom' as CFTopBottomType,
+          topBottomType: "bottom" as CFTopBottomType,
           topBottomValue: numValue,
           style,
-        });
-        break;
-      case 'bottom10Percent':
+        })
+        break
+      case "bottom10Percent":
         addRule({
-          type: 'topBottom',
+          type: "topBottom",
           range,
           enabled: true,
           stopIfTrue: false,
-          topBottomType: 'bottomPercent' as CFTopBottomType,
+          topBottomType: "bottomPercent" as CFTopBottomType,
           topBottomValue: numValue,
           style,
-        });
-        break;
-      case 'aboveAverage':
+        })
+        break
+      case "aboveAverage":
         addRule({
-          type: 'aboveAverage',
+          type: "aboveAverage",
           range,
           enabled: true,
           stopIfTrue: false,
-          averageType: 'above' as CFAverageType,
+          averageType: "above" as CFAverageType,
           style,
-        });
-        break;
-      case 'belowAverage':
+        })
+        break
+      case "belowAverage":
         addRule({
-          type: 'aboveAverage',
+          type: "aboveAverage",
           range,
           enabled: true,
           stopIfTrue: false,
-          averageType: 'below' as CFAverageType,
+          averageType: "below" as CFAverageType,
           style,
-        });
-        break;
+        })
+        break
     }
 
-    setShowDialog(null);
-    setValue('10');
-    onSelect();
-  };
+    setShowDialog(null)
+    setValue("10")
+    onSelect()
+  }
 
-  const needsValue = showDialog && !['aboveAverage', 'belowAverage'].includes(showDialog);
+  const needsValue =
+    showDialog && !["aboveAverage", "belowAverage"].includes(showDialog)
 
   if (showDialog) {
     return (
       <div className="highlight-dialog">
         <div className="dialog-header">
-          {RULE_CONFIGS.find(r => r.type === showDialog)?.label}
+          {RULE_CONFIGS.find((r) => r.type === showDialog)?.label}
         </div>
         <div className="dialog-content">
           {needsValue && (
             <div className="input-group">
               <label>
-                {showDialog.includes('Percent') ? 'Percentage:' : 'Number of items:'}
+                {showDialog.includes("Percent")
+                  ? "Percentage:"
+                  : "Number of items:"}
               </label>
               <input
                 type="number"
                 min="1"
-                max={showDialog.includes('Percent') ? '100' : '1000'}
+                max={showDialog.includes("Percent") ? "100" : "1000"}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 autoFocus
@@ -162,17 +205,23 @@ export const TopBottomRules: React.FC<TopBottomRulesProps> = ({ onSelect }) => {
               onChange={(e) => setSelectedStyle(parseInt(e.target.value))}
             >
               {HIGHLIGHT_STYLES.map((style, idx) => (
-                <option key={idx} value={idx}>{style.name}</option>
+                <option key={idx} value={idx}>
+                  {style.name}
+                </option>
               ))}
             </select>
           </div>
         </div>
         <div className="dialog-footer">
-          <button className="btn-cancel" onClick={() => setShowDialog(null)}>Cancel</button>
-          <button className="btn-ok" onClick={handleApply}>OK</button>
+          <button className="btn-cancel" onClick={() => setShowDialog(null)}>
+            Cancel
+          </button>
+          <button className="btn-ok" onClick={handleApply}>
+            OK
+          </button>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -190,7 +239,7 @@ export const TopBottomRules: React.FC<TopBottomRulesProps> = ({ onSelect }) => {
         </button>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default TopBottomRules;
+export default TopBottomRules

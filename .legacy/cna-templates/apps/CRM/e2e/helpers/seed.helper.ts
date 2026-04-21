@@ -1,15 +1,15 @@
-import { PrismaClient } from '@prisma/client'
-import { createClient } from '@supabase/supabase-js'
-import { randomBytes } from 'crypto'
+import { PrismaClient } from "@prisma/client"
+import { createClient } from "@supabase/supabase-js"
+import { randomBytes } from "crypto"
 
 const prisma = new PrismaClient()
 
 // Prefix for all test data — used for identification and cleanup
-export const TEST_PREFIX = '[TEST]'
-export const E2E_PREFIX = '[E2E]'
+export const TEST_PREFIX = "[TEST]"
+export const E2E_PREFIX = "[E2E]"
 
 // Known portal session token for E2E tests
-export const PORTAL_SESSION_TOKEN = 'e2e-portal-session-token-' + '0'.repeat(32)
+export const PORTAL_SESSION_TOKEN = "e2e-portal-session-token-" + "0".repeat(32)
 
 // ── Supabase Admin Client ───────────────────────────────────────────
 
@@ -29,10 +29,30 @@ function getSupabaseAdmin() {
 // ── Test User Definitions ───────────────────────────────────────────
 
 const TEST_USER_DEFS = [
-  { email: 'admin@test.rtr.com', password: 'TestAdmin123!', name: `${TEST_PREFIX} Admin User`, role: 'ADMIN' as const },
-  { email: 'manager@test.rtr.com', password: 'TestManager123!', name: `${TEST_PREFIX} Manager User`, role: 'MANAGER' as const },
-  { email: 'member@test.rtr.com', password: 'TestMember123!', name: `${TEST_PREFIX} Member User`, role: 'MEMBER' as const },
-  { email: 'viewer@test.rtr.com', password: 'TestViewer123!', name: `${TEST_PREFIX} Viewer User`, role: 'VIEWER' as const },
+  {
+    email: "admin@test.rtr.com",
+    password: "TestAdmin123!",
+    name: `${TEST_PREFIX} Admin User`,
+    role: "ADMIN" as const,
+  },
+  {
+    email: "manager@test.rtr.com",
+    password: "TestManager123!",
+    name: `${TEST_PREFIX} Manager User`,
+    role: "MANAGER" as const,
+  },
+  {
+    email: "member@test.rtr.com",
+    password: "TestMember123!",
+    name: `${TEST_PREFIX} Member User`,
+    role: "MEMBER" as const,
+  },
+  {
+    email: "viewer@test.rtr.com",
+    password: "TestViewer123!",
+    name: `${TEST_PREFIX} Viewer User`,
+    role: "VIEWER" as const,
+  },
 ]
 
 // ── Seed Test Users ─────────────────────────────────────────────────
@@ -53,7 +73,9 @@ export async function seedTestUsers(): Promise<void> {
     })
 
     if (existing) {
-      console.log(`  [seed] User ${def.email} already exists (${def.role}), skipping`)
+      console.log(
+        `  [seed] User ${def.email} already exists (${def.role}), skipping`
+      )
       continue
     }
 
@@ -67,10 +89,12 @@ export async function seedTestUsers(): Promise<void> {
 
       if (error) {
         // User might already exist in Supabase but not in Prisma
-        if (error.message?.includes('already been registered')) {
+        if (error.message?.includes("already been registered")) {
           // Look up existing Supabase user
           const { data: listData } = await supabase.auth.admin.listUsers()
-          const existingAuth = listData?.users?.find(u => u.email === def.email)
+          const existingAuth = listData?.users?.find(
+            (u) => u.email === def.email
+          )
           if (existingAuth) {
             await prisma.user.create({
               data: {
@@ -80,11 +104,16 @@ export async function seedTestUsers(): Promise<void> {
                 role: def.role,
               },
             })
-            console.log(`  [seed] Created Prisma user for existing Supabase user: ${def.email}`)
+            console.log(
+              `  [seed] Created Prisma user for existing Supabase user: ${def.email}`
+            )
             continue
           }
         }
-        console.error(`  [seed] Failed to create Supabase user ${def.email}:`, error.message)
+        console.error(
+          `  [seed] Failed to create Supabase user ${def.email}:`,
+          error.message
+        )
         continue
       }
 
@@ -99,8 +128,12 @@ export async function seedTestUsers(): Promise<void> {
       })
       console.log(`  [seed] Created user: ${def.email} (${def.role})`)
     } else {
-      console.warn(`  [seed] No SUPABASE_SERVICE_ROLE_KEY — cannot create auth user for ${def.email}`)
-      console.warn(`  [seed] Create test users manually in Supabase Dashboard, then re-run seed`)
+      console.warn(
+        `  [seed] No SUPABASE_SERVICE_ROLE_KEY — cannot create auth user for ${def.email}`
+      )
+      console.warn(
+        `  [seed] Create test users manually in Supabase Dashboard, then re-run seed`
+      )
     }
   }
 }
@@ -116,14 +149,14 @@ export async function seedTestUsers(): Promise<void> {
 export async function seedTestData(): Promise<void> {
   // Find test users
   const memberUser = await prisma.user.findUnique({
-    where: { email: 'member@test.rtr.com' },
+    where: { email: "member@test.rtr.com" },
   })
   const adminUser = await prisma.user.findUnique({
-    where: { email: 'admin@test.rtr.com' },
+    where: { email: "admin@test.rtr.com" },
   })
 
   if (!memberUser || !adminUser) {
-    console.warn('  [seed] Test users not found — skipping CRM data seed')
+    console.warn("  [seed] Test users not found — skipping CRM data seed")
     return
   }
 
@@ -132,7 +165,7 @@ export async function seedTestData(): Promise<void> {
     where: { name: { startsWith: TEST_PREFIX } },
   })
   if (existingCompany) {
-    console.log('  [seed] Test CRM data already exists, skipping')
+    console.log("  [seed] Test CRM data already exists, skipping")
     return
   }
 
@@ -140,11 +173,11 @@ export async function seedTestData(): Promise<void> {
   const companyA = await prisma.company.create({
     data: {
       name: `${TEST_PREFIX} Công ty ABC`,
-      industry: 'Technology',
-      size: 'MEDIUM',
-      email: 'abc@test.rtr.com',
-      phone: '0901234567',
-      city: 'Ho Chi Minh',
+      industry: "Technology",
+      size: "MEDIUM",
+      email: "abc@test.rtr.com",
+      phone: "0901234567",
+      city: "Ho Chi Minh",
       ownerId: memberUser.id,
     },
   })
@@ -152,28 +185,28 @@ export async function seedTestData(): Promise<void> {
   const companyB = await prisma.company.create({
     data: {
       name: `${TEST_PREFIX} Công ty XYZ`,
-      industry: 'Manufacturing',
-      size: 'LARGE',
-      email: 'xyz@test.rtr.com',
-      phone: '0907654321',
-      city: 'Ha Noi',
+      industry: "Manufacturing",
+      size: "LARGE",
+      email: "xyz@test.rtr.com",
+      phone: "0907654321",
+      city: "Ha Noi",
       ownerId: adminUser.id,
     },
   })
 
-  console.log('  [seed] Created 2 test companies')
+  console.log("  [seed] Created 2 test companies")
 
   // Create test contacts
   const contacts = await Promise.all([
     prisma.contact.create({
       data: {
         firstName: `${TEST_PREFIX} Nguyễn`,
-        lastName: 'Test A',
-        email: 'nguyen.a@test.rtr.com',
-        phone: '0901111111',
-        jobTitle: 'Giám đốc',
-        status: 'ACTIVE',
-        source: 'WEBSITE',
+        lastName: "Test A",
+        email: "nguyen.a@test.rtr.com",
+        phone: "0901111111",
+        jobTitle: "Giám đốc",
+        status: "ACTIVE",
+        source: "WEBSITE",
         companyId: companyA.id,
         ownerId: memberUser.id,
       },
@@ -181,12 +214,12 @@ export async function seedTestData(): Promise<void> {
     prisma.contact.create({
       data: {
         firstName: `${TEST_PREFIX} Trần`,
-        lastName: 'Test B',
-        email: 'tran.b@test.rtr.com',
-        phone: '0902222222',
-        jobTitle: 'Trưởng phòng',
-        status: 'CUSTOMER',
-        source: 'REFERRAL',
+        lastName: "Test B",
+        email: "tran.b@test.rtr.com",
+        phone: "0902222222",
+        jobTitle: "Trưởng phòng",
+        status: "CUSTOMER",
+        source: "REFERRAL",
         companyId: companyA.id,
         ownerId: memberUser.id,
       },
@@ -194,12 +227,12 @@ export async function seedTestData(): Promise<void> {
     prisma.contact.create({
       data: {
         firstName: `${TEST_PREFIX} Lê`,
-        lastName: 'Test C',
-        email: 'le.c@test.rtr.com',
-        phone: '0903333333',
-        jobTitle: 'Kế toán',
-        status: 'LEAD',
-        source: 'COLD_CALL',
+        lastName: "Test C",
+        email: "le.c@test.rtr.com",
+        phone: "0903333333",
+        jobTitle: "Kế toán",
+        status: "LEAD",
+        source: "COLD_CALL",
         companyId: companyB.id,
         ownerId: adminUser.id,
       },
@@ -211,11 +244,11 @@ export async function seedTestData(): Promise<void> {
   // Get or create default pipeline + stage for deals
   let pipeline = await prisma.pipelineConfig.findFirst({
     where: { isDefault: true },
-    include: { stages: { orderBy: { order: 'asc' } } },
+    include: { stages: { orderBy: { order: "asc" } } },
   })
 
   if (!pipeline || pipeline.stages.length === 0) {
-    console.warn('  [seed] No default pipeline found — skipping deals')
+    console.warn("  [seed] No default pipeline found — skipping deals")
     return
   }
 
@@ -251,20 +284,20 @@ export async function seedTestData(): Promise<void> {
   await prisma.activity.createMany({
     data: [
       {
-        type: 'CALL',
+        type: "CALL",
         subject: `${TEST_PREFIX} Gọi điện tư vấn`,
         contactId: contacts[0].id,
         userId: memberUser.id,
       },
       {
-        type: 'EMAIL',
+        type: "EMAIL",
         subject: `${TEST_PREFIX} Gửi báo giá`,
         contactId: contacts[1].id,
         dealId: deals[0].id,
         userId: memberUser.id,
       },
       {
-        type: 'MEETING',
+        type: "MEETING",
         subject: `${TEST_PREFIX} Họp demo sản phẩm`,
         contactId: contacts[2].id,
         dealId: deals[1].id,
@@ -273,14 +306,14 @@ export async function seedTestData(): Promise<void> {
     ],
   })
 
-  console.log('  [seed] Created 3 test activities')
+  console.log("  [seed] Created 3 test activities")
 
   // ── Quotes with items ───────────────────────────────────────────
   const year = new Date().getFullYear()
   const quote1 = await prisma.quote.create({
     data: {
       quoteNumber: `QUO-${year}-9901`,
-      status: 'DRAFT',
+      status: "DRAFT",
       contactId: contacts[0].id,
       companyId: companyA.id,
       createdById: memberUser.id,
@@ -289,7 +322,7 @@ export async function seedTestData(): Promise<void> {
       taxAmount: 1_000_000,
       total: 11_000_000,
       validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      terms: 'Thanh toán trong 30 ngày',
+      terms: "Thanh toán trong 30 ngày",
       items: {
         create: [
           {
@@ -308,7 +341,7 @@ export async function seedTestData(): Promise<void> {
   const quote2 = await prisma.quote.create({
     data: {
       quoteNumber: `QUO-${year}-9902`,
-      status: 'SENT',
+      status: "SENT",
       contactId: contacts[1].id,
       companyId: companyA.id,
       createdById: memberUser.id,
@@ -338,9 +371,9 @@ export async function seedTestData(): Promise<void> {
   // ── Portal User + Session ───────────────────────────────────────
   const portalUser = await prisma.portalUser.create({
     data: {
-      email: 'portal-test@test.rtr.com',
+      email: "portal-test@test.rtr.com",
       firstName: `${TEST_PREFIX} Portal`,
-      lastName: 'User',
+      lastName: "User",
       companyId: companyA.id,
       isActive: true,
     },
@@ -356,15 +389,15 @@ export async function seedTestData(): Promise<void> {
     },
   })
 
-  console.log('  [seed] Created portal user + session')
+  console.log("  [seed] Created portal user + session")
 
   // ── Support Ticket ──────────────────────────────────────────────
   const ticket = await prisma.supportTicket.create({
     data: {
-      ticketNumber: 'TK-9901',
+      ticketNumber: "TK-9901",
       subject: `${TEST_PREFIX} Hỏi về đơn hàng`,
-      status: 'OPEN',
-      priority: 'MEDIUM',
+      status: "OPEN",
+      priority: "MEDIUM",
       portalUserId: portalUser.id,
       companyId: companyA.id,
       messages: {
@@ -378,14 +411,14 @@ export async function seedTestData(): Promise<void> {
     },
   })
 
-  console.log('  [seed] Created 1 test ticket')
+  console.log("  [seed] Created 1 test ticket")
 
   // ── Audience + Campaign ─────────────────────────────────────────
   const audience = await prisma.audience.create({
     data: {
       name: `${TEST_PREFIX} Khách VIP`,
-      description: 'Test audience for E2E',
-      type: 'STATIC',
+      description: "Test audience for E2E",
+      type: "STATIC",
       createdById: adminUser.id,
       members: {
         create: contacts.map((c) => ({
@@ -399,17 +432,17 @@ export async function seedTestData(): Promise<void> {
     data: {
       name: `${TEST_PREFIX} Chiến dịch Email`,
       subject: `${TEST_PREFIX} Ưu đãi tháng 2`,
-      content: 'Xin chào {{first_name}}, đây là ưu đãi đặc biệt!',
-      status: 'DRAFT',
-      type: 'EMAIL',
+      content: "Xin chào {{first_name}}, đây là ưu đãi đặc biệt!",
+      status: "DRAFT",
+      type: "EMAIL",
       audienceId: audience.id,
       createdById: adminUser.id,
       variants: {
         create: [
           {
-            name: 'Original',
+            name: "Original",
             subject: `${TEST_PREFIX} Ưu đãi tháng 2`,
-            content: 'Xin chào {{first_name}}, đây là ưu đãi đặc biệt!',
+            content: "Xin chào {{first_name}}, đây là ưu đãi đặc biệt!",
             splitPercent: 100,
           },
         ],
@@ -417,7 +450,7 @@ export async function seedTestData(): Promise<void> {
     },
   })
 
-  console.log('  [seed] Created 1 test audience + 1 test campaign')
+  console.log("  [seed] Created 1 test audience + 1 test campaign")
 }
 
 // ── Cleanup ─────────────────────────────────────────────────────────
@@ -428,7 +461,10 @@ export async function seedTestData(): Promise<void> {
  */
 export async function cleanupTestData(): Promise<void> {
   const prefixFilter = (field: string) => ({
-    OR: [{ [field]: { startsWith: TEST_PREFIX } }, { [field]: { startsWith: E2E_PREFIX } }],
+    OR: [
+      { [field]: { startsWith: TEST_PREFIX } },
+      { [field]: { startsWith: E2E_PREFIX } },
+    ],
   })
 
   // Delete ticket messages first (FK to tickets)
@@ -441,12 +477,12 @@ export async function cleanupTestData(): Promise<void> {
 
   // Delete tickets
   await prisma.supportTicket.deleteMany({
-    where: prefixFilter('subject'),
+    where: prefixFilter("subject"),
   })
 
   // Delete portal sessions for test portal users
   const testPortalUsers = await prisma.portalUser.findMany({
-    where: { email: { contains: 'test.rtr.com' } },
+    where: { email: { contains: "test.rtr.com" } },
     select: { id: true },
   })
   if (testPortalUsers.length > 0) {
@@ -457,41 +493,45 @@ export async function cleanupTestData(): Promise<void> {
 
   // Delete portal users
   await prisma.portalUser.deleteMany({
-    where: { email: { contains: 'test.rtr.com' } },
+    where: { email: { contains: "test.rtr.com" } },
   })
-  console.log('  [cleanup] Deleted test portal data')
+  console.log("  [cleanup] Deleted test portal data")
 
   // Delete campaign sends, variants, campaigns
   const testCampaigns = await prisma.campaign.findMany({
-    where: prefixFilter('name'),
+    where: prefixFilter("name"),
     select: { id: true },
   })
   if (testCampaigns.length > 0) {
     const ids = testCampaigns.map((c) => c.id)
     await prisma.campaignSend.deleteMany({ where: { campaignId: { in: ids } } })
-    await prisma.campaignVariant.deleteMany({ where: { campaignId: { in: ids } } })
+    await prisma.campaignVariant.deleteMany({
+      where: { campaignId: { in: ids } },
+    })
     await prisma.campaign.deleteMany({ where: { id: { in: ids } } })
   }
 
   // Delete audience members + audiences
   const testAudiences = await prisma.audience.findMany({
-    where: prefixFilter('name'),
+    where: prefixFilter("name"),
     select: { id: true },
   })
   if (testAudiences.length > 0) {
     const ids = testAudiences.map((a) => a.id)
-    await prisma.audienceMember.deleteMany({ where: { audienceId: { in: ids } } })
+    await prisma.audienceMember.deleteMany({
+      where: { audienceId: { in: ids } },
+    })
     await prisma.audience.deleteMany({ where: { id: { in: ids } } })
   }
-  console.log('  [cleanup] Deleted test campaigns + audiences')
+  console.log("  [cleanup] Deleted test campaigns + audiences")
 
   // Delete quote items + quotes
   const testQuotes = await prisma.quote.findMany({
-    where: { quoteNumber: { startsWith: 'QUO-' } },
+    where: { quoteNumber: { startsWith: "QUO-" } },
     select: { id: true, quoteNumber: true },
   })
   const e2eQuotes = testQuotes.filter(
-    (q) => q.quoteNumber.includes('990') || q.quoteNumber.includes('E2E')
+    (q) => q.quoteNumber.includes("990") || q.quoteNumber.includes("E2E")
   )
   // Also delete quotes created by test users that have [E2E] in notes
   const e2eCreatedQuotes = await prisma.quote.findMany({
@@ -500,34 +540,36 @@ export async function cleanupTestData(): Promise<void> {
   })
   const quoteIdsToDelete = [...e2eQuotes, ...e2eCreatedQuotes].map((q) => q.id)
   if (quoteIdsToDelete.length > 0) {
-    await prisma.quoteItem.deleteMany({ where: { quoteId: { in: quoteIdsToDelete } } })
+    await prisma.quoteItem.deleteMany({
+      where: { quoteId: { in: quoteIdsToDelete } },
+    })
     await prisma.quote.deleteMany({ where: { id: { in: quoteIdsToDelete } } })
   }
-  console.log('  [cleanup] Deleted test quotes')
+  console.log("  [cleanup] Deleted test quotes")
 
   // Delete activities
   await prisma.activity.deleteMany({
-    where: prefixFilter('subject'),
+    where: prefixFilter("subject"),
   })
-  console.log('  [cleanup] Deleted test activities')
+  console.log("  [cleanup] Deleted test activities")
 
   // Delete deals
   await prisma.deal.deleteMany({
-    where: prefixFilter('title'),
+    where: prefixFilter("title"),
   })
-  console.log('  [cleanup] Deleted test deals')
+  console.log("  [cleanup] Deleted test deals")
 
   // Delete contacts (must happen after quotes, deals, activities, audience members)
   await prisma.contact.deleteMany({
-    where: prefixFilter('firstName'),
+    where: prefixFilter("firstName"),
   })
-  console.log('  [cleanup] Deleted test contacts')
+  console.log("  [cleanup] Deleted test contacts")
 
   // Delete companies (must happen after contacts, quotes, portal users, tickets)
   await prisma.company.deleteMany({
-    where: prefixFilter('name'),
+    where: prefixFilter("name"),
   })
-  console.log('  [cleanup] Deleted test companies')
+  console.log("  [cleanup] Deleted test companies")
 }
 
 /**

@@ -1,112 +1,119 @@
 // Phase 11: Session Timeout Warning Component
 // Warns users about idle timeout and allows session extension
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Clock, X } from 'lucide-react';
-import { useAuth } from '../../auth/AuthProvider';
+import React, { useState, useEffect, useCallback } from "react"
+import { Clock, X } from "lucide-react"
+import { useAuth } from "../../auth/AuthProvider"
 
 interface SessionTimeoutProps {
-  idleTimeoutMinutes?: number;
-  warningMinutes?: number;
+  idleTimeoutMinutes?: number
+  warningMinutes?: number
 }
 
 export const SessionTimeoutWarning: React.FC<SessionTimeoutProps> = ({
   idleTimeoutMinutes = 30,
   warningMinutes = 5,
 }) => {
-  const { isAuthenticated, logout, refreshToken } = useAuth();
-  const [showWarning, setShowWarning] = useState(false);
-  const [remainingSeconds, setRemainingSeconds] = useState(0);
-  const [lastActivity, setLastActivity] = useState(Date.now());
+  const { isAuthenticated, logout, refreshToken } = useAuth()
+  const [showWarning, setShowWarning] = useState(false)
+  const [remainingSeconds, setRemainingSeconds] = useState(0)
+  const [lastActivity, setLastActivity] = useState(Date.now())
 
-  const idleTimeoutMs = idleTimeoutMinutes * 60 * 1000;
-  const warningMs = warningMinutes * 60 * 1000;
+  const idleTimeoutMs = idleTimeoutMinutes * 60 * 1000
+  const warningMs = warningMinutes * 60 * 1000
 
   // Track user activity
   const resetActivity = useCallback(() => {
-    setLastActivity(Date.now());
-    setShowWarning(false);
-  }, []);
+    setLastActivity(Date.now())
+    setShowWarning(false)
+  }, [])
 
   // Set up activity listeners
   useEffect(() => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated) return
 
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    const events = [
+      "mousedown",
+      "mousemove",
+      "keypress",
+      "scroll",
+      "touchstart",
+      "click",
+    ]
 
-    const throttledReset = throttle(resetActivity, 1000);
+    const throttledReset = throttle(resetActivity, 1000)
 
-    events.forEach(event => {
-      window.addEventListener(event, throttledReset, { passive: true });
-    });
+    events.forEach((event) => {
+      window.addEventListener(event, throttledReset, { passive: true })
+    })
 
     return () => {
-      events.forEach(event => {
-        window.removeEventListener(event, throttledReset);
-      });
-    };
-  }, [isAuthenticated, resetActivity]);
+      events.forEach((event) => {
+        window.removeEventListener(event, throttledReset)
+      })
+    }
+  }, [isAuthenticated, resetActivity])
 
   // Check idle time
   useEffect(() => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated) return
 
     const checkIdle = () => {
-      const idleTime = Date.now() - lastActivity;
-      const timeUntilTimeout = idleTimeoutMs - idleTime;
+      const idleTime = Date.now() - lastActivity
+      const timeUntilTimeout = idleTimeoutMs - idleTime
 
       if (timeUntilTimeout <= 0) {
         // Session expired
-        logout();
-        return;
+        logout()
+        return
       }
 
       if (timeUntilTimeout <= warningMs) {
         // Show warning
-        setShowWarning(true);
-        setRemainingSeconds(Math.ceil(timeUntilTimeout / 1000));
+        setShowWarning(true)
+        setRemainingSeconds(Math.ceil(timeUntilTimeout / 1000))
       } else {
-        setShowWarning(false);
+        setShowWarning(false)
       }
-    };
+    }
 
-    const interval = setInterval(checkIdle, 1000);
-    return () => clearInterval(interval);
-  }, [isAuthenticated, lastActivity, idleTimeoutMs, warningMs, logout]);
+    const interval = setInterval(checkIdle, 1000)
+    return () => clearInterval(interval)
+  }, [isAuthenticated, lastActivity, idleTimeoutMs, warningMs, logout])
 
   // Update countdown
   useEffect(() => {
-    if (!showWarning) return;
+    if (!showWarning) return
 
     const interval = setInterval(() => {
-      setRemainingSeconds(prev => {
+      setRemainingSeconds((prev) => {
         if (prev <= 1) {
-          logout();
-          return 0;
+          logout()
+          return 0
         }
-        return prev - 1;
-      });
-    }, 1000);
+        return prev - 1
+      })
+    }, 1000)
 
-    return () => clearInterval(interval);
-  }, [showWarning, logout]);
+    return () => clearInterval(interval)
+  }, [showWarning, logout])
 
   const handleExtendSession = async () => {
-    await refreshToken();
-    resetActivity();
-  };
+    await refreshToken()
+    resetActivity()
+  }
 
   const handleLogout = () => {
-    logout();
-  };
+    logout()
+  }
 
   const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, "0")}`
+  }
 
-  if (!showWarning) return null;
+  if (!showWarning) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -117,7 +124,9 @@ export const SessionTimeoutWarning: React.FC<SessionTimeoutProps> = ({
             <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
               <Clock className="w-5 h-5 text-yellow-600" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">Session Expiring</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Session Expiring
+            </h2>
           </div>
           <button
             onClick={handleExtendSession}
@@ -130,7 +139,8 @@ export const SessionTimeoutWarning: React.FC<SessionTimeoutProps> = ({
         {/* Content */}
         <div className="mb-6">
           <p className="text-gray-600 mb-4">
-            Your session will expire due to inactivity. You will be logged out in:
+            Your session will expire due to inactivity. You will be logged out
+            in:
           </p>
 
           {/* Countdown */}
@@ -169,39 +179,39 @@ export const SessionTimeoutWarning: React.FC<SessionTimeoutProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Throttle helper
 function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
-  let inThrottle = false;
+  let inThrottle = false
   return function (this: unknown, ...args: Parameters<T>) {
     if (!inThrottle) {
-      func.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
+      func.apply(this, args)
+      inThrottle = true
+      setTimeout(() => (inThrottle = false), limit)
     }
-  };
+  }
 }
 
 // Session Activity Hook
 export const useSessionActivity = () => {
-  const [lastActivity, setLastActivity] = useState(Date.now());
-  const [isIdle, setIsIdle] = useState(false);
+  const [lastActivity, setLastActivity] = useState(Date.now())
+  const [isIdle, setIsIdle] = useState(false)
 
   const updateActivity = useCallback(() => {
-    setLastActivity(Date.now());
-    setIsIdle(false);
-  }, []);
+    setLastActivity(Date.now())
+    setIsIdle(false)
+  }, [])
 
   const getIdleTime = useCallback(() => {
-    return Date.now() - lastActivity;
-  }, [lastActivity]);
+    return Date.now() - lastActivity
+  }, [lastActivity])
 
-  return { lastActivity, isIdle, setIsIdle, updateActivity, getIdleTime };
-};
+  return { lastActivity, isIdle, setIsIdle, updateActivity, getIdleTime }
+}
 
-export default SessionTimeoutWarning;
+export default SessionTimeoutWarning

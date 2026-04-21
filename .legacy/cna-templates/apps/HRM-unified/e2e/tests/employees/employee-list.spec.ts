@@ -7,9 +7,9 @@ test.describe("Employee List", () => {
   })
 
   test("page loads with heading", async ({ page }) => {
-    await expect(
-      page.getByRole("heading", { name: /Nhân viên/i })
-    ).toBeVisible({ timeout: 10000 })
+    await expect(page.getByRole("heading", { name: /Nhân viên/i })).toBeVisible(
+      { timeout: 10000 }
+    )
   })
 
   test("displays employee data or empty state", async ({ page }) => {

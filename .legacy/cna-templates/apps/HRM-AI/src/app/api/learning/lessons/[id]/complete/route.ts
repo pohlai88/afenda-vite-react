@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { z } from "zod"
 
 const completeSchema = z.object({
   enrollmentId: z.string(),
@@ -17,7 +17,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -29,7 +29,7 @@ export async function POST(
       include: {
         course: {
           include: {
-            modules: { orderBy: { order: 'asc' } },
+            modules: { orderBy: { order: "asc" } },
           },
         },
         moduleCompletions: true,
@@ -38,14 +38,14 @@ export async function POST(
 
     if (!enrollment) {
       return NextResponse.json(
-        { error: 'Enrollment not found' },
+        { error: "Enrollment not found" },
         { status: 404 }
       )
     }
 
     if (enrollment.employeeId !== session.user.employeeId) {
       return NextResponse.json(
-        { error: 'Not authorized to complete this module' },
+        { error: "Not authorized to complete this module" },
         { status: 403 }
       )
     }
@@ -57,7 +57,7 @@ export async function POST(
 
     if (!module || module.courseId !== enrollment.courseId) {
       return NextResponse.json(
-        { error: 'Module not found in this course' },
+        { error: "Module not found in this course" },
         { status: 404 }
       )
     }
@@ -74,7 +74,7 @@ export async function POST(
 
     if (existingCompletion) {
       return NextResponse.json(
-        { error: 'Module already completed' },
+        { error: "Module already completed" },
         { status: 400 }
       )
     }
@@ -93,9 +93,8 @@ export async function POST(
     const totalModules = enrollment.course.modules.length
     const completedModules = enrollment.moduleCompletions.length + 1
 
-    const progress = totalModules > 0
-      ? Math.round((completedModules / totalModules) * 100)
-      : 0
+    const progress =
+      totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0
 
     const isComplete = progress === 100
 
@@ -104,7 +103,7 @@ export async function POST(
       where: { id: data.enrollmentId },
       data: {
         progress,
-        status: isComplete ? 'COMPLETED' : 'IN_PROGRESS',
+        status: isComplete ? "COMPLETED" : "IN_PROGRESS",
         completedAt: isComplete ? new Date() : null,
         passed: isComplete ? true : null,
         certificateIssued: isComplete,
@@ -131,22 +130,24 @@ export async function POST(
         moduleCompleted: true,
         enrollmentProgress: progress,
         isEnrollmentComplete: isComplete,
-        certificate: certificate ? {
-          id: certificate.id,
-          certificateNumber: certificate.certificateNumber,
-        } : null,
+        certificate: certificate
+          ? {
+              id: certificate.id,
+              certificateNumber: certificate.certificateNumber,
+            }
+          : null,
       },
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    console.error('Error completing module:', error)
+    console.error("Error completing module:", error)
     return NextResponse.json(
-      { error: 'Failed to complete module' },
+      { error: "Failed to complete module" },
       { status: 500 }
     )
   }

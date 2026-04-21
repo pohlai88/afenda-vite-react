@@ -1,5 +1,8 @@
-import { db } from '@/lib/db'
-import type { CreateBranchInput, UpdateBranchInput } from '@/lib/validations/branch'
+import { db } from "@/lib/db"
+import type {
+  CreateBranchInput,
+  UpdateBranchInput,
+} from "@/lib/validations/branch"
 
 export const branchService = {
   async findAll(tenantId: string, includeInactive = false) {
@@ -13,7 +16,7 @@ export const branchService = {
           select: { employees: true },
         },
       },
-      orderBy: [{ isHeadquarters: 'desc' }, { name: 'asc' }],
+      orderBy: [{ isHeadquarters: "desc" }, { name: "asc" }],
     })
   },
 
@@ -35,7 +38,7 @@ export const branchService = {
     })
 
     if (existing) {
-      throw new Error('Mã chi nhánh đã tồn tại')
+      throw new Error("Mã chi nhánh đã tồn tại")
     }
 
     // If this is headquarters, unset other headquarters
@@ -66,7 +69,7 @@ export const branchService = {
     })
 
     if (!current) {
-      throw new Error('Chi nhánh không tồn tại')
+      throw new Error("Chi nhánh không tồn tại")
     }
 
     // Check for duplicate code if code is being updated
@@ -76,7 +79,7 @@ export const branchService = {
       })
 
       if (existing) {
-        throw new Error('Mã chi nhánh đã tồn tại')
+        throw new Error("Mã chi nhánh đã tồn tại")
       }
     }
 
@@ -96,7 +99,9 @@ export const branchService = {
         ...(data.address !== undefined && { address: data.address }),
         ...(data.phone !== undefined && { phone: data.phone }),
         ...(data.email !== undefined && { email: data.email }),
-        ...(data.isHeadquarters !== undefined && { isHeadquarters: data.isHeadquarters }),
+        ...(data.isHeadquarters !== undefined && {
+          isHeadquarters: data.isHeadquarters,
+        }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
       },
     })
@@ -113,11 +118,11 @@ export const branchService = {
     })
 
     if (!branch) {
-      throw new Error('Chi nhánh không tồn tại')
+      throw new Error("Chi nhánh không tồn tại")
     }
 
     if (branch._count.employees > 0) {
-      throw new Error('Không thể xóa chi nhánh đang có nhân viên')
+      throw new Error("Không thể xóa chi nhánh đang có nhân viên")
     }
 
     return db.branch.delete({

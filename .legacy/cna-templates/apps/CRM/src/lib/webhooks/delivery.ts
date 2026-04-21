@@ -1,10 +1,10 @@
-import crypto from 'crypto'
-import { prisma } from '@/lib/prisma'
+import crypto from "crypto"
+import { prisma } from "@/lib/prisma"
 
 // ── HMAC Signature ──────────────────────────────────────────────
 
 export function generateSignature(payload: string, secret: string): string {
-  return crypto.createHmac('sha256', secret).update(payload).digest('hex')
+  return crypto.createHmac("sha256", secret).update(payload).digest("hex")
 }
 
 // ── Delivery Result ─────────────────────────────────────────────
@@ -39,13 +39,13 @@ export async function deliverWebhook(
     const timeout = setTimeout(() => controller.abort(), 5000)
 
     const res = await fetch(webhook.url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'X-VietERP-Signature': `sha256=${signature}`,
-        'X-VietERP-Event': event,
-        'X-VietERP-Delivery': deliveryId,
-        'User-Agent': 'VietERP-CRM-Webhook/1.0',
+        "Content-Type": "application/json",
+        "X-VietERP-Signature": `sha256=${signature}`,
+        "X-VietERP-Event": event,
+        "X-VietERP-Delivery": deliveryId,
+        "User-Agent": "VietERP-CRM-Webhook/1.0",
       },
       body,
       signal: controller.signal,
@@ -62,30 +62,32 @@ export async function deliverWebhook(
       responseText = null
     }
   } catch (err: unknown) {
-    error = err instanceof Error ? err.message : 'Unknown error'
-    if (error.includes('abort')) {
-      error = 'Request timed out (5s)'
+    error = err instanceof Error ? err.message : "Unknown error"
+    if (error.includes("abort")) {
+      error = "Request timed out (5s)"
     }
   }
 
   const duration = Date.now() - start
 
   // Log to DB (fire-and-forget)
-  prisma.webhookLog.create({
-    data: {
-      webhookId: webhook.id,
-      event,
-      payload: payload as any,
-      statusCode,
-      response: responseText,
-      success,
-      duration,
-      attempt,
-      error,
-    },
-  }).catch((err) => {
-    console.error('[Webhook] Failed to log delivery:', err)
-  })
+  prisma.webhookLog
+    .create({
+      data: {
+        webhookId: webhook.id,
+        event,
+        payload: payload as any,
+        statusCode,
+        response: responseText,
+        success,
+        duration,
+        attempt,
+        error,
+      },
+    })
+    .catch((err) => {
+      console.error("[Webhook] Failed to log delivery:", err)
+    })
 
   return { success, statusCode, duration, error }
 }

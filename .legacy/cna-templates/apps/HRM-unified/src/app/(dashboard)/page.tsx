@@ -10,7 +10,11 @@ import {
   BarChartTerminal,
   Sparkline,
 } from "@/components/charts"
-import { useAnimatedCounter, formatCurrency, staggerStyle } from "@/lib/animation"
+import {
+  useAnimatedCounter,
+  formatCurrency,
+  staggerStyle,
+} from "@/lib/animation"
 import {
   Users,
   UserCheck,
@@ -68,13 +72,13 @@ export default function DashboardPage() {
 
   const fetchDashboard = async () => {
     try {
-      const res = await fetch('/api/dashboard/stats')
+      const res = await fetch("/api/dashboard/stats")
       if (res.ok) {
         const json = await res.json()
         setData(json.data)
       }
     } catch (error) {
-      console.error('Error fetching dashboard:', error)
+      console.error("Error fetching dashboard:", error)
     } finally {
       setLoading(false)
     }
@@ -97,7 +101,9 @@ export default function DashboardPage() {
   const activeToday = data?.attendance.activeToday ?? 0
   const attendanceRate = data?.attendance.attendanceRate ?? 0
   const onLeaveToday = data?.attendance.onLeaveToday ?? 0
-  const pendingApprovals = (data?.alerts.pendingApprovals ?? 0) + (data?.alerts.pendingLeaveRequests ?? 0)
+  const pendingApprovals =
+    (data?.alerts.pendingApprovals ?? 0) +
+    (data?.alerts.pendingLeaveRequests ?? 0)
   const attendanceTrend = data?.attendanceTrend ?? []
   const departmentData = data?.distribution.department ?? []
   const recentActivities = data?.recentActivities ?? []
@@ -118,7 +124,11 @@ export default function DashboardPage() {
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground font-mono">
-            Cập nhật: {new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
+            Cập nhật:{" "}
+            {new Date().toLocaleTimeString("vi-VN", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </span>
         </div>
       </div>
@@ -172,7 +182,9 @@ export default function DashboardPage() {
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Quỹ lương tháng này</p>
+              <p className="text-sm text-muted-foreground">
+                Quỹ lương tháng này
+              </p>
               <p className="text-2xl sm:text-3xl font-bold font-mono mt-1 text-primary">
                 {formatCurrency(animatedPayroll)}
               </p>
@@ -180,7 +192,11 @@ export default function DashboardPage() {
                 <span className="text-xs">Từ kỳ lương gần nhất</span>
               </div>
             </div>
-            <Sparkline data={[42, 45, 48, 46, 52, 55, 58]} height={48} width={80} />
+            <Sparkline
+              data={[42, 45, 48, 46, 52, 55, 58]}
+              height={48}
+              width={80}
+            />
           </div>
         </div>
 
@@ -190,7 +206,9 @@ export default function DashboardPage() {
           style={staggerStyle(5)}
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-sm">Xu hướng chấm công tuần này</h3>
+            <h3 className="font-semibold text-sm">
+              Xu hướng chấm công tuần này
+            </h3>
             <Link
               href="/attendance"
               className="text-xs text-primary hover:underline flex items-center gap-0.5"
@@ -242,7 +260,9 @@ export default function DashboardPage() {
           </div>
           <div className="space-y-2">
             {recentActivities.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-8">Chưa có hoạt động nào</p>
+              <p className="text-sm text-muted-foreground text-center py-8">
+                Chưa có hoạt động nào
+              </p>
             ) : (
               recentActivities.map((activity, index) => (
                 <div
@@ -263,7 +283,9 @@ export default function DashboardPage() {
                     )}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{activity.action}</p>
+                    <p className="text-sm font-medium truncate">
+                      {activity.action}
+                    </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       {activity.user} • {activity.time}
                     </p>

@@ -1,6 +1,9 @@
 # ══════════════════════════════════════════════════════════════════════════════
-#                    📅 WEEK 1: SETUP & CORE INFRASTRUCTURE
-#                         Detailed Sprint Tasks
+
+# 📅 WEEK 1: SETUP & CORE INFRASTRUCTURE
+
+# Detailed Sprint Tasks
+
 # ══════════════════════════════════════════════════════════════════════════════
 
 ## 🎯 SPRINT GOALS
@@ -16,6 +19,7 @@
 ## 📋 DAY 1: CLEANUP & PREPARATION
 
 ### Task 1.1: Run Cleanup Script
+
 ```bash
 cd /Users/mac/TPM-TPO
 chmod +x cleanup.sh
@@ -23,6 +27,7 @@ chmod +x cleanup.sh
 ```
 
 **Expected Result:**
+
 ```
 TPM-TPO/
 ├── vierp-tpm/        ✅ KEEP (reference)
@@ -32,6 +37,7 @@ TPM-TPO/
 ```
 
 ### Task 1.2: Create Migration Branch
+
 ```bash
 cd /Users/mac/TPM-TPO/vierp-tpm-web
 git checkout main
@@ -40,6 +46,7 @@ git checkout -b feature/full-migration
 ```
 
 ### Task 1.3: Verify Current State
+
 ```bash
 # Check v2 structure
 ls -la apps/
@@ -56,6 +63,7 @@ npx prisma studio
 ## 📋 DAY 2: DATABASE SCHEMA ANALYSIS
 
 ### Task 2.1: Export Both Schemas
+
 ```bash
 # Export old schema
 cat /Users/mac/TPM-TPO/vierp-tpm/packages/database/prisma/schema.prisma > /tmp/schema-old.prisma
@@ -401,6 +409,7 @@ enum CommandStatus {
 ## 📋 DAY 3: APPLY SCHEMA CHANGES
 
 ### Task 3.1: Update schema.prisma
+
 ```bash
 cd /Users/mac/TPM-TPO/vierp-tpm-web/apps/api
 
@@ -412,6 +421,7 @@ cp prisma/schema.prisma prisma/schema.prisma.backup
 ```
 
 ### Task 3.2: Generate Migration
+
 ```bash
 # Create migration
 npx prisma migrate dev --name add_finance_planning_operations_models
@@ -424,6 +434,7 @@ npx prisma generate
 ```
 
 ### Task 3.3: Verify Schema
+
 ```bash
 # Open Prisma Studio
 npx prisma studio
@@ -437,6 +448,7 @@ npx prisma studio
 ## 📋 DAY 4: API STRUCTURE SETUP
 
 ### Task 4.1: Create API Folder Structure
+
 ```bash
 cd /Users/mac/TPM-TPO/vierp-tpm-web/apps/api/src
 
@@ -470,12 +482,13 @@ touch api/ai/voice.ts
 ```
 
 ### Task 4.2: Create Route Index Files
+
 ```typescript
 // api/finance/index.ts
-export * from './accruals';
-export * from './deductions';
-export * from './gl-journals';
-export * from './chequebook';
+export * from "./accruals"
+export * from "./deductions"
+export * from "./gl-journals"
+export * from "./chequebook"
 ```
 
 ---
@@ -483,6 +496,7 @@ export * from './chequebook';
 ## 📋 DAY 5: SHARED UTILITIES & TESTING
 
 ### Task 5.1: Create Shared Types
+
 ```bash
 cd /Users/mac/TPM-TPO/vierp-tpm-web/packages/shared/src
 
@@ -491,6 +505,7 @@ cd /Users/mac/TPM-TPO/vierp-tpm-web/packages/shared/src
 ```
 
 ### Task 5.2: Verify Everything Works
+
 ```bash
 # Run development servers
 cd /Users/mac/TPM-TPO/vierp-tpm-web
@@ -504,6 +519,7 @@ curl http://localhost:3000/api/promotions
 ```
 
 ### Task 5.3: Commit Week 1 Progress
+
 ```bash
 git add .
 git commit -m "feat: Week 1 - Setup migration infrastructure
@@ -521,26 +537,31 @@ git push origin feature/full-migration
 ## ✅ WEEK 1 CHECKLIST
 
 ### Day 1
+
 - [ ] Run cleanup script
 - [ ] Verify only 2 directories remain
 - [ ] Create feature/full-migration branch
 
 ### Day 2
+
 - [ ] Export both schemas
 - [ ] Identify 16 missing models
 - [ ] Document schema differences
 
 ### Day 3
+
 - [ ] Add new models to schema.prisma
 - [ ] Run prisma migrate/push
 - [ ] Verify in Prisma Studio
 
 ### Day 4
+
 - [ ] Create API folder structure
 - [ ] Create placeholder files
 - [ ] Setup route indexes
 
 ### Day 5
+
 - [ ] Add shared types
 - [ ] Test everything works
 - [ ] Commit and push
@@ -549,19 +570,20 @@ git push origin feature/full-migration
 
 ## 📊 WEEK 1 METRICS
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| Directories cleaned | 2 | |
-| Models added | 16 | |
-| API folders created | 5 | |
-| Tests passing | 100% | |
-| Commit pushed | ✅ | |
+| Metric              | Target | Actual |
+| ------------------- | ------ | ------ |
+| Directories cleaned | 2      |        |
+| Models added        | 16     |        |
+| API folders created | 5      |        |
+| Tests passing       | 100%   |        |
+| Commit pushed       | ✅     |        |
 
 ---
 
 ## 🚀 READY FOR WEEK 2
 
 After completing Week 1, you're ready to start implementing:
+
 - **Week 2: Finance Module** (Accrual, Deductions, GL, Chequebook)
 
 See `WEEK-2-FINANCE.md` for detailed tasks.

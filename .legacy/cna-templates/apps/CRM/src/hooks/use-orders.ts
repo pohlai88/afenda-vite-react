@@ -1,21 +1,17 @@
-'use client'
+"use client"
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import type { SalesOrder, OrderWithItems } from '@/types'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import type { SalesOrder, OrderWithItems } from "@/types"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 function buildUrl(
   base: string,
-  params?: Record<string, string | number | undefined | null>,
+  params?: Record<string, string | number | undefined | null>
 ) {
   const url = new URL(base, window.location.origin)
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
+      if (value !== undefined && value !== null && value !== "") {
         url.searchParams.set(key, String(value))
       }
     })
@@ -54,9 +50,14 @@ interface OrderListResponse {
 /** List orders with optional filters. */
 export function useOrders(params?: OrderListParams) {
   return useQuery<OrderListResponse>({
-    queryKey: ['orders', params],
+    queryKey: ["orders", params],
     queryFn: () =>
-      fetchJson<OrderListResponse>(buildUrl('/api/orders', params as Record<string, string | number | undefined>)),
+      fetchJson<OrderListResponse>(
+        buildUrl(
+          "/api/orders",
+          params as Record<string, string | number | undefined>
+        )
+      ),
     staleTime: 30_000,
   })
 }
@@ -64,7 +65,7 @@ export function useOrders(params?: OrderListParams) {
 /** Fetch a single order by ID. */
 export function useOrder(id: string) {
   return useQuery<OrderWithItems>({
-    queryKey: ['orders', id],
+    queryKey: ["orders", id],
     queryFn: () => fetchJson<OrderWithItems>(`/api/orders/${id}`),
     enabled: !!id,
     staleTime: 30_000,
@@ -77,15 +78,19 @@ export function useOrder(id: string) {
 export function useCreateOrder() {
   const qc = useQueryClient()
 
-  return useMutation<SalesOrder, Error, Partial<SalesOrder> & { items?: Array<Record<string, unknown>> }>({
+  return useMutation<
+    SalesOrder,
+    Error,
+    Partial<SalesOrder> & { items?: Array<Record<string, unknown>> }
+  >({
     mutationFn: (data) =>
-      fetchJson<SalesOrder>('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetchJson<SalesOrder>("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['orders'] })
+      qc.invalidateQueries({ queryKey: ["orders"] })
     },
   })
 }
@@ -109,13 +114,13 @@ export function useTransitionOrder() {
   >({
     mutationFn: ({ id, ...data }) =>
       fetchJson<OrderWithItems>(`/api/orders/${id}/transition`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: (_data, variables) => {
-      qc.invalidateQueries({ queryKey: ['orders', variables.id] })
-      qc.invalidateQueries({ queryKey: ['orders'] })
+      qc.invalidateQueries({ queryKey: ["orders", variables.id] })
+      qc.invalidateQueries({ queryKey: ["orders"] })
     },
   })
 }

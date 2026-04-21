@@ -1,7 +1,7 @@
 // src/services/engagement/recognition.service.ts
 // Recognition & Kudos Service
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -18,12 +18,16 @@ export interface CreateRecognitionInput {
 // RECOGNITIONS
 // ═══════════════════════════════════════════════════════════════
 
-export async function createRecognition(tenantId: string, giverId: string, input: CreateRecognitionInput) {
+export async function createRecognition(
+  tenantId: string,
+  giverId: string,
+  input: CreateRecognitionInput
+) {
   // Get category for points value
   const category = await db.recognitionCategory.findFirst({
-    where: { id: input.categoryId, tenantId, isActive: true }
+    where: { id: input.categoryId, tenantId, isActive: true },
   })
-  if (!category) throw new Error('Category not found')
+  if (!category) throw new Error("Category not found")
 
   return db.recognition.create({
     data: {
@@ -39,17 +43,20 @@ export async function createRecognition(tenantId: string, giverId: string, input
       giver: { select: { id: true, fullName: true } },
       receiver: { select: { id: true, fullName: true } },
       category: true,
-    }
+    },
   })
 }
 
-export async function listRecognitions(tenantId: string, filters?: {
-  receiverId?: string
-  giverId?: string
-  isPublic?: boolean
-  page?: number
-  limit?: number
-}) {
+export async function listRecognitions(
+  tenantId: string,
+  filters?: {
+    receiverId?: string
+    giverId?: string
+    isPublic?: boolean
+    page?: number
+    limit?: number
+  }
+) {
   const page = filters?.page || 1
   const limit = filters?.limit || 20
   const where: Record<string, unknown> = { tenantId }
@@ -67,15 +74,15 @@ export async function listRecognitions(tenantId: string, filters?: {
         reactions: { select: { id: true, emoji: true, employeeId: true } },
         comments: { select: { id: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
-    db.recognition.count({ where })
+    db.recognition.count({ where }),
   ])
 
   return {
-    recognitions: recognitions.map(r => ({
+    recognitions: recognitions.map((r) => ({
       ...r,
       reactionCount: r.reactions.length,
       commentCount: r.comments.length,
@@ -94,13 +101,13 @@ export async function getRecognition(tenantId: string, recognitionId: string) {
       receiver: { select: { id: true, fullName: true } },
       category: true,
       reactions: {
-        include: { employee: { select: { id: true, fullName: true } } }
+        include: { employee: { select: { id: true, fullName: true } } },
       },
       comments: {
         include: { author: { select: { id: true, fullName: true } } },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: "asc" },
       },
-    }
+    },
   })
 }
 
@@ -108,9 +115,16 @@ export async function getRecognition(tenantId: string, recognitionId: string) {
 // REACTIONS
 // ═══════════════════════════════════════════════════════════════
 
-export async function addReaction(tenantId: string, recognitionId: string, employeeId: string, emoji: string) {
-  const recognition = await db.recognition.findFirst({ where: { id: recognitionId, tenantId } })
-  if (!recognition) throw new Error('Recognition not found')
+export async function addReaction(
+  tenantId: string,
+  recognitionId: string,
+  employeeId: string,
+  emoji: string
+) {
+  const recognition = await db.recognition.findFirst({
+    where: { id: recognitionId, tenantId },
+  })
+  if (!recognition) throw new Error("Recognition not found")
 
   // Upsert - if already reacted, update the emoji
   return db.recognitionReaction.upsert({
@@ -125,27 +139,36 @@ export async function addReaction(tenantId: string, recognitionId: string, emplo
 // ═══════════════════════════════════════════════════════════════
 
 export async function getComments(tenantId: string, recognitionId: string) {
-  const recognition = await db.recognition.findFirst({ where: { id: recognitionId, tenantId } })
-  if (!recognition) throw new Error('Recognition not found')
+  const recognition = await db.recognition.findFirst({
+    where: { id: recognitionId, tenantId },
+  })
+  if (!recognition) throw new Error("Recognition not found")
 
   return db.recognitionComment.findMany({
     where: { recognitionId },
     include: {
-      author: { select: { id: true, fullName: true } }
+      author: { select: { id: true, fullName: true } },
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: "asc" },
   })
 }
 
-export async function addComment(tenantId: string, recognitionId: string, authorId: string, content: string) {
-  const recognition = await db.recognition.findFirst({ where: { id: recognitionId, tenantId } })
-  if (!recognition) throw new Error('Recognition not found')
+export async function addComment(
+  tenantId: string,
+  recognitionId: string,
+  authorId: string,
+  content: string
+) {
+  const recognition = await db.recognition.findFirst({
+    where: { id: recognitionId, tenantId },
+  })
+  if (!recognition) throw new Error("Recognition not found")
 
   return db.recognitionComment.create({
     data: { recognitionId, authorId, content },
     include: {
-      author: { select: { id: true, fullName: true } }
-    }
+      author: { select: { id: true, fullName: true } },
+    },
   })
 }
 
@@ -156,6 +179,6 @@ export async function addComment(tenantId: string, recognitionId: string, author
 export async function listCategories(tenantId: string) {
   return db.recognitionCategory.findMany({
     where: { tenantId, isActive: true },
-    orderBy: { sortOrder: 'asc' },
+    orderBy: { sortOrder: "asc" },
   })
 }

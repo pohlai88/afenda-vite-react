@@ -1,10 +1,14 @@
-'use client'
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { JOB_POSTING_STATUS, JOB_TYPE, WORK_MODE } from '@/lib/recruitment/constants'
-import type { JobPosting } from '@/types/recruitment'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  JOB_POSTING_STATUS,
+  JOB_TYPE,
+  WORK_MODE,
+} from "@/lib/recruitment/constants"
+import type { JobPosting } from "@/types/recruitment"
 import {
   MapPin,
   Briefcase,
@@ -14,7 +18,7 @@ import {
   Calendar,
   ExternalLink,
   Edit,
-} from 'lucide-react'
+} from "lucide-react"
 
 interface JobPostingCardProps {
   posting: JobPosting
@@ -22,27 +26,32 @@ interface JobPostingCardProps {
   onView?: () => void
 }
 
-export function JobPostingCard({ posting, onEdit, onView }: JobPostingCardProps) {
+export function JobPostingCard({
+  posting,
+  onEdit,
+  onView,
+}: JobPostingCardProps) {
   const statusConfig = JOB_POSTING_STATUS[posting.status] || {
     label: posting.status,
-    color: 'gray',
+    color: "gray",
   }
 
   const statusColorMap: Record<string, string> = {
-    gray: 'bg-gray-100 text-gray-800',
-    green: 'bg-green-100 text-green-800',
-    red: 'bg-red-100 text-red-800',
+    gray: "bg-gray-100 text-gray-800",
+    green: "bg-green-100 text-green-800",
+    red: "bg-red-100 text-red-800",
   }
 
   const formattedDate = posting.publishedAt
-    ? new Date(posting.publishedAt).toLocaleDateString('vi-VN')
+    ? new Date(posting.publishedAt).toLocaleDateString("vi-VN")
     : null
 
   const expiryDate = posting.expiresAt
-    ? new Date(posting.expiresAt).toLocaleDateString('vi-VN')
+    ? new Date(posting.expiresAt).toLocaleDateString("vi-VN")
     : null
 
-  const isExpired = posting.expiresAt && new Date(posting.expiresAt) < new Date()
+  const isExpired =
+    posting.expiresAt && new Date(posting.expiresAt) < new Date()
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -51,7 +60,11 @@ export function JobPostingCard({ posting, onEdit, onView }: JobPostingCardProps)
           <div className="flex-1">
             <CardTitle className="text-base">{posting.title}</CardTitle>
             <div className="flex items-center gap-2 mt-1">
-              <Badge className={statusColorMap[statusConfig.color] || statusColorMap.gray}>
+              <Badge
+                className={
+                  statusColorMap[statusConfig.color] || statusColorMap.gray
+                }
+              >
                 {statusConfig.label}
               </Badge>
               {posting.isInternal && (
@@ -123,9 +136,7 @@ export function JobPostingCard({ posting, onEdit, onView }: JobPostingCardProps)
               </span>
             )}
             {expiryDate && (
-              <span className="text-xs mt-0.5 block">
-                HH: {expiryDate}
-              </span>
+              <span className="text-xs mt-0.5 block">HH: {expiryDate}</span>
             )}
           </div>
         </div>

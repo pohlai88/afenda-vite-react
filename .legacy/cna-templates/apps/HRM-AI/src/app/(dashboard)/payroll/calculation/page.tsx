@@ -52,9 +52,7 @@ export default function PayrollCalculationPage() {
         <Card>
           <CardHeader>
             <CardTitle>Quy trình tính lương</CardTitle>
-            <CardDescription>
-              Các bước thực hiện tính lương
-            </CardDescription>
+            <CardDescription>Các bước thực hiện tính lương</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-center gap-2">
@@ -99,9 +97,7 @@ export default function PayrollCalculationPage() {
         <Card>
           <CardHeader>
             <CardTitle>Công thức tính</CardTitle>
-            <CardDescription>
-              Công thức tính lương VN
-            </CardDescription>
+            <CardDescription>Công thức tính lương VN</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <div>

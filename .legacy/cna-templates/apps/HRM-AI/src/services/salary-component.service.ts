@@ -1,10 +1,14 @@
 // src/services/salary-component.service.ts
 // Salary Component Service
 
-import { db } from '@/lib/db'
-import type { Prisma, PayrollComponentCategory, PayrollItemType } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
-import { DEFAULT_SALARY_COMPONENTS } from '@/lib/payroll/constants'
+import { db } from "@/lib/db"
+import type {
+  Prisma,
+  PayrollComponentCategory,
+  PayrollItemType,
+} from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
+import { DEFAULT_SALARY_COMPONENTS } from "@/lib/payroll/constants"
 
 export interface SalaryComponentFilters {
   search?: string
@@ -27,14 +31,21 @@ export const salaryComponentService = {
     tenantId: string,
     filters: SalaryComponentFilters = {}
   ): Promise<PaginatedResponse<Prisma.SalaryComponentGetPayload<object>>> {
-    const { search, category, itemType, isActive, page = 1, pageSize = 50 } = filters
+    const {
+      search,
+      category,
+      itemType,
+      isActive,
+      page = 1,
+      pageSize = 50,
+    } = filters
 
     const where: Prisma.SalaryComponentWhereInput = {
       tenantId,
       ...(search && {
         OR: [
-          { name: { contains: search, mode: 'insensitive' } },
-          { code: { contains: search, mode: 'insensitive' } },
+          { name: { contains: search, mode: "insensitive" } },
+          { code: { contains: search, mode: "insensitive" } },
         ],
       }),
       ...(category && { category }),
@@ -45,7 +56,7 @@ export const salaryComponentService = {
     const [data, total] = await Promise.all([
       db.salaryComponent.findMany({
         where,
-        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -87,7 +98,7 @@ export const salaryComponentService = {
   async getActiveComponents(tenantId: string) {
     return db.salaryComponent.findMany({
       where: { tenantId, isActive: true },
-      orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     })
   },
 
@@ -97,7 +108,7 @@ export const salaryComponentService = {
   async getByType(tenantId: string, itemType: PayrollItemType) {
     return db.salaryComponent.findMany({
       where: { tenantId, itemType, isActive: true },
-      orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     })
   },
 
@@ -107,7 +118,7 @@ export const salaryComponentService = {
   async getByCategory(tenantId: string, category: PayrollComponentCategory) {
     return db.salaryComponent.findMany({
       where: { tenantId, category, isActive: true },
-      orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     })
   },
 
@@ -116,7 +127,7 @@ export const salaryComponentService = {
    */
   async create(
     tenantId: string,
-    data: Omit<Prisma.SalaryComponentCreateInput, 'tenant'>
+    data: Omit<Prisma.SalaryComponentCreateInput, "tenant">
   ) {
     // Check for duplicate code
     const existing = await this.findByCode(tenantId, data.code as string)
@@ -138,23 +149,30 @@ export const salaryComponentService = {
   async update(
     tenantId: string,
     id: string,
-    data: Omit<Prisma.SalaryComponentUpdateInput, 'tenant'>
+    data: Omit<Prisma.SalaryComponentUpdateInput, "tenant">
   ) {
     const component = await db.salaryComponent.findFirst({
       where: { id, tenantId },
     })
 
     if (!component) {
-      throw new Error('Thành phần lương không tồn tại')
+      throw new Error("Thành phần lương không tồn tại")
     }
 
     if (component.isSystem) {
       // Only allow updating certain fields for system components
-      const allowedFields = ['isActive', 'defaultAmount', 'description', 'sortOrder']
+      const allowedFields = [
+        "isActive",
+        "defaultAmount",
+        "description",
+        "sortOrder",
+      ]
       const updateData: Prisma.SalaryComponentUpdateInput = {}
       for (const field of allowedFields) {
         if (field in data) {
-          (updateData as Record<string, unknown>)[field] = (data as Record<string, unknown>)[field]
+          ;(updateData as Record<string, unknown>)[field] = (
+            data as Record<string, unknown>
+          )[field]
         }
       }
       return db.salaryComponent.update({
@@ -191,15 +209,17 @@ export const salaryComponentService = {
     })
 
     if (!component) {
-      throw new Error('Thành phần lương không tồn tại')
+      throw new Error("Thành phần lương không tồn tại")
     }
 
     if (component.isSystem) {
-      throw new Error('Không thể xóa thành phần lương hệ thống')
+      throw new Error("Không thể xóa thành phần lương hệ thống")
     }
 
     if (component._count.payrollItems > 0) {
-      throw new Error('Không thể xóa thành phần lương đã được sử dụng trong bảng lương')
+      throw new Error(
+        "Không thể xóa thành phần lương đã được sử dụng trong bảng lương"
+      )
     }
 
     return db.salaryComponent.delete({
@@ -220,7 +240,7 @@ export const salaryComponentService = {
     })
 
     if (existing > 0) {
-      return { created: 0, message: 'Đã có thành phần lương' }
+      return { created: 0, message: "Đã có thành phần lương" }
     }
 
     const components = DEFAULT_SALARY_COMPONENTS.map((comp) => ({
@@ -240,7 +260,10 @@ export const salaryComponentService = {
       data: components,
     })
 
-    return { created: components.length, message: `Đã tạo ${components.length} thành phần lương` }
+    return {
+      created: components.length,
+      message: `Đã tạo ${components.length} thành phần lương`,
+    }
   },
 
   // ═══════════════════════════════════════════════════════════════
@@ -251,20 +274,20 @@ export const salaryComponentService = {
    * Get earnings components
    */
   async getEarnings(tenantId: string) {
-    return this.getByType(tenantId, 'EARNING')
+    return this.getByType(tenantId, "EARNING")
   },
 
   /**
    * Get deduction components
    */
   async getDeductions(tenantId: string) {
-    return this.getByType(tenantId, 'DEDUCTION')
+    return this.getByType(tenantId, "DEDUCTION")
   },
 
   /**
    * Get employer cost components
    */
   async getEmployerCosts(tenantId: string) {
-    return this.getByType(tenantId, 'EMPLOYER_COST')
+    return this.getByType(tenantId, "EMPLOYER_COST")
   },
 }

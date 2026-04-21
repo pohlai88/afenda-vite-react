@@ -18,8 +18,11 @@ import type { DatabaseClient } from "../client"
 import { tenantMemberships } from "../schema/iam/tenant-memberships.schema"
 import { tenantRoleAssignments } from "../schema/iam/tenant-role-assignments.schema"
 import { tenantRoles } from "../schema/iam/tenant-roles.schema"
-import { effectiveOnAsOfDatePredicate } from "./helpers/effective-row"
-import { assertIsoDateOnly, todayIsoDateUtc } from "./helpers/iso-date"
+import { effectiveOnAsOfDatePredicate } from "./query-primitives/effective-date-predicate"
+import {
+  assertIsoDateOnly,
+  todayIsoDateUtc,
+} from "./query-primitives/iso-date-assertions"
 
 export type TenantMembershipRecord = InferSelectModel<typeof tenantMemberships>
 export type TenantRoleAssignmentRecord = InferSelectModel<

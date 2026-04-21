@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { predictiveAnalyticsService } from '@/services/analytics'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { predictiveAnalyticsService } from "@/services/analytics"
+import { z } from "zod"
 
 const recordOutcomeSchema = z.object({
   outcome: z.string().min(1),
@@ -15,7 +15,7 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const tenantId = session.user.tenantId
@@ -25,7 +25,10 @@ export async function GET(
     )
 
     if (!prediction) {
-      return NextResponse.json({ error: 'Prediction not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Prediction not found" },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json({
@@ -33,9 +36,9 @@ export async function GET(
       data: prediction,
     })
   } catch (error) {
-    console.error('Error fetching prediction:', error)
+    console.error("Error fetching prediction:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch prediction' },
+      { error: "Failed to fetch prediction" },
       { status: 500 }
     )
   }
@@ -49,12 +52,12 @@ export async function PATCH(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Only allow admin/HR roles
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const tenantId = session.user.tenantId
@@ -70,18 +73,18 @@ export async function PATCH(
     return NextResponse.json({
       success: true,
       data: prediction,
-      message: 'Outcome recorded successfully',
+      message: "Outcome recorded successfully",
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    console.error('Error recording outcome:', error)
+    console.error("Error recording outcome:", error)
     return NextResponse.json(
-      { error: 'Failed to record outcome' },
+      { error: "Failed to record outcome" },
       { status: 500 }
     )
   }

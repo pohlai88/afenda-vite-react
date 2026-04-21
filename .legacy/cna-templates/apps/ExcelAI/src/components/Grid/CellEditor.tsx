@@ -1,19 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { InputMessage } from '../../types/cell';
+import React, { useEffect, useRef, useState } from "react"
+import { InputMessage } from "../../types/cell"
 
 interface CellEditorProps {
-  row: number;
-  col: number;
-  initialValue: string;
-  cellWidth: number;
-  cellHeight: number;
-  headerWidth: number;
-  headerHeight: number;
-  colOffset?: number; // x-offset for variable column widths
-  onSubmit: (value: string) => void;
-  onCancel: () => void;
-  validationError?: string | null;
-  inputMessage?: InputMessage;
+  row: number
+  col: number
+  initialValue: string
+  cellWidth: number
+  cellHeight: number
+  headerWidth: number
+  headerHeight: number
+  colOffset?: number // x-offset for variable column widths
+  onSubmit: (value: string) => void
+  onCancel: () => void
+  validationError?: string | null
+  inputMessage?: InputMessage
 }
 
 export const CellEditor: React.FC<CellEditorProps> = ({
@@ -30,37 +30,40 @@ export const CellEditor: React.FC<CellEditorProps> = ({
   validationError,
   inputMessage,
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState(initialValue);
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
-    inputRef.current?.focus();
-    inputRef.current?.select();
-  }, []);
+    inputRef.current?.focus()
+    inputRef.current?.select()
+  }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
-      case 'Enter':
-        e.preventDefault();
-        onSubmit(value);
-        break;
-      case 'Escape':
-        e.preventDefault();
-        onCancel();
-        break;
-      case 'Tab':
-        e.preventDefault();
-        onSubmit(value);
-        break;
+      case "Enter":
+        e.preventDefault()
+        onSubmit(value)
+        break
+      case "Escape":
+        e.preventDefault()
+        onCancel()
+        break
+      case "Tab":
+        e.preventDefault()
+        onSubmit(value)
+        break
     }
-  };
+  }
 
   const handleBlur = () => {
-    onSubmit(value);
-  };
+    onSubmit(value)
+  }
 
-  const left = colOffset !== undefined ? headerWidth + colOffset : headerWidth + col * cellWidth;
-  const top = headerHeight + row * cellHeight;
+  const left =
+    colOffset !== undefined
+      ? headerWidth + colOffset
+      : headerWidth + col * cellWidth
+  const top = headerHeight + row * cellHeight
 
   return (
     <>
@@ -73,15 +76,15 @@ export const CellEditor: React.FC<CellEditorProps> = ({
         onBlur={handleBlur}
         className={`absolute z-20 px-1 font-mono text-sm border-2 outline-none bg-white dark:bg-neutral-800 dark:text-white ${
           validationError
-            ? 'border-red-500 dark:border-red-400'
-            : 'border-blue-500 dark:border-blue-400'
+            ? "border-red-500 dark:border-red-400"
+            : "border-blue-500 dark:border-blue-400"
         }`}
         style={{
           left,
           top,
           width: cellWidth,
           height: cellHeight,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
         }}
       />
       {/* Validation error tooltip */}
@@ -112,5 +115,5 @@ export const CellEditor: React.FC<CellEditorProps> = ({
         </div>
       )}
     </>
-  );
-};
+  )
+}

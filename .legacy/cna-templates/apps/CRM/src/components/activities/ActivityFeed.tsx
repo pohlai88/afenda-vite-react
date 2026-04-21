@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { formatDistanceToNow } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import Link from 'next/link'
+import { formatDistanceToNow } from "date-fns"
+import { vi } from "date-fns/locale"
+import Link from "next/link"
 import {
   Phone,
   Mail,
@@ -14,12 +14,12 @@ import {
   ArrowRight,
   Circle,
   CheckCircle2,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import type { ActivityWithRelations } from '@/types'
-import { Badge } from '@/components/ui/badge'
-import { ACTIVITY_TYPES } from '@/lib/constants'
-import { useTranslation } from '@/i18n'
+} from "lucide-react"
+import { cn } from "@/lib/utils"
+import type { ActivityWithRelations } from "@/types"
+import { Badge } from "@/components/ui/badge"
+import { ACTIVITY_TYPES } from "@/lib/constants"
+import { useTranslation } from "@/i18n"
 
 // ── Icon map ────────────────────────────────────────────────────────
 const iconMap: Record<string, React.ElementType> = {
@@ -34,14 +34,14 @@ const iconMap: Record<string, React.ElementType> = {
 }
 
 const colorMap: Record<string, string> = {
-  CALL: '#10B981',
-  EMAIL: '#3B82F6',
-  MEETING: '#8B5CF6',
-  TASK: '#F59E0B',
-  NOTE: '#6B7280',
-  LUNCH: '#F97316',
-  DEMO: '#06B6D4',
-  FOLLOW_UP: '#EC4899',
+  CALL: "#10B981",
+  EMAIL: "#3B82F6",
+  MEETING: "#8B5CF6",
+  TASK: "#F59E0B",
+  NOTE: "#6B7280",
+  LUNCH: "#F97316",
+  DEMO: "#06B6D4",
+  FOLLOW_UP: "#EC4899",
 }
 
 // ── Props ───────────────────────────────────────────────────────────
@@ -50,13 +50,18 @@ interface ActivityFeedProps {
   onToggleComplete?: (id: string, completed: boolean) => void
 }
 
-export function ActivityFeed({ activities, onToggleComplete }: ActivityFeedProps) {
+export function ActivityFeed({
+  activities,
+  onToggleComplete,
+}: ActivityFeedProps) {
   const { t } = useTranslation()
   if (activities.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <Circle className="w-12 h-12 text-[#333] mb-3" />
-        <p className="text-[var(--crm-text-secondary)] text-sm">{t('activities.empty')}</p>
+        <p className="text-[var(--crm-text-secondary)] text-sm">
+          {t("activities.empty")}
+        </p>
       </div>
     )
   }
@@ -68,8 +73,10 @@ export function ActivityFeed({ activities, onToggleComplete }: ActivityFeedProps
 
       {activities.map((activity) => {
         const Icon = iconMap[activity.type] || Circle
-        const color = colorMap[activity.type] || '#6B7280'
-        const typeLabel = ACTIVITY_TYPES.find((at) => at.value === activity.type)
+        const color = colorMap[activity.type] || "#6B7280"
+        const typeLabel = ACTIVITY_TYPES.find(
+          (at) => at.value === activity.type
+        )
         const typeLabelText = typeLabel ? t(typeLabel.labelKey) : activity.type
 
         return (
@@ -135,14 +142,16 @@ export function ActivityFeed({ activities, onToggleComplete }: ActivityFeedProps
 
                 <div className="flex items-center gap-2 shrink-0">
                   {/* Toggle complete for tasks */}
-                  {activity.type === 'TASK' && onToggleComplete && (
+                  {activity.type === "TASK" && onToggleComplete && (
                     <button
-                      onClick={() => onToggleComplete(activity.id, !activity.isCompleted)}
+                      onClick={() =>
+                        onToggleComplete(activity.id, !activity.isCompleted)
+                      }
                       className={cn(
-                        'transition-colors',
+                        "transition-colors",
                         activity.isCompleted
-                          ? 'text-[#10B981] hover:text-[#10B981]/70'
-                          : 'text-[var(--crm-text-muted)] hover:text-[var(--crm-text-secondary)]'
+                          ? "text-[#10B981] hover:text-[#10B981]/70"
+                          : "text-[var(--crm-text-muted)] hover:text-[var(--crm-text-secondary)]"
                       )}
                     >
                       {activity.isCompleted ? (
@@ -166,10 +175,10 @@ export function ActivityFeed({ activities, onToggleComplete }: ActivityFeedProps
               {/* User avatar / name */}
               <div className="flex items-center gap-1.5 mt-2">
                 <div className="w-5 h-5 rounded-full bg-[var(--crm-bg-hover)] flex items-center justify-center text-[10px] text-[var(--crm-text-secondary)] font-medium">
-                  {activity.user?.name?.[0]?.toUpperCase() || 'U'}
+                  {activity.user?.name?.[0]?.toUpperCase() || "U"}
                 </div>
                 <span className="text-[11px] text-[var(--crm-text-muted)]">
-                  {activity.user?.name || t('common.user')}
+                  {activity.user?.name || t("common.user")}
                 </span>
               </div>
             </div>

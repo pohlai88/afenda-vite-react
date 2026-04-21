@@ -1,11 +1,11 @@
 // GET /api/internal/employees/[id]
 // Return single employee detail
 
-import { NextRequest, NextResponse } from 'next/server'
-import { validateInternalRequest } from '@/lib/api/internal-auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { validateInternalRequest } from "@/lib/api/internal-auth"
+import { db } from "@/lib/db"
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic"
 
 export async function GET(
   req: NextRequest,
@@ -54,10 +54,7 @@ export async function GET(
     })
 
     if (!employee) {
-      return NextResponse.json(
-        { error: 'Employee not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Employee not found" }, { status: 404 })
     }
 
     const result = {
@@ -74,14 +71,14 @@ export async function GET(
           }
         : null,
       joinDate: employee.hireDate,
-      isActive: employee.status === 'ACTIVE',
+      isActive: employee.status === "ACTIVE",
     }
 
     return NextResponse.json({ data: result })
   } catch (error) {
-    console.error('[Internal API] Employee detail error:', error)
+    console.error("[Internal API] Employee detail error:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

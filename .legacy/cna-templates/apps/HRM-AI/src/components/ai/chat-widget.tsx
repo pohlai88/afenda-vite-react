@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import { useState, useRef, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { ChatMessage } from './chat-message'
-import { ChatInput } from './chat-input'
-import type { AIMessage } from '@/types/ai'
-import { Bot, X, Minimize2, Maximize2, Trash2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { useState, useRef, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { ChatMessage } from "./chat-message"
+import { ChatInput } from "./chat-input"
+import type { AIMessage } from "@/types/ai"
+import { Bot, X, Minimize2, Maximize2, Trash2 } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface ChatWidgetProps {
   defaultOpen?: boolean
@@ -33,9 +33,9 @@ export function ChatWidget({ defaultOpen = false }: ChatWidgetProps) {
     if (isOpen && messages.length === 0) {
       setMessages([
         {
-          role: 'assistant',
+          role: "assistant",
           content:
-            'Xin chào! 👋 Tôi là trợ lý HR của bạn. Tôi có thể giúp bạn:\n\n• Tra cứu số ngày phép còn lại\n• Tạo đơn xin nghỉ, tăng ca\n• Hỏi đáp về chính sách công ty\n• Xem thông tin chấm công, lương\n\nBạn cần hỗ trợ gì?',
+            "Xin chào! 👋 Tôi là trợ lý HR của bạn. Tôi có thể giúp bạn:\n\n• Tra cứu số ngày phép còn lại\n• Tạo đơn xin nghỉ, tăng ca\n• Hỏi đáp về chính sách công ty\n• Xem thông tin chấm công, lương\n\nBạn cần hỗ trợ gì?",
           createdAt: new Date(),
         },
       ])
@@ -45,7 +45,7 @@ export function ChatWidget({ defaultOpen = false }: ChatWidgetProps) {
   const handleSend = async (content: string) => {
     // Add user message immediately
     const userMessage: AIMessage = {
-      role: 'user',
+      role: "user",
       content,
       createdAt: new Date(),
     }
@@ -53,9 +53,9 @@ export function ChatWidget({ defaultOpen = false }: ChatWidgetProps) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           conversationId,
           message: content,
@@ -63,7 +63,7 @@ export function ChatWidget({ defaultOpen = false }: ChatWidgetProps) {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to send message')
+        throw new Error("Failed to send message")
       }
 
       const data = await response.json()
@@ -76,12 +76,12 @@ export function ChatWidget({ defaultOpen = false }: ChatWidgetProps) {
       // Add assistant message
       setMessages((prev) => [...prev, data.message])
     } catch (error) {
-      console.error('Chat error:', error)
+      console.error("Chat error:", error)
       setMessages((prev) => [
         ...prev,
         {
-          role: 'assistant',
-          content: 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.',
+          role: "assistant",
+          content: "Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.",
           createdAt: new Date(),
         },
       ])
@@ -110,12 +110,12 @@ export function ChatWidget({ defaultOpen = false }: ChatWidgetProps) {
   return (
     <div
       className={cn(
-        'fixed z-40 flex flex-col bg-card border border-border rounded-xl md:rounded-sm transition-all shadow-2xl',
+        "fixed z-40 flex flex-col bg-card border border-border rounded-xl md:rounded-sm transition-all shadow-2xl",
         // Mobile: full width, above bottom nav
-        'bottom-20 left-2 right-2 md:bottom-6 md:left-auto md:right-6',
+        "bottom-20 left-2 right-2 md:bottom-6 md:left-auto md:right-6",
         isMinimized
-          ? 'h-[60px] md:w-[300px]'
-          : 'h-[70vh] md:h-[600px] md:w-[400px] md:max-h-[80vh]'
+          ? "h-[60px] md:w-[300px]"
+          : "h-[70vh] md:h-[600px] md:w-[400px] md:max-h-[80vh]"
       )}
     >
       {/* Header */}

@@ -18,8 +18,6 @@ test.describe("Auth Redirects", () => {
   test("login page is accessible without auth", async ({ page }) => {
     const response = await page.goto("/login")
     expect(response?.status()).toBeLessThan(400)
-    await expect(
-      page.getByRole("heading", { name: "Đăng nhập" })
-    ).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Đăng nhập" })).toBeVisible()
   })
 })

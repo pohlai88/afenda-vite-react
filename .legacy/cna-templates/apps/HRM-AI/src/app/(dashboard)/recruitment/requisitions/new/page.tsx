@@ -1,62 +1,62 @@
-'use client'
+"use client"
 
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { PageHeader } from '@/components/shared/page-header'
-import { JOB_TYPE, WORK_MODE, PRIORITY } from '@/lib/recruitment/constants'
+} from "@/components/ui/select"
+import { PageHeader } from "@/components/shared/page-header"
+import { JOB_TYPE, WORK_MODE, PRIORITY } from "@/lib/recruitment/constants"
 
 export default function NewRequisitionPage() {
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
   const [formData, setFormData] = useState({
-    title: '',
-    department: '',
-    jobType: 'FULL_TIME',
-    workMode: 'ONSITE',
+    title: "",
+    department: "",
+    jobType: "FULL_TIME",
+    workMode: "ONSITE",
     headcount: 1,
-    priority: 'NORMAL',
-    location: '',
-    salaryMin: '',
-    salaryMax: '',
-    description: '',
-    requirements: '',
-    benefits: '',
-    reason: '',
+    priority: "NORMAL",
+    location: "",
+    salaryMin: "",
+    salaryMax: "",
+    description: "",
+    requirements: "",
+    benefits: "",
+    reason: "",
   })
 
   const handleChange = (field: string, value: string | number) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
     try {
-      const res = await fetch('/api/recruitment/requisitions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/recruitment/requisitions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       })
-      if (!res.ok) throw new Error('Không thể tạo yêu cầu tuyển dụng')
+      if (!res.ok) throw new Error("Không thể tạo yêu cầu tuyển dụng")
       const result = await res.json()
       const created = result.data ?? result
       router.push(`/recruitment/requisitions/${created.id}`)
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     } finally {
       setSubmitting(false)
     }
@@ -89,7 +89,7 @@ export default function NewRequisitionPage() {
                 <Input
                   id="title"
                   value={formData.title}
-                  onChange={(e) => handleChange('title', e.target.value)}
+                  onChange={(e) => handleChange("title", e.target.value)}
                   placeholder="VD: Senior Frontend Developer"
                   required
                 />
@@ -99,7 +99,7 @@ export default function NewRequisitionPage() {
                 <Input
                   id="department"
                   value={formData.department}
-                  onChange={(e) => handleChange('department', e.target.value)}
+                  onChange={(e) => handleChange("department", e.target.value)}
                   placeholder="VD: Phòng Kỹ thuật"
                   required
                 />
@@ -111,14 +111,16 @@ export default function NewRequisitionPage() {
                 <Label>Loại hình</Label>
                 <Select
                   value={formData.jobType}
-                  onValueChange={(v) => handleChange('jobType', v)}
+                  onValueChange={(v) => handleChange("jobType", v)}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(JOB_TYPE).map(([key, val]) => (
-                      <SelectItem key={key} value={key}>{val.label}</SelectItem>
+                      <SelectItem key={key} value={key}>
+                        {val.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -127,14 +129,16 @@ export default function NewRequisitionPage() {
                 <Label>Hình thức làm việc</Label>
                 <Select
                   value={formData.workMode}
-                  onValueChange={(v) => handleChange('workMode', v)}
+                  onValueChange={(v) => handleChange("workMode", v)}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(WORK_MODE).map(([key, val]) => (
-                      <SelectItem key={key} value={key}>{val.label}</SelectItem>
+                      <SelectItem key={key} value={key}>
+                        {val.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -146,21 +150,25 @@ export default function NewRequisitionPage() {
                   type="number"
                   min={1}
                   value={formData.headcount}
-                  onChange={(e) => handleChange('headcount', parseInt(e.target.value) || 1)}
+                  onChange={(e) =>
+                    handleChange("headcount", parseInt(e.target.value) || 1)
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>Mức độ ưu tiên</Label>
                 <Select
                   value={formData.priority}
-                  onValueChange={(v) => handleChange('priority', v)}
+                  onValueChange={(v) => handleChange("priority", v)}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(PRIORITY).map(([key, val]) => (
-                      <SelectItem key={key} value={key}>{val.label}</SelectItem>
+                      <SelectItem key={key} value={key}>
+                        {val.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -173,7 +181,7 @@ export default function NewRequisitionPage() {
                 <Input
                   id="location"
                   value={formData.location}
-                  onChange={(e) => handleChange('location', e.target.value)}
+                  onChange={(e) => handleChange("location", e.target.value)}
                   placeholder="VD: TP. Hồ Chí Minh"
                 />
               </div>
@@ -183,7 +191,7 @@ export default function NewRequisitionPage() {
                   id="salaryMin"
                   type="number"
                   value={formData.salaryMin}
-                  onChange={(e) => handleChange('salaryMin', e.target.value)}
+                  onChange={(e) => handleChange("salaryMin", e.target.value)}
                   placeholder="VND"
                 />
               </div>
@@ -193,7 +201,7 @@ export default function NewRequisitionPage() {
                   id="salaryMax"
                   type="number"
                   value={formData.salaryMax}
-                  onChange={(e) => handleChange('salaryMax', e.target.value)}
+                  onChange={(e) => handleChange("salaryMax", e.target.value)}
                   placeholder="VND"
                 />
               </div>
@@ -212,7 +220,7 @@ export default function NewRequisitionPage() {
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => handleChange('description', e.target.value)}
+                onChange={(e) => handleChange("description", e.target.value)}
                 placeholder="Mô tả chi tiết về vị trí công việc..."
                 rows={4}
                 required
@@ -223,7 +231,7 @@ export default function NewRequisitionPage() {
               <Textarea
                 id="requirements"
                 value={formData.requirements}
-                onChange={(e) => handleChange('requirements', e.target.value)}
+                onChange={(e) => handleChange("requirements", e.target.value)}
                 placeholder="Yêu cầu về kinh nghiệm, kỹ năng..."
                 rows={4}
               />
@@ -233,7 +241,7 @@ export default function NewRequisitionPage() {
               <Textarea
                 id="benefits"
                 value={formData.benefits}
-                onChange={(e) => handleChange('benefits', e.target.value)}
+                onChange={(e) => handleChange("benefits", e.target.value)}
                 placeholder="Các quyền lợi dành cho ứng viên..."
                 rows={3}
               />
@@ -243,7 +251,7 @@ export default function NewRequisitionPage() {
               <Textarea
                 id="reason"
                 value={formData.reason}
-                onChange={(e) => handleChange('reason', e.target.value)}
+                onChange={(e) => handleChange("reason", e.target.value)}
                 placeholder="Lý do cần tuyển vị trí này..."
                 rows={2}
               />
@@ -259,7 +267,7 @@ export default function NewRequisitionPage() {
             </Button>
           </Link>
           <Button type="submit" disabled={submitting}>
-            {submitting ? 'Đang tạo...' : 'Tạo yêu cầu'}
+            {submitting ? "Đang tạo..." : "Tạo yêu cầu"}
           </Button>
         </div>
       </form>

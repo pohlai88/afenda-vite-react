@@ -48,11 +48,11 @@ This guide covers deployment procedures for various environments.
 
 ### Environments
 
-| Environment | URL | Purpose |
-|-------------|-----|---------|
-| Development | localhost:5173 | Local development |
-| Staging | staging.tpm.company.com | Testing, QA |
-| Production | tpm.company.com | Live system |
+| Environment | URL                     | Purpose           |
+| ----------- | ----------------------- | ----------------- |
+| Development | localhost:5173          | Local development |
+| Staging     | staging.tpm.company.com | Testing, QA       |
+| Production  | tpm.company.com         | Live system       |
 
 ---
 
@@ -133,6 +133,7 @@ openssl rand -base64 32
 ### Initial Setup
 
 1. **Connect Repository**:
+
    ```bash
    cd vierp-tpm-web
    vercel link
@@ -161,9 +162,7 @@ openssl rand -base64 32
   "framework": "vite",
   "buildCommand": "pnpm --filter web build",
   "outputDirectory": "apps/web/dist",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "headers": [
     {
       "source": "/(.*)",
@@ -176,7 +175,10 @@ openssl rand -base64 32
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
   ]
@@ -237,7 +239,7 @@ docker build -f docker/Dockerfile.api -t tpm-api:latest .
 
 ```yaml
 # docker/docker-compose.prod.yml
-version: '3.8'
+version: "3.8"
 
 services:
   web:
@@ -347,11 +349,13 @@ spec:
    - Create database: `tpm`
 
 2. **Get Connection String**:
+
    ```
    postgresql://user:pass@ep-xxx.region.aws.neon.tech/tpm?sslmode=require
    ```
 
 3. **Run Migrations**:
+
    ```bash
    # Set DATABASE_URL
    export DATABASE_URL="postgresql://..."
@@ -428,6 +432,7 @@ Configure in GitHub Settings → Environments:
 ### Health Checks
 
 Endpoints:
+
 - `/api/health` - Full health status
 - `/api/health/live` - Liveness probe
 - `/api/health/ready` - Readiness probe
@@ -436,28 +441,29 @@ Endpoints:
 
 Configure monitoring service (e.g., Better Uptime, Pingdom):
 
-| Check | URL | Interval | Alert Threshold |
-|-------|-----|----------|-----------------|
-| Web | https://tpm.company.com | 1 min | 2 failures |
-| API | https://api.tpm.company.com/api/health | 1 min | 2 failures |
-| Database | Via API health check | 5 min | 1 failure |
+| Check    | URL                                    | Interval | Alert Threshold |
+| -------- | -------------------------------------- | -------- | --------------- |
+| Web      | https://tpm.company.com                | 1 min    | 2 failures      |
+| API      | https://api.tpm.company.com/api/health | 1 min    | 2 failures      |
+| Database | Via API health check                   | 5 min    | 1 failure       |
 
 ### Error Tracking (Sentry)
 
 ```typescript
 // In API entry point
-import * as Sentry from '@sentry/node';
+import * as Sentry from "@sentry/node"
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
   tracesSampleRate: 0.1,
-});
+})
 ```
 
 ### Logging
 
 Logs are structured JSON and can be shipped to:
+
 - CloudWatch Logs
 - Datadog
 - Elastic/Kibana
@@ -482,6 +488,7 @@ Logs are structured JSON and can be shipped to:
 ### Vercel (Automatic)
 
 Vercel provides automatic SSL for:
+
 - Custom domains
 - Preview deployments
 
@@ -616,6 +623,7 @@ psql $DATABASE_URL < backup-20240101.sql
 ## Support
 
 For deployment issues:
+
 - **Slack**: #tpm-devops
 - **Email**: devops@company.com
 - **On-call**: See PagerDuty schedule

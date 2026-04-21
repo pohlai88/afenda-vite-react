@@ -55,7 +55,10 @@ export function SelectTerminal({
   // Close on outside click
   React.useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false)
         setSearchQuery("")
       }
@@ -86,7 +89,9 @@ export function SelectTerminal({
   return (
     <div className={cn("space-y-1.5", containerClassName)} ref={containerRef}>
       {label && (
-        <label className="block text-sm font-medium text-foreground">{label}</label>
+        <label className="block text-sm font-medium text-foreground">
+          {label}
+        </label>
       )}
 
       <div className="relative">
@@ -181,7 +186,9 @@ export function SelectTerminal({
                   )}
                 >
                   {option.label}
-                  {option.value === value && <Check className="w-4 h-4 text-primary" />}
+                  {option.value === value && (
+                    <Check className="w-4 h-4 text-primary" />
+                  )}
                 </button>
               ))
             )}
@@ -191,7 +198,12 @@ export function SelectTerminal({
 
       {/* Hint/Error */}
       {(hint || error) && (
-        <p className={cn("text-xs", error ? "text-destructive" : "text-muted-foreground")}>
+        <p
+          className={cn(
+            "text-xs",
+            error ? "text-destructive" : "text-muted-foreground"
+          )}
+        >
           {error || hint}
         </p>
       )}

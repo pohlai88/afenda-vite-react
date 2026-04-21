@@ -1,6 +1,6 @@
-import { db } from '@/lib/db'
-import type { AuditAction } from '@prisma/client'
-import type { AuditContext } from '@/types/audit'
+import { db } from "@/lib/db"
+import type { AuditAction } from "@prisma/client"
+import type { AuditContext } from "@/types/audit"
 
 export async function logAudit(
   context: AuditContext,
@@ -23,14 +23,18 @@ export async function logAudit(
         entityType,
         entityId,
         entityName: options?.entityName,
-        changes: options?.changes ? JSON.parse(JSON.stringify(options.changes)) : undefined,
-        metadata: options?.metadata ? JSON.parse(JSON.stringify(options.metadata)) : undefined,
+        changes: options?.changes
+          ? JSON.parse(JSON.stringify(options.changes))
+          : undefined,
+        metadata: options?.metadata
+          ? JSON.parse(JSON.stringify(options.metadata))
+          : undefined,
         ipAddress: context.ipAddress,
         userAgent: context.userAgent,
       },
     })
   } catch (error) {
-    console.error('Audit log error:', error)
+    console.error("Audit log error:", error)
   }
 }
 
@@ -57,30 +61,56 @@ export function computeChanges(
 }
 
 export const audit = {
-  create: (ctx: AuditContext, entityType: string, entityId: string, entityName?: string) =>
-    logAudit(ctx, 'CREATE', entityType, entityId, { entityName }),
+  create: (
+    ctx: AuditContext,
+    entityType: string,
+    entityId: string,
+    entityName?: string
+  ) => logAudit(ctx, "CREATE", entityType, entityId, { entityName }),
 
-  update: (ctx: AuditContext, entityType: string, entityId: string, changes?: Record<string, { old: unknown; new: unknown }>, entityName?: string) =>
-    logAudit(ctx, 'UPDATE', entityType, entityId, { changes, entityName }),
+  update: (
+    ctx: AuditContext,
+    entityType: string,
+    entityId: string,
+    changes?: Record<string, { old: unknown; new: unknown }>,
+    entityName?: string
+  ) => logAudit(ctx, "UPDATE", entityType, entityId, { changes, entityName }),
 
-  delete: (ctx: AuditContext, entityType: string, entityId: string, entityName?: string) =>
-    logAudit(ctx, 'DELETE', entityType, entityId, { entityName }),
+  delete: (
+    ctx: AuditContext,
+    entityType: string,
+    entityId: string,
+    entityName?: string
+  ) => logAudit(ctx, "DELETE", entityType, entityId, { entityName }),
 
-  login: (ctx: AuditContext) =>
-    logAudit(ctx, 'LOGIN', 'User', ctx.userId),
+  login: (ctx: AuditContext) => logAudit(ctx, "LOGIN", "User", ctx.userId),
 
-  logout: (ctx: AuditContext) =>
-    logAudit(ctx, 'LOGOUT', 'User', ctx.userId),
+  logout: (ctx: AuditContext) => logAudit(ctx, "LOGOUT", "User", ctx.userId),
 
-  export: (ctx: AuditContext, exportType: string, params?: Record<string, unknown>) =>
-    logAudit(ctx, 'EXPORT', exportType, undefined, { metadata: params }),
+  export: (
+    ctx: AuditContext,
+    exportType: string,
+    params?: Record<string, unknown>
+  ) => logAudit(ctx, "EXPORT", exportType, undefined, { metadata: params }),
 
-  import: (ctx: AuditContext, importType: string, jobId: string, summary?: Record<string, unknown>) =>
-    logAudit(ctx, 'IMPORT', importType, jobId, { metadata: summary }),
+  import: (
+    ctx: AuditContext,
+    importType: string,
+    jobId: string,
+    summary?: Record<string, unknown>
+  ) => logAudit(ctx, "IMPORT", importType, jobId, { metadata: summary }),
 
-  approve: (ctx: AuditContext, entityType: string, entityId: string, entityName?: string) =>
-    logAudit(ctx, 'APPROVE', entityType, entityId, { entityName }),
+  approve: (
+    ctx: AuditContext,
+    entityType: string,
+    entityId: string,
+    entityName?: string
+  ) => logAudit(ctx, "APPROVE", entityType, entityId, { entityName }),
 
-  reject: (ctx: AuditContext, entityType: string, entityId: string, entityName?: string) =>
-    logAudit(ctx, 'REJECT', entityType, entityId, { entityName }),
+  reject: (
+    ctx: AuditContext,
+    entityType: string,
+    entityId: string,
+    entityName?: string
+  ) => logAudit(ctx, "REJECT", entityType, entityId, { entityName }),
 }

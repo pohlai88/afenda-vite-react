@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { signIn } from '@/lib/auth'
+import { NextRequest, NextResponse } from "next/server"
+import { signIn } from "@/lib/auth"
 
 /**
  * SSO Callback Route for HRM
@@ -12,20 +12,20 @@ import { signIn } from '@/lib/auth'
  * 5. Redirects to the original page
  */
 export async function GET(request: NextRequest) {
-  if (process.env.ENABLE_SUPABASE_SSO !== 'true') {
-    return NextResponse.redirect(new URL('/login', request.url))
+  if (process.env.ENABLE_SUPABASE_SSO !== "true") {
+    return NextResponse.redirect(new URL("/login", request.url))
   }
 
-  const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '/'
+  const callbackUrl = request.nextUrl.searchParams.get("callbackUrl") || "/"
 
   try {
     // Find the Supabase auth cookie
-    const sbCookie = request.cookies.getAll().find(c =>
-      c.name.startsWith('sb-') && c.name.endsWith('-auth-token')
-    )
+    const sbCookie = request.cookies
+      .getAll()
+      .find((c) => c.name.startsWith("sb-") && c.name.endsWith("-auth-token"))
 
     if (!sbCookie) {
-      return NextResponse.redirect(new URL('/login', request.url))
+      return NextResponse.redirect(new URL("/login", request.url))
     }
 
     // Parse the cookie to extract access_token
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     try {
       let cookieValue = sbCookie.value
       try {
-        cookieValue = Buffer.from(cookieValue, 'base64').toString('utf-8')
+        cookieValue = Buffer.from(cookieValue, "base64").toString("utf-8")
       } catch {
         // Not base64
       }
@@ -44,17 +44,19 @@ export async function GET(request: NextRequest) {
     }
 
     if (!accessToken) {
-      return NextResponse.redirect(new URL('/login', request.url))
+      return NextResponse.redirect(new URL("/login", request.url))
     }
 
-    await signIn('supabase-sso', {
+    await signIn("supabase-sso", {
       accessToken,
       redirect: false,
     })
 
     return NextResponse.redirect(new URL(callbackUrl, request.url))
   } catch (error) {
-    console.error('[SSO] HRM callback error:', error)
-    return NextResponse.redirect(new URL('/login?error=sso_failed', request.url))
+    console.error("[SSO] HRM callback error:", error)
+    return NextResponse.redirect(
+      new URL("/login?error=sso_failed", request.url)
+    )
   }
 }

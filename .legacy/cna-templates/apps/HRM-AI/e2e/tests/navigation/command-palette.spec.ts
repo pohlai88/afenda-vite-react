@@ -50,7 +50,10 @@ test.describe("Command Palette", () => {
     await input.waitFor({ state: "visible" })
 
     // Click the backdrop to close
-    await page.locator(".fixed.inset-0 > .absolute.inset-0").first().click({ force: true })
+    await page
+      .locator(".fixed.inset-0 > .absolute.inset-0")
+      .first()
+      .click({ force: true })
     await page.waitForTimeout(500)
 
     // Verify the dialog is closed

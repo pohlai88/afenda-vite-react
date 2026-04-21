@@ -1,12 +1,18 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import { Loader2, Settings, Plus, Trash2, Users } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { useEffect, useState } from "react"
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
+import { Loader2, Settings, Plus, Trash2, Users } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import {
   Table,
   TableBody,
@@ -14,7 +20,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,9 +31,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { DelegationForm } from '@/components/workflow'
-import { useToast } from '@/hooks/use-toast'
+} from "@/components/ui/alert-dialog"
+import { DelegationForm } from "@/components/workflow"
+import { useToast } from "@/hooks/use-toast"
 
 interface Delegation {
   id: string
@@ -57,8 +63,8 @@ export default function ESSSettingsPage() {
   const fetchData = async () => {
     try {
       const [delegationsRes, usersRes] = await Promise.all([
-        fetch('/api/workflow/delegations'),
-        fetch('/api/users?role=approver'),
+        fetch("/api/workflow/delegations"),
+        fetch("/api/users?role=approver"),
       ])
 
       if (delegationsRes.ok) {
@@ -72,9 +78,9 @@ export default function ESSSettingsPage() {
       }
     } catch {
       toast({
-        title: 'Lỗi',
-        description: 'Không thể tải dữ liệu',
-        variant: 'destructive',
+        title: "Lỗi",
+        description: "Không thể tải dữ liệu",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -93,9 +99,9 @@ export default function ESSSettingsPage() {
     reason?: string
   }) => {
     try {
-      const response = await fetch('/api/workflow/delegations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/workflow/delegations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           delegateToId: data.delegateToId,
           startDate: data.startDate.toISOString(),
@@ -106,20 +112,21 @@ export default function ESSSettingsPage() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to create delegation')
+        throw new Error(error.error || "Failed to create delegation")
       }
 
       toast({
-        title: 'Thành công',
-        description: 'Đã tạo ủy quyền mới',
+        title: "Thành công",
+        description: "Đã tạo ủy quyền mới",
       })
 
       fetchData()
     } catch (error) {
       toast({
-        title: 'Lỗi',
-        description: error instanceof Error ? error.message : 'Không thể tạo ủy quyền',
-        variant: 'destructive',
+        title: "Lỗi",
+        description:
+          error instanceof Error ? error.message : "Không thể tạo ủy quyền",
+        variant: "destructive",
       })
       throw error
     }
@@ -128,25 +135,26 @@ export default function ESSSettingsPage() {
   const handleDeleteDelegation = async (id: string) => {
     try {
       const response = await fetch(`/api/workflow/delegations/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       })
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to delete delegation')
+        throw new Error(error.error || "Failed to delete delegation")
       }
 
       toast({
-        title: 'Thành công',
-        description: 'Đã xóa ủy quyền',
+        title: "Thành công",
+        description: "Đã xóa ủy quyền",
       })
 
       fetchData()
     } catch (error) {
       toast({
-        title: 'Lỗi',
-        description: error instanceof Error ? error.message : 'Không thể xóa ủy quyền',
-        variant: 'destructive',
+        title: "Lỗi",
+        description:
+          error instanceof Error ? error.message : "Không thể xóa ủy quyền",
+        variant: "destructive",
       })
     }
   }
@@ -216,21 +224,31 @@ export default function ESSSettingsPage() {
                   <TableRow key={delegation.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium">{delegation.delegateTo.name}</p>
+                        <p className="font-medium">
+                          {delegation.delegateTo.name}
+                        </p>
                         <p className="text-sm text-muted-foreground">
                           {delegation.delegateTo.email}
                         </p>
                       </div>
                     </TableCell>
                     <TableCell>
-                      {format(new Date(delegation.startDate), 'dd/MM/yyyy', { locale: vi })}
-                      {' - '}
-                      {format(new Date(delegation.endDate), 'dd/MM/yyyy', { locale: vi })}
+                      {format(new Date(delegation.startDate), "dd/MM/yyyy", {
+                        locale: vi,
+                      })}
+                      {" - "}
+                      {format(new Date(delegation.endDate), "dd/MM/yyyy", {
+                        locale: vi,
+                      })}
                     </TableCell>
-                    <TableCell>{delegation.reason || '-'}</TableCell>
+                    <TableCell>{delegation.reason || "-"}</TableCell>
                     <TableCell>
-                      <Badge variant={delegation.isActive ? 'default' : 'secondary'}>
-                        {delegation.isActive ? 'Đang hoạt động' : 'Không hoạt động'}
+                      <Badge
+                        variant={delegation.isActive ? "default" : "secondary"}
+                      >
+                        {delegation.isActive
+                          ? "Đang hoạt động"
+                          : "Không hoạt động"}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -244,13 +262,16 @@ export default function ESSSettingsPage() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Xóa ủy quyền?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Bạn có chắc muốn xóa ủy quyền này? Hành động này không thể hoàn tác.
+                              Bạn có chắc muốn xóa ủy quyền này? Hành động này
+                              không thể hoàn tác.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Hủy</AlertDialogCancel>
                             <AlertDialogAction
-                              onClick={() => handleDeleteDelegation(delegation.id)}
+                              onClick={() =>
+                                handleDeleteDelegation(delegation.id)
+                              }
                             >
                               Xóa
                             </AlertDialogAction>

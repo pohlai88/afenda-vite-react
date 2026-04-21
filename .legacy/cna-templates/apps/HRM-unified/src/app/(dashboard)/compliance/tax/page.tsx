@@ -1,19 +1,53 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Calculator, Users, FileText, Download, Plus, AlertTriangle, CheckCircle } from 'lucide-react'
-import { formatCurrency, formatDate } from '@/lib/utils'
-import { useToast } from '@/hooks/use-toast'
+import { useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Calculator,
+  Users,
+  FileText,
+  Download,
+  Plus,
+  AlertTriangle,
+  CheckCircle,
+} from "lucide-react"
+import { formatCurrency, formatDate } from "@/lib/utils"
+import { useToast } from "@/hooks/use-toast"
 
 // ═══════════════════════════════════════════════════════════════
 // TAX COMPLIANCE PAGE
@@ -27,10 +61,12 @@ export default function TaxCompliancePage() {
 
   // Fetch tax summary
   const { data: summary } = useQuery({
-    queryKey: ['tax-summary', selectedYear],
+    queryKey: ["tax-summary", selectedYear],
     queryFn: async () => {
-      const res = await fetch(`/api/compliance/tax/summary?year=${selectedYear}`)
-      if (!res.ok) throw new Error('Failed to fetch')
+      const res = await fetch(
+        `/api/compliance/tax/summary?year=${selectedYear}`
+      )
+      if (!res.ok) throw new Error("Failed to fetch")
       const json = await res.json()
       return json.data
     },
@@ -38,10 +74,12 @@ export default function TaxCompliancePage() {
 
   // Fetch settlements
   const { data: settlements } = useQuery({
-    queryKey: ['tax-settlements', selectedYear],
+    queryKey: ["tax-settlements", selectedYear],
     queryFn: async () => {
-      const res = await fetch(`/api/compliance/tax/settlements?year=${selectedYear}`)
-      if (!res.ok) throw new Error('Failed to fetch')
+      const res = await fetch(
+        `/api/compliance/tax/settlements?year=${selectedYear}`
+      )
+      if (!res.ok) throw new Error("Failed to fetch")
       const json = await res.json()
       return json.data
     },
@@ -49,10 +87,10 @@ export default function TaxCompliancePage() {
 
   // Fetch dependents
   const { data: dependents } = useQuery({
-    queryKey: ['dependents'],
+    queryKey: ["dependents"],
     queryFn: async () => {
-      const res = await fetch('/api/compliance/tax/dependents')
-      if (!res.ok) throw new Error('Failed to fetch')
+      const res = await fetch("/api/compliance/tax/dependents")
+      if (!res.ok) throw new Error("Failed to fetch")
       const json = await res.json()
       return json.data
     },
@@ -67,11 +105,16 @@ export default function TaxCompliancePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Quản lý Thuế TNCN</h1>
-          <p className="text-muted-foreground">Thuế Thu nhập Cá nhân - Quyết toán năm {selectedYear}</p>
+          <p className="text-muted-foreground">
+            Thuế Thu nhập Cá nhân - Quyết toán năm {selectedYear}
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <Select value={selectedYear.toString()} onValueChange={(v) => setSelectedYear(parseInt(v))}>
+          <Select
+            value={selectedYear.toString()}
+            onValueChange={(v) => setSelectedYear(parseInt(v))}
+          >
             <SelectTrigger className="w-[100px]">
               <SelectValue placeholder="Năm" />
             </SelectTrigger>
@@ -84,7 +127,10 @@ export default function TaxCompliancePage() {
             </SelectContent>
           </Select>
 
-          <TaxCalculatorDialog open={calculatorOpen} onOpenChange={setCalculatorOpen} />
+          <TaxCalculatorDialog
+            open={calculatorOpen}
+            onOpenChange={setCalculatorOpen}
+          />
         </div>
       </div>
 
@@ -92,11 +138,15 @@ export default function TaxCompliancePage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Tổng NV quyết toán</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Tổng NV quyết toán
+            </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{summary?.totalEmployees || 0}</div>
+            <div className="text-2xl font-bold">
+              {summary?.totalEmployees || 0}
+            </div>
             <p className="text-xs text-muted-foreground">năm {selectedYear}</p>
           </CardContent>
         </Card>
@@ -107,7 +157,9 @@ export default function TaxCompliancePage() {
             <Calculator className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(summary?.totalTaxAmount || 0)}</div>
+            <div className="text-2xl font-bold">
+              {formatCurrency(summary?.totalTaxAmount || 0)}
+            </div>
             <p className="text-xs text-muted-foreground">tổng thuế TNCN</p>
           </CardContent>
         </Card>
@@ -118,8 +170,12 @@ export default function TaxCompliancePage() {
             <CheckCircle className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{formatCurrency(summary?.totalTaxPaid || 0)}</div>
-            <p className="text-xs text-muted-foreground">đã khấu trừ hàng tháng</p>
+            <div className="text-2xl font-bold text-green-600">
+              {formatCurrency(summary?.totalTaxPaid || 0)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              đã khấu trừ hàng tháng
+            </p>
           </CardContent>
         </Card>
 
@@ -130,12 +186,14 @@ export default function TaxCompliancePage() {
           </CardHeader>
           <CardContent>
             <div
-              className={`text-2xl font-bold ${(summary?.totalDifference || 0) > 0 ? 'text-red-600' : 'text-green-600'}`}
+              className={`text-2xl font-bold ${(summary?.totalDifference || 0) > 0 ? "text-red-600" : "text-green-600"}`}
             >
               {formatCurrency(Math.abs(summary?.totalDifference || 0))}
             </div>
             <p className="text-xs text-muted-foreground">
-              {(summary?.totalDifference || 0) > 0 ? 'còn phải nộp' : 'được hoàn'}
+              {(summary?.totalDifference || 0) > 0
+                ? "còn phải nộp"
+                : "được hoàn"}
             </p>
           </CardContent>
         </Card>
@@ -145,32 +203,48 @@ export default function TaxCompliancePage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Biểu thuế lũy tiến 7 bậc</CardTitle>
-          <CardDescription>Áp dụng cho thu nhập từ tiền lương, tiền công</CardDescription>
+          <CardDescription>
+            Áp dụng cho thu nhập từ tiền lương, tiền công
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-2 md:grid-cols-7">
             {[
-              { range: '≤ 5 triệu', rate: '5%', bracket: 1 },
-              { range: '5-10 triệu', rate: '10%', bracket: 2 },
-              { range: '10-18 triệu', rate: '15%', bracket: 3 },
-              { range: '18-32 triệu', rate: '20%', bracket: 4 },
-              { range: '32-52 triệu', rate: '25%', bracket: 5 },
-              { range: '52-80 triệu', rate: '30%', bracket: 6 },
-              { range: '> 80 triệu', rate: '35%', bracket: 7 },
+              { range: "≤ 5 triệu", rate: "5%", bracket: 1 },
+              { range: "5-10 triệu", rate: "10%", bracket: 2 },
+              { range: "10-18 triệu", rate: "15%", bracket: 3 },
+              { range: "18-32 triệu", rate: "20%", bracket: 4 },
+              { range: "32-52 triệu", rate: "25%", bracket: 5 },
+              { range: "52-80 triệu", rate: "30%", bracket: 6 },
+              { range: "> 80 triệu", rate: "35%", bracket: 7 },
             ].map((bracket) => {
-              const bracketData = summary?.brackets?.find((b: { bracket: number }) => b.bracket === bracket.bracket)
+              const bracketData = summary?.brackets?.find(
+                (b: { bracket: number }) => b.bracket === bracket.bracket
+              )
               return (
-                <div key={bracket.bracket} className="text-center p-3 rounded-lg bg-muted">
-                  <div className="text-lg font-bold text-primary">{bracket.rate}</div>
-                  <div className="text-xs text-muted-foreground">{bracket.range}</div>
-                  <div className="mt-2 text-sm font-medium">{bracketData?.count || 0} NV</div>
+                <div
+                  key={bracket.bracket}
+                  className="text-center p-3 rounded-lg bg-muted"
+                >
+                  <div className="text-lg font-bold text-primary">
+                    {bracket.rate}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {bracket.range}
+                  </div>
+                  <div className="mt-2 text-sm font-medium">
+                    {bracketData?.count || 0} NV
+                  </div>
                 </div>
               )
             })}
           </div>
           <div className="mt-4 text-sm text-muted-foreground">
             <p>• Giảm trừ bản thân: 11.000.000 đ/tháng (132.000.000 đ/năm)</p>
-            <p>• Giảm trừ người phụ thuộc: 4.400.000 đ/người/tháng (52.800.000 đ/người/năm)</p>
+            <p>
+              • Giảm trừ người phụ thuộc: 4.400.000 đ/người/tháng (52.800.000
+              đ/người/năm)
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -206,17 +280,28 @@ export default function TaxCompliancePage() {
 // TAX CALCULATOR DIALOG
 // ═══════════════════════════════════════════════════════════════
 
-function TaxCalculatorDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-  const [grossSalary, setGrossSalary] = useState('')
-  const [dependents, setDependents] = useState('0')
-  const [insurance, setInsurance] = useState('')
+function TaxCalculatorDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
+  const [grossSalary, setGrossSalary] = useState("")
+  const [dependents, setDependents] = useState("0")
+  const [insurance, setInsurance] = useState("")
   const [result, setResult] = useState<{
     taxableGrossIncome: number
     deductions: { personal: number; dependents: number; insurance: number }
     taxableIncome: number
     taxAmount: number
     effectiveRate: number
-    brackets: Array<{ level: number; income: number; tax: number; rate: number }>
+    brackets: Array<{
+      level: number
+      income: number
+      tax: number
+      rate: number
+    }>
   } | null>(null)
 
   const calculate = () => {
@@ -292,7 +377,9 @@ function TaxCalculatorDialog({ open, onOpenChange }: { open: boolean; onOpenChan
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Tính thuế Thu nhập Cá nhân</DialogTitle>
-          <DialogDescription>Nhập thông tin để tính thuế TNCN hàng tháng</DialogDescription>
+          <DialogDescription>
+            Nhập thông tin để tính thuế TNCN hàng tháng
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -340,37 +427,57 @@ function TaxCalculatorDialog({ open, onOpenChange }: { open: boolean; onOpenChan
             <Card>
               <CardContent className="pt-4 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Thu nhập chịu thuế:</span>
-                  <span className="font-medium">{formatCurrency(result.taxableGrossIncome)}</span>
+                  <span className="text-muted-foreground">
+                    Thu nhập chịu thuế:
+                  </span>
+                  <span className="font-medium">
+                    {formatCurrency(result.taxableGrossIncome)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Giảm trừ bản thân:</span>
-                  <span className="font-medium">-{formatCurrency(result.deductions?.personal)}</span>
+                  <span className="text-muted-foreground">
+                    Giảm trừ bản thân:
+                  </span>
+                  <span className="font-medium">
+                    -{formatCurrency(result.deductions?.personal)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Giảm trừ NPT:</span>
-                  <span className="font-medium">-{formatCurrency(result.deductions?.dependents)}</span>
+                  <span className="font-medium">
+                    -{formatCurrency(result.deductions?.dependents)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Giảm trừ BHXH:</span>
-                  <span className="font-medium">-{formatCurrency(result.deductions?.insurance)}</span>
+                  <span className="font-medium">
+                    -{formatCurrency(result.deductions?.insurance)}
+                  </span>
                 </div>
                 <hr />
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Thu nhập tính thuế:</span>
-                  <span className="font-medium">{formatCurrency(result.taxableIncome)}</span>
+                  <span className="text-muted-foreground">
+                    Thu nhập tính thuế:
+                  </span>
+                  <span className="font-medium">
+                    {formatCurrency(result.taxableIncome)}
+                  </span>
                 </div>
 
                 {/* Bracket details */}
                 {result.brackets.length > 0 && (
                   <div className="mt-2 text-xs space-y-1">
                     {result.brackets.map((b) => (
-                      <div key={b.level} className="flex justify-between text-muted-foreground">
+                      <div
+                        key={b.level}
+                        className="flex justify-between text-muted-foreground"
+                      >
                         <span>
                           Bậc {b.level} ({(b.rate * 100).toFixed(0)}%):
                         </span>
                         <span>
-                          {formatCurrency(b.income)} × {(b.rate * 100).toFixed(0)}% = {formatCurrency(b.tax)}
+                          {formatCurrency(b.income)} ×{" "}
+                          {(b.rate * 100).toFixed(0)}% = {formatCurrency(b.tax)}
                         </span>
                       </div>
                     ))}
@@ -380,10 +487,14 @@ function TaxCalculatorDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                 <hr />
                 <div className="flex justify-between text-lg">
                   <span className="font-medium">Thuế TNCN:</span>
-                  <span className="font-bold text-primary">{formatCurrency(result.taxAmount)}</span>
+                  <span className="font-bold text-primary">
+                    {formatCurrency(result.taxAmount)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Thuế suất thực tế:</span>
+                  <span className="text-muted-foreground">
+                    Thuế suất thực tế:
+                  </span>
                   <span>{((result.effectiveRate || 0) * 100).toFixed(2)}%</span>
                 </div>
               </CardContent>
@@ -401,10 +512,10 @@ function TaxCalculatorDialog({ open, onOpenChange }: { open: boolean; onOpenChan
 
 function SettlementList({ year }: { year: number }) {
   const { data } = useQuery({
-    queryKey: ['tax-settlements-list', year],
+    queryKey: ["tax-settlements-list", year],
     queryFn: async () => {
       const res = await fetch(`/api/compliance/tax/settlements?year=${year}`)
-      if (!res.ok) throw new Error('Failed to fetch')
+      if (!res.ok) throw new Error("Failed to fetch")
       const json = await res.json()
       return json.data?.settlements || []
     },
@@ -416,7 +527,9 @@ function SettlementList({ year }: { year: number }) {
     <Card>
       <CardHeader>
         <CardTitle>Quyết toán thuế năm {year}</CardTitle>
-        <CardDescription>Danh sách nhân viên quyết toán thuế TNCN</CardDescription>
+        <CardDescription>
+          Danh sách nhân viên quyết toán thuế TNCN
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -435,30 +548,69 @@ function SettlementList({ year }: { year: number }) {
           <TableBody>
             {settlementList.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                <TableCell
+                  colSpan={8}
+                  className="text-center text-muted-foreground py-8"
+                >
                   Chưa có dữ liệu quyết toán
                 </TableCell>
               </TableRow>
             ) : (
-              settlementList.map((s: { id: string; employeeCode: string; fullName: string; totalIncome: number; taxableIncome: number; taxAmount: number; taxPaid: number; difference: number; status: string }) => (
-                <TableRow key={s.id}>
-                  <TableCell className="font-mono">{s.employeeCode}</TableCell>
-                  <TableCell>{s.fullName}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(s.totalIncome)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(s.taxableIncome)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(s.taxAmount)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(s.taxPaid)}</TableCell>
-                  <TableCell className={`text-right font-medium ${s.difference > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                    {s.difference > 0 ? '+' : ''}
-                    {formatCurrency(s.difference)}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={s.status === 'COMPLETED' || s.status === 'FINALIZED' || s.status === 'SUBMITTED' ? 'default' : 'secondary'}>
-                      {s.status === 'COMPLETED' || s.status === 'SUBMITTED' ? 'Hoàn thành' : s.status === 'FINALIZED' ? 'Đã chốt' : 'Chờ xử lý'}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))
+              settlementList.map(
+                (s: {
+                  id: string
+                  employeeCode: string
+                  fullName: string
+                  totalIncome: number
+                  taxableIncome: number
+                  taxAmount: number
+                  taxPaid: number
+                  difference: number
+                  status: string
+                }) => (
+                  <TableRow key={s.id}>
+                    <TableCell className="font-mono">
+                      {s.employeeCode}
+                    </TableCell>
+                    <TableCell>{s.fullName}</TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(s.totalIncome)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(s.taxableIncome)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(s.taxAmount)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(s.taxPaid)}
+                    </TableCell>
+                    <TableCell
+                      className={`text-right font-medium ${s.difference > 0 ? "text-red-600" : "text-green-600"}`}
+                    >
+                      {s.difference > 0 ? "+" : ""}
+                      {formatCurrency(s.difference)}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          s.status === "COMPLETED" ||
+                          s.status === "FINALIZED" ||
+                          s.status === "SUBMITTED"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {s.status === "COMPLETED" || s.status === "SUBMITTED"
+                          ? "Hoàn thành"
+                          : s.status === "FINALIZED"
+                            ? "Đã chốt"
+                            : "Chờ xử lý"}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                )
+              )
             )}
           </TableBody>
         </Table>
@@ -467,12 +619,16 @@ function SettlementList({ year }: { year: number }) {
   )
 }
 
-function DependentList({ dependentSummary }: { dependentSummary?: { total: number; byType: Record<string, number> } }) {
+function DependentList({
+  dependentSummary,
+}: {
+  dependentSummary?: { total: number; byType: Record<string, number> }
+}) {
   const { data: depData } = useQuery({
-    queryKey: ['dependents-list'],
+    queryKey: ["dependents-list"],
     queryFn: async () => {
-      const res = await fetch('/api/compliance/tax/dependents')
-      if (!res.ok) throw new Error('Failed to fetch')
+      const res = await fetch("/api/compliance/tax/dependents")
+      if (!res.ok) throw new Error("Failed to fetch")
       const json = await res.json()
       return json.data
     },
@@ -486,7 +642,9 @@ function DependentList({ dependentSummary }: { dependentSummary?: { total: numbe
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Người phụ thuộc</CardTitle>
-          <CardDescription>Quản lý thông tin người phụ thuộc để giảm trừ thuế</CardDescription>
+          <CardDescription>
+            Quản lý thông tin người phụ thuộc để giảm trừ thuế
+          </CardDescription>
         </div>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
@@ -504,19 +662,25 @@ function DependentList({ dependentSummary }: { dependentSummary?: { total: numbe
           </Card>
           <Card>
             <CardContent className="pt-4">
-              <div className="text-2xl font-bold">{summary?.byType?.children || 0}</div>
+              <div className="text-2xl font-bold">
+                {summary?.byType?.children || 0}
+              </div>
               <p className="text-xs text-muted-foreground">Con</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-4">
-              <div className="text-2xl font-bold">{summary?.byType?.parents || 0}</div>
+              <div className="text-2xl font-bold">
+                {summary?.byType?.parents || 0}
+              </div>
               <p className="text-xs text-muted-foreground">Cha/Mẹ</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-4">
-              <div className="text-2xl font-bold">{summary?.byType?.spouse || 0}</div>
+              <div className="text-2xl font-bold">
+                {summary?.byType?.spouse || 0}
+              </div>
               <p className="text-xs text-muted-foreground">Vợ/Chồng</p>
             </CardContent>
           </Card>
@@ -539,27 +703,52 @@ function DependentList({ dependentSummary }: { dependentSummary?: { total: numbe
           <TableBody>
             {dependentList.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                <TableCell
+                  colSpan={8}
+                  className="text-center text-muted-foreground py-8"
+                >
                   Chưa có dữ liệu người phụ thuộc
                 </TableCell>
               </TableRow>
             ) : (
-              dependentList.map((d: { id: string; employeeCode: string; employeeName: string; dependentName: string; relationship: string; birthDate: string | null; taxCode: string; validFrom: string; status: string }) => (
-                <TableRow key={d.id}>
-                  <TableCell className="font-mono">{d.employeeCode}</TableCell>
-                  <TableCell>{d.employeeName}</TableCell>
-                  <TableCell>{d.dependentName}</TableCell>
-                  <TableCell>{d.relationship}</TableCell>
-                  <TableCell>{d.birthDate ? formatDate(new Date(d.birthDate)) : '-'}</TableCell>
-                  <TableCell className="font-mono">{d.taxCode || '-'}</TableCell>
-                  <TableCell>{formatDate(new Date(d.validFrom))}</TableCell>
-                  <TableCell>
-                    <Badge variant={d.status === 'ACTIVE' ? 'default' : 'secondary'}>
-                      {d.status === 'ACTIVE' ? 'Hoạt động' : 'Ngừng'}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))
+              dependentList.map(
+                (d: {
+                  id: string
+                  employeeCode: string
+                  employeeName: string
+                  dependentName: string
+                  relationship: string
+                  birthDate: string | null
+                  taxCode: string
+                  validFrom: string
+                  status: string
+                }) => (
+                  <TableRow key={d.id}>
+                    <TableCell className="font-mono">
+                      {d.employeeCode}
+                    </TableCell>
+                    <TableCell>{d.employeeName}</TableCell>
+                    <TableCell>{d.dependentName}</TableCell>
+                    <TableCell>{d.relationship}</TableCell>
+                    <TableCell>
+                      {d.birthDate ? formatDate(new Date(d.birthDate)) : "-"}
+                    </TableCell>
+                    <TableCell className="font-mono">
+                      {d.taxCode || "-"}
+                    </TableCell>
+                    <TableCell>{formatDate(new Date(d.validFrom))}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          d.status === "ACTIVE" ? "default" : "secondary"
+                        }
+                      >
+                        {d.status === "ACTIVE" ? "Hoạt động" : "Ngừng"}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                )
+              )
             )}
           </TableBody>
         </Table>
@@ -573,7 +762,9 @@ function TaxReports({ year }: { year: number }) {
     <Card>
       <CardHeader>
         <CardTitle>Báo cáo thuế</CardTitle>
-        <CardDescription>Xuất báo cáo thuế TNCN theo mẫu quy định</CardDescription>
+        <CardDescription>
+          Xuất báo cáo thuế TNCN theo mẫu quy định
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
@@ -582,7 +773,9 @@ function TaxReports({ year }: { year: number }) {
               <FileText className="h-8 w-8 text-primary" />
               <div className="flex-1">
                 <h4 className="font-medium">Mẫu 05-KK-TNCN</h4>
-                <p className="text-sm text-muted-foreground">Tờ khai quyết toán thuế TNCN</p>
+                <p className="text-sm text-muted-foreground">
+                  Tờ khai quyết toán thuế TNCN
+                </p>
               </div>
               <Button variant="outline" size="sm">
                 <Download className="h-4 w-4 mr-1" />
@@ -596,7 +789,9 @@ function TaxReports({ year }: { year: number }) {
               <FileText className="h-8 w-8 text-primary" />
               <div className="flex-1">
                 <h4 className="font-medium">Mẫu 02/QT-TNCN</h4>
-                <p className="text-sm text-muted-foreground">Bảng kê chi tiết người nộp thuế</p>
+                <p className="text-sm text-muted-foreground">
+                  Bảng kê chi tiết người nộp thuế
+                </p>
               </div>
               <Button variant="outline" size="sm">
                 <Download className="h-4 w-4 mr-1" />
@@ -610,7 +805,9 @@ function TaxReports({ year }: { year: number }) {
               <FileText className="h-8 w-8 text-primary" />
               <div className="flex-1">
                 <h4 className="font-medium">Mẫu 05-1/BK-TNCN</h4>
-                <p className="text-sm text-muted-foreground">Bảng kê thu nhập cá nhân</p>
+                <p className="text-sm text-muted-foreground">
+                  Bảng kê thu nhập cá nhân
+                </p>
               </div>
               <Button variant="outline" size="sm">
                 <Download className="h-4 w-4 mr-1" />
@@ -624,7 +821,9 @@ function TaxReports({ year }: { year: number }) {
               <FileText className="h-8 w-8 text-primary" />
               <div className="flex-1">
                 <h4 className="font-medium">Mẫu 05-2/BK-TNCN</h4>
-                <p className="text-sm text-muted-foreground">Bảng kê người phụ thuộc</p>
+                <p className="text-sm text-muted-foreground">
+                  Bảng kê người phụ thuộc
+                </p>
               </div>
               <Button variant="outline" size="sm">
                 <Download className="h-4 w-4 mr-1" />
@@ -642,7 +841,9 @@ function TaxReports({ year }: { year: number }) {
                 <FileText className="h-6 w-6 text-muted-foreground" />
                 <div className="flex-1">
                   <h4 className="text-sm font-medium">Tờ khai thuế tháng</h4>
-                  <p className="text-xs text-muted-foreground">Mẫu 02/KK-TNCN</p>
+                  <p className="text-xs text-muted-foreground">
+                    Mẫu 02/KK-TNCN
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -652,7 +853,9 @@ function TaxReports({ year }: { year: number }) {
                 <FileText className="h-6 w-6 text-muted-foreground" />
                 <div className="flex-1">
                   <h4 className="text-sm font-medium">Bảng lương chi tiết</h4>
-                  <p className="text-xs text-muted-foreground">Có khấu trừ thuế</p>
+                  <p className="text-xs text-muted-foreground">
+                    Có khấu trừ thuế
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -662,7 +865,9 @@ function TaxReports({ year }: { year: number }) {
                 <FileText className="h-6 w-6 text-muted-foreground" />
                 <div className="flex-1">
                   <h4 className="text-sm font-medium">Báo cáo tổng hợp</h4>
-                  <p className="text-xs text-muted-foreground">Theo phòng ban</p>
+                  <p className="text-xs text-muted-foreground">
+                    Theo phòng ban
+                  </p>
                 </div>
               </CardContent>
             </Card>

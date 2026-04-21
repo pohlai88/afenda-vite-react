@@ -22,6 +22,7 @@
 - Moved: `e2e/*.spec.ts` (5 legacy specs) → `e2e/_legacy/` — Old scaffolded specs excluded via testIgnore
 
 **TEST RESULTS:**
+
 - AC-1 Playwright Config: PASS — `playwright.config.ts` has testDir, webServer (port 3018), globalSetup/globalTeardown, chromium project, CI-aware settings
 - AC-2 Auth Helpers: PASS — `loginAs(page, role)` handles all 4 roles (ADMIN, MANAGER, MEMBER, VIEWER) with env-configurable credentials
 - AC-3 Seed/Cleanup: PASS — `seedTestUsers()` creates Supabase+Prisma users idempotently; `seedTestData()` creates `[TEST]`-prefixed companies/contacts/deals/activities; `cleanupTestData()` removes all `[TEST]` data in FK order
@@ -31,9 +32,11 @@
 - AC-7 Build: PASS — `tsc --noEmit` 0 errors, `next build` clean (e2e files excluded from build)
 
 **ISSUES DISCOVERED:**
+
 - Playwright global setup/teardown runs in a separate Node.js process without Next.js `.env.local` loading — solved by creating custom `e2e/helpers/load-env.ts` parser
 - Dev server HTTP/1.1 upgrade header causes curl issues but Playwright Chromium works fine
 
 **DEVIATIONS FROM SPEC:**
+
 - Test data factories not implemented as separate factory functions — `seedTestData()` creates all test data inline with `[TEST]` prefix; full factories deferred to TIP-P2-004 when more granular test data is needed
 - Fixtures use `loginAs()` helper directly instead of separate auth state storage — simpler approach that avoids stale cookies; each test gets a fresh login

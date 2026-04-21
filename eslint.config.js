@@ -1,9 +1,13 @@
-import { createConfig } from "@afenda/eslint-config"
+import {
+  createConfig,
+  createRepositoryBoundaryConfig,
+} from "@afenda/eslint-config"
 
 const baseConfig = createConfig({ rootDir: import.meta.dirname })
 
 export default [
   ...baseConfig,
+  ...createRepositoryBoundaryConfig(),
   {
     name: "governed-ui/import-fence",
     files: ["apps/**/*.{js,jsx,ts,tsx}", "packages/**/*.{js,jsx,ts,tsx}"],

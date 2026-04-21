@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from "@tanstack/react-query"
 
 interface ModuleStatus {
   name: string
@@ -20,14 +20,14 @@ interface IntegrationHealth {
 }
 
 async function fetchIntegrationHealth(): Promise<IntegrationHealth> {
-  const res = await fetch('/api/integrations/health')
+  const res = await fetch("/api/integrations/health")
   if (!res.ok) return { modules: [], connected: 0, total: 0 }
   return res.json()
 }
 
 export function useIntegrationHealth() {
   return useQuery({
-    queryKey: ['integrations', 'health'],
+    queryKey: ["integrations", "health"],
     queryFn: fetchIntegrationHealth,
     refetchInterval: 30_000, // Auto-refresh every 30s
     staleTime: 15_000,

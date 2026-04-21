@@ -1,6 +1,6 @@
-import { db } from '@/lib/db'
-import bcrypt from 'bcryptjs'
-import type { UserRole } from '@prisma/client'
+import { db } from "@/lib/db"
+import bcrypt from "bcryptjs"
+import type { UserRole } from "@prisma/client"
 
 interface CreateUserInput {
   email: string
@@ -37,7 +37,7 @@ export const userService = {
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
   },
 
@@ -76,7 +76,7 @@ export const userService = {
     })
 
     if (existing) {
-      throw new Error('Email đã tồn tại')
+      throw new Error("Email đã tồn tại")
     }
 
     const passwordHash = await bcrypt.hash(data.password, 12)
@@ -87,7 +87,7 @@ export const userService = {
         email: data.email,
         passwordHash,
         name: data.name,
-        role: data.role ?? 'VIEWER',
+        role: data.role ?? "VIEWER",
         employeeId: data.employeeId,
       },
       select: {
@@ -107,7 +107,7 @@ export const userService = {
     })
 
     if (!current) {
-      throw new Error('Người dùng không tồn tại')
+      throw new Error("Người dùng không tồn tại")
     }
 
     return db.user.update({
@@ -135,7 +135,7 @@ export const userService = {
     })
 
     if (!current) {
-      throw new Error('Người dùng không tồn tại')
+      throw new Error("Người dùng không tồn tại")
     }
 
     const passwordHash = await bcrypt.hash(newPassword, 12)
@@ -152,7 +152,7 @@ export const userService = {
     })
 
     if (!user) {
-      throw new Error('Người dùng không tồn tại')
+      throw new Error("Người dùng không tồn tại")
     }
 
     // Soft delete by deactivating

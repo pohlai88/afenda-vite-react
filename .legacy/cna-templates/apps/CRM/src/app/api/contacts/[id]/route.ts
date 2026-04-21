@@ -1,9 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireOwnerOrRole, isErrorResponse, forbiddenResponse, canAccess } from '@/lib/auth/rbac'
-import { validateRequest, updateContactSchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import {
+  requireOwnerOrRole,
+  isErrorResponse,
+  forbiddenResponse,
+  canAccess,
+} from "@/lib/auth/rbac"
+import { validateRequest, updateContactSchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
 
 // GET /api/contacts/[id] — Get contact with relations
 export async function GET(
@@ -29,7 +34,7 @@ export async function GET(
           },
         },
         activities: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           take: 10,
           include: {
             user: { select: { id: true, name: true, avatarUrl: true } },
@@ -46,22 +51,25 @@ export async function GET(
     })
 
     if (!contact) {
-      return NextResponse.json({ error: 'Contact not found' }, { status: 404 })
+      return NextResponse.json({ error: "Contact not found" }, { status: 404 })
     }
 
     // MEMBER/VIEWER can only view own contacts
-    if (!canAccess(user, 'view_all') && contact.ownerId !== user.id) {
+    if (!canAccess(user, "view_all") && contact.ownerId !== user.id) {
       return forbiddenResponse()
     }
 
     return NextResponse.json(contact)
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/contacts/[id] error:', error)
+    console.error("GET /api/contacts/[id] error:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch contact' },
+      { error: "Failed to fetch contact" },
       { status: 500 }
     )
   }
@@ -81,10 +89,13 @@ export async function PATCH(
       select: { ownerId: true },
     })
     if (!existing) {
-      return NextResponse.json({ error: 'Contact not found' }, { status: 404 })
+      return NextResponse.json({ error: "Contact not found" }, { status: 404 })
     }
 
-    const result = await requireOwnerOrRole(existing.ownerId, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.ownerId, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
@@ -101,7 +112,7 @@ export async function PATCH(
 
     return NextResponse.json(contact)
   } catch (error) {
-    return handleApiError(error, '/api/contacts/[id]')
+    return handleApiError(error, "/api/contacts/[id]")
   }
 }
 
@@ -118,22 +129,25 @@ export async function DELETE(
       select: { ownerId: true },
     })
     if (!existing) {
-      return NextResponse.json({ error: 'Contact not found' }, { status: 404 })
+      return NextResponse.json({ error: "Contact not found" }, { status: 404 })
     }
 
-    const result = await requireOwnerOrRole(existing.ownerId, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.ownerId, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     await prisma.contact.delete({ where: { id } })
 
     return NextResponse.json({ success: true })
   } catch (error: any) {
-    if (error?.code === 'P2025') {
-      return NextResponse.json({ error: 'Contact not found' }, { status: 404 })
+    if (error?.code === "P2025") {
+      return NextResponse.json({ error: "Contact not found" }, { status: 404 })
     }
-    console.error('DELETE /api/contacts/[id] error:', error)
+    console.error("DELETE /api/contacts/[id] error:", error)
     return NextResponse.json(
-      { error: 'Failed to delete contact' },
+      { error: "Failed to delete contact" },
       { status: 500 }
     )
   }

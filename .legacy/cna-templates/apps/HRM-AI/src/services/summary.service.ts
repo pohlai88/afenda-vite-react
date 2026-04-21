@@ -1,15 +1,15 @@
 // src/services/summary.service.ts
 // Attendance summary service (monthly timesheet)
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import type {
   AttendanceSummaryFilters,
   PaginatedResponse,
   AttendanceSummaryWithRelations,
   MonthlySummaryData,
-} from '@/types'
-import type { Prisma } from '@prisma/client'
-import { getWorkingDaysInMonth, roundHours } from '@/lib/attendance/time-utils'
+} from "@/types"
+import type { Prisma } from "@prisma/client"
+import { getWorkingDaysInMonth, roundHours } from "@/lib/attendance/time-utils"
 
 export const summaryService = {
   // ═══════════════════════════════════════════════════════════════
@@ -55,7 +55,7 @@ export const summaryService = {
             },
           },
         },
-        orderBy: [{ year: 'desc' }, { month: 'desc' }, { createdAt: 'desc' }],
+        orderBy: [{ year: "desc" }, { month: "desc" }, { createdAt: "desc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -73,7 +73,10 @@ export const summaryService = {
     }
   },
 
-  async findById(tenantId: string, id: string): Promise<AttendanceSummaryWithRelations | null> {
+  async findById(
+    tenantId: string,
+    id: string
+  ): Promise<AttendanceSummaryWithRelations | null> {
     return db.attendanceSummary.findFirst({
       where: { id, tenantId },
       include: {
@@ -141,7 +144,7 @@ export const summaryService = {
         tenantId,
         employeeId,
         date: { gte: monthStart, lte: monthEnd },
-        status: 'APPROVED',
+        status: "APPROVED",
       },
     })
 
@@ -166,16 +169,16 @@ export const summaryService = {
     // Process attendance records
     for (const att of attendances) {
       switch (att.status) {
-        case 'PRESENT':
-        case 'LATE':
-        case 'EARLY_LEAVE':
-        case 'LATE_AND_EARLY':
+        case "PRESENT":
+        case "LATE":
+        case "EARLY_LEAVE":
+        case "LATE_AND_EARLY":
           presentDays++
           break
-        case 'ABSENT':
+        case "ABSENT":
           absentDays++
           break
-        case 'ON_LEAVE':
+        case "ON_LEAVE":
           paidLeaveDays++
           break
       }
@@ -213,10 +216,10 @@ export const summaryService = {
       const hours = Number(ot.actualHours || ot.plannedHours)
 
       switch (ot.dayType) {
-        case 'HOLIDAY':
+        case "HOLIDAY":
           otHolidayHours += hours
           break
-        case 'WEEKEND':
+        case "WEEKEND":
           otWeekendHours += hours
           break
         default:
@@ -264,14 +267,24 @@ export const summaryService = {
     month: number
   ) {
     // Check if summary exists
-    const existing = await this.findByEmployeeAndMonth(tenantId, employeeId, year, month)
+    const existing = await this.findByEmployeeAndMonth(
+      tenantId,
+      employeeId,
+      year,
+      month
+    )
 
     if (existing?.isLocked) {
-      throw new Error('Bảng công đã khóa, không thể tính lại')
+      throw new Error("Bảng công đã khóa, không thể tính lại")
     }
 
     // Calculate summary data
-    const summaryData = await this.calculateSummary(tenantId, employeeId, year, month)
+    const summaryData = await this.calculateSummary(
+      tenantId,
+      employeeId,
+      year,
+      month
+    )
 
     // Upsert summary
     return db.attendanceSummary.upsert({
@@ -315,7 +328,7 @@ export const summaryService = {
     const employees = await db.employee.findMany({
       where: {
         tenantId,
-        status: { in: ['ACTIVE', 'PROBATION'] },
+        status: { in: ["ACTIVE", "PROBATION"] },
         ...(departmentId && { departmentId }),
       },
       select: { id: true },
@@ -336,7 +349,7 @@ export const summaryService = {
         results.failed++
         results.errors.push({
           employeeId: emp.id,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : "Unknown error",
         })
       }
     }
@@ -354,11 +367,11 @@ export const summaryService = {
     })
 
     if (!summary) {
-      throw new Error('Bảng công không tồn tại')
+      throw new Error("Bảng công không tồn tại")
     }
 
     if (summary.isLocked) {
-      throw new Error('Bảng công đã được khóa')
+      throw new Error("Bảng công đã được khóa")
     }
 
     return db.attendanceSummary.update({
@@ -377,7 +390,7 @@ export const summaryService = {
     })
 
     if (!summary) {
-      throw new Error('Bảng công không tồn tại')
+      throw new Error("Bảng công không tồn tại")
     }
 
     return db.attendanceSummary.update({
@@ -390,7 +403,12 @@ export const summaryService = {
     })
   },
 
-  async lockMonth(tenantId: string, year: number, month: number, lockedBy: string) {
+  async lockMonth(
+    tenantId: string,
+    year: number,
+    month: number,
+    lockedBy: string
+  ) {
     return db.attendanceSummary.updateMany({
       where: {
         tenantId,

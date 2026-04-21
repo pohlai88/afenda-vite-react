@@ -1,25 +1,25 @@
-'use client'
+"use client"
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Loader2, Upload } from 'lucide-react'
-import { useState } from 'react'
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Loader2, Upload } from "lucide-react"
+import { useState } from "react"
 
 const applicationSchema = z.object({
-  fullName: z.string().min(1, 'Vui lòng nhập họ tên'),
-  email: z.string().email('Email không hợp lệ'),
-  phone: z.string().min(1, 'Vui lòng nhập số điện thoại'),
+  fullName: z.string().min(1, "Vui lòng nhập họ tên"),
+  email: z.string().email("Email không hợp lệ"),
+  phone: z.string().min(1, "Vui lòng nhập số điện thoại"),
   cvUrl: z.string().optional(),
   coverLetter: z.string().optional(),
   expectedSalary: z.coerce.number().optional(),
   yearsOfExperience: z.coerce.number().min(0).optional(),
-  linkedinUrl: z.string().url('URL không hợp lệ').optional().or(z.literal('')),
+  linkedinUrl: z.string().url("URL không hợp lệ").optional().or(z.literal("")),
 })
 
 type ApplicationFormData = z.infer<typeof applicationSchema>
@@ -27,7 +27,9 @@ type ApplicationFormData = z.infer<typeof applicationSchema>
 interface ApplicationFormProps {
   jobTitle: string
   jobPostingId: string
-  onSubmit: (data: ApplicationFormData & { jobPostingId: string }) => Promise<void>
+  onSubmit: (
+    data: ApplicationFormData & { jobPostingId: string }
+  ) => Promise<void>
   isSubmitting?: boolean
 }
 
@@ -47,14 +49,14 @@ export function ApplicationForm({
   } = useForm<ApplicationFormData>({
     resolver: zodResolver(applicationSchema) as never,
     defaultValues: {
-      fullName: '',
-      email: '',
-      phone: '',
-      cvUrl: '',
-      coverLetter: '',
+      fullName: "",
+      email: "",
+      phone: "",
+      cvUrl: "",
+      coverLetter: "",
       expectedSalary: undefined,
       yearsOfExperience: undefined,
-      linkedinUrl: '',
+      linkedinUrl: "",
     },
   })
 
@@ -63,7 +65,7 @@ export function ApplicationForm({
     if (file) {
       setCvFile(file)
       // In a real app, you would upload the file and get a URL
-      setValue('cvUrl', file.name)
+      setValue("cvUrl", file.name)
     }
   }
 
@@ -77,7 +79,8 @@ export function ApplicationForm({
         <CardHeader>
           <CardTitle className="text-lg">Ứng tuyển</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Vị trí: <span className="font-medium text-foreground">{jobTitle}</span>
+            Vị trí:{" "}
+            <span className="font-medium text-foreground">{jobTitle}</span>
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -87,10 +90,12 @@ export function ApplicationForm({
               <Input
                 id="fullName"
                 placeholder="Nguyễn Văn A"
-                {...register('fullName')}
+                {...register("fullName")}
               />
               {errors.fullName && (
-                <p className="text-sm text-red-500">{errors.fullName.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.fullName.message}
+                </p>
               )}
             </div>
 
@@ -100,7 +105,7 @@ export function ApplicationForm({
                 id="email"
                 type="email"
                 placeholder="email@example.com"
-                {...register('email')}
+                {...register("email")}
               />
               {errors.email && (
                 <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -114,7 +119,7 @@ export function ApplicationForm({
               <Input
                 id="phone"
                 placeholder="0912 345 678"
-                {...register('phone')}
+                {...register("phone")}
               />
               {errors.phone && (
                 <p className="text-sm text-red-500">{errors.phone.message}</p>
@@ -126,10 +131,12 @@ export function ApplicationForm({
               <Input
                 id="linkedinUrl"
                 placeholder="https://linkedin.com/in/..."
-                {...register('linkedinUrl')}
+                {...register("linkedinUrl")}
               />
               {errors.linkedinUrl && (
-                <p className="text-sm text-red-500">{errors.linkedinUrl.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.linkedinUrl.message}
+                </p>
               )}
             </div>
           </div>
@@ -142,7 +149,7 @@ export function ApplicationForm({
                 type="number"
                 min={0}
                 placeholder="VD: 3"
-                {...register('yearsOfExperience')}
+                {...register("yearsOfExperience")}
               />
             </div>
 
@@ -152,7 +159,7 @@ export function ApplicationForm({
                 id="expectedSalary"
                 type="number"
                 placeholder="VD: 25000000"
-                {...register('expectedSalary')}
+                {...register("expectedSalary")}
               />
             </div>
           </div>
@@ -171,7 +178,9 @@ export function ApplicationForm({
                 <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                 {cvFile ? (
                   <div>
-                    <p className="text-sm font-medium text-primary">{cvFile.name}</p>
+                    <p className="text-sm font-medium text-primary">
+                      {cvFile.name}
+                    </p>
                     <p className="text-xs text-muted-foreground mt-1">
                       Click để đổi file
                     </p>
@@ -196,7 +205,7 @@ export function ApplicationForm({
               id="coverLetter"
               placeholder="Viết đôi dòng giới thiệu về bản thân và lý do ứng tuyển..."
               rows={5}
-              {...register('coverLetter')}
+              {...register("coverLetter")}
             />
           </div>
         </CardContent>

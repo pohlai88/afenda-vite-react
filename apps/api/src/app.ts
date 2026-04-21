@@ -11,15 +11,17 @@ import { failure, success } from "./contract/envelope.js"
 import { Hono } from "hono"
 import { bodyLimit } from "hono/body-limit"
 import { cors } from "hono/cors"
-import { logger } from "hono/logger"
 import { secureHeaders } from "hono/secure-headers"
 
 import apiPackage from "../package.json" with { type: "json" }
 
 import { env } from "./lib/env.js"
+import { requestLoggingMiddleware } from "./lib/logger.js"
+import { betterAuthSessionContextMiddleware } from "./middleware/better-auth-session-context.js"
 import { onError, onNotFound } from "./middleware/error-handler.js"
 import { requestContextMiddleware } from "./middleware/request-context.js"
-import { authRoutes } from "./routes/auth.js"
+import { authCompanionRoutes } from "./routes/auth-companion-routes.js"
+import { betterAuthRoutes } from "./routes/better-auth-routes.js"
 import { healthRoutes } from "./routes/health.js"
 import { userRoutes } from "./routes/users.js"
 
@@ -32,7 +34,8 @@ export function createApp() {
   app.notFound(onNotFound)
 
   app.use("*", requestContextMiddleware)
-  app.use("*", logger())
+  app.use("/api/*", betterAuthSessionContextMiddleware)
+  app.use("*", requestLoggingMiddleware)
   app.use("*", secureHeaders())
 
   app.use(
@@ -74,7 +77,8 @@ export function createApp() {
   )
 
   app.route("/health", healthRoutes)
-  app.route("/api/auth", authRoutes)
+  app.route("/api/auth", betterAuthRoutes)
+  app.route("/api/v1/auth", authCompanionRoutes)
   app.route("/api/users", userRoutes)
 
   return app

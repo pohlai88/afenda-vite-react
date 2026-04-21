@@ -56,7 +56,10 @@ export function TableSkeleton({
         {/* Table Rows */}
         <div className="divide-y divide-zinc-800">
           {[...Array(rows)].map((_, rowIndex) => (
-            <div key={rowIndex} className="flex items-center p-4 gap-4 hover:bg-zinc-800/30">
+            <div
+              key={rowIndex}
+              className="flex items-center p-4 gap-4 hover:bg-zinc-800/30"
+            >
               <Skeleton className="h-4 w-4 bg-zinc-800" />
               {[...Array(columns)].map((_, colIndex) => (
                 <Skeleton

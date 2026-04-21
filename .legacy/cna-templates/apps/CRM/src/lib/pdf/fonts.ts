@@ -1,6 +1,7 @@
-import { Font } from '@react-pdf/renderer'
+import { Font } from "@react-pdf/renderer"
 
-const FONT_BASE = 'https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-ext'
+const FONT_BASE =
+  "https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-ext"
 
 let fontsRegistered = false
 
@@ -9,7 +10,7 @@ export function registerFonts() {
   fontsRegistered = true
 
   Font.register({
-    family: 'Roboto',
+    family: "Roboto",
     fonts: [
       {
         src: `${FONT_BASE}/400-normal.ttf`,

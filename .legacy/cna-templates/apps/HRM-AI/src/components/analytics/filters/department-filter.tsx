@@ -1,17 +1,17 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { useEffect, useState } from "react"
+import { cn } from "@/lib/utils"
 
 interface Department {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 interface DepartmentFilterProps {
-  value: string;
-  onChange: (departmentId: string) => void;
-  className?: string;
+  value: string
+  onChange: (departmentId: string) => void
+  className?: string
 }
 
 export function DepartmentFilter({
@@ -19,26 +19,26 @@ export function DepartmentFilter({
   onChange,
   className,
 }: DepartmentFilterProps) {
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [departments, setDepartments] = useState<Department[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchDepartments() {
       try {
-        const response = await fetch('/api/departments');
+        const response = await fetch("/api/departments")
         if (response.ok) {
-          const result = await response.json();
-          setDepartments(result);
+          const result = await response.json()
+          setDepartments(result)
         }
       } catch (error) {
-        console.error('Failed to fetch departments:', error);
+        console.error("Failed to fetch departments:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    fetchDepartments();
-  }, []);
+    fetchDepartments()
+  }, [])
 
   return (
     <select
@@ -46,7 +46,7 @@ export function DepartmentFilter({
       onChange={(e) => onChange(e.target.value)}
       disabled={loading}
       className={cn(
-        'h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50',
+        "h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50",
         className
       )}
     >
@@ -57,5 +57,5 @@ export function DepartmentFilter({
         </option>
       ))}
     </select>
-  );
+  )
 }

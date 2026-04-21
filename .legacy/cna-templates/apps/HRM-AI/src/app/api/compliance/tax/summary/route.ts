@@ -1,20 +1,22 @@
 // src/app/api/compliance/tax/summary/route.ts
 // Tax summary - aggregate payrolls + tax settlements for a year
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user?.tenantId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const tenantId = session.user.tenantId
     const { searchParams } = new URL(request.url)
-    const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()))
+    const year = parseInt(
+      searchParams.get("year") || String(new Date().getFullYear())
+    )
 
     // Count employees with payroll in this year
     const yearStart = new Date(year, 0, 1)
@@ -27,9 +29,9 @@ export async function GET(request: NextRequest) {
           is: {
             periodStart: { gte: yearStart },
             periodEnd: { lte: yearEnd },
-          }
+          },
         },
-        status: { in: ['APPROVED', 'PAID'] },
+        status: { in: ["APPROVED", "PAID"] },
       },
       select: {
         employeeId: true,
@@ -37,13 +39,20 @@ export async function GET(request: NextRequest) {
         taxableIncome: true,
         assessableIncome: true,
         grossSalary: true,
-      }
+      },
     })
 
     // Aggregate by employee
-    const employeeMap = new Map<string, { totalPit: number; totalTaxable: number; totalGross: number }>()
+    const employeeMap = new Map<
+      string,
+      { totalPit: number; totalTaxable: number; totalGross: number }
+    >()
     for (const p of payrolls) {
-      const existing = employeeMap.get(p.employeeId) || { totalPit: 0, totalTaxable: 0, totalGross: 0 }
+      const existing = employeeMap.get(p.employeeId) || {
+        totalPit: 0,
+        totalTaxable: 0,
+        totalGross: 0,
+      }
       existing.totalPit += Number(p.pit)
       existing.totalTaxable += Number(p.taxableIncome)
       existing.totalGross += Number(p.grossSalary)
@@ -61,11 +70,19 @@ export async function GET(request: NextRequest) {
     // Check TaxSettlement records for the year
     const settlements = await db.taxSettlement.findMany({
       where: { tenantId, settlementYear: year },
-      select: { taxAmount: true, taxPaid: true, taxOwed: true, taxRefund: true }
+      select: {
+        taxAmount: true,
+        taxPaid: true,
+        taxOwed: true,
+        taxRefund: true,
+      },
     })
 
     if (settlements.length > 0) {
-      totalTaxAmount = settlements.reduce((sum, s) => sum + Number(s.taxAmount), 0)
+      totalTaxAmount = settlements.reduce(
+        (sum, s) => sum + Number(s.taxAmount),
+        0
+      )
       totalTaxPaid = settlements.reduce((sum, s) => sum + Number(s.taxPaid), 0)
     } else {
       // Estimate from payroll data - PIT paid equals amount
@@ -86,7 +103,7 @@ export async function GET(request: NextRequest) {
     ]
 
     // Determine highest bracket per employee based on average monthly assessable
-    const brackets = bracketThresholds.map(b => ({ ...b, count: 0 }))
+    const brackets = bracketThresholds.map((b) => ({ ...b, count: 0 }))
     const monthCount = Math.min(new Date().getMonth() + 1, 12)
 
     for (const emp of employeeMap.values()) {
@@ -102,9 +119,14 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const avgTaxRate = totalTaxPaid > 0 && totalEmployees > 0
-      ? totalTaxAmount / (Array.from(employeeMap.values()).reduce((s, e) => s + e.totalGross, 0) || 1)
-      : 0
+    const avgTaxRate =
+      totalTaxPaid > 0 && totalEmployees > 0
+        ? totalTaxAmount /
+          (Array.from(employeeMap.values()).reduce(
+            (s, e) => s + e.totalGross,
+            0
+          ) || 1)
+        : 0
 
     return NextResponse.json({
       success: true,
@@ -114,15 +136,18 @@ export async function GET(request: NextRequest) {
         totalTaxPaid,
         totalDifference,
         avgTaxRate: Math.round(avgTaxRate * 1000) / 1000,
-        brackets: brackets.map(b => ({
+        brackets: brackets.map((b) => ({
           bracket: b.bracket,
           count: b.count,
           rate: b.rate,
         })),
-      }
+      },
     })
   } catch (error) {
-    console.error('Error fetching tax summary:', error)
-    return NextResponse.json({ error: 'Failed to fetch tax summary' }, { status: 500 })
+    console.error("Error fetching tax summary:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch tax summary" },
+      { status: 500 }
+    )
   }
 }

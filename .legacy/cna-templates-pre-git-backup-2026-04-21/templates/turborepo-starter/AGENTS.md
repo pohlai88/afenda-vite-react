@@ -4,9 +4,9 @@ This file is for AI assistants only. Humans: see CONTRIBUTING.md and docs/.
 
 ## 1. Authoritative References (Never Reproduce Content Here)
 
-| Topic | Source of Truth |
-|-------|-----------------|
-| Monorepo structure | docs/PROJECT_STRUCTURE.md |
+| Topic                | Source of Truth              |
+| -------------------- | ---------------------------- |
+| Monorepo structure   | docs/PROJECT_STRUCTURE.md    |
 | Development workflow | docs/DEVELOPMENT_WORKFLOW.md |
 
 (.template files are materialized during generation—treat as authoritative.)
@@ -61,5 +61,6 @@ Return a bullet summary:
 - Deferred items (tests, docs)
 
 ---
+
 Maintained automatically by create-awesome-node-app Turborepo template provisioning.
 Humans: stop reading—go to CONTRIBUTING.md + docs/.

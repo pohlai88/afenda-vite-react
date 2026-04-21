@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma'
-import type { ContactWithCompany } from './template-engine'
-import { resolveAudienceByRules } from './rule-engine'
-import type { AudienceRules } from '@/lib/audience-fields'
+import { prisma } from "@/lib/prisma"
+import type { ContactWithCompany } from "./template-engine"
+import { resolveAudienceByRules } from "./rule-engine"
+import type { AudienceRules } from "@/lib/audience-fields"
 
 export interface ResolvedContact extends ContactWithCompany {
   id: string
@@ -25,7 +25,7 @@ export async function getAudienceContacts(
   if (!audience) return []
 
   // DYNAMIC: resolve by rules
-  if (audience.type === 'DYNAMIC' && audience.rules) {
+  if (audience.type === "DYNAMIC" && audience.rules) {
     return resolveAudienceByRules(audience.rules as unknown as AudienceRules)
   }
 
@@ -51,7 +51,9 @@ export async function getAudienceContacts(
   const unsubscribed = await prisma.unsubscribe.findMany({
     select: { email: true },
   })
-  const unsubscribedSet = new Set(unsubscribed.map((u) => u.email.toLowerCase()))
+  const unsubscribedSet = new Set(
+    unsubscribed.map((u) => u.email.toLowerCase())
+  )
 
   // Filter: must have email, not unsubscribed
   return members

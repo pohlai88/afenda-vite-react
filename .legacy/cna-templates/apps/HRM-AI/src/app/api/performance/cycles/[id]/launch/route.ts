@@ -1,6 +1,6 @@
-import { auth } from '@/lib/auth'
-import { NextRequest, NextResponse } from 'next/server'
-import * as cycleService from '@/services/performance/cycle.service'
+import { auth } from "@/lib/auth"
+import { NextRequest, NextResponse } from "next/server"
+import * as cycleService from "@/services/performance/cycle.service"
 
 export async function POST(
   request: NextRequest,
@@ -9,19 +9,27 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     const tenantId = session.user.tenantId
     const userId = session.user.id
 
     const body = await request.json()
-    const result = await cycleService.launchCycle(tenantId, params.id, userId, body)
+    const result = await cycleService.launchCycle(
+      tenantId,
+      params.id,
+      userId,
+      body
+    )
     return NextResponse.json(result)
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error launching cycle:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error launching cycle:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

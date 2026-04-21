@@ -1,15 +1,27 @@
 // src/app/(dashboard)/analytics/workforce/turnover/page.tsx
 // Turnover Analysis Page
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Badge } from '@/components/ui/badge'
-import { RefreshCw, Download, TrendingDown, TrendingUp } from 'lucide-react'
+import { useState, useEffect } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge"
+import { RefreshCw, Download, TrendingDown, TrendingUp } from "lucide-react"
 import {
   BarChart,
   Bar,
@@ -24,7 +36,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts'
+} from "recharts"
 
 interface TurnoverData {
   rate: number
@@ -34,13 +46,22 @@ interface TurnoverData {
   byReason: Array<{ reason: string; count: number }>
 }
 
-const COLORS = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
+const COLORS = [
+  "#ef4444",
+  "#f59e0b",
+  "#10b981",
+  "#3b82f6",
+  "#8b5cf6",
+  "#ec4899",
+]
 
 export default function TurnoverPage() {
-  const [period, setPeriod] = useState('year')
+  const [period, setPeriod] = useState("year")
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<TurnoverData | null>(null)
-  const [trendData, setTrendData] = useState<Array<{ month: string; rate: number; benchmark: number }>>([])
+  const [trendData, setTrendData] = useState<
+    Array<{ month: string; rate: number; benchmark: number }>
+  >([])
 
   useEffect(() => {
     fetchData()
@@ -64,20 +85,28 @@ export default function TurnoverPage() {
 
       // Fetch real trend data
       try {
-        const trendsRes = await fetch('/api/analytics/workforce/trends')
+        const trendsRes = await fetch("/api/analytics/workforce/trends")
         if (trendsRes.ok) {
           const trendsJson = await trendsRes.json()
-          setTrendData((trendsJson.data || []).map((t: { month: string; turnoverRate: number; benchmark: number }) => ({
-            month: t.month,
-            rate: t.turnoverRate,
-            benchmark: t.benchmark,
-          })))
+          setTrendData(
+            (trendsJson.data || []).map(
+              (t: {
+                month: string
+                turnoverRate: number
+                benchmark: number
+              }) => ({
+                month: t.month,
+                rate: t.turnoverRate,
+                benchmark: t.benchmark,
+              })
+            )
+          )
         }
       } catch (e) {
-        console.error('Error fetching trends:', e)
+        console.error("Error fetching trends:", e)
       }
     } catch (error) {
-      console.error('Error fetching turnover data:', error)
+      console.error("Error fetching turnover data:", error)
     } finally {
       setLoading(false)
     }
@@ -86,12 +115,12 @@ export default function TurnoverPage() {
   const reasonData = data?.byReason?.length
     ? data.byReason
     : [
-        { reason: 'Cơ hội tốt hơn', count: 35 },
-        { reason: 'Lương thưởng', count: 25 },
-        { reason: 'Môi trường làm việc', count: 15 },
-        { reason: 'Phát triển nghề nghiệp', count: 12 },
-        { reason: 'Cá nhân', count: 8 },
-        { reason: 'Khác', count: 5 },
+        { reason: "Cơ hội tốt hơn", count: 35 },
+        { reason: "Lương thưởng", count: 25 },
+        { reason: "Môi trường làm việc", count: 15 },
+        { reason: "Phát triển nghề nghiệp", count: 12 },
+        { reason: "Cá nhân", count: 8 },
+        { reason: "Khác", count: 5 },
       ]
 
   return (
@@ -135,10 +164,14 @@ export default function TurnoverPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-20 mt-1" />
                 ) : (
-                  <p className="text-3xl font-bold">{data?.rate?.toFixed(1) || 0}%</p>
+                  <p className="text-3xl font-bold">
+                    {data?.rate?.toFixed(1) || 0}%
+                  </p>
                 )}
               </div>
-              <div className={`p-3 rounded-full ${(data?.rate || 0) > 12 ? 'bg-red-100' : 'bg-green-100'}`}>
+              <div
+                className={`p-3 rounded-full ${(data?.rate || 0) > 12 ? "bg-red-100" : "bg-green-100"}`}
+              >
                 {(data?.rate || 0) > 12 ? (
                   <TrendingUp className="h-6 w-6 text-red-600" />
                 ) : (
@@ -147,10 +180,12 @@ export default function TurnoverPage() {
               </div>
             </div>
             <Badge
-              variant={(data?.rate || 0) > 12 ? 'destructive' : 'default'}
+              variant={(data?.rate || 0) > 12 ? "destructive" : "default"}
               className="mt-2"
             >
-              {(data?.rate || 0) > 12 ? 'Cao hơn benchmark' : 'Trong tầm kiểm soát'}
+              {(data?.rate || 0) > 12
+                ? "Cao hơn benchmark"
+                : "Trong tầm kiểm soát"}
             </Badge>
           </CardContent>
         </Card>
@@ -161,24 +196,38 @@ export default function TurnoverPage() {
             {loading ? (
               <Skeleton className="h-8 w-20 mt-1" />
             ) : (
-              <p className="text-3xl font-bold text-orange-600">{data?.voluntaryRate?.toFixed(1) || 0}%</p>
+              <p className="text-3xl font-bold text-orange-600">
+                {data?.voluntaryRate?.toFixed(1) || 0}%
+              </p>
             )}
             <p className="text-sm text-muted-foreground mt-2">
-              ~{Math.round((data?.voluntaryRate || 0) / (data?.rate || 1) * 100)}% tổng số nghỉ việc
+              ~
+              {Math.round(
+                ((data?.voluntaryRate || 0) / (data?.rate || 1)) * 100
+              )}
+              % tổng số nghỉ việc
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground">Nghỉ không tự nguyện</p>
+            <p className="text-sm text-muted-foreground">
+              Nghỉ không tự nguyện
+            </p>
             {loading ? (
               <Skeleton className="h-8 w-20 mt-1" />
             ) : (
-              <p className="text-3xl font-bold text-red-600">{data?.involuntaryRate?.toFixed(1) || 0}%</p>
+              <p className="text-3xl font-bold text-red-600">
+                {data?.involuntaryRate?.toFixed(1) || 0}%
+              </p>
             )}
             <p className="text-sm text-muted-foreground mt-2">
-              ~{Math.round((data?.involuntaryRate || 0) / (data?.rate || 1) * 100)}% tổng số nghỉ việc
+              ~
+              {Math.round(
+                ((data?.involuntaryRate || 0) / (data?.rate || 1)) * 100
+              )}
+              % tổng số nghỉ việc
             </p>
           </CardContent>
         </Card>
@@ -227,7 +276,9 @@ export default function TurnoverPage() {
         <Card>
           <CardHeader>
             <CardTitle>Theo phòng ban</CardTitle>
-            <CardDescription>Tỷ lệ nghỉ việc của từng phòng ban</CardDescription>
+            <CardDescription>
+              Tỷ lệ nghỉ việc của từng phòng ban
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -239,7 +290,11 @@ export default function TurnoverPage() {
                   <XAxis type="number" domain={[0, 25]} />
                   <YAxis dataKey="department" type="category" width={120} />
                   <Tooltip />
-                  <Bar dataKey="rate" fill="#ef4444" name="Tỷ lệ nghỉ việc (%)" />
+                  <Bar
+                    dataKey="rate"
+                    fill="#ef4444"
+                    name="Tỷ lệ nghỉ việc (%)"
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -265,10 +320,15 @@ export default function TurnoverPage() {
                     outerRadius={120}
                     dataKey="count"
                     nameKey="reason"
-                    label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                    label={({ name, percent }) =>
+                      `${name} ${((percent || 0) * 100).toFixed(0)}%`
+                    }
                   >
                     {reasonData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <Tooltip />

@@ -1,12 +1,12 @@
-import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
-import type { User } from '@prisma/client'
+import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
+import type { User } from "@prisma/client"
 
 export class AuthError extends Error {
   status: number
   constructor(message: string, status = 401) {
     super(message)
-    this.name = 'AuthError'
+    this.name = "AuthError"
     this.status = status
   }
 }
@@ -17,10 +17,13 @@ export class AuthError extends Error {
  */
 export async function getCurrentUser(): Promise<User> {
   const supabase = await createClient()
-  const { data: { user: authUser }, error } = await supabase.auth.getUser()
+  const {
+    data: { user: authUser },
+    error,
+  } = await supabase.auth.getUser()
 
   if (error || !authUser) {
-    throw new AuthError('Unauthorized')
+    throw new AuthError("Unauthorized")
   }
 
   const user = await prisma.user.findUnique({
@@ -28,7 +31,7 @@ export async function getCurrentUser(): Promise<User> {
   })
 
   if (!user) {
-    throw new AuthError('User not found in database', 404)
+    throw new AuthError("User not found in database", 404)
   }
 
   return user

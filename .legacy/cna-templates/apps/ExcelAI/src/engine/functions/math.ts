@@ -1,794 +1,818 @@
-import { FunctionDef, FormulaValue, FormulaError } from '../types';
-import { flattenValues, toNumber, isError } from './utils';
+import { FunctionDef, FormulaValue, FormulaError } from "../types"
+import { flattenValues, toNumber, isError } from "./utils"
 
 export const mathFunctions: FunctionDef[] = [
   // SUM - adds all numbers in a range
   {
-    name: 'SUM',
+    name: "SUM",
     minArgs: 0,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
-      if (args.length === 0) return 0;
-      const values = flattenValues(args);
-      let sum = 0;
+      if (args.length === 0) return 0
+      const values = flattenValues(args)
+      let sum = 0
       for (const val of values) {
-        if (isError(val)) return val;
-        if (typeof val === 'number') {
-          sum += val;
-        } else if (typeof val === 'boolean') {
+        if (isError(val)) return val
+        if (typeof val === "number") {
+          sum += val
+        } else if (typeof val === "boolean") {
           // Excel counts TRUE as 1, FALSE as 0 in SUM
-          sum += val ? 1 : 0;
+          sum += val ? 1 : 0
         }
       }
-      return sum;
+      return sum
     },
   },
 
   // SUMIF - sum cells that meet a condition
   {
-    name: 'SUMIF',
+    name: "SUMIF",
     minArgs: 2,
     maxArgs: 3,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const range = args[0] as FormulaValue[][];
-      const criteria = args[1];
-      const sumRange = args[2] as FormulaValue[][] | undefined;
+      const range = args[0] as FormulaValue[][]
+      const criteria = args[1]
+      const sumRange = args[2] as FormulaValue[][] | undefined
 
       if (!Array.isArray(range)) {
-        return new FormulaError('#VALUE!', 'SUMIF requires a range');
+        return new FormulaError("#VALUE!", "SUMIF requires a range")
       }
 
-      let sum = 0;
-      const flat = flattenValues([range]);
-      const sumFlat = sumRange ? flattenValues([sumRange]) : flat;
+      let sum = 0
+      const flat = flattenValues([range])
+      const sumFlat = sumRange ? flattenValues([sumRange]) : flat
 
       for (let i = 0; i < flat.length; i++) {
         if (matchesCriteria(flat[i], criteria)) {
-          const val = sumFlat[i];
-          if (typeof val === 'number') {
-            sum += val;
+          const val = sumFlat[i]
+          if (typeof val === "number") {
+            sum += val
           }
         }
       }
 
-      return sum;
+      return sum
     },
   },
 
   // PRODUCT - multiplies all numbers
   {
-    name: 'PRODUCT',
+    name: "PRODUCT",
     minArgs: 1,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const values = flattenValues(args);
-      let product = 1;
-      let hasNumber = false;
+      const values = flattenValues(args)
+      let product = 1
+      let hasNumber = false
       for (const val of values) {
-        if (isError(val)) return val;
-        if (typeof val === 'number') {
-          product *= val;
-          hasNumber = true;
+        if (isError(val)) return val
+        if (typeof val === "number") {
+          product *= val
+          hasNumber = true
         }
       }
-      return hasNumber ? product : 0;
+      return hasNumber ? product : 0
     },
   },
 
   // POWER - raises number to power
   {
-    name: 'POWER',
+    name: "POWER",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const base = toNumber(args[0]);
-      const exp = toNumber(args[1]);
-      if (isError(base)) return base;
-      if (isError(exp)) return exp;
-      return Math.pow(base as number, exp as number);
+      const base = toNumber(args[0])
+      const exp = toNumber(args[1])
+      if (isError(base)) return base
+      if (isError(exp)) return exp
+      return Math.pow(base as number, exp as number)
     },
   },
 
   // SQRT - square root
   {
-    name: 'SQRT',
+    name: "SQRT",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
+      const num = toNumber(args[0])
+      if (isError(num)) return num
       if ((num as number) < 0) {
-        return new FormulaError('#NUM!', 'SQRT of negative number');
+        return new FormulaError("#NUM!", "SQRT of negative number")
       }
-      return Math.sqrt(num as number);
+      return Math.sqrt(num as number)
     },
   },
 
   // ABS - absolute value
   {
-    name: 'ABS',
+    name: "ABS",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.abs(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.abs(num as number)
     },
   },
 
   // ROUND - round to specified digits (Excel rounds away from zero for .5)
   {
-    name: 'ROUND',
+    name: "ROUND",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      const digits = toNumber(args[1]);
-      if (isError(num)) return num;
-      if (isError(digits)) return digits;
-      const n = num as number;
-      const d = digits as number;
-      const factor = Math.pow(10, d);
+      const num = toNumber(args[0])
+      const digits = toNumber(args[1])
+      if (isError(num)) return num
+      if (isError(digits)) return digits
+      const n = num as number
+      const d = digits as number
+      const factor = Math.pow(10, d)
       // Excel rounds away from zero for .5 values
-      const scaled = n * factor;
-      const rounded = n >= 0 ? Math.round(scaled) : -Math.round(-scaled);
-      return rounded / factor;
+      const scaled = n * factor
+      const rounded = n >= 0 ? Math.round(scaled) : -Math.round(-scaled)
+      return rounded / factor
     },
   },
 
   // ROUNDUP - round up away from zero
   {
-    name: 'ROUNDUP',
+    name: "ROUNDUP",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      const digits = toNumber(args[1]);
-      if (isError(num)) return num;
-      if (isError(digits)) return digits;
-      const factor = Math.pow(10, digits as number);
-      const n = num as number;
-      return n >= 0 ? Math.ceil(n * factor) / factor : Math.floor(n * factor) / factor;
+      const num = toNumber(args[0])
+      const digits = toNumber(args[1])
+      if (isError(num)) return num
+      if (isError(digits)) return digits
+      const factor = Math.pow(10, digits as number)
+      const n = num as number
+      return n >= 0
+        ? Math.ceil(n * factor) / factor
+        : Math.floor(n * factor) / factor
     },
   },
 
   // ROUNDDOWN - round down toward zero
   {
-    name: 'ROUNDDOWN',
+    name: "ROUNDDOWN",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      const digits = toNumber(args[1]);
-      if (isError(num)) return num;
-      if (isError(digits)) return digits;
-      const factor = Math.pow(10, digits as number);
-      const n = num as number;
-      return n >= 0 ? Math.floor(n * factor) / factor : Math.ceil(n * factor) / factor;
+      const num = toNumber(args[0])
+      const digits = toNumber(args[1])
+      if (isError(num)) return num
+      if (isError(digits)) return digits
+      const factor = Math.pow(10, digits as number)
+      const n = num as number
+      return n >= 0
+        ? Math.floor(n * factor) / factor
+        : Math.ceil(n * factor) / factor
     },
   },
 
   // CEILING - round up to nearest multiple
   {
-    name: 'CEILING',
+    name: "CEILING",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      const sig = toNumber(args[1]);
-      if (isError(num)) return num;
-      if (isError(sig)) return sig;
-      if ((sig as number) === 0) return 0;
-      return Math.ceil((num as number) / (sig as number)) * (sig as number);
+      const num = toNumber(args[0])
+      const sig = toNumber(args[1])
+      if (isError(num)) return num
+      if (isError(sig)) return sig
+      if ((sig as number) === 0) return 0
+      return Math.ceil((num as number) / (sig as number)) * (sig as number)
     },
   },
 
   // FLOOR - round down to nearest multiple
   {
-    name: 'FLOOR',
+    name: "FLOOR",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      const sig = toNumber(args[1]);
-      if (isError(num)) return num;
-      if (isError(sig)) return sig;
-      if ((sig as number) === 0) return 0;
-      return Math.floor((num as number) / (sig as number)) * (sig as number);
+      const num = toNumber(args[0])
+      const sig = toNumber(args[1])
+      if (isError(num)) return num
+      if (isError(sig)) return sig
+      if ((sig as number) === 0) return 0
+      return Math.floor((num as number) / (sig as number)) * (sig as number)
     },
   },
 
   // INT - round down to integer
   {
-    name: 'INT',
+    name: "INT",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.floor(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.floor(num as number)
     },
   },
 
   // MOD - modulo/remainder (Excel: result has same sign as divisor)
   {
-    name: 'MOD',
+    name: "MOD",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      const divisor = toNumber(args[1]);
-      if (isError(num)) return num;
-      if (isError(divisor)) return divisor;
-      const n = num as number;
-      const d = divisor as number;
+      const num = toNumber(args[0])
+      const divisor = toNumber(args[1])
+      if (isError(num)) return num
+      if (isError(divisor)) return divisor
+      const n = num as number
+      const d = divisor as number
       if (d === 0) {
-        return new FormulaError('#DIV/0!');
+        return new FormulaError("#DIV/0!")
       }
       // Excel MOD: n - d * INT(n/d), result has same sign as divisor
-      const result = n - d * Math.floor(n / d);
-      return result;
+      const result = n - d * Math.floor(n / d)
+      return result
     },
   },
 
   // QUOTIENT - integer division
   {
-    name: 'QUOTIENT',
+    name: "QUOTIENT",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      const divisor = toNumber(args[1]);
-      if (isError(num)) return num;
-      if (isError(divisor)) return divisor;
+      const num = toNumber(args[0])
+      const divisor = toNumber(args[1])
+      if (isError(num)) return num
+      if (isError(divisor)) return divisor
       if ((divisor as number) === 0) {
-        return new FormulaError('#DIV/0!');
+        return new FormulaError("#DIV/0!")
       }
-      return Math.trunc((num as number) / (divisor as number));
+      return Math.trunc((num as number) / (divisor as number))
     },
   },
 
   // RAND - random number between 0 and 1
   {
-    name: 'RAND',
+    name: "RAND",
     minArgs: 0,
     maxArgs: 0,
     fn: (): FormulaValue => {
-      return Math.random();
+      return Math.random()
     },
   },
 
   // RANDBETWEEN - random integer between two values
   {
-    name: 'RANDBETWEEN',
+    name: "RANDBETWEEN",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const bottom = toNumber(args[0]);
-      const top = toNumber(args[1]);
-      if (isError(bottom)) return bottom;
-      if (isError(top)) return top;
-      const min = Math.ceil(bottom as number);
-      const max = Math.floor(top as number);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+      const bottom = toNumber(args[0])
+      const top = toNumber(args[1])
+      if (isError(bottom)) return bottom
+      if (isError(top)) return top
+      const min = Math.ceil(bottom as number)
+      const max = Math.floor(top as number)
+      return Math.floor(Math.random() * (max - min + 1)) + min
     },
   },
 
   // PI - returns pi
   {
-    name: 'PI',
+    name: "PI",
     minArgs: 0,
     maxArgs: 0,
     fn: (): FormulaValue => {
-      return Math.PI;
+      return Math.PI
     },
   },
 
   // EXP - e raised to power
   {
-    name: 'EXP',
+    name: "EXP",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.exp(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.exp(num as number)
     },
   },
 
   // LN - natural logarithm
   {
-    name: 'LN',
+    name: "LN",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
+      const num = toNumber(args[0])
+      if (isError(num)) return num
       if ((num as number) <= 0) {
-        return new FormulaError('#NUM!');
+        return new FormulaError("#NUM!")
       }
-      return Math.log(num as number);
+      return Math.log(num as number)
     },
   },
 
   // LOG - logarithm with base
   {
-    name: 'LOG',
+    name: "LOG",
     minArgs: 1,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
+      const num = toNumber(args[0])
+      if (isError(num)) return num
       if ((num as number) <= 0) {
-        return new FormulaError('#NUM!');
+        return new FormulaError("#NUM!")
       }
-      const base = args[1] !== undefined ? toNumber(args[1]) : 10;
-      if (isError(base)) return base;
-      return Math.log(num as number) / Math.log(base as number);
+      const base = args[1] !== undefined ? toNumber(args[1]) : 10
+      if (isError(base)) return base
+      return Math.log(num as number) / Math.log(base as number)
     },
   },
 
   // LOG10 - base 10 logarithm
   {
-    name: 'LOG10',
+    name: "LOG10",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
+      const num = toNumber(args[0])
+      if (isError(num)) return num
       if ((num as number) <= 0) {
-        return new FormulaError('#NUM!');
+        return new FormulaError("#NUM!")
       }
-      return Math.log10(num as number);
+      return Math.log10(num as number)
     },
   },
 
   // SIN, COS, TAN, etc.
   {
-    name: 'SIN',
+    name: "SIN",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.sin(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.sin(num as number)
     },
   },
 
   {
-    name: 'COS',
+    name: "COS",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.cos(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.cos(num as number)
     },
   },
 
   {
-    name: 'TAN',
+    name: "TAN",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.tan(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.tan(num as number)
     },
   },
 
   // DEGREES - radians to degrees
   {
-    name: 'DEGREES',
+    name: "DEGREES",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return (num as number) * (180 / Math.PI);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return (num as number) * (180 / Math.PI)
     },
   },
 
   // RADIANS - degrees to radians
   {
-    name: 'RADIANS',
+    name: "RADIANS",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return (num as number) * (Math.PI / 180);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return (num as number) * (Math.PI / 180)
     },
   },
 
   // SUMIFS - sum with multiple criteria
   {
-    name: 'SUMIFS',
+    name: "SUMIFS",
     minArgs: 3,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const sumRange = args[0] as FormulaValue[][];
+      const sumRange = args[0] as FormulaValue[][]
       if (!Array.isArray(sumRange)) {
-        return new FormulaError('#VALUE!', 'SUMIFS requires a sum range');
+        return new FormulaError("#VALUE!", "SUMIFS requires a sum range")
       }
 
-      const sumFlat = flattenValues([sumRange]);
-      let sum = 0;
+      const sumFlat = flattenValues([sumRange])
+      let sum = 0
 
       // Process criteria pairs
-      const criteriaPairs: Array<{ range: FormulaValue[]; criteria: FormulaValue }> = [];
+      const criteriaPairs: Array<{
+        range: FormulaValue[]
+        criteria: FormulaValue
+      }> = []
       for (let i = 1; i < args.length; i += 2) {
-        const criteriaRange = args[i] as FormulaValue[][];
-        const criteria = args[i + 1];
+        const criteriaRange = args[i] as FormulaValue[][]
+        const criteria = args[i + 1]
         if (!Array.isArray(criteriaRange)) {
-          return new FormulaError('#VALUE!', 'Invalid criteria range');
+          return new FormulaError("#VALUE!", "Invalid criteria range")
         }
         criteriaPairs.push({
           range: flattenValues([criteriaRange]),
           criteria,
-        });
+        })
       }
 
       // Check each cell
       for (let i = 0; i < sumFlat.length; i++) {
-        let allMatch = true;
+        let allMatch = true
         for (const pair of criteriaPairs) {
           if (!matchesCriteria(pair.range[i], pair.criteria)) {
-            allMatch = false;
-            break;
+            allMatch = false
+            break
           }
         }
         if (allMatch) {
-          const val = sumFlat[i];
-          if (typeof val === 'number') {
-            sum += val;
+          const val = sumFlat[i]
+          if (typeof val === "number") {
+            sum += val
           }
         }
       }
 
-      return sum;
+      return sum
     },
   },
 
   // SUMPRODUCT - sum of products
   {
-    name: 'SUMPRODUCT',
+    name: "SUMPRODUCT",
     minArgs: 1,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
-      if (args.length === 0) return 0;
+      if (args.length === 0) return 0
 
       // Flatten all arrays
-      const arrays = args.map((arg) => flattenValues([arg]));
-      const length = arrays[0].length;
+      const arrays = args.map((arg) => flattenValues([arg]))
+      const length = arrays[0].length
 
       // Check all arrays have same length
       for (const arr of arrays) {
         if (arr.length !== length) {
-          return new FormulaError('#VALUE!', 'Arrays must have same dimensions');
+          return new FormulaError("#VALUE!", "Arrays must have same dimensions")
         }
       }
 
-      let sum = 0;
+      let sum = 0
       for (let i = 0; i < length; i++) {
-        let product = 1;
+        let product = 1
         for (const arr of arrays) {
-          const val = arr[i];
-          if (typeof val === 'number') {
-            product *= val;
-          } else if (typeof val === 'boolean') {
-            product *= val ? 1 : 0;
+          const val = arr[i]
+          if (typeof val === "number") {
+            product *= val
+          } else if (typeof val === "boolean") {
+            product *= val ? 1 : 0
           } else {
-            product *= 0;
+            product *= 0
           }
         }
-        sum += product;
+        sum += product
       }
 
-      return sum;
+      return sum
     },
   },
 
   // SIGN - returns sign of number
   {
-    name: 'SIGN',
+    name: "SIGN",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.sign(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.sign(num as number)
     },
   },
 
   // TRUNC - truncate to integer
   {
-    name: 'TRUNC',
+    name: "TRUNC",
     minArgs: 1,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      const digits = args[1] !== undefined ? toNumber(args[1]) : 0;
-      if (isError(digits)) return digits;
-      const factor = Math.pow(10, digits as number);
-      return Math.trunc((num as number) * factor) / factor;
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      const digits = args[1] !== undefined ? toNumber(args[1]) : 0
+      if (isError(digits)) return digits
+      const factor = Math.pow(10, digits as number)
+      return Math.trunc((num as number) * factor) / factor
     },
   },
 
   // EVEN - round up to nearest even
   {
-    name: 'EVEN',
+    name: "EVEN",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      const n = num as number;
-      const rounded = n >= 0 ? Math.ceil(n) : Math.floor(n);
-      return rounded % 2 === 0 ? rounded : rounded + (n >= 0 ? 1 : -1);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      const n = num as number
+      const rounded = n >= 0 ? Math.ceil(n) : Math.floor(n)
+      return rounded % 2 === 0 ? rounded : rounded + (n >= 0 ? 1 : -1)
     },
   },
 
   // ODD - round up to nearest odd
   {
-    name: 'ODD',
+    name: "ODD",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      const n = num as number;
-      const rounded = n >= 0 ? Math.ceil(n) : Math.floor(n);
-      return rounded % 2 !== 0 ? rounded : rounded + (n >= 0 ? 1 : -1);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      const n = num as number
+      const rounded = n >= 0 ? Math.ceil(n) : Math.floor(n)
+      return rounded % 2 !== 0 ? rounded : rounded + (n >= 0 ? 1 : -1)
     },
   },
 
   // FACT - factorial
   {
-    name: 'FACT',
+    name: "FACT",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      const n = Math.floor(num as number);
-      if (n < 0) return new FormulaError('#NUM!', 'Negative factorial');
-      if (n === 0 || n === 1) return 1;
-      let result = 1;
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      const n = Math.floor(num as number)
+      if (n < 0) return new FormulaError("#NUM!", "Negative factorial")
+      if (n === 0 || n === 1) return 1
+      let result = 1
       for (let i = 2; i <= n; i++) {
-        result *= i;
+        result *= i
       }
-      return result;
+      return result
     },
   },
 
   // COMBIN - combinations
   {
-    name: 'COMBIN',
+    name: "COMBIN",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const n = toNumber(args[0]);
-      const k = toNumber(args[1]);
-      if (isError(n)) return n;
-      if (isError(k)) return k;
-      const nVal = Math.floor(n as number);
-      const kVal = Math.floor(k as number);
+      const n = toNumber(args[0])
+      const k = toNumber(args[1])
+      if (isError(n)) return n
+      if (isError(k)) return k
+      const nVal = Math.floor(n as number)
+      const kVal = Math.floor(k as number)
       if (nVal < 0 || kVal < 0 || kVal > nVal) {
-        return new FormulaError('#NUM!');
+        return new FormulaError("#NUM!")
       }
       // Calculate n! / (k! * (n-k)!)
-      let result = 1;
+      let result = 1
       for (let i = 0; i < kVal; i++) {
-        result = (result * (nVal - i)) / (i + 1);
+        result = (result * (nVal - i)) / (i + 1)
       }
-      return Math.round(result);
+      return Math.round(result)
     },
   },
 
   // PERMUT - permutations
   {
-    name: 'PERMUT',
+    name: "PERMUT",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const n = toNumber(args[0]);
-      const k = toNumber(args[1]);
-      if (isError(n)) return n;
-      if (isError(k)) return k;
-      const nVal = Math.floor(n as number);
-      const kVal = Math.floor(k as number);
+      const n = toNumber(args[0])
+      const k = toNumber(args[1])
+      if (isError(n)) return n
+      if (isError(k)) return k
+      const nVal = Math.floor(n as number)
+      const kVal = Math.floor(k as number)
       if (nVal < 0 || kVal < 0 || kVal > nVal) {
-        return new FormulaError('#NUM!');
+        return new FormulaError("#NUM!")
       }
       // Calculate n! / (n-k)!
-      let result = 1;
+      let result = 1
       for (let i = 0; i < kVal; i++) {
-        result *= nVal - i;
+        result *= nVal - i
       }
-      return result;
+      return result
     },
   },
 
   // GCD - greatest common divisor
   {
-    name: 'GCD',
+    name: "GCD",
     minArgs: 1,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
       const numbers = flattenValues(args)
         .map((v) => toNumber(v))
-        .filter((v): v is number => typeof v === 'number' && !isNaN(v))
-        .map((v) => Math.abs(Math.floor(v)));
+        .filter((v): v is number => typeof v === "number" && !isNaN(v))
+        .map((v) => Math.abs(Math.floor(v)))
 
-      if (numbers.length === 0) return new FormulaError('#NUM!');
+      if (numbers.length === 0) return new FormulaError("#NUM!")
 
-      const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
-      return numbers.reduce((acc, num) => gcd(acc, num));
+      const gcd = (a: number, b: number): number =>
+        b === 0 ? a : gcd(b, a % b)
+      return numbers.reduce((acc, num) => gcd(acc, num))
     },
   },
 
   // LCM - least common multiple
   {
-    name: 'LCM',
+    name: "LCM",
     minArgs: 1,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
       const numbers = flattenValues(args)
         .map((v) => toNumber(v))
-        .filter((v): v is number => typeof v === 'number' && !isNaN(v))
-        .map((v) => Math.abs(Math.floor(v)));
+        .filter((v): v is number => typeof v === "number" && !isNaN(v))
+        .map((v) => Math.abs(Math.floor(v)))
 
-      if (numbers.length === 0) return new FormulaError('#NUM!');
+      if (numbers.length === 0) return new FormulaError("#NUM!")
 
-      const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
-      const lcm = (a: number, b: number): number => (a * b) / gcd(a, b);
-      return numbers.reduce((acc, num) => lcm(acc, num));
+      const gcd = (a: number, b: number): number =>
+        b === 0 ? a : gcd(b, a % b)
+      const lcm = (a: number, b: number): number => (a * b) / gcd(a, b)
+      return numbers.reduce((acc, num) => lcm(acc, num))
     },
   },
 
   // MROUND - round to multiple
   {
-    name: 'MROUND',
+    name: "MROUND",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      const multiple = toNumber(args[1]);
-      if (isError(num)) return num;
-      if (isError(multiple)) return multiple;
-      if ((multiple as number) === 0) return 0;
-      return Math.round((num as number) / (multiple as number)) * (multiple as number);
+      const num = toNumber(args[0])
+      const multiple = toNumber(args[1])
+      if (isError(num)) return num
+      if (isError(multiple)) return multiple
+      if ((multiple as number) === 0) return 0
+      return (
+        Math.round((num as number) / (multiple as number)) *
+        (multiple as number)
+      )
     },
   },
 
   // ASIN - arcsine
   {
-    name: 'ASIN',
+    name: "ASIN",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
+      const num = toNumber(args[0])
+      if (isError(num)) return num
       if ((num as number) < -1 || (num as number) > 1) {
-        return new FormulaError('#NUM!');
+        return new FormulaError("#NUM!")
       }
-      return Math.asin(num as number);
+      return Math.asin(num as number)
     },
   },
 
   // ACOS - arccosine
   {
-    name: 'ACOS',
+    name: "ACOS",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
+      const num = toNumber(args[0])
+      if (isError(num)) return num
       if ((num as number) < -1 || (num as number) > 1) {
-        return new FormulaError('#NUM!');
+        return new FormulaError("#NUM!")
       }
-      return Math.acos(num as number);
+      return Math.acos(num as number)
     },
   },
 
   // ATAN - arctangent
   {
-    name: 'ATAN',
+    name: "ATAN",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.atan(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.atan(num as number)
     },
   },
 
   // ATAN2 - arctangent from x,y coordinates
   {
-    name: 'ATAN2',
+    name: "ATAN2",
     minArgs: 2,
     maxArgs: 2,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const x = toNumber(args[0]);
-      const y = toNumber(args[1]);
-      if (isError(x)) return x;
-      if (isError(y)) return y;
+      const x = toNumber(args[0])
+      const y = toNumber(args[1])
+      if (isError(x)) return x
+      if (isError(y)) return y
       if ((x as number) === 0 && (y as number) === 0) {
-        return new FormulaError('#DIV/0!');
+        return new FormulaError("#DIV/0!")
       }
-      return Math.atan2(y as number, x as number);
+      return Math.atan2(y as number, x as number)
     },
   },
 
   // SINH - hyperbolic sine
   {
-    name: 'SINH',
+    name: "SINH",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.sinh(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.sinh(num as number)
     },
   },
 
   // COSH - hyperbolic cosine
   {
-    name: 'COSH',
+    name: "COSH",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.cosh(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.cosh(num as number)
     },
   },
 
   // TANH - hyperbolic tangent
   {
-    name: 'TANH',
+    name: "TANH",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const num = toNumber(args[0]);
-      if (isError(num)) return num;
-      return Math.tanh(num as number);
+      const num = toNumber(args[0])
+      if (isError(num)) return num
+      return Math.tanh(num as number)
     },
   },
-];
+]
 
 // Helper function to match criteria (like ">5", "=A", etc.)
 function matchesCriteria(value: FormulaValue, criteria: FormulaValue): boolean {
-  if (typeof criteria === 'string') {
+  if (typeof criteria === "string") {
     // Parse criteria like ">5", "<=10", "=text"
-    const match = criteria.match(/^([<>=!]+)?(.*)$/);
+    const match = criteria.match(/^([<>=!]+)?(.*)$/)
     if (match) {
-      const op = match[1] || '=';
-      const compareVal = match[2];
+      const op = match[1] || "="
+      const compareVal = match[2]
 
-      const numCompare = parseFloat(compareVal);
-      const numValue = typeof value === 'number' ? value : parseFloat(String(value));
+      const numCompare = parseFloat(compareVal)
+      const numValue =
+        typeof value === "number" ? value : parseFloat(String(value))
 
       if (!isNaN(numCompare) && !isNaN(numValue)) {
         switch (op) {
-          case '>': return numValue > numCompare;
-          case '<': return numValue < numCompare;
-          case '>=': return numValue >= numCompare;
-          case '<=': return numValue <= numCompare;
-          case '<>': case '!=': return numValue !== numCompare;
-          case '=': return numValue === numCompare;
+          case ">":
+            return numValue > numCompare
+          case "<":
+            return numValue < numCompare
+          case ">=":
+            return numValue >= numCompare
+          case "<=":
+            return numValue <= numCompare
+          case "<>":
+          case "!=":
+            return numValue !== numCompare
+          case "=":
+            return numValue === numCompare
         }
       } else {
         // String comparison
         switch (op) {
-          case '<>': case '!=': return String(value) !== compareVal;
-          case '=': default: return String(value) === compareVal;
+          case "<>":
+          case "!=":
+            return String(value) !== compareVal
+          case "=":
+          default:
+            return String(value) === compareVal
         }
       }
     }
   }
 
-  return value === criteria;
+  return value === criteria
 }

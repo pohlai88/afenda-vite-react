@@ -2,19 +2,22 @@
 // VALIDATION INDICATOR — Show validation status
 // =============================================================================
 
-import React from 'react';
-import { CheckCircle, AlertCircle, AlertTriangle } from 'lucide-react';
-import type { ValidationResult, ValidationError } from '../../types/validation/ValidationEngine';
+import React from "react"
+import { CheckCircle, AlertCircle, AlertTriangle } from "lucide-react"
+import type {
+  ValidationResult,
+  ValidationError,
+} from "../../types/validation/ValidationEngine"
 
 // -----------------------------------------------------------------------------
 // Validation Indicator Props
 // -----------------------------------------------------------------------------
 
 interface ValidationIndicatorProps {
-  result: ValidationResult;
-  showDetails?: boolean;
-  size?: 'small' | 'medium' | 'large';
-  className?: string;
+  result: ValidationResult
+  showDetails?: boolean
+  size?: "small" | "medium" | "large"
+  className?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -24,10 +27,10 @@ interface ValidationIndicatorProps {
 export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
   result,
   showDetails = false,
-  size = 'medium',
-  className = '',
+  size = "medium",
+  className = "",
 }) => {
-  const iconSize = size === 'small' ? 12 : size === 'medium' ? 14 : 16;
+  const iconSize = size === "small" ? 12 : size === "medium" ? 14 : 16
 
   if (result.valid && result.warnings.length === 0) {
     return (
@@ -35,7 +38,7 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
         <CheckCircle size={iconSize} className="validation-icon-valid" />
         {showDetails && <span className="validation-text">Valid</span>}
       </span>
-    );
+    )
   }
 
   if (result.valid && result.warnings.length > 0) {
@@ -52,7 +55,7 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
           </div>
         )}
       </div>
-    );
+    )
   }
 
   return (
@@ -68,47 +71,54 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Simple Valid/Invalid Icon
 // -----------------------------------------------------------------------------
 
 interface ValidationIconProps {
-  valid: boolean;
-  size?: number;
-  className?: string;
+  valid: boolean
+  size?: number
+  className?: string
 }
 
 export const ValidationIcon: React.FC<ValidationIconProps> = ({
   valid,
   size = 14,
-  className = '',
+  className = "",
 }) => {
   if (valid) {
-    return <CheckCircle size={size} className={`validation-icon-valid ${className}`} />;
+    return (
+      <CheckCircle
+        size={size}
+        className={`validation-icon-valid ${className}`}
+      />
+    )
   }
-  return <AlertCircle size={size} className={`validation-icon-error ${className}`} />;
-};
+  return (
+    <AlertCircle size={size} className={`validation-icon-error ${className}`} />
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Validation Message Component
 // -----------------------------------------------------------------------------
 
 interface ValidationMessageProps {
-  errors?: ValidationError[];
-  warnings?: ValidationError[];
-  className?: string;
+  errors?: ValidationError[]
+  warnings?: ValidationError[]
+  className?: string
 }
 
 export const ValidationMessage: React.FC<ValidationMessageProps> = ({
   errors = [],
   warnings = [],
-  className = '',
+  className = "",
 }) => {
   if (errors.length === 0 && warnings.length === 0) {
-    return null;
+    return null
   }
 
   return (
@@ -126,28 +136,28 @@ export const ValidationMessage: React.FC<ValidationMessageProps> = ({
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Validation Tooltip Component
 // -----------------------------------------------------------------------------
 
 interface ValidationTooltipProps {
-  result: ValidationResult;
-  children: React.ReactNode;
-  className?: string;
+  result: ValidationResult
+  children: React.ReactNode
+  className?: string
 }
 
 export const ValidationTooltip: React.FC<ValidationTooltipProps> = ({
   result,
   children,
-  className = '',
+  className = "",
 }) => {
-  const hasIssues = !result.valid || result.warnings.length > 0;
+  const hasIssues = !result.valid || result.warnings.length > 0
 
   if (!hasIssues) {
-    return <>{children}</>;
+    return <>{children}</>
   }
 
   return (
@@ -157,25 +167,27 @@ export const ValidationTooltip: React.FC<ValidationTooltipProps> = ({
         <ValidationMessage errors={result.errors} warnings={result.warnings} />
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Validation Summary Component
 // -----------------------------------------------------------------------------
 
 interface ValidationSummaryProps {
-  results: ValidationResult[];
-  className?: string;
+  results: ValidationResult[]
+  className?: string
 }
 
 export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
   results,
-  className = '',
+  className = "",
 }) => {
-  const valid = results.filter((r) => r.valid && r.warnings.length === 0).length;
-  const warnings = results.filter((r) => r.valid && r.warnings.length > 0).length;
-  const errors = results.filter((r) => !r.valid).length;
+  const valid = results.filter((r) => r.valid && r.warnings.length === 0).length
+  const warnings = results.filter(
+    (r) => r.valid && r.warnings.length > 0
+  ).length
+  const errors = results.filter((r) => !r.valid).length
 
   return (
     <div className={`validation-summary ${className}`}>
@@ -198,29 +210,32 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
         </span>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Cell Validation Badge (compact for cell corner)
 // -----------------------------------------------------------------------------
 
 interface CellValidationBadgeProps {
-  valid: boolean;
-  errorCount?: number;
-  className?: string;
+  valid: boolean
+  errorCount?: number
+  className?: string
 }
 
 export const CellValidationBadge: React.FC<CellValidationBadgeProps> = ({
   valid,
   errorCount = 0,
-  className = '',
+  className = "",
 }) => {
-  if (valid) return null;
+  if (valid) return null
 
   return (
-    <span className={`cell-validation-badge ${className}`} title={`${errorCount} validation error(s)`}>
+    <span
+      className={`cell-validation-badge ${className}`}
+      title={`${errorCount} validation error(s)`}
+    >
       <AlertCircle size={10} />
     </span>
-  );
-};
+  )
+}

@@ -27,6 +27,6 @@ export interface ImportColumn {
   key: string
   label: string
   required: boolean
-  type: 'string' | 'number' | 'date' | 'email' | 'phone'
+  type: "string" | "number" | "date" | "email" | "phone"
   example?: string
 }

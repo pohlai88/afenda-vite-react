@@ -78,7 +78,13 @@ export interface PerformanceReview {
   reviewCycleId: string
   reviewCycle?: ReviewCycle
   employeeId: string
-  employee?: { id: string; fullName: string; employeeCode: string; position?: string; department?: { id: string; name: string } }
+  employee?: {
+    id: string
+    fullName: string
+    employeeCode: string
+    position?: string
+    department?: { id: string; name: string }
+  }
   managerId: string
   manager?: { id: string; fullName: string; position?: string }
   status: string
@@ -250,7 +256,7 @@ export interface OneOnOne {
 
 export interface AgendaItem {
   topic: string
-  owner: 'employee' | 'manager'
+  owner: "employee" | "manager"
   notes?: string
 }
 
@@ -341,6 +347,10 @@ export interface PerformanceAnalytics {
   ratingDistribution: { rating: number; count: number; percentage: number }[]
   goalCompletionRate: number
   topPerformers: { employeeId: string; name: string; rating: number }[]
-  departmentComparison: { department: string; avgRating: number; count: number }[]
+  departmentComparison: {
+    department: string
+    avgRating: number
+    count: number
+  }[]
   ratingTrend: { period: string; avgRating: number }[]
 }

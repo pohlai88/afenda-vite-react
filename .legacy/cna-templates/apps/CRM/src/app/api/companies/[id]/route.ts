@@ -1,9 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireOwnerOrRole, isErrorResponse, forbiddenResponse, canAccess } from '@/lib/auth/rbac'
-import { validateRequest, updateCompanySchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import {
+  requireOwnerOrRole,
+  isErrorResponse,
+  forbiddenResponse,
+  canAccess,
+} from "@/lib/auth/rbac"
+import { validateRequest, updateCompanySchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
 
 // GET /api/companies/[id] — Get company with relations
 export async function GET(
@@ -18,19 +23,19 @@ export async function GET(
       where: { id },
       include: {
         contacts: {
-          orderBy: { updatedAt: 'desc' },
+          orderBy: { updatedAt: "desc" },
           include: {
             tags: { include: { tag: true } },
           },
         },
         deals: {
-          orderBy: { updatedAt: 'desc' },
+          orderBy: { updatedAt: "desc" },
           include: {
             stage: { select: { id: true, name: true, color: true } },
           },
         },
         activities: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           take: 20,
           include: {
             user: { select: { id: true, name: true, avatarUrl: true } },
@@ -38,7 +43,9 @@ export async function GET(
         },
         tags: { include: { tag: true } },
         parent: { select: { id: true, name: true } },
-        children: { select: { id: true, name: true, industry: true, country: true } },
+        children: {
+          select: { id: true, name: true, industry: true, country: true },
+        },
         _count: {
           select: {
             contacts: true,
@@ -53,21 +60,24 @@ export async function GET(
     })
 
     if (!company) {
-      return NextResponse.json({ error: 'Company not found' }, { status: 404 })
+      return NextResponse.json({ error: "Company not found" }, { status: 404 })
     }
 
-    if (!canAccess(user, 'view_all') && company.ownerId !== user.id) {
+    if (!canAccess(user, "view_all") && company.ownerId !== user.id) {
       return forbiddenResponse()
     }
 
     return NextResponse.json(company)
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/companies/[id] error:', error)
+    console.error("GET /api/companies/[id] error:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch company' },
+      { error: "Failed to fetch company" },
       { status: 500 }
     )
   }
@@ -80,10 +90,17 @@ export async function PATCH(
 ) {
   try {
     const { id } = params
-    const existing = await prisma.company.findUnique({ where: { id }, select: { ownerId: true } })
-    if (!existing) return NextResponse.json({ error: 'Company not found' }, { status: 404 })
+    const existing = await prisma.company.findUnique({
+      where: { id },
+      select: { ownerId: true },
+    })
+    if (!existing)
+      return NextResponse.json({ error: "Company not found" }, { status: 404 })
 
-    const result = await requireOwnerOrRole(existing.ownerId, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.ownerId, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
@@ -100,7 +117,7 @@ export async function PATCH(
 
     return NextResponse.json(company)
   } catch (error) {
-    return handleApiError(error, '/api/companies/[id]')
+    return handleApiError(error, "/api/companies/[id]")
   }
 }
 
@@ -111,17 +128,28 @@ export async function DELETE(
 ) {
   try {
     const { id } = params
-    const existing = await prisma.company.findUnique({ where: { id }, select: { ownerId: true } })
-    if (!existing) return NextResponse.json({ error: 'Company not found' }, { status: 404 })
+    const existing = await prisma.company.findUnique({
+      where: { id },
+      select: { ownerId: true },
+    })
+    if (!existing)
+      return NextResponse.json({ error: "Company not found" }, { status: 404 })
 
-    const result = await requireOwnerOrRole(existing.ownerId, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.ownerId, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     await prisma.company.delete({ where: { id } })
     return NextResponse.json({ success: true })
   } catch (error: any) {
-    if (error?.code === 'P2025') return NextResponse.json({ error: 'Company not found' }, { status: 404 })
-    console.error('DELETE /api/companies/[id] error:', error)
-    return NextResponse.json({ error: 'Failed to delete company' }, { status: 500 })
+    if (error?.code === "P2025")
+      return NextResponse.json({ error: "Company not found" }, { status: 404 })
+    console.error("DELETE /api/companies/[id] error:", error)
+    return NextResponse.json(
+      { error: "Failed to delete company" },
+      { status: 500 }
+    )
   }
 }

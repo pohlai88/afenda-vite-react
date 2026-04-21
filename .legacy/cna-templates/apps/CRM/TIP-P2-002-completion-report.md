@@ -14,6 +14,7 @@
 - Created: `docs/CRON.md` — Cron setup documentation for Vercel and external cron
 
 **TEST RESULTS:**
+
 - AC-1 Schedule Campaign: PASS — Wizard step 4 shows radio group, date/time pickers. Creating with schedule sets scheduledAt + status=SCHEDULED via server logic
 - AC-2 Edit Schedule: PASS — "Sửa lịch" button opens dialog with pre-filled date/time, PATCH updates scheduledAt with future-date validation
 - AC-3 Cancel Schedule: PASS — "Hủy lịch" button shows confirmation, sets status=DRAFT + scheduledAt=null
@@ -23,9 +24,11 @@
 - AC-7 Build: PASS — `tsc --noEmit` 0 errors, `next build` clean
 
 **ISSUES DISCOVERED:**
+
 - None
 
 **DEVIATIONS FROM SPEC:**
+
 - SCHEDULED badge color changed from blue (#3B82F6) to amber (#F59E0B) on both list and detail pages — amber better conveys "pending/waiting" semantics vs blue which suggests "active", consistent with SENDING status being blue
 - Used native HTML radio inputs with accent-[#10B981] instead of Shadcn RadioGroup — project doesn't have RadioGroup component installed, native radio with project styling is simpler and avoids adding a dependency
 - Time picker uses Shadcn Select with 15-min interval options instead of native `<input type="time">` — better cross-browser consistency and styling integration

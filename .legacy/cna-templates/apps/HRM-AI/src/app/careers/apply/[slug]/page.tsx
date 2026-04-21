@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, CheckCircle, Upload } from 'lucide-react'
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, CheckCircle, Upload } from "lucide-react"
 
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'default'
+const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || "default"
 
 interface JobInfo {
   id: string
@@ -26,27 +26,29 @@ export default function ApplyPage() {
   const [error, setError] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    coverLetter: '',
-    expectedSalary: '',
-    yearsOfExperience: '',
+    fullName: "",
+    email: "",
+    phone: "",
+    coverLetter: "",
+    expectedSalary: "",
+    yearsOfExperience: "",
   })
   const [cvFileName, setCvFileName] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchJob() {
       try {
-        const res = await fetch(`/api/public/careers/${slug}?tenantId=${TENANT_ID}`)
+        const res = await fetch(
+          `/api/public/careers/${slug}?tenantId=${TENANT_ID}`
+        )
         if (!res.ok) {
-          setError('Không tìm thấy vị trí tuyển dụng')
+          setError("Không tìm thấy vị trí tuyển dụng")
           return
         }
         const json = await res.json()
         setJob(json)
       } catch {
-        setError('Có lỗi xảy ra')
+        setError("Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -55,7 +57,7 @@ export default function ApplyPage() {
   }, [slug])
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,15 +71,15 @@ export default function ApplyPage() {
     e.preventDefault()
 
     if (!formData.fullName || !formData.email || !formData.phone) {
-      alert('Vui lòng điền đầy đủ thông tin bắt buộc')
+      alert("Vui lòng điền đầy đủ thông tin bắt buộc")
       return
     }
 
     setSubmitting(true)
     try {
-      const res = await fetch('/api/public/careers/apply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/public/careers/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tenantId: TENANT_ID,
           jobSlug: slug,
@@ -94,12 +96,12 @@ export default function ApplyPage() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        throw new Error(data.message || 'Không thể gửi hồ sơ')
+        throw new Error(data.message || "Không thể gửi hồ sơ")
       }
 
       setSubmitted(true)
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     } finally {
       setSubmitting(false)
     }
@@ -118,7 +120,7 @@ export default function ApplyPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-bold text-gray-900">
-            {error || 'Không tìm thấy vị trí'}
+            {error || "Không tìm thấy vị trí"}
           </h1>
           <Link
             href="/careers"
@@ -143,8 +145,8 @@ export default function ApplyPage() {
             Nộp hồ sơ thành công!
           </h1>
           <p className="text-gray-600">
-            Cảm ơn bạn đã ứng tuyển vị trí <strong>{job.title}</strong>.
-            Chúng tôi sẽ xem xét hồ sơ và liên hệ với bạn trong thời gian sớm nhất.
+            Cảm ơn bạn đã ứng tuyển vị trí <strong>{job.title}</strong>. Chúng
+            tôi sẽ xem xét hồ sơ và liên hệ với bạn trong thời gian sớm nhất.
           </p>
           <div className="pt-4">
             <Link
@@ -195,28 +197,34 @@ export default function ApplyPage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="fullName"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Họ và tên <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="fullName"
                   type="text"
                   value={formData.fullName}
-                  onChange={(e) => handleChange('fullName', e.target.value)}
+                  onChange={(e) => handleChange("fullName", e.target.value)}
                   required
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Nguyễn Văn A"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Email <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => handleChange('email', e.target.value)}
+                  onChange={(e) => handleChange("email", e.target.value)}
                   required
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="email@example.com"
@@ -226,21 +234,27 @@ export default function ApplyPage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Số điện thoại <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="phone"
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => handleChange('phone', e.target.value)}
+                  onChange={(e) => handleChange("phone", e.target.value)}
                   required
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="0912 345 678"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="yearsOfExperience" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="yearsOfExperience"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Số năm kinh nghiệm
                 </label>
                 <input
@@ -248,7 +262,9 @@ export default function ApplyPage() {
                   type="number"
                   min="0"
                   value={formData.yearsOfExperience}
-                  onChange={(e) => handleChange('yearsOfExperience', e.target.value)}
+                  onChange={(e) =>
+                    handleChange("yearsOfExperience", e.target.value)
+                  }
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="VD: 3"
                 />
@@ -256,14 +272,17 @@ export default function ApplyPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="expectedSalary" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="expectedSalary"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Mức lương mong muốn (VND)
               </label>
               <input
                 id="expectedSalary"
                 type="number"
                 value={formData.expectedSalary}
-                onChange={(e) => handleChange('expectedSalary', e.target.value)}
+                onChange={(e) => handleChange("expectedSalary", e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="VD: 20000000"
               />
@@ -291,7 +310,9 @@ export default function ApplyPage() {
                 <label htmlFor="cv-upload" className="cursor-pointer">
                   <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
                   {cvFileName ? (
-                    <p className="text-sm font-medium text-blue-600">{cvFileName}</p>
+                    <p className="text-sm font-medium text-blue-600">
+                      {cvFileName}
+                    </p>
                   ) : (
                     <>
                       <p className="text-sm font-medium text-gray-700">
@@ -308,13 +329,16 @@ export default function ApplyPage() {
 
             {/* Cover Letter */}
             <div className="space-y-2">
-              <label htmlFor="coverLetter" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="coverLetter"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Thư xin việc
               </label>
               <textarea
                 id="coverLetter"
                 value={formData.coverLetter}
-                onChange={(e) => handleChange('coverLetter', e.target.value)}
+                onChange={(e) => handleChange("coverLetter", e.target.value)}
                 rows={5}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 placeholder="Giới thiệu bản thân, kinh nghiệm liên quan và lý do bạn phù hợp với vị trí này..."
@@ -325,15 +349,15 @@ export default function ApplyPage() {
           {/* Submit */}
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
             <p className="text-xs text-gray-500">
-              Bằng việc nộp hồ sơ, bạn đồng ý cho phép chúng tôi xử lý thông tin cá nhân của bạn
-              cho mục đích tuyển dụng.
+              Bằng việc nộp hồ sơ, bạn đồng ý cho phép chúng tôi xử lý thông tin
+              cá nhân của bạn cho mục đích tuyển dụng.
             </p>
             <button
               type="submit"
               disabled={submitting}
               className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
             >
-              {submitting ? 'Đang gửi...' : 'Nộp hồ sơ'}
+              {submitting ? "Đang gửi..." : "Nộp hồ sơ"}
             </button>
           </div>
         </form>

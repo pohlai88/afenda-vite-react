@@ -13,6 +13,7 @@ This plan is intentionally repo-shaped. It is not a generic cleanup list.
 - Promote only after reuse is proven.
 - Preserve import stability where possible; when not possible, move in narrow slices.
 - Do not rename files just to hit a label count; every label must add meaning.
+- Strict naming applies to tracked source files in governed roots; generic names must be removed or explicitly protected as a public API exception.
 
 ## Current Stable Baseline
 
@@ -80,20 +81,26 @@ Decision rule:
 
 ### Wave 4: Package Boundary Hardening
 
-Status: next
+Status: active
 
 Targets:
 
 - `packages/design-system`
 - `packages/_database`
 - `packages/contracts`
+- `packages/pino-logger`
+- `packages/eslint-config`
+- `packages/vitest-config`
+- `packages/env-loader`
+- `packages/typescript-config`
+- `packages/better-auth`
 - package-level public API surfaces and local helper folders
 
 High-signal candidates already visible:
 
-- `packages/design-system/utils`
-- `packages/_database/src/queries/helpers`
-- `packages/_database/src/schema/helpers`
+- `packages/design-system/utils` as an explicit exported exception root
+- `packages/_database/src/queries` query support naming
+- `packages/_database/src/schema` support naming
 
 Decision rule:
 
@@ -116,7 +123,7 @@ Suggested tool path:
 
 ### Wave 6: Root Topology and Archive Hygiene
 
-Status: planned
+Status: active
 
 Targets:
 
@@ -129,8 +136,8 @@ Targets:
 Next concrete review areas:
 
 - `packages/design-system/utils`
-- `packages/_database/src/queries/helpers`
-- `packages/_database/src/schema/helpers`
+- package public API surfaces that still need stronger naming review
+- any vendor material that reappears inside active package roots
 - root topology around `.legacy/` and `archives/`
 
 ## Refactor Workflow

@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Building2, Target, ChevronDown, ChevronRight } from 'lucide-react'
-import { Goal } from '@/types/performance'
-import { GOAL_STATUS } from '@/lib/performance/constants'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Building2, Target, ChevronDown, ChevronRight } from "lucide-react"
+import { Goal } from "@/types/performance"
+import { GOAL_STATUS } from "@/lib/performance/constants"
 
 function GoalCascadeItem({ goal, level = 0 }: { goal: Goal; level?: number }) {
   const [expanded, setExpanded] = useState(level < 2)
@@ -23,21 +23,32 @@ function GoalCascadeItem({ goal, level = 0 }: { goal: Goal; level?: number }) {
         style={{ marginLeft: `${level * 24}px` }}
       >
         {hasChildren ? (
-          <button onClick={() => setExpanded(!expanded)} className="text-zinc-500 hover:text-zinc-300">
-            {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-zinc-500 hover:text-zinc-300"
+          >
+            {expanded ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
           </button>
         ) : (
           <div className="w-4" />
         )}
         <Target className="h-4 w-4 text-amber-400 shrink-0" />
         <Link href={`/performance/goals/${goal.id}`} className="flex-1 min-w-0">
-          <span className="text-sm font-medium text-zinc-200 hover:text-amber-400 truncate block">{goal.title}</span>
+          <span className="text-sm font-medium text-zinc-200 hover:text-amber-400 truncate block">
+            {goal.title}
+          </span>
         </Link>
         <div className="flex items-center gap-3 shrink-0">
           <div className="w-24">
             <Progress value={goal.progress} className="h-1.5" />
           </div>
-          <span className="text-xs text-zinc-500 w-10 text-right">{goal.progress}%</span>
+          <span className="text-xs text-zinc-500 w-10 text-right">
+            {goal.progress}%
+          </span>
           <Badge variant="outline" className="text-xs border-zinc-700">
             {statusInfo?.label || goal.status}
           </Badge>
@@ -61,7 +72,9 @@ export default function CompanyOKRsPage() {
   useEffect(() => {
     async function loadGoals() {
       try {
-        const res = await fetch('/api/performance/goals?goalType=COMPANY&includeChildren=true')
+        const res = await fetch(
+          "/api/performance/goals?goalType=COMPANY&includeChildren=true"
+        )
         if (res.ok) {
           const data = await res.json()
           setGoals(Array.isArray(data) ? data : data.goals || [])
@@ -96,7 +109,9 @@ export default function CompanyOKRsPage() {
         <div className="flex flex-col items-center justify-center py-16 text-zinc-500">
           <Building2 className="h-16 w-16 mb-4 text-zinc-700" />
           <p className="text-lg">Chưa có OKRs công ty</p>
-          <p className="text-sm text-zinc-600 mt-1">Các mục tiêu cấp công ty sẽ hiển thị ở đây</p>
+          <p className="text-sm text-zinc-600 mt-1">
+            Các mục tiêu cấp công ty sẽ hiển thị ở đây
+          </p>
         </div>
       ) : (
         <Card className="bg-zinc-900 border-zinc-800">

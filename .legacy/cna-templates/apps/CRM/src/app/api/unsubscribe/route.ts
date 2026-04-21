@@ -1,18 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { verifyUnsubscribeToken } from '@/lib/campaigns/unsubscribe'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { verifyUnsubscribeToken } from "@/lib/campaigns/unsubscribe"
 
 // GET /api/unsubscribe?token=xxx — Public endpoint, no auth
 export async function GET(req: NextRequest) {
-  const token = req.nextUrl.searchParams.get('token')
+  const token = req.nextUrl.searchParams.get("token")
 
   if (!token) {
-    return htmlResponse('Link không hợp lệ', false)
+    return htmlResponse("Link không hợp lệ", false)
   }
 
   const decoded = verifyUnsubscribeToken(token)
   if (!decoded) {
-    return htmlResponse('Link không hợp lệ hoặc đã hết hạn', false)
+    return htmlResponse("Link không hợp lệ hoặc đã hết hạn", false)
   }
 
   try {
@@ -28,15 +28,15 @@ export async function GET(req: NextRequest) {
       },
     })
 
-    return htmlResponse('Bạn đã hủy đăng ký thành công', true)
+    return htmlResponse("Bạn đã hủy đăng ký thành công", true)
   } catch {
-    return htmlResponse('Đã xảy ra lỗi. Vui lòng thử lại sau.', false)
+    return htmlResponse("Đã xảy ra lỗi. Vui lòng thử lại sau.", false)
   }
 }
 
 function htmlResponse(message: string, success: boolean): NextResponse {
-  const icon = success ? '&#10003;' : '&#10007;'
-  const color = success ? '#10B981' : '#EF4444'
+  const icon = success ? "&#10003;" : "&#10007;"
+  const color = success ? "#10B981" : "#EF4444"
 
   const html = `<!DOCTYPE html>
 <html lang="vi">
@@ -82,13 +82,13 @@ function htmlResponse(message: string, success: boolean): NextResponse {
   <div class="container">
     <div class="icon">${icon}</div>
     <p class="message">${message}</p>
-    ${success ? '<p class="footer">Bạn sẽ không nhận email marketing từ chúng tôi nữa.</p>' : ''}
+    ${success ? '<p class="footer">Bạn sẽ không nhận email marketing từ chúng tôi nữa.</p>' : ""}
   </div>
 </body>
 </html>`
 
   return new NextResponse(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    headers: { "Content-Type": "text/html; charset=utf-8" },
   })
 }

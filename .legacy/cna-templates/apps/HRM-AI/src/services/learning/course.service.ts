@@ -1,34 +1,34 @@
-import { db } from '@/lib/db';
+import { db } from "@/lib/db"
 
 export async function createCourse(
   tenantId: string,
   userId: string,
   data: {
-    code: string;
-    title: string;
-    description?: string;
-    objectives?: string;
-    categoryId?: string;
-    courseType: string;
-    level?: string;
-    durationHours: number;
-    maxParticipants?: number;
-    minParticipants?: number;
-    providerId?: string;
-    instructorName?: string;
-    costPerPerson?: number;
-    prerequisites?: string;
-    targetAudience?: string;
-    isMandatory?: boolean;
-    thumbnailUrl?: string;
-    skills?: { skillId: string; levelGained: number }[];
+    code: string
+    title: string
+    description?: string
+    objectives?: string
+    categoryId?: string
+    courseType: string
+    level?: string
+    durationHours: number
+    maxParticipants?: number
+    minParticipants?: number
+    providerId?: string
+    instructorName?: string
+    costPerPerson?: number
+    prerequisites?: string
+    targetAudience?: string
+    isMandatory?: boolean
+    thumbnailUrl?: string
+    skills?: { skillId: string; levelGained: number }[]
     modules?: {
-      title: string;
-      description?: string;
-      contentUrl?: string;
-      contentType?: string;
-      durationMinutes: number;
-    }[];
+      title: string
+      description?: string
+      contentUrl?: string
+      contentType?: string
+      durationMinutes: number
+    }[]
   }
 ) {
   const course = await db.course.create({
@@ -40,7 +40,7 @@ export async function createCourse(
       objectives: data.objectives,
       categoryId: data.categoryId,
       courseType: data.courseType as any,
-      level: (data.level as any) || 'BEGINNER',
+      level: (data.level as any) || "BEGINNER",
       durationHours: data.durationHours,
       maxParticipants: data.maxParticipants,
       minParticipants: data.minParticipants,
@@ -51,10 +51,10 @@ export async function createCourse(
       targetAudience: data.targetAudience,
       isMandatory: data.isMandatory || false,
       thumbnailUrl: data.thumbnailUrl,
-      status: 'DRAFT',
+      status: "DRAFT",
       createdById: userId,
     },
-  });
+  })
 
   if (data.skills && data.skills.length > 0) {
     for (const s of data.skills) {
@@ -64,13 +64,13 @@ export async function createCourse(
           skillId: s.skillId,
           skillLevelGained: s.levelGained,
         },
-      });
+      })
     }
   }
 
   if (data.modules && data.modules.length > 0) {
     for (let i = 0; i < data.modules.length; i++) {
-      const m = data.modules[i];
+      const m = data.modules[i]
       await db.courseModule.create({
         data: {
           courseId: course.id,
@@ -81,39 +81,40 @@ export async function createCourse(
           durationMinutes: m.durationMinutes,
           order: i,
         },
-      });
+      })
     }
   }
 
-  return getCourseById(course.id, tenantId);
+  return getCourseById(course.id, tenantId)
 }
 
 export async function getCourses(
   tenantId: string,
   filters?: {
-    categoryId?: string;
-    courseType?: string;
-    level?: string;
-    status?: string;
-    isMandatory?: boolean;
-    search?: string;
+    categoryId?: string
+    courseType?: string
+    level?: string
+    status?: string
+    isMandatory?: boolean
+    search?: string
   },
   page = 1,
   limit = 20
 ) {
-  const where: any = { tenantId };
+  const where: any = { tenantId }
 
-  if (filters?.categoryId) where.categoryId = filters.categoryId;
-  if (filters?.courseType) where.courseType = filters.courseType;
-  if (filters?.level) where.level = filters.level;
-  if (filters?.status) where.status = filters.status;
-  if (filters?.isMandatory !== undefined) where.isMandatory = filters.isMandatory;
+  if (filters?.categoryId) where.categoryId = filters.categoryId
+  if (filters?.courseType) where.courseType = filters.courseType
+  if (filters?.level) where.level = filters.level
+  if (filters?.status) where.status = filters.status
+  if (filters?.isMandatory !== undefined)
+    where.isMandatory = filters.isMandatory
   if (filters?.search) {
     where.OR = [
-      { title: { contains: filters.search, mode: 'insensitive' } },
-      { code: { contains: filters.search, mode: 'insensitive' } },
-      { description: { contains: filters.search, mode: 'insensitive' } },
-    ];
+      { title: { contains: filters.search, mode: "insensitive" } },
+      { code: { contains: filters.search, mode: "insensitive" } },
+      { description: { contains: filters.search, mode: "insensitive" } },
+    ]
   }
 
   const [courses, total] = await Promise.all([
@@ -124,14 +125,14 @@ export async function getCourses(
         provider: { select: { id: true, name: true } },
         _count: { select: { enrollments: true, sessions: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
     db.course.count({ where }),
-  ]);
+  ])
 
-  return { courses, total, page, limit };
+  return { courses, total, page, limit }
 }
 
 export async function getCourseById(id: string, tenantId: string) {
@@ -140,55 +141,59 @@ export async function getCourseById(id: string, tenantId: string) {
     include: {
       category: true,
       provider: true,
-      modules: { orderBy: { order: 'asc' } },
+      modules: { orderBy: { order: "asc" } },
       skills: { include: { skill: true } },
       _count: { select: { enrollments: true, sessions: true } },
       createdBy: { select: { id: true, name: true } },
     },
-  });
+  })
 }
 
 export async function publishCourse(id: string, tenantId: string) {
   const course = await db.course.findFirst({
-    where: { id, tenantId, status: 'DRAFT' },
-  });
-  if (!course) return null;
+    where: { id, tenantId, status: "DRAFT" },
+  })
+  if (!course) return null
   return db.course.update({
     where: { id },
-    data: { status: 'PUBLISHED', publishedAt: new Date() },
-  });
+    data: { status: "PUBLISHED", publishedAt: new Date() },
+  })
 }
 
 export async function archiveCourse(id: string, tenantId: string) {
   return db.course.update({
     where: { id },
-    data: { status: 'ARCHIVED', archivedAt: new Date() },
-  });
+    data: { status: "ARCHIVED", archivedAt: new Date() },
+  })
 }
 
-export async function updateCourse(id: string, tenantId: string, data: Record<string, unknown>) {
+export async function updateCourse(
+  id: string,
+  tenantId: string,
+  data: Record<string, unknown>
+) {
   return db.course.update({
     where: { id },
     data: data as any,
-  });
+  })
 }
 
 export async function getCourseCategories(tenantId: string) {
   return db.courseCategory.findMany({
     where: { tenantId },
     include: { _count: { select: { courses: true } } },
-    orderBy: { order: 'asc' },
-  });
+    orderBy: { order: "asc" },
+  })
 }
 
 export async function getCourseModules(courseId: string, tenantId: string) {
   const course = await db.course.findFirst({
     where: { id: courseId, tenantId },
     select: { id: true },
-  });
-  if (!course) return [];
+  })
+  if (!course) return []
   return db.courseModule.findMany({
     where: { courseId },
-    orderBy: { order: 'asc' },
-  });
+    orderBy: { order: "asc" },
+  })
 }

@@ -1,2 +1,2 @@
-export { FileMenu } from './FileMenu';
-export { default } from './FileMenu';
+export { FileMenu } from "./FileMenu"
+export { default } from "./FileMenu"

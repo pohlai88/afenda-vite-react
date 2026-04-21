@@ -1,15 +1,27 @@
 // src/app/(dashboard)/analytics/workforce/headcount/page.tsx
 // Headcount Analysis Page
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { RefreshCw, Download } from 'lucide-react'
+import { useState, useEffect } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { RefreshCw, Download } from "lucide-react"
 import {
   BarChart,
   Bar,
@@ -23,7 +35,7 @@ import {
   ResponsiveContainer,
   ComposedChart,
   Area,
-} from 'recharts'
+} from "recharts"
 
 interface HeadcountData {
   total: number
@@ -35,10 +47,12 @@ interface HeadcountData {
 }
 
 export default function HeadcountPage() {
-  const [period, setPeriod] = useState('year')
+  const [period, setPeriod] = useState("year")
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<HeadcountData | null>(null)
-  const [trendData, setTrendData] = useState<Array<{ month: string; count: number; hires: number; terminations: number }>>([])
+  const [trendData, setTrendData] = useState<
+    Array<{ month: string; count: number; hires: number; terminations: number }>
+  >([])
 
   useEffect(() => {
     fetchData()
@@ -62,21 +76,30 @@ export default function HeadcountPage() {
 
       // Fetch real trend data
       try {
-        const trendsRes = await fetch('/api/analytics/workforce/trends')
+        const trendsRes = await fetch("/api/analytics/workforce/trends")
         if (trendsRes.ok) {
           const trendsJson = await trendsRes.json()
-          setTrendData((trendsJson.data || []).map((t: { month: string; headcount: number; hires: number; terminations: number }) => ({
-            month: t.month,
-            count: t.headcount,
-            hires: t.hires,
-            terminations: t.terminations,
-          })))
+          setTrendData(
+            (trendsJson.data || []).map(
+              (t: {
+                month: string
+                headcount: number
+                hires: number
+                terminations: number
+              }) => ({
+                month: t.month,
+                count: t.headcount,
+                hires: t.hires,
+                terminations: t.terminations,
+              })
+            )
+          )
         }
       } catch (e) {
-        console.error('Error fetching trends:', e)
+        console.error("Error fetching trends:", e)
       }
     } catch (error) {
-      console.error('Error fetching headcount data:', error)
+      console.error("Error fetching headcount data:", error)
     } finally {
       setLoading(false)
     }
@@ -131,7 +154,9 @@ export default function HeadcountPage() {
             {loading ? (
               <Skeleton className="h-8 w-20 mt-1" />
             ) : (
-              <p className="text-3xl font-bold text-green-600">{data?.active || 0}</p>
+              <p className="text-3xl font-bold text-green-600">
+                {data?.active || 0}
+              </p>
             )}
           </CardContent>
         </Card>
@@ -141,7 +166,9 @@ export default function HeadcountPage() {
             {loading ? (
               <Skeleton className="h-8 w-20 mt-1" />
             ) : (
-              <p className="text-3xl font-bold text-orange-600">{data?.probation || 0}</p>
+              <p className="text-3xl font-bold text-orange-600">
+                {data?.probation || 0}
+              </p>
             )}
           </CardContent>
         </Card>
@@ -151,7 +178,9 @@ export default function HeadcountPage() {
             {loading ? (
               <Skeleton className="h-8 w-20 mt-1" />
             ) : (
-              <p className="text-3xl font-bold text-blue-600">{data?.onLeave || 0}</p>
+              <p className="text-3xl font-bold text-blue-600">
+                {data?.onLeave || 0}
+              </p>
             )}
           </CardContent>
         </Card>
@@ -161,7 +190,9 @@ export default function HeadcountPage() {
       <Card>
         <CardHeader>
           <CardTitle>Xu hướng nhân sự</CardTitle>
-          <CardDescription>Biến động số lượng nhân sự theo thời gian</CardDescription>
+          <CardDescription>
+            Biến động số lượng nhân sự theo thời gian
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -184,8 +215,18 @@ export default function HeadcountPage() {
                   stroke="#3b82f6"
                   name="Tổng nhân sự"
                 />
-                <Bar yAxisId="right" dataKey="hires" fill="#10b981" name="Tuyển mới" />
-                <Bar yAxisId="right" dataKey="terminations" fill="#ef4444" name="Nghỉ việc" />
+                <Bar
+                  yAxisId="right"
+                  dataKey="hires"
+                  fill="#10b981"
+                  name="Tuyển mới"
+                />
+                <Bar
+                  yAxisId="right"
+                  dataKey="terminations"
+                  fill="#ef4444"
+                  name="Nghỉ việc"
+                />
               </ComposedChart>
             </ResponsiveContainer>
           )}

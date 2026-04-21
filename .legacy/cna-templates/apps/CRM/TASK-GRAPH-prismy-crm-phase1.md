@@ -1,15 +1,16 @@
 # TASK GRAPH — PRISMY CRM PHASE 1 MVP PRODUCTION
+
 ## Vibecode Kit v5.0 — Generated 21/02/2026
 
 ---
 
 ## DECISIONS LOG
 
-| ID | Decision | Options | Chosen | Rationale |
-|----|----------|---------|--------|-----------|
-| D-001 | Auth Strategy | Supabase full / email-only / Custom JWT / Connect existing | Supabase email/password | Middleware đã config, đơn giản nhất cho MVP |
-| D-002 | Email Provider | Resend / AWS SES / Sendgrid | Resend.dev | Developer-friendly, React Email support, free 100/ngày |
-| D-003 | Post-core Priority | Campaign / Portal / Settings / Validation | Campaign → Portal → Settings → Validation | Marketing tạo doanh thu, Portal giữ khách |
+| ID    | Decision           | Options                                                    | Chosen                                    | Rationale                                              |
+| ----- | ------------------ | ---------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------ |
+| D-001 | Auth Strategy      | Supabase full / email-only / Custom JWT / Connect existing | Supabase email/password                   | Middleware đã config, đơn giản nhất cho MVP            |
+| D-002 | Email Provider     | Resend / AWS SES / Sendgrid                                | Resend.dev                                | Developer-friendly, React Email support, free 100/ngày |
+| D-003 | Post-core Priority | Campaign / Portal / Settings / Validation                  | Campaign → Portal → Settings → Validation | Marketing tạo doanh thu, Portal giữ khách              |
 
 ---
 
@@ -53,20 +54,20 @@ TIP-006: PDF   TIP-007: Quote                                  │
 
 ## TIP SUMMARY TABLE
 
-| TIP | Tên | Priority | Depends On | Est. Effort | Critical Path? |
-|-----|-----|----------|------------|-------------|----------------|
-| 001 | Auth System (Supabase email/pwd) | P0 | None | 120-180 min | ✅ YES |
-| 002 | RBAC Middleware & Role Enforcement | P0 | TIP-001 | 90-120 min | ✅ YES |
-| 003 | Email Service (Resend + React Email) | P0 | TIP-001 | 90-120 min | ✅ YES |
-| 004 | API Security Hardening | P0 | TIP-002 | 60-90 min | ✅ YES |
-| 005 | Zod Validation Layer | P1 | TIP-001 | 90-120 min | No |
-| 006 | PDF Generation (Quotes & Orders) | P1 | TIP-003 | 90-120 min | ✅ YES |
-| 007 | Quote Email Send + Expiry Alerts | P1 | TIP-003, TIP-006 | 60-90 min | ✅ YES |
-| 008 | Settings Persistence | P1 | TIP-004 | 60-90 min | No |
-| 009 | Global Search UI (cmdk) | P2 | TIP-004 | 45-60 min | No |
-| 010 | Campaign Engine (Resend bulk) | P1 | TIP-003, TIP-005 | 150-180 min | No |
-| 011 | Portal Completion | P1 | TIP-003, TIP-004 | 120-150 min | No |
-| 012 | VERIFY & Polish | P0 | ALL | 90-120 min | ✅ YES |
+| TIP | Tên                                  | Priority | Depends On       | Est. Effort | Critical Path? |
+| --- | ------------------------------------ | -------- | ---------------- | ----------- | -------------- |
+| 001 | Auth System (Supabase email/pwd)     | P0       | None             | 120-180 min | ✅ YES         |
+| 002 | RBAC Middleware & Role Enforcement   | P0       | TIP-001          | 90-120 min  | ✅ YES         |
+| 003 | Email Service (Resend + React Email) | P0       | TIP-001          | 90-120 min  | ✅ YES         |
+| 004 | API Security Hardening               | P0       | TIP-002          | 60-90 min   | ✅ YES         |
+| 005 | Zod Validation Layer                 | P1       | TIP-001          | 90-120 min  | No             |
+| 006 | PDF Generation (Quotes & Orders)     | P1       | TIP-003          | 90-120 min  | ✅ YES         |
+| 007 | Quote Email Send + Expiry Alerts     | P1       | TIP-003, TIP-006 | 60-90 min   | ✅ YES         |
+| 008 | Settings Persistence                 | P1       | TIP-004          | 60-90 min   | No             |
+| 009 | Global Search UI (cmdk)              | P2       | TIP-004          | 45-60 min   | No             |
+| 010 | Campaign Engine (Resend bulk)        | P1       | TIP-003, TIP-005 | 150-180 min | No             |
+| 011 | Portal Completion                    | P1       | TIP-003, TIP-004 | 120-150 min | No             |
+| 012 | VERIFY & Polish                      | P0       | ALL              | 90-120 min  | ✅ YES         |
 
 **Total Estimated: ~17-22 hours Claude Code time**
 **Calendar time: 4-5 tuần (1 senior dev, accounting for review cycles)**
@@ -76,9 +77,11 @@ TIP-006: PDF   TIP-007: Quote                                  │
 ## TIP BRIEFS (Chi tiết sẽ generate khi đến lượt)
 
 ### TIP-001: Auth System ✅ READY — Đã generate đầy đủ
+
 Xem file: `TIP-001-auth-system.md`
 
 ### TIP-002: RBAC Middleware & Role Enforcement
+
 ```
 SCOPE:
 - Tạo middleware checkRole(allowedRoles[]) cho API routes
@@ -94,6 +97,7 @@ DEPENDENCIES: TIP-001 (cần auth user với role)
 ```
 
 ### TIP-003: Email Service (Resend + React Email)
+
 ```
 SCOPE:
 - Setup Resend SDK + API key
@@ -110,6 +114,7 @@ DEPENDENCIES: TIP-001 (cần user email)
 ```
 
 ### TIP-004: API Security Hardening
+
 ```
 SCOPE:
 - JWT validation trên mọi API route (via middleware)
@@ -123,6 +128,7 @@ DEPENDENCIES: TIP-002 (cần RBAC middleware)
 ```
 
 ### TIP-005: Zod Validation Layer
+
 ```
 SCOPE:
 - Zod schemas cho mọi API input:
@@ -141,6 +147,7 @@ DEPENDENCIES: TIP-001 (cần auth context)
 ```
 
 ### TIP-006: PDF Generation
+
 ```
 SCOPE:
 - React PDF templates:
@@ -161,6 +168,7 @@ DEPENDENCIES: TIP-003 (PDF attached trong email)
 ```
 
 ### TIP-007: Quote Email Send + Expiry
+
 ```
 SCOPE:
 - "Gửi báo giá" button trên Quote detail → thực sự gửi email
@@ -175,6 +183,7 @@ DEPENDENCIES: TIP-003 (email service), TIP-006 (PDF generation)
 ```
 
 ### TIP-008: Settings Persistence
+
 ```
 SCOPE:
 - Settings API: CRUD /api/settings
@@ -189,6 +198,7 @@ DEPENDENCIES: TIP-004 (API security)
 ```
 
 ### TIP-009: Global Search UI
+
 ```
 SCOPE:
 - Command Palette (Ctrl+K / Cmd+K) dùng cmdk
@@ -202,6 +212,7 @@ DEPENDENCIES: TIP-004 (API security cho search endpoint)
 ```
 
 ### TIP-010: Campaign Engine
+
 ```
 SCOPE:
 - Kết nối campaign với Resend bulk send
@@ -216,6 +227,7 @@ DEPENDENCIES: TIP-003 (email service), TIP-005 (validation)
 ```
 
 ### TIP-011: Portal Completion
+
 ```
 SCOPE:
 - Magic link login thực tế (qua Resend email)
@@ -231,6 +243,7 @@ DEPENDENCIES: TIP-003 (magic link email), TIP-004 (API security)
 ```
 
 ### TIP-012: VERIFY & Polish
+
 ```
 SCOPE:
 - Requirement traceability check (mọi REQ đã implement?)
@@ -249,21 +262,25 @@ DEPENDENCIES: ALL previous TIPs
 ## EXECUTION PLAN
 
 ### Tuần 1-2: Foundation (Critical Path)
+
 ```
 TIP-001 → TIP-002 → TIP-003 (parallel: TIP-004 + TIP-005)
 ```
 
 ### Tuần 3: Core Features
+
 ```
 TIP-006 → TIP-007 (parallel: TIP-008 + TIP-009)
 ```
 
 ### Tuần 4: Marketing & Portal
+
 ```
 TIP-010 → TIP-011
 ```
 
 ### Tuần 5: Verify & Ship
+
 ```
 TIP-012 → Fixes → MVP LAUNCH 🚀
 ```
@@ -287,5 +304,5 @@ TIP-012 → Fixes → MVP LAUNCH 🚀
 
 ---
 
-*Generated by Chủ thầu — Vibecode Kit v5.0*
-*Project: Prismy CRM | Phase: 1 MVP Production*
+_Generated by Chủ thầu — Vibecode Kit v5.0_
+_Project: Prismy CRM | Phase: 1 MVP Production_

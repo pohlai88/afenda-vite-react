@@ -2,14 +2,14 @@
 // Anomaly Detection Types
 
 export type AnomalyCategory =
-  | 'ATTENDANCE'
-  | 'PAYROLL'
-  | 'LEAVE'
-  | 'OVERTIME'
-  | 'PERFORMANCE'
-  | 'COMPLIANCE'
+  | "ATTENDANCE"
+  | "PAYROLL"
+  | "LEAVE"
+  | "OVERTIME"
+  | "PERFORMANCE"
+  | "COMPLIANCE"
 
-export type AnomalySeverity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+export type AnomalySeverity = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
 
 export interface AnomalyDetail {
   field: string
@@ -24,7 +24,7 @@ export interface Anomaly {
   severity: AnomalySeverity
   title: string
   description: string
-  entityType: 'EMPLOYEE' | 'DEPARTMENT' | 'SYSTEM'
+  entityType: "EMPLOYEE" | "DEPARTMENT" | "SYSTEM"
   entityId?: string
   entityName?: string
   details: AnomalyDetail[]
@@ -63,22 +63,22 @@ export const ANOMALY_THRESHOLDS = {
     consecutiveLateDays: 3,
     consecutiveAbsentDays: 2,
     monthlyLateCount: 5,
-    monthlyAbsentCount: 3
+    monthlyAbsentCount: 3,
   },
   payroll: {
     salaryDeviationPercent: 20,
     otHoursWarning: 40,
     otHoursCritical: 60,
-    overtimeRatioWarning: 1.5
+    overtimeRatioWarning: 1.5,
   },
   leave: {
     unusedLeaveWarning: 5,
     consecutiveLeaveWarning: 10,
-    monthlyLeaveRequestsWarning: 3
+    monthlyLeaveRequestsWarning: 3,
   },
   overtime: {
     weeklyOtHoursWarning: 12,
     weeklyOtHoursCritical: 20,
-    monthlyOtHoursWarning: 40
-  }
+    monthlyOtHoursWarning: 40,
+  },
 }

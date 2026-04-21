@@ -1,32 +1,32 @@
-'use client'
+"use client"
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
-import { INTERVIEW_TYPE } from '@/lib/recruitment/constants'
-import { Loader2, X } from 'lucide-react'
+} from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { INTERVIEW_TYPE } from "@/lib/recruitment/constants"
+import { Loader2, X } from "lucide-react"
 
 const interviewSchema = z.object({
-  interviewType: z.string().min(1, 'Vui lòng chọn loại phỏng vấn'),
-  scheduledDate: z.string().min(1, 'Vui lòng chọn ngày'),
-  scheduledTime: z.string().min(1, 'Vui lòng chọn giờ'),
-  duration: z.coerce.number().min(15, 'Thời lượng tối thiểu 15 phút'),
+  interviewType: z.string().min(1, "Vui lòng chọn loại phỏng vấn"),
+  scheduledDate: z.string().min(1, "Vui lòng chọn ngày"),
+  scheduledTime: z.string().min(1, "Vui lòng chọn giờ"),
+  duration: z.coerce.number().min(15, "Thời lượng tối thiểu 15 phút"),
   location: z.string().optional(),
   notes: z.string().optional(),
-  interviewerIds: z.array(z.string()).min(1, 'Cần ít nhất 1 người phỏng vấn'),
+  interviewerIds: z.array(z.string()).min(1, "Cần ít nhất 1 người phỏng vấn"),
 })
 
 type InterviewFormData = z.infer<typeof interviewSchema>
@@ -42,7 +42,9 @@ interface InterviewSchedulerProps {
   candidateName: string
   round?: number
   interviewers: Interviewer[]
-  onSubmit: (data: InterviewFormData & { applicationId: string; round: number }) => Promise<void>
+  onSubmit: (
+    data: InterviewFormData & { applicationId: string; round: number }
+  ) => Promise<void>
   onCancel: () => void
   isSubmitting?: boolean
 }
@@ -65,27 +67,27 @@ export function InterviewScheduler({
   } = useForm<InterviewFormData>({
     resolver: zodResolver(interviewSchema) as never,
     defaultValues: {
-      interviewType: '',
-      scheduledDate: '',
-      scheduledTime: '',
+      interviewType: "",
+      scheduledDate: "",
+      scheduledTime: "",
       duration: 60,
-      location: '',
-      notes: '',
+      location: "",
+      notes: "",
       interviewerIds: [],
     },
   })
 
-  const selectedInterviewerIds = watch('interviewerIds')
+  const selectedInterviewerIds = watch("interviewerIds")
 
   const toggleInterviewer = (interviewerId: string) => {
     const current = selectedInterviewerIds || []
     if (current.includes(interviewerId)) {
       setValue(
-        'interviewerIds',
+        "interviewerIds",
         current.filter((id) => id !== interviewerId)
       )
     } else {
-      setValue('interviewerIds', [...current, interviewerId])
+      setValue("interviewerIds", [...current, interviewerId])
     }
   }
 
@@ -108,8 +110,8 @@ export function InterviewScheduler({
           <div className="space-y-2">
             <Label>Loại phỏng vấn *</Label>
             <Select
-              value={watch('interviewType')}
-              onValueChange={(val) => setValue('interviewType', val)}
+              value={watch("interviewType")}
+              onValueChange={(val) => setValue("interviewType", val)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Chọn loại phỏng vấn" />
@@ -123,7 +125,9 @@ export function InterviewScheduler({
               </SelectContent>
             </Select>
             {errors.interviewType && (
-              <p className="text-sm text-red-500">{errors.interviewType.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.interviewType.message}
+              </p>
             )}
           </div>
 
@@ -133,10 +137,12 @@ export function InterviewScheduler({
               <Input
                 id="scheduledDate"
                 type="date"
-                {...register('scheduledDate')}
+                {...register("scheduledDate")}
               />
               {errors.scheduledDate && (
-                <p className="text-sm text-red-500">{errors.scheduledDate.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.scheduledDate.message}
+                </p>
               )}
             </div>
 
@@ -145,18 +151,20 @@ export function InterviewScheduler({
               <Input
                 id="scheduledTime"
                 type="time"
-                {...register('scheduledTime')}
+                {...register("scheduledTime")}
               />
               {errors.scheduledTime && (
-                <p className="text-sm text-red-500">{errors.scheduledTime.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.scheduledTime.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="duration">Thời lượng (phút) *</Label>
               <Select
-                value={String(watch('duration'))}
-                onValueChange={(val) => setValue('duration', Number(val))}
+                value={String(watch("duration"))}
+                onValueChange={(val) => setValue("duration", Number(val))}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -178,7 +186,7 @@ export function InterviewScheduler({
             <Input
               id="location"
               placeholder="VD: Phòng họp A hoặc link Google Meet"
-              {...register('location')}
+              {...register("location")}
             />
           </div>
 
@@ -210,7 +218,9 @@ export function InterviewScheduler({
               ))}
             </div>
             {errors.interviewerIds && (
-              <p className="text-sm text-red-500">{errors.interviewerIds.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.interviewerIds.message}
+              </p>
             )}
             {selectedInterviewerIds?.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
@@ -242,7 +252,7 @@ export function InterviewScheduler({
               id="notes"
               placeholder="Ghi chú cho buổi phỏng vấn..."
               rows={3}
-              {...register('notes')}
+              {...register("notes")}
             />
           </div>
         </CardContent>

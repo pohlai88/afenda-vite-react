@@ -37,14 +37,14 @@
 
 Optional but common in the same package (not every file is `pgTable`):
 
-| Module                | Role                                                                                                                  |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **`audit/`**          | Pipeline: build, validate, insert audit **events** (uses governance tables).                                          |
-| **`identity/`**       | Bridge external auth ↔ `iam` (e.g. ensure identity links).                                                            |
-| **`tenancy/`**        | Resolve active tenant / membership **context** (mostly services + Zod; physical tenant tables stay in `mdm` / `iam`). |
-| **`pkg-governance/`** | Constants: managed schema list, migration identifiers, module registry.                                               |
-| **`helpers/`**        | Non-DDL helpers (env, column utilities) shared by schema code.                                                        |
-| **`constants/`**      | Runtime constants consumed by schema or tooling.                                                                      |
+| Module                     | Role                                                                                                                  |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **`audit/`**               | Pipeline: build, validate, insert audit **events** (uses governance tables).                                          |
+| **`identity/`**            | Bridge external auth ↔ `iam` (e.g. ensure identity links).                                                            |
+| **`tenancy/`**             | Resolve active tenant / membership **context** (mostly services + Zod; physical tenant tables stay in `mdm` / `iam`). |
+| **`pkg-governance/`**      | Constants: managed schema list, migration identifiers, module registry.                                               |
+| **`environment-support/`** | Non-DDL environment parsing and schema support shared by schema code.                                                 |
+| **`constants/`**           | Runtime constants consumed by schema or tooling.                                                                      |
 
 ---
 

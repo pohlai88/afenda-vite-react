@@ -1,9 +1,9 @@
 // src/services/leave-policy.service.ts
 // Leave Policy Service
 
-import { db } from '@/lib/db'
-import type { LeaveType, Prisma } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
+import { db } from "@/lib/db"
+import type { LeaveType, Prisma } from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -45,7 +45,7 @@ export const leavePolicyService = {
   async getAll(
     tenantId: string,
     filters: LeavePolicyFilters = {}
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<PaginatedResponse<any>> {
     const { leaveType, isActive = true, page = 1, pageSize = 50 } = filters
     const skip = (page - 1) * pageSize
@@ -59,7 +59,7 @@ export const leavePolicyService = {
     const [data, total] = await Promise.all([
       db.leavePolicy.findMany({
         where,
-        orderBy: [{ leaveType: 'asc' }, { name: 'asc' }],
+        orderBy: [{ leaveType: "asc" }, { name: "asc" }],
         skip,
         take: pageSize,
       }),
@@ -102,7 +102,7 @@ export const leavePolicyService = {
     // Check for duplicate code
     const existing = await this.getByCode(tenantId, data.code)
     if (existing) {
-      throw new Error('Mã chính sách đã tồn tại')
+      throw new Error("Mã chính sách đã tồn tại")
     }
 
     return db.leavePolicy.create({
@@ -131,17 +131,21 @@ export const leavePolicyService = {
   /**
    * Update a leave policy
    */
-  async update(tenantId: string, id: string, data: Partial<CreateLeavePolicyInput>) {
+  async update(
+    tenantId: string,
+    id: string,
+    data: Partial<CreateLeavePolicyInput>
+  ) {
     const policy = await this.getById(tenantId, id)
     if (!policy) {
-      throw new Error('Chính sách không tồn tại')
+      throw new Error("Chính sách không tồn tại")
     }
 
     // If changing code, check for duplicates
     if (data.code && data.code !== policy.code) {
       const existing = await this.getByCode(tenantId, data.code)
       if (existing) {
-        throw new Error('Mã chính sách đã tồn tại')
+        throw new Error("Mã chính sách đã tồn tại")
       }
     }
 
@@ -151,18 +155,40 @@ export const leavePolicyService = {
         ...(data.name && { name: data.name }),
         ...(data.code && { code: data.code }),
         ...(data.leaveType && { leaveType: data.leaveType }),
-        ...(data.daysPerYear !== undefined && { daysPerYear: data.daysPerYear }),
-        ...(data.maxCarryOver !== undefined && { maxCarryOver: data.maxCarryOver }),
-        ...(data.carryOverExpireMonths !== undefined && { carryOverExpireMonths: data.carryOverExpireMonths }),
-        ...(data.minDaysPerRequest !== undefined && { minDaysPerRequest: data.minDaysPerRequest }),
-        ...(data.maxDaysPerRequest !== undefined && { maxDaysPerRequest: data.maxDaysPerRequest }),
-        ...(data.advanceNoticeDays !== undefined && { advanceNoticeDays: data.advanceNoticeDays }),
-        ...(data.allowHalfDay !== undefined && { allowHalfDay: data.allowHalfDay }),
-        ...(data.allowNegativeBalance !== undefined && { allowNegativeBalance: data.allowNegativeBalance }),
-        ...(data.probationEligible !== undefined && { probationEligible: data.probationEligible }),
-        ...(data.minTenureMonths !== undefined && { minTenureMonths: data.minTenureMonths }),
+        ...(data.daysPerYear !== undefined && {
+          daysPerYear: data.daysPerYear,
+        }),
+        ...(data.maxCarryOver !== undefined && {
+          maxCarryOver: data.maxCarryOver,
+        }),
+        ...(data.carryOverExpireMonths !== undefined && {
+          carryOverExpireMonths: data.carryOverExpireMonths,
+        }),
+        ...(data.minDaysPerRequest !== undefined && {
+          minDaysPerRequest: data.minDaysPerRequest,
+        }),
+        ...(data.maxDaysPerRequest !== undefined && {
+          maxDaysPerRequest: data.maxDaysPerRequest,
+        }),
+        ...(data.advanceNoticeDays !== undefined && {
+          advanceNoticeDays: data.advanceNoticeDays,
+        }),
+        ...(data.allowHalfDay !== undefined && {
+          allowHalfDay: data.allowHalfDay,
+        }),
+        ...(data.allowNegativeBalance !== undefined && {
+          allowNegativeBalance: data.allowNegativeBalance,
+        }),
+        ...(data.probationEligible !== undefined && {
+          probationEligible: data.probationEligible,
+        }),
+        ...(data.minTenureMonths !== undefined && {
+          minTenureMonths: data.minTenureMonths,
+        }),
         ...(data.isPaid !== undefined && { isPaid: data.isPaid }),
-        ...(data.description !== undefined && { description: data.description }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
       },
     })
   },
@@ -173,7 +199,7 @@ export const leavePolicyService = {
   async delete(tenantId: string, id: string) {
     const policy = await this.getById(tenantId, id)
     if (!policy) {
-      throw new Error('Chính sách không tồn tại')
+      throw new Error("Chính sách không tồn tại")
     }
 
     // Check if policy is in use
@@ -209,17 +235,18 @@ export const leavePolicyService = {
         tenantId,
         isActive: true,
       },
-      orderBy: { leaveType: 'asc' },
+      orderBy: { leaveType: "asc" },
     })
 
     // Filter by eligibility (tenure, probation)
     const now = new Date()
     const tenureMonths = Math.floor(
-      (now.getTime() - new Date(employee.hireDate).getTime()) / (1000 * 60 * 60 * 24 * 30)
+      (now.getTime() - new Date(employee.hireDate).getTime()) /
+        (1000 * 60 * 60 * 24 * 30)
     )
-    const isProbation = employee.status === 'PROBATION'
+    const isProbation = employee.status === "PROBATION"
 
-    return policies.filter(policy => {
+    return policies.filter((policy) => {
       if (!policy.probationEligible && isProbation) return false
       if (policy.minTenureMonths > tenureMonths) return false
       return true

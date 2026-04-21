@@ -1,8 +1,8 @@
-import { registerNotificationHandlers } from './notification-handler'
-import { registerWebhookHandlers } from './webhook-handler'
-import { registerEmailNotificationHandlers } from './email-notification-handler'
-import { registerOrderAutomationHandlers } from './order-automation-handler'
-import { registerCommissionHandlers } from './commission-handler'
+import { registerNotificationHandlers } from "./notification-handler"
+import { registerWebhookHandlers } from "./webhook-handler"
+import { registerEmailNotificationHandlers } from "./email-notification-handler"
+import { registerOrderAutomationHandlers } from "./order-automation-handler"
+import { registerCommissionHandlers } from "./commission-handler"
 
 let initialized = false
 

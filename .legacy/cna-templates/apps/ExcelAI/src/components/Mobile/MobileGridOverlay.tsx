@@ -1,5 +1,5 @@
 // Stub: MobileGridOverlay
 export function MobileGridOverlay() {
-  return null;
+  return null
 }
-export default MobileGridOverlay;
+export default MobileGridOverlay

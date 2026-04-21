@@ -1,7 +1,7 @@
 // Phase 11: Security Settings Component
 // Configure security policies, MFA requirements, and session settings
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react"
 import {
   Shield,
   Lock,
@@ -13,58 +13,58 @@ import {
   XCircle,
   ChevronDown,
   ChevronRight,
-} from 'lucide-react';
-import { loggers } from '@/utils/logger';
+} from "lucide-react"
+import { loggers } from "@/utils/logger"
 
 interface SecuritySettings {
   // Password Policy
   passwordPolicy: {
-    minLength: number;
-    requireUppercase: boolean;
-    requireLowercase: boolean;
-    requireNumbers: boolean;
-    requireSpecialChars: boolean;
-    preventReuse: number;
-    expiryDays: number;
-  };
+    minLength: number
+    requireUppercase: boolean
+    requireLowercase: boolean
+    requireNumbers: boolean
+    requireSpecialChars: boolean
+    preventReuse: number
+    expiryDays: number
+  }
   // MFA Settings
   mfa: {
-    required: boolean;
-    allowedMethods: ('totp' | 'sms' | 'email')[];
-    gracePeriodDays: number;
-    rememberDeviceDays: number;
-  };
+    required: boolean
+    allowedMethods: ("totp" | "sms" | "email")[]
+    gracePeriodDays: number
+    rememberDeviceDays: number
+  }
   // Session Settings
   session: {
-    maxConcurrent: number;
-    idleTimeoutMinutes: number;
-    absoluteTimeoutHours: number;
-    extendOnActivity: boolean;
-  };
+    maxConcurrent: number
+    idleTimeoutMinutes: number
+    absoluteTimeoutHours: number
+    extendOnActivity: boolean
+  }
   // Login Settings
   login: {
-    maxAttempts: number;
-    lockoutMinutes: number;
-    requireCaptcha: boolean;
-    allowRememberMe: boolean;
-  };
+    maxAttempts: number
+    lockoutMinutes: number
+    requireCaptcha: boolean
+    allowRememberMe: boolean
+  }
   // IP Settings
   ipRestrictions: {
-    enabled: boolean;
-    whitelist: string[];
-    blockTorExits: boolean;
-    blockVpn: boolean;
-  };
+    enabled: boolean
+    whitelist: string[]
+    blockTorExits: boolean
+    blockVpn: boolean
+  }
   // SSO Settings
   sso: {
-    enabled: boolean;
+    enabled: boolean
     providers: {
-      google: boolean;
-      microsoft: boolean;
-      saml: boolean;
-    };
-    enforceForDomains: string[];
-  };
+      google: boolean
+      microsoft: boolean
+      saml: boolean
+    }
+    enforceForDomains: string[]
+  }
 }
 
 const DEFAULT_SETTINGS: SecuritySettings = {
@@ -79,7 +79,7 @@ const DEFAULT_SETTINGS: SecuritySettings = {
   },
   mfa: {
     required: false,
-    allowedMethods: ['totp', 'email'],
+    allowedMethods: ["totp", "email"],
     gracePeriodDays: 7,
     rememberDeviceDays: 30,
   },
@@ -110,76 +110,76 @@ const DEFAULT_SETTINGS: SecuritySettings = {
     },
     enforceForDomains: [],
   },
-};
+}
 
 export const SecuritySettings: React.FC = () => {
-  const [settings, setSettings] = useState<SecuritySettings>(DEFAULT_SETTINGS);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [settings, setSettings] = useState<SecuritySettings>(DEFAULT_SETTINGS)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['password', 'mfa', 'session'])
-  );
-  const [newIp, setNewIp] = useState('');
-  const [newDomain, setNewDomain] = useState('');
+    new Set(["password", "mfa", "session"])
+  )
+  const [newIp, setNewIp] = useState("")
+  const [newDomain, setNewDomain] = useState("")
 
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    fetchSettings()
+  }, [])
 
   const fetchSettings = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const response = await fetch('/api/admin/security/settings', {
+      const response = await fetch("/api/admin/security/settings", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-      });
+      })
 
       if (response.ok) {
-        const data = await response.json();
-        setSettings(data);
+        const data = await response.json()
+        setSettings(data)
       }
     } catch (error) {
-      loggers.admin.error('Failed to fetch security settings:', error);
+      loggers.admin.error("Failed to fetch security settings:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const saveSettings = async () => {
-    setSaving(true);
-    setSaved(false);
+    setSaving(true)
+    setSaved(false)
     try {
-      const response = await fetch('/api/admin/security/settings', {
-        method: 'PUT',
+      const response = await fetch("/api/admin/security/settings", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify(settings),
-      });
+      })
 
       if (response.ok) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
+        setSaved(true)
+        setTimeout(() => setSaved(false), 3000)
       }
     } catch (error) {
-      loggers.admin.error('Failed to save security settings:', error);
+      loggers.admin.error("Failed to save security settings:", error)
     } finally {
-      setSaving(false);
+      setSaving(false)
     }
-  };
+  }
 
   const toggleSection = (section: string) => {
-    const newExpanded = new Set(expandedSections);
+    const newExpanded = new Set(expandedSections)
     if (newExpanded.has(section)) {
-      newExpanded.delete(section);
+      newExpanded.delete(section)
     } else {
-      newExpanded.add(section);
+      newExpanded.add(section)
     }
-    setExpandedSections(newExpanded);
-  };
+    setExpandedSections(newExpanded)
+  }
 
   const addIpToWhitelist = () => {
     if (newIp && !settings.ipRestrictions.whitelist.includes(newIp)) {
@@ -189,10 +189,10 @@ export const SecuritySettings: React.FC = () => {
           ...settings.ipRestrictions,
           whitelist: [...settings.ipRestrictions.whitelist, newIp],
         },
-      });
-      setNewIp('');
+      })
+      setNewIp("")
     }
-  };
+  }
 
   const removeIpFromWhitelist = (ip: string) => {
     setSettings({
@@ -201,8 +201,8 @@ export const SecuritySettings: React.FC = () => {
         ...settings.ipRestrictions,
         whitelist: settings.ipRestrictions.whitelist.filter((i) => i !== ip),
       },
-    });
-  };
+    })
+  }
 
   const addDomainToEnforce = () => {
     if (newDomain && !settings.sso.enforceForDomains.includes(newDomain)) {
@@ -212,34 +212,38 @@ export const SecuritySettings: React.FC = () => {
           ...settings.sso,
           enforceForDomains: [...settings.sso.enforceForDomains, newDomain],
         },
-      });
-      setNewDomain('');
+      })
+      setNewDomain("")
     }
-  };
+  }
 
   const removeDomainFromEnforce = (domain: string) => {
     setSettings({
       ...settings,
       sso: {
         ...settings.sso,
-        enforceForDomains: settings.sso.enforceForDomains.filter((d) => d !== domain),
+        enforceForDomains: settings.sso.enforceForDomains.filter(
+          (d) => d !== domain
+        ),
       },
-    });
-  };
+    })
+  }
 
   if (loading) {
     return (
       <div className="p-6 max-w-4xl mx-auto">
-        <div className="text-center py-12 text-gray-500">Loading security settings...</div>
+        <div className="text-center py-12 text-gray-500">
+          Loading security settings...
+        </div>
       </div>
-    );
+    )
   }
 
   const SectionHeader: React.FC<{
-    title: string;
-    icon: React.ReactNode;
-    section: string;
-    description?: string;
+    title: string
+    icon: React.ReactNode
+    section: string
+    description?: string
   }> = ({ title, icon, section, description }) => (
     <button
       onClick={() => toggleSection(section)}
@@ -251,7 +255,9 @@ export const SecuritySettings: React.FC = () => {
         </div>
         <div className="text-left">
           <h3 className="font-medium text-gray-900">{title}</h3>
-          {description && <p className="text-sm text-gray-500">{description}</p>}
+          {description && (
+            <p className="text-sm text-gray-500">{description}</p>
+          )}
         </div>
       </div>
       {expandedSections.has(section) ? (
@@ -260,15 +266,19 @@ export const SecuritySettings: React.FC = () => {
         <ChevronRight className="w-5 h-5 text-gray-400" />
       )}
     </button>
-  );
+  )
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Security Settings</h1>
-          <p className="text-gray-500 mt-1">Configure organization security policies</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Security Settings
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Configure organization security policies
+          </p>
         </div>
         <div className="flex items-center gap-3">
           {saved && (
@@ -283,7 +293,7 @@ export const SecuritySettings: React.FC = () => {
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             <Save className="w-5 h-5" />
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>
@@ -298,7 +308,7 @@ export const SecuritySettings: React.FC = () => {
             description="Configure password requirements"
           />
 
-          {expandedSections.has('password') && (
+          {expandedSections.has("password") && (
             <div className="p-4 border-t border-gray-200 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -342,7 +352,9 @@ export const SecuritySettings: React.FC = () => {
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
-                  <p className="text-xs text-gray-500 mt-1">0 = never expires</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    0 = never expires
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -383,7 +395,9 @@ export const SecuritySettings: React.FC = () => {
                     }
                     className="rounded border-gray-300"
                   />
-                  <span className="text-gray-700">Require uppercase letters</span>
+                  <span className="text-gray-700">
+                    Require uppercase letters
+                  </span>
                 </label>
                 <label className="flex items-center gap-3">
                   <input
@@ -400,7 +414,9 @@ export const SecuritySettings: React.FC = () => {
                     }
                     className="rounded border-gray-300"
                   />
-                  <span className="text-gray-700">Require lowercase letters</span>
+                  <span className="text-gray-700">
+                    Require lowercase letters
+                  </span>
                 </label>
                 <label className="flex items-center gap-3">
                   <input
@@ -434,7 +450,9 @@ export const SecuritySettings: React.FC = () => {
                     }
                     className="rounded border-gray-300"
                   />
-                  <span className="text-gray-700">Require special characters</span>
+                  <span className="text-gray-700">
+                    Require special characters
+                  </span>
                 </label>
               </div>
             </div>
@@ -450,7 +468,7 @@ export const SecuritySettings: React.FC = () => {
             description="Configure MFA requirements"
           />
 
-          {expandedSections.has('mfa') && (
+          {expandedSections.has("mfa") && (
             <div className="p-4 border-t border-gray-200 space-y-4">
               <label className="flex items-center gap-3">
                 <input
@@ -464,7 +482,9 @@ export const SecuritySettings: React.FC = () => {
                   }
                   className="rounded border-gray-300"
                 />
-                <span className="text-gray-700 font-medium">Require MFA for all users</span>
+                <span className="text-gray-700 font-medium">
+                  Require MFA for all users
+                </span>
               </label>
 
               <div>
@@ -475,32 +495,52 @@ export const SecuritySettings: React.FC = () => {
                   <label className="flex items-center gap-3">
                     <input
                       type="checkbox"
-                      checked={settings.mfa.allowedMethods.includes('totp')}
+                      checked={settings.mfa.allowedMethods.includes("totp")}
                       onChange={(e) => {
                         const methods = e.target.checked
-                          ? [...settings.mfa.allowedMethods, 'totp']
-                          : settings.mfa.allowedMethods.filter((m) => m !== 'totp');
+                          ? [...settings.mfa.allowedMethods, "totp"]
+                          : settings.mfa.allowedMethods.filter(
+                              (m) => m !== "totp"
+                            )
                         setSettings({
                           ...settings,
-                          mfa: { ...settings.mfa, allowedMethods: methods as ('totp' | 'sms' | 'email')[] },
-                        });
+                          mfa: {
+                            ...settings.mfa,
+                            allowedMethods: methods as (
+                              | "totp"
+                              | "sms"
+                              | "email"
+                            )[],
+                          },
+                        })
                       }}
                       className="rounded border-gray-300"
                     />
-                    <span className="text-gray-700">Authenticator App (TOTP)</span>
+                    <span className="text-gray-700">
+                      Authenticator App (TOTP)
+                    </span>
                   </label>
                   <label className="flex items-center gap-3">
                     <input
                       type="checkbox"
-                      checked={settings.mfa.allowedMethods.includes('sms')}
+                      checked={settings.mfa.allowedMethods.includes("sms")}
                       onChange={(e) => {
                         const methods = e.target.checked
-                          ? [...settings.mfa.allowedMethods, 'sms']
-                          : settings.mfa.allowedMethods.filter((m) => m !== 'sms');
+                          ? [...settings.mfa.allowedMethods, "sms"]
+                          : settings.mfa.allowedMethods.filter(
+                              (m) => m !== "sms"
+                            )
                         setSettings({
                           ...settings,
-                          mfa: { ...settings.mfa, allowedMethods: methods as ('totp' | 'sms' | 'email')[] },
-                        });
+                          mfa: {
+                            ...settings.mfa,
+                            allowedMethods: methods as (
+                              | "totp"
+                              | "sms"
+                              | "email"
+                            )[],
+                          },
+                        })
                       }}
                       className="rounded border-gray-300"
                     />
@@ -509,15 +549,24 @@ export const SecuritySettings: React.FC = () => {
                   <label className="flex items-center gap-3">
                     <input
                       type="checkbox"
-                      checked={settings.mfa.allowedMethods.includes('email')}
+                      checked={settings.mfa.allowedMethods.includes("email")}
                       onChange={(e) => {
                         const methods = e.target.checked
-                          ? [...settings.mfa.allowedMethods, 'email']
-                          : settings.mfa.allowedMethods.filter((m) => m !== 'email');
+                          ? [...settings.mfa.allowedMethods, "email"]
+                          : settings.mfa.allowedMethods.filter(
+                              (m) => m !== "email"
+                            )
                         setSettings({
                           ...settings,
-                          mfa: { ...settings.mfa, allowedMethods: methods as ('totp' | 'sms' | 'email')[] },
-                        });
+                          mfa: {
+                            ...settings.mfa,
+                            allowedMethods: methods as (
+                              | "totp"
+                              | "sms"
+                              | "email"
+                            )[],
+                          },
+                        })
                       }}
                       className="rounded border-gray-300"
                     />
@@ -539,12 +588,17 @@ export const SecuritySettings: React.FC = () => {
                     onChange={(e) =>
                       setSettings({
                         ...settings,
-                        mfa: { ...settings.mfa, gracePeriodDays: parseInt(e.target.value) },
+                        mfa: {
+                          ...settings.mfa,
+                          gracePeriodDays: parseInt(e.target.value),
+                        },
                       })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Days before MFA is enforced</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Days before MFA is enforced
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -558,12 +612,17 @@ export const SecuritySettings: React.FC = () => {
                     onChange={(e) =>
                       setSettings({
                         ...settings,
-                        mfa: { ...settings.mfa, rememberDeviceDays: parseInt(e.target.value) },
+                        mfa: {
+                          ...settings.mfa,
+                          rememberDeviceDays: parseInt(e.target.value),
+                        },
                       })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
-                  <p className="text-xs text-gray-500 mt-1">0 = always require MFA</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    0 = always require MFA
+                  </p>
                 </div>
               </div>
             </div>
@@ -579,7 +638,7 @@ export const SecuritySettings: React.FC = () => {
             description="Configure session timeouts"
           />
 
-          {expandedSections.has('session') && (
+          {expandedSections.has("session") && (
             <div className="p-4 border-t border-gray-200 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -654,12 +713,17 @@ export const SecuritySettings: React.FC = () => {
                   onChange={(e) =>
                     setSettings({
                       ...settings,
-                      session: { ...settings.session, extendOnActivity: e.target.checked },
+                      session: {
+                        ...settings.session,
+                        extendOnActivity: e.target.checked,
+                      },
                     })
                   }
                   className="rounded border-gray-300"
                 />
-                <span className="text-gray-700">Extend session on user activity</span>
+                <span className="text-gray-700">
+                  Extend session on user activity
+                </span>
               </label>
             </div>
           )}
@@ -674,7 +738,7 @@ export const SecuritySettings: React.FC = () => {
             description="Configure login protection"
           />
 
-          {expandedSections.has('login') && (
+          {expandedSections.has("login") && (
             <div className="p-4 border-t border-gray-200 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -689,7 +753,10 @@ export const SecuritySettings: React.FC = () => {
                     onChange={(e) =>
                       setSettings({
                         ...settings,
-                        login: { ...settings.login, maxAttempts: parseInt(e.target.value) },
+                        login: {
+                          ...settings.login,
+                          maxAttempts: parseInt(e.target.value),
+                        },
                       })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -707,7 +774,10 @@ export const SecuritySettings: React.FC = () => {
                     onChange={(e) =>
                       setSettings({
                         ...settings,
-                        login: { ...settings.login, lockoutMinutes: parseInt(e.target.value) },
+                        login: {
+                          ...settings.login,
+                          lockoutMinutes: parseInt(e.target.value),
+                        },
                       })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -723,12 +793,17 @@ export const SecuritySettings: React.FC = () => {
                     onChange={(e) =>
                       setSettings({
                         ...settings,
-                        login: { ...settings.login, requireCaptcha: e.target.checked },
+                        login: {
+                          ...settings.login,
+                          requireCaptcha: e.target.checked,
+                        },
                       })
                     }
                     className="rounded border-gray-300"
                   />
-                  <span className="text-gray-700">Require CAPTCHA on login</span>
+                  <span className="text-gray-700">
+                    Require CAPTCHA on login
+                  </span>
                 </label>
                 <label className="flex items-center gap-3">
                   <input
@@ -737,12 +812,17 @@ export const SecuritySettings: React.FC = () => {
                     onChange={(e) =>
                       setSettings({
                         ...settings,
-                        login: { ...settings.login, allowRememberMe: e.target.checked },
+                        login: {
+                          ...settings.login,
+                          allowRememberMe: e.target.checked,
+                        },
                       })
                     }
                     className="rounded border-gray-300"
                   />
-                  <span className="text-gray-700">Allow "Remember Me" option</span>
+                  <span className="text-gray-700">
+                    Allow "Remember Me" option
+                  </span>
                 </label>
               </div>
             </div>
@@ -758,7 +838,7 @@ export const SecuritySettings: React.FC = () => {
             description="Configure IP-based access control"
           />
 
-          {expandedSections.has('ip') && (
+          {expandedSections.has("ip") && (
             <div className="p-4 border-t border-gray-200 space-y-4">
               <label className="flex items-center gap-3">
                 <input
@@ -767,12 +847,17 @@ export const SecuritySettings: React.FC = () => {
                   onChange={(e) =>
                     setSettings({
                       ...settings,
-                      ipRestrictions: { ...settings.ipRestrictions, enabled: e.target.checked },
+                      ipRestrictions: {
+                        ...settings.ipRestrictions,
+                        enabled: e.target.checked,
+                      },
                     })
                   }
                   className="rounded border-gray-300"
                 />
-                <span className="text-gray-700 font-medium">Enable IP restrictions</span>
+                <span className="text-gray-700 font-medium">
+                  Enable IP restrictions
+                </span>
               </label>
 
               {settings.ipRestrictions.enabled && (
@@ -830,7 +915,9 @@ export const SecuritySettings: React.FC = () => {
                         }
                         className="rounded border-gray-300"
                       />
-                      <span className="text-gray-700">Block Tor exit nodes</span>
+                      <span className="text-gray-700">
+                        Block Tor exit nodes
+                      </span>
                     </label>
                     <label className="flex items-center gap-3">
                       <input
@@ -847,7 +934,9 @@ export const SecuritySettings: React.FC = () => {
                         }
                         className="rounded border-gray-300"
                       />
-                      <span className="text-gray-700">Block known VPN providers</span>
+                      <span className="text-gray-700">
+                        Block known VPN providers
+                      </span>
                     </label>
                   </div>
                 </>
@@ -865,7 +954,7 @@ export const SecuritySettings: React.FC = () => {
             description="Configure SSO providers"
           />
 
-          {expandedSections.has('sso') && (
+          {expandedSections.has("sso") && (
             <div className="p-4 border-t border-gray-200 space-y-4">
               <label className="flex items-center gap-3">
                 <input
@@ -898,7 +987,10 @@ export const SecuritySettings: React.FC = () => {
                               ...settings,
                               sso: {
                                 ...settings.sso,
-                                providers: { ...settings.sso.providers, google: e.target.checked },
+                                providers: {
+                                  ...settings.sso.providers,
+                                  google: e.target.checked,
+                                },
                               },
                             })
                           }
@@ -935,7 +1027,10 @@ export const SecuritySettings: React.FC = () => {
                               ...settings,
                               sso: {
                                 ...settings.sso,
-                                providers: { ...settings.sso.providers, saml: e.target.checked },
+                                providers: {
+                                  ...settings.sso.providers,
+                                  saml: e.target.checked,
+                                },
                               },
                             })
                           }
@@ -992,7 +1087,7 @@ export const SecuritySettings: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SecuritySettings;
+export default SecuritySettings

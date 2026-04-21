@@ -13,7 +13,7 @@ import {
   type SyncOptions,
   type PunchType,
   type VerifyType,
-} from '../types'
+} from "../types"
 
 // ═══════════════════════════════════════════════════════════════
 // ZKTECO SDK ADAPTER
@@ -56,7 +56,7 @@ export class ZKTecoSDK implements IDeviceSDK {
       this.connected = true
       return true
     } catch (error) {
-      console.error('ZKTeco connection error:', error)
+      console.error("ZKTeco connection error:", error)
       this.connected = false
       return false
     }
@@ -77,18 +77,18 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async getDeviceInfo(): Promise<DeviceInfo> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call device API to get info
     return {
-      serialNumber: 'ZK-DEMO-001',
-      model: 'ZK-INBIO160',
-      manufacturer: 'ZKTECO',
-      firmwareVersion: '6.60',
-      deviceName: 'Main Entrance',
-      platform: 'ZK Platform',
-      macAddress: '00:17:61:XX:XX:XX',
+      serialNumber: "ZK-DEMO-001",
+      model: "ZK-INBIO160",
+      manufacturer: "ZKTECO",
+      firmwareVersion: "6.60",
+      deviceName: "Main Entrance",
+      platform: "ZK Platform",
+      macAddress: "00:17:61:XX:XX:XX",
       totalUsers: 0,
       totalRecords: 0,
       freeMemory: 50000,
@@ -97,9 +97,9 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async getDeviceStatus(): Promise<DeviceStatus> {
     if (this.connected) {
-      return 'ONLINE'
+      return "ONLINE"
     }
-    return 'OFFLINE'
+    return "OFFLINE"
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -108,7 +108,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async getDeviceTime(): Promise<Date> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call GetDeviceTime API
@@ -117,7 +117,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async setDeviceTime(time: Date): Promise<boolean> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call SetDeviceTime API
@@ -130,7 +130,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async getUsers(): Promise<DeviceUser[]> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call ReadAllUserID and GetUserInfo APIs
@@ -139,7 +139,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async getUser(userId: string): Promise<DeviceUser | null> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call GetUserInfo API
@@ -148,7 +148,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async setUser(user: DeviceUser): Promise<boolean> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call SetUserInfo API
@@ -157,7 +157,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async deleteUser(userId: string): Promise<boolean> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call DeleteEnrollData API
@@ -170,7 +170,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async getFingerprints(userId: string): Promise<BiometricTemplate[]> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call GetUserTmpExStr API
@@ -179,16 +179,19 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async setFingerprint(template: BiometricTemplate): Promise<boolean> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call SetUserTmpExStr API
     return true
   }
 
-  async deleteFingerprint(userId: string, fingerIndex?: number): Promise<boolean> {
+  async deleteFingerprint(
+    userId: string,
+    fingerIndex?: number
+  ): Promise<boolean> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call DeleteEnrollData API
@@ -201,7 +204,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async getAttendanceLogs(options?: SyncOptions): Promise<RawPunchRecord[]> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     const logs: RawPunchRecord[] = []
@@ -224,7 +227,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async clearAttendanceLogs(): Promise<boolean> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call ClearGLog API
@@ -243,7 +246,7 @@ export class ZKTecoSDK implements IDeviceSDK {
 
   async startRealTimeCapture(): Promise<boolean> {
     if (!this.connected) {
-      throw new Error('Device not connected')
+      throw new Error("Device not connected")
     }
 
     // In production, call RegEvent API and handle OnAttTransactionEx event
@@ -264,7 +267,7 @@ export class ZKTecoSDK implements IDeviceSDK {
    */
   private async sendCommand(command: Buffer): Promise<Buffer> {
     // In production, implement TCP communication
-    throw new Error('Not implemented')
+    throw new Error("Not implemented")
   }
 
   /**

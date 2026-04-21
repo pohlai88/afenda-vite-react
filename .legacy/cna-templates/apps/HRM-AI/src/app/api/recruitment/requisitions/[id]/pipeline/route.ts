@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
 
 // GET /api/recruitment/requisitions/[id]/pipeline
 export async function GET(
@@ -10,7 +10,7 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const requisition = await db.jobRequisition.findUnique({
@@ -21,7 +21,10 @@ export async function GET(
     })
 
     if (!requisition) {
-      return NextResponse.json({ error: 'Requisition not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Requisition not found" },
+        { status: 404 }
+      )
     }
 
     // Get all applications for this requisition
@@ -38,32 +41,34 @@ export async function GET(
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
 
     // Define pipeline stages based on actual ApplicationStatus enum
     const pipelineStages = [
-      { id: 'NEW', label: 'Mới', color: 'bg-blue-100' },
-      { id: 'SCREENING', label: 'Sàng lọc', color: 'bg-yellow-100' },
-      { id: 'PHONE_SCREEN', label: 'Phỏng vấn ĐT', color: 'bg-amber-100' },
-      { id: 'INTERVIEW', label: 'Phỏng vấn', color: 'bg-orange-100' },
-      { id: 'ASSESSMENT', label: 'Đánh giá', color: 'bg-purple-100' },
-      { id: 'OFFER', label: 'Đề xuất offer', color: 'bg-indigo-100' },
-      { id: 'HIRED', label: 'Đã tuyển', color: 'bg-emerald-100' },
-      { id: 'REJECTED', label: 'Từ chối', color: 'bg-red-100' },
-      { id: 'WITHDRAWN', label: 'Rút hồ sơ', color: 'bg-gray-100' },
+      { id: "NEW", label: "Mới", color: "bg-blue-100" },
+      { id: "SCREENING", label: "Sàng lọc", color: "bg-yellow-100" },
+      { id: "PHONE_SCREEN", label: "Phỏng vấn ĐT", color: "bg-amber-100" },
+      { id: "INTERVIEW", label: "Phỏng vấn", color: "bg-orange-100" },
+      { id: "ASSESSMENT", label: "Đánh giá", color: "bg-purple-100" },
+      { id: "OFFER", label: "Đề xuất offer", color: "bg-indigo-100" },
+      { id: "HIRED", label: "Đã tuyển", color: "bg-emerald-100" },
+      { id: "REJECTED", label: "Từ chối", color: "bg-red-100" },
+      { id: "WITHDRAWN", label: "Rút hồ sơ", color: "bg-gray-100" },
     ]
 
     // Calculate stats
     const stats = {
       total: applications.length,
-      new: applications.filter(a => a.status === 'NEW').length,
-      inProgress: applications.filter(a =>
-        ['SCREENING', 'PHONE_SCREEN', 'INTERVIEW', 'ASSESSMENT'].includes(a.status)
+      new: applications.filter((a) => a.status === "NEW").length,
+      inProgress: applications.filter((a) =>
+        ["SCREENING", "PHONE_SCREEN", "INTERVIEW", "ASSESSMENT"].includes(
+          a.status
+        )
       ).length,
-      offered: applications.filter(a => a.status === 'OFFER').length,
-      hired: applications.filter(a => a.status === 'HIRED').length,
-      rejected: applications.filter(a => a.status === 'REJECTED').length,
+      offered: applications.filter((a) => a.status === "OFFER").length,
+      hired: applications.filter((a) => a.status === "HIRED").length,
+      rejected: applications.filter((a) => a.status === "REJECTED").length,
     }
 
     return NextResponse.json({
@@ -79,7 +84,7 @@ export async function GET(
           status: requisition.status,
         },
         stages: pipelineStages,
-        applications: applications.map(app => ({
+        applications: applications.map((app) => ({
           id: app.id,
           candidateId: app.candidate.id,
           candidateName: app.candidate.fullName,
@@ -94,9 +99,9 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('Error fetching pipeline:', error)
+    console.error("Error fetching pipeline:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch pipeline' },
+      { error: "Failed to fetch pipeline" },
       { status: 500 }
     )
   }

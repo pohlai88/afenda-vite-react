@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import {
   Phone,
@@ -9,11 +9,11 @@ import {
   Coffee,
   Monitor,
   ArrowRight,
-} from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import { ACTIVITY_TYPES } from '@/lib/constants'
-import type { ActivityWithRelations } from '@/types'
+} from "lucide-react"
+import { formatDistanceToNow } from "date-fns"
+import { vi } from "date-fns/locale"
+import { ACTIVITY_TYPES } from "@/lib/constants"
+import type { ActivityWithRelations } from "@/types"
 
 interface ContactTimelineProps {
   activities: ActivityWithRelations[]
@@ -31,21 +31,23 @@ const iconMap: Record<string, React.ElementType> = {
 }
 
 const colorMap: Record<string, string> = {
-  CALL: '#10B981',
-  EMAIL: '#3B82F6',
-  MEETING: '#8B5CF6',
-  TASK: '#F59E0B',
-  NOTE: '#6B7280',
-  LUNCH: '#EC4899',
-  DEMO: '#06B6D4',
-  FOLLOW_UP: '#F97316',
+  CALL: "#10B981",
+  EMAIL: "#3B82F6",
+  MEETING: "#8B5CF6",
+  TASK: "#F59E0B",
+  NOTE: "#6B7280",
+  LUNCH: "#EC4899",
+  DEMO: "#06B6D4",
+  FOLLOW_UP: "#F97316",
 }
 
 export function ContactTimeline({ activities }: ContactTimelineProps) {
   if (activities.length === 0) {
     return (
       <div className="py-8 text-center">
-        <p className="text-sm text-[var(--crm-text-muted)]">Chưa có hoạt động nào</p>
+        <p className="text-sm text-[var(--crm-text-muted)]">
+          Chưa có hoạt động nào
+        </p>
       </div>
     )
   }
@@ -60,7 +62,7 @@ export function ContactTimeline({ activities }: ContactTimelineProps) {
         const IconComponent = typeMeta
           ? iconMap[typeMeta.icon] || FileText
           : FileText
-        const dotColor = colorMap[activity.type] || '#6B7280'
+        const dotColor = colorMap[activity.type] || "#6B7280"
 
         return (
           <div key={activity.id} className="relative flex gap-3 pb-4">

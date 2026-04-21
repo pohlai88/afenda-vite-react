@@ -32,7 +32,7 @@ import type {
   OTStatus,
   AnomalyType,
   AnomalySeverity,
-} from '@prisma/client'
+} from "@prisma/client"
 
 // Re-export Prisma types
 export type {
@@ -201,45 +201,45 @@ export type ShiftWithRelations = Shift & {
 }
 
 export type ShiftAssignmentWithRelations = ShiftAssignment & {
-  employee?: Pick<Employee, 'id' | 'employeeCode' | 'fullName'> & {
-    department?: Pick<Department, 'id' | 'name'> | null
-    position?: Pick<Position, 'id' | 'name'> | null
+  employee?: Pick<Employee, "id" | "employeeCode" | "fullName"> & {
+    department?: Pick<Department, "id" | "name"> | null
+    position?: Pick<Position, "id" | "name"> | null
   }
   shift?: Shift
 }
 
 export type AttendanceWithRelations = Attendance & {
-  employee?: Pick<Employee, 'id' | 'employeeCode' | 'fullName'> & {
-    department?: Pick<Department, 'id' | 'name'> | null
-    position?: Pick<Position, 'id' | 'name'> | null
+  employee?: Pick<Employee, "id" | "employeeCode" | "fullName"> & {
+    department?: Pick<Department, "id" | "name"> | null
+    position?: Pick<Position, "id" | "name"> | null
   }
   shift?: Shift | null
   anomalies?: AttendanceAnomaly[]
 }
 
 export type OvertimeRequestWithRelations = OvertimeRequest & {
-  employee?: Pick<Employee, 'id' | 'employeeCode' | 'fullName'> & {
-    department?: Pick<Department, 'id' | 'name'> | null
+  employee?: Pick<Employee, "id" | "employeeCode" | "fullName"> & {
+    department?: Pick<Department, "id" | "name"> | null
   }
-  approver?: Pick<User, 'id' | 'name'> | null
+  approver?: Pick<User, "id" | "name"> | null
 }
 
 export type AttendanceSummaryWithRelations = AttendanceSummary & {
-  employee?: Pick<Employee, 'id' | 'employeeCode' | 'fullName'> & {
-    department?: Pick<Department, 'id' | 'name'> | null
-    position?: Pick<Position, 'id' | 'name'> | null
+  employee?: Pick<Employee, "id" | "employeeCode" | "fullName"> & {
+    department?: Pick<Department, "id" | "name"> | null
+    position?: Pick<Position, "id" | "name"> | null
   }
 }
 
 export type AttendanceAnomalyWithRelations = AttendanceAnomaly & {
-  employee?: Pick<Employee, 'id' | 'employeeCode' | 'fullName'>
+  employee?: Pick<Employee, "id" | "employeeCode" | "fullName">
   attendance?: Attendance
 }
 
 export type HolidayWithRelations = Holiday
 
 export type WorkScheduleWithRelations = WorkSchedule & {
-  department?: Pick<Department, 'id' | 'name'> | null
+  department?: Pick<Department, "id" | "name"> | null
 }
 
 // Filter types
@@ -388,7 +388,7 @@ export interface CalendarEvent {
   end: Date
   allDay?: boolean
   color?: string
-  type: 'shift' | 'holiday' | 'attendance' | 'leave'
+  type: "shift" | "holiday" | "attendance" | "leave"
   data?: unknown
 }
 

@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db } from "@/lib/db"
 
 export async function getSkillCategories(tenantId: string) {
   return db.skillCategory.findMany({
@@ -6,32 +6,32 @@ export async function getSkillCategories(tenantId: string) {
     include: {
       children: {
         include: {
-          skills: { where: { isActive: true }, orderBy: { order: 'asc' } },
+          skills: { where: { isActive: true }, orderBy: { order: "asc" } },
         },
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
-      skills: { where: { isActive: true }, orderBy: { order: 'asc' } },
+      skills: { where: { isActive: true }, orderBy: { order: "asc" } },
     },
-    orderBy: { order: 'asc' },
-  });
+    orderBy: { order: "asc" },
+  })
 }
 
 export async function createSkill(
   tenantId: string,
   data: {
-    name: string;
-    description?: string;
-    categoryId?: string;
-    levels?: Record<string, string>;
+    name: string
+    description?: string
+    categoryId?: string
+    levels?: Record<string, string>
   }
 ) {
   const defaultLevels = {
-    '1': 'Beginner - Kiến thức cơ bản',
-    '2': 'Elementary - Có thể làm việc với hỗ trợ',
-    '3': 'Intermediate - Thành thạo, tự chủ',
-    '4': 'Advanced - Chuyên gia',
-    '5': 'Expert - Thought leader',
-  };
+    "1": "Beginner - Kiến thức cơ bản",
+    "2": "Elementary - Có thể làm việc với hỗ trợ",
+    "3": "Intermediate - Thành thạo, tự chủ",
+    "4": "Advanced - Chuyên gia",
+    "5": "Expert - Thought leader",
+  }
 
   return db.skill.create({
     data: {
@@ -42,7 +42,7 @@ export async function createSkill(
       levels: data.levels || defaultLevels,
       isActive: true,
     },
-  });
+  })
 }
 
 export async function getEmployeeSkills(tenantId: string, employeeId: string) {
@@ -53,8 +53,8 @@ export async function getEmployeeSkills(tenantId: string, employeeId: string) {
         include: { category: true },
       },
     },
-    orderBy: { skill: { name: 'asc' } },
-  });
+    orderBy: { skill: { name: "asc" } },
+  })
 }
 
 export async function updateEmployeeSkill(
@@ -62,17 +62,17 @@ export async function updateEmployeeSkill(
   employeeId: string,
   skillId: string,
   data: {
-    currentLevel?: number;
-    targetLevel?: number;
-    selfAssessment?: number;
-    managerAssessment?: number;
-    notes?: string;
+    currentLevel?: number
+    targetLevel?: number
+    selfAssessment?: number
+    managerAssessment?: number
+    notes?: string
   },
   assessedById?: string
 ) {
   const existing = await db.employeeSkill.findUnique({
     where: { employeeId_skillId: { employeeId, skillId } },
-  });
+  })
 
   if (existing) {
     return db.employeeSkill.update({
@@ -82,7 +82,7 @@ export async function updateEmployeeSkill(
         assessedAt: new Date(),
         assessedById,
       },
-    });
+    })
   }
 
   return db.employeeSkill.create({
@@ -98,19 +98,19 @@ export async function updateEmployeeSkill(
       assessedAt: new Date(),
       assessedById,
     },
-  });
+  })
 }
 
 export async function getSkillsMatrix(
   tenantId: string,
   filters?: {
-    departmentId?: string;
-    skillIds?: string[];
+    departmentId?: string
+    skillIds?: string[]
   }
 ) {
-  const employeeWhere: any = { tenantId, status: 'ACTIVE' };
+  const employeeWhere: any = { tenantId, status: "ACTIVE" }
   if (filters?.departmentId) {
-    employeeWhere.departmentId = filters.departmentId;
+    employeeWhere.departmentId = filters.departmentId
   }
 
   const employees = await db.employee.findMany({
@@ -121,44 +121,52 @@ export async function getSkillsMatrix(
       position: true,
       employeeSkills: {
         include: { skill: true },
-        where: filters?.skillIds ? { skillId: { in: filters.skillIds } } : undefined,
+        where: filters?.skillIds
+          ? { skillId: { in: filters.skillIds } }
+          : undefined,
       },
     },
-    orderBy: { fullName: 'asc' },
-  });
+    orderBy: { fullName: "asc" },
+  })
 
-  const skillWhere: any = { tenantId, isActive: true };
+  const skillWhere: any = { tenantId, isActive: true }
   if (filters?.skillIds) {
-    skillWhere.id = { in: filters.skillIds };
+    skillWhere.id = { in: filters.skillIds }
   }
 
   const skills = await db.skill.findMany({
     where: skillWhere,
-    orderBy: { name: 'asc' },
-  });
+    orderBy: { name: "asc" },
+  })
 
   const positionSkills = await db.positionSkill.findMany({
     where: { tenantId },
-  });
+  })
 
   const matrix = employees.map((emp) => {
-    const skillLevels: Record<string, { current: number; required: number; gap: number }> = {};
+    const skillLevels: Record<
+      string,
+      { current: number; required: number; gap: number }
+    > = {}
 
     skills.forEach((skill) => {
-      const empSkill = emp.employeeSkills.find((es: any) => es.skillId === skill.id);
+      const empSkill = emp.employeeSkills.find(
+        (es: any) => es.skillId === skill.id
+      )
       const posSkill = positionSkills.find(
-        (ps) => ps.skillId === skill.id && ps.position === (emp.position as any)?.name
-      );
+        (ps) =>
+          ps.skillId === skill.id && ps.position === (emp.position as any)?.name
+      )
 
-      const current = empSkill?.currentLevel || 0;
-      const required = posSkill?.requiredLevel || 0;
+      const current = empSkill?.currentLevel || 0
+      const required = posSkill?.requiredLevel || 0
 
       skillLevels[skill.id] = {
         current,
         required,
         gap: current - required,
-      };
-    });
+      }
+    })
 
     return {
       employee: {
@@ -167,22 +175,28 @@ export async function getSkillsMatrix(
         position: emp.position,
       },
       skills: skillLevels,
-    };
-  });
+    }
+  })
 
   const skillStats = skills.map((skill) => {
-    const levels = matrix.map((m) => m.skills[skill.id]?.current || 0).filter((l) => l > 0);
-    const avgLevel = levels.length > 0 ? levels.reduce((a, b) => a + b, 0) / levels.length : 0;
-    const gaps = matrix.map((m) => m.skills[skill.id]?.gap || 0).filter((g) => g < 0);
-    const avgGap = gaps.length > 0 ? gaps.reduce((a, b) => a + b, 0) / gaps.length : 0;
+    const levels = matrix
+      .map((m) => m.skills[skill.id]?.current || 0)
+      .filter((l) => l > 0)
+    const avgLevel =
+      levels.length > 0 ? levels.reduce((a, b) => a + b, 0) / levels.length : 0
+    const gaps = matrix
+      .map((m) => m.skills[skill.id]?.gap || 0)
+      .filter((g) => g < 0)
+    const avgGap =
+      gaps.length > 0 ? gaps.reduce((a, b) => a + b, 0) / gaps.length : 0
 
     return {
       skill,
       avgLevel: Math.round(avgLevel * 10) / 10,
       avgGap: Math.round(avgGap * 10) / 10,
       employeesWithGap: gaps.length,
-    };
-  });
+    }
+  })
 
-  return { skills, matrix, skillStats };
+  return { skills, matrix, skillStats }
 }

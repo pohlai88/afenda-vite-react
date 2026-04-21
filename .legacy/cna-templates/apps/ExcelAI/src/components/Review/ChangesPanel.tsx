@@ -2,13 +2,13 @@
 // CHANGES PANEL
 // ============================================================
 
-import React from 'react';
-import { useTrackChangesStore } from '../../stores/trackChangesStore';
-import { X, Check, Pencil, Plus, Minus, History } from 'lucide-react';
-import './TrackChanges.css';
+import React from "react"
+import { useTrackChangesStore } from "../../stores/trackChangesStore"
+import { X, Check, Pencil, Plus, Minus, History } from "lucide-react"
+import "./TrackChanges.css"
 
 interface ChangesPanelProps {
-  sheetId: string;
+  sheetId: string
 }
 
 export const ChangesPanel: React.FC<ChangesPanelProps> = ({ sheetId }) => {
@@ -20,34 +20,43 @@ export const ChangesPanel: React.FC<ChangesPanelProps> = ({ sheetId }) => {
     rejectChange,
     selectedChangeId,
     setSelectedChange,
-  } = useTrackChangesStore();
+  } = useTrackChangesStore()
 
-  const changes = getChangesForSheet(sheetId);
-  const pendingCount = getPendingChanges(sheetId).length;
+  const changes = getChangesForSheet(sheetId)
+  const pendingCount = getPendingChanges(sheetId).length
 
   const formatTime = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleString();
-  };
+    const date = new Date(dateStr)
+    return date.toLocaleString()
+  }
 
   const getChangeIcon = (type: string) => {
     switch (type) {
-      case 'cellEdit': return <Pencil size={16} />;
-      case 'rowInsert': return <Plus size={16} />;
-      case 'rowDelete': return <Minus size={16} />;
-      case 'colInsert': return <Plus size={16} />;
-      case 'colDelete': return <Minus size={16} />;
-      default: return <Pencil size={16} />;
+      case "cellEdit":
+        return <Pencil size={16} />
+      case "rowInsert":
+        return <Plus size={16} />
+      case "rowDelete":
+        return <Minus size={16} />
+      case "colInsert":
+        return <Plus size={16} />
+      case "colDelete":
+        return <Minus size={16} />
+      default:
+        return <Pencil size={16} />
     }
-  };
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'accepted': return '#10b981';
-      case 'rejected': return '#ef4444';
-      default: return '#f59e0b';
+      case "accepted":
+        return "#10b981"
+      case "rejected":
+        return "#ef4444"
+      default:
+        return "#f59e0b"
     }
-  };
+  }
 
   return (
     <div className="changes-panel">
@@ -66,17 +75,19 @@ export const ChangesPanel: React.FC<ChangesPanelProps> = ({ sheetId }) => {
             <span>Enable "Track Changes" to start recording</span>
           </div>
         ) : (
-          changes.map(change => (
+          changes.map((change) => (
             <div
               key={change.id}
-              className={`change-item ${selectedChangeId === change.id ? 'selected' : ''}`}
+              className={`change-item ${selectedChangeId === change.id ? "selected" : ""}`}
               onClick={() => setSelectedChange(change.id)}
             >
               <div className="change-icon">{getChangeIcon(change.type)}</div>
               <div className="change-details">
                 <div className="change-type">
-                  {change.type.replace(/([A-Z])/g, ' $1').trim()}
-                  {change.cellRef && <span className="cell-ref"> at {change.cellRef}</span>}
+                  {change.type.replace(/([A-Z])/g, " $1").trim()}
+                  {change.cellRef && (
+                    <span className="cell-ref"> at {change.cellRef}</span>
+                  )}
                 </div>
                 {change.oldValue !== undefined && (
                   <div className="change-values">
@@ -85,7 +96,9 @@ export const ChangesPanel: React.FC<ChangesPanelProps> = ({ sheetId }) => {
                     <span className="new-value">{String(change.newValue)}</span>
                   </div>
                 )}
-                <div className="change-time">{formatTime(change.timestamp)}</div>
+                <div className="change-time">
+                  {formatTime(change.timestamp)}
+                </div>
               </div>
               <div className="change-status">
                 <span
@@ -94,17 +107,23 @@ export const ChangesPanel: React.FC<ChangesPanelProps> = ({ sheetId }) => {
                 >
                   {change.status}
                 </span>
-                {change.status === 'pending' && (
+                {change.status === "pending" && (
                   <div className="change-actions">
                     <button
-                      onClick={(e) => { e.stopPropagation(); acceptChange(change.id, sheetId); }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        acceptChange(change.id, sheetId)
+                      }}
                       title="Accept"
                       className="accept-btn"
                     >
                       <Check size={14} />
                     </button>
                     <button
-                      onClick={(e) => { e.stopPropagation(); rejectChange(change.id, sheetId); }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        rejectChange(change.id, sheetId)
+                      }}
                       title="Reject"
                       className="reject-btn"
                     >
@@ -118,7 +137,7 @@ export const ChangesPanel: React.FC<ChangesPanelProps> = ({ sheetId }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChangesPanel;
+export default ChangesPanel

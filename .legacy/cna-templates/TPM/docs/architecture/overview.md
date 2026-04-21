@@ -72,43 +72,43 @@ The Trade Promotion Management (TPM) System manages the complete lifecycle of tr
 
 ### Frontend
 
-| Technology | Purpose | Rationale |
-|------------|---------|-----------|
-| React 18 | UI Framework | Component model, ecosystem, team expertise |
-| TypeScript | Type Safety | Catch errors early, better DX |
-| Vite | Build Tool | Fast builds, modern ESM support |
-| TanStack Query | Server State | Caching, sync, devtools |
-| Zustand | Client State | Simple, lightweight |
-| Tailwind CSS | Styling | Utility-first, consistent design |
-| shadcn/ui | Components | Customizable, accessible |
+| Technology     | Purpose      | Rationale                                  |
+| -------------- | ------------ | ------------------------------------------ |
+| React 18       | UI Framework | Component model, ecosystem, team expertise |
+| TypeScript     | Type Safety  | Catch errors early, better DX              |
+| Vite           | Build Tool   | Fast builds, modern ESM support            |
+| TanStack Query | Server State | Caching, sync, devtools                    |
+| Zustand        | Client State | Simple, lightweight                        |
+| Tailwind CSS   | Styling      | Utility-first, consistent design           |
+| shadcn/ui      | Components   | Customizable, accessible                   |
 
 ### Backend
 
-| Technology | Purpose | Rationale |
-|------------|---------|-----------|
-| Node.js 20 | Runtime | JavaScript ecosystem, async I/O |
-| Express/Hono | HTTP Framework | Mature, flexible middleware |
-| TypeScript | Type Safety | Consistent with frontend |
-| Prisma | ORM | Type-safe queries, migrations |
-| Zod | Validation | Runtime type checking |
-| Pino | Logging | High performance, structured |
+| Technology   | Purpose        | Rationale                       |
+| ------------ | -------------- | ------------------------------- |
+| Node.js 20   | Runtime        | JavaScript ecosystem, async I/O |
+| Express/Hono | HTTP Framework | Mature, flexible middleware     |
+| TypeScript   | Type Safety    | Consistent with frontend        |
+| Prisma       | ORM            | Type-safe queries, migrations   |
+| Zod          | Validation     | Runtime type checking           |
+| Pino         | Logging        | High performance, structured    |
 
 ### Data
 
-| Technology | Purpose | Rationale |
-|------------|---------|-----------|
-| PostgreSQL 15 | Primary Database | ACID, JSON support, mature |
-| Redis 7 | Cache/Sessions | Fast, versatile data structures |
-| S3/Cloudflare R2 | Object Storage | Scalable file storage |
+| Technology       | Purpose          | Rationale                       |
+| ---------------- | ---------------- | ------------------------------- |
+| PostgreSQL 15    | Primary Database | ACID, JSON support, mature      |
+| Redis 7          | Cache/Sessions   | Fast, versatile data structures |
+| S3/Cloudflare R2 | Object Storage   | Scalable file storage           |
 
 ### Infrastructure
 
-| Technology | Purpose | Rationale |
-|------------|---------|-----------|
-| Vercel | Hosting | Serverless, global CDN |
-| GitHub Actions | CI/CD | Native integration |
-| Docker | Containerization | Consistent environments |
-| Neon | Managed PostgreSQL | Serverless, branching |
+| Technology     | Purpose            | Rationale               |
+| -------------- | ------------------ | ----------------------- |
+| Vercel         | Hosting            | Serverless, global CDN  |
+| GitHub Actions | CI/CD              | Native integration      |
+| Docker         | Containerization   | Consistent environments |
+| Neon           | Managed PostgreSQL | Serverless, branching   |
 
 ---
 
@@ -544,16 +544,16 @@ Response
 
 ### Performance Optimizations
 
-| Area | Optimization | Impact |
-|------|--------------|--------|
-| Frontend | Code splitting | Smaller initial bundle |
-| Frontend | Image optimization | Faster load times |
-| Frontend | React Query caching | Reduced API calls |
-| API | Response compression | Smaller payloads |
-| API | Pagination | Limited data transfer |
-| API | Database indexing | Faster queries |
-| Database | Connection pooling | Reduced latency |
-| Database | Read replicas | Horizontal scaling |
+| Area     | Optimization         | Impact                 |
+| -------- | -------------------- | ---------------------- |
+| Frontend | Code splitting       | Smaller initial bundle |
+| Frontend | Image optimization   | Faster load times      |
+| Frontend | React Query caching  | Reduced API calls      |
+| API      | Response compression | Smaller payloads       |
+| API      | Pagination           | Limited data transfer  |
+| API      | Database indexing    | Faster queries         |
+| Database | Connection pooling   | Reduced latency        |
+| Database | Read replicas        | Horizontal scaling     |
 
 ---
 
@@ -564,12 +564,14 @@ Response
 **Decision**: Use pnpm workspaces monorepo
 
 **Rationale**:
+
 - Shared code between frontend and backend
 - Atomic commits across packages
 - Simplified dependency management
 - Consistent tooling configuration
 
 **Trade-offs**:
+
 - Larger repository size
 - More complex CI/CD
 - Learning curve for team
@@ -579,6 +581,7 @@ Response
 **Decision**: PostgreSQL over MySQL/MongoDB
 
 **Rationale**:
+
 - Strong ACID compliance for financial data
 - JSON support for flexible schemas
 - Row-level security features
@@ -589,12 +592,14 @@ Response
 **Decision**: Vercel serverless over traditional servers
 
 **Rationale**:
+
 - Auto-scaling without management
 - Global edge deployment
 - Pay-per-use cost model
 - Simplified operations
 
 **Trade-offs**:
+
 - Cold start latency
 - Execution time limits
 - Stateless requirements
@@ -604,6 +609,7 @@ Response
 **Decision**: TanStack Query over Redux/SWR
 
 **Rationale**:
+
 - Built-in caching and synchronization
 - Automatic background refetching
 - Optimistic updates support
@@ -621,8 +627,8 @@ Response
 
 ### Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2024-01-01 | Initial architecture |
-| 1.1 | 2024-06-01 | Added caching layer |
-| 2.0 | 2025-01-01 | Migrated to serverless |
+| Version | Date       | Changes                |
+| ------- | ---------- | ---------------------- |
+| 1.0     | 2024-01-01 | Initial architecture   |
+| 1.1     | 2024-06-01 | Added caching layer    |
+| 2.0     | 2025-01-01 | Migrated to serverless |

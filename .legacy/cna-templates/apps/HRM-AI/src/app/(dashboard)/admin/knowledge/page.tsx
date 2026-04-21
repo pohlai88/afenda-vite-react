@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
+import { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
 import {
   Table,
   TableBody,
@@ -14,14 +14,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,15 +31,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+} from "@/components/ui/alert-dialog"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { useToast } from '@/hooks/use-toast'
+} from "@/components/ui/select"
+import { useToast } from "@/hooks/use-toast"
 import {
   Loader2,
   Plus,
@@ -49,9 +49,9 @@ import {
   Eye,
   EyeOff,
   BookOpen,
-} from 'lucide-react'
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
+} from "lucide-react"
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
 
 interface KnowledgeArticle {
   id: string
@@ -67,21 +67,21 @@ interface KnowledgeArticle {
 }
 
 const defaultCategories = [
-  'Nghỉ phép',
-  'Chấm công',
-  'Tăng ca',
-  'Bảo hiểm',
-  'Lương thưởng',
-  'Quy định chung',
+  "Nghỉ phép",
+  "Chấm công",
+  "Tăng ca",
+  "Bảo hiểm",
+  "Lương thưởng",
+  "Quy định chung",
 ]
 
 export default function KnowledgeAdminPage() {
   const [articles, setArticles] = useState<KnowledgeArticle[]>([])
   const [categories, setCategories] = useState<string[]>(defaultCategories)
   const [isLoading, setIsLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [filterCategory, setFilterCategory] = useState<string>('')
-  const [filterPublished, setFilterPublished] = useState<string>('')
+  const [search, setSearch] = useState("")
+  const [filterCategory, setFilterCategory] = useState<string>("")
+  const [filterPublished, setFilterPublished] = useState<string>("")
 
   // Dialog states
   const [showEditor, setShowEditor] = useState(false)
@@ -94,10 +94,10 @@ export default function KnowledgeAdminPage() {
 
   // Form state
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    category: '',
-    keywords: '',
+    title: "",
+    content: "",
+    category: "",
+    keywords: "",
     isPublished: false,
   })
 
@@ -107,9 +107,9 @@ export default function KnowledgeAdminPage() {
     setIsLoading(true)
     try {
       const params = new URLSearchParams()
-      if (search) params.append('search', search)
-      if (filterCategory) params.append('category', filterCategory)
-      if (filterPublished) params.append('isPublished', filterPublished)
+      if (search) params.append("search", search)
+      if (filterCategory) params.append("category", filterCategory)
+      if (filterPublished) params.append("isPublished", filterPublished)
 
       const response = await fetch(`/api/knowledge?${params}`)
       if (response.ok) {
@@ -117,7 +117,7 @@ export default function KnowledgeAdminPage() {
         setArticles(data.data)
       }
     } catch (error) {
-      console.error('Fetch articles error:', error)
+      console.error("Fetch articles error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -125,15 +125,17 @@ export default function KnowledgeAdminPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/knowledge/categories')
+      const response = await fetch("/api/knowledge/categories")
       if (response.ok) {
         const data = await response.json()
         if (data.data.length > 0) {
-          setCategories(Array.from(new Set([...defaultCategories, ...data.data])))
+          setCategories(
+            Array.from(new Set([...defaultCategories, ...data.data]))
+          )
         }
       }
     } catch (error) {
-      console.error('Fetch categories error:', error)
+      console.error("Fetch categories error:", error)
     }
   }
 
@@ -149,16 +151,16 @@ export default function KnowledgeAdminPage() {
         title: article.title,
         content: article.content,
         category: article.category,
-        keywords: article.keywords.join(', '),
+        keywords: article.keywords.join(", "),
         isPublished: article.isPublished,
       })
     } else {
       setEditingArticle(null)
       setFormData({
-        title: '',
-        content: '',
-        category: '',
-        keywords: '',
+        title: "",
+        content: "",
+        category: "",
+        keywords: "",
         isPublished: false,
       })
     }
@@ -173,7 +175,7 @@ export default function KnowledgeAdminPage() {
         content: formData.content,
         category: formData.category,
         keywords: formData.keywords
-          .split(',')
+          .split(",")
           .map((k) => k.trim())
           .filter(Boolean),
         isPublished: formData.isPublished,
@@ -181,29 +183,29 @@ export default function KnowledgeAdminPage() {
 
       const url = editingArticle
         ? `/api/knowledge/${editingArticle.id}`
-        : '/api/knowledge'
-      const method = editingArticle ? 'PATCH' : 'POST'
+        : "/api/knowledge"
+      const method = editingArticle ? "PATCH" : "POST"
 
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
 
       if (response.ok) {
         toast({
-          title: editingArticle ? 'Đã cập nhật' : 'Đã tạo',
-          description: 'Bài viết đã được lưu thành công',
+          title: editingArticle ? "Đã cập nhật" : "Đã tạo",
+          description: "Bài viết đã được lưu thành công",
         })
         setShowEditor(false)
         fetchArticles()
       }
     } catch (error) {
-      console.error('Save article error:', error)
+      console.error("Save article error:", error)
       toast({
-        title: 'Lỗi',
-        description: 'Không thể lưu bài viết',
-        variant: 'destructive',
+        title: "Lỗi",
+        description: "Không thể lưu bài viết",
+        variant: "destructive",
       })
     } finally {
       setIsSaving(false)
@@ -216,22 +218,22 @@ export default function KnowledgeAdminPage() {
     setIsDeleting(true)
     try {
       const response = await fetch(`/api/knowledge/${deleteId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       })
 
       if (response.ok) {
         toast({
-          title: 'Đã xóa',
-          description: 'Bài viết đã được xóa',
+          title: "Đã xóa",
+          description: "Bài viết đã được xóa",
         })
         fetchArticles()
       }
     } catch (error) {
-      console.error('Delete article error:', error)
+      console.error("Delete article error:", error)
       toast({
-        title: 'Lỗi',
-        description: 'Không thể xóa bài viết',
-        variant: 'destructive',
+        title: "Lỗi",
+        description: "Không thể xóa bài viết",
+        variant: "destructive",
       })
     } finally {
       setIsDeleting(false)
@@ -242,8 +244,8 @@ export default function KnowledgeAdminPage() {
   const togglePublish = async (id: string, currentStatus: boolean) => {
     try {
       const response = await fetch(`/api/knowledge/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isPublished: !currentStatus }),
       })
 
@@ -251,7 +253,7 @@ export default function KnowledgeAdminPage() {
         fetchArticles()
       }
     } catch (error) {
-      console.error('Toggle publish error:', error)
+      console.error("Toggle publish error:", error)
     }
   }
 
@@ -357,16 +359,16 @@ export default function KnowledgeAdminPage() {
                       <Badge
                         className={
                           article.isPublished
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
                         }
                       >
-                        {article.isPublished ? 'Xuất bản' : 'Nháp'}
+                        {article.isPublished ? "Xuất bản" : "Nháp"}
                       </Badge>
                     </TableCell>
                     <TableCell>{article.viewCount}</TableCell>
                     <TableCell>
-                      {format(new Date(article.updatedAt), 'dd/MM/yyyy', {
+                      {format(new Date(article.updatedAt), "dd/MM/yyyy", {
                         locale: vi,
                       })}
                     </TableCell>
@@ -380,8 +382,8 @@ export default function KnowledgeAdminPage() {
                           }
                           title={
                             article.isPublished
-                              ? 'Ẩn bài viết'
-                              : 'Xuất bản bài viết'
+                              ? "Ẩn bài viết"
+                              : "Xuất bản bài viết"
                           }
                         >
                           {article.isPublished ? (
@@ -419,7 +421,7 @@ export default function KnowledgeAdminPage() {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              {editingArticle ? 'Chỉnh sửa bài viết' : 'Thêm bài viết mới'}
+              {editingArticle ? "Chỉnh sửa bài viết" : "Thêm bài viết mới"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -498,7 +500,7 @@ export default function KnowledgeAdminPage() {
               onClick={handleSave}
               disabled={isSaving || !formData.title || !formData.content}
             >
-              {isSaving ? 'Đang lưu...' : 'Lưu bài viết'}
+              {isSaving ? "Đang lưu..." : "Lưu bài viết"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -521,7 +523,7 @@ export default function KnowledgeAdminPage() {
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? 'Đang xóa...' : 'Xóa'}
+              {isDeleting ? "Đang xóa..." : "Xóa"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

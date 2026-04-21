@@ -2,16 +2,16 @@
 // CONFIDENCE TOOLTIP — Detailed confidence breakdown (Blueprint §5.4.6)
 // =============================================================================
 
-import React from 'react';
-import type { ConfidenceScore, ConfidenceBreakdown } from '../../ai/trust/types';
+import React from "react"
+import type { ConfidenceScore, ConfidenceBreakdown } from "../../ai/trust/types"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 interface ConfidenceTooltipProps {
-  score: ConfidenceScore;
-  className?: string;
+  score: ConfidenceScore
+  className?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ interface ConfidenceTooltipProps {
 
 export const ConfidenceTooltip: React.FC<ConfidenceTooltipProps> = ({
   score,
-  className = '',
+  className = "",
 }) => {
   return (
     <div className={`trust-tooltip ${className}`}>
@@ -59,9 +59,7 @@ export const ConfidenceTooltip: React.FC<ConfidenceTooltipProps> = ({
         />
       </div>
 
-      <div className="trust-tooltip__explanation">
-        {score.explanation}
-      </div>
+      <div className="trust-tooltip__explanation">{score.explanation}</div>
 
       <div className="trust-tooltip__footer">
         <span className="trust-tooltip__time">
@@ -69,22 +67,22 @@ export const ConfidenceTooltip: React.FC<ConfidenceTooltipProps> = ({
         </span>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Sub-components
 // -----------------------------------------------------------------------------
 
 interface FactorRowProps {
-  label: string;
-  description: string;
-  value: number;
+  label: string
+  description: string
+  value: number
 }
 
 const FactorRow: React.FC<FactorRowProps> = ({ label, description, value }) => {
-  const percentage = Math.round(value * 100);
-  const barColor = getFactorColor(value);
+  const percentage = Math.round(value * 100)
+  const barColor = getFactorColor(value)
 
   return (
     <div className="trust-tooltip__factor">
@@ -103,26 +101,26 @@ const FactorRow: React.FC<FactorRowProps> = ({ label, description, value }) => {
       </div>
       <span className="trust-tooltip__factor-desc">{description}</span>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Inline Confidence Indicator
 // -----------------------------------------------------------------------------
 
 interface InlineConfidenceProps {
-  score: ConfidenceScore;
-  showExplanation?: boolean;
-  className?: string;
+  score: ConfidenceScore
+  showExplanation?: boolean
+  className?: string
 }
 
 export const InlineConfidence: React.FC<InlineConfidenceProps> = ({
   score,
   showExplanation = false,
-  className = '',
+  className = "",
 }) => {
-  const percentage = Math.round(score.overall * 100);
-  const color = getFactorColor(score.overall);
+  const percentage = Math.round(score.overall * 100)
+  const color = getFactorColor(score.overall)
 
   return (
     <span className={`trust-inline ${className}`}>
@@ -135,59 +133,59 @@ export const InlineConfidence: React.FC<InlineConfidenceProps> = ({
         <span className="trust-inline__explanation">{score.explanation}</span>
       )}
     </span>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Confidence Factor Details Panel
 // -----------------------------------------------------------------------------
 
 interface ConfidenceDetailsProps {
-  breakdown: ConfidenceBreakdown;
-  className?: string;
+  breakdown: ConfidenceBreakdown
+  className?: string
 }
 
 export const ConfidenceDetails: React.FC<ConfidenceDetailsProps> = ({
   breakdown,
-  className = '',
+  className = "",
 }) => {
   const factors = [
     {
-      key: 'dataQuality',
-      label: 'Data Quality',
+      key: "dataQuality",
+      label: "Data Quality",
       value: breakdown.dataQuality,
-      icon: '📊',
-      description: 'How reliable and complete the source data is',
+      icon: "📊",
+      description: "How reliable and complete the source data is",
     },
     {
-      key: 'intentClarity',
-      label: 'Intent Clarity',
+      key: "intentClarity",
+      label: "Intent Clarity",
       value: breakdown.intentClarity,
-      icon: '🎯',
-      description: 'How well we understood your request',
+      icon: "🎯",
+      description: "How well we understood your request",
     },
     {
-      key: 'taskComplexity',
-      label: 'Task Simplicity',
+      key: "taskComplexity",
+      label: "Task Simplicity",
       value: breakdown.taskComplexity,
-      icon: '⚡',
-      description: 'How straightforward the task is to complete',
+      icon: "⚡",
+      description: "How straightforward the task is to complete",
     },
     {
-      key: 'historicalAccuracy',
-      label: 'Track Record',
+      key: "historicalAccuracy",
+      label: "Track Record",
       value: breakdown.historicalAccuracy,
-      icon: '📈',
-      description: 'Past accuracy on similar tasks',
+      icon: "📈",
+      description: "Past accuracy on similar tasks",
     },
     {
-      key: 'groundingStrength',
-      label: 'Data Grounding',
+      key: "groundingStrength",
+      label: "Data Grounding",
       value: breakdown.groundingStrength,
-      icon: '🔗',
-      description: 'How well grounded in actual spreadsheet data',
+      icon: "🔗",
+      description: "How well grounded in actual spreadsheet data",
     },
-  ];
+  ]
 
   return (
     <div className={`trust-details ${className}`}>
@@ -216,30 +214,30 @@ export const ConfidenceDetails: React.FC<ConfidenceDetailsProps> = ({
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
 
 function getFactorColor(value: number): string {
-  if (value >= 0.8) return '#22c55e'; // green
-  if (value >= 0.6) return '#84cc16'; // lime
-  if (value >= 0.4) return '#eab308'; // yellow
-  if (value >= 0.2) return '#f97316'; // orange
-  return '#ef4444'; // red
+  if (value >= 0.8) return "#22c55e" // green
+  if (value >= 0.6) return "#84cc16" // lime
+  if (value >= 0.4) return "#eab308" // yellow
+  if (value >= 0.2) return "#f97316" // orange
+  return "#ef4444" // red
 }
 
 function formatTime(date: Date): string {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const seconds = Math.floor(diff / 1000);
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const seconds = Math.floor(diff / 1000)
 
-  if (seconds < 60) return 'just now';
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-  return date.toLocaleDateString();
+  if (seconds < 60) return "just now"
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`
+  return date.toLocaleDateString()
 }
 
-export default ConfidenceTooltip;
+export default ConfidenceTooltip

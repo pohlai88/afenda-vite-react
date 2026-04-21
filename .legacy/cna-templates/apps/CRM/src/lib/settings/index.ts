@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from "@/lib/prisma"
 import type {
   SettingsKey,
   SettingsMap,
@@ -7,30 +7,74 @@ import type {
   NotificationSettings,
   EmailSettings,
   OrderSettings,
-} from './types'
+} from "./types"
 
-export type { SettingsKey, SettingsMap, CompanySettings, PipelineSettings, NotificationSettings, EmailSettings, OrderSettings }
-export type { PipelineStage } from './types'
+export type {
+  SettingsKey,
+  SettingsMap,
+  CompanySettings,
+  PipelineSettings,
+  NotificationSettings,
+  EmailSettings,
+  OrderSettings,
+}
+export type { PipelineStage } from "./types"
 
 // ── Default Settings ────────────────────────────────────────────────
 
 export const DEFAULT_SETTINGS: SettingsMap = {
   company: {
-    name: 'VietERP CRM',
-    address: '',
-    phone: '',
-    email: '',
-    website: '',
-    taxId: '',
+    name: "VietERP CRM",
+    address: "",
+    phone: "",
+    email: "",
+    website: "",
+    taxId: "",
   },
   pipeline: {
     stages: [
-      { id: 'new-lead', name: 'New Lead', color: '#6B7280', probability: 10, order: 0 },
-      { id: 'qualification', name: 'Qualification', color: '#3B82F6', probability: 20, order: 1 },
-      { id: 'proposal', name: 'Proposal', color: '#8B5CF6', probability: 50, order: 2 },
-      { id: 'negotiation', name: 'Negotiation', color: '#F59E0B', probability: 75, order: 3 },
-      { id: 'closed-won', name: 'Closed Won', color: '#10B981', probability: 100, order: 4 },
-      { id: 'closed-lost', name: 'Closed Lost', color: '#EF4444', probability: 0, order: 5 },
+      {
+        id: "new-lead",
+        name: "New Lead",
+        color: "#6B7280",
+        probability: 10,
+        order: 0,
+      },
+      {
+        id: "qualification",
+        name: "Qualification",
+        color: "#3B82F6",
+        probability: 20,
+        order: 1,
+      },
+      {
+        id: "proposal",
+        name: "Proposal",
+        color: "#8B5CF6",
+        probability: 50,
+        order: 2,
+      },
+      {
+        id: "negotiation",
+        name: "Negotiation",
+        color: "#F59E0B",
+        probability: 75,
+        order: 3,
+      },
+      {
+        id: "closed-won",
+        name: "Closed Won",
+        color: "#10B981",
+        probability: 100,
+        order: 4,
+      },
+      {
+        id: "closed-lost",
+        name: "Closed Lost",
+        color: "#EF4444",
+        probability: 0,
+        order: 5,
+      },
     ],
   },
   notifications: {
@@ -40,10 +84,13 @@ export const DEFAULT_SETTINGS: SettingsMap = {
     emailOnNewDeal: false,
   },
   email: {
-    fromName: 'VietERP CRM',
-    fromEmail: process.env.EMAIL_FROM?.match(/<(.+)>/)?.[1] || process.env.EMAIL_FROM || '',
-    replyTo: '',
-    signature: '',
+    fromName: "VietERP CRM",
+    fromEmail:
+      process.env.EMAIL_FROM?.match(/<(.+)>/)?.[1] ||
+      process.env.EMAIL_FROM ||
+      "",
+    replyTo: "",
+    signature: "",
   },
   order: {
     autoOrderFromQuote: true,
@@ -72,7 +119,10 @@ export async function getSettingOrDefault<K extends SettingsKey>(
   const row = await prisma.setting.findUnique({ where: { key } })
   const defaults = DEFAULT_SETTINGS[key]
   if (!row) return defaults
-  return deepMerge(defaults as unknown as Record<string, unknown>, row.value as Record<string, unknown>) as unknown as SettingsMap[K]
+  return deepMerge(
+    defaults as unknown as Record<string, unknown>,
+    row.value as Record<string, unknown>
+  ) as unknown as SettingsMap[K]
 }
 
 /**
@@ -124,9 +174,12 @@ function deepMerge(
     const tVal = target[key]
     const sVal = source[key]
     if (
-      tVal && sVal &&
-      typeof tVal === 'object' && typeof sVal === 'object' &&
-      !Array.isArray(tVal) && !Array.isArray(sVal)
+      tVal &&
+      sVal &&
+      typeof tVal === "object" &&
+      typeof sVal === "object" &&
+      !Array.isArray(tVal) &&
+      !Array.isArray(sVal)
     ) {
       result[key] = deepMerge(
         tVal as Record<string, unknown>,

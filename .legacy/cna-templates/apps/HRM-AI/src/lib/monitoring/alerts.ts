@@ -5,7 +5,7 @@
 // TYPES
 // ═══════════════════════════════════════════════════════════════
 
-export type AlertSeverity = 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL'
+export type AlertSeverity = "INFO" | "WARNING" | "ERROR" | "CRITICAL"
 
 export interface Alert {
   id: string
@@ -41,14 +41,18 @@ class AlertManager {
 
   constructor() {
     this.webhookUrl = process.env.ALERT_WEBHOOK_URL
-    this.emailRecipients = (process.env.ALERT_EMAIL_RECIPIENTS || '').split(',').filter(Boolean)
+    this.emailRecipients = (process.env.ALERT_EMAIL_RECIPIENTS || "")
+      .split(",")
+      .filter(Boolean)
   }
 
   // ─────────────────────────────────────────────────────────────
   // Send Alert
   // ─────────────────────────────────────────────────────────────
 
-  async sendAlert(alert: Omit<Alert, 'id' | 'timestamp' | 'acknowledged'>): Promise<Alert> {
+  async sendAlert(
+    alert: Omit<Alert, "id" | "timestamp" | "acknowledged">
+  ): Promise<Alert> {
     const fullAlert: Alert = {
       ...alert,
       id: `alert-${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -65,19 +69,23 @@ class AlertManager {
     }
 
     // Log alert
-    const logLevel = ['CRITICAL', 'ERROR'].includes(alert.severity) ? 'error' : alert.severity === 'WARNING' ? 'warn' : 'info'
+    const logLevel = ["CRITICAL", "ERROR"].includes(alert.severity)
+      ? "error"
+      : alert.severity === "WARNING"
+        ? "warn"
+        : "info"
 
     console[logLevel](`[ALERT] ${alert.severity}: ${alert.title}`, {
       alert: fullAlert,
     })
 
     // Send to webhook (Slack, Teams, etc.)
-    if (this.webhookUrl && ['CRITICAL', 'ERROR'].includes(alert.severity)) {
+    if (this.webhookUrl && ["CRITICAL", "ERROR"].includes(alert.severity)) {
       await this.sendWebhook(fullAlert)
     }
 
     // Send email for critical alerts
-    if (alert.severity === 'CRITICAL' && this.emailRecipients.length > 0) {
+    if (alert.severity === "CRITICAL" && this.emailRecipients.length > 0) {
       await this.sendEmail(fullAlert)
     }
 
@@ -93,9 +101,9 @@ class AlertManager {
 
     try {
       // Detect webhook type from URL
-      const isSlack = this.webhookUrl.includes('slack.com')
-      const isTeams = this.webhookUrl.includes('webhook.office.com')
-      const isDiscord = this.webhookUrl.includes('discord.com')
+      const isSlack = this.webhookUrl.includes("slack.com")
+      const isTeams = this.webhookUrl.includes("webhook.office.com")
+      const isDiscord = this.webhookUrl.includes("discord.com")
 
       let payload: Record<string, unknown>
 
@@ -121,13 +129,12 @@ class AlertManager {
       }
 
       await fetch(this.webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
-
     } catch (error) {
-      console.error('Failed to send webhook alert', {
+      console.error("Failed to send webhook alert", {
         alertId: alert.id,
         error: (error as Error).message,
       })
@@ -136,17 +143,17 @@ class AlertManager {
 
   private formatSlackPayload(alert: Alert): Record<string, unknown> {
     const severityEmoji = {
-      INFO: 'ℹ️',
-      WARNING: '⚠️',
-      ERROR: '❌',
-      CRITICAL: '🚨',
+      INFO: "ℹ️",
+      WARNING: "⚠️",
+      ERROR: "❌",
+      CRITICAL: "🚨",
     }
 
     const severityColor = {
-      INFO: '#2196F3',
-      WARNING: '#FF9800',
-      ERROR: '#F44336',
-      CRITICAL: '#9C27B0',
+      INFO: "#2196F3",
+      WARNING: "#FF9800",
+      ERROR: "#F44336",
+      CRITICAL: "#9C27B0",
     }
 
     return {
@@ -156,17 +163,17 @@ class AlertManager {
           color: severityColor[alert.severity],
           blocks: [
             {
-              type: 'section',
+              type: "section",
               text: {
-                type: 'mrkdwn',
+                type: "mrkdwn",
                 text: alert.message,
               },
             },
             {
-              type: 'context',
+              type: "context",
               elements: [
                 {
-                  type: 'mrkdwn',
+                  type: "mrkdwn",
                   text: `Source: *${alert.source}* | Time: ${alert.timestamp.toISOString()}`,
                 },
               ],
@@ -179,23 +186,23 @@ class AlertManager {
 
   private formatTeamsPayload(alert: Alert): Record<string, unknown> {
     const severityColor = {
-      INFO: '0078D4',
-      WARNING: 'FFC107',
-      ERROR: 'DC3545',
-      CRITICAL: '6F42C1',
+      INFO: "0078D4",
+      WARNING: "FFC107",
+      ERROR: "DC3545",
+      CRITICAL: "6F42C1",
     }
 
     return {
-      '@type': 'MessageCard',
-      '@context': 'http://schema.org/extensions',
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
       themeColor: severityColor[alert.severity],
       summary: `${alert.severity}: ${alert.title}`,
       sections: [
         {
           activityTitle: `${alert.severity}: ${alert.title}`,
           facts: [
-            { name: 'Source', value: alert.source },
-            { name: 'Time', value: alert.timestamp.toISOString() },
+            { name: "Source", value: alert.source },
+            { name: "Time", value: alert.timestamp.toISOString() },
           ],
           text: alert.message,
         },
@@ -218,8 +225,12 @@ class AlertManager {
           description: alert.message,
           color: severityColor[alert.severity],
           fields: [
-            { name: 'Source', value: alert.source, inline: true },
-            { name: 'Time', value: alert.timestamp.toISOString(), inline: true },
+            { name: "Source", value: alert.source, inline: true },
+            {
+              name: "Time",
+              value: alert.timestamp.toISOString(),
+              inline: true,
+            },
           ],
         },
       ],
@@ -311,10 +322,10 @@ class AlertManager {
     return {
       total: this.alerts.length,
       bySeverity: {
-        INFO: this.alerts.filter((a) => a.severity === 'INFO').length,
-        WARNING: this.alerts.filter((a) => a.severity === 'WARNING').length,
-        ERROR: this.alerts.filter((a) => a.severity === 'ERROR').length,
-        CRITICAL: this.alerts.filter((a) => a.severity === 'CRITICAL').length,
+        INFO: this.alerts.filter((a) => a.severity === "INFO").length,
+        WARNING: this.alerts.filter((a) => a.severity === "WARNING").length,
+        ERROR: this.alerts.filter((a) => a.severity === "ERROR").length,
+        CRITICAL: this.alerts.filter((a) => a.severity === "CRITICAL").length,
       },
       unacknowledged: this.alerts.filter((a) => !a.acknowledged).length,
       last24h: this.alerts.filter((a) => a.timestamp >= dayAgo).length,
@@ -336,113 +347,121 @@ export const alerts = {
   // Payment Alerts
   paymentFailed: (batchId: string, error: string) =>
     alertManager.sendAlert({
-      severity: 'ERROR',
-      title: 'Payment Batch Failed',
+      severity: "ERROR",
+      title: "Payment Batch Failed",
       message: `Batch ${batchId} failed: ${error}`,
-      source: 'banking',
+      source: "banking",
       metadata: { batchId },
     }),
 
-  paymentPartialSuccess: (batchId: string, successCount: number, failedCount: number) =>
+  paymentPartialSuccess: (
+    batchId: string,
+    successCount: number,
+    failedCount: number
+  ) =>
     alertManager.sendAlert({
-      severity: 'WARNING',
-      title: 'Payment Batch Partial Success',
+      severity: "WARNING",
+      title: "Payment Batch Partial Success",
       message: `Batch ${batchId}: ${successCount} succeeded, ${failedCount} failed`,
-      source: 'banking',
+      source: "banking",
       metadata: { batchId, successCount, failedCount },
     }),
 
   // System Alerts
   highErrorRate: (errorRate: number, endpoint: string) =>
     alertManager.sendAlert({
-      severity: 'WARNING',
-      title: 'High Error Rate Detected',
+      severity: "WARNING",
+      title: "High Error Rate Detected",
       message: `Error rate ${errorRate.toFixed(1)}% on ${endpoint}`,
-      source: 'monitoring',
+      source: "monitoring",
       metadata: { errorRate, endpoint },
     }),
 
   systemHealthDegraded: (component: string, status: string) =>
     alertManager.sendAlert({
-      severity: 'WARNING',
-      title: 'System Health Degraded',
+      severity: "WARNING",
+      title: "System Health Degraded",
       message: `${component} is ${status}`,
-      source: 'health',
+      source: "health",
       metadata: { component, status },
     }),
 
   databaseSlowQuery: (query: string, duration: number) =>
     alertManager.sendAlert({
-      severity: 'WARNING',
-      title: 'Slow Database Query',
+      severity: "WARNING",
+      title: "Slow Database Query",
       message: `Query took ${duration}ms: ${query.substring(0, 100)}...`,
-      source: 'database',
+      source: "database",
       metadata: { query, duration },
     }),
 
   // Security Alerts
   securityIncident: (type: string, details: string) =>
     alertManager.sendAlert({
-      severity: 'CRITICAL',
-      title: 'Security Incident',
+      severity: "CRITICAL",
+      title: "Security Incident",
       message: `${type}: ${details}`,
-      source: 'security',
+      source: "security",
       metadata: { type },
     }),
 
   suspiciousActivity: (userId: string, activity: string) =>
     alertManager.sendAlert({
-      severity: 'WARNING',
-      title: 'Suspicious Activity',
+      severity: "WARNING",
+      title: "Suspicious Activity",
       message: `User ${userId}: ${activity}`,
-      source: 'security',
+      source: "security",
       metadata: { userId, activity },
     }),
 
   loginFailures: (userId: string, count: number) =>
     alertManager.sendAlert({
-      severity: count >= 10 ? 'ERROR' : 'WARNING',
-      title: 'Multiple Login Failures',
+      severity: count >= 10 ? "ERROR" : "WARNING",
+      title: "Multiple Login Failures",
       message: `User ${userId} has ${count} failed login attempts`,
-      source: 'security',
+      source: "security",
       metadata: { userId, count },
     }),
 
   // Integration Alerts
   externalApiDown: (service: string, error: string) =>
     alertManager.sendAlert({
-      severity: 'ERROR',
-      title: 'External API Down',
+      severity: "ERROR",
+      title: "External API Down",
       message: `${service} is unavailable: ${error}`,
-      source: 'integrations',
+      source: "integrations",
       metadata: { service },
     }),
 
   certificateExpiring: (service: string, daysUntilExpiry: number) =>
     alertManager.sendAlert({
-      severity: daysUntilExpiry <= 7 ? 'CRITICAL' : 'WARNING',
-      title: 'Certificate Expiring Soon',
+      severity: daysUntilExpiry <= 7 ? "CRITICAL" : "WARNING",
+      title: "Certificate Expiring Soon",
       message: `${service} certificate expires in ${daysUntilExpiry} days`,
-      source: 'security',
+      source: "security",
       metadata: { service, daysUntilExpiry },
     }),
 
   // Business Alerts
   complianceDeadline: (reportType: string, deadline: Date) =>
     alertManager.sendAlert({
-      severity: 'WARNING',
-      title: 'Compliance Deadline Approaching',
-      message: `${reportType} due on ${deadline.toLocaleDateString('vi-VN')}`,
-      source: 'compliance',
+      severity: "WARNING",
+      title: "Compliance Deadline Approaching",
+      message: `${reportType} due on ${deadline.toLocaleDateString("vi-VN")}`,
+      source: "compliance",
       metadata: { reportType, deadline: deadline.toISOString() },
     }),
 
-  payrollProcessingComplete: (periodId: string, employeeCount: number, totalAmount: number) =>
+  payrollProcessingComplete: (
+    periodId: string,
+    employeeCount: number,
+    totalAmount: number
+  ) =>
     alertManager.sendAlert({
-      severity: 'INFO',
-      title: 'Payroll Processing Complete',
+      severity: "INFO",
+      title: "Payroll Processing Complete",
       message: `Processed payroll for ${employeeCount} employees, total: ${totalAmount.toLocaleString()} VND`,
-      source: 'payroll',
+      source: "payroll",
       metadata: { periodId, employeeCount, totalAmount },
     }),
 }

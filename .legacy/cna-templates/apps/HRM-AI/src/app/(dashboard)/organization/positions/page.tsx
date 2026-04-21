@@ -2,7 +2,12 @@
 
 import { useState } from "react"
 import { Plus, MoreHorizontal, Pencil, Trash2, Briefcase } from "lucide-react"
-import { usePositions, useCreatePosition, useUpdatePosition, useDeletePosition } from "@/hooks/use-positions"
+import {
+  usePositions,
+  useCreatePosition,
+  useUpdatePosition,
+  useDeletePosition,
+} from "@/hooks/use-positions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -36,9 +41,22 @@ import { Textarea } from "@/components/ui/textarea"
 
 export default function PositionsPage() {
   const [isOpen, setIsOpen] = useState(false)
-  const [editingPos, setEditingPos] = useState<{ id: string; name: string; code: string; level: number; description: string | null; isActive: boolean } | null>(null)
+  const [editingPos, setEditingPos] = useState<{
+    id: string
+    name: string
+    code: string
+    level: number
+    description: string | null
+    isActive: boolean
+  } | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ name: "", code: "", level: 1, description: "", isActive: true })
+  const [formData, setFormData] = useState({
+    name: "",
+    code: "",
+    level: 1,
+    description: "",
+    isActive: true,
+  })
 
   const { data: positions, isLoading } = usePositions()
   const createPosition = useCreatePosition()
@@ -47,11 +65,24 @@ export default function PositionsPage() {
 
   const handleOpenCreate = () => {
     setEditingPos(null)
-    setFormData({ name: "", code: "", level: 1, description: "", isActive: true })
+    setFormData({
+      name: "",
+      code: "",
+      level: 1,
+      description: "",
+      isActive: true,
+    })
     setIsOpen(true)
   }
 
-  const handleOpenEdit = (pos: { id: string; name: string; code: string; level: number; description: string | null; isActive: boolean }) => {
+  const handleOpenEdit = (pos: {
+    id: string
+    name: string
+    code: string
+    level: number
+    description: string | null
+    isActive: boolean
+  }) => {
     setEditingPos(pos)
     setFormData({
       name: pos.name,
@@ -82,7 +113,10 @@ export default function PositionsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Chức danh" description="Quản lý các chức danh trong công ty">
+      <PageHeader
+        title="Chức danh"
+        description="Quản lý các chức danh trong công ty"
+      >
         <Button onClick={handleOpenCreate}>
           <Plus className="mr-2 h-4 w-4" />
           Thêm chức danh
@@ -119,41 +153,51 @@ export default function PositionsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {positions.map((pos: { id: string; code: string; name: string; level: number; description: string | null; isActive: boolean; _count?: { employees: number } }) => (
-                <TableRow key={pos.id}>
-                  <TableCell className="font-mono">{pos.code}</TableCell>
-                  <TableCell className="font-medium">{pos.name}</TableCell>
-                  <TableCell>{pos.level}</TableCell>
-                  <TableCell>{pos._count?.employees || 0}</TableCell>
-                  <TableCell>
-                    <Badge variant={pos.isActive ? "success" : "secondary"}>
-                      {pos.isActive ? "Hoạt động" : "Ngừng"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleOpenEdit(pos)}>
-                          <Pencil className="mr-2 h-4 w-4" />
-                          Chỉnh sửa
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => setDeleteId(pos.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Xóa
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {positions.map(
+                (pos: {
+                  id: string
+                  code: string
+                  name: string
+                  level: number
+                  description: string | null
+                  isActive: boolean
+                  _count?: { employees: number }
+                }) => (
+                  <TableRow key={pos.id}>
+                    <TableCell className="font-mono">{pos.code}</TableCell>
+                    <TableCell className="font-medium">{pos.name}</TableCell>
+                    <TableCell>{pos.level}</TableCell>
+                    <TableCell>{pos._count?.employees || 0}</TableCell>
+                    <TableCell>
+                      <Badge variant={pos.isActive ? "success" : "secondary"}>
+                        {pos.isActive ? "Hoạt động" : "Ngừng"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleOpenEdit(pos)}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Chỉnh sửa
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => setDeleteId(pos.id)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Xóa
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                )
+              )}
             </TableBody>
           </Table>
         </div>
@@ -172,7 +216,9 @@ export default function PositionsPage() {
               <Input
                 id="code"
                 value={formData.code}
-                onChange={(e) => setFormData((p) => ({ ...p, code: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, code: e.target.value }))
+                }
                 placeholder="VD: GD, TP, NV"
                 required
               />
@@ -182,7 +228,9 @@ export default function PositionsPage() {
               <Input
                 id="name"
                 value={formData.name}
-                onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, name: e.target.value }))
+                }
                 placeholder="VD: Giám đốc, Trưởng phòng"
                 required
               />
@@ -195,7 +243,12 @@ export default function PositionsPage() {
                 min={1}
                 max={20}
                 value={formData.level}
-                onChange={(e) => setFormData((p) => ({ ...p, level: parseInt(e.target.value) || 1 }))}
+                onChange={(e) =>
+                  setFormData((p) => ({
+                    ...p,
+                    level: parseInt(e.target.value) || 1,
+                  }))
+                }
                 required
               />
             </div>
@@ -204,12 +257,18 @@ export default function PositionsPage() {
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, description: e.target.value }))
+                }
                 placeholder="Mô tả về chức danh..."
               />
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsOpen(false)}
+              >
                 Hủy
               </Button>
               <Button

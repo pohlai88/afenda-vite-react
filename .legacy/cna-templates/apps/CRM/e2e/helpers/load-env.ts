@@ -1,5 +1,5 @@
-import { readFileSync, existsSync } from 'fs'
-import { resolve } from 'path'
+import { readFileSync, existsSync } from "fs"
+import { resolve } from "path"
 
 /**
  * Load .env.local file into process.env.
@@ -7,18 +7,18 @@ import { resolve } from 'path'
  * Does NOT override existing env vars.
  */
 export function loadEnvLocal(): void {
-  const envPath = resolve(process.cwd(), '.env.local')
+  const envPath = resolve(process.cwd(), ".env.local")
   if (!existsSync(envPath)) {
-    console.warn('[load-env] No .env.local found at', envPath)
+    console.warn("[load-env] No .env.local found at", envPath)
     return
   }
 
-  const content = readFileSync(envPath, 'utf-8')
-  for (const line of content.split('\n')) {
+  const content = readFileSync(envPath, "utf-8")
+  for (const line of content.split("\n")) {
     const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
+    if (!trimmed || trimmed.startsWith("#")) continue
 
-    const eqIndex = trimmed.indexOf('=')
+    const eqIndex = trimmed.indexOf("=")
     if (eqIndex === -1) continue
 
     const key = trimmed.slice(0, eqIndex).trim()

@@ -48,9 +48,7 @@ export function EmptyState({
           <Icon className={cn("w-8 h-8", config.iconClassName)} />
         )}
       </div>
-      <h3 className="text-lg font-semibold mb-1 animate-fade-in-up">
-        {title}
-      </h3>
+      <h3 className="text-lg font-semibold mb-1 animate-fade-in-up">{title}</h3>
       {description && (
         <p className="text-sm text-muted-foreground max-w-sm mb-4 animate-fade-in-up">
           {description}

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState } from "react"
 
 interface SheetTabProps {
-  id: string;
-  name: string;
-  color?: string;
-  isActive: boolean;
-  onClick: () => void;
-  onContextMenu: (e: React.MouseEvent) => void;
-  onRename?: (id: string, newName: string) => void;
+  id: string
+  name: string
+  color?: string
+  isActive: boolean
+  onClick: () => void
+  onContextMenu: (e: React.MouseEvent) => void
+  onRename?: (id: string, newName: string) => void
 }
 
 export const SheetTab: React.FC<SheetTabProps> = ({
@@ -19,38 +19,38 @@ export const SheetTab: React.FC<SheetTabProps> = ({
   onContextMenu,
   onRename,
 }) => {
-  const [isEditing, setEditing] = useState(false);
-  const [editName, setEditName] = useState(name);
+  const [isEditing, setEditing] = useState(false)
+  const [editName, setEditName] = useState(name)
 
   const handleDoubleClick = () => {
-    setEditing(true);
-    setEditName(name);
-  };
+    setEditing(true)
+    setEditName(name)
+  }
 
   const handleSaveName = () => {
-    setEditing(false);
-    const trimmedName = editName.trim();
+    setEditing(false)
+    const trimmedName = editName.trim()
     if (trimmedName && trimmedName !== name) {
-      onRename?.(id, trimmedName);
+      onRename?.(id, trimmedName)
     }
-  };
+  }
 
   const handleBlur = () => {
-    handleSaveName();
-  };
+    handleSaveName()
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSaveName();
-    } else if (e.key === 'Escape') {
-      setEditing(false);
-      setEditName(name);
+    if (e.key === "Enter") {
+      handleSaveName()
+    } else if (e.key === "Escape") {
+      setEditing(false)
+      setEditName(name)
     }
-  };
+  }
 
   return (
     <div
-      className={`sheet-tab ${isActive ? 'active' : ''}`}
+      className={`sheet-tab ${isActive ? "active" : ""}`}
       onClick={onClick}
       onContextMenu={onContextMenu}
       onDoubleClick={handleDoubleClick}
@@ -70,5 +70,5 @@ export const SheetTab: React.FC<SheetTabProps> = ({
         <span className="sheet-tab-name">{name}</span>
       )}
     </div>
-  );
-};
+  )
+}

@@ -2,19 +2,20 @@
 
 ## 🗓️ DAILY TASKS
 
-| Day | Focus | Deliverables |
-|-----|-------|--------------|
-| **Day 1** | ERP API | 6 endpoints + connection test + sync |
-| **Day 2** | ERP UI | 2 pages + config form + sync logs |
-| **Day 3** | DMS + Webhooks API | 11 endpoints + delivery service |
-| **Day 4** | DMS + Webhooks UI | 4 pages + logs |
-| **Day 5** | Security & Audit | 7 endpoints + 3 pages |
+| Day       | Focus              | Deliverables                         |
+| --------- | ------------------ | ------------------------------------ |
+| **Day 1** | ERP API            | 6 endpoints + connection test + sync |
+| **Day 2** | ERP UI             | 2 pages + config form + sync logs    |
+| **Day 3** | DMS + Webhooks API | 11 endpoints + delivery service      |
+| **Day 4** | DMS + Webhooks UI  | 4 pages + logs                       |
+| **Day 5** | Security & Audit   | 7 endpoints + 3 pages                |
 
 ---
 
 ## 🔌 API ENDPOINTS CHECKLIST
 
 ### ERP Integration (6)
+
 ```
 [ ] GET    /api/integration/erp
 [ ] POST   /api/integration/erp
@@ -26,6 +27,7 @@
 ```
 
 ### DMS Integration (5)
+
 ```
 [ ] GET    /api/integration/dms
 [ ] POST   /api/integration/dms
@@ -36,6 +38,7 @@
 ```
 
 ### Webhooks (6)
+
 ```
 [ ] GET    /api/integration/webhooks
 [ ] POST   /api/integration/webhooks
@@ -48,6 +51,7 @@
 ```
 
 ### Security (7)
+
 ```
 [ ] GET    /api/integration/security/api-keys
 [ ] POST   /api/integration/security/api-keys
@@ -63,24 +67,28 @@
 ## 📄 PAGES CHECKLIST
 
 ### ERP (2)
+
 ```
 [ ] /integration/erp           → Connection list
 [ ] /integration/erp/:id       → Config & sync logs
 ```
 
 ### DMS (2)
+
 ```
 [ ] /integration/dms           → Connection list
 [ ] /integration/dms/:id       → Config & sync
 ```
 
 ### Webhooks (2)
+
 ```
 [ ] /integration/webhooks      → Endpoint list
 [ ] /integration/webhooks/:id  → Config & delivery logs
 ```
 
 ### Security (3)
+
 ```
 [ ] /integration/security          → Dashboard
 [ ] /integration/security/api-keys → Key management
@@ -92,6 +100,7 @@
 ## 🧩 COMPONENTS CHECKLIST
 
 ### ERP
+
 ```
 [ ] ERPConnectionCard.tsx
 [ ] ERPConfigForm.tsx
@@ -101,6 +110,7 @@
 ```
 
 ### DMS
+
 ```
 [ ] DMSConnectionCard.tsx
 [ ] DMSConfigForm.tsx
@@ -108,6 +118,7 @@
 ```
 
 ### Webhooks
+
 ```
 [ ] WebhookCard.tsx
 [ ] WebhookForm.tsx
@@ -116,6 +127,7 @@
 ```
 
 ### Security
+
 ```
 [ ] APIKeyCard.tsx
 [ ] APIKeyForm.tsx
@@ -165,26 +177,27 @@
 
 ## 🏢 ERP SYSTEMS SUPPORTED
 
-| System | Connection Method | Auth |
-|--------|-------------------|------|
-| SAP S/4HANA | OData API | Basic/OAuth |
-| SAP ECC | RFC/BAPI | SAP credentials |
-| Oracle ERP | REST API | OAuth 2.0 |
-| MS Dynamics | REST API | Azure AD |
-| Custom | REST/SFTP | API Key/Basic |
+| System      | Connection Method | Auth            |
+| ----------- | ----------------- | --------------- |
+| SAP S/4HANA | OData API         | Basic/OAuth     |
+| SAP ECC     | RFC/BAPI          | SAP credentials |
+| Oracle ERP  | REST API          | OAuth 2.0       |
+| MS Dynamics | REST API          | Azure AD        |
+| Custom      | REST/SFTP         | API Key/Basic   |
 
 ---
 
 ## 📡 WEBHOOK EVENTS
 
-| Category | Events |
-|----------|--------|
+| Category      | Events                                          |
+| ------------- | ----------------------------------------------- |
 | **Promotion** | created, updated, approved, rejected, completed |
-| **Claim** | submitted, approved, rejected, paid |
-| **Delivery** | created, delivered |
-| **Inventory** | low_stock, near_expiry |
+| **Claim**     | submitted, approved, rejected, paid             |
+| **Delivery**  | created, delivered                              |
+| **Inventory** | low_stock, near_expiry                          |
 
 ### Webhook Payload Format
+
 ```json
 {
   "event": "promotion.approved",
@@ -200,16 +213,17 @@
 ```
 
 ### Signature Verification
+
 ```typescript
 // Verify webhook signature
-const signature = req.headers['x-webhook-signature'];
+const signature = req.headers["x-webhook-signature"]
 const expectedSig = `sha256=${crypto
-  .createHmac('sha256', webhookSecret)
+  .createHmac("sha256", webhookSecret)
   .update(JSON.stringify(req.body))
-  .digest('hex')}`;
+  .digest("hex")}`
 
 if (signature !== expectedSig) {
-  throw new Error('Invalid signature');
+  throw new Error("Invalid signature")
 }
 ```
 
@@ -217,42 +231,43 @@ if (signature !== expectedSig) {
 
 ## 🔐 API PERMISSIONS
 
-| Permission | Description |
-|------------|-------------|
-| `read:promotions` | View promotions |
+| Permission         | Description              |
+| ------------------ | ------------------------ |
+| `read:promotions`  | View promotions          |
 | `write:promotions` | Create/update promotions |
-| `read:claims` | View claims |
-| `write:claims` | Submit/approve claims |
-| `read:customers` | View customers |
-| `write:customers` | Create/update customers |
-| `read:products` | View products |
-| `write:products` | Create/update products |
-| `read:reports` | View reports |
-| `admin:all` | Full access |
+| `read:claims`      | View claims              |
+| `write:claims`     | Submit/approve claims    |
+| `read:customers`   | View customers           |
+| `write:customers`  | Create/update customers  |
+| `read:products`    | View products            |
+| `write:products`   | Create/update products   |
+| `read:reports`     | View reports             |
+| `admin:all`        | Full access              |
 
 ---
 
 ## 📊 AUDIT ACTIONS
 
-| Action | Description |
-|--------|-------------|
-| create | Record created |
-| update | Record updated |
-| delete | Record deleted |
-| approve | Approval action |
-| reject | Rejection action |
-| login | User login |
-| logout | User logout |
-| revoke | API key revoked |
-| sync | Data sync triggered |
-| import | Data imported |
-| export | Data exported |
+| Action  | Description         |
+| ------- | ------------------- |
+| create  | Record created      |
+| update  | Record updated      |
+| delete  | Record deleted      |
+| approve | Approval action     |
+| reject  | Rejection action    |
+| login   | User login          |
+| logout  | User logout         |
+| revoke  | API key revoked     |
+| sync    | Data sync triggered |
+| import  | Data imported       |
+| export  | Data exported       |
 
 ---
 
 ## 🔄 SYNC WORKFLOWS
 
 ### ERP Sync Flow
+
 ```
 1. Test connection
 2. Configure field mappings
@@ -263,6 +278,7 @@ if (signature !== expectedSig) {
 ```
 
 ### DMS Sync Flow
+
 ```
 1. Connect to distributor DMS
 2. Pull sell-out/stock data (inbound)
@@ -272,6 +288,7 @@ if (signature !== expectedSig) {
 ```
 
 ### Webhook Delivery Flow
+
 ```
 1. Event occurs in system
 2. Find matching webhook endpoints
@@ -356,10 +373,10 @@ git commit -m "feat(integration): Day X - [description]"
 
 ## 📊 WEEK 5 METRICS TARGET
 
-| Metric | Target |
-|--------|--------|
-| API Endpoints | 24 |
-| Pages | 9 |
-| Components | ~15 |
-| Hooks | ~25 |
-| Test Coverage | >80% |
+| Metric        | Target |
+| ------------- | ------ |
+| API Endpoints | 24     |
+| Pages         | 9      |
+| Components    | ~15    |
+| Hooks         | ~25    |
+| Test Coverage | >80%   |

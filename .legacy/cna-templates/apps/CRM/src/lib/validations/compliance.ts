@@ -1,7 +1,7 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 export const screenEntitySchema = z.object({
-  entityType: z.enum(['DEAL', 'CONTACT', 'COMPANY']),
+  entityType: z.enum(["DEAL", "CONTACT", "COMPANY"]),
   entityId: z.string().cuid(),
   name: z.string().min(1),
   country: z.string().min(2).max(3),

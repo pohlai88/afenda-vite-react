@@ -1,20 +1,20 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Separator } from '@/components/ui/separator'
-import { DEFAULT_STAGES } from '@/lib/constants'
-import { cn } from '@/lib/utils'
-import { useSetting, useUpdateSetting } from '@/hooks/use-settings'
-import { useToast } from '@/hooks/use-toast'
-import { useTranslation } from '@/i18n'
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { ArrowLeft, Plus, Trash2, ArrowUp, ArrowDown } from "lucide-react"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Separator } from "@/components/ui/separator"
+import { DEFAULT_STAGES } from "@/lib/constants"
+import { cn } from "@/lib/utils"
+import { useSetting, useUpdateSetting } from "@/hooks/use-settings"
+import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "@/i18n"
 
 interface StageConfig {
   id: string
@@ -27,15 +27,23 @@ interface StageConfig {
 }
 
 const PRESET_COLORS = [
-  '#6B7280', '#3B82F6', '#8B5CF6', '#F59E0B', '#10B981',
-  '#EF4444', '#06B6D4', '#F97316', '#EC4899', '#14B8A6',
+  "#6B7280",
+  "#3B82F6",
+  "#8B5CF6",
+  "#F59E0B",
+  "#10B981",
+  "#EF4444",
+  "#06B6D4",
+  "#F97316",
+  "#EC4899",
+  "#14B8A6",
 ]
 
 export default function PipelineSettingsPage() {
   const router = useRouter()
   const { t } = useTranslation()
-  const { data: pipelineSettings } = useSetting('pipeline')
-  const mutation = useUpdateSetting('pipeline')
+  const { data: pipelineSettings } = useSetting("pipeline")
+  const mutation = useUpdateSetting("pipeline")
   const { toast } = useToast()
 
   const [stages, setStages] = useState<StageConfig[]>(
@@ -65,9 +73,9 @@ export default function PipelineSettingsPage() {
   const addStage = () => {
     const newStage: StageConfig = {
       id: `stage_${Date.now()}`,
-      name: t('settings.newStage'),
+      name: t("settings.newStage"),
       probability: 50,
-      color: '#3B82F6',
+      color: "#3B82F6",
       isWon: false,
       isLost: false,
       order: stages.length,
@@ -76,26 +84,32 @@ export default function PipelineSettingsPage() {
   }
 
   const removeStage = (id: string) => {
-    setStages(stages.filter((s) => s.id !== id).map((s, idx) => ({ ...s, order: idx })))
+    setStages(
+      stages.filter((s) => s.id !== id).map((s, idx) => ({ ...s, order: idx }))
+    )
   }
 
-  const updateStage = (id: string, field: keyof StageConfig, value: string | number | boolean) => {
+  const updateStage = (
+    id: string,
+    field: keyof StageConfig,
+    value: string | number | boolean
+  ) => {
     setStages(
       stages.map((s) => {
         if (s.id !== id) return s
         const updated = { ...s, [field]: value }
         // If marking as Won, unmark Lost (and vice versa)
-        if (field === 'isWon' && value) updated.isLost = false
-        if (field === 'isLost' && value) updated.isWon = false
+        if (field === "isWon" && value) updated.isLost = false
+        if (field === "isLost" && value) updated.isWon = false
         return updated
       })
     )
   }
 
-  const moveStage = (id: string, direction: 'up' | 'down') => {
+  const moveStage = (id: string, direction: "up" | "down") => {
     const idx = stages.findIndex((s) => s.id === id)
     if (idx < 0) return
-    const newIdx = direction === 'up' ? idx - 1 : idx + 1
+    const newIdx = direction === "up" ? idx - 1 : idx + 1
     if (newIdx < 0 || newIdx >= stages.length) return
 
     const reordered = [...stages]
@@ -117,14 +131,18 @@ export default function PipelineSettingsPage() {
       })),
     }
     mutation.mutate(payload as any, {
-      onSuccess: () => toast({ description: 'Đã lưu cấu hình pipeline!' }),
-      onError: () => toast({ description: t('settings.pipelineSaveError'), variant: 'destructive' }),
+      onSuccess: () => toast({ description: "Đã lưu cấu hình pipeline!" }),
+      onError: () =>
+        toast({
+          description: t("settings.pipelineSaveError"),
+          variant: "destructive",
+        }),
     })
   }
 
   return (
     <PageShell
-      title={t('settings.pipelineConfig')}
+      title={t("settings.pipelineConfig")}
       description="Tùy chỉnh các giai đoạn trong phễu bán hàng"
       actions={
         <Button
@@ -133,7 +151,7 @@ export default function PipelineSettingsPage() {
           className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
         >
           <ArrowLeft className="w-4 h-4 mr-1.5" />
-          {t('common.back')}
+          {t("common.back")}
         </Button>
       }
     >
@@ -146,17 +164,19 @@ export default function PipelineSettingsPage() {
             >
               {/* Order + Move buttons */}
               <div className="flex flex-col items-center gap-1 pt-1">
-                <span className="text-xs text-[var(--crm-text-muted)] font-mono w-5 text-center">{idx + 1}</span>
+                <span className="text-xs text-[var(--crm-text-muted)] font-mono w-5 text-center">
+                  {idx + 1}
+                </span>
                 <div className="flex flex-col gap-0.5">
                   <button
-                    onClick={() => moveStage(stage.id, 'up')}
+                    onClick={() => moveStage(stage.id, "up")}
                     disabled={idx === 0}
                     className="p-0.5 text-[var(--crm-text-muted)] hover:text-[var(--crm-text-secondary)] disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <ArrowUp className="w-3 h-3" />
                   </button>
                   <button
-                    onClick={() => moveStage(stage.id, 'down')}
+                    onClick={() => moveStage(stage.id, "down")}
                     disabled={idx === stages.length - 1}
                     className="p-0.5 text-[var(--crm-text-muted)] hover:text-[var(--crm-text-secondary)] disabled:opacity-30 disabled:cursor-not-allowed"
                   >
@@ -167,17 +187,19 @@ export default function PipelineSettingsPage() {
 
               {/* Color picker */}
               <div className="space-y-1.5 shrink-0">
-                <Label className="text-[var(--crm-text-muted)] text-[10px]">Màu</Label>
+                <Label className="text-[var(--crm-text-muted)] text-[10px]">
+                  Màu
+                </Label>
                 <div className="flex gap-1 flex-wrap w-20">
                   {PRESET_COLORS.map((c) => (
                     <button
                       key={c}
-                      onClick={() => updateStage(stage.id, 'color', c)}
+                      onClick={() => updateStage(stage.id, "color", c)}
                       className={cn(
-                        'w-4 h-4 rounded-full border-2 transition-transform',
+                        "w-4 h-4 rounded-full border-2 transition-transform",
                         stage.color === c
-                          ? 'border-white scale-110'
-                          : 'border-transparent hover:scale-105'
+                          ? "border-white scale-110"
+                          : "border-transparent hover:scale-105"
                       )}
                       style={{ backgroundColor: c }}
                     />
@@ -187,24 +209,34 @@ export default function PipelineSettingsPage() {
 
               {/* Name */}
               <div className="flex-1 space-y-1.5">
-                <Label className="text-[var(--crm-text-muted)] text-[10px]">Tên giai đoạn</Label>
+                <Label className="text-[var(--crm-text-muted)] text-[10px]">
+                  Tên giai đoạn
+                </Label>
                 <Input
                   value={stage.name}
-                  onChange={(e) => updateStage(stage.id, 'name', e.target.value)}
+                  onChange={(e) =>
+                    updateStage(stage.id, "name", e.target.value)
+                  }
                   className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] h-8 text-sm"
                 />
               </div>
 
               {/* Probability */}
               <div className="w-24 space-y-1.5">
-                <Label className="text-[var(--crm-text-muted)] text-[10px]">{t('settings.probability')}</Label>
+                <Label className="text-[var(--crm-text-muted)] text-[10px]">
+                  {t("settings.probability")}
+                </Label>
                 <Input
                   type="number"
                   min={0}
                   max={100}
                   value={stage.probability}
                   onChange={(e) =>
-                    updateStage(stage.id, 'probability', Math.min(100, Math.max(0, Number(e.target.value))))
+                    updateStage(
+                      stage.id,
+                      "probability",
+                      Math.min(100, Math.max(0, Number(e.target.value)))
+                    )
                   }
                   className="bg-[var(--crm-bg-page)] border-[var(--crm-border)] text-[var(--crm-text-primary)] h-8 text-sm text-right"
                 />
@@ -215,18 +247,22 @@ export default function PipelineSettingsPage() {
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={stage.isWon}
-                    onCheckedChange={(v) => updateStage(stage.id, 'isWon', v)}
+                    onCheckedChange={(v) => updateStage(stage.id, "isWon", v)}
                     className="data-[state=checked]:bg-[#10B981] h-4 w-8"
                   />
-                  <span className="text-[10px] text-[var(--crm-text-muted)]">Won</span>
+                  <span className="text-[10px] text-[var(--crm-text-muted)]">
+                    Won
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={stage.isLost}
-                    onCheckedChange={(v) => updateStage(stage.id, 'isLost', v)}
+                    onCheckedChange={(v) => updateStage(stage.id, "isLost", v)}
                     className="data-[state=checked]:bg-[#EF4444] h-4 w-8"
                   />
-                  <span className="text-[10px] text-[var(--crm-text-muted)]">Lost</span>
+                  <span className="text-[10px] text-[var(--crm-text-muted)]">
+                    Lost
+                  </span>
                 </div>
               </div>
 
@@ -254,14 +290,16 @@ export default function PipelineSettingsPage() {
             className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:bg-[var(--crm-bg-subtle)]"
           >
             <Plus className="w-3.5 h-3.5 mr-1.5" />
-            {t('settings.addStage')}
+            {t("settings.addStage")}
           </Button>
 
           <Button
             onClick={handleSave}
             className="bg-[#10B981] hover:bg-[#10B981]/90 text-white"
           >
-            {mutation.isPending ? t('common.saving') : t('settings.saveChanges')}
+            {mutation.isPending
+              ? t("common.saving")
+              : t("settings.saveChanges")}
           </Button>
         </div>
       </Card>

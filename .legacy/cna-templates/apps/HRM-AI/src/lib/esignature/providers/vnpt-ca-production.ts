@@ -1,8 +1,8 @@
 // src/lib/esignature/providers/vnpt-ca-production.ts
 // VNPT-CA Production Provider with Remote Signing
 
-import crypto from 'crypto'
-import { v4 as uuidv4 } from 'uuid'
+import crypto from "crypto"
+import { v4 as uuidv4 } from "uuid"
 import type {
   ISignatureProvider,
   SignatureProviderCode,
@@ -11,14 +11,14 @@ import type {
   SignatureRequest,
   SignatureResult,
   SignatureVerification,
-} from '../types'
+} from "../types"
 
 // ═══════════════════════════════════════════════════════════════
 // CONFIGURATION
 // ═══════════════════════════════════════════════════════════════
 
 export interface VNPTCAConfig {
-  environment: 'sandbox' | 'production'
+  environment: "sandbox" | "production"
   baseUrl: string
   partnerId: string
   partnerSecret: string
@@ -50,11 +50,11 @@ export interface SigningSessionResponse {
   sessionId: string
   signingUrl: string
   expiresAt: Date
-  status: 'PENDING' | 'COMPLETED' | 'EXPIRED' | 'FAILED' | 'CANCELLED'
+  status: "PENDING" | "COMPLETED" | "EXPIRED" | "FAILED" | "CANCELLED"
 }
 
 export interface SigningStatus {
-  status: 'PENDING' | 'COMPLETED' | 'EXPIRED' | 'FAILED' | 'CANCELLED'
+  status: "PENDING" | "COMPLETED" | "EXPIRED" | "FAILED" | "CANCELLED"
   signature?: string
   signedAt?: Date
   errorMessage?: string
@@ -66,24 +66,24 @@ export interface SigningStatus {
 // ═══════════════════════════════════════════════════════════════
 
 export class VNPTCAProductionProvider implements ISignatureProvider {
-  readonly providerCode: SignatureProviderCode = 'VNPT_CA'
-  readonly providerName = 'VNPT-CA'
+  readonly providerCode: SignatureProviderCode = "VNPT_CA"
+  readonly providerName = "VNPT-CA"
 
   private config: VNPTCAConfig
   private configured = false
 
   constructor() {
-    const env = process.env.NODE_ENV === 'production' ? 'production' : 'sandbox'
+    const env = process.env.NODE_ENV === "production" ? "production" : "sandbox"
 
     this.config = {
       environment: env,
       baseUrl:
-        env === 'production'
-          ? 'https://api.ca.vnpt.vn/v2'
-          : 'https://sandbox.ca.vnpt.vn/v2',
-      partnerId: process.env.VNPT_CA_PARTNER_ID || '',
-      partnerSecret: process.env.VNPT_CA_PARTNER_SECRET || '',
-      callbackUrl: process.env.VNPT_CA_CALLBACK_URL || '',
+        env === "production"
+          ? "https://api.ca.vnpt.vn/v2"
+          : "https://sandbox.ca.vnpt.vn/v2",
+      partnerId: process.env.VNPT_CA_PARTNER_ID || "",
+      partnerSecret: process.env.VNPT_CA_PARTNER_SECRET || "",
+      callbackUrl: process.env.VNPT_CA_CALLBACK_URL || "",
     }
 
     this.configured = !!this.config.partnerId
@@ -93,7 +93,11 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
   // Configuration
   // ─────────────────────────────────────────────────────────────
 
-  configure(config: { apiEndpoint: string; clientId: string; clientSecret: string }): void {
+  configure(config: {
+    apiEndpoint: string
+    clientId: string
+    clientSecret: string
+  }): void {
     this.config = {
       ...this.config,
       baseUrl: config.apiEndpoint || this.config.baseUrl,
@@ -105,7 +109,7 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
 
   private ensureConfigured(): void {
     if (!this.configured) {
-      throw new Error('VNPT-CA provider not configured')
+      throw new Error("VNPT-CA provider not configured")
     }
   }
 
@@ -114,12 +118,15 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
   // ─────────────────────────────────────────────────────────────
 
   private signRequest(data: unknown, timestamp: string): string {
-    const payload = (data ? JSON.stringify(data) : '') + timestamp
-    return crypto.createHmac('sha256', this.config.partnerSecret).update(payload).digest('hex')
+    const payload = (data ? JSON.stringify(data) : "") + timestamp
+    return crypto
+      .createHmac("sha256", this.config.partnerSecret)
+      .update(payload)
+      .digest("hex")
   }
 
   private async apiRequest<T>(
-    method: 'GET' | 'POST',
+    method: "GET" | "POST",
     endpoint: string,
     data?: Record<string, unknown>
   ): Promise<T> {
@@ -129,10 +136,10 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
     const signature = this.signRequest(data, timestamp)
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'X-Partner-ID': this.config.partnerId,
-      'X-Timestamp': timestamp,
-      'X-Signature': signature,
+      "Content-Type": "application/json",
+      "X-Partner-ID": this.config.partnerId,
+      "X-Timestamp": timestamp,
+      "X-Signature": signature,
     }
 
     const url = `${this.config.baseUrl}${endpoint}`
@@ -146,7 +153,9 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
     const responseData = await response.json()
 
     if (!response.ok) {
-      const error = new Error(responseData.message || 'VNPT-CA API error') as Error & { code: string }
+      const error = new Error(
+        responseData.message || "VNPT-CA API error"
+      ) as Error & { code: string }
       error.code = responseData.errorCode
       throw error
     }
@@ -166,13 +175,17 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
         status: string
       }
 
-      const response = await this.apiRequest<AuthResponse>('POST', '/auth/verify', {
-        partnerId: this.config.partnerId,
-      })
+      const response = await this.apiRequest<AuthResponse>(
+        "POST",
+        "/auth/verify",
+        {
+          partnerId: this.config.partnerId,
+        }
+      )
 
-      return response.status === 'OK'
+      return response.status === "OK"
     } catch (error) {
-      console.error('VNPT-CA: Authentication failed', error)
+      console.error("VNPT-CA: Authentication failed", error)
       return false
     }
   }
@@ -181,7 +194,9 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
   // Certificate Operations
   // ─────────────────────────────────────────────────────────────
 
-  async getCertificateInfo(certificateSerial: string): Promise<CertificateInfo> {
+  async getCertificateInfo(
+    certificateSerial: string
+  ): Promise<CertificateInfo> {
     interface CertResponse {
       serial: string
       subjectDN: string
@@ -193,7 +208,10 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
       thumbprint: string
     }
 
-    const response = await this.apiRequest<CertResponse>('GET', `/certificates/${certificateSerial}`)
+    const response = await this.apiRequest<CertResponse>(
+      "GET",
+      `/certificates/${certificateSerial}`
+    )
 
     return {
       serial: response.serial,
@@ -207,7 +225,9 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
     }
   }
 
-  async validateCertificate(certificateSerial: string): Promise<CertificateValidation> {
+  async validateCertificate(
+    certificateSerial: string
+  ): Promise<CertificateValidation> {
     try {
       interface ValidationResponse {
         valid: boolean
@@ -217,11 +237,15 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
         errors?: string[]
       }
 
-      const response = await this.apiRequest<ValidationResponse>('POST', '/certificates/validate', {
-        serial: certificateSerial,
-        checkRevocation: true,
-        checkChain: true,
-      })
+      const response = await this.apiRequest<ValidationResponse>(
+        "POST",
+        "/certificates/validate",
+        {
+          serial: certificateSerial,
+          checkRevocation: true,
+          checkChain: true,
+        }
+      )
 
       return {
         isValid: response.valid,
@@ -255,7 +279,10 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
       }>
     }
 
-    const response = await this.apiRequest<ListResponse>('GET', `/certificates?userId=${employeeId}`)
+    const response = await this.apiRequest<ListResponse>(
+      "GET",
+      `/certificates?userId=${employeeId}`
+    )
 
     return response.certificates.map((cert) => ({
       serial: cert.serial,
@@ -273,7 +300,9 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
   // Signing Session Management
   // ─────────────────────────────────────────────────────────────
 
-  async createSigningSession(request: SigningSessionRequest): Promise<SigningSessionResponse> {
+  async createSigningSession(
+    request: SigningSessionRequest
+  ): Promise<SigningSessionResponse> {
     interface SessionResponse {
       sessionId: string
       signingUrl: string
@@ -281,49 +310,53 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
       status: string
     }
 
-    const response = await this.apiRequest<SessionResponse>('POST', '/signing/session', {
-      requestId: uuidv4(),
+    const response = await this.apiRequest<SessionResponse>(
+      "POST",
+      "/signing/session",
+      {
+        requestId: uuidv4(),
 
-      // Document info
-      documentId: request.documentId,
-      documentTitle: request.documentTitle,
-      documentHash: request.documentHash,
-      hashAlgorithm: 'SHA256',
+        // Document info
+        documentId: request.documentId,
+        documentTitle: request.documentTitle,
+        documentHash: request.documentHash,
+        hashAlgorithm: "SHA256",
 
-      // Signer info
-      signerUserId: request.signerId,
-      signerName: request.signerName,
-      signerEmail: request.signerEmail,
-      signerPhone: request.signerPhone,
+        // Signer info
+        signerUserId: request.signerId,
+        signerName: request.signerName,
+        signerEmail: request.signerEmail,
+        signerPhone: request.signerPhone,
 
-      // Signing position
-      signatureConfig: request.signaturePosition
-        ? {
-            page: request.signaturePosition.page,
-            x: request.signaturePosition.x,
-            y: request.signaturePosition.y,
-            width: request.signaturePosition.width || 150,
-            height: request.signaturePosition.height || 50,
-            showReason: true,
-            showDate: true,
-            showName: true,
-          }
-        : undefined,
+        // Signing position
+        signatureConfig: request.signaturePosition
+          ? {
+              page: request.signaturePosition.page,
+              x: request.signaturePosition.x,
+              y: request.signaturePosition.y,
+              width: request.signaturePosition.width || 150,
+              height: request.signaturePosition.height || 50,
+              showReason: true,
+              showDate: true,
+              showName: true,
+            }
+          : undefined,
 
-      // Callback
-      callbackUrl: this.config.callbackUrl,
+        // Callback
+        callbackUrl: this.config.callbackUrl,
 
-      // Options
-      requireOTP: true,
-      otpMethod: 'SMS', // SMS or EMAIL
-      expiresInMinutes: 30,
-    })
+        // Options
+        requireOTP: true,
+        otpMethod: "SMS", // SMS or EMAIL
+        expiresInMinutes: 30,
+      }
+    )
 
     return {
       sessionId: response.sessionId,
       signingUrl: response.signingUrl,
       expiresAt: new Date(response.expiresAt),
-      status: response.status as SigningSessionResponse['status'],
+      status: response.status as SigningSessionResponse["status"],
     }
   }
 
@@ -345,10 +378,13 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
       }
     }
 
-    const response = await this.apiRequest<StatusResponse>('GET', `/signing/session/${sessionId}/status`)
+    const response = await this.apiRequest<StatusResponse>(
+      "GET",
+      `/signing/session/${sessionId}/status`
+    )
 
     return {
-      status: response.status as SigningStatus['status'],
+      status: response.status as SigningStatus["status"],
       signature: response.signature,
       signedAt: response.signedAt ? new Date(response.signedAt) : undefined,
       errorMessage: response.errorMessage,
@@ -369,7 +405,7 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
 
   async cancelSession(sessionId: string): Promise<boolean> {
     try {
-      await this.apiRequest('POST', `/signing/session/${sessionId}/cancel`)
+      await this.apiRequest("POST", `/signing/session/${sessionId}/cancel`)
       return true
     } catch {
       return false
@@ -380,12 +416,18 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
   // Document Signing
   // ─────────────────────────────────────────────────────────────
 
-  async signDocument(request: SignatureRequest, documentData: Buffer): Promise<SignatureResult> {
+  async signDocument(
+    request: SignatureRequest,
+    documentData: Buffer
+  ): Promise<SignatureResult> {
     this.ensureConfigured()
 
     try {
       // Calculate document hash
-      const documentHash = crypto.createHash('sha256').update(documentData).digest('hex')
+      const documentHash = crypto
+        .createHash("sha256")
+        .update(documentData)
+        .digest("hex")
 
       // Create signing session
       const session = await this.createSigningSession({
@@ -411,13 +453,16 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
       const err = error as Error & { code?: string }
       return {
         success: false,
-        errorCode: err.code || 'SIGNING_ERROR',
+        errorCode: err.code || "SIGNING_ERROR",
         errorMessage: err.message,
       }
     }
   }
 
-  async signHash(hash: string, certificateSerial: string): Promise<SignatureResult> {
+  async signHash(
+    hash: string,
+    certificateSerial: string
+  ): Promise<SignatureResult> {
     this.ensureConfigured()
 
     try {
@@ -426,8 +471,8 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
       if (!validation.isValid) {
         return {
           success: false,
-          errorCode: 'INVALID_CERTIFICATE',
-          errorMessage: validation.errors.join(', '),
+          errorCode: "INVALID_CERTIFICATE",
+          errorMessage: validation.errors.join(", "),
         }
       }
 
@@ -437,11 +482,15 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
         transactionId: string
       }
 
-      const response = await this.apiRequest<SignHashResponse>('POST', '/signing/hash', {
-        documentHash: hash,
-        hashAlgorithm: 'SHA256',
-        certificateSerial,
-      })
+      const response = await this.apiRequest<SignHashResponse>(
+        "POST",
+        "/signing/hash",
+        {
+          documentHash: hash,
+          hashAlgorithm: "SHA256",
+          certificateSerial,
+        }
+      )
 
       return {
         success: true,
@@ -455,7 +504,7 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
       const err = error as Error & { code?: string }
       return {
         success: false,
-        errorCode: err.code || 'HASH_SIGNING_ERROR',
+        errorCode: err.code || "HASH_SIGNING_ERROR",
         errorMessage: err.message,
       }
     }
@@ -465,7 +514,9 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
   // Signature Verification
   // ─────────────────────────────────────────────────────────────
 
-  async verifySignature(signedDocument: Buffer): Promise<SignatureVerification[]> {
+  async verifySignature(
+    signedDocument: Buffer
+  ): Promise<SignatureVerification[]> {
     this.ensureConfigured()
 
     try {
@@ -485,14 +536,18 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
         }>
       }
 
-      const documentBase64 = signedDocument.toString('base64')
+      const documentBase64 = signedDocument.toString("base64")
 
-      const response = await this.apiRequest<VerifyResponse>('POST', '/verify', {
-        document: documentBase64,
-        verifyChain: true,
-        verifyRevocation: true,
-        verifyTimestamp: true,
-      })
+      const response = await this.apiRequest<VerifyResponse>(
+        "POST",
+        "/verify",
+        {
+          document: documentBase64,
+          verifyChain: true,
+          verifyRevocation: true,
+          verifyTimestamp: true,
+        }
+      )
 
       return response.signatures.map((sig) => ({
         isValid: sig.valid,
@@ -501,18 +556,18 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
         certificateInfo: {
           serial: sig.certificateSerial,
           subject: sig.signerName,
-          issuer: 'VNPT-CA',
+          issuer: "VNPT-CA",
           validFrom: new Date(),
           validTo: new Date(),
-          publicKey: '',
-          algorithm: 'SHA256withRSA',
-          thumbprint: '',
+          publicKey: "",
+          algorithm: "SHA256withRSA",
+          thumbprint: "",
         },
         isModified: sig.modified,
         errors: sig.errors || [],
       }))
     } catch (error) {
-      console.error('VNPT-CA: Verification failed', error)
+      console.error("VNPT-CA: Verification failed", error)
       return []
     }
   }
@@ -541,12 +596,12 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
     })
 
     const expectedSignature = crypto
-      .createHmac('sha256', this.config.partnerSecret)
+      .createHmac("sha256", this.config.partnerSecret)
       .update(dataToVerify)
-      .digest('hex')
+      .digest("hex")
 
     if (payload.signature !== expectedSignature) {
-      throw new Error('Invalid callback signature')
+      throw new Error("Invalid callback signature")
     }
 
     return {
@@ -561,16 +616,23 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
   // OTP Verification
   // ─────────────────────────────────────────────────────────────
 
-  async requestOTP(sessionId: string, method: 'SMS' | 'EMAIL'): Promise<boolean> {
+  async requestOTP(
+    sessionId: string,
+    method: "SMS" | "EMAIL"
+  ): Promise<boolean> {
     try {
       interface OTPResponse {
         sent: boolean
         expiresIn: number
       }
 
-      const response = await this.apiRequest<OTPResponse>('POST', `/signing/session/${sessionId}/otp`, {
-        method,
-      })
+      const response = await this.apiRequest<OTPResponse>(
+        "POST",
+        `/signing/session/${sessionId}/otp`,
+        {
+          method,
+        }
+      )
 
       return response.sent
     } catch {
@@ -585,7 +647,7 @@ export class VNPTCAProductionProvider implements ISignatureProvider {
       }
 
       const response = await this.apiRequest<VerifyOTPResponse>(
-        'POST',
+        "POST",
         `/signing/session/${sessionId}/otp/verify`,
         {
           otp,

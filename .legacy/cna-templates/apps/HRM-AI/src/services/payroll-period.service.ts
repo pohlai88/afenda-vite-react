@@ -1,11 +1,11 @@
 // src/services/payroll-period.service.ts
 // Payroll Period Service
 
-import { db } from '@/lib/db'
-import type { Prisma, PayrollStatus } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
-import { startOfMonth, endOfMonth, format } from 'date-fns'
-import { vi } from 'date-fns/locale'
+import { db } from "@/lib/db"
+import type { Prisma, PayrollStatus } from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
+import { startOfMonth, endOfMonth, format } from "date-fns"
+import { vi } from "date-fns/locale"
 
 export interface PayrollPeriodFilters {
   year?: number
@@ -76,7 +76,7 @@ export const payrollPeriodService = {
             },
           },
         },
-        orderBy: [{ year: 'desc' }, { month: 'desc' }],
+        orderBy: [{ year: "desc" }, { month: "desc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -142,12 +142,7 @@ export const payrollPeriodService = {
   /**
    * Create new period
    */
-  async create(
-    tenantId: string,
-    year: number,
-    month: number,
-    notes?: string
-  ) {
+  async create(tenantId: string, year: number, month: number, notes?: string) {
     // Check for existing period
     const existing = await this.findByYearMonth(tenantId, year, month)
     if (existing) {
@@ -167,7 +162,7 @@ export const payrollPeriodService = {
         month,
         periodStart,
         periodEnd,
-        status: 'DRAFT',
+        status: "DRAFT",
         notes,
       },
     })
@@ -186,11 +181,11 @@ export const payrollPeriodService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     if (period.isLocked) {
-      throw new Error('Kỳ lương đã khóa, không thể chỉnh sửa')
+      throw new Error("Kỳ lương đã khóa, không thể chỉnh sửa")
     }
 
     return db.payrollPeriod.update({
@@ -216,15 +211,15 @@ export const payrollPeriodService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     if (period.isLocked) {
-      throw new Error('Kỳ lương đã khóa, không thể xóa')
+      throw new Error("Kỳ lương đã khóa, không thể xóa")
     }
 
     if (period._count.payrolls > 0) {
-      throw new Error('Không thể xóa kỳ lương đã có dữ liệu')
+      throw new Error("Không thể xóa kỳ lương đã có dữ liệu")
     }
 
     return db.payrollPeriod.delete({
@@ -250,7 +245,7 @@ export const payrollPeriodService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     const now = new Date()
@@ -258,25 +253,25 @@ export const payrollPeriodService = {
 
     // Set timestamps based on status
     switch (status) {
-      case 'CALCULATING':
+      case "CALCULATING":
         break
-      case 'SIMULATED':
+      case "SIMULATED":
         updateData.calculatedAt = now
         break
-      case 'PENDING_APPROVAL':
+      case "PENDING_APPROVAL":
         break
-      case 'APPROVED':
+      case "APPROVED":
         updateData.approvedAt = now
         if (userId) {
           updateData.approver = { connect: { id: userId } }
         }
         break
-      case 'PAID':
+      case "PAID":
         updateData.paidAt = now
         updateData.isLocked = true
         updateData.lockedAt = now
         break
-      case 'CANCELLED':
+      case "CANCELLED":
         break
     }
 
@@ -295,7 +290,7 @@ export const payrollPeriodService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     return db.payrollPeriod.update({
@@ -316,7 +311,7 @@ export const payrollPeriodService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     return db.payrollPeriod.update({
@@ -368,8 +363,8 @@ export const payrollPeriodService = {
     const result = await db.payrollPeriod.findMany({
       where: { tenantId },
       select: { year: true },
-      distinct: ['year'],
-      orderBy: { year: 'desc' },
+      distinct: ["year"],
+      orderBy: { year: "desc" },
     })
     return result.map((r) => r.year)
   },
@@ -385,18 +380,14 @@ export const payrollPeriodService = {
           select: { payrolls: true },
         },
       },
-      orderBy: { month: 'asc' },
+      orderBy: { month: "asc" },
     })
   },
 
   /**
    * Create period if not exists
    */
-  async getOrCreate(
-    tenantId: string,
-    year: number,
-    month: number
-  ) {
+  async getOrCreate(tenantId: string, year: number, month: number) {
     const existing = await this.findByYearMonth(tenantId, year, month)
     if (existing) {
       return existing

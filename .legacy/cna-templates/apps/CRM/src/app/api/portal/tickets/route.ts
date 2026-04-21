@@ -1,16 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getPortalSession } from '@/lib/portal-auth'
-import { prisma } from '@/lib/prisma'
-import { portalCreateTicketSchema } from '@/lib/validations/portal'
-import { formatZodErrors } from '@/lib/validations/utils'
-import { eventBus, CRM_EVENTS } from '@/lib/events'
-import { autoAssignTicket } from '@/lib/tickets/auto-assign'
+import { NextRequest, NextResponse } from "next/server"
+import { getPortalSession } from "@/lib/portal-auth"
+import { prisma } from "@/lib/prisma"
+import { portalCreateTicketSchema } from "@/lib/validations/portal"
+import { formatZodErrors } from "@/lib/validations/utils"
+import { eventBus, CRM_EVENTS } from "@/lib/events"
+import { autoAssignTicket } from "@/lib/tickets/auto-assign"
 
 // GET — List tickets
 export async function GET() {
   const session = await getPortalSession()
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const tickets = await prisma.supportTicket.findMany({
@@ -18,7 +18,7 @@ export async function GET() {
     include: {
       _count: { select: { messages: true } },
     },
-    orderBy: { updatedAt: 'desc' },
+    orderBy: { updatedAt: "desc" },
     take: 50,
   })
 
@@ -29,14 +29,14 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await getPortalSession()
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const body = await req.json()
   const parsed = portalCreateTicketSchema.safeParse(body)
   if (!parsed.success) {
     return NextResponse.json(
-      { error: 'Dữ liệu không hợp lệ', details: formatZodErrors(parsed.error) },
+      { error: "Dữ liệu không hợp lệ", details: formatZodErrors(parsed.error) },
       { status: 400 }
     )
   }
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       ticketNumber,
       subject,
       category,
-      priority: priority || 'MEDIUM',
+      priority: priority || "MEDIUM",
       portalUserId: session.portalUser.id,
       companyId: session.portalUser.companyId,
       messages: {
@@ -65,13 +65,16 @@ export async function POST(req: NextRequest) {
   })
 
   // Fire-and-forget: emit ticket created event
-  const contactName = `${session.portalUser.firstName} ${session.portalUser.lastName}`.trim()
-  eventBus.emit(CRM_EVENTS.TICKET_CREATED, {
-    timestamp: new Date().toISOString(),
-    ticketId: ticket.id,
-    ticket: { subject, priority: priority || 'MEDIUM', status: 'OPEN' },
-    contactName,
-  }).catch(() => {})
+  const contactName =
+    `${session.portalUser.firstName} ${session.portalUser.lastName}`.trim()
+  eventBus
+    .emit(CRM_EVENTS.TICKET_CREATED, {
+      timestamp: new Date().toISOString(),
+      ticketId: ticket.id,
+      ticket: { subject, priority: priority || "MEDIUM", status: "OPEN" },
+      contactName,
+    })
+    .catch(() => {})
 
   // Fire-and-forget: auto-assign ticket based on strategy
   autoAssignTicket(ticket.id).catch(() => {})

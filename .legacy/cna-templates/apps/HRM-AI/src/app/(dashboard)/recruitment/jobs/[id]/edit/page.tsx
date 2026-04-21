@@ -1,25 +1,25 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Checkbox } from '@/components/ui/checkbox'
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { JOB_TYPE, WORK_MODE } from '@/lib/recruitment/constants'
+} from "@/components/ui/select"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import { JOB_TYPE, WORK_MODE } from "@/lib/recruitment/constants"
 
 interface JobPostingFormData {
   title: string
@@ -44,43 +44,43 @@ export default function EditJobPostingPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState<JobPostingFormData>({
-    title: '',
-    department: '',
-    jobType: 'FULL_TIME',
-    workMode: 'ONSITE',
-    location: '',
-    description: '',
-    requirements: '',
-    benefits: '',
-    salaryMin: '',
-    salaryMax: '',
+    title: "",
+    department: "",
+    jobType: "FULL_TIME",
+    workMode: "ONSITE",
+    location: "",
+    description: "",
+    requirements: "",
+    benefits: "",
+    salaryMin: "",
+    salaryMax: "",
     showSalary: true,
-    closingDate: '',
+    closingDate: "",
   })
 
   useEffect(() => {
     async function fetchJob() {
       try {
         const res = await fetch(`/api/recruitment/jobs/${id}`)
-        if (!res.ok) throw new Error('Không thể tải thông tin tin tuyển dụng')
+        if (!res.ok) throw new Error("Không thể tải thông tin tin tuyển dụng")
         const json = await res.json()
         const job = json.data ?? json
         setFormData({
-          title: job.title || '',
-          department: job.department || '',
-          jobType: job.jobType || 'FULL_TIME',
-          workMode: job.workMode || 'ONSITE',
-          location: job.location || '',
-          description: job.description || '',
-          requirements: job.requirements || '',
-          benefits: job.benefits || '',
-          salaryMin: job.salaryMin?.toString() || '',
-          salaryMax: job.salaryMax?.toString() || '',
+          title: job.title || "",
+          department: job.department || "",
+          jobType: job.jobType || "FULL_TIME",
+          workMode: job.workMode || "ONSITE",
+          location: job.location || "",
+          description: job.description || "",
+          requirements: job.requirements || "",
+          benefits: job.benefits || "",
+          salaryMin: job.salaryMin?.toString() || "",
+          salaryMax: job.salaryMax?.toString() || "",
           showSalary: job.showSalary ?? true,
-          closingDate: job.closingDate ? job.closingDate.split('T')[0] : '',
+          closingDate: job.closingDate ? job.closingDate.split("T")[0] : "",
         })
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -89,7 +89,7 @@ export default function EditJobPostingPage() {
   }, [id])
 
   const handleChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,18 +97,18 @@ export default function EditJobPostingPage() {
     setSubmitting(true)
     try {
       const res = await fetch(`/api/recruitment/jobs/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
           salaryMin: formData.salaryMin ? parseInt(formData.salaryMin) : null,
           salaryMax: formData.salaryMax ? parseInt(formData.salaryMax) : null,
         }),
       })
-      if (!res.ok) throw new Error('Không thể cập nhật tin tuyển dụng')
+      if (!res.ok) throw new Error("Không thể cập nhật tin tuyển dụng")
       router.push(`/recruitment/jobs/${id}`)
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      alert(err instanceof Error ? err.message : "Có lỗi xảy ra")
     } finally {
       setSubmitting(false)
     }
@@ -131,10 +131,7 @@ export default function EditJobPostingPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Chỉnh sửa tin tuyển dụng"
-        description={formData.title}
-      >
+      <PageHeader title="Chỉnh sửa tin tuyển dụng" description={formData.title}>
         <Link href={`/recruitment/jobs/${id}`}>
           <Button variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -155,7 +152,7 @@ export default function EditJobPostingPage() {
                 <Input
                   id="title"
                   value={formData.title}
-                  onChange={(e) => handleChange('title', e.target.value)}
+                  onChange={(e) => handleChange("title", e.target.value)}
                   required
                 />
               </div>
@@ -164,7 +161,7 @@ export default function EditJobPostingPage() {
                 <Input
                   id="department"
                   value={formData.department}
-                  onChange={(e) => handleChange('department', e.target.value)}
+                  onChange={(e) => handleChange("department", e.target.value)}
                 />
               </div>
             </div>
@@ -174,14 +171,16 @@ export default function EditJobPostingPage() {
                 <Label>Loại hình</Label>
                 <Select
                   value={formData.jobType}
-                  onValueChange={(v) => handleChange('jobType', v)}
+                  onValueChange={(v) => handleChange("jobType", v)}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(JOB_TYPE).map(([key, val]) => (
-                      <SelectItem key={key} value={key}>{val.label}</SelectItem>
+                      <SelectItem key={key} value={key}>
+                        {val.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -190,14 +189,16 @@ export default function EditJobPostingPage() {
                 <Label>Hình thức</Label>
                 <Select
                   value={formData.workMode}
-                  onValueChange={(v) => handleChange('workMode', v)}
+                  onValueChange={(v) => handleChange("workMode", v)}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(WORK_MODE).map(([key, val]) => (
-                      <SelectItem key={key} value={key}>{val.label}</SelectItem>
+                      <SelectItem key={key} value={key}>
+                        {val.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -207,7 +208,7 @@ export default function EditJobPostingPage() {
                 <Input
                   id="location"
                   value={formData.location}
-                  onChange={(e) => handleChange('location', e.target.value)}
+                  onChange={(e) => handleChange("location", e.target.value)}
                 />
               </div>
             </div>
@@ -219,7 +220,7 @@ export default function EditJobPostingPage() {
                   id="salaryMin"
                   type="number"
                   value={formData.salaryMin}
-                  onChange={(e) => handleChange('salaryMin', e.target.value)}
+                  onChange={(e) => handleChange("salaryMin", e.target.value)}
                   placeholder="VND"
                 />
               </div>
@@ -229,7 +230,7 @@ export default function EditJobPostingPage() {
                   id="salaryMax"
                   type="number"
                   value={formData.salaryMax}
-                  onChange={(e) => handleChange('salaryMax', e.target.value)}
+                  onChange={(e) => handleChange("salaryMax", e.target.value)}
                   placeholder="VND"
                 />
               </div>
@@ -239,7 +240,7 @@ export default function EditJobPostingPage() {
                   id="closingDate"
                   type="date"
                   value={formData.closingDate}
-                  onChange={(e) => handleChange('closingDate', e.target.value)}
+                  onChange={(e) => handleChange("closingDate", e.target.value)}
                 />
               </div>
             </div>
@@ -248,7 +249,9 @@ export default function EditJobPostingPage() {
               <Checkbox
                 id="showSalary"
                 checked={formData.showSalary}
-                onCheckedChange={(checked) => handleChange('showSalary', !!checked)}
+                onCheckedChange={(checked) =>
+                  handleChange("showSalary", !!checked)
+                }
               />
               <Label htmlFor="showSalary" className="text-sm">
                 Hiển thị mức lương trên tin tuyển dụng
@@ -267,7 +270,7 @@ export default function EditJobPostingPage() {
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => handleChange('description', e.target.value)}
+                onChange={(e) => handleChange("description", e.target.value)}
                 rows={6}
                 required
               />
@@ -277,7 +280,7 @@ export default function EditJobPostingPage() {
               <Textarea
                 id="requirements"
                 value={formData.requirements}
-                onChange={(e) => handleChange('requirements', e.target.value)}
+                onChange={(e) => handleChange("requirements", e.target.value)}
                 rows={5}
               />
             </div>
@@ -286,7 +289,7 @@ export default function EditJobPostingPage() {
               <Textarea
                 id="benefits"
                 value={formData.benefits}
-                onChange={(e) => handleChange('benefits', e.target.value)}
+                onChange={(e) => handleChange("benefits", e.target.value)}
                 rows={4}
               />
             </div>
@@ -295,10 +298,12 @@ export default function EditJobPostingPage() {
 
         <div className="flex justify-end gap-4">
           <Link href={`/recruitment/jobs/${id}`}>
-            <Button type="button" variant="outline">Hủy</Button>
+            <Button type="button" variant="outline">
+              Hủy
+            </Button>
           </Link>
           <Button type="submit" disabled={submitting}>
-            {submitting ? 'Đang lưu...' : 'Lưu thay đổi'}
+            {submitting ? "Đang lưu..." : "Lưu thay đổi"}
           </Button>
         </div>
       </form>

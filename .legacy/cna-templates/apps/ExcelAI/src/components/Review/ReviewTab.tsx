@@ -2,13 +2,13 @@
 // REVIEW TAB - Main Ribbon Tab
 // ============================================================
 
-import React, { useState } from 'react';
-import { useCommentsStore } from '../../stores/commentsStore';
-import { useTrackChangesStore } from '../../stores/trackChangesStore';
-import { useProtectionStore } from '../../stores/protectionStore';
-import { CommentPanel } from './CommentPanel';
-import { ChangesPanel } from './ChangesPanel';
-import { ProtectSheetDialog } from './ProtectSheetDialog';
+import React, { useState } from "react"
+import { useCommentsStore } from "../../stores/commentsStore"
+import { useTrackChangesStore } from "../../stores/trackChangesStore"
+import { useProtectionStore } from "../../stores/protectionStore"
+import { CommentPanel } from "./CommentPanel"
+import { ChangesPanel } from "./ChangesPanel"
+import { ProtectSheetDialog } from "./ProtectSheetDialog"
 import {
   MessageSquarePlus,
   Trash2,
@@ -23,17 +23,20 @@ import {
   XCircle,
   History,
   Shield,
-  Lock
-} from 'lucide-react';
-import './ReviewTab.css';
+  Lock,
+} from "lucide-react"
+import "./ReviewTab.css"
 
 interface ReviewTabProps {
-  sheetId: string;
-  selectedCell?: { row: number; col: number } | null;
+  sheetId: string
+  selectedCell?: { row: number; col: number } | null
 }
 
-export const ReviewTab: React.FC<ReviewTabProps> = ({ sheetId, selectedCell }) => {
-  const [showProtectDialog, setShowProtectDialog] = useState(false);
+export const ReviewTab: React.FC<ReviewTabProps> = ({
+  sheetId,
+  selectedCell,
+}) => {
+  const [showProtectDialog, setShowProtectDialog] = useState(false)
 
   const {
     addComment,
@@ -46,7 +49,7 @@ export const ReviewTab: React.FC<ReviewTabProps> = ({ sheetId, selectedCell }) =
     showAllComments,
     activeCommentId,
     getCommentsForSheet,
-  } = useCommentsStore();
+  } = useCommentsStore()
 
   const {
     settings: trackSettings,
@@ -59,25 +62,25 @@ export const ReviewTab: React.FC<ReviewTabProps> = ({ sheetId, selectedCell }) =
     showChangesPanel,
     selectedChangeId,
     getPendingChanges,
-  } = useTrackChangesStore();
+  } = useTrackChangesStore()
 
-  const { isSheetProtected, isWorkbookProtected } = useProtectionStore();
+  const { isSheetProtected, isWorkbookProtected } = useProtectionStore()
 
-  const comments = getCommentsForSheet(sheetId);
-  const pendingChanges = getPendingChanges(sheetId);
+  const comments = getCommentsForSheet(sheetId)
+  const pendingChanges = getPendingChanges(sheetId)
 
   const handleNewComment = () => {
     if (selectedCell) {
-      const cellRef = `${String.fromCharCode(65 + selectedCell.col)}${selectedCell.row + 1}`;
-      addComment(sheetId, cellRef, '');
+      const cellRef = `${String.fromCharCode(65 + selectedCell.col)}${selectedCell.row + 1}`
+      addComment(sheetId, cellRef, "")
     }
-  };
+  }
 
   const handleDeleteComment = () => {
     if (activeCommentId) {
-      deleteComment(activeCommentId, sheetId);
+      deleteComment(activeCommentId, sheetId)
     }
-  };
+  }
 
   return (
     <div className="review-tab">
@@ -123,13 +126,13 @@ export const ReviewTab: React.FC<ReviewTabProps> = ({ sheetId, selectedCell }) =
 
           <div className="ribbon-btn-stack">
             <button
-              className={`ribbon-btn-small ${showCommentsPanel ? 'active' : ''}`}
+              className={`ribbon-btn-small ${showCommentsPanel ? "active" : ""}`}
               onClick={toggleCommentsPanel}
             >
               <MessageSquare size={14} /> Show Panel
             </button>
             <button
-              className={`ribbon-btn-small ${showAllComments ? 'active' : ''}`}
+              className={`ribbon-btn-small ${showAllComments ? "active" : ""}`}
               onClick={toggleShowAllComments}
             >
               <MessagesSquare size={14} /> Show All
@@ -143,26 +146,35 @@ export const ReviewTab: React.FC<ReviewTabProps> = ({ sheetId, selectedCell }) =
       <div className="ribbon-group">
         <div className="ribbon-group-content">
           <button
-            className={`ribbon-btn-large ${trackSettings.enabled ? 'active' : ''}`}
+            className={`ribbon-btn-large ${trackSettings.enabled ? "active" : ""}`}
             onClick={toggleTrackChanges}
             title="Track Changes"
           >
-            <FileText size={24} color={trackSettings.enabled ? '#217346' : '#666'} />
+            <FileText
+              size={24}
+              color={trackSettings.enabled ? "#217346" : "#666"}
+            />
             <span className="btn-label">Track</span>
-            <span className="btn-sublabel">{trackSettings.enabled ? 'ON' : 'OFF'}</span>
+            <span className="btn-sublabel">
+              {trackSettings.enabled ? "ON" : "OFF"}
+            </span>
           </button>
 
           <div className="ribbon-btn-stack">
             <button
               className="ribbon-btn-small"
-              onClick={() => selectedChangeId && acceptChange(selectedChangeId, sheetId)}
+              onClick={() =>
+                selectedChangeId && acceptChange(selectedChangeId, sheetId)
+              }
               disabled={!selectedChangeId}
             >
               <Check size={14} color="#16a34a" /> Accept
             </button>
             <button
               className="ribbon-btn-small"
-              onClick={() => selectedChangeId && rejectChange(selectedChangeId, sheetId)}
+              onClick={() =>
+                selectedChangeId && rejectChange(selectedChangeId, sheetId)
+              }
               disabled={!selectedChangeId}
             >
               <X size={14} color="#dc2626" /> Reject
@@ -187,7 +199,7 @@ export const ReviewTab: React.FC<ReviewTabProps> = ({ sheetId, selectedCell }) =
           </div>
 
           <button
-            className={`ribbon-btn-small ${showChangesPanel ? 'active' : ''}`}
+            className={`ribbon-btn-small ${showChangesPanel ? "active" : ""}`}
             onClick={toggleChangesPanel}
           >
             <History size={14} /> History ({pendingChanges.length})
@@ -200,17 +212,20 @@ export const ReviewTab: React.FC<ReviewTabProps> = ({ sheetId, selectedCell }) =
       <div className="ribbon-group">
         <div className="ribbon-group-content">
           <button
-            className={`ribbon-btn-large ${isSheetProtected(sheetId) ? 'active' : ''}`}
+            className={`ribbon-btn-large ${isSheetProtected(sheetId) ? "active" : ""}`}
             onClick={() => setShowProtectDialog(true)}
             title="Protect Sheet"
           >
-            <Shield size={24} color={isSheetProtected(sheetId) ? '#217346' : '#666'} />
+            <Shield
+              size={24}
+              color={isSheetProtected(sheetId) ? "#217346" : "#666"}
+            />
             <span className="btn-label">Protect</span>
             <span className="btn-sublabel">Sheet</span>
           </button>
 
           <button
-            className={`ribbon-btn-small ${isWorkbookProtected() ? 'active' : ''}`}
+            className={`ribbon-btn-small ${isWorkbookProtected() ? "active" : ""}`}
             title="Protect Workbook"
           >
             <Lock size={14} /> Workbook
@@ -231,7 +246,7 @@ export const ReviewTab: React.FC<ReviewTabProps> = ({ sheetId, selectedCell }) =
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ReviewTab;
+export default ReviewTab

@@ -1,55 +1,61 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert } from '@/components/ui/alert';
-import { PieChart } from '@/components/analytics/charts/PieChart';
-import { BarChart } from '@/components/analytics/charts/BarChart';
-import { AlertTriangle, Users, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useEffect, useState } from "react"
+import { Card } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Alert } from "@/components/ui/alert"
+import { PieChart } from "@/components/analytics/charts/PieChart"
+import { BarChart } from "@/components/analytics/charts/BarChart"
+import {
+  AlertTriangle,
+  Users,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+} from "lucide-react"
 
 interface WorkforceComposition {
-  genderDistribution: { gender: string; count: number; percentage: number }[];
-  ageGroups: { group: string; count: number; percentage: number }[];
-  tenureDistribution: { range: string; count: number; percentage: number }[];
+  genderDistribution: { gender: string; count: number; percentage: number }[]
+  ageGroups: { group: string; count: number; percentage: number }[]
+  tenureDistribution: { range: string; count: number; percentage: number }[]
   departmentBreakdown: {
-    department: string;
-    departmentId: string;
-    headcount: number;
-    percentage: number;
-    avgAge: number;
-    avgTenure: number;
-  }[];
+    department: string
+    departmentId: string
+    headcount: number
+    percentage: number
+    avgAge: number
+    avgTenure: number
+  }[]
   headcount: {
-    total: number;
-    active: number;
-    newHires: number;
-    terminated: number;
-    netChange: number;
-  };
+    total: number
+    active: number
+    newHires: number
+    terminated: number
+    netChange: number
+  }
 }
 
 export default function HRAnalyticsPage() {
-  const [data, setData] = useState<WorkforceComposition | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<WorkforceComposition | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        setLoading(true);
-        const response = await fetch('/api/analytics/hr');
-        if (!response.ok) throw new Error('Không thể tải dữ liệu');
-        const result = await response.json();
-        setData(result.data ?? result);
+        setLoading(true)
+        const response = await fetch("/api/analytics/hr")
+        if (!response.ok) throw new Error("Không thể tải dữ liệu")
+        const result = await response.json()
+        setData(result.data ?? result)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi');
+        setError(err instanceof Error ? err.message : "Đã xảy ra lỗi")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   if (loading) {
     return (
@@ -73,7 +79,7 @@ export default function HRAnalyticsPage() {
           <Skeleton className="h-[200px] w-full" />
         </Card>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -84,42 +90,48 @@ export default function HRAnalyticsPage() {
           <span>{error}</span>
         </Alert>
       </div>
-    );
+    )
   }
 
-  if (!data) return null;
+  if (!data) return null
 
   const genderChart = {
-    labels: (data.genderDistribution ?? []).map((g) => g.gender || 'Không rõ'),
+    labels: (data.genderDistribution ?? []).map((g) => g.gender || "Không rõ"),
     datasets: [
       {
-        label: 'Giới tính',
+        label: "Giới tính",
         data: (data.genderDistribution ?? []).map((g) => g.count),
       },
     ],
-  };
+  }
 
   const ageChart = {
     labels: (data.ageGroups ?? []).map((a) => a.group),
     datasets: [
       {
-        label: 'Số nhân viên',
+        label: "Số nhân viên",
         data: (data.ageGroups ?? []).map((a) => a.count),
       },
     ],
-  };
+  }
 
   const tenureChart = {
     labels: (data.tenureDistribution ?? []).map((t) => t.range),
     datasets: [
       {
-        label: 'Số nhân viên',
+        label: "Số nhân viên",
         data: (data.tenureDistribution ?? []).map((t) => t.count),
       },
     ],
-  };
+  }
 
-  const headcount = data.headcount ?? { total: 0, active: 0, newHires: 0, terminated: 0, netChange: 0 };
+  const headcount = data.headcount ?? {
+    total: 0,
+    active: 0,
+    newHires: 0,
+    terminated: 0,
+    netChange: 0,
+  }
 
   return (
     <div className="space-y-6 p-6">
@@ -133,25 +145,33 @@ export default function HRAnalyticsPage() {
         </Card>
         <Card className="p-4 text-center">
           <div className="text-sm text-muted-foreground">Đang làm việc</div>
-          <div className="text-2xl font-bold mt-1 text-green-600">{headcount.active}</div>
+          <div className="text-2xl font-bold mt-1 text-green-600">
+            {headcount.active}
+          </div>
         </Card>
         <Card className="p-4 text-center">
           <div className="text-sm text-muted-foreground">Tuyển mới</div>
-          <div className="text-2xl font-bold mt-1 text-blue-600">{headcount.newHires}</div>
+          <div className="text-2xl font-bold mt-1 text-blue-600">
+            {headcount.newHires}
+          </div>
         </Card>
         <Card className="p-4 text-center">
           <div className="text-sm text-muted-foreground">Nghỉ việc</div>
-          <div className="text-2xl font-bold mt-1 text-red-600">{headcount.terminated}</div>
+          <div className="text-2xl font-bold mt-1 text-red-600">
+            {headcount.terminated}
+          </div>
         </Card>
         <Card className="p-4 text-center">
           <div className="text-sm text-muted-foreground">Thay đổi ròng</div>
-          <div className={`text-2xl font-bold mt-1 flex items-center justify-center gap-1 ${
-            headcount.netChange > 0
-              ? 'text-green-600'
-              : headcount.netChange < 0
-              ? 'text-red-600'
-              : 'text-muted-foreground'
-          }`}>
+          <div
+            className={`text-2xl font-bold mt-1 flex items-center justify-center gap-1 ${
+              headcount.netChange > 0
+                ? "text-green-600"
+                : headcount.netChange < 0
+                  ? "text-red-600"
+                  : "text-muted-foreground"
+            }`}
+          >
             {headcount.netChange > 0 ? (
               <TrendingUp className="h-5 w-5" />
             ) : headcount.netChange < 0 ? (
@@ -159,7 +179,8 @@ export default function HRAnalyticsPage() {
             ) : (
               <Minus className="h-5 w-5" />
             )}
-            {headcount.netChange > 0 ? '+' : ''}{headcount.netChange}
+            {headcount.netChange > 0 ? "+" : ""}
+            {headcount.netChange}
           </div>
         </Card>
       </div>
@@ -201,7 +222,9 @@ export default function HRAnalyticsPage() {
       {/* Department Breakdown Table */}
       {(data.departmentBreakdown ?? []).length > 0 && (
         <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">Phân bổ nhân sự theo phòng ban</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            Phân bổ nhân sự theo phòng ban
+          </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -215,7 +238,10 @@ export default function HRAnalyticsPage() {
               </thead>
               <tbody>
                 {data.departmentBreakdown.map((dept) => (
-                  <tr key={dept.departmentId} className="border-b hover:bg-muted/50">
+                  <tr
+                    key={dept.departmentId}
+                    className="border-b hover:bg-muted/50"
+                  >
                     <td className="py-2 px-3">{dept.department}</td>
                     <td className="text-right py-2 px-3">{dept.headcount}</td>
                     <td className="text-right py-2 px-3">{dept.percentage}%</td>
@@ -229,5 +255,5 @@ export default function HRAnalyticsPage() {
         </Card>
       )}
     </div>
-  );
+  )
 }

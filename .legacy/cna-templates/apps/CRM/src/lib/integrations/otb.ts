@@ -1,4 +1,4 @@
-import { callModule } from '@/lib/integration'
+import { callModule } from "@/lib/integration"
 
 export async function syncPipelineToOtb(forecast: {
   period: string
@@ -12,11 +12,11 @@ export async function syncPipelineToOtb(forecast: {
   }>
 }): Promise<boolean> {
   try {
-    await callModule('otb', '/api/internal/demand-signals', {
-      method: 'POST',
+    await callModule("otb", "/api/internal/demand-signals", {
+      method: "POST",
       body: JSON.stringify({
-        source: 'vierp-crm',
-        type: 'pipeline-forecast',
+        source: "vierp-crm",
+        type: "pipeline-forecast",
         ...forecast,
       }),
     })
@@ -28,7 +28,7 @@ export async function syncPipelineToOtb(forecast: {
 
 export async function getOtbBudgetInfo(budgetRef: string): Promise<any | null> {
   try {
-    return await callModule('otb', `/api/internal/budgets/${budgetRef}`)
+    return await callModule("otb", `/api/internal/budgets/${budgetRef}`)
   } catch {
     return null
   }

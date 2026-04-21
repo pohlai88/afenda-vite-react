@@ -1,10 +1,10 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { Unauthorized, NotFound, handleApiError } from '@/lib/api/errors'
-import { apiSuccess, apiNoContent } from '@/lib/api/response'
-import { validateRequest, updateWebhookSchema } from '@/lib/validations'
+import { NextRequest } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { Unauthorized, NotFound, handleApiError } from "@/lib/api/errors"
+import { apiSuccess, apiNoContent } from "@/lib/api/response"
+import { validateRequest, updateWebhookSchema } from "@/lib/validations"
 
 // GET /api/webhooks/[id] — Webhook detail with recent logs
 export async function GET(
@@ -12,27 +12,29 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
 
     const webhook = await prisma.webhook.findUnique({
       where: { id: params.id },
       include: {
         logs: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           take: 20,
         },
       },
     })
 
-    if (!webhook) return handleApiError(NotFound('Webhook'), '/api/webhooks/[id]')
+    if (!webhook)
+      return handleApiError(NotFound("Webhook"), "/api/webhooks/[id]")
 
     // Don't expose the secret
     const { secret: _, ...rest } = webhook
     return apiSuccess(rest)
   } catch (error) {
-    if (error instanceof AuthError) return handleApiError(Unauthorized(error.message), '/api/webhooks/[id]')
-    return handleApiError(error, '/api/webhooks/[id]')
+    if (error instanceof AuthError)
+      return handleApiError(Unauthorized(error.message), "/api/webhooks/[id]")
+    return handleApiError(error, "/api/webhooks/[id]")
   }
 }
 
@@ -42,11 +44,14 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
 
-    const existing = await prisma.webhook.findUnique({ where: { id: params.id } })
-    if (!existing) return handleApiError(NotFound('Webhook'), '/api/webhooks/[id]')
+    const existing = await prisma.webhook.findUnique({
+      where: { id: params.id },
+    })
+    if (!existing)
+      return handleApiError(NotFound("Webhook"), "/api/webhooks/[id]")
 
     const body = await req.json()
     const data = validateRequest(updateWebhookSchema, body)
@@ -59,8 +64,9 @@ export async function PATCH(
     const { secret: _, ...rest } = updated
     return apiSuccess(rest)
   } catch (error) {
-    if (error instanceof AuthError) return handleApiError(Unauthorized(error.message), '/api/webhooks/[id]')
-    return handleApiError(error, '/api/webhooks/[id]')
+    if (error instanceof AuthError)
+      return handleApiError(Unauthorized(error.message), "/api/webhooks/[id]")
+    return handleApiError(error, "/api/webhooks/[id]")
   }
 }
 
@@ -70,17 +76,21 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
 
-    const existing = await prisma.webhook.findUnique({ where: { id: params.id } })
-    if (!existing) return handleApiError(NotFound('Webhook'), '/api/webhooks/[id]')
+    const existing = await prisma.webhook.findUnique({
+      where: { id: params.id },
+    })
+    if (!existing)
+      return handleApiError(NotFound("Webhook"), "/api/webhooks/[id]")
 
     await prisma.webhook.delete({ where: { id: params.id } })
 
     return apiNoContent()
   } catch (error) {
-    if (error instanceof AuthError) return handleApiError(Unauthorized(error.message), '/api/webhooks/[id]')
-    return handleApiError(error, '/api/webhooks/[id]')
+    if (error instanceof AuthError)
+      return handleApiError(Unauthorized(error.message), "/api/webhooks/[id]")
+    return handleApiError(error, "/api/webhooks/[id]")
   }
 }

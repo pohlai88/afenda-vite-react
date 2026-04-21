@@ -37,8 +37,8 @@ Mô tả ngắn gọn về thay đổi. / Brief description of changes.
 
 ## Ảnh chụp / Screenshots (nếu thay đổi giao diện / if UI changes)
 
-Trước / Before | Sau / After
---- | ---
+| Trước / Before | Sau / After |
+| -------------- | ----------- |
 
 ## Issues liên quan / Related Issues
 

@@ -10,30 +10,40 @@ import type {
   SignatureRequest,
   SignatureResult,
   SignatureVerification,
-} from '../types'
+} from "../types"
 
 // ═══════════════════════════════════════════════════════════════
 // VNPT-CA PROVIDER
 // ═══════════════════════════════════════════════════════════════
 
 export class VNPTCAProvider implements ISignatureProvider {
-  readonly providerCode: SignatureProviderCode = 'VNPT_CA'
-  readonly providerName = 'VNPT-CA'
+  readonly providerCode: SignatureProviderCode = "VNPT_CA"
+  readonly providerName = "VNPT-CA"
 
-  private config: { apiEndpoint: string; clientId: string; clientSecret: string } | null = null
+  private config: {
+    apiEndpoint: string
+    clientId: string
+    clientSecret: string
+  } | null = null
   private accessToken: string | null = null
 
   // ─────────────────────────────────────────────────────────────
   // Configuration
   // ─────────────────────────────────────────────────────────────
 
-  configure(config: { apiEndpoint: string; clientId: string; clientSecret: string }): void {
+  configure(config: {
+    apiEndpoint: string
+    clientId: string
+    clientSecret: string
+  }): void {
     this.config = config
   }
 
   private ensureConfigured(): void {
     if (!this.config) {
-      throw new Error('VNPT-CA provider not configured. Call configure() first.')
+      throw new Error(
+        "VNPT-CA provider not configured. Call configure() first."
+      )
     }
   }
 
@@ -47,10 +57,10 @@ export class VNPTCAProvider implements ISignatureProvider {
     try {
       // In production, call VNPT-CA OAuth endpoint
       // Simulate successful auth
-      this.accessToken = 'vnpt-ca-token-' + Date.now()
+      this.accessToken = "vnpt-ca-token-" + Date.now()
       return true
     } catch (error) {
-      console.error('VNPT-CA authentication failed:', error)
+      console.error("VNPT-CA authentication failed:", error)
       return false
     }
   }
@@ -59,7 +69,9 @@ export class VNPTCAProvider implements ISignatureProvider {
   // Certificate Operations
   // ─────────────────────────────────────────────────────────────
 
-  async getCertificateInfo(certificateSerial: string): Promise<CertificateInfo> {
+  async getCertificateInfo(
+    certificateSerial: string
+  ): Promise<CertificateInfo> {
     this.ensureConfigured()
 
     // In production, call VNPT-CA API to get certificate details
@@ -67,17 +79,19 @@ export class VNPTCAProvider implements ISignatureProvider {
     // Simulated response
     return {
       serial: certificateSerial,
-      subject: 'CN=NGUYEN VAN A, O=COMPANY ABC, C=VN',
-      issuer: 'CN=VNPT-CA, O=VNPT Group, C=VN',
-      validFrom: new Date('2024-01-01'),
-      validTo: new Date('2025-12-31'),
-      publicKey: 'RSA-2048',
-      algorithm: 'SHA256withRSA',
-      thumbprint: 'A1B2C3D4E5F6...',
+      subject: "CN=NGUYEN VAN A, O=COMPANY ABC, C=VN",
+      issuer: "CN=VNPT-CA, O=VNPT Group, C=VN",
+      validFrom: new Date("2024-01-01"),
+      validTo: new Date("2025-12-31"),
+      publicKey: "RSA-2048",
+      algorithm: "SHA256withRSA",
+      thumbprint: "A1B2C3D4E5F6...",
     }
   }
 
-  async validateCertificate(certificateSerial: string): Promise<CertificateValidation> {
+  async validateCertificate(
+    certificateSerial: string
+  ): Promise<CertificateValidation> {
     this.ensureConfigured()
 
     // In production, call VNPT-CA validation API
@@ -92,7 +106,7 @@ export class VNPTCAProvider implements ISignatureProvider {
       isExpired,
       isRevoked: false,
       isTrusted: true,
-      errors: isExpired ? ['Chứng thư số đã hết hạn'] : [],
+      errors: isExpired ? ["Chứng thư số đã hết hạn"] : [],
     }
   }
 
@@ -109,7 +123,10 @@ export class VNPTCAProvider implements ISignatureProvider {
   // Signing Operations
   // ─────────────────────────────────────────────────────────────
 
-  async signDocument(request: SignatureRequest, documentData: Buffer): Promise<SignatureResult> {
+  async signDocument(
+    request: SignatureRequest,
+    documentData: Buffer
+  ): Promise<SignatureResult> {
     this.ensureConfigured()
 
     // In production, this would:
@@ -122,8 +139,8 @@ export class VNPTCAProvider implements ISignatureProvider {
     if (!validation.isValid) {
       return {
         success: false,
-        errorCode: 'INVALID_CERTIFICATE',
-        errorMessage: validation.errors.join(', '),
+        errorCode: "INVALID_CERTIFICATE",
+        errorMessage: validation.errors.join(", "),
       }
     }
 
@@ -134,13 +151,15 @@ export class VNPTCAProvider implements ISignatureProvider {
       success: true,
       signatureId: `SIG-${Date.now()}`,
       signedAt: new Date(),
-      signatureData: Buffer.from('simulated-signature').toString('base64'),
+      signatureData: Buffer.from("simulated-signature").toString("base64"),
       signatureHash,
       transactionId: `VNPT-${Date.now()}`,
     }
   }
 
-  async verifySignature(signedDocument: Buffer): Promise<SignatureVerification[]> {
+  async verifySignature(
+    signedDocument: Buffer
+  ): Promise<SignatureVerification[]> {
     this.ensureConfigured()
 
     // In production, parse PDF and verify each signature
@@ -149,7 +168,10 @@ export class VNPTCAProvider implements ISignatureProvider {
     return []
   }
 
-  async signHash(hash: string, certificateSerial: string): Promise<SignatureResult> {
+  async signHash(
+    hash: string,
+    certificateSerial: string
+  ): Promise<SignatureResult> {
     this.ensureConfigured()
 
     // In production, call remote signing API
@@ -159,8 +181,8 @@ export class VNPTCAProvider implements ISignatureProvider {
     if (!validation.isValid) {
       return {
         success: false,
-        errorCode: 'INVALID_CERTIFICATE',
-        errorMessage: validation.errors.join(', '),
+        errorCode: "INVALID_CERTIFICATE",
+        errorMessage: validation.errors.join(", "),
       }
     }
 
@@ -168,7 +190,7 @@ export class VNPTCAProvider implements ISignatureProvider {
       success: true,
       signatureId: `HASH-SIG-${Date.now()}`,
       signedAt: new Date(),
-      signatureData: Buffer.from('signed-hash').toString('base64'),
+      signatureData: Buffer.from("signed-hash").toString("base64"),
       signatureHash: hash,
       transactionId: `VNPT-HASH-${Date.now()}`,
     }
@@ -180,7 +202,7 @@ export class VNPTCAProvider implements ISignatureProvider {
 
   private generateHash(data: Buffer): string {
     // In production, use crypto.createHash('sha256')
-    const simpleHash = data.length.toString(16) + '-' + Date.now().toString(36)
+    const simpleHash = data.length.toString(16) + "-" + Date.now().toString(36)
     return simpleHash
   }
 }

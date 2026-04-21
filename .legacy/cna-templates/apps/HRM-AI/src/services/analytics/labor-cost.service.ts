@@ -1,15 +1,15 @@
 // src/services/analytics/labor-cost.service.ts
 // Labor Cost Analytics Service
 
-import { calculateLaborCostMetrics } from '@/lib/analytics/calculators/labor-cost'
-import { db } from '@/lib/db'
+import { calculateLaborCostMetrics } from "@/lib/analytics/calculators/labor-cost"
+import { db } from "@/lib/db"
 
 // Simple in-memory cache
 const cache = new Map<string, { data: unknown; expiresAt: number }>()
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 function getCacheKey(tenantId: string, date: Date): string {
-  return `labor-cost:${tenantId}:${date.toISOString().split('T')[0]}`
+  return `labor-cost:${tenantId}:${date.toISOString().split("T")[0]}`
 }
 
 export async function getLaborCostMetrics(
@@ -50,8 +50,8 @@ export async function calculateAndStoreLaborCost(
   const existing = await db.analyticsMetric.findFirst({
     where: {
       tenantId,
-      metricType: 'LABOR_COST',
-      period: 'MONTHLY',
+      metricType: "LABOR_COST",
+      period: "MONTHLY",
       periodStart,
       departmentId: null,
     },
@@ -76,8 +76,8 @@ export async function calculateAndStoreLaborCost(
     await db.analyticsMetric.create({
       data: {
         tenantId,
-        metricType: 'LABOR_COST',
-        period: 'MONTHLY',
+        metricType: "LABOR_COST",
+        period: "MONTHLY",
         periodStart,
         periodEnd,
         value: result.total,

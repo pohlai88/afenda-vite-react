@@ -8,14 +8,14 @@
 
 ## Current Status: PRODUCTION READY
 
-| Metric | Status |
-|--------|--------|
-| Build | Passing (18.3s) |
-| Tests | 1,856 passing (34 test files) |
-| TypeScript | Strict mode, 0 errors |
-| Type Safety | 5 `as any` remaining (external lib boundaries only) |
+| Metric          | Status                                                  |
+| --------------- | ------------------------------------------------------- |
+| Build           | Passing (18.3s)                                         |
+| Tests           | 1,856 passing (34 test files)                           |
+| TypeScript      | Strict mode, 0 errors                                   |
+| Type Safety     | 5 `as any` remaining (external lib boundaries only)     |
 | Console Hygiene | 0 raw console calls in production code (all use logger) |
-| Deployment | Ready (`dist/` folder) |
+| Deployment      | Ready (`dist/` folder)                                  |
 
 ---
 
@@ -92,41 +92,45 @@
 
 ## Feature Completeness
 
-| Feature | Rating | Notes |
-|---------|--------|-------|
-| Formula Engine | 5/5 | 162 functions, production-ready |
-| Basic Spreadsheet | 5/5 | Cell editing, formatting, freeze panes |
-| Charts | 5/5 | 19 chart types, auto-recommendations |
-| Collaboration | 4/5 | CRDT, presence, comments (needs WebSocket server) |
-| AI Copilot | 5/5 | Context assembly, tool calling, grounding |
-| Data Cleaning | 5/5 | Quality analysis, duplicates, outliers |
-| Natural Language | 4/5 | NL-to-formula conversion |
-| Pivot Tables | 5/5 | Full CRUD, aggregations, slicers, timelines |
-| Macros | 5/5 | All 19 action types implemented |
-| File Import/Export | 5/5 | XLSX, CSV, TSV, PDF with proper types |
-| Logging & Observability | 5/5 | Structured logger, env-aware, module-scoped |
-| Mobile | 2/5 | Desktop-first, stubs present |
-| Accessibility | 2.5/5 | Basic keyboard, AriaGrid stub |
+| Feature                 | Rating | Notes                                             |
+| ----------------------- | ------ | ------------------------------------------------- |
+| Formula Engine          | 5/5    | 162 functions, production-ready                   |
+| Basic Spreadsheet       | 5/5    | Cell editing, formatting, freeze panes            |
+| Charts                  | 5/5    | 19 chart types, auto-recommendations              |
+| Collaboration           | 4/5    | CRDT, presence, comments (needs WebSocket server) |
+| AI Copilot              | 5/5    | Context assembly, tool calling, grounding         |
+| Data Cleaning           | 5/5    | Quality analysis, duplicates, outliers            |
+| Natural Language        | 4/5    | NL-to-formula conversion                          |
+| Pivot Tables            | 5/5    | Full CRUD, aggregations, slicers, timelines       |
+| Macros                  | 5/5    | All 19 action types implemented                   |
+| File Import/Export      | 5/5    | XLSX, CSV, TSV, PDF with proper types             |
+| Logging & Observability | 5/5    | Structured logger, env-aware, module-scoped       |
+| Mobile                  | 2/5    | Desktop-first, stubs present                      |
+| Accessibility           | 2.5/5  | Basic keyboard, AriaGrid stub                     |
 
 ---
 
 ## Known Issues / Technical Debt
 
 ### Resolved (2026-03-17)
+
 - ~~134 raw console.log/warn/error calls~~ → All replaced with structured logger
 - ~~8+ `any` types in source code~~ → Reduced to 5 (external lib boundaries only)
 - ~~TODO/FIXME comments~~ → 0 remaining
 
 ### High Priority
+
 1. **WebSocket Server** - Collaboration needs backend server deployment
 
 ### Medium Priority
+
 2. Mobile responsive design (stubs in `src/components/Mobile/`)
 3. WCAG 2.1 accessibility compliance (AriaGrid stub exists)
 4. Performance testing at scale (50k+ rows)
 5. Main bundle size 1,711KB — needs code-splitting
 
 ### Low Priority
+
 6. Solver/Goal Seek (engine stub in `src/engine/solver/`)
 7. Power Query subset (stub in `src/powerquery/`)
 8. Custom function scripting (VBA converter tool started)
@@ -186,6 +190,7 @@ npx tsc --noEmit
 ## Next Steps (Roadmap)
 
 ### Phase 1 - Production Ready
+
 - [x] Complete 19 macro action stubs
 - [x] Improve type safety (reduce `any` types)
 - [x] Replace raw console calls with structured logger
@@ -194,11 +199,13 @@ npx tsc --noEmit
 - [ ] Code-split main bundle (currently 1,711KB)
 
 ### Phase 2 - Enterprise Features
+
 - [ ] Mobile responsive design
 - [ ] WCAG 2.1 accessibility compliance
 - [ ] Performance testing (50k+ rows)
 
 ### Phase 3 - Advanced Features
+
 - [ ] Solver/Goal Seek (engine exists, needs UI integration)
 - [ ] Power Query subset
 - [ ] Custom function scripting
@@ -208,9 +215,11 @@ npx tsc --noEmit
 ## How to Continue
 
 When returning to this project, ask:
+
 > "Doc file HANDOVER.md de tiep tuc"
 
 Or in English:
+
 > "Read HANDOVER.md to continue"
 
 This will give full context of the project status.

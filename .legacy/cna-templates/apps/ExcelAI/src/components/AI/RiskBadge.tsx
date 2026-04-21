@@ -2,23 +2,23 @@
 // RISK BADGE — Visual risk level indicator (Blueprint §2.2.3)
 // =============================================================================
 
-import React from 'react';
-import type { RiskLevel, DetectedRisk } from '../../ai/sandbox/types';
+import React from "react"
+import type { RiskLevel, DetectedRisk } from "../../ai/sandbox/types"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 interface RiskBadgeProps {
-  level: RiskLevel;
-  score?: number;
-  showScore?: boolean;
-  size?: 'small' | 'medium' | 'large';
+  level: RiskLevel
+  score?: number
+  showScore?: boolean
+  size?: "small" | "medium" | "large"
 }
 
 interface RiskDetailsProps {
-  risks: DetectedRisk[];
-  compact?: boolean;
+  risks: DetectedRisk[]
+  compact?: boolean
 }
 
 // -----------------------------------------------------------------------------
@@ -29,29 +29,29 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({
   level,
   score,
   showScore = false,
-  size = 'medium',
+  size = "medium",
 }) => {
   const getIcon = () => {
     switch (level) {
-      case 'low':
-        return '🟢';
-      case 'medium':
-        return '🟡';
-      case 'high':
-        return '🔴';
+      case "low":
+        return "🟢"
+      case "medium":
+        return "🟡"
+      case "high":
+        return "🔴"
     }
-  };
+  }
 
   const getLabel = () => {
     switch (level) {
-      case 'low':
-        return 'Low Risk';
-      case 'medium':
-        return 'Medium Risk';
-      case 'high':
-        return 'High Risk';
+      case "low":
+        return "Low Risk"
+      case "medium":
+        return "Medium Risk"
+      case "high":
+        return "High Risk"
     }
-  };
+  }
 
   return (
     <div className={`risk-badge risk-badge--${level} risk-badge--${size}`}>
@@ -61,8 +61,8 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({
         <span className="risk-badge-score">{score}/100</span>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Risk Details Component
@@ -78,26 +78,26 @@ export const RiskDetails: React.FC<RiskDetailsProps> = ({
         <span className="risk-details-icon">✓</span>
         <span>No significant risks detected</span>
       </div>
-    );
+    )
   }
 
   const getSeverityIcon = (level: RiskLevel) => {
     switch (level) {
-      case 'low':
-        return '🟢';
-      case 'medium':
-        return '🟡';
-      case 'high':
-        return '🔴';
+      case "low":
+        return "🟢"
+      case "medium":
+        return "🟡"
+      case "high":
+        return "🔴"
     }
-  };
+  }
 
   const formatFactor = (factor: string) => {
     return factor
-      .split('_')
+      .split("_")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
+      .join(" ")
+  }
 
   if (compact) {
     return (
@@ -108,7 +108,7 @@ export const RiskDetails: React.FC<RiskDetailsProps> = ({
           </span>
         ))}
       </div>
-    );
+    )
   }
 
   return (
@@ -121,7 +121,9 @@ export const RiskDetails: React.FC<RiskDetailsProps> = ({
               <span className="risk-item-icon">
                 {getSeverityIcon(risk.severity)}
               </span>
-              <span className="risk-item-factor">{formatFactor(risk.factor)}</span>
+              <span className="risk-item-factor">
+                {formatFactor(risk.factor)}
+              </span>
             </div>
             <p className="risk-item-description">{risk.description}</p>
             {risk.suggestion && (
@@ -148,18 +150,18 @@ export const RiskDetails: React.FC<RiskDetailsProps> = ({
         ))}
       </ul>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Risk Summary Component
 // -----------------------------------------------------------------------------
 
 interface RiskSummaryProps {
-  level: RiskLevel;
-  score: number;
-  requiresApproval: boolean;
-  canAutoApply: boolean;
+  level: RiskLevel
+  score: number
+  requiresApproval: boolean
+  canAutoApply: boolean
 }
 
 export const RiskSummary: React.FC<RiskSummaryProps> = ({
@@ -184,7 +186,7 @@ export const RiskSummary: React.FC<RiskSummaryProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RiskBadge;
+export default RiskBadge

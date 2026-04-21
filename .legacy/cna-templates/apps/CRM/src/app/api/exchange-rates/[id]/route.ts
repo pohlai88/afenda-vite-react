@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { handleApiError } from '@/lib/api/errors'
-import { updateExchangeRateSchema } from '@/lib/validations/exchange-rate'
-import { validateRequest } from '@/lib/validations'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { handleApiError } from "@/lib/api/errors"
+import { updateExchangeRateSchema } from "@/lib/validations/exchange-rate"
+import { validateRequest } from "@/lib/validations"
 
 // PATCH /api/exchange-rates/[id] — Update exchange rate (ADMIN only)
 export async function PATCH(
@@ -11,7 +11,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
     const user = result
 
@@ -37,10 +37,13 @@ export async function PATCH(
 
     return NextResponse.json(rate)
   } catch (error: any) {
-    if (error?.code === 'P2025') {
-      return NextResponse.json({ error: 'Exchange rate not found' }, { status: 404 })
+    if (error?.code === "P2025") {
+      return NextResponse.json(
+        { error: "Exchange rate not found" },
+        { status: 404 }
+      )
     }
-    return handleApiError(error, '/api/exchange-rates/[id]')
+    return handleApiError(error, "/api/exchange-rates/[id]")
   }
 }
 
@@ -50,7 +53,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
 
     const { id } = await params
@@ -58,15 +61,21 @@ export async function DELETE(
     // Don't allow deleting the base currency
     const rate = await prisma.exchangeRate.findUnique({ where: { id } })
     if (!rate) {
-      return NextResponse.json({ error: 'Exchange rate not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Exchange rate not found" },
+        { status: 404 }
+      )
     }
     if (rate.isBase) {
-      return NextResponse.json({ error: 'Cannot delete base currency' }, { status: 400 })
+      return NextResponse.json(
+        { error: "Cannot delete base currency" },
+        { status: 400 }
+      )
     }
 
     await prisma.exchangeRate.delete({ where: { id } })
     return new NextResponse(null, { status: 204 })
   } catch (error) {
-    return handleApiError(error, '/api/exchange-rates/[id]')
+    return handleApiError(error, "/api/exchange-rates/[id]")
   }
 }

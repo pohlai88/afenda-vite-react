@@ -1,11 +1,20 @@
-import React from 'react';
-import { RibbonGroup } from '../RibbonGroup';
-import { RibbonButton } from '../RibbonButton';
-import { RibbonDropdown } from '../RibbonDropdown';
+import React from "react"
+import { RibbonGroup } from "../RibbonGroup"
+import { RibbonButton } from "../RibbonButton"
+import { RibbonDropdown } from "../RibbonDropdown"
 import {
-  Table, Image, Shapes, BarChart3, LineChart, PieChart,
-  Sparkles, Link, MessageSquare, Type, Sigma
-} from 'lucide-react';
+  Table,
+  Image,
+  Shapes,
+  BarChart3,
+  LineChart,
+  PieChart,
+  Sparkles,
+  Link,
+  MessageSquare,
+  Type,
+  Sigma,
+} from "lucide-react"
 
 export const InsertTab: React.FC = () => {
   return (
@@ -34,9 +43,13 @@ export const InsertTab: React.FC = () => {
           label="Column"
           size="large"
           options={[
-            { id: 'clustered', label: 'Clustered Column', onClick: () => {} },
-            { id: 'stacked', label: 'Stacked Column', onClick: () => {} },
-            { id: '100-stacked', label: '100% Stacked Column', onClick: () => {} },
+            { id: "clustered", label: "Clustered Column", onClick: () => {} },
+            { id: "stacked", label: "Stacked Column", onClick: () => {} },
+            {
+              id: "100-stacked",
+              label: "100% Stacked Column",
+              onClick: () => {},
+            },
           ]}
         />
         <RibbonDropdown
@@ -44,9 +57,13 @@ export const InsertTab: React.FC = () => {
           label="Line"
           size="large"
           options={[
-            { id: 'line', label: 'Line', onClick: () => {} },
-            { id: 'line-markers', label: 'Line with Markers', onClick: () => {} },
-            { id: 'stacked-line', label: 'Stacked Line', onClick: () => {} },
+            { id: "line", label: "Line", onClick: () => {} },
+            {
+              id: "line-markers",
+              label: "Line with Markers",
+              onClick: () => {},
+            },
+            { id: "stacked-line", label: "Stacked Line", onClick: () => {} },
           ]}
         />
         <RibbonDropdown
@@ -54,8 +71,8 @@ export const InsertTab: React.FC = () => {
           label="Pie"
           size="large"
           options={[
-            { id: 'pie', label: 'Pie', onClick: () => {} },
-            { id: 'doughnut', label: 'Doughnut', onClick: () => {} },
+            { id: "pie", label: "Pie", onClick: () => {} },
+            { id: "doughnut", label: "Doughnut", onClick: () => {} },
           ]}
         />
       </RibbonGroup>
@@ -76,5 +93,5 @@ export const InsertTab: React.FC = () => {
         <RibbonButton icon={Sigma} label="Equation" size="large" />
       </RibbonGroup>
     </div>
-  );
-};
+  )
+}

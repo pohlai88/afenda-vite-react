@@ -20,7 +20,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { DEFAULT_SALARY_COMPONENTS, COMPONENT_CATEGORY_LABELS, ITEM_TYPE_LABELS } from "@/lib/payroll/constants"
+import {
+  DEFAULT_SALARY_COMPONENTS,
+  COMPONENT_CATEGORY_LABELS,
+  ITEM_TYPE_LABELS,
+} from "@/lib/payroll/constants"
 
 export const metadata: Metadata = {
   title: "Thành phần lương | Lạc Việt HR",
@@ -69,7 +73,9 @@ export default function SalaryComponentsPage() {
                   <TableCell>{comp.name}</TableCell>
                   <TableCell>
                     <Badge
-                      variant={comp.itemType === "EARNING" ? "default" : "destructive"}
+                      variant={
+                        comp.itemType === "EARNING" ? "default" : "destructive"
+                      }
                     >
                       {ITEM_TYPE_LABELS[comp.itemType]}
                     </Badge>
@@ -77,9 +83,7 @@ export default function SalaryComponentsPage() {
                   <TableCell className="text-sm text-muted-foreground">
                     {COMPONENT_CATEGORY_LABELS[comp.category]}
                   </TableCell>
-                  <TableCell>
-                    {comp.isTaxable ? "Có" : "Không"}
-                  </TableCell>
+                  <TableCell>{comp.isTaxable ? "Có" : "Không"}</TableCell>
                   <TableCell>
                     {comp.isSystem ? (
                       <Badge variant="secondary">Hệ thống</Badge>

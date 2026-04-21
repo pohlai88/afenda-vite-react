@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
 import {
   ArrowLeft,
   Pencil,
@@ -15,22 +15,22 @@ import {
   Calendar,
   MessageSquare,
   Video,
-} from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
-import { vi } from 'date-fns/locale'
+} from "lucide-react"
+import { formatDistanceToNow } from "date-fns"
+import { vi } from "date-fns/locale"
 
-import { useTranslation } from '@/i18n'
-import { DocumentPanel } from '@/components/documents/DocumentPanel'
-import { PageShell } from '@/components/layout/PageShell'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { useTranslation } from "@/i18n"
+import { DocumentPanel } from "@/components/documents/DocumentPanel"
+import { PageShell } from "@/components/layout/PageShell"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 // Card imports removed — using glass-card-static classes
-import { Skeleton } from '@/components/ui/skeleton'
-import { ContactTimeline } from '@/components/contacts/ContactTimeline'
-import { useContact } from '@/hooks/use-contacts'
-import { useActivities } from '@/hooks/use-activities'
-import { CONTACT_STATUSES, LEAD_SOURCES, formatCurrency } from '@/lib/constants'
+import { Skeleton } from "@/components/ui/skeleton"
+import { ContactTimeline } from "@/components/contacts/ContactTimeline"
+import { useContact } from "@/hooks/use-contacts"
+import { useActivities } from "@/hooks/use-activities"
+import { CONTACT_STATUSES, LEAD_SOURCES, formatCurrency } from "@/lib/constants"
 
 export default function ContactDetailPage() {
   const params = useParams()
@@ -61,22 +61,25 @@ export default function ContactDetailPage() {
 
   if (!contact) {
     return (
-      <PageShell title={t('common.notFound')}>
+      <PageShell title={t("common.notFound")}>
         <div className="flex flex-col items-center justify-center py-16">
-          <p className="text-sm text-[var(--crm-text-muted)]">{t('contacts.notFound')}</p>
+          <p className="text-sm text-[var(--crm-text-muted)]">
+            {t("contacts.notFound")}
+          </p>
           <Button
             variant="outline"
             className="mt-4 border-[var(--crm-border)] text-[var(--crm-text-secondary)]"
-            onClick={() => router.push('/contacts')}
+            onClick={() => router.push("/contacts")}
           >
-            {t('common.back')}
+            {t("common.back")}
           </Button>
         </div>
       </PageShell>
     )
   }
 
-  const initials = `${contact.firstName.charAt(0)}${contact.lastName.charAt(0)}`.toUpperCase()
+  const initials =
+    `${contact.firstName.charAt(0)}${contact.lastName.charAt(0)}`.toUpperCase()
   const deals = contact.tags ? [] : [] // Deals come from DealContact relation, showing placeholder
 
   return (
@@ -88,10 +91,10 @@ export default function ContactDetailPage() {
             variant="outline"
             size="sm"
             className="border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)]"
-            onClick={() => router.push('/contacts')}
+            onClick={() => router.push("/contacts")}
           >
             <ArrowLeft className="h-4 w-4" />
-            {t('common.back')}
+            {t("common.back")}
           </Button>
           <Button
             size="sm"
@@ -105,51 +108,53 @@ export default function ContactDetailPage() {
     >
       {/* Contact Header */}
       <div className="glass-card-static p-6 flex items-center gap-5">
-          <Avatar className="h-16 w-16">
-            <AvatarFallback className="bg-[#10B981]/20 text-[#10B981] text-xl font-semibold">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3">
-              <h2 className="text-xl font-bold text-[var(--crm-text-primary)]">
-                {contact.firstName} {contact.lastName}
-              </h2>
-              {status && (
-                <Badge
-                  className="border-0 text-xs"
-                  style={{
-                    backgroundColor: `${status.color}20`,
-                    color: status.color,
-                  }}
-                >
-                  {t(status.labelKey)}
-                </Badge>
-              )}
-              {contact.score > 0 && (
-                <div className="flex items-center gap-1.5">
-                  <div className="h-1.5 w-12 rounded-full bg-[var(--crm-border)]">
-                    <div
-                      className="h-full rounded-full bg-[#10B981]"
-                      style={{ width: `${Math.min(contact.score, 100)}%` }}
-                    />
-                  </div>
-                  <span className="text-xs text-[var(--crm-text-secondary)]">{contact.score}</span>
+        <Avatar className="h-16 w-16">
+          <AvatarFallback className="bg-[#10B981]/20 text-[#10B981] text-xl font-semibold">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-[var(--crm-text-primary)]">
+              {contact.firstName} {contact.lastName}
+            </h2>
+            {status && (
+              <Badge
+                className="border-0 text-xs"
+                style={{
+                  backgroundColor: `${status.color}20`,
+                  color: status.color,
+                }}
+              >
+                {t(status.labelKey)}
+              </Badge>
+            )}
+            {contact.score > 0 && (
+              <div className="flex items-center gap-1.5">
+                <div className="h-1.5 w-12 rounded-full bg-[var(--crm-border)]">
+                  <div
+                    className="h-full rounded-full bg-[#10B981]"
+                    style={{ width: `${Math.min(contact.score, 100)}%` }}
+                  />
                 </div>
-              )}
-            </div>
-            <div className="mt-1 flex items-center gap-3 text-sm text-[var(--crm-text-secondary)]">
-              {contact.jobTitle && <span>{contact.jobTitle}</span>}
-              {contact.company && (
-                <Link
-                  href={`/companies/${contact.company.id}`}
-                  className="text-[#10B981] hover:underline"
-                >
-                  {contact.company.name}
-                </Link>
-              )}
-            </div>
+                <span className="text-xs text-[var(--crm-text-secondary)]">
+                  {contact.score}
+                </span>
+              </div>
+            )}
           </div>
+          <div className="mt-1 flex items-center gap-3 text-sm text-[var(--crm-text-secondary)]">
+            {contact.jobTitle && <span>{contact.jobTitle}</span>}
+            {contact.company && (
+              <Link
+                href={`/companies/${contact.company.id}`}
+                className="text-[#10B981] hover:underline"
+              >
+                {contact.company.name}
+              </Link>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Two-column layout */}
@@ -164,7 +169,11 @@ export default function ContactDetailPage() {
             <div className="grid gap-3">
               <InfoRow icon={Mail} label="Email" value={contact.email} />
               <InfoRow icon={Phone} label="Điện thoại" value={contact.phone} />
-              <InfoRow icon={Smartphone} label="Di động" value={contact.mobile} />
+              <InfoRow
+                icon={Smartphone}
+                label="Di động"
+                value={contact.mobile}
+              />
               <InfoRow
                 icon={Building2}
                 label="Phòng ban"
@@ -176,7 +185,11 @@ export default function ContactDetailPage() {
                 value={source ? t(source.labelKey) : undefined}
               />
               {contact.notes && (
-                <InfoRow icon={FileText} label="Ghi chú" value={contact.notes} />
+                <InfoRow
+                  icon={FileText}
+                  label="Ghi chú"
+                  value={contact.notes}
+                />
               )}
             </div>
           </div>
@@ -184,7 +197,9 @@ export default function ContactDetailPage() {
           {/* Tags */}
           {contact.tags && contact.tags.length > 0 && (
             <div className="glass-card-static p-3">
-              <h3 className="text-sm font-medium text-[var(--crm-text-secondary)] mb-3">Tags</h3>
+              <h3 className="text-sm font-medium text-[var(--crm-text-secondary)] mb-3">
+                Tags
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {contact.tags.map(({ tag }) => (
                   <Badge
@@ -209,7 +224,7 @@ export default function ContactDetailPage() {
           {/* Quick actions */}
           <div className="glass-card-static p-3">
             <h3 className="text-sm font-medium text-[var(--crm-text-secondary)] mb-3">
-              {t('contacts.quickActions')}
+              {t("contacts.quickActions")}
             </h3>
             <div className="grid grid-cols-2 gap-2">
               <Button
@@ -218,7 +233,7 @@ export default function ContactDetailPage() {
                 className="justify-start border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:border-[#10B981]/30"
               >
                 <Phone className="h-3.5 w-3.5 text-[#10B981]" />
-                {t('contacts.logCall')}
+                {t("contacts.logCall")}
               </Button>
               <Button
                 variant="outline"
@@ -226,7 +241,7 @@ export default function ContactDetailPage() {
                 className="justify-start border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:border-[#3B82F6]/30"
               >
                 <Mail className="h-3.5 w-3.5 text-[#3B82F6]" />
-                {t('contacts.sendEmail')}
+                {t("contacts.sendEmail")}
               </Button>
               <Button
                 variant="outline"
@@ -242,7 +257,7 @@ export default function ContactDetailPage() {
                 className="justify-start border-[var(--crm-border)] text-[var(--crm-text-secondary)] hover:text-[var(--crm-text-primary)] hover:border-[#F59E0B]/30"
               >
                 <MessageSquare className="h-3.5 w-3.5 text-[#F59E0B]" />
-                {t('contacts.addNote')}
+                {t("contacts.addNote")}
               </Button>
             </div>
           </div>
@@ -253,7 +268,7 @@ export default function ContactDetailPage() {
           {/* Activity Timeline */}
           <div className="glass-card-static p-3">
             <h3 className="text-sm font-medium text-[var(--crm-text-secondary)] mb-3">
-              {t('nav.activities')}
+              {t("nav.activities")}
             </h3>
             <ContactTimeline activities={activities} />
           </div>
@@ -277,7 +292,7 @@ function InfoRow({
       <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--crm-text-muted)]" />
       <div className="min-w-0">
         <p className="text-xs text-[var(--crm-text-muted)]">{label}</p>
-        <p className="text-sm text-[var(--crm-text-primary)]">{value || '-'}</p>
+        <p className="text-sm text-[var(--crm-text-primary)]">{value || "-"}</p>
       </div>
     </div>
   )

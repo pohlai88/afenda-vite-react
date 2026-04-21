@@ -1,21 +1,25 @@
 # ExcelAI - Master Implementation Checklist
 
 ## Overview
+
 Tổng số components: **280+** | Stores: **35** | Hooks: **14+**
 Tiến độ ước tính: **~85% hoàn thành**
 
 ---
 
 ## Phase 1: Core Completions (Hoàn thiện lõi) ✅
+
 > Ưu tiên: **CAO** | Độ phức tạp: **THẤP-TRUNG BÌNH**
 
 ### 1.1 Cell Operations ✅
+
 - [x] **Insert Cells Dialog** - Shift cells right/down options
 - [x] **Delete Cells Dialog** - Shift cells left/up options
 - [x] Wire InsertCellsDialog vào CellsGroup
 - [x] Wire DeleteCellsDialog vào CellsGroup
 
 ### 1.2 Sheet Management ✅
+
 - [x] **Hide Sheet** - Implement trong SheetContextMenu
 - [x] **Unhide Sheet Dialog** - List hidden sheets để unhide
 - [x] **Protect Sheet Dialog** - Password protection
@@ -23,6 +27,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [x] Sheet tab color customization (đã có trong SheetContextMenu)
 
 ### 1.3 Comments System ✅
+
 - [x] Wire Comments vào InsertToolbar
 - [x] Comment indicator trên cells (có trong CSS)
 - [x] Edit/Delete comment functionality (CommentDialog)
@@ -32,15 +37,18 @@ Tiến độ ước tính: **~85% hoàn thành**
 ---
 
 ## Phase 2: Data Tools (Công cụ dữ liệu) ✅
+
 > Ưu tiên: **CAO** | Độ phức tạp: **TRUNG BÌNH**
 
 ### 2.1 Data Cleaning ✅
+
 - [x] **Remove Duplicates Dialog** - Column selection, preview
 - [x] **Text to Columns** - Delimiter options
 - [x] **Flash Fill** - Pattern detection và auto-fill (flashFillUtils.ts)
 - [x] **Data Validation Enhancement** - DataValidationDialog đã có
 
 ### 2.2 Data Import/Export ✅
+
 - [x] **Import Dialog** - CSV, JSON, XML support (FileIO/ImportDialog.tsx)
 - [x] **Export Dialog** - Multiple format options (FileIO/ExportDialog.tsx)
 - [ ] **Screenshot Export** - Full implementation (future)
@@ -48,6 +56,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [ ] Recent files list (future)
 
 ### 2.3 Data Connections (Future Enhancement)
+
 - [ ] Database connection wizard
 - [ ] REST API integration
 - [ ] Refresh data functionality
@@ -56,9 +65,11 @@ Tiến độ ước tính: **~85% hoàn thành**
 ---
 
 ## Phase 3: Advanced Features (Tính năng nâng cao)
+
 > Ưu tiên: **TRUNG BÌNH** | Độ phức tạp: **CAO**
 
 ### 3.1 Formula Engine Enhancement ✅
+
 - [x] More Excel functions (200+ target) - Added 70+ new functions
 - [x] Array formula support (FILTER, SORT, UNIQUE, SEQUENCE, etc.)
 - [x] Dynamic arrays (FILTER, SORT, UNIQUE, SORTBY, TAKE, DROP, etc.)
@@ -68,6 +79,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [x] Formula autocomplete improvement (FormulaAutocomplete component with fuzzy matching, category icons, named ranges)
 
 ### 3.2 Charting Enhancement ✅
+
 - [x] Scatter plot (ScatterChart with ZAxis support)
 - [x] Combo charts (ComposedChart with Bar + Line)
 - [x] Bubble chart support
@@ -76,6 +88,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [x] Trendlines và forecasting (trendlineUtils.ts, TrendlineDialog.tsx - 6 trendline types)
 
 ### 3.3 Pivot Table Enhancement ✅
+
 - [x] Calculated fields (CalculatedFieldDialog, pivotEngine evaluation)
 - [x] Grouping - Date grouping (GroupingDialog, years/quarters/months/days/hours)
 - [x] Grouping - Number grouping UI (config panel with preview)
@@ -84,6 +97,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [x] Slicers và timelines (Slicer.tsx, Timeline.tsx, InsertSlicerDialog, slicerStore)
 
 ### 3.4 Conditional Formatting Enhancement ✅
+
 - [x] Data Bars improvements (CFRenderers - DataBarRenderer with gradients, axis)
 - [x] Icon Sets customization (IconSetRenderer with threshold config)
 - [x] Color Scales gradient options (ColorScaleRenderer with 2/3-color interpolation)
@@ -93,9 +107,11 @@ Tiến độ ước tính: **~85% hoàn thành**
 ---
 
 ## Phase 4: Collaboration & Security
+
 > Ưu tiên: **TRUNG BÌNH** | Độ phức tạp: **CAO**
 
 ### 4.1 Real-time Collaboration
+
 - [ ] Conflict resolution improvements
 - [ ] Version history browser
 - [ ] Change tracking toggle
@@ -103,6 +119,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [ ] Compare versions
 
 ### 4.2 Security Features
+
 - [ ] Cell-level protection enforcement
 - [ ] Workbook encryption
 - [ ] Digital signatures
@@ -110,6 +127,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [ ] Permission inheritance
 
 ### 4.3 Sharing Features
+
 - [ ] Share link generation
 - [ ] Permission levels (view/edit/comment)
 - [ ] Expiring links
@@ -119,9 +137,11 @@ Tiến độ ước tính: **~85% hoàn thành**
 ---
 
 ## Phase 5: AI & Intelligence
+
 > Ưu tiên: **TRUNG BÌNH** | Độ phức tạp: **CAO**
 
 ### 5.1 AI Copilot Enhancement ✅
+
 - [ ] Real API integration (replace mock)
 - [x] Context-aware suggestions (AIContextTriggers.ts)
 - [x] Formula explanation (InlineAISuggestions)
@@ -129,6 +149,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [x] Data insights generation (generateInsight)
 
 ### 5.2 Smart Features (Partially Done)
+
 - [ ] Smart Fill patterns
 - [ ] Auto-categorization
 - [ ] Anomaly detection
@@ -136,12 +157,14 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [ ] Natural language queries
 
 ### 5.3 Proactive Intelligence ✅
+
 - [x] Data quality warnings (ProactiveAINotifications)
 - [ ] Performance suggestions
 - [x] Formula optimization (nested IF detection, VLOOKUP hints)
 - [ ] Layout recommendations
 
 ### 5.4 Contextual AI Integration ✅ (NEW)
+
 - [x] FloatingAIButton - Context-aware AI quick access near selection
 - [x] InlineAISuggestions - Formula bar hints and error fixes
 - [x] FormulaBarAIHint - Smart hints while typing formulas
@@ -152,9 +175,11 @@ Tiến độ ước tính: **~85% hoàn thành**
 ---
 
 ## Phase 6: Performance & Polish
+
 > Ưu tiên: **CAO** | Độ phức tạp: **TRUNG BÌNH**
 
 ### 6.1 Performance Optimization
+
 - [ ] Large dataset handling (100k+ cells)
 - [ ] Lazy loading improvements
 - [ ] Memory optimization
@@ -162,6 +187,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [ ] Render optimization
 
 ### 6.2 UX Polish
+
 - [ ] Loading states cho tất cả actions
 - [ ] Error messages improvement
 - [ ] Tooltips và help text
@@ -169,6 +195,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [ ] Touch/mobile gestures
 
 ### 6.3 Accessibility
+
 - [ ] Screen reader support
 - [ ] High contrast mode
 - [ ] Keyboard-only navigation
@@ -178,27 +205,32 @@ Tiến độ ước tính: **~85% hoàn thành**
 ---
 
 ## Phase 7: Testing & Documentation
+
 > Ưu tiên: **CAO** | Độ phức tạp: **TRUNG BÌNH**
 
 ### 7.1 Unit Tests
+
 - [ ] Store tests (workbookStore, selectionStore...)
 - [ ] Hook tests (useAutofill, useKeyboardShortcuts...)
 - [ ] Utility tests (fillSeriesUtils, cellFormatting...)
 - [ ] Component tests (Grid, Dialogs...)
 
 ### 7.2 Integration Tests
+
 - [ ] Full workflow tests
 - [ ] Collaboration tests
 - [ ] Import/Export tests
 - [ ] Formula calculation tests
 
 ### 7.3 E2E Tests
+
 - [ ] Critical user journeys
 - [ ] Cross-browser testing
 - [ ] Mobile responsive testing
 - [ ] Performance benchmarks
 
 ### 7.4 Documentation
+
 - [ ] API documentation
 - [ ] Component storybook
 - [ ] User guide
@@ -208,9 +240,11 @@ Tiến độ ước tính: **~85% hoàn thành**
 ---
 
 ## Phase 8: Deployment & DevOps
+
 > Ưu tiên: **CAO** | Độ phức tạp: **TRUNG BÌNH**
 
 ### 8.1 Build & Bundle
+
 - [ ] Production build optimization
 - [ ] Code splitting
 - [ ] Tree shaking verification
@@ -218,6 +252,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [ ] Source maps configuration
 
 ### 8.2 CI/CD
+
 - [ ] Automated testing pipeline
 - [ ] Staging environment
 - [ ] Production deployment
@@ -225,6 +260,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 - [ ] Health monitoring
 
 ### 8.3 Infrastructure
+
 - [ ] CDN configuration
 - [ ] Caching strategy
 - [ ] Error tracking (Sentry)
@@ -236,6 +272,7 @@ Tiến độ ước tính: **~85% hoàn thành**
 ## Quick Reference: Files to Modify
 
 ### Phase 1 Files
+
 ```
 src/components/Dialogs/InsertCellsDialog.tsx (create/enhance)
 src/components/Dialogs/DeleteCellsDialog.tsx (create/enhance)
@@ -246,6 +283,7 @@ src/components/Modern/toolbars/InsertToolbar.tsx
 ```
 
 ### Phase 2 Files
+
 ```
 src/components/Dialogs/RemoveDuplicatesDialog.tsx (create)
 src/components/Dialogs/TextToColumnsDialog.tsx (create)
@@ -255,6 +293,7 @@ src/components/Modern/toolbars/DataToolbar.tsx
 ```
 
 ### Store Enhancements Needed
+
 ```
 src/stores/workbookStore.ts - insertCells, deleteCells, protectSheet
 src/stores/commentStore.ts - enhance comment operations
@@ -265,22 +304,23 @@ src/stores/connectionStore.ts - data import/export
 
 ## Priority Matrix
 
-| Phase | Priority | Complexity | Est. Time |
-|-------|----------|------------|-----------|
-| 1. Core Completions | HIGH | LOW-MED | 2-3 days |
-| 2. Data Tools | HIGH | MEDIUM | 3-4 days |
-| 3. Advanced Features | MEDIUM | HIGH | 1-2 weeks |
-| 4. Collaboration | MEDIUM | HIGH | 1 week |
-| 5. AI Enhancement | MEDIUM | HIGH | 1-2 weeks |
-| 6. Performance | HIGH | MEDIUM | 3-4 days |
-| 7. Testing | HIGH | MEDIUM | 1 week |
-| 8. Deployment | HIGH | MEDIUM | 2-3 days |
+| Phase                | Priority | Complexity | Est. Time |
+| -------------------- | -------- | ---------- | --------- |
+| 1. Core Completions  | HIGH     | LOW-MED    | 2-3 days  |
+| 2. Data Tools        | HIGH     | MEDIUM     | 3-4 days  |
+| 3. Advanced Features | MEDIUM   | HIGH       | 1-2 weeks |
+| 4. Collaboration     | MEDIUM   | HIGH       | 1 week    |
+| 5. AI Enhancement    | MEDIUM   | HIGH       | 1-2 weeks |
+| 6. Performance       | HIGH     | MEDIUM     | 3-4 days  |
+| 7. Testing           | HIGH     | MEDIUM     | 1 week    |
+| 8. Deployment        | HIGH     | MEDIUM     | 2-3 days  |
 
 ---
 
 ## Current Session Progress
 
 ### Completed Today
+
 - [x] Fill Series (fillSeriesUtils.ts, FillSeriesDialog.tsx)
 - [x] Go To / Go To Special dialogs
 - [x] Paste Special dialog + store action
@@ -298,6 +338,7 @@ src/stores/connectionStore.ts - data import/export
 - [x] Sheet type updated with SheetProtection interface
 
 ### Phase 2 Completed
+
 - [x] RemoveDuplicatesDialog - column selection, preview, batch update
 - [x] TextToColumnsDialog - delimiter options, 2-step wizard
 - [x] FlashFillDialog + flashFillUtils.ts - pattern detection
@@ -305,6 +346,7 @@ src/stores/connectionStore.ts - data import/export
 - [x] Import Dialog integration
 
 ### Phase 3 Progress
+
 - [x] Formula Engine Enhancement - Added 70+ new functions:
   - Math: SUMIFS, SUMPRODUCT, SIGN, TRUNC, EVEN, ODD, FACT, COMBIN, PERMUT, GCD, LCM, MROUND, ASIN, ACOS, ATAN, ATAN2, SINH, COSH, TANH
   - Statistical: COUNTIFS, AVERAGEIFS, MAXIFS, MINIFS, GEOMEAN, HARMEAN, QUARTILE, TRIMMEAN, AVEDEV, DEVSQ, SLOPE, INTERCEPT, RSQ
@@ -321,6 +363,7 @@ src/stores/connectionStore.ts - data import/export
   - Calculated field evaluation in pivotEngine
 
 ### Phase 3 Continued (2026-01-18)
+
 - [x] Conditional Formatting Enhancement:
   - ManageRulesDialog - View, edit, reorder, enable/disable, delete rules
   - CFRenderers - DataBarRenderer, ColorScaleRenderer, IconSetRenderer
@@ -349,6 +392,7 @@ src/stores/connectionStore.ts - data import/export
   - Forward/backward forecasting support
 
 ### LAMBDA Functions & Formula Autocomplete (2026-01-18)
+
 - [x] LAMBDA Functions:
   - lambda.ts - 9 LAMBDA-related functions (LAMBDA, LET, MAP, REDUCE, SCAN, MAKEARRAY, BYROW, BYCOL, ISOMITTED)
   - nameManagerStore.ts - Store for named ranges, formulas, LAMBDA definitions
@@ -365,9 +409,11 @@ src/stores/connectionStore.ts - data import/export
   - Integration with VirtualCellEditor
 
 ### Phase 3 Completed!
+
 All Phase 3: Advanced Features items are now complete.
 
 ### Phase 5: AI Integration Enhancement (2026-01-18)
+
 - [x] AIContextTriggers.ts - Smart context detection system:
   - Selection analysis (data type, formulas, errors, patterns)
   - Context-aware suggestion generation
@@ -399,11 +445,13 @@ All Phase 3: Advanced Features items are now complete.
 ## Notes
 
 ### Technical Debt
+
 1. Mock user ID trong sandboxStore cần replace
 2. ~~Sheet name persistence TODO~~ ✅ Fixed
 3. Một số stores có incomplete implementations
 
 ### Dependencies
+
 - Zustand: State management
 - Lucide React: Icons
 - React: UI framework
@@ -411,5 +459,5 @@ All Phase 3: Advanced Features items are now complete.
 
 ---
 
-*Last Updated: 2026-01-18*
-*Version: 1.1*
+_Last Updated: 2026-01-18_
+_Version: 1.1_

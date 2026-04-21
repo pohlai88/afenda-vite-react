@@ -2,7 +2,7 @@
 // Vietcombank (VCB) Bank Adapter
 // Note: This is a simulation. Production implementation requires VCB API credentials.
 
-import { BaseBankAdapter } from './base'
+import { BaseBankAdapter } from "./base"
 import type {
   BankCode,
   BankApiConfig,
@@ -12,15 +12,15 @@ import type {
   BatchPaymentResponse,
   PaymentTransactionStatus,
   AccountValidation,
-} from '../types'
+} from "../types"
 
 // ═══════════════════════════════════════════════════════════════
 // VCB ADAPTER
 // ═══════════════════════════════════════════════════════════════
 
 export class VCBAdapter extends BaseBankAdapter {
-  readonly bankCode: BankCode = 'VCB'
-  readonly bankName = 'Vietcombank'
+  readonly bankCode: BankCode = "VCB"
+  readonly bankName = "Vietcombank"
 
   configure(config: BankApiConfig): void {
     this.config = config
@@ -36,12 +36,12 @@ export class VCBAdapter extends BaseBankAdapter {
     try {
       // In production, call VCB OAuth endpoint
       // Simulate successful auth
-      this.accessToken = 'simulated-vcb-token-' + Date.now()
+      this.accessToken = "simulated-vcb-token-" + Date.now()
       this.tokenExpiry = new Date(Date.now() + 3600000) // 1 hour
 
       return true
     } catch (error) {
-      console.error('VCB authentication failed:', error)
+      console.error("VCB authentication failed:", error)
       return false
     }
   }
@@ -50,7 +50,10 @@ export class VCBAdapter extends BaseBankAdapter {
   // Account Operations
   // ─────────────────────────────────────────────────────────────
 
-  async validateAccount(accountNumber: string, bankCode: BankCode): Promise<AccountValidation> {
+  async validateAccount(
+    accountNumber: string,
+    bankCode: BankCode
+  ): Promise<AccountValidation> {
     this.ensureConfigured()
 
     // Basic validation
@@ -59,7 +62,7 @@ export class VCBAdapter extends BaseBankAdapter {
         valid: false,
         accountNumber,
         bankCode,
-        errorMessage: 'Số tài khoản không hợp lệ',
+        errorMessage: "Số tài khoản không hợp lệ",
       }
     }
 
@@ -68,7 +71,7 @@ export class VCBAdapter extends BaseBankAdapter {
       valid: true,
       accountNumber,
       bankCode,
-      accountName: 'NGUYEN VAN A',
+      accountName: "NGUYEN VAN A",
     }
   }
 
@@ -84,10 +87,10 @@ export class VCBAdapter extends BaseBankAdapter {
       success: true,
       transactionId: request.transactionId,
       bankTransactionId: `VCB${Date.now()}`,
-      responseCode: '00',
-      responseMessage: 'Thành công',
+      responseCode: "00",
+      responseMessage: "Thành công",
       processedAt: new Date(),
-      status: 'SUCCESS',
+      status: "SUCCESS",
     }
   }
 
@@ -95,16 +98,19 @@ export class VCBAdapter extends BaseBankAdapter {
   // Batch Operations
   // ─────────────────────────────────────────────────────────────
 
-  async createBatchPayment(request: BatchPaymentRequest): Promise<BatchPaymentResponse> {
+  async createBatchPayment(
+    request: BatchPaymentRequest
+  ): Promise<BatchPaymentResponse> {
     this.ensureConfigured()
 
-    const transactions: BatchPaymentResponse['transactions'] = request.payments.map((p) => ({
-      transactionId: p.transactionId,
-      status: 'SUCCESS' as PaymentTransactionStatus,
-      bankTransactionId: `VCB${Date.now()}${Math.random().toString(36).substring(2, 6)}`,
-      responseCode: '00',
-      responseMessage: 'Thành công',
-    }))
+    const transactions: BatchPaymentResponse["transactions"] =
+      request.payments.map((p) => ({
+        transactionId: p.transactionId,
+        status: "SUCCESS" as PaymentTransactionStatus,
+        bankTransactionId: `VCB${Date.now()}${Math.random().toString(36).substring(2, 6)}`,
+        responseCode: "00",
+        responseMessage: "Thành công",
+      }))
 
     return {
       success: true,
@@ -112,8 +118,8 @@ export class VCBAdapter extends BaseBankAdapter {
       bankBatchId: `VCBBATCH${Date.now()}`,
       successCount: request.payments.length,
       failedCount: 0,
-      responseCode: '00',
-      responseMessage: 'Batch thực hiện thành công',
+      responseCode: "00",
+      responseMessage: "Batch thực hiện thành công",
       transactions,
     }
   }

@@ -2,20 +2,20 @@
 // KPI CARD — KPI display card component
 // =============================================================================
 
-import React from 'react';
-import type { ChartConfig } from '../autoviz/types';
-import { Sparkline } from './Sparkline';
+import React from "react"
+import type { ChartConfig } from "../autoviz/types"
+import { Sparkline } from "./Sparkline"
 
 interface KPICardProps {
-  config: ChartConfig;
-  width?: number;
-  height?: number;
-  showTrend?: boolean;
-  showSparkline?: boolean;
-  previousValue?: number;
-  format?: 'number' | 'currency' | 'percent';
-  prefix?: string;
-  suffix?: string;
+  config: ChartConfig
+  width?: number
+  height?: number
+  showTrend?: boolean
+  showSparkline?: boolean
+  previousValue?: number
+  format?: "number" | "currency" | "percent"
+  prefix?: string
+  suffix?: string
 }
 
 export const KPICard: React.FC<KPICardProps> = ({
@@ -25,45 +25,48 @@ export const KPICard: React.FC<KPICardProps> = ({
   showTrend = true,
   showSparkline = true,
   previousValue,
-  format = 'number',
-  prefix = '',
-  suffix = '',
+  format = "number",
+  prefix = "",
+  suffix = "",
 }) => {
-  const { data, colorScheme, style, title } = config;
+  const { data, colorScheme, style, title } = config
 
   // Get current value (last value in dataset)
-  const values = data.datasets[0]?.data || [];
-  const currentValue = values[values.length - 1] || 0;
+  const values = data.datasets[0]?.data || []
+  const currentValue = values[values.length - 1] || 0
 
   // Calculate change
-  const prevValue = previousValue ?? (values.length > 1 ? values[values.length - 2] : currentValue);
-  const change = prevValue !== 0 ? ((currentValue - prevValue) / prevValue) * 100 : 0;
-  const isPositive = change >= 0;
+  const prevValue =
+    previousValue ??
+    (values.length > 1 ? values[values.length - 2] : currentValue)
+  const change =
+    prevValue !== 0 ? ((currentValue - prevValue) / prevValue) * 100 : 0
+  const isPositive = change >= 0
 
   // Format value
   const formatValue = (value: number): string => {
     switch (format) {
-      case 'currency':
-        return new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
+      case "currency":
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
           minimumFractionDigits: 0,
           maximumFractionDigits: 0,
-        }).format(value);
-      case 'percent':
-        return `${value.toFixed(1)}%`;
+        }).format(value)
+      case "percent":
+        return `${value.toFixed(1)}%`
       default:
         if (Math.abs(value) >= 1000000) {
-          return `${(value / 1000000).toFixed(1)}M`;
+          return `${(value / 1000000).toFixed(1)}M`
         }
         if (Math.abs(value) >= 1000) {
-          return `${(value / 1000).toFixed(1)}K`;
+          return `${(value / 1000).toFixed(1)}K`
         }
-        return value.toLocaleString(undefined, { maximumFractionDigits: 1 });
+        return value.toLocaleString(undefined, { maximumFractionDigits: 1 })
     }
-  };
+  }
 
-  const displayValue = `${prefix}${formatValue(currentValue)}${suffix}`;
+  const displayValue = `${prefix}${formatValue(currentValue)}${suffix}`
 
   return (
     <div
@@ -74,7 +77,7 @@ export const KPICard: React.FC<KPICardProps> = ({
         backgroundColor: style.backgroundColor,
         borderRadius: style.borderRadius,
         padding: style.padding,
-        boxShadow: style.shadow ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none',
+        boxShadow: style.shadow ? "0 4px 6px -1px rgba(0, 0, 0, 0.1)" : "none",
       }}
     >
       {/* Header */}
@@ -86,24 +89,38 @@ export const KPICard: React.FC<KPICardProps> = ({
             color: style.labelFont.color,
           }}
         >
-          {title || 'KPI'}
+          {title || "KPI"}
         </span>
         {showTrend && (
           <span
-            className={`kpi-trend ${isPositive ? 'positive' : 'negative'}`}
+            className={`kpi-trend ${isPositive ? "positive" : "negative"}`}
             style={{
               color: isPositive
-                ? colorScheme.positive || '#22c55e'
-                : colorScheme.negative || '#ef4444',
+                ? colorScheme.positive || "#22c55e"
+                : colorScheme.negative || "#ef4444",
             }}
           >
             {isPositive ? (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 15l-6-6-6 6"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M18 15l-6-6-6 6" />
               </svg>
             ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M6 9l6 6 6-6"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M6 9l6 6 6-6" />
               </svg>
             )}
             {Math.abs(change).toFixed(1)}%
@@ -116,7 +133,7 @@ export const KPICard: React.FC<KPICardProps> = ({
         className="kpi-value"
         style={{
           fontSize: Math.min(style.titleFont.size * 2, height * 0.35),
-          fontWeight: 'bold',
+          fontWeight: "bold",
           color: colorScheme.colors[0] || style.titleFont.color,
         }}
       >
@@ -149,7 +166,7 @@ export const KPICard: React.FC<KPICardProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default KPICard;
+export default KPICard

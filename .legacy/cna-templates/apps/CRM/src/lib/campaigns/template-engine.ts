@@ -25,24 +25,28 @@ export interface AvailableVariable {
 // ── Available Variables (for UI) ─────────────────────────────────────
 
 export const AVAILABLE_VARIABLES: AvailableVariable[] = [
-  { key: 'firstName', label: 'Tên', description: 'Tên của liên hệ' },
-  { key: 'lastName', label: 'Họ', description: 'Họ của liên hệ' },
-  { key: 'fullName', label: 'Họ tên', description: 'Họ và tên đầy đủ' },
-  { key: 'email', label: 'Email', description: 'Email liên hệ' },
-  { key: 'company', label: 'Công ty', description: 'Tên công ty' },
-  { key: 'title', label: 'Chức danh', description: 'Chức danh / vị trí' },
-  { key: 'unsubscribeUrl', label: 'Link hủy đăng ký', description: 'Tự động tạo' },
+  { key: "firstName", label: "Tên", description: "Tên của liên hệ" },
+  { key: "lastName", label: "Họ", description: "Họ của liên hệ" },
+  { key: "fullName", label: "Họ tên", description: "Họ và tên đầy đủ" },
+  { key: "email", label: "Email", description: "Email liên hệ" },
+  { key: "company", label: "Công ty", description: "Tên công ty" },
+  { key: "title", label: "Chức danh", description: "Chức danh / vị trí" },
+  {
+    key: "unsubscribeUrl",
+    label: "Link hủy đăng ký",
+    description: "Tự động tạo",
+  },
 ]
 
 // ── Variable aliases (snake_case → camelCase) ────────────────────────
 
 const ALIASES: Record<string, string> = {
-  first_name: 'firstName',
-  last_name: 'lastName',
-  full_name: 'fullName',
-  company_name: 'company',
-  job_title: 'title',
-  unsubscribe_url: 'unsubscribeUrl',
+  first_name: "firstName",
+  last_name: "lastName",
+  full_name: "fullName",
+  company_name: "company",
+  job_title: "title",
+  unsubscribe_url: "unsubscribeUrl",
 }
 
 // ── Replace variables ────────────────────────────────────────────────
@@ -63,7 +67,7 @@ export function replaceVariables(
     const aliasKey = ALIASES[key]
     if (aliasKey && aliasKey in variables) return variables[aliasKey]
     // Missing → empty string
-    return ''
+    return ""
   })
 }
 
@@ -77,12 +81,12 @@ export function getContactVariables(
   extra?: Record<string, string>
 ): Record<string, string> {
   const vars: Record<string, string> = {
-    firstName: contact.firstName || '',
-    lastName: contact.lastName || '',
-    fullName: [contact.firstName, contact.lastName].filter(Boolean).join(' '),
-    email: contact.email || '',
-    company: contact.company?.name || '',
-    title: contact.jobTitle || '',
+    firstName: contact.firstName || "",
+    lastName: contact.lastName || "",
+    fullName: [contact.firstName, contact.lastName].filter(Boolean).join(" "),
+    email: contact.email || "",
+    company: contact.company?.name || "",
+    title: contact.jobTitle || "",
   }
 
   if (extra) {

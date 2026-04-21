@@ -7,6 +7,7 @@ import { serve } from "@hono/node-server"
 
 import { createApp } from "./app.js"
 import { env } from "./lib/env.js"
+import { apiLogger } from "./lib/logger.js"
 
 const app = createApp()
 
@@ -15,13 +16,13 @@ const server = serve({
   port: env.PORT,
 })
 
-console.log(`[api] listening on http://localhost:${env.PORT}`)
+apiLogger.info({ port: env.PORT }, "api listening")
 
 function shutdown(signal: string) {
-  console.log(`[api] ${signal} received; shutting down`)
+  apiLogger.info({ signal }, "shutdown signal received")
   server.close((error) => {
     if (error) {
-      console.error("[api] shutdown failure", error)
+      apiLogger.error({ signal, error }, "shutdown failure")
       process.exit(1)
     }
     process.exit(0)

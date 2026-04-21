@@ -1,14 +1,26 @@
 // src/app/(dashboard)/analytics/predictive/hiring-forecast/page.tsx
 // Hiring Forecast Page
 
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useState, useEffect } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Calendar,
   Users,
@@ -16,7 +28,7 @@ import {
   Building2,
   RefreshCw,
   Download,
-} from 'lucide-react'
+} from "lucide-react"
 import {
   BarChart,
   Bar,
@@ -30,7 +42,7 @@ import {
   ResponsiveContainer,
   ComposedChart,
   Area,
-} from 'recharts'
+} from "recharts"
 
 interface ForecastData {
   period: string
@@ -45,12 +57,12 @@ interface DepartmentNeed {
   current: number
   projected: number
   gap: number
-  priority: 'high' | 'medium' | 'low'
+  priority: "high" | "medium" | "low"
 }
 
 export default function HiringForecastPage() {
   const [loading, setLoading] = useState(true)
-  const [horizon, setHorizon] = useState('6months')
+  const [horizon, setHorizon] = useState("6months")
   const [forecastData, setForecastData] = useState<ForecastData[]>([])
   const [departmentNeeds, setDepartmentNeeds] = useState<DepartmentNeed[]>([])
   const [summary, setSummary] = useState({
@@ -70,8 +82,21 @@ export default function HiringForecastPage() {
       await new Promise((resolve) => setTimeout(resolve, 500))
 
       // Generate mock forecast data
-      const months = horizon === '3months' ? 3 : horizon === '6months' ? 6 : 12
-      const monthNames = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12']
+      const months = horizon === "3months" ? 3 : horizon === "6months" ? 6 : 12
+      const monthNames = [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7",
+        "T8",
+        "T9",
+        "T10",
+        "T11",
+        "T12",
+      ]
       const currentMonth = new Date().getMonth()
 
       const forecast: ForecastData[] = []
@@ -107,14 +132,44 @@ export default function HiringForecastPage() {
 
       // Department needs
       setDepartmentNeeds([
-        { department: 'Phòng Kinh doanh', current: 45, projected: 52, gap: 7, priority: 'high' },
-        { department: 'Phòng IT', current: 30, projected: 35, gap: 5, priority: 'high' },
-        { department: 'Phòng Marketing', current: 15, projected: 18, gap: 3, priority: 'medium' },
-        { department: 'Phòng Nhân sự', current: 10, projected: 12, gap: 2, priority: 'medium' },
-        { department: 'Phòng Kế toán', current: 12, projected: 13, gap: 1, priority: 'low' },
+        {
+          department: "Phòng Kinh doanh",
+          current: 45,
+          projected: 52,
+          gap: 7,
+          priority: "high",
+        },
+        {
+          department: "Phòng IT",
+          current: 30,
+          projected: 35,
+          gap: 5,
+          priority: "high",
+        },
+        {
+          department: "Phòng Marketing",
+          current: 15,
+          projected: 18,
+          gap: 3,
+          priority: "medium",
+        },
+        {
+          department: "Phòng Nhân sự",
+          current: 10,
+          projected: 12,
+          gap: 2,
+          priority: "medium",
+        },
+        {
+          department: "Phòng Kế toán",
+          current: 12,
+          projected: 13,
+          gap: 1,
+          priority: "low",
+        },
       ])
     } catch (error) {
-      console.error('Error fetching forecast data:', error)
+      console.error("Error fetching forecast data:", error)
     } finally {
       setLoading(false)
     }
@@ -122,27 +177,27 @@ export default function HiringForecastPage() {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high':
-        return 'bg-red-100 text-red-800'
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'low':
-        return 'bg-green-100 text-green-800'
+      case "high":
+        return "bg-red-100 text-red-800"
+      case "medium":
+        return "bg-yellow-100 text-yellow-800"
+      case "low":
+        return "bg-green-100 text-green-800"
       default:
-        return ''
+        return ""
     }
   }
 
   const getPriorityLabel = (priority: string) => {
     switch (priority) {
-      case 'high':
-        return 'Ưu tiên cao'
-      case 'medium':
-        return 'Trung bình'
-      case 'low':
-        return 'Thấp'
+      case "high":
+        return "Ưu tiên cao"
+      case "medium":
+        return "Trung bình"
+      case "low":
+        return "Thấp"
       default:
-        return ''
+        return ""
     }
   }
 
@@ -195,7 +250,9 @@ export default function HiringForecastPage() {
               </div>
             </div>
             <p className="text-sm text-muted-foreground mt-2">
-              trong {horizon === '3months' ? '3' : horizon === '6months' ? '6' : '12'} tháng tới
+              trong{" "}
+              {horizon === "3months" ? "3" : horizon === "6months" ? "6" : "12"}{" "}
+              tháng tới
             </p>
           </CardContent>
         </Card>
@@ -204,11 +261,15 @@ export default function HiringForecastPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Thay thế nghỉ việc</p>
+                <p className="text-sm text-muted-foreground">
+                  Thay thế nghỉ việc
+                </p>
                 {loading ? (
                   <Skeleton className="h-8 w-16 mt-1" />
                 ) : (
-                  <p className="text-3xl font-bold text-orange-600">{summary.forReplacement}</p>
+                  <p className="text-3xl font-bold text-orange-600">
+                    {summary.forReplacement}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-orange-100 rounded-full">
@@ -229,7 +290,9 @@ export default function HiringForecastPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-16 mt-1" />
                 ) : (
-                  <p className="text-3xl font-bold text-green-600">{summary.forGrowth}</p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {summary.forGrowth}
+                  </p>
                 )}
               </div>
               <div className="p-3 bg-green-100 rounded-full">
@@ -260,9 +323,25 @@ export default function HiringForecastPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="replacement" stackId="a" fill="#f97316" name="Thay thế" />
-                <Bar dataKey="growth" stackId="a" fill="#10b981" name="Tăng trưởng" />
-                <Line type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={2} name="Tổng" />
+                <Bar
+                  dataKey="replacement"
+                  stackId="a"
+                  fill="#f97316"
+                  name="Thay thế"
+                />
+                <Bar
+                  dataKey="growth"
+                  stackId="a"
+                  fill="#10b981"
+                  name="Tăng trưởng"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="total"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  name="Tổng"
+                />
               </ComposedChart>
             </ResponsiveContainer>
           )}
@@ -273,7 +352,9 @@ export default function HiringForecastPage() {
       <Card>
         <CardHeader>
           <CardTitle>Nhu cầu theo phòng ban</CardTitle>
-          <CardDescription>Khoảng cách giữa nhân sự hiện tại và dự kiến</CardDescription>
+          <CardDescription>
+            Khoảng cách giữa nhân sự hiện tại và dự kiến
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -302,7 +383,9 @@ export default function HiringForecastPage() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-blue-600">+{dept.gap}</p>
+                      <p className="text-2xl font-bold text-blue-600">
+                        +{dept.gap}
+                      </p>
                       <p className="text-xs text-muted-foreground">cần tuyển</p>
                     </div>
                     <Badge className={getPriorityColor(dept.priority)}>
@@ -320,7 +403,9 @@ export default function HiringForecastPage() {
       <Card>
         <CardHeader>
           <CardTitle>Lịch tuyển dụng đề xuất</CardTitle>
-          <CardDescription>Thời điểm tốt nhất để bắt đầu tuyển dụng</CardDescription>
+          <CardDescription>
+            Thời điểm tốt nhất để bắt đầu tuyển dụng
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="relative pl-8 space-y-6">
@@ -336,7 +421,8 @@ export default function HiringForecastPage() {
                   <Badge variant="destructive">Khẩn cấp</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Bắt đầu tuyển dụng cho Phòng Kinh doanh và IT - các vị trí ưu tiên cao
+                  Bắt đầu tuyển dụng cho Phòng Kinh doanh và IT - các vị trí ưu
+                  tiên cao
                 </p>
               </div>
             </div>
@@ -346,12 +432,16 @@ export default function HiringForecastPage() {
               <div className="p-4 border rounded-lg ml-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium">Tháng 2</span>
-                  <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+                  <Badge
+                    variant="outline"
+                    className="text-yellow-600 border-yellow-600"
+                  >
                     Chuẩn bị
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Đăng tin tuyển dụng cho Phòng Marketing - dự kiến onboard tháng 3
+                  Đăng tin tuyển dụng cho Phòng Marketing - dự kiến onboard
+                  tháng 3
                 </p>
               </div>
             </div>
@@ -361,7 +451,10 @@ export default function HiringForecastPage() {
               <div className="p-4 border rounded-lg ml-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium">Tháng 3-4</span>
-                  <Badge variant="outline" className="text-green-600 border-green-600">
+                  <Badge
+                    variant="outline"
+                    className="text-green-600 border-green-600"
+                  >
                     Theo kế hoạch
                   </Badge>
                 </div>

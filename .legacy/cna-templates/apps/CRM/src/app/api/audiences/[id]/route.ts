@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { validateRequest } from '@/lib/validations/utils'
-import { updateAudienceSchema } from '@/lib/validations/audience'
-import { countAudienceByRules } from '@/lib/campaigns/rule-engine'
-import { handleApiError } from '@/lib/api/errors'
-import type { AudienceRules } from '@/lib/audience-fields'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { validateRequest } from "@/lib/validations/utils"
+import { updateAudienceSchema } from "@/lib/validations/audience"
+import { countAudienceByRules } from "@/lib/campaigns/rule-engine"
+import { handleApiError } from "@/lib/api/errors"
+import type { AudienceRules } from "@/lib/audience-fields"
 
 // GET /api/audiences/[id] — Authenticated users can view
 export async function GET(
@@ -22,7 +22,14 @@ export async function GET(
         members: {
           include: {
             contact: {
-              select: { id: true, firstName: true, lastName: true, email: true, status: true, company: { select: { name: true } } },
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                status: true,
+                company: { select: { name: true } },
+              },
             },
           },
         },
@@ -30,21 +37,29 @@ export async function GET(
     })
 
     if (!audience) {
-      return NextResponse.json({ error: 'Audience not found' }, { status: 404 })
+      return NextResponse.json({ error: "Audience not found" }, { status: 404 })
     }
 
     // For DYNAMIC, add resolved count
-    if (audience.type === 'DYNAMIC' && audience.rules) {
-      const dynamicCount = await countAudienceByRules(audience.rules as unknown as AudienceRules)
+    if (audience.type === "DYNAMIC" && audience.rules) {
+      const dynamicCount = await countAudienceByRules(
+        audience.rules as unknown as AudienceRules
+      )
       return NextResponse.json({ ...audience, _dynamicCount: dynamicCount })
     }
 
     return NextResponse.json(audience)
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    return NextResponse.json({ error: 'Failed to fetch audience' }, { status: 500 })
+    return NextResponse.json(
+      { error: "Failed to fetch audience" },
+      { status: 500 }
+    )
   }
 }
 
@@ -54,7 +69,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER'])
+    const result = await requireRole(["ADMIN", "MANAGER"])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
@@ -71,9 +86,12 @@ export async function PATCH(
     return NextResponse.json(audience)
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    return handleApiError(error, 'PATCH /api/audiences/[id]')
+    return handleApiError(error, "PATCH /api/audiences/[id]")
   }
 }
 
@@ -83,15 +101,18 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER'])
+    const result = await requireRole(["ADMIN", "MANAGER"])
     if (isErrorResponse(result)) return result
 
     await prisma.audience.delete({ where: { id: params.id } })
     return NextResponse.json({ success: true })
   } catch (error: any) {
-    if (error?.code === 'P2025') {
-      return NextResponse.json({ error: 'Audience not found' }, { status: 404 })
+    if (error?.code === "P2025") {
+      return NextResponse.json({ error: "Audience not found" }, { status: 404 })
     }
-    return NextResponse.json({ error: 'Failed to delete audience' }, { status: 500 })
+    return NextResponse.json(
+      { error: "Failed to delete audience" },
+      { status: 500 }
+    )
   }
 }

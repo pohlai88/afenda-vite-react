@@ -5,38 +5,38 @@
  * Webpack and Next.js optimization settings
  */
 
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next"
 
 // ════════════════════════════════════════════════════════════════════════════════
 // TYPES
 // ════════════════════════════════════════════════════════════════════════════════
 
 export interface BundleAnalysis {
-  totalSize: number;
-  chunks: ChunkInfo[];
-  assets: AssetInfo[];
-  warnings: string[];
+  totalSize: number
+  chunks: ChunkInfo[]
+  assets: AssetInfo[]
+  warnings: string[]
 }
 
 export interface ChunkInfo {
-  name: string;
-  size: number;
-  modules: number;
-  isEntry: boolean;
-  isAsync: boolean;
+  name: string
+  size: number
+  modules: number
+  isEntry: boolean
+  isAsync: boolean
 }
 
 export interface AssetInfo {
-  name: string;
-  size: number;
-  type: 'js' | 'css' | 'image' | 'font' | 'other';
-  chunks: string[];
+  name: string
+  size: number
+  type: "js" | "css" | "image" | "font" | "other"
+  chunks: string[]
 }
 
 export interface SizeLimit {
-  name: string;
-  path: string;
-  limit: string;
+  name: string
+  path: string
+  limit: string
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -48,21 +48,41 @@ export interface SizeLimit {
  */
 export const SizeBudgets: SizeLimit[] = [
   // Core bundles
-  { name: 'Main JS', path: '.next/static/chunks/main-*.js', limit: '150kb' },
-  { name: 'Framework JS', path: '.next/static/chunks/framework-*.js', limit: '150kb' },
-  { name: 'Commons JS', path: '.next/static/chunks/commons-*.js', limit: '100kb' },
+  { name: "Main JS", path: ".next/static/chunks/main-*.js", limit: "150kb" },
+  {
+    name: "Framework JS",
+    path: ".next/static/chunks/framework-*.js",
+    limit: "150kb",
+  },
+  {
+    name: "Commons JS",
+    path: ".next/static/chunks/commons-*.js",
+    limit: "100kb",
+  },
 
   // Page bundles
-  { name: 'App Shell', path: '.next/static/chunks/pages/_app-*.js', limit: '50kb' },
-  { name: 'Dashboard Page', path: '.next/static/chunks/pages/dashboard-*.js', limit: '100kb' },
-  { name: 'Employee Page', path: '.next/static/chunks/pages/employees-*.js', limit: '80kb' },
+  {
+    name: "App Shell",
+    path: ".next/static/chunks/pages/_app-*.js",
+    limit: "50kb",
+  },
+  {
+    name: "Dashboard Page",
+    path: ".next/static/chunks/pages/dashboard-*.js",
+    limit: "100kb",
+  },
+  {
+    name: "Employee Page",
+    path: ".next/static/chunks/pages/employees-*.js",
+    limit: "80kb",
+  },
 
   // CSS
-  { name: 'Global CSS', path: '.next/static/css/*.css', limit: '100kb' },
+  { name: "Global CSS", path: ".next/static/css/*.css", limit: "100kb" },
 
   // Total
-  { name: 'Total Initial JS', path: '.next/static/**/*.js', limit: '500kb' },
-];
+  { name: "Total Initial JS", path: ".next/static/**/*.js", limit: "500kb" },
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // EXTERNAL PACKAGES
@@ -73,25 +93,25 @@ export const SizeBudgets: SizeLimit[] = [
  */
 export const ExternalPackages = [
   // Heavy packages that should be loaded from CDN in production
-  'lodash',
-  'moment',
-  'chart.js',
+  "lodash",
+  "moment",
+  "chart.js",
 
   // Server-only packages
-  'bcrypt',
-  'sharp',
-  '@prisma/client',
-];
+  "bcrypt",
+  "sharp",
+  "@prisma/client",
+]
 
 /**
  * Packages that should be transpiled
  */
 export const TranspilePackages = [
-  '@radix-ui',
-  'lucide-react',
-  '@tanstack/react-query',
-  '@tanstack/react-table',
-];
+  "@radix-ui",
+  "lucide-react",
+  "@tanstack/react-query",
+  "@tanstack/react-table",
+]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // CODE SPLITTING CONFIGURATION
@@ -122,7 +142,7 @@ export const ChunkGroups = {
   recruitment: /[\\/]src[\\/](app|components)[\\/]recruitment[\\/]/,
   reports: /[\\/]src[\\/](app|components)[\\/]reports[\\/]/,
   settings: /[\\/]src[\\/](app|components)[\\/]settings[\\/]/,
-};
+}
 
 // ════════════════════════════════════════════════════════════════════════════════
 // WEBPACK CONFIGURATION HELPER
@@ -133,14 +153,14 @@ export const ChunkGroups = {
  */
 export function generateSplitChunksConfig() {
   return {
-    chunks: 'all' as const,
+    chunks: "all" as const,
     maxInitialRequests: 25,
     minSize: 20000,
     maxSize: 244000,
     cacheGroups: {
       // Framework
       framework: {
-        name: 'framework',
+        name: "framework",
         test: ChunkGroups.react,
         priority: 50,
         enforce: true,
@@ -149,7 +169,7 @@ export function generateSplitChunksConfig() {
 
       // UI Components
       ui: {
-        name: 'ui',
+        name: "ui",
         test: ChunkGroups.ui,
         priority: 40,
         reuseExistingChunk: true,
@@ -157,7 +177,7 @@ export function generateSplitChunksConfig() {
 
       // Form handling
       forms: {
-        name: 'forms',
+        name: "forms",
         test: ChunkGroups.forms,
         priority: 35,
         reuseExistingChunk: true,
@@ -165,7 +185,7 @@ export function generateSplitChunksConfig() {
 
       // Table handling
       table: {
-        name: 'table',
+        name: "table",
         test: ChunkGroups.table,
         priority: 30,
         reuseExistingChunk: true,
@@ -173,7 +193,7 @@ export function generateSplitChunksConfig() {
 
       // Data fetching
       query: {
-        name: 'query',
+        name: "query",
         test: ChunkGroups.query,
         priority: 30,
         reuseExistingChunk: true,
@@ -181,7 +201,7 @@ export function generateSplitChunksConfig() {
 
       // Charts - lazy loaded
       charts: {
-        name: 'charts',
+        name: "charts",
         test: ChunkGroups.charts,
         priority: 20,
         reuseExistingChunk: true,
@@ -189,7 +209,7 @@ export function generateSplitChunksConfig() {
 
       // Date utilities
       dates: {
-        name: 'dates',
+        name: "dates",
         test: ChunkGroups.dates,
         priority: 20,
         reuseExistingChunk: true,
@@ -197,7 +217,7 @@ export function generateSplitChunksConfig() {
 
       // PDF generation - lazy loaded
       pdf: {
-        name: 'pdf',
+        name: "pdf",
         test: ChunkGroups.pdf,
         priority: 10,
         reuseExistingChunk: true,
@@ -205,7 +225,7 @@ export function generateSplitChunksConfig() {
 
       // Excel handling - lazy loaded
       excel: {
-        name: 'excel',
+        name: "excel",
         test: ChunkGroups.excel,
         priority: 10,
         reuseExistingChunk: true,
@@ -213,7 +233,7 @@ export function generateSplitChunksConfig() {
 
       // Default vendor chunk
       vendors: {
-        name: 'vendors',
+        name: "vendors",
         test: /[\\/]node_modules[\\/]/,
         priority: 5,
         reuseExistingChunk: true,
@@ -221,13 +241,13 @@ export function generateSplitChunksConfig() {
 
       // Common shared code
       common: {
-        name: 'common',
+        name: "common",
         minChunks: 2,
         priority: 1,
         reuseExistingChunk: true,
       },
     },
-  };
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -248,30 +268,33 @@ export function generateNextConfig(baseConfig: NextConfig = {}): NextConfig {
     swcMinify: true,
 
     // Standalone output for Docker
-    output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
+    output: process.env.BUILD_STANDALONE === "true" ? "standalone" : undefined,
 
     // Compiler options
     compiler: {
       // Remove console in production
-      removeConsole: process.env.NODE_ENV === 'production' ? {
-        exclude: ['error', 'warn'],
-      } : false,
+      removeConsole:
+        process.env.NODE_ENV === "production"
+          ? {
+              exclude: ["error", "warn"],
+            }
+          : false,
     },
 
     // Experimental features
     experimental: {
       // Optimize package imports
       optimizePackageImports: [
-        '@radix-ui/react-icons',
-        'lucide-react',
-        'date-fns',
-        '@tanstack/react-table',
+        "@radix-ui/react-icons",
+        "lucide-react",
+        "date-fns",
+        "@tanstack/react-table",
       ],
     },
 
     // Image optimization
     images: {
-      formats: ['image/avif', 'image/webp'],
+      formats: ["image/avif", "image/webp"],
       deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
       imageSizes: [16, 32, 48, 64, 96, 128, 256],
       minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
@@ -283,33 +306,33 @@ export function generateNextConfig(baseConfig: NextConfig = {}): NextConfig {
     async headers() {
       return [
         {
-          source: '/static/:path*',
+          source: "/static/:path*",
           headers: [
             {
-              key: 'Cache-Control',
-              value: 'public, max-age=31536000, immutable',
+              key: "Cache-Control",
+              value: "public, max-age=31536000, immutable",
             },
           ],
         },
         {
-          source: '/_next/static/:path*',
+          source: "/_next/static/:path*",
           headers: [
             {
-              key: 'Cache-Control',
-              value: 'public, max-age=31536000, immutable',
+              key: "Cache-Control",
+              value: "public, max-age=31536000, immutable",
             },
           ],
         },
         {
-          source: '/fonts/:path*',
+          source: "/fonts/:path*",
           headers: [
             {
-              key: 'Cache-Control',
-              value: 'public, max-age=31536000, immutable',
+              key: "Cache-Control",
+              value: "public, max-age=31536000, immutable",
             },
           ],
         },
-      ];
+      ]
     },
 
     // Webpack configuration
@@ -320,9 +343,9 @@ export function generateNextConfig(baseConfig: NextConfig = {}): NextConfig {
           ...config.optimization,
           splitChunks: generateSplitChunksConfig(),
           runtimeChunk: {
-            name: 'runtime',
+            name: "runtime",
           },
-        };
+        }
       }
 
       // Aliases for common imports
@@ -330,13 +353,13 @@ export function generateNextConfig(baseConfig: NextConfig = {}): NextConfig {
         ...config.resolve,
         alias: {
           ...config.resolve?.alias,
-          '@': './src',
+          "@": "./src",
         },
-      };
+      }
 
-      return config;
+      return config
     },
-  };
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -349,22 +372,22 @@ export function generateNextConfig(baseConfig: NextConfig = {}): NextConfig {
 export const TurbopackConfig = {
   // Rules for different file types
   rules: {
-    '*.svg': {
-      loaders: ['@svgr/webpack'],
-      as: '*.js',
+    "*.svg": {
+      loaders: ["@svgr/webpack"],
+      as: "*.js",
     },
   },
 
   // Resolve aliases
   resolveAlias: {
-    '@': './src',
-    '@/components': './src/components',
-    '@/lib': './src/lib',
-    '@/hooks': './src/hooks',
-    '@/styles': './src/styles',
-    '@/types': './src/types',
+    "@": "./src",
+    "@/components": "./src/components",
+    "@/lib": "./src/lib",
+    "@/hooks": "./src/hooks",
+    "@/styles": "./src/styles",
+    "@/types": "./src/types",
   },
-};
+}
 
 // ════════════════════════════════════════════════════════════════════════════════
 // TREE SHAKING HELPERS
@@ -374,21 +397,16 @@ export const TurbopackConfig = {
  * Mark packages as side-effect free for better tree shaking
  */
 export const SideEffectFreePackages = [
-  'lodash-es',
-  'date-fns',
-  '@radix-ui/*',
-  'lucide-react',
-];
+  "lodash-es",
+  "date-fns",
+  "@radix-ui/*",
+  "lucide-react",
+]
 
 /**
  * Modules that should be marked as external in SSR
  */
-export const SSRExternals = [
-  'bcrypt',
-  'sharp',
-  '@prisma/client',
-  'puppeteer',
-];
+export const SSRExternals = ["bcrypt", "sharp", "@prisma/client", "puppeteer"]
 
 // ════════════════════════════════════════════════════════════════════════════════
 // BUNDLE ANALYZER HELPERS
@@ -398,32 +416,32 @@ export const SSRExternals = [
  * Parse bundle size string to bytes
  */
 export function parseSizeToBytes(size: string): number {
-  const match = size.match(/^([\d.]+)\s*(b|kb|mb|gb)?$/i);
-  if (!match) return 0;
+  const match = size.match(/^([\d.]+)\s*(b|kb|mb|gb)?$/i)
+  if (!match) return 0
 
-  const value = parseFloat(match[1]);
-  const unit = (match[2] || 'b').toLowerCase();
+  const value = parseFloat(match[1])
+  const unit = (match[2] || "b").toLowerCase()
 
   const multipliers: Record<string, number> = {
     b: 1,
     kb: 1024,
     mb: 1024 * 1024,
     gb: 1024 * 1024 * 1024,
-  };
+  }
 
-  return Math.round(value * (multipliers[unit] || 1));
+  return Math.round(value * (multipliers[unit] || 1))
 }
 
 /**
  * Format bytes to human readable string
  */
 export function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return "0 B"
 
-  const units = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  const units = ["B", "KB", "MB", "GB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(1024))
 
-  return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
+  return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`
 }
 
 /**
@@ -433,13 +451,13 @@ export function checkSizeLimit(
   actualSize: number,
   limit: string
 ): { exceeded: boolean; percentage: number } {
-  const limitBytes = parseSizeToBytes(limit);
-  const percentage = (actualSize / limitBytes) * 100;
+  const limitBytes = parseSizeToBytes(limit)
+  const percentage = (actualSize / limitBytes) * 100
 
   return {
     exceeded: actualSize > limitBytes,
     percentage: Math.round(percentage),
-  };
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -456,10 +474,12 @@ export function createDynamicImport(
 ): string {
   const comments = [
     `webpackChunkName: "${chunkName}"`,
-    prefetch ? 'webpackPrefetch: true' : '',
-  ].filter(Boolean).join(', ');
+    prefetch ? "webpackPrefetch: true" : "",
+  ]
+    .filter(Boolean)
+    .join(", ")
 
-  return `import(/* ${comments} */ '${modulePath}')`;
+  return `import(/* ${comments} */ '${modulePath}')`
 }
 
 /**
@@ -467,17 +487,17 @@ export function createDynamicImport(
  */
 export const PrefetchHints = {
   // From login page
-  'login': ['dashboard', 'employees'],
+  login: ["dashboard", "employees"],
 
   // From dashboard
-  'dashboard': ['employees', 'attendance', 'reports'],
+  dashboard: ["employees", "attendance", "reports"],
 
   // From employee list
-  'employees': ['employee-detail', 'employee-form'],
+  employees: ["employee-detail", "employee-form"],
 
   // From attendance
-  'attendance': ['timesheet', 'attendance-report'],
+  attendance: ["timesheet", "attendance-report"],
 
   // From payroll
-  'payroll': ['payslip', 'payroll-report'],
-} as const;
+  payroll: ["payslip", "payroll-report"],
+} as const

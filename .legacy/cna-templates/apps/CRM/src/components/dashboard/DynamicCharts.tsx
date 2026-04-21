@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import dynamic from 'next/dynamic'
-import { Skeleton } from '@/components/ui/skeleton'
+import dynamic from "next/dynamic"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const ChartSkeleton = () => (
   <div className="chart-container">
@@ -11,11 +11,11 @@ const ChartSkeleton = () => (
 )
 
 export const LazyFunnelChart = dynamic(
-  () => import('./FunnelChart').then((mod) => ({ default: mod.FunnelChart })),
+  () => import("./FunnelChart").then((mod) => ({ default: mod.FunnelChart })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 export const LazyRevenueChart = dynamic(
-  () => import('./RevenueChart').then((mod) => ({ default: mod.RevenueChart })),
+  () => import("./RevenueChart").then((mod) => ({ default: mod.RevenueChart })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )

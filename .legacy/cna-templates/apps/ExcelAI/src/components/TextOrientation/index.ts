@@ -1,2 +1,2 @@
-export { TextOrientationDropdown } from './TextOrientationDropdown';
-export { TextOrientationDialog } from './TextOrientationDialog';
+export { TextOrientationDropdown } from "./TextOrientationDropdown"
+export { TextOrientationDialog } from "./TextOrientationDialog"

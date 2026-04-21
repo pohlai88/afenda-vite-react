@@ -72,7 +72,7 @@ These are logical support folders only; they are **not** extra PostgreSQL namesp
 - `src/schema/identity/`
 - `src/schema/tenancy/`
 - `src/schema/pkg-governance/`
-- `src/schema/helpers/`
+- `src/schema/environment-support/`
 - `src/schema/constants/`
 
 ### 2.4 Reserved suffix rule
@@ -139,7 +139,7 @@ packages/_database/
       shared/
         columns.schema.ts
         enums.schema.ts
-        helpers.ts
+        shared-sql-defaults.ts
         index.ts
         shared-boundary.schema.ts
         __tests__/
@@ -248,9 +248,9 @@ packages/_database/
         __tests__/
           governance.test.ts
 
-      helpers/
-        env-boundary.schema.ts
-        env.ts
+      environment-support/
+        environment-integer.schema.ts
+        environment-integer-parsing.ts
         index.ts
 
       constants/
@@ -304,13 +304,14 @@ packages/_database/src/queries/
   resolve-current-tenant-policy.ts
   resolve-item-settings.ts
   resolve-membership-scope.ts
-  helpers/
-    effective-row.ts
-    iso-date.ts
-    scope-utils.ts
+  query-primitives/
+    effective-date-predicate.ts
+    iso-date-assertions.ts
+    scope-matching.ts
   __tests__/
-    iso-date.test.ts
-    scope-utils.test.ts
+    effective-date-predicate.test.ts
+    iso-date-assertions.test.ts
+    scope-matching.test.ts
 ```
 
 ### 5.3 Views inventory
@@ -356,14 +357,14 @@ packages/_database/
     schema/
       __tests__/
         schema-contract.test.ts
-      helpers/
+      environment-support/
         __tests__/
-          helpers-env.test.ts
+          environment-support.test.ts
     __tests__/
       002a-physical-inventory.test.ts
       database-doctrine.test.ts
       hardening-patches.test.ts
-      helper-boundary.test.ts
+      schema-support-boundary.test.ts
       web-boundary.test.ts
       studio/
         business-glossary-matrix.test.ts

@@ -2,22 +2,22 @@
 // PROACTIVE SCHEDULER — Background scanning scheduler
 // =============================================================================
 
-import type { ScanConfig, SheetData } from './types';
-import { loggers } from '@/utils/logger';
+import type { ScanConfig, SheetData } from "./types"
+import { loggers } from "@/utils/logger"
 
 /**
  * Schedules and manages background scans
  */
 export class ProactiveScheduler {
-  private config: ScanConfig;
-  private intervalId: ReturnType<typeof setInterval> | null = null;
-  private isRunning = false;
-  private lastScanTime = 0;
-  private scanCallback: ((data: SheetData) => Promise<unknown>) | null = null;
-  private getDataCallback: (() => SheetData | null) | null = null;
+  private config: ScanConfig
+  private intervalId: ReturnType<typeof setInterval> | null = null
+  private isRunning = false
+  private lastScanTime = 0
+  private scanCallback: ((data: SheetData) => Promise<unknown>) | null = null
+  private getDataCallback: (() => SheetData | null) | null = null
 
   constructor(config: ScanConfig) {
-    this.config = config;
+    this.config = config
   }
 
   /**
@@ -28,22 +28,22 @@ export class ProactiveScheduler {
     scanCallback: (data: SheetData) => Promise<unknown>
   ): void {
     if (this.intervalId) {
-      this.stop();
+      this.stop()
     }
 
-    this.getDataCallback = getDataCallback;
-    this.scanCallback = scanCallback;
-    this.isRunning = true;
+    this.getDataCallback = getDataCallback
+    this.scanCallback = scanCallback
+    this.isRunning = true
 
     // Run initial scan
-    this.runScan();
+    this.runScan()
 
     // Schedule periodic scans
     this.intervalId = setInterval(() => {
       if (this.config.enabled && this.isRunning) {
-        this.runScan();
+        this.runScan()
       }
-    }, this.config.interval);
+    }, this.config.interval)
   }
 
   /**
@@ -51,24 +51,24 @@ export class ProactiveScheduler {
    */
   stop(): void {
     if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
+      clearInterval(this.intervalId)
+      this.intervalId = null
     }
-    this.isRunning = false;
+    this.isRunning = false
   }
 
   /**
    * Pause scanning
    */
   pause(): void {
-    this.isRunning = false;
+    this.isRunning = false
   }
 
   /**
    * Resume scanning
    */
   resume(): void {
-    this.isRunning = true;
+    this.isRunning = true
   }
 
   /**
@@ -76,27 +76,27 @@ export class ProactiveScheduler {
    */
   async runScan(): Promise<void> {
     if (!this.getDataCallback || !this.scanCallback) {
-      return;
+      return
     }
 
-    const data = this.getDataCallback();
+    const data = this.getDataCallback()
     if (!data) {
-      return;
+      return
     }
 
     // Skip if data is too large
-    const cellCount = data.rowCount * data.colCount;
+    const cellCount = data.rowCount * data.colCount
     if (cellCount > this.config.maxCellsToScan) {
-      loggers.proactive.warn('Skipping scan: data too large');
-      return;
+      loggers.proactive.warn("Skipping scan: data too large")
+      return
     }
 
-    this.lastScanTime = Date.now();
+    this.lastScanTime = Date.now()
 
     try {
-      await this.scanCallback(data);
+      await this.scanCallback(data)
     } catch (error) {
-      loggers.proactive.error('Scan failed:', error);
+      loggers.proactive.error("Scan failed:", error)
     }
   }
 
@@ -104,13 +104,13 @@ export class ProactiveScheduler {
    * Update configuration
    */
   updateConfig(config: Partial<ScanConfig>): void {
-    this.config = { ...this.config, ...config };
+    this.config = { ...this.config, ...config }
 
     // Restart if interval changed
     if (config.interval && this.intervalId) {
-      this.stop();
+      this.stop()
       if (this.getDataCallback && this.scanCallback) {
-        this.start(this.getDataCallback, this.scanCallback);
+        this.start(this.getDataCallback, this.scanCallback)
       }
     }
   }
@@ -125,23 +125,23 @@ export class ProactiveScheduler {
       nextScanTime: this.lastScanTime + this.config.interval,
       interval: this.config.interval,
       enabled: this.config.enabled,
-    };
+    }
   }
 
   /**
    * Check if scheduler is running
    */
   isActive(): boolean {
-    return this.isRunning && this.config.enabled;
+    return this.isRunning && this.config.enabled
   }
 
   /**
    * Get time until next scan
    */
   getTimeUntilNextScan(): number {
-    if (!this.isRunning) return -1;
-    const elapsed = Date.now() - this.lastScanTime;
-    return Math.max(0, this.config.interval - elapsed);
+    if (!this.isRunning) return -1
+    const elapsed = Date.now() - this.lastScanTime
+    return Math.max(0, this.config.interval - elapsed)
   }
 }
 
@@ -150,9 +150,9 @@ export class ProactiveScheduler {
 // =============================================================================
 
 export interface SchedulerStatus {
-  isRunning: boolean;
-  lastScanTime: number;
-  nextScanTime: number;
-  interval: number;
-  enabled: boolean;
+  isRunning: boolean
+  lastScanTime: number
+  nextScanTime: number
+  interval: number
+  enabled: boolean
 }

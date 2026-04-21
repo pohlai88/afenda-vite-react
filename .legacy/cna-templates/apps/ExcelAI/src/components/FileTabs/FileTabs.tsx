@@ -2,29 +2,29 @@
 // FILE TABS - Main Container Component
 // ============================================================
 
-import React, { useCallback, useRef, useEffect } from 'react';
-import { useTabsStore } from '../../stores/tabsStore';
-import { FileTab } from './FileTab';
-import { HomeTab } from './HomeTab';
-import { NewTabButton } from './NewTabButton';
-import { TabContextMenu } from './TabContextMenu';
-import './FileTabs.css';
+import React, { useCallback, useRef, useEffect } from "react"
+import { useTabsStore } from "../../stores/tabsStore"
+import { FileTab } from "./FileTab"
+import { HomeTab } from "./HomeTab"
+import { NewTabButton } from "./NewTabButton"
+import { TabContextMenu } from "./TabContextMenu"
+import "./FileTabs.css"
 
 interface FileTabsProps {
-  onTabChange?: (tabId: string, workbookId: string | null) => void;
-  onNewTab?: () => void;
+  onTabChange?: (tabId: string, workbookId: string | null) => void
+  onNewTab?: () => void
 }
 
 export const FileTabs: React.FC<FileTabsProps> = ({
   onTabChange,
   onNewTab,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null)
   const [contextMenu, setContextMenu] = React.useState<{
-    tabId: string;
-    x: number;
-    y: number;
-  } | null>(null);
+    tabId: string
+    x: number
+    y: number
+  } | null>(null)
 
   const {
     tabs,
@@ -40,106 +40,106 @@ export const FileTabs: React.FC<FileTabsProps> = ({
     goToNextTab,
     goToPrevTab,
     goToTab,
-  } = useTabsStore();
+  } = useTabsStore()
 
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Tab' && !e.shiftKey) {
-        e.preventDefault();
-        goToNextTab();
+      if ((e.ctrlKey || e.metaKey) && e.key === "Tab" && !e.shiftKey) {
+        e.preventDefault()
+        goToNextTab()
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Tab' && e.shiftKey) {
-        e.preventDefault();
-        goToPrevTab();
+      if ((e.ctrlKey || e.metaKey) && e.key === "Tab" && e.shiftKey) {
+        e.preventDefault()
+        goToPrevTab()
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'w') {
-        e.preventDefault();
-        removeTab(activeTabId);
+      if ((e.ctrlKey || e.metaKey) && e.key === "w") {
+        e.preventDefault()
+        removeTab(activeTabId)
       }
-      if ((e.ctrlKey || e.metaKey) && e.key >= '1' && e.key <= '9') {
-        e.preventDefault();
-        goToTab(parseInt(e.key) - 1);
+      if ((e.ctrlKey || e.metaKey) && e.key >= "1" && e.key <= "9") {
+        e.preventDefault()
+        goToTab(parseInt(e.key) - 1)
       }
-    };
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goToNextTab, goToPrevTab, goToTab, removeTab, activeTabId]);
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [goToNextTab, goToPrevTab, goToTab, removeTab, activeTabId])
 
   const handleTabClick = useCallback(
     (tabId: string) => {
-      setActiveTab(tabId);
-      const tab = tabs.find((t) => t.id === tabId);
-      onTabChange?.(tabId, tab?.workbookId || null);
+      setActiveTab(tabId)
+      const tab = tabs.find((t) => t.id === tabId)
+      onTabChange?.(tabId, tab?.workbookId || null)
     },
     [setActiveTab, tabs, onTabChange]
-  );
+  )
 
   const handleTabClose = useCallback(
     async (tabId: string, e: React.MouseEvent) => {
-      e.stopPropagation();
-      await removeTab(tabId);
+      e.stopPropagation()
+      await removeTab(tabId)
     },
     [removeTab]
-  );
+  )
 
   const handleNewTab = useCallback(() => {
     const newTabId = addTab({
-      name: 'New Workbook',
-      type: 'workbook',
-    });
-    onNewTab?.();
-    onTabChange?.(newTabId, null);
-  }, [addTab, onNewTab, onTabChange]);
+      name: "New Workbook",
+      type: "workbook",
+    })
+    onNewTab?.()
+    onTabChange?.(newTabId, null)
+  }, [addTab, onNewTab, onTabChange])
 
   const handleContextMenu = useCallback(
     (tabId: string, e: React.MouseEvent) => {
-      e.preventDefault();
+      e.preventDefault()
       setContextMenu({
         tabId,
         x: e.clientX,
         y: e.clientY,
-      });
+      })
     },
     []
-  );
+  )
 
   const closeContextMenu = useCallback(() => {
-    setContextMenu(null);
-  }, []);
+    setContextMenu(null)
+  }, [])
 
   const handleDragStart = useCallback(
     (tabId: string) => {
-      startDrag(tabId);
+      startDrag(tabId)
     },
     [startDrag]
-  );
+  )
 
   const handleDragOver = useCallback(
     (tabId: string, e: React.DragEvent) => {
-      e.preventDefault();
-      const rect = (e.target as HTMLElement).getBoundingClientRect();
+      e.preventDefault()
+      const rect = (e.target as HTMLElement).getBoundingClientRect()
       const position =
-        e.clientX < rect.left + rect.width / 2 ? 'before' : 'after';
-      updateDragTarget(tabId, position);
+        e.clientX < rect.left + rect.width / 2 ? "before" : "after"
+      updateDragTarget(tabId, position)
     },
     [updateDragTarget]
-  );
+  )
 
   const handleDrop = useCallback(() => {
-    endDrag();
-  }, [endDrag]);
+    endDrag()
+  }, [endDrag])
 
   const scrollToTab = useCallback((tabId: string) => {
-    const container = containerRef.current;
-    const tabElement = container?.querySelector(`[data-tab-id="${tabId}"]`);
-    tabElement?.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-  }, []);
+    const container = containerRef.current
+    const tabElement = container?.querySelector(`[data-tab-id="${tabId}"]`)
+    tabElement?.scrollIntoView({ behavior: "smooth", inline: "center" })
+  }, [])
 
   useEffect(() => {
-    scrollToTab(activeTabId);
-  }, [activeTabId, scrollToTab]);
+    scrollToTab(activeTabId)
+  }, [activeTabId, scrollToTab])
 
   return (
     <div className="file-tabs-container">
@@ -147,13 +147,13 @@ export const FileTabs: React.FC<FileTabsProps> = ({
         <div className="file-tabs-list">
           {showHomeTab && (
             <HomeTab
-              isActive={activeTabId === 'home'}
-              onClick={() => handleTabClick('home')}
+              isActive={activeTabId === "home"}
+              onClick={() => handleTabClick("home")}
             />
           )}
 
           {tabs
-            .filter((tab) => tab.type !== 'home')
+            .filter((tab) => tab.type !== "home")
             .map((tab) => (
               <FileTab
                 key={tab.id}
@@ -188,7 +188,7 @@ export const FileTabs: React.FC<FileTabsProps> = ({
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default FileTabs;
+export default FileTabs

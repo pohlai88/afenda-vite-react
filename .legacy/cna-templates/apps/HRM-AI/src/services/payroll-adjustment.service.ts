@@ -1,9 +1,14 @@
 // src/services/payroll-adjustment.service.ts
 // Payroll Adjustment Service
 
-import { db } from '@/lib/db'
-import type { Prisma, PayrollStatus, PayrollComponentCategory, PayrollItemType } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
+import { db } from "@/lib/db"
+import type {
+  Prisma,
+  PayrollStatus,
+  PayrollComponentCategory,
+  PayrollItemType,
+} from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
 
 export interface PayrollAdjustmentFilters {
   employeeId?: string
@@ -90,9 +95,13 @@ export const payrollAdjustmentService = {
       ...(itemType && { itemType }),
       ...(search && {
         OR: [
-          { name: { contains: search, mode: 'insensitive' } },
-          { employee: { fullName: { contains: search, mode: 'insensitive' } } },
-          { employee: { employeeCode: { contains: search, mode: 'insensitive' } } },
+          { name: { contains: search, mode: "insensitive" } },
+          { employee: { fullName: { contains: search, mode: "insensitive" } } },
+          {
+            employee: {
+              employeeCode: { contains: search, mode: "insensitive" },
+            },
+          },
         ],
       }),
     }
@@ -116,7 +125,7 @@ export const payrollAdjustmentService = {
             select: { id: true, name: true, email: true },
           },
         },
-        orderBy: [{ createdAt: 'desc' }],
+        orderBy: [{ createdAt: "desc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -176,7 +185,7 @@ export const payrollAdjustmentService = {
         month,
         employeeId,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     })
   },
 
@@ -187,7 +196,7 @@ export const payrollAdjustmentService = {
     return db.payrollAdjustment.findMany({
       where: {
         tenantId,
-        status: 'PENDING_APPROVAL',
+        status: "PENDING_APPROVAL",
       },
       include: {
         employee: {
@@ -202,7 +211,7 @@ export const payrollAdjustmentService = {
           select: { id: true, name: true },
         },
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
     })
   },
 
@@ -232,7 +241,7 @@ export const payrollAdjustmentService = {
     })
 
     if (period?.isLocked) {
-      throw new Error('Kỳ lương đã khóa, không thể tạo điều chỉnh')
+      throw new Error("Kỳ lương đã khóa, không thể tạo điều chỉnh")
     }
 
     // Verify employee exists
@@ -241,7 +250,7 @@ export const payrollAdjustmentService = {
     })
 
     if (!employee) {
-      throw new Error('Nhân viên không tồn tại')
+      throw new Error("Nhân viên không tồn tại")
     }
 
     return db.payrollAdjustment.create({
@@ -255,7 +264,7 @@ export const payrollAdjustmentService = {
         itemType: data.itemType,
         amount: data.amount,
         isTaxable: data.isTaxable ?? true,
-        status: 'PENDING_APPROVAL',
+        status: "PENDING_APPROVAL",
         createdBy: userId,
         reason: data.reason,
         attachmentUrl: data.attachmentUrl,
@@ -286,11 +295,11 @@ export const payrollAdjustmentService = {
     })
 
     if (!adjustment) {
-      throw new Error('Điều chỉnh không tồn tại')
+      throw new Error("Điều chỉnh không tồn tại")
     }
 
-    if (adjustment.status !== 'PENDING_APPROVAL') {
-      throw new Error('Chỉ có thể chỉnh sửa điều chỉnh đang chờ duyệt')
+    if (adjustment.status !== "PENDING_APPROVAL") {
+      throw new Error("Chỉ có thể chỉnh sửa điều chỉnh đang chờ duyệt")
     }
 
     return db.payrollAdjustment.update({
@@ -308,11 +317,11 @@ export const payrollAdjustmentService = {
     })
 
     if (!adjustment) {
-      throw new Error('Điều chỉnh không tồn tại')
+      throw new Error("Điều chỉnh không tồn tại")
     }
 
-    if (adjustment.status !== 'PENDING_APPROVAL') {
-      throw new Error('Chỉ có thể xóa điều chỉnh đang chờ duyệt')
+    if (adjustment.status !== "PENDING_APPROVAL") {
+      throw new Error("Chỉ có thể xóa điều chỉnh đang chờ duyệt")
     }
 
     return db.payrollAdjustment.delete({
@@ -333,17 +342,17 @@ export const payrollAdjustmentService = {
     })
 
     if (!adjustment) {
-      throw new Error('Điều chỉnh không tồn tại')
+      throw new Error("Điều chỉnh không tồn tại")
     }
 
-    if (adjustment.status !== 'PENDING_APPROVAL') {
-      throw new Error('Điều chỉnh không ở trạng thái chờ duyệt')
+    if (adjustment.status !== "PENDING_APPROVAL") {
+      throw new Error("Điều chỉnh không ở trạng thái chờ duyệt")
     }
 
     return db.payrollAdjustment.update({
       where: { id },
       data: {
-        status: 'APPROVED',
+        status: "APPROVED",
         approvedBy: approverId,
         approvedAt: new Date(),
       },
@@ -364,21 +373,21 @@ export const payrollAdjustmentService = {
     })
 
     if (!adjustment) {
-      throw new Error('Điều chỉnh không tồn tại')
+      throw new Error("Điều chỉnh không tồn tại")
     }
 
-    if (adjustment.status !== 'PENDING_APPROVAL') {
-      throw new Error('Điều chỉnh không ở trạng thái chờ duyệt')
+    if (adjustment.status !== "PENDING_APPROVAL") {
+      throw new Error("Điều chỉnh không ở trạng thái chờ duyệt")
     }
 
     if (!rejectionReason) {
-      throw new Error('Vui lòng nhập lý do từ chối')
+      throw new Error("Vui lòng nhập lý do từ chối")
     }
 
     return db.payrollAdjustment.update({
       where: { id },
       data: {
-        status: 'CANCELLED',
+        status: "CANCELLED",
         approvedBy: approverId,
         approvedAt: new Date(),
         rejectionReason,
@@ -394,10 +403,10 @@ export const payrollAdjustmentService = {
       where: {
         id: { in: ids },
         tenantId,
-        status: 'PENDING_APPROVAL',
+        status: "PENDING_APPROVAL",
       },
       data: {
-        status: 'APPROVED',
+        status: "APPROVED",
         approvedBy: approverId,
         approvedAt: new Date(),
       },
@@ -420,12 +429,12 @@ export const payrollAdjustmentService = {
       },
     })
 
-    const approved = adjustments.filter(a => a.status === 'APPROVED')
-    const pending = adjustments.filter(a => a.status === 'PENDING_APPROVAL')
-    const rejected = adjustments.filter(a => a.status === 'CANCELLED')
+    const approved = adjustments.filter((a) => a.status === "APPROVED")
+    const pending = adjustments.filter((a) => a.status === "PENDING_APPROVAL")
+    const rejected = adjustments.filter((a) => a.status === "CANCELLED")
 
-    const earnings = approved.filter(a => a.itemType === 'EARNING')
-    const deductions = approved.filter(a => a.itemType === 'DEDUCTION')
+    const earnings = approved.filter((a) => a.itemType === "EARNING")
+    const deductions = approved.filter((a) => a.itemType === "DEDUCTION")
 
     return {
       total: adjustments.length,

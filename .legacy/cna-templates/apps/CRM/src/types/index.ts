@@ -1,57 +1,99 @@
-export type { Company, Contact, Deal, Stage, PipelineConfig, Activity, Quote, QuoteItem, SalesOrder, OrderItem, Product, Tag, User, AuditLog, DealContact, ContactTag, CompanyTag, DealTag, ExchangeRate, Document, ComplianceCheck, DealChecklist, ProductBundle, ProductBundleItem, ProductCompatibility, PricingTier, Partner, DealRegistration, Commission } from '@prisma/client'
+export type {
+  Company,
+  Contact,
+  Deal,
+  Stage,
+  PipelineConfig,
+  Activity,
+  Quote,
+  QuoteItem,
+  SalesOrder,
+  OrderItem,
+  Product,
+  Tag,
+  User,
+  AuditLog,
+  DealContact,
+  ContactTag,
+  CompanyTag,
+  DealTag,
+  ExchangeRate,
+  Document,
+  ComplianceCheck,
+  DealChecklist,
+  ProductBundle,
+  ProductBundleItem,
+  ProductCompatibility,
+  PricingTier,
+  Partner,
+  DealRegistration,
+  Commission,
+} from "@prisma/client"
 
-export type ContactWithCompany = import('@prisma/client').Contact & {
-  company: import('@prisma/client').Company | null
-  tags: (import('@prisma/client').ContactTag & { tag: import('@prisma/client').Tag })[]
+export type ContactWithCompany = import("@prisma/client").Contact & {
+  company: import("@prisma/client").Company | null
+  tags: (import("@prisma/client").ContactTag & {
+    tag: import("@prisma/client").Tag
+  })[]
 }
 
-export type CompanyWithContacts = import('@prisma/client').Company & {
-  contacts: import('@prisma/client').Contact[]
-  deals: import('@prisma/client').Deal[]
-  tags: (import('@prisma/client').CompanyTag & { tag: import('@prisma/client').Tag })[]
+export type CompanyWithContacts = import("@prisma/client").Company & {
+  contacts: import("@prisma/client").Contact[]
+  deals: import("@prisma/client").Deal[]
+  tags: (import("@prisma/client").CompanyTag & {
+    tag: import("@prisma/client").Tag
+  })[]
   parent?: { id: string; name: string } | null
   children?: { id: string; name: string }[]
   _count: { contacts: number; deals: number; documents?: number }
 }
 
-export type DealWithRelations = import('@prisma/client').Deal & {
-  stage: import('@prisma/client').Stage
-  company: (import('@prisma/client').Company & {
-    parent?: { id: string; name: string } | null
-    children?: { id: string; name: string }[]
-  }) | null
-  contacts: (import('@prisma/client').DealContact & { contact: import('@prisma/client').Contact })[]
-  owner: import('@prisma/client').User
-  checklists?: import('@prisma/client').DealChecklist[]
+export type DealWithRelations = import("@prisma/client").Deal & {
+  stage: import("@prisma/client").Stage
+  company:
+    | (import("@prisma/client").Company & {
+        parent?: { id: string; name: string } | null
+        children?: { id: string; name: string }[]
+      })
+    | null
+  contacts: (import("@prisma/client").DealContact & {
+    contact: import("@prisma/client").Contact
+  })[]
+  owner: import("@prisma/client").User
+  checklists?: import("@prisma/client").DealChecklist[]
   _count: { activities: number; quotes: number; documents?: number }
 }
 
-export type DocumentWithUploader = import('@prisma/client').Document & {
+export type DocumentWithUploader = import("@prisma/client").Document & {
   uploadedBy: { id: string; name: string | null; avatarUrl: string | null }
 }
 
-export type StageWithDeals = import('@prisma/client').Stage & {
+export type StageWithDeals = import("@prisma/client").Stage & {
   deals: DealWithRelations[]
 }
 
-export type ActivityWithRelations = import('@prisma/client').Activity & {
-  contact: import('@prisma/client').Contact | null
-  company: import('@prisma/client').Company | null
-  deal: import('@prisma/client').Deal | null
-  user: import('@prisma/client').User
+export type ActivityWithRelations = import("@prisma/client").Activity & {
+  contact: import("@prisma/client").Contact | null
+  company: import("@prisma/client").Company | null
+  deal: import("@prisma/client").Deal | null
+  user: import("@prisma/client").User
 }
 
-export type QuoteWithItems = import('@prisma/client').Quote & {
-  items: (import('@prisma/client').QuoteItem & { product: import('@prisma/client').Product | null })[]
-  contact: import('@prisma/client').Contact | null
-  company: import('@prisma/client').Company | null
-  deal: import('@prisma/client').Deal | null
+export type QuoteWithItems = import("@prisma/client").Quote & {
+  items: (import("@prisma/client").QuoteItem & {
+    product: import("@prisma/client").Product | null
+  })[]
+  contact: import("@prisma/client").Contact | null
+  company: import("@prisma/client").Company | null
+  deal: import("@prisma/client").Deal | null
 }
 
-export type OrderWithItems = import('@prisma/client').SalesOrder & {
-  items: (import('@prisma/client').OrderItem & { product: import('@prisma/client').Product | null })[]
-  company: import('@prisma/client').Company | null
-  deal: import('@prisma/client').Deal | null
+export type OrderWithItems = import("@prisma/client").SalesOrder & {
+  items: (import("@prisma/client").OrderItem & {
+    product: import("@prisma/client").Product | null
+  })[]
+  company: import("@prisma/client").Company | null
+  deal: import("@prisma/client").Deal | null
 }
 
 export interface DashboardStats {

@@ -34,7 +34,11 @@ function ensureCleanup() {
     })
   }, 60_000)
   // Allow process to exit without waiting for interval
-  if (cleanupInterval && typeof cleanupInterval === 'object' && 'unref' in cleanupInterval) {
+  if (
+    cleanupInterval &&
+    typeof cleanupInterval === "object" &&
+    "unref" in cleanupInterval
+  ) {
     cleanupInterval.unref()
   }
 }

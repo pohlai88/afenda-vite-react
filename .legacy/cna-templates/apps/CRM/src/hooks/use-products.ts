@@ -1,11 +1,7 @@
-'use client'
+"use client"
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import type { Product } from '@/types'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import type { Product } from "@/types"
 
 // ── Helpers ──────────────────────────────────────────────────────────
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -28,8 +24,8 @@ interface ProductListResponse {
 /** Fetch all products. */
 export function useProducts() {
   return useQuery<ProductListResponse>({
-    queryKey: ['products'],
-    queryFn: () => fetchJson<ProductListResponse>('/api/products'),
+    queryKey: ["products"],
+    queryFn: () => fetchJson<ProductListResponse>("/api/products"),
     staleTime: 30_000,
   })
 }
@@ -42,13 +38,13 @@ export function useCreateProduct() {
 
   return useMutation<Product, Error, Partial<Product>>({
     mutationFn: (data) =>
-      fetchJson<Product>('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetchJson<Product>("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['products'] })
+      qc.invalidateQueries({ queryKey: ["products"] })
     },
   })
 }

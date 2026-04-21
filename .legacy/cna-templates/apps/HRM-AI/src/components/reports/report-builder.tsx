@@ -1,44 +1,44 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Loader2, Wand2, FileText } from 'lucide-react'
-import type { ReportParams, ReportResult } from '@/types/report'
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Loader2, Wand2, FileText } from "lucide-react"
+import type { ReportParams, ReportResult } from "@/types/report"
 
 interface ReportBuilderProps {
   onGenerate: (result: ReportResult) => void
 }
 
 const reportTypes = [
-  { value: 'attendance', label: 'Báo cáo chấm công' },
-  { value: 'leave', label: 'Báo cáo nghỉ phép' },
-  { value: 'overtime', label: 'Báo cáo tăng ca' },
-  { value: 'headcount', label: 'Báo cáo nhân sự' },
+  { value: "attendance", label: "Báo cáo chấm công" },
+  { value: "leave", label: "Báo cáo nghỉ phép" },
+  { value: "overtime", label: "Báo cáo tăng ca" },
+  { value: "headcount", label: "Báo cáo nhân sự" },
 ]
 
 export function ReportBuilder({ onGenerate }: ReportBuilderProps) {
-  const [mode, setMode] = useState<'natural' | 'form'>('natural')
-  const [query, setQuery] = useState('')
+  const [mode, setMode] = useState<"natural" | "form">("natural")
+  const [query, setQuery] = useState("")
   const [formData, setFormData] = useState<Partial<ReportParams>>({
-    reportType: 'attendance',
+    reportType: "attendance",
     parameters: {
       startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
         .toISOString()
-        .split('T')[0],
-      endDate: new Date().toISOString().split('T')[0],
-      groupBy: 'employee',
+        .split("T")[0],
+      endDate: new Date().toISOString().split("T")[0],
+      groupBy: "employee",
     },
   })
   const [isLoading, setIsLoading] = useState(false)
@@ -48,18 +48,18 @@ export function ReportBuilder({ onGenerate }: ReportBuilderProps) {
 
     setIsLoading(true)
     try {
-      const response = await fetch('/api/reports', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),
       })
 
-      if (!response.ok) throw new Error('Failed to generate report')
+      if (!response.ok) throw new Error("Failed to generate report")
 
       const { data } = await response.json()
       onGenerate(data)
     } catch (error) {
-      console.error('Generate report error:', error)
+      console.error("Generate report error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -68,9 +68,9 @@ export function ReportBuilder({ onGenerate }: ReportBuilderProps) {
   const handleFormSubmit = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/reports', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           reportType: formData.reportType,
           title: `Báo cáo ${reportTypes.find((t) => t.value === formData.reportType)?.label}`,
@@ -78,12 +78,12 @@ export function ReportBuilder({ onGenerate }: ReportBuilderProps) {
         }),
       })
 
-      if (!response.ok) throw new Error('Failed to generate report')
+      if (!response.ok) throw new Error("Failed to generate report")
 
       const { data } = await response.json()
       onGenerate(data)
     } catch (error) {
-      console.error('Generate report error:', error)
+      console.error("Generate report error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -98,7 +98,10 @@ export function ReportBuilder({ onGenerate }: ReportBuilderProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs value={mode} onValueChange={(v) => setMode(v as 'natural' | 'form')}>
+        <Tabs
+          value={mode}
+          onValueChange={(v) => setMode(v as "natural" | "form")}
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="natural">
               <Wand2 className="h-4 w-4 mr-2" />
@@ -120,7 +123,8 @@ export function ReportBuilder({ onGenerate }: ReportBuilderProps) {
                 rows={3}
               />
               <p className="text-xs text-muted-foreground">
-                Mô tả báo cáo bạn muốn bằng tiếng Việt. AI sẽ tự động hiểu và tạo báo cáo phù hợp.
+                Mô tả báo cáo bạn muốn bằng tiếng Việt. AI sẽ tự động hiểu và
+                tạo báo cáo phù hợp.
               </p>
             </div>
             <Button

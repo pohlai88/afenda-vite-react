@@ -1,4 +1,4 @@
-import { chromium, type FullConfig } from '@playwright/test'
+import { chromium, type FullConfig } from "@playwright/test"
 
 /**
  * Global setup for E2E tests.
@@ -10,7 +10,7 @@ async function globalSetup(config: FullConfig) {
   // - Environment validation
   // - API initialization checks
 
-  console.log('E2E Test Suite for Accounting Module - Global Setup')
+  console.log("E2E Test Suite for Accounting Module - Global Setup")
 
   const { baseURL } = config.use
   console.log(`Base URL: ${baseURL}`)
@@ -20,10 +20,13 @@ async function globalSetup(config: FullConfig) {
   const page = await browser.newPage()
 
   try {
-    await page.goto(`${baseURL}/`, { timeout: 30_000, waitUntil: 'networkidle' })
-    console.log('Server is reachable')
+    await page.goto(`${baseURL}/`, {
+      timeout: 30_000,
+      waitUntil: "networkidle",
+    })
+    console.log("Server is reachable")
   } catch (error) {
-    console.error('Failed to reach server at', baseURL, error)
+    console.error("Failed to reach server at", baseURL, error)
     // Don't fail global setup, tests will fail instead
   } finally {
     await page.close()

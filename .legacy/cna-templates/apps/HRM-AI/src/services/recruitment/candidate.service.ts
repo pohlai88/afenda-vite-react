@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
-import { ApplicationSource, Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import { ApplicationSource, Prisma } from "@prisma/client"
 
 export async function createCandidate(
   tenantId: string,
@@ -51,7 +51,8 @@ export async function createCandidate(
       workHistory: data.workHistory as Prisma.InputJsonValue,
       notes: data.notes,
       tags: data.tags as Prisma.InputJsonValue,
-      source: (data.source as ApplicationSource) || ApplicationSource.CAREERS_PAGE,
+      source:
+        (data.source as ApplicationSource) || ApplicationSource.CAREERS_PAGE,
       referredById: data.referredById,
     },
   })
@@ -70,11 +71,12 @@ export async function getCandidates(
   const where: Record<string, unknown> = { tenantId }
 
   if (filters?.source) where.source = filters.source
-  if (filters?.isBlacklisted !== undefined) where.isBlacklisted = filters.isBlacklisted
+  if (filters?.isBlacklisted !== undefined)
+    where.isBlacklisted = filters.isBlacklisted
   if (filters?.search) {
     where.OR = [
-      { fullName: { contains: filters.search, mode: 'insensitive' } },
-      { email: { contains: filters.search, mode: 'insensitive' } },
+      { fullName: { contains: filters.search, mode: "insensitive" } },
+      { email: { contains: filters.search, mode: "insensitive" } },
       { phone: { contains: filters.search } },
     ]
   }
@@ -85,7 +87,7 @@ export async function getCandidates(
       include: {
         _count: { select: { applications: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -104,7 +106,7 @@ export async function getCandidateById(id: string, tenantId: string) {
           requisition: { select: { id: true, title: true } },
           _count: { select: { interviews: true } },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       },
       referredBy: { select: { id: true, fullName: true } },
     },
@@ -160,7 +162,8 @@ export async function findOrCreateCandidate(
         yearsOfExperience: data.yearsOfExperience,
         linkedinUrl: data.linkedinUrl,
         portfolioUrl: data.portfolioUrl,
-        source: (data.source as ApplicationSource) || ApplicationSource.CAREERS_PAGE,
+        source:
+          (data.source as ApplicationSource) || ApplicationSource.CAREERS_PAGE,
       },
     })
   } else {
@@ -172,7 +175,8 @@ export async function findOrCreateCandidate(
         cvUrl: data.cvUrl || candidate.cvUrl,
         cvFileName: data.cvFileName || candidate.cvFileName,
         expectedSalary: data.expectedSalary || candidate.expectedSalary,
-        yearsOfExperience: data.yearsOfExperience || candidate.yearsOfExperience,
+        yearsOfExperience:
+          data.yearsOfExperience || candidate.yearsOfExperience,
         linkedinUrl: data.linkedinUrl || candidate.linkedinUrl,
         portfolioUrl: data.portfolioUrl || candidate.portfolioUrl,
       },

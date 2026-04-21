@@ -2,22 +2,31 @@
 // TYPE INFERENCE PANEL — Show AI type suggestions
 // =============================================================================
 
-import React, { useState, useEffect } from 'react';
-import { Sparkles, Check, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
-import { typeInference, type TypeInferenceResult } from '../../types/semantic/TypeInference';
-import { type SemanticType } from '../../types/semantic/types';
-import { TypeBadge } from './TypeBadge';
+import React, { useState, useEffect } from "react"
+import {
+  Sparkles,
+  Check,
+  RefreshCw,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react"
+import {
+  typeInference,
+  type TypeInferenceResult,
+} from "../../types/semantic/TypeInference"
+import { type SemanticType } from "../../types/semantic/types"
+import { TypeBadge } from "./TypeBadge"
 
 // -----------------------------------------------------------------------------
 // Type Inference Panel Props
 // -----------------------------------------------------------------------------
 
 interface TypeInferencePanelProps {
-  header?: string;
-  samples?: unknown[];
-  currentType?: string;
-  onApply: (type: SemanticType) => void;
-  className?: string;
+  header?: string
+  samples?: unknown[]
+  currentType?: string
+  onApply: (type: SemanticType) => void
+  className?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -29,42 +38,42 @@ export const TypeInferencePanel: React.FC<TypeInferencePanelProps> = ({
   samples = [],
   currentType,
   onApply,
-  className = '',
+  className = "",
 }) => {
-  const [inference, setInference] = useState<TypeInferenceResult | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showAlternates, setShowAlternates] = useState(false);
+  const [inference, setInference] = useState<TypeInferenceResult | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [showAlternates, setShowAlternates] = useState(false)
 
   // Run inference when inputs change
   useEffect(() => {
     if (!header && samples.length === 0) {
-      setInference(null);
-      return;
+      setInference(null)
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     // Simulate async inference (in real app this might be server-side)
     const timer = setTimeout(() => {
-      let result: TypeInferenceResult;
+      let result: TypeInferenceResult
 
       if (header && samples.length > 0) {
-        result = typeInference.infer(header, samples);
+        result = typeInference.infer(header, samples)
       } else if (header) {
-        result = typeInference.inferFromHeader(header);
+        result = typeInference.inferFromHeader(header)
       } else {
-        result = typeInference.inferFromSamples(samples);
+        result = typeInference.inferFromSamples(samples)
       }
 
-      setInference(result);
-      setIsLoading(false);
-    }, 300);
+      setInference(result)
+      setIsLoading(false)
+    }, 300)
 
-    return () => clearTimeout(timer);
-  }, [header, samples]);
+    return () => clearTimeout(timer)
+  }, [header, samples])
 
   // Don't show if already using suggested type
-  const isSameType = inference?.type.id === currentType;
+  const isSameType = inference?.type.id === currentType
 
   if (!inference || isLoading) {
     return (
@@ -74,7 +83,7 @@ export const TypeInferencePanel: React.FC<TypeInferencePanelProps> = ({
           <span>Analyzing data...</span>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -86,7 +95,9 @@ export const TypeInferencePanel: React.FC<TypeInferencePanelProps> = ({
       </div>
 
       {/* Main suggestion */}
-      <div className={`type-inference-suggestion ${isSameType ? 'current' : ''}`}>
+      <div
+        className={`type-inference-suggestion ${isSameType ? "current" : ""}`}
+      >
         <div className="type-inference-suggestion-main">
           <TypeBadge type={inference.type} size="medium" />
           <span className="type-inference-confidence">
@@ -121,9 +132,14 @@ export const TypeInferencePanel: React.FC<TypeInferencePanelProps> = ({
             className="type-inference-alternates-toggle"
             onClick={() => setShowAlternates(!showAlternates)}
           >
-            {showAlternates ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            {showAlternates ? (
+              <ChevronUp size={14} />
+            ) : (
+              <ChevronDown size={14} />
+            )}
             <span>
-              {showAlternates ? 'Hide' : 'Show'} {inference.alternates.length} alternatives
+              {showAlternates ? "Hide" : "Show"} {inference.alternates.length}{" "}
+              alternatives
             </span>
           </button>
 
@@ -149,19 +165,19 @@ export const TypeInferencePanel: React.FC<TypeInferencePanelProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Compact Type Suggestion (single line)
 // -----------------------------------------------------------------------------
 
 interface CompactTypeSuggestionProps {
-  header?: string;
-  samples?: unknown[];
-  currentType?: string;
-  onApply: (type: SemanticType) => void;
-  className?: string;
+  header?: string
+  samples?: unknown[]
+  currentType?: string
+  onApply: (type: SemanticType) => void
+  className?: string
 }
 
 export const CompactTypeSuggestion: React.FC<CompactTypeSuggestionProps> = ({
@@ -169,48 +185,52 @@ export const CompactTypeSuggestion: React.FC<CompactTypeSuggestionProps> = ({
   samples = [],
   currentType,
   onApply,
-  className = '',
+  className = "",
 }) => {
-  const [inference, setInference] = useState<TypeInferenceResult | null>(null);
+  const [inference, setInference] = useState<TypeInferenceResult | null>(null)
 
   useEffect(() => {
     if (!header && samples.length === 0) {
-      setInference(null);
-      return;
+      setInference(null)
+      return
     }
 
-    let result: TypeInferenceResult;
+    let result: TypeInferenceResult
     if (header && samples.length > 0) {
-      result = typeInference.infer(header, samples);
+      result = typeInference.infer(header, samples)
     } else if (header) {
-      result = typeInference.inferFromHeader(header);
+      result = typeInference.inferFromHeader(header)
     } else {
-      result = typeInference.inferFromSamples(samples);
+      result = typeInference.inferFromSamples(samples)
     }
 
-    setInference(result);
-  }, [header, samples]);
+    setInference(result)
+  }, [header, samples])
 
   if (!inference || inference.type.id === currentType) {
-    return null;
+    return null
   }
 
   return (
     <div className={`compact-type-suggestion ${className}`}>
       <Sparkles size={12} />
       <span>Suggest:</span>
-      <TypeBadge type={inference.type} size="small" onClick={() => onApply(inference.type)} />
+      <TypeBadge
+        type={inference.type}
+        size="small"
+        onClick={() => onApply(inference.type)}
+      />
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Type Inference Tooltip
 // -----------------------------------------------------------------------------
 
 interface TypeInferenceTooltipProps {
-  inference: TypeInferenceResult;
-  onApply: (type: SemanticType) => void;
+  inference: TypeInferenceResult
+  onApply: (type: SemanticType) => void
 }
 
 export const TypeInferenceTooltip: React.FC<TypeInferenceTooltipProps> = ({
@@ -227,9 +247,12 @@ export const TypeInferenceTooltip: React.FC<TypeInferenceTooltipProps> = ({
         <TypeBadge type={inference.type} size="small" />
         <span>{Math.round(inference.confidence * 100)}%</span>
       </div>
-      <button className="type-inference-tooltip-apply" onClick={() => onApply(inference.type)}>
+      <button
+        className="type-inference-tooltip-apply"
+        onClick={() => onApply(inference.type)}
+      >
         Apply
       </button>
     </div>
-  );
-};
+  )
+}

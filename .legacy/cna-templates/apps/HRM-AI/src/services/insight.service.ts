@@ -1,10 +1,10 @@
 // src/services/insight.service.ts
 // Smart Insights Service
 
-import { db } from '@/lib/db'
-import type { Prisma, InsightType, InsightSeverity } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
-import type { Insight, InsightCounts, InsightFilters } from '@/types/insight'
+import { db } from "@/lib/db"
+import type { Prisma, InsightType, InsightSeverity } from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
+import type { Insight, InsightCounts, InsightFilters } from "@/types/insight"
 
 export const insightService = {
   /**
@@ -39,8 +39,8 @@ export const insightService = {
       db.insight.findMany({
         where,
         orderBy: [
-          { severity: 'desc' }, // Critical first
-          { createdAt: 'desc' },
+          { severity: "desc" }, // Critical first
+          { createdAt: "desc" },
         ],
         skip,
         take: pageSize,
@@ -73,10 +73,10 @@ export const insightService = {
     }
 
     const [critical, high, medium, low] = await Promise.all([
-      db.insight.count({ where: { ...baseWhere, severity: 'CRITICAL' } }),
-      db.insight.count({ where: { ...baseWhere, severity: 'HIGH' } }),
-      db.insight.count({ where: { ...baseWhere, severity: 'MEDIUM' } }),
-      db.insight.count({ where: { ...baseWhere, severity: 'LOW' } }),
+      db.insight.count({ where: { ...baseWhere, severity: "CRITICAL" } }),
+      db.insight.count({ where: { ...baseWhere, severity: "HIGH" } }),
+      db.insight.count({ where: { ...baseWhere, severity: "MEDIUM" } }),
+      db.insight.count({ where: { ...baseWhere, severity: "LOW" } }),
     ])
 
     return {
@@ -154,7 +154,9 @@ export const insightService = {
         description: data.description,
         referenceType: data.referenceType,
         referenceId: data.referenceId,
-        metrics: data.metrics ? JSON.parse(JSON.stringify(data.metrics)) : undefined,
+        metrics: data.metrics
+          ? JSON.parse(JSON.stringify(data.metrics))
+          : undefined,
         suggestions: data.suggestions,
         validFrom: new Date(),
         validUntil: data.validUntil,
@@ -172,11 +174,11 @@ export const insightService = {
 
     // Find employees with high late count
     const lateStats = await db.attendance.groupBy({
-      by: ['employeeId'],
+      by: ["employeeId"],
       where: {
         employee: { tenantId },
         date: { gte: startOfMonth },
-        status: 'LATE',
+        status: "LATE",
       },
       _count: { id: true },
       having: {
@@ -198,8 +200,8 @@ export const insightService = {
       const existing = await db.insight.findFirst({
         where: {
           tenantId,
-          type: 'ANOMALY',
-          category: 'attendance',
+          type: "ANOMALY",
+          category: "attendance",
           referenceId: employee.id,
           isDismissed: false,
           createdAt: { gte: startOfMonth },
@@ -209,21 +211,21 @@ export const insightService = {
       if (existing) continue
 
       await this.create(tenantId, {
-        type: 'ANOMALY',
-        severity: stat._count.id >= 10 ? 'HIGH' : 'MEDIUM',
-        category: 'attendance',
+        type: "ANOMALY",
+        severity: stat._count.id >= 10 ? "HIGH" : "MEDIUM",
+        category: "attendance",
         title: `Nhân viên đi muộn nhiều lần`,
         description: `${employee.fullName} (${employee.employeeCode}) đã đi muộn ${stat._count.id} lần trong tháng này.`,
-        referenceType: 'EMPLOYEE',
+        referenceType: "EMPLOYEE",
         referenceId: employee.id,
         metrics: {
           lateCount: stat._count.id,
           department: employee.department?.name,
         },
         suggestions: [
-          'Trao đổi với nhân viên về nguyên nhân',
-          'Kiểm tra lịch làm việc có phù hợp không',
-          'Xem xét điều chỉnh giờ làm việc nếu cần',
+          "Trao đổi với nhân viên về nguyên nhân",
+          "Kiểm tra lịch làm việc có phù hợp không",
+          "Xem xét điều chỉnh giờ làm việc nếu cần",
         ],
       })
 
@@ -245,7 +247,7 @@ export const insightService = {
       where: {
         employee: { tenantId },
         year: currentYear,
-        policy: { code: 'ANNUAL' },
+        policy: { code: "ANNUAL" },
       },
       include: {
         employee: { include: { department: true } },
@@ -266,8 +268,8 @@ export const insightService = {
         const existing = await db.insight.findFirst({
           where: {
             tenantId,
-            type: 'WARNING',
-            category: 'leave',
+            type: "WARNING",
+            category: "leave",
             referenceId: balance.employeeId,
             isDismissed: false,
             createdAt: { gte: new Date(currentYear, 0, 1) },
@@ -277,12 +279,12 @@ export const insightService = {
         if (existing) continue
 
         await this.create(tenantId, {
-          type: 'WARNING',
-          severity: remaining <= 0 ? 'HIGH' : 'MEDIUM',
-          category: 'leave',
+          type: "WARNING",
+          severity: remaining <= 0 ? "HIGH" : "MEDIUM",
+          category: "leave",
           title: `Phép năm sắp hết`,
           description: `${balance.employee.fullName} đã sử dụng ${used}/${entitlement} ngày phép năm (${usagePercent.toFixed(0)}%).`,
-          referenceType: 'EMPLOYEE',
+          referenceType: "EMPLOYEE",
           referenceId: balance.employeeId,
           metrics: {
             used: balance.used,
@@ -291,8 +293,8 @@ export const insightService = {
             usagePercent,
           },
           suggestions: [
-            'Thông báo cho nhân viên về số ngày phép còn lại',
-            'Xem xét kế hoạch nghỉ phép cuối năm',
+            "Thông báo cho nhân viên về số ngày phép còn lại",
+            "Xem xét kế hoạch nghỉ phép cuối năm",
           ],
         })
 

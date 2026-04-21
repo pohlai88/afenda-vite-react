@@ -23,14 +23,18 @@
     "tokens:check": "pnpm --filter @afenda/design-system run tokens:check",
     "icons:generate": "pnpm --filter @afenda/design-system run icons:generate",
     "icons:check": "pnpm --filter @afenda/design-system run icons:check",
-    "check": "pnpm run script:check-afenda-config && pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit && pnpm run script:validate-i18n && pnpm run script:i18n-check && pnpm run tokens:check && turbo run lint typecheck test:run build",
+    "check": "pnpm run script:check-governance && pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit && pnpm run script:validate-i18n && pnpm run script:i18n-check && pnpm run tokens:check && turbo run lint typecheck test:run build",
     "preview": "turbo run preview",
     "script:env-inspect": "tsx scripts/env-inspect.ts",
     "script:node-info": "tsx scripts/node-info.ts",
     "script:generate-docs-readme": "tsx scripts/generate-docs-readme.ts",
+    "script:check-governance": "pnpm run script:check-afenda-config && pnpm run script:check-filesystem-governance && pnpm run script:check-storage-governance",
     "script:check-afenda-config": "tsx scripts/check-afenda-config.ts",
     "script:check-filesystem-governance": "tsx scripts/check-filesystem-governance.ts",
     "script:generate-filesystem-governance-report": "tsx scripts/generate-filesystem-governance-report.ts",
+    "script:check-storage-governance": "tsx scripts/check-storage-governance.ts",
+    "script:generate-storage-governance-report": "tsx scripts/generate-storage-governance-report.ts",
+    "script:generate-governance-reports": "pnpm run script:generate-filesystem-governance-report && pnpm run script:generate-storage-governance-report",
     "script:validate-i18n": "tsx scripts/validate-i18n.ts",
     "script:i18n-check": "pnpm --filter @afenda/web i18n:check",
     "script:i18n-check:unused": "pnpm --filter @afenda/web i18n:check:unused",
@@ -78,6 +82,6 @@
     "vitest": "catalog:"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm exec lint-staged --concurrent false"
+    "pre-commit": "pnpm run script:check-governance && pnpm exec lint-staged --concurrent false"
   }
 }

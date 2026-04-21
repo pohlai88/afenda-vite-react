@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireRole, isErrorResponse, canAccess } from '@/lib/auth/rbac'
-import { validateRequest, createOrderSchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { requireRole, isErrorResponse, canAccess } from "@/lib/auth/rbac"
+import { validateRequest, createOrderSchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
 
 // Auto-generate order number: ORD-YYYY-NNNN
 async function generateOrderNumber(): Promise<string> {
@@ -13,17 +13,17 @@ async function generateOrderNumber(): Promise<string> {
 
   const lastOrder = await prisma.salesOrder.findFirst({
     where: { orderNumber: { startsWith: prefix } },
-    orderBy: { orderNumber: 'desc' },
+    orderBy: { orderNumber: "desc" },
     select: { orderNumber: true },
   })
 
   let nextNum = 1
   if (lastOrder) {
-    const lastNum = parseInt(lastOrder.orderNumber.replace(prefix, ''))
+    const lastNum = parseInt(lastOrder.orderNumber.replace(prefix, ""))
     if (!isNaN(lastNum)) nextNum = lastNum + 1
   }
 
-  return `${prefix}${String(nextNum).padStart(4, '0')}`
+  return `${prefix}${String(nextNum).padStart(4, "0")}`
 }
 
 // GET /api/orders — List orders with status filter, pagination
@@ -31,14 +31,17 @@ export async function GET(req: NextRequest) {
   try {
     const user = await getCurrentUser()
     const { searchParams } = req.nextUrl
-    const status = searchParams.get('status')
-    const cursor = searchParams.get('cursor')
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
+    const status = searchParams.get("status")
+    const cursor = searchParams.get("cursor")
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"))
+    const limit = Math.min(
+      100,
+      Math.max(1, parseInt(searchParams.get("limit") || "20"))
+    )
 
     const where: Prisma.SalesOrderWhereInput = {}
 
-    if (!canAccess(user, 'view_all')) {
+    if (!canAccess(user, "view_all")) {
       where.createdById = user.id
     }
 
@@ -58,7 +61,7 @@ export async function GET(req: NextRequest) {
       const data = await prisma.salesOrder.findMany({
         where,
         include: includeClause,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: limit + 1,
         cursor: { id: cursor },
         skip: 1,
@@ -78,7 +81,7 @@ export async function GET(req: NextRequest) {
       prisma.salesOrder.findMany({
         where,
         include: includeClause,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: limit,
       }),
@@ -88,11 +91,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ data, total, page, limit })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/orders error:', error)
+    console.error("GET /api/orders error:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch orders' },
+      { error: "Failed to fetch orders" },
       { status: 500 }
     )
   }
@@ -101,7 +107,7 @@ export async function GET(req: NextRequest) {
 // POST /api/orders — Create order (can be from quote conversion)
 export async function POST(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN', 'MANAGER', 'MEMBER'])
+    const result = await requireRole(["ADMIN", "MANAGER", "MEMBER"])
     if (isErrorResponse(result)) return result
     const user = result
     const body = await req.json()
@@ -110,7 +116,7 @@ export async function POST(req: NextRequest) {
     const orderNumber = await generateOrderNumber()
 
     let orderItems: any[] = []
-    let currency = 'VND'
+    let currency = "VND"
 
     // If converting from a quote, pull items and currency from the quote
     if (data.quoteId) {
@@ -119,7 +125,7 @@ export async function POST(req: NextRequest) {
         include: { items: true },
       })
       if (!quote) {
-        return NextResponse.json({ error: 'Quote not found' }, { status: 404 })
+        return NextResponse.json({ error: "Quote not found" }, { status: 404 })
       }
 
       currency = quote.currency
@@ -127,7 +133,7 @@ export async function POST(req: NextRequest) {
       // Mark quote as accepted
       await prisma.quote.update({
         where: { id: data.quoteId! },
-        data: { status: 'ACCEPTED' },
+        data: { status: "ACCEPTED" },
       })
 
       orderItems = quote.items.map((item) => ({
@@ -162,7 +168,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Calculate totals
-    const subtotal = orderItems.reduce((sum, item) => sum + Number(item.total), 0)
+    const subtotal = orderItems.reduce(
+      (sum, item) => sum + Number(item.total),
+      0
+    )
     const taxAmount = subtotal * 0.1 // 10% VAT
     const total = subtotal + taxAmount
 
@@ -193,6 +202,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(order, { status: 201 })
   } catch (error) {
-    return handleApiError(error, '/api/orders')
+    return handleApiError(error, "/api/orders")
   }
 }

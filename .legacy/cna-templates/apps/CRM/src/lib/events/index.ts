@@ -1,5 +1,5 @@
-export { eventBus } from './event-bus'
-export { CRM_EVENTS } from './types'
+export { eventBus } from "./event-bus"
+export { CRM_EVENTS } from "./types"
 export type {
   CrmEventName,
   BaseEventPayload,
@@ -13,9 +13,9 @@ export type {
   TicketEventPayload,
   TicketStaffRepliedPayload,
   CampaignEventPayload,
-} from './types'
-export { initializeEventHandlers } from './handlers'
+} from "./types"
+export { initializeEventHandlers } from "./handlers"
 
 // ── Self-initialize on module load ──────────────────────────────
-import { initializeEventHandlers } from './handlers'
+import { initializeEventHandlers } from "./handlers"
 initializeEventHandlers()

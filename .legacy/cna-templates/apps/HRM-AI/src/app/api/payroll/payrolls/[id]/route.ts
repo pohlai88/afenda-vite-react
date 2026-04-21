@@ -1,9 +1,9 @@
 // src/app/api/payroll/payrolls/[id]/route.ts
 // Single Payroll (Payslip) API
 
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { payrollService } from '@/services/payroll.service'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { payrollService } from "@/services/payroll.service"
 
 export async function GET(
   request: NextRequest,
@@ -12,7 +12,7 @@ export async function GET(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
@@ -20,7 +20,7 @@ export async function GET(
 
     if (!payroll) {
       return NextResponse.json(
-        { error: 'Bảng lương không tồn tại' },
+        { error: "Bảng lương không tồn tại" },
         { status: 404 }
       )
     }
@@ -28,17 +28,19 @@ export async function GET(
     // Check if user can view this payroll
     // HR staff can view all, employees can only view their own
     if (
-      !['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'HR_STAFF'].includes(session.user.role) &&
+      !["SUPER_ADMIN", "ADMIN", "HR_MANAGER", "HR_STAFF"].includes(
+        session.user.role
+      ) &&
       payroll.employeeId !== session.user.employeeId
     ) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     return NextResponse.json(payroll)
   } catch (error) {
-    console.error('Error fetching payroll:', error)
+    console.error("Error fetching payroll:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
@@ -51,11 +53,11 @@ export async function DELETE(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -66,9 +68,9 @@ export async function DELETE(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    console.error('Error deleting payroll:', error)
+    console.error("Error deleting payroll:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

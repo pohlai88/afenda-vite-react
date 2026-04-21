@@ -1,11 +1,8 @@
 // src/lib/learning/services/learning-path.service.ts
 // Learning Path Service - Manage learning paths and career progression
 
-import { db } from '@/lib/db'
-import {
-  LearningPathStatus,
-  Prisma
-} from '@prisma/client'
+import { db } from "@/lib/db"
+import { LearningPathStatus, Prisma } from "@prisma/client"
 
 // Types
 export interface CreateLearningPathInput {
@@ -84,10 +81,10 @@ export class LearningPathService {
       include: {
         createdBy: { select: { id: true, name: true } },
         stages: {
-          orderBy: { order: 'asc' },
+          orderBy: { order: "asc" },
           include: {
             courses: {
-              orderBy: { order: 'asc' },
+              orderBy: { order: "asc" },
               include: {
                 course: {
                   select: {
@@ -109,14 +106,17 @@ export class LearningPathService {
     })
 
     if (!path) {
-      throw new Error('Learning path not found')
+      throw new Error("Learning path not found")
     }
 
     // Calculate total hours
     const totalHours = path.stages.reduce((sum, stage) => {
-      return sum + stage.courses.reduce((stageSum, pc) => {
-        return stageSum + Number(pc.course.durationHours)
-      }, 0)
+      return (
+        sum +
+        stage.courses.reduce((stageSum, pc) => {
+          return stageSum + Number(pc.course.durationHours)
+        }, 0)
+      )
     }, 0)
 
     return {
@@ -129,7 +129,11 @@ export class LearningPathService {
   /**
    * List learning paths
    */
-  async list(filters: LearningPathFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: LearningPathFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.LearningPathWhereInput = {
@@ -146,16 +150,16 @@ export class LearningPathService {
 
     if (filters.search) {
       where.OR = [
-        { name: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
-        { targetPosition: { contains: filters.search, mode: 'insensitive' } },
+        { name: { contains: filters.search, mode: "insensitive" } },
+        { description: { contains: filters.search, mode: "insensitive" } },
+        { targetPosition: { contains: filters.search, mode: "insensitive" } },
       ]
     }
 
     const [paths, total] = await Promise.all([
       db.learningPath.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -188,7 +192,7 @@ export class LearningPathService {
     })
 
     if (!path) {
-      throw new Error('Learning path not found')
+      throw new Error("Learning path not found")
     }
 
     return db.learningPath.update({
@@ -225,11 +229,11 @@ export class LearningPathService {
     })
 
     if (!path) {
-      throw new Error('Learning path not found')
+      throw new Error("Learning path not found")
     }
 
     if (path._count.enrollments > 0) {
-      throw new Error('Cannot delete learning path with active enrollments')
+      throw new Error("Cannot delete learning path with active enrollments")
     }
 
     await db.learningPath.delete({ where: { id } })
@@ -247,13 +251,13 @@ export class LearningPathService {
     })
 
     if (!path) {
-      throw new Error('Learning path not found')
+      throw new Error("Learning path not found")
     }
 
     // Get max order
     const lastStage = await db.learningPathStage.findFirst({
       where: { pathId },
-      orderBy: { order: 'desc' },
+      orderBy: { order: "desc" },
     })
 
     const order = input.order ?? (lastStage ? lastStage.order + 1 : 0)
@@ -316,7 +320,7 @@ export class LearningPathService {
     // Get max order in stage
     const lastCourse = await db.learningPathCourse.findFirst({
       where: { stageId: input.stageId },
-      orderBy: { order: 'desc' },
+      orderBy: { order: "desc" },
     })
 
     const order = input.order ?? (lastCourse ? lastCourse.order + 1 : 0)
@@ -354,7 +358,12 @@ export class LearningPathService {
   /**
    * Update course in stage
    */
-  async updateCourseInStage(stageId: string, courseId: string, isRequired: boolean, order?: number) {
+  async updateCourseInStage(
+    stageId: string,
+    courseId: string,
+    isRequired: boolean,
+    order?: number
+  ) {
     return db.learningPathCourse.update({
       where: {
         stageId_courseId: {
@@ -384,7 +393,7 @@ export class LearningPathService {
     })
 
     if (!path) {
-      throw new Error('Learning path not found or inactive')
+      throw new Error("Learning path not found or inactive")
     }
 
     // Check existing enrollment
@@ -398,7 +407,7 @@ export class LearningPathService {
     })
 
     if (existing) {
-      throw new Error('Employee already enrolled in this learning path')
+      throw new Error("Employee already enrolled in this learning path")
     }
 
     return db.learningPathEnrollment.create({
@@ -437,10 +446,10 @@ export class LearningPathService {
         path: {
           include: {
             stages: {
-              orderBy: { order: 'asc' },
+              orderBy: { order: "asc" },
               include: {
                 courses: {
-                  orderBy: { order: 'asc' },
+                  orderBy: { order: "asc" },
                   include: {
                     course: {
                       select: { id: true, title: true, code: true },
@@ -458,7 +467,7 @@ export class LearningPathService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     // Get employee's course completions to calculate progress
@@ -466,29 +475,31 @@ export class LearningPathService {
       where: {
         employeeId: enrollment.employeeId,
         courseId: {
-          in: enrollment.path.stages.flatMap(s =>
-            s.courses.map(c => c.courseId)
+          in: enrollment.path.stages.flatMap((s) =>
+            s.courses.map((c) => c.courseId)
           ),
         },
-        status: 'COMPLETED',
+        status: "COMPLETED",
       },
       select: { courseId: true },
     })
 
-    const completedCourseIds = new Set(completedCourses.map(c => c.courseId))
+    const completedCourseIds = new Set(completedCourses.map((c) => c.courseId))
 
     // Add completion info to courses
     const pathWithProgress = {
       ...enrollment,
       path: {
         ...enrollment.path,
-        stages: enrollment.path.stages.map(stage => ({
+        stages: enrollment.path.stages.map((stage) => ({
           ...stage,
-          courses: stage.courses.map(pc => ({
+          courses: stage.courses.map((pc) => ({
             ...pc,
             completed: completedCourseIds.has(pc.courseId),
           })),
-          completed: stage.courses.every(pc => completedCourseIds.has(pc.courseId)),
+          completed: stage.courses.every((pc) =>
+            completedCourseIds.has(pc.courseId)
+          ),
         })),
       },
     }
@@ -505,18 +516,18 @@ export class LearningPathService {
       include: {
         path: {
           include: {
-            stages: { orderBy: { order: 'asc' } },
+            stages: { orderBy: { order: "asc" } },
           },
         },
       },
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     if (enrollment.status !== LearningPathStatus.NOT_STARTED) {
-      throw new Error('Learning path already started')
+      throw new Error("Learning path already started")
     }
 
     const firstStage = enrollment.path.stages[0]
@@ -541,7 +552,7 @@ export class LearningPathService {
         path: {
           include: {
             stages: {
-              orderBy: { order: 'asc' },
+              orderBy: { order: "asc" },
               include: {
                 courses: { where: { isRequired: true } },
               },
@@ -552,12 +563,12 @@ export class LearningPathService {
     })
 
     if (!enrollment) {
-      throw new Error('Enrollment not found')
+      throw new Error("Enrollment not found")
     }
 
     // Get all required courses
-    const allRequiredCourses = enrollment.path.stages.flatMap(s =>
-      s.courses.map(c => c.courseId)
+    const allRequiredCourses = enrollment.path.stages.flatMap((s) =>
+      s.courses.map((c) => c.courseId)
     )
 
     // Get completed courses
@@ -565,22 +576,25 @@ export class LearningPathService {
       where: {
         employeeId: enrollment.employeeId,
         courseId: { in: allRequiredCourses },
-        status: 'COMPLETED',
+        status: "COMPLETED",
       },
       select: { courseId: true },
     })
 
-    const completedIds = new Set(completedCourses.map(c => c.courseId))
+    const completedIds = new Set(completedCourses.map((c) => c.courseId))
 
     // Calculate progress
-    const progress = allRequiredCourses.length > 0
-      ? Math.round((completedIds.size / allRequiredCourses.length) * 100)
-      : 0
+    const progress =
+      allRequiredCourses.length > 0
+        ? Math.round((completedIds.size / allRequiredCourses.length) * 100)
+        : 0
 
     // Find current stage (first incomplete stage)
     let currentStageId = enrollment.currentStageId
     for (const stage of enrollment.path.stages) {
-      const stageComplete = stage.courses.every(c => completedIds.has(c.courseId))
+      const stageComplete = stage.courses.every((c) =>
+        completedIds.has(c.courseId)
+      )
       if (!stageComplete) {
         currentStageId = stage.id
         break
@@ -595,7 +609,9 @@ export class LearningPathService {
       data: {
         progress,
         currentStageId,
-        status: isCompleted ? LearningPathStatus.COMPLETED : LearningPathStatus.IN_PROGRESS,
+        status: isCompleted
+          ? LearningPathStatus.COMPLETED
+          : LearningPathStatus.IN_PROGRESS,
         completedAt: isCompleted ? new Date() : null,
       },
     })
@@ -610,7 +626,7 @@ export class LearningPathService {
         tenantId: this.tenantId,
         employeeId,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: {
         path: {
           select: {
@@ -634,7 +650,7 @@ export class LearningPathService {
       }),
 
       db.learningPathEnrollment.groupBy({
-        by: ['status'],
+        by: ["status"],
         where: { tenantId: this.tenantId },
         _count: true,
       }),
@@ -661,7 +677,7 @@ export class LearningPathService {
 
     return {
       totalPaths: total,
-      enrollmentsByStatus: enrollments.map(e => ({
+      enrollmentsByStatus: enrollments.map((e) => ({
         status: e.status,
         count: e._count,
       })),
@@ -671,6 +687,8 @@ export class LearningPathService {
 }
 
 // Factory function
-export function createLearningPathService(tenantId: string): LearningPathService {
+export function createLearningPathService(
+  tenantId: string
+): LearningPathService {
   return new LearningPathService(tenantId)
 }

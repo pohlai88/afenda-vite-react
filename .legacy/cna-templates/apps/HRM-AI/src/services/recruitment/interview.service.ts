@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
-import type { InterviewType, InterviewResult } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { InterviewType, InterviewResult } from "@prisma/client"
 
 export async function createInterview(
   tenantId: string,
@@ -30,14 +30,14 @@ export async function createInterview(
       duration: data.duration || 60,
       location: data.location,
       interviewerIds: data.interviewerIds,
-      result: 'PENDING',
+      result: "PENDING",
     },
   })
 
   await db.applicationActivity.create({
     data: {
       applicationId: data.applicationId,
-      action: 'interview_scheduled',
+      action: "interview_scheduled",
       description: `Đã lên lịch phỏng vấn vòng ${round}`,
       performedById: userId,
     },
@@ -83,11 +83,11 @@ export async function getInterviews(
         },
       },
     },
-    orderBy: { scheduledAt: 'asc' },
+    orderBy: { scheduledAt: "asc" },
   })
 
   if (filters?.interviewerId) {
-    return interviews.filter(i =>
+    return interviews.filter((i) =>
       (i.interviewerIds as string[]).includes(filters.interviewerId!)
     )
   }
@@ -136,7 +136,7 @@ export async function updateInterviewResult(
     await db.applicationActivity.create({
       data: {
         applicationId: interview.applicationId,
-        action: 'interview_result',
+        action: "interview_result",
         description: `Kết quả phỏng vấn vòng ${interview.round}: ${result}`,
         performedById: userId,
       },
@@ -163,7 +163,7 @@ export async function rescheduleInterview(
     where: { id },
     data: {
       scheduledAt: newScheduledAt,
-      result: 'RESCHEDULED',
+      result: "RESCHEDULED",
     },
   })
 
@@ -171,8 +171,8 @@ export async function rescheduleInterview(
     await db.applicationActivity.create({
       data: {
         applicationId: interview.applicationId,
-        action: 'interview_rescheduled',
-        description: `Dời lịch phỏng vấn vòng ${interview.round}${reason ? `: ${reason}` : ''}`,
+        action: "interview_rescheduled",
+        description: `Dời lịch phỏng vấn vòng ${interview.round}${reason ? `: ${reason}` : ""}`,
         performedById: userId,
       },
     })
@@ -203,8 +203,8 @@ export async function getCalendarEvents(
   })
 
   return interviews
-    .filter(i => (i.interviewerIds as string[]).includes(userId))
-    .map(i => ({
+    .filter((i) => (i.interviewerIds as string[]).includes(userId))
+    .map((i) => ({
       id: i.id,
       title: `PV: ${i.application.candidate.fullName} - ${i.application.requisition.title}`,
       start: i.scheduledAt,

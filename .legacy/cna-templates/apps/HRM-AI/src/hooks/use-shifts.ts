@@ -1,21 +1,30 @@
 // src/hooks/use-shifts.ts
 // Shift management hooks
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { ShiftFilters, ShiftWithRelations, ShiftAssignmentFilters, ShiftAssignmentWithRelations, PaginatedResponse } from '@/types'
-import type { Shift, ShiftAssignment } from '@prisma/client'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import type {
+  ShiftFilters,
+  ShiftWithRelations,
+  ShiftAssignmentFilters,
+  ShiftAssignmentWithRelations,
+  PaginatedResponse,
+} from "@/types"
+import type { Shift, ShiftAssignment } from "@prisma/client"
 
 // Fetch functions
-async function fetchShifts(filters: ShiftFilters): Promise<PaginatedResponse<ShiftWithRelations>> {
+async function fetchShifts(
+  filters: ShiftFilters
+): Promise<PaginatedResponse<ShiftWithRelations>> {
   const params = new URLSearchParams()
-  if (filters.search) params.set('search', filters.search)
-  if (filters.shiftType) params.set('shiftType', filters.shiftType)
-  if (filters.isActive !== undefined) params.set('isActive', String(filters.isActive))
-  if (filters.page) params.set('page', String(filters.page))
-  if (filters.pageSize) params.set('pageSize', String(filters.pageSize))
+  if (filters.search) params.set("search", filters.search)
+  if (filters.shiftType) params.set("shiftType", filters.shiftType)
+  if (filters.isActive !== undefined)
+    params.set("isActive", String(filters.isActive))
+  if (filters.page) params.set("page", String(filters.page))
+  if (filters.pageSize) params.set("pageSize", String(filters.pageSize))
 
   const res = await fetch(`/api/shifts?${params}`)
-  if (!res.ok) throw new Error('Failed to fetch shifts')
+  if (!res.ok) throw new Error("Failed to fetch shifts")
   const json = await res.json()
   if (json.meta) {
     return {
@@ -33,28 +42,30 @@ async function fetchShifts(filters: ShiftFilters): Promise<PaginatedResponse<Shi
 
 async function fetchShift(id: string): Promise<ShiftWithRelations> {
   const res = await fetch(`/api/shifts/${id}`)
-  if (!res.ok) throw new Error('Failed to fetch shift')
+  if (!res.ok) throw new Error("Failed to fetch shift")
   const json = await res.json()
   return json.data ?? json
 }
 
 async function fetchActiveShifts(): Promise<Shift[]> {
-  const res = await fetch('/api/shifts?isActive=true&pageSize=100')
-  if (!res.ok) throw new Error('Failed to fetch active shifts')
+  const res = await fetch("/api/shifts?isActive=true&pageSize=100")
+  if (!res.ok) throw new Error("Failed to fetch active shifts")
   const data = await res.json()
   return data.data ?? data
 }
 
-async function fetchShiftAssignments(filters: ShiftAssignmentFilters): Promise<PaginatedResponse<ShiftAssignmentWithRelations>> {
+async function fetchShiftAssignments(
+  filters: ShiftAssignmentFilters
+): Promise<PaginatedResponse<ShiftAssignmentWithRelations>> {
   const params = new URLSearchParams()
-  if (filters.employeeId) params.set('employeeId', filters.employeeId)
-  if (filters.shiftId) params.set('shiftId', filters.shiftId)
-  if (filters.departmentId) params.set('departmentId', filters.departmentId)
-  if (filters.page) params.set('page', String(filters.page))
-  if (filters.pageSize) params.set('pageSize', String(filters.pageSize))
+  if (filters.employeeId) params.set("employeeId", filters.employeeId)
+  if (filters.shiftId) params.set("shiftId", filters.shiftId)
+  if (filters.departmentId) params.set("departmentId", filters.departmentId)
+  if (filters.page) params.set("page", String(filters.page))
+  if (filters.pageSize) params.set("pageSize", String(filters.pageSize))
 
   const res = await fetch(`/api/shifts/assignments?${params}`)
-  if (!res.ok) throw new Error('Failed to fetch shift assignments')
+  if (!res.ok) throw new Error("Failed to fetch shift assignments")
   const sjson = await res.json()
   if (sjson.meta) {
     return {
@@ -73,14 +84,14 @@ async function fetchShiftAssignments(filters: ShiftAssignmentFilters): Promise<P
 // Hooks
 export function useShifts(filters: ShiftFilters = {}) {
   return useQuery({
-    queryKey: ['shifts', filters],
+    queryKey: ["shifts", filters],
     queryFn: () => fetchShifts(filters),
   })
 }
 
 export function useShift(id: string | undefined) {
   return useQuery({
-    queryKey: ['shift', id],
+    queryKey: ["shift", id],
     queryFn: () => fetchShift(id!),
     enabled: !!id,
   })
@@ -88,14 +99,14 @@ export function useShift(id: string | undefined) {
 
 export function useActiveShifts() {
   return useQuery({
-    queryKey: ['shifts', 'active'],
+    queryKey: ["shifts", "active"],
     queryFn: fetchActiveShifts,
   })
 }
 
 export function useShiftAssignments(filters: ShiftAssignmentFilters = {}) {
   return useQuery({
-    queryKey: ['shift-assignments', filters],
+    queryKey: ["shift-assignments", filters],
     queryFn: () => fetchShiftAssignments(filters),
   })
 }
@@ -103,7 +114,13 @@ export function useShiftAssignments(filters: ShiftAssignmentFilters = {}) {
 type ShiftInput = {
   name: string
   code: string
-  shiftType?: 'STANDARD' | 'MORNING' | 'AFTERNOON' | 'NIGHT' | 'FLEXIBLE' | 'ROTATING'
+  shiftType?:
+    | "STANDARD"
+    | "MORNING"
+    | "AFTERNOON"
+    | "NIGHT"
+    | "FLEXIBLE"
+    | "ROTATING"
   startTime: string
   endTime: string
   breakStartTime?: string | null
@@ -125,19 +142,19 @@ export function useCreateShift() {
 
   return useMutation({
     mutationFn: async (data: ShiftInput) => {
-      const res = await fetch('/api/shifts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/shifts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
       if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.error || 'Failed to create shift')
+        throw new Error(error.error || "Failed to create shift")
       }
       return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shifts'] })
+      queryClient.invalidateQueries({ queryKey: ["shifts"] })
     },
   })
 }
@@ -146,21 +163,27 @@ export function useUpdateShift() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<ShiftInput> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string
+      data: Partial<ShiftInput>
+    }) => {
       const res = await fetch(`/api/shifts/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
       if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.error || 'Failed to update shift')
+        throw new Error(error.error || "Failed to update shift")
       }
       return res.json()
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['shifts'] })
-      queryClient.invalidateQueries({ queryKey: ['shift', variables.id] })
+      queryClient.invalidateQueries({ queryKey: ["shifts"] })
+      queryClient.invalidateQueries({ queryKey: ["shift", variables.id] })
     },
   })
 }
@@ -171,16 +194,16 @@ export function useDeleteShift() {
   return useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(`/api/shifts/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       })
       if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.error || 'Failed to delete shift')
+        throw new Error(error.error || "Failed to delete shift")
       }
       return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shifts'] })
+      queryClient.invalidateQueries({ queryKey: ["shifts"] })
     },
   })
 }
@@ -189,20 +212,22 @@ export function useAssignShift() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data: Partial<ShiftAssignment> & { employeeIds?: string[] }) => {
-      const res = await fetch('/api/shifts/assignments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    mutationFn: async (
+      data: Partial<ShiftAssignment> & { employeeIds?: string[] }
+    ) => {
+      const res = await fetch("/api/shifts/assignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
       if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.error || 'Failed to assign shift')
+        throw new Error(error.error || "Failed to assign shift")
       }
       return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shift-assignments'] })
+      queryClient.invalidateQueries({ queryKey: ["shift-assignments"] })
     },
   })
 }

@@ -40,7 +40,12 @@ export interface OrderSettings {
   autoOrderFromQuote: boolean
 }
 
-export type SettingsKey = 'company' | 'pipeline' | 'notifications' | 'email' | 'order'
+export type SettingsKey =
+  | "company"
+  | "pipeline"
+  | "notifications"
+  | "email"
+  | "order"
 
 export type SettingsMap = {
   company: CompanySettings

@@ -1,14 +1,16 @@
-'use client'
+"use client"
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { authQueryConfig } from '@/lib/query-config'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { authQueryConfig } from "@/lib/query-config"
 
 export function useComplianceChecks(entityType: string, entityId: string) {
   return useQuery({
-    queryKey: ['compliance-checks', entityType, entityId],
+    queryKey: ["compliance-checks", entityType, entityId],
     queryFn: async () => {
-      const res = await fetch(`/api/compliance/checks?entityType=${entityType}&entityId=${entityId}`)
-      if (!res.ok) throw new Error('Failed to fetch compliance checks')
+      const res = await fetch(
+        `/api/compliance/checks?entityType=${entityType}&entityId=${entityId}`
+      )
+      if (!res.ok) throw new Error("Failed to fetch compliance checks")
       const json = await res.json()
       return json.data as Array<{
         id: string
@@ -32,30 +34,37 @@ export function useComplianceChecks(entityType: string, entityId: string) {
 export function useScreenEntity() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: async (data: { entityType: string; entityId: string; name: string; country: string }) => {
-      const res = await fetch('/api/compliance/screen', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    mutationFn: async (data: {
+      entityType: string
+      entityId: string
+      name: string
+      country: string
+    }) => {
+      const res = await fetch("/api/compliance/screen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
       if (!res.ok) {
         const err = await res.json()
-        throw new Error(err.error || 'Screening failed')
+        throw new Error(err.error || "Screening failed")
       }
       return res.json()
     },
     onSuccess: (_, vars) => {
-      qc.invalidateQueries({ queryKey: ['compliance-checks', vars.entityType, vars.entityId] })
+      qc.invalidateQueries({
+        queryKey: ["compliance-checks", vars.entityType, vars.entityId],
+      })
     },
   })
 }
 
 export function useDealChecklist(dealId: string) {
   return useQuery({
-    queryKey: ['deal-checklist', dealId],
+    queryKey: ["deal-checklist", dealId],
     queryFn: async () => {
       const res = await fetch(`/api/deals/${dealId}/checklist`)
-      if (!res.ok) throw new Error('Failed to fetch checklist')
+      if (!res.ok) throw new Error("Failed to fetch checklist")
       const json = await res.json()
       return json.data as Array<{
         id: string
@@ -76,20 +85,30 @@ export function useDealChecklist(dealId: string) {
 export function useUpdateChecklistItem() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: async ({ dealId, key, checked, notes }: { dealId: string; key: string; checked: boolean; notes?: string }) => {
+    mutationFn: async ({
+      dealId,
+      key,
+      checked,
+      notes,
+    }: {
+      dealId: string
+      key: string
+      checked: boolean
+      notes?: string
+    }) => {
       const res = await fetch(`/api/deals/${dealId}/checklist`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key, checked, notes }),
       })
       if (!res.ok) {
         const err = await res.json()
-        throw new Error(err.error || 'Update failed')
+        throw new Error(err.error || "Update failed")
       }
       return res.json()
     },
     onSuccess: (_, vars) => {
-      qc.invalidateQueries({ queryKey: ['deal-checklist', vars.dealId] })
+      qc.invalidateQueries({ queryKey: ["deal-checklist", vars.dealId] })
     },
   })
 }

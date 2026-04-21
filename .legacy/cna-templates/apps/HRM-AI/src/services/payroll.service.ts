@@ -1,9 +1,9 @@
 // src/services/payroll.service.ts
 // Payroll Service - Individual payroll records
 
-import { db } from '@/lib/db'
-import type { Prisma, PayrollStatus, BankCode } from '@prisma/client'
-import type { PaginatedResponse } from '@/types'
+import { db } from "@/lib/db"
+import type { Prisma, PayrollStatus, BankCode } from "@prisma/client"
+import type { PaginatedResponse } from "@/types"
 
 export interface PayrollFilters {
   periodId?: string
@@ -120,8 +120,8 @@ export const payrollService = {
       ...(isPaid !== undefined && { isPaid }),
       ...(search && {
         OR: [
-          { employeeCode: { contains: search, mode: 'insensitive' } },
-          { employeeName: { contains: search, mode: 'insensitive' } },
+          { employeeCode: { contains: search, mode: "insensitive" } },
+          { employeeName: { contains: search, mode: "insensitive" } },
         ],
       }),
     }
@@ -143,10 +143,10 @@ export const payrollService = {
             },
           },
           items: {
-            orderBy: { sortOrder: 'asc' },
+            orderBy: { sortOrder: "asc" },
           },
         },
-        orderBy: [{ employeeName: 'asc' }],
+        orderBy: [{ employeeName: "asc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -172,7 +172,13 @@ export const payrollService = {
       where: { id, tenantId },
       include: {
         period: {
-          select: { id: true, name: true, year: true, month: true, status: true },
+          select: {
+            id: true,
+            name: true,
+            year: true,
+            month: true,
+            status: true,
+          },
         },
         employee: {
           select: {
@@ -184,7 +190,7 @@ export const payrollService = {
           },
         },
         items: {
-          orderBy: { sortOrder: 'asc' },
+          orderBy: { sortOrder: "asc" },
         },
       },
     })
@@ -193,11 +199,15 @@ export const payrollService = {
   /**
    * Find by period and employee
    */
-  async findByPeriodEmployee(tenantId: string, periodId: string, employeeId: string) {
+  async findByPeriodEmployee(
+    tenantId: string,
+    periodId: string,
+    employeeId: string
+  ) {
     return db.payroll.findFirst({
       where: { tenantId, periodId, employeeId },
       include: {
-        items: { orderBy: { sortOrder: 'asc' } },
+        items: { orderBy: { sortOrder: "asc" } },
       },
     })
   },
@@ -217,9 +227,9 @@ export const payrollService = {
             department: { select: { id: true, name: true } },
           },
         },
-        items: { orderBy: { sortOrder: 'asc' } },
+        items: { orderBy: { sortOrder: "asc" } },
       },
-      orderBy: { employeeName: 'asc' },
+      orderBy: { employeeName: "asc" },
     })
   },
 
@@ -243,19 +253,21 @@ export const payrollService = {
           },
         },
         items: {
-          orderBy: { sortOrder: 'asc' },
+          orderBy: { sortOrder: "asc" },
         },
       },
     })
 
     if (!payroll) {
-      throw new Error('Không tìm thấy phiếu lương')
+      throw new Error("Không tìm thấy phiếu lương")
     }
 
     // Group items by type
-    const earnings = payroll.items.filter(i => i.itemType === 'EARNING')
-    const deductions = payroll.items.filter(i => i.itemType === 'DEDUCTION')
-    const employerCosts = payroll.items.filter(i => i.itemType === 'EMPLOYER_COST')
+    const earnings = payroll.items.filter((i) => i.itemType === "EARNING")
+    const deductions = payroll.items.filter((i) => i.itemType === "DEDUCTION")
+    const employerCosts = payroll.items.filter(
+      (i) => i.itemType === "EMPLOYER_COST"
+    )
 
     return {
       ...payroll,
@@ -270,7 +282,7 @@ export const payrollService = {
    */
   async create(
     tenantId: string,
-    data: Omit<Prisma.PayrollCreateInput, 'tenant' | 'period' | 'employee'> & {
+    data: Omit<Prisma.PayrollCreateInput, "tenant" | "period" | "employee"> & {
       periodId: string
       employeeId: string
     }
@@ -278,9 +290,13 @@ export const payrollService = {
     const { periodId, employeeId, ...rest } = data
 
     // Check for existing
-    const existing = await this.findByPeriodEmployee(tenantId, periodId, employeeId)
+    const existing = await this.findByPeriodEmployee(
+      tenantId,
+      periodId,
+      employeeId
+    )
     if (existing) {
-      throw new Error('Đã có bảng lương cho nhân viên này trong kỳ lương')
+      throw new Error("Đã có bảng lương cho nhân viên này trong kỳ lương")
     }
 
     return db.payroll.create({
@@ -296,22 +312,18 @@ export const payrollService = {
   /**
    * Update payroll
    */
-  async update(
-    tenantId: string,
-    id: string,
-    data: Prisma.PayrollUpdateInput
-  ) {
+  async update(tenantId: string, id: string, data: Prisma.PayrollUpdateInput) {
     const payroll = await db.payroll.findFirst({
       where: { id, tenantId },
       include: { period: true },
     })
 
     if (!payroll) {
-      throw new Error('Bảng lương không tồn tại')
+      throw new Error("Bảng lương không tồn tại")
     }
 
     if (payroll.period.isLocked) {
-      throw new Error('Kỳ lương đã khóa, không thể chỉnh sửa')
+      throw new Error("Kỳ lương đã khóa, không thể chỉnh sửa")
     }
 
     return db.payroll.update({
@@ -330,11 +342,11 @@ export const payrollService = {
     })
 
     if (!payroll) {
-      throw new Error('Bảng lương không tồn tại')
+      throw new Error("Bảng lương không tồn tại")
     }
 
     if (payroll.period.isLocked) {
-      throw new Error('Kỳ lương đã khóa, không thể xóa')
+      throw new Error("Kỳ lương đã khóa, không thể xóa")
     }
 
     // Delete items first (cascade should handle this, but being explicit)
@@ -356,11 +368,11 @@ export const payrollService = {
     })
 
     if (!period) {
-      throw new Error('Kỳ lương không tồn tại')
+      throw new Error("Kỳ lương không tồn tại")
     }
 
     if (period.isLocked) {
-      throw new Error('Kỳ lương đã khóa, không thể xóa dữ liệu')
+      throw new Error("Kỳ lương đã khóa, không thể xóa dữ liệu")
     }
 
     // Delete all items first
@@ -387,7 +399,7 @@ export const payrollService = {
       data: {
         isPaid: true,
         paidAt: new Date(),
-        status: 'PAID',
+        status: "PAID",
       },
     })
   },
@@ -404,7 +416,7 @@ export const payrollService = {
       data: {
         isPaid: true,
         paidAt: new Date(),
-        status: 'PAID',
+        status: "PAID",
       },
     })
   },
@@ -418,7 +430,7 @@ export const payrollService = {
       data: {
         isPaid: true,
         paidAt: new Date(),
-        status: 'PAID',
+        status: "PAID",
       },
     })
   },
@@ -439,12 +451,21 @@ export const payrollService = {
       totalEmployees: payrolls.length,
       totalGross: payrolls.reduce((sum, p) => sum + Number(p.grossSalary), 0),
       totalNet: payrolls.reduce((sum, p) => sum + Number(p.netSalary), 0),
-      totalDeductions: payrolls.reduce((sum, p) => sum + Number(p.totalDeductions), 0),
-      totalInsurance: payrolls.reduce((sum, p) => sum + Number(p.totalInsuranceEmployee), 0),
+      totalDeductions: payrolls.reduce(
+        (sum, p) => sum + Number(p.totalDeductions),
+        0
+      ),
+      totalInsurance: payrolls.reduce(
+        (sum, p) => sum + Number(p.totalInsuranceEmployee),
+        0
+      ),
       totalPIT: payrolls.reduce((sum, p) => sum + Number(p.pit), 0),
-      totalEmployerCost: payrolls.reduce((sum, p) => sum + Number(p.totalEmployerCost), 0),
-      paidCount: payrolls.filter(p => p.isPaid).length,
-      unpaidCount: payrolls.filter(p => !p.isPaid).length,
+      totalEmployerCost: payrolls.reduce(
+        (sum, p) => sum + Number(p.totalEmployerCost),
+        0
+      ),
+      paidCount: payrolls.filter((p) => p.isPaid).length,
+      unpaidCount: payrolls.filter((p) => !p.isPaid).length,
     }
   },
 
@@ -463,10 +484,7 @@ export const payrollService = {
           select: { id: true, name: true, year: true, month: true },
         },
       },
-      orderBy: [
-        { period: { year: 'desc' } },
-        { period: { month: 'desc' } },
-      ],
+      orderBy: [{ period: { year: "desc" } }, { period: { month: "desc" } }],
       take: limit,
     })
   },

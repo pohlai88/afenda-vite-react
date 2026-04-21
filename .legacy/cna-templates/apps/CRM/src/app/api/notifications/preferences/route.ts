@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { Unauthorized, handleApiError } from '@/lib/api/errors'
-import { apiSuccess } from '@/lib/api/response'
-import { CRM_EVENTS } from '@/lib/events/types'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { Unauthorized, handleApiError } from "@/lib/api/errors"
+import { apiSuccess } from "@/lib/api/response"
+import { CRM_EVENTS } from "@/lib/events/types"
 
 // Events that support email notification
 const NOTIFIABLE_EVENTS = [
@@ -38,8 +38,12 @@ export async function GET() {
 
     return apiSuccess(preferences)
   } catch (error) {
-    if (error instanceof AuthError) return handleApiError(Unauthorized(error.message), '/api/notifications/preferences')
-    return handleApiError(error, '/api/notifications/preferences')
+    if (error instanceof AuthError)
+      return handleApiError(
+        Unauthorized(error.message),
+        "/api/notifications/preferences"
+      )
+    return handleApiError(error, "/api/notifications/preferences")
   }
 }
 
@@ -54,7 +58,10 @@ export async function PUT(req: NextRequest) {
     }
 
     if (!Array.isArray(preferences)) {
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+      return NextResponse.json(
+        { error: "Invalid request body" },
+        { status: 400 }
+      )
     }
 
     // Validate event types
@@ -99,7 +106,11 @@ export async function PUT(req: NextRequest) {
 
     return apiSuccess(result)
   } catch (error) {
-    if (error instanceof AuthError) return handleApiError(Unauthorized(error.message), '/api/notifications/preferences')
-    return handleApiError(error, '/api/notifications/preferences')
+    if (error instanceof AuthError)
+      return handleApiError(
+        Unauthorized(error.message),
+        "/api/notifications/preferences"
+      )
+    return handleApiError(error, "/api/notifications/preferences")
   }
 }

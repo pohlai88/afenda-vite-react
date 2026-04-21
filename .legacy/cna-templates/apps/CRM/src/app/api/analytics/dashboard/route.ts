@@ -1,8 +1,8 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { Unauthorized, handleApiError } from '@/lib/api/errors'
-import { apiSuccess } from '@/lib/api/response'
+import { NextRequest } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { Unauthorized, handleApiError } from "@/lib/api/errors"
+import { apiSuccess } from "@/lib/api/response"
 
 // GET /api/analytics/dashboard — Dashboard KPIs + chart datasets with period comparison
 export async function GET(req: NextRequest) {
@@ -12,11 +12,11 @@ export async function GET(req: NextRequest) {
 
     // Parse date range (defaults to last 30 days)
     const now = new Date()
-    const toDate = searchParams.get('to')
-      ? new Date(searchParams.get('to')!)
+    const toDate = searchParams.get("to")
+      ? new Date(searchParams.get("to")!)
       : now
-    const fromDate = searchParams.get('from')
-      ? new Date(searchParams.get('from')!)
+    const fromDate = searchParams.get("from")
+      ? new Date(searchParams.get("from")!)
       : new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30)
 
     // Previous period (same duration, shifted back)
@@ -25,14 +25,22 @@ export async function GET(req: NextRequest) {
     const prevTo = new Date(fromDate.getTime())
 
     // Scope: MEMBER sees own, MANAGER+ sees all
-    const isManager = user.role === 'ADMIN' || user.role === 'MANAGER'
-    const ownerFilter: Record<string, string> = isManager ? {} : { ownerId: user.id }
-    const userFilter: Record<string, string> = isManager ? {} : { userId: user.id }
-    const createdByFilter: Record<string, string> = isManager ? {} : { createdById: user.id }
+    const isManager = user.role === "ADMIN" || user.role === "MANAGER"
+    const ownerFilter: Record<string, string> = isManager
+      ? {}
+      : { ownerId: user.id }
+    const userFilter: Record<string, string> = isManager
+      ? {}
+      : { userId: user.id }
+    const createdByFilter: Record<string, string> = isManager
+      ? {}
+      : { createdById: user.id }
 
     // ── KPIs ────────────────────────────────────────────────────────
     // Load exchange rates for multi-currency conversion
-    const exchangeRates = await prisma.exchangeRate.findMany({ where: { isActive: true } })
+    const exchangeRates = await prisma.exchangeRate.findMany({
+      where: { isActive: true },
+    })
     const baseRate = exchangeRates.find((r) => r.isBase)
     const rateMap: Record<string, number> = {}
     for (const r of exchangeRates) {
@@ -40,38 +48,59 @@ export async function GET(req: NextRequest) {
     }
 
     const [kpis, prevKpis] = await Promise.all([
-      computeKPIs(fromDate, toDate, ownerFilter, userFilter, createdByFilter, rateMap, baseRate?.currency),
-      computeKPIs(prevFrom, prevTo, ownerFilter, userFilter, createdByFilter, rateMap, baseRate?.currency),
+      computeKPIs(
+        fromDate,
+        toDate,
+        ownerFilter,
+        userFilter,
+        createdByFilter,
+        rateMap,
+        baseRate?.currency
+      ),
+      computeKPIs(
+        prevFrom,
+        prevTo,
+        ownerFilter,
+        userFilter,
+        createdByFilter,
+        rateMap,
+        baseRate?.currency
+      ),
     ])
 
     const pctChange = (curr: number, prev: number) =>
-      prev === 0 ? (curr > 0 ? 100 : 0) : Math.round(((curr - prev) / prev) * 1000) / 10
+      prev === 0
+        ? curr > 0
+          ? 100
+          : 0
+        : Math.round(((curr - prev) / prev) * 1000) / 10
 
     // ── Ticket KPIs ──────────────────────────────────────────────────
-    const [openTickets, slaBreachedTickets, prevOpenTickets, prevSlaBreached] = await Promise.all([
-      prisma.supportTicket.count({
-        where: { status: { in: ['OPEN', 'IN_PROGRESS'] } },
-      }),
-      prisma.supportTicket.count({
-        where: {
-          slaBreached: true,
-          status: { in: ['OPEN', 'IN_PROGRESS', 'WAITING_CUSTOMER'] },
-        },
-      }),
-      prisma.supportTicket.count({
-        where: {
-          status: { in: ['OPEN', 'IN_PROGRESS'] },
-          createdAt: { lte: prevTo },
-        },
-      }),
-      prisma.supportTicket.count({
-        where: {
-          slaBreached: true,
-          status: { in: ['OPEN', 'IN_PROGRESS', 'WAITING_CUSTOMER'] },
-          createdAt: { lte: prevTo },
-        },
-      }),
-    ])
+    const [openTickets, slaBreachedTickets, prevOpenTickets, prevSlaBreached] =
+      await Promise.all([
+        prisma.supportTicket.count({
+          where: { status: { in: ["OPEN", "IN_PROGRESS"] } },
+        }),
+        prisma.supportTicket.count({
+          where: {
+            slaBreached: true,
+            status: { in: ["OPEN", "IN_PROGRESS", "WAITING_CUSTOMER"] },
+          },
+        }),
+        prisma.supportTicket.count({
+          where: {
+            status: { in: ["OPEN", "IN_PROGRESS"] },
+            createdAt: { lte: prevTo },
+          },
+        }),
+        prisma.supportTicket.count({
+          where: {
+            slaBreached: true,
+            status: { in: ["OPEN", "IN_PROGRESS", "WAITING_CUSTOMER"] },
+            createdAt: { lte: prevTo },
+          },
+        }),
+      ])
 
     // ── Charts ──────────────────────────────────────────────────────
     const [
@@ -83,9 +112,21 @@ export async function GET(req: NextRequest) {
       activityByType,
     ] = await Promise.all([
       getPipelineFunnel(ownerFilter, rateMap, baseRate?.currency),
-      getDealsOverTime(fromDate, toDate, ownerFilter, rateMap, baseRate?.currency),
+      getDealsOverTime(
+        fromDate,
+        toDate,
+        ownerFilter,
+        rateMap,
+        baseRate?.currency
+      ),
       getQuotesByStatus(fromDate, toDate, createdByFilter),
-      getTopContacts(fromDate, toDate, ownerFilter, rateMap, baseRate?.currency),
+      getTopContacts(
+        fromDate,
+        toDate,
+        ownerFilter,
+        rateMap,
+        baseRate?.currency
+      ),
       getCampaignPerformance(fromDate, toDate, createdByFilter),
       getActivityByType(fromDate, toDate, userFilter),
     ])
@@ -100,7 +141,10 @@ export async function GET(req: NextRequest) {
         newContacts: kpis.newContacts,
         newContactsChange: pctChange(kpis.newContacts, prevKpis.newContacts),
         conversionRate: kpis.conversionRate,
-        conversionRateChange: pctChange(kpis.conversionRate, prevKpis.conversionRate),
+        conversionRateChange: pctChange(
+          kpis.conversionRate,
+          prevKpis.conversionRate
+        ),
         totalQuotes: kpis.totalQuotes,
         totalQuotesChange: pctChange(kpis.totalQuotes, prevKpis.totalQuotes),
         totalOrders: kpis.totalOrders,
@@ -108,7 +152,10 @@ export async function GET(req: NextRequest) {
         avgDealValue: kpis.avgDealValue,
         avgDealValueChange: pctChange(kpis.avgDealValue, prevKpis.avgDealValue),
         activitiesCount: kpis.activitiesCount,
-        activitiesCountChange: pctChange(kpis.activitiesCount, prevKpis.activitiesCount),
+        activitiesCountChange: pctChange(
+          kpis.activitiesCount,
+          prevKpis.activitiesCount
+        ),
         openTickets,
         openTicketsChange: pctChange(openTickets, prevOpenTickets),
         slaBreached: slaBreachedTickets,
@@ -125,15 +172,23 @@ export async function GET(req: NextRequest) {
     })
   } catch (error) {
     if (error instanceof AuthError) {
-      return handleApiError(Unauthorized(error.message), '/api/analytics/dashboard')
+      return handleApiError(
+        Unauthorized(error.message),
+        "/api/analytics/dashboard"
+      )
     }
-    return handleApiError(error, '/api/analytics/dashboard')
+    return handleApiError(error, "/api/analytics/dashboard")
   }
 }
 
 // ── KPI computation ─────────────────────────────────────────────────
 
-function convertToBase(value: number, currency: string, rateMap: Record<string, number>, baseCurrency?: string): number {
+function convertToBase(
+  value: number,
+  currency: string,
+  rateMap: Record<string, number>,
+  baseCurrency?: string
+): number {
   if (!baseCurrency || currency === baseCurrency) return value
   const rate = rateMap[currency]
   if (!rate || rate === 0) return value
@@ -247,9 +302,14 @@ async function computeKPIs(
     }),
   ])
 
-  const totalRevenue = wonDeals.reduce((sum, d) => sum + convertToBase(Number(d.value), d.currency, rateMap, baseCurrency), 0)
+  const totalRevenue = wonDeals.reduce(
+    (sum, d) =>
+      sum + convertToBase(Number(d.value), d.currency, rateMap, baseCurrency),
+    0
+  )
   const avgDealValue = wonDeals.length > 0 ? totalRevenue / wonDeals.length : 0
-  const conversionRate = closedTotal > 0 ? Math.round((closedWon / closedTotal) * 1000) / 10 : 0
+  const conversionRate =
+    closedTotal > 0 ? Math.round((closedWon / closedTotal) * 1000) / 10 : 0
 
   return {
     totalRevenue,
@@ -265,10 +325,14 @@ async function computeKPIs(
 
 // ── Chart: Pipeline Funnel ──────────────────────────────────────────
 
-async function getPipelineFunnel(ownerFilter: Record<string, string>, rateMap: Record<string, number> = {}, baseCurrency?: string) {
+async function getPipelineFunnel(
+  ownerFilter: Record<string, string>,
+  rateMap: Record<string, number> = {},
+  baseCurrency?: string
+) {
   const stages = await prisma.stage.findMany({
     where: { pipeline: { isDefault: true } },
-    orderBy: { order: 'asc' },
+    orderBy: { order: "asc" },
     include: {
       deals: {
         where: ownerFilter,
@@ -285,7 +349,11 @@ async function getPipelineFunnel(ownerFilter: Record<string, string>, rateMap: R
   return stages.map((stage) => ({
     stage: stage.name,
     count: stage._count.deals,
-    value: stage.deals.reduce((sum, d) => sum + convertToBase(Number(d.value), d.currency, rateMap, baseCurrency), 0),
+    value: stage.deals.reduce(
+      (sum, d) =>
+        sum + convertToBase(Number(d.value), d.currency, rateMap, baseCurrency),
+      0
+    ),
     color: stage.color,
   }))
 }
@@ -306,7 +374,12 @@ async function getDealsOverTime(
   const wonStageIds = wonStages.map((s) => s.id)
 
   // Group by month
-  const months: Array<{ month: string; won: number; lost: number; revenue: number }> = []
+  const months: Array<{
+    month: string
+    won: number
+    lost: number
+    revenue: number
+  }> = []
   const lostStages = await prisma.stage.findMany({
     where: { isLost: true },
     select: { id: true },
@@ -341,10 +414,18 @@ async function getDealsOverTime(
     ])
 
     months.push({
-      month: monthStart.toLocaleDateString('vi-VN', { month: 'short', year: 'numeric' }),
+      month: monthStart.toLocaleDateString("vi-VN", {
+        month: "short",
+        year: "numeric",
+      }),
       won: wonDeals.length,
       lost: lostDeals,
-      revenue: wonDeals.reduce((sum, d) => sum + convertToBase(Number(d.value), d.currency, rateMap, baseCurrency), 0),
+      revenue: wonDeals.reduce(
+        (sum, d) =>
+          sum +
+          convertToBase(Number(d.value), d.currency, rateMap, baseCurrency),
+        0
+      ),
     })
 
     current.setMonth(current.getMonth() + 1)
@@ -360,14 +441,21 @@ async function getQuotesByStatus(
   to: Date,
   createdByFilter: Record<string, string>
 ) {
-  const statuses = ['DRAFT', 'SENT', 'VIEWED', 'ACCEPTED', 'REJECTED', 'EXPIRED'] as const
+  const statuses = [
+    "DRAFT",
+    "SENT",
+    "VIEWED",
+    "ACCEPTED",
+    "REJECTED",
+    "EXPIRED",
+  ] as const
   const colors: Record<string, string> = {
-    DRAFT: '#6B7280',
-    SENT: '#3B82F6',
-    VIEWED: '#8B5CF6',
-    ACCEPTED: '#10B981',
-    REJECTED: '#EF4444',
-    EXPIRED: '#F59E0B',
+    DRAFT: "#6B7280",
+    SENT: "#3B82F6",
+    VIEWED: "#8B5CF6",
+    ACCEPTED: "#10B981",
+    REJECTED: "#EF4444",
+    EXPIRED: "#F59E0B",
   }
 
   const results = await Promise.all(
@@ -417,11 +505,19 @@ async function getTopContacts(
   })
 
   // Aggregate by contact
-  const contactMap = new Map<string, { name: string; totalValue: number; deals: number }>()
+  const contactMap = new Map<
+    string,
+    { name: string; totalValue: number; deals: number }
+  >()
   for (const dc of dealContacts) {
     const key = dc.contact.id
     const existing = contactMap.get(key)
-    const dealValue = convertToBase(Number(dc.deal.value), dc.deal.currency, rateMap, baseCurrency)
+    const dealValue = convertToBase(
+      Number(dc.deal.value),
+      dc.deal.currency,
+      rateMap,
+      baseCurrency
+    )
     if (existing) {
       existing.totalValue += dealValue
       existing.deals++
@@ -448,7 +544,7 @@ async function getCampaignPerformance(
 ) {
   const campaigns = await prisma.campaign.findMany({
     where: {
-      status: 'SENT',
+      status: "SENT",
       sentAt: { gte: from, lte: to },
       ...createdByFilter,
     },
@@ -460,7 +556,7 @@ async function getCampaignPerformance(
       totalClicked: true,
       totalBounced: true,
     },
-    orderBy: { sentAt: 'desc' },
+    orderBy: { sentAt: "desc" },
     take: 10,
   })
 
@@ -470,7 +566,10 @@ async function getCampaignPerformance(
     opened: c.totalOpened,
     clicked: c.totalClicked,
     bounced: c.totalBounced,
-    openRate: c.totalSent > 0 ? Math.round((c.totalOpened / c.totalSent) * 1000) / 10 : 0,
+    openRate:
+      c.totalSent > 0
+        ? Math.round((c.totalOpened / c.totalSent) * 1000) / 10
+        : 0,
   }))
 }
 
@@ -481,16 +580,25 @@ async function getActivityByType(
   to: Date,
   userFilter: Record<string, string>
 ) {
-  const types = ['CALL', 'EMAIL', 'MEETING', 'TASK', 'NOTE', 'LUNCH', 'DEMO', 'FOLLOW_UP'] as const
+  const types = [
+    "CALL",
+    "EMAIL",
+    "MEETING",
+    "TASK",
+    "NOTE",
+    "LUNCH",
+    "DEMO",
+    "FOLLOW_UP",
+  ] as const
   const colors: Record<string, string> = {
-    CALL: '#3B82F6',
-    EMAIL: '#10B981',
-    MEETING: '#8B5CF6',
-    TASK: '#F59E0B',
-    NOTE: '#6B7280',
-    LUNCH: '#EC4899',
-    DEMO: '#06B6D4',
-    FOLLOW_UP: '#F97316',
+    CALL: "#3B82F6",
+    EMAIL: "#10B981",
+    MEETING: "#8B5CF6",
+    TASK: "#F59E0B",
+    NOTE: "#6B7280",
+    LUNCH: "#EC4899",
+    DEMO: "#06B6D4",
+    FOLLOW_UP: "#F97316",
   }
 
   const results = await Promise.all(

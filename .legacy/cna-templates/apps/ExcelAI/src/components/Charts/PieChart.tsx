@@ -1,28 +1,28 @@
 // Phase 5: Pie Chart Component
 // SVG-based pie/doughnut chart
 
-import React, { useMemo, useState } from 'react';
-import { ChartStyle, LegendConfig } from '../../types/visualization';
+import React, { useMemo, useState } from "react"
+import { ChartStyle, LegendConfig } from "../../types/visualization"
 
 interface PieChartProps {
-  width: number;
-  height: number;
-  categories: string[];
-  series: { name: string; values: number[]; color: string }[];
-  style: ChartStyle;
-  legend: LegendConfig;
-  isDoughnut?: boolean;
+  width: number
+  height: number
+  categories: string[]
+  series: { name: string; values: number[]; color: string }[]
+  style: ChartStyle
+  legend: LegendConfig
+  isDoughnut?: boolean
 }
 
 interface SliceData {
-  label: string;
-  value: number;
-  percentage: number;
-  color: string;
-  startAngle: number;
-  endAngle: number;
-  path: string;
-  labelPosition: { x: number; y: number };
+  label: string
+  value: number
+  percentage: number
+  color: string
+  startAngle: number
+  endAngle: number
+  path: string
+  labelPosition: { x: number; y: number }
 }
 
 export const PieChart: React.FC<PieChartProps> = ({
@@ -33,30 +33,30 @@ export const PieChart: React.FC<PieChartProps> = ({
   legend,
   isDoughnut = false,
 }) => {
-  const [hoveredSlice, setHoveredSlice] = useState<number | null>(null);
+  const [hoveredSlice, setHoveredSlice] = useState<number | null>(null)
 
-  const centerX = width / 2;
-  const centerY = (height - (legend.visible ? 30 : 0)) / 2;
-  const radius = Math.min(centerX, centerY) - 40;
-  const innerRadius = isDoughnut ? radius * 0.5 : 0;
+  const centerX = width / 2
+  const centerY = (height - (legend.visible ? 30 : 0)) / 2
+  const radius = Math.min(centerX, centerY) - 40
+  const innerRadius = isDoughnut ? radius * 0.5 : 0
 
   const slices = useMemo<SliceData[]>(() => {
     // Use first series values with categories as labels
-    const values = series[0]?.values || [];
-    const colors = series.map((s) => s.color);
-    const total = values.reduce((sum, v) => sum + (v || 0), 0);
+    const values = series[0]?.values || []
+    const colors = series.map((s) => s.color)
+    const total = values.reduce((sum, v) => sum + (v || 0), 0)
 
-    if (total === 0) return [];
+    if (total === 0) return []
 
-    let currentAngle = -Math.PI / 2; // Start from top
+    let currentAngle = -Math.PI / 2 // Start from top
 
     return categories.map((label, i) => {
-      const value = values[i] || 0;
-      const percentage = (value / total) * 100;
-      const angle = (value / total) * Math.PI * 2;
-      const startAngle = currentAngle;
-      const endAngle = currentAngle + angle;
-      currentAngle = endAngle;
+      const value = values[i] || 0
+      const percentage = (value / total) * 100
+      const angle = (value / total) * Math.PI * 2
+      const startAngle = currentAngle
+      const endAngle = currentAngle + angle
+      currentAngle = endAngle
 
       // Create SVG arc path
       const path = createArcPath(
@@ -66,41 +66,43 @@ export const PieChart: React.FC<PieChartProps> = ({
         innerRadius,
         startAngle,
         endAngle
-      );
+      )
 
       // Calculate label position
-      const midAngle = (startAngle + endAngle) / 2;
-      const labelRadius = radius * 0.7;
+      const midAngle = (startAngle + endAngle) / 2
+      const labelRadius = radius * 0.7
       const labelPosition = {
         x: centerX + Math.cos(midAngle) * labelRadius,
         y: centerY + Math.sin(midAngle) * labelRadius,
-      };
+      }
 
       return {
         label,
         value,
         percentage,
-        color: colors[i % colors.length] || `hsl(${(i * 360) / categories.length}, 70%, 50%)`,
+        color:
+          colors[i % colors.length] ||
+          `hsl(${(i * 360) / categories.length}, 70%, 50%)`,
         startAngle,
         endAngle,
         path,
         labelPosition,
-      };
-    });
-  }, [categories, series, centerX, centerY, radius, innerRadius]);
+      }
+    })
+  }, [categories, series, centerX, centerY, radius, innerRadius])
 
-  const total = slices.reduce((sum, s) => sum + s.value, 0);
+  const total = slices.reduce((sum, s) => sum + s.value, 0)
 
   return (
     <svg width={width} height={height} className="overflow-visible">
       {/* Slices */}
       <g>
         {slices.map((slice, i) => {
-          const isHovered = hoveredSlice === i;
-          const offset = isHovered ? 8 : 0;
-          const midAngle = (slice.startAngle + slice.endAngle) / 2;
-          const translateX = Math.cos(midAngle) * offset;
-          const translateY = Math.sin(midAngle) * offset;
+          const isHovered = hoveredSlice === i
+          const offset = isHovered ? 8 : 0
+          const midAngle = (slice.startAngle + slice.endAngle) / 2
+          const translateX = Math.cos(midAngle) * offset
+          const translateY = Math.sin(midAngle) * offset
 
           return (
             <g
@@ -120,13 +122,13 @@ export const PieChart: React.FC<PieChartProps> = ({
                 <title>{`${slice.label}: ${slice.value.toLocaleString()} (${slice.percentage.toFixed(1)}%)`}</title>
               </path>
             </g>
-          );
+          )
         })}
       </g>
 
       {/* Labels on slices (only for larger slices) */}
       {slices.map((slice, i) => {
-        if (slice.percentage < 5) return null; // Skip small slices
+        if (slice.percentage < 5) return null // Skip small slices
         return (
           <text
             key={`label-${i}`}
@@ -135,11 +137,11 @@ export const PieChart: React.FC<PieChartProps> = ({
             textAnchor="middle"
             dominantBaseline="middle"
             className="text-xs font-medium fill-white pointer-events-none"
-            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
+            style={{ textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
           >
             {slice.percentage.toFixed(0)}%
           </text>
-        );
+        )
       })}
 
       {/* Center text for doughnut */}
@@ -168,8 +170,8 @@ export const PieChart: React.FC<PieChartProps> = ({
       {legend.visible && (
         <g transform={`translate(0, ${height - 25})`}>
           {slices.map((slice, i) => {
-            const itemWidth = width / slices.length;
-            const x = i * itemWidth + itemWidth / 2;
+            const itemWidth = width / slices.length
+            const x = i * itemWidth + itemWidth / 2
             return (
               <g
                 key={`legend-${i}`}
@@ -192,16 +194,18 @@ export const PieChart: React.FC<PieChartProps> = ({
                   className="text-xs fill-gray-600"
                   style={{ fontSize: legend.fontSize || 12 }}
                 >
-                  {slice.label.length > 10 ? slice.label.slice(0, 10) + '...' : slice.label}
+                  {slice.label.length > 10
+                    ? slice.label.slice(0, 10) + "..."
+                    : slice.label}
                 </text>
               </g>
-            );
+            )
           })}
         </g>
       )}
     </svg>
-  );
-};
+  )
+}
 
 function createArcPath(
   cx: number,
@@ -214,21 +218,21 @@ function createArcPath(
   const startOuter = {
     x: cx + Math.cos(startAngle) * outerRadius,
     y: cy + Math.sin(startAngle) * outerRadius,
-  };
+  }
   const endOuter = {
     x: cx + Math.cos(endAngle) * outerRadius,
     y: cy + Math.sin(endAngle) * outerRadius,
-  };
+  }
   const startInner = {
     x: cx + Math.cos(endAngle) * innerRadius,
     y: cy + Math.sin(endAngle) * innerRadius,
-  };
+  }
   const endInner = {
     x: cx + Math.cos(startAngle) * innerRadius,
     y: cy + Math.sin(startAngle) * innerRadius,
-  };
+  }
 
-  const largeArc = endAngle - startAngle > Math.PI ? 1 : 0;
+  const largeArc = endAngle - startAngle > Math.PI ? 1 : 0
 
   if (innerRadius === 0) {
     // Pie slice
@@ -236,8 +240,8 @@ function createArcPath(
       `M ${cx} ${cy}`,
       `L ${startOuter.x} ${startOuter.y}`,
       `A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${endOuter.x} ${endOuter.y}`,
-      'Z',
-    ].join(' ');
+      "Z",
+    ].join(" ")
   }
 
   // Doughnut slice
@@ -246,6 +250,6 @@ function createArcPath(
     `A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${endOuter.x} ${endOuter.y}`,
     `L ${startInner.x} ${startInner.y}`,
     `A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${endInner.x} ${endInner.y}`,
-    'Z',
-  ].join(' ');
+    "Z",
+  ].join(" ")
 }

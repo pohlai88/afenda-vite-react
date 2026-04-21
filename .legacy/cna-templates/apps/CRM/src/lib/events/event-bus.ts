@@ -22,17 +22,19 @@ class EventBus {
   }
 
   /** Register a handler for ALL events */
-  onAny(handler: (event: string, payload: unknown) => void | Promise<void>): void {
-    const wrapped: EventHandler = (p) => handler('__any__', p)
+  onAny(
+    handler: (event: string, payload: unknown) => void | Promise<void>
+  ): void {
+    const wrapped: EventHandler = (p) => handler("__any__", p)
     ;(wrapped as any).__onAny = handler
-    const list = this.handlers.get('*') || []
+    const list = this.handlers.get("*") || []
     list.push(wrapped)
-    this.handlers.set('*', list)
+    this.handlers.set("*", list)
   }
 
   async emit(event: string, payload: unknown): Promise<void> {
     const specific = this.handlers.get(event) || []
-    const wildcard = this.handlers.get('*') || []
+    const wildcard = this.handlers.get("*") || []
 
     const tasks: Promise<void>[] = []
 
@@ -53,7 +55,10 @@ class EventBus {
           Promise.resolve()
             .then(() => onAnyFn(event, payload))
             .catch((err) => {
-              console.error(`[EventBus] Wildcard handler error for "${event}":`, err)
+              console.error(
+                `[EventBus] Wildcard handler error for "${event}":`,
+                err
+              )
             })
         )
       }

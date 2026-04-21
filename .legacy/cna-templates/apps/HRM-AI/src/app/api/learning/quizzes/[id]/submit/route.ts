@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { z } from 'zod'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { z } from "zod"
 
 const submitSchema = z.object({
   enrollmentId: z.string(),
@@ -18,7 +18,7 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
@@ -28,12 +28,15 @@ export async function POST(
     const assessment = await db.assessment.findUnique({
       where: { id: params.id },
       include: {
-        questions: { orderBy: { order: 'asc' } },
+        questions: { orderBy: { order: "asc" } },
       },
     })
 
     if (!assessment) {
-      return NextResponse.json({ error: 'Assessment not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Assessment not found" },
+        { status: 404 }
+      )
     }
 
     // Verify enrollment
@@ -42,12 +45,15 @@ export async function POST(
     })
 
     if (!enrollment) {
-      return NextResponse.json({ error: 'Enrollment not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: "Enrollment not found" },
+        { status: 404 }
+      )
     }
 
     if (enrollment.employeeId !== session.user.employeeId) {
       return NextResponse.json(
-        { error: 'Not authorized to submit this assessment' },
+        { error: "Not authorized to submit this assessment" },
         { status: 403 }
       )
     }
@@ -62,7 +68,7 @@ export async function POST(
 
     if (assessment.maxAttempts && attemptCount >= assessment.maxAttempts) {
       return NextResponse.json(
-        { error: 'Maximum attempts reached' },
+        { error: "Maximum attempts reached" },
         { status: 400 }
       )
     }
@@ -87,37 +93,45 @@ export async function POST(
         questionResults.push({
           questionId: question.id,
           isCorrect: false,
-          userAnswer: '',
+          userAnswer: "",
         })
         continue
       }
 
       let isCorrect = false
-      const options = question.options as { id: string; text: string; isCorrect: boolean }[] | null
+      const options = question.options as
+        | { id: string; text: string; isCorrect: boolean }[]
+        | null
 
       switch (question.questionType) {
-        case 'SINGLE_CHOICE':
-        case 'TRUE_FALSE':
+        case "SINGLE_CHOICE":
+        case "TRUE_FALSE":
           if (options) {
             const correctOption = options.find((o) => o.isCorrect)
             isCorrect = correctOption?.id === userAnswer
           }
           break
 
-        case 'MULTIPLE_CHOICE':
+        case "MULTIPLE_CHOICE":
           if (options) {
-            const correctIds = options.filter((o) => o.isCorrect).map((o) => o.id).sort()
-            const userIds = (Array.isArray(userAnswer) ? userAnswer : [userAnswer]).sort()
+            const correctIds = options
+              .filter((o) => o.isCorrect)
+              .map((o) => o.id)
+              .sort()
+            const userIds = (
+              Array.isArray(userAnswer) ? userAnswer : [userAnswer]
+            ).sort()
             isCorrect = JSON.stringify(correctIds) === JSON.stringify(userIds)
           }
           break
 
-        case 'SHORT_ANSWER':
-        case 'ESSAY':
+        case "SHORT_ANSWER":
+        case "ESSAY":
           // For short answers, check exact match (case-insensitive)
           if (question.correctAnswer) {
-            isCorrect = String(question.correctAnswer).toLowerCase().trim() ===
-                        String(userAnswer).toLowerCase().trim()
+            isCorrect =
+              String(question.correctAnswer).toLowerCase().trim() ===
+              String(userAnswer).toLowerCase().trim()
           }
           break
       }
@@ -159,15 +173,17 @@ export async function POST(
         data: {
           attemptId: attempt.id,
           questionId: result.questionId,
-          response: typeof result.userAnswer === 'string'
-            ? result.userAnswer
-            : null,
+          response:
+            typeof result.userAnswer === "string" ? result.userAnswer : null,
           selectedOptions: Array.isArray(result.userAnswer)
             ? result.userAnswer
             : undefined,
           isCorrect: result.isCorrect,
           pointsEarned: result.isCorrect
-            ? Number(assessment.questions.find(q => q.id === result.questionId)?.points) || 1
+            ? Number(
+                assessment.questions.find((q) => q.id === result.questionId)
+                  ?.points
+              ) || 1
             : 0,
         },
       })
@@ -195,26 +211,28 @@ export async function POST(
         attemptsRemaining: assessment.maxAttempts
           ? assessment.maxAttempts - attemptCount - 1
           : null,
-        results: assessment.showCorrectAnswers ? {
-          questions: questionResults.map((qr, idx) => ({
-            questionId: qr.questionId,
-            questionText: assessment.questions[idx].questionText,
-            isCorrect: qr.isCorrect,
-            userAnswer: qr.userAnswer,
-          })),
-        } : null,
+        results: assessment.showCorrectAnswers
+          ? {
+              questions: questionResults.map((qr, idx) => ({
+                questionId: qr.questionId,
+                questionText: assessment.questions[idx].questionText,
+                isCorrect: qr.isCorrect,
+                userAnswer: qr.userAnswer,
+              })),
+            }
+          : null,
       },
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.issues },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       )
     }
-    console.error('Error submitting assessment:', error)
+    console.error("Error submitting assessment:", error)
     return NextResponse.json(
-      { error: 'Failed to submit assessment' },
+      { error: "Failed to submit assessment" },
       { status: 500 }
     )
   }

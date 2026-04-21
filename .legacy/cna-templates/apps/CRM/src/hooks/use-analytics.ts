@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useQuery } from '@tanstack/react-query'
-import type { AnalyticsDashboard } from '@/types'
-import { authQueryConfig } from '@/lib/query-config'
+import { useQuery } from "@tanstack/react-query"
+import type { AnalyticsDashboard } from "@/types"
+import { authQueryConfig } from "@/lib/query-config"
 
 async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(url)
@@ -15,12 +15,12 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 export interface DateRange {
   from: string // ISO date string
-  to: string   // ISO date string
+  to: string // ISO date string
 }
 
 export function useDashboardAnalytics(range: DateRange, enabled = true) {
   return useQuery<AnalyticsDashboard>({
-    queryKey: ['analytics', 'dashboard', range.from, range.to],
+    queryKey: ["analytics", "dashboard", range.from, range.to],
     queryFn: () =>
       fetchJson<AnalyticsDashboard>(
         `/api/analytics/dashboard?from=${range.from}&to=${range.to}`
@@ -54,10 +54,13 @@ export interface ForecastData {
   baseCurrency: string
 }
 
-export function useForecast(baseCurrency = 'USD') {
+export function useForecast(baseCurrency = "USD") {
   return useQuery<ForecastData>({
-    queryKey: ['analytics', 'forecast', baseCurrency],
-    queryFn: () => fetchJson<ForecastData>(`/api/analytics/forecast?baseCurrency=${baseCurrency}`),
+    queryKey: ["analytics", "forecast", baseCurrency],
+    queryFn: () =>
+      fetchJson<ForecastData>(
+        `/api/analytics/forecast?baseCurrency=${baseCurrency}`
+      ),
     staleTime: 60_000,
     ...authQueryConfig,
   })
@@ -76,8 +79,9 @@ export interface VelocityData {
 
 export function useVelocity(periodDays = 180) {
   return useQuery<VelocityData>({
-    queryKey: ['analytics', 'velocity', periodDays],
-    queryFn: () => fetchJson<VelocityData>(`/api/analytics/velocity?period=${periodDays}`),
+    queryKey: ["analytics", "velocity", periodDays],
+    queryFn: () =>
+      fetchJson<VelocityData>(`/api/analytics/velocity?period=${periodDays}`),
     staleTime: 60_000,
     ...authQueryConfig,
   })
@@ -87,20 +91,40 @@ export function useVelocity(periodDays = 180) {
 
 export interface WinLossData {
   overall: {
-    won: number; lost: number; winRate: number
-    totalValue: number; wonValue: number; lostValue: number
+    won: number
+    lost: number
+    winRate: number
+    totalValue: number
+    wonValue: number
+    lostValue: number
   }
-  bySegment: Array<{ segment: string; won: number; lost: number; winRate: number; avgValue: number }>
-  lossReasons: Array<{ reason: string; count: number; totalValue: number; percentage: number }>
-  competitors: Array<{ name: string; dealsLost: number; totalValueLost: number }>
+  bySegment: Array<{
+    segment: string
+    won: number
+    lost: number
+    winRate: number
+    avgValue: number
+  }>
+  lossReasons: Array<{
+    reason: string
+    count: number
+    totalValue: number
+    percentage: number
+  }>
+  competitors: Array<{
+    name: string
+    dealsLost: number
+    totalValueLost: number
+  }>
   trend: Array<{ month: string; winRate: number; won: number; lost: number }>
   baseCurrency: string
 }
 
 export function useWinLoss(periodDays = 365) {
   return useQuery<WinLossData>({
-    queryKey: ['analytics', 'win-loss', periodDays],
-    queryFn: () => fetchJson<WinLossData>(`/api/analytics/win-loss?period=${periodDays}`),
+    queryKey: ["analytics", "win-loss", periodDays],
+    queryFn: () =>
+      fetchJson<WinLossData>(`/api/analytics/win-loss?period=${periodDays}`),
     staleTime: 60_000,
     ...authQueryConfig,
   })
@@ -121,16 +145,29 @@ export interface GeoCountryData {
 
 export interface GeoAnalytics {
   byCountry: GeoCountryData[]
-  byRegion: Array<{ region: string; dealCount: number; totalValue: number; wonValue: number }>
-  matrix: Array<{ country: string; segment: string; dealCount: number; value: number }>
+  byRegion: Array<{
+    region: string
+    dealCount: number
+    totalValue: number
+    wonValue: number
+  }>
+  matrix: Array<{
+    country: string
+    segment: string
+    dealCount: number
+    value: number
+  }>
   topCountries: string[]
   baseCurrency: string
 }
 
-export function useGeoAnalytics(period = 365, baseCurrency = 'USD') {
+export function useGeoAnalytics(period = 365, baseCurrency = "USD") {
   return useQuery<GeoAnalytics>({
-    queryKey: ['analytics', 'geo', period, baseCurrency],
-    queryFn: () => fetchJson<GeoAnalytics>(`/api/analytics/geo?period=${period}&baseCurrency=${baseCurrency}`),
+    queryKey: ["analytics", "geo", period, baseCurrency],
+    queryFn: () =>
+      fetchJson<GeoAnalytics>(
+        `/api/analytics/geo?period=${period}&baseCurrency=${baseCurrency}`
+      ),
     staleTime: 60_000,
     ...authQueryConfig,
   })
@@ -161,10 +198,13 @@ export interface PartnerPerformance {
   baseCurrency: string
 }
 
-export function usePartnerPerformance(period = 365, baseCurrency = 'USD') {
+export function usePartnerPerformance(period = 365, baseCurrency = "USD") {
   return useQuery<PartnerPerformance>({
-    queryKey: ['analytics', 'partner-performance', period, baseCurrency],
-    queryFn: () => fetchJson<PartnerPerformance>(`/api/analytics/partner-performance?period=${period}&baseCurrency=${baseCurrency}`),
+    queryKey: ["analytics", "partner-performance", period, baseCurrency],
+    queryFn: () =>
+      fetchJson<PartnerPerformance>(
+        `/api/analytics/partner-performance?period=${period}&baseCurrency=${baseCurrency}`
+      ),
     staleTime: 60_000,
     ...authQueryConfig,
   })

@@ -1,13 +1,13 @@
 // src/lib/recruitment/services/interview.service.ts
 // Interview Service - Schedule and manage interviews
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   InterviewType,
   InterviewResult,
   ApplicationStatus,
-  Prisma
-} from '@prisma/client'
+  Prisma,
+} from "@prisma/client"
 
 // Types
 export interface ScheduleInterviewInput {
@@ -51,25 +51,35 @@ export class InterviewService {
       where: {
         id: input.applicationId,
         tenantId: this.tenantId,
-        status: { notIn: [ApplicationStatus.REJECTED, ApplicationStatus.WITHDRAWN, ApplicationStatus.HIRED] },
+        status: {
+          notIn: [
+            ApplicationStatus.REJECTED,
+            ApplicationStatus.WITHDRAWN,
+            ApplicationStatus.HIRED,
+          ],
+        },
       },
       include: {
         interviews: {
-          orderBy: { round: 'desc' },
+          orderBy: { round: "desc" },
           take: 1,
         },
       },
     })
 
     if (!application) {
-      throw new Error('Application not found or not in valid status')
+      throw new Error("Application not found or not in valid status")
     }
 
     // Determine round number
     const round = input.round || (application.interviews[0]?.round || 0) + 1
 
     // Check for scheduling conflicts
-    await this.checkConflicts(input.scheduledAt, input.duration || 60, input.interviewerIds)
+    await this.checkConflicts(
+      input.scheduledAt,
+      input.duration || 60,
+      input.interviewerIds
+    )
 
     const interview = await db.interview.create({
       data: {
@@ -116,7 +126,7 @@ export class InterviewService {
       await db.applicationActivity.create({
         data: {
           applicationId: input.applicationId,
-          action: 'INTERVIEW_SCHEDULED',
+          action: "INTERVIEW_SCHEDULED",
           description: `${input.interviewType} interview scheduled for ${input.scheduledAt.toISOString()}`,
         },
       })
@@ -167,7 +177,7 @@ export class InterviewService {
     })
 
     if (!interview) {
-      throw new Error('Interview not found')
+      throw new Error("Interview not found")
     }
 
     // Get interviewer details
@@ -186,7 +196,11 @@ export class InterviewService {
   /**
    * List interviews with filters
    */
-  async list(filters: InterviewFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: InterviewFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.InterviewWhereInput = {
@@ -214,13 +228,16 @@ export class InterviewService {
     }
 
     if (filters.toDate) {
-      where.scheduledAt = { ...(where.scheduledAt as object || {}), lte: filters.toDate }
+      where.scheduledAt = {
+        ...((where.scheduledAt as object) || {}),
+        lte: filters.toDate,
+      }
     }
 
     const [interviews, total] = await Promise.all([
       db.interview.findMany({
         where,
-        orderBy: { scheduledAt: 'asc' },
+        orderBy: { scheduledAt: "asc" },
         skip,
         take: pageSize,
         include: {
@@ -250,18 +267,22 @@ export class InterviewService {
     ])
 
     // Get interviewer names
-    const allInterviewerIds = interviews.flatMap(i => i.interviewerIds as string[])
+    const allInterviewerIds = interviews.flatMap(
+      (i) => i.interviewerIds as string[]
+    )
     const uniqueInterviewerIds = Array.from(new Set(allInterviewerIds))
     const interviewers = await db.user.findMany({
       where: { id: { in: uniqueInterviewerIds } },
       select: { id: true, name: true },
     })
-    const interviewerMap = new Map(interviewers.map(i => [i.id, i.name]))
+    const interviewerMap = new Map(interviewers.map((i) => [i.id, i.name]))
 
     return {
-      data: interviews.map(i => ({
+      data: interviews.map((i) => ({
         ...i,
-        interviewerNames: (i.interviewerIds as string[]).map(id => interviewerMap.get(id) || 'Unknown'),
+        interviewerNames: (i.interviewerIds as string[]).map(
+          (id) => interviewerMap.get(id) || "Unknown"
+        ),
       })),
       total,
       page,
@@ -281,7 +302,7 @@ export class InterviewService {
         scheduledAt: { gte: new Date() },
         result: InterviewResult.PENDING,
       },
-      orderBy: { scheduledAt: 'asc' },
+      orderBy: { scheduledAt: "asc" },
       take: limit,
       include: {
         application: {
@@ -325,7 +346,7 @@ export class InterviewService {
           lt: tomorrow,
         },
       },
-      orderBy: { scheduledAt: 'asc' },
+      orderBy: { scheduledAt: "asc" },
       include: {
         application: {
           include: {
@@ -358,7 +379,7 @@ export class InterviewService {
     })
 
     if (!interview) {
-      throw new Error('Interview not found')
+      throw new Error("Interview not found")
     }
 
     // Check for scheduling conflicts if time is changed
@@ -393,14 +414,19 @@ export class InterviewService {
     })
 
     if (!interview) {
-      throw new Error('Interview not found')
+      throw new Error("Interview not found")
     }
 
     if (interview.result !== InterviewResult.PENDING) {
-      throw new Error('Cannot reschedule a completed interview')
+      throw new Error("Cannot reschedule a completed interview")
     }
 
-    await this.checkConflicts(newTime, interview.duration, interview.interviewerIds as string[], id)
+    await this.checkConflicts(
+      newTime,
+      interview.duration,
+      interview.interviewerIds as string[],
+      id
+    )
 
     const updated = await db.interview.update({
       where: { id },
@@ -408,7 +434,7 @@ export class InterviewService {
         scheduledAt: newTime,
         result: InterviewResult.RESCHEDULED,
         notes: reason
-          ? `${interview.notes || ''}\nRescheduled: ${reason}`
+          ? `${interview.notes || ""}\nRescheduled: ${reason}`
           : interview.notes,
       },
     })
@@ -417,8 +443,8 @@ export class InterviewService {
     await db.applicationActivity.create({
       data: {
         applicationId: interview.applicationId,
-        action: 'INTERVIEW_RESCHEDULED',
-        description: `Interview rescheduled to ${newTime.toISOString()}${reason ? `: ${reason}` : ''}`,
+        action: "INTERVIEW_RESCHEDULED",
+        description: `Interview rescheduled to ${newTime.toISOString()}${reason ? `: ${reason}` : ""}`,
         oldValue: interview.scheduledAt.toISOString(),
         newValue: newTime.toISOString(),
       },
@@ -442,7 +468,7 @@ export class InterviewService {
     })
 
     if (!interview) {
-      throw new Error('Interview not found')
+      throw new Error("Interview not found")
     }
 
     const updated = await db.interview.update({
@@ -450,7 +476,7 @@ export class InterviewService {
       data: {
         result,
         notes: notes
-          ? `${interview.notes || ''}\nResult: ${notes}`
+          ? `${interview.notes || ""}\nResult: ${notes}`
           : interview.notes,
       },
     })
@@ -459,7 +485,7 @@ export class InterviewService {
     await db.applicationActivity.create({
       data: {
         applicationId: interview.applicationId,
-        action: 'INTERVIEW_COMPLETED',
+        action: "INTERVIEW_COMPLETED",
         description: `Interview completed with result: ${result}`,
         oldValue: InterviewResult.PENDING,
         newValue: result,
@@ -485,11 +511,11 @@ export class InterviewService {
     })
 
     if (!interview) {
-      throw new Error('Interview not found')
+      throw new Error("Interview not found")
     }
 
     if (interview.result !== InterviewResult.PENDING) {
-      throw new Error('Cannot cancel a completed interview')
+      throw new Error("Cannot cancel a completed interview")
     }
 
     // Delete the interview
@@ -499,7 +525,7 @@ export class InterviewService {
     await db.applicationActivity.create({
       data: {
         applicationId: interview.applicationId,
-        action: 'INTERVIEW_CANCELLED',
+        action: "INTERVIEW_CANCELLED",
         description: `Interview cancelled: ${reason}`,
       },
     })
@@ -594,7 +620,7 @@ export class InterviewService {
           select: { name: true },
         })
         throw new Error(
-          `Scheduling conflict: ${interviewer?.name || 'Interviewer'} has another interview at this time`
+          `Scheduling conflict: ${interviewer?.name || "Interviewer"} has another interview at this time`
         )
       }
     }
@@ -619,13 +645,13 @@ export class InterviewService {
       db.interview.count({ where }),
 
       db.interview.groupBy({
-        by: ['interviewType'],
+        by: ["interviewType"],
         where,
         _count: true,
       }),
 
       db.interview.groupBy({
-        by: ['result'],
+        by: ["result"],
         where,
         _count: true,
       }),
@@ -642,11 +668,11 @@ export class InterviewService {
     return {
       total,
       upcoming,
-      byType: byType.map(t => ({
+      byType: byType.map((t) => ({
         type: t.interviewType,
         count: t._count,
       })),
-      byResult: byResult.map(r => ({
+      byResult: byResult.map((r) => ({
         result: r.result,
         count: r._count,
       })),

@@ -1,28 +1,35 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { ClipboardCheck, ArrowRight, FileText } from 'lucide-react'
-import { PerformanceReview } from '@/types/performance'
-import { REVIEW_STATUS } from '@/lib/performance/constants'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { ClipboardCheck, ArrowRight, FileText } from "lucide-react"
+import { PerformanceReview } from "@/types/performance"
+import { REVIEW_STATUS } from "@/lib/performance/constants"
 
 function ReviewStatusBadge({ status }: { status: string }) {
   const info = REVIEW_STATUS[status as keyof typeof REVIEW_STATUS]
   const colorMap: Record<string, string> = {
-    gray: 'bg-zinc-700 text-zinc-300',
-    blue: 'bg-blue-500/20 text-blue-400',
-    yellow: 'bg-yellow-500/20 text-yellow-400',
-    purple: 'bg-purple-500/20 text-purple-400',
-    green: 'bg-green-500/20 text-green-400',
+    gray: "bg-zinc-700 text-zinc-300",
+    blue: "bg-blue-500/20 text-blue-400",
+    yellow: "bg-yellow-500/20 text-yellow-400",
+    purple: "bg-purple-500/20 text-purple-400",
+    green: "bg-green-500/20 text-green-400",
   }
 
   return (
-    <Badge className={colorMap[info?.color || 'gray'] || colorMap.gray}>
+    <Badge className={colorMap[info?.color || "gray"] || colorMap.gray}>
       {info?.label || status}
     </Badge>
   )
@@ -37,8 +44,8 @@ export default function ReviewsPage() {
     async function loadReviews() {
       try {
         const [myRes, teamRes] = await Promise.all([
-          fetch('/api/performance/reviews?scope=my'),
-          fetch('/api/performance/reviews?scope=team'),
+          fetch("/api/performance/reviews?scope=my"),
+          fetch("/api/performance/reviews?scope=team"),
         ])
         if (myRes.ok) {
           const data = await myRes.json()
@@ -85,14 +92,19 @@ export default function ReviewsPage() {
           ) : (
             <div className="space-y-3">
               {myReviews.map((review) => (
-                <Link key={review.id} href={`/performance/reviews/${review.id}`}>
+                <Link
+                  key={review.id}
+                  href={`/performance/reviews/${review.id}`}
+                >
                   <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-800 hover:bg-zinc-750 border border-zinc-700 transition-colors">
                     <div>
                       <p className="text-sm font-medium text-zinc-200">
-                        {review.reviewCycle?.name || 'Review Cycle'}
+                        {review.reviewCycle?.name || "Review Cycle"}
                       </p>
                       <p className="text-xs text-zinc-500 mt-1">
-                        {review.overallScore ? `Điểm: ${review.overallScore}` : 'Chưa có điểm'}
+                        {review.overallScore
+                          ? `Điểm: ${review.overallScore}`
+                          : "Chưa có điểm"}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -133,20 +145,24 @@ export default function ReviewsPage() {
                 {teamReviews.map((review) => (
                   <TableRow key={review.id} className="border-zinc-800">
                     <TableCell className="text-zinc-200">
-                      {review.employee?.fullName || 'N/A'}
+                      {review.employee?.fullName || "N/A"}
                     </TableCell>
                     <TableCell className="text-zinc-400">
-                      {review.reviewCycle?.name || 'N/A'}
+                      {review.reviewCycle?.name || "N/A"}
                     </TableCell>
                     <TableCell>
                       <ReviewStatusBadge status={review.status} />
                     </TableCell>
                     <TableCell className="text-zinc-300">
-                      {review.overallScore?.toFixed(1) || '-'}
+                      {review.overallScore?.toFixed(1) || "-"}
                     </TableCell>
                     <TableCell>
                       <Link href={`/performance/reviews/${review.id}`}>
-                        <Button size="sm" variant="ghost" className="text-amber-400 hover:text-amber-300">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-amber-400 hover:text-amber-300"
+                        >
                           Xem
                         </Button>
                       </Link>

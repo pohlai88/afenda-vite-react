@@ -1,13 +1,9 @@
 // src/lib/ai/automation/smart-form.ts
 // Smart Form Assistant
 
-import Anthropic from '@anthropic-ai/sdk'
-import { db } from '@/lib/db'
-import {
-  SmartFormContext,
-  SmartFormResult,
-  FormSuggestion
-} from './types'
+import Anthropic from "@anthropic-ai/sdk"
+import { db } from "@/lib/db"
+import { SmartFormContext, SmartFormResult, FormSuggestion } from "./types"
 
 // ═══════════════════════════════════════════════════════════════
 // SMART FORM ASSISTANT CLASS
@@ -19,7 +15,7 @@ export class SmartFormAssistant {
 
   constructor(tenantId: string) {
     this.client = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY || ''
+      apiKey: process.env.ANTHROPIC_API_KEY || "",
     })
     this.tenantId = tenantId
   }
@@ -29,11 +25,11 @@ export class SmartFormAssistant {
    */
   async getSuggestions(context: SmartFormContext): Promise<SmartFormResult> {
     switch (context.formType) {
-      case 'leave_request':
+      case "leave_request":
         return this.suggestLeaveRequest(context)
-      case 'overtime_request':
+      case "overtime_request":
         return this.suggestOvertimeRequest(context)
-      case 'employee_create':
+      case "employee_create":
         return this.suggestEmployeeCreate(context)
       default:
         return { suggestions: [], warnings: [], recommendations: [] }
@@ -43,7 +39,9 @@ export class SmartFormAssistant {
   /**
    * Suggest values for leave request form
    */
-  private async suggestLeaveRequest(context: SmartFormContext): Promise<SmartFormResult> {
+  private async suggestLeaveRequest(
+    context: SmartFormContext
+  ): Promise<SmartFormResult> {
     const suggestions: FormSuggestion[] = []
     const warnings: string[] = []
     const recommendations: string[] = []
@@ -58,25 +56,25 @@ export class SmartFormAssistant {
       where: {
         tenantId: this.tenantId,
         employeeId,
-        year: new Date().getFullYear()
+        year: new Date().getFullYear(),
       },
       include: {
-        policy: { select: { id: true, name: true, leaveType: true } }
-      }
+        policy: { select: { id: true, name: true, leaveType: true } },
+      },
     })
 
     // Suggest leave type based on available balance
     const sortedBalances = leaveBalances
-      .filter(lb => Number(lb.available) > 0)
+      .filter((lb) => Number(lb.available) > 0)
       .sort((a, b) => Number(b.available) - Number(a.available))
 
     if (sortedBalances.length > 0) {
       const topBalance = sortedBalances[0]
       suggestions.push({
-        fieldName: 'leaveType',
+        fieldName: "leaveType",
         suggestedValue: topBalance.policy.leaveType,
         reason: `${topBalance.policy.name}: còn ${topBalance.available} ngày`,
-        confidence: 0.8
+        confidence: 0.8,
       })
     }
 
@@ -88,18 +86,20 @@ export class SmartFormAssistant {
       const overlapping = await db.leaveRequest.findFirst({
         where: {
           employeeId,
-          status: { in: ['PENDING', 'APPROVED'] },
+          status: { in: ["PENDING", "APPROVED"] },
           OR: [
             {
               startDate: { lte: new Date(endDate) },
-              endDate: { gte: new Date(startDate) }
-            }
-          ]
-        }
+              endDate: { gte: new Date(startDate) },
+            },
+          ],
+        },
       })
 
       if (overlapping) {
-        warnings.push(`Đã có đơn nghỉ phép trong khoảng thời gian này (${overlapping.startDate.toLocaleDateString('vi-VN')} - ${overlapping.endDate.toLocaleDateString('vi-VN')})`)
+        warnings.push(
+          `Đã có đơn nghỉ phép trong khoảng thời gian này (${overlapping.startDate.toLocaleDateString("vi-VN")} - ${overlapping.endDate.toLocaleDateString("vi-VN")})`
+        )
       }
     }
 
@@ -107,22 +107,30 @@ export class SmartFormAssistant {
     const today = new Date()
     const dayOfWeek = today.getDay()
 
-    if (dayOfWeek === 5) { // Friday
-      recommendations.push('Gợi ý: Nghỉ thứ 6 kết hợp cuối tuần sẽ có 3 ngày nghỉ liên tiếp')
+    if (dayOfWeek === 5) {
+      // Friday
+      recommendations.push(
+        "Gợi ý: Nghỉ thứ 6 kết hợp cuối tuần sẽ có 3 ngày nghỉ liên tiếp"
+      )
     }
 
-    if (dayOfWeek === 1) { // Monday
-      recommendations.push('Gợi ý: Nghỉ thứ 2 kết hợp cuối tuần sẽ có 3 ngày nghỉ liên tiếp')
+    if (dayOfWeek === 1) {
+      // Monday
+      recommendations.push(
+        "Gợi ý: Nghỉ thứ 2 kết hợp cuối tuần sẽ có 3 ngày nghỉ liên tiếp"
+      )
     }
 
     // Check balance warnings
     const requestedDays = context.currentValues.totalDays as number
     const currentBalance = leaveBalances.find(
-      lb => lb.policy.leaveType === context.currentValues.leaveType
+      (lb) => lb.policy.leaveType === context.currentValues.leaveType
     )
 
     if (currentBalance && requestedDays > Number(currentBalance.available)) {
-      warnings.push(`Số ngày yêu cầu (${requestedDays}) vượt quá số ngày phép còn lại (${currentBalance.available})`)
+      warnings.push(
+        `Số ngày yêu cầu (${requestedDays}) vượt quá số ngày phép còn lại (${currentBalance.available})`
+      )
     }
 
     return { suggestions, warnings, recommendations }
@@ -131,7 +139,9 @@ export class SmartFormAssistant {
   /**
    * Suggest values for overtime request form
    */
-  private async suggestOvertimeRequest(context: SmartFormContext): Promise<SmartFormResult> {
+  private async suggestOvertimeRequest(
+    context: SmartFormContext
+  ): Promise<SmartFormResult> {
     const suggestions: FormSuggestion[] = []
     const warnings: string[] = []
     const recommendations: string[] = []
@@ -151,23 +161,25 @@ export class SmartFormAssistant {
         tenantId: this.tenantId,
         employeeId,
         date: { gte: monthStart },
-        otHours: { gt: 0 }
+        otHours: { gt: 0 },
       },
-      _sum: { otHours: true }
+      _sum: { otHours: true },
     })
 
     const currentMonthOT = Number(monthlyOT._sum.otHours || 0)
 
     if (currentMonthOT >= 30) {
-      warnings.push(`Bạn đã tăng ca ${currentMonthOT} giờ trong tháng này. Theo quy định, tăng ca không nên vượt quá 40 giờ/tháng.`)
+      warnings.push(
+        `Bạn đã tăng ca ${currentMonthOT} giờ trong tháng này. Theo quy định, tăng ca không nên vượt quá 40 giờ/tháng.`
+      )
     }
 
     // Suggest common OT hours
     suggestions.push({
-      fieldName: 'hours',
+      fieldName: "hours",
       suggestedValue: 2,
-      reason: 'Thời gian tăng ca phổ biến',
-      confidence: 0.6
+      reason: "Thời gian tăng ca phổ biến",
+      confidence: 0.6,
     })
 
     return { suggestions, warnings, recommendations }
@@ -176,7 +188,9 @@ export class SmartFormAssistant {
   /**
    * Suggest values for employee creation form
    */
-  private async suggestEmployeeCreate(context: SmartFormContext): Promise<SmartFormResult> {
+  private async suggestEmployeeCreate(
+    context: SmartFormContext
+  ): Promise<SmartFormResult> {
     const suggestions: FormSuggestion[] = []
     const warnings: string[] = []
     const recommendations: string[] = []
@@ -184,8 +198,8 @@ export class SmartFormAssistant {
     // Generate employee code suggestion
     const lastEmployee = await db.employee.findFirst({
       where: { tenantId: this.tenantId },
-      orderBy: { employeeCode: 'desc' },
-      select: { employeeCode: true }
+      orderBy: { employeeCode: "desc" },
+      select: { employeeCode: true },
     })
 
     if (lastEmployee?.employeeCode) {
@@ -193,14 +207,14 @@ export class SmartFormAssistant {
       const match = lastEmployee.employeeCode.match(/(\d+)$/)
       if (match) {
         const num = parseInt(match[1]) + 1
-        const prefix = lastEmployee.employeeCode.replace(/\d+$/, '')
-        const newCode = `${prefix}${num.toString().padStart(match[1].length, '0')}`
+        const prefix = lastEmployee.employeeCode.replace(/\d+$/, "")
+        const newCode = `${prefix}${num.toString().padStart(match[1].length, "0")}`
 
         suggestions.push({
-          fieldName: 'employeeCode',
+          fieldName: "employeeCode",
           suggestedValue: newCode,
           reason: `Mã tiếp theo sau ${lastEmployee.employeeCode}`,
-          confidence: 0.9
+          confidence: 0.9,
         })
       }
     }
@@ -208,27 +222,29 @@ export class SmartFormAssistant {
     // Suggest work email based on name
     const fullName = context.currentValues.fullName as string
     if (fullName) {
-      const nameParts = fullName.toLowerCase().split(' ')
+      const nameParts = fullName.toLowerCase().split(" ")
       if (nameParts.length >= 2) {
-        const firstName = this.removeVietnameseAccent(nameParts[nameParts.length - 1])
+        const firstName = this.removeVietnameseAccent(
+          nameParts[nameParts.length - 1]
+        )
         const lastName = this.removeVietnameseAccent(nameParts[0])
         const email = `${firstName}.${lastName}@company.com`
 
         suggestions.push({
-          fieldName: 'workEmail',
+          fieldName: "workEmail",
           suggestedValue: email,
-          reason: 'Email theo format chuẩn công ty',
-          confidence: 0.7
+          reason: "Email theo format chuẩn công ty",
+          confidence: 0.7,
         })
       }
     }
 
     // Default hire date
     suggestions.push({
-      fieldName: 'hireDate',
-      suggestedValue: new Date().toISOString().split('T')[0],
-      reason: 'Ngày hiện tại',
-      confidence: 0.5
+      fieldName: "hireDate",
+      suggestedValue: new Date().toISOString().split("T")[0],
+      reason: "Ngày hiện tại",
+      confidence: 0.5,
     })
 
     return { suggestions, warnings, recommendations }
@@ -258,13 +274,13 @@ Trả về JSON array các gợi ý:
 }]`
 
       const response = await this.client.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: "claude-sonnet-4-20250514",
         max_tokens: 500,
-        messages: [{ role: 'user', content: prompt }]
+        messages: [{ role: "user", content: prompt }],
       })
 
       const textBlock = response.content.find(
-        (block): block is Anthropic.TextBlock => block.type === 'text'
+        (block): block is Anthropic.TextBlock => block.type === "text"
       )
 
       if (textBlock?.text) {
@@ -274,7 +290,7 @@ Trả về JSON array các gợi ý:
         }
       }
     } catch (error) {
-      console.error('Error getting AI suggestions:', error)
+      console.error("Error getting AI suggestions:", error)
     }
 
     return []
@@ -285,10 +301,10 @@ Trả về JSON array các gợi ý:
    */
   private removeVietnameseAccent(str: string): string {
     return str
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/đ/g, 'd')
-      .replace(/Đ/g, 'D')
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
   }
 }
 

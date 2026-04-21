@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
-import type { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import type { Prisma } from "@prisma/client"
 
 export async function createPIP(
   tenantId: string,
@@ -35,7 +35,7 @@ export async function createPIP(
       expectedOutcomes: data.expectedOutcomes,
       supportProvided: data.supportProvided,
       resources: data.resources,
-      status: 'DRAFT',
+      status: "DRAFT",
       milestones: data.milestones
         ? {
             create: data.milestones.map((m, index) => ({
@@ -43,7 +43,7 @@ export async function createPIP(
               description: m.description,
               dueDate: m.dueDate,
               order: m.order ?? index,
-              status: 'PENDING',
+              status: "PENDING",
             })),
           }
         : undefined,
@@ -59,7 +59,7 @@ export async function createPIP(
         select: { id: true, name: true },
       },
       milestones: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
     },
   })
@@ -70,7 +70,13 @@ export async function getPIPs(
   filters?: {
     employeeId?: string
     managerId?: string
-    status?: 'DRAFT' | 'ACTIVE' | 'EXTENDED' | 'COMPLETED_SUCCESS' | 'COMPLETED_FAIL' | 'CANCELLED'
+    status?:
+      | "DRAFT"
+      | "ACTIVE"
+      | "EXTENDED"
+      | "COMPLETED_SUCCESS"
+      | "COMPLETED_FAIL"
+      | "CANCELLED"
     search?: string
   },
   page = 1,
@@ -84,8 +90,18 @@ export async function getPIPs(
     ...(filters?.search && {
       employee: {
         OR: [
-          { fullName: { contains: filters.search, mode: 'insensitive' as const } },
-          { employeeCode: { contains: filters.search, mode: 'insensitive' as const } },
+          {
+            fullName: {
+              contains: filters.search,
+              mode: "insensitive" as const,
+            },
+          },
+          {
+            employeeCode: {
+              contains: filters.search,
+              mode: "insensitive" as const,
+            },
+          },
         ],
       },
     }),
@@ -105,7 +121,7 @@ export async function getPIPs(
           select: { milestones: true, checkIns: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -137,7 +153,7 @@ export async function getPIPById(id: string, tenantId: string) {
         select: { id: true, name: true },
       },
       milestones: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
       checkIns: {
         include: {
@@ -145,7 +161,7 @@ export async function getPIPById(id: string, tenantId: string) {
             select: { id: true, name: true },
           },
         },
-        orderBy: { checkInDate: 'desc' },
+        orderBy: { checkInDate: "desc" },
       },
     },
   })
@@ -162,7 +178,13 @@ export async function updatePIP(
     expectedOutcomes?: string
     supportProvided?: string
     resources?: string
-    status?: 'DRAFT' | 'ACTIVE' | 'EXTENDED' | 'COMPLETED_SUCCESS' | 'COMPLETED_FAIL' | 'CANCELLED'
+    status?:
+      | "DRAFT"
+      | "ACTIVE"
+      | "EXTENDED"
+      | "COMPLETED_SUCCESS"
+      | "COMPLETED_FAIL"
+      | "CANCELLED"
     outcome?: string
     completedAt?: Date
     employeeAcknowledgedAt?: Date
@@ -173,7 +195,7 @@ export async function updatePIP(
   })
 
   if (!pip) {
-    throw new Error('PIP not found')
+    throw new Error("PIP not found")
   }
 
   return db.performanceImprovementPlan.update({
@@ -181,15 +203,25 @@ export async function updatePIP(
     data: {
       ...(data.startDate !== undefined && { startDate: data.startDate }),
       ...(data.endDate !== undefined && { endDate: data.endDate }),
-      ...(data.performanceIssues !== undefined && { performanceIssues: data.performanceIssues }),
-      ...(data.impactDescription !== undefined && { impactDescription: data.impactDescription }),
-      ...(data.expectedOutcomes !== undefined && { expectedOutcomes: data.expectedOutcomes }),
-      ...(data.supportProvided !== undefined && { supportProvided: data.supportProvided }),
+      ...(data.performanceIssues !== undefined && {
+        performanceIssues: data.performanceIssues,
+      }),
+      ...(data.impactDescription !== undefined && {
+        impactDescription: data.impactDescription,
+      }),
+      ...(data.expectedOutcomes !== undefined && {
+        expectedOutcomes: data.expectedOutcomes,
+      }),
+      ...(data.supportProvided !== undefined && {
+        supportProvided: data.supportProvided,
+      }),
       ...(data.resources !== undefined && { resources: data.resources }),
       ...(data.status !== undefined && { status: data.status }),
       ...(data.outcome !== undefined && { outcome: data.outcome }),
       ...(data.completedAt !== undefined && { completedAt: data.completedAt }),
-      ...(data.employeeAcknowledgedAt !== undefined && { employeeAcknowledgedAt: data.employeeAcknowledgedAt }),
+      ...(data.employeeAcknowledgedAt !== undefined && {
+        employeeAcknowledgedAt: data.employeeAcknowledgedAt,
+      }),
     },
     include: {
       employee: {
@@ -199,7 +231,7 @@ export async function updatePIP(
         select: { id: true, fullName: true },
       },
       milestones: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
     },
   })
@@ -227,7 +259,7 @@ export async function addMilestone(
       description: data.description,
       dueDate: data.dueDate,
       order: data.order ?? (maxOrder._max.order ?? -1) + 1,
-      status: 'PENDING',
+      status: "PENDING",
     },
   })
 }

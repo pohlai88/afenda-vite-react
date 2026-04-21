@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { employeeService } from '@/services/employee.service'
-import { audit } from '@/lib/audit/logger'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { employeeService } from "@/services/employee.service"
+import { audit } from "@/lib/audit/logger"
 
 export async function POST(
   request: NextRequest,
@@ -10,19 +10,23 @@ export async function POST(
   try {
     const session = await auth()
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!["SUPER_ADMIN", "ADMIN", "HR_MANAGER"].includes(session.user.role)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
     const employee = await employeeService.restore(session.user.tenantId, id)
 
     await audit.create(
-      { tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' },
-      'Employee',
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Employee",
       id
     )
 
@@ -31,6 +35,9 @@ export async function POST(
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
-    return NextResponse.json({ error: 'Không thể khôi phục nhân viên' }, { status: 500 })
+    return NextResponse.json(
+      { error: "Không thể khôi phục nhân viên" },
+      { status: 500 }
+    )
   }
 }

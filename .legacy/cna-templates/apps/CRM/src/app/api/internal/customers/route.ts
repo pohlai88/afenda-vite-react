@@ -1,23 +1,26 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { requireRole, isErrorResponse } from '@/lib/auth/rbac'
-import { AuthError } from '@/lib/auth/get-current-user'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { requireRole, isErrorResponse } from "@/lib/auth/rbac"
+import { AuthError } from "@/lib/auth/get-current-user"
 
 // GET /api/internal/customers — Customer data for TPM integration (Phase 3 stub)
 export async function GET(req: NextRequest) {
   try {
-    const result = await requireRole(['ADMIN'])
+    const result = await requireRole(["ADMIN"])
     if (isErrorResponse(result)) return result
     const { searchParams } = req.nextUrl
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '50')))
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"))
+    const limit = Math.min(
+      100,
+      Math.max(1, parseInt(searchParams.get("limit") || "50"))
+    )
     const skip = (page - 1) * limit
 
     // Return companies with CUSTOMER-status contacts and deal stats
     const companies = await prisma.company.findMany({
       where: {
         contacts: {
-          some: { status: 'CUSTOMER' },
+          some: { status: "CUSTOMER" },
         },
       },
       select: {
@@ -34,7 +37,7 @@ export async function GET(req: NextRequest) {
         taxCode: true,
         externalTpmId: true,
         contacts: {
-          where: { status: 'CUSTOMER' },
+          where: { status: "CUSTOMER" },
           select: {
             id: true,
             firstName: true,
@@ -51,7 +54,7 @@ export async function GET(req: NextRequest) {
           },
         },
       },
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
       skip,
       take: limit,
     })
@@ -59,7 +62,7 @@ export async function GET(req: NextRequest) {
     const total = await prisma.company.count({
       where: {
         contacts: {
-          some: { status: 'CUSTOMER' },
+          some: { status: "CUSTOMER" },
         },
       },
     })
@@ -73,11 +76,14 @@ export async function GET(req: NextRequest) {
     })
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/internal/customers error:', error)
+    console.error("GET /api/internal/customers error:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch customer data' },
+      { error: "Failed to fetch customer data" },
       { status: 500 }
     )
   }

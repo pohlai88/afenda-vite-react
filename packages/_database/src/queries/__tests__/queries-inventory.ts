@@ -5,11 +5,11 @@
  *
  * | # | Export | File |
  * |---|--------|------|
- * | 1 | `effectiveOnAsOfDatePredicate` | `helpers/effective-row.ts` |
- * | 2 | `todayIsoDateUtc` | `helpers/iso-date.ts` |
- * | 3 | `assertIsoDateOnly` | `helpers/iso-date.ts` |
- * | 4 | `isIsoDateOnly` | `helpers/iso-date.ts` |
- * | 5 | `matchesScope` | `helpers/scope-utils.ts` |
+ * | 1 | `effectiveOnAsOfDatePredicate` | `query-primitives/effective-date-predicate.ts` |
+ * | 2 | `todayIsoDateUtc` | `query-primitives/iso-date-assertions.ts` |
+ * | 3 | `assertIsoDateOnly` | `query-primitives/iso-date-assertions.ts` |
+ * | 4 | `isIsoDateOnly` | `query-primitives/iso-date-assertions.ts` |
+ * | 5 | `matchesScope` | `query-primitives/scope-matching.ts` |
  * | 6 | `resolveCurrentTenantPolicy` | `resolve-current-tenant-policy.ts` |
  * | 7 | `resolveItemSettings` | `resolve-item-settings.ts` |
  * | 8 | `resolveMembershipScope` | `resolve-membership-scope.ts` |

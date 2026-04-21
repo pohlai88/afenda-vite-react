@@ -7,7 +7,7 @@ Central **ESLint flat config** for the Afenda monorepo (pnpm + Turborepo, Vite, 
 From the repo root:
 
 ```js
-import { createConfig } from '@afenda/eslint-config'
+import { createConfig } from "@afenda/eslint-config"
 
 const baseConfig = createConfig({ rootDir: import.meta.dirname })
 
@@ -23,29 +23,29 @@ Workspace packages run `eslint .` from their directory; ESLint walks up and load
 
 Run these from **`c:\NexusCanon\afenda-react-vite`** (or your clone root) so the root `eslint.config.js` loads.
 
-| Command | Explanation |
-|--------|---------------|
-| `pnpm run lint` | Runs **`turbo run lint`** — lints all packages that define a `lint` script (matches CI). |
-| `pnpm exec eslint . --max-warnings 0 --cache --cache-location .eslintcache` | Lints **the whole repo** the same way ESLint resolves files from the root config. |
-| `pnpm exec eslint apps/web/src --max-warnings 0 --cache --cache-location .eslintcache` | Lints **only the web app** tree (faster than `eslint .`). |
-| `pnpm exec eslint "apps/web/src/app/_platform/shell/components" --max-warnings 0 --cache --cache-location .eslintcache` | Lints **only** the platform shell `components` folder (path you asked about). |
-| `pnpm exec eslint "**/components/**/*.{tsx,jsx}" --max-warnings 0 --cache --cache-location .eslintcache` | Lints **every** `**/components/**` file (matches the `afenda-ui/components-folders` scope in `src/index.js`). |
-| `pnpm exec eslint <path> --fix --cache --cache-location .eslintcache` | Same as above paths, but applies **auto-fixes** where rules support them. |
+| Command                                                                                                                 | Explanation                                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `pnpm run lint`                                                                                                         | Runs **`turbo run lint`** — lints all packages that define a `lint` script (matches CI).                      |
+| `pnpm exec eslint . --max-warnings 0 --cache --cache-location .eslintcache`                                             | Lints **the whole repo** the same way ESLint resolves files from the root config.                             |
+| `pnpm exec eslint apps/web/src --max-warnings 0 --cache --cache-location .eslintcache`                                  | Lints **only the web app** tree (faster than `eslint .`).                                                     |
+| `pnpm exec eslint "apps/web/src/app/_platform/shell/components" --max-warnings 0 --cache --cache-location .eslintcache` | Lints **only** the platform shell `components` folder (path you asked about).                                 |
+| `pnpm exec eslint "**/components/**/*.{tsx,jsx}" --max-warnings 0 --cache --cache-location .eslintcache`                | Lints **every** `**/components/**` file (matches the `afenda-ui/components-folders` scope in `src/index.js`). |
+| `pnpm exec eslint <path> --fix --cache --cache-location .eslintcache`                                                   | Same as above paths, but applies **auto-fixes** where rules support them.                                     |
 
 **UI governance (`afenda-ui` plugin):** `token-only-tailwind` (palette drift / `driftOnly`), `no-inline-styles`, and `no-direct-radix` apply to `**/components/**/*.{tsx,jsx}` (excluding `*.test.*`, `*.stories.*`, and `components/**/__tests__/**`). Use the `**/components/**` command to scan all of those at once.
 
 ## What this config includes
 
-| Layer | Notes |
-|--------|--------|
-| **Ignores** | Build/output, caches, coverage, reference mirrors (`_eslint-github`, `_vitest-github`), `.legacy`, minified JS |
-| **Linter options** | Warn on unused `eslint-disable` and inline config (keeps hygiene without failing CI on noise) |
-| **Baseline** | `@eslint/js` recommended + `typescript-eslint` recommended (not type-checked by default) |
-| **TypeScript** | `@typescript-eslint/no-unused-vars` with `_` ignore patterns; base `no-unused-vars` / `no-redeclare` disabled where they duplicate or conflict with TS |
-| **Globals** | `globals`: browser for app + selected `packages/*` sources; Node for `scripts/**`, `*.config.*`, Vite/Vitest/ESLint configs |
-| **React + Fast Refresh** | `eslint-plugin-react-hooks` + `eslint-plugin-react-refresh` (Vite preset) — **only `apps/web/**/*.{tsx,jsx}`** |
-| **Vitest** | `@vitest/eslint-plugin` recommended + env globals; see rule notes below |
-| **Prettier** | `eslint-config-prettier/flat` applied **last** |
+| Layer                    | Notes                                                                                                                                                  |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Ignores**              | Build/output, caches, coverage, `.legacy`, minified JS                                                                                                 |
+| **Linter options**       | Warn on unused `eslint-disable` and inline config (keeps hygiene without failing CI on noise)                                                          |
+| **Baseline**             | `@eslint/js` recommended + `typescript-eslint` recommended (not type-checked by default)                                                               |
+| **TypeScript**           | `@typescript-eslint/no-unused-vars` with `_` ignore patterns; base `no-unused-vars` / `no-redeclare` disabled where they duplicate or conflict with TS |
+| **Globals**              | `globals`: browser for app + selected `packages/*` sources; Node for `scripts/**`, `*.config.*`, Vite/Vitest/ESLint configs                            |
+| **React + Fast Refresh** | `eslint-plugin-react-hooks` + `eslint-plugin-react-refresh` (Vite preset) — **only `apps/web/**/\*.{tsx,jsx}`\*\*                                      |
+| **Vitest**               | `@vitest/eslint-plugin` recommended + env globals; see rule notes below                                                                                |
+| **Prettier**             | `eslint-config-prettier/flat` applied **last**                                                                                                         |
 
 ## Intentional rule choices
 

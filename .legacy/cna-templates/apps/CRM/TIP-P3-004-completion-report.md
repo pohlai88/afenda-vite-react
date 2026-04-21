@@ -20,6 +20,7 @@
 - Modified: `src/app/api/quotes/check-expiry/route.ts` — notifyUser → eventBus.emit(QUOTE_EXPIRING)
 
 **EVENT TYPES:** 22 defined in CRM_EVENTS
+
 - contact: created, updated, deleted (3)
 - deal: created, updated, stage_changed, won, lost (5)
 - quote: created, sent, accepted, rejected, expiring (5)
@@ -27,9 +28,10 @@
 - ticket: created, assigned, replied, staff_replied, resolved (5)
 - campaign: sent (1)
 - user: created (1)
-Note: Not all events have handlers yet — they are defined for future use by webhooks (P3-005) and email notifications (P3-006).
+  Note: Not all events have handlers yet — they are defined for future use by webhooks (P3-005) and email notifications (P3-006).
 
 **HANDLERS REGISTERED:** 8 notification handlers
+
 1. QUOTE_ACCEPTED → notifyUser(ownerId)
 2. QUOTE_REJECTED → notifyUser(ownerId)
 3. QUOTE_EXPIRING → notifyUser(ownerId)
@@ -45,6 +47,7 @@ Note: Not all events have handlers yet — they are defined for future use by we
 **INITIALIZATION APPROACH:** Self-initializing — `initializeEventHandlers()` called on module load in `src/lib/events/index.ts`. Idempotent guard prevents double-registration.
 
 **TEST RESULTS:**
+
 - AC-1: Event Bus Works — ✅ EventBus class with on/off/emit/onAny
 - AC-2: Fire-and-Forget — ✅ Each handler wrapped in try/catch, Promise.allSettled, errors logged but never propagated
 - AC-3: Quote Accept Notification Works — ✅ eventBus.emit(QUOTE_ACCEPTED) → notification-handler → notifyUser()
@@ -56,6 +59,7 @@ Note: Not all events have handlers yet — they are defined for future use by we
 - AC-9: Build & E2E — ✅ `tsc --noEmit` PASS, `next build` PASS, 45/45 E2E tests PASS
 
 **GREP VERIFICATION:**
+
 ```
 $ grep -r "notifyUser\|notifyRole" src/app/api/ → 0 results ✅
 $ grep -r "notifyUser\|notifyRole" src/ → 2 files only:

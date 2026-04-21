@@ -1,859 +1,887 @@
-import { FunctionDef, FormulaValue, FormulaError } from '../types';
-import { toNumber, isError, flattenValues, toBoolean, isBlank } from './utils';
+import { FunctionDef, FormulaValue, FormulaError } from "../types"
+import { toNumber, isError, flattenValues, toBoolean, isBlank } from "./utils"
 
 export const arrayFunctions: FunctionDef[] = [
   // FILTER - filter array based on criteria
   {
-    name: 'FILTER',
+    name: "FILTER",
     minArgs: 2,
     maxArgs: 3,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
-      const include = args[1];
-      const ifEmpty = args[2];
+      const array = args[0] as FormulaValue[][]
+      const include = args[1]
+      const ifEmpty = args[2]
 
       if (!Array.isArray(array)) {
-        return new FormulaError('#VALUE!', 'FILTER requires an array');
+        return new FormulaError("#VALUE!", "FILTER requires an array")
       }
 
       // Flatten include array to get boolean conditions
-      const includeFlat = flattenValues([include]).map((v) => toBoolean(v));
+      const includeFlat = flattenValues([include]).map((v) => toBoolean(v))
 
       // Handle 2D array
-      const rows = Array.isArray(array[0]) ? (array as FormulaValue[][]) : [[...array] as FormulaValue[]];
+      const rows = Array.isArray(array[0])
+        ? (array as FormulaValue[][])
+        : [[...array] as FormulaValue[]]
 
       if (includeFlat.length !== rows.length) {
-        return new FormulaError('#VALUE!', 'Array and include must have same dimensions');
+        return new FormulaError(
+          "#VALUE!",
+          "Array and include must have same dimensions"
+        )
       }
 
-      const result: FormulaValue[][] = [];
+      const result: FormulaValue[][] = []
 
       for (let i = 0; i < rows.length; i++) {
-        const condition = includeFlat[i];
-        if (isError(condition)) continue;
+        const condition = includeFlat[i]
+        if (isError(condition)) continue
         if (condition === true) {
-          result.push(rows[i]);
+          result.push(rows[i])
         }
       }
 
       if (result.length === 0) {
         if (ifEmpty !== undefined) {
-          return ifEmpty;
+          return ifEmpty
         }
-        return new FormulaError('#N/A', 'No data returned from FILTER');
+        return new FormulaError("#N/A", "No data returned from FILTER")
       }
 
-      return result;
+      return result
     },
   },
 
   // SORT - sort an array
   {
-    name: 'SORT',
+    name: "SORT",
     minArgs: 1,
     maxArgs: 4,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
-      const sortIndex = args[1] !== undefined ? toNumber(args[1]) : 1;
-      const sortOrder = args[2] !== undefined ? toNumber(args[2]) : 1;
-      const byCol = args[3] !== undefined ? toBoolean(args[3]) : false;
+      const array = args[0] as FormulaValue[][]
+      const sortIndex = args[1] !== undefined ? toNumber(args[1]) : 1
+      const sortOrder = args[2] !== undefined ? toNumber(args[2]) : 1
+      const byCol = args[3] !== undefined ? toBoolean(args[3]) : false
 
-      if (isError(sortIndex)) return sortIndex;
-      if (isError(sortOrder)) return sortOrder;
-      if (isError(byCol)) return byCol;
+      if (isError(sortIndex)) return sortIndex
+      if (isError(sortOrder)) return sortOrder
+      if (isError(byCol)) return byCol
 
       if (!Array.isArray(array)) {
-        return new FormulaError('#VALUE!', 'SORT requires an array');
+        return new FormulaError("#VALUE!", "SORT requires an array")
       }
 
-      const is2D = Array.isArray(array[0]);
-      let rows: FormulaValue[][];
+      const is2D = Array.isArray(array[0])
+      let rows: FormulaValue[][]
 
       if (is2D) {
-        rows = (array as FormulaValue[][]).map((row) => [...row]);
+        rows = (array as FormulaValue[][]).map((row) => [...row])
       } else {
-        rows = (array as unknown as FormulaValue[]).map((v) => [v]);
+        rows = (array as unknown as FormulaValue[]).map((v) => [v])
       }
 
-      const idx = (sortIndex as number) - 1;
-      const ascending = (sortOrder as number) === 1;
+      const idx = (sortIndex as number) - 1
+      const ascending = (sortOrder as number) === 1
 
       if (byCol) {
         // Sort columns - transpose, sort, transpose back
-        const transposed = transposeArray(rows);
-        transposed.sort((a, b) => compareForSort(a[idx], b[idx], ascending));
-        return transposeArray(transposed);
+        const transposed = transposeArray(rows)
+        transposed.sort((a, b) => compareForSort(a[idx], b[idx], ascending))
+        return transposeArray(transposed)
       } else {
         // Sort rows
-        rows.sort((a, b) => compareForSort(a[idx], b[idx], ascending));
-        return rows;
+        rows.sort((a, b) => compareForSort(a[idx], b[idx], ascending))
+        return rows
       }
     },
   },
 
   // SORTBY - sort array by another array
   {
-    name: 'SORTBY',
+    name: "SORTBY",
     minArgs: 2,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
+      const array = args[0] as FormulaValue[][]
 
       if (!Array.isArray(array)) {
-        return new FormulaError('#VALUE!', 'SORTBY requires an array');
+        return new FormulaError("#VALUE!", "SORTBY requires an array")
       }
 
-      const is2D = Array.isArray(array[0]);
-      let rows: FormulaValue[][];
+      const is2D = Array.isArray(array[0])
+      let rows: FormulaValue[][]
 
       if (is2D) {
-        rows = (array as FormulaValue[][]).map((row) => [...row]);
+        rows = (array as FormulaValue[][]).map((row) => [...row])
       } else {
-        rows = (array as unknown as FormulaValue[]).map((v) => [v]);
+        rows = (array as unknown as FormulaValue[]).map((v) => [v])
       }
 
       // Create index array for sorting
-      const indices = rows.map((_, i) => i);
+      const indices = rows.map((_, i) => i)
 
       // Process sort pairs (byArray, sortOrder)
-      const sortPairs: Array<{ values: FormulaValue[]; ascending: boolean }> = [];
+      const sortPairs: Array<{ values: FormulaValue[]; ascending: boolean }> =
+        []
       for (let i = 1; i < args.length; i += 2) {
-        const byArray = flattenValues([args[i]]);
-        const sortOrder = args[i + 1] !== undefined ? toNumber(args[i + 1]) : 1;
-        if (isError(sortOrder)) return sortOrder;
+        const byArray = flattenValues([args[i]])
+        const sortOrder = args[i + 1] !== undefined ? toNumber(args[i + 1]) : 1
+        if (isError(sortOrder)) return sortOrder
         sortPairs.push({
           values: byArray,
           ascending: (sortOrder as number) === 1,
-        });
+        })
       }
 
       // Sort indices based on sort pairs
       indices.sort((a, b) => {
         for (const pair of sortPairs) {
-          const cmp = compareForSort(pair.values[a], pair.values[b], pair.ascending);
-          if (cmp !== 0) return cmp;
+          const cmp = compareForSort(
+            pair.values[a],
+            pair.values[b],
+            pair.ascending
+          )
+          if (cmp !== 0) return cmp
         }
-        return 0;
-      });
+        return 0
+      })
 
       // Reorder rows based on sorted indices
-      const result = indices.map((i) => rows[i]);
-      return result;
+      const result = indices.map((i) => rows[i])
+      return result
     },
   },
 
   // UNIQUE - return unique values
   {
-    name: 'UNIQUE',
+    name: "UNIQUE",
     minArgs: 1,
     maxArgs: 3,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
-      const byCol = args[1] !== undefined ? toBoolean(args[1]) : false;
-      const exactlyOnce = args[2] !== undefined ? toBoolean(args[2]) : false;
+      const array = args[0] as FormulaValue[][]
+      const byCol = args[1] !== undefined ? toBoolean(args[1]) : false
+      const exactlyOnce = args[2] !== undefined ? toBoolean(args[2]) : false
 
-      if (isError(byCol)) return byCol;
-      if (isError(exactlyOnce)) return exactlyOnce;
+      if (isError(byCol)) return byCol
+      if (isError(exactlyOnce)) return exactlyOnce
 
       if (!Array.isArray(array)) {
-        return new FormulaError('#VALUE!', 'UNIQUE requires an array');
+        return new FormulaError("#VALUE!", "UNIQUE requires an array")
       }
 
-      const is2D = Array.isArray(array[0]);
-      let rows: FormulaValue[][];
+      const is2D = Array.isArray(array[0])
+      let rows: FormulaValue[][]
 
       if (is2D) {
-        rows = array as FormulaValue[][];
+        rows = array as FormulaValue[][]
       } else {
-        rows = (array as unknown as FormulaValue[]).map((v) => [v]);
+        rows = (array as unknown as FormulaValue[]).map((v) => [v])
       }
 
       if (byCol) {
-        rows = transposeArray(rows);
+        rows = transposeArray(rows)
       }
 
       // Track unique rows
-      const seen = new Map<string, number>();
-      const result: FormulaValue[][] = [];
+      const seen = new Map<string, number>()
+      const result: FormulaValue[][] = []
 
       for (const row of rows) {
-        const key = JSON.stringify(row);
-        seen.set(key, (seen.get(key) || 0) + 1);
+        const key = JSON.stringify(row)
+        seen.set(key, (seen.get(key) || 0) + 1)
       }
 
       for (const row of rows) {
-        const key = JSON.stringify(row);
-        const count = seen.get(key) || 0;
+        const key = JSON.stringify(row)
+        const count = seen.get(key) || 0
 
         if (exactlyOnce) {
           if (count === 1) {
-            result.push(row);
+            result.push(row)
           }
         } else {
           if (!result.some((r) => JSON.stringify(r) === key)) {
-            result.push(row);
+            result.push(row)
           }
         }
       }
 
       if (result.length === 0) {
-        return new FormulaError('#N/A', 'No unique values found');
+        return new FormulaError("#N/A", "No unique values found")
       }
 
-      const finalResult = byCol ? transposeArray(result) : result;
-      return finalResult;
+      const finalResult = byCol ? transposeArray(result) : result
+      return finalResult
     },
   },
 
   // SEQUENCE - generate a sequence of numbers
   {
-    name: 'SEQUENCE',
+    name: "SEQUENCE",
     minArgs: 1,
     maxArgs: 4,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const rows = toNumber(args[0]);
-      const cols = args[1] !== undefined ? toNumber(args[1]) : 1;
-      const start = args[2] !== undefined ? toNumber(args[2]) : 1;
-      const step = args[3] !== undefined ? toNumber(args[3]) : 1;
+      const rows = toNumber(args[0])
+      const cols = args[1] !== undefined ? toNumber(args[1]) : 1
+      const start = args[2] !== undefined ? toNumber(args[2]) : 1
+      const step = args[3] !== undefined ? toNumber(args[3]) : 1
 
-      if (isError(rows)) return rows;
-      if (isError(cols)) return cols;
-      if (isError(start)) return start;
-      if (isError(step)) return step;
+      if (isError(rows)) return rows
+      if (isError(cols)) return cols
+      if (isError(start)) return start
+      if (isError(step)) return step
 
-      const numRows = Math.floor(rows as number);
-      const numCols = Math.floor(cols as number);
-      const startVal = start as number;
-      const stepVal = step as number;
+      const numRows = Math.floor(rows as number)
+      const numCols = Math.floor(cols as number)
+      const startVal = start as number
+      const stepVal = step as number
 
       if (numRows <= 0 || numCols <= 0) {
-        return new FormulaError('#VALUE!', 'Rows and columns must be positive');
+        return new FormulaError("#VALUE!", "Rows and columns must be positive")
       }
 
-      const result: FormulaValue[][] = [];
-      let current = startVal;
+      const result: FormulaValue[][] = []
+      let current = startVal
 
       for (let r = 0; r < numRows; r++) {
-        const row: FormulaValue[] = [];
+        const row: FormulaValue[] = []
         for (let c = 0; c < numCols; c++) {
-          row.push(current);
-          current += stepVal;
+          row.push(current)
+          current += stepVal
         }
-        result.push(row);
+        result.push(row)
       }
 
-      return result;
+      return result
     },
   },
 
   // RANDARRAY - generate array of random numbers
   {
-    name: 'RANDARRAY',
+    name: "RANDARRAY",
     minArgs: 0,
     maxArgs: 5,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const rows = args[0] !== undefined ? toNumber(args[0]) : 1;
-      const cols = args[1] !== undefined ? toNumber(args[1]) : 1;
-      const min = args[2] !== undefined ? toNumber(args[2]) : 0;
-      const max = args[3] !== undefined ? toNumber(args[3]) : 1;
-      const wholeNumber = args[4] !== undefined ? toBoolean(args[4]) : false;
+      const rows = args[0] !== undefined ? toNumber(args[0]) : 1
+      const cols = args[1] !== undefined ? toNumber(args[1]) : 1
+      const min = args[2] !== undefined ? toNumber(args[2]) : 0
+      const max = args[3] !== undefined ? toNumber(args[3]) : 1
+      const wholeNumber = args[4] !== undefined ? toBoolean(args[4]) : false
 
-      if (isError(rows)) return rows;
-      if (isError(cols)) return cols;
-      if (isError(min)) return min;
-      if (isError(max)) return max;
-      if (isError(wholeNumber)) return wholeNumber;
+      if (isError(rows)) return rows
+      if (isError(cols)) return cols
+      if (isError(min)) return min
+      if (isError(max)) return max
+      if (isError(wholeNumber)) return wholeNumber
 
-      const numRows = Math.floor(rows as number);
-      const numCols = Math.floor(cols as number);
-      const minVal = min as number;
-      const maxVal = max as number;
+      const numRows = Math.floor(rows as number)
+      const numCols = Math.floor(cols as number)
+      const minVal = min as number
+      const maxVal = max as number
 
       if (numRows <= 0 || numCols <= 0) {
-        return new FormulaError('#VALUE!', 'Rows and columns must be positive');
+        return new FormulaError("#VALUE!", "Rows and columns must be positive")
       }
 
-      const result: FormulaValue[][] = [];
+      const result: FormulaValue[][] = []
 
       for (let r = 0; r < numRows; r++) {
-        const row: FormulaValue[] = [];
+        const row: FormulaValue[] = []
         for (let c = 0; c < numCols; c++) {
-          let value = Math.random() * (maxVal - minVal) + minVal;
+          let value = Math.random() * (maxVal - minVal) + minVal
           if (wholeNumber) {
-            value = Math.floor(value);
+            value = Math.floor(value)
           }
-          row.push(value);
+          row.push(value)
         }
-        result.push(row);
+        result.push(row)
       }
 
       // Return single value if 1x1
       if (numCols === 1 && numRows === 1) {
-        return result[0][0];
+        return result[0][0]
       }
 
-      return result;
+      return result
     },
   },
 
   // TRANSPOSE - transpose array
   {
-    name: 'TRANSPOSE',
+    name: "TRANSPOSE",
     minArgs: 1,
     maxArgs: 1,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
+      const array = args[0] as FormulaValue[][]
 
       if (!Array.isArray(array)) {
-        return [[array]];
+        return [[array]]
       }
 
-      const is2D = Array.isArray(array[0]);
+      const is2D = Array.isArray(array[0])
 
       if (!is2D) {
         // 1D row -> 2D column
-        return (array as unknown as FormulaValue[]).map((v) => [v]);
+        return (array as unknown as FormulaValue[]).map((v) => [v])
       }
 
-      return transposeArray(array as FormulaValue[][]);
+      return transposeArray(array as FormulaValue[][])
     },
   },
 
   // FLATTEN - flatten array to single column
   {
-    name: 'FLATTEN',
+    name: "FLATTEN",
     minArgs: 1,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const result: FormulaValue[][] = [];
+      const result: FormulaValue[][] = []
 
       for (const arg of args) {
-        const flat = flattenValues([arg]);
+        const flat = flattenValues([arg])
         for (const val of flat) {
-          result.push([val]);
+          result.push([val])
         }
       }
 
-      return result;
+      return result
     },
   },
 
   // TOCOL - convert array to single column
   {
-    name: 'TOCOL',
+    name: "TOCOL",
     minArgs: 1,
     maxArgs: 3,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
-      const ignore = args[1] !== undefined ? toNumber(args[1]) : 0;
-      const scanByCol = args[2] !== undefined ? toBoolean(args[2]) : false;
+      const array = args[0] as FormulaValue[][]
+      const ignore = args[1] !== undefined ? toNumber(args[1]) : 0
+      const scanByCol = args[2] !== undefined ? toBoolean(args[2]) : false
 
-      if (isError(ignore)) return ignore;
-      if (isError(scanByCol)) return scanByCol;
+      if (isError(ignore)) return ignore
+      if (isError(scanByCol)) return scanByCol
 
       if (!Array.isArray(array)) {
-        return [[array]];
+        return [[array]]
       }
 
-      const is2D = Array.isArray(array[0]);
-      let rows: FormulaValue[][];
+      const is2D = Array.isArray(array[0])
+      let rows: FormulaValue[][]
 
       if (is2D) {
-        rows = scanByCol ? transposeArray(array as FormulaValue[][]) : (array as FormulaValue[][]);
+        rows = scanByCol
+          ? transposeArray(array as FormulaValue[][])
+          : (array as FormulaValue[][])
       } else {
-        rows = [(array as unknown as FormulaValue[])];
+        rows = [array as unknown as FormulaValue[]]
       }
 
-      const result: FormulaValue[][] = [];
-      const ignoreVal = ignore as number;
+      const result: FormulaValue[][] = []
+      const ignoreVal = ignore as number
 
       for (const row of rows) {
         for (const val of row) {
-          if (ignoreVal === 1 && isBlank(val)) continue;
-          if (ignoreVal === 2 && isError(val)) continue;
-          if (ignoreVal === 3 && (isBlank(val) || isError(val))) continue;
-          result.push([val]);
+          if (ignoreVal === 1 && isBlank(val)) continue
+          if (ignoreVal === 2 && isError(val)) continue
+          if (ignoreVal === 3 && (isBlank(val) || isError(val))) continue
+          result.push([val])
         }
       }
 
-      return result;
+      return result
     },
   },
 
   // TOROW - convert array to single row
   {
-    name: 'TOROW',
+    name: "TOROW",
     minArgs: 1,
     maxArgs: 3,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
-      const ignore = args[1] !== undefined ? toNumber(args[1]) : 0;
-      const scanByCol = args[2] !== undefined ? toBoolean(args[2]) : false;
+      const array = args[0] as FormulaValue[][]
+      const ignore = args[1] !== undefined ? toNumber(args[1]) : 0
+      const scanByCol = args[2] !== undefined ? toBoolean(args[2]) : false
 
-      if (isError(ignore)) return ignore;
-      if (isError(scanByCol)) return scanByCol;
+      if (isError(ignore)) return ignore
+      if (isError(scanByCol)) return scanByCol
 
       if (!Array.isArray(array)) {
-        return [[array]];
+        return [[array]]
       }
 
-      const is2D = Array.isArray(array[0]);
-      let rows: FormulaValue[][];
+      const is2D = Array.isArray(array[0])
+      let rows: FormulaValue[][]
 
       if (is2D) {
-        rows = scanByCol ? transposeArray(array as FormulaValue[][]) : (array as FormulaValue[][]);
+        rows = scanByCol
+          ? transposeArray(array as FormulaValue[][])
+          : (array as FormulaValue[][])
       } else {
-        rows = [(array as unknown as FormulaValue[])];
+        rows = [array as unknown as FormulaValue[]]
       }
 
-      const result: FormulaValue[] = [];
-      const ignoreVal = ignore as number;
+      const result: FormulaValue[] = []
+      const ignoreVal = ignore as number
 
       for (const row of rows) {
         for (const val of row) {
-          if (ignoreVal === 1 && isBlank(val)) continue;
-          if (ignoreVal === 2 && isError(val)) continue;
-          if (ignoreVal === 3 && (isBlank(val) || isError(val))) continue;
-          result.push(val);
+          if (ignoreVal === 1 && isBlank(val)) continue
+          if (ignoreVal === 2 && isError(val)) continue
+          if (ignoreVal === 3 && (isBlank(val) || isError(val))) continue
+          result.push(val)
         }
       }
 
-      return [result];
+      return [result]
     },
   },
 
   // WRAPROWS - wrap values into rows
   {
-    name: 'WRAPROWS',
+    name: "WRAPROWS",
     minArgs: 2,
     maxArgs: 3,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const vector = flattenValues([args[0]]);
-      const wrapCount = toNumber(args[1]);
-      const padWith = args[2];
+      const vector = flattenValues([args[0]])
+      const wrapCount = toNumber(args[1])
+      const padWith = args[2]
 
-      if (isError(wrapCount)) return wrapCount;
+      if (isError(wrapCount)) return wrapCount
 
-      const cols = Math.floor(wrapCount as number);
+      const cols = Math.floor(wrapCount as number)
       if (cols <= 0) {
-        return new FormulaError('#VALUE!', 'Wrap count must be positive');
+        return new FormulaError("#VALUE!", "Wrap count must be positive")
       }
 
-      const result: FormulaValue[][] = [];
-      let currentRow: FormulaValue[] = [];
+      const result: FormulaValue[][] = []
+      let currentRow: FormulaValue[] = []
 
       for (const val of vector) {
-        currentRow.push(val);
+        currentRow.push(val)
         if (currentRow.length === cols) {
-          result.push(currentRow);
-          currentRow = [];
+          result.push(currentRow)
+          currentRow = []
         }
       }
 
       // Handle remaining values
       if (currentRow.length > 0) {
         while (currentRow.length < cols) {
-          currentRow.push(padWith !== undefined ? padWith : new FormulaError('#N/A'));
+          currentRow.push(
+            padWith !== undefined ? padWith : new FormulaError("#N/A")
+          )
         }
-        result.push(currentRow);
+        result.push(currentRow)
       }
 
-      return result;
+      return result
     },
   },
 
   // WRAPCOLS - wrap values into columns
   {
-    name: 'WRAPCOLS',
+    name: "WRAPCOLS",
     minArgs: 2,
     maxArgs: 3,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const vector = flattenValues([args[0]]);
-      const wrapCount = toNumber(args[1]);
-      const padWith = args[2];
+      const vector = flattenValues([args[0]])
+      const wrapCount = toNumber(args[1])
+      const padWith = args[2]
 
-      if (isError(wrapCount)) return wrapCount;
+      if (isError(wrapCount)) return wrapCount
 
-      const rows = Math.floor(wrapCount as number);
+      const rows = Math.floor(wrapCount as number)
       if (rows <= 0) {
-        return new FormulaError('#VALUE!', 'Wrap count must be positive');
+        return new FormulaError("#VALUE!", "Wrap count must be positive")
       }
 
-      const cols = Math.ceil(vector.length / rows);
-      const result: FormulaValue[][] = Array.from({ length: rows }, () => []);
+      const cols = Math.ceil(vector.length / rows)
+      const result: FormulaValue[][] = Array.from({ length: rows }, () => [])
 
       for (let i = 0; i < vector.length; i++) {
-        const rowIdx = i % rows;
-        result[rowIdx].push(vector[i]);
+        const rowIdx = i % rows
+        result[rowIdx].push(vector[i])
       }
 
       // Pad remaining cells
-      const pad = padWith !== undefined ? padWith : new FormulaError('#N/A');
+      const pad = padWith !== undefined ? padWith : new FormulaError("#N/A")
       for (const row of result) {
         while (row.length < cols) {
-          row.push(pad);
+          row.push(pad)
         }
       }
 
-      return result;
+      return result
     },
   },
 
   // TAKE - take first/last n rows or columns
   {
-    name: 'TAKE',
+    name: "TAKE",
     minArgs: 2,
     maxArgs: 3,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
-      const rowCount = toNumber(args[1]);
-      const colCount = args[2] !== undefined ? toNumber(args[2]) : undefined;
+      const array = args[0] as FormulaValue[][]
+      const rowCount = toNumber(args[1])
+      const colCount = args[2] !== undefined ? toNumber(args[2]) : undefined
 
-      if (isError(rowCount)) return rowCount;
-      if (colCount !== undefined && isError(colCount)) return colCount as FormulaError;
+      if (isError(rowCount)) return rowCount
+      if (colCount !== undefined && isError(colCount))
+        return colCount as FormulaError
 
       if (!Array.isArray(array)) {
-        return new FormulaError('#VALUE!', 'TAKE requires an array');
+        return new FormulaError("#VALUE!", "TAKE requires an array")
       }
 
-      const is2D = Array.isArray(array[0]);
-      let rows: FormulaValue[][];
+      const is2D = Array.isArray(array[0])
+      let rows: FormulaValue[][]
 
       if (is2D) {
-        rows = array as FormulaValue[][];
+        rows = array as FormulaValue[][]
       } else {
-        rows = [(array as unknown as FormulaValue[])];
+        rows = [array as unknown as FormulaValue[]]
       }
 
-      const numRows = rowCount as number;
+      const numRows = rowCount as number
 
       // Take rows
-      let result: FormulaValue[][];
+      let result: FormulaValue[][]
       if (numRows >= 0) {
-        result = rows.slice(0, numRows);
+        result = rows.slice(0, numRows)
       } else {
-        result = rows.slice(numRows);
+        result = rows.slice(numRows)
       }
 
       // Take columns if specified
       if (colCount !== undefined) {
-        const numCols = colCount as number;
+        const numCols = colCount as number
         result = result.map((row) => {
           if (numCols >= 0) {
-            return row.slice(0, numCols);
+            return row.slice(0, numCols)
           } else {
-            return row.slice(numCols);
+            return row.slice(numCols)
           }
-        });
+        })
       }
 
       if (result.length === 0) {
-        return new FormulaError('#N/A', 'No data to return');
+        return new FormulaError("#N/A", "No data to return")
       }
 
-      return result;
+      return result
     },
   },
 
   // DROP - drop first/last n rows or columns
   {
-    name: 'DROP',
+    name: "DROP",
     minArgs: 2,
     maxArgs: 3,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
-      const rowCount = toNumber(args[1]);
-      const colCount = args[2] !== undefined ? toNumber(args[2]) : undefined;
+      const array = args[0] as FormulaValue[][]
+      const rowCount = toNumber(args[1])
+      const colCount = args[2] !== undefined ? toNumber(args[2]) : undefined
 
-      if (isError(rowCount)) return rowCount;
-      if (colCount !== undefined && isError(colCount)) return colCount as FormulaError;
+      if (isError(rowCount)) return rowCount
+      if (colCount !== undefined && isError(colCount))
+        return colCount as FormulaError
 
       if (!Array.isArray(array)) {
-        return new FormulaError('#VALUE!', 'DROP requires an array');
+        return new FormulaError("#VALUE!", "DROP requires an array")
       }
 
-      const is2D = Array.isArray(array[0]);
-      let rows: FormulaValue[][];
+      const is2D = Array.isArray(array[0])
+      let rows: FormulaValue[][]
 
       if (is2D) {
-        rows = array as FormulaValue[][];
+        rows = array as FormulaValue[][]
       } else {
-        rows = [(array as unknown as FormulaValue[])];
+        rows = [array as unknown as FormulaValue[]]
       }
 
-      const numRows = rowCount as number;
+      const numRows = rowCount as number
 
       // Drop rows
-      let result: FormulaValue[][];
+      let result: FormulaValue[][]
       if (numRows >= 0) {
-        result = rows.slice(numRows);
+        result = rows.slice(numRows)
       } else {
-        result = rows.slice(0, rows.length + numRows);
+        result = rows.slice(0, rows.length + numRows)
       }
 
       // Drop columns if specified
       if (colCount !== undefined) {
-        const numCols = colCount as number;
+        const numCols = colCount as number
         result = result.map((row) => {
           if (numCols >= 0) {
-            return row.slice(numCols);
+            return row.slice(numCols)
           } else {
-            return row.slice(0, row.length + numCols);
+            return row.slice(0, row.length + numCols)
           }
-        });
+        })
       }
 
-      if (result.length === 0 || (result.length > 0 && result[0].length === 0)) {
-        return new FormulaError('#N/A', 'No data to return');
+      if (
+        result.length === 0 ||
+        (result.length > 0 && result[0].length === 0)
+      ) {
+        return new FormulaError("#N/A", "No data to return")
       }
 
-      return result;
+      return result
     },
   },
 
   // EXPAND - expand array to specified dimensions
   {
-    name: 'EXPAND',
+    name: "EXPAND",
     minArgs: 2,
     maxArgs: 4,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
-      const rows = toNumber(args[1]);
-      const cols = args[2] !== undefined ? toNumber(args[2]) : undefined;
-      const padWith = args[3] !== undefined ? args[3] : new FormulaError('#N/A');
+      const array = args[0] as FormulaValue[][]
+      const rows = toNumber(args[1])
+      const cols = args[2] !== undefined ? toNumber(args[2]) : undefined
+      const padWith = args[3] !== undefined ? args[3] : new FormulaError("#N/A")
 
-      if (isError(rows)) return rows;
-      if (cols !== undefined && isError(cols)) return cols as FormulaError;
+      if (isError(rows)) return rows
+      if (cols !== undefined && isError(cols)) return cols as FormulaError
 
       if (!Array.isArray(array)) {
-        const numRows = Math.floor(rows as number);
-        const numCols = cols !== undefined ? Math.floor(cols as number) : 1;
+        const numRows = Math.floor(rows as number)
+        const numCols = cols !== undefined ? Math.floor(cols as number) : 1
         return Array.from({ length: numRows }, (_, r) =>
-          Array.from({ length: numCols }, (_, c) => (r === 0 && c === 0 ? array : padWith))
-        );
+          Array.from({ length: numCols }, (_, c) =>
+            r === 0 && c === 0 ? array : padWith
+          )
+        )
       }
 
-      const is2D = Array.isArray(array[0]);
+      const is2D = Array.isArray(array[0])
       const sourceRows: FormulaValue[][] = is2D
         ? (array as FormulaValue[][])
-        : [(array as unknown as FormulaValue[])];
+        : [array as unknown as FormulaValue[]]
 
-      const numRows = Math.floor(rows as number);
-      const numCols = cols !== undefined ? Math.floor(cols as number) : sourceRows[0].length;
+      const numRows = Math.floor(rows as number)
+      const numCols =
+        cols !== undefined ? Math.floor(cols as number) : sourceRows[0].length
 
-      const result: FormulaValue[][] = [];
+      const result: FormulaValue[][] = []
 
       for (let r = 0; r < numRows; r++) {
-        const row: FormulaValue[] = [];
+        const row: FormulaValue[] = []
         for (let c = 0; c < numCols; c++) {
           if (r < sourceRows.length && c < sourceRows[r].length) {
-            row.push(sourceRows[r][c]);
+            row.push(sourceRows[r][c])
           } else {
-            row.push(padWith);
+            row.push(padWith)
           }
         }
-        result.push(row);
+        result.push(row)
       }
 
-      return result;
+      return result
     },
   },
 
   // CHOOSECOLS - select specific columns
   {
-    name: 'CHOOSECOLS',
+    name: "CHOOSECOLS",
     minArgs: 2,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
+      const array = args[0] as FormulaValue[][]
 
       if (!Array.isArray(array) || !Array.isArray(array[0])) {
-        return new FormulaError('#VALUE!', 'CHOOSECOLS requires a 2D array');
+        return new FormulaError("#VALUE!", "CHOOSECOLS requires a 2D array")
       }
 
-      const colIndices: number[] = [];
+      const colIndices: number[] = []
       for (let i = 1; i < args.length; i++) {
-        const idx = toNumber(args[i]);
-        if (isError(idx)) return idx;
-        colIndices.push(idx as number);
+        const idx = toNumber(args[i])
+        if (isError(idx)) return idx
+        colIndices.push(idx as number)
       }
 
-      const numCols = array[0].length;
+      const numCols = array[0].length
       const result: FormulaValue[][] = array.map((row) => {
         return colIndices.map((idx) => {
-          const colIdx = idx > 0 ? idx - 1 : numCols + idx;
+          const colIdx = idx > 0 ? idx - 1 : numCols + idx
           if (colIdx < 0 || colIdx >= numCols) {
-            return new FormulaError('#VALUE!', 'Column index out of range');
+            return new FormulaError("#VALUE!", "Column index out of range")
           }
-          return row[colIdx];
-        });
-      });
+          return row[colIdx]
+        })
+      })
 
-      return result;
+      return result
     },
   },
 
   // CHOOSEROWS - select specific rows
   {
-    name: 'CHOOSEROWS',
+    name: "CHOOSEROWS",
     minArgs: 2,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
-      const array = args[0] as FormulaValue[][];
+      const array = args[0] as FormulaValue[][]
 
       if (!Array.isArray(array)) {
-        return new FormulaError('#VALUE!', 'CHOOSEROWS requires an array');
+        return new FormulaError("#VALUE!", "CHOOSEROWS requires an array")
       }
 
-      const is2D = Array.isArray(array[0]);
+      const is2D = Array.isArray(array[0])
       const rows: FormulaValue[][] = is2D
         ? (array as FormulaValue[][])
-        : (array as unknown as FormulaValue[]).map((v) => [v]);
+        : (array as unknown as FormulaValue[]).map((v) => [v])
 
-      const rowIndices: number[] = [];
+      const rowIndices: number[] = []
       for (let i = 1; i < args.length; i++) {
-        const idx = toNumber(args[i]);
-        if (isError(idx)) return idx;
-        rowIndices.push(idx as number);
+        const idx = toNumber(args[i])
+        if (isError(idx)) return idx
+        rowIndices.push(idx as number)
       }
 
-      const numRows = rows.length;
+      const numRows = rows.length
       const result: FormulaValue[][] = rowIndices.map((idx) => {
-        const rowIdx = idx > 0 ? idx - 1 : numRows + idx;
+        const rowIdx = idx > 0 ? idx - 1 : numRows + idx
         if (rowIdx < 0 || rowIdx >= numRows) {
-          return [new FormulaError('#VALUE!', 'Row index out of range')];
+          return [new FormulaError("#VALUE!", "Row index out of range")]
         }
-        return rows[rowIdx];
-      });
+        return rows[rowIdx]
+      })
 
-      return result;
+      return result
     },
   },
 
   // HSTACK - stack arrays horizontally
   {
-    name: 'HSTACK',
+    name: "HSTACK",
     minArgs: 1,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
       const arrays: FormulaValue[][][] = args.map((arg) => {
         if (!Array.isArray(arg)) {
-          return [[arg]];
+          return [[arg]]
         }
         if (!Array.isArray((arg as FormulaValue[][])[0])) {
-          return (arg as unknown as FormulaValue[]).map((v) => [v]);
+          return (arg as unknown as FormulaValue[]).map((v) => [v])
         }
-        return arg as FormulaValue[][];
-      });
+        return arg as FormulaValue[][]
+      })
 
-      const maxRows = Math.max(...arrays.map((a) => a.length));
-      const result: FormulaValue[][] = [];
+      const maxRows = Math.max(...arrays.map((a) => a.length))
+      const result: FormulaValue[][] = []
 
       for (let r = 0; r < maxRows; r++) {
-        const row: FormulaValue[] = [];
+        const row: FormulaValue[] = []
         for (const array of arrays) {
           if (r < array.length) {
-            row.push(...array[r]);
+            row.push(...array[r])
           } else {
-            row.push(...Array(array[0].length).fill(new FormulaError('#N/A')));
+            row.push(...Array(array[0].length).fill(new FormulaError("#N/A")))
           }
         }
-        result.push(row);
+        result.push(row)
       }
 
-      return result;
+      return result
     },
   },
 
   // VSTACK - stack arrays vertically
   {
-    name: 'VSTACK',
+    name: "VSTACK",
     minArgs: 1,
     maxArgs: 255,
     fn: (args: FormulaValue[]): FormulaValue => {
       const arrays: FormulaValue[][][] = args.map((arg) => {
         if (!Array.isArray(arg)) {
-          return [[arg]];
+          return [[arg]]
         }
         if (!Array.isArray((arg as FormulaValue[][])[0])) {
-          return [(arg as unknown as FormulaValue[])];
+          return [arg as unknown as FormulaValue[]]
         }
-        return arg as FormulaValue[][];
-      });
+        return arg as FormulaValue[][]
+      })
 
-      const maxCols = Math.max(...arrays.map((a) => (a[0] ? a[0].length : 0)));
-      const result: FormulaValue[][] = [];
+      const maxCols = Math.max(...arrays.map((a) => (a[0] ? a[0].length : 0)))
+      const result: FormulaValue[][] = []
 
       for (const array of arrays) {
         for (const row of array) {
-          const paddedRow = [...row];
+          const paddedRow = [...row]
           while (paddedRow.length < maxCols) {
-            paddedRow.push(new FormulaError('#N/A'));
+            paddedRow.push(new FormulaError("#N/A"))
           }
-          result.push(paddedRow);
+          result.push(paddedRow)
         }
       }
 
-      return result;
+      return result
     },
   },
-];
+]
 
 // Helper function to transpose a 2D array
 function transposeArray(array: FormulaValue[][]): FormulaValue[][] {
-  if (array.length === 0) return [];
-  const rows = array.length;
-  const cols = array[0].length;
-  const result: FormulaValue[][] = [];
+  if (array.length === 0) return []
+  const rows = array.length
+  const cols = array[0].length
+  const result: FormulaValue[][] = []
 
   for (let c = 0; c < cols; c++) {
-    const row: FormulaValue[] = [];
+    const row: FormulaValue[] = []
     for (let r = 0; r < rows; r++) {
-      row.push(array[r][c]);
+      row.push(array[r][c])
     }
-    result.push(row);
+    result.push(row)
   }
 
-  return result;
+  return result
 }
 
 // Helper function for sorting comparison
-function compareForSort(a: FormulaValue, b: FormulaValue, ascending: boolean): number {
+function compareForSort(
+  a: FormulaValue,
+  b: FormulaValue,
+  ascending: boolean
+): number {
   // Handle nulls/undefined
-  if (a == null && b == null) return 0;
-  if (a == null) return ascending ? 1 : -1;
-  if (b == null) return ascending ? -1 : 1;
+  if (a == null && b == null) return 0
+  if (a == null) return ascending ? 1 : -1
+  if (b == null) return ascending ? -1 : 1
 
   // Handle errors
-  if (isError(a) && isError(b)) return 0;
-  if (isError(a)) return ascending ? 1 : -1;
-  if (isError(b)) return ascending ? -1 : 1;
+  if (isError(a) && isError(b)) return 0
+  if (isError(a)) return ascending ? 1 : -1
+  if (isError(b)) return ascending ? -1 : 1
 
   // Handle booleans
-  if (typeof a === 'boolean' && typeof b === 'boolean') {
-    return ascending ? (a === b ? 0 : a ? 1 : -1) : (a === b ? 0 : a ? -1 : 1);
+  if (typeof a === "boolean" && typeof b === "boolean") {
+    return ascending ? (a === b ? 0 : a ? 1 : -1) : a === b ? 0 : a ? -1 : 1
   }
 
   // Handle numbers
-  if (typeof a === 'number' && typeof b === 'number') {
-    return ascending ? a - b : b - a;
+  if (typeof a === "number" && typeof b === "number") {
+    return ascending ? a - b : b - a
   }
 
   // Handle strings
-  if (typeof a === 'string' && typeof b === 'string') {
-    const cmp = a.toLowerCase().localeCompare(b.toLowerCase());
-    return ascending ? cmp : -cmp;
+  if (typeof a === "string" && typeof b === "string") {
+    const cmp = a.toLowerCase().localeCompare(b.toLowerCase())
+    return ascending ? cmp : -cmp
   }
 
   // Mixed types: numbers < text < booleans
   const typeOrder = (v: FormulaValue): number => {
-    if (typeof v === 'number') return 0;
-    if (typeof v === 'string') return 1;
-    if (typeof v === 'boolean') return 2;
-    return 3;
-  };
+    if (typeof v === "number") return 0
+    if (typeof v === "string") return 1
+    if (typeof v === "boolean") return 2
+    return 3
+  }
 
-  const orderA = typeOrder(a);
-  const orderB = typeOrder(b);
-  return ascending ? orderA - orderB : orderB - orderA;
+  const orderA = typeOrder(a)
+  const orderB = typeOrder(b)
+  return ascending ? orderA - orderB : orderB - orderA
 }

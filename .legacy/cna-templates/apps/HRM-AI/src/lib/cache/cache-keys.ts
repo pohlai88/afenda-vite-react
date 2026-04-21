@@ -5,20 +5,20 @@
  * Consistent cache key generation and naming conventions
  */
 
-import crypto from 'crypto';
+import crypto from "crypto"
 
 // ════════════════════════════════════════════════════════════════════════════════
 // TYPES
 // ════════════════════════════════════════════════════════════════════════════════
 
 export interface CacheKeyParams {
-  entity?: string;
-  id?: string;
-  action?: string;
-  userId?: string;
-  tenantId?: string;
-  params?: Record<string, unknown>;
-  version?: string;
+  entity?: string
+  id?: string
+  action?: string
+  userId?: string
+  tenantId?: string
+  params?: Record<string, unknown>
+  version?: string
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -27,46 +27,46 @@ export interface CacheKeyParams {
 
 export const CachePrefix = {
   // Entities
-  EMPLOYEE: 'employee',
-  DEPARTMENT: 'department',
-  POSITION: 'position',
-  USER: 'user',
-  LEAVE: 'leave',
-  ATTENDANCE: 'attendance',
-  PAYROLL: 'payroll',
-  RECRUITMENT: 'recruitment',
-  TRAINING: 'training',
-  PERFORMANCE: 'performance',
+  EMPLOYEE: "employee",
+  DEPARTMENT: "department",
+  POSITION: "position",
+  USER: "user",
+  LEAVE: "leave",
+  ATTENDANCE: "attendance",
+  PAYROLL: "payroll",
+  RECRUITMENT: "recruitment",
+  TRAINING: "training",
+  PERFORMANCE: "performance",
 
   // Auth & Session
-  SESSION: 'session',
-  TOKEN: 'token',
-  PERMISSION: 'permission',
-  ROLE: 'role',
-  MFA: 'mfa',
+  SESSION: "session",
+  TOKEN: "token",
+  PERMISSION: "permission",
+  ROLE: "role",
+  MFA: "mfa",
 
   // System
-  CONFIG: 'config',
-  SETTINGS: 'settings',
-  NOTIFICATION: 'notification',
+  CONFIG: "config",
+  SETTINGS: "settings",
+  NOTIFICATION: "notification",
 
   // Analytics
-  STATS: 'stats',
-  REPORT: 'report',
-  DASHBOARD: 'dashboard',
+  STATS: "stats",
+  REPORT: "report",
+  DASHBOARD: "dashboard",
 
   // Lists
-  LIST: 'list',
-  SEARCH: 'search',
+  LIST: "list",
+  SEARCH: "search",
 
   // Rate Limiting
-  RATE_LIMIT: 'ratelimit',
-  LOCKOUT: 'lockout',
+  RATE_LIMIT: "ratelimit",
+  LOCKOUT: "lockout",
 
   // Temporary
-  TEMP: 'temp',
-  CACHE: 'cache',
-} as const;
+  TEMP: "temp",
+  CACHE: "cache",
+} as const
 
 // ════════════════════════════════════════════════════════════════════════════════
 // KEY GENERATION FUNCTIONS
@@ -76,45 +76,45 @@ export const CachePrefix = {
  * Generate a consistent cache key from parameters
  */
 export function generateCacheKey(params: CacheKeyParams): string {
-  const parts: string[] = [];
+  const parts: string[] = []
 
   // Add tenant if multi-tenant
   if (params.tenantId) {
-    parts.push(`t:${params.tenantId}`);
+    parts.push(`t:${params.tenantId}`)
   }
 
   // Add entity
   if (params.entity) {
-    parts.push(params.entity);
+    parts.push(params.entity)
   }
 
   // Add action
   if (params.action) {
-    parts.push(params.action);
+    parts.push(params.action)
   }
 
   // Add ID
   if (params.id) {
-    parts.push(params.id);
+    parts.push(params.id)
   }
 
   // Add user scope
   if (params.userId) {
-    parts.push(`u:${params.userId}`);
+    parts.push(`u:${params.userId}`)
   }
 
   // Add version
   if (params.version) {
-    parts.push(`v:${params.version}`);
+    parts.push(`v:${params.version}`)
   }
 
   // Add params hash
   if (params.params && Object.keys(params.params).length > 0) {
-    const paramsHash = hashParams(params.params);
-    parts.push(`p:${paramsHash}`);
+    const paramsHash = hashParams(params.params)
+    parts.push(`p:${paramsHash}`)
   }
 
-  return parts.join(':');
+  return parts.join(":")
 }
 
 /**
@@ -123,13 +123,16 @@ export function generateCacheKey(params: CacheKeyParams): string {
 export function hashParams(params: Record<string, unknown>): string {
   const sorted = Object.keys(params)
     .sort()
-    .reduce((acc, key) => {
-      acc[key] = params[key];
-      return acc;
-    }, {} as Record<string, unknown>);
+    .reduce(
+      (acc, key) => {
+        acc[key] = params[key]
+        return acc
+      },
+      {} as Record<string, unknown>
+    )
 
-  const json = JSON.stringify(sorted);
-  return crypto.createHash('md5').update(json).digest('hex').substring(0, 8);
+  const json = JSON.stringify(sorted)
+  return crypto.createHash("md5").update(json).digest("hex").substring(0, 8)
 }
 
 // ════════════════════════════════════════════════════════════════════════════════
@@ -142,9 +145,17 @@ export const CacheKeys = {
     byId: (id: string) => `${CachePrefix.EMPLOYEE}:${id}`,
     profile: (id: string) => `${CachePrefix.EMPLOYEE}:${id}:profile`,
     list: (params?: Record<string, unknown>) =>
-      generateCacheKey({ entity: CachePrefix.EMPLOYEE, action: 'list', params }),
+      generateCacheKey({
+        entity: CachePrefix.EMPLOYEE,
+        action: "list",
+        params,
+      }),
     search: (query: string, params?: Record<string, unknown>) =>
-      generateCacheKey({ entity: CachePrefix.EMPLOYEE, action: 'search', params: { q: query, ...params } }),
+      generateCacheKey({
+        entity: CachePrefix.EMPLOYEE,
+        action: "search",
+        params: { q: query, ...params },
+      }),
     byDepartment: (departmentId: string) =>
       `${CachePrefix.EMPLOYEE}:dept:${departmentId}`,
     count: () => `${CachePrefix.EMPLOYEE}:count`,
@@ -162,7 +173,8 @@ export const CacheKeys = {
   // User/Auth keys
   user: {
     byId: (id: string) => `${CachePrefix.USER}:${id}`,
-    byEmail: (email: string) => `${CachePrefix.USER}:email:${email.toLowerCase()}`,
+    byEmail: (email: string) =>
+      `${CachePrefix.USER}:email:${email.toLowerCase()}`,
     permissions: (id: string) => `${CachePrefix.PERMISSION}:${id}`,
     roles: (id: string) => `${CachePrefix.ROLE}:${id}`,
     session: (sessionId: string) => `${CachePrefix.SESSION}:${sessionId}`,
@@ -174,7 +186,8 @@ export const CacheKeys = {
   // Leave keys
   leave: {
     byId: (id: string) => `${CachePrefix.LEAVE}:${id}`,
-    byEmployee: (employeeId: string) => `${CachePrefix.LEAVE}:emp:${employeeId}`,
+    byEmployee: (employeeId: string) =>
+      `${CachePrefix.LEAVE}:emp:${employeeId}`,
     balance: (employeeId: string, year: number) =>
       `${CachePrefix.LEAVE}:balance:${employeeId}:${year}`,
     pending: (managerId: string) => `${CachePrefix.LEAVE}:pending:${managerId}`,
@@ -185,7 +198,7 @@ export const CacheKeys = {
   // Attendance keys
   attendance: {
     today: (employeeId: string) =>
-      `${CachePrefix.ATTENDANCE}:${employeeId}:${new Date().toISOString().split('T')[0]}`,
+      `${CachePrefix.ATTENDANCE}:${employeeId}:${new Date().toISOString().split("T")[0]}`,
     byDate: (employeeId: string, date: string) =>
       `${CachePrefix.ATTENDANCE}:${employeeId}:${date}`,
     summary: (employeeId: string, month: string) =>
@@ -204,7 +217,8 @@ export const CacheKeys = {
   // Analytics/Dashboard keys
   analytics: {
     dashboard: (userId: string) => `${CachePrefix.DASHBOARD}:${userId}`,
-    stats: (type: string, period: string) => `${CachePrefix.STATS}:${type}:${period}`,
+    stats: (type: string, period: string) =>
+      `${CachePrefix.STATS}:${type}:${period}`,
     report: (reportId: string) => `${CachePrefix.REPORT}:${reportId}`,
     kpi: (type: string) => `${CachePrefix.STATS}:kpi:${type}`,
   },
@@ -213,16 +227,18 @@ export const CacheKeys = {
   system: {
     config: (key: string) => `${CachePrefix.CONFIG}:${key}`,
     settings: () => `${CachePrefix.SETTINGS}:global`,
-    tenantSettings: (tenantId: string) => `${CachePrefix.SETTINGS}:tenant:${tenantId}`,
+    tenantSettings: (tenantId: string) =>
+      `${CachePrefix.SETTINGS}:tenant:${tenantId}`,
   },
 
   // Rate limiting keys
   rateLimit: {
     api: (identifier: string) => `${CachePrefix.RATE_LIMIT}:api:${identifier}`,
-    login: (identifier: string) => `${CachePrefix.RATE_LIMIT}:login:${identifier}`,
+    login: (identifier: string) =>
+      `${CachePrefix.RATE_LIMIT}:login:${identifier}`,
     lockout: (identifier: string) => `${CachePrefix.LOCKOUT}:${identifier}`,
   },
-};
+}
 
 // ════════════════════════════════════════════════════════════════════════════════
 // INVALIDATION PATTERNS
@@ -267,7 +283,7 @@ export const InvalidationPatterns = {
     `${CachePrefix.STATS}:*`,
     `${CachePrefix.REPORT}:*`,
   ],
-};
+}
 
 // ════════════════════════════════════════════════════════════════════════════════
 // CACHE TAGS
@@ -275,12 +291,12 @@ export const InvalidationPatterns = {
 
 export const CacheTags = {
   // Entity tags
-  EMPLOYEES: 'employees',
-  DEPARTMENTS: 'departments',
-  USERS: 'users',
-  LEAVES: 'leaves',
-  ATTENDANCE: 'attendance',
-  PAYROLL: 'payroll',
+  EMPLOYEES: "employees",
+  DEPARTMENTS: "departments",
+  USERS: "users",
+  LEAVES: "leaves",
+  ATTENDANCE: "attendance",
+  PAYROLL: "payroll",
 
   // Scope tags
   USER_SCOPED: (userId: string) => `user:${userId}`,
@@ -288,10 +304,10 @@ export const CacheTags = {
   DEPARTMENT_SCOPED: (deptId: string) => `dept:${deptId}`,
 
   // Type tags
-  LIST: 'list',
-  DETAIL: 'detail',
-  STATS: 'stats',
-  CONFIG: 'config',
-};
+  LIST: "list",
+  DETAIL: "detail",
+  STATS: "stats",
+  CONFIG: "config",
+}
 
-export default CacheKeys;
+export default CacheKeys

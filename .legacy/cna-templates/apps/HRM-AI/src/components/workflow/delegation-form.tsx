@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import { CalendarIcon, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { format } from "date-fns"
+import { vi } from "date-fns/locale"
+import { CalendarIcon, Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Dialog,
   DialogContent,
@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -25,26 +25,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { Textarea } from '@/components/ui/textarea'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/popover"
+import { Textarea } from "@/components/ui/textarea"
+import { cn } from "@/lib/utils"
 
 const formSchema = z.object({
-  delegateToId: z.string().min(1, 'Vui lòng chọn người được ủy quyền'),
-  startDate: z.date({ message: 'Vui lòng chọn ngày bắt đầu' }),
-  endDate: z.date({ message: 'Vui lòng chọn ngày kết thúc' }),
+  delegateToId: z.string().min(1, "Vui lòng chọn người được ủy quyền"),
+  startDate: z.date({ message: "Vui lòng chọn ngày bắt đầu" }),
+  endDate: z.date({ message: "Vui lòng chọn ngày kết thúc" }),
   reason: z.string().optional(),
 })
 
@@ -62,15 +62,19 @@ interface DelegationFormProps {
   trigger?: React.ReactNode
 }
 
-export function DelegationForm({ users, onSubmit, trigger }: DelegationFormProps) {
+export function DelegationForm({
+  users,
+  onSubmit,
+  trigger,
+}: DelegationFormProps) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      delegateToId: '',
-      reason: '',
+      delegateToId: "",
+      reason: "",
     },
   })
 
@@ -99,14 +103,20 @@ export function DelegationForm({ users, onSubmit, trigger }: DelegationFormProps
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="delegateToId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Người được ủy quyền</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn người được ủy quyền" />
@@ -121,7 +131,8 @@ export function DelegationForm({ users, onSubmit, trigger }: DelegationFormProps
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    Người này sẽ có quyền phê duyệt thay bạn trong thời gian ủy quyền
+                    Người này sẽ có quyền phê duyệt thay bạn trong thời gian ủy
+                    quyền
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -141,12 +152,12 @@ export function DelegationForm({ users, onSubmit, trigger }: DelegationFormProps
                           <Button
                             variant="outline"
                             className={cn(
-                              'pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
                             )}
                           >
                             {field.value ? (
-                              format(field.value, 'dd/MM/yyyy', { locale: vi })
+                              format(field.value, "dd/MM/yyyy", { locale: vi })
                             ) : (
                               <span>Chọn ngày</span>
                             )}
@@ -180,12 +191,12 @@ export function DelegationForm({ users, onSubmit, trigger }: DelegationFormProps
                           <Button
                             variant="outline"
                             className={cn(
-                              'pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
                             )}
                           >
                             {field.value ? (
-                              format(field.value, 'dd/MM/yyyy', { locale: vi })
+                              format(field.value, "dd/MM/yyyy", { locale: vi })
                             ) : (
                               <span>Chọn ngày</span>
                             )}
@@ -199,7 +210,8 @@ export function DelegationForm({ users, onSubmit, trigger }: DelegationFormProps
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={(date) =>
-                            form.watch('startDate') && date < form.watch('startDate')
+                            form.watch("startDate") &&
+                            date < form.watch("startDate")
                           }
                           initialFocus
                         />
@@ -238,7 +250,9 @@ export function DelegationForm({ users, onSubmit, trigger }: DelegationFormProps
                 Hủy
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 Tạo ủy quyền
               </Button>
             </div>

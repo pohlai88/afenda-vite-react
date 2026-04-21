@@ -18,7 +18,8 @@ export const useSidebarStore = create<SidebarState>()(
       toggle: () => set((state) => ({ collapsed: !state.collapsed })),
       setCollapsed: (collapsed) => set({ collapsed }),
       setCommandPaletteOpen: (open) => set({ commandPaletteOpen: open }),
-      toggleCommandPalette: () => set((state) => ({ commandPaletteOpen: !state.commandPaletteOpen })),
+      toggleCommandPalette: () =>
+        set((state) => ({ commandPaletteOpen: !state.commandPaletteOpen })),
     }),
     {
       name: "sidebar-storage",

@@ -1,51 +1,51 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from 'react';
-import { Users } from 'lucide-react';
-import { WidgetContainer } from './widget-container';
-import { cn } from '@/lib/utils';
+import { useEffect, useState } from "react"
+import { Users } from "lucide-react"
+import { WidgetContainer } from "./widget-container"
+import { cn } from "@/lib/utils"
 
 interface HeadcountData {
-  total: number;
-  active: number;
-  probation: number;
-  partTime: number;
-  change: number;
+  total: number
+  active: number
+  probation: number
+  partTime: number
+  change: number
 }
 
 interface HeadcountWidgetProps {
-  id?: string;
-  onRemove?: (id: string) => void;
-  isDragging?: boolean;
-  className?: string;
+  id?: string
+  onRemove?: (id: string) => void
+  isDragging?: boolean
+  className?: string
 }
 
 export function HeadcountWidget({
-  id = 'headcount',
+  id = "headcount",
   onRemove,
   isDragging,
   className,
 }: HeadcountWidgetProps) {
-  const [data, setData] = useState<HeadcountData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<HeadcountData | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch('/api/analytics/headcount');
+        const response = await fetch("/api/analytics/headcount")
         if (response.ok) {
-          const result = await response.json();
-          setData(result);
+          const result = await response.json()
+          setData(result)
         }
       } catch (error) {
-        console.error('Failed to fetch headcount data:', error);
+        console.error("Failed to fetch headcount data:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   return (
     <WidgetContainer
@@ -70,12 +70,21 @@ export function HeadcountWidget({
               <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{data.total.toLocaleString('vi-VN')}</p>
-              <p className={cn(
-                'text-xs',
-                data.change > 0 ? 'text-green-600' : data.change < 0 ? 'text-red-600' : 'text-muted-foreground'
-              )}>
-                {data.change > 0 ? '+' : ''}{data.change} so với tháng trước
+              <p className="text-2xl font-bold">
+                {data.total.toLocaleString("vi-VN")}
+              </p>
+              <p
+                className={cn(
+                  "text-xs",
+                  data.change > 0
+                    ? "text-green-600"
+                    : data.change < 0
+                      ? "text-red-600"
+                      : "text-muted-foreground"
+                )}
+              >
+                {data.change > 0 ? "+" : ""}
+                {data.change} so với tháng trước
               </p>
             </div>
           </div>
@@ -83,15 +92,21 @@ export function HeadcountWidget({
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Chính thức</span>
-              <span className="font-medium">{data.active.toLocaleString('vi-VN')}</span>
+              <span className="font-medium">
+                {data.active.toLocaleString("vi-VN")}
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Thử việc</span>
-              <span className="font-medium">{data.probation.toLocaleString('vi-VN')}</span>
+              <span className="font-medium">
+                {data.probation.toLocaleString("vi-VN")}
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Bán thời gian</span>
-              <span className="font-medium">{data.partTime.toLocaleString('vi-VN')}</span>
+              <span className="font-medium">
+                {data.partTime.toLocaleString("vi-VN")}
+              </span>
             </div>
           </div>
         </div>
@@ -99,5 +114,5 @@ export function HeadcountWidget({
         <p className="text-sm text-muted-foreground">Không có dữ liệu</p>
       )}
     </WidgetContainer>
-  );
+  )
 }

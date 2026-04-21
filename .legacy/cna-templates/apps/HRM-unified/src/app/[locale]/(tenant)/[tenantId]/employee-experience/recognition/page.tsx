@@ -1,15 +1,21 @@
 // src/app/[locale]/(tenant)/[tenantId]/employee-experience/recognition/page.tsx
 // Recognition & Kudos Page
 
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Progress } from '@/components/ui/progress'
+import { useState } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Progress } from "@/components/ui/progress"
 import {
   Dialog,
   DialogContent,
@@ -17,16 +23,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import {
   Award,
   Heart,
@@ -40,70 +46,160 @@ import {
   Handshake,
   Clock,
   TrendingUp,
-} from 'lucide-react'
+} from "lucide-react"
 
 // Mock data
 const kudosCategories = [
-  { id: '1', name: 'Team Player', emoji: '🤝', points: 10, color: 'bg-blue-100 text-blue-800' },
-  { id: '2', name: 'Innovation', emoji: '💡', points: 15, color: 'bg-purple-100 text-purple-800' },
-  { id: '3', name: 'Going Extra Mile', emoji: '🚀', points: 20, color: 'bg-orange-100 text-orange-800' },
-  { id: '4', name: 'Problem Solver', emoji: '🔧', points: 15, color: 'bg-green-100 text-green-800' },
-  { id: '5', name: 'Mentor', emoji: '🎓', points: 15, color: 'bg-indigo-100 text-indigo-800' },
-  { id: '6', name: 'Customer Focus', emoji: '⭐', points: 10, color: 'bg-yellow-100 text-yellow-800' },
-  { id: '7', name: 'Leadership', emoji: '👑', points: 20, color: 'bg-amber-100 text-amber-800' },
-  { id: '8', name: 'Positive Attitude', emoji: '😊', points: 5, color: 'bg-pink-100 text-pink-800' },
+  {
+    id: "1",
+    name: "Team Player",
+    emoji: "🤝",
+    points: 10,
+    color: "bg-blue-100 text-blue-800",
+  },
+  {
+    id: "2",
+    name: "Innovation",
+    emoji: "💡",
+    points: 15,
+    color: "bg-purple-100 text-purple-800",
+  },
+  {
+    id: "3",
+    name: "Going Extra Mile",
+    emoji: "🚀",
+    points: 20,
+    color: "bg-orange-100 text-orange-800",
+  },
+  {
+    id: "4",
+    name: "Problem Solver",
+    emoji: "🔧",
+    points: 15,
+    color: "bg-green-100 text-green-800",
+  },
+  {
+    id: "5",
+    name: "Mentor",
+    emoji: "🎓",
+    points: 15,
+    color: "bg-indigo-100 text-indigo-800",
+  },
+  {
+    id: "6",
+    name: "Customer Focus",
+    emoji: "⭐",
+    points: 10,
+    color: "bg-yellow-100 text-yellow-800",
+  },
+  {
+    id: "7",
+    name: "Leadership",
+    emoji: "👑",
+    points: 20,
+    color: "bg-amber-100 text-amber-800",
+  },
+  {
+    id: "8",
+    name: "Positive Attitude",
+    emoji: "😊",
+    points: 5,
+    color: "bg-pink-100 text-pink-800",
+  },
 ]
 
 const mockRecognitions = [
   {
-    id: '1',
-    giver: { name: 'Nguyen Van A', avatar: '', department: 'Engineering' },
-    receiver: { name: 'Tran Thi B', avatar: '', department: 'Product' },
+    id: "1",
+    giver: { name: "Nguyen Van A", avatar: "", department: "Engineering" },
+    receiver: { name: "Tran Thi B", avatar: "", department: "Product" },
     category: kudosCategories[0],
-    message: 'Thank you for helping me debug that critical issue at 11pm last night! Your dedication to the team is amazing.',
+    message:
+      "Thank you for helping me debug that critical issue at 11pm last night! Your dedication to the team is amazing.",
     points: 10,
-    reactions: [{ emoji: '❤️', count: 5 }, { emoji: '👏', count: 8 }],
+    reactions: [
+      { emoji: "❤️", count: 5 },
+      { emoji: "👏", count: 8 },
+    ],
     comments: 2,
-    createdAt: '2 hours ago',
+    createdAt: "2 hours ago",
     isPublic: true,
   },
   {
-    id: '2',
-    giver: { name: 'Le Van C', avatar: '', department: 'Sales' },
-    receiver: { name: 'Pham Thi D', avatar: '', department: 'Marketing' },
+    id: "2",
+    giver: { name: "Le Van C", avatar: "", department: "Sales" },
+    receiver: { name: "Pham Thi D", avatar: "", department: "Marketing" },
     category: kudosCategories[1],
-    message: 'The new campaign idea was brilliant! It exceeded our expectations and generated 3x more leads.',
+    message:
+      "The new campaign idea was brilliant! It exceeded our expectations and generated 3x more leads.",
     points: 15,
-    reactions: [{ emoji: '🔥', count: 12 }, { emoji: '💡', count: 6 }],
+    reactions: [
+      { emoji: "🔥", count: 12 },
+      { emoji: "💡", count: 6 },
+    ],
     comments: 4,
-    createdAt: '5 hours ago',
+    createdAt: "5 hours ago",
     isPublic: true,
   },
   {
-    id: '3',
-    giver: { name: 'Hoang Van E', avatar: '', department: 'HR' },
-    receiver: { name: 'Nguyen Thi F', avatar: '', department: 'Finance' },
+    id: "3",
+    giver: { name: "Hoang Van E", avatar: "", department: "HR" },
+    receiver: { name: "Nguyen Thi F", avatar: "", department: "Finance" },
     category: kudosCategories[2],
-    message: 'Thank you for staying late to close the month-end reports. Your extra effort made our audit smooth!',
+    message:
+      "Thank you for staying late to close the month-end reports. Your extra effort made our audit smooth!",
     points: 20,
-    reactions: [{ emoji: '🙏', count: 7 }, { emoji: '⭐', count: 4 }],
+    reactions: [
+      { emoji: "🙏", count: 7 },
+      { emoji: "⭐", count: 4 },
+    ],
     comments: 1,
-    createdAt: 'Yesterday',
+    createdAt: "Yesterday",
     isPublic: true,
   },
 ]
 
 const leaderboard = [
-  { rank: 1, name: 'Tran Thi B', department: 'Product', points: 245, kudosReceived: 18 },
-  { rank: 2, name: 'Nguyen Van A', department: 'Engineering', points: 210, kudosReceived: 15 },
-  { rank: 3, name: 'Pham Thi D', department: 'Marketing', points: 185, kudosReceived: 12 },
-  { rank: 4, name: 'Le Van C', department: 'Sales', points: 165, kudosReceived: 11 },
-  { rank: 5, name: 'Hoang Van E', department: 'HR', points: 150, kudosReceived: 10 },
+  {
+    rank: 1,
+    name: "Tran Thi B",
+    department: "Product",
+    points: 245,
+    kudosReceived: 18,
+  },
+  {
+    rank: 2,
+    name: "Nguyen Van A",
+    department: "Engineering",
+    points: 210,
+    kudosReceived: 15,
+  },
+  {
+    rank: 3,
+    name: "Pham Thi D",
+    department: "Marketing",
+    points: 185,
+    kudosReceived: 12,
+  },
+  {
+    rank: 4,
+    name: "Le Van C",
+    department: "Sales",
+    points: 165,
+    kudosReceived: 11,
+  },
+  {
+    rank: 5,
+    name: "Hoang Van E",
+    department: "HR",
+    points: 150,
+    kudosReceived: 10,
+  },
 ]
 
 export default function RecognitionPage() {
   const [giveKudosOpen, setGiveKudosOpen] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [selectedCategory, setSelectedCategory] = useState<string>("")
 
   const myStats = {
     pointsGiven: 65,
@@ -118,7 +214,9 @@ export default function RecognitionPage() {
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Recognition & Kudos</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Recognition & Kudos
+          </h1>
           <p className="text-muted-foreground">
             Celebrate achievements and appreciate your colleagues
           </p>
@@ -145,7 +243,9 @@ export default function RecognitionPage() {
                     <SelectValue placeholder="Select a colleague" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Nguyen Van A - Engineering</SelectItem>
+                    <SelectItem value="1">
+                      Nguyen Van A - Engineering
+                    </SelectItem>
                     <SelectItem value="2">Tran Thi B - Product</SelectItem>
                     <SelectItem value="3">Le Van C - Sales</SelectItem>
                   </SelectContent>
@@ -157,7 +257,9 @@ export default function RecognitionPage() {
                   {kudosCategories.map((cat) => (
                     <Button
                       key={cat.id}
-                      variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                      variant={
+                        selectedCategory === cat.id ? "default" : "outline"
+                      }
                       className="justify-start"
                       onClick={() => setSelectedCategory(cat.id)}
                     >
@@ -178,11 +280,22 @@ export default function RecognitionPage() {
                 />
               </div>
               <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <span>Points remaining: {myStats.pointsRemaining} / {myStats.monthlyAllowance}</span>
-                <span>Cost: {kudosCategories.find(c => c.id === selectedCategory)?.points || 0} points</span>
+                <span>
+                  Points remaining: {myStats.pointsRemaining} /{" "}
+                  {myStats.monthlyAllowance}
+                </span>
+                <span>
+                  Cost:{" "}
+                  {kudosCategories.find((c) => c.id === selectedCategory)
+                    ?.points || 0}{" "}
+                  points
+                </span>
               </div>
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setGiveKudosOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setGiveKudosOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button onClick={() => setGiveKudosOpen(false)}>
@@ -198,12 +311,17 @@ export default function RecognitionPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Points Remaining</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Points Remaining
+            </CardTitle>
             <Zap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{myStats.pointsRemaining}</div>
-            <Progress value={(myStats.pointsRemaining / myStats.monthlyAllowance) * 100} className="h-2 mt-2" />
+            <Progress
+              value={(myStats.pointsRemaining / myStats.monthlyAllowance) * 100}
+              className="h-2 mt-2"
+            />
             <p className="text-xs text-muted-foreground mt-1">
               {myStats.pointsGiven} / {myStats.monthlyAllowance} used this month
             </p>
@@ -221,7 +339,9 @@ export default function RecognitionPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Kudos Received</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Kudos Received
+            </CardTitle>
             <Star className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -235,7 +355,9 @@ export default function RecognitionPage() {
             <Trophy className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{myStats.totalPointsReceived}</div>
+            <div className="text-2xl font-bold">
+              {myStats.totalPointsReceived}
+            </div>
             <p className="text-xs text-muted-foreground">Earned this year</p>
           </CardContent>
         </Card>
@@ -259,31 +381,53 @@ export default function RecognitionPage() {
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={recognition.giver.avatar} />
                         <AvatarFallback>
-                          {recognition.giver.name.split(' ').map(n => n[0]).join('')}
+                          {recognition.giver.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold">{recognition.giver.name}</span>
-                          <span className="text-muted-foreground">recognized</span>
-                          <span className="font-semibold">{recognition.receiver.name}</span>
+                          <span className="font-semibold">
+                            {recognition.giver.name}
+                          </span>
+                          <span className="text-muted-foreground">
+                            recognized
+                          </span>
+                          <span className="font-semibold">
+                            {recognition.receiver.name}
+                          </span>
                           <Badge className={recognition.category.color}>
-                            {recognition.category.emoji} {recognition.category.name}
+                            {recognition.category.emoji}{" "}
+                            {recognition.category.name}
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {recognition.giver.department} · {recognition.createdAt}
+                          {recognition.giver.department} ·{" "}
+                          {recognition.createdAt}
                         </p>
                         <p className="mt-3">{recognition.message}</p>
                         <div className="flex items-center gap-4 mt-4">
                           <div className="flex items-center gap-2">
                             {recognition.reactions.map((reaction, index) => (
-                              <Button key={index} variant="ghost" size="sm" className="h-8 px-2">
+                              <Button
+                                key={index}
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 px-2"
+                              >
                                 <span className="mr-1">{reaction.emoji}</span>
-                                <span className="text-xs">{reaction.count}</span>
+                                <span className="text-xs">
+                                  {reaction.count}
+                                </span>
                               </Button>
                             ))}
-                            <Button variant="ghost" size="sm" className="h-8 px-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 px-2"
+                            >
                               <Heart className="h-4 w-4" />
                             </Button>
                           </div>
@@ -333,26 +477,40 @@ export default function RecognitionPage() {
               <div className="space-y-4">
                 {leaderboard.map((person, index) => (
                   <div key={index} className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                      index === 0 ? 'bg-yellow-100 text-yellow-700' :
-                      index === 1 ? 'bg-gray-100 text-gray-700' :
-                      index === 2 ? 'bg-orange-100 text-orange-700' :
-                      'bg-muted text-muted-foreground'
-                    }`}>
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                        index === 0
+                          ? "bg-yellow-100 text-yellow-700"
+                          : index === 1
+                            ? "bg-gray-100 text-gray-700"
+                            : index === 2
+                              ? "bg-orange-100 text-orange-700"
+                              : "bg-muted text-muted-foreground"
+                      }`}
+                    >
                       {person.rank}
                     </div>
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="text-xs">
-                        {person.name.split(' ').map(n => n[0]).join('')}
+                        {person.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{person.name}</p>
-                      <p className="text-xs text-muted-foreground">{person.department}</p>
+                      <p className="text-sm font-medium truncate">
+                        {person.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {person.department}
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-bold">{person.points}</p>
-                      <p className="text-xs text-muted-foreground">{person.kudosReceived} kudos</p>
+                      <p className="text-xs text-muted-foreground">
+                        {person.kudosReceived} kudos
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -368,7 +526,10 @@ export default function RecognitionPage() {
             <CardContent>
               <div className="space-y-2">
                 {kudosCategories.slice(0, 5).map((cat) => (
-                  <div key={cat.id} className="flex items-center justify-between">
+                  <div
+                    key={cat.id}
+                    className="flex items-center justify-between"
+                  >
                     <span className="flex items-center gap-2 text-sm">
                       <span>{cat.emoji}</span>
                       {cat.name}

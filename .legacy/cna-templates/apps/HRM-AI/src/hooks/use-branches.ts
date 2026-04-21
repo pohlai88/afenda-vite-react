@@ -2,7 +2,10 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import type { BranchWithRelations } from "@/types"
-import type { CreateBranchInput, UpdateBranchInput } from "@/lib/validations/branch"
+import type {
+  CreateBranchInput,
+  UpdateBranchInput,
+} from "@/lib/validations/branch"
 import { toast } from "sonner"
 
 async function fetchBranches(): Promise<BranchWithRelations[]> {
@@ -14,7 +17,9 @@ async function fetchBranches(): Promise<BranchWithRelations[]> {
   return json.data ?? json
 }
 
-async function createBranch(data: CreateBranchInput): Promise<BranchWithRelations> {
+async function createBranch(
+  data: CreateBranchInput
+): Promise<BranchWithRelations> {
   const res = await fetch("/api/branches", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -27,7 +32,9 @@ async function createBranch(data: CreateBranchInput): Promise<BranchWithRelation
   return res.json()
 }
 
-async function updateBranch(data: UpdateBranchInput): Promise<BranchWithRelations> {
+async function updateBranch(
+  data: UpdateBranchInput
+): Promise<BranchWithRelations> {
   const res = await fetch(`/api/branches/${data.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

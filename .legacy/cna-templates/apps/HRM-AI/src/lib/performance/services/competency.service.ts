@@ -1,8 +1,8 @@
 // src/lib/performance/services/competency.service.ts
 // Competency Service - Manage competency frameworks and assessments
 
-import { db } from '@/lib/db'
-import { Prisma } from '@prisma/client'
+import { db } from "@/lib/db"
+import { Prisma } from "@prisma/client"
 
 // Types
 export interface CreateFrameworkInput {
@@ -69,13 +69,13 @@ export class CompetencyService {
       },
       include: {
         competencies: {
-          orderBy: [{ category: 'asc' }, { order: 'asc' }],
+          orderBy: [{ category: "asc" }, { order: "asc" }],
         },
       },
     })
 
     if (!framework) {
-      throw new Error('Competency framework not found')
+      throw new Error("Competency framework not found")
     }
 
     return framework
@@ -87,7 +87,7 @@ export class CompetencyService {
   async listFrameworks() {
     return db.competencyFramework.findMany({
       where: { tenantId: this.tenantId },
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
       include: {
         _count: { select: { competencies: true } },
       },
@@ -127,11 +127,11 @@ export class CompetencyService {
     })
 
     if (!framework) {
-      throw new Error('Framework not found')
+      throw new Error("Framework not found")
     }
 
     if (framework._count.competencies > 0) {
-      throw new Error('Cannot delete framework with competencies')
+      throw new Error("Cannot delete framework with competencies")
     }
 
     await db.competencyFramework.delete({ where: { id } })
@@ -149,13 +149,13 @@ export class CompetencyService {
     })
 
     if (!framework) {
-      throw new Error('Framework not found')
+      throw new Error("Framework not found")
     }
 
     // Get max order in category
     const lastCompetency = await db.competency.findFirst({
       where: { frameworkId, category: input.category },
-      orderBy: { order: 'desc' },
+      orderBy: { order: "desc" },
     })
 
     const order = input.order ?? (lastCompetency ? lastCompetency.order + 1 : 0)
@@ -186,12 +186,12 @@ export class CompetencyService {
     })
 
     if (!competency) {
-      throw new Error('Competency not found')
+      throw new Error("Competency not found")
     }
 
     // Verify tenant access
     if (competency.framework.tenantId !== this.tenantId) {
-      throw new Error('Competency not found')
+      throw new Error("Competency not found")
     }
 
     return competency
@@ -200,7 +200,11 @@ export class CompetencyService {
   /**
    * List competencies
    */
-  async listCompetencies(filters: CompetencyFilters = {}, page: number = 1, pageSize: number = 50) {
+  async listCompetencies(
+    filters: CompetencyFilters = {},
+    page: number = 1,
+    pageSize: number = 50
+  ) {
     const skip = (page - 1) * pageSize
 
     // Build framework filter
@@ -226,15 +230,15 @@ export class CompetencyService {
 
     if (filters.search) {
       where.OR = [
-        { name: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
+        { name: { contains: filters.search, mode: "insensitive" } },
+        { description: { contains: filters.search, mode: "insensitive" } },
       ]
     }
 
     const [competencies, total] = await Promise.all([
       db.competency.findMany({
         where,
-        orderBy: [{ category: 'asc' }, { order: 'asc' }],
+        orderBy: [{ category: "asc" }, { order: "asc" }],
         skip,
         take: pageSize,
         include: {
@@ -262,13 +266,13 @@ export class CompetencyService {
         frameworkId,
         framework: { tenantId: this.tenantId },
       },
-      orderBy: [{ category: 'asc' }, { order: 'asc' }],
+      orderBy: [{ category: "asc" }, { order: "asc" }],
     })
 
     // Group by category
     const byCategory: Record<string, typeof competencies> = {}
-    competencies.forEach(c => {
-      const category = c.category || 'Uncategorized'
+    competencies.forEach((c) => {
+      const category = c.category || "Uncategorized"
       if (!byCategory[category]) {
         byCategory[category] = []
       }
@@ -293,7 +297,7 @@ export class CompetencyService {
 
     return db.competency.findMany({
       where,
-      orderBy: { order: 'asc' },
+      orderBy: { order: "asc" },
     })
   }
 
@@ -327,11 +331,11 @@ export class CompetencyService {
     })
 
     if (!competency || competency.framework.tenantId !== this.tenantId) {
-      throw new Error('Competency not found')
+      throw new Error("Competency not found")
     }
 
     if (competency._count.reviewCompetencies > 0) {
-      throw new Error('Cannot delete competency used in reviews')
+      throw new Error("Cannot delete competency used in reviews")
     }
 
     await db.competency.delete({ where: { id } })
@@ -343,7 +347,10 @@ export class CompetencyService {
   /**
    * Set required competencies for a position
    */
-  async setPositionCompetencies(position: string, competencies: PositionCompetencyInput[]) {
+  async setPositionCompetencies(
+    position: string,
+    competencies: PositionCompetencyInput[]
+  ) {
     // Delete existing
     await db.positionCompetency.deleteMany({
       where: {
@@ -355,7 +362,7 @@ export class CompetencyService {
     // Create new
     if (competencies.length > 0) {
       await db.positionCompetency.createMany({
-        data: competencies.map(c => ({
+        data: competencies.map((c) => ({
           tenantId: this.tenantId,
           competencyId: c.competencyId,
           position,
@@ -379,7 +386,7 @@ export class CompetencyService {
       include: {
         competency: true,
       },
-      orderBy: { competency: { order: 'asc' } },
+      orderBy: { competency: { order: "asc" } },
     })
   }
 
@@ -425,14 +432,18 @@ export class CompetencyService {
   /**
    * Assess competency gap for an employee
    */
-  async assessGap(employeeId: string, competencyId: string, currentLevel: number) {
+  async assessGap(
+    employeeId: string,
+    competencyId: string,
+    currentLevel: number
+  ) {
     const employee = await db.employee.findFirst({
       where: { id: employeeId, tenantId: this.tenantId },
       include: { position: true },
     })
 
     if (!employee || !employee.position) {
-      throw new Error('Employee or position not found')
+      throw new Error("Employee or position not found")
     }
 
     const positionCompetency = await db.positionCompetency.findFirst({
@@ -455,21 +466,24 @@ export class CompetencyService {
       requiredLevel: positionCompetency.requiredLevel,
       currentLevel,
       gap,
-      status: gap <= 0 ? 'MEETS' : gap === 1 ? 'DEVELOPING' : 'GAP',
+      status: gap <= 0 ? "MEETS" : gap === 1 ? "DEVELOPING" : "GAP",
     }
   }
 
   /**
    * Get full competency gap analysis for employee
    */
-  async getEmployeeGapAnalysis(employeeId: string, currentLevels: Record<string, number>) {
+  async getEmployeeGapAnalysis(
+    employeeId: string,
+    currentLevels: Record<string, number>
+  ) {
     const employee = await db.employee.findFirst({
       where: { id: employeeId, tenantId: this.tenantId },
       include: { position: true },
     })
 
     if (!employee || !employee.position) {
-      throw new Error('Employee or position not found')
+      throw new Error("Employee or position not found")
     }
 
     const positionCompetencies = await db.positionCompetency.findMany({
@@ -480,7 +494,7 @@ export class CompetencyService {
       include: { competency: true },
     })
 
-    const analysis = positionCompetencies.map(pc => {
+    const analysis = positionCompetencies.map((pc) => {
       const currentLevel = currentLevels[pc.competencyId] || 0
       const gap = pc.requiredLevel - currentLevel
 
@@ -489,7 +503,7 @@ export class CompetencyService {
         requiredLevel: pc.requiredLevel,
         currentLevel,
         gap,
-        status: gap <= 0 ? 'MEETS' : gap === 1 ? 'DEVELOPING' : 'GAP',
+        status: gap <= 0 ? "MEETS" : gap === 1 ? "DEVELOPING" : "GAP",
       }
     })
 
@@ -498,9 +512,8 @@ export class CompetencyService {
       const score = Math.min(a.currentLevel / a.requiredLevel, 1)
       return sum + score
     }, 0)
-    const overallReadiness = analysis.length > 0
-      ? Math.round((totalScore / analysis.length) * 100)
-      : 0
+    const overallReadiness =
+      analysis.length > 0 ? Math.round((totalScore / analysis.length) * 100) : 0
 
     return {
       employee: {
@@ -511,9 +524,9 @@ export class CompetencyService {
       analysis,
       summary: {
         totalCompetencies: analysis.length,
-        meetsRequirements: analysis.filter(a => a.status === 'MEETS').length,
-        developing: analysis.filter(a => a.status === 'DEVELOPING').length,
-        gaps: analysis.filter(a => a.status === 'GAP').length,
+        meetsRequirements: analysis.filter((a) => a.status === "MEETS").length,
+        developing: analysis.filter((a) => a.status === "DEVELOPING").length,
+        gaps: analysis.filter((a) => a.status === "GAP").length,
         overallReadiness,
       },
     }
@@ -535,7 +548,7 @@ export class CompetencyService {
       }),
 
       db.competency.groupBy({
-        by: ['category'],
+        by: ["category"],
         where: { framework: { tenantId: this.tenantId } },
         _count: true,
       }),
@@ -544,8 +557,8 @@ export class CompetencyService {
     return {
       totalFrameworks: frameworks,
       totalCompetencies: competencies,
-      byCategory: byCategory.map(c => ({
-        category: c.category || 'Uncategorized',
+      byCategory: byCategory.map((c) => ({
+        category: c.category || "Uncategorized",
         count: c._count,
       })),
     }

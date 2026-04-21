@@ -1,9 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { requireOwnerOrRole, isErrorResponse, forbiddenResponse, canAccess } from '@/lib/auth/rbac'
-import { validateRequest, updateQuoteSchema } from '@/lib/validations'
-import { handleApiError } from '@/lib/api/errors'
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import {
+  requireOwnerOrRole,
+  isErrorResponse,
+  forbiddenResponse,
+  canAccess,
+} from "@/lib/auth/rbac"
+import { validateRequest, updateQuoteSchema } from "@/lib/validations"
+import { handleApiError } from "@/lib/api/errors"
 
 // GET /api/quotes/[id] — Get quote with items and relations
 export async function GET(
@@ -18,32 +23,40 @@ export async function GET(
       where: { id },
       include: {
         items: {
-          orderBy: { sortOrder: 'asc' },
+          orderBy: { sortOrder: "asc" },
           include: { product: true },
         },
         contact: true,
         company: true,
         deal: { select: { id: true, title: true, value: true } },
-        order: { select: { id: true, orderNumber: true, status: true, total: true } },
+        order: {
+          select: { id: true, orderNumber: true, status: true, total: true },
+        },
         createdBy: { select: { id: true, name: true, email: true } },
       },
     })
 
     if (!quote) {
-      return NextResponse.json({ error: 'Quote not found' }, { status: 404 })
+      return NextResponse.json({ error: "Quote not found" }, { status: 404 })
     }
 
-    if (!canAccess(user, 'view_all') && quote.createdById !== user.id) {
+    if (!canAccess(user, "view_all") && quote.createdById !== user.id) {
       return forbiddenResponse()
     }
 
     return NextResponse.json(quote)
   } catch (error) {
     if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
-    console.error('GET /api/quotes/[id] error:', error)
-    return NextResponse.json({ error: 'Failed to fetch quote' }, { status: 500 })
+    console.error("GET /api/quotes/[id] error:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch quote" },
+      { status: 500 }
+    )
   }
 }
 
@@ -54,10 +67,17 @@ export async function PATCH(
 ) {
   try {
     const { id } = params
-    const existing = await prisma.quote.findUnique({ where: { id }, select: { createdById: true } })
-    if (!existing) return NextResponse.json({ error: 'Quote not found' }, { status: 404 })
+    const existing = await prisma.quote.findUnique({
+      where: { id },
+      select: { createdById: true },
+    })
+    if (!existing)
+      return NextResponse.json({ error: "Quote not found" }, { status: 404 })
 
-    const result = await requireOwnerOrRole(existing.createdById, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.createdById, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     const body = await req.json()
@@ -83,7 +103,8 @@ export async function PATCH(
       const discPct = quoteData.discountPercent || 0
       const discountAmount = subtotal * (discPct / 100)
       const afterDiscount = subtotal - discountAmount
-      const taxPct = quoteData.taxPercent !== undefined ? quoteData.taxPercent : 10
+      const taxPct =
+        quoteData.taxPercent !== undefined ? quoteData.taxPercent : 10
       const taxAmount = afterDiscount * (taxPct / 100)
       const total = afterDiscount + taxAmount
 
@@ -102,7 +123,7 @@ export async function PATCH(
           items: { create: processedItems },
         },
         include: {
-          items: { orderBy: { sortOrder: 'asc' }, include: { product: true } },
+          items: { orderBy: { sortOrder: "asc" }, include: { product: true } },
           contact: { select: { id: true, firstName: true, lastName: true } },
           company: { select: { id: true, name: true } },
         },
@@ -115,7 +136,7 @@ export async function PATCH(
       where: { id },
       data: quoteData,
       include: {
-        items: { orderBy: { sortOrder: 'asc' }, include: { product: true } },
+        items: { orderBy: { sortOrder: "asc" }, include: { product: true } },
         contact: { select: { id: true, firstName: true, lastName: true } },
         company: { select: { id: true, name: true } },
       },
@@ -123,7 +144,7 @@ export async function PATCH(
 
     return NextResponse.json(quote)
   } catch (error) {
-    return handleApiError(error, '/api/quotes/[id]')
+    return handleApiError(error, "/api/quotes/[id]")
   }
 }
 
@@ -134,17 +155,28 @@ export async function DELETE(
 ) {
   try {
     const { id } = params
-    const existing = await prisma.quote.findUnique({ where: { id }, select: { createdById: true } })
-    if (!existing) return NextResponse.json({ error: 'Quote not found' }, { status: 404 })
+    const existing = await prisma.quote.findUnique({
+      where: { id },
+      select: { createdById: true },
+    })
+    if (!existing)
+      return NextResponse.json({ error: "Quote not found" }, { status: 404 })
 
-    const result = await requireOwnerOrRole(existing.createdById, ['ADMIN', 'MANAGER'])
+    const result = await requireOwnerOrRole(existing.createdById, [
+      "ADMIN",
+      "MANAGER",
+    ])
     if (isErrorResponse(result)) return result
 
     await prisma.quote.delete({ where: { id } })
     return NextResponse.json({ success: true })
   } catch (error: any) {
-    if (error?.code === 'P2025') return NextResponse.json({ error: 'Quote not found' }, { status: 404 })
-    console.error('DELETE /api/quotes/[id] error:', error)
-    return NextResponse.json({ error: 'Failed to delete quote' }, { status: 500 })
+    if (error?.code === "P2025")
+      return NextResponse.json({ error: "Quote not found" }, { status: 404 })
+    console.error("DELETE /api/quotes/[id] error:", error)
+    return NextResponse.json(
+      { error: "Failed to delete quote" },
+      { status: 500 }
+    )
   }
 }

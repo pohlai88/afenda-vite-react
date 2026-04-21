@@ -1,43 +1,44 @@
 // Phase 11: Login Page Component
 // Email/password + SSO login options
 
-import React, { useState } from 'react';
-import { Lock, Mail, AlertCircle } from 'lucide-react';
-import { useAuth } from '../../auth/AuthProvider';
-import { SSOButtons } from './SSOButtons';
-import { MFAVerify } from './MFASetup';
+import React, { useState } from "react"
+import { Lock, Mail, AlertCircle } from "lucide-react"
+import { useAuth } from "../../auth/AuthProvider"
+import { SSOButtons } from "./SSOButtons"
+import { MFAVerify } from "./MFASetup"
 
 export const LoginPage: React.FC = () => {
-  const { login, isLoading, error, clearError } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [localError, setLocalError] = useState('');
-  const [showMfa, setShowMfa] = useState(false);
+  const { login, isLoading, error, clearError } = useAuth()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [localError, setLocalError] = useState("")
+  const [showMfa, setShowMfa] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLocalError('');
-    clearError();
+    e.preventDefault()
+    setLocalError("")
+    clearError()
 
     if (!email || !password) {
-      setLocalError('Please enter email and password');
-      return;
+      setLocalError("Please enter email and password")
+      return
     }
 
     try {
-      await login(email, password);
+      await login(email, password)
     } catch (err) {
-      if (err instanceof Error && err.message === 'MFA_REQUIRED') {
-        setShowMfa(true);
+      if (err instanceof Error && err.message === "MFA_REQUIRED") {
+        setShowMfa(true)
       }
     }
-  };
-
-  if (showMfa || error === 'MFA_REQUIRED') {
-    return <MFAVerify onBack={() => setShowMfa(false)} />;
   }
 
-  const displayError = localError || (error && error !== 'MFA_REQUIRED' ? error : '');
+  if (showMfa || error === "MFA_REQUIRED") {
+    return <MFAVerify onBack={() => setShowMfa(false)} />
+  }
+
+  const displayError =
+    localError || (error && error !== "MFA_REQUIRED" ? error : "")
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
@@ -61,7 +62,9 @@ export const LoginPage: React.FC = () => {
               <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">or continue with email</span>
+              <span className="px-4 bg-white text-gray-500">
+                or continue with email
+              </span>
             </div>
           </div>
 
@@ -111,10 +114,16 @@ export const LoginPage: React.FC = () => {
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="rounded border-gray-300 text-blue-600" />
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300 text-blue-600"
+                />
                 <span className="text-gray-600">Remember me</span>
               </label>
-              <a href="/forgot-password" className="text-blue-600 hover:text-blue-700">
+              <a
+                href="/forgot-password"
+                className="text-blue-600 hover:text-blue-700"
+              >
                 Forgot password?
               </a>
             </div>
@@ -145,15 +154,18 @@ export const LoginPage: React.FC = () => {
                   Signing in...
                 </span>
               ) : (
-                'Sign in'
+                "Sign in"
               )}
             </button>
           </form>
 
           {/* Footer */}
           <p className="mt-6 text-center text-sm text-gray-500">
-            Don't have an account?{' '}
-            <a href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+            Don't have an account?{" "}
+            <a
+              href="/signup"
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
               Sign up
             </a>
           </p>
@@ -166,7 +178,7 @@ export const LoginPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

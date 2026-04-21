@@ -1,38 +1,38 @@
-import React, { useMemo } from 'react';
-import { Minus, Plus } from 'lucide-react';
-import { useSelectionStore } from '../../stores/selectionStore';
-import { useWorkbookStore } from '../../stores/workbookStore';
-import { getCellKey } from '../../types/cell';
+import React, { useMemo } from "react"
+import { Minus, Plus } from "lucide-react"
+import { useSelectionStore } from "../../stores/selectionStore"
+import { useWorkbookStore } from "../../stores/workbookStore"
+import { getCellKey } from "../../types/cell"
 
 export const StatusBar2026: React.FC = () => {
-  const { selectedCell, selectionRange } = useSelectionStore();
-  const { activeSheetId, sheets, zoom, setZoom } = useWorkbookStore();
+  const { selectedCell, selectionRange } = useSelectionStore()
+  const { activeSheetId, sheets, zoom, setZoom } = useWorkbookStore()
 
   const stats = useMemo(() => {
-    if (!activeSheetId || !sheets[activeSheetId]) return null;
+    if (!activeSheetId || !sheets[activeSheetId]) return null
 
-    const sheet = sheets[activeSheetId];
-    const values: number[] = [];
+    const sheet = sheets[activeSheetId]
+    const values: number[] = []
 
     if (selectionRange) {
-      const { start, end } = selectionRange;
+      const { start, end } = selectionRange
       for (let row = start.row; row <= end.row; row++) {
         for (let col = start.col; col <= end.col; col++) {
-          const cellKey = getCellKey(row, col);
-          const cell = sheet.cells[cellKey];
+          const cellKey = getCellKey(row, col)
+          const cell = sheet.cells[cellKey]
           if (cell?.value !== null && cell?.value !== undefined) {
-            const num = parseFloat(String(cell.value));
-            if (!isNaN(num)) values.push(num);
+            const num = parseFloat(String(cell.value))
+            if (!isNaN(num)) values.push(num)
           }
         }
       }
     }
 
-    if (values.length <= 1) return null;
+    if (values.length <= 1) return null
 
-    const sum = values.reduce((a, b) => a + b, 0);
-    return { sum, avg: sum / values.length, count: values.length };
-  }, [selectedCell, selectionRange, activeSheetId, sheets]);
+    const sum = values.reduce((a, b) => a + b, 0)
+    return { sum, avg: sum / values.length, count: values.length }
+  }, [selectedCell, selectionRange, activeSheetId, sheets])
 
   return (
     <div className="status-bar-2026">
@@ -43,7 +43,9 @@ export const StatusBar2026: React.FC = () => {
           <div className="status-bar-2026__stats">
             <span className="status-bar-2026__stat">
               <span className="status-bar-2026__stat-label">Average:</span>
-              <span className="status-bar-2026__stat-value">{stats.avg.toFixed(2)}</span>
+              <span className="status-bar-2026__stat-value">
+                {stats.avg.toFixed(2)}
+              </span>
             </span>
             <span className="status-bar-2026__stat">
               <span className="status-bar-2026__stat-label">Count:</span>
@@ -51,7 +53,9 @@ export const StatusBar2026: React.FC = () => {
             </span>
             <span className="status-bar-2026__stat">
               <span className="status-bar-2026__stat-label">Sum:</span>
-              <span className="status-bar-2026__stat-value">{stats.sum.toFixed(2)}</span>
+              <span className="status-bar-2026__stat-value">
+                {stats.sum.toFixed(2)}
+              </span>
             </span>
           </div>
         )}
@@ -75,5 +79,5 @@ export const StatusBar2026: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

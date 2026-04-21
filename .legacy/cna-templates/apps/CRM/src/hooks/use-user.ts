@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useAuth, type AuthUser } from './use-auth'
+import { useAuth, type AuthUser } from "./use-auth"
 
 /** Returns the current authenticated user. */
 export function useUser(): { user: AuthUser | null; isLoading: boolean } {

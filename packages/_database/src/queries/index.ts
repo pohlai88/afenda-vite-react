@@ -6,11 +6,11 @@
  * Schema or relation changes require `db:guard` / `db:ci`; Drizzle Kit output is gitignored until you generate/apply migrations.
  * Envelope timestamp: 2026-04-18T12:00:00.000Z
  *
- * This module: `queries/index.ts` — barrel for tenant policy, item settings, membership scope, and shared date/scope helpers.
+ * This module: `queries/index.ts` — barrel for tenant policy, item settings, membership scope, and query primitives.
  */
-export * from "./helpers/effective-row"
-export * from "./helpers/iso-date"
-export * from "./helpers/scope-utils"
+export * from "./query-primitives/effective-date-predicate"
+export * from "./query-primitives/iso-date-assertions"
+export * from "./query-primitives/scope-matching"
 export * from "./resolve-current-tenant-policy"
 export * from "./resolve-item-settings"
 export * from "./resolve-membership-scope"

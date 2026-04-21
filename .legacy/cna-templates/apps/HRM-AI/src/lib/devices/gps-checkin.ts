@@ -1,8 +1,12 @@
 // src/lib/devices/gps-checkin.ts
 // GPS Check-in Service
 
-import prisma from '@/lib/db'
-import type { GPSCheckInRequest, GPSCheckInResult, GPSCoordinates } from './types'
+import prisma from "@/lib/db"
+import type {
+  GPSCheckInRequest,
+  GPSCheckInResult,
+  GPSCoordinates,
+} from "./types"
 
 // ═══════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -32,7 +36,10 @@ export function calculateDistance(
 
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2)
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   const distanceKm = EARTH_RADIUS_KM * c
@@ -77,12 +84,12 @@ export class GPSCheckInService {
       where: {
         id: employeeId,
         tenantId: this.tenantId,
-        status: 'ACTIVE',
+        status: "ACTIVE",
       },
     })
 
     if (!employee) {
-      throw new Error('Nhân viên không tồn tại hoặc không hoạt động')
+      throw new Error("Nhân viên không tồn tại hoặc không hoạt động")
     }
 
     // Find matching office location
@@ -130,15 +137,20 @@ export class GPSCheckInService {
     }
 
     // Determine location type
-    let locationType: 'OFFICE' | 'REMOTE' | 'FIELD' = 'REMOTE'
+    let locationType: "OFFICE" | "REMOTE" | "FIELD" = "REMOTE"
     let isWithinAllowedRadius = false
     let locationName: string | undefined
 
     if (matchedLocation) {
       locationName = matchedLocation.locationName
-      const allowedRadius = matchedLocation.radiusMeters || DEFAULT_RADIUS_METERS
+      const allowedRadius =
+        matchedLocation.radiusMeters || DEFAULT_RADIUS_METERS
 
-      if (distanceFromOffice === undefined && matchedLocation.latitude && matchedLocation.longitude) {
+      if (
+        distanceFromOffice === undefined &&
+        matchedLocation.latitude &&
+        matchedLocation.longitude
+      ) {
         distanceFromOffice = calculateDistance(
           coordinates.latitude,
           coordinates.longitude,
@@ -150,9 +162,9 @@ export class GPSCheckInService {
       isWithinAllowedRadius = (distanceFromOffice || 0) <= allowedRadius
 
       if (isWithinAllowedRadius) {
-        locationType = 'OFFICE'
+        locationType = "OFFICE"
       } else {
-        locationType = 'FIELD'
+        locationType = "FIELD"
         warnings.push(
           `Khoảng cách đến ${locationName}: ${distanceFromOffice}m (cho phép: ${allowedRadius}m)`
         )
@@ -160,7 +172,8 @@ export class GPSCheckInService {
 
       // Check WiFi SSID if configured
       if (wifiSSID && matchedLocation.allowedWifiSSIDs.length > 0) {
-        const isAllowedWifi = matchedLocation.allowedWifiSSIDs.includes(wifiSSID)
+        const isAllowedWifi =
+          matchedLocation.allowedWifiSSIDs.includes(wifiSSID)
         if (!isAllowedWifi) {
           warnings.push(`WiFi "${wifiSSID}" không trong danh sách cho phép`)
         }
@@ -176,8 +189,8 @@ export class GPSCheckInService {
     let gpsDevice = await prisma.attendanceDevice.findFirst({
       where: {
         tenantId: this.tenantId,
-        deviceType: 'GPS_CHECKIN',
-        deviceCode: 'GPS-MOBILE',
+        deviceType: "GPS_CHECKIN",
+        deviceCode: "GPS-MOBILE",
       },
     })
 
@@ -185,10 +198,10 @@ export class GPSCheckInService {
       gpsDevice = await prisma.attendanceDevice.create({
         data: {
           tenantId: this.tenantId,
-          deviceCode: 'GPS-MOBILE',
-          deviceName: 'GPS Mobile Check-in',
-          deviceType: 'GPS_CHECKIN',
-          status: 'ONLINE',
+          deviceCode: "GPS-MOBILE",
+          deviceName: "GPS Mobile Check-in",
+          deviceType: "GPS_CHECKIN",
+          status: "ONLINE",
         },
       })
     }
@@ -206,13 +219,15 @@ export class GPSCheckInService {
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
         accuracy: coordinates.accuracy,
-        rawData: JSON.parse(JSON.stringify({
-          coordinates,
-          locationId: matchedLocation?.id,
-          locationType,
-          wifiSSID,
-          deviceInfo: request.deviceInfo,
-        })),
+        rawData: JSON.parse(
+          JSON.stringify({
+            coordinates,
+            locationId: matchedLocation?.id,
+            locationType,
+            wifiSSID,
+            deviceInfo: request.deviceInfo,
+          })
+        ),
         isProcessed: false,
       },
     })
@@ -272,7 +287,7 @@ export class GPSCheckInService {
   async getTodayHistory(employeeId: string): Promise<
     Array<{
       time: Date
-      type: 'IN' | 'OUT'
+      type: "IN" | "OUT"
       location: string | null
       method: string
     }>
@@ -293,7 +308,7 @@ export class GPSCheckInService {
         },
       },
       orderBy: {
-        punchTime: 'asc',
+        punchTime: "asc",
       },
       include: {
         device: true,
@@ -302,8 +317,10 @@ export class GPSCheckInService {
 
     return logs.map((log) => ({
       time: log.punchTime,
-      type: log.punchType === 0 ? 'IN' : 'OUT',
-      location: (log.rawData as Record<string, unknown>)?.locationType as string | null,
+      type: log.punchType === 0 ? "IN" : "OUT",
+      location: (log.rawData as Record<string, unknown>)?.locationType as
+        | string
+        | null,
       method: log.device.deviceType,
     }))
   }

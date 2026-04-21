@@ -5,41 +5,47 @@
 // PROVIDER CODES
 // ═══════════════════════════════════════════════════════════════
 
-export type SignatureProviderCode = 'VNPT_CA' | 'VIETTEL_CA' | 'FPT_CA' | 'BKAV_CA' | 'NACENCOMM' | 'CUSTOM'
+export type SignatureProviderCode =
+  | "VNPT_CA"
+  | "VIETTEL_CA"
+  | "FPT_CA"
+  | "BKAV_CA"
+  | "NACENCOMM"
+  | "CUSTOM"
 
 export const SIGNATURE_PROVIDERS: Record<
   SignatureProviderCode,
   { name: string; fullName: string; website: string }
 > = {
   VNPT_CA: {
-    name: 'VNPT-CA',
-    fullName: 'Trung tâm Chứng thực Điện tử Quốc gia VNPT',
-    website: 'https://vnpt-ca.vn',
+    name: "VNPT-CA",
+    fullName: "Trung tâm Chứng thực Điện tử Quốc gia VNPT",
+    website: "https://vnpt-ca.vn",
   },
   VIETTEL_CA: {
-    name: 'Viettel-CA',
-    fullName: 'Tổ chức Chứng thực Chữ ký số Viettel',
-    website: 'https://viettel-ca.vn',
+    name: "Viettel-CA",
+    fullName: "Tổ chức Chứng thực Chữ ký số Viettel",
+    website: "https://viettel-ca.vn",
   },
   FPT_CA: {
-    name: 'FPT-CA',
-    fullName: 'Tổ chức Chứng thực Chữ ký số FPT',
-    website: 'https://fpt-ca.vn',
+    name: "FPT-CA",
+    fullName: "Tổ chức Chứng thực Chữ ký số FPT",
+    website: "https://fpt-ca.vn",
   },
   BKAV_CA: {
-    name: 'BKAV-CA',
-    fullName: 'Tổ chức Chứng thực Chữ ký số BKAV',
-    website: 'https://bkav-ca.vn',
+    name: "BKAV-CA",
+    fullName: "Tổ chức Chứng thực Chữ ký số BKAV",
+    website: "https://bkav-ca.vn",
   },
   NACENCOMM: {
-    name: 'NACENCOMM',
-    fullName: 'Cục Chứng thực số và Bảo mật thông tin',
-    website: 'https://nacencomm.gov.vn',
+    name: "NACENCOMM",
+    fullName: "Cục Chứng thực số và Bảo mật thông tin",
+    website: "https://nacencomm.gov.vn",
   },
   CUSTOM: {
-    name: 'Custom',
-    fullName: 'Nhà cung cấp tùy chỉnh',
-    website: '',
+    name: "Custom",
+    fullName: "Nhà cung cấp tùy chỉnh",
+    website: "",
   },
 }
 
@@ -47,23 +53,32 @@ export const SIGNATURE_PROVIDERS: Record<
 // STATUS TYPES
 // ═══════════════════════════════════════════════════════════════
 
-export type SignatureStatus = 'PENDING' | 'SIGNED' | 'REJECTED' | 'EXPIRED' | 'REVOKED'
+export type SignatureStatus =
+  | "PENDING"
+  | "SIGNED"
+  | "REJECTED"
+  | "EXPIRED"
+  | "REVOKED"
 
-export type CertificateStatus = 'ACTIVE' | 'EXPIRED' | 'REVOKED' | 'PENDING_RENEWAL'
+export type CertificateStatus =
+  | "ACTIVE"
+  | "EXPIRED"
+  | "REVOKED"
+  | "PENDING_RENEWAL"
 
 export const SIGNATURE_STATUS_LABELS = {
-  PENDING: { label: 'Chờ ký', color: 'yellow' },
-  SIGNED: { label: 'Đã ký', color: 'green' },
-  REJECTED: { label: 'Từ chối', color: 'red' },
-  EXPIRED: { label: 'Hết hạn', color: 'gray' },
-  REVOKED: { label: 'Đã thu hồi', color: 'red' },
+  PENDING: { label: "Chờ ký", color: "yellow" },
+  SIGNED: { label: "Đã ký", color: "green" },
+  REJECTED: { label: "Từ chối", color: "red" },
+  EXPIRED: { label: "Hết hạn", color: "gray" },
+  REVOKED: { label: "Đã thu hồi", color: "red" },
 } as const
 
 export const CERTIFICATE_STATUS_LABELS = {
-  ACTIVE: { label: 'Hoạt động', color: 'green' },
-  EXPIRED: { label: 'Hết hạn', color: 'red' },
-  REVOKED: { label: 'Đã thu hồi', color: 'red' },
-  PENDING_RENEWAL: { label: 'Chờ gia hạn', color: 'yellow' },
+  ACTIVE: { label: "Hoạt động", color: "green" },
+  EXPIRED: { label: "Hết hạn", color: "red" },
+  REVOKED: { label: "Đã thu hồi", color: "red" },
+  PENDING_RENEWAL: { label: "Chờ gia hạn", color: "yellow" },
 } as const
 
 // ═══════════════════════════════════════════════════════════════
@@ -135,7 +150,12 @@ export interface SignatureVerification {
 // DOCUMENT TYPES
 // ═══════════════════════════════════════════════════════════════
 
-export type DocumentType = 'CONTRACT' | 'DECISION' | 'REPORT' | 'PAYSLIP' | 'OTHER'
+export type DocumentType =
+  | "CONTRACT"
+  | "DECISION"
+  | "REPORT"
+  | "PAYSLIP"
+  | "OTHER"
 
 export interface SignableDocument {
   documentId: string
@@ -147,11 +167,11 @@ export interface SignableDocument {
     signerId: string
     signerName: string
     order: number
-    role: 'CREATOR' | 'APPROVER' | 'WITNESS'
+    role: "CREATOR" | "APPROVER" | "WITNESS"
     status: SignatureStatus
     signedAt?: Date
   }>
-  status: 'PENDING' | 'PARTIAL' | 'COMPLETED' | 'CANCELLED'
+  status: "PENDING" | "PARTIAL" | "COMPLETED" | "CANCELLED"
   createdAt: Date
   expiresAt?: Date
 }
@@ -181,7 +201,10 @@ export interface ISignatureProvider {
   listCertificates(employeeId: string): Promise<CertificateInfo[]>
 
   // Signing operations
-  signDocument(request: SignatureRequest, documentData: Buffer): Promise<SignatureResult>
+  signDocument(
+    request: SignatureRequest,
+    documentData: Buffer
+  ): Promise<SignatureResult>
   verifySignature(signedDocument: Buffer): Promise<SignatureVerification[]>
 
   // Hash signing (for remote signing)
@@ -193,9 +216,10 @@ export interface ISignatureProvider {
 // ═══════════════════════════════════════════════════════════════
 
 export const HASH_ALGORITHMS = {
-  SHA256: 'SHA-256',
-  SHA384: 'SHA-384',
-  SHA512: 'SHA-512',
+  SHA256: "SHA-256",
+  SHA384: "SHA-384",
+  SHA512: "SHA-512",
 } as const
 
-export type HashAlgorithm = (typeof HASH_ALGORITHMS)[keyof typeof HASH_ALGORITHMS]
+export type HashAlgorithm =
+  (typeof HASH_ALGORITHMS)[keyof typeof HASH_ALGORITHMS]

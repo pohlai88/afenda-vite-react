@@ -2,41 +2,48 @@
 // NL MACRO INPUT — Natural language macro creation
 // =============================================================================
 
-import React, { useState } from 'react';
+import React, { useState } from "react"
 
 interface NLMacroInputProps {
-  onCreate: (description: string) => Promise<void>;
+  onCreate: (description: string) => Promise<void>
 }
 
 export const NLMacroInput: React.FC<NLMacroInputProps> = ({ onCreate }) => {
-  const [description, setDescription] = useState('');
-  const [isCreating, setIsCreating] = useState(false);
+  const [description, setDescription] = useState("")
+  const [isCreating, setIsCreating] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!description.trim() || isCreating) return;
+    e.preventDefault()
+    if (!description.trim() || isCreating) return
 
-    setIsCreating(true);
-    await onCreate(description.trim());
-    setDescription('');
-    setIsCreating(false);
-  };
+    setIsCreating(true)
+    await onCreate(description.trim())
+    setDescription("")
+    setIsCreating(false)
+  }
 
   const examples = [
-    'Every Monday, create a weekly sales report and email it to team@company.com',
-    'When data changes, clean duplicates and format the table',
-    'Generate a PDF report with charts and send notification',
-    'Hàng tuần, tạo báo cáo và gửi email cho quản lý',
-    'Khi có dữ liệu mới, làm sạch và tạo biểu đồ',
-  ];
+    "Every Monday, create a weekly sales report and email it to team@company.com",
+    "When data changes, clean duplicates and format the table",
+    "Generate a PDF report with charts and send notification",
+    "Hàng tuần, tạo báo cáo và gửi email cho quản lý",
+    "Khi có dữ liệu mới, làm sạch và tạo biểu đồ",
+  ]
 
   return (
     <div className="nl-macro-input">
       <div className="input-header">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-          <path d="M2 17l10 5 10-5"/>
-          <path d="M2 12l10 5 10-5"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M12 2L2 7l10 5 10-5-10-5z" />
+          <path d="M2 17l10 5 10-5" />
+          <path d="M2 12l10 5 10-5" />
         </svg>
         <div>
           <h3>Create Macro with AI</h3>
@@ -57,9 +64,16 @@ export const NLMacroInput: React.FC<NLMacroInputProps> = ({ onCreate }) => {
             {isCreating ? (
               <div className="spinner" />
             ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="22" y1="2" x2="11" y2="13"/>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
               </svg>
             )}
           </button>
@@ -75,8 +89,15 @@ export const NLMacroInput: React.FC<NLMacroInputProps> = ({ onCreate }) => {
               className="example-item"
               onClick={() => setDescription(ex)}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
               </svg>
               <span>{ex}</span>
             </button>
@@ -84,7 +105,7 @@ export const NLMacroInput: React.FC<NLMacroInputProps> = ({ onCreate }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NLMacroInput;
+export default NLMacroInput

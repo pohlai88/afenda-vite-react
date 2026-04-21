@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import { cn } from '@/lib/utils'
-import { Badge } from '@/components/ui/badge'
-import { RATING_SCALE } from '@/lib/performance/constants'
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { RATING_SCALE } from "@/lib/performance/constants"
 
 interface RatingBadgeProps {
   rating: number
-  size?: 'sm' | 'md'
+  size?: "sm" | "md"
 }
 
-export function RatingBadge({ rating, size = 'md' }: RatingBadgeProps) {
+export function RatingBadge({ rating, size = "md" }: RatingBadgeProps) {
   const ratingInfo = RATING_SCALE.find((r) => r.value === Math.round(rating))
 
   if (!ratingInfo) return null
@@ -17,8 +17,8 @@ export function RatingBadge({ rating, size = 'md' }: RatingBadgeProps) {
   return (
     <Badge
       className={cn(
-        'border-transparent font-data',
-        size === 'sm' ? 'px-1.5 py-0 text-[10px]' : 'px-2 py-0.5 text-xs'
+        "border-transparent font-data",
+        size === "sm" ? "px-1.5 py-0 text-[10px]" : "px-2 py-0.5 text-xs"
       )}
       style={{
         backgroundColor: `${ratingInfo.color}20`,

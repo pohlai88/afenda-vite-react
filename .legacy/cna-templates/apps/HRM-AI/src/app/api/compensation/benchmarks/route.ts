@@ -1,26 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import * as analyticsService from '@/services/compensation/analytics.service'
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import * as analyticsService from "@/services/compensation/analytics.service"
 
 export async function GET() {
   try {
     const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    const result = await analyticsService.getCompensationBenchmarks(session.user.tenantId)
+    if (!session?.user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    const result = await analyticsService.getCompensationBenchmarks(
+      session.user.tenantId
+    )
     return NextResponse.json(result)
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!session?.user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     const body = await request.json()
-    const result = await analyticsService.createBenchmark(session.user.tenantId, body)
+    const result = await analyticsService.createBenchmark(
+      session.user.tenantId,
+      body
+    )
     return NextResponse.json(result, { status: 201 })
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

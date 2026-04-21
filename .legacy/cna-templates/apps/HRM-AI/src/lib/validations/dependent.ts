@@ -1,10 +1,10 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 export const dependentSchema = z.object({
-  employeeId: z.string().min(1, 'Nhân viên là bắt buộc'),
-  fullName: z.string().min(1, 'Họ tên là bắt buộc').max(100),
-  relationship: z.enum(['SPOUSE', 'CHILD', 'PARENT', 'OTHER'], {
-    message: 'Quan hệ là bắt buộc',
+  employeeId: z.string().min(1, "Nhân viên là bắt buộc"),
+  fullName: z.string().min(1, "Họ tên là bắt buộc").max(100),
+  relationship: z.enum(["SPOUSE", "CHILD", "PARENT", "OTHER"], {
+    message: "Quan hệ là bắt buộc",
   }),
   dateOfBirth: z.coerce.date().optional().nullable(),
   idNumber: z.string().max(20).optional().nullable(),

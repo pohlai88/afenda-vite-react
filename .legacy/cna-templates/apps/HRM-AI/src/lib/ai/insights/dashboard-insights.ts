@@ -1,17 +1,17 @@
 // src/lib/ai/insights/dashboard-insights.ts
 // Dashboard Insights Generator
 
-import Anthropic from '@anthropic-ai/sdk'
-import { db } from '@/lib/db'
-import { nanoid } from 'nanoid'
+import Anthropic from "@anthropic-ai/sdk"
+import { db } from "@/lib/db"
+import { nanoid } from "nanoid"
 import {
   DashboardInsight,
   InsightCategory,
   InsightSeverity,
   InsightsResult,
   InsightContext,
-  InsightAction
-} from './types'
+  InsightAction,
+} from "./types"
 
 // ═══════════════════════════════════════════════════════════════
 // DASHBOARD INSIGHTS GENERATOR
@@ -23,7 +23,7 @@ export class DashboardInsightsGenerator {
 
   constructor(tenantId: string) {
     this.client = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY || ''
+      apiKey: process.env.ANTHROPIC_API_KEY || "",
     })
     this.tenantId = tenantId
   }
@@ -39,12 +39,12 @@ export class DashboardInsightsGenerator {
       workforceInsights,
       attendanceInsights,
       leaveInsights,
-      complianceInsights
+      complianceInsights,
     ] = await Promise.all([
       this.generateWorkforceInsights(),
       this.generateAttendanceInsights(),
       this.generateLeaveInsights(),
-      this.generateComplianceInsights()
+      this.generateComplianceInsights(),
     ])
 
     insights.push(...workforceInsights)
@@ -57,23 +57,25 @@ export class DashboardInsightsGenerator {
       CRITICAL: 0,
       WARNING: 1,
       INFO: 2,
-      SUCCESS: 3
+      SUCCESS: 3,
     }
-    insights.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity])
+    insights.sort(
+      (a, b) => severityOrder[a.severity] - severityOrder[b.severity]
+    )
 
     // Generate summary
     const summary = {
       total: insights.length,
-      critical: insights.filter(i => i.severity === 'CRITICAL').length,
-      warning: insights.filter(i => i.severity === 'WARNING').length,
-      info: insights.filter(i => i.severity === 'INFO').length,
-      success: insights.filter(i => i.severity === 'SUCCESS').length
+      critical: insights.filter((i) => i.severity === "CRITICAL").length,
+      warning: insights.filter((i) => i.severity === "WARNING").length,
+      info: insights.filter((i) => i.severity === "INFO").length,
+      success: insights.filter((i) => i.severity === "SUCCESS").length,
     }
 
     return {
       insights,
       summary,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     }
   }
 
@@ -91,22 +93,22 @@ export class DashboardInsightsGenerator {
     const totalEmployees = await db.employee.count({
       where: {
         tenantId: this.tenantId,
-        status: { in: ['ACTIVE', 'PROBATION'] },
-        deletedAt: null
-      }
+        status: { in: ["ACTIVE", "PROBATION"] },
+        deletedAt: null,
+      },
     })
 
     const lastMonthTotal = await db.employee.count({
       where: {
         tenantId: this.tenantId,
-        status: { in: ['ACTIVE', 'PROBATION'] },
+        status: { in: ["ACTIVE", "PROBATION"] },
         hireDate: { lte: lastMonthEnd },
         deletedAt: null,
         OR: [
           { resignationDate: null },
-          { resignationDate: { gt: lastMonthEnd } }
-        ]
-      }
+          { resignationDate: { gt: lastMonthEnd } },
+        ],
+      },
     })
 
     // New hires this month
@@ -114,18 +116,18 @@ export class DashboardInsightsGenerator {
       where: {
         tenantId: this.tenantId,
         hireDate: { gte: thisMonth },
-        deletedAt: null
-      }
+        deletedAt: null,
+      },
     })
 
     // Resignations this month
     const resignations = await db.employee.count({
       where: {
         tenantId: this.tenantId,
-        status: 'RESIGNED',
+        status: "RESIGNED",
         resignationDate: { gte: thisMonth },
-        deletedAt: null
-      }
+        deletedAt: null,
+      },
     })
 
     // Headcount insight
@@ -133,25 +135,31 @@ export class DashboardInsightsGenerator {
     if (headcountChange !== 0) {
       insights.push({
         id: nanoid(),
-        category: 'WORKFORCE',
-        severity: headcountChange < 0 ? 'WARNING' : 'INFO',
-        title: headcountChange > 0 ? 'Nhân sự tăng trưởng' : 'Nhân sự giảm',
-        message: headcountChange > 0
-          ? `Tổng nhân sự tăng ${headcountChange} người so với tháng trước`
-          : `Tổng nhân sự giảm ${Math.abs(headcountChange)} người so với tháng trước`,
+        category: "WORKFORCE",
+        severity: headcountChange < 0 ? "WARNING" : "INFO",
+        title: headcountChange > 0 ? "Nhân sự tăng trưởng" : "Nhân sự giảm",
+        message:
+          headcountChange > 0
+            ? `Tổng nhân sự tăng ${headcountChange} người so với tháng trước`
+            : `Tổng nhân sự giảm ${Math.abs(headcountChange)} người so với tháng trước`,
         metric: {
           value: totalEmployees,
-          label: 'nhân viên',
-          trend: headcountChange > 0 ? 'up' : 'down',
-          changePercent: lastMonthTotal > 0
-            ? Math.round((headcountChange / lastMonthTotal) * 100 * 10) / 10
-            : 0
+          label: "nhân viên",
+          trend: headcountChange > 0 ? "up" : "down",
+          changePercent:
+            lastMonthTotal > 0
+              ? Math.round((headcountChange / lastMonthTotal) * 100 * 10) / 10
+              : 0,
         },
         actions: [
-          { type: 'navigate', label: 'Xem danh sách', url: '/employees' },
-          { type: 'create_report', label: 'Báo cáo chi tiết', params: { type: 'headcount' } }
+          { type: "navigate", label: "Xem danh sách", url: "/employees" },
+          {
+            type: "create_report",
+            label: "Báo cáo chi tiết",
+            params: { type: "headcount" },
+          },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -159,45 +167,63 @@ export class DashboardInsightsGenerator {
     if (newHires > 0) {
       insights.push({
         id: nanoid(),
-        category: 'WORKFORCE',
-        severity: 'SUCCESS',
-        title: 'Tuyển dụng thành công',
+        category: "WORKFORCE",
+        severity: "SUCCESS",
+        title: "Tuyển dụng thành công",
         message: `Đã tuyển ${newHires} nhân viên mới trong tháng này`,
         metric: {
           value: newHires,
-          label: 'nhân viên mới',
-          trend: 'up'
+          label: "nhân viên mới",
+          trend: "up",
         },
         actions: [
-          { type: 'navigate', label: 'Xem nhân viên mới', url: '/employees?status=new' }
+          {
+            type: "navigate",
+            label: "Xem nhân viên mới",
+            url: "/employees?status=new",
+          },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
     // Resignations insight
     if (resignations > 0) {
-      const resignationRate = totalEmployees > 0
-        ? Math.round((resignations / totalEmployees) * 100 * 10) / 10
-        : 0
+      const resignationRate =
+        totalEmployees > 0
+          ? Math.round((resignations / totalEmployees) * 100 * 10) / 10
+          : 0
 
       insights.push({
         id: nanoid(),
-        category: 'WORKFORCE',
-        severity: resignationRate > 5 ? 'CRITICAL' : resignations > 3 ? 'WARNING' : 'INFO',
-        title: 'Nhân viên nghỉ việc',
+        category: "WORKFORCE",
+        severity:
+          resignationRate > 5
+            ? "CRITICAL"
+            : resignations > 3
+              ? "WARNING"
+              : "INFO",
+        title: "Nhân viên nghỉ việc",
         message: `${resignations} nhân viên nghỉ việc trong tháng (tỷ lệ ${resignationRate}%)`,
         metric: {
           value: resignations,
-          label: 'nghỉ việc',
-          trend: 'up',
-          changePercent: resignationRate
+          label: "nghỉ việc",
+          trend: "up",
+          changePercent: resignationRate,
         },
         actions: [
-          { type: 'navigate', label: 'Xem chi tiết', url: '/employees?status=resigned' },
-          { type: 'view_details', label: 'Phân tích nguyên nhân', url: '/ai/predictions' }
+          {
+            type: "navigate",
+            label: "Xem chi tiết",
+            url: "/employees?status=resigned",
+          },
+          {
+            type: "view_details",
+            label: "Phân tích nguyên nhân",
+            url: "/ai/predictions",
+          },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -205,26 +231,30 @@ export class DashboardInsightsGenerator {
     const probationCount = await db.employee.count({
       where: {
         tenantId: this.tenantId,
-        status: 'PROBATION',
-        deletedAt: null
-      }
+        status: "PROBATION",
+        deletedAt: null,
+      },
     })
 
     if (probationCount > 0) {
       insights.push({
         id: nanoid(),
-        category: 'WORKFORCE',
-        severity: 'INFO',
-        title: 'Nhân viên thử việc',
+        category: "WORKFORCE",
+        severity: "INFO",
+        title: "Nhân viên thử việc",
         message: `Có ${probationCount} nhân viên đang trong giai đoạn thử việc`,
         metric: {
           value: probationCount,
-          label: 'thử việc'
+          label: "thử việc",
         },
         actions: [
-          { type: 'navigate', label: 'Xem danh sách', url: '/employees?status=probation' }
+          {
+            type: "navigate",
+            label: "Xem danh sách",
+            url: "/employees?status=probation",
+          },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -243,39 +273,43 @@ export class DashboardInsightsGenerator {
 
     // Today's attendance
     const todayAttendance = await db.attendance.groupBy({
-      by: ['status'],
+      by: ["status"],
       where: {
         tenantId: this.tenantId,
-        date: today
+        date: today,
       },
-      _count: true
+      _count: true,
     })
 
-    const present = todayAttendance.find(a => a.status === 'PRESENT')?._count || 0
-    const late = todayAttendance.filter(a =>
-      ['LATE', 'LATE_AND_EARLY'].includes(a.status)
-    ).reduce((sum, a) => sum + a._count, 0)
-    const absent = todayAttendance.find(a => a.status === 'ABSENT')?._count || 0
+    const present =
+      todayAttendance.find((a) => a.status === "PRESENT")?._count || 0
+    const late = todayAttendance
+      .filter((a) => ["LATE", "LATE_AND_EARLY"].includes(a.status))
+      .reduce((sum, a) => sum + a._count, 0)
+    const absent =
+      todayAttendance.find((a) => a.status === "ABSENT")?._count || 0
 
     // Today attendance insight
     if (present > 0 || late > 0) {
       const totalToday = present + late + absent
-      const lateRate = totalToday > 0 ? Math.round((late / totalToday) * 100) : 0
+      const lateRate =
+        totalToday > 0 ? Math.round((late / totalToday) * 100) : 0
 
       insights.push({
         id: nanoid(),
-        category: 'ATTENDANCE',
-        severity: lateRate > 20 ? 'WARNING' : lateRate > 10 ? 'INFO' : 'SUCCESS',
-        title: 'Chấm công hôm nay',
+        category: "ATTENDANCE",
+        severity:
+          lateRate > 20 ? "WARNING" : lateRate > 10 ? "INFO" : "SUCCESS",
+        title: "Chấm công hôm nay",
         message: `${present} đúng giờ, ${late} đi muộn (${lateRate}%), ${absent} vắng mặt`,
         metric: {
           value: `${present + late}/${totalToday}`,
-          label: 'có mặt'
+          label: "có mặt",
         },
         actions: [
-          { type: 'navigate', label: 'Chi tiết chấm công', url: '/attendance' }
+          { type: "navigate", label: "Chi tiết chấm công", url: "/attendance" },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -284,15 +318,15 @@ export class DashboardInsightsGenerator {
       where: {
         tenantId: this.tenantId,
         date: { gte: weekAgo },
-        status: { in: ['LATE', 'LATE_AND_EARLY'] }
-      }
+        status: { in: ["LATE", "LATE_AND_EARLY"] },
+      },
     })
 
     const weeklyTotal = await db.attendance.count({
       where: {
         tenantId: this.tenantId,
-        date: { gte: weekAgo }
-      }
+        date: { gte: weekAgo },
+      },
     })
 
     if (weeklyTotal > 0) {
@@ -301,53 +335,61 @@ export class DashboardInsightsGenerator {
       if (weeklyLateRate > 15) {
         insights.push({
           id: nanoid(),
-          category: 'ATTENDANCE',
-          severity: weeklyLateRate > 25 ? 'CRITICAL' : 'WARNING',
-          title: 'Xu hướng đi muộn cao',
+          category: "ATTENDANCE",
+          severity: weeklyLateRate > 25 ? "CRITICAL" : "WARNING",
+          title: "Xu hướng đi muộn cao",
           message: `${weeklyLateRate}% nhân viên đi muộn trong tuần qua (${weeklyLate}/${weeklyTotal})`,
           metric: {
             value: weeklyLateRate,
-            label: '% đi muộn',
-            trend: 'up'
+            label: "% đi muộn",
+            trend: "up",
           },
           actions: [
-            { type: 'navigate', label: 'Xem báo cáo', url: '/attendance/reports' },
-            { type: 'send_notification', label: 'Nhắc nhở nhân viên' }
+            {
+              type: "navigate",
+              label: "Xem báo cáo",
+              url: "/attendance/reports",
+            },
+            { type: "send_notification", label: "Nhắc nhở nhân viên" },
           ],
-          generatedAt: new Date()
+          generatedAt: new Date(),
         })
       }
     }
 
     // Frequent late employees
     const frequentLate = await db.attendance.groupBy({
-      by: ['employeeId'],
+      by: ["employeeId"],
       where: {
         tenantId: this.tenantId,
         date: { gte: weekAgo },
-        status: { in: ['LATE', 'LATE_AND_EARLY'] }
+        status: { in: ["LATE", "LATE_AND_EARLY"] },
       },
       _count: true,
       having: {
-        employeeId: { _count: { gte: 3 } }
-      }
+        employeeId: { _count: { gte: 3 } },
+      },
     })
 
     if (frequentLate.length > 0) {
       insights.push({
         id: nanoid(),
-        category: 'ATTENDANCE',
-        severity: 'WARNING',
-        title: 'Nhân viên đi muộn thường xuyên',
+        category: "ATTENDANCE",
+        severity: "WARNING",
+        title: "Nhân viên đi muộn thường xuyên",
         message: `${frequentLate.length} nhân viên đi muộn 3+ lần trong tuần`,
         metric: {
           value: frequentLate.length,
-          label: 'nhân viên'
+          label: "nhân viên",
         },
         actions: [
-          { type: 'view_details', label: 'Xem danh sách', url: '/attendance/late-report' }
+          {
+            type: "view_details",
+            label: "Xem danh sách",
+            url: "/attendance/late-report",
+          },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -364,25 +406,25 @@ export class DashboardInsightsGenerator {
     const pendingLeaves = await db.leaveRequest.count({
       where: {
         tenantId: this.tenantId,
-        status: 'PENDING'
-      }
+        status: "PENDING",
+      },
     })
 
     if (pendingLeaves > 0) {
       insights.push({
         id: nanoid(),
-        category: 'LEAVE',
-        severity: pendingLeaves > 10 ? 'WARNING' : 'INFO',
-        title: 'Đơn nghỉ phép chờ duyệt',
+        category: "LEAVE",
+        severity: pendingLeaves > 10 ? "WARNING" : "INFO",
+        title: "Đơn nghỉ phép chờ duyệt",
         message: `Có ${pendingLeaves} đơn nghỉ phép đang chờ phê duyệt`,
         metric: {
           value: pendingLeaves,
-          label: 'đơn chờ duyệt'
+          label: "đơn chờ duyệt",
         },
         actions: [
-          { type: 'navigate', label: 'Duyệt đơn', url: '/leave/approvals' }
+          { type: "navigate", label: "Duyệt đơn", url: "/leave/approvals" },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -392,25 +434,29 @@ export class DashboardInsightsGenerator {
         tenantId: this.tenantId,
         year: new Date().getFullYear(),
         available: { lt: 2 },
-        entitlement: { gt: 5 }
-      }
+        entitlement: { gt: 5 },
+      },
     })
 
     if (lowBalanceEmployees > 0) {
       insights.push({
         id: nanoid(),
-        category: 'LEAVE',
-        severity: 'INFO',
-        title: 'Nhân viên sắp hết phép',
+        category: "LEAVE",
+        severity: "INFO",
+        title: "Nhân viên sắp hết phép",
         message: `${lowBalanceEmployees} nhân viên còn ít hơn 2 ngày phép năm`,
         metric: {
           value: lowBalanceEmployees,
-          label: 'nhân viên'
+          label: "nhân viên",
         },
         actions: [
-          { type: 'view_details', label: 'Xem chi tiết', url: '/leave/balances?filter=low' }
+          {
+            type: "view_details",
+            label: "Xem chi tiết",
+            url: "/leave/balances?filter=low",
+          },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -424,29 +470,29 @@ export class DashboardInsightsGenerator {
     const upcomingLeaves = await db.leaveRequest.count({
       where: {
         tenantId: this.tenantId,
-        status: 'APPROVED',
+        status: "APPROVED",
         startDate: {
           gte: tomorrow,
-          lte: nextWeek
-        }
-      }
+          lte: nextWeek,
+        },
+      },
     })
 
     if (upcomingLeaves > 0) {
       insights.push({
         id: nanoid(),
-        category: 'LEAVE',
-        severity: upcomingLeaves > 5 ? 'WARNING' : 'INFO',
-        title: 'Nhân viên nghỉ tuần tới',
+        category: "LEAVE",
+        severity: upcomingLeaves > 5 ? "WARNING" : "INFO",
+        title: "Nhân viên nghỉ tuần tới",
         message: `${upcomingLeaves} nhân viên đã đăng ký nghỉ trong 7 ngày tới`,
         metric: {
           value: upcomingLeaves,
-          label: 'nghỉ phép'
+          label: "nghỉ phép",
         },
         actions: [
-          { type: 'navigate', label: 'Xem lịch nghỉ', url: '/leave/calendar' }
+          { type: "navigate", label: "Xem lịch nghỉ", url: "/leave/calendar" },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -466,30 +512,38 @@ export class DashboardInsightsGenerator {
     const expiringContracts = await db.contract.count({
       where: {
         tenantId: this.tenantId,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         endDate: {
           gte: today,
-          lte: thirtyDays
-        }
-      }
+          lte: thirtyDays,
+        },
+      },
     })
 
     if (expiringContracts > 0) {
       insights.push({
         id: nanoid(),
-        category: 'COMPLIANCE',
-        severity: expiringContracts > 5 ? 'CRITICAL' : 'WARNING',
-        title: 'Hợp đồng sắp hết hạn',
+        category: "COMPLIANCE",
+        severity: expiringContracts > 5 ? "CRITICAL" : "WARNING",
+        title: "Hợp đồng sắp hết hạn",
         message: `${expiringContracts} hợp đồng sẽ hết hạn trong 30 ngày tới`,
         metric: {
           value: expiringContracts,
-          label: 'hợp đồng'
+          label: "hợp đồng",
         },
         actions: [
-          { type: 'navigate', label: 'Xem danh sách', url: '/contracts?filter=expiring' },
-          { type: 'create_report', label: 'Báo cáo', params: { type: 'expiring_contracts' } }
+          {
+            type: "navigate",
+            label: "Xem danh sách",
+            url: "/contracts?filter=expiring",
+          },
+          {
+            type: "create_report",
+            label: "Báo cáo",
+            params: { type: "expiring_contracts" },
+          },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -497,26 +551,30 @@ export class DashboardInsightsGenerator {
     const expiredContracts = await db.contract.count({
       where: {
         tenantId: this.tenantId,
-        status: 'ACTIVE',
-        endDate: { lt: today }
-      }
+        status: "ACTIVE",
+        endDate: { lt: today },
+      },
     })
 
     if (expiredContracts > 0) {
       insights.push({
         id: nanoid(),
-        category: 'COMPLIANCE',
-        severity: 'CRITICAL',
-        title: 'Hợp đồng đã hết hạn',
+        category: "COMPLIANCE",
+        severity: "CRITICAL",
+        title: "Hợp đồng đã hết hạn",
         message: `${expiredContracts} hợp đồng đã hết hạn nhưng chưa được gia hạn`,
         metric: {
           value: expiredContracts,
-          label: 'hợp đồng'
+          label: "hợp đồng",
         },
         actions: [
-          { type: 'navigate', label: 'Xử lý ngay', url: '/contracts?filter=expired' }
+          {
+            type: "navigate",
+            label: "Xử lý ngay",
+            url: "/contracts?filter=expired",
+          },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -524,27 +582,31 @@ export class DashboardInsightsGenerator {
     const employeesWithoutContracts = await db.employee.count({
       where: {
         tenantId: this.tenantId,
-        status: { in: ['ACTIVE', 'PROBATION'] },
+        status: { in: ["ACTIVE", "PROBATION"] },
         deletedAt: null,
-        contracts: { none: { status: 'ACTIVE' } }
-      }
+        contracts: { none: { status: "ACTIVE" } },
+      },
     })
 
     if (employeesWithoutContracts > 0) {
       insights.push({
         id: nanoid(),
-        category: 'COMPLIANCE',
-        severity: 'WARNING',
-        title: 'Thiếu hợp đồng lao động',
+        category: "COMPLIANCE",
+        severity: "WARNING",
+        title: "Thiếu hợp đồng lao động",
         message: `${employeesWithoutContracts} nhân viên chưa có hợp đồng đang hiệu lực`,
         metric: {
           value: employeesWithoutContracts,
-          label: 'nhân viên'
+          label: "nhân viên",
         },
         actions: [
-          { type: 'navigate', label: 'Xem danh sách', url: '/employees?filter=no_contract' }
+          {
+            type: "navigate",
+            label: "Xem danh sách",
+            url: "/employees?filter=no_contract",
+          },
         ],
-        generatedAt: new Date()
+        generatedAt: new Date(),
       })
     }
 
@@ -573,13 +635,13 @@ Trả về JSON với format:
 }`
 
       const response = await this.client.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: "claude-sonnet-4-20250514",
         max_tokens: 500,
-        messages: [{ role: 'user', content: prompt }]
+        messages: [{ role: "user", content: prompt }],
       })
 
       const textBlock = response.content.find(
-        (block): block is Anthropic.TextBlock => block.type === 'text'
+        (block): block is Anthropic.TextBlock => block.type === "text"
       )
 
       if (textBlock?.text) {
@@ -590,18 +652,18 @@ Trả về JSON với format:
           return {
             id: nanoid(),
             category,
-            severity: parsed.severity || 'INFO',
+            severity: parsed.severity || "INFO",
             title: parsed.title,
             message: parsed.message,
             actions: parsed.recommendation
-              ? [{ type: 'view_details', label: parsed.recommendation }]
+              ? [{ type: "view_details", label: parsed.recommendation }]
               : [],
-            generatedAt: new Date()
+            generatedAt: new Date(),
           }
         }
       }
     } catch (error) {
-      console.error('Error generating AI insight:', error)
+      console.error("Error generating AI insight:", error)
     }
 
     return null
@@ -612,6 +674,8 @@ Trả về JSON với format:
 // FACTORY FUNCTION
 // ═══════════════════════════════════════════════════════════════
 
-export function createDashboardInsightsGenerator(tenantId: string): DashboardInsightsGenerator {
+export function createDashboardInsightsGenerator(
+  tenantId: string
+): DashboardInsightsGenerator {
   return new DashboardInsightsGenerator(tenantId)
 }

@@ -1,11 +1,16 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getCurrentUser, AuthError } from '@/lib/auth/get-current-user'
-import { canAccess } from '@/lib/auth/rbac'
-import { Unauthorized, NotFound, Forbidden, handleApiError } from '@/lib/api/errors'
-import { apiCreated } from '@/lib/api/response'
-import { validateRequest, staffTicketMessageSchema } from '@/lib/validations'
-import { eventBus, CRM_EVENTS } from '@/lib/events'
+import { NextRequest } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getCurrentUser, AuthError } from "@/lib/auth/get-current-user"
+import { canAccess } from "@/lib/auth/rbac"
+import {
+  Unauthorized,
+  NotFound,
+  Forbidden,
+  handleApiError,
+} from "@/lib/api/errors"
+import { apiCreated } from "@/lib/api/response"
+import { validateRequest, staffTicketMessageSchema } from "@/lib/validations"
+import { eventBus, CRM_EVENTS } from "@/lib/events"
 
 // POST /api/tickets/[id]/messages — Staff reply or internal note
 export async function POST(
@@ -16,8 +21,8 @@ export async function POST(
     const user = await getCurrentUser()
     const { id } = params
 
-    if (!canAccess(user, 'create')) {
-      return handleApiError(Forbidden(), '/api/tickets/[id]/messages')
+    if (!canAccess(user, "create")) {
+      return handleApiError(Forbidden(), "/api/tickets/[id]/messages")
     }
 
     const ticket = await prisma.supportTicket.findUnique({
@@ -30,7 +35,8 @@ export async function POST(
         portalUser: { select: { firstName: true, lastName: true } },
       },
     })
-    if (!ticket) return handleApiError(NotFound('Ticket'), '/api/tickets/[id]/messages')
+    if (!ticket)
+      return handleApiError(NotFound("Ticket"), "/api/tickets/[id]/messages")
 
     const body = await req.json()
     const data = validateRequest(staffTicketMessageSchema, body)
@@ -62,8 +68,8 @@ export async function POST(
       }
 
       // Auto-update status to WAITING_CUSTOMER if currently OPEN
-      if (ticket.status === 'OPEN') {
-        ticketUpdate.status = 'WAITING_CUSTOMER'
+      if (ticket.status === "OPEN") {
+        ticketUpdate.status = "WAITING_CUSTOMER"
         ticketUpdate.assigneeId = ticket.assigneeId || user.id
       }
 
@@ -77,18 +83,24 @@ export async function POST(
 
     // Emit staff replied event for visibility
     if (!data.isInternal) {
-      eventBus.emit(CRM_EVENTS.TICKET_STAFF_REPLIED, {
-        timestamp: new Date().toISOString(),
-        userId: user.id,
-        ticketId: id,
-        ticket: { subject: ticket.subject },
-        staffName: user.name || 'Staff',
-      }).catch(() => {})
+      eventBus
+        .emit(CRM_EVENTS.TICKET_STAFF_REPLIED, {
+          timestamp: new Date().toISOString(),
+          userId: user.id,
+          ticketId: id,
+          ticket: { subject: ticket.subject },
+          staffName: user.name || "Staff",
+        })
+        .catch(() => {})
     }
 
     return apiCreated(message)
   } catch (error) {
-    if (error instanceof AuthError) return handleApiError(Unauthorized(error.message), '/api/tickets/[id]/messages')
-    return handleApiError(error, '/api/tickets/[id]/messages')
+    if (error instanceof AuthError)
+      return handleApiError(
+        Unauthorized(error.message),
+        "/api/tickets/[id]/messages"
+      )
+    return handleApiError(error, "/api/tickets/[id]/messages")
   }
 }

@@ -48,7 +48,10 @@ export async function PUT(
     const body = await request.json()
     const validated = updateEmployeeSchema.parse({ ...body, id })
 
-    const oldEmployee = await employeeService.findById(session.user.tenantId, id)
+    const oldEmployee = await employeeService.findById(
+      session.user.tenantId,
+      id
+    )
     if (!oldEmployee) {
       return NextResponse.json(
         { error: "Không tìm thấy nhân viên" },
@@ -63,7 +66,15 @@ export async function PUT(
       session.user.id
     )
 
-    await audit.update({ tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' }, 'Employee', id)
+    await audit.update(
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Employee",
+      id
+    )
 
     return NextResponse.json(employee)
   } catch (error) {
@@ -86,7 +97,10 @@ export async function DELETE(
     }
 
     const { id } = await params
-    const oldEmployee = await employeeService.findById(session.user.tenantId, id)
+    const oldEmployee = await employeeService.findById(
+      session.user.tenantId,
+      id
+    )
     if (!oldEmployee) {
       return NextResponse.json(
         { error: "Không tìm thấy nhân viên" },
@@ -96,7 +110,15 @@ export async function DELETE(
 
     await employeeService.softDelete(session.user.tenantId, id)
 
-    await audit.delete({ tenantId: session.user.tenantId, userId: session.user.id, userEmail: session.user.email || '' }, 'Employee', id)
+    await audit.delete(
+      {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        userEmail: session.user.email || "",
+      },
+      "Employee",
+      id
+    )
 
     // Return employee info so the client can show an undo action
     return NextResponse.json({

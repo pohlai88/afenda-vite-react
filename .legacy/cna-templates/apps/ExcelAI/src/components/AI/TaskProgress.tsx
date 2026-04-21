@@ -2,20 +2,25 @@
 // TASK PROGRESS — Multi-step progress visualization (Blueprint §5.6)
 // =============================================================================
 
-import React from 'react';
-import type { TaskPlan, TaskStep, StepStatus, StepResult } from '../../ai/conversation/types';
+import React from "react"
+import type {
+  TaskPlan,
+  TaskStep,
+  StepStatus,
+  StepResult,
+} from "../../ai/conversation/types"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 interface TaskProgressProps {
-  plan: TaskPlan;
-  results: StepResult[];
-  currentStepIndex: number;
-  onRetryStep?: (stepIndex: number) => void;
-  onSkipStep?: (stepIndex: number) => void;
-  className?: string;
+  plan: TaskPlan
+  results: StepResult[]
+  currentStepIndex: number
+  onRetryStep?: (stepIndex: number) => void
+  onSkipStep?: (stepIndex: number) => void
+  className?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -28,12 +33,12 @@ export const TaskProgress: React.FC<TaskProgressProps> = ({
   currentStepIndex,
   onRetryStep,
   onSkipStep,
-  className = '',
+  className = "",
 }) => {
   const completedCount = plan.steps.filter(
-    (s) => s.status === 'completed' || s.status === 'skipped'
-  ).length;
-  const progress = Math.round((completedCount / plan.steps.length) * 100);
+    (s) => s.status === "completed" || s.status === "skipped"
+  ).length
+  const progress = Math.round((completedCount / plan.steps.length) * 100)
 
   return (
     <div className={`task-progress ${className}`}>
@@ -56,8 +61,8 @@ export const TaskProgress: React.FC<TaskProgressProps> = ({
       {/* Steps */}
       <div className="task-progress__steps">
         {plan.steps.map((step, index) => {
-          const result = results.find((r) => r.stepId === step.id);
-          const isCurrent = index === currentStepIndex;
+          const result = results.find((r) => r.stepId === step.id)
+          const isCurrent = index === currentStepIndex
 
           return (
             <TaskStepRow
@@ -66,17 +71,17 @@ export const TaskProgress: React.FC<TaskProgressProps> = ({
               result={result}
               isCurrent={isCurrent}
               onRetry={
-                onRetryStep && step.canRetry && step.status === 'failed'
+                onRetryStep && step.canRetry && step.status === "failed"
                   ? () => onRetryStep(index)
                   : undefined
               }
               onSkip={
-                onSkipStep && step.optional && step.status === 'pending'
+                onSkipStep && step.optional && step.status === "pending"
                   ? () => onSkipStep(index)
                   : undefined
               }
             />
-          );
+          )
         })}
       </div>
 
@@ -87,19 +92,19 @@ export const TaskProgress: React.FC<TaskProgressProps> = ({
         </span>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Step Row
 // -----------------------------------------------------------------------------
 
 interface TaskStepRowProps {
-  step: TaskStep;
-  result?: StepResult;
-  isCurrent: boolean;
-  onRetry?: () => void;
-  onSkip?: () => void;
+  step: TaskStep
+  result?: StepResult
+  isCurrent: boolean
+  onRetry?: () => void
+  onSkip?: () => void
 }
 
 const TaskStepRow: React.FC<TaskStepRowProps> = ({
@@ -111,18 +116,18 @@ const TaskStepRow: React.FC<TaskStepRowProps> = ({
 }) => {
   return (
     <div
-      className={`task-step ${isCurrent ? 'task-step--current' : ''} task-step--${step.status}`}
+      className={`task-step ${isCurrent ? "task-step--current" : ""} task-step--${step.status}`}
     >
       {/* Status indicator */}
-      <span className="task-step__status">
-        {getStatusIcon(step.status)}
-      </span>
+      <span className="task-step__status">{getStatusIcon(step.status)}</span>
 
       {/* Step info */}
       <div className="task-step__info">
         <span className="task-step__name">
           {step.index + 1}. {step.name}
-          {step.optional && <span className="task-step__optional">(optional)</span>}
+          {step.optional && (
+            <span className="task-step__optional">(optional)</span>
+          )}
         </span>
         <span className="task-step__description">{step.description}</span>
 
@@ -146,21 +151,21 @@ const TaskStepRow: React.FC<TaskStepRowProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Compact Progress Bar
 // -----------------------------------------------------------------------------
 
 interface CompactProgressProps {
-  plan: TaskPlan;
-  className?: string;
+  plan: TaskPlan
+  className?: string
 }
 
 export const CompactProgress: React.FC<CompactProgressProps> = ({
   plan,
-  className = '',
+  className = "",
 }) => {
   return (
     <div className={`compact-progress ${className}`}>
@@ -174,42 +179,42 @@ export const CompactProgress: React.FC<CompactProgressProps> = ({
         </span>
       ))}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Step List
 // -----------------------------------------------------------------------------
 
 interface StepListProps {
-  steps: TaskStep[];
-  currentIndex: number;
-  className?: string;
+  steps: TaskStep[]
+  currentIndex: number
+  className?: string
 }
 
 export const StepList: React.FC<StepListProps> = ({
   steps,
   currentIndex,
-  className = '',
+  className = "",
 }) => {
   return (
     <ol className={`step-list ${className}`}>
       {steps.map((step, index) => {
-        const isPast = index < currentIndex;
-        const isCurrent = index === currentIndex;
-        const isFuture = index > currentIndex;
+        const isPast = index < currentIndex
+        const isCurrent = index === currentIndex
+        const isFuture = index > currentIndex
 
         return (
           <li
             key={step.id}
             className={`step-list__item ${
               isPast
-                ? 'step-list__item--past'
+                ? "step-list__item--past"
                 : isCurrent
-                ? 'step-list__item--current'
-                : isFuture
-                ? 'step-list__item--future'
-                : ''
+                  ? "step-list__item--current"
+                  : isFuture
+                    ? "step-list__item--future"
+                    : ""
             }`}
           >
             <span className="step-list__number">{index + 1}</span>
@@ -218,39 +223,39 @@ export const StepList: React.FC<StepListProps> = ({
               {getStatusIcon(step.status)}
             </span>
           </li>
-        );
+        )
       })}
     </ol>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Progress Summary
 // -----------------------------------------------------------------------------
 
 interface ProgressSummaryProps {
-  plan: TaskPlan;
-  results: StepResult[];
-  className?: string;
+  plan: TaskPlan
+  results: StepResult[]
+  className?: string
 }
 
 export const ProgressSummary: React.FC<ProgressSummaryProps> = ({
   plan,
   results,
-  className = '',
+  className = "",
 }) => {
-  const completed = plan.steps.filter((s) => s.status === 'completed').length;
-  const failed = plan.steps.filter((s) => s.status === 'failed').length;
-  const skipped = plan.steps.filter((s) => s.status === 'skipped').length;
-  const pending = plan.steps.filter((s) => s.status === 'pending').length;
-  const running = plan.steps.filter((s) => s.status === 'running').length;
+  const completed = plan.steps.filter((s) => s.status === "completed").length
+  const failed = plan.steps.filter((s) => s.status === "failed").length
+  const skipped = plan.steps.filter((s) => s.status === "skipped").length
+  const pending = plan.steps.filter((s) => s.status === "pending").length
+  const running = plan.steps.filter((s) => s.status === "running").length
 
   const totalTime = results.reduce((sum, r) => {
     if (r.completedAt && r.startedAt) {
-      return sum + (r.completedAt.getTime() - r.startedAt.getTime());
+      return sum + (r.completedAt.getTime() - r.startedAt.getTime())
     }
-    return sum;
-  }, 0);
+    return sum
+  }, 0)
 
   return (
     <div className={`progress-summary ${className}`}>
@@ -288,8 +293,8 @@ export const ProgressSummary: React.FC<ProgressSummaryProps> = ({
         </span>
       )}
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -297,25 +302,25 @@ export const ProgressSummary: React.FC<ProgressSummaryProps> = ({
 
 function getStatusIcon(status: StepStatus): string {
   switch (status) {
-    case 'pending':
-      return '○';
-    case 'running':
-      return '⚡';
-    case 'completed':
-      return '✓';
-    case 'failed':
-      return '✗';
-    case 'skipped':
-      return '−';
+    case "pending":
+      return "○"
+    case "running":
+      return "⚡"
+    case "completed":
+      return "✓"
+    case "failed":
+      return "✗"
+    case "skipped":
+      return "−"
   }
 }
 
 function formatDuration(ms: number): string {
-  if (ms < 1000) return `${ms}ms`;
-  const seconds = Math.round(ms / 1000);
-  if (seconds < 60) return `${seconds}s`;
-  const minutes = Math.round(seconds / 60);
-  return `${minutes}m`;
+  if (ms < 1000) return `${ms}ms`
+  const seconds = Math.round(ms / 1000)
+  if (seconds < 60) return `${seconds}s`
+  const minutes = Math.round(seconds / 60)
+  return `${minutes}m`
 }
 
-export default TaskProgress;
+export default TaskProgress

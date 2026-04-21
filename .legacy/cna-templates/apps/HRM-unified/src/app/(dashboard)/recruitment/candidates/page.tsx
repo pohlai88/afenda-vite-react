@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { Search, Users, FileText } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { Search, Users, FileText } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -20,10 +20,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { PageHeader } from '@/components/shared/page-header'
-import { LoadingPage } from '@/components/shared/loading-spinner'
-import { APPLICATION_SOURCE } from '@/lib/recruitment/constants'
+} from "@/components/ui/table"
+import { PageHeader } from "@/components/shared/page-header"
+import { LoadingPage } from "@/components/shared/loading-spinner"
+import { APPLICATION_SOURCE } from "@/lib/recruitment/constants"
 
 interface Candidate {
   id: string
@@ -39,24 +39,27 @@ export default function CandidatesPage() {
   const [candidates, setCandidates] = useState<Candidate[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [sourceFilter, setSourceFilter] = useState<string>('all')
+  const [search, setSearch] = useState("")
+  const [sourceFilter, setSourceFilter] = useState<string>("all")
 
   useEffect(() => {
     async function fetchCandidates() {
       try {
         const params = new URLSearchParams()
-        if (sourceFilter !== 'all') params.set('source', sourceFilter)
-        if (search) params.set('search', search)
+        if (sourceFilter !== "all") params.set("source", sourceFilter)
+        if (search) params.set("search", search)
 
-        const res = await fetch(`/api/recruitment/candidates?${params.toString()}`)
-        if (!res.ok) throw new Error('Không thể tải danh sách ứng viên')
+        const res = await fetch(
+          `/api/recruitment/candidates?${params.toString()}`
+        )
+        if (!res.ok) throw new Error("Không thể tải danh sách ứng viên")
         const json = await res.json()
         // API returns { success: true, data: { candidates, total, page, limit } }
-        const data = json.data?.candidates || json.data || json.candidates || json || []
+        const data =
+          json.data?.candidates || json.data || json.candidates || json || []
         setCandidates(Array.isArray(data) ? data : [])
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra")
       } finally {
         setLoading(false)
       }
@@ -68,10 +71,7 @@ export default function CandidatesPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Ứng viên"
-        description="Quản lý hồ sơ ứng viên"
-      />
+      <PageHeader title="Ứng viên" description="Quản lý hồ sơ ứng viên" />
 
       {/* Filters */}
       <Card>
@@ -93,7 +93,9 @@ export default function CandidatesPage() {
               <SelectContent>
                 <SelectItem value="all">Tất cả nguồn</SelectItem>
                 {Object.entries(APPLICATION_SOURCE).map(([key, val]) => (
-                  <SelectItem key={key} value={key}>{val.label}</SelectItem>
+                  <SelectItem key={key} value={key}>
+                    {val.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -125,7 +127,10 @@ export default function CandidatesPage() {
               <TableBody>
                 {candidates.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell
+                      colSpan={6}
+                      className="text-center py-8 text-muted-foreground"
+                    >
                       Chưa có ứng viên nào
                     </TableCell>
                   </TableRow>
@@ -141,11 +146,16 @@ export default function CandidatesPage() {
                           {candidate.fullName}
                         </Link>
                       </TableCell>
-                      <TableCell className="text-sm">{candidate.email}</TableCell>
-                      <TableCell className="text-sm">{candidate.phone}</TableCell>
+                      <TableCell className="text-sm">
+                        {candidate.email}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {candidate.phone}
+                      </TableCell>
                       <TableCell>
                         <Badge variant="secondary">
-                          {APPLICATION_SOURCE[candidate.source]?.label || candidate.source}
+                          {APPLICATION_SOURCE[candidate.source]?.label ||
+                            candidate.source}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-center">
@@ -155,7 +165,9 @@ export default function CandidatesPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-sm">
-                        {new Date(candidate.createdAt).toLocaleDateString('vi-VN')}
+                        {new Date(candidate.createdAt).toLocaleDateString(
+                          "vi-VN"
+                        )}
                       </TableCell>
                     </TableRow>
                   ))

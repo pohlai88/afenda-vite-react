@@ -2,76 +2,76 @@
 // TABS STORE - Zustand State Management
 // ============================================================
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { FileTab, DragState, TabCloseResult } from '../types/tabs';
-import { loggers } from '@/utils/logger';
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
+import { FileTab, DragState, TabCloseResult } from "../types/tabs"
+import { loggers } from "@/utils/logger"
 
 // Simple ID generator
-const generateId = () => Math.random().toString(36).substring(2, 10);
+const generateId = () => Math.random().toString(36).substring(2, 10)
 
 interface TabsStore {
   // State
-  tabs: FileTab[];
-  activeTabId: string;
-  maxTabs: number;
-  showHomeTab: boolean;
-  dragState: DragState;
-  onBeforeClose?: (tabId: string) => Promise<boolean>;
+  tabs: FileTab[]
+  activeTabId: string
+  maxTabs: number
+  showHomeTab: boolean
+  dragState: DragState
+  onBeforeClose?: (tabId: string) => Promise<boolean>
 
   // Tab Management
-  addTab: (tab: Partial<FileTab>) => string;
-  removeTab: (tabId: string) => Promise<TabCloseResult>;
-  setActiveTab: (tabId: string) => void;
-  updateTab: (tabId: string, updates: Partial<FileTab>) => void;
+  addTab: (tab: Partial<FileTab>) => string
+  removeTab: (tabId: string) => Promise<TabCloseResult>
+  setActiveTab: (tabId: string) => void
+  updateTab: (tabId: string, updates: Partial<FileTab>) => void
 
   // Tab Operations
-  closeOtherTabs: (tabId: string) => Promise<void>;
-  closeTabsToRight: (tabId: string) => Promise<void>;
-  closeAllTabs: () => Promise<void>;
-  duplicateTab: (tabId: string) => string;
+  closeOtherTabs: (tabId: string) => Promise<void>
+  closeTabsToRight: (tabId: string) => Promise<void>
+  closeAllTabs: () => Promise<void>
+  duplicateTab: (tabId: string) => string
 
   // Tab Ordering
-  moveTab: (tabId: string, newIndex: number) => void;
-  pinTab: (tabId: string) => void;
-  unpinTab: (tabId: string) => void;
+  moveTab: (tabId: string, newIndex: number) => void
+  pinTab: (tabId: string) => void
+  unpinTab: (tabId: string) => void
 
   // Drag & Drop
-  startDrag: (tabId: string) => void;
-  updateDragTarget: (targetId: string, position: 'before' | 'after') => void;
-  endDrag: () => void;
+  startDrag: (tabId: string) => void
+  updateDragTarget: (targetId: string, position: "before" | "after") => void
+  endDrag: () => void
 
   // Navigation
-  goToNextTab: () => void;
-  goToPrevTab: () => void;
-  goToTab: (index: number) => void;
+  goToNextTab: () => void
+  goToPrevTab: () => void
+  goToTab: (index: number) => void
 
   // Utility
-  getTabById: (tabId: string) => FileTab | undefined;
-  getActiveTab: () => FileTab | undefined;
-  getTabIndex: (tabId: string) => number;
-  hasUnsavedChanges: () => boolean;
-  setOnBeforeClose: (handler: (tabId: string) => Promise<boolean>) => void;
+  getTabById: (tabId: string) => FileTab | undefined
+  getActiveTab: () => FileTab | undefined
+  getTabIndex: (tabId: string) => number
+  hasUnsavedChanges: () => boolean
+  setOnBeforeClose: (handler: (tabId: string) => Promise<boolean>) => void
 }
 
 const HOME_TAB: FileTab = {
-  id: 'home',
-  name: 'Home',
-  type: 'home',
+  id: "home",
+  name: "Home",
+  type: "home",
   workbookId: null,
   isModified: false,
   isPinned: true,
-  icon: '🏠',
+  icon: "🏠",
   createdAt: Date.now(),
   lastAccessedAt: Date.now(),
-};
+}
 
 export const useTabsStore = create<TabsStore>()(
   persist(
     (set, get) => ({
       // Initial State
       tabs: [HOME_TAB],
-      activeTabId: 'home',
+      activeTabId: "home",
       maxTabs: 20,
       showHomeTab: true,
       dragState: {
@@ -85,18 +85,18 @@ export const useTabsStore = create<TabsStore>()(
       // ========== Tab Management ==========
 
       addTab: (tabData) => {
-        const state = get();
+        const state = get()
 
         if (state.tabs.length >= state.maxTabs) {
-          loggers.store.warn('Maximum tabs reached');
-          return '';
+          loggers.store.warn("Maximum tabs reached")
+          return ""
         }
 
         const newTab: FileTab = {
           id: generateId(),
-          name: tabData.name || 'Untitled',
+          name: tabData.name || "Untitled",
           path: tabData.path,
-          type: tabData.type || 'workbook',
+          type: tabData.type || "workbook",
           workbookId: tabData.workbookId || generateId(),
           isModified: false,
           isPinned: false,
@@ -104,58 +104,58 @@ export const useTabsStore = create<TabsStore>()(
           createdAt: Date.now(),
           lastAccessedAt: Date.now(),
           ...tabData,
-        };
+        }
 
         set((state) => ({
           tabs: [...state.tabs, newTab],
           activeTabId: newTab.id,
-        }));
+        }))
 
-        return newTab.id;
+        return newTab.id
       },
 
       removeTab: async (tabId) => {
-        const state = get();
-        const tab = state.tabs.find((t) => t.id === tabId);
+        const state = get()
+        const tab = state.tabs.find((t) => t.id === tabId)
 
-        if (!tab || tab.type === 'home') {
-          return 'cancelled';
+        if (!tab || tab.type === "home") {
+          return "cancelled"
         }
 
         if (tab.isModified && state.onBeforeClose) {
-          const canClose = await state.onBeforeClose(tabId);
+          const canClose = await state.onBeforeClose(tabId)
           if (!canClose) {
-            return 'cancelled';
+            return "cancelled"
           }
         }
 
-        const tabIndex = state.tabs.findIndex((t) => t.id === tabId);
-        const isActive = state.activeTabId === tabId;
+        const tabIndex = state.tabs.findIndex((t) => t.id === tabId)
+        const isActive = state.activeTabId === tabId
 
         set((state) => {
-          const newTabs = state.tabs.filter((t) => t.id !== tabId);
+          const newTabs = state.tabs.filter((t) => t.id !== tabId)
 
-          let newActiveId = state.activeTabId;
+          let newActiveId = state.activeTabId
           if (isActive) {
-            const nextTab = state.tabs[tabIndex + 1];
-            const prevTab = state.tabs[tabIndex - 1];
-            newActiveId = nextTab?.id || prevTab?.id || 'home';
+            const nextTab = state.tabs[tabIndex + 1]
+            const prevTab = state.tabs[tabIndex - 1]
+            newActiveId = nextTab?.id || prevTab?.id || "home"
           }
 
           return {
             tabs: newTabs,
             activeTabId: newActiveId,
-          };
-        });
+          }
+        })
 
-        return 'closed';
+        return "closed"
       },
 
       setActiveTab: (tabId) => {
-        const tab = get().tabs.find((t) => t.id === tabId);
+        const tab = get().tabs.find((t) => t.id === tabId)
         if (tab) {
-          set({ activeTabId: tabId });
-          get().updateTab(tabId, { lastAccessedAt: Date.now() });
+          set({ activeTabId: tabId })
+          get().updateTab(tabId, { lastAccessedAt: Date.now() })
         }
       },
 
@@ -164,93 +164,93 @@ export const useTabsStore = create<TabsStore>()(
           tabs: state.tabs.map((tab) =>
             tab.id === tabId ? { ...tab, ...updates } : tab
           ),
-        }));
+        }))
       },
 
       // ========== Tab Operations ==========
 
       closeOtherTabs: async (tabId) => {
-        const state = get();
+        const state = get()
         const tabsToClose = state.tabs.filter(
-          (t) => t.id !== tabId && t.type !== 'home' && !t.isPinned
-        );
+          (t) => t.id !== tabId && t.type !== "home" && !t.isPinned
+        )
 
         for (const tab of tabsToClose) {
-          await state.removeTab(tab.id);
+          await state.removeTab(tab.id)
         }
       },
 
       closeTabsToRight: async (tabId) => {
-        const state = get();
-        const tabIndex = state.tabs.findIndex((t) => t.id === tabId);
+        const state = get()
+        const tabIndex = state.tabs.findIndex((t) => t.id === tabId)
         const tabsToClose = state.tabs.filter(
-          (t, i) => i > tabIndex && t.type !== 'home' && !t.isPinned
-        );
+          (t, i) => i > tabIndex && t.type !== "home" && !t.isPinned
+        )
 
         for (const tab of tabsToClose) {
-          await state.removeTab(tab.id);
+          await state.removeTab(tab.id)
         }
       },
 
       closeAllTabs: async () => {
-        const state = get();
+        const state = get()
         const tabsToClose = state.tabs.filter(
-          (t) => t.type !== 'home' && !t.isPinned
-        );
+          (t) => t.type !== "home" && !t.isPinned
+        )
 
         for (const tab of tabsToClose) {
-          await state.removeTab(tab.id);
+          await state.removeTab(tab.id)
         }
       },
 
       duplicateTab: (tabId) => {
-        const tab = get().tabs.find((t) => t.id === tabId);
-        if (!tab || tab.type === 'home') return '';
+        const tab = get().tabs.find((t) => t.id === tabId)
+        if (!tab || tab.type === "home") return ""
 
         return get().addTab({
           name: `${tab.name} (Copy)`,
           type: tab.type,
           path: tab.path,
           icon: tab.icon,
-        });
+        })
       },
 
       // ========== Tab Ordering ==========
 
       moveTab: (tabId, newIndex) => {
         set((state) => {
-          const tabs = [...state.tabs];
-          const currentIndex = tabs.findIndex((t) => t.id === tabId);
+          const tabs = [...state.tabs]
+          const currentIndex = tabs.findIndex((t) => t.id === tabId)
 
-          if (currentIndex === -1 || currentIndex === newIndex) return state;
+          if (currentIndex === -1 || currentIndex === newIndex) return state
 
           if (newIndex === 0 && state.showHomeTab) {
-            newIndex = 1;
+            newIndex = 1
           }
 
-          const [movedTab] = tabs.splice(currentIndex, 1);
-          tabs.splice(newIndex, 0, movedTab);
+          const [movedTab] = tabs.splice(currentIndex, 1)
+          tabs.splice(newIndex, 0, movedTab)
 
-          return { tabs };
-        });
+          return { tabs }
+        })
       },
 
       pinTab: (tabId) => {
-        const state = get();
-        const tab = state.tabs.find((t) => t.id === tabId);
-        if (!tab || tab.type === 'home') return;
+        const state = get()
+        const tab = state.tabs.find((t) => t.id === tabId)
+        if (!tab || tab.type === "home") return
 
         const lastPinnedIndex = state.tabs.reduce(
           (acc, t, i) => (t.isPinned ? i : acc),
           0
-        );
+        )
 
-        state.updateTab(tabId, { isPinned: true });
-        state.moveTab(tabId, lastPinnedIndex + 1);
+        state.updateTab(tabId, { isPinned: true })
+        state.moveTab(tabId, lastPinnedIndex + 1)
       },
 
       unpinTab: (tabId) => {
-        get().updateTab(tabId, { isPinned: false });
+        get().updateTab(tabId, { isPinned: false })
       },
 
       // ========== Drag & Drop ==========
@@ -263,7 +263,7 @@ export const useTabsStore = create<TabsStore>()(
             dropTargetId: null,
             dropPosition: null,
           },
-        });
+        })
       },
 
       updateDragTarget: (targetId, position) => {
@@ -273,11 +273,11 @@ export const useTabsStore = create<TabsStore>()(
             dropTargetId: targetId,
             dropPosition: position,
           },
-        }));
+        }))
       },
 
       endDrag: () => {
-        const { dragState, moveTab, tabs } = get();
+        const { dragState, moveTab, tabs } = get()
 
         if (
           dragState.draggedTabId &&
@@ -286,10 +286,10 @@ export const useTabsStore = create<TabsStore>()(
         ) {
           const targetIndex = tabs.findIndex(
             (t) => t.id === dragState.dropTargetId
-          );
+          )
           const newIndex =
-            dragState.dropPosition === 'after' ? targetIndex + 1 : targetIndex;
-          moveTab(dragState.draggedTabId, newIndex);
+            dragState.dropPosition === "after" ? targetIndex + 1 : targetIndex
+          moveTab(dragState.draggedTabId, newIndex)
         }
 
         set({
@@ -299,34 +299,34 @@ export const useTabsStore = create<TabsStore>()(
             dropTargetId: null,
             dropPosition: null,
           },
-        });
+        })
       },
 
       // ========== Navigation ==========
 
       goToNextTab: () => {
-        const state = get();
+        const state = get()
         const currentIndex = state.tabs.findIndex(
           (t) => t.id === state.activeTabId
-        );
-        const nextIndex = (currentIndex + 1) % state.tabs.length;
-        state.setActiveTab(state.tabs[nextIndex].id);
+        )
+        const nextIndex = (currentIndex + 1) % state.tabs.length
+        state.setActiveTab(state.tabs[nextIndex].id)
       },
 
       goToPrevTab: () => {
-        const state = get();
+        const state = get()
         const currentIndex = state.tabs.findIndex(
           (t) => t.id === state.activeTabId
-        );
+        )
         const prevIndex =
-          (currentIndex - 1 + state.tabs.length) % state.tabs.length;
-        state.setActiveTab(state.tabs[prevIndex].id);
+          (currentIndex - 1 + state.tabs.length) % state.tabs.length
+        state.setActiveTab(state.tabs[prevIndex].id)
       },
 
       goToTab: (index) => {
-        const tabs = get().tabs;
+        const tabs = get().tabs
         if (index >= 0 && index < tabs.length) {
-          get().setActiveTab(tabs[index].id);
+          get().setActiveTab(tabs[index].id)
         }
       },
 
@@ -335,8 +335,8 @@ export const useTabsStore = create<TabsStore>()(
       getTabById: (tabId) => get().tabs.find((t) => t.id === tabId),
 
       getActiveTab: () => {
-        const state = get();
-        return state.tabs.find((t) => t.id === state.activeTabId);
+        const state = get()
+        return state.tabs.find((t) => t.id === state.activeTabId)
       },
 
       getTabIndex: (tabId) => get().tabs.findIndex((t) => t.id === tabId),
@@ -344,11 +344,11 @@ export const useTabsStore = create<TabsStore>()(
       hasUnsavedChanges: () => get().tabs.some((t) => t.isModified),
 
       setOnBeforeClose: (handler) => {
-        set({ onBeforeClose: handler });
+        set({ onBeforeClose: handler })
       },
     }),
     {
-      name: 'excelai-tabs',
+      name: "excelai-tabs",
       partialize: (state) => ({
         tabs: state.tabs,
         activeTabId: state.activeTabId,
@@ -356,4 +356,4 @@ export const useTabsStore = create<TabsStore>()(
       }),
     }
   )
-);
+)

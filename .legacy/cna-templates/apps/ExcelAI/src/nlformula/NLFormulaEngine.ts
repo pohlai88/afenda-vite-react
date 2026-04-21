@@ -2,11 +2,11 @@
 // NL FORMULA ENGINE — Main orchestrator
 // =============================================================================
 
-import { FormulaInterpreter } from './FormulaInterpreter';
-import { FormulaExplainer } from './FormulaExplainer';
-import { FormulaDebugger } from './FormulaDebugger';
-import { FormulaSuggester } from './FormulaSuggester';
-import { ContextAnalyzer } from './ContextAnalyzer';
+import { FormulaInterpreter } from "./FormulaInterpreter"
+import { FormulaExplainer } from "./FormulaExplainer"
+import { FormulaDebugger } from "./FormulaDebugger"
+import { FormulaSuggester } from "./FormulaSuggester"
+import { ContextAnalyzer } from "./ContextAnalyzer"
 import type {
   NLInput,
   InterpretationResult,
@@ -14,29 +14,29 @@ import type {
   DebugResult,
   SuggestionResult,
   CellContext,
-} from './types';
+} from "./types"
 
 /**
  * Natural Language Formula Engine
  * Converts natural language to Excel formulas and vice versa
  */
 export class NLFormulaEngine {
-  private interpreter: FormulaInterpreter;
-  private explainer: FormulaExplainer;
-  private debugger: FormulaDebugger;
-  private suggester: FormulaSuggester;
-  private contextAnalyzer: ContextAnalyzer;
+  private interpreter: FormulaInterpreter
+  private explainer: FormulaExplainer
+  private debugger: FormulaDebugger
+  private suggester: FormulaSuggester
+  private contextAnalyzer: ContextAnalyzer
 
   // Cache for performance
-  private interpretCache: Map<string, InterpretationResult> = new Map();
-  private explainCache: Map<string, FormulaExplanation> = new Map();
+  private interpretCache: Map<string, InterpretationResult> = new Map()
+  private explainCache: Map<string, FormulaExplanation> = new Map()
 
   constructor() {
-    this.interpreter = new FormulaInterpreter();
-    this.explainer = new FormulaExplainer();
-    this.debugger = new FormulaDebugger();
-    this.suggester = new FormulaSuggester();
-    this.contextAnalyzer = new ContextAnalyzer();
+    this.interpreter = new FormulaInterpreter()
+    this.explainer = new FormulaExplainer()
+    this.debugger = new FormulaDebugger()
+    this.suggester = new FormulaSuggester()
+    this.contextAnalyzer = new ContextAnalyzer()
   }
 
   // ===========================================================================
@@ -48,45 +48,45 @@ export class NLFormulaEngine {
    * Main entry point for NL → Formula conversion
    */
   async interpret(input: NLInput): Promise<InterpretationResult> {
-    const cacheKey = this.getCacheKey(input);
+    const cacheKey = this.getCacheKey(input)
 
     if (this.interpretCache.has(cacheKey)) {
-      return this.interpretCache.get(cacheKey)!;
+      return this.interpretCache.get(cacheKey)!
     }
 
     try {
       // Analyze context
-      const enrichedContext = await this.contextAnalyzer.analyze(input.context);
+      const enrichedContext = await this.contextAnalyzer.analyze(input.context)
 
       // Interpret
       const result = await this.interpreter.interpret({
         ...input,
         context: enrichedContext,
-      });
+      })
 
       // Cache successful results
       if (result.success) {
-        this.interpretCache.set(cacheKey, result);
+        this.interpretCache.set(cacheKey, result)
 
         // Add to recent formulas
         if (result.formula) {
-          this.suggester.addRecent(result.formula);
+          this.suggester.addRecent(result.formula)
         }
       }
 
-      return result;
+      return result
     } catch (error) {
       return {
         success: false,
         confidence: 0,
-        explanation: '',
+        explanation: "",
         error: `Interpretation failed: ${error}`,
         suggestions: [
-          'Try being more specific',
-          'Use column names from your data',
+          "Try being more specific",
+          "Use column names from your data",
           'Example: "sum of Sales column"',
         ],
-      };
+      }
     }
   }
 
@@ -96,18 +96,18 @@ export class NLFormulaEngine {
   async explain(
     formula: string,
     context?: CellContext,
-    language: 'en' | 'vi' = 'en'
+    language: "en" | "vi" = "en"
   ): Promise<FormulaExplanation> {
-    const cacheKey = `explain:${formula}:${language}`;
+    const cacheKey = `explain:${formula}:${language}`
 
     if (this.explainCache.has(cacheKey)) {
-      return this.explainCache.get(cacheKey)!;
+      return this.explainCache.get(cacheKey)!
     }
 
-    const result = await this.explainer.explain(formula, context, language);
-    this.explainCache.set(cacheKey, result);
+    const result = await this.explainer.explain(formula, context, language)
+    this.explainCache.set(cacheKey, result)
 
-    return result;
+    return result
   }
 
   /**
@@ -118,7 +118,7 @@ export class NLFormulaEngine {
     error: string,
     context?: CellContext
   ): Promise<DebugResult> {
-    return this.debugger.debug(formula, error, context);
+    return this.debugger.debug(formula, error, context)
   }
 
   /**
@@ -133,7 +133,7 @@ export class NLFormulaEngine {
       partialInput,
       cursorPosition,
       context,
-    });
+    })
   }
 
   /**
@@ -141,31 +141,31 @@ export class NLFormulaEngine {
    */
   isNaturalLanguage(input: string): boolean {
     // Formulas start with =
-    if (input.startsWith('=')) return false;
+    if (input.startsWith("=")) return false
 
     // Contains spaces and common words
-    const hasSpaces = input.includes(' ');
+    const hasSpaces = input.includes(" ")
     const hasNLWords =
       /\b(sum|average|count|if|total|calculate|find|get|show|của|tổng|trung bình|đếm|nếu|tìm)\b/i.test(
         input
-      );
+      )
 
-    return hasSpaces || hasNLWords;
+    return hasSpaces || hasNLWords
   }
 
   /**
    * Detect input language
    */
-  detectLanguage(input: string): 'en' | 'vi' {
+  detectLanguage(input: string): "en" | "vi" {
     const viPatterns =
-      /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
+      /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i
     const viWords =
-      /\b(của|và|hoặc|nếu|thì|là|trong|với|từ|đến|tổng|đếm|trung bình)\b/i;
+      /\b(của|và|hoặc|nếu|thì|là|trong|với|từ|đến|tổng|đếm|trung bình)\b/i
 
     if (viPatterns.test(input) || viWords.test(input)) {
-      return 'vi';
+      return "vi"
     }
-    return 'en';
+    return "en"
   }
 
   /**
@@ -176,24 +176,24 @@ export class NLFormulaEngine {
     context: CellContext
   ): Promise<InterpretationResult | null> {
     if (!input || input.trim().length === 0) {
-      return null;
+      return null
     }
 
     // If it's a formula, don't process
-    if (input.startsWith('=')) {
-      return null;
+    if (input.startsWith("=")) {
+      return null
     }
 
     // If it looks like natural language, interpret it
     if (this.isNaturalLanguage(input)) {
       return this.interpret({
         text: input,
-        language: 'auto',
+        language: "auto",
         context,
-      });
+      })
     }
 
-    return null;
+    return null
   }
 
   // ===========================================================================
@@ -201,31 +201,31 @@ export class NLFormulaEngine {
   // ===========================================================================
 
   private getCacheKey(input: NLInput): string {
-    return `${input.text}:${input.context.sheetId}:${input.context.cellRef}`;
+    return `${input.text}:${input.context.sheetId}:${input.context.cellRef}`
   }
 
   /**
    * Clear caches
    */
   clearCache(): void {
-    this.interpretCache.clear();
-    this.explainCache.clear();
+    this.interpretCache.clear()
+    this.explainCache.clear()
   }
 
   /**
    * Get recent formulas
    */
   getRecentFormulas(): string[] {
-    return this.suggester.getRecent();
+    return this.suggester.getRecent()
   }
 
   /**
    * Clear recent formulas
    */
   clearRecentFormulas(): void {
-    this.suggester.clearRecent();
+    this.suggester.clearRecent()
   }
 }
 
 // Export singleton
-export const nlFormulaEngine = new NLFormulaEngine();
+export const nlFormulaEngine = new NLFormulaEngine()

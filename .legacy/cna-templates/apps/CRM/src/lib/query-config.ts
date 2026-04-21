@@ -4,7 +4,11 @@
  */
 export const authQueryConfig = {
   retry: (failureCount: number, error: Error) => {
-    if (error?.message?.includes('401') || error?.message?.includes('Unauthorized')) return false
+    if (
+      error?.message?.includes("401") ||
+      error?.message?.includes("Unauthorized")
+    )
+      return false
     return failureCount < 2
   },
 }

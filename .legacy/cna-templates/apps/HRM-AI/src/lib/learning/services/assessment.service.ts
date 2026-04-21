@@ -1,12 +1,8 @@
 // src/lib/learning/services/assessment.service.ts
 // Assessment Service - Manage course assessments, quizzes, and grading
 
-import { db } from '@/lib/db'
-import {
-  AssessmentType,
-  QuestionType,
-  Prisma
-} from '@prisma/client'
+import { db } from "@/lib/db"
+import { AssessmentType, QuestionType, Prisma } from "@prisma/client"
 
 // Types
 export interface CreateAssessmentInput {
@@ -95,7 +91,7 @@ export class AssessmentService {
         course: { select: { id: true, title: true, code: true } },
         createdBy: { select: { id: true, name: true } },
         questions: {
-          orderBy: { order: 'asc' },
+          orderBy: { order: "asc" },
         },
         _count: {
           select: { attempts: true },
@@ -104,7 +100,7 @@ export class AssessmentService {
     })
 
     if (!assessment) {
-      throw new Error('Assessment not found')
+      throw new Error("Assessment not found")
     }
 
     return assessment
@@ -118,15 +114,15 @@ export class AssessmentService {
 
     // Check if active and available
     if (!assessment.isActive) {
-      throw new Error('Assessment is not active')
+      throw new Error("Assessment is not active")
     }
 
     const now = new Date()
     if (assessment.availableFrom && now < assessment.availableFrom) {
-      throw new Error('Assessment is not yet available')
+      throw new Error("Assessment is not yet available")
     }
     if (assessment.availableUntil && now > assessment.availableUntil) {
-      throw new Error('Assessment is no longer available')
+      throw new Error("Assessment is no longer available")
     }
 
     // Check attempts limit
@@ -138,11 +134,11 @@ export class AssessmentService {
     })
 
     if (attemptCount >= assessment.maxAttempts) {
-      throw new Error('Maximum attempts reached')
+      throw new Error("Maximum attempts reached")
     }
 
     // Remove correct answers from questions
-    const questions = assessment.questions.map(q => ({
+    const questions = assessment.questions.map((q) => ({
       id: q.id,
       questionText: q.questionText,
       questionType: q.questionType,
@@ -154,8 +150,8 @@ export class AssessmentService {
     // Shuffle if needed
     if (assessment.shuffleQuestions) {
       for (let i = questions.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [questions[i], questions[j]] = [questions[j], questions[i]]
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[questions[i], questions[j]] = [questions[j], questions[i]]
       }
     }
 
@@ -176,7 +172,11 @@ export class AssessmentService {
   /**
    * List assessments
    */
-  async list(filters: AssessmentFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: AssessmentFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.AssessmentWhereInput = {
@@ -197,15 +197,15 @@ export class AssessmentService {
 
     if (filters.search) {
       where.OR = [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
+        { title: { contains: filters.search, mode: "insensitive" } },
+        { description: { contains: filters.search, mode: "insensitive" } },
       ]
     }
 
     const [assessments, total] = await Promise.all([
       db.assessment.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: pageSize,
         include: {
@@ -236,7 +236,7 @@ export class AssessmentService {
     })
 
     if (!assessment) {
-      throw new Error('Assessment not found')
+      throw new Error("Assessment not found")
     }
 
     return db.assessment.update({
@@ -278,11 +278,11 @@ export class AssessmentService {
     })
 
     if (!assessment) {
-      throw new Error('Assessment not found')
+      throw new Error("Assessment not found")
     }
 
     if (assessment._count.attempts > 0) {
-      throw new Error('Cannot delete assessment with attempts')
+      throw new Error("Cannot delete assessment with attempts")
     }
 
     await db.assessment.delete({ where: { id } })
@@ -300,13 +300,13 @@ export class AssessmentService {
     })
 
     if (!assessment) {
-      throw new Error('Assessment not found')
+      throw new Error("Assessment not found")
     }
 
     // Get max order
     const lastQuestion = await db.assessmentQuestion.findFirst({
       where: { assessmentId },
-      orderBy: { order: 'desc' },
+      orderBy: { order: "desc" },
     })
 
     const order = input.order ?? (lastQuestion ? lastQuestion.order + 1 : 0)
@@ -328,7 +328,10 @@ export class AssessmentService {
   /**
    * Update question
    */
-  async updateQuestion(questionId: string, input: Partial<CreateQuestionInput>) {
+  async updateQuestion(
+    questionId: string,
+    input: Partial<CreateQuestionInput>
+  ) {
     return db.assessmentQuestion.update({
       where: { id: questionId },
       data: {
@@ -371,13 +374,17 @@ export class AssessmentService {
   /**
    * Start an assessment attempt
    */
-  async startAttempt(assessmentId: string, employeeId: string, enrollmentId?: string) {
+  async startAttempt(
+    assessmentId: string,
+    employeeId: string,
+    enrollmentId?: string
+  ) {
     const assessment = await db.assessment.findFirst({
       where: { id: assessmentId, tenantId: this.tenantId },
     })
 
     if (!assessment) {
-      throw new Error('Assessment not found')
+      throw new Error("Assessment not found")
     }
 
     // Check attempts limit
@@ -386,7 +393,7 @@ export class AssessmentService {
     })
 
     if (attemptCount >= assessment.maxAttempts) {
-      throw new Error('Maximum attempts reached')
+      throw new Error("Maximum attempts reached")
     }
 
     return db.assessmentAttempt.create({
@@ -420,26 +427,29 @@ export class AssessmentService {
     })
 
     if (!attempt) {
-      throw new Error('Attempt not found')
+      throw new Error("Attempt not found")
     }
 
     if (attempt.submittedAt) {
-      throw new Error('Attempt already submitted')
+      throw new Error("Attempt already submitted")
     }
 
     // Check time limit
     if (attempt.assessment.timeLimitMinutes) {
       const timeElapsed = (Date.now() - attempt.startedAt.getTime()) / 60000
-      if (timeElapsed > attempt.assessment.timeLimitMinutes + 1) { // 1 minute grace
-        throw new Error('Time limit exceeded')
+      if (timeElapsed > attempt.assessment.timeLimitMinutes + 1) {
+        // 1 minute grace
+        throw new Error("Time limit exceeded")
       }
     }
 
     // Process responses
-    const questionMap = new Map(attempt.assessment.questions.map(q => [q.id, q]))
+    const questionMap = new Map(
+      attempt.assessment.questions.map((q) => [q.id, q])
+    )
     let totalScore = 0
 
-    const responseData = responses.map(r => {
+    const responseData = responses.map((r) => {
       const question = questionMap.get(r.questionId)
       if (!question) {
         throw new Error(`Question ${r.questionId} not found`)
@@ -449,11 +459,22 @@ export class AssessmentService {
       let isCorrect: boolean | null = null
       let pointsEarned: number | null = null
 
-      if ([QuestionType.SINGLE_CHOICE, QuestionType.MULTIPLE_CHOICE, QuestionType.TRUE_FALSE].some(t => t === question.questionType)) {
-        if (question.questionType === QuestionType.MULTIPLE_CHOICE && r.selectedOptions) {
+      if (
+        [
+          QuestionType.SINGLE_CHOICE,
+          QuestionType.MULTIPLE_CHOICE,
+          QuestionType.TRUE_FALSE,
+        ].some((t) => t === question.questionType)
+      ) {
+        if (
+          question.questionType === QuestionType.MULTIPLE_CHOICE &&
+          r.selectedOptions
+        ) {
           // Compare arrays
-          const correct = JSON.parse(question.correctAnswer || '[]')
-          isCorrect = JSON.stringify(r.selectedOptions.sort()) === JSON.stringify(correct.sort())
+          const correct = JSON.parse(question.correctAnswer || "[]")
+          isCorrect =
+            JSON.stringify(r.selectedOptions.sort()) ===
+            JSON.stringify(correct.sort())
         } else {
           isCorrect = r.response === question.correctAnswer
         }
@@ -478,16 +499,21 @@ export class AssessmentService {
 
     // Calculate final score
     const totalPoints = Number(attempt.assessment.totalPoints)
-    const percentageScore = totalPoints > 0 ? Math.round((totalScore / totalPoints) * 100) : 0
+    const percentageScore =
+      totalPoints > 0 ? Math.round((totalScore / totalPoints) * 100) : 0
     const passingScore = Number(attempt.assessment.passingScore)
     const passed = percentageScore >= passingScore
 
     // Check if all questions are graded (no essay/short answer)
-    const needsManualGrading = attempt.assessment.questions.some(q =>
-      [QuestionType.ESSAY, QuestionType.SHORT_ANSWER].some(t => t === q.questionType)
+    const needsManualGrading = attempt.assessment.questions.some((q) =>
+      [QuestionType.ESSAY, QuestionType.SHORT_ANSWER].some(
+        (t) => t === q.questionType
+      )
     )
 
-    const timeSpentMinutes = Math.round((Date.now() - attempt.startedAt.getTime()) / 60000)
+    const timeSpentMinutes = Math.round(
+      (Date.now() - attempt.startedAt.getTime()) / 60000
+    )
 
     // Update attempt
     const result = await db.assessmentAttempt.update({
@@ -520,7 +546,12 @@ export class AssessmentService {
   /**
    * Grade a response manually
    */
-  async gradeResponse(responseId: string, graderId: string, pointsEarned: number, comments?: string) {
+  async gradeResponse(
+    responseId: string,
+    graderId: string,
+    pointsEarned: number,
+    comments?: string
+  ) {
     const response = await db.questionResponse.findUnique({
       where: { id: responseId },
       include: {
@@ -535,11 +566,11 @@ export class AssessmentService {
     })
 
     if (!response) {
-      throw new Error('Response not found')
+      throw new Error("Response not found")
     }
 
     if (pointsEarned > Number(response.question.points)) {
-      throw new Error('Points earned cannot exceed question points')
+      throw new Error("Points earned cannot exceed question points")
     }
 
     // Update response
@@ -559,12 +590,16 @@ export class AssessmentService {
       where: { attemptId: response.attemptId },
     })
 
-    const allGraded = allResponses.every(r => r.pointsEarned !== null)
+    const allGraded = allResponses.every((r) => r.pointsEarned !== null)
 
     if (allGraded) {
-      const totalScore = allResponses.reduce((sum, r) => sum + Number(r.pointsEarned || 0), 0)
+      const totalScore = allResponses.reduce(
+        (sum, r) => sum + Number(r.pointsEarned || 0),
+        0
+      )
       const totalPoints = Number(response.attempt.assessment.totalPoints)
-      const percentageScore = totalPoints > 0 ? Math.round((totalScore / totalPoints) * 100) : 0
+      const percentageScore =
+        totalPoints > 0 ? Math.round((totalScore / totalPoints) * 100) : 0
       const passingScore = Number(response.attempt.assessment.passingScore)
       const passed = percentageScore >= passingScore
 
@@ -591,7 +626,7 @@ export class AssessmentService {
         assessment: {
           include: {
             questions: {
-              orderBy: { order: 'asc' },
+              orderBy: { order: "asc" },
             },
           },
         },
@@ -608,12 +643,12 @@ export class AssessmentService {
     })
 
     if (!attempt) {
-      throw new Error('Attempt not found')
+      throw new Error("Attempt not found")
     }
 
     // Include correct answers if showCorrectAnswers is true
     if (!attempt.assessment.showCorrectAnswers) {
-      attempt.assessment.questions = attempt.assessment.questions.map(q => ({
+      attempt.assessment.questions = attempt.assessment.questions.map((q) => ({
         ...q,
         correctAnswer: null,
         explanation: null,
@@ -633,7 +668,7 @@ export class AssessmentService {
         assessmentId,
         employeeId,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: {
         assessment: {
           select: { id: true, title: true, passingScore: true },
@@ -652,7 +687,7 @@ export class AssessmentService {
         submittedAt: { not: null },
         passed: null, // Not fully graded
       },
-      orderBy: { submittedAt: 'asc' },
+      orderBy: { submittedAt: "asc" },
       include: {
         assessment: {
           select: { id: true, title: true },
@@ -685,7 +720,7 @@ export class AssessmentService {
       db.assessmentAttempt.count({ where }),
 
       db.assessmentAttempt.groupBy({
-        by: ['passed'],
+        by: ["passed"],
         where: { ...where, passed: { not: null } },
         _count: true,
       }),
@@ -696,17 +731,20 @@ export class AssessmentService {
       }),
     ])
 
-    const passedCount = passRate.find(p => p.passed)
-    const failedCount = passRate.find(p => !p.passed)
-    const passRatePercent = totalAttempts > 0
-      ? Math.round(((passedCount?._count || 0) / totalAttempts) * 100)
-      : 0
+    const passedCount = passRate.find((p) => p.passed)
+    const failedCount = passRate.find((p) => !p.passed)
+    const passRatePercent =
+      totalAttempts > 0
+        ? Math.round(((passedCount?._count || 0) / totalAttempts) * 100)
+        : 0
 
     return {
       totalAttempts,
       passRate: passRatePercent,
       failRate: 100 - passRatePercent,
-      averageScore: avgScore._avg.percentageScore ? Math.round(Number(avgScore._avg.percentageScore)) : 0,
+      averageScore: avgScore._avg.percentageScore
+        ? Math.round(Number(avgScore._avg.percentageScore))
+        : 0,
       passed: passedCount?._count || 0,
       failed: failedCount?._count || 0,
     }

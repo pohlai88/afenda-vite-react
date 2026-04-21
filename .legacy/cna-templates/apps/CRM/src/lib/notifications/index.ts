@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma'
-import { NOTIFICATION_TYPES, resolveTemplate } from './types'
-import type { NotificationTypeKey } from './types'
-import type { Notification } from '@prisma/client'
+import { prisma } from "@/lib/prisma"
+import { NOTIFICATION_TYPES, resolveTemplate } from "./types"
+import type { NotificationTypeKey } from "./types"
+import type { Notification } from "@prisma/client"
 
 // ── Create notification ─────────────────────────────────────────────
 
@@ -50,7 +50,7 @@ export async function notifyUser(
 // ── Notify all users with a given role ──────────────────────────────
 
 export async function notifyRole(
-  role: 'ADMIN' | 'MANAGER',
+  role: "ADMIN" | "MANAGER",
   type: NotificationTypeKey,
   vars: Record<string, string>,
   link?: string
@@ -60,9 +60,7 @@ export async function notifyRole(
     select: { id: true },
   })
 
-  await Promise.all(
-    users.map((user) => notifyUser(user.id, type, vars, link))
-  )
+  await Promise.all(users.map((user) => notifyUser(user.id, type, vars, link)))
 }
 
 // ── Unread count ────────────────────────────────────────────────────

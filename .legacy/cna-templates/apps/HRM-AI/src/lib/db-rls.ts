@@ -2,7 +2,7 @@
 // Prisma client extension for PostgreSQL Row-Level Security (P2-23)
 // Sets app.current_tenant_id session variable before queries
 
-import { db } from './db'
+import { db } from "./db"
 
 /**
  * Execute a Prisma operation with tenant RLS context.
@@ -69,8 +69,12 @@ export async function clearTenantContext(): Promise<void> {
 /**
  * Check if RLS is enabled on a table (diagnostic utility).
  */
-export async function checkRLSStatus(): Promise<{ table: string; rlsEnabled: boolean }[]> {
-  const result = await db.$queryRaw<{ tablename: string; rowsecurity: boolean }[]>`
+export async function checkRLSStatus(): Promise<
+  { table: string; rlsEnabled: boolean }[]
+> {
+  const result = await db.$queryRaw<
+    { tablename: string; rowsecurity: boolean }[]
+  >`
     SELECT tablename, rowsecurity
     FROM pg_tables
     WHERE schemaname = 'public'

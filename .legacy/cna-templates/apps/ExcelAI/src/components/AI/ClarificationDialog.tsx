@@ -2,25 +2,25 @@
 // CLARIFICATION DIALOG — Ask clarifying questions (Blueprint §5.6)
 // =============================================================================
 
-import React, { useState } from 'react';
+import React, { useState } from "react"
 import type {
   ClarificationRequest,
   ClarificationOption,
   ClarificationType,
-} from '../../ai/conversation/types';
+} from "../../ai/conversation/types"
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 interface ClarificationDialogProps {
-  request: ClarificationRequest;
+  request: ClarificationRequest
   onRespond: (response: {
-    selectedOptionId?: string;
-    freeTextResponse?: string;
-  }) => void;
-  onSkip?: () => void;
-  className?: string;
+    selectedOptionId?: string
+    freeTextResponse?: string
+  }) => void
+  onSkip?: () => void
+  className?: string
 }
 
 // -----------------------------------------------------------------------------
@@ -31,27 +31,27 @@ export const ClarificationDialog: React.FC<ClarificationDialogProps> = ({
   request,
   onRespond,
   onSkip,
-  className = '',
+  className = "",
 }) => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [freeText, setFreeText] = useState('');
-  const [showFreeText, setShowFreeText] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null)
+  const [freeText, setFreeText] = useState("")
+  const [showFreeText, setShowFreeText] = useState(false)
 
   const handleOptionSelect = (optionId: string) => {
-    setSelectedOption(optionId);
-    setShowFreeText(false);
-  };
+    setSelectedOption(optionId)
+    setShowFreeText(false)
+  }
 
   const handleSubmit = () => {
     if (showFreeText && freeText) {
-      onRespond({ freeTextResponse: freeText });
+      onRespond({ freeTextResponse: freeText })
     } else if (selectedOption) {
-      onRespond({ selectedOptionId: selectedOption });
+      onRespond({ selectedOptionId: selectedOption })
     }
-  };
+  }
 
   const canSubmit =
-    (showFreeText && freeText.length > 0) || selectedOption !== null;
+    (showFreeText && freeText.length > 0) || selectedOption !== null
 
   return (
     <div className={`clarification-dialog ${className}`}>
@@ -89,11 +89,11 @@ export const ClarificationDialog: React.FC<ClarificationDialogProps> = ({
           {request.allowFreeText && (
             <button
               className={`clarification-option ${
-                showFreeText ? 'clarification-option--selected' : ''
+                showFreeText ? "clarification-option--selected" : ""
               }`}
               onClick={() => {
-                setShowFreeText(true);
-                setSelectedOption(null);
+                setShowFreeText(true)
+                setSelectedOption(null)
               }}
             >
               <span className="clarification-option__label">Other...</span>
@@ -122,10 +122,7 @@ export const ClarificationDialog: React.FC<ClarificationDialogProps> = ({
       {/* Actions */}
       <div className="clarification-dialog__actions">
         {onSkip && !request.required && (
-          <button
-            className="clarification-dialog__skip"
-            onClick={onSkip}
-          >
+          <button className="clarification-dialog__skip" onClick={onSkip}>
             Skip
           </button>
         )}
@@ -138,17 +135,17 @@ export const ClarificationDialog: React.FC<ClarificationDialogProps> = ({
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Option Button
 // -----------------------------------------------------------------------------
 
 interface ClarificationOptionButtonProps {
-  option: ClarificationOption;
-  selected: boolean;
-  onSelect: () => void;
+  option: ClarificationOption
+  selected: boolean
+  onSelect: () => void
 }
 
 const ClarificationOptionButton: React.FC<ClarificationOptionButtonProps> = ({
@@ -159,12 +156,12 @@ const ClarificationOptionButton: React.FC<ClarificationOptionButtonProps> = ({
   return (
     <button
       className={`clarification-option ${
-        selected ? 'clarification-option--selected' : ''
+        selected ? "clarification-option--selected" : ""
       }`}
       onClick={onSelect}
     >
       <span className="clarification-option__radio">
-        {selected ? '●' : '○'}
+        {selected ? "●" : "○"}
       </span>
       <span className="clarification-option__label">{option.label}</span>
       {option.description && (
@@ -173,25 +170,25 @@ const ClarificationOptionButton: React.FC<ClarificationOptionButtonProps> = ({
         </span>
       )}
     </button>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Inline Clarification
 // -----------------------------------------------------------------------------
 
 interface InlineClarificationProps {
-  question: string;
-  options: string[];
-  onSelect: (option: string) => void;
-  className?: string;
+  question: string
+  options: string[]
+  onSelect: (option: string) => void
+  className?: string
 }
 
 export const InlineClarification: React.FC<InlineClarificationProps> = ({
   question,
   options,
   onSelect,
-  className = '',
+  className = "",
 }) => {
   return (
     <div className={`inline-clarification ${className}`}>
@@ -208,25 +205,25 @@ export const InlineClarification: React.FC<InlineClarificationProps> = ({
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Quick Suggestions
 // -----------------------------------------------------------------------------
 
 interface QuickSuggestionsProps {
-  suggestions: string[];
-  onSelect: (suggestion: string) => void;
-  className?: string;
+  suggestions: string[]
+  onSelect: (suggestion: string) => void
+  className?: string
 }
 
 export const QuickSuggestions: React.FC<QuickSuggestionsProps> = ({
   suggestions,
   onSelect,
-  className = '',
+  className = "",
 }) => {
-  if (suggestions.length === 0) return null;
+  if (suggestions.length === 0) return null
 
   return (
     <div className={`quick-suggestions ${className}`}>
@@ -243,8 +240,8 @@ export const QuickSuggestions: React.FC<QuickSuggestionsProps> = ({
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -252,36 +249,36 @@ export const QuickSuggestions: React.FC<QuickSuggestionsProps> = ({
 
 function getTypeIcon(type: ClarificationType): string {
   switch (type) {
-    case 'target_selection':
-      return '📍';
-    case 'action_confirmation':
-      return '✓';
-    case 'parameter_value':
-      return '🔢';
-    case 'ambiguity_resolution':
-      return '❓';
-    case 'scope_definition':
-      return '📊';
-    case 'format_preference':
-      return '🎨';
+    case "target_selection":
+      return "📍"
+    case "action_confirmation":
+      return "✓"
+    case "parameter_value":
+      return "🔢"
+    case "ambiguity_resolution":
+      return "❓"
+    case "scope_definition":
+      return "📊"
+    case "format_preference":
+      return "🎨"
   }
 }
 
 function formatType(type: ClarificationType): string {
   switch (type) {
-    case 'target_selection':
-      return 'Select Target';
-    case 'action_confirmation':
-      return 'Confirm Action';
-    case 'parameter_value':
-      return 'Enter Value';
-    case 'ambiguity_resolution':
-      return 'Clarify Intent';
-    case 'scope_definition':
-      return 'Define Scope';
-    case 'format_preference':
-      return 'Choose Format';
+    case "target_selection":
+      return "Select Target"
+    case "action_confirmation":
+      return "Confirm Action"
+    case "parameter_value":
+      return "Enter Value"
+    case "ambiguity_resolution":
+      return "Clarify Intent"
+    case "scope_definition":
+      return "Define Scope"
+    case "format_preference":
+      return "Choose Format"
   }
 }
 
-export default ClarificationDialog;
+export default ClarificationDialog

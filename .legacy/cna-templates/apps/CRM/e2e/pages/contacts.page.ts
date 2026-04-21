@@ -1,11 +1,11 @@
-import { type Page, expect } from '@playwright/test'
-import { SELECTORS } from '../helpers/selectors'
+import { type Page, expect } from "@playwright/test"
+import { SELECTORS } from "../helpers/selectors"
 
 export class ContactsPage {
   constructor(private page: Page) {}
 
   async goto() {
-    await this.page.goto('/contacts')
+    await this.page.goto("/contacts")
   }
 
   async expectListVisible() {
@@ -17,14 +17,16 @@ export class ContactsPage {
 
   async expectPageHeading() {
     // Check for Vietnamese or English heading
-    await expect(
-      this.page.locator('h1').first()
-    ).toBeVisible({ timeout: 10_000 })
+    await expect(this.page.locator("h1").first()).toBeVisible({
+      timeout: 10_000,
+    })
   }
 
   async clickCreate() {
     await this.page
-      .locator('button:has-text("Thêm"), a:has-text("Thêm"), button:has-text("Add")')
+      .locator(
+        'button:has-text("Thêm"), a:has-text("Thêm"), button:has-text("Add")'
+      )
       .first()
       .click()
   }

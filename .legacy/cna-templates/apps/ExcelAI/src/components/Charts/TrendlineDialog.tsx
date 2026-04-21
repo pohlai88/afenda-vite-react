@@ -2,7 +2,7 @@
 // TRENDLINE DIALOG — Configure and Add Trendlines to Charts
 // ============================================================
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from "react"
 import {
   X,
   TrendingUp,
@@ -10,102 +10,107 @@ import {
   Activity,
   BarChart2,
   Zap,
-} from 'lucide-react';
+} from "lucide-react"
 import {
   TrendlineType,
   TrendlineConfig,
   TrendlineResult,
   calculateTrendline,
-} from '../../utils/trendlineUtils';
-import './Charts.css';
+} from "../../utils/trendlineUtils"
+import "./Charts.css"
 
 interface TrendlineDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onApply: (config: TrendlineConfig, result: TrendlineResult) => void;
-  dataPoints: { x: number; y: number }[];
-  seriesName?: string;
+  isOpen: boolean
+  onClose: () => void
+  onApply: (config: TrendlineConfig, result: TrendlineResult) => void
+  dataPoints: { x: number; y: number }[]
+  seriesName?: string
 }
 
-const TRENDLINE_OPTIONS: { type: TrendlineType; label: string; icon: React.ReactNode; description: string }[] = [
+const TRENDLINE_OPTIONS: {
+  type: TrendlineType
+  label: string
+  icon: React.ReactNode
+  description: string
+}[] = [
   {
-    type: 'linear',
-    label: 'Linear',
+    type: "linear",
+    label: "Linear",
     icon: <TrendingUp size={18} />,
-    description: 'Best fit straight line (y = mx + b)',
+    description: "Best fit straight line (y = mx + b)",
   },
   {
-    type: 'exponential',
-    label: 'Exponential',
+    type: "exponential",
+    label: "Exponential",
     icon: <Zap size={18} />,
-    description: 'Exponential growth or decay (y = ae^bx)',
+    description: "Exponential growth or decay (y = ae^bx)",
   },
   {
-    type: 'logarithmic',
-    label: 'Logarithmic',
+    type: "logarithmic",
+    label: "Logarithmic",
     icon: <LineChart size={18} />,
-    description: 'Logarithmic curve (y = a·ln(x) + b)',
+    description: "Logarithmic curve (y = a·ln(x) + b)",
   },
   {
-    type: 'polynomial',
-    label: 'Polynomial',
+    type: "polynomial",
+    label: "Polynomial",
     icon: <Activity size={18} />,
-    description: 'Polynomial curve of specified degree',
+    description: "Polynomial curve of specified degree",
   },
   {
-    type: 'power',
-    label: 'Power',
+    type: "power",
+    label: "Power",
     icon: <BarChart2 size={18} />,
-    description: 'Power curve (y = ax^b)',
+    description: "Power curve (y = ax^b)",
   },
   {
-    type: 'moving-average',
-    label: 'Moving Average',
+    type: "moving-average",
+    label: "Moving Average",
     icon: <LineChart size={18} />,
-    description: 'Smoothed trend using period average',
+    description: "Smoothed trend using period average",
   },
-];
+]
 
 const COLOR_OPTIONS = [
-  '#EF4444', // Red
-  '#F59E0B', // Amber
-  '#10B981', // Green
-  '#3B82F6', // Blue
-  '#8B5CF6', // Purple
-  '#EC4899', // Pink
-  '#6B7280', // Gray
-  '#000000', // Black
-];
+  "#EF4444", // Red
+  "#F59E0B", // Amber
+  "#10B981", // Green
+  "#3B82F6", // Blue
+  "#8B5CF6", // Purple
+  "#EC4899", // Pink
+  "#6B7280", // Gray
+  "#000000", // Black
+]
 
 export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
   isOpen,
   onClose,
   onApply,
   dataPoints,
-  seriesName: _seriesName = 'Series',
+  seriesName: _seriesName = "Series",
 }) => {
-  const [selectedType, setSelectedType] = useState<TrendlineType>('linear');
-  const [degree, setDegree] = useState(2);
-  const [period, setPeriod] = useState(3);
-  const [displayEquation, setDisplayEquation] = useState(true);
-  const [displayRSquared, setDisplayRSquared] = useState(true);
-  const [forward, setForward] = useState(0);
-  const [backward, setBackward] = useState(0);
-  const [color, setColor] = useState('#EF4444');
-  const [strokeWidth, setStrokeWidth] = useState(2);
-  const [dashArray, setDashArray] = useState('5,5');
+  const [selectedType, setSelectedType] = useState<TrendlineType>("linear")
+  const [degree, setDegree] = useState(2)
+  const [period, setPeriod] = useState(3)
+  const [displayEquation, setDisplayEquation] = useState(true)
+  const [displayRSquared, setDisplayRSquared] = useState(true)
+  const [forward, setForward] = useState(0)
+  const [backward, setBackward] = useState(0)
+  const [color, setColor] = useState("#EF4444")
+  const [strokeWidth, setStrokeWidth] = useState(2)
+  const [dashArray, setDashArray] = useState("5,5")
 
-  const xValues = dataPoints.map(p => p.x);
-  const yValues = dataPoints.map(p => p.y);
+  const xValues = dataPoints.map((p) => p.x)
+  const yValues = dataPoints.map((p) => p.y)
 
   // Calculate preview result
   const previewResult = useMemo(() => {
-    if (dataPoints.length < 2) return null;
+    if (dataPoints.length < 2) return null
 
     const config: TrendlineConfig = {
       type: selectedType,
-      degree: selectedType === 'polynomial' ? degree : undefined,
-      period: selectedType === 'moving-average' ? period : undefined,
+      degree: selectedType === "polynomial" ? degree : undefined,
+      period: selectedType === "moving-average" ? period : undefined,
       displayEquation,
       displayRSquared,
       forward,
@@ -113,18 +118,32 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
       color,
       strokeWidth,
       dashArray,
-    };
+    }
 
-    return calculateTrendline(xValues, yValues, config);
-  }, [selectedType, degree, period, forward, backward, dataPoints, xValues, yValues, displayEquation, displayRSquared, color, strokeWidth, dashArray]);
+    return calculateTrendline(xValues, yValues, config)
+  }, [
+    selectedType,
+    degree,
+    period,
+    forward,
+    backward,
+    dataPoints,
+    xValues,
+    yValues,
+    displayEquation,
+    displayRSquared,
+    color,
+    strokeWidth,
+    dashArray,
+  ])
 
   const handleApply = () => {
-    if (!previewResult) return;
+    if (!previewResult) return
 
     const config: TrendlineConfig = {
       type: selectedType,
-      degree: selectedType === 'polynomial' ? degree : undefined,
-      period: selectedType === 'moving-average' ? period : undefined,
+      degree: selectedType === "polynomial" ? degree : undefined,
+      period: selectedType === "moving-average" ? period : undefined,
       displayEquation,
       displayRSquared,
       forward,
@@ -132,17 +151,20 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
       color,
       strokeWidth,
       dashArray,
-    };
+    }
 
-    onApply(config, previewResult);
-    onClose();
-  };
+    onApply(config, previewResult)
+    onClose()
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog trendline-dialog" onClick={e => e.stopPropagation()}>
+      <div
+        className="dialog trendline-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h2>
             <TrendingUp size={18} />
@@ -158,10 +180,10 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
           <div className="dialog-field">
             <label>Trendline Type</label>
             <div className="trendline-type-grid">
-              {TRENDLINE_OPTIONS.map(option => (
+              {TRENDLINE_OPTIONS.map((option) => (
                 <button
                   key={option.type}
-                  className={`trendline-type-btn ${selectedType === option.type ? 'active' : ''}`}
+                  className={`trendline-type-btn ${selectedType === option.type ? "active" : ""}`}
                   onClick={() => setSelectedType(option.type)}
                 >
                   <div className="type-icon">{option.icon}</div>
@@ -175,14 +197,14 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
           </div>
 
           {/* Polynomial Degree */}
-          {selectedType === 'polynomial' && (
+          {selectedType === "polynomial" && (
             <div className="dialog-field">
               <label>Polynomial Degree</label>
               <div className="degree-selector">
-                {[2, 3, 4, 5, 6].map(d => (
+                {[2, 3, 4, 5, 6].map((d) => (
                   <button
                     key={d}
-                    className={`degree-btn ${degree === d ? 'active' : ''}`}
+                    className={`degree-btn ${degree === d ? "active" : ""}`}
                     onClick={() => setDegree(d)}
                   >
                     {d}
@@ -193,7 +215,7 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
           )}
 
           {/* Moving Average Period */}
-          {selectedType === 'moving-average' && (
+          {selectedType === "moving-average" && (
             <div className="dialog-field">
               <label>Period</label>
               <input
@@ -201,9 +223,9 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
                 min="2"
                 max="20"
                 value={period}
-                onChange={e => setPeriod(parseInt(e.target.value) || 3)}
+                onChange={(e) => setPeriod(parseInt(e.target.value) || 3)}
                 className="dialog-input"
-                style={{ width: '100px' }}
+                style={{ width: "100px" }}
               />
             </div>
           )}
@@ -219,7 +241,7 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
                   min="0"
                   max="100"
                   value={forward}
-                  onChange={e => setForward(parseInt(e.target.value) || 0)}
+                  onChange={(e) => setForward(parseInt(e.target.value) || 0)}
                   className="dialog-input"
                 />
                 <span>periods</span>
@@ -231,7 +253,7 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
                   min="0"
                   max="100"
                   value={backward}
-                  onChange={e => setBackward(parseInt(e.target.value) || 0)}
+                  onChange={(e) => setBackward(parseInt(e.target.value) || 0)}
                   className="dialog-input"
                 />
                 <span>periods</span>
@@ -247,16 +269,16 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
                 <input
                   type="checkbox"
                   checked={displayEquation}
-                  onChange={e => setDisplayEquation(e.target.checked)}
+                  onChange={(e) => setDisplayEquation(e.target.checked)}
                 />
                 <span>Display equation on chart</span>
               </label>
-              {selectedType !== 'moving-average' && (
+              {selectedType !== "moving-average" && (
                 <label className="dialog-checkbox">
                   <input
                     type="checkbox"
                     checked={displayRSquared}
-                    onChange={e => setDisplayRSquared(e.target.checked)}
+                    onChange={(e) => setDisplayRSquared(e.target.checked)}
                   />
                   <span>Display R-squared value on chart</span>
                 </label>
@@ -271,10 +293,10 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
               <div className="color-picker">
                 <span>Color:</span>
                 <div className="color-options">
-                  {COLOR_OPTIONS.map(c => (
+                  {COLOR_OPTIONS.map((c) => (
                     <button
                       key={c}
-                      className={`color-btn ${color === c ? 'active' : ''}`}
+                      className={`color-btn ${color === c ? "active" : ""}`}
                       style={{ backgroundColor: c }}
                       onClick={() => setColor(c)}
                     />
@@ -285,7 +307,7 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
                 <span>Width:</span>
                 <select
                   value={strokeWidth}
-                  onChange={e => setStrokeWidth(parseFloat(e.target.value))}
+                  onChange={(e) => setStrokeWidth(parseFloat(e.target.value))}
                   className="dialog-select"
                 >
                   <option value="1">Thin (1px)</option>
@@ -297,7 +319,7 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
                 <span>Dash:</span>
                 <select
                   value={dashArray}
-                  onChange={e => setDashArray(e.target.value)}
+                  onChange={(e) => setDashArray(e.target.value)}
                   className="dialog-select"
                 >
                   <option value="">Solid</option>
@@ -319,10 +341,12 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
                     <span className="stat-label">Equation:</span>
                     <span className="stat-value">{previewResult.equation}</span>
                   </div>
-                  {selectedType !== 'moving-average' && (
+                  {selectedType !== "moving-average" && (
                     <div className="stat">
                       <span className="stat-label">R² Value:</span>
-                      <span className="stat-value">{previewResult.rSquared.toFixed(4)}</span>
+                      <span className="stat-value">
+                        {previewResult.rSquared.toFixed(4)}
+                      </span>
                     </div>
                   )}
                   <div className="stat">
@@ -331,7 +355,9 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
                   </div>
                   <div className="stat">
                     <span className="stat-label">Trendline Points:</span>
-                    <span className="stat-value">{previewResult.points.length}</span>
+                    <span className="stat-value">
+                      {previewResult.points.length}
+                    </span>
                   </div>
                 </div>
                 <div className="preview-line">
@@ -366,7 +392,7 @@ export const TrendlineDialog: React.FC<TrendlineDialogProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TrendlineDialog;
+export default TrendlineDialog

@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { formatDistanceToNow } from 'date-fns'
-import { vi } from 'date-fns/locale'
-import { Bell, CheckCircle, Clock, XCircle, Info } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import type { NotificationType } from '@prisma/client'
+import { formatDistanceToNow } from "date-fns"
+import { vi } from "date-fns/locale"
+import { Bell, CheckCircle, Clock, XCircle, Info } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import type { NotificationType } from "@prisma/client"
 
 interface Notification {
   id: string
@@ -67,8 +67,8 @@ export function NotificationList({
               <div
                 key={notification.id}
                 className={cn(
-                  'flex gap-3 p-4 cursor-pointer hover:bg-muted/50 transition-colors',
-                  !notification.isRead && 'bg-muted/30'
+                  "flex gap-3 p-4 cursor-pointer hover:bg-muted/50 transition-colors",
+                  !notification.isRead && "bg-muted/30"
                 )}
                 onClick={() => {
                   if (!notification.isRead) {
@@ -83,8 +83,8 @@ export function NotificationList({
                 <div className="flex-1 min-w-0">
                   <p
                     className={cn(
-                      'text-sm',
-                      !notification.isRead && 'font-medium'
+                      "text-sm",
+                      !notification.isRead && "font-medium"
                     )}
                   >
                     {notification.title}

@@ -40,6 +40,7 @@ export interface AfendaConfig {
 
 export interface WorkspaceGovernance {
   rootTopology: RootTopologyGovernance
+  packageTopology: PackageTopologyGovernance
   featureTemplate: FeatureTemplateGovernance
   sharedPackageTemplate: SharedPackageTemplateGovernance
   webClientSrc: WebClientSrcGovernance
@@ -48,7 +49,14 @@ export interface WorkspaceGovernance {
 export interface RootTopologyGovernance {
   primaryProductDirectories: string[]
   allowedRootDirectories: string[]
+  allowedHiddenRootDirectories: string[]
+  storageDirectories: string[]
   requiredRootFiles: string[]
+}
+
+export interface PackageTopologyGovernance {
+  workspaceRootDirectories: string[]
+  allowedManifestlessDirectories: string[]
 }
 
 export interface FeatureTemplateGovernance {
@@ -158,8 +166,29 @@ export function assertAfendaConfigShape(
     "workspaceGovernance.rootTopology.allowedRootDirectories"
   )
   assertStringArray(
+    value.workspaceGovernance.rootTopology.allowedHiddenRootDirectories,
+    "workspaceGovernance.rootTopology.allowedHiddenRootDirectories"
+  )
+  assertStringArray(
+    value.workspaceGovernance.rootTopology.storageDirectories,
+    "workspaceGovernance.rootTopology.storageDirectories"
+  )
+  assertStringArray(
     value.workspaceGovernance.rootTopology.requiredRootFiles,
     "workspaceGovernance.rootTopology.requiredRootFiles"
+  )
+
+  assert(
+    isRecord(value.workspaceGovernance.packageTopology),
+    "workspaceGovernance.packageTopology must be an object."
+  )
+  assertStringArray(
+    value.workspaceGovernance.packageTopology.workspaceRootDirectories,
+    "workspaceGovernance.packageTopology.workspaceRootDirectories"
+  )
+  assertStringArrayAllowEmpty(
+    value.workspaceGovernance.packageTopology.allowedManifestlessDirectories,
+    "workspaceGovernance.packageTopology.allowedManifestlessDirectories"
   )
 
   assert(
@@ -170,11 +199,11 @@ export function assertAfendaConfigShape(
     value.workspaceGovernance.featureTemplate.featuresRoot,
     "workspaceGovernance.featureTemplate.featuresRoot"
   )
-  assertStringArray(
+  assertStringArrayAllowEmpty(
     value.workspaceGovernance.featureTemplate.requiredDirectories,
     "workspaceGovernance.featureTemplate.requiredDirectories"
   )
-  assertStringArray(
+  assertStringArrayAllowEmpty(
     value.workspaceGovernance.featureTemplate.requiredFiles,
     "workspaceGovernance.featureTemplate.requiredFiles"
   )
@@ -296,6 +325,16 @@ export function assertStringArray(
 ): asserts value is string[] {
   assert(Array.isArray(value), `${label} must be an array.`)
   assert(value.length > 0, `${label} must contain at least one item.`)
+  value.forEach((item, index) => {
+    assertNonEmptyString(item, `${label}[${index}]`)
+  })
+}
+
+export function assertStringArrayAllowEmpty(
+  value: unknown,
+  label: string
+): asserts value is string[] {
+  assert(Array.isArray(value), `${label} must be an array.`)
   value.forEach((item, index) => {
     assertNonEmptyString(item, `${label}[${index}]`)
   })

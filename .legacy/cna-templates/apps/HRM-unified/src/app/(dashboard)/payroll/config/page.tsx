@@ -38,9 +38,7 @@ export default function PayrollConfigPage() {
         <Card>
           <CardHeader>
             <CardTitle>Bảo hiểm xã hội</CardTitle>
-            <CardDescription>
-              Tỷ lệ đóng BHXH/BHYT/BHTN
-            </CardDescription>
+            <CardDescription>Tỷ lệ đóng BHXH/BHYT/BHTN</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4 text-sm">
@@ -49,16 +47,28 @@ export default function PayrollConfigPage() {
               <div className="font-medium text-center">Công ty</div>
 
               <div>BHXH</div>
-              <div className="text-center">{INSURANCE_RATES.BHXH.EMPLOYEE * 100}%</div>
-              <div className="text-center">{INSURANCE_RATES.BHXH.EMPLOYER * 100}%</div>
+              <div className="text-center">
+                {INSURANCE_RATES.BHXH.EMPLOYEE * 100}%
+              </div>
+              <div className="text-center">
+                {INSURANCE_RATES.BHXH.EMPLOYER * 100}%
+              </div>
 
               <div>BHYT</div>
-              <div className="text-center">{INSURANCE_RATES.BHYT.EMPLOYEE * 100}%</div>
-              <div className="text-center">{INSURANCE_RATES.BHYT.EMPLOYER * 100}%</div>
+              <div className="text-center">
+                {INSURANCE_RATES.BHYT.EMPLOYEE * 100}%
+              </div>
+              <div className="text-center">
+                {INSURANCE_RATES.BHYT.EMPLOYER * 100}%
+              </div>
 
               <div>BHTN</div>
-              <div className="text-center">{INSURANCE_RATES.BHTN.EMPLOYEE * 100}%</div>
-              <div className="text-center">{INSURANCE_RATES.BHTN.EMPLOYER * 100}%</div>
+              <div className="text-center">
+                {INSURANCE_RATES.BHTN.EMPLOYEE * 100}%
+              </div>
+              <div className="text-center">
+                {INSURANCE_RATES.BHTN.EMPLOYER * 100}%
+              </div>
 
               <div className="font-semibold border-t pt-2">Tổng</div>
               <div className="text-center font-semibold border-t pt-2">
@@ -70,7 +80,9 @@ export default function PayrollConfigPage() {
             </div>
 
             <div className="pt-4 border-t">
-              <div className="text-sm text-muted-foreground">Mức trần lương đóng BH</div>
+              <div className="text-sm text-muted-foreground">
+                Mức trần lương đóng BH
+              </div>
               <div className="text-lg font-semibold">
                 {formatVND(INSURANCE_SALARY_CAP)}
               </div>
@@ -84,9 +96,7 @@ export default function PayrollConfigPage() {
         <Card>
           <CardHeader>
             <CardTitle>Thuế TNCN</CardTitle>
-            <CardDescription>
-              Biểu thuế lũy tiến 7 bậc
-            </CardDescription>
+            <CardDescription>Biểu thuế lũy tiến 7 bậc</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2 text-sm">
@@ -106,12 +116,20 @@ export default function PayrollConfigPage() {
 
             <div className="pt-4 border-t space-y-2">
               <div>
-                <div className="text-sm text-muted-foreground">Giảm trừ bản thân</div>
-                <div className="font-semibold">{formatVND(PIT_DEDUCTIONS.PERSONAL)}/tháng</div>
+                <div className="text-sm text-muted-foreground">
+                  Giảm trừ bản thân
+                </div>
+                <div className="font-semibold">
+                  {formatVND(PIT_DEDUCTIONS.PERSONAL)}/tháng
+                </div>
               </div>
               <div>
-                <div className="text-sm text-muted-foreground">Giảm trừ người phụ thuộc</div>
-                <div className="font-semibold">{formatVND(PIT_DEDUCTIONS.DEPENDENT)}/người/tháng</div>
+                <div className="text-sm text-muted-foreground">
+                  Giảm trừ người phụ thuộc
+                </div>
+                <div className="font-semibold">
+                  {formatVND(PIT_DEDUCTIONS.DEPENDENT)}/người/tháng
+                </div>
               </div>
             </div>
           </CardContent>
@@ -120,9 +138,7 @@ export default function PayrollConfigPage() {
         <Card>
           <CardHeader>
             <CardTitle>Hệ số tăng ca</CardTitle>
-            <CardDescription>
-              Theo Bộ luật Lao động 2019
-            </CardDescription>
+            <CardDescription>Theo Bộ luật Lao động 2019</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-between">
@@ -139,7 +155,9 @@ export default function PayrollConfigPage() {
             </div>
             <div className="flex justify-between border-t pt-2">
               <span>Phụ cấp đêm (22:00-06:00)</span>
-              <span className="font-semibold">+{OT_RATES.NIGHT_BONUS * 100}%</span>
+              <span className="font-semibold">
+                +{OT_RATES.NIGHT_BONUS * 100}%
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -147,30 +165,38 @@ export default function PayrollConfigPage() {
         <Card>
           <CardHeader>
             <CardTitle>Cài đặt ngày công</CardTitle>
-            <CardDescription>
-              Tham số ngày công chuẩn
-            </CardDescription>
+            <CardDescription>Tham số ngày công chuẩn</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-between">
               <span>Ngày công chuẩn/tháng</span>
-              <span className="font-semibold">{WORK_SETTINGS.STANDARD_WORK_DAYS} ngày</span>
+              <span className="font-semibold">
+                {WORK_SETTINGS.STANDARD_WORK_DAYS} ngày
+              </span>
             </div>
             <div className="flex justify-between">
               <span>Giờ công/ngày</span>
-              <span className="font-semibold">{WORK_SETTINGS.STANDARD_WORK_HOURS} giờ</span>
+              <span className="font-semibold">
+                {WORK_SETTINGS.STANDARD_WORK_HOURS} giờ
+              </span>
             </div>
             <div className="flex justify-between border-t pt-2">
               <span>OT tối đa/ngày</span>
-              <span className="font-semibold">{WORK_SETTINGS.MAX_OT_HOURS_DAY} giờ</span>
+              <span className="font-semibold">
+                {WORK_SETTINGS.MAX_OT_HOURS_DAY} giờ
+              </span>
             </div>
             <div className="flex justify-between">
               <span>OT tối đa/tháng</span>
-              <span className="font-semibold">{WORK_SETTINGS.MAX_OT_HOURS_MONTH} giờ</span>
+              <span className="font-semibold">
+                {WORK_SETTINGS.MAX_OT_HOURS_MONTH} giờ
+              </span>
             </div>
             <div className="flex justify-between">
               <span>OT tối đa/năm</span>
-              <span className="font-semibold">{WORK_SETTINGS.MAX_OT_HOURS_YEAR} giờ</span>
+              <span className="font-semibold">
+                {WORK_SETTINGS.MAX_OT_HOURS_YEAR} giờ
+              </span>
             </div>
           </CardContent>
         </Card>

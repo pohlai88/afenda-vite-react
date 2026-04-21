@@ -5,12 +5,13 @@
  */
 
 import {
-  collectFilesystemGovernanceViolations,
+  evaluateFilesystemGovernance,
   loadFilesystemGovernanceConfig,
 } from "./lib/filesystem-governance"
 
 const config = loadFilesystemGovernanceConfig()
-const violations = collectFilesystemGovernanceViolations(config)
+const evaluation = evaluateFilesystemGovernance(config)
+const violations = evaluation.violations
 
 if (violations.length === 0) {
   console.log("Filesystem governance check passed.")

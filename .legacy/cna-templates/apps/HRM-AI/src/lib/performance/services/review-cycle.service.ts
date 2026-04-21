@@ -1,13 +1,13 @@
 // src/lib/performance/services/review-cycle.service.ts
 // Review Cycle Service - Manage performance review cycles
 
-import { db } from '@/lib/db'
+import { db } from "@/lib/db"
 import {
   ReviewCycleType,
   ReviewCycleStatus,
   ReviewStatus,
-  Prisma
-} from '@prisma/client'
+  Prisma,
+} from "@prisma/client"
 
 // Types
 export interface CreateReviewCycleInput {
@@ -48,13 +48,14 @@ export class ReviewCycleService {
    */
   async create(createdById: string, input: CreateReviewCycleInput) {
     // Validate weights sum to 100
-    const totalWeight = (input.goalWeight ?? 40) +
+    const totalWeight =
+      (input.goalWeight ?? 40) +
       (input.competencyWeight ?? 30) +
       (input.valuesWeight ?? 20) +
       (input.feedbackWeight ?? 10)
 
     if (totalWeight !== 100) {
-      throw new Error('Score weights must sum to 100')
+      throw new Error("Score weights must sum to 100")
     }
 
     return db.reviewCycle.create({
@@ -112,7 +113,7 @@ export class ReviewCycleService {
     })
 
     if (!cycle) {
-      throw new Error('Review cycle not found')
+      throw new Error("Review cycle not found")
     }
 
     return cycle
@@ -121,7 +122,11 @@ export class ReviewCycleService {
   /**
    * List review cycles
    */
-  async list(filters: ReviewCycleFilters = {}, page: number = 1, pageSize: number = 20) {
+  async list(
+    filters: ReviewCycleFilters = {},
+    page: number = 1,
+    pageSize: number = 20
+  ) {
     const skip = (page - 1) * pageSize
 
     const where: Prisma.ReviewCycleWhereInput = {
@@ -143,7 +148,7 @@ export class ReviewCycleService {
     const [cycles, total] = await Promise.all([
       db.reviewCycle.findMany({
         where,
-        orderBy: [{ year: 'desc' }, { startDate: 'desc' }],
+        orderBy: [{ year: "desc" }, { startDate: "desc" }],
         skip,
         take: pageSize,
         include: {
@@ -181,7 +186,7 @@ export class ReviewCycleService {
           ],
         },
       },
-      orderBy: { startDate: 'desc' },
+      orderBy: { startDate: "desc" },
     })
   }
 
@@ -192,13 +197,13 @@ export class ReviewCycleService {
     const cycle = await this.getById(id)
     const now = new Date()
 
-    let currentPhase = 'UNKNOWN'
+    let currentPhase = "UNKNOWN"
     let phaseStart: Date | null = null
     let phaseEnd: Date | null = null
 
     if (cycle.goalSettingStart && cycle.goalSettingEnd) {
       if (now >= cycle.goalSettingStart && now <= cycle.goalSettingEnd) {
-        currentPhase = 'GOAL_SETTING'
+        currentPhase = "GOAL_SETTING"
         phaseStart = cycle.goalSettingStart
         phaseEnd = cycle.goalSettingEnd
       }
@@ -206,7 +211,7 @@ export class ReviewCycleService {
 
     if (cycle.selfReviewStart && cycle.selfReviewEnd) {
       if (now >= cycle.selfReviewStart && now <= cycle.selfReviewEnd) {
-        currentPhase = 'SELF_REVIEW'
+        currentPhase = "SELF_REVIEW"
         phaseStart = cycle.selfReviewStart
         phaseEnd = cycle.selfReviewEnd
       }
@@ -214,7 +219,7 @@ export class ReviewCycleService {
 
     if (cycle.managerReviewStart && cycle.managerReviewEnd) {
       if (now >= cycle.managerReviewStart && now <= cycle.managerReviewEnd) {
-        currentPhase = 'MANAGER_REVIEW'
+        currentPhase = "MANAGER_REVIEW"
         phaseStart = cycle.managerReviewStart
         phaseEnd = cycle.managerReviewEnd
       }
@@ -222,7 +227,7 @@ export class ReviewCycleService {
 
     if (cycle.calibrationStart && cycle.calibrationEnd) {
       if (now >= cycle.calibrationStart && now <= cycle.calibrationEnd) {
-        currentPhase = 'CALIBRATION'
+        currentPhase = "CALIBRATION"
         phaseStart = cycle.calibrationStart
         phaseEnd = cycle.calibrationEnd
       }
@@ -234,7 +239,9 @@ export class ReviewCycleService {
       phaseStart,
       phaseEnd,
       daysRemaining: phaseEnd
-        ? Math.ceil((phaseEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        ? Math.ceil(
+            (phaseEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          )
         : null,
     }
   }
@@ -248,19 +255,24 @@ export class ReviewCycleService {
     })
 
     if (!cycle) {
-      throw new Error('Review cycle not found')
+      throw new Error("Review cycle not found")
     }
 
     // Validate weights if any are provided
-    if (input.goalWeight !== undefined || input.competencyWeight !== undefined ||
-        input.valuesWeight !== undefined || input.feedbackWeight !== undefined) {
-      const totalWeight = (input.goalWeight ?? Number(cycle.goalWeight)) +
+    if (
+      input.goalWeight !== undefined ||
+      input.competencyWeight !== undefined ||
+      input.valuesWeight !== undefined ||
+      input.feedbackWeight !== undefined
+    ) {
+      const totalWeight =
+        (input.goalWeight ?? Number(cycle.goalWeight)) +
         (input.competencyWeight ?? Number(cycle.competencyWeight)) +
         (input.valuesWeight ?? Number(cycle.valuesWeight)) +
         (input.feedbackWeight ?? Number(cycle.feedbackWeight))
 
       if (totalWeight !== 100) {
-        throw new Error('Score weights must sum to 100')
+        throw new Error("Score weights must sum to 100")
       }
     }
 
@@ -301,7 +313,7 @@ export class ReviewCycleService {
     })
 
     if (!cycle) {
-      throw new Error('Review cycle not found')
+      throw new Error("Review cycle not found")
     }
 
     return db.reviewCycle.update({
@@ -320,25 +332,25 @@ export class ReviewCycleService {
     })
 
     if (!cycle) {
-      throw new Error('Review cycle not found')
+      throw new Error("Review cycle not found")
     }
 
     if (cycle.status !== ReviewCycleStatus.DRAFT) {
-      throw new Error('Cycle must be in draft status to start')
+      throw new Error("Cycle must be in draft status to start")
     }
 
     // Get all active employees with managers
     const employees = await db.employee.findMany({
       where: {
         tenantId: this.tenantId,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         directManagerId: { not: null },
       },
       select: { id: true, directManagerId: true },
     })
 
     // Create reviews for each employee
-    const reviewData = employees.map(emp => ({
+    const reviewData = employees.map((emp) => ({
       tenantId: this.tenantId,
       reviewCycleId: id,
       employeeId: emp.id,
@@ -372,7 +384,7 @@ export class ReviewCycleService {
     })
 
     if (!cycle) {
-      throw new Error('Review cycle not found')
+      throw new Error("Review cycle not found")
     }
 
     const phaseOrder: ReviewCycleStatus[] = [
@@ -387,7 +399,7 @@ export class ReviewCycleService {
 
     const currentIndex = phaseOrder.indexOf(cycle.status)
     if (currentIndex === -1 || currentIndex >= phaseOrder.length - 1) {
-      throw new Error('Cannot advance from current phase')
+      throw new Error("Cannot advance from current phase")
     }
 
     const nextStatus = phaseOrder[currentIndex + 1]
@@ -407,7 +419,7 @@ export class ReviewCycleService {
     })
 
     if (!cycle) {
-      throw new Error('Review cycle not found')
+      throw new Error("Review cycle not found")
     }
 
     // Check all reviews are completed or acknowledged
@@ -421,7 +433,9 @@ export class ReviewCycleService {
     })
 
     if (incompleteReviews > 0) {
-      throw new Error(`Cannot complete cycle. ${incompleteReviews} reviews are still pending.`)
+      throw new Error(
+        `Cannot complete cycle. ${incompleteReviews} reviews are still pending.`
+      )
     }
 
     return db.reviewCycle.update({
@@ -449,11 +463,11 @@ export class ReviewCycleService {
     })
 
     if (!cycle) {
-      throw new Error('Review cycle not found')
+      throw new Error("Review cycle not found")
     }
 
     if (cycle.status !== ReviewCycleStatus.DRAFT) {
-      throw new Error('Only draft cycles can be deleted')
+      throw new Error("Only draft cycles can be deleted")
     }
 
     await db.reviewCycle.delete({ where: { id } })
@@ -467,24 +481,27 @@ export class ReviewCycleService {
     const cycle = await this.getById(id)
 
     const reviews = await db.performanceReview.groupBy({
-      by: ['status'],
+      by: ["status"],
       where: { reviewCycleId: id },
       _count: true,
     })
 
     const totalReviews = reviews.reduce((sum, r) => sum + r._count, 0)
 
-    const statusCounts = reviews.reduce((acc, r) => {
-      acc[r.status] = r._count
-      return acc
-    }, {} as Record<string, number>)
+    const statusCounts = reviews.reduce(
+      (acc, r) => {
+        acc[r.status] = r._count
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
     // Calculate completion percentage
-    const completed = (statusCounts[ReviewStatus.COMPLETED] || 0) +
+    const completed =
+      (statusCounts[ReviewStatus.COMPLETED] || 0) +
       (statusCounts[ReviewStatus.ACKNOWLEDGED] || 0)
-    const completionRate = totalReviews > 0
-      ? Math.round((completed / totalReviews) * 100)
-      : 0
+    const completionRate =
+      totalReviews > 0 ? Math.round((completed / totalReviews) * 100) : 0
 
     return {
       cycle,
@@ -502,24 +519,24 @@ export class ReviewCycleService {
       db.reviewCycle.count({ where: { tenantId: this.tenantId } }),
 
       db.reviewCycle.groupBy({
-        by: ['status'],
+        by: ["status"],
         where: { tenantId: this.tenantId },
         _count: true,
       }),
 
       db.reviewCycle.groupBy({
-        by: ['year'],
+        by: ["year"],
         where: { tenantId: this.tenantId },
         _count: true,
-        orderBy: { year: 'desc' },
+        orderBy: { year: "desc" },
         take: 5,
       }),
     ])
 
     return {
       total,
-      byStatus: byStatus.map(s => ({ status: s.status, count: s._count })),
-      byYear: byYear.map(y => ({ year: y.year, count: y._count })),
+      byStatus: byStatus.map((s) => ({ status: s.status, count: s._count })),
+      byYear: byYear.map((y) => ({ year: y.year, count: y._count })),
     }
   }
 }
