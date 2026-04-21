@@ -25,7 +25,11 @@ export function PasskeyButton({ isPending }: PasskeyButtonProps) {
       type="button"
       variant="outline"
       disabled={isDisabled}
-      className={cn("w-full", isDisabled && "pointer-events-none opacity-50")}
+      size="lg"
+      className={cn(
+        "auth-secondary-action",
+        isDisabled && "pointer-events-none opacity-50"
+      )}
       onClick={() => signInPasskey()}
     >
       {passkeyPending ? <Spinner /> : <Fingerprint />}

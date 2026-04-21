@@ -24,6 +24,44 @@ import {
   usernameClient,
 } from "better-auth/client/plugins"
 
+type AuthOrganizationItem = {
+  readonly id: string
+  readonly name: string
+  readonly slug: string
+}
+
+type AuthClientErrorShape = {
+  readonly code?: string
+  readonly message?: string
+}
+
+type AuthClientMutationResult<TData = unknown> = Promise<{
+  readonly data: TData | null
+  readonly error: AuthClientErrorShape | null
+}>
+
+type AuthClientQueryState<TData> = {
+  readonly data: TData | null
+  readonly error: unknown
+  readonly isPending: boolean
+  readonly isRefetching: boolean
+  readonly refetch: (queryParams?: unknown) => Promise<void>
+}
+
+export interface AfendaOrganizationClient {
+  useActiveOrganization: () => AuthClientQueryState<AuthOrganizationItem>
+  useListOrganizations: () => AuthClientQueryState<AuthOrganizationItem[]>
+  organization: {
+    create: (input: {
+      readonly name: string
+      readonly slug: string
+    }) => AuthClientMutationResult
+    setActive: (input: {
+      readonly organizationId: string
+    }) => AuthClientMutationResult
+  }
+}
+
 function resolveBetterAuthBaseUrl(): string | undefined {
   const raw = import.meta.env.VITE_BETTER_AUTH_BASE_URL?.trim()
   return raw && raw.length > 0 ? raw : undefined
@@ -134,13 +172,19 @@ function resolveAuthClientPlugins() {
  * Cast to `AuthClient` from `@better-auth-ui/react` to avoid TS7056 and align with `AuthUIProvider` /
  * hooks (`genericOAuthClient` supplies `accountInfo` per Better Auth Generic OAuth docs).
  */
-const authClient = createAuthClient({
+const rawAuthClient = createAuthClient({
   ...(betterAuthBaseUrl ? { baseURL: betterAuthBaseUrl } : {}),
   plugins: resolveAuthClientPlugins(),
   fetchOptions: {
     credentials: "include" as const,
   },
-}) as AuthClient
+})
+
+const authClient = rawAuthClient as AuthClient
+const authOrganizationClient =
+  rawAuthClient as unknown as AfendaOrganizationClient
+
+export { authOrganizationClient }
 export { authClient }
 
 /** Session + user types — aligned with server `createAfendaAuth` / `inferAdditionalFields<AfendaAuth>()`. */
@@ -154,4 +198,4 @@ export function getAfendaAuthStepUpPolicy(): "off" | "risk_based" {
 }
 
 /** Same reactive session hook as `authClient.useSession` — stable export for route guards and chrome. */
-export const useAfendaSession = authClient.useSession
+export const useAfendaSession = rawAuthClient.useSession

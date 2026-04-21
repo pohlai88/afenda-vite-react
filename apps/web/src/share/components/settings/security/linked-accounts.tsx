@@ -46,12 +46,12 @@ export function LinkedAccounts({ className }: LinkedAccountsProps) {
   ]
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">
+    <div className="space-y-3">
+      <h2 className="text-base font-semibold tracking-[-0.02em]">
         {localization.settings.linkedAccounts}
       </h2>
 
-      <Card className={cn("p-0", className)}>
+      <Card className={cn("border-border/70 p-0 shadow-none", className)}>
         <CardContent className="p-0">
           {isPending
             ? socialProviders?.map((provider, index) => (

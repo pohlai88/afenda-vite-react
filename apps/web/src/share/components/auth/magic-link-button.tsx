@@ -18,30 +18,31 @@ export type MagicLinkButtonProps = {
  * @returns The button element configured to navigate to the appropriate auth route
  */
 export function MagicLinkButton({ isPending, view }: MagicLinkButtonProps) {
-  const { basePaths, viewPaths, localization, Link } = useAuth()
+  const { basePaths, viewPaths, localization, navigate } = useAuth()
 
   const isMagicLinkView = view === "magicLink"
+  const nextPath = `${basePaths.auth}/${isMagicLinkView ? viewPaths.auth.signIn : viewPaths.auth.magicLink}`
 
   return (
     <Button
       type="button"
       variant="outline"
       disabled={isPending}
-      className={cn("w-full", isPending && "pointer-events-none opacity-50")}
-      asChild
+      size="lg"
+      className={cn(
+        "auth-secondary-action",
+        isPending && "pointer-events-none opacity-50"
+      )}
+      onClick={() => navigate({ to: nextPath })}
     >
-      <Link
-        href={`${basePaths.auth}/${isMagicLinkView ? viewPaths.auth.signIn : viewPaths.auth.magicLink}`}
-      >
-        {isMagicLinkView ? <Lock /> : <Mail />}
+      {isMagicLinkView ? <Lock /> : <Mail />}
 
-        {localization.auth.continueWith.replace(
-          "{{provider}}",
-          isMagicLinkView
-            ? localization.auth.password
-            : localization.auth.magicLink
-        )}
-      </Link>
+      {localization.auth.continueWith.replace(
+        "{{provider}}",
+        isMagicLinkView
+          ? localization.auth.password
+          : localization.auth.magicLink
+      )}
     </Button>
   )
 }

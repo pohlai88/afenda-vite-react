@@ -28,8 +28,8 @@ export function ProviderButtons({
 
   const resolvedSocialLayout = useMemo(() => {
     if (socialLayout === "auto") {
-      if (socialProviders?.length && socialProviders.length >= 4) {
-        return "horizontal"
+      if (socialProviders?.length && socialProviders.length >= 2) {
+        return "grid"
       }
 
       return "vertical"

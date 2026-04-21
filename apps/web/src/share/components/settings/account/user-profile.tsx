@@ -115,13 +115,13 @@ export function UserProfile({ className }: UserProfileProps) {
     username.trim() !== currentUsername
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">
+    <div className="space-y-3">
+      <h2 className="text-base font-semibold tracking-[-0.02em]">
         {localization.settings.profile}
       </h2>
 
       <form onSubmit={handleSubmit}>
-        <Card className={cn(className)}>
+        <Card className={cn("border-border/70 shadow-none", className)}>
           <CardContent className="flex flex-col gap-6">
             <ChangeAvatar />
 
@@ -140,6 +140,8 @@ export function UserProfile({ className }: UserProfileProps) {
                       name="username"
                       type="text"
                       autoComplete="username"
+                      autoCapitalize="none"
+                      spellCheck={false}
                       placeholder={localization.auth.usernamePlaceholder}
                       minLength={usernameConfig.minUsernameLength}
                       maxLength={usernameConfig.maxUsernameLength}

@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardDescription,
   CardHeader,
@@ -12,9 +13,9 @@ import {
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
-  MarketingCallToActionPanel,
   MarketingPageSection,
   MarketingPageShell,
   MarketingSectionHeading,
@@ -55,10 +56,7 @@ export default function DataGovernancePage() {
   const reduceMotion = !!useReducedMotion()
 
   return (
-    <MarketingPageShell
-      badges={["Legal and Trust", "Data Governance"]}
-      tagline="Governance page scaffold for reusable marketing quality"
-    >
+    <MarketingPageShell tagline="Governance page scaffold for reusable marketing quality">
       <MarketingPageSection
         className="relative overflow-hidden border-b border-border/70"
         containerClassName="pb-16 pt-28 md:pb-20 lg:pb-24 lg:pt-32"
@@ -121,35 +119,42 @@ export default function DataGovernancePage() {
       </MarketingPageSection>
 
       <MarketingPageSection>
-        <motion.div {...getMarketingReveal(reduceMotion)}>
-          <MarketingCallToActionPanel
-            kicker="Governance CTA"
-            title="Keep governance pages connected to the product story."
-            description={
-              <>
-                Legal and trust pages should reinforce the operating model, not
-                feel like a separate website with lower standards.
-              </>
-            }
-            links={[
-              {
-                label: "Open Trust Center",
-                to: MARKETING_PAGE_HREFS.trustCenter,
-              },
-              {
-                label: "View Benchmark Campaign",
-                to: MARKETING_PAGE_HREFS.erpBenchmarkCampaign,
-                variant: "outline",
-              },
-            ]}
-            aside={
-              <>
-                The shell components are built so additional legal pages can
-                reuse the same frame without hiding policy content inside vague
-                wrappers.
-              </>
-            }
-          />
+        <motion.div
+          className="rounded-[2rem] border border-border/70 bg-card/95 p-6 shadow-xl shadow-primary/5 md:p-8"
+          {...getMarketingReveal(reduceMotion)}
+        >
+          <div className="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
+            Governance CTA
+          </div>
+          <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4vw,3.4rem)] leading-[0.95] font-semibold tracking-[-0.05em] text-balance">
+            Keep governance pages connected to the product story.
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-pretty text-muted-foreground">
+            Legal and trust pages should reinforce the operating model, not feel
+            like a separate website with lower standards.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild size="lg" className="touch-manipulation">
+              <Link to={MARKETING_PAGE_HREFS.trustCenter}>
+                Open Trust Center
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="touch-manipulation border-border/70 bg-background/75"
+            >
+              <Link to={MARKETING_PAGE_HREFS.erpBenchmarkCampaign}>
+                View Benchmark Campaign
+              </Link>
+            </Button>
+          </div>
+          <p className="mt-6 max-w-2xl text-sm leading-7 text-pretty text-muted-foreground">
+            This route owns governance framing. It should connect into trust and
+            campaign surfaces without relying on another shared CTA composition
+            helper.
+          </p>
         </motion.div>
       </MarketingPageSection>
     </MarketingPageShell>

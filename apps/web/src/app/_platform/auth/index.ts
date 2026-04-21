@@ -1,4 +1,5 @@
 export {
+  authOrganizationClient,
   authClient,
   getAfendaAuthStepUpPolicy,
   useAfendaSession,
@@ -12,15 +13,20 @@ export {
 } from "./auth-redirect-urls"
 
 export { AUTH_ROUTES } from "./auth-paths"
+export { SETUP_ROUTES } from "./setup-paths"
 
 export { RequireAuth } from "./guards/require-auth"
 export { RequireGuest } from "./guards/require-guest"
+export { RequireAppReady } from "./guards/require-app-ready"
+export { RequireSetupRoute } from "./guards/require-setup-route"
 
-export { RouteAuthUnified } from "./routes/route-auth-unified"
-export { RouteAuthCallback } from "./routes/route-auth-callback"
 export { AuthLayout } from "./routes/auth-layout"
+export { authRouteObjects } from "./routes/route-auth"
+export { setupRouteObject } from "./routes/route-setup"
 
 export { useAuthIntelligence } from "./hooks/use-auth-intelligence"
+export { useAuthPostLoginDestination } from "./hooks/use-auth-post-login-destination"
+export { useAuthSetupState } from "./hooks/use-auth-setup-state"
 export { useAuthSessions } from "./hooks/use-auth-sessions"
 
 export type {
@@ -44,5 +50,10 @@ export type {
 } from "./contracts/auth-api"
 
 export type { AuthReturnTarget } from "./contracts/auth-return-target"
+export type {
+  AuthSetupSnapshot,
+  ResolveSetupStateOptions,
+  SetupState,
+} from "./contracts/auth-setup-state"
 
 export type { AuthIntelligenceResource } from "./contracts/auth-view-model"

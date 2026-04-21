@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Website UI"
+  short_description: "Design website pages, sections, and components"
+  default_prompt: "Use $design-website-ui to design or refine a website page, section, component, image treatment, or optional story in this repo."

@@ -3,14 +3,14 @@ import type { ReactNode } from "react"
 import { MemoryRouter, Route, Routes } from "react-router-dom"
 import { describe, expect, it, vi } from "vitest"
 
-vi.mock("../routes/auth-theme-provider", () => ({
-  AuthThemeProvider: ({ children }: { children: ReactNode }) => (
-    <div data-testid="auth-theme-provider">{children}</div>
+vi.mock("../../theme/public-theme-provider", () => ({
+  PublicThemeProvider: ({ children }: { children: ReactNode }) => (
+    <div data-testid="public-theme-provider">{children}</div>
   ),
 }))
 
-vi.mock("../better-auth-ui/afenda-public-auth-ui-provider", () => ({
-  AfendaPublicAuthUiProvider: ({ children }: { children: ReactNode }) => (
+vi.mock("../better-auth-ui/afenda-auth-ui-provider", () => ({
+  AfendaAuthUiProvider: ({ children }: { children: ReactNode }) => (
     <div data-testid="auth-ui-provider">{children}</div>
   ),
 }))
@@ -23,7 +23,7 @@ import { AuthLayout } from "../routes/auth-layout"
 
 describe("AuthLayout", () => {
   it("renders the standalone auth provider stack, shell container, outlet, and toaster", () => {
-    const { container } = render(
+    render(
       <MemoryRouter initialEntries={["/auth/login"]}>
         <Routes>
           <Route element={<AuthLayout />}>
@@ -36,11 +36,10 @@ describe("AuthLayout", () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByTestId("auth-theme-provider")).toBeInTheDocument()
+    expect(screen.getByTestId("public-theme-provider")).toBeInTheDocument()
     expect(screen.getByTestId("auth-ui-provider")).toBeInTheDocument()
     expect(screen.getByTestId("auth-outlet")).toBeInTheDocument()
     expect(screen.getByTestId("auth-toaster")).toBeInTheDocument()
-    expect(container.querySelector(".auth-root")).not.toBeNull()
-    expect(container.querySelector(".auth-shell-content")).not.toBeNull()
+    expect(screen.getByTestId("auth-layout-root")).toBeInTheDocument()
   })
 })

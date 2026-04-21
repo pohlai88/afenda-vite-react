@@ -1,8 +1,11 @@
 import { useAuth, useAuthenticate } from "@better-auth-ui/react"
 import type { SettingsView } from "@better-auth-ui/react/core"
+import { CircleUserRound, ShieldCheck, Sparkles } from "lucide-react"
 import { useMemo } from "react"
+import { useTranslation } from "react-i18next"
 
 import {
+  Badge,
   Tabs,
   TabsContent,
   TabsList,
@@ -30,8 +33,18 @@ export type SettingsProps = {
  * @returns A JSX element rendering the settings layout and the selected settings panel
  */
 export function Settings({ className, view, path, hideNav }: SettingsProps) {
-  const { basePaths, localization, viewPaths, Link } = useAuth()
+  const {
+    basePaths,
+    emailAndPassword,
+    localization,
+    multiSession,
+    passkey,
+    socialProviders,
+    viewPaths,
+    Link,
+  } = useAuth()
   useAuthenticate()
+  const { t } = useTranslation("auth", { keyPrefix: "experience.settings" })
 
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
@@ -46,33 +59,133 @@ export function Settings({ className, view, path, hideNav }: SettingsProps) {
   )
 
   const currentView = view || (path ? settingsPathViews[path] : undefined)
+  const viewLabel =
+    currentView === "security"
+      ? localization.settings.security
+      : localization.settings.account
+  const capabilityLabels = useMemo(
+    () =>
+      [
+        emailAndPassword?.enabled ? localization.auth.password : null,
+        socialProviders?.length ? localization.settings.linkedAccounts : null,
+        passkey ? localization.settings.passkeys : null,
+        multiSession ? localization.settings.manageAccounts : null,
+      ].filter((label): label is string => Boolean(label)),
+    [
+      emailAndPassword?.enabled,
+      localization.auth.password,
+      localization.settings.linkedAccounts,
+      localization.settings.manageAccounts,
+      localization.settings.passkeys,
+      multiSession,
+      passkey,
+      socialProviders?.length,
+    ]
+  )
+
+  if (!currentView) {
+    throw new Error(
+      `[Better Auth UI] Valid settings views are: ${Object.keys(viewPaths.settings).join(", ")}`
+    )
+  }
 
   return (
-    <Tabs
-      value={currentView}
-      className={cn("w-full gap-4 md:gap-6", className)}
-    >
-      <div className={cn(hideNav && "hidden")}>
-        <TabsList aria-label={localization.settings.settings}>
-          <TabsTrigger value="account" asChild>
-            <Link href={`${basePaths.settings}/${viewPaths.settings.account}`}>
-              {localization.settings.account}
-            </Link>
-          </TabsTrigger>
+    <Tabs value={currentView} className={cn("auth-settings-root", className)}>
+      <section className="auth-settings-header">
+        <div className="auth-settings-intro">
+          <div className="auth-settings-eyebrow-row">
+            <Badge variant="outline" className="auth-shell-badge">
+              {t("eyebrow")}
+            </Badge>
+            <span className="auth-shell-wordmark">
+              {localization.settings.settings}
+            </span>
+          </div>
 
-          <TabsTrigger value="security" asChild>
-            <Link href={`${basePaths.settings}/${viewPaths.settings.security}`}>
-              {localization.settings.security}
-            </Link>
-          </TabsTrigger>
-        </TabsList>
-      </div>
+          <div className="auth-settings-copy-block">
+            <h1 className="auth-settings-title">
+              {t(`views.${currentView}.title`)}
+            </h1>
+            <p className="auth-settings-description">
+              {t(`views.${currentView}.description`)}
+            </p>
+          </div>
+        </div>
 
-      <TabsContent value="account" tabIndex={-1}>
+        <div className="auth-settings-summary">
+          <div className="grid gap-2">
+            <div className="auth-settings-section-title">
+              {currentView === "security" ? (
+                <ShieldCheck
+                  className="size-4 text-primary"
+                  aria-hidden="true"
+                />
+              ) : (
+                <CircleUserRound
+                  className="size-4 text-primary"
+                  aria-hidden="true"
+                />
+              )}
+              {viewLabel}
+            </div>
+            <p className="auth-settings-summary-copy">
+              {t(`views.${currentView}.summary`)}
+            </p>
+          </div>
+
+          <div className="grid gap-3">
+            <div className="auth-settings-section-title">
+              <Sparkles className="size-4 text-primary" aria-hidden="true" />
+              {t("capabilities_title")}
+            </div>
+            <div className="auth-settings-capability-list">
+              {capabilityLabels.map((label) => (
+                <span key={label} className="auth-settings-pill">
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className={cn(hideNav && "hidden")}>
+          <TabsList
+            variant="line"
+            aria-label={t("tabs_label")}
+            className="auth-settings-nav"
+          >
+            <TabsTrigger
+              value="account"
+              className="auth-settings-trigger"
+              asChild
+            >
+              <Link
+                href={`${basePaths.settings}/${viewPaths.settings.account}`}
+              >
+                {localization.settings.account}
+              </Link>
+            </TabsTrigger>
+
+            <TabsTrigger
+              value="security"
+              className="auth-settings-trigger"
+              asChild
+            >
+              <Link
+                href={`${basePaths.settings}/${viewPaths.settings.security}`}
+              >
+                {localization.settings.security}
+              </Link>
+            </TabsTrigger>
+          </TabsList>
+        </div>
+      </section>
+
+      <TabsContent value="account" tabIndex={-1} className="mt-0">
         <AccountSettings />
       </TabsContent>
 
-      <TabsContent value="security" tabIndex={-1}>
+      <TabsContent value="security" tabIndex={-1} className="mt-0">
         <SecuritySettings />
       </TabsContent>
     </Tabs>

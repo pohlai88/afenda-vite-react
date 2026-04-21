@@ -35,12 +35,7 @@ export function RouteAuthUnified() {
 
   return (
     <RequireGuest>
-      {/* Keep the auth card centered and leave background ownership to the standalone auth shell. */}
-      <main className="relative flex min-h-dvh w-full flex-col justify-center px-4 py-10 text-foreground">
-        <div className="mx-auto flex w-full max-w-lg justify-center">
-          <Auth view={view} />
-        </div>
-      </main>
+      <Auth view={view} />
     </RequireGuest>
   )
 }

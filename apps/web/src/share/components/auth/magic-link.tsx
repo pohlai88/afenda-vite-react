@@ -1,13 +1,10 @@
 import { useAuth, useSignInMagicLink } from "@better-auth-ui/react"
 import { type SyntheticEvent, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 import {
   Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
   Field,
   FieldDescription,
   FieldError,
@@ -18,6 +15,8 @@ import {
   Spinner,
 } from "@afenda/design-system/ui-primitives"
 import { cn } from "@afenda/design-system/utils"
+import { useAuthPostLoginDestination } from "@/app/_platform/auth"
+import { AuthCardFrame } from "./auth-card-frame"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
@@ -41,16 +40,19 @@ export function MagicLink({
   socialLayout,
   socialPosition = "bottom",
 }: MagicLinkProps) {
+  const { t } = useTranslation("auth", {
+    keyPrefix: "experience.views.magicLink",
+  })
   const {
     basePaths,
     baseURL,
     localization,
     passkey,
-    redirectTo,
     socialProviders,
     viewPaths,
     Link,
   } = useAuth()
+  const postLoginPath = useAuthPostLoginDestination()
 
   const [email, setEmail] = useState("")
 
@@ -70,116 +72,125 @@ export function MagicLink({
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
-    signInMagicLink({ email, callbackURL: `${baseURL}${redirectTo}` })
+    signInMagicLink({ email, callbackURL: `${baseURL}${postLoginPath}` })
   }
 
   const showSeparator = socialProviders && socialProviders.length > 0
 
+  const footer = (
+    <div className="auth-footer-links flex w-full flex-col items-center">
+      <FieldDescription className="text-center">
+        {localization.auth.needToCreateAnAccount}{" "}
+        <Link
+          href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
+          className="underline underline-offset-4"
+        >
+          {localization.auth.signUp}
+        </Link>
+      </FieldDescription>
+    </div>
+  )
+
   return (
-    <Card className={cn("w-full max-w-sm", className)}>
-      <CardHeader>
-        <CardTitle className="text-xl">{localization.auth.signIn}</CardTitle>
-      </CardHeader>
+    <AuthCardFrame
+      title={t("panel_title")}
+      description={t("panel_description")}
+      footer={footer}
+      className={cn(className)}
+    >
+      <div className="auth-form-shell">
+        {socialPosition === "top" && (
+          <>
+            {socialProviders && socialProviders.length > 0 && (
+              <ProviderButtons
+                socialLayout={socialLayout}
+                isPending={isPending}
+              />
+            )}
 
-      <CardContent>
-        <div className="flex flex-col gap-6">
-          {socialPosition === "top" && (
-            <>
-              {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  isPending={isPending}
-                />
-              )}
+            {showSeparator && (
+              <FieldSeparator className="m-0 flex items-center text-xs *:data-[slot=field-separator-content]:bg-background">
+                {localization.auth.or}
+              </FieldSeparator>
+            )}
+          </>
+        )}
 
-              {showSeparator && (
-                <FieldSeparator className="m-0 flex items-center text-xs *:data-[slot=field-separator-content]:bg-card">
-                  {localization.auth.or}
-                </FieldSeparator>
-              )}
-            </>
-          )}
+        <form onSubmit={handleSubmit}>
+          <FieldGroup className="auth-form-stack">
+            <Field data-invalid={!!fieldErrors.email}>
+              <Label htmlFor="email">{localization.auth.email}</Label>
 
-          <form onSubmit={handleSubmit}>
-            <FieldGroup>
-              <Field data-invalid={!!fieldErrors.email}>
-                <Label htmlFor="email">{localization.auth.email}</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                autoCapitalize="none"
+                spellCheck={false}
+                inputMode="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value)
 
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value)
+                  setFieldErrors((prev) => ({
+                    ...prev,
+                    email: undefined,
+                  }))
+                }}
+                placeholder={localization.auth.emailPlaceholder}
+                required
+                disabled={isPending}
+                onInvalid={(e) => {
+                  e.preventDefault()
 
-                    setFieldErrors((prev) => ({
-                      ...prev,
-                      email: undefined,
-                    }))
-                  }}
-                  placeholder={localization.auth.emailPlaceholder}
-                  required
-                  disabled={isPending}
-                  onInvalid={(e) => {
-                    e.preventDefault()
+                  setFieldErrors((prev) => ({
+                    ...prev,
+                    email: (e.target as HTMLInputElement).validationMessage,
+                  }))
+                }}
+                aria-invalid={!!fieldErrors.email}
+              />
 
-                    setFieldErrors((prev) => ({
-                      ...prev,
-                      email: (e.target as HTMLInputElement).validationMessage,
-                    }))
-                  }}
-                  aria-invalid={!!fieldErrors.email}
-                />
+              <FieldError>{fieldErrors.email}</FieldError>
+            </Field>
 
-                <FieldError>{fieldErrors.email}</FieldError>
-              </Field>
+            <div className="auth-form-actions">
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="auth-primary-action"
+                size="lg"
+              >
+                {isPending && <Spinner />}
 
-              <div className="flex flex-col gap-3">
-                <Button type="submit" disabled={isPending}>
-                  {isPending && <Spinner />}
+                {localization.auth.sendMagicLink}
+              </Button>
 
-                  {localization.auth.sendMagicLink}
-                </Button>
+              <MagicLinkButton view="magicLink" isPending={isPending} />
 
-                <MagicLinkButton view="magicLink" isPending={isPending} />
+              {passkey && <PasskeyButton isPending={isPending} />}
+            </div>
+          </FieldGroup>
+        </form>
 
-                {passkey && <PasskeyButton isPending={isPending} />}
-              </div>
-            </FieldGroup>
-          </form>
+        {socialPosition === "bottom" && (
+          <>
+            {showSeparator && (
+              <FieldSeparator className="flex items-center text-xs *:data-[slot=field-separator-content]:bg-background">
+                {localization.auth.or}
+              </FieldSeparator>
+            )}
 
-          {socialPosition === "bottom" && (
-            <>
-              {showSeparator && (
-                <FieldSeparator className="flex items-center text-xs *:data-[slot=field-separator-content]:bg-card">
-                  {localization.auth.or}
-                </FieldSeparator>
-              )}
-
-              {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  isPending={isPending}
-                />
-              )}
-            </>
-          )}
-        </div>
-
-        <div className="mt-4 flex w-full flex-col items-center gap-3">
-          <FieldDescription className="text-center">
-            {localization.auth.needToCreateAnAccount}{" "}
-            <Link
-              href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
-              className="underline underline-offset-4"
-            >
-              {localization.auth.signUp}
-            </Link>
-          </FieldDescription>
-        </div>
-      </CardContent>
-    </Card>
+            {socialProviders && socialProviders.length > 0 && (
+              <ProviderButtons
+                socialLayout={socialLayout}
+                isPending={isPending}
+              />
+            )}
+          </>
+        )}
+      </div>
+    </AuthCardFrame>
   )
 }

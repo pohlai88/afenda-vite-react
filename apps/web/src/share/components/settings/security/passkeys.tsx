@@ -4,6 +4,12 @@ import {
   Button,
   Card,
   CardContent,
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
   Separator,
   Skeleton,
   Spinner,
@@ -13,6 +19,8 @@ import {
   useAuth,
   useListUserPasskeys,
 } from "@better-auth-ui/react"
+import { KeyRound } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@afenda/design-system/utils"
 import { Passkey } from "./passkey"
 
@@ -22,18 +30,21 @@ export type PasskeysProps = {
 
 export function Passkeys({ className }: PasskeysProps) {
   const { localization } = useAuth()
+  const { t } = useTranslation("auth", {
+    keyPrefix: "experience.settings.empty",
+  })
 
   const { data: passkeys, isPending } = useListUserPasskeys()
 
   const { mutate: addPasskey, isPending: isAdding } = useAddPasskey()
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">
+    <div className="space-y-3">
+      <h2 className="text-base font-semibold tracking-[-0.02em]">
         {localization.settings.passkeys}
       </h2>
 
-      <Card className={cn("p-0", className)}>
+      <Card className={cn("border-border/70 p-0 shadow-none", className)}>
         <CardContent className="p-0">
           <Card className="border-0 bg-transparent shadow-none ring-0">
             <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -63,6 +74,30 @@ export function Passkeys({ className }: PasskeysProps) {
             <>
               <Separator />
               <PasskeySkeleton />
+            </>
+          ) : !passkeys?.length ? (
+            <>
+              <Separator />
+              <Empty className="rounded-xl border-0 px-6 py-10 md:px-8">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <KeyRound aria-hidden="true" />
+                  </EmptyMedia>
+                  <EmptyTitle>{t("passkeys_title")}</EmptyTitle>
+                  <EmptyDescription>{t("passkeys_body")}</EmptyDescription>
+                </EmptyHeader>
+
+                <EmptyContent>
+                  <Button
+                    className="w-full sm:w-auto"
+                    disabled={isAdding}
+                    onClick={() => addPasskey()}
+                  >
+                    {isAdding && <Spinner />}
+                    {localization.settings.addPasskey}
+                  </Button>
+                </EmptyContent>
+              </Empty>
             </>
           ) : (
             passkeys?.map((passkey) => (

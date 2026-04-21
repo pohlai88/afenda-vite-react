@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardDescription,
   CardHeader,
@@ -12,9 +13,9 @@ import {
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
-  MarketingCallToActionPanel,
   MarketingPageSection,
   MarketingPageShell,
   MarketingSectionHeading,
@@ -55,10 +56,7 @@ export default function AsiaPacificPage() {
   const reduceMotion = !!useReducedMotion()
 
   return (
-    <MarketingPageShell
-      badges={["Regional Surface", "Asia Pacific"]}
-      tagline="Geo-specific ERP posture for regional operators"
-    >
+    <MarketingPageShell tagline="Geo-specific ERP posture for regional operators">
       <MarketingPageSection
         className="relative overflow-hidden border-b border-border/70"
         containerClassName="pb-16 pt-28 md:pb-20 lg:pb-24 lg:pt-32"
@@ -123,35 +121,39 @@ export default function AsiaPacificPage() {
       </MarketingPageSection>
 
       <MarketingPageSection>
-        <motion.div {...getMarketingReveal(reduceMotion)}>
-          <MarketingCallToActionPanel
-            kicker="Regional CTA"
-            title="Connect regional rollout to the same product and policy system."
-            description={
-              <>
-                Regional pages should route cleanly into product meaning and
-                legal posture so expansion does not create a fragmented public
-                story.
-              </>
-            }
-            links={[
-              {
-                label: "Open Truth Engine",
-                to: MARKETING_PAGE_HREFS.truthEngine,
-              },
-              {
-                label: "View PDPA",
-                to: MARKETING_PAGE_HREFS.pdpa,
-                variant: "outline",
-              },
-            ]}
-            aside={
-              <>
-                This route makes the `regional/` domain real without turning it
-                into a generic geography bucket with no narrative ownership.
-              </>
-            }
-          />
+        <motion.div
+          className="rounded-[2rem] border border-border/70 bg-card/95 p-6 shadow-xl shadow-primary/5 md:p-8"
+          {...getMarketingReveal(reduceMotion)}
+        >
+          <div className="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
+            Regional CTA
+          </div>
+          <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4vw,3.4rem)] leading-[0.95] font-semibold tracking-[-0.05em] text-balance">
+            Connect regional rollout to the same product and policy system.
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-pretty text-muted-foreground">
+            Regional pages should route cleanly into product meaning and legal
+            posture so expansion does not create a fragmented public story.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild size="lg" className="touch-manipulation">
+              <Link to={MARKETING_PAGE_HREFS.truthEngine}>
+                Open Truth Engine
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="touch-manipulation border-border/70 bg-background/75"
+            >
+              <Link to={MARKETING_PAGE_HREFS.pdpa}>View PDPA</Link>
+            </Button>
+          </div>
+          <p className="mt-6 max-w-2xl text-sm leading-7 text-pretty text-muted-foreground">
+            This route makes the regional domain real without turning it into a
+            generic geography bucket with no narrative ownership.
+          </p>
         </motion.div>
       </MarketingPageSection>
     </MarketingPageShell>

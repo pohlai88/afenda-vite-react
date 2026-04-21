@@ -22,7 +22,7 @@ import { createBrowserRouter, type RouteObject } from "react-router-dom"
 import "./app/_platform/shell/types/shell-route-handle"
 
 import { marketingRouteObjects } from "./marketing/marketing-routes"
-import { authRouteObjects } from "./routes/route-auth"
+import { authRouteObjects, setupRouteObject } from "./app/_platform/auth"
 import { appShellRouteObject } from "./routes/route-app-shell"
 
 /** Align with Vite `base` / `import.meta.env.BASE_URL` for non-root deploys. */
@@ -38,6 +38,7 @@ const basename = viteBaseToRouterBasename()
 export const browserRoutes: RouteObject[] = [
   ...marketingRouteObjects,
   ...authRouteObjects,
+  setupRouteObject,
   appShellRouteObject,
 ]
 

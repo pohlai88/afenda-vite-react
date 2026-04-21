@@ -12,11 +12,11 @@
 import { Navigate, type RouteObject } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../app/_components"
-import { AfendaAppAuthUiProvider } from "../app/_platform/auth/better-auth-ui/afenda-app-auth-ui-provider"
+import { AfendaAuthUiProvider } from "../app/_platform/auth/better-auth-ui/afenda-auth-ui-provider"
 import { BetterAuthSettingsView } from "../app/_features/better-auth-settings/better-auth-settings-view"
 import { DbStudioPage } from "../app/_features/db-studio"
 import { FeatureTemplateView } from "../app/_features/_template"
-import { RequireAuth } from "../app/_platform/auth"
+import { RequireAppReady, RequireAuth } from "../app/_platform/auth"
 import { TenantScopeProvider } from "../app/_platform/tenant"
 import {
   AppShellNotFound,
@@ -37,14 +37,16 @@ export const appShellRouteObject: RouteObject = {
   path: "/app",
   element: (
     <AppThemeProvider>
-      <AfendaAppAuthUiProvider>
+      <AfendaAuthUiProvider>
         <RequireAuth>
-          <TenantScopeProvider>
-            <ShellLeftSidebarLayout />
-          </TenantScopeProvider>
+          <RequireAppReady>
+            <TenantScopeProvider>
+              <ShellLeftSidebarLayout />
+            </TenantScopeProvider>
+          </RequireAppReady>
         </RequireAuth>
         <Toaster />
-      </AfendaAppAuthUiProvider>
+      </AfendaAuthUiProvider>
     </AppThemeProvider>
   ),
   errorElement: (

@@ -2,14 +2,11 @@
 
 import { useAuth, useRequestPasswordReset } from "@better-auth-ui/react"
 import { type SyntheticEvent, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 import {
   Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
   Field,
   FieldDescription,
   FieldError,
@@ -19,6 +16,7 @@ import {
   Spinner,
 } from "@afenda/design-system/ui-primitives"
 import { cn } from "@afenda/design-system/utils"
+import { AuthCardFrame } from "./auth-card-frame"
 
 export type ForgotPasswordProps = {
   className?: string
@@ -34,6 +32,9 @@ export type ForgotPasswordProps = {
  * @returns The forgot-password form UI as a JSX element
  */
 export function ForgotPassword({ className }: ForgotPasswordProps) {
+  const { t } = useTranslation("auth", {
+    keyPrefix: "experience.views.forgotPassword",
+  })
   const { basePaths, localization, viewPaths, Link } = useAuth()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
@@ -50,70 +51,77 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
     email?: string
   }>({})
 
+  const footer = (
+    <div className="auth-footer-links flex w-full flex-col items-center">
+      <FieldDescription className="text-center">
+        {localization.auth.rememberYourPassword}{" "}
+        <Link
+          href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
+          className="underline underline-offset-4 hover:underline"
+        >
+          {localization.auth.signIn}
+        </Link>
+      </FieldDescription>
+    </div>
+  )
+
   return (
-    <Card className={cn("w-full max-w-sm", className)}>
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">
-          {localization.auth.forgotPassword}
-        </CardTitle>
-      </CardHeader>
+    <AuthCardFrame
+      title={t("panel_title")}
+      description={t("panel_description")}
+      footer={footer}
+      className={cn(className)}
+    >
+      <form onSubmit={handleSubmit}>
+        <FieldGroup className="auth-form-stack">
+          <Field data-invalid={!!fieldErrors.email}>
+            <Label htmlFor="email">{localization.auth.email}</Label>
 
-      <CardContent>
-        <form onSubmit={handleSubmit}>
-          <FieldGroup>
-            <Field data-invalid={!!fieldErrors.email}>
-              <Label htmlFor="email">{localization.auth.email}</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              autoCapitalize="none"
+              spellCheck={false}
+              inputMode="email"
+              placeholder={localization.auth.emailPlaceholder}
+              required
+              disabled={isPending}
+              onChange={() => {
+                setFieldErrors((prev) => ({
+                  ...prev,
+                  email: undefined,
+                }))
+              }}
+              onInvalid={(e) => {
+                e.preventDefault()
 
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder={localization.auth.emailPlaceholder}
-                required
-                disabled={isPending}
-                onChange={() => {
-                  setFieldErrors((prev) => ({
-                    ...prev,
-                    email: undefined,
-                  }))
-                }}
-                onInvalid={(e) => {
-                  e.preventDefault()
+                setFieldErrors((prev) => ({
+                  ...prev,
+                  email: (e.target as HTMLInputElement).validationMessage,
+                }))
+              }}
+              aria-invalid={!!fieldErrors.email}
+            />
 
-                  setFieldErrors((prev) => ({
-                    ...prev,
-                    email: (e.target as HTMLInputElement).validationMessage,
-                  }))
-                }}
-                aria-invalid={!!fieldErrors.email}
-              />
+            <FieldError>{fieldErrors.email}</FieldError>
+          </Field>
 
-              <FieldError>{fieldErrors.email}</FieldError>
-            </Field>
-
-            <div className="flex flex-col gap-3">
-              <Button type="submit" disabled={isPending}>
-                {isPending && <Spinner />}
-
-                {localization.auth.sendResetLink}
-              </Button>
-            </div>
-          </FieldGroup>
-        </form>
-
-        <div className="mt-4 flex w-full flex-col items-center gap-3">
-          <FieldDescription className="text-center">
-            {localization.auth.rememberYourPassword}{" "}
-            <Link
-              href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-              className="underline underline-offset-4"
+          <div className="auth-form-actions">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="auth-primary-action"
+              size="lg"
             >
-              {localization.auth.signIn}
-            </Link>
-          </FieldDescription>
-        </div>
-      </CardContent>
-    </Card>
+              {isPending && <Spinner />}
+
+              {localization.auth.sendResetLink}
+            </Button>
+          </div>
+        </FieldGroup>
+      </form>
+    </AuthCardFrame>
   )
 }

@@ -7,8 +7,13 @@ describe("MarketingLoadingFallback", () => {
   it("renders an accessible busy state for lazy marketing chunks", () => {
     render(<MarketingLoadingFallback />)
 
-    const region = screen.getByLabelText("Loading marketing experience")
+    const region = screen.getByRole("status", {
+      name: "Loading marketing experience",
+    })
+
     expect(region).toHaveAttribute("aria-busy", "true")
-    expect(region).toHaveTextContent("Loading")
+    expect(region).toHaveAttribute("aria-live", "polite")
+    expect(region).toHaveAttribute("aria-atomic", "true")
+    expect(region).toHaveTextContent("Loading…")
   })
 })

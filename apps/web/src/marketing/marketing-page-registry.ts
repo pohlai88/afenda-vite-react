@@ -8,7 +8,7 @@ type MarketingLandingModule = {
 }
 
 export function loadMarketingFlagshipPage() {
-  return import("@/marketing/pages/landing/flagship/afenda-flagship-page")
+  return import("@/marketing/pages/landing/flagship/flagship-page")
 }
 
 export const MARKETING_PAGE_HREFS = {
@@ -108,8 +108,7 @@ export const marketingLandingVariants = [
   {
     id: "BenchmarkERP",
     slug: "benchmark-erp",
-    load: () =>
-      import("@/marketing/pages/landing/flagship/afenda-flagship-page"),
+    load: () => import("@/marketing/pages/landing/flagship/flagship-page"),
   },
 ] as const satisfies readonly {
   readonly id: string

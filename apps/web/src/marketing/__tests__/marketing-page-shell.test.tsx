@@ -40,4 +40,24 @@ describe("MarketingPageShell", () => {
       )
     ).toBeInTheDocument()
   })
+
+  it("can hide the shared header while preserving the main content and footer", () => {
+    render(
+      <MemoryRouter>
+        <MarketingPageShell hideHeader>
+          <section>
+            <h1>Flagship Hero</h1>
+          </section>
+        </MarketingPageShell>
+      </MemoryRouter>
+    )
+
+    expect(screen.queryByRole("banner")).not.toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", { name: /Flagship Hero/i })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole("navigation", { name: /Marketing footer navigation/i })
+    ).toBeInTheDocument()
+  })
 })

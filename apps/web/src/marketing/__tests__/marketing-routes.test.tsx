@@ -31,7 +31,7 @@ vi.mock("../marketing.config", () => ({
   isRandomHomeEnabled: () => routeMocks.isRandomHomeEnabled,
 }))
 
-vi.mock("../pages/landing/flagship/afenda-flagship-page", () => ({
+vi.mock("../pages/landing/flagship/flagship-page", () => ({
   default: () => routeMocks.flagshipPage(),
 }))
 

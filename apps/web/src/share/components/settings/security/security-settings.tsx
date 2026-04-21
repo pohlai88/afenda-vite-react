@@ -23,12 +23,16 @@ export function SecuritySettings({ className }: SecuritySettingsProps) {
   const { deleteUser, emailAndPassword, passkey, socialProviders } = useAuth()
 
   return (
-    <div className={cn("flex w-full flex-col gap-4 md:gap-6", className)}>
-      {emailAndPassword?.enabled && <ChangePassword />}
+    <div className={cn("grid w-full gap-6 xl:grid-cols-2 xl:gap-8", className)}>
+      {emailAndPassword?.enabled && (
+        <ChangePassword
+          className={!socialProviders?.length ? "xl:col-span-2" : undefined}
+        />
+      )}
       {!!socialProviders?.length && <LinkedAccounts />}
-      {passkey && <Passkeys />}
-      <ActiveSessions />
-      {deleteUser?.enabled && <DangerZone />}
+      {passkey && <Passkeys className="xl:col-span-2" />}
+      <ActiveSessions className="xl:col-span-2" />
+      {deleteUser?.enabled && <DangerZone className="xl:col-span-2" />}
     </div>
   )
 }

@@ -52,13 +52,13 @@ export function ChangeEmail({ className }: ChangeEmailProps) {
   }
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">
+    <div className="space-y-3">
+      <h2 className="text-base font-semibold tracking-[-0.02em]">
         {localization.settings.changeEmail}
       </h2>
 
       <form onSubmit={handleSubmit}>
-        <Card className={cn(className)}>
+        <Card className={cn("border-border/70 shadow-none", className)}>
           <CardContent className="flex flex-col gap-6">
             <Field data-invalid={!!fieldErrors.email}>
               <Label htmlFor="email">{localization.auth.email}</Label>
@@ -70,6 +70,9 @@ export function ChangeEmail({ className }: ChangeEmailProps) {
                   name="email"
                   type="email"
                   autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  inputMode="email"
                   defaultValue={session?.user.email}
                   placeholder={localization.auth.emailPlaceholder}
                   disabled={isPending}

@@ -85,6 +85,7 @@ export function ManageAccount({
                 variant="ghost"
                 size="icon-sm"
                 className="shrink-0"
+                aria-label={localization.settings.manageAccounts}
                 disabled={isBusy}
               >
                 <MoreHorizontal />

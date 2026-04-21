@@ -6,7 +6,7 @@ import {
   useSession,
 } from "@better-auth-ui/react"
 import { Eye, EyeOff } from "lucide-react"
-import { type SyntheticEvent, useState } from "react"
+import { type SyntheticEvent, useRef, useState } from "react"
 import { toast } from "sonner"
 
 import {
@@ -78,12 +78,12 @@ function SetPassword({ className }: { className?: string }) {
   }
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">
+    <div className="space-y-3">
+      <h2 className="text-base font-semibold tracking-[-0.02em]">
         {localization.settings.changePassword}
       </h2>
 
-      <Card className={cn(className)}>
+      <Card className={cn("border-border/70 shadow-none", className)}>
         <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm leading-tight font-medium">
@@ -149,15 +149,17 @@ function ChangePasswordForm({
     newPassword?: string
     confirmPassword?: string
   }>({})
+  const confirmPasswordRef = useRef<HTMLInputElement | null>(null)
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (emailAndPassword.confirmPassword && newPassword !== confirmPassword) {
-      setCurrentPassword("")
-      setNewPassword("")
-      setConfirmPassword("")
-      toast.error(localization.auth.passwordsDoNotMatch)
+      setFieldErrors((prev) => ({
+        ...prev,
+        confirmPassword: localization.auth.passwordsDoNotMatch,
+      }))
+      confirmPasswordRef.current?.focus()
       return
     }
 
@@ -169,13 +171,13 @@ function ChangePasswordForm({
   }
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">
+    <div className="space-y-3">
+      <h2 className="text-base font-semibold tracking-[-0.02em]">
         {localization.settings.changePassword}
       </h2>
 
       <form onSubmit={handleSubmit}>
-        <Card className={cn(className)}>
+        <Card className={cn("border-border/70 shadow-none", className)}>
           <CardContent className="flex flex-col gap-6">
             <Field data-invalid={!!fieldErrors.currentPassword}>
               <Label htmlFor="currentPassword">
@@ -259,6 +261,7 @@ function ChangePasswordForm({
 
                   <InputGroupAddon align="inline-end">
                     <InputGroupButton
+                      type="button"
                       size="icon-xs"
                       aria-label={
                         isNewPasswordVisible
@@ -292,6 +295,7 @@ function ChangePasswordForm({
                 {session ? (
                   <InputGroup>
                     <InputGroupInput
+                      ref={confirmPasswordRef}
                       id="confirmPassword"
                       name="confirmPassword"
                       type={isConfirmPasswordVisible ? "text" : "password"}
@@ -324,6 +328,7 @@ function ChangePasswordForm({
 
                     <InputGroupAddon align="inline-end">
                       <InputGroupButton
+                        type="button"
                         size="icon-xs"
                         aria-label={
                           isConfirmPasswordVisible

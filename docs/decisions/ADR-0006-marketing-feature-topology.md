@@ -4,7 +4,7 @@
 - **Date:** 2026-04-19
 - **Owner:** Platform / web
 - **Review by:** 2026-10-01
-- **Related:** [ADR-0004](./ADR-0004-web-src-architecture-rpc-runtime-features.md) (web `src/` boundaries), [ADR-0005](./ADR-0005-zustand-client-ui-store-adoption.md) (client-store governance)
+- **Related:** [ADR-0004](./ADR-0004-web-src-architecture-rpc-runtime-features.md) (web `src/` boundaries), [ADR-0005](./ADR-0005-zustand-client-ui-store-adoption.md) (client-store governance), [marketing-webgl-route-only](./marketing-webgl-route-only.md) (Three/R3F default on marketing)
 
 ## Context
 

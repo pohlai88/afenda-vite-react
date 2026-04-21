@@ -2,10 +2,12 @@
 
 import { useAuth, useSignOut } from "@better-auth-ui/react"
 import { useEffect, useRef } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 import { Spinner } from "@afenda/design-system/ui-primitives"
 import { cn } from "@afenda/design-system/utils"
+import { AuthCardFrame } from "./auth-card-frame"
 
 export type SignOutProps = {
   className?: string
@@ -18,6 +20,9 @@ export type SignOutProps = {
  * @returns The spinner shown during sign-out
  */
 export function SignOut({ className }: SignOutProps) {
+  const { t } = useTranslation("auth", {
+    keyPrefix: "experience.views.signOut",
+  })
   const { basePaths, navigate, viewPaths } = useAuth()
 
   const { mutate: signOut } = useSignOut({
@@ -45,5 +50,20 @@ export function SignOut({ className }: SignOutProps) {
     signOut()
   }, [signOut])
 
-  return <Spinner className={cn("mx-auto my-auto", className)} />
+  return (
+    <AuthCardFrame
+      title={t("panel_title")}
+      description={t("panel_description")}
+      className={cn(className)}
+    >
+      <div
+        role="status"
+        aria-live="polite"
+        className="flex min-h-32 items-center gap-3 text-sm text-muted-foreground"
+      >
+        <Spinner />
+        <span>{t("status_message")}</span>
+      </div>
+    </AuthCardFrame>
+  )
 }

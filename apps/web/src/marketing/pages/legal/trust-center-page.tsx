@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardDescription,
   CardHeader,
@@ -12,9 +13,9 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
-  MarketingCallToActionPanel,
   MarketingPageSection,
   MarketingPageShell,
   MarketingSectionHeading,
@@ -55,10 +56,7 @@ export default function TrustCenterPage() {
   const reduceMotion = !!useReducedMotion()
 
   return (
-    <MarketingPageShell
-      badges={["Legal and Trust", "Trust Center"]}
-      tagline="Reusable marketing shell for trust and governance pages"
-    >
+    <MarketingPageShell tagline="Reusable marketing shell for trust and governance pages">
       <MarketingPageSection
         className="relative overflow-hidden border-b border-border/70"
         containerClassName="pb-16 pt-28 md:pb-20 lg:pb-24 lg:pt-32"
@@ -121,35 +119,40 @@ export default function TrustCenterPage() {
       </MarketingPageSection>
 
       <MarketingPageSection>
-        <motion.div {...getMarketingReveal(reduceMotion)}>
-          <MarketingCallToActionPanel
-            kicker="Trust CTA"
-            title="Follow the trust model into governance detail."
-            description={
-              <>
-                Trust pages should move people toward clearer governance, not
-                bury them under an abstract promise stack.
-              </>
-            }
-            links={[
-              {
-                label: "Open Data Governance",
-                to: MARKETING_PAGE_HREFS.dataGovernance,
-              },
-              {
-                label: "Return to Flagship",
-                to: MARKETING_PAGE_HREFS.flagship,
-                variant: "outline",
-              },
-            ]}
-            aside={
-              <>
-                This legal surface reuses the same shell, spacing system, and
-                CTA structure as campaign pages so quality stays consistent
-                across the marketing tree.
-              </>
-            }
-          />
+        <motion.div
+          className="rounded-[2rem] border border-border/70 bg-card/95 p-6 shadow-xl shadow-primary/5 md:p-8"
+          {...getMarketingReveal(reduceMotion)}
+        >
+          <div className="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
+            Trust CTA
+          </div>
+          <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4vw,3.4rem)] leading-[0.95] font-semibold tracking-[-0.05em] text-balance">
+            Follow the trust model into governance detail.
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-pretty text-muted-foreground">
+            Trust pages should move people toward clearer governance, not bury
+            them under an abstract promise stack.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild size="lg" className="touch-manipulation">
+              <Link to={MARKETING_PAGE_HREFS.dataGovernance}>
+                Open Data Governance
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="touch-manipulation border-border/70 bg-background/75"
+            >
+              <Link to={MARKETING_PAGE_HREFS.flagship}>Return to Flagship</Link>
+            </Button>
+          </div>
+          <p className="mt-6 max-w-2xl text-sm leading-7 text-pretty text-muted-foreground">
+            This legal surface should stay consistent with the rest of the
+            marketing tree without pushing CTA composition back into a shared
+            component.
+          </p>
         </motion.div>
       </MarketingPageSection>
     </MarketingPageShell>

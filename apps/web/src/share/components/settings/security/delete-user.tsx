@@ -88,7 +88,7 @@ export function DeleteUser({ className }: DeleteUserProps) {
   }
 
   return (
-    <Card className={cn("border-destructive", className)}>
+    <Card className={cn("border-destructive/70 shadow-none", className)}>
       <CardContent className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm leading-tight font-medium">

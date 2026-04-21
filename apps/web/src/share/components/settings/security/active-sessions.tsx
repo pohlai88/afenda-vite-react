@@ -3,10 +3,17 @@
 import {
   Card,
   CardContent,
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
   Separator,
   Skeleton,
 } from "@afenda/design-system/ui-primitives"
 import { useAuth, useListSessions, useSession } from "@better-auth-ui/react"
+import { LaptopMinimal } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@afenda/design-system/utils"
 import { ActiveSession } from "./active-session"
 
@@ -24,6 +31,9 @@ export type ActiveSessionsProps = {
  */
 export function ActiveSessions({ className }: ActiveSessionsProps) {
   const { localization } = useAuth()
+  const { t } = useTranslation("auth", {
+    keyPrefix: "experience.settings.empty",
+  })
   const { data: session } = useSession()
 
   const { data: sessions, isPending } = useListSessions()
@@ -33,15 +43,25 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
   )
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">
+    <div className="space-y-3">
+      <h2 className="text-base font-semibold tracking-[-0.02em]">
         {localization.settings.activeSessions}
       </h2>
 
-      <Card className={cn("p-0", className)}>
+      <Card className={cn("border-border/70 p-0 shadow-none", className)}>
         <CardContent className="p-0">
           {isPending ? (
             <SessionRowSkeleton />
+          ) : activeSessions.length === 0 ? (
+            <Empty className="rounded-xl border-0 px-6 py-10 md:px-8">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <LaptopMinimal aria-hidden="true" />
+                </EmptyMedia>
+                <EmptyTitle>{t("sessions_title")}</EmptyTitle>
+                <EmptyDescription>{t("sessions_body")}</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           ) : (
             activeSessions?.map((activeSession, index) => (
               <div key={activeSession.id}>

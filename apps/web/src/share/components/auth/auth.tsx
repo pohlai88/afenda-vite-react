@@ -1,6 +1,7 @@
 import { useAuth } from "@better-auth-ui/react"
 import type { AuthView } from "@better-auth-ui/react/core"
 
+import { AuthExperienceShell } from "./auth-experience-shell"
 import { ForgotPassword } from "./forgot-password"
 import { MagicLink } from "./magic-link"
 import type { SocialLayout } from "./provider-buttons"
@@ -50,40 +51,50 @@ export function Auth({
 
   const currentView = view || (path ? authPathViews[path] : undefined)
 
+  let content: React.ReactNode
+
   switch (currentView) {
     case "signIn":
-      return (
+      content = (
         <SignIn
           className={className}
           socialLayout={socialLayout}
           socialPosition={socialPosition}
         />
       )
+      break
     case "signUp":
-      return (
+      content = (
         <SignUp
           className={className}
           socialLayout={socialLayout}
           socialPosition={socialPosition}
         />
       )
+      break
     case "magicLink":
-      return (
+      content = (
         <MagicLink
           className={className}
           socialLayout={socialLayout}
           socialPosition={socialPosition}
         />
       )
+      break
     case "forgotPassword":
-      return <ForgotPassword className={className} />
+      content = <ForgotPassword className={className} />
+      break
     case "resetPassword":
-      return <ResetPassword className={className} />
+      content = <ResetPassword className={className} />
+      break
     case "signOut":
-      return <SignOut className={className} />
+      content = <SignOut className={className} />
+      break
     default:
       throw new Error(
         `[Better Auth UI] Valid views are: ${Object.keys(viewPaths.auth).join(", ")}`
       )
   }
+
+  return <AuthExperienceShell view={currentView}>{content}</AuthExperienceShell>
 }

@@ -36,13 +36,13 @@ export function AccountSettings({
 
   return (
     <div
-      className={cn("flex w-full flex-col gap-4 md:gap-6", className)}
+      className={cn("grid w-full gap-6 xl:grid-cols-2 xl:gap-8", className)}
       {...props}
     >
-      <UserProfile />
+      <UserProfile className="xl:col-span-2" />
       {(emailAndPassword?.enabled || magicLink) && <ChangeEmail />}
       {setTheme && <Appearance />}
-      {multiSession && <ManageAccounts />}
+      {multiSession && <ManageAccounts className="xl:col-span-2" />}
     </div>
   )
 }

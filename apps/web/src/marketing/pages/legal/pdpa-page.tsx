@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardDescription,
   CardHeader,
@@ -12,9 +13,9 @@ import {
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
-  MarketingCallToActionPanel,
   MarketingPageSection,
   MarketingPageShell,
   MarketingSectionHeading,
@@ -55,10 +56,7 @@ export default function PdpaPage() {
   const reduceMotion = !!useReducedMotion()
 
   return (
-    <MarketingPageShell
-      badges={["Legal and Trust", "PDPA"]}
-      tagline="Regional privacy and governance posture"
-    >
+    <MarketingPageShell tagline="Regional privacy and governance posture">
       <MarketingPageSection
         className="relative overflow-hidden border-b border-border/70"
         containerClassName="pb-16 pt-28 md:pb-20 lg:pb-24 lg:pt-32"
@@ -121,35 +119,43 @@ export default function PdpaPage() {
       </MarketingPageSection>
 
       <MarketingPageSection>
-        <motion.div {...getMarketingReveal(reduceMotion)}>
-          <MarketingCallToActionPanel
-            kicker="PDPA CTA"
-            title="Move from regional policy into broader privacy and regional rollout context."
-            description={
-              <>
-                Region-specific pages should connect policy detail back to the
-                wider public system so trust remains cumulative across routes.
-              </>
-            }
-            links={[
-              {
-                label: "Open Privacy Policy",
-                to: MARKETING_PAGE_HREFS.privacyPolicy,
-              },
-              {
-                label: "View Asia Pacific",
-                to: MARKETING_PAGE_HREFS.asiaPacific,
-                variant: "outline",
-              },
-            ]}
-            aside={
-              <>
-                The naming is stable and descriptive on purpose. This route
-                exists to satisfy a governed legal domain, not to act as a
-                temporary campaign page.
-              </>
-            }
-          />
+        <motion.div
+          className="rounded-[2rem] border border-border/70 bg-card/95 p-6 shadow-xl shadow-primary/5 md:p-8"
+          {...getMarketingReveal(reduceMotion)}
+        >
+          <div className="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
+            PDPA CTA
+          </div>
+          <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4vw,3.4rem)] leading-[0.95] font-semibold tracking-[-0.05em] text-balance">
+            Move from regional policy into broader privacy and regional rollout
+            context.
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-pretty text-muted-foreground">
+            Region-specific pages should connect policy detail back to the wider
+            public system so trust remains cumulative across routes.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild size="lg" className="touch-manipulation">
+              <Link to={MARKETING_PAGE_HREFS.privacyPolicy}>
+                Open Privacy Policy
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="touch-manipulation border-border/70 bg-background/75"
+            >
+              <Link to={MARKETING_PAGE_HREFS.asiaPacific}>
+                View Asia Pacific
+              </Link>
+            </Button>
+          </div>
+          <p className="mt-6 max-w-2xl text-sm leading-7 text-pretty text-muted-foreground">
+            The naming is stable and descriptive on purpose. This route exists
+            to satisfy a governed legal domain, not to act as a temporary
+            campaign page.
+          </p>
         </motion.div>
       </MarketingPageSection>
     </MarketingPageShell>

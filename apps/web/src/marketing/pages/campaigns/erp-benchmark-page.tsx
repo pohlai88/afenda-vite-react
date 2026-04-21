@@ -1,5 +1,6 @@
 import {
   Badge,
+  Button,
   Card,
   CardDescription,
   CardHeader,
@@ -15,9 +16,9 @@ import {
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
-  MarketingCallToActionPanel,
   MarketingPageSection,
   MarketingPageShell,
   MarketingSectionHeading,
@@ -71,10 +72,7 @@ export default function ErpBenchmarkCampaignPage() {
   const reduceMotion = !!useReducedMotion()
 
   return (
-    <MarketingPageShell
-      badges={["Campaign Surface", "ERP Benchmark"]}
-      tagline="Campaign shell for benchmark-led ERP narratives"
-    >
+    <MarketingPageShell tagline="Campaign shell for benchmark-led ERP narratives">
       <MarketingPageSection
         className="relative overflow-hidden border-b border-border/70"
         containerClassName="pb-16 pt-28 md:pb-20 lg:pb-24 lg:pt-32"
@@ -205,32 +203,40 @@ export default function ErpBenchmarkCampaignPage() {
       </MarketingPageSection>
 
       <MarketingPageSection>
-        <motion.div {...getMarketingReveal(reduceMotion)}>
-          <MarketingCallToActionPanel
-            kicker="Campaign CTA"
-            title="Bring the benchmark conversation onto Afenda's terms."
-            description={
-              <>
-                Show buyers the suites they already know, then show them the
-                stronger operating standard they are actually missing.
-              </>
-            }
-            links={[
-              { label: "View Flagship", to: MARKETING_PAGE_HREFS.flagship },
-              {
-                label: "Open Trust Center",
-                to: MARKETING_PAGE_HREFS.trustCenter,
-                variant: "outline",
-              },
-            ]}
-            aside={
-              <>
-                Reusable shell components in this page are intentionally generic
-                enough for campaigns, legal, and future product surfaces without
-                collapsing into a flat dump of wrappers.
-              </>
-            }
-          />
+        <motion.div
+          className="rounded-[2rem] border border-border/70 bg-card/95 p-6 shadow-xl shadow-primary/5 md:p-8"
+          {...getMarketingReveal(reduceMotion)}
+        >
+          <div className="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
+            Campaign CTA
+          </div>
+          <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4vw,3.4rem)] leading-[0.95] font-semibold tracking-[-0.05em] text-balance">
+            Bring the benchmark conversation onto Afenda&apos;s terms.
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-pretty text-muted-foreground">
+            Show buyers the suites they already know, then show them the
+            stronger operating standard they are actually missing.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild size="lg" className="touch-manipulation">
+              <Link to={MARKETING_PAGE_HREFS.flagship}>View Flagship</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="touch-manipulation border-border/70 bg-background/75"
+            >
+              <Link to={MARKETING_PAGE_HREFS.trustCenter}>
+                Open Trust Center
+              </Link>
+            </Button>
+          </div>
+          <p className="mt-6 max-w-2xl text-sm leading-7 text-pretty text-muted-foreground">
+            This page owns campaign positioning. It should connect the benchmark
+            conversation back to the flagship and trust routes without
+            introducing another shared composition layer.
+          </p>
         </motion.div>
       </MarketingPageSection>
     </MarketingPageShell>

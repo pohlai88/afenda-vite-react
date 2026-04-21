@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardDescription,
   CardHeader,
@@ -12,9 +13,9 @@ import {
   Layers3,
   type LucideIcon,
 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
-  MarketingCallToActionPanel,
   MarketingPageSection,
   MarketingPageShell,
   MarketingSectionHeading,
@@ -55,10 +56,7 @@ export default function TruthEnginePage() {
   const reduceMotion = !!useReducedMotion()
 
   return (
-    <MarketingPageShell
-      badges={["Product Surface", "Truth Engine"]}
-      tagline="Product architecture and platform meaning"
-    >
+    <MarketingPageShell tagline="Product architecture and platform meaning">
       <MarketingPageSection
         className="relative overflow-hidden border-b border-border/70"
         containerClassName="pb-16 pt-28 md:pb-20 lg:pb-24 lg:pt-32"
@@ -121,32 +119,41 @@ export default function TruthEnginePage() {
       </MarketingPageSection>
 
       <MarketingPageSection>
-        <motion.div {...getMarketingReveal(reduceMotion)}>
-          <MarketingCallToActionPanel
-            kicker="Product CTA"
-            title="See the product logic in the flagship, then test it against the ERP benchmark."
-            description={
-              <>
-                Product pages should clarify the mechanism, not repeat the
-                slogan. The route tree stays connected so readers can move from
-                architecture to narrative to benchmark without losing context.
-              </>
-            }
-            links={[
-              { label: "Open Flagship", to: MARKETING_PAGE_HREFS.flagship },
-              {
-                label: "View Benchmark ERP",
-                to: MARKETING_PAGE_HREFS.benchmarkErp,
-                variant: "outline",
-              },
-            ]}
-            aside={
-              <>
-                This page owns product meaning. It does not borrow campaign or
-                legal framing to explain what the system actually is.
-              </>
-            }
-          />
+        <motion.div
+          className="rounded-[2rem] border border-border/70 bg-card/95 p-6 shadow-xl shadow-primary/5 md:p-8"
+          {...getMarketingReveal(reduceMotion)}
+        >
+          <div className="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
+            Product CTA
+          </div>
+          <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4vw,3.4rem)] leading-[0.95] font-semibold tracking-[-0.05em] text-balance">
+            See the product logic in the flagship, then test it against the ERP
+            benchmark.
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-pretty text-muted-foreground">
+            Product pages should clarify the mechanism, not repeat the slogan.
+            The route tree stays connected so readers can move from architecture
+            to narrative to benchmark without losing context.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild size="lg" className="touch-manipulation">
+              <Link to={MARKETING_PAGE_HREFS.flagship}>Open Flagship</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="touch-manipulation border-border/70 bg-background/75"
+            >
+              <Link to={MARKETING_PAGE_HREFS.benchmarkErp}>
+                View Benchmark ERP
+              </Link>
+            </Button>
+          </div>
+          <p className="mt-6 max-w-2xl text-sm leading-7 text-pretty text-muted-foreground">
+            This page owns product meaning. It does not borrow campaign or legal
+            framing to explain what the system actually is.
+          </p>
         </motion.div>
       </MarketingPageSection>
     </MarketingPageShell>

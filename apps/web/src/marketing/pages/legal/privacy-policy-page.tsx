@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardDescription,
   CardHeader,
@@ -12,9 +13,9 @@ import {
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
-  MarketingCallToActionPanel,
   MarketingPageSection,
   MarketingPageShell,
   MarketingSectionHeading,
@@ -55,10 +56,7 @@ export default function PrivacyPolicyPage() {
   const reduceMotion = !!useReducedMotion()
 
   return (
-    <MarketingPageShell
-      badges={["Legal and Trust", "Privacy Policy"]}
-      tagline="Privacy posture, control visibility, and data handling intent"
-    >
+    <MarketingPageShell tagline="Privacy posture, control visibility, and data handling intent">
       <MarketingPageSection
         className="relative overflow-hidden border-b border-border/70"
         containerClassName="pb-16 pt-28 md:pb-20 lg:pb-24 lg:pt-32"
@@ -120,32 +118,40 @@ export default function PrivacyPolicyPage() {
       </MarketingPageSection>
 
       <MarketingPageSection>
-        <motion.div {...getMarketingReveal(reduceMotion)}>
-          <MarketingCallToActionPanel
-            kicker="Privacy CTA"
-            title="Follow the privacy posture into PDPA and trust governance."
-            description={
-              <>
-                Privacy pages should help the reader reach the next relevant
-                control surface instead of stopping at a static legal dead end.
-              </>
-            }
-            links={[
-              { label: "Open PDPA", to: MARKETING_PAGE_HREFS.pdpa },
-              {
-                label: "Visit Trust Center",
-                to: MARKETING_PAGE_HREFS.trustCenter,
-                variant: "outline",
-              },
-            ]}
-            aside={
-              <>
-                This is a public legal surface, not a full contract. It is
-                structured to keep the policy route coherent inside the broader
-                marketing system.
-              </>
-            }
-          />
+        <motion.div
+          className="rounded-[2rem] border border-border/70 bg-card/95 p-6 shadow-xl shadow-primary/5 md:p-8"
+          {...getMarketingReveal(reduceMotion)}
+        >
+          <div className="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
+            Privacy CTA
+          </div>
+          <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4vw,3.4rem)] leading-[0.95] font-semibold tracking-[-0.05em] text-balance">
+            Follow the privacy posture into PDPA and trust governance.
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-pretty text-muted-foreground">
+            Privacy pages should help the reader reach the next relevant control
+            surface instead of stopping at a static legal dead end.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild size="lg" className="touch-manipulation">
+              <Link to={MARKETING_PAGE_HREFS.pdpa}>Open PDPA</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="touch-manipulation border-border/70 bg-background/75"
+            >
+              <Link to={MARKETING_PAGE_HREFS.trustCenter}>
+                Visit Trust Center
+              </Link>
+            </Button>
+          </div>
+          <p className="mt-6 max-w-2xl text-sm leading-7 text-pretty text-muted-foreground">
+            This is a public legal surface, not a full contract. It is
+            structured to keep the policy route coherent inside the broader
+            marketing system.
+          </p>
         </motion.div>
       </MarketingPageSection>
     </MarketingPageShell>

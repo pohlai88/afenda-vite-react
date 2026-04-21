@@ -1,6 +1,7 @@
-import tokenOnlyTailwind from './rules/token-only-tailwind.js'
-import noInlineStyles from './rules/no-inline-styles.js'
-import noDirectRadix from './rules/no-direct-radix.js'
+import tokenOnlyTailwind from "./rules/token-only-tailwind.js"
+import noInlineStyles from "./rules/no-inline-styles.js"
+import noDirectRadix from "./rules/no-direct-radix.js"
+import noAuthScrollTrap from "./rules/no-auth-scroll-trap.js"
 
 /**
  * Afenda UI governance plugin (flat config). Rule ids: `afenda-ui/<rule-name>`.
@@ -9,13 +10,14 @@ import noDirectRadix from './rules/no-direct-radix.js'
  */
 const plugin = {
   meta: {
-    name: 'eslint-plugin-afenda-ui',
-    version: '0.0.0',
+    name: "eslint-plugin-afenda-ui",
+    version: "0.0.0",
   },
   rules: {
-    'token-only-tailwind': tokenOnlyTailwind,
-    'no-inline-styles': noInlineStyles,
-    'no-direct-radix': noDirectRadix,
+    "token-only-tailwind": tokenOnlyTailwind,
+    "no-inline-styles": noInlineStyles,
+    "no-direct-radix": noDirectRadix,
+    "no-auth-scroll-trap": noAuthScrollTrap,
   },
 }
 
