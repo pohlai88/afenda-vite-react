@@ -66,4 +66,4 @@ Prefer **TanStack Query** (`_platform` `server-state` when added) for caching, r
 
 ## Layout
 
-Matches `_template`: `adapters/` (fetch + timeout), `services/` (`api-client-service.ts`), `policy/` (`api-client-policy.ts`), `types/` (`api-client-types.ts`), `hooks/`, `components/`, `utils/` (`api-client-utils.ts`), `scripts/` (`api-client-capability-report.ts`), `__tests__/` (`api-client-policy.test.ts`).
+Matches `_template`: `adapters/` (fetch + timeout), `services/` (`api-client-service.ts`), `policy/` (`api-client-policy.ts`), `types/` (`api-client-types.ts`), `hooks/`, `components/`, root runtime config (`api-client-config.ts`), `scripts/` (`api-client-capability-report.ts`), `__tests__/` (`api-client-policy.test.ts`).

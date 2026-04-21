@@ -6,7 +6,7 @@ import {
 } from "../policy/platform-capability-policy"
 import { createPlatformCapabilityTemplateReport } from "../scripts/platform-capability-template-report"
 import { listPlatformCapabilityContracts } from "../services/platform-capability-service"
-import { assertPlatformCapabilityId } from "../utils/platform-capability-utils"
+import { assertPlatformCapabilityId } from "../platform-capability-metadata"
 
 describe("platform capability template", () => {
   it("keeps feature internals outside the platform boundary", () => {

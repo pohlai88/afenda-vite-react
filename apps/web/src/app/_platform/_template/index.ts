@@ -14,7 +14,7 @@ export {
   assertPlatformCapabilityId,
   formatPlatformCapabilityStatus,
   isPlatformCapabilityId,
-} from "./utils/platform-capability-utils"
+} from "./platform-capability-metadata"
 export type {
   PlatformCapabilityAdapter,
   PlatformCapabilityAdapterResult,

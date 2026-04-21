@@ -31,6 +31,13 @@
       "description": "Generate the scripts directory index and support-file summary."
     },
     {
+      "path": "rules",
+      "mode": "generic-formal-directory",
+      "title": "Repository rules",
+      "description": "Generate an index for durable repository governance rules, machine-readable policy, and refactor planning artifacts.",
+      "includeChildDirectories": true
+    },
+    {
       "path": ".agents/skills/shadcn",
       "mode": "generic-formal-directory",
       "title": "Shadcn skill docs",

@@ -12,7 +12,7 @@ import type {
   FeatureTemplateMetric,
   FeatureTemplateTone,
 } from "../types/feature-template"
-import { getFeatureTemplateToneClassName } from "../utils/feature-template-utils"
+import { getFeatureTemplateToneClassName } from "../feature-template-policy"
 
 export interface OperationalMetricStripProps {
   readonly metrics: readonly FeatureTemplateMetric[]

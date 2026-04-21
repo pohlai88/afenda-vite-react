@@ -11,12 +11,12 @@ import type { FeatureTemplateRecord } from "../types/feature-template"
 import {
   formatFeatureTemplateSeverity,
   getFeatureTemplateSeverityClassName,
-} from "../utils/feature-template-utils"
+} from "../feature-template-policy"
 import {
   formatFeatureTemplateDateTime,
   normalizeFeatureTemplateText,
   resolveFeatureTemplateDateTime,
-} from "../utils/feature-template-formatters"
+} from "../feature-template-formatters"
 
 export interface PriorityQueuePanelProps {
   readonly records: readonly FeatureTemplateRecord[]

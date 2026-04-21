@@ -44,7 +44,6 @@ export const apiClientPlatformPolicy = {
     "scripts",
     "services",
     "types",
-    "utils",
     "__tests__",
   ],
   dependencyDirection:

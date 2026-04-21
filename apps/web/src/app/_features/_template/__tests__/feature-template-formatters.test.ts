@@ -7,7 +7,7 @@ import {
   normalizeFeatureTemplateText,
   parseFeatureTemplateDate,
   resolveFeatureTemplateDateTime,
-} from "../utils/feature-template-formatters"
+} from "../feature-template-formatters"
 
 describe("featureTemplateFormatters", () => {
   it("normalizes optional text safely", () => {

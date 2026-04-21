@@ -1,0 +1,93 @@
+{
+  "$schema": "./filesystem-governance.schema-note.json",
+  "version": 1,
+  "promotedSharedDirectories": ["share", "shared"],
+  "ignoredDirectoryNames": ["__tests__", "coverage", "dist", "node_modules"],
+  "deniedDirectoryNames": [
+    "content",
+    "data",
+    "helper",
+    "helpers",
+    "section",
+    "sections",
+    "util",
+    "utils",
+    "wrapper"
+  ],
+  "deniedFileStems": [
+    "common",
+    "content",
+    "data",
+    "helper",
+    "helpers",
+    "misc",
+    "section",
+    "sections",
+    "util",
+    "utils",
+    "wrapper"
+  ],
+  "governedRoots": [
+    {
+      "root": "apps/web/src/marketing/pages",
+      "maxDirectoryDepth": 3,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "apps/web/src/app/_features",
+      "maxDirectoryDepth": 4,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "apps/web/src/app/_platform",
+      "maxDirectoryDepth": 4,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "apps/web/src/share",
+      "maxDirectoryDepth": 3,
+      "allowedPromotedSharedRoots": ["share"]
+    },
+    {
+      "root": "apps/web/src/routes",
+      "maxDirectoryDepth": 3,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "apps/web/src/rpc",
+      "maxDirectoryDepth": 3,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "apps/api/src/modules",
+      "maxDirectoryDepth": 4,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "apps/api/src/routes",
+      "maxDirectoryDepth": 3,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "apps/api/src/middleware",
+      "maxDirectoryDepth": 3,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "apps/api/src/contract",
+      "maxDirectoryDepth": 3,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "apps/api/src/lib",
+      "maxDirectoryDepth": 3,
+      "allowedPromotedSharedRoots": []
+    }
+  ],
+  "notes": [
+    "This config is functional-first and intentionally narrow.",
+    "It targets app source subroots where ownership and naming drift are highest.",
+    "Web marketing, app ownership roots, promoted share, route surfaces, RPC, and API source boundaries are now in active governance.",
+    "Package governance and import-boundary linting should be layered in after the current app-and-api wave remains stable."
+  ]
+}

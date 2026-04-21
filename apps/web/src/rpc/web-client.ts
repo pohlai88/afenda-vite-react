@@ -14,7 +14,7 @@ import { hc } from "hono/client"
 
 import type { AppType } from "@afenda/api/app"
 
-import { normalizeApiClientBaseUrl } from "@/app/_platform/runtime/utils/api-client-utils"
+import { normalizeApiClientBaseUrl } from "@/app/_platform/runtime/api-client-config"
 
 function resolveHcBaseUrl(): string {
   const normalized = normalizeApiClientBaseUrl(

@@ -14,58 +14,58 @@ export type PoEntry = {
  */
 export function parsePo(content: string): PoEntry[] {
   const entries: PoEntry[] = []
-  const lines = content.split('\n')
+  const lines = content.split("\n")
 
-  let currentField: 'msgid' | 'msgstr' | null = null
-  let msgid = ''
-  let msgstr = ''
+  let currentField: "msgid" | "msgstr" | null = null
+  let msgid = ""
+  let msgstr = ""
 
   function flush() {
     if (msgid) {
       entries.push({ msgid, msgstr })
     }
-    msgid = ''
-    msgstr = ''
+    msgid = ""
+    msgstr = ""
     currentField = null
   }
 
   for (const raw of lines) {
     const line = raw.trim()
 
-    if (line === '' || line.startsWith('#')) {
-      if (currentField === 'msgstr') {
+    if (line === "" || line.startsWith("#")) {
+      if (currentField === "msgstr") {
         flush()
       }
       continue
     }
 
-    if (line.startsWith('msgid ')) {
-      if (currentField === 'msgstr') {
+    if (line.startsWith("msgid ")) {
+      if (currentField === "msgstr") {
         flush()
       }
-      currentField = 'msgid'
+      currentField = "msgid"
       msgid = extractQuoted(line.slice(6))
       continue
     }
 
-    if (line.startsWith('msgstr ')) {
-      currentField = 'msgstr'
+    if (line.startsWith("msgstr ")) {
+      currentField = "msgstr"
       msgstr = extractQuoted(line.slice(7))
       continue
     }
 
     if (line.startsWith('"') && line.endsWith('"')) {
       const continuation = extractQuoted(line)
-      if (currentField === 'msgid') {
+      if (currentField === "msgid") {
         msgid += continuation
-      } else if (currentField === 'msgstr') {
+      } else if (currentField === "msgstr") {
         msgstr += continuation
       }
     }
   }
 
   flush()
-  return entries.filter((e) => e.msgid !== '')
+  return entries.filter((e) => e.msgid !== "")
 }
 
 function extractQuoted(s: string): string {
@@ -74,8 +74,8 @@ function extractQuoted(s: string): string {
     return trimmed
       .slice(1, -1)
       .replace(/\\"/g, '"')
-      .replace(/\\n/g, '\n')
-      .replace(/\\\\/g, '\\')
+      .replace(/\\n/g, "\n")
+      .replace(/\\\\/g, "\\")
   }
   return trimmed
 }
@@ -96,7 +96,7 @@ export type DolibarrLangEntry = {
  */
 export function parseFrappeCsv(content: string): CsvEntry[] {
   const entries: CsvEntry[] = []
-  const lines = content.split('\n')
+  const lines = content.split("\n")
 
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim()
@@ -116,7 +116,7 @@ export function parseFrappeCsv(content: string): CsvEntry[] {
 
 function parseCsvLine(line: string): string[] {
   const fields: string[] = []
-  let current = ''
+  let current = ""
   let inQuotes = false
 
   for (let i = 0; i < line.length; i++) {
@@ -136,9 +136,9 @@ function parseCsvLine(line: string): string[] {
     } else {
       if (ch === '"') {
         inQuotes = true
-      } else if (ch === ',') {
+      } else if (ch === ",") {
         fields.push(current)
-        current = ''
+        current = ""
       } else {
         current += ch
       }
@@ -155,20 +155,20 @@ function parseCsvLine(line: string): string[] {
  */
 export function parseDolibarrLang(content: string): DolibarrLangEntry[] {
   const entries: DolibarrLangEntry[] = []
-  const lines = content.split('\n')
+  const lines = content.split("\n")
 
   for (const raw of lines) {
     const line = raw.trim()
-    if (!line || line.startsWith('#')) continue
+    if (!line || line.startsWith("#")) continue
 
-    const idx = line.indexOf('=')
+    const idx = line.indexOf("=")
     if (idx <= 0) continue
 
     const key = line.slice(0, idx).trim()
     const value = line
       .slice(idx + 1)
       .trim()
-      .replace(/\\n/g, '\n')
+      .replace(/\\n/g, "\n")
 
     if (!key) continue
     entries.push({ key, value })

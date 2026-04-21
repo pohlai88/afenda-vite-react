@@ -29,6 +29,8 @@
     "script:node-info": "tsx scripts/node-info.ts",
     "script:generate-docs-readme": "tsx scripts/generate-docs-readme.ts",
     "script:check-afenda-config": "tsx scripts/check-afenda-config.ts",
+    "script:check-filesystem-governance": "tsx scripts/check-filesystem-governance.ts",
+    "script:generate-filesystem-governance-report": "tsx scripts/generate-filesystem-governance-report.ts",
     "script:validate-i18n": "tsx scripts/validate-i18n.ts",
     "script:i18n-check": "pnpm --filter @afenda/web i18n:check",
     "script:i18n-check:unused": "pnpm --filter @afenda/web i18n:check:unused",

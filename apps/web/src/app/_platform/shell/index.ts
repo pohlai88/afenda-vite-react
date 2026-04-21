@@ -300,4 +300,4 @@ export type { ShellCommandRegistry } from "./registry/shell-command-registry"
 export { createShellCommandRegistry } from "./registry/shell-command-registry"
 export { shellCommandRegistry } from "./registry/shell-command-registry-instance"
 
-export { translateShellNamespaceKey } from "./utils/translate-shell-namespace-key"
+export { translateShellNamespaceKey } from "./translate-shell-namespace-key"

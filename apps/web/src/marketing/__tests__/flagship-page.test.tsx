@@ -52,18 +52,23 @@ describe("AfendaFlagshipPage", () => {
     ).not.toBeInTheDocument()
 
     expect(
-      screen.getByText(/enforces the immutable laws/i, {
-        selector: "p",
-      })
+      screen.getByText(
+        /Afenda binds document, entity, event, and transition/i,
+        {
+          selector: "p",
+        }
+      )
     ).toBeInTheDocument()
-    expect(screen.getByText(/Truth is engineered\./i)).toBeInTheDocument()
+    expect(
+      screen.getAllByText(/Truth is engineered\./i).length
+    ).toBeGreaterThan(0)
     for (const brandName of screen.getAllByText("Afenda", {
       selector: "span",
     })) {
       expect(brandName).toHaveAttribute("translate", "no")
     }
     expect(
-      screen.getByText(/Chaos Interrogated • Truth Preserved/i)
+      screen.getByText(/Accountable business truth under pressure\./i)
     ).toBeInTheDocument()
     expect(screen.getAllByText("CHECK_001")).not.toHaveLength(0)
     expect(screen.getAllByText("CHECK_003")).not.toHaveLength(0)
@@ -71,15 +76,15 @@ describe("AfendaFlagshipPage", () => {
       within(heroRegion).queryByText("Assume Nothing")
     ).not.toBeInTheDocument()
     expect(
-      within(operatingLawsRegion).getByText("Assume Nothing")
+      within(operatingLawsRegion).getByText("No record without origin")
     ).toBeInTheDocument()
     expect(
-      within(operatingLawsRegion).getByText("Reject Reconstruction")
+      within(operatingLawsRegion).getByText("No truth without continuity")
     ).toBeInTheDocument()
 
     expect(
       screen.getByRole("heading", {
-        name: /Where business truth breaks first\./i,
+        name: /Where enterprise records fail first\./i,
       })
     ).toBeInTheDocument()
 
@@ -131,15 +136,11 @@ describe("AfendaFlagshipPage", () => {
     ).toHaveAttribute("href", "/marketing/polaris")
 
     expect(
-      screen.getByRole("link", { name: /Explore ERP Benchmarks/i })
-    ).toHaveAttribute("href", "/marketing/benchmark-erp")
+      screen.getByRole("link", { name: /Explore NexusCanon/i })
+    ).toHaveAttribute("href", "/marketing/polaris")
 
     expect(
-      screen.getAllByRole("link", { name: /Truth Engine/i })[0]
-    ).toHaveAttribute("href", "/marketing/product/truth-engine")
-
-    expect(
-      screen.getAllByRole("link", { name: /Trust Center/i })[0]
-    ).toHaveAttribute("href", "/marketing/legal/trust-center")
+      screen.getByRole("link", { name: /See the proof model/i })
+    ).toHaveAttribute("href", "/marketing/polaris#proof")
   })
 })

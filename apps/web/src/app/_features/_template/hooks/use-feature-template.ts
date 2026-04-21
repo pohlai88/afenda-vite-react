@@ -10,7 +10,7 @@ import type {
   FeatureTemplateCommandResult,
   FeatureTemplateDefinition,
 } from "../types/feature-template"
-import { resolveFeatureTemplateSlug } from "../utils/feature-template-utils"
+import { resolveFeatureTemplateSlug } from "../feature-template-policy"
 
 export interface UseFeatureTemplateResult {
   readonly feature: FeatureTemplateDefinition | null

@@ -34,7 +34,7 @@ export function ShellTopNavConnectPopover() {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-[2.25rem] gap-2 rounded-full border-border-muted bg-card/70 px-3.5 text-foreground shadow-sm transition-colors has-[>svg]:px-3.5 hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                className="h-[2.25rem] gap-2 rounded-full border-border-muted bg-card/70 px-3.5 text-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring has-[>svg]:px-3.5"
                 aria-label={t("top_nav.connect_title")}
               >
                 <Plug
@@ -42,7 +42,9 @@ export function ShellTopNavConnectPopover() {
                   strokeWidth={1.5}
                   aria-hidden
                 />
-                <span className="text-sm leading-none">{t("top_nav.connect")}</span>
+                <span className="text-sm leading-none">
+                  {t("top_nav.connect")}
+                </span>
               </Button>
             </PopoverTrigger>
           </span>

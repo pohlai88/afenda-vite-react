@@ -1,15 +1,16 @@
+/**
+ * Flagship page composer.
+ * Owns section order only.
+ * Do not place section internals, copy definitions, or motion presets here.
+ */
 import { useReducedMotion } from "framer-motion"
 
 import { MarketingPageShell } from "../../_components"
-import {
-  FlagshipBenchmarkSection,
-  FlagshipCanonSection,
-  FlagshipFinalSection,
-  FlagshipHeroSection,
-  FlagshipOperatingLawsSection,
-  FlagshipProductScopeSection,
-  FlagshipProofSection,
-} from "./flagship-sections"
+import { FlagshipPageCloseCta } from "./flagship-page-close-cta"
+import { FlagshipPageHero } from "./flagship-page-hero"
+import { FlagshipPageImmutableLaws } from "./flagship-page-immutable-laws"
+import { FlagshipPageProofSurface } from "./flagship-page-proof-surface"
+import { FlagshipPageSecondaryCta } from "./flagship-page-secondary-cta"
 
 export default function AfendaFlagshipPage() {
   const reduceMotion = useReducedMotion()
@@ -21,13 +22,11 @@ export default function AfendaFlagshipPage() {
       tagline="Immutable law enforcement for business truth"
       hideHeader
     >
-      <FlagshipHeroSection reduceMotion={isReducedMotion} />
-      <FlagshipOperatingLawsSection reduceMotion={isReducedMotion} />
-      <FlagshipBenchmarkSection reduceMotion={isReducedMotion} />
-      <FlagshipProductScopeSection reduceMotion={isReducedMotion} />
-      <FlagshipProofSection reduceMotion={isReducedMotion} />
-      <FlagshipCanonSection reduceMotion={isReducedMotion} />
-      <FlagshipFinalSection reduceMotion={isReducedMotion} />
+      <FlagshipPageHero reduceMotion={isReducedMotion} />
+      <FlagshipPageImmutableLaws reduceMotion={isReducedMotion} />
+      <FlagshipPageProofSurface reduceMotion={isReducedMotion} />
+      <FlagshipPageSecondaryCta reduceMotion={isReducedMotion} />
+      <FlagshipPageCloseCta reduceMotion={isReducedMotion} />
     </MarketingPageShell>
   )
 }

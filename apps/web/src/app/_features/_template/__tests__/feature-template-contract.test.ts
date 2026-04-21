@@ -6,7 +6,7 @@ import {
 } from "../actions/feature-template-actions"
 import { createFeatureTemplateReport } from "../scripts/feature-template-report"
 import { fetchFeatureTemplate } from "../services/feature-template-service"
-import { resolveFeatureTemplateSlug } from "../utils/feature-template-utils"
+import { resolveFeatureTemplateSlug } from "../feature-template-policy"
 
 describe("feature template contract", () => {
   it("resolves route slugs to a known feature contract", async () => {

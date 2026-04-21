@@ -21,7 +21,6 @@ export const platformCapabilityPolicy = {
     "scripts",
     "services",
     "types",
-    "utils",
     "__tests__",
   ],
   dependencyDirection:

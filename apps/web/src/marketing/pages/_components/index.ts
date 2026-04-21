@@ -11,3 +11,7 @@ export {
   type MarketingSectionKickerProps,
 } from "./marketing-page-section"
 export { MARKETING_EASE_OUT, getMarketingReveal } from "./marketing-reveal"
+export {
+  marketingGlassDarkNavInner,
+  marketingGlassLightPanel,
+} from "./marketing-glass"

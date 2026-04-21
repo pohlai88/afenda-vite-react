@@ -1,4 +1,4 @@
-import { joinApiClientUrl } from "../utils/api-client-utils"
+import { joinApiClientUrl } from "../api-client-config"
 
 export interface FetchWithTimeoutParams {
   readonly url: string

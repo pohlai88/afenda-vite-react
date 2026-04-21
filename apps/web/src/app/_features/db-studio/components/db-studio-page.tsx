@@ -47,7 +47,7 @@ import type { TruthGovernanceDoc } from "../types/db-studio"
 import {
   buildDomainModuleEntryCounts,
   formatGlossaryTechnicalSummary,
-} from "../utils/db-studio-utils"
+} from "../db-studio-formatters"
 
 type AuditRecentResponse = {
   readonly items: ReadonlyArray<Record<string, unknown>>

@@ -14,7 +14,7 @@ import { useLocation } from "react-router-dom"
 import type { ShellBreadcrumbResolvedItem } from "../contract/shell-breadcrumb-contract"
 import type { ShellMetadata } from "../contract/shell-metadata-contract"
 import { resolveShellBreadcrumbs } from "../services/resolve-shell-breadcrumbs"
-import { translateShellNamespaceKey } from "../utils/translate-shell-namespace-key"
+import { translateShellNamespaceKey } from "../translate-shell-namespace-key"
 import { useShellMetadata } from "./use-shell-metadata"
 
 export function useShellBreadcrumbs(): ShellBreadcrumbResolvedItem[] {

@@ -12,7 +12,7 @@ import type {
 import {
   formatFeatureTemplateLastSync,
   normalizeFeatureTemplateText,
-} from "../utils/feature-template-formatters"
+} from "../feature-template-formatters"
 
 export interface FeatureCommandHeaderProps {
   readonly feature: FeatureTemplateDefinition

@@ -18,7 +18,7 @@ import type {
   FeatureTemplateCommandResult,
   FeatureTemplateDefinition,
 } from "../types/feature-template"
-import { getPrimaryFeatureTemplateRecord } from "../utils/feature-template-utils"
+import { getPrimaryFeatureTemplateRecord } from "../feature-template-policy"
 
 export const featureTemplateCommands = [
   {

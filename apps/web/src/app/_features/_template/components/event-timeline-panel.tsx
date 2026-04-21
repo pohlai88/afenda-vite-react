@@ -23,7 +23,7 @@ import {
   formatFeatureTemplateTime,
   normalizeFeatureTemplateText,
   resolveFeatureTemplateDateTime,
-} from "../utils/feature-template-formatters"
+} from "../feature-template-formatters"
 
 import { resolveTimelineIconKind } from "./event-timeline-icon"
 

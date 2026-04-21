@@ -3,7 +3,7 @@ import {
   defaultApiClientTimeoutMs,
   normalizeApiClientBaseUrl,
   parseApiClientTimeoutMs,
-} from "../utils/api-client-utils"
+} from "../api-client-config"
 import type {
   ApiClient,
   ApiClientConfig,

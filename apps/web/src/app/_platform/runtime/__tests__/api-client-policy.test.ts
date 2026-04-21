@@ -17,7 +17,7 @@ import {
   joinApiClientUrl,
   normalizeApiClientBaseUrl,
   parseApiClientTimeoutMs,
-} from "../utils/api-client-utils"
+} from "../api-client-config"
 
 describe("_platform/runtime", () => {
   afterEach(() => {

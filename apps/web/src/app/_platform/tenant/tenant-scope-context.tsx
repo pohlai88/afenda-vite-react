@@ -14,7 +14,7 @@ import {
   ApiClientHttpError,
   getSharedApiClient,
 } from "../runtime/services/api-client-service"
-import { resolveApiV1Path } from "../runtime/utils/api-client-utils"
+import { resolveApiV1Path } from "../runtime/api-client-config"
 import { getDemoTenantId } from "../config/afenda-local-env"
 import { useAfendaSession } from "../auth"
 

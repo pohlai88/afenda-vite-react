@@ -10,7 +10,7 @@ import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { resolveShellTitle } from "../services/resolve-shell-title"
-import { translateShellNamespaceKey } from "../utils/translate-shell-namespace-key"
+import { translateShellNamespaceKey } from "../translate-shell-namespace-key"
 import { useShellMetadata } from "./use-shell-metadata"
 
 export function useShellTitle(): string | undefined {

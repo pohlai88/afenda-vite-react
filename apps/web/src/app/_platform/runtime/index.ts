@@ -27,7 +27,7 @@ export {
   normalizeApiClientBaseUrl,
   parseApiClientTimeoutMs,
   resolveApiV1Path,
-} from "./utils/api-client-utils"
+} from "./api-client-config"
 export type {
   ApiClient,
   ApiClientCapabilityContract,

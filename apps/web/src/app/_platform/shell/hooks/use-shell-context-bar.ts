@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import type { ShellContextBarResolvedModel } from "../contract/shell-context-bar-contract"
 import { resolveShellContextBar } from "../services/resolve-shell-context-bar"
-import { translateShellNamespaceKey } from "../utils/translate-shell-namespace-key"
+import { translateShellNamespaceKey } from "../translate-shell-namespace-key"
 import { useShellMetadata } from "./use-shell-metadata"
 
 export function useShellContextBar(): ShellContextBarResolvedModel | undefined {

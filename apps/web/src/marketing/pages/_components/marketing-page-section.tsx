@@ -50,6 +50,7 @@ export interface MarketingSectionHeadingProps {
   readonly as?: "h1" | "h2" | "h3"
   readonly id?: string
   readonly className?: string
+  readonly kickerClassName?: string
   readonly titleClassName?: string
   readonly descriptionClassName?: string
 }
@@ -61,12 +62,15 @@ export function MarketingSectionHeading({
   as: TitleTag = "h2",
   id,
   className,
+  kickerClassName,
   titleClassName,
   descriptionClassName,
 }: MarketingSectionHeadingProps) {
   return (
     <div className={className}>
-      <MarketingSectionKicker>{kicker}</MarketingSectionKicker>
+      <MarketingSectionKicker className={kickerClassName}>
+        {kicker}
+      </MarketingSectionKicker>
       <TitleTag
         id={id}
         className={cn(

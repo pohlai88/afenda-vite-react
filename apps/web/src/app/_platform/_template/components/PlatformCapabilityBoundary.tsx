@@ -3,7 +3,7 @@ import type { ReactNode } from "react"
 import { usePlatformCapability } from "../hooks/use-platform-capability"
 import { platformCapabilityTemplateContract } from "../policy/platform-capability-policy"
 import type { PlatformCapabilityContract } from "../types/platform-capability"
-import { formatPlatformCapabilityStatus } from "../utils/platform-capability-utils"
+import { formatPlatformCapabilityStatus } from "../platform-capability-metadata"
 
 export interface PlatformCapabilityBoundaryProps {
   readonly contract?: PlatformCapabilityContract

@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next"
 
 import type { ShellHeaderActionResolvedItem } from "../contract/shell-header-action-contract"
 import { resolveShellHeaderActions } from "../services/resolve-shell-header-actions"
-import { translateShellNamespaceKey } from "../utils/translate-shell-namespace-key"
+import { translateShellNamespaceKey } from "../translate-shell-namespace-key"
 import { useShellMetadata } from "./use-shell-metadata"
 
 export function useShellHeaderActions(): ShellHeaderActionResolvedItem[] {

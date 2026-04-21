@@ -3,7 +3,7 @@
 import { Badge } from "@afenda/design-system/ui-primitives"
 import { useTranslation } from "react-i18next"
 
-import { shortContentHash } from "../utils/db-studio-utils"
+import { shortContentHash } from "../db-studio-formatters"
 
 export type SnapshotMeta = {
   readonly generated_at?: string

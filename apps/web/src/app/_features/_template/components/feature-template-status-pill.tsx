@@ -4,7 +4,7 @@ import type { FeatureTemplateStatus } from "../types/feature-template"
 import {
   formatFeatureTemplateStatus,
   getFeatureTemplateStatusClassName,
-} from "../utils/feature-template-utils"
+} from "../feature-template-policy"
 
 export interface FeatureTemplateStatusPillProps {
   readonly status: FeatureTemplateStatus

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Filesystem Governance Config",
+  "description": "Lightweight schema note for the repo-local filesystem governance checker.",
+  "type": "object"
+}
