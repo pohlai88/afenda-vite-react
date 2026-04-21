@@ -13,12 +13,12 @@ import {
 import { MARKETING_PAGE_HREFS } from "../../../marketing-page-registry"
 
 /**
- * Editorial content contract for the flagship landing page.
- * Keep copy grouped by section, preserve the stable exports consumed by the page,
- * and treat this module as the single source of truth for flagship narrative edits.
+ * Editorial contract for the marketing flagship page: copy, icons, and public
+ * navigation targets only. No environment values, credentials, or internal
+ * implementation detail — import layout/motion from companion modules instead.
  */
 
-type FlagshipNarrativeCopy = Readonly<{
+export type FlagshipPageNarrative = Readonly<{
   operatingLawsLead: string
   benchmarkDescription: string
   scopeDescription: string
@@ -27,46 +27,43 @@ type FlagshipNarrativeCopy = Readonly<{
   finalDescription: string
 }>
 
-type FlagshipTextPoint = Readonly<{
+export type FlagshipPageTextCard = Readonly<{
   title: string
   body: string
 }>
 
-type FlagshipIconPoint = FlagshipTextPoint &
+export type FlagshipPageIconCard = FlagshipPageTextCard &
   Readonly<{
     icon: LucideIcon
   }>
 
-type FlagshipCanonFragment = Readonly<{
+export type FlagshipPageCornerNote = Readonly<{
   label: string
   note: string
-  desktopClassName: string
 }>
 
-type FlagshipLink = Readonly<{
+export type FlagshipPageCta = Readonly<{
   label: string
   to: string
 }>
 
-type FlagshipContentModel = Readonly<{
-  copy: FlagshipNarrativeCopy
-  heroLaws: readonly FlagshipTextPoint[]
-  benchmarkProofPoints: readonly FlagshipTextPoint[]
-  productScope: readonly FlagshipIconPoint[]
-  practicePoints: readonly string[]
-  proofModel: readonly FlagshipIconPoint[]
-  canon: Readonly<{
-    fragments: readonly FlagshipCanonFragment[]
-    evidence: readonly string[]
+export type FlagshipPageEditorial = Readonly<{
+  narrative: FlagshipPageNarrative
+  operatingLawCards: readonly FlagshipPageTextCard[]
+  marketRealityCards: readonly FlagshipPageTextCard[]
+  continuityScopeCards: readonly FlagshipPageIconCard[]
+  fieldPracticeLines: readonly string[]
+  accountableRecordCards: readonly FlagshipPageIconCard[]
+  bindingStructure: Readonly<{
+    cornerNotes: readonly FlagshipPageCornerNote[]
+    evidenceLines: readonly string[]
   }>
-  finalCallToActionLinks: readonly FlagshipLink[]
+  closingActionLinks: readonly FlagshipPageCta[]
 }>
 
-const FLAGSHIP_CANON_HREF = MARKETING_PAGE_HREFS.canon
-
-const FLAGSHIP_CONTENT = {
-  // Long-form narrative copy
-  copy: {
+/** Canonical marketing copy and lists for the flagship route. */
+export const FLAGSHIP_PAGE_CONTENT = {
+  narrative: {
     operatingLawsLead:
       "Most systems can store activity. Far fewer can defend it. Afenda begins where ordinary software becomes expensive: when a record must survive scrutiny, causality, and consequence without narrative repair.",
     benchmarkDescription:
@@ -81,8 +78,7 @@ const FLAGSHIP_CONTENT = {
       "is for operators done paying the hidden tax of fragmented systems: delay, adjustment, exception handling, audit drag, and reconstructed explanation. The objective is not prettier software. It is a record that can stand.",
   },
 
-  // Hero laws
-  heroLaws: [
+  operatingLawCards: [
     {
       title: "No record without origin",
       body: "Every consequential record must resolve to a source, an actor, and an attributable beginning. If origin is missing, trust is already compromised.",
@@ -97,8 +93,7 @@ const FLAGSHIP_CONTENT = {
     },
   ],
 
-  // Benchmark proof points
-  benchmarkProofPoints: [
+  marketRealityCards: [
     {
       title: "Bad data is not cosmetic. It is expensive.",
       body: "IBM cites Gartner's estimate that poor data quality costs organizations an average of $12.9 million a year. In IBM's 2025 IBV reporting, more than a quarter of organizations estimated losses above $5 million, and 7% reported losses above $25 million. Afenda starts from the premise that broken continuity is a financial problem, not a reporting inconvenience.",
@@ -117,8 +112,7 @@ const FLAGSHIP_CONTENT = {
     },
   ],
 
-  // Product scope
-  productScope: [
+  continuityScopeCards: [
     {
       icon: Boxes,
       title: "Operations that remain accountable",
@@ -141,8 +135,7 @@ const FLAGSHIP_CONTENT = {
     },
   ],
 
-  // Practice points
-  practicePoints: [
+  fieldPracticeLines: [
     "A purchase flow should not end in a number that only becomes explainable later through spreadsheets, chat memory, or operator folklore.",
     "An internal transfer should preserve source, causality, and resulting position, not just update quantities and leave interpretation to humans.",
     "A financial posting should still know which document, event, and transition made it necessary.",
@@ -151,8 +144,7 @@ const FLAGSHIP_CONTENT = {
     "A business state should become harder to dispute as it moves forward, not harder to understand.",
   ],
 
-  // Proof model
-  proofModel: [
+  accountableRecordCards: [
     {
       icon: ShieldAlert,
       title: "Contradiction is surfaced early",
@@ -175,31 +167,26 @@ const FLAGSHIP_CONTENT = {
     },
   ],
 
-  // NexusCanon fragments and evidence
-  canon: {
-    fragments: [
+  bindingStructure: {
+    cornerNotes: [
       {
         label: "Document",
         note: "The initiating artifact that introduces business intent, instruction, or claim.",
-        desktopClassName: "left-[4%] top-[8%]",
       },
       {
         label: "Entity",
         note: "The accountable subject carrying ownership, obligation, or operational position.",
-        desktopClassName: "right-[6%] top-[18%]",
       },
       {
         label: "Event",
         note: "The action boundary that creates change, movement, recognition, or exception.",
-        desktopClassName: "left-[10%] bottom-[18%]",
       },
       {
         label: "Transition",
         note: "The resulting state movement that must stay causally attached, not separately narrated.",
-        desktopClassName: "right-[3%] bottom-[8%]",
       },
     ],
-    evidence: [
+    evidenceLines: [
       "One business record should not require multiple systems and human interpretation before it becomes believable.",
       "When document, entity, event, and transition split apart, reconciliation begins and confidence starts decaying.",
       "NexusCanon is designed to keep the record bound tightly enough that review can interrogate reality instead of reconstruct it.",
@@ -207,23 +194,12 @@ const FLAGSHIP_CONTENT = {
     ],
   },
 
-  // Final CTA links
-  finalCallToActionLinks: [
-    { label: "Explore NexusCanon", to: FLAGSHIP_CANON_HREF },
-    { label: "See the proof model", to: `${FLAGSHIP_CANON_HREF}#proof` },
+  closingActionLinks: [
+    { label: "Explore NexusCanon", to: MARKETING_PAGE_HREFS.canon },
+    { label: "See the proof model", to: `${MARKETING_PAGE_HREFS.canon}#proof` },
     {
       label: "Read the operating doctrine",
-      to: `${FLAGSHIP_CANON_HREF}#doctrine`,
+      to: `${MARKETING_PAGE_HREFS.canon}#doctrine`,
     },
   ],
-} as const satisfies FlagshipContentModel
-
-export const FLAGSHIP_COPY = FLAGSHIP_CONTENT.copy
-export const HERO_OPERATING_LAWS = FLAGSHIP_CONTENT.heroLaws
-export const BENCHMARK_POINTS = FLAGSHIP_CONTENT.benchmarkProofPoints
-export const PRODUCT_SCOPE = FLAGSHIP_CONTENT.productScope
-export const PRACTICE_POINTS = FLAGSHIP_CONTENT.practicePoints
-export const PROOF_POINTS = FLAGSHIP_CONTENT.proofModel
-export const CANON_FRAGMENTS = FLAGSHIP_CONTENT.canon.fragments
-export const CANON_EVIDENCE_POINTS = FLAGSHIP_CONTENT.canon.evidence
-export const FINAL_ACTION_LINKS = FLAGSHIP_CONTENT.finalCallToActionLinks
+} as const satisfies FlagshipPageEditorial

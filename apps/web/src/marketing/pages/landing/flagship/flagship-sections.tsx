@@ -9,18 +9,27 @@ import {
   MarketingSectionHeading,
 } from "../../_components"
 import { MARKETING_PAGE_HREFS } from "../../../marketing-page-registry"
-import {
-  BENCHMARK_POINTS,
-  CANON_EVIDENCE_POINTS,
-  CANON_FRAGMENTS,
-  FINAL_ACTION_LINKS,
-  FLAGSHIP_COPY,
-  HERO_OPERATING_LAWS,
-  PRACTICE_POINTS,
-  PRODUCT_SCOPE,
-  PROOF_POINTS,
-} from "./flagship-content"
-import { getFlagshipSectionReveal } from "./flagship-reveal"
+import { FLAGSHIP_PAGE_CONTENT } from "./flagship-page-content"
+import { getMarketingPageSectionReveal } from "./flagship-marketing-motion"
+
+/** Presentation layout for binding-structure corners; order must match `cornerNotes`. */
+const BINDING_CORNER_DESKTOP_PLACEMENT = [
+  "left-[4%] top-[8%]",
+  "right-[6%] top-[18%]",
+  "left-[10%] bottom-[18%]",
+  "right-[3%] bottom-[8%]",
+] as const
+
+const {
+  narrative,
+  operatingLawCards,
+  marketRealityCards,
+  continuityScopeCards,
+  fieldPracticeLines,
+  accountableRecordCards,
+  bindingStructure,
+  closingActionLinks,
+} = FLAGSHIP_PAGE_CONTENT
 
 export interface FlagshipSectionProps {
   readonly reduceMotion: boolean
@@ -43,7 +52,7 @@ export function FlagshipOperatingLawsSection({
     >
       <motion.div
         className="grid gap-5 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10"
-        {...getFlagshipSectionReveal(reduceMotion)}
+        {...getMarketingPageSectionReveal(reduceMotion)}
       >
         <div className="max-w-xs pt-1">
           <h2
@@ -53,16 +62,19 @@ export function FlagshipOperatingLawsSection({
             Immutable Laws
           </h2>
           <p className="mt-3 text-sm leading-7 text-pretty text-muted-foreground">
-            {FLAGSHIP_COPY.operatingLawsLead}
+            {narrative.operatingLawsLead}
           </p>
         </div>
 
         <div className="grid gap-0 border-y border-border/60 md:grid-cols-3">
-          {HERO_OPERATING_LAWS.map((law, index) => (
+          {operatingLawCards.map((law, index) => (
             <motion.div
               key={law.title}
               className="px-0 py-4 md:px-0 md:py-5"
-              {...getFlagshipSectionReveal(reduceMotion, 0.06 + index * 0.05)}
+              {...getMarketingPageSectionReveal(
+                reduceMotion,
+                0.06 + index * 0.05
+              )}
             >
               <div
                 className={`h-full ${index > 0 ? "border-t border-border/60 pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-6" : ""}`}
@@ -94,7 +106,7 @@ export function FlagshipBenchmarkSection({
       className="border-b border-border/70 bg-foreground text-background"
     >
       <div className="grid gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-16">
-        <motion.div {...getFlagshipSectionReveal(reduceMotion)}>
+        <motion.div {...getMarketingPageSectionReveal(reduceMotion)}>
           <div className="font-mono text-[11px] tracking-[0.28em] text-background/60 uppercase">
             Market Pain
           </div>
@@ -105,16 +117,16 @@ export function FlagshipBenchmarkSection({
             Where enterprise records fail first.
           </h2>
           <p className="mt-6 max-w-2xl text-base leading-8 text-pretty text-background/70">
-            <AfendaBrand /> {FLAGSHIP_COPY.benchmarkDescription}
+            <AfendaBrand /> {narrative.benchmarkDescription}
           </p>
         </motion.div>
 
         <div className="space-y-3">
-          {BENCHMARK_POINTS.map(({ title, body }, index) => (
+          {marketRealityCards.map(({ title, body }, index) => (
             <motion.div
               key={title}
               className="rounded-[1.85rem] border border-white/12 bg-white/5 px-5 py-5 shadow-sm backdrop-blur-sm md:px-6 md:py-6"
-              {...getFlagshipSectionReveal(reduceMotion, index * 0.06)}
+              {...getMarketingPageSectionReveal(reduceMotion, index * 0.06)}
             >
               <div className="grid gap-4 md:grid-cols-[4.75rem_minmax(0,1fr)] md:items-start md:gap-5">
                 <div className="text-[2.5rem] leading-none font-semibold tracking-[-0.08em] text-primary/70 md:text-[3rem]">
@@ -147,25 +159,25 @@ export function FlagshipProductScopeSection({
       className="border-b border-border/70 bg-background"
     >
       <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
-        <motion.div {...getFlagshipSectionReveal(reduceMotion)}>
+        <motion.div {...getMarketingPageSectionReveal(reduceMotion)}>
           <MarketingSectionHeading
             kicker="Enforcement Surface"
             id="flagship-scope-title"
             title="Enforce truth where activity becomes consequence."
             description={
               <>
-                <AfendaBrand /> {FLAGSHIP_COPY.scopeDescription}
+                <AfendaBrand /> {narrative.scopeDescription}
               </>
             }
           />
         </motion.div>
 
         <div className="space-y-4">
-          {PRODUCT_SCOPE.map(({ title, body, icon: Icon }, index) => (
+          {continuityScopeCards.map(({ title, body, icon: Icon }, index) => (
             <motion.div
               key={title}
               className="overflow-hidden rounded-[2rem] border border-border/60 bg-background/88 shadow-sm"
-              {...getFlagshipSectionReveal(reduceMotion, index * 0.06)}
+              {...getMarketingPageSectionReveal(reduceMotion, index * 0.06)}
             >
               <div className="h-1 w-full bg-gradient-to-r from-primary/70 via-primary/20 to-transparent" />
               <div className="grid gap-4 px-5 py-5 md:grid-cols-[3.5rem_minmax(0,10rem)_minmax(0,1fr)] md:items-start md:gap-6 md:px-6 md:py-6">
@@ -186,7 +198,7 @@ export function FlagshipProductScopeSection({
 
       <motion.div
         className="mt-8 border-t border-border/60 pt-8"
-        {...getFlagshipSectionReveal(reduceMotion, 0.12)}
+        {...getMarketingPageSectionReveal(reduceMotion, 0.12)}
       >
         <div className="grid gap-4 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-8">
           <div>
@@ -199,7 +211,7 @@ export function FlagshipProductScopeSection({
           </div>
 
           <ul className="grid gap-3 text-sm leading-7 text-muted-foreground md:grid-cols-2">
-            {PRACTICE_POINTS.map((point) => (
+            {fieldPracticeLines.map((point) => (
               <li
                 key={point}
                 className="min-w-0 rounded-2xl border border-border/60 bg-background/72 px-4 py-4"
@@ -222,7 +234,7 @@ export function FlagshipProofSection({ reduceMotion }: FlagshipSectionProps) {
     >
       <motion.div
         className="relative overflow-hidden rounded-[2.5rem] border border-border/70 bg-card/96 p-6 shadow-2xl shadow-primary/8 md:p-8 lg:p-10"
-        {...getFlagshipSectionReveal(reduceMotion)}
+        {...getMarketingPageSectionReveal(reduceMotion)}
       >
         <div
           aria-hidden
@@ -236,14 +248,14 @@ export function FlagshipProofSection({ reduceMotion }: FlagshipSectionProps) {
               title="False state cannot survive forward motion."
               description={
                 <>
-                  <AfendaBrand /> {FLAGSHIP_COPY.proofDescription}
+                  <AfendaBrand /> {narrative.proofDescription}
                 </>
               }
             />
 
             <motion.aside
               className="mt-8 rounded-[1.85rem] border border-border/70 bg-background/74 p-6 shadow-sm md:p-7"
-              {...getFlagshipSectionReveal(reduceMotion, 0.08)}
+              {...getMarketingPageSectionReveal(reduceMotion, 0.08)}
             >
               <div className="font-mono text-[11px] tracking-[0.28em] text-muted-foreground uppercase">
                 Immutable Principle
@@ -261,7 +273,7 @@ export function FlagshipProofSection({ reduceMotion }: FlagshipSectionProps) {
                   <motion.li
                     key={item}
                     className="flex items-start gap-3 border-t border-border/60 pt-3 first:border-t-0 first:pt-0"
-                    {...getFlagshipSectionReveal(
+                    {...getMarketingPageSectionReveal(
                       reduceMotion,
                       0.12 + index * 0.05
                     )}
@@ -282,7 +294,7 @@ export function FlagshipProofSection({ reduceMotion }: FlagshipSectionProps) {
           <div className="space-y-4">
             <motion.div
               className="grid gap-3 rounded-[2rem] border border-border/70 bg-background/78 p-4 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-center md:p-6"
-              {...getFlagshipSectionReveal(reduceMotion, 0.1)}
+              {...getMarketingPageSectionReveal(reduceMotion, 0.1)}
             >
               <div className="rounded-[1.5rem] border border-destructive/20 bg-destructive/8 p-5">
                 <Badge
@@ -329,26 +341,31 @@ export function FlagshipProofSection({ reduceMotion }: FlagshipSectionProps) {
             </motion.div>
 
             <div className="grid gap-3 md:grid-cols-2">
-              {PROOF_POINTS.map(({ title, body, icon: Icon }, index) => (
-                <motion.div
-                  key={title}
-                  className="rounded-[1.5rem] border border-border/70 bg-background/78 p-5 shadow-sm md:p-6"
-                  {...getFlagshipSectionReveal(
-                    reduceMotion,
-                    0.14 + index * 0.05
-                  )}
-                >
-                  <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/10">
-                    <Icon aria-hidden="true" className="size-5 text-primary" />
-                  </div>
-                  <h3 className="mt-4 text-[1.12rem] font-semibold tracking-[-0.03em] text-foreground">
-                    {title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-pretty text-muted-foreground">
-                    {body}
-                  </p>
-                </motion.div>
-              ))}
+              {accountableRecordCards.map(
+                ({ title, body, icon: Icon }, index) => (
+                  <motion.div
+                    key={title}
+                    className="rounded-[1.5rem] border border-border/70 bg-background/78 p-5 shadow-sm md:p-6"
+                    {...getMarketingPageSectionReveal(
+                      reduceMotion,
+                      0.14 + index * 0.05
+                    )}
+                  >
+                    <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/10">
+                      <Icon
+                        aria-hidden="true"
+                        className="size-5 text-primary"
+                      />
+                    </div>
+                    <h3 className="mt-4 text-[1.12rem] font-semibold tracking-[-0.03em] text-foreground">
+                      {title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-7 text-pretty text-muted-foreground">
+                      {body}
+                    </p>
+                  </motion.div>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -365,24 +382,27 @@ export function FlagshipCanonSection({ reduceMotion }: FlagshipSectionProps) {
     >
       <div className="marketing-container py-12 md:py-14 lg:py-16">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-center">
-          <motion.div {...getFlagshipSectionReveal(reduceMotion)}>
+          <motion.div {...getMarketingPageSectionReveal(reduceMotion)}>
             <div className="flagship-canon-field relative overflow-hidden rounded-[2.25rem] border border-border/70 bg-card/70 p-5 shadow-2xl shadow-primary/5 md:p-7">
               <div className="flagship-grid absolute inset-0 opacity-80" />
               <div className="flagship-grain absolute inset-0 opacity-70" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,color-mix(in_oklab,var(--color-primary)_12%,transparent),transparent_44%)]" />
 
               <div className="relative grid gap-4 md:hidden">
-                {CANON_FRAGMENTS.map((fragment, index) => (
+                {bindingStructure.cornerNotes.map((corner, index) => (
                   <motion.div
-                    key={fragment.label}
+                    key={corner.label}
                     className="rounded-2xl border border-border/70 bg-background/70 px-4 py-4"
-                    {...getFlagshipSectionReveal(reduceMotion, index * 0.05)}
+                    {...getMarketingPageSectionReveal(
+                      reduceMotion,
+                      index * 0.05
+                    )}
                   >
                     <div className="font-mono text-[10px] tracking-[0.24em] text-muted-foreground uppercase">
-                      {fragment.label}
+                      {corner.label}
                     </div>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      {fragment.note}
+                      {corner.note}
                     </p>
                   </motion.div>
                 ))}
@@ -402,10 +422,10 @@ export function FlagshipCanonSection({ reduceMotion }: FlagshipSectionProps) {
               <div className="relative hidden min-h-[38rem] md:block">
                 <div className="absolute inset-y-10 left-1/2 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-border to-transparent" />
 
-                {CANON_FRAGMENTS.map((fragment, index) => (
+                {bindingStructure.cornerNotes.map((corner, index) => (
                   <motion.div
-                    key={fragment.label}
-                    className={`absolute max-w-[13.5rem] rounded-2xl border border-border/70 bg-background/80 px-4 py-4 shadow-lg ${fragment.desktopClassName}`}
+                    key={corner.label}
+                    className={`absolute max-w-[13.5rem] rounded-2xl border border-border/70 bg-background/80 px-4 py-4 shadow-lg ${BINDING_CORNER_DESKTOP_PLACEMENT[index]}`}
                     initial={{
                       opacity: 0,
                       x: reduceMotion ? 0 : index < 2 ? -18 : 18,
@@ -420,10 +440,10 @@ export function FlagshipCanonSection({ reduceMotion }: FlagshipSectionProps) {
                     }}
                   >
                     <div className="font-mono text-[10px] tracking-[0.24em] text-muted-foreground uppercase">
-                      {fragment.label}
+                      {corner.label}
                     </div>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      {fragment.note}
+                      {corner.note}
                     </p>
                   </motion.div>
                 ))}
@@ -459,22 +479,22 @@ export function FlagshipCanonSection({ reduceMotion }: FlagshipSectionProps) {
             </div>
           </motion.div>
 
-          <motion.div {...getFlagshipSectionReveal(reduceMotion, 0.08)}>
+          <motion.div {...getMarketingPageSectionReveal(reduceMotion, 0.08)}>
             <MarketingSectionHeading
               kicker="Canonical Record"
               id="flagship-canon-title"
               title="This is where the record stops fragmenting."
-              description={FLAGSHIP_COPY.canonDescription}
+              description={narrative.canonDescription}
               descriptionClassName="max-w-xl"
               titleClassName="max-w-2xl"
             />
 
             <div className="mt-6 grid gap-4">
-              {CANON_EVIDENCE_POINTS.map((item, index) => (
+              {bindingStructure.evidenceLines.map((item, index) => (
                 <motion.div
                   key={item}
                   className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card/80 p-4"
-                  {...getFlagshipSectionReveal(
+                  {...getMarketingPageSectionReveal(
                     reduceMotion,
                     0.12 + index * 0.05
                   )}
@@ -507,7 +527,7 @@ export function FlagshipFinalSection({ reduceMotion }: FlagshipSectionProps) {
       <div className="marketing-container relative py-12 md:py-14 lg:py-16">
         <motion.div
           className="rounded-[2.4rem] border border-border/70 bg-card/94 p-7 shadow-2xl shadow-primary/6 md:p-10"
-          {...getFlagshipSectionReveal(reduceMotion)}
+          {...getMarketingPageSectionReveal(reduceMotion)}
         >
           <div className="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
             Final State
@@ -517,7 +537,7 @@ export function FlagshipFinalSection({ reduceMotion }: FlagshipSectionProps) {
           </h2>
 
           <p className="mt-6 max-w-3xl text-base leading-8 text-pretty text-muted-foreground">
-            <AfendaBrand /> {FLAGSHIP_COPY.finalDescription}
+            <AfendaBrand /> {narrative.finalDescription}
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -543,7 +563,7 @@ export function FlagshipFinalSection({ reduceMotion }: FlagshipSectionProps) {
             </div>
 
             <div className="mt-4 flex flex-wrap gap-3">
-              {FINAL_ACTION_LINKS.map((item) => (
+              {closingActionLinks.map((item) => (
                 <Button
                   key={`${item.label}:${item.to}`}
                   asChild
