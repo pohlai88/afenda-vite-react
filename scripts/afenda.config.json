@@ -692,8 +692,11 @@
         "docs": {
           "primary": "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
           "references": [
+            "docs/architecture/adr/ADR-0008-repository-integrity-guard-architecture.md",
+            "docs/architecture/atc/ATC-0005-repository-integrity-guard-baseline.md",
             "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md",
-            "docs/architecture/governance/NAMING_CONVENTION.md"
+            "docs/architecture/governance/NAMING_CONVENTION.md",
+            "docs/architecture/governance/REPO_GUARDRAIL_TODO.md"
           ]
         },
         "localConfig": "scripts/repo-integrity/repo-guard-policy.ts",

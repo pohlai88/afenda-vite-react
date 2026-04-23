@@ -111,50 +111,74 @@ function canon(
   }
 }
 
-const raw = JSON.parse(
-  readFileSync(snapshotPath, "utf8")
-) as BusinessGlossarySnapshot
+export function synchronizeBusinessGlossarySnapshot(
+  input: BusinessGlossarySnapshot,
+  options?: { readonly generatedAt?: string }
+): BusinessGlossarySnapshot {
+  const raw = structuredClone(input) as BusinessGlossarySnapshot
 
-const existingEnumNames = new Set(
-  raw.entries.flatMap((e) =>
-    e.technical.artifact_kind === "postgres_enum" ? [e.technical.enum_name] : []
+  const existingEnumNames = new Set(
+    raw.entries.flatMap((e) =>
+      e.technical.artifact_kind === "postgres_enum"
+        ? [e.technical.enum_name]
+        : []
+    )
   )
-)
 
-const financeMod = {
-  id: "finance",
-  label: "Finance and inventory",
-  summary:
-    "Chart of accounts, fiscal periods, posting semantics, valuation, and typed custom fields.",
+  const financeMod = {
+    id: "finance",
+    label: "Finance and inventory",
+    summary:
+      "Chart of accounts, fiscal periods, posting semantics, valuation, and typed custom fields.",
+  }
+
+  if (!raw.domain_modules.some((m) => m.id === "finance")) {
+    raw.domain_modules = [...raw.domain_modules, financeMod]
+  }
+
+  const newEntries: typeof raw.entries = []
+  for (const enumName of STUDIO_PG_ENUM_ALLOWLIST) {
+    if (existingEnumNames.has(enumName)) continue
+    newEntries.push({
+      id: enumName,
+      business_primary_term: label(enumName),
+      domain_module: domainFor(enumName),
+      technical: {
+        artifact_kind: "postgres_enum",
+        enum_name: enumName,
+        drizzle_schema_file: drizzleFile(enumName),
+      },
+    })
+  }
+
+  raw.entries = [...raw.entries, ...newEntries]
+
+  raw.source_content_sha256 = createHash("sha256")
+    .update(JSON.stringify(canon(raw)), "utf8")
+    .digest("hex")
+  raw.generated_at = options?.generatedAt ?? new Date().toISOString()
+
+  return raw
 }
 
-if (!raw.domain_modules.some((m) => m.id === "finance")) {
-  raw.domain_modules = [...raw.domain_modules, financeMod]
+export function renderBusinessGlossarySnapshot(
+  snapshot: BusinessGlossarySnapshot
+): string {
+  return `${JSON.stringify(snapshot, null, 2)}\n`
 }
 
-const newEntries: typeof raw.entries = []
-for (const enumName of STUDIO_PG_ENUM_ALLOWLIST) {
-  if (existingEnumNames.has(enumName)) continue
-  newEntries.push({
-    id: enumName,
-    business_primary_term: label(enumName),
-    domain_module: domainFor(enumName),
-    technical: {
-      artifact_kind: "postgres_enum",
-      enum_name: enumName,
-      drizzle_schema_file: drizzleFile(enumName),
-    },
-  })
+function run(): void {
+  const raw = JSON.parse(
+    readFileSync(snapshotPath, "utf8")
+  ) as BusinessGlossarySnapshot
+  const next = synchronizeBusinessGlossarySnapshot(raw)
+
+  writeFileSync(snapshotPath, renderBusinessGlossarySnapshot(next))
+  console.log(
+    `sync-glossary-enums: ${next.entries.length} entries, sha256=${next.source_content_sha256}`
+  )
 }
 
-raw.entries = [...raw.entries, ...newEntries]
-
-raw.source_content_sha256 = createHash("sha256")
-  .update(JSON.stringify(canon(raw)), "utf8")
-  .digest("hex")
-raw.generated_at = new Date().toISOString()
-
-writeFileSync(snapshotPath, `${JSON.stringify(raw, null, 2)}\n`)
-console.log(
-  `sync-glossary-enums: ${raw.entries.length} entries, sha256=${raw.source_content_sha256}`
-)
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  run()
+}

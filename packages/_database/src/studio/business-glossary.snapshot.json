@@ -1,8 +1,8 @@
 {
   "document_kind": "business_glossary_snapshot",
-  "generated_at": "2026-04-17T19:17:54.422Z",
+  "generated_at": "2026-04-23T12:30:38.728Z",
   "source_commit": "0062580664e97f8be118980cdf2c69b64d40075b",
-  "source_content_sha256": "2313aff3575adf77846f834e2bd911d4a6d189240acd54041d19143c870e6523",
+  "source_content_sha256": "8e16e0003189689013021e1aa8c0663bb061d33b4921c6d55648b4ff06a5f3b8",
   "schema_version": 2,
   "document": "business-technical-glossary",
   "description": "Maps Afenda business terms to PostgreSQL and Drizzle artifacts in packages/_database",

@@ -18,6 +18,7 @@ relatedDomain: decision-record
 - **Decision type:** Record existing baseline
 - **Operational posture:** Active contract
 - **Related governance domains:** GOV-DOC-001
+- **Related ATCs:** ATC-XXXX
 
 ## Context
 

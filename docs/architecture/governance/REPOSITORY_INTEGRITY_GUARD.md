@@ -23,6 +23,32 @@ The rollout posture is **warn-first**:
 - the public operator command is `pnpm run repo:guard`
 - v1 runs as a warned governance domain, not a blocking root check
 
+Decision anchor and contract baseline:
+
+- [ADR-0008 repository integrity guard architecture](../adr/ADR-0008-repository-integrity-guard-architecture.md)
+- [ATC-0005 repository integrity guard baseline](../atc/ATC-0005-repository-integrity-guard-baseline.md)
+- [Repo guardrail todo](./REPO_GUARDRAIL_TODO.md)
+- [Repo guard repo map](./REPO_GUARD_REPO_MAP.md)
+- [Repo guard activation plan](./REPO_GUARD_ACTIVATION_PLAN.md)
+- [Repo guard false positive log](./REPO_GUARD_FALSE_POSITIVE_LOG.md)
+
+## Architecture binding
+
+The Repository Integrity Guard is architecture-bound, not implementation-defined.
+
+It operates under:
+
+- [ADR-0008 repository integrity guard architecture](../adr/ADR-0008-repository-integrity-guard-architecture.md)
+- [ATC-0005 repository integrity guard baseline](../atc/ATC-0005-repository-integrity-guard-baseline.md)
+
+## Contract authority
+
+The guard exists inside the governance chain, but its local behavior is contract-bound.
+
+- ADR-0008 defines why the repo-truth layer exists and why it is aggregate-first.
+- ATC-0005 defines the bound command surface, evidence paths, and warn/block semantics.
+- If implementation behavior drifts from the documented baseline, ATC-0005 takes precedence.
+
 ## Purpose
 
 The guard answers:
@@ -51,6 +77,44 @@ It adds only two native scanners:
 - dirty file scan
 - working tree legitimacy
 
+## Current native scanners
+
+The guard now includes the original V1 native scanners plus the first post-V1 structural extension:
+
+- dirty file scan
+- working tree legitimacy
+- `RG-STRUCT-001` placement and ownership
+- `RG-TRUTH-002` generated artifact authenticity
+- `RG-STRUCT-003` boundary and import regression
+- `RG-TRUTH-004` source and evidence mismatch
+- `RG-HYGIENE-005` duplicate and overlap hygiene
+- `RG-ADVISORY-006` stronger document control
+
+`RG-STRUCT-001` is currently grounded in declared rollout owner truth, runtime owners, and shared roots.
+It is not yet the full final ownership model for every repo surface.
+`RG-TRUTH-002` currently binds the governance register surfaces, design-system component governance artifacts, and selected database generated artifacts to explicit provenance and canonical renderers.
+It is not yet full generated-artifact authenticity coverage for every governed generated root.
+`RG-STRUCT-003` currently enforces only high-confidence cross-root drift rules for selected app roots and workspace-private path leakage.
+It is not yet the full final package/public-surface import contract for the repo.
+`RG-TRUTH-004` currently enforces declared source/evidence bindings for the governance register, repository-guard architecture discovery surfaces, design-system component-governance outputs, and selected database generated artifacts.
+It is not yet the full final source-to-evidence map for every governed report and generated artifact.
+`RG-HYGIENE-005` currently enforces only warning-level suspicious variant detection and duplicate-basename detection in duplicate-sensitive governed surfaces.
+It is not yet a full semantic overlap detector for docs, generators, or business logic.
+`RG-ADVISORY-006` currently enforces only warning-level frontmatter and linkage checks for governed doctrine, ADR, and ATC surfaces.
+It is not yet a full doctrine-network validator or parent/child document authority resolver.
+
+## Operationalization surfaces
+
+The guard is no longer only an architecture-and-code surface.
+Its activation and calibration are tracked explicitly through:
+
+- [Repo guard repo map](./REPO_GUARD_REPO_MAP.md)
+- [Repo guard activation plan](./REPO_GUARD_ACTIVATION_PLAN.md)
+- [Repo guard false positive log](./REPO_GUARD_FALSE_POSITIVE_LOG.md)
+- [Repo guardrail todo](./REPO_GUARDRAIL_TODO.md)
+
+These documents exist so promotion decisions are based on repo-native topology, observed findings quality, and explicit activation phases rather than assumption.
+
 ## Commands
 
 - `pnpm run repo:guard`
@@ -59,6 +123,8 @@ It adds only two native scanners:
   CI-oriented execution with structured report output and fail-only-on-error exit codes.
 - `pnpm run repo:guard:report`
   Writes evidence artifacts without changing root check behavior.
+- `pnpm run repo:guard:promotion-review`
+  Writes a promotion-readiness review report and scorecard for `GOV-TRUTH-001`.
 - `pnpm run script:check-repo-guard`
   Governance entrypoint used by the `GOV-TRUTH-001` domain.
 
@@ -68,8 +134,14 @@ The guard writes:
 
 - `.artifacts/reports/governance/repo-integrity-guard.report.json`
 - `.artifacts/reports/governance/repo-integrity-guard.report.md`
+- `.artifacts/reports/governance/repo-guard-promotion-readiness.report.json`
+- `.artifacts/reports/governance/repo-guard-promotion-readiness.report.md`
+- shared waiver registry: `rules/repo-integrity/repo-guard-waivers.json`
 
 The JSON report includes a governance-domain projection so the existing governance control plane can load it as standard evidence.
+The evidence contract is bound to `GOV-TRUTH-001`, ADR-0008, and ATC-0005.
+The report also carries explicit contract-binding metadata so the evidence stays self-describing in review and CI.
+The report now also carries waiver registry status, expiry, and validity summary for native repo-guard suppressions.
 
 ## V1 rules
 

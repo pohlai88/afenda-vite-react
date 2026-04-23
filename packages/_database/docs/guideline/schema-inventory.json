@@ -3,7 +3,7 @@
   "package": "@afenda/database",
   "roots": ["src/schema", "src/7w1h-audit"],
   "fileCount": 122,
-  "generatedAt": "2026-04-22T00:12:35.659Z",
+  "generatedAt": "2026-04-23T12:30:38.713Z",
   "paths": [
     "7w1h-audit/__tests__/7w1h-audit.manifest.test.ts",
     "7w1h-audit/__tests__/audit-action-catalog.test.ts",
@@ -44,8 +44,8 @@
     "finance/legal-entity-coa-assignments.schema.ts",
     "governance/__tests__/governance-boundary.schemas.test.ts",
     "governance/_schema.ts",
-    "governance/governance-data-sources.schema.ts",
     "governance/governance-boundary.schema.ts",
+    "governance/governance-data-sources.schema.ts",
     "governance/index.ts",
     "governance/ops-events.schema.ts",
     "governance/ops-partners.schema.ts",

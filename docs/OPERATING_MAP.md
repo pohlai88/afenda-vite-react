@@ -73,11 +73,11 @@ This document is the repo-local navigation surface for contributors. It explains
 
 ## Current governance summary
 
-- Final verdict: `pass`
-- Explanation: pass: no blocking failures, no expired waivers, and all enforced domains emitted evidence (10/10 reports present)
-- Verdict reasons: all-clear
-- Domains: 10 total; 10 passed; 0 warned; 0 blocked
-- Evidence complete: 10 / 10
+- Final verdict: `warn`
+- Explanation: warn: no blocking failures, but warned domains have drift or incomplete evidence (GOV-TRUTH-001)
+- Verdict reasons: warned-domain
+- Domains: 11 total; 10 passed; 1 warned; 0 blocked
+- Evidence complete: 11 / 11
 - Active waivers: 0; expired waivers: 0
 
 ## If governance CI fails

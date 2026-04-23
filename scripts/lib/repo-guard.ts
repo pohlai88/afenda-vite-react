@@ -20,21 +20,34 @@ import {
   readRootPackageScripts,
   writeJsonFile,
 } from "./governance-spine.js"
+import { evaluateBoundaryImportFindings } from "./boundary-import-guard.js"
+import { evaluateDuplicateOverlapFindings } from "./duplicate-overlap-guard.js"
 import {
   evaluateGeneratedArtifactGovernance,
   loadGeneratedArtifactGovernanceConfig,
 } from "./generated-artifact-governance.js"
+import { evaluateGeneratedArtifactAuthenticityFindings } from "./generated-artifact-authenticity-guard.js"
 import { evaluateNamingConvention } from "./naming-convention.js"
+import {
+  buildPlacementOwnershipScopes,
+  evaluatePlacementOwnershipFindings,
+} from "./placement-ownership-guard.js"
+import {
+  applyRepoGuardWaivers,
+  buildRepoGuardWaiverCheckResult,
+  evaluateRepoGuardWaiverRegistry,
+  loadRepoGuardWaiverRegistry,
+  type RepoGuardWaiverReport,
+} from "./repo-guard-waivers.js"
 import { validateReviewedSurvivalForRollout } from "./reviewed-survival-governance.js"
+import { evaluateStrongerDocumentControlFindings } from "./stronger-document-control-guard.js"
+import { evaluateSourceEvidenceMismatchFindings } from "./source-evidence-mismatch-guard.js"
 import {
   evaluateStorageGovernance,
   loadStorageGovernanceConfig,
 } from "./storage-governance.js"
 
-import type {
-  RepoGuardPolicy,
-  RepoGuardWaiver,
-} from "../repo-integrity/repo-guard-policy.js"
+import type { RepoGuardPolicy } from "../repo-integrity/repo-guard-policy.js"
 
 export type RepoGuardStatus = "pass" | "warn" | "fail"
 export type RepoGuardMode = "human" | "ci"
@@ -61,6 +74,12 @@ export interface RepoGuardReport {
   readonly status: RepoGuardStatus
   readonly mode: RepoGuardMode
   readonly generatedAt: string
+  readonly contractBinding: {
+    readonly adr: "ADR-0008"
+    readonly atc: "ATC-0005"
+    readonly status: "bound"
+  }
+  readonly waivers: RepoGuardWaiverReport
   readonly checks: readonly RepoGuardCheckResult[]
   readonly summary: {
     readonly passCount: number
@@ -74,7 +93,7 @@ export interface RepoGuardEvidenceReport extends RepoGuardReport {
   readonly governanceDomain: GovernanceDomainReport
 }
 
-interface RepoGuardGitEntry {
+export interface RepoGuardGitEntry {
   readonly code: string
   readonly path: string
   readonly previousPath?: string
@@ -100,18 +119,43 @@ export async function runRepoGuard(options: {
   const checks = await Promise.all([
     evaluateFilesystemCheck(),
     evaluateGeneratedArtifactCheck(),
+    evaluateGeneratedArtifactAuthenticityCheck(repoRoot, options.policy),
     evaluateStorageCheck(),
     evaluateNamingCheck(repoRoot, rootPackageScripts),
     evaluateDocumentationCheck(repoRoot),
     evaluateWorkspaceTopologyCheck(options.config, repoRoot),
     evaluateFileSurvivalCheck(options.config, repoRoot),
+    evaluatePlacementOwnershipCheck(options.config, repoRoot, options.policy),
+    evaluateBoundaryImportCheck(repoRoot, options.policy),
+    evaluateSourceEvidenceMismatchCheck(repoRoot, options.policy),
+    evaluateDuplicateOverlapCheck(repoRoot, options.policy),
+    evaluateStrongerDocumentControlCheck(repoRoot, options.policy),
     evaluateDirtyFilesCheck(repoRoot, options.policy),
     evaluateWorkingTreeLegitimacyCheck(repoRoot, options.policy, options.mode),
   ])
-  const waivedChecks = checks.map((check) =>
-    applyRepoGuardWaivers(check, options.policy.waivers, generatedAt)
+  const nativeCheckKeys = checks
+    .filter((check) => check.source === "native")
+    .map((check) => check.key)
+  const waiverRegistry = await loadRepoGuardWaiverRegistry(
+    repoRoot,
+    options.policy.waiverRegistryPath
   )
-  const report = buildRepoGuardReport(waivedChecks, options.mode, generatedAt)
+  const waiverReport = evaluateRepoGuardWaiverRegistry({
+    registry: waiverRegistry,
+    registryPath: options.policy.waiverRegistryPath,
+    knownCheckKeys: nativeCheckKeys,
+    referenceDate: new Date(generatedAt),
+    soonToExpireDays: options.policy.waiverSoonToExpireDays,
+  })
+  const waivedChecks = checks.map((check) =>
+    applyRepoGuardWaivers(check, waiverReport.applicableWaivers, generatedAt)
+  )
+  const report = buildRepoGuardReport(
+    [...waivedChecks, buildRepoGuardWaiverCheckResult(waiverReport)],
+    options.mode,
+    generatedAt,
+    waiverReport
+  )
 
   return {
     report,
@@ -156,6 +200,7 @@ export function formatRepoGuardHumanReport(report: RepoGuardReport): string {
     `Generated at: ${report.generatedAt}`,
     `Checks: ${String(report.summary.passCount)} pass, ${String(report.summary.warnCount)} warn, ${String(report.summary.failCount)} fail`,
     `Findings: ${String(report.summary.findingCount)}`,
+    `Waivers: ${String(report.waivers.activeWaiverCount)} active, ${String(report.waivers.expiredWaiverCount)} expired, ${String(report.waivers.soonToExpireCount)} soon to expire`,
     "",
   ]
 
@@ -178,7 +223,13 @@ export function formatRepoGuardMarkdownReport(report: RepoGuardReport): string {
     "",
     `- Status: \`${report.status}\``,
     `- Mode: \`${report.mode}\``,
+    `- Contract binding: \`${report.contractBinding.adr}\` + \`${report.contractBinding.atc}\` (${report.contractBinding.status})`,
     `- Generated at: ${report.generatedAt}`,
+    `- Waiver registry: \`${report.waivers.registryPath}\``,
+    `- Waiver validity: \`${report.waivers.valid ? "valid" : "invalid"}\``,
+    `- Active waivers: ${String(report.waivers.activeWaiverCount)}`,
+    `- Expired waivers: ${String(report.waivers.expiredWaiverCount)}`,
+    `- Soon to expire: ${String(report.waivers.soonToExpireCount)}`,
     `- Pass: ${String(report.summary.passCount)}`,
     `- Warn: ${String(report.summary.warnCount)}`,
     `- Fail: ${String(report.summary.failCount)}`,
@@ -217,7 +268,8 @@ export function formatRepoGuardMarkdownReport(report: RepoGuardReport): string {
 export function buildRepoGuardReport(
   checks: readonly RepoGuardCheckResult[],
   mode: RepoGuardMode,
-  generatedAt: string
+  generatedAt: string,
+  waivers: RepoGuardWaiverReport
 ): RepoGuardReport {
   const passCount = checks.filter((check) => check.status === "pass").length
   const warnCount = checks.filter((check) => check.status === "warn").length
@@ -232,6 +284,12 @@ export function buildRepoGuardReport(
     status: failCount > 0 ? "fail" : warnCount > 0 ? "warn" : "pass",
     mode,
     generatedAt,
+    contractBinding: {
+      adr: "ADR-0008",
+      atc: "ATC-0005",
+      status: "bound",
+    },
+    waivers,
     checks,
     summary: {
       passCount,
@@ -312,30 +370,6 @@ export function buildRepoGuardGovernanceDomainReport(
         : report.status === "warn"
           ? "warned"
           : "passed",
-  }
-}
-
-export function applyRepoGuardWaivers(
-  check: RepoGuardCheckResult,
-  waivers: readonly RepoGuardWaiver[],
-  generatedAt: string
-): RepoGuardCheckResult {
-  if (check.source !== "native" || waivers.length === 0) {
-    return check
-  }
-
-  const nextFindings = check.findings.map((finding) => {
-    const waiver = waivers.find((item) =>
-      waiverMatchesFinding(item, finding, generatedAt)
-    )
-
-    return waiver ? { ...finding, waived: true } : finding
-  })
-
-  return {
-    ...check,
-    status: statusFromFindings(nextFindings),
-    findings: nextFindings,
   }
 }
 
@@ -446,27 +480,6 @@ export function evaluateWorkingTreeFindings(
   return findings
 }
 
-function waiverMatchesFinding(
-  waiver: RepoGuardWaiver,
-  finding: RepoGuardFinding,
-  generatedAt: string
-): boolean {
-  if (waiver.ruleId !== finding.ruleId) {
-    return false
-  }
-
-  const expiresAt = Date.parse(waiver.expiresOn)
-  if (Number.isNaN(expiresAt) || Date.parse(generatedAt) > expiresAt) {
-    return false
-  }
-
-  if (!finding.filePath) {
-    return waiver.path === "*"
-  }
-
-  return waiver.path === "*" || finding.filePath === waiver.path
-}
-
 async function evaluateFilesystemCheck(): Promise<RepoGuardCheckResult> {
   const config = loadFilesystemGovernanceConfig()
   const evaluation = evaluateFilesystemGovernance(config)
@@ -501,6 +514,26 @@ async function evaluateGeneratedArtifactCheck(): Promise<RepoGuardCheckResult> {
     title: "Generated artifact governance",
     status: statusFromFindings(findings),
     source: "adapter",
+    findings,
+  }
+}
+
+async function evaluateGeneratedArtifactAuthenticityCheck(
+  repoRoot: string,
+  policy: RepoGuardPolicy
+): Promise<RepoGuardCheckResult> {
+  const trackedFiles = listGitFiles(repoRoot, ["ls-files"])
+  const findings = await evaluateGeneratedArtifactAuthenticityFindings({
+    repoRoot,
+    trackedFiles,
+    policy: policy.generatedAuthenticity,
+  })
+
+  return {
+    key: "generated-artifact-authenticity",
+    title: "Generated artifact authenticity",
+    status: statusFromFindings(findings),
+    source: "native",
     findings,
   }
 }
@@ -661,6 +694,112 @@ async function evaluateDirtyFilesCheck(
   return {
     key: "dirty-file-scan",
     title: "Dirty file scan",
+    status: statusFromFindings(findings),
+    source: "native",
+    findings,
+  }
+}
+
+async function evaluateBoundaryImportCheck(
+  repoRoot: string,
+  policy: RepoGuardPolicy
+): Promise<RepoGuardCheckResult> {
+  const trackedFiles = listGitFiles(repoRoot, ["ls-files"])
+  const findings = await evaluateBoundaryImportFindings({
+    repoRoot,
+    filePaths: trackedFiles,
+    policy: policy.boundaryImport,
+  })
+
+  return {
+    key: "boundary-import-regression",
+    title: "Boundary and import regression",
+    status: statusFromFindings(findings),
+    source: "native",
+    findings,
+  }
+}
+
+async function evaluateSourceEvidenceMismatchCheck(
+  repoRoot: string,
+  policy: RepoGuardPolicy
+): Promise<RepoGuardCheckResult> {
+  const entries = readGitStatusEntries(repoRoot)
+  const findings = evaluateSourceEvidenceMismatchFindings({
+    entries,
+    policy: policy.sourceEvidenceMismatch,
+  })
+
+  return {
+    key: "source-evidence-mismatch",
+    title: "Source and evidence mismatch",
+    status: statusFromFindings(findings),
+    source: "native",
+    findings,
+  }
+}
+
+async function evaluateDuplicateOverlapCheck(
+  repoRoot: string,
+  policy: RepoGuardPolicy
+): Promise<RepoGuardCheckResult> {
+  const trackedFiles = listGitFiles(repoRoot, ["ls-files"])
+  const findings = evaluateDuplicateOverlapFindings({
+    filePaths: trackedFiles,
+    policy: policy.duplicateOverlap,
+  })
+
+  return {
+    key: "duplicate-overlap",
+    title: "Duplicate and overlap hygiene",
+    status: statusFromFindings(findings),
+    source: "native",
+    findings,
+  }
+}
+
+async function evaluateStrongerDocumentControlCheck(
+  repoRoot: string,
+  policy: RepoGuardPolicy
+): Promise<RepoGuardCheckResult> {
+  const trackedFiles = listGitFiles(repoRoot, ["ls-files"])
+  const findings = await evaluateStrongerDocumentControlFindings({
+    repoRoot,
+    filePaths: trackedFiles,
+    policy: policy.strongerDocumentControl,
+  })
+
+  return {
+    key: "stronger-document-control",
+    title: "Stronger document control",
+    status: statusFromFindings(findings),
+    source: "native",
+    findings,
+  }
+}
+
+async function evaluatePlacementOwnershipCheck(
+  config: AfendaConfig,
+  repoRoot: string,
+  policy: RepoGuardPolicy
+): Promise<RepoGuardCheckResult> {
+  const allScopes = buildPlacementOwnershipScopes(
+    config,
+    policy.placementOwnershipStaticScopes
+  )
+  const trackedFiles = listGitFiles(repoRoot, ["ls-files"])
+  const findings = evaluatePlacementOwnershipFindings({
+    filePaths: trackedFiles,
+    scopes: allScopes,
+    ignoredPathPatterns: [
+      ...policy.machineNoiseExcludePatterns,
+      ...policy.placementOwnershipIgnorePatterns,
+    ],
+  })
+
+  return {
+    key: "placement-ownership",
+    title: "Placement and ownership",
     status: statusFromFindings(findings),
     source: "native",
     findings,

@@ -1,6 +1,6 @@
 import fs from "node:fs"
 import path from "node:path"
-import { fileURLToPath } from "node:url"
+import { fileURLToPath, pathToFileURL } from "node:url"
 import ts from "typescript"
 import { z } from "zod"
 
@@ -17,10 +17,22 @@ export const REGISTRY_FILE = path.join(UI_PRIMITIVES_DIR, "_registry.ts")
 export const GENERATED_DIR = path.join(DESIGN_SYSTEM_ROOT, "generated")
 
 /** Pre-register manifests so Vitest/Vite transform `.ts`; runtime `import(file://…/*.ts)` does not. */
-const manifestModuleLoaders = import.meta.glob<{
+type ManifestModule = {
   default?: PrimitiveGovernanceManifest
   manifest?: PrimitiveGovernanceManifest
-}>("../../ui-primitives/**/*.manifest.ts")
+}
+
+type ImportMetaWithGlob = ImportMeta & {
+  glob?: <T>(pattern: string) => Record<string, () => Promise<T>>
+}
+
+const importMetaWithGlob = import.meta as ImportMetaWithGlob
+const manifestModuleLoaders =
+  typeof importMetaWithGlob.glob === "function"
+    ? importMetaWithGlob.glob<ManifestModule>(
+        "../../ui-primitives/**/*.manifest.ts"
+      )
+    : {}
 
 const VARIANT_TOKEN_REGEX =
   /\b(?:bg|text|border|ring|outline|fill|stroke)-(?:background|foreground|card|popover|primary|secondary|muted|accent|destructive|input|border|ring|sidebar(?:-[a-z-]+)?|success|warning|info)\b/
@@ -662,12 +674,9 @@ async function loadManifestModule(
     .replace(/^\/+/, "")
   const key = `../../${relFromRoot}`
   const loader = manifestModuleLoaders[key]
-  if (!loader) {
-    throw new Error(
-      `No manifest module registered for ${key} (resolved from ${manifestAbsolutePath}).`
-    )
-  }
-  const moduleValue = await loader()
+  const moduleValue = loader
+    ? await loader()
+    : ((await import(pathToFileURL(abs).href)) as ManifestModule)
   const candidate = moduleValue.default ?? moduleValue.manifest
   if (!candidate) {
     throw new Error(
