@@ -96,13 +96,13 @@ test("controlled domains pass with valid naming", () => {
         private: true,
         scripts: {
           "script:check-governance-registry":
-            "tsx scripts/check-governance-registry.ts",
+            "tsx scripts/governance/check-governance-registry.ts",
         },
       },
       null,
       2
     ),
-    "scripts/check-governance-registry.ts": "console.log('ok')",
+    "scripts/governance/check-governance-registry.ts": "console.log('ok')",
     "docs/architecture/governance/NAMING_CONVENTION.md": "# Naming",
     "docs/architecture/adr/ADR_TEMPLATE.md": "# Template",
     "docs/architecture/adr/ADR-0001-core-web-architecture-baseline.md": "# ADR",
@@ -113,7 +113,7 @@ test("controlled domains pass with valid naming", () => {
   try {
     const result = evaluateNamingConvention(repoRoot, {
       "script:check-governance-registry":
-        "tsx scripts/check-governance-registry.ts",
+        "tsx scripts/governance/check-governance-registry.ts",
     })
 
     assert.equal(result.errors.length, 0)
@@ -130,13 +130,13 @@ test("generic and role-only names fail", () => {
         private: true,
         scripts: {
           "script:check-governance-registry":
-            "tsx scripts/check-governance-registry.ts",
+            "tsx scripts/governance/check-governance-registry.ts",
         },
       },
       null,
       2
     ),
-    "scripts/check-governance-registry.ts": "console.log('ok')",
+    "scripts/governance/check-governance-registry.ts": "console.log('ok')",
     "docs/architecture/governance/policy.md": "# bad",
     "docs/architecture/adr/ADR_TEMPLATE.md": "# Template",
     "docs/architecture/atc/ATC_TEMPLATE.md": "# Template",
@@ -145,7 +145,7 @@ test("generic and role-only names fail", () => {
   try {
     const result = evaluateNamingConvention(repoRoot, {
       "script:check-governance-registry":
-        "tsx scripts/check-governance-registry.ts",
+        "tsx scripts/governance/check-governance-registry.ts",
     })
 
     const messages = result.errors.map((issue) => issue.message).join("\n")

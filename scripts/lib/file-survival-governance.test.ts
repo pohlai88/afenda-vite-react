@@ -4,8 +4,8 @@ import path from "node:path"
 import assert from "node:assert/strict"
 import test from "node:test"
 
-import type { FileSurvivalRolloutDefinition } from "../afenda-config.js"
-import { FILE_SURVIVAL_ROLE_PRECEDENCE } from "../afenda-config.js"
+import type { FileSurvivalRolloutDefinition } from "../config/afenda-config.js"
+import { FILE_SURVIVAL_ROLE_PRECEDENCE } from "../config/afenda-config.js"
 import {
   generateFileSurvivalReport,
   renderFileSurvivalHtmlPreview,

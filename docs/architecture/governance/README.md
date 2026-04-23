@@ -3,7 +3,7 @@
 
 # Governance
 
-> Generated from: `scripts/generate-docs-readme.ts`, `docs/architecture/governance`
+> Generated from: `scripts/docs/generate-docs-readme.ts`, `docs/architecture/governance`
 > Regenerate with: `pnpm run script:generate-docs-readme`
 > Truth class: `derived`
 > Do not edit directly.
@@ -27,6 +27,7 @@ Governance doctrine, glossary, and generated register for the repo-local governa
 | [Repo guardrail todo](./REPO_GUARDRAIL_TODO.md)                                             | Reference  | supporting | supporting-doc | governance-toolchain | Governed execution roadmap for repository guardrail architecture, Repository Integrity Guard expansion, and promotion criteria.                                                                                     |
 | [Repo guard promotion review template](./REPO_GUARD_PROMOTION_REVIEW_TEMPLATE.md)           | Reference  | supporting | supporting-doc | governance-toolchain | Supporting template for a bounded GOV-TRUTH-001 promotion readiness review using current evidence, scorecard, and decision notes.                                                                                   |
 | [Repo guard repo map](./REPO_GUARD_REPO_MAP.md)                                             | Reference  | supporting | supporting-doc | governance-toolchain | Repo-native truth map for Repository Integrity Guard calibration, including owner roots, generated roots, import aliases, and doctrine-to-evidence bindings.                                                        |
+| [Scripts topology handoff](./SCRIPTS_TOPOLOGY_HANDOFF.md)                                   | Reference  | supporting | supporting-doc | governance-toolchain | Developer handoff for the grouped scripts topology, area ownership model, and root-scripts reservation policy.                                                                                                      |
 | [Repo guard activation plan](./REPO_GUARD_ACTIVATION_PLAN.md)                               | Reference  | supporting | supporting-doc | governance-toolchain | Repo-specific activation blueprint for calibrating, hardening, and reviewing the Repository Integrity Guard before promotion from warned to blocking.                                                               |
 | [Repo guard promotion scorecard template](./REPO_GUARD_PROMOTION_SCORECARD_TEMPLATE.md)     | Reference  | supporting | supporting-doc | governance-toolchain | Supporting template for summarizing GOV-TRUTH-001 promotion-readiness checks, pass/warn/fail counts, and blocking evidence.                                                                                         |
 | [Repo guard false positive log](./REPO_GUARD_FALSE_POSITIVE_LOG.md)                         | Reference  | supporting | supporting-doc | governance-toolchain | Evidence log for classifying Repository Integrity Guard findings during warned calibration and promotion review.                                                                                                    |

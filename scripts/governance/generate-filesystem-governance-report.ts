@@ -10,7 +10,7 @@ import path from "node:path"
 import {
   evaluateFilesystemGovernance,
   loadFilesystemGovernanceConfig,
-} from "./lib/filesystem-governance"
+} from "../lib/filesystem-governance"
 
 const REPORT_PATH = path.resolve(
   "rules/filesystem-governance/repo-screening.md"

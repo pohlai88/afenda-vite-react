@@ -26,6 +26,6 @@
  * - that creates a circular dependency and can break light mode resolution
  *
  * Tooling note:
- * - `scripts/check-stem-sync.ts` reads `theme-tokens-light.css`
+ * - `scripts/ui/check-stem-sync.ts` reads `theme-tokens-light.css`
  *   as the canonical source for Tailwind color stem synchronization
  */

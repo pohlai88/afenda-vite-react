@@ -1,8 +1,8 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { AfendaConfig } from "../afenda-config.js"
-import { toPosixPath } from "../afenda-config.js"
+import type { AfendaConfig } from "../config/afenda-config.js"
+import { toPosixPath } from "../config/afenda-config.js"
 
 export interface AfendaWorkspaceGovernanceIssue {
   readonly rule:

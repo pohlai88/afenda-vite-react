@@ -10,7 +10,7 @@ import type {
   GovernanceLifecycleStatus,
   GovernanceSeverity,
   GovernanceTier,
-} from "../afenda-config.js"
+} from "../config/afenda-config.js"
 
 export interface GovernanceIssue {
   readonly scope: string

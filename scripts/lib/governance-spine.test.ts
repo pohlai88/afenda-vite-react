@@ -4,7 +4,7 @@ import os from "node:os"
 import path from "node:path"
 import test from "node:test"
 
-import type { AfendaConfig } from "../afenda-config.js"
+import type { AfendaConfig } from "../config/afenda-config.js"
 import {
   buildGovernanceAggregateReport,
   evaluateGovernanceBindings,
@@ -66,7 +66,7 @@ test("binding validation catches missing files and missing package scripts", asy
         private: true,
         scripts: {
           "script:check-governance-registry":
-            "tsx scripts/check-governance-registry.ts",
+            "tsx scripts/governance/check-governance-registry.ts",
         },
       },
       null,
@@ -78,8 +78,8 @@ test("binding validation catches missing files and missing package scripts", asy
       null,
       2
     ),
-    "scripts/check-governance-registry.ts": "console.log('ok')",
-    "scripts/generate-governance-report.ts": "console.log('ok')",
+    "scripts/governance/check-governance-registry.ts": "console.log('ok')",
+    "scripts/governance/generate-governance-report.ts": "console.log('ok')",
   })
 
   try {
@@ -107,9 +107,9 @@ test("binding validation catches drifted domains with broken bindings", async ()
         private: true,
         scripts: {
           "script:check-governance-registry":
-            "tsx scripts/check-governance-registry.ts",
+            "tsx scripts/governance/check-governance-registry.ts",
           "script:generate-governance-report":
-            "tsx scripts/generate-governance-report.ts",
+            "tsx scripts/governance/generate-governance-report.ts",
         },
       },
       null,
@@ -121,7 +121,7 @@ test("binding validation catches drifted domains with broken bindings", async ()
       null,
       2
     ),
-    "scripts/check-governance-registry.ts": "console.log('ok')",
+    "scripts/governance/check-governance-registry.ts": "console.log('ok')",
   })
 
   try {
@@ -232,7 +232,7 @@ test("waiver severity caps do not suppress higher-severity violations", () => {
           {
             id: "registry-check",
             command: "pnpm run script:check-governance-registry",
-            scriptPath: "scripts/check-governance-registry.ts",
+            scriptPath: "scripts/governance/check-governance-registry.ts",
             status: "failed",
             exitCode: 1,
             durationMs: 1,
@@ -305,7 +305,7 @@ test("aggregate report and register are deterministic for fixed input", () => {
           {
             id: "registry-check",
             command: "pnpm run script:check-governance-registry",
-            scriptPath: "scripts/check-governance-registry.ts",
+            scriptPath: "scripts/governance/check-governance-registry.ts",
             status: "passed",
             exitCode: 0,
             durationMs: 1,
@@ -507,12 +507,12 @@ function createFixtureConfig(): AfendaConfig {
             {
               id: "registry-check",
               command: "pnpm run script:check-governance-registry",
-              scriptPath: "scripts/check-governance-registry.ts",
+              scriptPath: "scripts/governance/check-governance-registry.ts",
             },
           ],
           report: {
             command: "pnpm run script:generate-governance-report",
-            scriptPath: "scripts/generate-governance-report.ts",
+            scriptPath: "scripts/governance/generate-governance-report.ts",
           },
           evidencePath:
             ".artifacts/reports/governance/registry-integrity.report.json",
@@ -526,7 +526,7 @@ function createFixtureConfig(): AfendaConfig {
           title: "Governance registry integrity",
           description: "Check registry.",
           command: "pnpm run script:check-governance-registry",
-          scriptPath: "scripts/check-governance-registry.ts",
+          scriptPath: "scripts/governance/check-governance-registry.ts",
           ciBehavior: "block",
         },
       ],

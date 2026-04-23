@@ -5,14 +5,14 @@
 import { mkdir, writeFile } from "node:fs/promises"
 import path from "node:path"
 
-import { loadAfendaConfig, workspaceRoot } from "./afenda-config.js"
-import { fileSurvivalReportsDir } from "./lib/artifact-paths.js"
+import { loadAfendaConfig, workspaceRoot } from "../config/afenda-config.js"
+import { fileSurvivalReportsDir } from "../lib/artifact-paths.js"
 import {
   generateFileSurvivalReport,
   renderFileSurvivalHtmlPreview,
   renderFileSurvivalMarkdownReport,
-} from "./lib/file-survival-governance.js"
-import { validateReviewedSurvivalForRollout } from "./lib/reviewed-survival-governance.js"
+} from "../lib/file-survival-governance.js"
+import { validateReviewedSurvivalForRollout } from "../lib/reviewed-survival-governance.js"
 
 const requestedRolloutId = process.argv[2]?.trim() || null
 const config = await loadAfendaConfig()

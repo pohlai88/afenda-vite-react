@@ -1,4 +1,4 @@
-import { loadAfendaConfig, workspaceRoot } from "../afenda-config.js"
+import { loadAfendaConfig, workspaceRoot } from "../config/afenda-config.js"
 import {
   formatRepoGuardHumanReport,
   runRepoGuard,

@@ -1,13 +1,13 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import { loadAfendaConfig, workspaceRoot } from "./afenda-config.js"
-import type { GovernanceAggregateReport } from "./lib/governance-spine.js"
+import { loadAfendaConfig, workspaceRoot } from "../config/afenda-config.js"
+import type { GovernanceAggregateReport } from "../lib/governance-spine.js"
 import {
   buildGovernanceRegisterSnapshot,
   renderGovernanceRegisterMarkdown,
   writeJsonFile,
-} from "./lib/governance-spine.js"
+} from "../lib/governance-spine.js"
 
 const config = await loadAfendaConfig()
 const aggregateReportPath = path.join(

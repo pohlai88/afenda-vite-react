@@ -4,8 +4,11 @@ import { existsSync } from "fs"
 import fs from "fs/promises"
 import path from "path"
 import prettier from "prettier"
-import type { AfendaConfig, ReadmeTargetDefinition } from "./afenda-config.js"
-import { loadAfendaConfig, workspaceRoot } from "./afenda-config.js"
+import type {
+  AfendaConfig,
+  ReadmeTargetDefinition,
+} from "../config/afenda-config.js"
+import { loadAfendaConfig, workspaceRoot } from "../config/afenda-config.js"
 
 interface DocMetadata {
   title?: string
@@ -871,7 +874,7 @@ async function renderRootReadme(
     `# ${afendaConfig.product.name} documentation`,
     "",
     renderGeneratedMetadataNotice({
-      sourcePaths: ["scripts/generate-docs-readme.ts", "docs/**/*.md"],
+      sourcePaths: ["scripts/docs/generate-docs-readme.ts", "docs/**/*.md"],
       command: "pnpm run script:generate-docs-readme",
       truthClass: "derived",
     }),
@@ -1016,7 +1019,7 @@ async function renderDependenciesReadme(
     "",
     renderGeneratedMetadataNotice({
       sourcePaths: [
-        "scripts/generate-docs-readme.ts",
+        "scripts/docs/generate-docs-readme.ts",
         "docs/dependencies/*.md",
       ],
       command: "pnpm run script:generate-docs-readme",
@@ -1107,7 +1110,7 @@ async function renderGenericReadme(
     "",
     renderGeneratedMetadataNotice({
       sourcePaths: [
-        "scripts/generate-docs-readme.ts",
+        "scripts/docs/generate-docs-readme.ts",
         `docs/${relativeDirectory}`,
       ],
       command: "pnpm run script:generate-docs-readme",
@@ -1195,8 +1198,8 @@ async function renderScriptsReadme(
     "",
     renderGeneratedMetadataNotice({
       sourcePaths: [
-        "scripts/generate-docs-readme.ts",
-        "scripts/*.ts",
+        "scripts/docs/generate-docs-readme.ts",
+        "scripts/**/*.ts",
         "scripts/afenda.config.json",
       ],
       command: "pnpm run script:generate-docs-readme",
@@ -1207,7 +1210,7 @@ async function renderScriptsReadme(
     "",
     `Run scripts from the repository root with \`${afendaConfig.workspace.packageManager}\` so they use the workspace toolchain and \`tsx\` configuration.`,
     "",
-    "Layout and contribution rules (flat vs one subdirectory) live in [`RULES.md`](./RULES.md).",
+    "Layout and contribution rules (grouped areas plus one-level nesting) live in [`RULES.md`](./RULES.md).",
     "",
     "## Start here",
     "",
@@ -1306,7 +1309,7 @@ async function renderOperatingMap(
     "",
     renderGeneratedMetadataNotice({
       sourcePaths: [
-        "scripts/generate-docs-readme.ts",
+        "scripts/docs/generate-docs-readme.ts",
         "scripts/afenda.config.json",
         ".artifacts/reports/governance/governance-summary.report.json",
       ],
@@ -1678,9 +1681,10 @@ function getScriptInsight(
   entry: ScriptEntry,
   afendaConfig: AfendaConfig
 ): ScriptInsight {
+  const baseFileName = path.posix.basename(entry.fileName)
   const scriptPath = `scripts/${toPosixPath(entry.fileName)}`
 
-  if (entry.fileName === "generate-governance-report.ts") {
+  if (baseFileName === "generate-governance-report.ts") {
     return {
       failureImpact: "Blocks CI when governance evidence is incomplete",
       primaryOutput:
@@ -1689,7 +1693,7 @@ function getScriptInsight(
     }
   }
 
-  if (entry.fileName === "generate-governance-register.ts") {
+  if (baseFileName === "generate-governance-register.ts") {
     const registerPath =
       findExistingRelativePath(workspaceRoot, [
         "docs/architecture/governance/generated/governance-register.md",
@@ -1704,7 +1708,7 @@ function getScriptInsight(
     }
   }
 
-  if (entry.fileName === "generate-docs-readme.ts") {
+  if (baseFileName === "generate-docs-readme.ts") {
     return {
       failureImpact: "Generated docs only",
       primaryOutput:
@@ -1712,7 +1716,7 @@ function getScriptInsight(
     }
   }
 
-  if (entry.fileName === "check-governance-waivers.ts") {
+  if (baseFileName === "check-governance-waivers.ts") {
     return {
       failureImpact: "Blocks CI when waiver policy is invalid",
       primaryOutput: `\`${afendaConfig.governance.waivers.reportPath}\``,
@@ -1801,7 +1805,10 @@ async function renderFormalDirectoryReadme(
     `# ${title}`,
     "",
     renderGeneratedMetadataNotice({
-      sourcePaths: ["scripts/generate-docs-readme.ts", target.relativePath],
+      sourcePaths: [
+        "scripts/docs/generate-docs-readme.ts",
+        target.relativePath,
+      ],
       command: "pnpm run script:generate-docs-readme",
       truthClass: "derived",
     }),
@@ -2060,7 +2067,9 @@ async function getScriptEntries(
   const entries = await Promise.all(
     scriptFiles.map(async ({ relativePath, absolutePath }) => {
       const content = await fs.readFile(absolutePath, "utf8")
-      const override = SCRIPT_FILE_OVERRIDES[relativePath]
+      const override =
+        SCRIPT_FILE_OVERRIDES[relativePath] ??
+        SCRIPT_FILE_OVERRIDES[path.posix.basename(relativePath)]
       const baseTitle = titleFromFileName(path.basename(relativePath))
       const title =
         override?.title ??

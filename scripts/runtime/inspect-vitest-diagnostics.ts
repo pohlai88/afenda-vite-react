@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url"
 import { startVitest } from "vitest/node"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const repoRoot = path.join(__dirname, "..")
+const repoRoot = path.join(__dirname, "..", "..")
 
 type TargetKey = "design-system" | "vitest-config" | "web"
 

@@ -36,7 +36,7 @@ Operational path:
 - `failure`: duplicate root docs survive in the active docs index when a better canonical or runtime-owned source already exists
 - `enforcement`:
   - `script_check`: `pnpm run script:generate-docs-readme`, `pnpm run script:check-storage-governance`, `pnpm run script:check-governance`
-  - `lint_or_ast_rule`: focused ESLint on `scripts/generate-docs-readme.ts`
+  - `lint_or_ast_rule`: focused ESLint on `scripts/docs/generate-docs-readme.ts`
   - `boundary_rule`: active docs index must not surface deleted or archived superseded docs
 - `adoption_expansion`:
   - `newly_adopted_surfaces`: docs duplicate-truth matrix and archive registration for superseded docs
@@ -69,7 +69,7 @@ Operational path:
 ## 6. Files And Surfaces Touched
 
 - files touched:
-  - [`scripts/generate-docs-readme.ts`](../../scripts/generate-docs-readme.ts)
+  - [`scripts/docs/generate-docs-readme.ts`](../../scripts/docs/generate-docs-readme.ts)
   - [`docs/SHELL_ARCHITECTURE.md`](../../docs/SHELL_ARCHITECTURE.md)
   - [`archives/README.md`](../../archives/README.md)
   - [`archives/docs-superseded-2026-04-23/README.md`](../../archives/docs-superseded-2026-04-23/README.md)
@@ -87,7 +87,7 @@ Operational path:
 ## 7. Validation Evidence
 
 - typecheck: `pnpm run check` (`pnpm run typecheck` phase)
-- lint: `pnpm run lint`; focused `pnpm exec eslint scripts/generate-docs-readme.ts --cache --cache-location .artifacts/eslint --max-warnings 0`
+- lint: `pnpm run lint`; focused `pnpm exec eslint scripts/docs/generate-docs-readme.ts --cache --cache-location .artifacts/eslint --max-warnings 0`
 - compliance: `pnpm run script:generate-docs-readme`; `pnpm run script:check-storage-governance`; `pnpm run script:check-governance`
 - runtime verification: `pnpm run check`
 - targeted tests: not applicable

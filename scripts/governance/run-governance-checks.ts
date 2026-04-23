@@ -1,5 +1,5 @@
-import { loadAfendaConfig, workspaceRoot } from "./afenda-config.js"
-import { runGovernanceChecks } from "./lib/governance-spine.js"
+import { loadAfendaConfig, workspaceRoot } from "../config/afenda-config.js"
+import { runGovernanceChecks } from "../lib/governance-spine.js"
 
 const config = await loadAfendaConfig()
 const result = await runGovernanceChecks(config, workspaceRoot, new Date())

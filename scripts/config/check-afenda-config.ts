@@ -14,7 +14,7 @@ import {
   toPosixPath,
   workspaceRoot,
 } from "./afenda-config.js"
-import { evaluateAfendaWorkspaceGovernance } from "./lib/afenda-workspace-governance.js"
+import { evaluateAfendaWorkspaceGovernance } from "../lib/afenda-workspace-governance.js"
 
 interface RootPackageJson {
   name?: string
@@ -562,13 +562,31 @@ function assertRelativeWorkspacePath(relativePath: string, label: string) {
 }
 
 /**
- * Enforces `scripts/RULES.md`: at most one directory level under `scripts/`
+ * Enforces `scripts/RULES.md`: `scripts/` root is reserved for manifests and
+ * support files, and nested script areas must remain one level deep
  * (no `scripts/a/b/` subtrees).
  */
 async function assertScriptsDirectoryNestingPolicy(scriptsRoot: string) {
   const topLevel = await fs.readdir(scriptsRoot, { withFileTypes: true })
+  const allowedRootFiles = new Set([
+    "README.md",
+    "RULES.md",
+    "afenda.config.json",
+    "afenda.config.schema.json",
+    "tsconfig.json",
+  ])
 
   for (const entry of topLevel) {
+    if (entry.isFile()) {
+      assert(
+        allowedRootFiles.has(entry.name) ||
+          entry.name.startsWith(".") ||
+          !/\.(?:[cm]?js|ts)$/i.test(entry.name),
+        `scripts/${entry.name} must move under a grouped scripts area. Root scripts/ is reserved for manifests, rules, and support files only. See scripts/RULES.md.`
+      )
+      continue
+    }
+
     if (!entry.isDirectory()) {
       continue
     }

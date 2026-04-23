@@ -3,7 +3,7 @@
 
 # Repository rules
 
-> Generated from: `scripts/generate-docs-readme.ts`, `rules`
+> Generated from: `scripts/docs/generate-docs-readme.ts`, `rules`
 > Regenerate with: `pnpm run script:generate-docs-readme`
 > Truth class: `derived`
 > Do not edit directly.

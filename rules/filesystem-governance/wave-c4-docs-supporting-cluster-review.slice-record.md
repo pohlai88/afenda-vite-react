@@ -36,7 +36,7 @@ Operational path:
 - `failure`: root docs still mix dense supporting implementation packs directly into canonical policy surfaces
 - `enforcement`:
   - `script_check`: `pnpm run script:generate-docs-readme`, `pnpm run script:check-governance`
-  - `lint_or_ast_rule`: focused ESLint on `scripts/generate-docs-readme.ts`
+  - `lint_or_ast_rule`: focused ESLint on `scripts/docs/generate-docs-readme.ts`
   - `boundary_rule`: moved supporting docs survive through a dedicated docs collection, not as root canonical-looking docs
 - `adoption_expansion`:
   - `newly_adopted_surfaces`: `docs/scaffolds/` as a governed supporting-doc collection
@@ -67,7 +67,7 @@ Operational path:
 ## 6. Files And Surfaces Touched
 
 - files touched:
-  - [`scripts/generate-docs-readme.ts`](../../scripts/generate-docs-readme.ts)
+  - [`scripts/docs/generate-docs-readme.ts`](../../scripts/docs/generate-docs-readme.ts)
   - moved docs under [`docs/scaffolds`](../../docs/scaffolds)
   - [`repo-closure-slice-register.md`](./repo-closure-slice-register.md)
   - [`wave-c4-docs-supporting-cluster-matrix.md`](./wave-c4-docs-supporting-cluster-matrix.md)
@@ -81,7 +81,7 @@ Operational path:
 ## 7. Validation Evidence
 
 - typecheck: `pnpm run check` (`pnpm run typecheck` phase)
-- lint: `pnpm run lint`; focused `pnpm exec eslint scripts/generate-docs-readme.ts --cache --cache-location .artifacts/eslint --max-warnings 0`
+- lint: `pnpm run lint`; focused `pnpm exec eslint scripts/docs/generate-docs-readme.ts --cache --cache-location .artifacts/eslint --max-warnings 0`
 - compliance: `pnpm run script:generate-docs-readme`; `pnpm run script:check-governance`
 - runtime verification: `pnpm run check`
 - targeted tests: not applicable

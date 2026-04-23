@@ -36,7 +36,7 @@ Operational path:
 - `failure`: active docs can no longer survive by omission of ownership or truth-status metadata
 - `enforcement`:
   - `script_check`: `pnpm run script:generate-docs-readme`, `pnpm run script:check-governance`
-  - `lint_or_ast_rule`: focused ESLint on `scripts/generate-docs-readme.ts`
+  - `lint_or_ast_rule`: focused ESLint on `scripts/docs/generate-docs-readme.ts`
   - `boundary_rule`: active visible docs must provide owner, truthStatus, docClass, and relatedDomain
 - `adoption_expansion`:
   - `newly_adopted_surfaces`: root docs, dependency guides, marketing docs, and decision records
@@ -62,13 +62,13 @@ Operational path:
 - permission enforcement: unchanged
 - truth behavior: active docs explicitly distinguish canonical-doc from supporting-doc
 - runtime behavior: generated docs indexes stay green only when active docs satisfy the metadata contract
-- enforcement behavior: `scripts/generate-docs-readme.ts` asserts required metadata on active visible docs
+- enforcement behavior: `scripts/docs/generate-docs-readme.ts` asserts required metadata on active visible docs
 
 ## 6. Files And Surfaces Touched
 
 - files touched:
   - active docs under [`docs`](../../docs), [`docs/dependencies`](../../docs/dependencies), [`docs/marketing`](../../docs/marketing), and [`docs/decisions`](../../docs/decisions)
-  - [`scripts/generate-docs-readme.ts`](../../scripts/generate-docs-readme.ts)
+  - [`scripts/docs/generate-docs-readme.ts`](../../scripts/docs/generate-docs-readme.ts)
   - [`repo-closure-slice-register.md`](./repo-closure-slice-register.md)
 - routes touched: none
 - contracts touched: active-doc metadata requirement for generated docs
@@ -79,7 +79,7 @@ Operational path:
 ## 7. Validation Evidence
 
 - typecheck: `pnpm run check` (`pnpm run typecheck` phase)
-- lint: `pnpm run lint`; focused `pnpm exec eslint scripts/generate-docs-readme.ts --cache --cache-location .artifacts/eslint --max-warnings 0`
+- lint: `pnpm run lint`; focused `pnpm exec eslint scripts/docs/generate-docs-readme.ts --cache --cache-location .artifacts/eslint --max-warnings 0`
 - compliance: `pnpm run script:generate-docs-readme`; `pnpm run script:check-governance`
 - runtime verification: `pnpm run check`
 - targeted tests: not applicable

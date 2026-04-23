@@ -2,7 +2,7 @@ import type {
   AfendaConfig,
   GovernanceEnforcementMaturity,
   GovernanceLifecycleStatus,
-} from "../afenda-config.js"
+} from "../config/afenda-config.js"
 
 export interface ParsedAtcContract {
   readonly contractId?: string

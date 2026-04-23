@@ -3,7 +3,7 @@
 
 # Workspace
 
-> Generated from: `scripts/generate-docs-readme.ts`, `docs/workspace`
+> Generated from: `scripts/docs/generate-docs-readme.ts`, `docs/workspace`
 > Regenerate with: `pnpm run script:generate-docs-readme`
 > Truth class: `derived`
 > Do not edit directly.

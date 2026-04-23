@@ -241,7 +241,10 @@ export interface WebClientSrcGovernance {
   enforce: boolean
 }
 
-export const scriptDirectory = path.dirname(fileURLToPath(import.meta.url))
+export const scriptDirectory = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  ".."
+)
 export const workspaceRoot = path.resolve(scriptDirectory, "..")
 export const afendaConfigPath = path.join(scriptDirectory, "afenda.config.json")
 export const afendaSchemaPath = path.join(

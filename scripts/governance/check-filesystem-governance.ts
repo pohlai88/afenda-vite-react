@@ -7,7 +7,7 @@
 import {
   evaluateFilesystemGovernance,
   loadFilesystemGovernanceConfig,
-} from "./lib/filesystem-governance"
+} from "../lib/filesystem-governance"
 
 const config = loadFilesystemGovernanceConfig()
 const evaluation = evaluateFilesystemGovernance(config)

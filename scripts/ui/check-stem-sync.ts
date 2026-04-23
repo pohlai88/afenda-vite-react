@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url"
 const require = createRequire(import.meta.url)
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url))
-const repoRoot = join(__dirname, "..")
+const repoRoot = join(__dirname, "..", "..")
 
 const { SEMANTIC_COLOR_STEMS } =
   require("../packages/eslint-config/afenda-ui-plugin/semantic-color-stems.cjs") as {

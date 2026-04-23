@@ -11,7 +11,7 @@ import {
   type PromotionReadinessStatus,
 } from "@afenda/governance-toolchain"
 
-import type { AfendaConfig } from "../afenda-config.js"
+import type { AfendaConfig } from "../config/afenda-config.js"
 import type { RepoGuardEvidenceReport } from "./repo-guard.js"
 
 export type {

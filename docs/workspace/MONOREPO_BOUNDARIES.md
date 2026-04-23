@@ -94,8 +94,8 @@ This gives a deterministic scaffold for shared cross-app capabilities.
 1. Update policy in `scripts/afenda.config.json`.
 2. Keep schema and runtime checks in sync:
    - `scripts/afenda.config.schema.json`
-   - `scripts/afenda-config.ts`
-   - `scripts/check-afenda-config.ts`
+   - `scripts/config/afenda-config.ts`
+   - `scripts/config/check-afenda-config.ts`
 3. Run:
    - `pnpm run script:check-afenda-config`
    - `pnpm run check`

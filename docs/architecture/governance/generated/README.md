@@ -3,7 +3,7 @@
 
 # Generated
 
-> Generated from: `scripts/generate-docs-readme.ts`, `docs/architecture/governance/generated`
+> Generated from: `scripts/docs/generate-docs-readme.ts`, `docs/architecture/governance/generated`
 > Regenerate with: `pnpm run script:generate-docs-readme`
 > Truth class: `derived`
 > Do not edit directly.

@@ -4,7 +4,7 @@ import path from "node:path"
 import {
   evaluateStorageGovernance,
   loadStorageGovernanceConfig,
-} from "./lib/storage-governance.js"
+} from "../lib/storage-governance.js"
 
 const REPORT_PATH = path.resolve(
   "rules/storage-governance/storage-screening.md"

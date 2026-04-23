@@ -1,5 +1,5 @@
-import { workspaceRoot } from "./afenda-config.js"
-import { evaluateDocumentationGovernance } from "./lib/doc-governance.js"
+import { workspaceRoot } from "../config/afenda-config.js"
+import { evaluateDocumentationGovernance } from "../lib/doc-governance.js"
 
 const issues = await evaluateDocumentationGovernance(workspaceRoot)
 

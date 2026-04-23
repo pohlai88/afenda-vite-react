@@ -493,12 +493,12 @@
           {
             "id": "filesystem-check",
             "command": "pnpm run script:check-filesystem-governance",
-            "scriptPath": "scripts/check-filesystem-governance.ts"
+            "scriptPath": "scripts/governance/check-filesystem-governance.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-filesystem-governance-report",
-          "scriptPath": "scripts/generate-filesystem-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-filesystem-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/filesystem.report.json",
         "ciBehavior": "block",
@@ -521,12 +521,12 @@
           {
             "id": "generated-artifact-check",
             "command": "pnpm run script:check-generated-artifact-governance",
-            "scriptPath": "scripts/check-generated-artifact-governance.ts"
+            "scriptPath": "scripts/governance/check-generated-artifact-governance.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-generated-artifact-governance-report",
-          "scriptPath": "scripts/generate-generated-artifact-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-generated-artifact-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/generated-artifacts.report.json",
         "ciBehavior": "block",
@@ -549,12 +549,12 @@
           {
             "id": "storage-check",
             "command": "pnpm run script:check-storage-governance",
-            "scriptPath": "scripts/check-storage-governance.ts"
+            "scriptPath": "scripts/governance/check-storage-governance.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-storage-governance-report",
-          "scriptPath": "scripts/generate-storage-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-storage-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/storage.report.json",
         "ciBehavior": "block",
@@ -580,12 +580,12 @@
           {
             "id": "workspace-topology-check",
             "command": "pnpm run script:check-afenda-config",
-            "scriptPath": "scripts/check-afenda-config.ts"
+            "scriptPath": "scripts/config/check-afenda-config.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-governance-report",
-          "scriptPath": "scripts/generate-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/workspace-topology.report.json",
         "ciBehavior": "block",
@@ -612,12 +612,12 @@
           {
             "id": "architecture-contract-check",
             "command": "pnpm run script:check-architecture-contracts",
-            "scriptPath": "scripts/check-architecture-contracts.ts"
+            "scriptPath": "scripts/governance/check-architecture-contracts.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-governance-report",
-          "scriptPath": "scripts/generate-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/architecture-contracts.report.json",
         "ciBehavior": "warn",
@@ -644,12 +644,12 @@
           {
             "id": "doc-governance-check",
             "command": "pnpm run script:check-doc-governance",
-            "scriptPath": "scripts/check-doc-governance.ts"
+            "scriptPath": "scripts/governance/check-doc-governance.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-governance-report",
-          "scriptPath": "scripts/generate-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/documentation-integrity.report.json",
         "ciBehavior": "warn",
@@ -676,12 +676,12 @@
           {
             "id": "naming-convention-check",
             "command": "pnpm run script:check-naming-convention",
-            "scriptPath": "scripts/check-naming-convention.ts"
+            "scriptPath": "scripts/governance/check-naming-convention.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-governance-report",
-          "scriptPath": "scripts/generate-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/naming-convention.report.json",
         "ciBehavior": "block",
@@ -710,7 +710,7 @@
           {
             "id": "repo-integrity-guard-check",
             "command": "pnpm run script:check-repo-guard",
-            "scriptPath": "scripts/check-repo-guard.ts"
+            "scriptPath": "scripts/governance/check-repo-guard.ts"
           }
         ],
         "report": {
@@ -741,12 +741,12 @@
           {
             "id": "governance-registry-check",
             "command": "pnpm run script:check-governance-registry",
-            "scriptPath": "scripts/check-governance-registry.ts"
+            "scriptPath": "scripts/governance/check-governance-registry.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-governance-report",
-          "scriptPath": "scripts/generate-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/registry-integrity.report.json",
         "ciBehavior": "block",
@@ -769,12 +769,12 @@
           {
             "id": "governance-binding-check",
             "command": "pnpm run script:check-governance-bindings",
-            "scriptPath": "scripts/check-governance-bindings.ts"
+            "scriptPath": "scripts/governance/check-governance-bindings.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-governance-report",
-          "scriptPath": "scripts/generate-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/bindings.report.json",
         "ciBehavior": "block",
@@ -800,12 +800,12 @@
           {
             "id": "governance-waiver-check",
             "command": "pnpm run script:check-governance-waivers",
-            "scriptPath": "scripts/check-governance-waivers.ts"
+            "scriptPath": "scripts/governance/check-governance-waivers.ts"
           }
         ],
         "report": {
           "command": "pnpm run script:generate-governance-report",
-          "scriptPath": "scripts/generate-governance-report.ts"
+          "scriptPath": "scripts/governance/generate-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/waivers-domain.report.json",
         "ciBehavior": "block",
@@ -818,7 +818,7 @@
         "title": "Governance registry integrity",
         "description": "Validate governance registry shape, IDs, statuses, and control-plane semantics.",
         "command": "pnpm run script:check-governance-registry",
-        "scriptPath": "scripts/check-governance-registry.ts",
+        "scriptPath": "scripts/governance/check-governance-registry.ts",
         "ciBehavior": "block"
       },
       {
@@ -826,7 +826,7 @@
         "title": "Governance bindings validity",
         "description": "Validate docs, config, command, report, and evidence bindings declared by the governance registry.",
         "command": "pnpm run script:check-governance-bindings",
-        "scriptPath": "scripts/check-governance-bindings.ts",
+        "scriptPath": "scripts/governance/check-governance-bindings.ts",
         "ciBehavior": "block"
       },
       {
@@ -834,7 +834,7 @@
         "title": "Registered governance checks",
         "description": "Run all governance domain checks and emit per-domain evidence under .artifacts.",
         "command": "pnpm run script:run-governance-checks",
-        "scriptPath": "scripts/run-governance-checks.ts",
+        "scriptPath": "scripts/governance/run-governance-checks.ts",
         "ciBehavior": "block"
       },
       {
@@ -842,7 +842,7 @@
         "title": "Governance evidence completeness",
         "description": "Aggregate domain evidence and fail if blocking domains are missing required reports.",
         "command": "pnpm run script:generate-governance-report",
-        "scriptPath": "scripts/generate-governance-report.ts",
+        "scriptPath": "scripts/governance/generate-governance-report.ts",
         "ciBehavior": "block"
       },
       {
@@ -850,7 +850,7 @@
         "title": "Governance waivers validity",
         "description": "Validate waiver ownership, target IDs, expiry, and severity caps.",
         "command": "pnpm run script:check-governance-waivers",
-        "scriptPath": "scripts/check-governance-waivers.ts",
+        "scriptPath": "scripts/governance/check-governance-waivers.ts",
         "ciBehavior": "block"
       },
       {
@@ -858,7 +858,7 @@
         "title": "Governance register sync",
         "description": "Regenerate the governance register and snapshot so docs match the current control plane and evidence.",
         "command": "pnpm run script:generate-governance-register",
-        "scriptPath": "scripts/generate-governance-register.ts",
+        "scriptPath": "scripts/governance/generate-governance-register.ts",
         "ciBehavior": "block"
       }
     ],

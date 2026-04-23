@@ -39,7 +39,7 @@ Operational path:
   - `lint_or_ast_rule`: generator front matter validation for `truthStatus` and `docClass`
   - `boundary_rule`: historical or delete-class docs are not rendered as active docs by the generator
 - `adoption_expansion`:
-  - `newly_adopted_surfaces`: minimum active-doc metadata contract in `scripts/generate-docs-readme.ts`
+  - `newly_adopted_surfaces`: minimum active-doc metadata contract in `scripts/docs/generate-docs-readme.ts`
   - `added_to_enforcement_immediately`: doc metadata parsing and hidden/archive filtering in generated readmes
 - `removed_paths`: `docs/__idea__/`
 
@@ -67,7 +67,7 @@ Operational path:
 ## 6. Files And Surfaces Touched
 
 - files touched:
-  - [`scripts/generate-docs-readme.ts`](../../scripts/generate-docs-readme.ts)
+  - [`scripts/docs/generate-docs-readme.ts`](../../scripts/docs/generate-docs-readme.ts)
   - [`docs/SHELL_ARCHITECTURE.md`](../../docs/SHELL_ARCHITECTURE.md)
   - [`docs/VITE_FRONTEND_CI_GATES.md`](../../docs/VITE_FRONTEND_CI_GATES.md)
   - [`archives/README.md`](../../archives/README.md)

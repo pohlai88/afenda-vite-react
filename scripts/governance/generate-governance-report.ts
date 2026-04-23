@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import { loadAfendaConfig, workspaceRoot } from "./afenda-config.js"
+import { loadAfendaConfig, workspaceRoot } from "../config/afenda-config.js"
 import {
   renderGovernanceSummaryMarkdown,
   buildGovernanceAggregateReport,
@@ -10,7 +10,7 @@ import {
   evaluateGovernanceWaivers,
   writeGovernanceWaiverReport,
   writeJsonFile,
-} from "./lib/governance-spine.js"
+} from "../lib/governance-spine.js"
 
 const config = await loadAfendaConfig()
 const generatedAt = new Date()

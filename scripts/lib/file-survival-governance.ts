@@ -5,13 +5,13 @@ import * as ts from "typescript"
 import type {
   FileSurvivalClaimedRole,
   FileSurvivalRolloutDefinition,
-} from "../afenda-config.js"
+} from "../config/afenda-config.js"
 import {
   FILE_SURVIVAL_ROLE_PRECEDENCE,
   assert,
   toPosixPath,
   workspaceRoot,
-} from "../afenda-config.js"
+} from "../config/afenda-config.js"
 
 export type FileSurvivalEvidenceRole =
   | "direct-consumer:route-owner"

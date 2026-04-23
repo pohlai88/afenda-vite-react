@@ -1,9 +1,9 @@
-import { loadAfendaConfig, workspaceRoot } from "./afenda-config.js"
+import { loadAfendaConfig, workspaceRoot } from "../config/afenda-config.js"
 import {
   evaluateGovernanceWaivers,
   loadGovernanceWaiverRegistry,
   writeGovernanceWaiverReport,
-} from "./lib/governance-spine.js"
+} from "../lib/governance-spine.js"
 
 const config = await loadAfendaConfig()
 const waiverRegistry = await loadGovernanceWaiverRegistry(

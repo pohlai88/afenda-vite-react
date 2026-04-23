@@ -1,7 +1,7 @@
 import {
   evaluateStorageGovernance,
   loadStorageGovernanceConfig,
-} from "./lib/storage-governance.js"
+} from "../lib/storage-governance.js"
 
 const config = loadStorageGovernanceConfig()
 const evaluation = evaluateStorageGovernance(config)

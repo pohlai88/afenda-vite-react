@@ -1,6 +1,6 @@
 ---
 title: Scripts directory rules
-description: Layout, naming, entrypoint, and flat vs one-level-nested policy for repository scripts under scripts/.
+description: Layout, naming, grouped-area policy, and one-level-nested topology rules for repository scripts under scripts/.
 order: 5
 status: active
 ---
@@ -27,28 +27,37 @@ Do **not** put:
 
 ---
 
-## 2. Flat vs nested layout
+## 2. Grouped layout
 
-### Default: flat (`scripts/*.ts`)
+### Default: grouped areas (`scripts/<area>/file.ts`)
 
-Use the **repository root of `scripts/`** for:
+Entrypoint CLIs and script-local support modules should live under a **named area directory**:
 
-- Small counts of entrypoints.
-- One-off CLIs with no shared private subtree.
-- Shared modules used across many scripts (e.g. `afenda-config.ts`).
+- `scripts/config/` — workspace manifest loading and config validation
+- `scripts/docs/` — generated docs navigation and doc-index tooling
+- `scripts/governance/` — governance-domain checks and evidence writers
+- `scripts/runtime/` — toolchain/runtime diagnostics
+- `scripts/ui/` — repo-global UI quality checks
+- `scripts/integrations/` — external tool bridges and adapters
+- existing support areas such as `lib/`, `repo-integrity/`, and `fixtures/` remain valid
 
-### When to add **one subdirectory** (`scripts/<area>/`)
+### Root `scripts/` is reserved
 
-Introduce a **single** nested directory when **all** of the following are true:
+Keep the **repository root of `scripts/`** for:
 
-1. **Three or more** related files (entrypoints and/or colocated helpers) form a clear boundary (e.g. `readme/`, `ci/`, `release/`).
-2. Keeping them flat would **blur ownership** or encourage cross-import spaghetti.
-3. You are willing to **document** the area (short `README.md` inside that folder is optional but recommended once non-obvious).
+- workspace manifests and schemas (`afenda.config.*`)
+- root support files (`README.md`, `RULES.md`, `tsconfig.json`)
+- hidden/generated support directories when explicitly allowed
+
+Do **not** leave new `.ts`, `.js`, or `.mjs` entrypoints directly in `scripts/`.
+If a script is runnable or importable as repo-local code, it should have an area owner.
 
 ### Hard limits
 
 - **At most one level** of nesting under `scripts/` (`scripts/<area>/file.ts`). No `scripts/a/b/c/` without an ADR and update to this policy.
-- **`pnpm run script:check-afenda-config`** enforces this depth rule in CI (nested directories under `scripts/<area>/` fail the check).
+- **`pnpm run script:check-afenda-config`** enforces both:
+  - root `scripts/` reserved-file policy
+  - one-level nesting only (nested directories under `scripts/<area>/` fail the check)
 - **No `node_modules`** under `scripts/` (use the workspace root install).
 - **Ignore dot-directories** for script discovery (e.g. `.cache`).
 
@@ -57,9 +66,9 @@ Introduce a **single** nested directory when **all** of the following are true:
 This document covers script-local layout and entrypoint rules.
 The canonical naming doctrine now lives in [`docs/architecture/governance/NAMING_CONVENTION.md`](../docs/architecture/governance/NAMING_CONVENTION.md).
 
-- **Files:** root script entrypoints remain `kebab-case.ts` and should follow the root-script grammar from the naming doctrine: `<action>-<domain>-<target>.ts`.
-- **Directories:** `kebab-case` or short **lowercase** domain names (`readme`, `ci`, `afenda`).
-- **Meaning model:** root `scripts/` names must be self-identifying because they are repo-global surfaces; local app/package scripts should move to their owner rather than forcing root to become a junk drawer.
+- **Files:** grouped script entrypoints remain `kebab-case.ts` and should follow the root-script grammar from the naming doctrine: `<action>-<domain>-<target>.ts`.
+- **Directories:** `kebab-case` or short **lowercase** domain names (`config`, `docs`, `governance`, `runtime`, `ui`).
+- **Meaning model:** area directories communicate ownership first; the root should no longer act as a flat script inventory.
 
 ---
 
@@ -68,10 +77,10 @@ The canonical naming doctrine now lives in [`docs/architecture/governance/NAMING
 Every **user-facing** CLI must:
 
 1. Have a **`pnpm run script:…`** script in the **root** `package.json` (workspace runs from repo root).
-2. Prefer **`tsx scripts/…`** for repo-global implementations. When a command is owned by one app or package, keep the root command as a thin delegating entrypoint to that owner rather than keeping the implementation in root `scripts/`.
+2. Prefer **`tsx scripts/<area>/…`** for repo-global implementations. When a command is owned by one app or package, keep the root command as a thin delegating entrypoint to that owner rather than keeping the implementation in root `scripts/`.
 3. Include a **short module comment** or docstring that states purpose (the README generator uses this text).
 
-Internal modules (no direct `pnpm` invocation) should be marked in [`generate-docs-readme.ts`](./generate-docs-readme.ts) `SCRIPT_FILE_OVERRIDES` with `hidden: true`, or live only under a nested folder without a root `package.json` script.
+Internal modules (no direct `pnpm` invocation) should be marked in [`docs/generate-docs-readme.ts`](./docs/generate-docs-readme.ts) `SCRIPT_FILE_OVERRIDES` with `hidden: true`, or live under an area folder without a root `package.json` script.
 
 ---
 
@@ -85,7 +94,7 @@ Internal modules (no direct `pnpm` invocation) should be marked in [`generate-do
 
 ## 5. Config and automation
 
-- **`afenda.config.json`** is the workspace manifest: paths, product identity, **readmeTargets**, etc. Extend the **schema** when adding fields, and keep **`check-afenda-config.ts`** in sync for runtime checks that matter in CI.
+- **`afenda.config.json`** is the workspace manifest: paths, product identity, **readmeTargets**, etc. Extend the **schema** when adding fields, and keep **`config/check-afenda-config.ts`** in sync for runtime checks that matter in CI.
 - Prefer **config-driven** registration (e.g. `readmeTargets`) over hard-coding new paths in multiple places.
 
 ---
@@ -95,3 +104,4 @@ Internal modules (no direct `pnpm` invocation) should be marked in [`generate-do
 - [Architecture evolution](../docs/workspace/ARCHITECTURE_EVOLUTION.md) — when to add complexity vs defer.
 - [AGENTS.md](../AGENTS.md) — AI/human execution index.
 - [Project configuration](../docs/workspace/PROJECT_CONFIGURATION.md) — repo-wide tooling.
+- [Scripts topology handoff](../docs/architecture/governance/SCRIPTS_TOPOLOGY_HANDOFF.md) — developer handoff for grouped scripts ownership and migration baseline.

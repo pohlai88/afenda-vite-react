@@ -9,7 +9,7 @@ export const repoGuardCoverageCatalog = [
     baselineStatus: "implemented",
     enforcement: "blocking",
     checkKeys: ["filesystem-governance"],
-    evidence: ["scripts/check-filesystem-governance.ts"],
+    evidence: ["scripts/governance/check-filesystem-governance.ts"],
     notes: "Existing governance surface aggregated by repo guard.",
   },
   {
@@ -20,7 +20,7 @@ export const repoGuardCoverageCatalog = [
     baselineStatus: "implemented",
     enforcement: "blocking",
     checkKeys: ["generated-artifact-governance"],
-    evidence: ["scripts/check-generated-artifact-governance.ts"],
+    evidence: ["scripts/governance/check-generated-artifact-governance.ts"],
     notes: "Existing governance surface aggregated by repo guard.",
   },
   {
@@ -31,7 +31,7 @@ export const repoGuardCoverageCatalog = [
     baselineStatus: "implemented",
     enforcement: "blocking",
     checkKeys: ["storage-governance"],
-    evidence: ["scripts/check-storage-governance.ts"],
+    evidence: ["scripts/governance/check-storage-governance.ts"],
     notes: "Existing governance surface aggregated by repo guard.",
   },
   {
@@ -42,7 +42,7 @@ export const repoGuardCoverageCatalog = [
     baselineStatus: "implemented",
     enforcement: "blocking",
     checkKeys: ["naming-convention"],
-    evidence: ["scripts/check-naming-convention.ts"],
+    evidence: ["scripts/governance/check-naming-convention.ts"],
     notes: "Existing governance surface aggregated by repo guard.",
   },
   {
@@ -53,7 +53,7 @@ export const repoGuardCoverageCatalog = [
     baselineStatus: "implemented",
     enforcement: "blocking",
     checkKeys: ["documentation-governance"],
-    evidence: ["scripts/check-doc-governance.ts"],
+    evidence: ["scripts/governance/check-doc-governance.ts"],
     notes: "Existing governance surface aggregated by repo guard.",
   },
   {
@@ -64,7 +64,7 @@ export const repoGuardCoverageCatalog = [
     baselineStatus: "implemented",
     enforcement: "blocking",
     checkKeys: ["workspace-topology"],
-    evidence: ["scripts/check-afenda-config.ts"],
+    evidence: ["scripts/config/check-afenda-config.ts"],
     notes: "Existing workspace topology governance aggregated by repo guard.",
   },
   {

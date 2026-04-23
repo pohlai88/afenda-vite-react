@@ -3,7 +3,7 @@
 
 # Scaffolds and templates
 
-> Generated from: `scripts/generate-docs-readme.ts`, `docs/architecture/scaffolds`
+> Generated from: `scripts/docs/generate-docs-readme.ts`, `docs/architecture/scaffolds`
 > Regenerate with: `pnpm run script:generate-docs-readme`
 > Truth class: `derived`
 > Do not edit directly.

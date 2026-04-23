@@ -2,7 +2,7 @@ import { createHash } from "node:crypto"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import { loadAfendaConfig } from "../afenda-config.js"
+import { loadAfendaConfig } from "../config/afenda-config.js"
 import type { RepoGuardFinding } from "./repo-guard.js"
 import type { GovernanceAggregateReport } from "./governance-spine.js"
 import type { BusinessGlossarySnapshot } from "../../packages/_database/src/studio/business-glossary.schema.js"

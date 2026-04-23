@@ -1,8 +1,8 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs"
 import path from "node:path"
 
-import type { FileSurvivalRolloutDefinition } from "../afenda-config.js"
-import { toPosixPath, workspaceRoot } from "../afenda-config.js"
+import type { FileSurvivalRolloutDefinition } from "../config/afenda-config.js"
+import { toPosixPath, workspaceRoot } from "../config/afenda-config.js"
 
 export const REVIEWED_EXCEPTIONS_LEDGER_WORKSPACE_PATH =
   "rules/filesystem-governance/reviewed-exceptions.json"

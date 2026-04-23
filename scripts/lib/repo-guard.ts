@@ -5,8 +5,8 @@ import path from "node:path"
 import type {
   AfendaConfig,
   GovernanceDomainDefinition,
-} from "../afenda-config.js"
-import { workspaceRoot } from "../afenda-config.js"
+} from "../config/afenda-config.js"
+import { workspaceRoot } from "../config/afenda-config.js"
 import { evaluateAfendaWorkspaceGovernance } from "./afenda-workspace-governance.js"
 import { evaluateDocumentationGovernance } from "./doc-governance.js"
 import {
@@ -262,7 +262,8 @@ export function buildRepoGuardGovernanceDomainReport(
         command:
           domain.checks[0]?.command ?? "pnpm run script:check-repo-guard",
         scriptPath:
-          domain.checks[0]?.scriptPath ?? "scripts/check-repo-guard.ts",
+          domain.checks[0]?.scriptPath ??
+          "scripts/governance/check-repo-guard.ts",
         status: report.status === "fail" ? "failed" : "passed",
         exitCode: report.status === "fail" ? 1 : 0,
         durationMs: 0,

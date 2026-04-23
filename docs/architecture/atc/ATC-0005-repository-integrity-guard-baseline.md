@@ -31,7 +31,7 @@ This contract binds the Repository Integrity Guard to real commands, real eviden
 ## Implementation bindings
 
 - In-scope paths:
-  `scripts/repo-integrity/`, `scripts/lib/repo-guard.ts`, `scripts/check-repo-guard.ts`, `docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md`, `docs/architecture/adr/ADR-0008-repository-integrity-guard-architecture.md`
+  `scripts/repo-integrity/`, `scripts/lib/repo-guard.ts`, `scripts/governance/check-repo-guard.ts`, `docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md`, `docs/architecture/adr/ADR-0008-repository-integrity-guard-architecture.md`
 - Bound code/config surfaces:
   `scripts/afenda.config.json`, `.artifacts/reports/governance/repo-integrity-guard.report.json`, `.artifacts/reports/governance/repo-integrity-guard.report.md`, governance evidence loading in `scripts/lib/governance-spine.ts`
 - Explicitly out of scope:

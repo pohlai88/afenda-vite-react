@@ -1,5 +1,5 @@
-import { loadAfendaConfig } from "./afenda-config.js"
-import { evaluateGovernanceRegistry } from "./lib/governance-spine.js"
+import { loadAfendaConfig } from "../config/afenda-config.js"
+import { evaluateGovernanceRegistry } from "../lib/governance-spine.js"
 
 const config = await loadAfendaConfig()
 const issues = evaluateGovernanceRegistry(config)

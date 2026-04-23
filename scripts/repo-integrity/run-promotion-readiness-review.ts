@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import { loadAfendaConfig, workspaceRoot } from "../afenda-config.js"
+import { loadAfendaConfig, workspaceRoot } from "../config/afenda-config.js"
 import type { RepoGuardEvidenceReport } from "../lib/repo-guard.js"
 import {
   evaluatePromotionReadiness,

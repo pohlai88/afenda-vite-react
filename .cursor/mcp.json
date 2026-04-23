@@ -15,7 +15,7 @@
     },
     "resend": {
       "command": "node",
-      "args": ["./scripts/mcp-resend-stdio.mjs"],
+      "args": ["./scripts/integrations/mcp-resend-stdio.mjs"],
       "cwd": "."
     },
     "better-auth": {

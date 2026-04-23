@@ -3,7 +3,7 @@
 
 # ATC contracts
 
-> Generated from: `scripts/generate-docs-readme.ts`, `docs/architecture/atc`
+> Generated from: `scripts/docs/generate-docs-readme.ts`, `docs/architecture/atc`
 > Regenerate with: `pnpm run script:generate-docs-readme`
 > Truth class: `derived`
 > Do not edit directly.

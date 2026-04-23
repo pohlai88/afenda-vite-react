@@ -7,7 +7,7 @@
  * Pure Node (no ripgrep): works on Windows/macOS/Linux CI without `rg` on PATH.
  *
  * Usage:
- *   tsx scripts/check-color-consistency.ts
+ *   tsx scripts/ui/check-color-consistency.ts
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs"
 import path from "node:path"

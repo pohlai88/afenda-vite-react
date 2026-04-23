@@ -1,7 +1,7 @@
 import {
   evaluateGeneratedArtifactGovernance,
   loadGeneratedArtifactGovernanceConfig,
-} from "./lib/generated-artifact-governance.js"
+} from "../lib/generated-artifact-governance.js"
 
 const config = loadGeneratedArtifactGovernanceConfig()
 const evaluation = evaluateGeneratedArtifactGovernance(config)

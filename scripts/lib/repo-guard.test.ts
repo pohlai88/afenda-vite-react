@@ -5,8 +5,8 @@ import path from "node:path"
 import { spawnSync } from "node:child_process"
 import test from "node:test"
 
-import { workspaceRoot } from "../afenda-config.js"
-import { loadAfendaConfig } from "../afenda-config.js"
+import { workspaceRoot } from "../config/afenda-config.js"
+import { loadAfendaConfig } from "../config/afenda-config.js"
 import { repoGuardPolicy } from "../repo-integrity/repo-guard-policy.js"
 import {
   evaluateBoundaryImportFindings,

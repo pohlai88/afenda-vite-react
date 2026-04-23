@@ -3,7 +3,7 @@
 
 # Shadcn skill docs
 
-> Generated from: `scripts/generate-docs-readme.ts`, `.agents/skills/shadcn`
+> Generated from: `scripts/docs/generate-docs-readme.ts`, `.agents/skills/shadcn`
 > Regenerate with: `pnpm run script:generate-docs-readme`
 > Truth class: `derived`
 > Do not edit directly.

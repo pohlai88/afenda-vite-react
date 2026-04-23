@@ -1,8 +1,8 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import { workspaceRoot } from "./afenda-config.js"
-import { evaluateNamingConvention } from "./lib/naming-convention.js"
+import { workspaceRoot } from "../config/afenda-config.js"
+import { evaluateNamingConvention } from "../lib/naming-convention.js"
 
 const packageJsonPath = path.join(workspaceRoot, "package.json")
 const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8")) as {

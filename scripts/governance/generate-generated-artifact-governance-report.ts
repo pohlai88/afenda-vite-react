@@ -4,7 +4,7 @@ import path from "node:path"
 import {
   evaluateGeneratedArtifactGovernance,
   loadGeneratedArtifactGovernanceConfig,
-} from "./lib/generated-artifact-governance.js"
+} from "../lib/generated-artifact-governance.js"
 
 const outputPath = path.resolve(
   "rules/generated-artifact-governance/generated-artifact-screening.md"

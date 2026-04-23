@@ -13,7 +13,7 @@ import type {
   AfendaConfig,
   FileSurvivalOwnerTruth,
   FileSurvivalRolloutDefinition,
-} from "../afenda-config.js"
+} from "../config/afenda-config.js"
 export type { PlacementOwnershipRule, PlacementOwnershipScope }
 export {
   evaluatePlacementOwnershipFindings,

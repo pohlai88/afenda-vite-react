@@ -1,11 +1,11 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import { loadAfendaConfig, workspaceRoot } from "./afenda-config.js"
+import { loadAfendaConfig, workspaceRoot } from "../config/afenda-config.js"
 import {
   evaluateAtcHonesty,
   parseAtcContract,
-} from "./lib/governance-honesty.js"
+} from "../lib/governance-honesty.js"
 
 const ATC_ROOT = path.join(workspaceRoot, "docs", "architecture", "atc")
 const TEMPLATE_PATH = path.join(ATC_ROOT, "ATC_TEMPLATE.md")

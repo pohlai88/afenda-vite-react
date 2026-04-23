@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 
-import type { AfendaConfig } from "../afenda-config.js"
+import type { AfendaConfig } from "../config/afenda-config.js"
 import {
   buildGovernanceAggregateReport,
   buildGovernanceRegisterSnapshot,
@@ -139,7 +139,7 @@ test("register snapshot cannot diverge from aggregate evidence", () => {
           {
             id: "architecture-contract-check",
             command: "pnpm run script:check-architecture-contracts",
-            scriptPath: "scripts/check-architecture-contracts.ts",
+            scriptPath: "scripts/governance/check-architecture-contracts.ts",
             status: "failed",
             exitCode: 1,
             durationMs: 1,
@@ -299,12 +299,12 @@ function createFixtureConfig(): AfendaConfig {
             {
               id: "architecture-contract-check",
               command: "pnpm run script:check-architecture-contracts",
-              scriptPath: "scripts/check-architecture-contracts.ts",
+              scriptPath: "scripts/governance/check-architecture-contracts.ts",
             },
           ],
           report: {
             command: "pnpm run script:generate-governance-report",
-            scriptPath: "scripts/generate-governance-report.ts",
+            scriptPath: "scripts/governance/generate-governance-report.ts",
           },
           evidencePath:
             ".artifacts/reports/governance/architecture-contracts.report.json",
@@ -318,7 +318,7 @@ function createFixtureConfig(): AfendaConfig {
           title: "Governance checks",
           description: "Run governance checks.",
           command: "pnpm run script:run-governance-checks",
-          scriptPath: "scripts/run-governance-checks.ts",
+          scriptPath: "scripts/governance/run-governance-checks.ts",
           ciBehavior: "block",
         },
       ],
