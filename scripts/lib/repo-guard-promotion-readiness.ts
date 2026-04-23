@@ -2,8 +2,10 @@ import fs from "node:fs/promises"
 import path from "node:path"
 
 import {
+  buildPromotionReadinessReport,
   formatPromotionReadinessHumanReport as formatPromotionReadinessHumanReportModel,
   formatPromotionReadinessMarkdownReport as formatPromotionReadinessMarkdownReportModel,
+  promotionReadinessCheckCatalog,
   type PromotionReadinessCheck,
   type PromotionReadinessReport,
   type PromotionReadinessStatus,
@@ -37,23 +39,10 @@ export async function evaluatePromotionReadiness(options: {
     evaluateManualPromotionCriteriaCheck()
   )
 
-  const passCount = checks.filter((check) => check.status === "pass").length
-  const warnCount = checks.filter((check) => check.status === "warn").length
-  const failCount = checks.filter((check) => check.status === "fail").length
-
-  return {
-    status: failCount > 0 ? "fail" : warnCount > 0 ? "warn" : "pass",
-    generatedAt,
-    domainId: "GOV-TRUTH-001",
-    scorecard: {
-      totalChecks: checks.length,
-      passCount,
-      warnCount,
-      failCount,
-      readyForPromotion: failCount === 0 && warnCount === 0,
-    },
+  return buildPromotionReadinessReport({
     checks,
-  }
+    generatedAt,
+  })
 }
 
 export function formatPromotionReadinessHumanReport(
@@ -90,8 +79,8 @@ async function evaluateArchitectureBindingCheck(
   }
 
   return {
-    key: "architecture-binding",
-    title: "Architecture binding",
+    key: promotionReadinessCheckCatalog.architectureBinding.key,
+    title: promotionReadinessCheckCatalog.architectureBinding.title,
     status: missing.length > 0 ? "fail" : "pass",
     message:
       missing.length > 0
@@ -110,8 +99,8 @@ function evaluateGovernanceDomainPostureCheck(
 
   if (!domain) {
     return {
-      key: "governance-domain-posture",
-      title: "Governance domain posture",
+      key: promotionReadinessCheckCatalog.governanceDomainPosture.key,
+      title: promotionReadinessCheckCatalog.governanceDomainPosture.title,
       status: "fail",
       message: 'Configured governance domain "GOV-TRUTH-001" is missing.',
       evidence: [],
@@ -124,8 +113,8 @@ function evaluateGovernanceDomainPostureCheck(
     domain.ciBehavior === "warn"
 
   return {
-    key: "governance-domain-posture",
-    title: "Governance domain posture",
+    key: promotionReadinessCheckCatalog.governanceDomainPosture.key,
+    title: promotionReadinessCheckCatalog.governanceDomainPosture.title,
     status: expected ? "pass" : "warn",
     message: expected
       ? "Promotion review is starting from the expected warn-first baseline."
@@ -163,8 +152,8 @@ async function evaluateMajorGuardrailCoverageCheck(
   }
 
   return {
-    key: "major-guardrail-coverage",
-    title: "Major guardrail coverage",
+    key: promotionReadinessCheckCatalog.majorGuardrailCoverage.key,
+    title: promotionReadinessCheckCatalog.majorGuardrailCoverage.title,
     status: missing.length > 0 ? "fail" : "pass",
     message:
       missing.length > 0
@@ -181,8 +170,8 @@ function evaluateCoverageModelCheck(
     repoGuardReport.coverage
 
   return {
-    key: "coverage-model",
-    title: "Coverage model",
+    key: promotionReadinessCheckCatalog.coverageModel.key,
+    title: promotionReadinessCheckCatalog.coverageModel.title,
     status: missingCount > 0 ? "warn" : "pass",
     message:
       missingCount > 0
@@ -208,8 +197,8 @@ async function evaluateWaiverModelCheck(
 
   if (!exists) {
     return {
-      key: "waiver-model",
-      title: "Waiver model",
+      key: promotionReadinessCheckCatalog.waiverModel.key,
+      title: promotionReadinessCheckCatalog.waiverModel.title,
       status: "fail",
       message:
         "Promotion cannot proceed without the shared repo-guard waiver registry file.",
@@ -222,8 +211,8 @@ async function evaluateWaiverModelCheck(
     repoGuardReport.waivers.expiredWaiverCount > 0
   ) {
     return {
-      key: "waiver-model",
-      title: "Waiver model",
+      key: promotionReadinessCheckCatalog.waiverModel.key,
+      title: promotionReadinessCheckCatalog.waiverModel.title,
       status: "fail",
       message:
         "Promotion cannot proceed while the repo-guard waiver registry is invalid or expired.",
@@ -237,8 +226,8 @@ async function evaluateWaiverModelCheck(
 
   if (repoGuardReport.waivers.soonToExpireCount > 0) {
     return {
-      key: "waiver-model",
-      title: "Waiver model",
+      key: promotionReadinessCheckCatalog.waiverModel.key,
+      title: promotionReadinessCheckCatalog.waiverModel.title,
       status: "warn",
       message:
         "Waiver registry is valid, but one or more waivers are approaching expiry and should be reviewed before promotion.",
@@ -250,8 +239,8 @@ async function evaluateWaiverModelCheck(
   }
 
   return {
-    key: "waiver-model",
-    title: "Waiver model",
+    key: promotionReadinessCheckCatalog.waiverModel.key,
+    title: promotionReadinessCheckCatalog.waiverModel.title,
     status: "pass",
     message:
       "Shared repo-guard waiver registry is present and currently valid.",
@@ -263,8 +252,8 @@ function evaluateRepoGuardVerdictCheck(
   repoGuardReport: RepoGuardEvidenceReport
 ): PromotionReadinessCheck {
   return {
-    key: "repo-guard-verdict",
-    title: "Repo guard current verdict",
+    key: promotionReadinessCheckCatalog.repoGuardVerdict.key,
+    title: promotionReadinessCheckCatalog.repoGuardVerdict.title,
     status: repoGuardReport.status,
     message:
       repoGuardReport.status === "pass"
@@ -291,8 +280,8 @@ function evaluateAdvisoryBacklogCheck(
 
   if (advisoryCount === 0) {
     return {
-      key: "advisory-backlog",
-      title: "Advisory backlog",
+      key: promotionReadinessCheckCatalog.advisoryBacklog.key,
+      title: promotionReadinessCheckCatalog.advisoryBacklog.title,
       status: "pass",
       message:
         "No active advisory backlog is visible in the current repo-guard evidence.",
@@ -301,8 +290,8 @@ function evaluateAdvisoryBacklogCheck(
   }
 
   return {
-    key: "advisory-backlog",
-    title: "Advisory backlog",
+    key: promotionReadinessCheckCatalog.advisoryBacklog.key,
+    title: promotionReadinessCheckCatalog.advisoryBacklog.title,
     status: "warn",
     message:
       "Advisory guardrails still report drift that should be reviewed before promotion.",
@@ -312,8 +301,8 @@ function evaluateAdvisoryBacklogCheck(
 
 function evaluateManualPromotionCriteriaCheck(): PromotionReadinessCheck {
   return {
-    key: "manual-promotion-criteria",
-    title: "Manual promotion criteria",
+    key: promotionReadinessCheckCatalog.manualPromotionCriteria.key,
+    title: promotionReadinessCheckCatalog.manualPromotionCriteria.title,
     status: "warn",
     message:
       "False-positive rate, stable usage over a full cycle, and explicit promotion approval still require human review and cannot be proven statically.",

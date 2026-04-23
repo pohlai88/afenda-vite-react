@@ -58,7 +58,7 @@ The Repository Integrity Guard now uses a permanent three-way split:
 - reusable governance-domain code lives in `packages/governance-toolchain`
 - repo-local orchestration remains in `scripts/`
 
-`@afenda/governance-toolchain` is the owned code home for pure governance-domain contracts, coverage/waiver/promotion models, formatters, report builders, and selected pure native evaluators.
+`@afenda/governance-toolchain` is the owned code home for pure governance-domain contracts, coverage/waiver/promotion models, formatters, report builders, selected pure native evaluators, and stable registries/catalogs.
 It must not become a second root control plane:
 
 - no git/process execution

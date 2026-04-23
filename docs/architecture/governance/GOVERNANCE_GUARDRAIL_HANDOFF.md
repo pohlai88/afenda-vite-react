@@ -44,6 +44,7 @@ It exists so governance semantics are owned as a real domain without moving the 
 - pure formatters
 - pure report builders
 - pure evaluators that operate only on passed-in inputs
+- stable registries and catalog definitions that do not perform repo I/O
 
 It must not own:
 

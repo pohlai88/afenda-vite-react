@@ -40,6 +40,7 @@ export type {
 } from "./status/status.js"
 export { buildRepoGuardCoverage } from "./coverage/repo-guard-coverage.js"
 export { buildRepoGuardReport } from "./reports/repo-guard-report.js"
+export { buildPromotionReadinessReport } from "./reports/promotion-readiness-report.js"
 export {
   formatRepoGuardHumanReport,
   formatRepoGuardMarkdownReport,
@@ -62,3 +63,5 @@ export {
   matchesPlacementOwnershipRule,
   resolveStrongestPlacementOwnershipRules,
 } from "./evaluators/placement-ownership.js"
+export { repoGuardCoverageCatalog } from "./registries/repo-guard-coverage-catalog.js"
+export { promotionReadinessCheckCatalog } from "./registries/promotion-readiness-check-catalog.js"
