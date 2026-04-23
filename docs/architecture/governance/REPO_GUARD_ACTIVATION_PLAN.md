@@ -236,7 +236,11 @@ Current state:
 - the repo guard is green on a clean tree
 - the old ADR advisory backlog is cleared
 - the earlier governance-register cycle and repo-guard discovery false positives were fixed in policy
-- the remaining gap is not a live technical blocker; it is evidence for one stable warned cycle and the manual promotion decision
+- one bounded clean-tree warned-cycle review is now recorded in:
+  - [REPO_GUARD_PROMOTION_REVIEW_2026-04-23.md](/C:/NexusCanon/afenda-react-vite/docs/architecture/governance/REPO_GUARD_PROMOTION_REVIEW_2026-04-23.md)
+  - [REPO_GUARD_PROMOTION_SCORECARD_2026-04-23.md](/C:/NexusCanon/afenda-react-vite/docs/architecture/governance/REPO_GUARD_PROMOTION_SCORECARD_2026-04-23.md)
+  - [REPO_GUARD_PROMOTION_DECISION_2026-04-23.md](/C:/NexusCanon/afenda-react-vite/docs/architecture/governance/REPO_GUARD_PROMOTION_DECISION_2026-04-23.md)
+- the remaining gap is not a live technical blocker; it is evidence for one stable warned cycle across time and the manual promotion decision
 
 ## Phase 5 — Policy tightening
 
@@ -288,7 +292,7 @@ Exit condition:
 
 ## Immediate next actions
 
-1. Run and record one real warned-cycle review in the false-positive log against current green repo-guard evidence.
+1. Keep recording repo-guard findings and no-finding review windows in the false-positive log through the next stable warned cycle window.
 2. Tighten package public-vs-internal boundary rules from export lists into enforceable import policy.
 3. Convert more of the generator truth map into explicit provenance/manifests where durable generator entrypoints already exist.
-4. Re-run promotion readiness after the warned-cycle evidence is recorded, then decide whether to keep `GOV-TRUTH-001` warned or promote it.
+4. Re-run promotion readiness after the warned-cycle evidence window is complete, then decide whether to keep `GOV-TRUTH-001` warned or promote it.

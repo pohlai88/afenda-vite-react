@@ -40,7 +40,6 @@ The intent is to keep this human-readable first, while making it structured enou
 ### Missing
 
 - Major guardrails are implemented as first cuts.
-- Repo-guard coverage is not yet self-reported as an explicit guardrail program.
 - Repo-specific calibration is still incomplete.
 - Promotion readiness is now blocked only by manual criteria, not live technical drift.
 
@@ -461,7 +460,7 @@ Before promotion to block, the following must be true:
 
 - [x] Repo truth-map and activation docs
 - [~] Warned-cycle calibration
-- [ ] Promotion decision record
+- [~] Promotion decision record
 
 ## Definition of done for repository guardrail architecture
 
@@ -479,4 +478,4 @@ Before promotion to block, the following must be true:
 
 ## Current status label
 
-`Repository Integrity Guard V1 is green on a clean tree; all major roadmap guardrails, waiver hardening, activation docs, and coverage reporting are in place; remaining work is repo-specific tightening, warned-cycle calibration evidence, and the promotion decision.`
+`Repository Integrity Guard V1 is green on a clean tree; all major roadmap guardrails, waiver hardening, activation docs, coverage reporting, and a first bounded warned-cycle review are in place; remaining work is repo-specific tightening, stable cycle evidence across time, and the final promotion decision.`
