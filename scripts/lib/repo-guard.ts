@@ -48,66 +48,30 @@ import {
 } from "./storage-governance.js"
 
 import type { RepoGuardPolicy } from "../repo-integrity/repo-guard-policy.js"
+import {
+  buildRepoGuardCoverage as buildRepoGuardCoverageModel,
+  buildRepoGuardReport as buildRepoGuardReportModel,
+  formatRepoGuardHumanReport as formatRepoGuardHumanReportModel,
+  formatRepoGuardMarkdownReport as formatRepoGuardMarkdownReportModel,
+  type RepoGuardCheckResult,
+  type RepoGuardCliResult,
+  type RepoGuardCoverageDefinition,
+  type RepoGuardFinding,
+  type RepoGuardMode,
+  type RepoGuardReport,
+  type RepoGuardStatus,
+  statusFromRepoGuardFindings,
+} from "@afenda/governance-toolchain"
 
-export type RepoGuardStatus = "pass" | "warn" | "fail"
-export type RepoGuardMode = "human" | "ci"
-
-export interface RepoGuardFinding {
-  readonly severity: "info" | "warn" | "error"
-  readonly ruleId: string
-  readonly message: string
-  readonly filePath?: string
-  readonly evidence?: string
-  readonly suggestedFix?: string
-  readonly waived?: boolean
-}
-
-export interface RepoGuardCheckResult {
-  readonly key: string
-  readonly title: string
-  readonly status: RepoGuardStatus
-  readonly source: "adapter" | "native"
-  readonly findings: readonly RepoGuardFinding[]
-}
-
-export type RepoGuardCoverageStatus = "implemented" | "partial" | "missing"
-
-export interface RepoGuardCoverageEntry {
-  readonly id: string
-  readonly title: string
-  readonly area: "foundation" | "guardrail"
-  readonly status: RepoGuardCoverageStatus
-  readonly owner: string
-  readonly enforcement: "blocking" | "warned" | "advisory"
-  readonly checkKeys: readonly string[]
-  readonly evidence: readonly string[]
-  readonly notes: string
-}
-
-export interface RepoGuardReport {
-  readonly status: RepoGuardStatus
-  readonly mode: RepoGuardMode
-  readonly generatedAt: string
-  readonly contractBinding: {
-    readonly adr: "ADR-0008"
-    readonly atc: "ATC-0005"
-    readonly status: "bound"
-  }
-  readonly waivers: RepoGuardWaiverReport
-  readonly checks: readonly RepoGuardCheckResult[]
-  readonly coverage: {
-    readonly implementedCount: number
-    readonly partialCount: number
-    readonly missingCount: number
-    readonly entries: readonly RepoGuardCoverageEntry[]
-  }
-  readonly summary: {
-    readonly passCount: number
-    readonly warnCount: number
-    readonly failCount: number
-    readonly findingCount: number
-  }
-}
+export type {
+  RepoGuardCheckResult,
+  RepoGuardCliResult,
+  RepoGuardCoverageDefinition,
+  RepoGuardFinding,
+  RepoGuardMode,
+  RepoGuardReport,
+  RepoGuardStatus,
+} from "@afenda/governance-toolchain"
 
 export interface RepoGuardEvidenceReport extends RepoGuardReport {
   readonly governanceDomain: GovernanceDomainReport
@@ -119,24 +83,6 @@ export interface RepoGuardGitEntry {
   readonly previousPath?: string
   readonly untracked: boolean
   readonly modifiedTracked: boolean
-}
-
-export interface RepoGuardCliResult {
-  readonly report: RepoGuardReport
-  readonly exitCode: number
-  readonly humanOutput: string
-}
-
-interface RepoGuardCoverageDefinition {
-  readonly id: string
-  readonly title: string
-  readonly area: "foundation" | "guardrail"
-  readonly owner: string
-  readonly baselineStatus: Exclude<RepoGuardCoverageStatus, "missing">
-  readonly enforcement: "blocking" | "warned" | "advisory"
-  readonly checkKeys: readonly string[]
-  readonly evidence: readonly string[]
-  readonly notes: string
 }
 
 const repoGuardCoverageCatalog = [
@@ -401,102 +347,11 @@ export async function writeRepoGuardEvidence(options: {
 }
 
 export function formatRepoGuardHumanReport(report: RepoGuardReport): string {
-  const lines = [
-    `Repository Integrity Guard: ${report.status.toUpperCase()}`,
-    `Generated at: ${report.generatedAt}`,
-    `Checks: ${String(report.summary.passCount)} pass, ${String(report.summary.warnCount)} warn, ${String(report.summary.failCount)} fail`,
-    `Findings: ${String(report.summary.findingCount)}`,
-    `Coverage: ${String(report.coverage.implementedCount)} implemented, ${String(report.coverage.partialCount)} partial, ${String(report.coverage.missingCount)} missing`,
-    `Waivers: ${String(report.waivers.activeWaiverCount)} active, ${String(report.waivers.expiredWaiverCount)} expired, ${String(report.waivers.soonToExpireCount)} soon to expire`,
-    "",
-  ]
-
-  for (const check of report.checks) {
-    lines.push(`- ${check.status.toUpperCase()} ${check.title}`)
-    for (const finding of check.findings.slice(0, 5)) {
-      const suffix = finding.waived ? " (waived)" : ""
-      lines.push(
-        `  - [${finding.ruleId}] ${finding.message}${finding.filePath ? ` :: ${finding.filePath}` : ""}${suffix}`
-      )
-    }
-  }
-
-  return lines.join("\n")
+  return formatRepoGuardHumanReportModel(report)
 }
 
 export function formatRepoGuardMarkdownReport(report: RepoGuardReport): string {
-  const lines = [
-    "# Repository integrity guard",
-    "",
-    `- Status: \`${report.status}\``,
-    `- Mode: \`${report.mode}\``,
-    `- Contract binding: \`${report.contractBinding.adr}\` + \`${report.contractBinding.atc}\` (${report.contractBinding.status})`,
-    `- Generated at: ${report.generatedAt}`,
-    `- Waiver registry: \`${report.waivers.registryPath}\``,
-    `- Waiver validity: \`${report.waivers.valid ? "valid" : "invalid"}\``,
-    `- Active waivers: ${String(report.waivers.activeWaiverCount)}`,
-    `- Expired waivers: ${String(report.waivers.expiredWaiverCount)}`,
-    `- Soon to expire: ${String(report.waivers.soonToExpireCount)}`,
-    `- Coverage implemented: ${String(report.coverage.implementedCount)}`,
-    `- Coverage partial: ${String(report.coverage.partialCount)}`,
-    `- Coverage missing: ${String(report.coverage.missingCount)}`,
-    `- Pass: ${String(report.summary.passCount)}`,
-    `- Warn: ${String(report.summary.warnCount)}`,
-    `- Fail: ${String(report.summary.failCount)}`,
-    `- Findings: ${String(report.summary.findingCount)}`,
-    "",
-    "## Coverage",
-    "",
-  ]
-
-  for (const entry of report.coverage.entries) {
-    lines.push(`### ${entry.title}`, "")
-    lines.push(`- Coverage status: \`${entry.status}\``)
-    lines.push(`- Area: \`${entry.area}\``)
-    lines.push(`- Owner: \`${entry.owner}\``)
-    lines.push(`- Enforcement: \`${entry.enforcement}\``)
-    if (entry.checkKeys.length > 0) {
-      lines.push(
-        `- Check keys: ${entry.checkKeys.map((key) => `\`${key}\``).join(", ")}`
-      )
-    }
-    if (entry.evidence.length > 0) {
-      lines.push("- Evidence:")
-      for (const evidence of entry.evidence) {
-        lines.push(`  - \`${evidence}\``)
-      }
-    }
-    lines.push(`- Notes: ${entry.notes}`, "")
-  }
-
-  lines.push("## Checks", "")
-
-  for (const check of report.checks) {
-    lines.push(`## ${check.title}`, "")
-    lines.push(`- Status: \`${check.status}\``)
-    lines.push(`- Source: \`${check.source}\``)
-
-    if (check.findings.length === 0) {
-      lines.push("- Findings: none", "")
-      continue
-    }
-
-    lines.push("- Findings:")
-    for (const finding of check.findings) {
-      lines.push(
-        `  - [${finding.severity}/${finding.ruleId}] ${finding.message}${finding.filePath ? ` (\`${finding.filePath}\`)` : ""}${finding.waived ? " [waived]" : ""}`
-      )
-      if (finding.suggestedFix) {
-        lines.push(`    - Fix: ${finding.suggestedFix}`)
-      }
-      if (finding.evidence) {
-        lines.push(`    - Evidence: ${finding.evidence}`)
-      }
-    }
-    lines.push("")
-  }
-
-  return lines.join("\n")
+  return formatRepoGuardMarkdownReportModel(report)
 }
 
 export function buildRepoGuardReport(
@@ -505,68 +360,24 @@ export function buildRepoGuardReport(
   generatedAt: string,
   waivers: RepoGuardWaiverReport
 ): RepoGuardReport {
-  const passCount = checks.filter((check) => check.status === "pass").length
-  const warnCount = checks.filter((check) => check.status === "warn").length
-  const failCount = checks.filter((check) => check.status === "fail").length
-  const findingCount = checks.reduce(
-    (count, check) =>
-      count + check.findings.filter((finding) => !finding.waived).length,
-    0
-  )
-  const coverage = buildRepoGuardCoverage(checks)
-
-  return {
-    status: failCount > 0 ? "fail" : warnCount > 0 ? "warn" : "pass",
+  return buildRepoGuardReportModel({
+    checks,
     mode,
     generatedAt,
+    waivers,
+    coverage: buildRepoGuardCoverage(checks),
     contractBinding: {
       adr: "ADR-0008",
       atc: "ATC-0005",
       status: "bound",
     },
-    waivers,
-    checks,
-    coverage,
-    summary: {
-      passCount,
-      warnCount,
-      failCount,
-      findingCount,
-    },
-  }
+  })
 }
 
 export function buildRepoGuardCoverage(
   checks: readonly RepoGuardCheckResult[]
 ): RepoGuardReport["coverage"] {
-  const availableCheckKeys = new Set(checks.map((check) => check.key))
-  const entries = repoGuardCoverageCatalog.map((definition) => {
-    const status = definition.checkKeys.every((key) =>
-      availableCheckKeys.has(key)
-    )
-      ? definition.baselineStatus
-      : "missing"
-
-    return {
-      id: definition.id,
-      title: definition.title,
-      area: definition.area,
-      status,
-      owner: definition.owner,
-      enforcement: definition.enforcement,
-      checkKeys: definition.checkKeys,
-      evidence: definition.evidence,
-      notes: definition.notes,
-    } satisfies RepoGuardCoverageEntry
-  })
-
-  return {
-    implementedCount: entries.filter((entry) => entry.status === "implemented")
-      .length,
-    partialCount: entries.filter((entry) => entry.status === "partial").length,
-    missingCount: entries.filter((entry) => entry.status === "missing").length,
-    entries,
-  }
+  return buildRepoGuardCoverageModel(repoGuardCoverageCatalog, checks)
 }
 
 export function buildRepoGuardEvidenceReport(
@@ -762,7 +573,7 @@ async function evaluateFilesystemCheck(): Promise<RepoGuardCheckResult> {
   return {
     key: "filesystem-governance",
     title: "Filesystem governance",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "adapter",
     findings,
   }
@@ -781,7 +592,7 @@ async function evaluateGeneratedArtifactCheck(): Promise<RepoGuardCheckResult> {
   return {
     key: "generated-artifact-governance",
     title: "Generated artifact governance",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "adapter",
     findings,
   }
@@ -801,7 +612,7 @@ async function evaluateGeneratedArtifactAuthenticityCheck(
   return {
     key: "generated-artifact-authenticity",
     title: "Generated artifact authenticity",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "native",
     findings,
   }
@@ -820,7 +631,7 @@ async function evaluateStorageCheck(): Promise<RepoGuardCheckResult> {
   return {
     key: "storage-governance",
     title: "Storage governance",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "adapter",
     findings,
   }
@@ -849,7 +660,7 @@ async function evaluateNamingCheck(
   return {
     key: "naming-convention",
     title: "Naming convention",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "adapter",
     findings,
   }
@@ -869,7 +680,7 @@ async function evaluateDocumentationCheck(
   return {
     key: "documentation-governance",
     title: "Documentation governance",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "adapter",
     findings,
   }
@@ -890,7 +701,7 @@ async function evaluateWorkspaceTopologyCheck(
   return {
     key: "workspace-topology",
     title: "Workspace and package topology",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "adapter",
     findings,
   }
@@ -939,7 +750,7 @@ async function evaluateFileSurvivalCheck(
   return {
     key: "file-survival",
     title: "File survival and reviewed survival",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "adapter",
     findings,
   }
@@ -963,7 +774,7 @@ async function evaluateDirtyFilesCheck(
   return {
     key: "dirty-file-scan",
     title: "Dirty file scan",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "native",
     findings,
   }
@@ -983,7 +794,7 @@ async function evaluateBoundaryImportCheck(
   return {
     key: "boundary-import-regression",
     title: "Boundary and import regression",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "native",
     findings,
   }
@@ -1002,7 +813,7 @@ async function evaluateSourceEvidenceMismatchCheck(
   return {
     key: "source-evidence-mismatch",
     title: "Source and evidence mismatch",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "native",
     findings,
   }
@@ -1021,7 +832,7 @@ async function evaluateDuplicateOverlapCheck(
   return {
     key: "duplicate-overlap",
     title: "Duplicate and overlap hygiene",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "native",
     findings,
   }
@@ -1041,7 +852,7 @@ async function evaluateStrongerDocumentControlCheck(
   return {
     key: "stronger-document-control",
     title: "Stronger document control",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "native",
     findings,
   }
@@ -1069,7 +880,7 @@ async function evaluatePlacementOwnershipCheck(
   return {
     key: "placement-ownership",
     title: "Placement and ownership",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "native",
     findings,
   }
@@ -1086,7 +897,7 @@ async function evaluateWorkingTreeLegitimacyCheck(
   return {
     key: "working-tree-legitimacy",
     title: "Working tree legitimacy",
-    status: statusFromFindings(findings),
+    status: statusFromRepoGuardFindings(findings),
     source: "native",
     findings,
   }
@@ -1146,19 +957,6 @@ function readGitStatusEntries(repoRoot: string): readonly RepoGuardGitEntry[] {
         modifiedTracked: code !== "??" && code !== "",
       } satisfies RepoGuardGitEntry
     })
-}
-
-function statusFromFindings(
-  findings: readonly RepoGuardFinding[]
-): RepoGuardStatus {
-  const activeFindings = findings.filter((finding) => !finding.waived)
-  if (activeFindings.some((finding) => finding.severity === "error")) {
-    return "fail"
-  }
-  if (activeFindings.some((finding) => finding.severity === "warn")) {
-    return "warn"
-  }
-  return "pass"
 }
 
 function isIgnoredByPolicy(filePath: string, policy: RepoGuardPolicy): boolean {

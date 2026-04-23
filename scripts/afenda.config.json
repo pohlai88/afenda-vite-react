@@ -390,6 +390,12 @@
           "extraAllowedFiles": []
         },
         {
+          "path": "packages/governance-toolchain",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
           "path": "packages/eslint-config",
           "profile": "source-library",
           "extraAllowedDirectories": [],

@@ -1,32 +1,22 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
+import {
+  formatPromotionReadinessHumanReport as formatPromotionReadinessHumanReportModel,
+  formatPromotionReadinessMarkdownReport as formatPromotionReadinessMarkdownReportModel,
+  type PromotionReadinessCheck,
+  type PromotionReadinessReport,
+  type PromotionReadinessStatus,
+} from "@afenda/governance-toolchain"
+
 import type { AfendaConfig } from "../afenda-config.js"
 import type { RepoGuardEvidenceReport } from "./repo-guard.js"
 
-export type PromotionReadinessStatus = "pass" | "warn" | "fail"
-
-export interface PromotionReadinessCheck {
-  readonly key: string
-  readonly title: string
-  readonly status: PromotionReadinessStatus
-  readonly message: string
-  readonly evidence: readonly string[]
-}
-
-export interface PromotionReadinessReport {
-  readonly status: PromotionReadinessStatus
-  readonly generatedAt: string
-  readonly domainId: "GOV-TRUTH-001"
-  readonly scorecard: {
-    readonly totalChecks: number
-    readonly passCount: number
-    readonly warnCount: number
-    readonly failCount: number
-    readonly readyForPromotion: boolean
-  }
-  readonly checks: readonly PromotionReadinessCheck[]
-}
+export type {
+  PromotionReadinessCheck,
+  PromotionReadinessReport,
+  PromotionReadinessStatus,
+} from "@afenda/governance-toolchain"
 
 export async function evaluatePromotionReadiness(options: {
   readonly repoRoot: string
@@ -69,55 +59,13 @@ export async function evaluatePromotionReadiness(options: {
 export function formatPromotionReadinessHumanReport(
   report: PromotionReadinessReport
 ): string {
-  const lines = [
-    `Repository Guard Promotion Readiness: ${report.status.toUpperCase()}`,
-    `Generated at: ${report.generatedAt}`,
-    `Checks: ${String(report.scorecard.passCount)} pass, ${String(report.scorecard.warnCount)} warn, ${String(report.scorecard.failCount)} fail`,
-    `Ready for promotion: ${report.scorecard.readyForPromotion ? "yes" : "no"}`,
-    "",
-  ]
-
-  for (const check of report.checks) {
-    lines.push(`- ${check.status.toUpperCase()} ${check.title}`)
-    lines.push(`  - ${check.message}`)
-  }
-
-  return lines.join("\n")
+  return formatPromotionReadinessHumanReportModel(report)
 }
 
 export function formatPromotionReadinessMarkdownReport(
   report: PromotionReadinessReport
 ): string {
-  const lines = [
-    "# Repository guard promotion readiness review",
-    "",
-    `- Domain: \`${report.domainId}\``,
-    `- Status: \`${report.status}\``,
-    `- Generated at: ${report.generatedAt}`,
-    `- Total checks: ${String(report.scorecard.totalChecks)}`,
-    `- Pass: ${String(report.scorecard.passCount)}`,
-    `- Warn: ${String(report.scorecard.warnCount)}`,
-    `- Fail: ${String(report.scorecard.failCount)}`,
-    `- Ready for promotion: ${report.scorecard.readyForPromotion ? "yes" : "no"}`,
-    "",
-    "## Checks",
-    "",
-  ]
-
-  for (const check of report.checks) {
-    lines.push(`### ${check.title}`, "")
-    lines.push(`- Status: \`${check.status}\``)
-    lines.push(`- Message: ${check.message}`)
-    if (check.evidence.length > 0) {
-      lines.push("- Evidence:")
-      for (const item of check.evidence) {
-        lines.push(`  - ${item}`)
-      }
-    }
-    lines.push("")
-  }
-
-  return lines.join("\n")
+  return formatPromotionReadinessMarkdownReportModel(report)
 }
 
 async function evaluateArchitectureBindingCheck(

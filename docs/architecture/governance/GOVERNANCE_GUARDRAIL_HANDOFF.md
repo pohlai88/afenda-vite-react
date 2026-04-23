@@ -24,6 +24,34 @@ Validation: IN PROGRESS (time-based)
 Promotion: BLOCKED (by design)
 ```
 
+## Permanent architecture split
+
+The governance guardrail program now has a permanent three-way split:
+
+- `docs/architecture/governance/` = canonical truth
+- `packages/governance-toolchain` = reusable pure governance-domain code
+- `scripts/` = repo-local orchestration and execution
+
+This split is not temporary.
+It exists so governance semantics are owned as a real domain without moving the root control plane into a package.
+
+`@afenda/governance-toolchain` must stay pure:
+
+- contracts
+- status/result vocabulary
+- coverage and waiver models
+- promotion-readiness model
+- pure formatters
+- pure report builders
+
+It must not own:
+
+- git/process execution
+- repo-root/path resolution
+- config loading
+- artifact writing
+- imports from `scripts/`
+
 ## What is complete
 
 - Repository Integrity Guard architecture exists.

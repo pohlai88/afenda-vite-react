@@ -50,6 +50,32 @@ The guard exists inside the governance chain, but its local behavior is contract
 - ATC-0005 defines the bound command surface, evidence paths, and warn/block semantics.
 - If implementation behavior drifts from the documented baseline, ATC-0005 takes precedence.
 
+## Code ownership split
+
+The Repository Integrity Guard now uses a permanent three-way split:
+
+- docs in `docs/architecture/governance/` remain canonical truth
+- reusable governance-domain code lives in `packages/governance-toolchain`
+- repo-local orchestration remains in `scripts/`
+
+`@afenda/governance-toolchain` is the owned code home for pure governance-domain contracts, coverage/waiver/promotion models, formatters, and report builders.
+It must not become a second root control plane:
+
+- no git/process execution
+- no repo-root assumptions
+- no root config loading
+- no artifact emission
+- no imports from `scripts/`
+
+`scripts/` remains the only layer that performs repo execution:
+
+- CLI entrypoints
+- git/worktree access
+- repo-root/path resolution
+- root config loading
+- artifact writing
+- governance register/report orchestration
+
 ## Purpose
 
 The guard answers:

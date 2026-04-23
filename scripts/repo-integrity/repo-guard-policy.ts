@@ -261,6 +261,19 @@ export const repoGuardPolicy: RepoGuardPolicy = {
       ],
     },
     {
+      id: "package-governance-toolchain-src",
+      scopeRoot: "packages/governance-toolchain/src",
+      ignorePatterns: [],
+      rules: [
+        {
+          owner: "packages/governance-toolchain:src",
+          root: "packages/governance-toolchain/src",
+          kind: "owner-root",
+          matchMode: "prefix",
+        },
+      ],
+    },
+    {
       id: "package-pino-logger-src",
       scopeRoot: "packages/pino-logger/src",
       ignorePatterns: [],
