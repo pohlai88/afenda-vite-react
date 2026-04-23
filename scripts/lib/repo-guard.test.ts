@@ -17,6 +17,7 @@ import { evaluateDuplicateOverlapFindings } from "./duplicate-overlap-guard.js"
 import {
   computeCombinedContentHash,
   evaluateGeneratedArtifactAuthenticityFindings,
+  normalizeGeneratedJsonContent,
 } from "./generated-artifact-authenticity-guard.js"
 import {
   buildPlacementOwnershipScopes,
@@ -651,6 +652,23 @@ test("generated authenticity hash helper is deterministic for source inputs", as
 
   assert.equal(hashA, hashB)
   assert.match(hashA, /^[a-f0-9]{64}$/u)
+})
+
+test("generated authenticity JSON normalization ignores formatting-only drift", () => {
+  const compact = `{"roots":["src/schema","src/7w1h-audit"],"count":2}`
+  const expanded = `{
+  "roots": [
+    "src/schema",
+    "src/7w1h-audit"
+  ],
+  "count": 2
+}
+`
+
+  assert.equal(
+    normalizeGeneratedJsonContent(compact),
+    normalizeGeneratedJsonContent(expanded)
+  )
 })
 
 test("generated authenticity stays clean for calibrated design-system and database bindings", async () => {

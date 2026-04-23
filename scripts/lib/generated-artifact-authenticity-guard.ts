@@ -223,8 +223,11 @@ export async function evaluateGeneratedAuthenticityBinding(options: {
     )
 
     if (
-      normalizeGeneratedContent(actualContent) !==
-      normalizeGeneratedContent(expectedContent)
+      !generatedContentsMatch(
+        options.binding.targetPath,
+        actualContent,
+        expectedContent
+      )
     ) {
       findings.push({
         severity: "error",
@@ -251,8 +254,11 @@ export async function evaluateGeneratedAuthenticityBinding(options: {
     )
 
     if (
-      normalizeGeneratedContent(actualContent) !==
-      normalizeGeneratedContent(expectedContent)
+      !generatedContentsMatch(
+        options.binding.targetPath,
+        actualContent,
+        expectedContent
+      )
     ) {
       findings.push({
         severity: "error",
@@ -276,8 +282,11 @@ export async function evaluateGeneratedAuthenticityBinding(options: {
   const actualContent = await fs.readFile(targetAbsolutePath, "utf8")
 
   if (
-    normalizeGeneratedContent(actualContent) !==
-    normalizeGeneratedContent(expectedContent)
+    !generatedContentsMatch(
+      options.binding.targetPath,
+      actualContent,
+      expectedContent
+    )
   ) {
     findings.push({
       severity: "error",
@@ -370,4 +379,26 @@ function normalizeGeneratedContent(content: string): string {
 
 function withTrailingNewline(content: string): string {
   return content.endsWith("\n") ? content : `${content}\n`
+}
+
+function generatedContentsMatch(
+  targetPath: string,
+  actualContent: string,
+  expectedContent: string
+): boolean {
+  if (targetPath.endsWith(".json")) {
+    return (
+      normalizeGeneratedJsonContent(actualContent) ===
+      normalizeGeneratedJsonContent(expectedContent)
+    )
+  }
+
+  return (
+    normalizeGeneratedContent(actualContent) ===
+    normalizeGeneratedContent(expectedContent)
+  )
+}
+
+export function normalizeGeneratedJsonContent(content: string): string {
+  return JSON.stringify(JSON.parse(content))
 }
