@@ -42,6 +42,7 @@ The intent is to keep this human-readable first, while making it structured enou
 - Major guardrails are implemented as first cuts.
 - Repo-guard coverage is not yet self-reported as an explicit guardrail program.
 - Repo-specific calibration is still incomplete.
+- Promotion readiness is now blocked only by manual criteria, not live technical drift.
 
 ## Track 1 — Architecture documentation
 
@@ -419,7 +420,7 @@ Before promotion to block, the following must be true:
 - [~] Hygiene/advisory coverage is sufficiently mature
 - [ ] False positive rate < 2%
 - [ ] No unresolved fail findings for 1 full cycle
-- [ ] Waiver registry is explicit and audited
+- [~] Waiver registry is explicit and audited
 - [ ] Repo-specific activation plan has been exercised through one warned calibration cycle
 
 ### Final
@@ -459,7 +460,7 @@ Before promotion to block, the following must be true:
 ### Phase F
 
 - [x] Repo truth-map and activation docs
-- [ ] Warned-cycle calibration
+- [~] Warned-cycle calibration
 - [ ] Promotion decision record
 
 ## Definition of done for repository guardrail architecture
@@ -478,4 +479,4 @@ Before promotion to block, the following must be true:
 
 ## Current status label
 
-`Repository Integrity Guard V1 implemented; all major roadmap guardrails, waiver hardening, and repo-specific activation docs are in place; remaining work is coverage reporting, repo-specific tightening, warned-cycle calibration, and promotion review.`
+`Repository Integrity Guard V1 is green on a clean tree; all major roadmap guardrails, waiver hardening, and repo-specific activation docs are in place; remaining work is coverage reporting, repo-specific tightening, warned-cycle calibration evidence, and the promotion decision.`

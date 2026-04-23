@@ -203,7 +203,7 @@ Exit condition:
 
 ## Phase 4 — Warned calibration cycle
 
-Status: `not complete`
+Status: `in progress`
 
 This phase must happen before promotion.
 
@@ -230,6 +230,13 @@ Exit condition:
 
 - false-positive behavior is understood and bounded
 
+Current state:
+
+- the repo guard is green on a clean tree
+- the old ADR advisory backlog is cleared
+- the earlier governance-register cycle and repo-guard discovery false positives were fixed in policy
+- the remaining gap is not a live technical blocker; it is evidence for one stable warned cycle and the manual promotion decision
+
 ## Phase 5 — Policy tightening
 
 Status: `not complete`
@@ -254,7 +261,7 @@ Exit condition:
 
 ## Phase 6 — Promotion review
 
-Status: `started, not ready`
+Status: `warn-only, not ready`
 
 Required artifacts:
 
@@ -280,8 +287,8 @@ Exit condition:
 
 ## Immediate next actions
 
-1. Convert the current generator truth map into explicit provenance/manifests where the repo already has durable generator entrypoints.
+1. Run and record one real warned-cycle review in the false-positive log against current green repo-guard evidence.
 2. Tighten package public-vs-internal boundary rules from export lists into enforceable import policy.
-3. Clear the live advisory backlog from older ADR linkage markers.
-4. Run and record one real warned-cycle review in the false-positive log.
-5. Re-run promotion readiness after the current working-tree legitimacy blocker is cleared.
+3. Convert more of the generator truth map into explicit provenance/manifests where durable generator entrypoints already exist.
+4. Add coverage reporting so repo guard can self-report implemented/partial/missing program coverage.
+5. Re-run promotion readiness after the warned-cycle evidence is recorded, then decide whether to keep `GOV-TRUTH-001` warned or promote it.
