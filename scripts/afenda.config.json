@@ -34,7 +34,7 @@
       "path": "rules",
       "mode": "generic-formal-directory",
       "title": "Repository rules",
-      "description": "Generate an index for durable repository governance rules, machine-readable policy, and refactor planning artifacts.",
+      "description": "Generate an index for durable repository governance rules, machine-readable policy, and enforcement-tied governance records.",
       "includeChildDirectories": true
     },
     {
@@ -232,12 +232,15 @@
             ".artifacts",
             ".turbo",
             "config",
+            "docs",
             "dist",
             "e2e",
             "node_modules",
             "public",
+            "rules",
             "scripts",
-            "src"
+            "src",
+            "tests"
           ],
           "allowedFiles": [
             ".env.example",
@@ -256,9 +259,13 @@
           "allowedDirectories": [
             ".artifacts",
             ".turbo",
+            "docs",
             "dist",
             "node_modules",
-            "src"
+            "rules",
+            "scripts",
+            "src",
+            "tests"
           ],
           "allowedFiles": [
             "package.json",
@@ -275,8 +282,10 @@
             "dist",
             "docs",
             "node_modules",
+            "rules",
             "scripts",
-            "src"
+            "src",
+            "tests"
           ],
           "allowedFiles": [
             "AGENTS.md",
@@ -308,9 +317,11 @@
             "docs",
             "drizzle",
             "node_modules",
+            "rules",
             "scripts",
             "sql",
-            "src"
+            "src",
+            "tests"
           ],
           "allowedFiles": [
             "README.md",
@@ -326,11 +337,14 @@
             ".artifacts",
             ".turbo",
             "design-architecture",
+            "docs",
             "generated",
             "hooks",
             "icons",
             "node_modules",
+            "rules",
             "scripts",
+            "tests",
             "ui-primitives",
             "utils"
           ],

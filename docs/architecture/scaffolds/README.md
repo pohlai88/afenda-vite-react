@@ -12,10 +12,10 @@ Reference templates, blueprints, and implementation packs that support canonical
 
 ## Documents
 
-| Document                                                                   | Priority  | Truth      | Class          | Owner                | Description                                                                         |
-| -------------------------------------------------------------------------- | --------- | ---------- | -------------- | -------------------- | ----------------------------------------------------------------------------------- |
-| [CI Quality Gates (Scaffold)](./VITE_FRONTEND_CI_GATES.md)                 | Reference | supporting | supporting-doc | governance-toolchain | Use this checklist as non-negotiable CI policy for Vite frontend release readiness. |
-| [Feature Module Template (Scaffold)](./VITE_FRONTEND_FEATURE_TEMPLATE.md)  | Reference | supporting | supporting-doc | governance-toolchain | Register routes only in src/share/routing/.                                         |
-| [Performance Defaults (Scaffold)](./VITE_FRONTEND_PERFORMANCE_DEFAULTS.md) | Reference | supporting | supporting-doc | governance-toolchain | These defaults are the baseline for scalable Vite SPA performance.                  |
-| [Vite Config Template (Scaffold)](./VITE_FRONTEND_CONFIG_TEMPLATE.md)      | Reference | supporting | supporting-doc | governance-toolchain | Use this as the default vite.config.ts baseline for new frontend apps.              |
-| [Vite Frontend Blueprint](./VITE_FRONTEND_BLUEPRINT.md)                    | Reference | supporting | supporting-doc | governance-toolchain | Use this when creating a new app or resetting architecture drift.                   |
+| Document                                                                   | Surface  | Priority  | Truth      | Class          | Owner                | Description                                                                         |
+| -------------------------------------------------------------------------- | -------- | --------- | ---------- | -------------- | -------------------- | ----------------------------------------------------------------------------------- |
+| [CI Quality Gates (Scaffold)](./VITE_FRONTEND_CI_GATES.md)                 | doctrine | Reference | supporting | supporting-doc | governance-toolchain | Use this checklist as non-negotiable CI policy for Vite frontend release readiness. |
+| [Feature Module Template (Scaffold)](./VITE_FRONTEND_FEATURE_TEMPLATE.md)  | doctrine | Reference | supporting | supporting-doc | governance-toolchain | Register routes only in src/share/routing/.                                         |
+| [Performance Defaults (Scaffold)](./VITE_FRONTEND_PERFORMANCE_DEFAULTS.md) | doctrine | Reference | supporting | supporting-doc | governance-toolchain | These defaults are the baseline for scalable Vite SPA performance.                  |
+| [Vite Config Template (Scaffold)](./VITE_FRONTEND_CONFIG_TEMPLATE.md)      | doctrine | Reference | supporting | supporting-doc | governance-toolchain | Use this as the default vite.config.ts baseline for new frontend apps.              |
+| [Vite Frontend Blueprint](./VITE_FRONTEND_BLUEPRINT.md)                    | doctrine | Reference | supporting | supporting-doc | governance-toolchain | Use this when creating a new app or resetting architecture drift.                   |

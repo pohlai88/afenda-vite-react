@@ -7,7 +7,7 @@ status: active
 
 # Scripts directory rules
 
-This folder holds **repo maintenance CLIs**, **shared script modules**, and **workspace manifest** files (`afenda.config.*`). It is not a second application runtime—keep scope narrow.
+This folder holds **repo-local orchestration**, **shared script modules**, and **workspace manifest** files (`afenda.config.*`). It is not a second application runtime and it is not the default home for owner-local tooling.
 
 The generated [`README.md`](./README.md) lists runnable scripts and support files. **This file is authoritative for structure and contribution rules** and is not overwritten by the generator.
 
@@ -19,9 +19,13 @@ The generated [`README.md`](./README.md) lists runnable scripts and support file
 - **Shared loaders/helpers** imported only by other files under `scripts/` (no `pnpm` entry unless intentionally exposed).
 - **JSON/Schema config** checked by `script:check-afenda-config` and consumed by automation.
 
+Root `scripts/` is the execution surface for repo-wide orchestration.
+Feature-local or package-local runnable tooling belongs with the owner by default.
+
 Do **not** put:
 
 - Application UI or `apps/web` feature code.
+- Feature-local or package-local scripts in root `scripts/` for convenience.
 - Long-lived servers (unless explicitly approved and documented).
 - Secrets or real credentials (use env vars and local-only files ignored by git).
 
@@ -101,6 +105,7 @@ Internal modules (no direct `pnpm` invocation) should be marked in [`docs/genera
 
 ## 6. Related documentation
 
+- [Boundary surfaces](../docs/workspace/BOUNDARY_SURFACES.md) — canonical root vs owner-local surface doctrine.
 - [Architecture evolution](../docs/workspace/ARCHITECTURE_EVOLUTION.md) — when to add complexity vs defer.
 - [AGENTS.md](../AGENTS.md) — AI/human execution index.
 - [Project configuration](../docs/workspace/PROJECT_CONFIGURATION.md) — repo-wide tooling.

@@ -5,6 +5,7 @@ status: active
 owner: governance-toolchain
 truthStatus: canonical
 docClass: canonical-doc
+surfaceType: doctrine
 relatedDomain: governance-registry
 order: 10
 ---
@@ -26,13 +27,24 @@ Each enforced governance rule must be traceable across that chain.
 
 The repo distinguishes between canonical vs derived governance surfaces:
 
-- Canonical doctrine lives in `docs/governance/`, `docs/architecture/adr/`, and `docs/architecture/atc/`.
+- Canonical governance doctrine lives in `docs/architecture/governance/`, with related doctrine in `docs/architecture/adr/` and `docs/architecture/atc/`.
+- Doctrine is a semantic class for authoritative governing text; it is not a synonym for all docs and not a separate required filesystem tree.
 - Canonical machine binding lives in `scripts/afenda.config.json`.
 - Domain-local enforcement config lives in `rules/**`.
 - Derived evidence lives under `.artifacts/reports/governance/**`.
 - CI verdicts are derived from the registry, the checks, and the evidence artifacts.
 
 No derived artifact is allowed to redefine policy independently of the canonical control plane.
+
+## Root vs owner-local surfaces
+
+The governance spine follows the canonical boundary model in `docs/workspace/BOUNDARY_SURFACES.md`.
+
+- Root doctrine exists only for repo-wide or multi-owner governance.
+- Root `rules/` exists only for enforcement-tied policy artifacts.
+- Root `scripts/` exists only for repo-local orchestration and execution.
+- Owner-local docs, rules, scripts, schema, and tests belong with the owner by default.
+- Owner-local doctrine is allowed only when it lives under the owner's `docs/` surface and is explicitly classified as doctrine.
 
 ## Ownership model
 

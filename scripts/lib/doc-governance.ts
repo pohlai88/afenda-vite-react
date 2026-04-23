@@ -15,6 +15,7 @@ const REQUIRED_FILES = [
   "docs/architecture/governance/GOVERNANCE_GLOSSARY.md",
   "docs/architecture/governance/NAMING_CONVENTION.md",
   "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
+  "docs/workspace/BOUNDARY_SURFACES.md",
   "docs/architecture/adr/ADR_TEMPLATE.md",
   "docs/architecture/atc/ATC_TEMPLATE.md",
 ] as const
@@ -24,9 +25,24 @@ const TERM_EXPECTATIONS = [
     file: "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md",
     patterns: [
       "canonical vs derived",
+      "Root vs owner-local surfaces",
       "waiver/exception",
       "ADR vs ATC",
       "traceability chain",
+    ],
+  },
+  {
+    file: "docs/workspace/BOUNDARY_SURFACES.md",
+    patterns: [
+      "Scope axis",
+      "Surface axis",
+      "Doctrine is the semantic class",
+      "root doctrine lives under `docs/architecture/**`",
+      "Owner-local doctrine is optional and rare",
+      "`rules/` is not a general governance archive",
+      "Schema defaults to the owner",
+      "Root tests",
+      "Owner-local tests",
     ],
   },
   {

@@ -12,6 +12,6 @@ This index is generated from markdown files in `docs/architecture/governance/gen
 
 ## Documents
 
-| Document                                        | Priority  | Truth      | Class          | Owner                | Description                                                                |
-| ----------------------------------------------- | --------- | ---------- | -------------- | -------------------- | -------------------------------------------------------------------------- |
-| [Governance register](./governance-register.md) | Reference | supporting | supporting-doc | governance-toolchain | Generated register of governance domains, evidence paths, and CI behavior. |
+| Document                                        | Surface  | Priority  | Truth      | Class          | Owner                | Description                                                                |
+| ----------------------------------------------- | -------- | --------- | ---------- | -------------- | -------------------- | -------------------------------------------------------------------------- |
+| [Governance register](./governance-register.md) | doctrine | Reference | supporting | supporting-doc | governance-toolchain | Generated register of governance domains, evidence paths, and CI behavior. |

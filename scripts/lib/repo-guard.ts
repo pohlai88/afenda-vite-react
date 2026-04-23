@@ -415,7 +415,7 @@ async function evaluateWorkspaceTopologyCheck(
 ): Promise<RepoGuardCheckResult> {
   const issues = await evaluateAfendaWorkspaceGovernance(config, repoRoot)
   const findings = issues.map<RepoGuardFinding>((issue) => ({
-    severity: "error",
+    severity: issue.severity,
     ruleId: `TOPO:${issue.rule}`,
     filePath: issue.path,
     message: issue.message,

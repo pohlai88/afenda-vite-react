@@ -2,6 +2,7 @@
 owner: governance-toolchain
 truthStatus: canonical
 docClass: canonical-doc
+surfaceType: doctrine
 relatedDomain: monorepo-governance
 ---
 
@@ -14,10 +15,10 @@ This policy defines **machine-enforced** workspace boundaries for Afenda. The so
 ## Goals
 
 - Keep product code topology predictable as the monorepo scales.
-- Ensure feature modules share a consistent internal shape.
+- Keep root vs owner-local surfaces explicit instead of relying on folder-name intuition.
 - Lock the **Vite web client** `src/` tree so cross-cutting code does not sprawl at `apps/web/src` root.
 - Prevent accidental root sprawl by enforcing a root directory allowlist.
-- Keep package structure explicit when `packages/shared` is introduced.
+- Keep package and feature ownership explicit for docs, doctrine, rules, scripts, schema, and tests.
 
 ---
 
@@ -25,6 +26,15 @@ This policy defines **machine-enforced** workspace boundaries for Afenda. The so
 
 Afenda treats `apps/` and `packages/` as the **primary product code roots**.  
 Other root directories are support/governance infrastructure (`docs/`, `scripts/`) or generated/vendor output (`dist/`, `node_modules/`).
+
+The canonical boundary doctrine is defined in [Boundary surfaces](./BOUNDARY_SURFACES.md).
+The important distinction is:
+
+- `docs/` stores repo-wide documentation surfaces
+- root doctrine defaults to `docs/architecture/**`
+- `rules/` stores enforcement-tied policy artifacts
+- `scripts/` stores repo-local orchestration
+- owner-local docs, rules, scripts, schema, and tests stay with the owner by default
 
 The guard checks:
 
@@ -34,19 +44,22 @@ The guard checks:
 
 ---
 
-## Feature template policy (`apps/web/src/features/*`)
+## Feature-owned surfaces (`apps/web/src/app/_features/*`)
 
-When a feature folder exists, it must include:
+Feature directories live under `apps/web/src/app/_features/*`.
+The repository no longer treats `apps/web/src/features/*` as the live feature root.
 
-- `components/`
-- `hooks/`
-- `services/`
-- `types/`
-- `actions/`
-- `utils/`
-- `index.ts` (public API surface)
+Feature owners may keep local surfaces with the feature when they are justified:
 
-This keeps feature modules cohesive and import-safe as capabilities grow.
+- `docs/` for feature-local guidance
+- doctrine inside `docs/`, only when the feature has a durable local policy or contract surface
+- `rules/` for feature-local policy artifacts tied to enforcement or formal review
+- `scripts/` for feature-local generators, validators, or audit tooling
+- `schema/` for feature-owned models and validation boundaries
+- `tests/` or `__tests__/` for feature-owned verification
+
+Do not create feature-local `doctrine/` trees.
+Doctrine remains a semantic class, not a default folder name.
 
 ---
 
@@ -56,14 +69,14 @@ This keeps feature modules cohesive and import-safe as capabilities grow.
 
 Configuration lives in **`scripts/afenda.config.json`** under **`workspaceGovernance.webClientSrc`**:
 
-| Field                             | Purpose                                                                                                                                                                                           |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`srcRoot`**                     | Workspace-relative path to the web client source root (typically `apps/web/src`).                                                                                                                 |
-| **`allowedTopLevelDirectories`**  | **Exhaustive** list of directory names allowed directly under `src/` (today: `features`, `pages`, `share`). CI fails if any other top-level directory appears or if any listed folder is missing. |
-| **`requiredShareSubdirectories`** | Subfolders that must exist under `src/share/` (today: `api`, `client-store`, `components`, `i18n`, `query`, `react-hooks`, `routing`). Add entries when you introduce required shared buckets.    |
-| **`enforce`**                     | When `true`, `pnpm run script:check-afenda-config` runs filesystem checks. Set `false` only for exceptional migration windows.                                                                    |
+| Field                             | Purpose                                                                                                                                                                                                           |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`srcRoot`**                     | Workspace-relative path to the web client source root (today: `apps/web/src`).                                                                                                                                    |
+| **`allowedTopLevelDirectories`**  | **Exhaustive** list of directory names allowed directly under `src/` (today: `app`, `marketing`, `routes`, `rpc`, `share`). CI fails if any other top-level directory appears or if any listed folder is missing. |
+| **`requiredShareSubdirectories`** | Subfolders that must exist under `src/share/`. Add entries only when a shared bucket becomes mandatory across ownership areas.                                                                                    |
+| **`enforce`**                     | When `true`, `pnpm run script:check-afenda-config` runs filesystem checks. Set `false` only for exceptional migration windows.                                                                                    |
 
-Cross-cutting client code belongs under **`src/share/`**. Avoid a separate top-level `src/components/`; compose shared UI under **`src/share/components/`** and keep primitives in **`packages/shadcn-ui-deprecated`**. Updating **`allowedTopLevelDirectories`** or **`requiredShareSubdirectories`** without changing the tree (or the reverse) will fail the config check—by design.
+Cross-cutting client code belongs under **`src/share/`**. Avoid a separate top-level `src/components/`; compose shared UI under **`src/share/`** and keep owner-local code with the owner. Updating **`allowedTopLevelDirectories`** or **`requiredShareSubdirectories`** without changing the tree (or the reverse) will fail the config check by design.
 
 ---
 
@@ -100,11 +113,15 @@ This gives a deterministic scaffold for shared cross-app capabilities.
    - `pnpm run script:check-afenda-config`
    - `pnpm run check`
 
+Boundary-surface checks are warn-first when the classification is new or still being aligned.
+They become blocking only after doctrine and placement conventions are stable.
+
 ---
 
 ## Related docs
 
 - [Architecture](./ARCHITECTURE.md)
+- [Boundary surfaces](./BOUNDARY_SURFACES.md)
 - [Project structure](./PROJECT_STRUCTURE.md)
 - [Architecture evolution](./ARCHITECTURE_EVOLUTION.md)
 - [Project configuration](./PROJECT_CONFIGURATION.md)

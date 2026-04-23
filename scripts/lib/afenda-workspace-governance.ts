@@ -12,6 +12,8 @@ export interface AfendaWorkspaceGovernanceIssue {
     | "feature-template"
     | "shared-package-template"
     | "web-client-src"
+    | "boundary-surfaces"
+  readonly severity: "error" | "warn"
   readonly path: string
   readonly message: string
 }
@@ -30,6 +32,7 @@ export async function evaluateAfendaWorkspaceGovernance(
     ...(await evaluateSharedPackageTemplateGovernance(config, repoRoot))
   )
   issues.push(...(await evaluateWebClientSrcGovernance(config, repoRoot)))
+  issues.push(...(await evaluateBoundarySurfaceGovernance(config, repoRoot)))
 
   return issues.sort((left, right) => left.path.localeCompare(right.path))
 }
@@ -73,6 +76,7 @@ async function evaluateRootTopologyGovernance(
     if (!exists) {
       issues.push({
         rule: "root-topology",
+        severity: "error",
         path: directory,
         message: `Configured primary product directory "${directory}" does not exist.`,
       })
@@ -93,6 +97,7 @@ async function evaluateRootTopologyGovernance(
       ) {
         issues.push({
           rule: "root-topology",
+          severity: "error",
           path: directoryName,
           message: `Hidden root directory "${directoryName}" is not allowed by workspaceGovernance.rootTopology.`,
         })
@@ -106,6 +111,7 @@ async function evaluateRootTopologyGovernance(
     ) {
       issues.push({
         rule: "root-topology",
+        severity: "error",
         path: directoryName,
         message: `Root directory "${directoryName}" is not allowed by workspaceGovernance.rootTopology.`,
       })
@@ -116,6 +122,7 @@ async function evaluateRootTopologyGovernance(
     if (!allowedRootDirectorySet.has(directoryName)) {
       issues.push({
         rule: "root-topology",
+        severity: "error",
         path: directoryName,
         message: `Primary product directory "${directoryName}" must also be listed in allowedRootDirectories.`,
       })
@@ -123,6 +130,7 @@ async function evaluateRootTopologyGovernance(
     if (storageDirectorySet.has(directoryName)) {
       issues.push({
         rule: "root-topology",
+        severity: "error",
         path: directoryName,
         message: `Primary product directory "${directoryName}" must not be listed in storageDirectories.`,
       })
@@ -130,6 +138,7 @@ async function evaluateRootTopologyGovernance(
     if (allowedHiddenRootDirectorySet.has(directoryName)) {
       issues.push({
         rule: "root-topology",
+        severity: "error",
         path: directoryName,
         message: `Primary product directory "${directoryName}" must not be listed in allowedHiddenRootDirectories.`,
       })
@@ -144,6 +153,7 @@ async function evaluateRootTopologyGovernance(
     if (!exists) {
       issues.push({
         rule: "root-topology",
+        severity: "error",
         path: directoryName,
         message: `Configured storage directory "${directoryName}" does not exist.`,
       })
@@ -155,6 +165,7 @@ async function evaluateRootTopologyGovernance(
     if (!exists) {
       issues.push({
         rule: "root-topology",
+        severity: "error",
         path: fileName,
         message: `Required root file "${fileName}" is missing.`,
       })
@@ -181,6 +192,7 @@ async function evaluatePackageTopologyGovernance(
     if (!rootExists) {
       issues.push({
         rule: "package-topology",
+        severity: "error",
         path: workspaceRootDirectory,
         message: `Workspace root "${workspaceRootDirectory}" does not exist.`,
       })
@@ -208,6 +220,7 @@ async function evaluatePackageTopologyGovernance(
       if (!packageJsonExists) {
         issues.push({
           rule: "package-topology",
+          severity: "error",
           path: relativePackageDirectory,
           message: `Workspace package directory "${relativePackageDirectory}" must contain a package.json manifest or be explicitly allowlisted.`,
         })
@@ -237,6 +250,7 @@ async function evaluatePackageRootGovernance(
     if (profileMap.has(profile.name)) {
       issues.push({
         rule: "package-root",
+        severity: "error",
         path: `profile:${profile.name}`,
         message: `workspaceGovernance.packageRoots.profiles contains duplicate profile "${profile.name}".`,
       })
@@ -249,6 +263,7 @@ async function evaluatePackageRootGovernance(
     if (!profileMap.has(packageDefinition.profile)) {
       issues.push({
         rule: "package-root",
+        severity: "error",
         path: normalizedPath,
         message: `workspaceGovernance.packageRoots.packages entry "${normalizedPath}" references unknown profile "${packageDefinition.profile}".`,
       })
@@ -256,6 +271,7 @@ async function evaluatePackageRootGovernance(
     if (packageDefinitionMap.has(normalizedPath)) {
       issues.push({
         rule: "package-root",
+        severity: "error",
         path: normalizedPath,
         message: `workspaceGovernance.packageRoots.packages contains duplicate path "${normalizedPath}".`,
       })
@@ -272,6 +288,7 @@ async function evaluatePackageRootGovernance(
     if (!packageDefinitionMap.has(packageDirectory)) {
       issues.push({
         rule: "package-root",
+        severity: "error",
         path: packageDirectory,
         message: `Workspace package directory "${packageDirectory}" must be declared in workspaceGovernance.packageRoots.packages.`,
       })
@@ -282,6 +299,7 @@ async function evaluatePackageRootGovernance(
     if (!discoveredPackageDirectories.includes(packageDirectory)) {
       issues.push({
         rule: "package-root",
+        severity: "error",
         path: packageDirectory,
         message: `workspaceGovernance.packageRoots.packages entry "${packageDirectory}" does not match a discovered workspace package directory.`,
       })
@@ -308,6 +326,7 @@ async function evaluatePackageRootGovernance(
       if (entry.isDirectory() && !allowedDirectories.has(entry.name)) {
         issues.push({
           rule: "package-root",
+          severity: "error",
           path: `${packageDirectory}/${entry.name}`,
           message: `Package root "${packageDirectory}" contains disallowed directory "${entry.name}/".`,
         })
@@ -316,6 +335,7 @@ async function evaluatePackageRootGovernance(
       if (entry.isFile() && !allowedFiles.has(entry.name)) {
         issues.push({
           rule: "package-root",
+          severity: "error",
           path: `${packageDirectory}/${entry.name}`,
           message: `Package root "${packageDirectory}" contains disallowed file "${entry.name}".`,
         })
@@ -363,6 +383,7 @@ async function evaluateFeatureTemplateGovernance(
       if (!exists) {
         issues.push({
           rule: "feature-template",
+          severity: "error",
           path: `${featureTemplate.featuresRoot}/${featureDirectory}/${requiredDirectory}`,
           message: `Feature "${featureDirectory}" must include "${requiredDirectory}/" per workspaceGovernance.featureTemplate.`,
         })
@@ -377,6 +398,7 @@ async function evaluateFeatureTemplateGovernance(
       if (!exists) {
         issues.push({
           rule: "feature-template",
+          severity: "error",
           path: `${featureTemplate.featuresRoot}/${featureDirectory}/${requiredFile}`,
           message: `Feature "${featureDirectory}" must include "${requiredFile}" per workspaceGovernance.featureTemplate.`,
         })
@@ -414,6 +436,7 @@ async function evaluateSharedPackageTemplateGovernance(
     if (!exists) {
       issues.push({
         rule: "shared-package-template",
+        severity: "error",
         path: `${sharedPackageTemplate.packagePath}/${requiredDirectory}`,
         message: `Shared package "${sharedPackageTemplate.packagePath}" must include "${requiredDirectory}/" per workspaceGovernance.sharedPackageTemplate.`,
       })
@@ -438,6 +461,7 @@ async function evaluateWebClientSrcGovernance(
   if (!srcExists) {
     issues.push({
       rule: "web-client-src",
+      severity: "error",
       path: webClientSrc.srcRoot,
       message: `Web client src "${webClientSrc.srcRoot}" must exist (workspaceGovernance.webClientSrc).`,
     })
@@ -460,6 +484,7 @@ async function evaluateWebClientSrcGovernance(
   if (!topologyMatches) {
     issues.push({
       rule: "web-client-src",
+      severity: "error",
       path: webClientSrc.srcRoot,
       message: `Web client src top-level directories must match workspaceGovernance.webClientSrc.allowedTopLevelDirectories exactly. Expected: ${expected.join(", ")}. Actual: ${topLevelDirs.join(", ")}.`,
     })
@@ -474,6 +499,7 @@ async function evaluateWebClientSrcGovernance(
     if (!exists) {
       issues.push({
         rule: "web-client-src",
+        severity: "error",
         path: `${webClientSrc.srcRoot}/share/${subdirectory}`,
         message: `src/share must include "${subdirectory}/" per workspaceGovernance.webClientSrc.requiredShareSubdirectories.`,
       })
@@ -521,6 +547,112 @@ async function collectWorkspacePackageDirectories(
   return packageDirectories.sort((left, right) => left.localeCompare(right))
 }
 
+async function evaluateBoundarySurfaceGovernance(
+  config: AfendaConfig,
+  repoRoot: string
+): Promise<readonly AfendaWorkspaceGovernanceIssue[]> {
+  const issues: AfendaWorkspaceGovernanceIssue[] = []
+  const rootEntries = await fs.readdir(repoRoot, { withFileTypes: true })
+  const forbiddenRootDirectories = new Set(["doctrine", "schema", "schemas"])
+
+  for (const entry of rootEntries) {
+    if (!entry.isDirectory()) {
+      continue
+    }
+
+    if (forbiddenRootDirectories.has(entry.name)) {
+      issues.push({
+        rule: "boundary-surfaces",
+        severity: "warn",
+        path: entry.name,
+        message: `Root directory "${entry.name}/" violates the boundary-surfaces doctrine. Root doctrine lives under docs/architecture/** and schema defaults to owner-local placement.`,
+      })
+    }
+  }
+
+  const ownerRoots = [
+    ...config.workspaceGovernance.packageTopology.workspaceRootDirectories.map(
+      (directory) => ({
+        path: path.join(repoRoot, directory),
+        allowSchemaAtOwnerRoot: false,
+      })
+    ),
+    {
+      path: path.join(
+        repoRoot,
+        config.workspaceGovernance.featureTemplate.featuresRoot
+      ),
+      allowSchemaAtOwnerRoot: true,
+    },
+  ]
+
+  for (const ownerRoot of ownerRoots) {
+    const exists = await pathExists(ownerRoot.path, "directory")
+
+    if (!exists) {
+      continue
+    }
+
+    issues.push(
+      ...(await collectOwnerBoundaryWarnings(
+        repoRoot,
+        ownerRoot.path,
+        ownerRoot.allowSchemaAtOwnerRoot
+      ))
+    )
+  }
+
+  return issues
+}
+
+async function collectOwnerBoundaryWarnings(
+  repoRoot: string,
+  rootDirectory: string,
+  allowSchemaAtOwnerRoot: boolean
+): Promise<readonly AfendaWorkspaceGovernanceIssue[]> {
+  const issues: AfendaWorkspaceGovernanceIssue[] = []
+  const entries = await fs.readdir(rootDirectory, { withFileTypes: true })
+
+  for (const entry of entries) {
+    if (!entry.isDirectory() || entry.name.startsWith(".")) {
+      continue
+    }
+
+    const ownerPath = path.join(rootDirectory, entry.name)
+    const ownerRelativePath = toPosixPath(path.relative(repoRoot, ownerPath))
+    const childEntries = await fs.readdir(ownerPath, { withFileTypes: true })
+
+    for (const childEntry of childEntries) {
+      if (!childEntry.isDirectory() || childEntry.name.startsWith(".")) {
+        continue
+      }
+
+      if (childEntry.name === "doctrine") {
+        issues.push({
+          rule: "boundary-surfaces",
+          severity: "warn",
+          path: `${ownerRelativePath}/doctrine`,
+          message: `Owner-local doctrine must live under "${ownerRelativePath}/docs/" and be classified as doctrine by metadata. Dedicated "doctrine/" folders are discouraged.`,
+        })
+      }
+
+      if (
+        !allowSchemaAtOwnerRoot &&
+        (childEntry.name === "schema" || childEntry.name === "schemas")
+      ) {
+        issues.push({
+          rule: "boundary-surfaces",
+          severity: "warn",
+          path: `${ownerRelativePath}/${childEntry.name}`,
+          message: `Owner-local schema should stay with the bounded owner surface, typically under src/ or feature-owned directories, rather than at the owner root.`,
+        })
+      }
+    }
+  }
+
+  return issues
+}
+
 async function pathExists(
   targetPath: string,
   kind: "file" | "directory"
@@ -546,6 +678,7 @@ function pushDisjointSetIssues(
 
   issues.push({
     rule: "root-topology",
+    severity: "error",
     path: `${leftLabel}|${rightLabel}`,
     message: `${leftLabel} and ${rightLabel} must be disjoint. Overlap: ${overlap.join(", ")}.`,
   })

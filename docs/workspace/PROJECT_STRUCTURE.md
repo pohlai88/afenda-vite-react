@@ -2,6 +2,7 @@
 owner: web-runtime-shell
 truthStatus: canonical
 docClass: canonical-doc
+surfaceType: docs
 relatedDomain: project-structure
 ---
 
@@ -58,7 +59,7 @@ Use for product features and feature-owned UI/runtime logic.
 Typical examples:
 
 - domain screens and feature routes
-- feature-local hooks, services, types, and tests
+- feature-local hooks, services, types, schema, docs, scripts, rules, and tests
 - dependency-grouped feature slices such as `app/_features/hono/<domain>`
 
 ### `app/_platform/`
@@ -86,6 +87,22 @@ Do not use this folder as a generic runtime/network junk drawer.
 
 Use for cross-cutting code that legitimately serves multiple ownership areas.
 If code clearly belongs to one feature or one platform slice, keep it there instead.
+
+## Owner-local surface defaults
+
+The canonical boundary model is defined in [Monorepo boundaries](./MONOREPO_BOUNDARIES.md) and [Boundary surfaces](./BOUNDARY_SURFACES.md).
+
+Within an owning feature, platform slice, app, or package:
+
+- `docs/` is the default home for owner-local guidance
+- doctrine may live inside owner-local `docs/`, but only when the owner has a durable local policy or contract surface
+- `rules/` is allowed for owner-local policy artifacts tied to enforcement or formal review
+- `scripts/` is allowed for owner-local generators, validators, or audit tooling
+- `schema/` is the default home for owner-local schema
+- `tests/` or `__tests__/` is the default home for owner-local verification
+
+Do not create a separate `doctrine/` tree.
+Doctrine is a semantic class, not a default folder name.
 
 ## Anti-patterns
 
@@ -116,6 +133,7 @@ This document is the operating guide that helps contributors place new code corr
 ## Related docs
 
 - [Architecture](./ARCHITECTURE.md)
+- [Boundary surfaces](./BOUNDARY_SURFACES.md)
 - [State management](./STATE_MANAGEMENT.md)
 - [Marketing Frontend Contract](./MARKETING_FRONTEND_CONTRACT.md)
 - [Monorepo boundaries](./MONOREPO_BOUNDARIES.md)

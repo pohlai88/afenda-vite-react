@@ -8,13 +8,13 @@
 > Truth class: `derived`
 > Do not edit directly.
 
-This folder is the generated index for repo-wide guides in the Afenda monorepo (`pnpm` + `Turborepo`; web client: `apps/web` with Vite + React).
+This folder is the generated index for repo-wide documentation surfaces in the Afenda monorepo (`pnpm` + `Turborepo`; web client: `apps/web` with Vite + React).
 
 - AI agents: use [`AGENTS.md`](../AGENTS.md) as the execution index and doc map.
 - Humans: start here or from the root [`README.md`](../README.md).
-- App-specific docs may also live under `apps/web/docs/` when that package starts owning local guidance.
+- App-specific and package-specific docs may also live under the owner's `docs/` surface when that owner starts owning local guidance.
 
-These guides describe Afenda, Vite, and ERP concerns for this repository. They are distinct from the older Next.js template docs preserved elsewhere in the workspace.
+These guides include both repo-wide docs and repo-wide doctrine. Docs are explanatory or operational surfaces; doctrine is authoritative governing text classified separately from general docs.
 
 ## Start here
 
@@ -25,13 +25,13 @@ These guides describe Afenda, Vite, and ERP concerns for this repository. They a
 | Review architecture decisions and contracts         | [Open](./architecture/README.md) | Architecture docs route you to narrative ADRs and enforceable ATCs without mixing the two.                 |
 | Check dependency adoption posture                   | [Open](./dependencies/README.md) | Dependency guides separate implemented surfaces from installed-only, planned, optional, and research docs. |
 
-## Canonical and generated docs in this folder
+## Docs and generated surfaces in this folder
 
-| Document                            | Priority  | Truth      | Class          | Owner                | Description                                                                                                                          |
-| ----------------------------------- | --------- | ---------- | -------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| [Operating map](./OPERATING_MAP.md) | Reference | supporting | supporting-doc | governance-toolchain | Generated navigation map for canonical docs, generated surfaces, CI-blocking areas, evidence paths, and contributor starting points. |
+| Document                            | Surface | Priority  | Truth      | Class          | Owner                | Description                                                                                                                          |
+| ----------------------------------- | ------- | --------- | ---------- | -------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| [Operating map](./OPERATING_MAP.md) | docs    | Reference | supporting | supporting-doc | governance-toolchain | Generated navigation map for docs, doctrine, generated surfaces, CI-blocking areas, evidence paths, and contributor starting points. |
 
-## Documentation collections
+## Documentation and doctrine collections
 
 | Collection                                       | Description                                                                                                     |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |

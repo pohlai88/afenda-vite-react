@@ -18,6 +18,7 @@ interface DocMetadata {
   owner?: string
   truthStatus?: string
   docClass?: string
+  surfaceType?: string
   relatedDomain?: string
   supersededBy?: string
   order?: number
@@ -44,6 +45,7 @@ interface DocEntry {
   owner?: string
   truthStatus?: string
   docClass?: string
+  surfaceType?: string
   relatedDomain?: string
   supersededBy?: string
   order: number
@@ -142,6 +144,7 @@ const FRONT_MATTER_KEYS = new Set<keyof DocMetadata>([
   "owner",
   "truthStatus",
   "docClass",
+  "surfaceType",
   "relatedDomain",
   "supersededBy",
   "order",
@@ -156,6 +159,7 @@ const TEXT_FRONT_MATTER_KEYS = new Set<keyof DocMetadata>([
   "owner",
   "truthStatus",
   "docClass",
+  "surfaceType",
   "relatedDomain",
   "supersededBy",
 ])
@@ -173,6 +177,8 @@ const DOC_CLASS_VALUES = new Set([
   "reviewed-exception",
   "delete",
 ])
+
+const DOC_SURFACE_TYPE_VALUES = new Set(["docs", "doctrine", "rules"])
 
 const COMPAT_FRONT_MATTER_ALIASES: Partial<
   Record<string, keyof FrontMatterData>
@@ -236,7 +242,7 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
   "PROJECT_STRUCTURE.md": {
     title: "Project structure",
     description:
-      "`apps/web` layout, routes, features, and migration toward `features/*`.",
+      "`apps/web` layout, routes, ownership boundaries, and owner-local surface placement guidance.",
     order: 40,
   },
   "DESIGN_SYSTEM.md": {
@@ -321,7 +327,7 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
   "OPERATING_MAP.md": {
     title: "Operating map",
     description:
-      "Generated navigation map for canonical docs, generated surfaces, CI-blocking areas, evidence paths, and contributor starting points.",
+      "Generated navigation map for docs, doctrine, generated surfaces, CI-blocking areas, evidence paths, and contributor starting points.",
     order: 5,
   },
 }
@@ -879,13 +885,13 @@ async function renderRootReadme(
       truthClass: "derived",
     }),
     "",
-    `This folder is the generated index for repo-wide guides in the ${afendaConfig.product.name} monorepo (\`${afendaConfig.workspace.packageManager}\` + \`Turborepo\`; web client: \`${afendaConfig.paths.webApp}\` with Vite + React).`,
+    `This folder is the generated index for repo-wide documentation surfaces in the ${afendaConfig.product.name} monorepo (\`${afendaConfig.workspace.packageManager}\` + \`Turborepo\`; web client: \`${afendaConfig.paths.webApp}\` with Vite + React).`,
     "",
     "- AI agents: use [`AGENTS.md`](../AGENTS.md) as the execution index and doc map.",
     "- Humans: start here or from the root [`README.md`](../README.md).",
-    `- App-specific docs may also live under \`${afendaConfig.paths.webApp}/docs/\` when that package starts owning local guidance.`,
+    `- App-specific and package-specific docs may also live under the owner's \`docs/\` surface when that owner starts owning local guidance.`,
     "",
-    `These guides describe ${afendaConfig.product.name}, Vite, and ERP concerns for this repository. They are distinct from the older Next.js template docs preserved elsewhere in the workspace.`,
+    `These guides include both repo-wide docs and repo-wide doctrine. Docs are explanatory or operational surfaces; doctrine is authoritative governing text classified separately from general docs.`,
     "",
     "## Start here",
     "",
@@ -895,7 +901,7 @@ async function renderRootReadme(
   if (coreEntries.length > 0) {
     sections.push(
       "",
-      "## Canonical and generated docs in this folder",
+      "## Docs and generated surfaces in this folder",
       "",
       renderDocMetadataTable(docsRoot, coreEntries)
     )
@@ -903,7 +909,7 @@ async function renderRootReadme(
 
   sections.push(
     "",
-    "## Documentation collections",
+    "## Documentation and doctrine collections",
     "",
     renderTable(
       ["Collection", "Description"],
@@ -1206,11 +1212,11 @@ async function renderScriptsReadme(
       truthClass: "derived",
     }),
     "",
-    `This directory contains small Node/TypeScript CLI utilities and script-local metadata used for repository maintenance and automation in ${afendaConfig.workspace.rootPackageName}.`,
+    `This directory contains repo-local execution surfaces: small Node/TypeScript CLIs, shared orchestration helpers, and script-local metadata used for repository maintenance and automation in ${afendaConfig.workspace.rootPackageName}.`,
     "",
     `Run scripts from the repository root with \`${afendaConfig.workspace.packageManager}\` so they use the workspace toolchain and \`tsx\` configuration.`,
     "",
-    "Layout and contribution rules (grouped areas plus one-level nesting) live in [`RULES.md`](./RULES.md).",
+    "Layout and contribution rules (grouped areas plus one-level nesting) live in [`RULES.md`](./RULES.md). Owner-local scripts belong with the owning app, package, or feature rather than in root `scripts/`.",
     "",
     "## Start here",
     "",
@@ -1242,7 +1248,7 @@ async function renderScriptsReadme(
     `| [\`afenda.config.json\`](./afenda.config.json) | Verified workspace manifest for ${afendaConfig.product.name} identity, key paths, workspace defaults, and governance bindings. |`,
     "| [`afenda.config.schema.json`](./afenda.config.schema.json) | JSON Schema for the Afenda workspace manifest. |",
     "| [`tsconfig.json`](./tsconfig.json) | Type-check configuration for this directory's Node scripts. |",
-    "| [`RULES.md`](./RULES.md) | Authoritative layout, naming, and flat vs one-level-nested folder policy for `scripts/`. |",
+    "| [`RULES.md`](./RULES.md) | Authoritative layout, naming, and root-vs-owner-local script policy for `scripts/`. |",
     "",
     "## Governed README targets",
     "",
@@ -1349,10 +1355,11 @@ async function renderOperatingMap(
       },
     ]),
     "",
-    "## Canonical docs first",
+    "## Canonical docs and doctrine first",
     "",
     renderBulletLinks(docsRoot, workspaceRoot, [
       "docs/workspace/README.md",
+      "docs/workspace/BOUNDARY_SURFACES.md",
       "docs/architecture/README.md",
       "docs/architecture/adr/README.md",
       "docs/architecture/atc/README.md",
@@ -1471,9 +1478,18 @@ function renderDocMetadataTable(
   entries: readonly DocEntry[]
 ) {
   return renderTable(
-    ["Document", "Priority", "Truth", "Class", "Owner", "Description"],
+    [
+      "Document",
+      "Surface",
+      "Priority",
+      "Truth",
+      "Class",
+      "Owner",
+      "Description",
+    ],
     entries.map((entry) => [
       formatLink(baseDirectory, entry.absolutePath, entry.title),
+      getDocSurfaceType(entry),
       getReadPriority(entry),
       entry.truthStatus ?? "unspecified",
       entry.docClass ?? "unspecified",
@@ -1481,6 +1497,26 @@ function renderDocMetadataTable(
       entry.description,
     ])
   )
+}
+
+function getDocSurfaceType(entry: DocEntry) {
+  if (entry.surfaceType) {
+    return entry.surfaceType
+  }
+
+  const relativePath = toPosixPath(
+    path.relative(workspaceRoot, entry.absolutePath)
+  )
+
+  if (relativePath.startsWith("docs/architecture/")) {
+    return "doctrine"
+  }
+
+  if (relativePath.startsWith("rules/")) {
+    return "rules"
+  }
+
+  return "docs"
 }
 
 function getReadPriority(entry: DocEntry) {
@@ -1535,6 +1571,11 @@ function getCollectionTaskGuides(
           task: "Find canonical implementation policy",
           startPath: "PROJECT_STRUCTURE.md",
           why: "Workspace docs hold the durable repo-wide implementation guidance for structure and operating conventions.",
+        },
+        {
+          task: "Decide root vs owner-local placement",
+          startPath: "BOUNDARY_SURFACES.md",
+          why: "Boundary surfaces doctrine defines what belongs at root, what stays with the owner, and why doctrine is not the same thing as general docs.",
         },
         {
           task: "Change auth, deployment, or toolchain behavior",
@@ -1602,7 +1643,7 @@ function getCollectionCiFailureGuidance(relativeDirectory: string) {
       ]
     case "workspace":
       return [
-        "start with `pnpm run script:check-doc-governance` for docs issues or `pnpm run script:check-afenda-config` for topology issues",
+        "start with `pnpm run script:check-doc-governance` for docs and doctrine issues or `pnpm run script:check-afenda-config` for topology issues",
         "regenerate docs with `pnpm run script:generate-docs-readme` after changing any generated index surface",
       ]
     default:
@@ -1792,6 +1833,11 @@ async function renderFormalDirectoryReadme(
   const description =
     target.description ??
     `This directory contains formal project documentation and generated index entries for \`${target.relativePath}\`.`
+  const normalizedRelativePath = toPosixPath(target.relativePath)
+  const effectiveDescription =
+    normalizedRelativePath === "rules"
+      ? "This directory indexes repo-wide rule artifacts and enforcement-tied policy records. It is not a general governance archive."
+      : description
 
   assertUniqueTitles(visibleEntries, target.relativePath)
   assertNonEmptyDescriptions(visibleEntries, target.relativePath)
@@ -1813,7 +1859,7 @@ async function renderFormalDirectoryReadme(
       truthClass: "derived",
     }),
     "",
-    description,
+    effectiveDescription,
   ]
 
   if (visibleEntries.length > 0) {
@@ -1828,7 +1874,9 @@ async function renderFormalDirectoryReadme(
       "",
       `## ${childSection.title}`,
       "",
-      `Markdown docs in \`${childSection.relativePath}\`.`,
+      normalizedRelativePath === "rules"
+        ? `Rule and governance records in \`${childSection.relativePath}\`.`
+        : `Markdown docs in \`${childSection.relativePath}\`.`,
       "",
       renderDocMetadataTable(target.absolutePath, childSection.entries)
     )
@@ -2141,6 +2189,7 @@ async function getDocEntries(
       const owner = parsedDoc.frontMatter.owner
       const truthStatus = parsedDoc.frontMatter.truthStatus
       const docClass = parsedDoc.frontMatter.docClass
+      const surfaceType = parsedDoc.frontMatter.surfaceType
       const relatedDomain = parsedDoc.frontMatter.relatedDomain
       const supersededBy = parsedDoc.frontMatter.supersededBy
       const order = override?.order ?? parsedDoc.frontMatter.order ?? 999
@@ -2157,6 +2206,7 @@ async function getDocEntries(
         owner,
         truthStatus,
         docClass,
+        surfaceType,
         relatedDomain,
         supersededBy,
         order,
@@ -2268,6 +2318,16 @@ function parseDoc(
     ) {
       throw new Error(
         `Front matter "docClass" must be one of ${Array.from(DOC_CLASS_VALUES).join(", ")} in ${relativePath}`
+      )
+    }
+
+    if (
+      key === "surfaceType" &&
+      typeof value === "string" &&
+      !DOC_SURFACE_TYPE_VALUES.has(value)
+    ) {
+      throw new Error(
+        `Front matter "surfaceType" must be one of ${Array.from(DOC_SURFACE_TYPE_VALUES).join(", ")} in ${relativePath}`
       )
     }
 

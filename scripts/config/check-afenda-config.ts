@@ -474,6 +474,26 @@ async function main() {
     () => "Web client src topology matches workspaceGovernance.webClientSrc."
   )
 
+  await runDiagnosticStep(
+    "Review boundary surface alignment",
+    () => {
+      const warnings = workspaceGovernanceIssues.filter(
+        (issue) =>
+          issue.rule === "boundary-surfaces" && issue.severity === "warn"
+      )
+
+      for (const warning of warnings) {
+        console.warn(`[warn] ${warning.path}: ${warning.message}`)
+      }
+
+      return warnings.length
+    },
+    (warningCount) =>
+      warningCount === 0
+        ? "Root vs owner-local boundary surfaces are aligned with current doctrine."
+        : `Boundary surface doctrine emitted ${String(warningCount)} warning(s).`
+  )
+
   console.log("Afenda config check passed")
 }
 
@@ -658,7 +678,9 @@ function assertNoWorkspaceGovernanceIssues(
   issues: Awaited<ReturnType<typeof evaluateAfendaWorkspaceGovernance>>,
   rule: (typeof issues)[number]["rule"]
 ) {
-  const matchingIssues = issues.filter((issue) => issue.rule === rule)
+  const matchingIssues = issues.filter(
+    (issue) => issue.rule === rule && issue.severity === "error"
+  )
   assert(
     matchingIssues.length === 0,
     matchingIssues.map((issue) => `${issue.path}: ${issue.message}`).join("\n")

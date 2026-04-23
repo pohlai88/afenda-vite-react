@@ -8,11 +8,11 @@
 > Truth class: `derived`
 > Do not edit directly.
 
-This directory contains small Node/TypeScript CLI utilities and script-local metadata used for repository maintenance and automation in afenda-monorepo.
+This directory contains repo-local execution surfaces: small Node/TypeScript CLIs, shared orchestration helpers, and script-local metadata used for repository maintenance and automation in afenda-monorepo.
 
 Run scripts from the repository root with `pnpm` so they use the workspace toolchain and `tsx` configuration.
 
-Layout and contribution rules (grouped areas plus one-level nesting) live in [`RULES.md`](./RULES.md).
+Layout and contribution rules (grouped areas plus one-level nesting) live in [`RULES.md`](./RULES.md). Owner-local scripts belong with the owning app, package, or feature rather than in root `scripts/`.
 
 ## Start here
 
@@ -49,17 +49,17 @@ Layout and contribution rules (grouped areas plus one-level nesting) live in [`R
 | [`afenda.config.json`](./afenda.config.json)               | Verified workspace manifest for Afenda identity, key paths, workspace defaults, and governance bindings. |
 | [`afenda.config.schema.json`](./afenda.config.schema.json) | JSON Schema for the Afenda workspace manifest.                                                           |
 | [`tsconfig.json`](./tsconfig.json)                         | Type-check configuration for this directory's Node scripts.                                              |
-| [`RULES.md`](./RULES.md)                                   | Authoritative layout, naming, and flat vs one-level-nested folder policy for `scripts/`.                 |
+| [`RULES.md`](./RULES.md)                                   | Authoritative layout, naming, and root-vs-owner-local script policy for `scripts/`.                      |
 
 ## Governed README targets
 
-| Path                    | Mode                       | Notes                                                                                                                |
-| ----------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `docs`                  | `docs-root`                | Generate the top-level documentation index for repo-wide guides.                                                     |
-| `docs`                  | `docs-collections`         | Generate README indexes for governed documentation subdirectories.                                                   |
-| `scripts`               | `scripts`                  | Generate the scripts directory index and support-file summary.                                                       |
-| `rules`                 | `generic-formal-directory` | Generate an index for durable repository governance rules, machine-readable policy, and refactor planning artifacts. |
-| `.agents/skills/shadcn` | `generic-formal-directory` | Generate an index for the in-repo shadcn skill guidance and companion markdown references.                           |
+| Path                    | Mode                       | Notes                                                                                                                        |
+| ----------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `docs`                  | `docs-root`                | Generate the top-level documentation index for repo-wide guides.                                                             |
+| `docs`                  | `docs-collections`         | Generate README indexes for governed documentation subdirectories.                                                           |
+| `scripts`               | `scripts`                  | Generate the scripts directory index and support-file summary.                                                               |
+| `rules`                 | `generic-formal-directory` | Generate an index for durable repository governance rules, machine-readable policy, and enforcement-tied governance records. |
+| `.agents/skills/shadcn` | `generic-formal-directory` | Generate an index for the in-repo shadcn skill guidance and companion markdown references.                                   |
 
 ## Related
 
