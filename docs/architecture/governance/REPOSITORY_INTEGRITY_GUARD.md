@@ -27,6 +27,7 @@ Decision anchor and contract baseline:
 
 - [ADR-0008 repository integrity guard architecture](../adr/ADR-0008-repository-integrity-guard-architecture.md)
 - [ATC-0005 repository integrity guard baseline](../atc/ATC-0005-repository-integrity-guard-baseline.md)
+- [Governance guardrail handoff](./GOVERNANCE_GUARDRAIL_HANDOFF.md)
 - [Repo guardrail todo](./REPO_GUARDRAIL_TODO.md)
 - [Repo guard repo map](./REPO_GUARD_REPO_MAP.md)
 - [Repo guard activation plan](./REPO_GUARD_ACTIVATION_PLAN.md)
@@ -167,3 +168,5 @@ doctrine -> contract binding -> guardrail -> evidence -> CI verdict
 ```
 
 Its role is to summarize whether the repository is still legitimate enough to trust as a whole.
+
+For the current program-level handoff state, start with [Governance guardrail handoff](./GOVERNANCE_GUARDRAIL_HANDOFF.md).
