@@ -778,7 +778,6 @@ export function renderGovernanceRegisterMarkdown(
     "",
     "## Summary",
     "",
-    `- Generated at: ${report.generatedAt}`,
     `- Final verdict: \`${report.summary.finalVerdict}\``,
     `- Verdict explanation: ${report.summary.finalVerdictExplanation}`,
     `- Verdict reasons: ${report.summary.verdictReasons.join(", ")}`,

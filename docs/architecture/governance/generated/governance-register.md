@@ -17,7 +17,6 @@ This register is generated from `scripts/afenda.config.json` and the latest gove
 
 ## Summary
 
-- Generated at: 2026-04-23T09:35:10.098Z
 - Final verdict: `warn`
 - Verdict explanation: warn: no blocking failures, but warned domains have drift or incomplete evidence (GOV-TRUTH-001)
 - Verdict reasons: warned-domain
