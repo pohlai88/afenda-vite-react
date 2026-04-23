@@ -17,12 +17,12 @@ This register is generated from `scripts/afenda.config.json` and the latest gove
 
 ## Summary
 
-- Final verdict: `warn`
-- Verdict explanation: warn: no blocking failures, but warned domains have drift or incomplete evidence (GOV-TRUTH-001)
-- Verdict reasons: warned-domain
+- Final verdict: `pass`
+- Verdict explanation: pass: no blocking failures, no expired waivers, and all enforced domains emitted evidence (11/11 reports present)
+- Verdict reasons: all-clear
 - Domains: 11
-- Passed: 10
-- Warned: 1
+- Passed: 11
+- Warned: 0
 - Blocked: 0
 - Observed: 0
 - Evidence complete: 11 / 11
@@ -36,9 +36,9 @@ This register is generated from `scripts/afenda.config.json` and the latest gove
 - Enforcement maturity counts:
   defined=0, measured=0, warned=3, blocking=8, runtime-enforced=0
 - Violation severity counts:
-  info=0, warn=6, error=0, fatal=0
+  info=0, warn=0, error=0, fatal=0
 - Blocked domains: none
-- Warned domains: `GOV-TRUTH-001`
+- Warned domains: none
 
 ## Domains
 
