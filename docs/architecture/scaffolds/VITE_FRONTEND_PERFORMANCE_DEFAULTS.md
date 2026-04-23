@@ -1,15 +1,20 @@
 ---
+title: Performance defaults scaffold
+description: Supporting checklist for frontend performance defaults, budgets, diagnostics, and red flags in Vite SPA work.
+status: template
 owner: governance-toolchain
 truthStatus: supporting
 docClass: supporting-doc
+surfaceType: doctrine
 relatedDomain: frontend-performance
+order: 50
 ---
 
 # Performance Defaults (Scaffold)
 
 These defaults are the baseline for scalable Vite SPA performance.
-
-Canonical performance and Vite workspace policy stay in [`../PERFORMANCE.md`](../PERFORMANCE.md) and [`../VITE_ENTERPRISE_WORKSPACE.md`](../VITE_ENTERPRISE_WORKSPACE.md). This file is a supporting checklist for applying those rules to new frontend work.
+Use this when setting a baseline for new frontend work or reviewing drift.
+It does not replace the canonical performance and Vite workspace policy in [`../../workspace/PERFORMANCE.md`](../../workspace/PERFORMANCE.md) and [`../../workspace/VITE_ENTERPRISE_WORKSPACE.md`](../../workspace/VITE_ENTERPRISE_WORKSPACE.md).
 
 ## 1) Initial Load Strategy
 

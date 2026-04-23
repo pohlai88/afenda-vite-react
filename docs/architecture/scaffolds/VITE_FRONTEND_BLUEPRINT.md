@@ -1,17 +1,20 @@
 ---
+title: Vite frontend blueprint
+description: Supporting blueprint for assembling a Vite frontend baseline that matches current Afenda workspace doctrine and topology.
+status: template
 owner: governance-toolchain
 truthStatus: supporting
 docClass: supporting-doc
+surfaceType: doctrine
 relatedDomain: vite-blueprint
+order: 10
 ---
 
 # Vite Frontend Blueprint
 
-This document defines the ideal scaffold baseline for a scalable, maintainable Vite frontend in Afenda-style monorepos.
-
-Use this when creating a new app or resetting architecture drift.
-
-Canonical policy stays in [`../VITE_ENTERPRISE_WORKSPACE.md`](../VITE_ENTERPRISE_WORKSPACE.md) and [`../PROJECT_STRUCTURE.md`](../PROJECT_STRUCTURE.md). This file is the supporting implementation pack that ties those policies into one starting blueprint.
+This document defines the supporting scaffold baseline for a scalable, maintainable Vite frontend in the current Afenda workspace.
+Use it when creating a new app or resetting architecture drift.
+It does not replace the canonical workspace policy in [`../../workspace/VITE_ENTERPRISE_WORKSPACE.md`](../../workspace/VITE_ENTERPRISE_WORKSPACE.md) and [`../../workspace/PROJECT_STRUCTURE.md`](../../workspace/PROJECT_STRUCTURE.md).
 
 ## Scope
 
@@ -25,31 +28,36 @@ Canonical policy stays in [`../VITE_ENTERPRISE_WORKSPACE.md`](../VITE_ENTERPRISE
 
 Paths below are relative to `apps/web/src`:
 
-- `features/`: domain modules (`auth`, `finance`, `inventory`, etc.)
-- `share/`: cross-feature infrastructure (routing, providers, query, i18n, shared shell UI, theme, reusable hooks)
-- `pages/`: public marketing-only pages
+- `app/_features/`: product feature ownership
+- `app/_platform/`: app-wide platform runtime, shell, auth, tenant, i18n
+- `marketing/`: public marketing ownership
+- `routes/`: route composition
+- `rpc/`: typed RPC/client contracts
+- `share/`: cross-cutting code that does not belong to one feature or one platform slice
 
-Do not add a fourth top-level `src/components/`; put shared composition under `share/components/` and primitives in `packages/shadcn-ui-deprecated`.
+Do not add a new top-level `src/components/`; keep shared composition in `share/` and feature-owned code inside the owning feature or platform slice.
 
 Feature module contract:
 
 ```text
-features/<feature-name>/
+app/_features/<feature-name>/
 ├── components/
 ├── hooks/
 ├── services/
 ├── types/
-├── actions/
-├── utils/
-└── index.ts
+├── docs/                 # optional owner-local guidance
+├── scripts/              # optional owner-local tooling
+├── schema/               # optional owner-local schema
+├── tests/ or __tests__/  # owner-local verification
+└── index.ts              # only when intentional public surface is needed
 ```
 
 ## Design Rules
 
-1. Keep business UI in `features/*`, not in `share/*`.
+1. Keep business UI in `app/_features/*`, not in `share/*`.
 2. Keep cross-feature concerns in `share/*`, not at `src/` root.
-3. Keep `pages/*` for public/marketing routes only.
-4. Keep UI primitives in `@afenda/shadcn-ui-deprecated` (`packages/shadcn-ui-deprecated`), not copied in app code.
+3. Keep marketing ownership in `marketing/*`, not mixed into product features.
+4. Keep platform runtime concerns in `app/_platform/*`, not scattered across feature roots.
 5. Use feature root `index.ts` as each module's public API to avoid deep-import coupling.
 
 ## Vite Core Rules
@@ -68,6 +76,7 @@ features/<feature-name>/
 - Feature template: [VITE_FRONTEND_FEATURE_TEMPLATE.md](./VITE_FRONTEND_FEATURE_TEMPLATE.md)
 - Performance defaults: [VITE_FRONTEND_PERFORMANCE_DEFAULTS.md](./VITE_FRONTEND_PERFORMANCE_DEFAULTS.md)
 - CI quality gates: [VITE_FRONTEND_CI_GATES.md](./VITE_FRONTEND_CI_GATES.md)
+- Governance authoring template: [GOVERNANCE_AUTHORING_TEMPLATE.md](./GOVERNANCE_AUTHORING_TEMPLATE.md)
 
 ## Adoption Sequence
 

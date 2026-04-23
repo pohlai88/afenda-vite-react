@@ -1,15 +1,20 @@
 ---
+title: Vite config template
+description: Supporting starter template for `vite.config.ts`, preload recovery, and env contract authoring in Vite frontend apps.
+status: template
 owner: governance-toolchain
 truthStatus: supporting
 docClass: supporting-doc
+surfaceType: doctrine
 relatedDomain: vite-template
+order: 30
 ---
 
 # Vite Config Template (Scaffold)
 
 Use this as the default `vite.config.ts` baseline for new frontend apps.
-
-Canonical Vite policy stays in [`../VITE_ENTERPRISE_WORKSPACE.md`](../VITE_ENTERPRISE_WORKSPACE.md) and workspace tooling rules stay in [`../PROJECT_CONFIGURATION.md`](../PROJECT_CONFIGURATION.md). This file is a supporting starter template, not the governing truth.
+It should be used when bootstrapping or re-baselining a Vite frontend app.
+It does not replace the canonical Vite policy in [`../../workspace/VITE_ENTERPRISE_WORKSPACE.md`](../../workspace/VITE_ENTERPRISE_WORKSPACE.md) or the tooling rules in [`../../workspace/PROJECT_CONFIGURATION.md`](../../workspace/PROJECT_CONFIGURATION.md).
 
 ```ts
 /// <reference types="vitest/config" />

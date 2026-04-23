@@ -1,15 +1,20 @@
 ---
+title: CI quality gates scaffold
+description: Supporting scaffold for release-readiness gates that should be applied to Vite frontend work in the Afenda workspace.
+status: template
 owner: governance-toolchain
 truthStatus: supporting
 docClass: supporting-doc
+surfaceType: doctrine
 relatedDomain: frontend-ci
+order: 20
 ---
 
 # CI Quality Gates (Scaffold)
 
 Use this checklist as non-negotiable CI policy for Vite frontend release readiness.
-
-Canonical workspace release policy stays in [`../VITE_ENTERPRISE_WORKSPACE.md`](../VITE_ENTERPRISE_WORKSPACE.md), [`../TESTING.md`](../TESTING.md), and [`../PROJECT_CONFIGURATION.md`](../PROJECT_CONFIGURATION.md). This file is the supporting gate checklist applied during frontend rollout and review.
+It should be used during rollout and review of frontend changes.
+It does not replace the canonical workspace policy in [`../../workspace/VITE_ENTERPRISE_WORKSPACE.md`](../../workspace/VITE_ENTERPRISE_WORKSPACE.md), [`../../workspace/TESTING.md`](../../workspace/TESTING.md), and [`../../workspace/PROJECT_CONFIGURATION.md`](../../workspace/PROJECT_CONFIGURATION.md).
 
 ## Required Gates
 
