@@ -110,7 +110,8 @@ export function validateReviewedSurvivalForRollout(
       issues.push({
         code: "marker-ledger-mismatch",
         path: filePath,
-        message: "Reviewed exception is configured but missing from the ledger.",
+        message:
+          "Reviewed exception is configured but missing from the ledger.",
       })
       continue
     }
@@ -119,7 +120,8 @@ export function validateReviewedSurvivalForRollout(
       issues.push({
         code: "missing-marker",
         path: filePath,
-        message: "Reviewed exception is configured but the file has no reviewed-survival marker.",
+        message:
+          "Reviewed exception is configured but the file has no reviewed-survival marker.",
       })
       continue
     }
@@ -171,9 +173,7 @@ export function validateReviewedSurvivalForRollout(
 
   return {
     rolloutId: rollout.id,
-    ledgerPath: normalizeWorkspacePath(
-      path.relative(repoRoot, ledgerPath)
-    ),
+    ledgerPath: normalizeWorkspacePath(path.relative(repoRoot, ledgerPath)),
     reviewedExceptionCount: reviewedExceptionSet.size,
     issueCount: issues.length,
     issues: issues.sort((left, right) => left.path.localeCompare(right.path)),
@@ -205,12 +205,17 @@ function validateMarker({
     issues.push({
       code: "invalid-marker",
       path: filePath,
-      message: "Reviewed-survival marker is missing one or more required fields.",
+      message:
+        "Reviewed-survival marker is missing one or more required fields.",
     })
     return issues
   }
 
-  if (!REVIEWED_SURVIVAL_ALLOWED_ROLES.includes(marker.role as ReviewedSurvivalRole)) {
+  if (
+    !REVIEWED_SURVIVAL_ALLOWED_ROLES.includes(
+      marker.role as ReviewedSurvivalRole
+    )
+  ) {
     issues.push({
       code: "invalid-marker",
       path: filePath,
@@ -242,7 +247,8 @@ function validateMarker({
     issues.push({
       code: "invalid-marker",
       path: filePath,
-      message: "Marker reviewed-on and review-by must be ISO dates (YYYY-MM-DD).",
+      message:
+        "Marker reviewed-on and review-by must be ISO dates (YYYY-MM-DD).",
     })
   } else if (marker.reviewBy < marker.reviewedOn) {
     issues.push({
@@ -263,7 +269,8 @@ function validateMarker({
   const mismatchFields: string[] = []
   if (normalizedLedgerEntry.role !== marker.role) mismatchFields.push("role")
   if (normalizedLedgerEntry.owner !== marker.owner) mismatchFields.push("owner")
-  if (normalizedLedgerEntry.reason !== marker.reason) mismatchFields.push("reason")
+  if (normalizedLedgerEntry.reason !== marker.reason)
+    mismatchFields.push("reason")
   if (normalizedLedgerEntry.reviewedOn !== marker.reviewedOn)
     mismatchFields.push("reviewedOn")
   if (normalizedLedgerEntry.reviewBy !== marker.reviewBy)
@@ -375,10 +382,7 @@ function parseReviewedSurvivalSidecar(
   }
 }
 
-function extractAnnotatedBlock(
-  source: string,
-  pattern: RegExp
-): string | null {
+function extractAnnotatedBlock(source: string, pattern: RegExp): string | null {
   const match = source.match(pattern)
   if (!match || !match[1]?.includes(REVIEWED_SURVIVAL_TAG)) {
     return null

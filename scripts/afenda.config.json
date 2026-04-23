@@ -62,11 +62,7 @@
           "apps/web/src/marketing/marketing-loading-fallback.tsx"
         ],
         "rolePatterns": {
-          "routeOwner": [
-            "**/page.tsx",
-            "**/*-page.tsx",
-            "pages/landing/*.tsx"
-          ],
+          "routeOwner": ["**/page.tsx", "**/*-page.tsx", "pages/landing/*.tsx"],
           "contentOwner": [
             "**/content.ts",
             "**/*-editorial.ts",

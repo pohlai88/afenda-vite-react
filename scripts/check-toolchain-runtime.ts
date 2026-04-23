@@ -127,7 +127,7 @@ function resolveWindowsPnpmShimDiagnostic(
       return null
     }
 
-      return [
+    return [
       "Toolchain governance warning:",
       `pnpm shim "${pnpmShimPath}" boots with "${shimNodePath}" at Node ${shimNodeVersion},`,
       `but .npmrc requires Node ${expectedNodeVersion}.`,

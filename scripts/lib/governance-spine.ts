@@ -153,7 +153,9 @@ export async function readRootPackageScripts(
   return manifest.scripts ?? {}
 }
 
-export function evaluateGovernanceRegistry(config: AfendaConfig): GovernanceIssue[] {
+export function evaluateGovernanceRegistry(
+  config: AfendaConfig
+): GovernanceIssue[] {
   const issues: GovernanceIssue[] = []
   const seenFamilies = new Set<string>()
   const seenDomainIds = new Set<string>()
@@ -412,7 +414,9 @@ export function evaluateGovernanceWaivers(
   const domainMap = new Map(
     config.governance.domains.map((domain) => [domain.id, domain] as const)
   )
-  const knownDomainIds = new Set(config.governance.domains.map((domain) => domain.id))
+  const knownDomainIds = new Set(
+    config.governance.domains.map((domain) => domain.id)
+  )
   const knownPolicyPrefixes = new Set(config.governance.idFamilies)
   const seenWaiverIds = new Set<string>()
   let activeWaiverCount = 0
@@ -516,7 +520,6 @@ export function evaluateGovernanceWaivers(
       activeWaiverCount += 1
       activeWaivers.push(waiver)
     }
-
   }
 
   return {
@@ -536,7 +539,10 @@ export async function writeGovernanceWaiverReport(
   config: AfendaConfig,
   report: GovernanceWaiverReport
 ): Promise<void> {
-  await writeJsonFile(path.join(repoRoot, config.governance.waivers.reportPath), report)
+  await writeJsonFile(
+    path.join(repoRoot, config.governance.waivers.reportPath),
+    report
+  )
 }
 
 export async function runGovernanceChecks(
@@ -591,7 +597,12 @@ export async function runGovernanceChecks(
       }
     }
 
-    const report = buildGovernanceDomainReport(domain, generatedAt, executions, violations)
+    const report = buildGovernanceDomainReport(
+      domain,
+      generatedAt,
+      executions,
+      violations
+    )
     reports.push(report)
     await writeJsonFile(path.join(repoRoot, domain.evidencePath), report)
 
@@ -660,14 +671,7 @@ export function buildGovernanceAggregateReport(
     (report) => report.evidenceComplete
   ).length
   const lifecycleCounts = countByEnum<GovernanceLifecycleStatus>(
-    [
-      "watcher",
-      "bound",
-      "partial",
-      "enforced",
-      "drifted",
-      "retired",
-    ],
+    ["watcher", "bound", "partial", "enforced", "drifted", "retired"],
     registeredDomains.map((domain) => domain.lifecycleStatus)
   )
   const enforcementMaturityCounts = countByEnum<GovernanceEnforcementMaturity>(
@@ -705,20 +709,16 @@ export function buildGovernanceAggregateReport(
     totalDomains: registeredDomains.length,
     passedDomains: effectiveDomainReports.filter(
       (report) => report.ciOutcome === "passed"
-    )
-      .length,
+    ).length,
     warnedDomains: effectiveDomainReports.filter(
       (report) => report.ciOutcome === "warned"
-    )
-      .length,
+    ).length,
     blockedDomains: effectiveDomainReports.filter(
       (report) => report.ciOutcome === "blocked"
-    )
-      .length,
+    ).length,
     observedDomains: effectiveDomainReports.filter(
       (report) => report.ciOutcome === "observed"
-    )
-      .length,
+    ).length,
     lifecycleCounts,
     enforcementMaturityCounts,
     violationSeverityCounts,
@@ -803,7 +803,13 @@ export function renderGovernanceRegisterMarkdown(
     )
   }
 
-  lines.push("", "## Gates", "", "| Gate | Title | CI behavior | Command |", "| --- | --- | --- | --- |")
+  lines.push(
+    "",
+    "## Gates",
+    "",
+    "| Gate | Title | CI behavior | Command |",
+    "| --- | --- | --- | --- |"
+  )
 
   for (const gate of config.governance.gates) {
     lines.push(
@@ -893,21 +899,24 @@ export function evaluateGovernanceRegisterConsistency(
   if (snapshot.aggregateGeneratedAt !== report.generatedAt) {
     issues.push({
       scope: "governance.registerSnapshot",
-      message: "Register snapshot aggregateGeneratedAt does not match the aggregate report.",
+      message:
+        "Register snapshot aggregateGeneratedAt does not match the aggregate report.",
     })
   }
 
   if (snapshot.registerPath !== config.governance.evidence.registerPath) {
     issues.push({
       scope: "governance.registerSnapshot",
-      message: "Register snapshot registerPath does not match governance.evidence.registerPath.",
+      message:
+        "Register snapshot registerPath does not match governance.evidence.registerPath.",
     })
   }
 
   if (snapshot.finalVerdict !== report.summary.finalVerdict) {
     issues.push({
       scope: "governance.registerSnapshot",
-      message: "Register snapshot finalVerdict does not match aggregate summary finalVerdict.",
+      message:
+        "Register snapshot finalVerdict does not match aggregate summary finalVerdict.",
     })
   }
 
@@ -917,7 +926,8 @@ export function evaluateGovernanceRegisterConsistency(
   ) {
     issues.push({
       scope: "governance.registerSnapshot",
-      message: "Register snapshot blockedDomainIds do not match aggregate summary blockedDomainIds.",
+      message:
+        "Register snapshot blockedDomainIds do not match aggregate summary blockedDomainIds.",
     })
   }
 
@@ -927,14 +937,16 @@ export function evaluateGovernanceRegisterConsistency(
   ) {
     issues.push({
       scope: "governance.registerSnapshot",
-      message: "Register snapshot warnedDomainIds do not match aggregate summary warnedDomainIds.",
+      message:
+        "Register snapshot warnedDomainIds do not match aggregate summary warnedDomainIds.",
     })
   }
 
   if (snapshot.domainRows.length !== config.governance.domains.length) {
     issues.push({
       scope: "governance.registerSnapshot",
-      message: "Register snapshot domain row count does not match configured governance domains.",
+      message:
+        "Register snapshot domain row count does not match configured governance domains.",
     })
   }
 
@@ -966,7 +978,10 @@ export function evaluateGovernanceRegisterConsistency(
   return issues
 }
 
-export async function writeJsonFile(filePath: string, value: unknown): Promise<void> {
+export async function writeJsonFile(
+  filePath: string,
+  value: unknown
+): Promise<void> {
   await fs.mkdir(path.dirname(filePath), { recursive: true })
   await fs.writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8")
 }
@@ -1084,10 +1099,7 @@ function resolveVerdictReasons(input: {
   if (!input.waiverReport.valid) {
     reasons.push("waiver-violation")
   }
-  if (
-    reasons.length === 0 &&
-    input.warnedDomainIds.length > 0
-  ) {
+  if (reasons.length === 0 && input.warnedDomainIds.length > 0) {
     reasons.push("warned-domain")
   }
   if (reasons.length === 0) {
@@ -1111,7 +1123,9 @@ function expectedCiBehaviorForTier(tier: GovernanceTier): GovernanceCiBehavior {
   return "block"
 }
 
-function expectedCiBehaviorForGate(gateId: string): GovernanceCiBehavior | null {
+function expectedCiBehaviorForGate(
+  gateId: string
+): GovernanceCiBehavior | null {
   return gateId.startsWith("GOV-CI-GATE-") ? "block" : null
 }
 
@@ -1148,10 +1162,7 @@ function validateMaturityBehavior(
     return 'Enforcement maturity "defined" must use ciBehavior "observe".'
   }
 
-  if (
-    domain.enforcementMaturity === "warned" &&
-    domain.ciBehavior !== "warn"
-  ) {
+  if (domain.enforcementMaturity === "warned" && domain.ciBehavior !== "warn") {
     return 'Enforcement maturity "warned" must use ciBehavior "warn".'
   }
 
@@ -1280,7 +1291,10 @@ function applyWaiversToDomainReports(
       ...report,
       violations: effectiveViolations,
       driftDetected: report.driftDetected || effectiveViolations.length > 0,
-      ciOutcome: resolveCiOutcome(report.ciBehavior, effectiveViolations.length > 0),
+      ciOutcome: resolveCiOutcome(
+        report.ciBehavior,
+        effectiveViolations.length > 0
+      ),
     }
   })
 }

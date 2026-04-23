@@ -166,7 +166,10 @@ async function main() {
           domain.docs.primary,
           `governance.domains[${index}].docs.primary`
         )
-        for (const [referenceIndex, reference] of domain.docs.references.entries()) {
+        for (const [
+          referenceIndex,
+          reference,
+        ] of domain.docs.references.entries()) {
           assertRelativeWorkspacePath(
             reference,
             `governance.domains[${index}].docs.references[${referenceIndex}]`
@@ -230,7 +233,10 @@ async function main() {
           scopeIndex,
           protectedScope,
         ] of rollout.protectedScopes.entries()) {
-          for (const [rootIndex, protectedRoot] of protectedScope.roots.entries()) {
+          for (const [
+            rootIndex,
+            protectedRoot,
+          ] of protectedScope.roots.entries()) {
             assertRelativeWorkspacePath(
               protectedRoot,
               `fileSurvival.rollouts[${index}].protectedScopes[${scopeIndex}].roots[${rootIndex}]`

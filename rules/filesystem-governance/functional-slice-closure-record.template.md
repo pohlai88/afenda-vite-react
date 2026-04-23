@@ -35,10 +35,10 @@ Use this after a slice is implemented and validated.
 
 Operational path:
 
-1. 
-2. 
-3. 
-4. 
+1.
+2.
+3.
+4.
 
 ---
 
@@ -116,9 +116,7 @@ List only commands or checks actually executed.
 
 Validation not executed:
 
-- 
-
----
+- ***
 
 ## 8. Evaluation Scorecard
 
@@ -145,19 +143,17 @@ Overall:
 
 Only list material improvements created by this slice.
 
-- 
-- 
-- 
-
----
+-
+-
+- ***
 
 ## 10. Remaining Debt
 
 Only list debt that still exists after the slice closes.
 
-- 
-- 
-- 
+-
+-
+-
 
 Mark each as one of:
 
@@ -192,10 +188,8 @@ Record the exact wrong patterns this slice revealed.
 
 Add specific notes:
 
-- 
-- 
-
----
+-
+- ***
 
 ## 13. Enforcement Upgrade Rule
 

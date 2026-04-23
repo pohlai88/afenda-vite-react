@@ -33,12 +33,11 @@ for (const rollout of rollouts) {
   const reviewedSurvivalAudit = validateReviewedSurvivalForRollout(rollout, {
     repoRoot: workspaceRoot,
   })
-  const blockingFindings = report.findings.filter((finding) => finding.ciBlocking)
+  const blockingFindings = report.findings.filter(
+    (finding) => finding.ciBlocking
+  )
 
-  if (
-    blockingFindings.length === 0 &&
-    reviewedSurvivalAudit.issueCount === 0
-  ) {
+  if (blockingFindings.length === 0 && reviewedSurvivalAudit.issueCount === 0) {
     console.log(
       `[ok] ${rollout.id}: no policy-blocking file-survival findings (${report.rolloutStatus}, trust=${report.reportTrust})`
     )
@@ -56,7 +55,9 @@ for (const rollout of rollouts) {
     )
   }
   for (const issue of reviewedSurvivalAudit.issues.slice(0, 10)) {
-    console.error(`  - [reviewed-survival:${issue.code}] ${issue.path} :: ${issue.message}`)
+    console.error(
+      `  - [reviewed-survival:${issue.code}] ${issue.path} :: ${issue.message}`
+    )
   }
 }
 

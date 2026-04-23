@@ -499,7 +499,10 @@ export function assertAfendaConfigShape(
     "workspaceGovernance.webClientSrc.enforce must be a boolean."
   )
 
-  assert(isRecord(value.governance), "Afenda config governance must be an object.")
+  assert(
+    isRecord(value.governance),
+    "Afenda config governance must be an object."
+  )
   assert(
     typeof value.governance.version === "number" &&
       Number.isInteger(value.governance.version) &&
@@ -507,7 +510,10 @@ export function assertAfendaConfigShape(
     "governance.version must be an integer >= 1."
   )
   assertStringArray(value.governance.idFamilies, "governance.idFamilies")
-  assert(Array.isArray(value.governance.domains), "governance.domains must be an array.")
+  assert(
+    Array.isArray(value.governance.domains),
+    "governance.domains must be an array."
+  )
   assert(
     value.governance.domains.length > 0,
     "governance.domains must contain at least one domain."
@@ -515,7 +521,10 @@ export function assertAfendaConfigShape(
   value.governance.domains.forEach((domain, index) => {
     assertGovernanceDomainDefinition(domain, `governance.domains[${index}]`)
   })
-  assert(Array.isArray(value.governance.gates), "governance.gates must be an array.")
+  assert(
+    Array.isArray(value.governance.gates),
+    "governance.gates must be an array."
+  )
   assert(
     value.governance.gates.length > 0,
     "governance.gates must contain at least one gate."
@@ -527,7 +536,10 @@ export function assertAfendaConfigShape(
     isRecord(value.governance.evidence),
     "governance.evidence must be an object."
   )
-  assertNonEmptyString(value.governance.evidence.root, "governance.evidence.root")
+  assertNonEmptyString(
+    value.governance.evidence.root,
+    "governance.evidence.root"
+  )
   assertNonEmptyString(
     value.governance.evidence.aggregateReportPath,
     "governance.evidence.aggregateReportPath"
@@ -599,7 +611,10 @@ export function assertGovernanceDomainDefinition(
   assertNonEmptyString(value.id, `${label}.id`)
   assertNonEmptyString(value.title, `${label}.title`)
   assertNonEmptyString(value.owner, `${label}.owner`)
-  assertGovernanceLifecycleStatus(value.lifecycleStatus, `${label}.lifecycleStatus`)
+  assertGovernanceLifecycleStatus(
+    value.lifecycleStatus,
+    `${label}.lifecycleStatus`
+  )
   assertGovernanceEnforcementMaturity(
     value.enforcementMaturity,
     `${label}.enforcementMaturity`
@@ -611,7 +626,10 @@ export function assertGovernanceDomainDefinition(
   assertStringArrayAllowEmpty(value.docs.references, `${label}.docs.references`)
   assertNonEmptyString(value.localConfig, `${label}.localConfig`)
   assert(Array.isArray(value.checks), `${label}.checks must be an array.`)
-  assert(value.checks.length > 0, `${label}.checks must contain at least one check.`)
+  assert(
+    value.checks.length > 0,
+    `${label}.checks must contain at least one check.`
+  )
   value.checks.forEach((check, index) => {
     assertGovernanceCommandDefinition(check, `${label}.checks[${index}]`)
   })
@@ -669,12 +687,12 @@ export function assertFileSurvivalRolloutDefinition(
     `${label}.protectedScopes must contain at least one protected scope.`
   )
   value.protectedScopes.forEach((scope, index) => {
-    assert(isRecord(scope), `${label}.protectedScopes[${index}] must be an object.`)
-    assertNonEmptyString(scope.id, `${label}.protectedScopes[${index}].id`)
-    assertStringArray(
-      scope.roots,
-      `${label}.protectedScopes[${index}].roots`
+    assert(
+      isRecord(scope),
+      `${label}.protectedScopes[${index}] must be an object.`
     )
+    assertNonEmptyString(scope.id, `${label}.protectedScopes[${index}].id`)
+    assertStringArray(scope.roots, `${label}.protectedScopes[${index}].roots`)
   })
   assert(
     Array.isArray(value.ownerTruth),
@@ -685,7 +703,10 @@ export function assertFileSurvivalRolloutDefinition(
     `${label}.ownerTruth must contain at least one owner rule.`
   )
   value.ownerTruth.forEach((ownerRule, index) => {
-    assert(isRecord(ownerRule), `${label}.ownerTruth[${index}] must be an object.`)
+    assert(
+      isRecord(ownerRule),
+      `${label}.ownerTruth[${index}] must be an object.`
+    )
     assertNonEmptyString(ownerRule.root, `${label}.ownerTruth[${index}].root`)
     assertNonEmptyString(ownerRule.owner, `${label}.ownerTruth[${index}].owner`)
   })
@@ -711,9 +732,7 @@ export function assertFileSurvivalRolloutDefinition(
   )
   value.blockingPolicy.blockingConfidence.forEach((confidence, index) => {
     assert(
-      confidence === "high" ||
-        confidence === "medium" ||
-        confidence === "low",
+      confidence === "high" || confidence === "medium" || confidence === "low",
       `${label}.blockingPolicy.blockingConfidence[${index}] must be one of: high, medium, low.`
     )
   })
@@ -739,7 +758,10 @@ export function assertFileSurvivalRolloutDefinition(
       )
     }
   )
-  assert(Array.isArray(value.rolePrecedence), `${label}.rolePrecedence must be an array.`)
+  assert(
+    Array.isArray(value.rolePrecedence),
+    `${label}.rolePrecedence must be an array.`
+  )
   assert(
     value.rolePrecedence.length === FILE_SURVIVAL_ROLE_PRECEDENCE.length,
     `${label}.rolePrecedence must contain exactly ${String(FILE_SURVIVAL_ROLE_PRECEDENCE.length)} items.`
@@ -766,7 +788,10 @@ export function assertFileSurvivalRolloutDefinition(
     isRecord(value.rolePatterns),
     `${label}.rolePatterns must be an object.`
   )
-  assertStringArray(value.rolePatterns.routeOwner, `${label}.rolePatterns.routeOwner`)
+  assertStringArray(
+    value.rolePatterns.routeOwner,
+    `${label}.rolePatterns.routeOwner`
+  )
   assertStringArray(
     value.rolePatterns.contentOwner,
     `${label}.rolePatterns.contentOwner`
@@ -846,9 +871,7 @@ export function assertGovernanceLifecycleStatus(
   label: string
 ): asserts value is GovernanceLifecycleStatus {
   assert(
-    GOVERNANCE_LIFECYCLE_STATUSES.includes(
-      value as GovernanceLifecycleStatus
-    ),
+    GOVERNANCE_LIFECYCLE_STATUSES.includes(value as GovernanceLifecycleStatus),
     `${label} must be one of: ${GOVERNANCE_LIFECYCLE_STATUSES.join(", ")}.`
   )
 }

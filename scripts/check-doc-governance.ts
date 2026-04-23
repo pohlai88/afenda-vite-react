@@ -26,7 +26,16 @@ const termExpectations = [
   },
   {
     file: "docs/architecture/governance/GOVERNANCE_GLOSSARY.md",
-    patterns: ["Policy", "Contract", "Guardrail", "Evidence", "Drift", "Regression", "Waiver", "Gate"],
+    patterns: [
+      "Policy",
+      "Contract",
+      "Guardrail",
+      "Evidence",
+      "Drift",
+      "Regression",
+      "Waiver",
+      "Gate",
+    ],
   },
   {
     file: "docs/architecture/governance/NAMING_CONVENTION.md",
@@ -73,10 +82,14 @@ for (const expectation of termExpectations) {
   }
 }
 
-const atcEntries = await fs.readdir(ATC_ROOT, { withFileTypes: true }).catch(() => [])
+const atcEntries = await fs
+  .readdir(ATC_ROOT, { withFileTypes: true })
+  .catch(() => [])
 const knownAtcIds = new Set(
   atcEntries
-    .filter((entry) => entry.isFile() && /^ATC-[0-9]{4}.*\.md$/u.test(entry.name))
+    .filter(
+      (entry) => entry.isFile() && /^ATC-[0-9]{4}.*\.md$/u.test(entry.name)
+    )
     .map((entry) => entry.name.match(/^(ATC-[0-9]{4})/u)?.[1])
     .filter((value): value is string => Boolean(value))
 )
@@ -91,9 +104,7 @@ const adrFiles = decisionEntries
 for (const adrPath of adrFiles) {
   const relativePath = path.relative(workspaceRoot, adrPath)
   const content = await fs.readFile(adrPath, "utf8")
-  const relatedAtcs = content.match(
-    /- \*\*Related ATCs:\*\*\s*([^\n]+)/u
-  )?.[1]
+  const relatedAtcs = content.match(/- \*\*Related ATCs:\*\*\s*([^\n]+)/u)?.[1]
 
   if (!relatedAtcs) {
     continue
@@ -116,7 +127,9 @@ if (issues.length === 0) {
   process.exit(0)
 }
 
-console.error(`Documentation governance check found ${String(issues.length)} issue(s):`)
+console.error(
+  `Documentation governance check found ${String(issues.length)} issue(s):`
+)
 for (const issue of issues) {
   console.error(`- ${issue}`)
 }

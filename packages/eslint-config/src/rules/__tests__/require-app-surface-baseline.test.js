@@ -30,10 +30,7 @@ async function lintFile(input) {
           },
         },
         rules: {
-          "afenda-ui/require-app-surface-baseline": [
-            "error",
-            input.options,
-          ],
+          "afenda-ui/require-app-surface-baseline": ["error", input.options],
         },
       },
     ],
@@ -112,8 +109,12 @@ describe("require-app-surface-baseline", () => {
     })
 
     expect(messages).toHaveLength(2)
-    expect(messages.some((message) => message.message.includes('"PageShell"'))).toBe(true)
-    expect(messages.some((message) => message.message.includes('"AppLoadingState"'))).toBe(true)
+    expect(
+      messages.some((message) => message.message.includes('"PageShell"'))
+    ).toBe(true)
+    expect(
+      messages.some((message) => message.message.includes('"AppLoadingState"'))
+    ).toBe(true)
   })
 
   it("requires embedded mode for the settings route surface", async () => {
@@ -163,7 +164,11 @@ describe("require-app-surface-baseline", () => {
     })
 
     expect(messages).toHaveLength(2)
-    expect(messages.some((message) => message.message.includes('"StateSurface"'))).toBe(true)
-    expect(messages.some((message) => message.message.includes('"ui-page"'))).toBe(true)
+    expect(
+      messages.some((message) => message.message.includes('"StateSurface"'))
+    ).toBe(true)
+    expect(
+      messages.some((message) => message.message.includes('"ui-page"'))
+    ).toBe(true)
   })
 })

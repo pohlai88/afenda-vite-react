@@ -214,7 +214,8 @@ const NAMING_GOVERNED_ROOTS: readonly NamingGovernedRoot[] = [
       testNamingRules: ["<subject>.test.ts[x]"],
       deliverableFamilies: [],
     },
-    (context, issues) => evaluateWebPlatformRuntimeRoot(context.repoRoot, issues)
+    (context, issues) =>
+      evaluateWebPlatformRuntimeRoot(context.repoRoot, issues)
   ),
   createNamingGovernedRoot(
     {
@@ -236,11 +237,7 @@ const NAMING_GOVERNED_ROOTS: readonly NamingGovernedRoot[] = [
         "apps/web/src/app/_platform/theme/*.{ts,tsx}",
         "apps/web/src/app/_platform/theme/__tests__/*.{ts,tsx}",
       ],
-      namingFamilies: [
-        "theme-react-role",
-        "theme-script-role",
-        "hook-prefix",
-      ],
+      namingFamilies: ["theme-react-role", "theme-script-role", "hook-prefix"],
       allowedIndexBoundaries: ["apps/web/src/app/_platform/theme/index.ts"],
       testNamingRules: ["<subject>.test.ts[x]"],
       deliverableFamilies: [],
@@ -263,19 +260,20 @@ const NAMING_GOVERNED_ROOTS: readonly NamingGovernedRoot[] = [
     {
       id: "web-platform-app-surface",
       relativeRoot: "apps/web/src/app/_platform/app-surface",
-      includePatterns: [
-        "apps/web/src/app/_platform/app-surface/**/*.{ts,tsx}",
-      ],
+      includePatterns: ["apps/web/src/app/_platform/app-surface/**/*.{ts,tsx}"],
       namingFamilies: [
         "kebab-component",
         "contract-suffix",
         "verb-first-service",
       ],
-      allowedIndexBoundaries: ["apps/web/src/app/_platform/app-surface/index.ts"],
+      allowedIndexBoundaries: [
+        "apps/web/src/app/_platform/app-surface/index.ts",
+      ],
       testNamingRules: ["<subject>.test.ts[x]"],
       deliverableFamilies: [],
     },
-    (context, issues) => evaluateWebPlatformAppSurfaceRoot(context.repoRoot, issues)
+    (context, issues) =>
+      evaluateWebPlatformAppSurfaceRoot(context.repoRoot, issues)
   ),
   createNamingGovernedRoot(
     {
@@ -482,7 +480,8 @@ const NAMING_GOVERNED_ROOTS: readonly NamingGovernedRoot[] = [
       testNamingRules: ["<subject>[.<role>].test.ts"],
       deliverableFamilies: ["dist-js", "dist-dts", "dist-dts-map"],
     },
-    (context, issues) => evaluateVitestConfigPackageRoot(context.repoRoot, issues)
+    (context, issues) =>
+      evaluateVitestConfigPackageRoot(context.repoRoot, issues)
   ),
   createNamingGovernedRoot(
     {
@@ -497,7 +496,8 @@ const NAMING_GOVERNED_ROOTS: readonly NamingGovernedRoot[] = [
       testNamingRules: ["<subject>[.<role>].test.js"],
       deliverableFamilies: [],
     },
-    (context, issues) => evaluateEslintConfigPackageRoot(context.repoRoot, issues)
+    (context, issues) =>
+      evaluateEslintConfigPackageRoot(context.repoRoot, issues)
   ),
   createNamingGovernedRoot(
     {
@@ -529,7 +529,8 @@ const NAMING_GOVERNED_ROOTS: readonly NamingGovernedRoot[] = [
       testNamingRules: ["<subject>[.<role>].test.ts[x]"],
       deliverableFamilies: ["generated-json", "schema-json"],
     },
-    (context, issues) => evaluateDesignSystemPackageRoot(context.repoRoot, issues)
+    (context, issues) =>
+      evaluateDesignSystemPackageRoot(context.repoRoot, issues)
   ),
   createNamingGovernedRoot(
     {
@@ -626,7 +627,8 @@ function createNamingGovernedRoot(
 ): NamingGovernedRoot {
   return {
     ...definition,
-    excludePatterns: definition.excludePatterns ?? MACHINE_NOISE_EXCLUDE_PATTERNS,
+    excludePatterns:
+      definition.excludePatterns ?? MACHINE_NOISE_EXCLUDE_PATTERNS,
     evaluate,
   }
 }
@@ -681,8 +683,16 @@ function evaluateScriptsRoot(
   }
 }
 
-function evaluateGovernanceDocs(repoRoot: string, issues: NamingConventionIssue[]) {
-  const governanceRoot = path.join(repoRoot, "docs", "architecture", "governance")
+function evaluateGovernanceDocs(
+  repoRoot: string,
+  issues: NamingConventionIssue[]
+) {
+  const governanceRoot = path.join(
+    repoRoot,
+    "docs",
+    "architecture",
+    "governance"
+  )
   if (!fs.existsSync(governanceRoot)) {
     return
   }
@@ -1105,7 +1115,10 @@ function evaluateWebPlatformRuntimeRoot(
         return
       }
 
-      if (!fileName.endsWith("-types.ts") && !fileName.endsWith("-types.d.ts")) {
+      if (
+        !fileName.endsWith("-types.ts") &&
+        !fileName.endsWith("-types.d.ts")
+      ) {
         issues.push({
           severity: "error",
           rule: "runtime-types-suffix",
@@ -1239,7 +1252,11 @@ function evaluateWebPlatformThemeRoot(
     evaluateGenericAndRoleOnlyName(fileName, relativePath, issues)
 
     if (fileName.endsWith(".tsx")) {
-      if (!/^(?:[a-z0-9]+(?:-[a-z0-9]+)*)-(?:provider|root|meta)\.tsx$/u.test(fileName)) {
+      if (
+        !/^(?:[a-z0-9]+(?:-[a-z0-9]+)*)-(?:provider|root|meta)\.tsx$/u.test(
+          fileName
+        )
+      ) {
         issues.push({
           severity: "error",
           rule: "theme-tsx-role",
@@ -1256,9 +1273,7 @@ function evaluateWebPlatformThemeRoot(
         continue
       }
 
-      if (
-        !/(?:-preference|-path|-contract)\.ts$/u.test(fileName)
-      ) {
+      if (!/(?:-preference|-path|-contract)\.ts$/u.test(fileName)) {
         issues.push({
           severity: "error",
           rule: "theme-ts-role",
@@ -1391,7 +1406,7 @@ function evaluateWebPlatformAppSurfaceRoot(
           rule: "app-surface-service-verb",
           path: relativePath,
           message:
-            'app-surface service modules must use approved verb-first naming in the bounded Phase 2 naming domain.',
+            "app-surface service modules must use approved verb-first naming in the bounded Phase 2 naming domain.",
         })
       }
     }
@@ -1456,9 +1471,7 @@ function evaluateWebPlatformAuthRoot(
     issues,
     (fileName, relativePath) => {
       if (fileName.endsWith(".tsx")) {
-        if (
-          !/(?:-link|-provider)\.tsx$/u.test(fileName)
-        ) {
+        if (!/(?:-link|-provider)\.tsx$/u.test(fileName)) {
           issues.push({
             severity: "error",
             rule: "auth-better-auth-ui-tsx-role",
@@ -1470,7 +1483,10 @@ function evaluateWebPlatformAuthRoot(
         return
       }
 
-      if (fileName.endsWith(".ts") && !/^use-[a-z0-9]+(?:-[a-z0-9]+)*\.ts$/u.test(fileName)) {
+      if (
+        fileName.endsWith(".ts") &&
+        !/^use-[a-z0-9]+(?:-[a-z0-9]+)*\.ts$/u.test(fileName)
+      ) {
         issues.push({
           severity: "error",
           rule: "auth-better-auth-ui-hook",
@@ -1494,7 +1510,10 @@ function evaluateWebPlatformAuthRoot(
     "apps/web/src/app/_platform/auth/guards",
     issues,
     (fileName, relativePath) => {
-      if (fileName.endsWith(".tsx") && !/^require-[a-z0-9]+(?:-[a-z0-9]+)*\.tsx$/u.test(fileName)) {
+      if (
+        fileName.endsWith(".tsx") &&
+        !/^require-[a-z0-9]+(?:-[a-z0-9]+)*\.tsx$/u.test(fileName)
+      ) {
         issues.push({
           severity: "error",
           rule: "auth-guard-prefix",
@@ -1518,7 +1537,10 @@ function evaluateWebPlatformAuthRoot(
     "apps/web/src/app/_platform/auth/mappers",
     issues,
     (fileName, relativePath) => {
-      if (fileName.endsWith(".ts") && !/^map-[a-z0-9]+(?:-[a-z0-9]+)*\.ts$/u.test(fileName)) {
+      if (
+        fileName.endsWith(".ts") &&
+        !/^map-[a-z0-9]+(?:-[a-z0-9]+)*\.ts$/u.test(fileName)
+      ) {
         issues.push({
           severity: "error",
           rule: "auth-mapper-prefix",
@@ -1624,7 +1646,10 @@ function evaluateWebPlatformShellRoot(
 
     evaluateGenericAndRoleOnlyName(fileName, relativePath, issues)
 
-    if (fileName.endsWith(".ts") && !KEBAB_CASE_STEM_PATTERN.test(stripExtension(fileName))) {
+    if (
+      fileName.endsWith(".ts") &&
+      !KEBAB_CASE_STEM_PATTERN.test(stripExtension(fileName))
+    ) {
       issues.push({
         severity: "error",
         rule: "shell-root-kebab-case",
@@ -1851,21 +1876,25 @@ function evaluatePhaseTwoTestDirectory(
   domainLabel: string,
   issues: NamingConventionIssue[]
 ) {
-  evaluateWebPlatformI18nDirectory(absoluteRoot, relativeRoot, issues, (fileName, relativePath) => {
-    if (!/\.(?:ts|tsx)$/u.test(fileName)) {
-      return
-    }
+  evaluateWebPlatformI18nDirectory(
+    absoluteRoot,
+    relativeRoot,
+    issues,
+    (fileName, relativePath) => {
+      if (!/\.(?:ts|tsx)$/u.test(fileName)) {
+        return
+      }
 
-    if (!TEST_FILE_PATTERN.test(fileName)) {
-      issues.push({
-        severity: "error",
-        rule: `${domainLabel}-test-suffix`,
-        path: relativePath,
-        message:
-          `${domainLabel} unit and integration tests must use "<subject>.test.ts[x]" naming in the bounded Phase 2 naming domain.`,
-      })
+      if (!TEST_FILE_PATTERN.test(fileName)) {
+        issues.push({
+          severity: "error",
+          rule: `${domainLabel}-test-suffix`,
+          path: relativePath,
+          message: `${domainLabel} unit and integration tests must use "<subject>.test.ts[x]" naming in the bounded Phase 2 naming domain.`,
+        })
+      }
     }
-  })
+  )
 }
 
 function evaluateHookDirectory(
@@ -1874,21 +1903,25 @@ function evaluateHookDirectory(
   domainLabel: string,
   issues: NamingConventionIssue[]
 ) {
-  evaluateWebPlatformI18nDirectory(absoluteRoot, relativeRoot, issues, (fileName, relativePath) => {
-    if (!/\.(?:ts|tsx)$/u.test(fileName)) {
-      return
-    }
+  evaluateWebPlatformI18nDirectory(
+    absoluteRoot,
+    relativeRoot,
+    issues,
+    (fileName, relativePath) => {
+      if (!/\.(?:ts|tsx)$/u.test(fileName)) {
+        return
+      }
 
-    if (!/^use-[a-z0-9]+(?:-[a-z0-9]+)*\.tsx?$/u.test(fileName)) {
-      issues.push({
-        severity: "error",
-        rule: `${domainLabel}-hook-prefix`,
-        path: relativePath,
-        message:
-          `${domainLabel} hook modules must use "use-<subject>.ts[x]" naming in the bounded Phase 2 naming domain.`,
-      })
+      if (!/^use-[a-z0-9]+(?:-[a-z0-9]+)*\.tsx?$/u.test(fileName)) {
+        issues.push({
+          severity: "error",
+          rule: `${domainLabel}-hook-prefix`,
+          path: relativePath,
+          message: `${domainLabel} hook modules must use "use-<subject>.ts[x]" naming in the bounded Phase 2 naming domain.`,
+        })
+      }
     }
-  })
+  )
 }
 
 function evaluateKebabCaseDirectory(
@@ -1897,24 +1930,29 @@ function evaluateKebabCaseDirectory(
   issues: NamingConventionIssue[],
   label: string
 ) {
-  evaluateWebPlatformI18nDirectory(absoluteRoot, relativeRoot, issues, (fileName, relativePath) => {
-    if (fileName === "index.ts") {
-      return
-    }
+  evaluateWebPlatformI18nDirectory(
+    absoluteRoot,
+    relativeRoot,
+    issues,
+    (fileName, relativePath) => {
+      if (fileName === "index.ts") {
+        return
+      }
 
-    if (!/\.(?:ts|tsx)$/u.test(fileName)) {
-      return
-    }
+      if (!/\.(?:ts|tsx)$/u.test(fileName)) {
+        return
+      }
 
-    if (!KEBAB_CASE_STEM_PATTERN.test(stripExtension(fileName))) {
-      issues.push({
-        severity: "error",
-        rule: "kebab-case-directory",
-        path: relativePath,
-        message: `${label} must use kebab-case filenames within the bounded Phase 2 naming domain.`,
-      })
+      if (!KEBAB_CASE_STEM_PATTERN.test(stripExtension(fileName))) {
+        issues.push({
+          severity: "error",
+          rule: "kebab-case-directory",
+          path: relativePath,
+          message: `${label} must use kebab-case filenames within the bounded Phase 2 naming domain.`,
+        })
+      }
     }
-  })
+  )
 }
 
 function evaluateShellComponentsDirectory(
@@ -1922,36 +1960,40 @@ function evaluateShellComponentsDirectory(
   relativeRoot: string,
   issues: NamingConventionIssue[]
 ) {
-  evaluateWebPlatformI18nDirectory(absoluteRoot, relativeRoot, issues, (fileName, relativePath) => {
-    if (fileName === "index.ts") {
-      return
-    }
+  evaluateWebPlatformI18nDirectory(
+    absoluteRoot,
+    relativeRoot,
+    issues,
+    (fileName, relativePath) => {
+      if (fileName === "index.ts") {
+        return
+      }
 
-    if (!/\.(?:ts|tsx)$/u.test(fileName)) {
-      return
-    }
+      if (!/\.(?:ts|tsx)$/u.test(fileName)) {
+        return
+      }
 
-    if (fileName.endsWith(".config.ts")) {
-      return
-    }
+      if (fileName.endsWith(".config.ts")) {
+        return
+      }
 
-    const stem = stripExtension(fileName)
-    if (!KEBAB_CASE_STEM_PATTERN.test(stem)) {
-      issues.push({
-        severity: "error",
-        rule: "shell-component-kebab-case",
-        path: relativePath,
-        message:
-          "shell component module filenames must use kebab-case within the bounded Phase 2 naming domain.",
-      })
-      return
-    }
+      const stem = stripExtension(fileName)
+      if (!KEBAB_CASE_STEM_PATTERN.test(stem)) {
+        issues.push({
+          severity: "error",
+          rule: "shell-component-kebab-case",
+          path: relativePath,
+          message:
+            "shell component module filenames must use kebab-case within the bounded Phase 2 naming domain.",
+        })
+        return
+      }
 
-    if (fileName.startsWith("use-")) {
-      return
+      if (fileName.startsWith("use-")) {
+        return
+      }
     }
-
-  })
+  )
 }
 
 function evaluateAppComponentsRoot(
@@ -1981,11 +2023,7 @@ function evaluateAppComponentsRoot(
         return null
       }
 
-      return validateLowerRoleFile(
-        "app component",
-        fileName,
-        relativePath
-      )
+      return validateLowerRoleFile("app component", fileName, relativePath)
     },
   })
 }
@@ -1994,7 +2032,14 @@ function evaluateAppFeaturesRoot(
   repoRoot: string,
   issues: NamingConventionIssue[]
 ) {
-  const featuresRoot = path.join(repoRoot, "apps", "web", "src", "app", "_features")
+  const featuresRoot = path.join(
+    repoRoot,
+    "apps",
+    "web",
+    "src",
+    "app",
+    "_features"
+  )
   if (!fs.existsSync(featuresRoot)) {
     return
   }
@@ -2020,7 +2065,11 @@ function evaluateAppFeaturesRoot(
           return null
         }
 
-        if (directoryName === "__tests__" || fileName.endsWith(".test.ts") || fileName.endsWith(".test.tsx")) {
+        if (
+          directoryName === "__tests__" ||
+          fileName.endsWith(".test.ts") ||
+          fileName.endsWith(".test.tsx")
+        ) {
           return validateTestFile("feature", fileName, relativePath)
         }
 
@@ -2084,7 +2133,10 @@ function evaluateWebRoutesRoot(
 
     evaluateGenericAndRoleOnlyName(fileName, relativePath, issues)
 
-    if (fileName.endsWith(".tsx") && !/^route-[a-z0-9]+(?:-[a-z0-9]+)*\.tsx$/u.test(fileName)) {
+    if (
+      fileName.endsWith(".tsx") &&
+      !/^route-[a-z0-9]+(?:-[a-z0-9]+)*\.tsx$/u.test(fileName)
+    ) {
       issues.push({
         severity: "error",
         rule: "route-module-prefix",
@@ -2101,7 +2153,8 @@ function evaluateWebRoutesRoot(
           severity: "error",
           rule: "route-helper-kebab-case",
           path: relativePath,
-          message: "route helper filenames must use kebab-case in the routes root.",
+          message:
+            "route helper filenames must use kebab-case in the routes root.",
         })
       }
     }
@@ -2148,10 +2201,7 @@ function evaluateWebShareRoot(
   })
 }
 
-function evaluateWebRpcRoot(
-  repoRoot: string,
-  issues: NamingConventionIssue[]
-) {
+function evaluateWebRpcRoot(repoRoot: string, issues: NamingConventionIssue[]) {
   const root = path.join(repoRoot, "apps", "web", "src", "rpc")
   if (!fs.existsSync(root)) {
     return
@@ -2216,7 +2266,9 @@ function evaluateWebMarketingRoot(
           return null
         }
 
-        if (!/^marketing-[a-z0-9]+(?:-[a-z0-9]+)*\.(?:ts|tsx)$/u.test(fileName)) {
+        if (
+          !/^marketing-[a-z0-9]+(?:-[a-z0-9]+)*\.(?:ts|tsx)$/u.test(fileName)
+        ) {
           return {
             severity: "error",
             rule: "marketing-component-name",
@@ -2231,7 +2283,9 @@ function evaluateWebMarketingRoot(
 
       if (
         relativePath.startsWith("apps/web/src/marketing/pages/landing/") &&
-        !relativePath.startsWith("apps/web/src/marketing/pages/landing/flagship/")
+        !relativePath.startsWith(
+          "apps/web/src/marketing/pages/landing/flagship/"
+        )
       ) {
         if (!/^[a-z0-9]+(?:-[a-z0-9]+)*-landing-page\.tsx$/u.test(fileName)) {
           return {
@@ -2247,7 +2301,9 @@ function evaluateWebMarketingRoot(
       }
 
       if (
-        relativePath.startsWith("apps/web/src/marketing/pages/landing/flagship/")
+        relativePath.startsWith(
+          "apps/web/src/marketing/pages/landing/flagship/"
+        )
       ) {
         if (
           !/^flagship-page(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?\.(?:ts|tsx)$/u.test(
@@ -2266,7 +2322,9 @@ function evaluateWebMarketingRoot(
         return null
       }
 
-      if (relativePath.startsWith("apps/web/src/marketing/pages/company/about/")) {
+      if (
+        relativePath.startsWith("apps/web/src/marketing/pages/company/about/")
+      ) {
         if (
           fileName === "about-page-editorial.ts" ||
           /^about-page(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?\.tsx$/u.test(fileName) ||
@@ -2381,43 +2439,50 @@ function evaluateBetterAuthPackageRoot(
 ) {
   const srcRoot = path.join(repoRoot, "packages", "better-auth", "src")
   if (fs.existsSync(srcRoot)) {
-    evaluateRecursiveNamingSurface(srcRoot, "packages/better-auth/src", issues, {
-      allowIndexAtRoots: new Set([
-        "packages/better-auth/src",
-        "packages/better-auth/src/schema",
-      ]),
-      onFile(fileName, relativePath, directoryName) {
-        if (fileName === "README.md") {
-          return null
-        }
-
-        if (directoryName === "__tests__" || fileName.endsWith(".test.ts")) {
-          return validatePackageTestFile("better auth", fileName, relativePath)
-        }
-
-        if (fileName.endsWith(".generated.ts")) {
-          if (
-            !/^[a-z0-9]+(?:-[a-z0-9]+)*\.generated\.ts$/u.test(fileName)
-          ) {
-            return {
-              severity: "error",
-              rule: "better-auth-generated-name",
-              path: relativePath,
-              message:
-                'better-auth generated modules must use "<subject>.generated.ts" naming.',
-            }
+    evaluateRecursiveNamingSurface(
+      srcRoot,
+      "packages/better-auth/src",
+      issues,
+      {
+        allowIndexAtRoots: new Set([
+          "packages/better-auth/src",
+          "packages/better-auth/src/schema",
+        ]),
+        onFile(fileName, relativePath, directoryName) {
+          if (fileName === "README.md") {
+            return null
           }
 
-          return null
-        }
+          if (directoryName === "__tests__" || fileName.endsWith(".test.ts")) {
+            return validatePackageTestFile(
+              "better auth",
+              fileName,
+              relativePath
+            )
+          }
 
-        if (!fileName.endsWith(".ts")) {
-          return null
-        }
+          if (fileName.endsWith(".generated.ts")) {
+            if (!/^[a-z0-9]+(?:-[a-z0-9]+)*\.generated\.ts$/u.test(fileName)) {
+              return {
+                severity: "error",
+                rule: "better-auth-generated-name",
+                path: relativePath,
+                message:
+                  'better-auth generated modules must use "<subject>.generated.ts" naming.',
+              }
+            }
 
-        return validateLowerRoleFile("better auth", fileName, relativePath)
-      },
-    })
+            return null
+          }
+
+          if (!fileName.endsWith(".ts")) {
+            return null
+          }
+
+          return validateLowerRoleFile("better auth", fileName, relativePath)
+        },
+      }
+    )
   }
 
   evaluatePackageScriptDirectory(
@@ -2434,19 +2499,28 @@ function evaluateVitestConfigPackageRoot(
 ) {
   const srcRoot = path.join(repoRoot, "packages", "vitest-config", "src")
   if (fs.existsSync(srcRoot)) {
-    evaluateRecursiveNamingSurface(srcRoot, "packages/vitest-config/src", issues, {
-      onFile(fileName, relativePath, directoryName) {
-        if (directoryName === "__test__" || directoryName === "__tests__") {
-          return validatePackageTestFile("vitest config", fileName, relativePath)
-        }
+    evaluateRecursiveNamingSurface(
+      srcRoot,
+      "packages/vitest-config/src",
+      issues,
+      {
+        onFile(fileName, relativePath, directoryName) {
+          if (directoryName === "__test__" || directoryName === "__tests__") {
+            return validatePackageTestFile(
+              "vitest config",
+              fileName,
+              relativePath
+            )
+          }
 
-        if (!fileName.endsWith(".ts")) {
-          return null
-        }
+          if (!fileName.endsWith(".ts")) {
+            return null
+          }
 
-        return validateLowerRoleFile("vitest config", fileName, relativePath)
-      },
-    })
+          return validateLowerRoleFile("vitest config", fileName, relativePath)
+        },
+      }
+    )
   }
 
   evaluateWebPlatformI18nDirectory(
@@ -2455,7 +2529,9 @@ function evaluateVitestConfigPackageRoot(
     issues,
     (fileName, relativePath) => {
       if (
-        !/^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.(?:js|d\.ts|d\.ts\.map))$/u.test(fileName)
+        !/^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.(?:js|d\.ts|d\.ts\.map))$/u.test(
+          fileName
+        )
       ) {
         issues.push({
           severity: "error",
@@ -2574,21 +2650,25 @@ function evaluatePackageScriptDirectory(
   domainLabel: string,
   issues: NamingConventionIssue[]
 ) {
-  evaluateWebPlatformI18nDirectory(absoluteRoot, relativeRoot, issues, (fileName, relativePath) => {
-    if (!/\.(?:ts|mjs)$/u.test(fileName)) {
-      return
-    }
+  evaluateWebPlatformI18nDirectory(
+    absoluteRoot,
+    relativeRoot,
+    issues,
+    (fileName, relativePath) => {
+      if (!/\.(?:ts|mjs)$/u.test(fileName)) {
+        return
+      }
 
-    if (!PACKAGE_LOCAL_SCRIPT_ENTRYPOINT_PATTERN.test(fileName)) {
-      issues.push({
-        severity: "error",
-        rule: `${domainLabel}-package-script-name`,
-        path: relativePath,
-        message:
-          `Package-local ${domainLabel} scripts must use an approved verb-first naming pattern.`,
-      })
+      if (!PACKAGE_LOCAL_SCRIPT_ENTRYPOINT_PATTERN.test(fileName)) {
+        issues.push({
+          severity: "error",
+          rule: `${domainLabel}-package-script-name`,
+          path: relativePath,
+          message: `Package-local ${domainLabel} scripts must use an approved verb-first naming pattern.`,
+        })
+      }
     }
-  })
+  )
 }
 
 function validatePackageTestFile(
@@ -2607,8 +2687,7 @@ function validatePackageTestFile(
     severity: "error",
     rule: `${domainLabel}-package-test-suffix`,
     path: relativePath,
-    message:
-      `${domainLabel} package tests must use "<subject>[.<role>].test.ts[x]" naming, with explicit *-inventory.ts files allowed.`,
+    message: `${domainLabel} package tests must use "<subject>[.<role>].test.ts[x]" naming, with explicit *-inventory.ts files allowed.`,
   }
 }
 
@@ -2617,7 +2696,11 @@ function validateJsPackageTestFile(
   fileName: string,
   relativePath: string
 ): NamingConventionIssue | null {
-  if (/^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*\.test\.js$/u.test(fileName)) {
+  if (
+    /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*\.test\.js$/u.test(
+      fileName
+    )
+  ) {
     return null
   }
 
@@ -2625,8 +2708,7 @@ function validateJsPackageTestFile(
     severity: "error",
     rule: `${domainLabel}-package-test-suffix`,
     path: relativePath,
-    message:
-      `${domainLabel} tests must use "<subject>[.<role>].test.js" naming.`,
+    message: `${domainLabel} tests must use "<subject>[.<role>].test.js" naming.`,
   }
 }
 
@@ -2689,7 +2771,11 @@ function evaluateDesignSystemIconsRoot(
       }
 
       if (directoryName === "__tests__") {
-        return validatePackageTestFile("design-system icon", fileName, relativePath)
+        return validatePackageTestFile(
+          "design-system icon",
+          fileName,
+          relativePath
+        )
       }
 
       if (relativePath.startsWith("packages/design-system/icons/script/")) {
@@ -2740,39 +2826,48 @@ function evaluateDesignSystemUiPrimitivesRoot(
     return
   }
 
-  evaluateRecursiveNamingSurface(root, "packages/design-system/ui-primitives", issues, {
-    allowIndexAtRoots: new Set(["packages/design-system/ui-primitives"]),
-    onFile(fileName, relativePath, directoryName) {
-      if (
-        fileName === "README.md" ||
-        fileName === "index.ts" ||
-        fileName === "_registry.ts" ||
-        fileName === "manifest-contract.ts"
-      ) {
-        return null
-      }
+  evaluateRecursiveNamingSurface(
+    root,
+    "packages/design-system/ui-primitives",
+    issues,
+    {
+      allowIndexAtRoots: new Set(["packages/design-system/ui-primitives"]),
+      onFile(fileName, relativePath, directoryName) {
+        if (
+          fileName === "README.md" ||
+          fileName === "index.ts" ||
+          fileName === "_registry.ts" ||
+          fileName === "manifest-contract.ts"
+        ) {
+          return null
+        }
 
-      if (directoryName === "__tests__") {
-        return validatePackageTestFile("design-system primitive", fileName, relativePath)
-      }
+        if (directoryName === "__tests__") {
+          return validatePackageTestFile(
+            "design-system primitive",
+            fileName,
+            relativePath
+          )
+        }
 
-      if (/^[a-z0-9]+(?:-[a-z0-9]+)*\.manifest\.ts$/u.test(fileName)) {
-        return null
-      }
+        if (/^[a-z0-9]+(?:-[a-z0-9]+)*\.manifest\.ts$/u.test(fileName)) {
+          return null
+        }
 
-      if (/^[a-z0-9]+(?:-[a-z0-9]+)*\.tsx$/u.test(fileName)) {
-        return null
-      }
+        if (/^[a-z0-9]+(?:-[a-z0-9]+)*\.tsx$/u.test(fileName)) {
+          return null
+        }
 
-      return {
-        severity: "error",
-        rule: "design-system-primitive-name",
-        path: relativePath,
-        message:
-          "design-system primitives must use kebab-case component files and .manifest.ts companions.",
-      }
-    },
-  })
+        return {
+          severity: "error",
+          rule: "design-system-primitive-name",
+          path: relativePath,
+          message:
+            "design-system primitives must use kebab-case component files and .manifest.ts companions.",
+        }
+      },
+    }
+  )
 }
 
 function evaluateDesignSystemUtilsRoot(
@@ -2787,19 +2882,31 @@ function evaluateDesignSystemUtilsRoot(
   evaluateRecursiveNamingSurface(root, "packages/design-system/utils", issues, {
     allowIndexAtRoots: new Set(["packages/design-system/utils"]),
     onFile(fileName, relativePath, directoryName) {
-      if (fileName === "README.md" || fileName === "index.ts" || fileName === "cn.ts") {
+      if (
+        fileName === "README.md" ||
+        fileName === "index.ts" ||
+        fileName === "cn.ts"
+      ) {
         return null
       }
 
       if (directoryName === "__tests__") {
-        return validatePackageTestFile("design-system utility", fileName, relativePath)
+        return validatePackageTestFile(
+          "design-system utility",
+          fileName,
+          relativePath
+        )
       }
 
       if (!fileName.endsWith(".ts")) {
         return null
       }
 
-      return validateLowerRoleFile("design-system utility", fileName, relativePath)
+      return validateLowerRoleFile(
+        "design-system utility",
+        fileName,
+        relativePath
+      )
     },
   })
 }
@@ -2808,7 +2915,12 @@ function evaluateDesignSystemGeneratedRoot(
   repoRoot: string,
   issues: NamingConventionIssue[]
 ) {
-  const generatedRoot = path.join(repoRoot, "packages", "design-system", "generated")
+  const generatedRoot = path.join(
+    repoRoot,
+    "packages",
+    "design-system",
+    "generated"
+  )
   if (fs.existsSync(generatedRoot)) {
     const generatedFiles = fs
       .readdirSync(generatedRoot, { withFileTypes: true })
@@ -2886,7 +2998,11 @@ function evaluateDesignSystemScriptsRoot(
     {
       onFile(fileName, relativePath, directoryName) {
         if (directoryName === "__tests__") {
-          return validatePackageTestFile("design-system component governance", fileName, relativePath)
+          return validatePackageTestFile(
+            "design-system component governance",
+            fileName,
+            relativePath
+          )
         }
 
         if (/^(?:check|core|generate)\.ts$/u.test(fileName)) {
@@ -2909,36 +3025,50 @@ function evaluateDesignSystemArchitectureRoot(
   repoRoot: string,
   issues: NamingConventionIssue[]
 ) {
-  const root = path.join(repoRoot, "packages", "design-system", "design-architecture")
+  const root = path.join(
+    repoRoot,
+    "packages",
+    "design-system",
+    "design-architecture"
+  )
   if (!fs.existsSync(root)) {
     return
   }
 
-  evaluateRecursiveNamingSurface(root, "packages/design-system/design-architecture", issues, {
-    onFile(fileName, relativePath, directoryName) {
-      if (fileName === "TOKEN_COMPONENT_CONTRACT.md") {
+  evaluateRecursiveNamingSurface(
+    root,
+    "packages/design-system/design-architecture",
+    issues,
+    {
+      onFile(fileName, relativePath, directoryName) {
+        if (fileName === "TOKEN_COMPONENT_CONTRACT.md") {
+          return null
+        }
+
+        if (directoryName === "__tests__") {
+          return validatePackageTestFile(
+            "design-system architecture",
+            fileName,
+            relativePath
+          )
+        }
+
+        if (fileName.endsWith(".css")) {
+          return /^[a-z0-9]+(?:-[a-z0-9]+)*\.css$/u.test(fileName)
+            ? null
+            : {
+                severity: "error",
+                rule: "design-system-css-name",
+                path: relativePath,
+                message:
+                  "design-system architecture stylesheets must use lowercase or kebab-case filenames.",
+              }
+        }
+
         return null
-      }
-
-      if (directoryName === "__tests__") {
-        return validatePackageTestFile("design-system architecture", fileName, relativePath)
-      }
-
-      if (fileName.endsWith(".css")) {
-        return /^[a-z0-9]+(?:-[a-z0-9]+)*\.css$/u.test(fileName)
-          ? null
-          : {
-              severity: "error",
-              rule: "design-system-css-name",
-              path: relativePath,
-              message:
-                "design-system architecture stylesheets must use lowercase or kebab-case filenames.",
-            }
-      }
-
-      return null
-    },
-  })
+      },
+    }
+  )
 }
 
 function evaluateDatabaseSqlRoot(
@@ -3068,7 +3198,11 @@ function evaluateRecursiveNamingSurface(
   options: {
     allowIndexAtRoots?: ReadonlySet<string>
     ignoredDirectoryNames?: ReadonlySet<string>
-    onFile: (fileName: string, relativePath: string, directoryName: string) => NamingConventionIssue | null
+    onFile: (
+      fileName: string,
+      relativePath: string,
+      directoryName: string
+    ) => NamingConventionIssue | null
   }
 ) {
   const pending = [{ absoluteRoot, relativeRoot }]
@@ -3103,7 +3237,11 @@ function evaluateRecursiveNamingSurface(
       }
 
       evaluateGenericAndRoleOnlyName(fileName, relativePath, issues)
-      const issue = options.onFile(fileName, relativePath, path.basename(next.relativeRoot))
+      const issue = options.onFile(
+        fileName,
+        relativePath,
+        path.basename(next.relativeRoot)
+      )
       if (issue) {
         issues.push(issue)
       }
@@ -3137,8 +3275,7 @@ function validateLowerRoleFile(
       severity: "error",
       rule: `${domainLabel}-lower-role`,
       path: relativePath,
-      message:
-        `${domainLabel} filenames must use lower-case kebab naming with optional dotted role suffixes in the bounded Phase 2 naming domain.`,
+      message: `${domainLabel} filenames must use lower-case kebab naming with optional dotted role suffixes in the bounded Phase 2 naming domain.`,
     }
   }
   return null
@@ -3154,8 +3291,7 @@ function validateHookFile(
       severity: "error",
       rule: `${domainLabel}-hook-prefix`,
       path: relativePath,
-      message:
-        `${domainLabel} hook modules must use "use-<subject>.ts[x]" naming in the bounded Phase 2 naming domain.`,
+      message: `${domainLabel} hook modules must use "use-<subject>.ts[x]" naming in the bounded Phase 2 naming domain.`,
     }
   }
   return null
@@ -3171,8 +3307,7 @@ function validateLocalScriptFile(
       severity: "error",
       rule: `${domainLabel}-script-verb-first`,
       path: relativePath,
-      message:
-        `Local ${domainLabel} scripts must start with an approved verb and use "<action>-<subject>" naming.`,
+      message: `Local ${domainLabel} scripts must start with an approved verb and use "<action>-<subject>" naming.`,
     }
   }
   return null
@@ -3188,8 +3323,7 @@ function validateTestFile(
       severity: "error",
       rule: `${domainLabel}-test-suffix`,
       path: relativePath,
-      message:
-        `${domainLabel} unit and integration tests must use "<subject>.test.ts[x]" naming in the bounded Phase 2 naming domain.`,
+      message: `${domainLabel} unit and integration tests must use "<subject>.test.ts[x]" naming in the bounded Phase 2 naming domain.`,
     }
   }
   return null
@@ -3275,7 +3409,11 @@ function describeFilenameIdentity(fileName: string): {
 
   const subjectStem = hasRoleSuffix ? parts.slice(0, -1).join(".") : stem
 
-  if (!subjectStem || subjectStem === "README" || subjectStem.endsWith("_TEMPLATE")) {
+  if (
+    !subjectStem ||
+    subjectStem === "README" ||
+    subjectStem.endsWith("_TEMPLATE")
+  ) {
     if (hasRoleSuffix && subjectStem.length === 0) {
       return {
         primarySubject: trailing ?? "",
@@ -3288,10 +3426,7 @@ function describeFilenameIdentity(fileName: string): {
 
   return {
     primarySubject:
-      subjectStem
-      .split(/[-_.]/u)
-      .filter(Boolean)[0]
-      ?.toLowerCase() ?? "",
+      subjectStem.split(/[-_.]/u).filter(Boolean)[0]?.toLowerCase() ?? "",
     isRoleOnly: false,
   }
 }

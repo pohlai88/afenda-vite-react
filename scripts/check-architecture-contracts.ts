@@ -2,7 +2,10 @@ import fs from "node:fs/promises"
 import path from "node:path"
 
 import { loadAfendaConfig, workspaceRoot } from "./afenda-config.js"
-import { evaluateAtcHonesty, parseAtcContract } from "./lib/governance-honesty.js"
+import {
+  evaluateAtcHonesty,
+  parseAtcContract,
+} from "./lib/governance-honesty.js"
 
 const ATC_ROOT = path.join(workspaceRoot, "docs", "architecture", "atc")
 const TEMPLATE_PATH = path.join(ATC_ROOT, "ATC_TEMPLATE.md")
@@ -27,7 +30,9 @@ for (const requiredPath of [ATC_ROOT, TEMPLATE_PATH, DECISIONS_ROOT]) {
     .then(() => true)
     .catch(() => false)
   if (!exists) {
-    issues.push(`Missing architecture contract path: ${path.relative(workspaceRoot, requiredPath)}`)
+    issues.push(
+      `Missing architecture contract path: ${path.relative(workspaceRoot, requiredPath)}`
+    )
   }
 }
 
@@ -36,14 +41,21 @@ const decisionEntries = await fs
   .catch(() => [])
 const knownAdrIds = new Set(
   decisionEntries
-    .filter((entry) => entry.isFile() && /^ADR-[0-9]{4}.*\.md$/u.test(entry.name))
+    .filter(
+      (entry) => entry.isFile() && /^ADR-[0-9]{4}.*\.md$/u.test(entry.name)
+    )
     .map((entry) => entry.name.match(/^(ADR-[0-9]{4})/u)?.[1])
     .filter((value): value is string => Boolean(value))
 )
 
-const entries = await fs.readdir(ATC_ROOT, { withFileTypes: true }).catch(() => [])
+const entries = await fs
+  .readdir(ATC_ROOT, { withFileTypes: true })
+  .catch(() => [])
 const atcFiles = entries
-  .filter((entry) => entry.isFile() && entry.name.endsWith(".md") && entry.name !== "README.md")
+  .filter(
+    (entry) =>
+      entry.isFile() && entry.name.endsWith(".md") && entry.name !== "README.md"
+  )
   .map((entry) => path.join(ATC_ROOT, entry.name))
 
 for (const filePath of atcFiles) {
@@ -72,7 +84,9 @@ for (const filePath of atcFiles) {
     issues.push(`${relativePath} must declare an evidence path.`)
   }
   if (!atc.checkCommand || !atc.reportCommand) {
-    issues.push(`${relativePath} must declare linked check and report commands.`)
+    issues.push(
+      `${relativePath} must declare linked check and report commands.`
+    )
   }
 
   const boundDomain = atc.domainId
@@ -106,7 +120,9 @@ if (issues.length === 0) {
   process.exit(0)
 }
 
-console.error(`Architecture contracts check found ${String(issues.length)} issue(s):`)
+console.error(
+  `Architecture contracts check found ${String(issues.length)} issue(s):`
+)
 for (const issue of issues) {
   console.error(`- ${issue}`)
 }

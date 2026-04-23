@@ -18,7 +18,10 @@ const aggregateReport = JSON.parse(
   await fs.readFile(aggregateReportPath, "utf8")
 ) as GovernanceAggregateReport
 
-const registerMarkdown = renderGovernanceRegisterMarkdown(config, aggregateReport)
+const registerMarkdown = renderGovernanceRegisterMarkdown(
+  config,
+  aggregateReport
+)
 const registerPath = path.join(
   workspaceRoot,
   config.governance.evidence.registerPath
@@ -32,4 +35,6 @@ await writeJsonFile(
   buildGovernanceRegisterSnapshot(config, aggregateReport)
 )
 
-console.log(`Governance register written to ${config.governance.evidence.registerPath}`)
+console.log(
+  `Governance register written to ${config.governance.evidence.registerPath}`
+)

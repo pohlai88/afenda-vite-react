@@ -135,7 +135,11 @@
               "rolePatterns": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["routeOwner", "contentOwner", "pageLocalComposition"],
+                "required": [
+                  "routeOwner",
+                  "contentOwner",
+                  "pageLocalComposition"
+                ],
                 "properties": {
                   "routeOwner": {
                     "type": "array",
@@ -454,7 +458,14 @@
     "governance": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["version", "idFamilies", "domains", "gates", "evidence", "waivers"],
+      "required": [
+        "version",
+        "idFamilies",
+        "domains",
+        "gates",
+        "evidence",
+        "waivers"
+      ],
       "properties": {
         "version": { "type": "integer", "minimum": 1 },
         "idFamilies": {
@@ -490,11 +501,24 @@
               "owner": { "type": "string", "minLength": 1 },
               "lifecycleStatus": {
                 "type": "string",
-                "enum": ["watcher", "bound", "partial", "enforced", "drifted", "retired"]
+                "enum": [
+                  "watcher",
+                  "bound",
+                  "partial",
+                  "enforced",
+                  "drifted",
+                  "retired"
+                ]
               },
               "enforcementMaturity": {
                 "type": "string",
-                "enum": ["defined", "measured", "warned", "blocking", "runtime-enforced"]
+                "enum": [
+                  "defined",
+                  "measured",
+                  "warned",
+                  "blocking",
+                  "runtime-enforced"
+                ]
               },
               "defaultSeverity": {
                 "type": "string",
@@ -555,7 +579,14 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["id", "title", "description", "command", "scriptPath", "ciBehavior"],
+            "required": [
+              "id",
+              "title",
+              "description",
+              "command",
+              "scriptPath",
+              "ciBehavior"
+            ],
             "properties": {
               "id": { "type": "string", "minLength": 1 },
               "title": { "type": "string", "minLength": 1 },

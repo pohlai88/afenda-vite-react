@@ -64,14 +64,19 @@ test("binding validation catches missing files and missing package scripts", asy
         name: "fixture",
         private: true,
         scripts: {
-          "script:check-governance-registry": "tsx scripts/check-governance-registry.ts",
+          "script:check-governance-registry":
+            "tsx scripts/check-governance-registry.ts",
         },
       },
       null,
       2
     ),
     "docs/governance/GOVERNANCE_CONSTITUTION.md": "# Constitution",
-    "rules/governance/waivers.json": JSON.stringify({ version: 1, waivers: [] }, null, 2),
+    "rules/governance/waivers.json": JSON.stringify(
+      { version: 1, waivers: [] },
+      null,
+      2
+    ),
     "scripts/check-governance-registry.ts": "console.log('ok')",
     "scripts/generate-governance-report.ts": "console.log('ok')",
   })
@@ -100,15 +105,21 @@ test("binding validation catches drifted domains with broken bindings", async ()
         name: "fixture",
         private: true,
         scripts: {
-          "script:check-governance-registry": "tsx scripts/check-governance-registry.ts",
-          "script:generate-governance-report": "tsx scripts/generate-governance-report.ts",
+          "script:check-governance-registry":
+            "tsx scripts/check-governance-registry.ts",
+          "script:generate-governance-report":
+            "tsx scripts/generate-governance-report.ts",
         },
       },
       null,
       2
     ),
     "docs/governance/GOVERNANCE_CONSTITUTION.md": "# Constitution",
-    "rules/governance/waivers.json": JSON.stringify({ version: 1, waivers: [] }, null, 2),
+    "rules/governance/waivers.json": JSON.stringify(
+      { version: 1, waivers: [] },
+      null,
+      2
+    ),
     "scripts/check-governance-registry.ts": "console.log('ok')",
   })
 
@@ -193,7 +204,10 @@ test("aggregate report blocks enforced domains without evidence files", () => {
   )
 
   assert.equal(aggregate.summary.finalVerdict, "block")
-  assert.match(aggregate.summary.finalVerdictExplanation, /required evidence is missing/u)
+  assert.match(
+    aggregate.summary.finalVerdictExplanation,
+    /required evidence is missing/u
+  )
 })
 
 test("waiver severity caps do not suppress higher-severity violations", () => {
@@ -263,7 +277,10 @@ test("waiver severity caps do not suppress higher-severity violations", () => {
   )
 
   assert.equal(aggregate.summary.finalVerdict, "block")
-  assert.match(aggregate.summary.finalVerdictExplanation, /blocking domains failed/u)
+  assert.match(
+    aggregate.summary.finalVerdictExplanation,
+    /blocking domains failed/u
+  )
 })
 
 test("aggregate report and register are deterministic for fixed input", () => {
@@ -366,7 +383,13 @@ function createFixtureConfig(): AfendaConfig {
     workspaceGovernance: {
       rootTopology: {
         primaryProductDirectories: ["apps", "packages"],
-        allowedRootDirectories: ["apps", "docs", "packages", "rules", "scripts"],
+        allowedRootDirectories: [
+          "apps",
+          "docs",
+          "packages",
+          "rules",
+          "scripts",
+        ],
         allowedHiddenRootDirectories: [".artifacts"],
         storageDirectories: ["archives"],
         requiredRootFiles: ["package.json"],
@@ -438,7 +461,8 @@ function createFixtureConfig(): AfendaConfig {
             command: "pnpm run script:generate-governance-report",
             scriptPath: "scripts/generate-governance-report.ts",
           },
-          evidencePath: ".artifacts/reports/governance/registry-integrity.report.json",
+          evidencePath:
+            ".artifacts/reports/governance/registry-integrity.report.json",
           ciBehavior: "block",
           reviewCadence: "14d",
         },
@@ -455,10 +479,14 @@ function createFixtureConfig(): AfendaConfig {
       ],
       evidence: {
         root: ".artifacts/reports/governance",
-        aggregateReportPath: ".artifacts/reports/governance/governance-core.report.json",
-        summaryReportPath: ".artifacts/reports/governance/governance-summary.report.json",
-        registerPath: "docs/architecture/governance/generated/governance-register.md",
-        registerSnapshotPath: ".artifacts/reports/governance/governance-register.snapshot.json",
+        aggregateReportPath:
+          ".artifacts/reports/governance/governance-core.report.json",
+        summaryReportPath:
+          ".artifacts/reports/governance/governance-summary.report.json",
+        registerPath:
+          "docs/architecture/governance/generated/governance-register.md",
+        registerSnapshotPath:
+          ".artifacts/reports/governance/governance-register.snapshot.json",
       },
       waivers: {
         registryPath: "rules/governance/waivers.json",

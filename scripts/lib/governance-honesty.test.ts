@@ -24,7 +24,8 @@ test("ATCs cannot claim stronger enforcement than their bound domain", () => {
 
   const issues = evaluateAtcHonesty({
     config,
-    relativePath: "docs/architecture/atc/ATC-0001-core-web-architecture-baseline.md",
+    relativePath:
+      "docs/architecture/atc/ATC-0001-core-web-architecture-baseline.md",
     atc,
     knownAdrIds: new Set(["ADR-0001"]),
     evidenceExists: false,
@@ -51,7 +52,8 @@ test("ATC honesty fails on ADR mismatch and evidence mismatch", () => {
 
   const issues = evaluateAtcHonesty({
     config,
-    relativePath: "docs/architecture/atc/ATC-0001-core-web-architecture-baseline.md",
+    relativePath:
+      "docs/architecture/atc/ATC-0001-core-web-architecture-baseline.md",
     atc,
     knownAdrIds: new Set(["ADR-0001"]),
   })
@@ -79,7 +81,10 @@ test("aggregate verdict cannot overstate pass when evidence is missing", () => {
   )
 
   assert.equal(report.summary.finalVerdict, "block")
-  assert.match(report.summary.finalVerdictExplanation, /required evidence is missing/u)
+  assert.match(
+    report.summary.finalVerdictExplanation,
+    /required evidence is missing/u
+  )
 })
 
 test("config enforced domain without evidence cannot pass", () => {
@@ -184,9 +189,18 @@ test("register snapshot cannot diverge from aggregate evidence", () => {
     staleSnapshot
   )
 
-  assert.match(issues.map((issue) => issue.message).join("\n"), /does not match the aggregate report/u)
-  assert.match(issues.map((issue) => issue.message).join("\n"), /does not match aggregate summary finalVerdict/u)
-  assert.match(issues.map((issue) => issue.message).join("\n"), /does not match afenda\.config/u)
+  assert.match(
+    issues.map((issue) => issue.message).join("\n"),
+    /does not match the aggregate report/u
+  )
+  assert.match(
+    issues.map((issue) => issue.message).join("\n"),
+    /does not match aggregate summary finalVerdict/u
+  )
+  assert.match(
+    issues.map((issue) => issue.message).join("\n"),
+    /does not match afenda\.config/u
+  )
 })
 
 function createFixtureConfig(): AfendaConfig {
@@ -211,7 +225,13 @@ function createFixtureConfig(): AfendaConfig {
     workspaceGovernance: {
       rootTopology: {
         primaryProductDirectories: ["apps", "packages"],
-        allowedRootDirectories: ["apps", "docs", "packages", "rules", "scripts"],
+        allowedRootDirectories: [
+          "apps",
+          "docs",
+          "packages",
+          "rules",
+          "scripts",
+        ],
         allowedHiddenRootDirectories: [".artifacts"],
         storageDirectories: ["archives"],
         requiredRootFiles: ["package.json"],
@@ -268,8 +288,11 @@ function createFixtureConfig(): AfendaConfig {
           defaultSeverity: "error",
           tier: "tier-2",
           docs: {
-            primary: "docs/architecture/atc/ATC-0001-core-web-architecture-baseline.md",
-            references: ["docs/architecture/adr/ADR-0001-core-web-architecture-baseline.md"],
+            primary:
+              "docs/architecture/atc/ATC-0001-core-web-architecture-baseline.md",
+            references: [
+              "docs/architecture/adr/ADR-0001-core-web-architecture-baseline.md",
+            ],
           },
           localConfig: "docs/architecture/atc",
           checks: [
@@ -283,7 +306,8 @@ function createFixtureConfig(): AfendaConfig {
             command: "pnpm run script:generate-governance-report",
             scriptPath: "scripts/generate-governance-report.ts",
           },
-          evidencePath: ".artifacts/reports/governance/architecture-contracts.report.json",
+          evidencePath:
+            ".artifacts/reports/governance/architecture-contracts.report.json",
           ciBehavior: "warn",
           reviewCadence: "30d",
         },
@@ -300,10 +324,14 @@ function createFixtureConfig(): AfendaConfig {
       ],
       evidence: {
         root: ".artifacts/reports/governance",
-        aggregateReportPath: ".artifacts/reports/governance/governance-core.report.json",
-        summaryReportPath: ".artifacts/reports/governance/governance-summary.report.json",
-        registerPath: "docs/architecture/governance/generated/governance-register.md",
-        registerSnapshotPath: ".artifacts/reports/governance/governance-register.snapshot.json",
+        aggregateReportPath:
+          ".artifacts/reports/governance/governance-core.report.json",
+        summaryReportPath:
+          ".artifacts/reports/governance/governance-summary.report.json",
+        registerPath:
+          "docs/architecture/governance/generated/governance-register.md",
+        registerSnapshotPath:
+          ".artifacts/reports/governance/governance-register.snapshot.json",
       },
       waivers: {
         registryPath: "rules/governance/waivers.json",

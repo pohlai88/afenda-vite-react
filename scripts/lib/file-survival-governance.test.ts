@@ -197,32 +197,43 @@ export default function PrivacyPolicyPage() {
     )
 
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/company/about/section-04-re-export.tsx")
-        ?.category,
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/company/about/section-04-re-export.tsx"
+      )?.category,
       "wrapper"
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/company/about/section-03-wrapper.tsx")
-        ?.category,
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/company/about/section-03-wrapper.tsx"
+      )?.category,
       "wrapper"
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/components/shared-card.tsx")?.category,
+      findFinding(report, "apps/web/src/marketing/components/shared-card.tsx")
+        ?.category,
       "shared-single-use"
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/company/about/section-05-orphan.tsx")
-        ?.category,
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/company/about/section-05-orphan.tsx"
+      )?.category,
       "dead"
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/company/about/mystery.ts")
-        ?.category,
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/company/about/mystery.ts"
+      )?.category,
       "unknown-role-consumed"
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/company/about/orphan.ts")
-        ?.category,
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/company/about/orphan.ts"
+      )?.category,
       "unknown-role-unconsumed"
     )
     assert.equal(
@@ -231,24 +242,37 @@ export default function PrivacyPolicyPage() {
       "unknown-role-protected-scope"
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/company/ghost")?.category,
+      findFinding(report, "apps/web/src/marketing/pages/company/ghost")
+        ?.category,
       "empty-folder"
     )
 
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/product/truth-engine-page.tsx"),
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/product/truth-engine-page.tsx"
+      ),
       undefined
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/legal/privacy-policy-page.tsx"),
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/legal/privacy-policy-page.tsx"
+      ),
       undefined
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/company/about/page.tsx"),
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/company/about/page.tsx"
+      ),
       undefined
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/company/about/content.ts"),
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/company/about/content.ts"
+      ),
       undefined
     )
     assert.equal(
@@ -259,7 +283,10 @@ export default function PrivacyPolicyPage() {
       undefined
     )
     assert.equal(
-      findFinding(report, "apps/web/src/marketing/pages/company/about/page-motion.ts"),
+      findFinding(
+        report,
+        "apps/web/src/marketing/pages/company/about/page-motion.ts"
+      ),
       undefined
     )
     assert.equal(
@@ -303,7 +330,10 @@ export default function PrivacyPolicyPage() {
     assert.deepEqual(report.ownerCoverage.fallbackOwnedPaths, [
       "apps/web/src/marketing/marketing-unknown.ts",
     ])
-    assert.equal(report.ownerAccountability[0]?.owner, "marketing-route:company")
+    assert.equal(
+      report.ownerAccountability[0]?.owner,
+      "marketing-route:company"
+    )
     assert.equal(report.ownerAccountability[0]?.blockingFindingCount, 3)
   } finally {
     cleanupFixtureRepo(fixture)
@@ -457,10 +487,7 @@ export const ghost = "ghost"
       buildFixtureOptions(fixture, generatedAt)
     )
 
-    assert.equal(
-      JSON.stringify(left, null, 2),
-      JSON.stringify(right, null, 2)
-    )
+    assert.equal(JSON.stringify(left, null, 2), JSON.stringify(right, null, 2))
 
     const markdown = renderFileSurvivalMarkdownReport(left)
     const html = renderFileSurvivalHtmlPreview(left)
@@ -514,7 +541,13 @@ function createMarketingRollout(): FileSurvivalRolloutDefinition {
         "**/*motion.ts",
       ],
     },
-    ignore: ["**/__tests__/**", "**/*.css", "**/*.generated.*", "**/dist/**", "**/build/**"],
+    ignore: [
+      "**/__tests__/**",
+      "**/*.css",
+      "**/*.generated.*",
+      "**/dist/**",
+      "**/build/**",
+    ],
     reviewedExceptions: [],
     protectedScopes: [
       {
@@ -602,7 +635,9 @@ function createMarketingRollout(): FileSurvivalRolloutDefinition {
 }
 
 function createFixtureRepo(files: Record<string, string>): string {
-  const tempRoot = mkdtempSync(path.join(os.tmpdir(), "file-survival-governance-"))
+  const tempRoot = mkdtempSync(
+    path.join(os.tmpdir(), "file-survival-governance-")
+  )
 
   writeFixtureFile(
     tempRoot,
@@ -651,7 +686,10 @@ function buildFixtureOptions(repoRoot: string, generatedAt?: Date) {
   return {
     repoRoot,
     generatedAt,
-    typescriptConfigPath: path.join(repoRoot, "apps/web/config/tsconfig/app.json"),
+    typescriptConfigPath: path.join(
+      repoRoot,
+      "apps/web/config/tsconfig/app.json"
+    ),
   }
 }
 

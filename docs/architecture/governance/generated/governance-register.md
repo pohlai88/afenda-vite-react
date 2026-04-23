@@ -17,7 +17,7 @@ This register is generated from `scripts/afenda.config.json` and the latest gove
 
 ## Summary
 
-- Generated at: 2026-04-23T06:55:43.102Z
+- Generated at: 2026-04-23T07:30:53.619Z
 - Final verdict: `pass`
 - Verdict explanation: pass: no blocking failures, no expired waivers, and all enforced domains emitted evidence (10/10 reports present)
 - Verdict reasons: all-clear

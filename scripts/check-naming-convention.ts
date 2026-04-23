@@ -5,13 +5,14 @@ import { workspaceRoot } from "./afenda-config.js"
 import { evaluateNamingConvention } from "./lib/naming-convention.js"
 
 const packageJsonPath = path.join(workspaceRoot, "package.json")
-const packageJson = JSON.parse(
-  await fs.readFile(packageJsonPath, "utf8")
-) as {
+const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8")) as {
   readonly scripts?: Record<string, string>
 }
 
-const result = evaluateNamingConvention(workspaceRoot, packageJson.scripts ?? {})
+const result = evaluateNamingConvention(
+  workspaceRoot,
+  packageJson.scripts ?? {}
+)
 
 for (const warning of result.warnings) {
   console.warn(`WARN [${warning.rule}] ${warning.path}: ${warning.message}`)

@@ -32,9 +32,15 @@ export function parseAtcContract(content: string): ParsedAtcContract {
   const enforcementMaturity = content.match(
     /- \*\*Enforcement maturity:\*\*\s*(defined|measured|warned|blocking|runtime-enforced)/u
   )?.[1] as GovernanceEnforcementMaturity | undefined
-  const evidencePath = content.match(/- \*\*Evidence path:\*\*\s*`([^`]+)`/u)?.[1]
-  const checkCommand = content.match(/- \*\*Check command:\*\*\s*`([^`]+)`/u)?.[1]
-  const reportCommand = content.match(/- \*\*Report command:\*\*\s*`([^`]+)`/u)?.[1]
+  const evidencePath = content.match(
+    /- \*\*Evidence path:\*\*\s*`([^`]+)`/u
+  )?.[1]
+  const checkCommand = content.match(
+    /- \*\*Check command:\*\*\s*`([^`]+)`/u
+  )?.[1]
+  const reportCommand = content.match(
+    /- \*\*Report command:\*\*\s*`([^`]+)`/u
+  )?.[1]
 
   return {
     contractId,
@@ -97,7 +103,10 @@ export function evaluateAtcHonesty(input: {
     )
   }
 
-  if (!atc.checkCommand || !boundDomain.checks.some((check) => check.command === atc.checkCommand)) {
+  if (
+    !atc.checkCommand ||
+    !boundDomain.checks.some((check) => check.command === atc.checkCommand)
+  ) {
     issues.push(
       `${relativePath} check command must resolve to a bound domain check command.`
     )
@@ -121,7 +130,8 @@ export function evaluateAtcHonesty(input: {
 
   if (
     atc.lifecycleStatus &&
-    lifecycleRank(atc.lifecycleStatus) > lifecycleRank(boundDomain.lifecycleStatus)
+    lifecycleRank(atc.lifecycleStatus) >
+      lifecycleRank(boundDomain.lifecycleStatus)
   ) {
     issues.push(
       `${relativePath} claims lifecycle status "${atc.lifecycleStatus}" stronger than bound domain lifecycle "${boundDomain.lifecycleStatus}".`
@@ -144,7 +154,9 @@ export function evaluateAtcHonesty(input: {
         `${relativePath} cannot claim strong enforcement because bound domain "${boundDomain.id}" has no registered check command.`
       )
     }
-    if (!boundDomain.evidencePath.startsWith(".artifacts/reports/governance/")) {
+    if (
+      !boundDomain.evidencePath.startsWith(".artifacts/reports/governance/")
+    ) {
       issues.push(
         `${relativePath} cannot claim strong enforcement because bound domain "${boundDomain.id}" evidence path is outside .artifacts/reports/governance/.`
       )

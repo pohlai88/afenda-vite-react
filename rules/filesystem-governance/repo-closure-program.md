@@ -16,12 +16,12 @@ The program sequence is fixed:
 
 ## Repo Health States
 
-| State | Meaning |
-| --- | --- |
-| `red` | release or merge trust is broken |
-| `amber` | closure is in progress and cleanup is bounded |
-| `green` | gates are green, active scope is governed, reviewed exceptions are controlled |
-| `sealed` | green plus minimal exception debt in protected scopes |
+| State    | Meaning                                                                       |
+| -------- | ----------------------------------------------------------------------------- |
+| `red`    | release or merge trust is broken                                              |
+| `amber`  | closure is in progress and cleanup is bounded                                 |
+| `green`  | gates are green, active scope is governed, reviewed exceptions are controlled |
+| `sealed` | green plus minimal exception debt in protected scopes                         |
 
 ## Success Definitions
 

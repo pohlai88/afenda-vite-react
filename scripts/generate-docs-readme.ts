@@ -1015,7 +1015,10 @@ async function renderDependenciesReadme(
     "# Dependency guides",
     "",
     renderGeneratedMetadataNotice({
-      sourcePaths: ["scripts/generate-docs-readme.ts", "docs/dependencies/*.md"],
+      sourcePaths: [
+        "scripts/generate-docs-readme.ts",
+        "docs/dependencies/*.md",
+      ],
       command: "pnpm run script:generate-docs-readme",
       truthClass: "derived",
     }),
@@ -1081,7 +1084,10 @@ async function renderGenericReadme(
   const visibleEntries: DocEntry[] = sortEntries(
     entries.filter(isVisibleDocEntry)
   )
-  const childCollections = await getDirectChildCollectionEntries(directory, docsRoot)
+  const childCollections = await getDirectChildCollectionEntries(
+    directory,
+    docsRoot
+  )
   const relativeDirectory = toPosixPath(path.relative(docsRoot, directory))
   const override = ROOT_COLLECTION_OVERRIDES[relativeDirectory]
   const title =
@@ -1100,7 +1106,10 @@ async function renderGenericReadme(
     `# ${title}`,
     "",
     renderGeneratedMetadataNotice({
-      sourcePaths: ["scripts/generate-docs-readme.ts", `docs/${relativeDirectory}`],
+      sourcePaths: [
+        "scripts/generate-docs-readme.ts",
+        `docs/${relativeDirectory}`,
+      ],
       command: "pnpm run script:generate-docs-readme",
       truthClass: "derived",
     }),
@@ -1110,7 +1119,12 @@ async function renderGenericReadme(
 
   const startHereGuides = getCollectionTaskGuides(relativeDirectory)
   if (startHereGuides.length > 0) {
-    sections.push("", "## Start here", "", renderTaskGuideTable(directory, startHereGuides))
+    sections.push(
+      "",
+      "## Start here",
+      "",
+      renderTaskGuideTable(directory, startHereGuides)
+    )
   }
 
   if (childCollections.length > 0) {
@@ -1121,7 +1135,11 @@ async function renderGenericReadme(
       renderTable(
         ["Collection", "Description"],
         childCollections.map((entry) => [
-          formatLink(directory, path.join(entry.absolutePath, "README.md"), entry.title),
+          formatLink(
+            directory,
+            path.join(entry.absolutePath, "README.md"),
+            entry.title
+          ),
           entry.description,
         ])
       )
@@ -1129,7 +1147,12 @@ async function renderGenericReadme(
   }
 
   if (visibleEntries.length > 0) {
-    sections.push("", "## Documents", "", renderDocMetadataTable(directory, visibleEntries))
+    sections.push(
+      "",
+      "## Documents",
+      "",
+      renderDocMetadataTable(directory, visibleEntries)
+    )
   }
 
   const relatedCommands = getCollectionRelatedCommands(relativeDirectory)
@@ -1171,7 +1194,11 @@ async function renderScriptsReadme(
     "# Scripts",
     "",
     renderGeneratedMetadataNotice({
-      sourcePaths: ["scripts/generate-docs-readme.ts", "scripts/*.ts", "scripts/afenda.config.json"],
+      sourcePaths: [
+        "scripts/generate-docs-readme.ts",
+        "scripts/*.ts",
+        "scripts/afenda.config.json",
+      ],
       command: "pnpm run script:generate-docs-readme",
       truthClass: "derived",
     }),
@@ -1359,7 +1386,10 @@ async function renderOperatingMap(
     renderTable(
       ["Surface", "Path"],
       [
-        ["Governance evidence root", `\`${afendaConfig.governance.evidence.root}\``],
+        [
+          "Governance evidence root",
+          `\`${afendaConfig.governance.evidence.root}\``,
+        ],
         [
           "Aggregate governance report",
           `\`${afendaConfig.governance.evidence.aggregateReportPath}\``,
@@ -1373,7 +1403,10 @@ async function renderOperatingMap(
           "Governance register snapshot",
           `\`${afendaConfig.governance.evidence.registerSnapshotPath}\``,
         ],
-        ["Waiver registry", `\`${afendaConfig.governance.waivers.registryPath}\``],
+        [
+          "Waiver registry",
+          `\`${afendaConfig.governance.waivers.registryPath}\``,
+        ],
         [
           "Waiver evidence report",
           `\`${afendaConfig.governance.waivers.reportPath}\``,
@@ -1489,7 +1522,9 @@ function formatGuidePath(baseDirectory: string, startPath: string) {
   )})`
 }
 
-function getCollectionTaskGuides(relativeDirectory: string): CollectionTaskGuide[] {
+function getCollectionTaskGuides(
+  relativeDirectory: string
+): CollectionTaskGuide[] {
   switch (relativeDirectory) {
     case "workspace":
       return [
@@ -1593,7 +1628,9 @@ function renderBulletLinks(
   relativePaths: string[]
 ) {
   const lines = relativePaths
-    .map((relativePath) => findExistingRelativePath(workspaceRoot, [relativePath]))
+    .map((relativePath) =>
+      findExistingRelativePath(workspaceRoot, [relativePath])
+    )
     .filter((value): value is string => Boolean(value))
     .map((relativePath) => {
       const absolutePath = path.join(workspaceRoot, relativePath)
@@ -1773,7 +1810,10 @@ async function renderFormalDirectoryReadme(
   ]
 
   if (visibleEntries.length > 0) {
-    sections.push("", renderDocMetadataTable(target.absolutePath, visibleEntries))
+    sections.push(
+      "",
+      renderDocMetadataTable(target.absolutePath, visibleEntries)
+    )
   }
 
   for (const childSection of childSections) {
@@ -1887,7 +1927,9 @@ async function getDirectoryEntries(
           return undefined
         }
 
-        const relativePath = toPosixPath(path.relative(docsRoot, childDirectory))
+        const relativePath = toPosixPath(
+          path.relative(docsRoot, childDirectory)
+        )
         const override =
           ROOT_COLLECTION_OVERRIDES[relativePath] ??
           ROOT_COLLECTION_OVERRIDES[child.name]
@@ -1941,7 +1983,9 @@ async function getDirectChildCollectionEntries(
           return undefined
         }
 
-        const relativePath = toPosixPath(path.relative(docsRoot, childDirectory))
+        const relativePath = toPosixPath(
+          path.relative(docsRoot, childDirectory)
+        )
         const override =
           ROOT_COLLECTION_OVERRIDES[relativePath] ??
           ROOT_COLLECTION_OVERRIDES[child.name]

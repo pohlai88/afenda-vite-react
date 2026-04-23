@@ -9,7 +9,9 @@ if (issues.length === 0) {
   process.exit(0)
 }
 
-console.error(`Governance registry check found ${String(issues.length)} issue(s):`)
+console.error(
+  `Governance registry check found ${String(issues.length)} issue(s):`
+)
 for (const issue of issues) {
   console.error(`- [${issue.scope}] ${issue.message}`)
 }

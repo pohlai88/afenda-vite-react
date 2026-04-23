@@ -135,11 +135,15 @@ export interface FileSurvivalStats {
   readonly scannedDirectoryCount: number
   readonly exceptionCount: number
   readonly findingCount: number
-  readonly findingsByCategory: Readonly<Record<FileSurvivalFindingCategory, number>>
+  readonly findingsByCategory: Readonly<
+    Record<FileSurvivalFindingCategory, number>
+  >
   readonly findingsByConfidence: Readonly<
     Record<FileSurvivalFindingConfidence, number>
   >
-  readonly findingsBySeverity: Readonly<Record<FileSurvivalFindingSeverity, number>>
+  readonly findingsBySeverity: Readonly<
+    Record<FileSurvivalFindingSeverity, number>
+  >
   readonly scannedFilesByRole: Readonly<Record<FileSurvivalClaimedRole, number>>
   readonly scannedFilesByOwnerSource: Readonly<
     Record<FileSurvivalOwnerSource, number>
@@ -193,10 +197,7 @@ export interface GenerateFileSurvivalReportOptions {
 
 type WrapperSubtype = "re-export-only" | "pass-through-only" | null
 
-type InternalCandidateRole =
-  | FileSurvivalClaimedRole
-  | "styling-asset"
-  | "test"
+type InternalCandidateRole = FileSurvivalClaimedRole | "styling-asset" | "test"
 
 interface FileAnalysis {
   readonly path: string
@@ -338,15 +339,16 @@ export function generateFileSurvivalReport(
   }
 
   const directImportersByFile = buildDirectImporters(parsedModules)
-  const routeOwnerPaths = relevantFiles.filter((filePath) =>
-    claimedRoleForPath({
-      filePath,
-      scopeRootWorkspacePath: rollout.scopeRoot,
-      sharedRootSet,
-      runtimeOwnerSet,
-      rolePatterns: rollout.rolePatterns,
-      rolePrecedence: rollout.rolePrecedence,
-    }).claimedRole === "route-owner"
+  const routeOwnerPaths = relevantFiles.filter(
+    (filePath) =>
+      claimedRoleForPath({
+        filePath,
+        scopeRootWorkspacePath: rollout.scopeRoot,
+        sharedRootSet,
+        runtimeOwnerSet,
+        rolePatterns: rollout.rolePatterns,
+        rolePrecedence: rollout.rolePrecedence,
+      }).claimedRole === "route-owner"
   )
   const runtimeOwnerPaths = relevantFiles.filter((filePath) =>
     runtimeOwnerSet.has(filePath)
@@ -400,21 +402,21 @@ export function generateFileSurvivalReport(
     const parsedModule = parsedModules.get(filePath)
     assert(parsedModule, `Missing parsed module for ${filePath}.`)
 
-    const routeOwnerConsumers = sortStrings(
-      [...(reachabilityFromRouteOwners.get(filePath) ?? new Set<string>())]
-    )
-    const runtimeOwnerConsumers = sortStrings(
-      [...(reachabilityFromRuntimeOwners.get(filePath) ?? new Set<string>())]
-    )
-    const registryConsumers = sortStrings(
-      [...(reachabilityFromRegistries.get(filePath) ?? new Set<string>())]
-    )
-    const routerConsumers = sortStrings(
-      [...(reachabilityFromRouters.get(filePath) ?? new Set<string>())]
-    )
-    const layoutOrHomeConsumers = sortStrings(
-      [...(reachabilityFromLayoutOrHome.get(filePath) ?? new Set<string>())]
-    )
+    const routeOwnerConsumers = sortStrings([
+      ...(reachabilityFromRouteOwners.get(filePath) ?? new Set<string>()),
+    ])
+    const runtimeOwnerConsumers = sortStrings([
+      ...(reachabilityFromRuntimeOwners.get(filePath) ?? new Set<string>()),
+    ])
+    const registryConsumers = sortStrings([
+      ...(reachabilityFromRegistries.get(filePath) ?? new Set<string>()),
+    ])
+    const routerConsumers = sortStrings([
+      ...(reachabilityFromRouters.get(filePath) ?? new Set<string>()),
+    ])
+    const layoutOrHomeConsumers = sortStrings([
+      ...(reachabilityFromLayoutOrHome.get(filePath) ?? new Set<string>()),
+    ])
 
     const directImporters = sortStrings([
       ...(directImportersByFile.get(filePath) ?? new Set<string>()),
@@ -437,15 +439,16 @@ export function generateFileSurvivalReport(
       routerConsumers,
       layoutOrHomeConsumers,
       wrapperSubtype: parsedModule.wrapperSubtype,
-      directImportersByClaimedRole: directImporters.map((importerPath) =>
-        claimedRoleForPath({
-          filePath: importerPath,
-          scopeRootWorkspacePath: rollout.scopeRoot,
-          sharedRootSet,
-          runtimeOwnerSet,
-          rolePatterns: rollout.rolePatterns,
-          rolePrecedence: rollout.rolePrecedence,
-        }).claimedRole
+      directImportersByClaimedRole: directImporters.map(
+        (importerPath) =>
+          claimedRoleForPath({
+            filePath: importerPath,
+            scopeRootWorkspacePath: rollout.scopeRoot,
+            sharedRootSet,
+            runtimeOwnerSet,
+            rolePatterns: rollout.rolePatterns,
+            rolePrecedence: rollout.rolePrecedence,
+          }).claimedRole
       ),
     })
 
@@ -464,7 +467,9 @@ export function generateFileSurvivalReport(
 
     analyses.set(filePath, {
       path: filePath,
-      scopeRelativePath: toPosixPath(path.relative(rollout.scopeRoot, filePath)),
+      scopeRelativePath: toPosixPath(
+        path.relative(rollout.scopeRoot, filePath)
+      ),
       sourceKind: "code",
       claimedRole: claimedRoleData.claimedRole,
       slice,
@@ -517,13 +522,13 @@ export function generateFileSurvivalReport(
 
   const stats = buildStats({
     analyses,
-      findings,
-      ignoredFileCount: collected.ignoredFiles.length,
-      scannedDirectoryCount: collected.directories.length,
-      reviewedExceptionCount: countMatchingReviewedExceptions(
-        reviewedExceptionSet,
-        relevantFilePathSet
-      ),
+    findings,
+    ignoredFileCount: collected.ignoredFiles.length,
+    scannedDirectoryCount: collected.directories.length,
+    reviewedExceptionCount: countMatchingReviewedExceptions(
+      reviewedExceptionSet,
+      relevantFilePathSet
+    ),
   })
   const ownerCoverage = buildOwnerCoverage(analyses)
   const ownerAccountability = buildOwnerAccountability(findings)
@@ -553,7 +558,7 @@ export function generateFileSurvivalReport(
     reportTrust,
   })
 
-    return {
+  return {
     rolloutId: rollout.id,
     rolloutMode: rollout.blockingPolicy.rolloutMode,
     rolloutStatus,
@@ -639,7 +644,8 @@ export function renderFileSurvivalMarkdownReport(
     "### By Inferred Role",
     "",
     ...ROLE_ORDER.map(
-      (role) => `- \`${role}\`: ${String(report.stats.scannedFilesByRole[role])}`
+      (role) =>
+        `- \`${role}\`: ${String(report.stats.scannedFilesByRole[role])}`
     ),
     "",
     "### By Owner Source",
@@ -670,7 +676,10 @@ export function renderFileSurvivalMarkdownReport(
       `- ${String(report.resolver.ignoredAssetImportCount)} ignored asset import(s) were excluded from resolver trust scoring.`,
       `- First ignored imports (${String(Math.min(report.resolver.ignoredAssetImports.length, 10))} shown):`
     )
-    for (const ignoredImport of report.resolver.ignoredAssetImports.slice(0, 10)) {
+    for (const ignoredImport of report.resolver.ignoredAssetImports.slice(
+      0,
+      10
+    )) {
       lines.push(
         `  - \`${ignoredImport.importer}\` -> \`${ignoredImport.specifier}\``
       )
@@ -683,7 +692,15 @@ export function renderFileSurvivalMarkdownReport(
     "",
     `- Rollout status: \`${report.rolloutStatus}\``,
     `- Blocking findings: ${String(report.findings.filter((finding) => finding.ciBlocking).length)}`,
-    `- Blocking owners: ${report.ownerAccountability.filter((entry) => entry.blockingFindingCount > 0).map((entry) => `\`${entry.owner}\` (${String(entry.blockingFindingCount)})`).join(", ") || "none"}`,
+    `- Blocking owners: ${
+      report.ownerAccountability
+        .filter((entry) => entry.blockingFindingCount > 0)
+        .map(
+          (entry) =>
+            `\`${entry.owner}\` (${String(entry.blockingFindingCount)})`
+        )
+        .join(", ") || "none"
+    }`,
     "",
     "## High-confidence Delete Candidates",
     "",
@@ -783,7 +800,10 @@ export function renderFileSurvivalMarkdownReport(
     lines.push(
       `- First unresolved imports (${String(Math.min(report.resolver.unresolvedImports.length, 10))} shown):`
     )
-    for (const unresolvedImport of report.resolver.unresolvedImports.slice(0, 10)) {
+    for (const unresolvedImport of report.resolver.unresolvedImports.slice(
+      0,
+      10
+    )) {
       lines.push(
         `  - \`${unresolvedImport.importer}\` -> \`${unresolvedImport.specifier}\``
       )
@@ -2085,7 +2105,10 @@ function collectFileFindings(
       continue
     }
 
-    const sharedSingleUseFinding = classifySharedSingleUseFinding(analysis, policy)
+    const sharedSingleUseFinding = classifySharedSingleUseFinding(
+      analysis,
+      policy
+    )
     if (sharedSingleUseFinding !== null) {
       findings.push(sharedSingleUseFinding)
       continue
@@ -2131,7 +2154,10 @@ function classifyWrapperFinding(
     return null
   }
 
-  if (analysis.claimedRole === "route-owner" || analysis.claimedRole === "registry") {
+  if (
+    analysis.claimedRole === "route-owner" ||
+    analysis.claimedRole === "registry"
+  ) {
     return null
   }
 
@@ -2244,14 +2270,12 @@ function classifyWeakBoundaryFinding(
     analysis.isTrivialExportSurface,
     analysis.isVerySmall,
   ]
-  const trueTriggerCount = [...consumerShapeTriggers, ...substanceTriggers].filter(
-    Boolean
-  ).length
+  const trueTriggerCount = [
+    ...consumerShapeTriggers,
+    ...substanceTriggers,
+  ].filter(Boolean).length
 
-  if (
-    substanceTriggers.filter(Boolean).length === 0 ||
-    trueTriggerCount < 2
-  ) {
+  if (substanceTriggers.filter(Boolean).length === 0 || trueTriggerCount < 2) {
     return null
   }
 
@@ -2276,7 +2300,7 @@ function collectEmptyFolderFindings({
   repoRoot,
   scopeRoot,
   rollout,
-  }: {
+}: {
   allDirectories: readonly string[]
   allFiles: readonly string[]
   ignorePatterns: readonly string[]
@@ -2297,13 +2321,15 @@ function collectEmptyFolderFindings({
       continue
     }
 
-    if (isIgnoredScopePath({
-      scopeRelativePath: normalizeWorkspacePath(
-        path.relative(scopeRoot, directoryPath)
-      ),
-      ignorePatterns,
-      isDirectory: true,
-    })) {
+    if (
+      isIgnoredScopePath({
+        scopeRelativePath: normalizeWorkspacePath(
+          path.relative(scopeRoot, directoryPath)
+        ),
+        ignorePatterns,
+        isDirectory: true,
+      })
+    ) {
       continue
     }
 
@@ -2409,20 +2435,18 @@ function buildOwnerAccountability(
 
   for (const finding of findings) {
     const existingBucket = buckets.get(finding.owner)
-    const bucket =
-      existingBucket ??
-      {
-        owner: finding.owner,
-        ownerSource: finding.ownerSource,
-        findingCount: 0,
-        blockingFindingCount: 0,
-        severityCounts: {
-          error: 0,
-          warning: 0,
-          advisory: 0,
-        },
-        topPaths: [],
-      }
+    const bucket = existingBucket ?? {
+      owner: finding.owner,
+      ownerSource: finding.ownerSource,
+      findingCount: 0,
+      blockingFindingCount: 0,
+      severityCounts: {
+        error: 0,
+        warning: 0,
+        advisory: 0,
+      },
+      topPaths: [],
+    }
 
     bucket.findingCount += 1
     bucket.severityCounts[finding.severity] += 1
@@ -2472,15 +2496,13 @@ function buildRemediationMatrix(
 
   for (const finding of findings) {
     const kind = finding.approvedRemediation.kind
-    const bucket =
-      buckets.get(kind) ??
-      {
-        kind,
-        findingCount: 0,
-        blockingFindingCount: 0,
-        owners: new Set<string>(),
-        topPaths: [],
-      }
+    const bucket = buckets.get(kind) ?? {
+      kind,
+      findingCount: 0,
+      blockingFindingCount: 0,
+      owners: new Set<string>(),
+      topPaths: [],
+    }
 
     bucket.findingCount += 1
     if (finding.ciBlocking) {
@@ -2717,7 +2739,10 @@ function inferOwnerFallback(
     return "marketing-runtime"
   }
 
-  if (inferredRole === "shared-component" || normalizedPath.includes("/components/")) {
+  if (
+    inferredRole === "shared-component" ||
+    normalizedPath.includes("/components/")
+  ) {
     return "marketing-shared-surface"
   }
 
@@ -3060,7 +3085,9 @@ function parseModule({
 
   return {
     directDependencies: sortStrings([...directDependencies]),
-    unresolvedInternalSpecifiers: sortStrings([...unresolvedInternalSpecifiers]),
+    unresolvedInternalSpecifiers: sortStrings([
+      ...unresolvedInternalSpecifiers,
+    ]),
     ignoredUnresolvedInternalSpecifiers: sortStrings([
       ...ignoredUnresolvedInternalSpecifiers,
     ]),
@@ -3213,7 +3240,10 @@ function detectPassThroughModule(
 
 function getDefaultExportTargetName(sourceFile: ts.SourceFile): string | null {
   for (const statement of sourceFile.statements) {
-    if (ts.isExportAssignment(statement) && ts.isIdentifier(statement.expression)) {
+    if (
+      ts.isExportAssignment(statement) &&
+      ts.isIdentifier(statement.expression)
+    ) {
       return statement.expression.text
     }
 
@@ -3292,8 +3322,8 @@ function variableReturnsImportedComponent(
 
   if (ts.isArrowFunction(declaration.initializer)) {
     if (ts.isBlock(declaration.initializer.body)) {
-      const returnStatement = declaration.initializer.body.statements.find((statement) =>
-        ts.isReturnStatement(statement)
+      const returnStatement = declaration.initializer.body.statements.find(
+        (statement) => ts.isReturnStatement(statement)
       ) as ts.ReturnStatement | undefined
 
       if (!returnStatement?.expression) {
@@ -3345,7 +3375,9 @@ function jsxTagMatchesImportedSymbol(
 }
 
 function hasDefaultModifier(node: ts.Node): boolean {
-  const modifiers = ts.canHaveModifiers(node) ? ts.getModifiers(node) : undefined
+  const modifiers = ts.canHaveModifiers(node)
+    ? ts.getModifiers(node)
+    : undefined
 
   return Boolean(
     modifiers?.some(
@@ -3360,7 +3392,10 @@ function countSignificantStatements(sourceFile: ts.SourceFile): number {
       return false
     }
 
-    if (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) {
+    if (
+      ts.isInterfaceDeclaration(statement) ||
+      ts.isTypeAliasDeclaration(statement)
+    ) {
       return false
     }
 
@@ -3379,9 +3414,9 @@ function countExportedDeclarations(sourceFile: ts.SourceFile): number {
 
     if (
       ts.canHaveModifiers(statement) &&
-      (ts.getModifiers(statement)?.some(
-        (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword
-      ) ??
+      (ts
+        .getModifiers(statement)
+        ?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword) ??
         false)
     ) {
       exportedDeclarationCount += 1
@@ -3584,7 +3619,9 @@ function matchesAnyPattern(
   scopeRelativePath: string,
   patterns: readonly string[]
 ): boolean {
-  return patterns.some((pattern) => path.matchesGlob(scopeRelativePath, pattern))
+  return patterns.some((pattern) =>
+    path.matchesGlob(scopeRelativePath, pattern)
+  )
 }
 
 function isGovernedSourceFile(filePath: string): boolean {
@@ -3751,7 +3788,8 @@ function compareFindings(
   }
 
   const categoryComparison =
-    CATEGORY_ORDER.indexOf(left.category) - CATEGORY_ORDER.indexOf(right.category)
+    CATEGORY_ORDER.indexOf(left.category) -
+    CATEGORY_ORDER.indexOf(right.category)
   if (categoryComparison !== 0) {
     return categoryComparison
   }
@@ -3818,7 +3856,9 @@ function formatApprovedRemediation(
   remediation: FileSurvivalApprovedRemediation
 ): string {
   const targetZone =
-    remediation.targetZone === null ? "no target zone" : `target ${remediation.targetZone}`
+    remediation.targetZone === null
+      ? "no target zone"
+      : `target ${remediation.targetZone}`
   const reviewState = remediation.requiresHumanReview
     ? "human review required"
     : "human review not required"

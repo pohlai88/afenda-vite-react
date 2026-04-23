@@ -237,7 +237,8 @@ test("bounded i18n Phase 2 surface passes with valid naming", () => {
     "docs/architecture/governance/NAMING_CONVENTION.md": "# Naming",
     "docs/architecture/adr/ADR_TEMPLATE.md": "# Template",
     "docs/architecture/atc/ATC_TEMPLATE.md": "# Template",
-    "apps/web/src/app/_platform/i18n/index.ts": "export * from './policy/i18n-policy'",
+    "apps/web/src/app/_platform/i18n/index.ts":
+      "export * from './policy/i18n-policy'",
     "apps/web/src/app/_platform/i18n/components/language-switcher.tsx":
       "export function LanguageSwitcher() { return null }",
     "apps/web/src/app/_platform/i18n/adapters/i18next-adapter.ts":
@@ -278,9 +279,9 @@ test("bounded i18n Phase 2 surface rejects invalid role naming", () => {
       "export function formatNumber() { return '' }",
     "apps/web/src/app/_platform/i18n/policy/policy.ts":
       "export const SUPPORTED_LOCALES = ['en']",
-    "apps/web/src/app/_platform/i18n/scripts/i18n.ts":
-      "console.log('bad')",
-    "apps/web/src/app/_platform/i18n/types/i18n.d.ts": "export type Locale = 'en'",
+    "apps/web/src/app/_platform/i18n/scripts/i18n.ts": "console.log('bad')",
+    "apps/web/src/app/_platform/i18n/types/i18n.d.ts":
+      "export type Locale = 'en'",
     "apps/web/src/app/_platform/i18n/__tests__/policy-script.spec.ts":
       "export {}",
   })
@@ -293,7 +294,10 @@ test("bounded i18n Phase 2 surface rejects invalid role naming", () => {
     assert.match(messages, /adapter filenames must end with "-adapter\.ts"/u)
     assert.match(messages, /service filenames must end with "-service\.ts"/u)
     assert.match(messages, /policy modules must end with "-policy\.ts"/u)
-    assert.match(messages, /Local i18n scripts must start with an approved verb/u)
+    assert.match(
+      messages,
+      /Local i18n scripts must start with an approved verb/u
+    )
     assert.match(messages, /declaration files must end with "-types\.d\.ts"/u)
     assert.match(messages, /must use "<subject>\.test\.ts\[x\]" naming/u)
   } finally {
@@ -364,13 +368,31 @@ test("bounded runtime Phase 2 surface rejects invalid role naming", () => {
     const messages = result.errors.map((issue) => issue.message).join("\n")
 
     assert.match(messages, /runtime component filenames must use kebab-case/u)
-    assert.match(messages, /runtime adapter filenames must end with "-adapter\.ts"/u)
-    assert.match(messages, /runtime hook filenames must use "use-<subject>\.ts\[x\]"/u)
-    assert.match(messages, /runtime policy modules must end with "-policy\.ts"/u)
-    assert.match(messages, /Local runtime scripts must start with an approved verb/u)
-    assert.match(messages, /runtime service filenames must end with "-service\.ts"/u)
+    assert.match(
+      messages,
+      /runtime adapter filenames must end with "-adapter\.ts"/u
+    )
+    assert.match(
+      messages,
+      /runtime hook filenames must use "use-<subject>\.ts\[x\]"/u
+    )
+    assert.match(
+      messages,
+      /runtime policy modules must end with "-policy\.ts"/u
+    )
+    assert.match(
+      messages,
+      /Local runtime scripts must start with an approved verb/u
+    )
+    assert.match(
+      messages,
+      /runtime service filenames must end with "-service\.ts"/u
+    )
     assert.match(messages, /runtime type modules must end with "-types\.ts"/u)
-    assert.match(messages, /runtime unit and integration tests must use "<subject>\.test\.ts\[x\]"/u)
+    assert.match(
+      messages,
+      /runtime unit and integration tests must use "<subject>\.test\.ts\[x\]"/u
+    )
   } finally {
     cleanupFixtureRepo(repoRoot)
   }
@@ -415,8 +437,14 @@ test("bounded tenant Phase 2 surface rejects invalid role naming", () => {
     const messages = result.errors.map((issue) => issue.message).join("\n")
 
     assert.match(messages, /tenant platform filenames must use kebab-case/u)
-    assert.match(messages, /tenant React context modules must end with "-context\.tsx"/u)
-    assert.match(messages, /tenant TypeScript modules must end with "-types\.ts"/u)
+    assert.match(
+      messages,
+      /tenant React context modules must end with "-context\.tsx"/u
+    )
+    assert.match(
+      messages,
+      /tenant TypeScript modules must end with "-types\.ts"/u
+    )
   } finally {
     cleanupFixtureRepo(repoRoot)
   }
@@ -460,7 +488,8 @@ test("remaining bounded platform roots pass with valid naming", () => {
     "apps/web/src/app/_platform/app-surface/__tests__/app-surface.test.tsx":
       "export {}",
     "apps/web/src/app/_platform/auth/index.ts": "export {}",
-    "apps/web/src/app/_platform/auth/auth-client.ts": "export const authClient = {}",
+    "apps/web/src/app/_platform/auth/auth-client.ts":
+      "export const authClient = {}",
     "apps/web/src/app/_platform/auth/auth.css": ".auth {}",
     "apps/web/src/app/_platform/auth/better-auth-ui/afenda-auth-link.tsx":
       "export function AfendaAuthLink() { return null }",
@@ -545,8 +574,7 @@ test("remaining bounded platform roots reject invalid role naming", () => {
     "docs/architecture/atc/ATC_TEMPLATE.md": "# Template",
     "apps/web/src/app/_platform/theme/Theme.tsx":
       "export function Theme() { return null }",
-    "apps/web/src/app/_platform/config/config.ts":
-      "export const config = {}",
+    "apps/web/src/app/_platform/config/config.ts": "export const config = {}",
     "apps/web/src/app/_platform/app-surface/services/app-surface.ts":
       "export const appSurface = {}",
     "apps/web/src/app/_platform/auth/guards/auth.tsx":
@@ -573,8 +601,7 @@ test("remaining bounded platform roots reject invalid role naming", () => {
       "export const shell = {}",
     "apps/web/src/app/_platform/shell/store/shell.ts":
       "export const shell = {}",
-    "apps/web/src/app/_platform/shell/__tests__/shell.spec.ts":
-      "export {}",
+    "apps/web/src/app/_platform/shell/__tests__/shell.spec.ts": "export {}",
   })
 
   try {
@@ -583,20 +610,47 @@ test("remaining bounded platform roots reject invalid role naming", () => {
 
     assert.match(messages, /theme React modules must end with/u)
     assert.match(messages, /config modules must end with "-env\.ts"/u)
-    assert.match(messages, /app-surface service modules must use approved verb-first naming/u)
-    assert.match(messages, /auth guard modules must use "require-<subject>\.tsx"/u)
-    assert.match(messages, /auth hook modules must use "use-<subject>\.ts\[x\]"/u)
+    assert.match(
+      messages,
+      /app-surface service modules must use approved verb-first naming/u
+    )
+    assert.match(
+      messages,
+      /auth guard modules must use "require-<subject>\.tsx"/u
+    )
+    assert.match(
+      messages,
+      /auth hook modules must use "use-<subject>\.ts\[x\]"/u
+    )
     assert.match(messages, /auth mapper modules must use "map-<subject>\.ts"/u)
-    assert.match(messages, /auth route modules must use "route-<subject>\.tsx"/u)
+    assert.match(
+      messages,
+      /auth route modules must use "route-<subject>\.tsx"/u
+    )
     assert.match(messages, /auth service modules must end with "-service\.ts"/u)
     assert.match(messages, /Generic or catch-all filenames are not allowed/u)
     assert.match(messages, /shell error modules must end with "-error\.ts"/u)
-    assert.match(messages, /shell hook modules must use "use-<subject>\.ts\[x\]"/u)
+    assert.match(
+      messages,
+      /shell hook modules must use "use-<subject>\.ts\[x\]"/u
+    )
     assert.match(messages, /shell policy modules must end with "-policy\.ts"/u)
-    assert.match(messages, /shell registry modules must end with "-registry\.ts" or "-instance\.ts"/u)
-    assert.match(messages, /Local shell scripts must start with an approved verb/u)
-    assert.match(messages, /shell store modules must end with "-store\.ts" or "-instance\.ts"/u)
-    assert.match(messages, /shell unit and integration tests must use "<subject>\.test\.ts\[x\]"/u)
+    assert.match(
+      messages,
+      /shell registry modules must end with "-registry\.ts" or "-instance\.ts"/u
+    )
+    assert.match(
+      messages,
+      /Local shell scripts must start with an approved verb/u
+    )
+    assert.match(
+      messages,
+      /shell store modules must end with "-store\.ts" or "-instance\.ts"/u
+    )
+    assert.match(
+      messages,
+      /shell unit and integration tests must use "<subject>\.test\.ts\[x\]"/u
+    )
   } finally {
     cleanupFixtureRepo(repoRoot)
   }
@@ -619,8 +673,7 @@ test("app components and features pass with valid naming", () => {
     "apps/web/src/app/_features/feature-a/index.ts": "export {}",
     "apps/web/src/app/_features/feature-a/feature-a-page.tsx":
       "export function FeatureAPage() { return null }",
-    "apps/web/src/app/_features/feature-a/feature-a-view.test.tsx":
-      "export {}",
+    "apps/web/src/app/_features/feature-a/feature-a-view.test.tsx": "export {}",
     "apps/web/src/app/_features/feature-a/components/feature-a-panel.tsx":
       "export function FeatureAPanel() { return null }",
     "apps/web/src/app/_features/feature-a/components/__tests__/feature-a-panel.test.tsx":
@@ -667,12 +720,27 @@ test("app components and features reject invalid naming", () => {
     const result = evaluateNamingConvention(repoRoot, {})
     const messages = result.errors.map((issue) => issue.message).join("\n")
 
-    assert.match(messages, /app component filenames must use lower-case kebab naming/u)
-    assert.match(messages, /app component unit and integration tests must use "<subject>\.test\.ts\[x\]"/u)
+    assert.match(
+      messages,
+      /app component filenames must use lower-case kebab naming/u
+    )
+    assert.match(
+      messages,
+      /app component unit and integration tests must use "<subject>\.test\.ts\[x\]"/u
+    )
     assert.match(messages, /feature component filenames must use kebab-case/u)
-    assert.match(messages, /feature hook modules must use "use-<subject>\.ts\[x\]"/u)
-    assert.match(messages, /Local feature scripts must start with an approved verb/u)
-    assert.match(messages, /feature unit and integration tests must use "<subject>\.test\.ts\[x\]"/u)
+    assert.match(
+      messages,
+      /feature hook modules must use "use-<subject>\.ts\[x\]"/u
+    )
+    assert.match(
+      messages,
+      /Local feature scripts must start with an approved verb/u
+    )
+    assert.match(
+      messages,
+      /feature unit and integration tests must use "<subject>\.test\.ts\[x\]"/u
+    )
   } finally {
     cleanupFixtureRepo(repoRoot)
   }
@@ -686,81 +754,120 @@ test("remaining app and package roots pass with valid naming", () => {
     "docs/architecture/atc/ATC_TEMPLATE.md": "# Template",
     "apps/web/src/routes/index.ts": "export {}",
     "apps/web/src/routes/README.md": "# routes",
-    "apps/web/src/routes/route-app-shell.tsx": "export function RouteAppShell() { return null }",
+    "apps/web/src/routes/route-app-shell.tsx":
+      "export function RouteAppShell() { return null }",
     "apps/web/src/routes/__tests__/route-marketing-parity.test.ts": "export {}",
-    "apps/web/src/share/components/auth/auth.tsx": "export function Auth() { return null }",
+    "apps/web/src/share/components/auth/auth.tsx":
+      "export function Auth() { return null }",
     "apps/web/src/share/components/auth/__test__/sign-up.test.tsx": "export {}",
     "apps/web/src/rpc/index.ts": "export {}",
     "apps/web/src/rpc/web-client.ts": "export const webClient = {}",
     "apps/web/src/marketing/README.md": "# marketing",
-    "apps/web/src/marketing/marketing-layout.tsx": "export function MarketingLayout() { return null }",
-    "apps/web/src/marketing/marketing-page-registry.ts": "export const marketingLandingVariants = []",
-    "apps/web/src/marketing/marketing-routes.tsx": "export const marketingRouteObjects = []",
-    "apps/web/src/marketing/marketing-theme-provider.tsx": "export function MarketingThemeProvider() { return null }",
-    "apps/web/src/marketing/marketing-loading-fallback.tsx": "export function MarketingLoadingFallback() { return null }",
-    "apps/web/src/marketing/marketing.config.ts": "export const MARKETING_CONFIG = {}",
+    "apps/web/src/marketing/marketing-layout.tsx":
+      "export function MarketingLayout() { return null }",
+    "apps/web/src/marketing/marketing-page-registry.ts":
+      "export const marketingLandingVariants = []",
+    "apps/web/src/marketing/marketing-routes.tsx":
+      "export const marketingRouteObjects = []",
+    "apps/web/src/marketing/marketing-theme-provider.tsx":
+      "export function MarketingThemeProvider() { return null }",
+    "apps/web/src/marketing/marketing-loading-fallback.tsx":
+      "export function MarketingLoadingFallback() { return null }",
+    "apps/web/src/marketing/marketing.config.ts":
+      "export const MARKETING_CONFIG = {}",
     "apps/web/src/marketing/marketing.css": ".marketing {}",
     "apps/web/src/marketing/components/index.ts": "export {}",
-    "apps/web/src/marketing/components/marketing-page-shell.tsx": "export function MarketingPageShell() { return null }",
-    "apps/web/src/marketing/pages/company/about/about-page.tsx": "export default function AboutPage() { return null }",
-    "apps/web/src/marketing/pages/company/about/about-page-editorial.ts": "export const aboutPageContent = {}",
-    "apps/web/src/marketing/pages/company/about/about-page-hero.tsx": "export function AboutHero() { return null }",
-    "apps/web/src/marketing/pages/company/about/about-page-footer-cta.tsx": "export function AboutFooterCta() { return null }",
-    "apps/web/src/marketing/pages/company/about/about-page-section-credibility.tsx": "export function AboutSection05Credibility() { return null }",
-    "apps/web/src/marketing/pages/legal/data-governance/governance-data-page.tsx": "export default function GovernanceDataPage() { return null }",
-    "apps/web/src/marketing/pages/legal/data-governance/governance-data-page-editorial.ts": "export const dataGovernanceEditorial = {}",
-    "apps/web/src/marketing/pages/landing/moire-landing-page.tsx": "export default function MoireLandingPage() { return null }",
-    "apps/web/src/marketing/pages/landing/flagship/flagship-page.tsx": "export default function FlagshipPage() { return null }",
+    "apps/web/src/marketing/components/marketing-page-shell.tsx":
+      "export function MarketingPageShell() { return null }",
+    "apps/web/src/marketing/pages/company/about/about-page.tsx":
+      "export default function AboutPage() { return null }",
+    "apps/web/src/marketing/pages/company/about/about-page-editorial.ts":
+      "export const aboutPageContent = {}",
+    "apps/web/src/marketing/pages/company/about/about-page-hero.tsx":
+      "export function AboutHero() { return null }",
+    "apps/web/src/marketing/pages/company/about/about-page-footer-cta.tsx":
+      "export function AboutFooterCta() { return null }",
+    "apps/web/src/marketing/pages/company/about/about-page-section-credibility.tsx":
+      "export function AboutSection05Credibility() { return null }",
+    "apps/web/src/marketing/pages/legal/data-governance/governance-data-page.tsx":
+      "export default function GovernanceDataPage() { return null }",
+    "apps/web/src/marketing/pages/legal/data-governance/governance-data-page-editorial.ts":
+      "export const dataGovernanceEditorial = {}",
+    "apps/web/src/marketing/pages/landing/moire-landing-page.tsx":
+      "export default function MoireLandingPage() { return null }",
+    "apps/web/src/marketing/pages/landing/flagship/flagship-page.tsx":
+      "export default function FlagshipPage() { return null }",
     "apps/web/src/marketing/__tests__/marketing.config.test.ts": "export {}",
     "packages/contracts/src/index.ts": "export {}",
     "packages/env-loader/src/index.ts": "export {}",
     "packages/pino-logger/src/index.ts": "export {}",
-    "packages/pino-logger/src/hono-request-logging.ts": "export const honoRequestLogging = {}",
-    "packages/pino-logger/src/__tests__/hono-request-logging.test.ts": "export {}",
+    "packages/pino-logger/src/hono-request-logging.ts":
+      "export const honoRequestLogging = {}",
+    "packages/pino-logger/src/__tests__/hono-request-logging.test.ts":
+      "export {}",
     "packages/better-auth/src/index.ts": "export {}",
     "packages/better-auth/src/schema/index.ts": "export {}",
-    "packages/better-auth/src/schema/auth-schema.generated.ts": "export const authSchema = {}",
-    "packages/better-auth/src/__tests__/build-afenda-auth-plugins.test.ts": "export {}",
-    "packages/better-auth/scripts/run-auth-migrate-with-plugins.mjs": "export {}",
-    "packages/vitest-config/src/vitest/defaults.ts": "export const vitestDefaults = {}",
+    "packages/better-auth/src/schema/auth-schema.generated.ts":
+      "export const authSchema = {}",
+    "packages/better-auth/src/__tests__/build-afenda-auth-plugins.test.ts":
+      "export {}",
+    "packages/better-auth/scripts/run-auth-migrate-with-plugins.mjs":
+      "export {}",
+    "packages/vitest-config/src/vitest/defaults.ts":
+      "export const vitestDefaults = {}",
     "packages/vitest-config/src/__test__/defaults.test.ts": "export {}",
-    "packages/vitest-config/dist/vitest/defaults.js": "export const vitestDefaults = {}",
-    "packages/vitest-config/dist/vitest/defaults.d.ts": "export type VitestDefaults = {}",
+    "packages/vitest-config/dist/vitest/defaults.js":
+      "export const vitestDefaults = {}",
+    "packages/vitest-config/dist/vitest/defaults.d.ts":
+      "export type VitestDefaults = {}",
     "packages/vitest-config/dist/vitest/defaults.d.ts.map": "{}",
     "packages/eslint-config/src/index.js": "export default []",
     "packages/eslint-config/src/plugin.js": "export default {}",
     "packages/eslint-config/src/rules/no-inline-styles.js": "export default {}",
-    "packages/eslint-config/src/rules/__tests__/no-inline-styles.test.js": "export {}",
+    "packages/eslint-config/src/rules/__tests__/no-inline-styles.test.js":
+      "export {}",
     "packages/design-system/hooks/index.ts": "export {}",
-    "packages/design-system/hooks/use-copy-to-clipboard.ts": "export function useCopyToClipboard() { return null }",
+    "packages/design-system/hooks/use-copy-to-clipboard.ts":
+      "export function useCopyToClipboard() { return null }",
     "packages/design-system/icons/index.ts": "export {}",
-    "packages/design-system/icons/icon-policy.ts": "export const iconPolicy = {}",
-    "packages/design-system/icons/create-icon-loader.tsx": "export function createIconLoader() { return null }",
+    "packages/design-system/icons/icon-policy.ts":
+      "export const iconPolicy = {}",
+    "packages/design-system/icons/create-icon-loader.tsx":
+      "export function createIconLoader() { return null }",
     "packages/design-system/icons/__lucide__.ts": "export const lucide = {}",
     "packages/design-system/icons/script/build-icons.ts": "export {}",
     "packages/design-system/icons/__tests__/icons-barrel.test.ts": "export {}",
     "packages/design-system/ui-primitives/index.ts": "export {}",
-    "packages/design-system/ui-primitives/button.tsx": "export function Button() { return null }",
-    "packages/design-system/ui-primitives/button.manifest.ts": "export const buttonManifest = {}",
-    "packages/design-system/ui-primitives/__tests__/button.test.ts": "export {}",
+    "packages/design-system/ui-primitives/button.tsx":
+      "export function Button() { return null }",
+    "packages/design-system/ui-primitives/button.manifest.ts":
+      "export const buttonManifest = {}",
+    "packages/design-system/ui-primitives/__tests__/button.test.ts":
+      "export {}",
     "packages/design-system/utils/index.ts": "export {}",
     "packages/design-system/utils/cn.ts": "export function cn() { return '' }",
     "packages/design-system/utils/__tests__/cn.test.ts": "export {}",
     "packages/design-system/generated/component-coverage.json": "{}",
-    "packages/design-system/generated/schemas/component-coverage.schema.json": "{}",
+    "packages/design-system/generated/schemas/component-coverage.schema.json":
+      "{}",
     "packages/design-system/scripts/check-tailwind-tokens.ts": "export {}",
     "packages/design-system/scripts/component-governance/check.ts": "export {}",
-    "packages/design-system/scripts/component-governance/__tests__/extractor.test.ts": "export {}",
+    "packages/design-system/scripts/component-governance/__tests__/extractor.test.ts":
+      "export {}",
     "packages/design-system/design-architecture/src/local.css": "body{}",
-    "packages/design-system/design-architecture/__tests__/theme-contract-drift.test.ts": "export {}",
-    "packages/_database/scripts/verify-hardening-patch-order.ts": "export const HARDENING_PATCH_FILENAMES = []",
+    "packages/design-system/design-architecture/__tests__/theme-contract-drift.test.ts":
+      "export {}",
+    "packages/_database/scripts/verify-hardening-patch-order.ts":
+      "export const HARDENING_PATCH_FILENAMES = []",
     "packages/_database/sql/hardening/patch_a_triggers.sql": "-- sql",
     "packages/_database/drizzle/0000_dear_rockslide.sql": "-- sql",
     "packages/_database/drizzle/meta/_journal.json": "{}",
     "packages/_database/drizzle/meta/0000_snapshot.json": "{}",
     "packages/_database/src/index.ts": "export {}",
-    "packages/_database/src/schema/governance/governance-data-sources.schema.ts": "export const dataSources = {}",
-    "packages/_database/src/views/__tests__/drizzle-view-testing-utils.ts": "export const drizzleViewTestingUtils = {}",
+    "packages/_database/src/schema/governance/governance-data-sources.schema.ts":
+      "export const dataSources = {}",
+    "packages/_database/src/views/__tests__/drizzle-view-testing-utils.ts":
+      "export const drizzleViewTestingUtils = {}",
     "packages/_database/src/__tests__/hardening-patches.test.ts": "export {}",
   })
 
@@ -780,15 +887,21 @@ test("remaining app and package roots reject invalid naming", () => {
     "docs/architecture/atc/ATC_TEMPLATE.md": "# Template",
     "apps/web/src/routes/shell.tsx": "export function Shell() { return null }",
     "apps/web/src/rpc/client.ts": "export const client = {}",
-    "apps/web/src/marketing/pages/landing/1.Moire-BW.tsx": "export default function BadLanding() { return null }",
-    "apps/web/src/marketing/pages/company/about/page.tsx": "export default function AboutPage() { return null }",
-    "packages/better-auth/src/schema/AuthSchema.generated.ts": "export const authSchema = {}",
-    "packages/vitest-config/dist/vitest/BadName.js": "export const badName = {}",
+    "apps/web/src/marketing/pages/landing/1.Moire-BW.tsx":
+      "export default function BadLanding() { return null }",
+    "apps/web/src/marketing/pages/company/about/page.tsx":
+      "export default function AboutPage() { return null }",
+    "packages/better-auth/src/schema/AuthSchema.generated.ts":
+      "export const authSchema = {}",
+    "packages/vitest-config/dist/vitest/BadName.js":
+      "export const badName = {}",
     "packages/eslint-config/src/rules/BadRule.js": "export default {}",
     "packages/design-system/generated/ComponentCoverage.json": "{}",
-    "packages/_database/scripts/hardening-patch-order.ts": "export const HARDENING_PATCH_FILENAMES = []",
+    "packages/_database/scripts/hardening-patch-order.ts":
+      "export const HARDENING_PATCH_FILENAMES = []",
     "packages/_database/sql/hardening/patch-triggers.sql": "-- sql",
-    "packages/_database/src/views/__tests__/helper.ts": "export const helper = {}",
+    "packages/_database/src/views/__tests__/helper.ts":
+      "export const helper = {}",
   })
 
   try {
@@ -802,9 +915,18 @@ test("remaining app and package roots reject invalid naming", () => {
     assert.match(messages, /better-auth generated modules must use/u)
     assert.match(messages, /vitest-config dist artifacts must use kebab-case/u)
     assert.match(messages, /eslint rule filenames must use kebab-case/u)
-    assert.match(messages, /design-system generated JSON files must use kebab-case/u)
-    assert.match(messages, /Package-local database scripts must use an approved verb-first naming pattern/u)
-    assert.match(messages, /database hardening patches must use patch_<letter>_<subject>\.sql naming/u)
+    assert.match(
+      messages,
+      /design-system generated JSON files must use kebab-case/u
+    )
+    assert.match(
+      messages,
+      /Package-local database scripts must use an approved verb-first naming pattern/u
+    )
+    assert.match(
+      messages,
+      /database hardening patches must use patch_<letter>_<subject>\.sql naming/u
+    )
     assert.match(messages, /database package tests must use/u)
   } finally {
     cleanupFixtureRepo(repoRoot)

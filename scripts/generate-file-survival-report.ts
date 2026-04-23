@@ -43,12 +43,17 @@ for (const rollout of rollouts) {
     reportsDirectory,
     `${rollout.id}-blocking.json`
   )
-  const htmlPreviewPath = path.join(reportsDirectory, `${rollout.id}-preview.html`)
+  const htmlPreviewPath = path.join(
+    reportsDirectory,
+    `${rollout.id}-preview.html`
+  )
   const reviewedSurvivalJsonPath = path.join(
     reportsDirectory,
     `${rollout.id}-reviewed-survival.json`
   )
-  const blockingFindings = report.findings.filter((finding) => finding.ciBlocking)
+  const blockingFindings = report.findings.filter(
+    (finding) => finding.ciBlocking
+  )
   const blockingOwners = report.ownerAccountability.filter(
     (entry) => entry.blockingFindingCount > 0
   )
@@ -56,7 +61,11 @@ for (const rollout of rollouts) {
     repoRoot: workspaceRoot,
   })
 
-  await writeFile(markdownPath, renderFileSurvivalMarkdownReport(report), "utf8")
+  await writeFile(
+    markdownPath,
+    renderFileSurvivalMarkdownReport(report),
+    "utf8"
+  )
   await writeFile(jsonPath, `${JSON.stringify(report, null, 2)}\n`, "utf8")
   await writeFile(
     blockingJsonPath,
@@ -74,7 +83,11 @@ for (const rollout of rollouts) {
     )}\n`,
     "utf8"
   )
-  await writeFile(htmlPreviewPath, renderFileSurvivalHtmlPreview(report), "utf8")
+  await writeFile(
+    htmlPreviewPath,
+    renderFileSurvivalHtmlPreview(report),
+    "utf8"
+  )
   await writeFile(
     reviewedSurvivalJsonPath,
     `${JSON.stringify(reviewedSurvivalAudit, null, 2)}\n`,
