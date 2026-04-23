@@ -70,6 +70,20 @@ export interface RepoGuardCheckResult {
   readonly findings: readonly RepoGuardFinding[]
 }
 
+export type RepoGuardCoverageStatus = "implemented" | "partial" | "missing"
+
+export interface RepoGuardCoverageEntry {
+  readonly id: string
+  readonly title: string
+  readonly area: "foundation" | "guardrail"
+  readonly status: RepoGuardCoverageStatus
+  readonly owner: string
+  readonly enforcement: "blocking" | "warned" | "advisory"
+  readonly checkKeys: readonly string[]
+  readonly evidence: readonly string[]
+  readonly notes: string
+}
+
 export interface RepoGuardReport {
   readonly status: RepoGuardStatus
   readonly mode: RepoGuardMode
@@ -81,6 +95,12 @@ export interface RepoGuardReport {
   }
   readonly waivers: RepoGuardWaiverReport
   readonly checks: readonly RepoGuardCheckResult[]
+  readonly coverage: {
+    readonly implementedCount: number
+    readonly partialCount: number
+    readonly missingCount: number
+    readonly entries: readonly RepoGuardCoverageEntry[]
+  }
   readonly summary: {
     readonly passCount: number
     readonly warnCount: number
@@ -106,6 +126,192 @@ export interface RepoGuardCliResult {
   readonly exitCode: number
   readonly humanOutput: string
 }
+
+interface RepoGuardCoverageDefinition {
+  readonly id: string
+  readonly title: string
+  readonly area: "foundation" | "guardrail"
+  readonly owner: string
+  readonly baselineStatus: Exclude<RepoGuardCoverageStatus, "missing">
+  readonly enforcement: "blocking" | "warned" | "advisory"
+  readonly checkKeys: readonly string[]
+  readonly evidence: readonly string[]
+  readonly notes: string
+}
+
+const repoGuardCoverageCatalog = [
+  {
+    id: "FOUND-FILESYSTEM",
+    title: "Filesystem governance",
+    area: "foundation",
+    owner: "governance-toolchain",
+    baselineStatus: "implemented",
+    enforcement: "blocking",
+    checkKeys: ["filesystem-governance"],
+    evidence: ["scripts/check-filesystem-governance.ts"],
+    notes: "Existing governance surface aggregated by repo guard.",
+  },
+  {
+    id: "FOUND-GENERATED-GOVERNANCE",
+    title: "Generated artifact governance",
+    area: "foundation",
+    owner: "governance-toolchain",
+    baselineStatus: "implemented",
+    enforcement: "blocking",
+    checkKeys: ["generated-artifact-governance"],
+    evidence: ["scripts/check-generated-artifact-governance.ts"],
+    notes: "Existing governance surface aggregated by repo guard.",
+  },
+  {
+    id: "FOUND-STORAGE",
+    title: "Storage governance",
+    area: "foundation",
+    owner: "governance-toolchain",
+    baselineStatus: "implemented",
+    enforcement: "blocking",
+    checkKeys: ["storage-governance"],
+    evidence: ["scripts/check-storage-governance.ts"],
+    notes: "Existing governance surface aggregated by repo guard.",
+  },
+  {
+    id: "FOUND-NAMING",
+    title: "Naming convention",
+    area: "foundation",
+    owner: "governance-toolchain",
+    baselineStatus: "implemented",
+    enforcement: "blocking",
+    checkKeys: ["naming-convention"],
+    evidence: ["scripts/check-naming-convention.ts"],
+    notes: "Existing governance surface aggregated by repo guard.",
+  },
+  {
+    id: "FOUND-DOC-GOVERNANCE",
+    title: "Documentation governance",
+    area: "foundation",
+    owner: "docs-policy",
+    baselineStatus: "implemented",
+    enforcement: "blocking",
+    checkKeys: ["documentation-governance"],
+    evidence: ["scripts/check-doc-governance.ts"],
+    notes: "Existing governance surface aggregated by repo guard.",
+  },
+  {
+    id: "FOUND-WORKSPACE-TOPOLOGY",
+    title: "Workspace and package topology",
+    area: "foundation",
+    owner: "governance-toolchain",
+    baselineStatus: "implemented",
+    enforcement: "blocking",
+    checkKeys: ["workspace-topology"],
+    evidence: ["scripts/check-afenda-config.ts"],
+    notes: "Existing workspace topology governance aggregated by repo guard.",
+  },
+  {
+    id: "FOUND-FILE-SURVIVAL",
+    title: "File survival and reviewed survival",
+    area: "foundation",
+    owner: "governance-toolchain",
+    baselineStatus: "implemented",
+    enforcement: "blocking",
+    checkKeys: ["file-survival"],
+    evidence: ["scripts/lib/file-survival-governance.ts"],
+    notes: "Existing file survival governance aggregated by repo guard.",
+  },
+  {
+    id: "FOUND-DIRTY-FILE-SCAN",
+    title: "Dirty file scan",
+    area: "foundation",
+    owner: "governance-toolchain",
+    baselineStatus: "implemented",
+    enforcement: "warned",
+    checkKeys: ["dirty-file-scan"],
+    evidence: ["scripts/lib/repo-guard.ts"],
+    notes: "Native repo-guard hygiene scan.",
+  },
+  {
+    id: "FOUND-WORKTREE-LEGITIMACY",
+    title: "Working tree legitimacy",
+    area: "foundation",
+    owner: "governance-toolchain",
+    baselineStatus: "implemented",
+    enforcement: "warned",
+    checkKeys: ["working-tree-legitimacy"],
+    evidence: ["scripts/lib/repo-guard.ts"],
+    notes: "Native repo-guard worktree trust check.",
+  },
+  {
+    id: "RG-STRUCT-001",
+    title: "Placement and ownership",
+    area: "guardrail",
+    owner: "governance-toolchain",
+    baselineStatus: "partial",
+    enforcement: "warned",
+    checkKeys: ["placement-ownership"],
+    evidence: ["scripts/lib/placement-ownership-guard.ts"],
+    notes:
+      "Implemented as a first cut; broader repo-wide ownership families still need follow-through.",
+  },
+  {
+    id: "RG-TRUTH-002",
+    title: "Generated artifact authenticity",
+    area: "guardrail",
+    owner: "governance-toolchain",
+    baselineStatus: "partial",
+    enforcement: "warned",
+    checkKeys: ["generated-artifact-authenticity"],
+    evidence: ["scripts/lib/generated-artifact-authenticity-guard.ts"],
+    notes:
+      "Implemented as a first cut; wider provenance coverage still needs follow-through.",
+  },
+  {
+    id: "RG-STRUCT-003",
+    title: "Boundary and import regression",
+    area: "guardrail",
+    owner: "governance-toolchain",
+    baselineStatus: "partial",
+    enforcement: "warned",
+    checkKeys: ["boundary-import-regression"],
+    evidence: ["scripts/lib/boundary-import-guard.ts"],
+    notes:
+      "Implemented as a first cut; package export enforcement is active, but full public-surface policy is still incomplete.",
+  },
+  {
+    id: "RG-TRUTH-004",
+    title: "Source and evidence mismatch",
+    area: "guardrail",
+    owner: "governance-toolchain",
+    baselineStatus: "partial",
+    enforcement: "warned",
+    checkKeys: ["source-evidence-mismatch"],
+    evidence: ["scripts/lib/source-evidence-mismatch-guard.ts"],
+    notes:
+      "Implemented as a first cut; source-to-evidence coverage remains intentionally narrow and high-confidence.",
+  },
+  {
+    id: "RG-HYGIENE-005",
+    title: "Duplicate and overlap hygiene",
+    area: "guardrail",
+    owner: "governance-toolchain",
+    baselineStatus: "partial",
+    enforcement: "advisory",
+    checkKeys: ["duplicate-overlap"],
+    evidence: ["scripts/lib/duplicate-overlap-guard.ts"],
+    notes:
+      "Implemented as a first cut; semantic overlap detection still needs follow-through.",
+  },
+  {
+    id: "RG-ADVISORY-006",
+    title: "Advanced document control",
+    area: "guardrail",
+    owner: "docs-policy",
+    baselineStatus: "partial",
+    enforcement: "advisory",
+    checkKeys: ["stronger-document-control"],
+    evidence: ["scripts/lib/stronger-document-control-guard.ts"],
+    notes:
+      "Implemented as a first cut; deeper doctrine-network validation still needs follow-through.",
+  },
+] as const satisfies readonly RepoGuardCoverageDefinition[]
 
 export async function runRepoGuard(options: {
   readonly config: AfendaConfig
@@ -200,6 +406,7 @@ export function formatRepoGuardHumanReport(report: RepoGuardReport): string {
     `Generated at: ${report.generatedAt}`,
     `Checks: ${String(report.summary.passCount)} pass, ${String(report.summary.warnCount)} warn, ${String(report.summary.failCount)} fail`,
     `Findings: ${String(report.summary.findingCount)}`,
+    `Coverage: ${String(report.coverage.implementedCount)} implemented, ${String(report.coverage.partialCount)} partial, ${String(report.coverage.missingCount)} missing`,
     `Waivers: ${String(report.waivers.activeWaiverCount)} active, ${String(report.waivers.expiredWaiverCount)} expired, ${String(report.waivers.soonToExpireCount)} soon to expire`,
     "",
   ]
@@ -230,12 +437,39 @@ export function formatRepoGuardMarkdownReport(report: RepoGuardReport): string {
     `- Active waivers: ${String(report.waivers.activeWaiverCount)}`,
     `- Expired waivers: ${String(report.waivers.expiredWaiverCount)}`,
     `- Soon to expire: ${String(report.waivers.soonToExpireCount)}`,
+    `- Coverage implemented: ${String(report.coverage.implementedCount)}`,
+    `- Coverage partial: ${String(report.coverage.partialCount)}`,
+    `- Coverage missing: ${String(report.coverage.missingCount)}`,
     `- Pass: ${String(report.summary.passCount)}`,
     `- Warn: ${String(report.summary.warnCount)}`,
     `- Fail: ${String(report.summary.failCount)}`,
     `- Findings: ${String(report.summary.findingCount)}`,
     "",
+    "## Coverage",
+    "",
   ]
+
+  for (const entry of report.coverage.entries) {
+    lines.push(`### ${entry.title}`, "")
+    lines.push(`- Coverage status: \`${entry.status}\``)
+    lines.push(`- Area: \`${entry.area}\``)
+    lines.push(`- Owner: \`${entry.owner}\``)
+    lines.push(`- Enforcement: \`${entry.enforcement}\``)
+    if (entry.checkKeys.length > 0) {
+      lines.push(
+        `- Check keys: ${entry.checkKeys.map((key) => `\`${key}\``).join(", ")}`
+      )
+    }
+    if (entry.evidence.length > 0) {
+      lines.push("- Evidence:")
+      for (const evidence of entry.evidence) {
+        lines.push(`  - \`${evidence}\``)
+      }
+    }
+    lines.push(`- Notes: ${entry.notes}`, "")
+  }
+
+  lines.push("## Checks", "")
 
   for (const check of report.checks) {
     lines.push(`## ${check.title}`, "")
@@ -279,6 +513,7 @@ export function buildRepoGuardReport(
       count + check.findings.filter((finding) => !finding.waived).length,
     0
   )
+  const coverage = buildRepoGuardCoverage(checks)
 
   return {
     status: failCount > 0 ? "fail" : warnCount > 0 ? "warn" : "pass",
@@ -291,12 +526,46 @@ export function buildRepoGuardReport(
     },
     waivers,
     checks,
+    coverage,
     summary: {
       passCount,
       warnCount,
       failCount,
       findingCount,
     },
+  }
+}
+
+export function buildRepoGuardCoverage(
+  checks: readonly RepoGuardCheckResult[]
+): RepoGuardReport["coverage"] {
+  const availableCheckKeys = new Set(checks.map((check) => check.key))
+  const entries = repoGuardCoverageCatalog.map((definition) => {
+    const status = definition.checkKeys.every((key) =>
+      availableCheckKeys.has(key)
+    )
+      ? definition.baselineStatus
+      : "missing"
+
+    return {
+      id: definition.id,
+      title: definition.title,
+      area: definition.area,
+      status,
+      owner: definition.owner,
+      enforcement: definition.enforcement,
+      checkKeys: definition.checkKeys,
+      evidence: definition.evidence,
+      notes: definition.notes,
+    } satisfies RepoGuardCoverageEntry
+  })
+
+  return {
+    implementedCount: entries.filter((entry) => entry.status === "implemented")
+      .length,
+    partialCount: entries.filter((entry) => entry.status === "partial").length,
+    missingCount: entries.filter((entry) => entry.status === "missing").length,
+    entries,
   }
 }
 

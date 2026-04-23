@@ -40,6 +40,7 @@ export async function evaluatePromotionReadiness(options: {
     await evaluateArchitectureBindingCheck(options.repoRoot),
     evaluateGovernanceDomainPostureCheck(options.config),
     await evaluateMajorGuardrailCoverageCheck(options.repoRoot),
+    evaluateCoverageModelCheck(options.repoGuardReport),
     await evaluateWaiverModelCheck(options.repoRoot, options.repoGuardReport),
     evaluateRepoGuardVerdictCheck(options.repoGuardReport),
     evaluateAdvisoryBacklogCheck(options.repoGuardReport),
@@ -222,6 +223,28 @@ async function evaluateMajorGuardrailCoverageCheck(
         ? "Promotion cannot proceed while major first-cut guardrail files are missing."
         : "All major roadmap guardrail slices are implemented as first-cut files.",
     evidence: missing.length > 0 ? missing : requiredFiles,
+  }
+}
+
+function evaluateCoverageModelCheck(
+  repoGuardReport: RepoGuardEvidenceReport
+): PromotionReadinessCheck {
+  const { implementedCount, partialCount, missingCount } =
+    repoGuardReport.coverage
+
+  return {
+    key: "coverage-model",
+    title: "Coverage model",
+    status: missingCount > 0 ? "warn" : "pass",
+    message:
+      missingCount > 0
+        ? "Coverage reporting is present, but one or more planned repo-guard areas are still uncovered."
+        : "Coverage reporting is present and every planned repo-guard area is classified as implemented or partial.",
+    evidence: [
+      `implemented=${String(implementedCount)}`,
+      `partial=${String(partialCount)}`,
+      `missing=${String(missingCount)}`,
+    ],
   }
 }
 

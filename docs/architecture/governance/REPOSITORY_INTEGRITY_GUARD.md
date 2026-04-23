@@ -142,6 +142,7 @@ The JSON report includes a governance-domain projection so the existing governan
 The evidence contract is bound to `GOV-TRUTH-001`, ADR-0008, and ATC-0005.
 The report also carries explicit contract-binding metadata so the evidence stays self-describing in review and CI.
 The report now also carries waiver registry status, expiry, and validity summary for native repo-guard suppressions.
+The report now also carries a deterministic coverage model for implemented, partial, and missing repo-guard program areas.
 
 ## V1 rules
 

@@ -374,10 +374,10 @@ missing
 
 ### Coverage intent
 
-- [ ] Add a machine-readable coverage summary for implemented guardrails
-- [ ] Mark partial guardrails explicitly
-- [ ] Mark missing guardrails explicitly
-- [ ] Allow the repo guard to report which parts of repository truth are still uncovered
+- [x] Add a machine-readable coverage summary for implemented guardrails
+- [x] Mark partial guardrails explicitly
+- [x] Mark missing guardrails explicitly
+- [x] Allow the repo guard to report which parts of repository truth are still uncovered
 
 ### Initial target mapping
 
@@ -454,7 +454,7 @@ Before promotion to block, the following must be true:
 ### Phase E
 
 - [x] Waiver system hardening
-- [ ] Coverage reporting
+- [x] Coverage reporting
 - [~] Promotion review for `GOV-TRUTH-001`
 
 ### Phase F
@@ -472,11 +472,11 @@ Before promotion to block, the following must be true:
 - [x] Guard has evidence output
 - [x] Guard has stable CI behavior
 - [~] Core missing guardrails are implemented
-- [ ] Coverage reporting exists
+- [x] Coverage reporting exists
 - [x] Waiver model exists
 - [x] Promotion criteria are explicit
 - [ ] Blocking rollout decision is documented
 
 ## Current status label
 
-`Repository Integrity Guard V1 is green on a clean tree; all major roadmap guardrails, waiver hardening, and repo-specific activation docs are in place; remaining work is coverage reporting, repo-specific tightening, warned-cycle calibration evidence, and the promotion decision.`
+`Repository Integrity Guard V1 is green on a clean tree; all major roadmap guardrails, waiver hardening, activation docs, and coverage reporting are in place; remaining work is repo-specific tightening, warned-cycle calibration evidence, and the promotion decision.`

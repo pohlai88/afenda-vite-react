@@ -73,6 +73,10 @@ test("promotion readiness warns when static manual criteria remain unresolved", 
   assert.equal(report.status, "warn")
   assert.equal(report.scorecard.readyForPromotion, false)
   assert.equal(
+    report.checks.find((check) => check.key === "coverage-model")?.status,
+    "pass"
+  )
+  assert.equal(
     report.checks.find((check) => check.key === "manual-promotion-criteria")
       ?.status,
     "warn"
@@ -164,6 +168,12 @@ function createRepoGuardEvidenceReport(input: {
       applicableWaivers: [],
     },
     checks: input.checks,
+    coverage: {
+      implementedCount: 9,
+      partialCount: 6,
+      missingCount: 0,
+      entries: [],
+    },
     summary: input.summary,
     governanceDomain: {
       domainId: "GOV-TRUTH-001",

@@ -291,5 +291,4 @@ Exit condition:
 1. Run and record one real warned-cycle review in the false-positive log against current green repo-guard evidence.
 2. Tighten package public-vs-internal boundary rules from export lists into enforceable import policy.
 3. Convert more of the generator truth map into explicit provenance/manifests where durable generator entrypoints already exist.
-4. Add coverage reporting so repo guard can self-report implemented/partial/missing program coverage.
-5. Re-run promotion readiness after the warned-cycle evidence is recorded, then decide whether to keep `GOV-TRUTH-001` warned or promote it.
+4. Re-run promotion readiness after the warned-cycle evidence is recorded, then decide whether to keep `GOV-TRUTH-001` warned or promote it.

@@ -25,6 +25,7 @@ import {
   evaluatePlacementOwnershipFindings,
 } from "./placement-ownership-guard.js"
 import {
+  buildRepoGuardCoverage,
   buildRepoGuardReport,
   evaluateDirtyFileCandidates,
   evaluateWorkingTreeFindings,
@@ -109,6 +110,138 @@ test("buildRepoGuardReport rolls up pass warn and fail counts", () => {
     failCount: 1,
     findingCount: 2,
   })
+})
+
+test("buildRepoGuardCoverage classifies implemented, partial, and missing surfaces deterministically", () => {
+  const coverage = buildRepoGuardCoverage([
+    {
+      key: "filesystem-governance",
+      title: "Filesystem governance",
+      status: "pass",
+      source: "adapter",
+      findings: [],
+    },
+    {
+      key: "generated-artifact-governance",
+      title: "Generated artifact governance",
+      status: "pass",
+      source: "adapter",
+      findings: [],
+    },
+    {
+      key: "storage-governance",
+      title: "Storage governance",
+      status: "pass",
+      source: "adapter",
+      findings: [],
+    },
+    {
+      key: "naming-convention",
+      title: "Naming convention",
+      status: "pass",
+      source: "adapter",
+      findings: [],
+    },
+    {
+      key: "documentation-governance",
+      title: "Documentation governance",
+      status: "pass",
+      source: "adapter",
+      findings: [],
+    },
+    {
+      key: "workspace-topology",
+      title: "Workspace and package topology",
+      status: "pass",
+      source: "adapter",
+      findings: [],
+    },
+    {
+      key: "file-survival",
+      title: "File survival and reviewed survival",
+      status: "pass",
+      source: "adapter",
+      findings: [],
+    },
+    {
+      key: "dirty-file-scan",
+      title: "Dirty file scan",
+      status: "pass",
+      source: "native",
+      findings: [],
+    },
+    {
+      key: "working-tree-legitimacy",
+      title: "Working tree legitimacy",
+      status: "pass",
+      source: "native",
+      findings: [],
+    },
+    {
+      key: "placement-ownership",
+      title: "Placement and ownership",
+      status: "pass",
+      source: "native",
+      findings: [],
+    },
+    {
+      key: "generated-artifact-authenticity",
+      title: "Generated artifact authenticity",
+      status: "pass",
+      source: "native",
+      findings: [],
+    },
+    {
+      key: "boundary-import-regression",
+      title: "Boundary and import regression",
+      status: "pass",
+      source: "native",
+      findings: [],
+    },
+    {
+      key: "source-evidence-mismatch",
+      title: "Source and evidence mismatch",
+      status: "pass",
+      source: "native",
+      findings: [],
+    },
+    {
+      key: "duplicate-overlap",
+      title: "Duplicate and overlap hygiene",
+      status: "pass",
+      source: "native",
+      findings: [],
+    },
+    {
+      key: "stronger-document-control",
+      title: "Stronger document control",
+      status: "pass",
+      source: "native",
+      findings: [],
+    },
+  ] satisfies RepoGuardCheckResult[])
+
+  assert.deepEqual(
+    {
+      implemented: coverage.implementedCount,
+      partial: coverage.partialCount,
+      missing: coverage.missingCount,
+    },
+    {
+      implemented: 9,
+      partial: 6,
+      missing: 0,
+    }
+  )
+  assert.equal(
+    coverage.entries.find((entry) => entry.id === "RG-STRUCT-003")?.status,
+    "partial"
+  )
+  assert.equal(
+    coverage.entries.find((entry) => entry.id === "FOUND-WORKTREE-LEGITIMACY")
+      ?.status,
+    "implemented"
+  )
 })
 
 test("evaluateDirtyFileCandidates flags high-confidence junk and weaker drift names", () => {
