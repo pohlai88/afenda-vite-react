@@ -1,0 +1,781 @@
+import { spawnSync } from "node:child_process"
+import fs from "node:fs/promises"
+import path from "node:path"
+
+import type {
+  AfendaConfig,
+  GovernanceDomainDefinition,
+} from "../afenda-config.js"
+import { workspaceRoot } from "../afenda-config.js"
+import { evaluateAfendaWorkspaceGovernance } from "./afenda-workspace-governance.js"
+import { evaluateDocumentationGovernance } from "./doc-governance.js"
+import {
+  evaluateFilesystemGovernance,
+  loadFilesystemGovernanceConfig,
+} from "./filesystem-governance.js"
+import { generateFileSurvivalReport } from "./file-survival-governance.js"
+import {
+  type GovernanceCheckExecution,
+  type GovernanceDomainReport,
+  readRootPackageScripts,
+  writeJsonFile,
+} from "./governance-spine.js"
+import {
+  evaluateGeneratedArtifactGovernance,
+  loadGeneratedArtifactGovernanceConfig,
+} from "./generated-artifact-governance.js"
+import { evaluateNamingConvention } from "./naming-convention.js"
+import { validateReviewedSurvivalForRollout } from "./reviewed-survival-governance.js"
+import {
+  evaluateStorageGovernance,
+  loadStorageGovernanceConfig,
+} from "./storage-governance.js"
+
+import type {
+  RepoGuardPolicy,
+  RepoGuardWaiver,
+} from "../repo-integrity/repo-guard-policy.js"
+
+export type RepoGuardStatus = "pass" | "warn" | "fail"
+export type RepoGuardMode = "human" | "ci"
+
+export interface RepoGuardFinding {
+  readonly severity: "info" | "warn" | "error"
+  readonly ruleId: string
+  readonly message: string
+  readonly filePath?: string
+  readonly evidence?: string
+  readonly suggestedFix?: string
+  readonly waived?: boolean
+}
+
+export interface RepoGuardCheckResult {
+  readonly key: string
+  readonly title: string
+  readonly status: RepoGuardStatus
+  readonly source: "adapter" | "native"
+  readonly findings: readonly RepoGuardFinding[]
+}
+
+export interface RepoGuardReport {
+  readonly status: RepoGuardStatus
+  readonly mode: RepoGuardMode
+  readonly generatedAt: string
+  readonly checks: readonly RepoGuardCheckResult[]
+  readonly summary: {
+    readonly passCount: number
+    readonly warnCount: number
+    readonly failCount: number
+    readonly findingCount: number
+  }
+}
+
+export interface RepoGuardEvidenceReport extends RepoGuardReport {
+  readonly governanceDomain: GovernanceDomainReport
+}
+
+interface RepoGuardGitEntry {
+  readonly code: string
+  readonly path: string
+  readonly previousPath?: string
+  readonly untracked: boolean
+  readonly modifiedTracked: boolean
+}
+
+export interface RepoGuardCliResult {
+  readonly report: RepoGuardReport
+  readonly exitCode: number
+  readonly humanOutput: string
+}
+
+export async function runRepoGuard(options: {
+  readonly config: AfendaConfig
+  readonly policy: RepoGuardPolicy
+  readonly mode: RepoGuardMode
+  readonly repoRoot?: string
+}): Promise<RepoGuardCliResult> {
+  const repoRoot = options.repoRoot ?? workspaceRoot
+  const rootPackageScripts = await readRootPackageScripts(repoRoot)
+  const generatedAt = new Date().toISOString()
+  const checks = await Promise.all([
+    evaluateFilesystemCheck(),
+    evaluateGeneratedArtifactCheck(),
+    evaluateStorageCheck(),
+    evaluateNamingCheck(repoRoot, rootPackageScripts),
+    evaluateDocumentationCheck(repoRoot),
+    evaluateWorkspaceTopologyCheck(options.config, repoRoot),
+    evaluateFileSurvivalCheck(options.config, repoRoot),
+    evaluateDirtyFilesCheck(repoRoot, options.policy),
+    evaluateWorkingTreeLegitimacyCheck(repoRoot, options.policy, options.mode),
+  ])
+  const waivedChecks = checks.map((check) =>
+    applyRepoGuardWaivers(check, options.policy.waivers, generatedAt)
+  )
+  const report = buildRepoGuardReport(waivedChecks, options.mode, generatedAt)
+
+  return {
+    report,
+    exitCode: options.mode === "ci" && report.status === "fail" ? 1 : 0,
+    humanOutput: formatRepoGuardHumanReport(report),
+  }
+}
+
+export async function writeRepoGuardEvidence(options: {
+  readonly policy: RepoGuardPolicy
+  readonly report: RepoGuardReport
+  readonly domain: GovernanceDomainDefinition
+  readonly repoRoot?: string
+}): Promise<RepoGuardEvidenceReport> {
+  const repoRoot = options.repoRoot ?? workspaceRoot
+  const evidenceReport = buildRepoGuardEvidenceReport(
+    options.domain,
+    options.report
+  )
+  const markdown = formatRepoGuardMarkdownReport(options.report)
+
+  await writeJsonFile(
+    path.join(repoRoot, options.domain.evidencePath),
+    evidenceReport
+  )
+  await fs.mkdir(
+    path.dirname(path.join(repoRoot, options.policy.reportMarkdownPath)),
+    { recursive: true }
+  )
+  await fs.writeFile(
+    path.join(repoRoot, options.policy.reportMarkdownPath),
+    `${markdown}\n`,
+    "utf8"
+  )
+
+  return evidenceReport
+}
+
+export function formatRepoGuardHumanReport(report: RepoGuardReport): string {
+  const lines = [
+    `Repository Integrity Guard: ${report.status.toUpperCase()}`,
+    `Generated at: ${report.generatedAt}`,
+    `Checks: ${String(report.summary.passCount)} pass, ${String(report.summary.warnCount)} warn, ${String(report.summary.failCount)} fail`,
+    `Findings: ${String(report.summary.findingCount)}`,
+    "",
+  ]
+
+  for (const check of report.checks) {
+    lines.push(`- ${check.status.toUpperCase()} ${check.title}`)
+    for (const finding of check.findings.slice(0, 5)) {
+      const suffix = finding.waived ? " (waived)" : ""
+      lines.push(
+        `  - [${finding.ruleId}] ${finding.message}${finding.filePath ? ` :: ${finding.filePath}` : ""}${suffix}`
+      )
+    }
+  }
+
+  return lines.join("\n")
+}
+
+export function formatRepoGuardMarkdownReport(report: RepoGuardReport): string {
+  const lines = [
+    "# Repository integrity guard",
+    "",
+    `- Status: \`${report.status}\``,
+    `- Mode: \`${report.mode}\``,
+    `- Generated at: ${report.generatedAt}`,
+    `- Pass: ${String(report.summary.passCount)}`,
+    `- Warn: ${String(report.summary.warnCount)}`,
+    `- Fail: ${String(report.summary.failCount)}`,
+    `- Findings: ${String(report.summary.findingCount)}`,
+    "",
+  ]
+
+  for (const check of report.checks) {
+    lines.push(`## ${check.title}`, "")
+    lines.push(`- Status: \`${check.status}\``)
+    lines.push(`- Source: \`${check.source}\``)
+
+    if (check.findings.length === 0) {
+      lines.push("- Findings: none", "")
+      continue
+    }
+
+    lines.push("- Findings:")
+    for (const finding of check.findings) {
+      lines.push(
+        `  - [${finding.severity}/${finding.ruleId}] ${finding.message}${finding.filePath ? ` (\`${finding.filePath}\`)` : ""}${finding.waived ? " [waived]" : ""}`
+      )
+      if (finding.suggestedFix) {
+        lines.push(`    - Fix: ${finding.suggestedFix}`)
+      }
+      if (finding.evidence) {
+        lines.push(`    - Evidence: ${finding.evidence}`)
+      }
+    }
+    lines.push("")
+  }
+
+  return lines.join("\n")
+}
+
+export function buildRepoGuardReport(
+  checks: readonly RepoGuardCheckResult[],
+  mode: RepoGuardMode,
+  generatedAt: string
+): RepoGuardReport {
+  const passCount = checks.filter((check) => check.status === "pass").length
+  const warnCount = checks.filter((check) => check.status === "warn").length
+  const failCount = checks.filter((check) => check.status === "fail").length
+  const findingCount = checks.reduce(
+    (count, check) =>
+      count + check.findings.filter((finding) => !finding.waived).length,
+    0
+  )
+
+  return {
+    status: failCount > 0 ? "fail" : warnCount > 0 ? "warn" : "pass",
+    mode,
+    generatedAt,
+    checks,
+    summary: {
+      passCount,
+      warnCount,
+      failCount,
+      findingCount,
+    },
+  }
+}
+
+export function buildRepoGuardEvidenceReport(
+  domain: GovernanceDomainDefinition,
+  report: RepoGuardReport
+): RepoGuardEvidenceReport {
+  const governanceReport = buildRepoGuardGovernanceDomainReport(domain, report)
+  return {
+    ...report,
+    governanceDomain: governanceReport,
+  }
+}
+
+export function buildRepoGuardGovernanceDomainReport(
+  domain: GovernanceDomainDefinition,
+  report: RepoGuardReport
+): GovernanceDomainReport {
+  const domainViolations =
+    report.status === "pass"
+      ? []
+      : report.checks
+          .filter((check) => check.status !== "pass")
+          .flatMap((check) =>
+            check.findings
+              .filter((finding) => !finding.waived)
+              .slice(0, 25)
+              .map((finding) => ({
+                checkId: `repo-guard:${check.key}`,
+                severity:
+                  finding.severity === "error"
+                    ? "error"
+                    : finding.severity === "warn"
+                      ? "warn"
+                      : "info",
+                message: `${check.title}: ${finding.message}${finding.filePath ? ` (${finding.filePath})` : ""}`,
+              }))
+          )
+
+  return {
+    domainId: domain.id,
+    title: domain.title,
+    owner: domain.owner,
+    generatedAt: report.generatedAt,
+    lifecycleStatus: domain.lifecycleStatus,
+    enforcementMaturity: domain.enforcementMaturity,
+    defaultSeverity: domain.defaultSeverity,
+    tier: domain.tier,
+    ciBehavior: domain.ciBehavior,
+    localConfig: domain.localConfig,
+    checks: [
+      {
+        id: domain.checks[0]?.id ?? "repo-guard",
+        command:
+          domain.checks[0]?.command ?? "pnpm run script:check-repo-guard",
+        scriptPath:
+          domain.checks[0]?.scriptPath ?? "scripts/check-repo-guard.ts",
+        status: report.status === "fail" ? "failed" : "passed",
+        exitCode: report.status === "fail" ? 1 : 0,
+        durationMs: 0,
+      } satisfies GovernanceCheckExecution,
+    ],
+    violations: domainViolations,
+    evidenceComplete: true,
+    driftDetected: report.status !== "pass",
+    ciOutcome:
+      report.status === "fail"
+        ? domain.ciBehavior === "block"
+          ? "blocked"
+          : "warned"
+        : report.status === "warn"
+          ? "warned"
+          : "passed",
+  }
+}
+
+export function applyRepoGuardWaivers(
+  check: RepoGuardCheckResult,
+  waivers: readonly RepoGuardWaiver[],
+  generatedAt: string
+): RepoGuardCheckResult {
+  if (check.source !== "native" || waivers.length === 0) {
+    return check
+  }
+
+  const nextFindings = check.findings.map((finding) => {
+    const waiver = waivers.find((item) =>
+      waiverMatchesFinding(item, finding, generatedAt)
+    )
+
+    return waiver ? { ...finding, waived: true } : finding
+  })
+
+  return {
+    ...check,
+    status: statusFromFindings(nextFindings),
+    findings: nextFindings,
+  }
+}
+
+export function evaluateDirtyFileCandidates(
+  filePaths: readonly string[],
+  policy: RepoGuardPolicy
+): readonly RepoGuardFinding[] {
+  const findings: RepoGuardFinding[] = []
+
+  for (const filePath of filePaths) {
+    if (isIgnoredByPolicy(filePath, policy)) {
+      continue
+    }
+
+    const lowerPath = filePath.toLowerCase()
+    const fileName = path.basename(lowerPath)
+    const stem = fileName.replace(/\.[^.]+$/u, "")
+    const stemParts = stem.split(/[-_.\s]+/u).filter(Boolean)
+    const edgeTokens = new Set(
+      [stemParts.at(0), stemParts.at(-1)].filter((value): value is string =>
+        Boolean(value)
+      )
+    )
+
+    if (
+      policy.highConfidenceBackupPatterns.some((pattern) =>
+        pattern.test(lowerPath)
+      )
+    ) {
+      findings.push({
+        severity: "error",
+        ruleId: "DIRTY-FILE-001",
+        filePath,
+        message: "High-confidence backup or temp artifact detected.",
+        suggestedFix:
+          "Delete or rename the file to its canonical tracked form.",
+      })
+      continue
+    }
+
+    if (policy.warnStemTokens.some((token) => edgeTokens.has(token))) {
+      findings.push({
+        severity: "warn",
+        ruleId: "DIRTY-FILE-002",
+        filePath,
+        message:
+          "Suspicious filename token detected; this looks like temporary or duplicate content.",
+        suggestedFix:
+          "Rename to a canonical subject or remove the stray artifact.",
+      })
+    }
+  }
+
+  return findings
+}
+
+export function evaluateWorkingTreeFindings(
+  entries: readonly RepoGuardGitEntry[],
+  policy: RepoGuardPolicy,
+  mode: RepoGuardMode
+): readonly RepoGuardFinding[] {
+  const findings: RepoGuardFinding[] = []
+
+  for (const entry of entries) {
+    if (policy.ignoredWorkingTreePaths.includes(entry.path)) {
+      continue
+    }
+
+    if (entry.untracked) {
+      const suspicious = evaluateDirtyFileCandidates([entry.path], policy)
+      if (suspicious.length > 0) {
+        findings.push(
+          ...suspicious.map((finding) => ({
+            ...finding,
+            ruleId: "WORKTREE-001",
+            message: `Suspicious untracked file detected. ${finding.message}`,
+          }))
+        )
+      }
+      continue
+    }
+
+    if (
+      entry.modifiedTracked &&
+      matchesAnyPathPattern(entry.path, policy.protectedGeneratedPaths)
+    ) {
+      findings.push({
+        severity: "error",
+        ruleId: "WORKTREE-002",
+        filePath: entry.path,
+        message: "Protected generated surface is modified in the working tree.",
+        suggestedFix:
+          "Regenerate the surface from its canonical source or restore it.",
+      })
+      continue
+    }
+
+    if (mode === "human" && entry.modifiedTracked) {
+      findings.push({
+        severity: "warn",
+        ruleId: "WORKTREE-003",
+        filePath: entry.path,
+        message: "Tracked file is modified in the working tree.",
+      })
+    }
+  }
+
+  return findings
+}
+
+function waiverMatchesFinding(
+  waiver: RepoGuardWaiver,
+  finding: RepoGuardFinding,
+  generatedAt: string
+): boolean {
+  if (waiver.ruleId !== finding.ruleId) {
+    return false
+  }
+
+  const expiresAt = Date.parse(waiver.expiresOn)
+  if (Number.isNaN(expiresAt) || Date.parse(generatedAt) > expiresAt) {
+    return false
+  }
+
+  if (!finding.filePath) {
+    return waiver.path === "*"
+  }
+
+  return waiver.path === "*" || finding.filePath === waiver.path
+}
+
+async function evaluateFilesystemCheck(): Promise<RepoGuardCheckResult> {
+  const config = loadFilesystemGovernanceConfig()
+  const evaluation = evaluateFilesystemGovernance(config)
+  const findings = evaluation.violations.map<RepoGuardFinding>((violation) => ({
+    severity: "error",
+    ruleId: `FS:${violation.rule}`,
+    filePath: violation.path,
+    message: violation.message,
+  }))
+
+  return {
+    key: "filesystem-governance",
+    title: "Filesystem governance",
+    status: statusFromFindings(findings),
+    source: "adapter",
+    findings,
+  }
+}
+
+async function evaluateGeneratedArtifactCheck(): Promise<RepoGuardCheckResult> {
+  const config = loadGeneratedArtifactGovernanceConfig()
+  const evaluation = evaluateGeneratedArtifactGovernance(config)
+  const findings = evaluation.violations.map<RepoGuardFinding>((violation) => ({
+    severity: "error",
+    ruleId: `GEN:${violation.rule}`,
+    filePath: violation.path,
+    message: violation.message,
+  }))
+
+  return {
+    key: "generated-artifact-governance",
+    title: "Generated artifact governance",
+    status: statusFromFindings(findings),
+    source: "adapter",
+    findings,
+  }
+}
+
+async function evaluateStorageCheck(): Promise<RepoGuardCheckResult> {
+  const config = loadStorageGovernanceConfig()
+  const evaluation = evaluateStorageGovernance(config)
+  const findings = evaluation.violations.map<RepoGuardFinding>((violation) => ({
+    severity: "error",
+    ruleId: `STORAGE:${violation.rule}`,
+    filePath: violation.path,
+    message: violation.message,
+  }))
+
+  return {
+    key: "storage-governance",
+    title: "Storage governance",
+    status: statusFromFindings(findings),
+    source: "adapter",
+    findings,
+  }
+}
+
+async function evaluateNamingCheck(
+  repoRoot: string,
+  rootPackageScripts: Record<string, string>
+): Promise<RepoGuardCheckResult> {
+  const result = evaluateNamingConvention(repoRoot, rootPackageScripts)
+  const findings = [
+    ...result.errors.map<RepoGuardFinding>((issue) => ({
+      severity: "error",
+      ruleId: `NAME:${issue.rule}`,
+      filePath: issue.path,
+      message: issue.message,
+    })),
+    ...result.warnings.map<RepoGuardFinding>((issue) => ({
+      severity: "warn",
+      ruleId: `NAME:${issue.rule}`,
+      filePath: issue.path,
+      message: issue.message,
+    })),
+  ]
+
+  return {
+    key: "naming-convention",
+    title: "Naming convention",
+    status: statusFromFindings(findings),
+    source: "adapter",
+    findings,
+  }
+}
+
+async function evaluateDocumentationCheck(
+  repoRoot: string
+): Promise<RepoGuardCheckResult> {
+  const issues = await evaluateDocumentationGovernance(repoRoot)
+  const findings = issues.map<RepoGuardFinding>((issue) => ({
+    severity: "error",
+    ruleId: `DOC:${issue.rule}`,
+    filePath: issue.path,
+    message: issue.message,
+  }))
+
+  return {
+    key: "documentation-governance",
+    title: "Documentation governance",
+    status: statusFromFindings(findings),
+    source: "adapter",
+    findings,
+  }
+}
+
+async function evaluateWorkspaceTopologyCheck(
+  config: AfendaConfig,
+  repoRoot: string
+): Promise<RepoGuardCheckResult> {
+  const issues = await evaluateAfendaWorkspaceGovernance(config, repoRoot)
+  const findings = issues.map<RepoGuardFinding>((issue) => ({
+    severity: "error",
+    ruleId: `TOPO:${issue.rule}`,
+    filePath: issue.path,
+    message: issue.message,
+  }))
+
+  return {
+    key: "workspace-topology",
+    title: "Workspace and package topology",
+    status: statusFromFindings(findings),
+    source: "adapter",
+    findings,
+  }
+}
+
+async function evaluateFileSurvivalCheck(
+  config: AfendaConfig,
+  repoRoot: string
+): Promise<RepoGuardCheckResult> {
+  const findings: RepoGuardFinding[] = []
+
+  for (const rollout of config.fileSurvival.rollouts) {
+    const report = generateFileSurvivalReport(rollout, {
+      repoRoot,
+      typescriptConfigPath: path.join(
+        repoRoot,
+        "apps/web/config/tsconfig/app.json"
+      ),
+    })
+    const reviewedAudit = validateReviewedSurvivalForRollout(rollout, {
+      repoRoot,
+    })
+
+    for (const finding of report.findings) {
+      findings.push({
+        severity: finding.ciBlocking ? "error" : "warn",
+        ruleId: `SURVIVAL:${finding.ruleId}`,
+        filePath: finding.path,
+        message: finding.reason,
+        evidence: `${rollout.id}:${finding.category}/${finding.confidence}`,
+        suggestedFix: `${finding.recommendedAction} (${finding.approvedRemediation.kind})`,
+      })
+    }
+
+    for (const issue of reviewedAudit.issues) {
+      findings.push({
+        severity: "error",
+        ruleId: `SURVIVAL:reviewed-survival:${issue.code}`,
+        filePath: issue.path,
+        message: issue.message,
+        evidence: rollout.id,
+      })
+    }
+  }
+
+  return {
+    key: "file-survival",
+    title: "File survival and reviewed survival",
+    status: statusFromFindings(findings),
+    source: "adapter",
+    findings,
+  }
+}
+
+async function evaluateDirtyFilesCheck(
+  repoRoot: string,
+  policy: RepoGuardPolicy
+): Promise<RepoGuardCheckResult> {
+  const trackedFiles = listGitFiles(repoRoot, ["ls-files"])
+  const untrackedFiles = listGitFiles(repoRoot, [
+    "ls-files",
+    "--others",
+    "--exclude-standard",
+  ])
+  const findings = evaluateDirtyFileCandidates(
+    [...trackedFiles, ...untrackedFiles],
+    policy
+  )
+
+  return {
+    key: "dirty-file-scan",
+    title: "Dirty file scan",
+    status: statusFromFindings(findings),
+    source: "native",
+    findings,
+  }
+}
+
+async function evaluateWorkingTreeLegitimacyCheck(
+  repoRoot: string,
+  policy: RepoGuardPolicy,
+  mode: RepoGuardMode
+): Promise<RepoGuardCheckResult> {
+  const entries = readGitStatusEntries(repoRoot)
+  const findings = evaluateWorkingTreeFindings(entries, policy, mode)
+
+  return {
+    key: "working-tree-legitimacy",
+    title: "Working tree legitimacy",
+    status: statusFromFindings(findings),
+    source: "native",
+    findings,
+  }
+}
+
+function listGitFiles(
+  repoRoot: string,
+  args: readonly string[]
+): readonly string[] {
+  const result = spawnSync("git", args, {
+    cwd: repoRoot,
+    encoding: "utf8",
+    shell: false,
+  })
+
+  if (result.status !== 0) {
+    throw new Error(result.stderr || `git ${args.join(" ")} failed`)
+  }
+
+  return result.stdout
+    .split(/\r?\n/u)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((value) => toPosixPath(value))
+}
+
+function readGitStatusEntries(repoRoot: string): readonly RepoGuardGitEntry[] {
+  const result = spawnSync("git", ["status", "--porcelain=v1"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+    shell: false,
+  })
+
+  if (result.status !== 0) {
+    throw new Error(result.stderr || "git status failed")
+  }
+
+  return result.stdout
+    .split(/\r?\n/u)
+    .map((line) => line.trimEnd())
+    .filter(Boolean)
+    .map((line) => {
+      const code = line.slice(0, 2)
+      const rawPath = line.slice(3)
+      const pathPart = rawPath.includes(" -> ")
+        ? (rawPath.split(" -> ").at(-1) ?? rawPath)
+        : rawPath
+      const normalizedPath = toPosixPath(pathPart.trim())
+
+      return {
+        code,
+        path: normalizedPath,
+        previousPath: rawPath.includes(" -> ")
+          ? toPosixPath(rawPath.split(" -> ")[0]!.trim())
+          : undefined,
+        untracked: code === "??",
+        modifiedTracked: code !== "??" && code !== "",
+      } satisfies RepoGuardGitEntry
+    })
+}
+
+function statusFromFindings(
+  findings: readonly RepoGuardFinding[]
+): RepoGuardStatus {
+  const activeFindings = findings.filter((finding) => !finding.waived)
+  if (activeFindings.some((finding) => finding.severity === "error")) {
+    return "fail"
+  }
+  if (activeFindings.some((finding) => finding.severity === "warn")) {
+    return "warn"
+  }
+  return "pass"
+}
+
+function isIgnoredByPolicy(filePath: string, policy: RepoGuardPolicy): boolean {
+  return (
+    matchesAnyPathPattern(filePath, policy.machineNoiseExcludePatterns) ||
+    matchesAnyPathPattern(filePath, policy.protectedGeneratedPaths)
+  )
+}
+
+function matchesAnyPathPattern(
+  filePath: string,
+  patterns: readonly string[]
+): boolean {
+  return patterns.some((pattern) => {
+    if (pattern.endsWith("/**")) {
+      const prefix = pattern.slice(0, -3)
+      if (filePath === prefix || filePath.startsWith(`${prefix}/`)) {
+        return true
+      }
+    }
+
+    return path.matchesGlob(filePath, pattern)
+  })
+}
+
+function toPosixPath(value: string): string {
+  return value.split(path.sep).join("/")
+}

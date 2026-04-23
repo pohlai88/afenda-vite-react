@@ -14,6 +14,7 @@ import {
   toPosixPath,
   workspaceRoot,
 } from "./afenda-config.js"
+import { evaluateAfendaWorkspaceGovernance } from "./lib/afenda-workspace-governance.js"
 
 interface RootPackageJson {
   name?: string
@@ -287,10 +288,18 @@ async function main() {
     () => "scripts/RULES.md present; scripts/ nesting policy satisfied."
   )
 
+  const workspaceGovernanceIssues = await evaluateAfendaWorkspaceGovernance(
+    config,
+    workspaceRoot
+  )
+
   await runDiagnosticStep(
     "Enforce root topology governance",
-    async () => {
-      await assertRootTopologyGovernance(config)
+    () => {
+      assertNoWorkspaceGovernanceIssues(
+        workspaceGovernanceIssues,
+        "root-topology"
+      )
     },
     () => "Root directories and required root files satisfy governance policy."
   )
@@ -411,8 +420,11 @@ async function main() {
 
   await runDiagnosticStep(
     "Enforce workspace package topology",
-    async () => {
-      await assertPackageTopologyGovernance(config)
+    () => {
+      assertNoWorkspaceGovernanceIssues(
+        workspaceGovernanceIssues,
+        "package-topology"
+      )
     },
     () =>
       "Workspace package roots do not contain manifestless package directories."
@@ -420,32 +432,44 @@ async function main() {
 
   await runDiagnosticStep(
     "Enforce workspace package root governance",
-    async () => {
-      await assertPackageRootGovernance(config)
+    () => {
+      assertNoWorkspaceGovernanceIssues(
+        workspaceGovernanceIssues,
+        "package-root"
+      )
     },
     () => "Workspace package roots match declared root profiles."
   )
 
   await runDiagnosticStep(
     "Enforce feature template governance",
-    async () => {
-      await assertFeatureTemplateGovernance(config)
+    () => {
+      assertNoWorkspaceGovernanceIssues(
+        workspaceGovernanceIssues,
+        "feature-template"
+      )
     },
     () => "Feature template policy enforced for discovered features."
   )
 
   await runDiagnosticStep(
     "Enforce shared package template governance",
-    async () => {
-      await assertSharedPackageTemplateGovernance(config)
+    () => {
+      assertNoWorkspaceGovernanceIssues(
+        workspaceGovernanceIssues,
+        "shared-package-template"
+      )
     },
     () => "Shared package template policy checked."
   )
 
   await runDiagnosticStep(
     "Enforce web client src topology",
-    async () => {
-      await assertWebClientSrcGovernance(config)
+    () => {
+      assertNoWorkspaceGovernanceIssues(
+        workspaceGovernanceIssues,
+        "web-client-src"
+      )
     },
     () => "Web client src topology matches workspaceGovernance.webClientSrc."
   )
@@ -566,379 +590,6 @@ async function assertScriptsDirectoryNestingPolicy(scriptsRoot: string) {
   }
 }
 
-async function assertRootTopologyGovernance(
-  config: Awaited<ReturnType<typeof loadAfendaConfig>>
-) {
-  const rootTopology = config.workspaceGovernance.rootTopology
-  const allowedRootDirectorySet = new Set(rootTopology.allowedRootDirectories)
-  const allowedHiddenRootDirectorySet = new Set(
-    rootTopology.allowedHiddenRootDirectories
-  )
-  const storageDirectorySet = new Set(rootTopology.storageDirectories)
-
-  assertDisjointSets(
-    rootTopology.allowedRootDirectories,
-    rootTopology.allowedHiddenRootDirectories,
-    "workspaceGovernance.rootTopology.allowedRootDirectories",
-    "workspaceGovernance.rootTopology.allowedHiddenRootDirectories"
-  )
-  assertDisjointSets(
-    rootTopology.allowedRootDirectories,
-    rootTopology.storageDirectories,
-    "workspaceGovernance.rootTopology.allowedRootDirectories",
-    "workspaceGovernance.rootTopology.storageDirectories"
-  )
-  assertDisjointSets(
-    rootTopology.allowedHiddenRootDirectories,
-    rootTopology.storageDirectories,
-    "workspaceGovernance.rootTopology.allowedHiddenRootDirectories",
-    "workspaceGovernance.rootTopology.storageDirectories"
-  )
-
-  for (const directory of rootTopology.primaryProductDirectories) {
-    const directoryPath = path.join(workspaceRoot, directory)
-    await assertDirectoryExists(
-      directoryPath,
-      `Configured primary product directory "${directory}" does not exist.`
-    )
-  }
-
-  const rootEntries = await fs.readdir(workspaceRoot, { withFileTypes: true })
-  const rootDirectories = rootEntries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort((left, right) => left.localeCompare(right))
-
-  for (const directoryName of rootDirectories) {
-    if (directoryName.startsWith(".")) {
-      assert(
-        allowedHiddenRootDirectorySet.has(directoryName) ||
-          storageDirectorySet.has(directoryName),
-        `Hidden root directory "${directoryName}" is not allowed by workspaceGovernance.rootTopology.allowedHiddenRootDirectories or workspaceGovernance.rootTopology.storageDirectories.`
-      )
-      continue
-    }
-
-    assert(
-      allowedRootDirectorySet.has(directoryName) ||
-        storageDirectorySet.has(directoryName),
-      `Root directory "${directoryName}" is not allowed by workspaceGovernance.rootTopology.allowedRootDirectories or workspaceGovernance.rootTopology.storageDirectories.`
-    )
-  }
-
-  for (const directoryName of rootTopology.primaryProductDirectories) {
-    assert(
-      allowedRootDirectorySet.has(directoryName),
-      `Primary product directory "${directoryName}" must also be listed in allowedRootDirectories.`
-    )
-    assert(
-      !storageDirectorySet.has(directoryName),
-      `Primary product directory "${directoryName}" must not be listed in storageDirectories.`
-    )
-    assert(
-      !allowedHiddenRootDirectorySet.has(directoryName),
-      `Primary product directory "${directoryName}" must not be listed in allowedHiddenRootDirectories.`
-    )
-  }
-
-  for (const directoryName of rootTopology.storageDirectories) {
-    await assertDirectoryExists(
-      path.join(workspaceRoot, directoryName),
-      `Configured storage directory "${directoryName}" does not exist.`
-    )
-  }
-
-  for (const fileName of rootTopology.requiredRootFiles) {
-    await assertFileExists(
-      path.join(workspaceRoot, fileName),
-      `Required root file "${fileName}" is missing.`
-    )
-  }
-}
-
-async function assertFeatureTemplateGovernance(
-  config: Awaited<ReturnType<typeof loadAfendaConfig>>
-) {
-  const featureTemplate = config.workspaceGovernance.featureTemplate
-  const featuresRootPath = path.join(
-    workspaceRoot,
-    featureTemplate.featuresRoot
-  )
-  const featuresRootStats = await fs
-    .stat(featuresRootPath)
-    .catch(() => undefined)
-
-  if (!featuresRootStats?.isDirectory()) {
-    return
-  }
-
-  const entries = await fs.readdir(featuresRootPath, { withFileTypes: true })
-  const featureDirectories = entries
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
-    .map((entry) => entry.name)
-    .sort((left, right) => left.localeCompare(right))
-
-  if (
-    !featureTemplate.enforceWhenFeatureExists ||
-    featureDirectories.length === 0
-  ) {
-    return
-  }
-
-  for (const featureDirectory of featureDirectories) {
-    const featureRoot = path.join(featuresRootPath, featureDirectory)
-
-    for (const requiredDirectory of featureTemplate.requiredDirectories) {
-      await assertDirectoryExists(
-        path.join(featureRoot, requiredDirectory),
-        `Feature "${featureDirectory}" must include "${requiredDirectory}/" per workspaceGovernance.featureTemplate.`
-      )
-    }
-
-    for (const requiredFile of featureTemplate.requiredFiles) {
-      await assertFileExists(
-        path.join(featureRoot, requiredFile),
-        `Feature "${featureDirectory}" must include "${requiredFile}" per workspaceGovernance.featureTemplate.`
-      )
-    }
-  }
-}
-
-async function assertPackageTopologyGovernance(
-  config: Awaited<ReturnType<typeof loadAfendaConfig>>
-) {
-  const packageTopology = config.workspaceGovernance.packageTopology
-  const allowedManifestlessDirectories = new Set(
-    packageTopology.allowedManifestlessDirectories
-  )
-
-  for (const workspaceRootDirectory of packageTopology.workspaceRootDirectories) {
-    const workspaceRootPath = path.join(workspaceRoot, workspaceRootDirectory)
-    await assertDirectoryExists(
-      workspaceRootPath,
-      `Workspace root "${workspaceRootDirectory}" does not exist.`
-    )
-
-    const entries = await fs.readdir(workspaceRootPath, { withFileTypes: true })
-
-    for (const entry of entries) {
-      if (!entry.isDirectory() || entry.name.startsWith(".")) {
-        continue
-      }
-
-      const relativePackageDirectory = toPosixPath(
-        path.join(workspaceRootDirectory, entry.name)
-      )
-      const packageDirectoryPath = path.join(workspaceRootPath, entry.name)
-      const packageJsonPath = path.join(packageDirectoryPath, "package.json")
-
-      if (allowedManifestlessDirectories.has(relativePackageDirectory)) {
-        continue
-      }
-
-      const packageJsonExists = await fs
-        .stat(packageJsonPath)
-        .then((stats) => stats.isFile())
-        .catch(() => false)
-
-      assert(
-        packageJsonExists,
-        `Workspace package directory "${relativePackageDirectory}" must contain a package.json manifest or be explicitly allowlisted in workspaceGovernance.packageTopology.allowedManifestlessDirectories.`
-      )
-    }
-  }
-}
-
-async function assertPackageRootGovernance(
-  config: Awaited<ReturnType<typeof loadAfendaConfig>>
-) {
-  const packageRootGovernance = config.workspaceGovernance.packageRoots
-  const profileMap = new Map<
-    string,
-    (typeof packageRootGovernance.profiles)[number]
-  >()
-  const packageDefinitionMap = new Map<
-    string,
-    (typeof packageRootGovernance.packages)[number]
-  >()
-
-  for (const profile of packageRootGovernance.profiles) {
-    assert(
-      !profileMap.has(profile.name),
-      `workspaceGovernance.packageRoots.profiles contains duplicate profile "${profile.name}".`
-    )
-    profileMap.set(profile.name, profile)
-  }
-
-  for (const packageDefinition of packageRootGovernance.packages) {
-    const normalizedPath = toPosixPath(packageDefinition.path)
-    assert(
-      profileMap.has(packageDefinition.profile),
-      `workspaceGovernance.packageRoots.packages entry "${normalizedPath}" references unknown profile "${packageDefinition.profile}".`
-    )
-    assert(
-      !packageDefinitionMap.has(normalizedPath),
-      `workspaceGovernance.packageRoots.packages contains duplicate path "${normalizedPath}".`
-    )
-    packageDefinitionMap.set(normalizedPath, packageDefinition)
-  }
-
-  const discoveredPackageDirectories =
-    await collectWorkspacePackageDirectories(config)
-
-  for (const packageDirectory of discoveredPackageDirectories) {
-    assert(
-      packageDefinitionMap.has(packageDirectory),
-      `Workspace package directory "${packageDirectory}" must be declared in workspaceGovernance.packageRoots.packages.`
-    )
-  }
-
-  for (const [packageDirectory, packageDefinition] of packageDefinitionMap) {
-    assert(
-      discoveredPackageDirectories.includes(packageDirectory),
-      `workspaceGovernance.packageRoots.packages entry "${packageDirectory}" does not match a discovered workspace package directory.`
-    )
-
-    const profile = profileMap.get(packageDefinition.profile)
-    assert(
-      profile,
-      `Missing package root profile "${packageDefinition.profile}".`
-    )
-
-    const packageRootPath = path.join(workspaceRoot, packageDirectory)
-    const allowedDirectories = new Set([
-      ...profile.allowedDirectories,
-      ...packageDefinition.extraAllowedDirectories,
-    ])
-    const allowedFiles = new Set([
-      ...profile.allowedFiles,
-      ...packageDefinition.extraAllowedFiles,
-    ])
-    const entries = await fs.readdir(packageRootPath, { withFileTypes: true })
-
-    for (const entry of entries) {
-      if (entry.isDirectory()) {
-        assert(
-          allowedDirectories.has(entry.name),
-          `Package root "${packageDirectory}" contains disallowed directory "${entry.name}/". Allowed directories: ${[...allowedDirectories].sort((left, right) => left.localeCompare(right)).join(", ")}.`
-        )
-        continue
-      }
-
-      if (entry.isFile()) {
-        assert(
-          allowedFiles.has(entry.name),
-          `Package root "${packageDirectory}" contains disallowed file "${entry.name}". Allowed files: ${[...allowedFiles].sort((left, right) => left.localeCompare(right)).join(", ")}.`
-        )
-      }
-    }
-  }
-}
-
-async function assertSharedPackageTemplateGovernance(
-  config: Awaited<ReturnType<typeof loadAfendaConfig>>
-) {
-  const sharedPackageTemplate = config.workspaceGovernance.sharedPackageTemplate
-  const sharedPackagePath = path.join(
-    workspaceRoot,
-    sharedPackageTemplate.packagePath
-  )
-  const sharedPackageStats = await fs
-    .stat(sharedPackagePath)
-    .catch(() => undefined)
-
-  if (!sharedPackageStats?.isDirectory()) {
-    return
-  }
-
-  if (!sharedPackageTemplate.requireDirectoriesWhenPackageExists) {
-    return
-  }
-
-  for (const requiredDirectory of sharedPackageTemplate.requiredDirectories) {
-    await assertDirectoryExists(
-      path.join(sharedPackagePath, requiredDirectory),
-      `Shared package "${sharedPackageTemplate.packagePath}" must include "${requiredDirectory}/" per workspaceGovernance.sharedPackageTemplate.`
-    )
-  }
-}
-
-async function collectWorkspacePackageDirectories(
-  config: Awaited<ReturnType<typeof loadAfendaConfig>>
-) {
-  const packageDirectories: string[] = []
-
-  for (const workspaceRootDirectory of config.workspaceGovernance
-    .packageTopology.workspaceRootDirectories) {
-    const rootDirectoryPath = path.join(workspaceRoot, workspaceRootDirectory)
-    const entries = await fs.readdir(rootDirectoryPath, { withFileTypes: true })
-
-    for (const entry of entries) {
-      if (!entry.isDirectory() || entry.name.startsWith(".")) {
-        continue
-      }
-
-      const relativePackageDirectory = toPosixPath(
-        path.join(workspaceRootDirectory, entry.name)
-      )
-      const packageJsonPath = path.join(
-        rootDirectoryPath,
-        entry.name,
-        "package.json"
-      )
-      const packageJsonExists = await fs
-        .stat(packageJsonPath)
-        .then((stats) => stats.isFile())
-        .catch(() => false)
-
-      if (packageJsonExists) {
-        packageDirectories.push(relativePackageDirectory)
-      }
-    }
-  }
-
-  return packageDirectories.sort((left, right) => left.localeCompare(right))
-}
-
-async function assertWebClientSrcGovernance(
-  config: Awaited<ReturnType<typeof loadAfendaConfig>>
-) {
-  const webClientSrc = config.workspaceGovernance.webClientSrc
-  if (!webClientSrc.enforce) {
-    return
-  }
-
-  const srcPath = path.join(workspaceRoot, webClientSrc.srcRoot)
-  await assertDirectoryExists(
-    srcPath,
-    `Web client src "${webClientSrc.srcRoot}" must exist (workspaceGovernance.webClientSrc).`
-  )
-
-  const entries = await fs.readdir(srcPath, { withFileTypes: true })
-  const topLevelDirs = entries
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
-    .map((entry) => entry.name)
-    .sort((left, right) => left.localeCompare(right))
-
-  const expected = [...webClientSrc.allowedTopLevelDirectories].sort(
-    (left, right) => left.localeCompare(right)
-  )
-
-  assert(
-    topLevelDirs.length === expected.length &&
-      topLevelDirs.every((name, index) => name === expected[index]),
-    `Web client src top-level directories must match workspaceGovernance.webClientSrc.allowedTopLevelDirectories exactly (no extra folders; no dumping at src root).\nExpected: ${expected.join(", ")}\nActual: ${topLevelDirs.join(", ")}\nSee docs/PROJECT_STRUCTURE.md and docs/MONOREPO_BOUNDARIES.md.`
-  )
-
-  const sharePath = path.join(srcPath, "share")
-  for (const subdirectory of webClientSrc.requiredShareSubdirectories) {
-    await assertDirectoryExists(
-      path.join(sharePath, subdirectory),
-      `src/share must include "${subdirectory}/" per workspaceGovernance.webClientSrc.requiredShareSubdirectories.`
-    )
-  }
-}
-
 function assertUniqueReadmeTargets(
   readmeTargets: Array<{ path: string; mode: string }>
 ) {
@@ -983,19 +634,15 @@ function assertScopedPackageName(
   )
 }
 
-function assertDisjointSets(
-  leftValues: string[],
-  rightValues: string[],
-  leftLabel: string,
-  rightLabel: string
-) {
-  const rightSet = new Set(rightValues)
-  const overlap = leftValues.filter((value) => rightSet.has(value))
+await main()
 
+function assertNoWorkspaceGovernanceIssues(
+  issues: Awaited<ReturnType<typeof evaluateAfendaWorkspaceGovernance>>,
+  rule: (typeof issues)[number]["rule"]
+) {
+  const matchingIssues = issues.filter((issue) => issue.rule === rule)
   assert(
-    overlap.length === 0,
-    `${leftLabel} and ${rightLabel} must be disjoint. Overlap: ${overlap.join(", ")}.`
+    matchingIssues.length === 0,
+    matchingIssues.map((issue) => `${issue.path}: ${issue.message}`).join("\n")
   )
 }
-
-await main()

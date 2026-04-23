@@ -10,6 +10,7 @@ import {
   evaluateGovernanceBindings,
   evaluateGovernanceRegistry,
   evaluateGovernanceWaivers,
+  loadGovernanceDomainReports,
   renderGovernanceRegisterMarkdown,
 } from "./governance-spine.js"
 
@@ -336,6 +337,58 @@ test("aggregate report and register are deterministic for fixed input", () => {
   assert.match(register, /# Governance register/u)
   assert.match(register, /GOV-CI-001/u)
   assert.match(register, /\.artifacts\/reports\/governance/u)
+})
+
+test("loadGovernanceDomainReports accepts self-managed evidence wrappers", async () => {
+  const generatedAt = "2026-04-23T12:00:00.000Z"
+  const repoRoot = createFixtureRepo({
+    ".artifacts/reports/governance/registry-integrity.report.json":
+      JSON.stringify(
+        {
+          status: "warn",
+          mode: "ci",
+          generatedAt,
+          checks: [],
+          summary: {
+            passCount: 0,
+            warnCount: 1,
+            failCount: 0,
+            findingCount: 1,
+          },
+          governanceDomain: {
+            domainId: "GOV-CI-001",
+            title: "Governance registry integrity",
+            owner: "governance-toolchain",
+            generatedAt,
+            lifecycleStatus: "enforced",
+            enforcementMaturity: "blocking",
+            defaultSeverity: "fatal",
+            tier: "tier-3",
+            ciBehavior: "block",
+            localConfig: "scripts/afenda.config.json",
+            checks: [],
+            violations: [],
+            evidenceComplete: true,
+            driftDetected: false,
+            ciOutcome: "passed",
+          },
+        },
+        null,
+        2
+      ),
+  })
+
+  try {
+    const reports = await loadGovernanceDomainReports(
+      createFixtureConfig(),
+      repoRoot
+    )
+
+    assert.equal(reports.length, 1)
+    assert.equal(reports[0]?.domainId, "GOV-CI-001")
+  } finally {
+    cleanupFixtureRepo(repoRoot)
+  }
 })
 
 function createFixtureRepo(files: Record<string, string>): string {

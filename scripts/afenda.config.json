@@ -682,6 +682,37 @@
         "reviewCadence": "30d"
       },
       {
+        "id": "GOV-TRUTH-001",
+        "title": "Repository integrity guard",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "partial",
+        "enforcementMaturity": "warned",
+        "defaultSeverity": "warn",
+        "tier": "tier-2",
+        "docs": {
+          "primary": "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
+          "references": [
+            "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md",
+            "docs/architecture/governance/NAMING_CONVENTION.md"
+          ]
+        },
+        "localConfig": "scripts/repo-integrity/repo-guard-policy.ts",
+        "checks": [
+          {
+            "id": "repo-integrity-guard-check",
+            "command": "pnpm run script:check-repo-guard",
+            "scriptPath": "scripts/check-repo-guard.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run repo:guard:report",
+          "scriptPath": "scripts/repo-integrity/run-repo-guard.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/repo-integrity-guard.report.json",
+        "ciBehavior": "warn",
+        "reviewCadence": "30d"
+      },
+      {
         "id": "GOV-CI-001",
         "title": "Governance registry integrity",
         "owner": "governance-toolchain",

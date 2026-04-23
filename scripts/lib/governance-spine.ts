@@ -87,6 +87,10 @@ export interface GovernanceDomainReport {
   readonly ciOutcome: "passed" | "observed" | "warned" | "blocked"
 }
 
+interface SelfManagedGovernanceEvidenceReport {
+  readonly governanceDomain: GovernanceDomainReport
+}
+
 export interface GovernanceAggregateSummary {
   readonly totalDomains: number
   readonly passedDomains: number
@@ -561,6 +565,9 @@ export async function runGovernanceChecks(
   for (const domain of config.governance.domains) {
     const executions: GovernanceCheckExecution[] = []
     const violations: GovernanceDomainViolation[] = []
+    const reportPath = path.join(repoRoot, domain.evidencePath)
+
+    await fs.rm(reportPath, { force: true }).catch(() => undefined)
 
     for (const check of domain.checks) {
       const startedAt = Date.now()
@@ -597,14 +604,17 @@ export async function runGovernanceChecks(
       }
     }
 
-    const report = buildGovernanceDomainReport(
-      domain,
-      generatedAt,
-      executions,
-      violations
+    const selfManagedReport = await readGovernanceDomainReportFromEvidencePath(
+      reportPath,
+      domain.id
     )
+    const report =
+      selfManagedReport ??
+      buildGovernanceDomainReport(domain, generatedAt, executions, violations)
     reports.push(report)
-    await writeJsonFile(path.join(repoRoot, domain.evidencePath), report)
+    if (!selfManagedReport) {
+      await writeJsonFile(reportPath, report)
+    }
 
     if (violations.length === 0) {
       continue
@@ -629,7 +639,8 @@ export async function loadGovernanceDomainReports(
   for (const domain of config.governance.domains) {
     const reportPath = path.join(repoRoot, domain.evidencePath)
     const raw = await fs.readFile(reportPath, "utf8")
-    reports.push(JSON.parse(raw) as GovernanceDomainReport)
+    const parsed = JSON.parse(raw) as unknown
+    reports.push(extractGovernanceDomainReport(parsed, domain.id))
   }
 
   return reports
@@ -1195,6 +1206,70 @@ async function assertPathExists(
       message: `Path "${relativePath}" does not exist.`,
     })
   }
+}
+
+async function readGovernanceDomainReportFromEvidencePath(
+  reportPath: string,
+  domainId: string
+): Promise<GovernanceDomainReport | null> {
+  const raw = await fs.readFile(reportPath, "utf8").catch(() => null)
+  if (raw === null) {
+    return null
+  }
+
+  const parsed = JSON.parse(raw) as unknown
+  return extractGovernanceDomainReport(parsed, domainId)
+}
+
+function extractGovernanceDomainReport(
+  value: unknown,
+  expectedDomainId: string
+): GovernanceDomainReport {
+  if (isGovernanceDomainReport(value, expectedDomainId)) {
+    return value
+  }
+
+  if (isSelfManagedGovernanceEvidenceReport(value, expectedDomainId)) {
+    return value.governanceDomain
+  }
+
+  throw new Error(
+    `Evidence report for "${expectedDomainId}" does not contain a valid governance domain report.`
+  )
+}
+
+function isGovernanceDomainReport(
+  value: unknown,
+  expectedDomainId: string
+): value is GovernanceDomainReport {
+  if (typeof value !== "object" || value === null) {
+    return false
+  }
+
+  const candidate = value as Partial<GovernanceDomainReport>
+  return (
+    candidate.domainId === expectedDomainId &&
+    typeof candidate.title === "string" &&
+    typeof candidate.owner === "string" &&
+    typeof candidate.generatedAt === "string" &&
+    Array.isArray(candidate.checks) &&
+    Array.isArray(candidate.violations) &&
+    typeof candidate.evidenceComplete === "boolean" &&
+    typeof candidate.driftDetected === "boolean" &&
+    typeof candidate.ciOutcome === "string"
+  )
+}
+
+function isSelfManagedGovernanceEvidenceReport(
+  value: unknown,
+  expectedDomainId: string
+): value is SelfManagedGovernanceEvidenceReport {
+  if (typeof value !== "object" || value === null) {
+    return false
+  }
+
+  const candidate = value as Partial<SelfManagedGovernanceEvidenceReport>
+  return isGovernanceDomainReport(candidate.governanceDomain, expectedDomainId)
 }
 
 function assertPnpmRunScriptExists(
