@@ -1,9 +1,12 @@
+import type {
+  DuplicateOverlapPolicy,
+  PlacementOwnershipScope,
+  SourceEvidenceMismatchPolicy,
+} from "@afenda/governance-toolchain"
+
 import type { BoundaryImportPolicy } from "../lib/boundary-import-guard.js"
-import type { DuplicateOverlapPolicy } from "../lib/duplicate-overlap-guard.js"
 import type { GeneratedAuthenticityPolicy } from "../lib/generated-artifact-authenticity-guard.js"
-import type { PlacementOwnershipScope } from "../lib/placement-ownership-guard.js"
 import type { DocumentControlPolicy } from "../lib/stronger-document-control-guard.js"
-import type { SourceEvidenceMismatchPolicy } from "../lib/source-evidence-mismatch-guard.js"
 
 export interface RepoGuardPolicy {
   readonly machineNoiseExcludePatterns: readonly string[]

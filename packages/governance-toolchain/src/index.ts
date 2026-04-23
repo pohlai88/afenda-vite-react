@@ -19,6 +19,19 @@ export type {
   PromotionReadinessCheck,
   PromotionReadinessReport,
 } from "./contracts/promotion-readiness.js"
+export type {
+  DuplicateOverlapPolicy,
+  DuplicateOverlapScope,
+} from "./contracts/duplicate-overlap.js"
+export type {
+  SourceEvidenceMismatchBinding,
+  SourceEvidenceMismatchGitEntry,
+  SourceEvidenceMismatchPolicy,
+} from "./contracts/source-evidence-mismatch.js"
+export type {
+  PlacementOwnershipRule,
+  PlacementOwnershipScope,
+} from "./contracts/placement-ownership.js"
 export type { RepoGuardCoverageDefinition } from "./coverage/repo-guard-coverage.js"
 export type {
   RepoGuardStatus,
@@ -41,3 +54,11 @@ export {
   buildRepoGuardWaiverCheckResult,
   evaluateRepoGuardWaiverRegistry,
 } from "./waivers/repo-guard-waivers.js"
+export { evaluateDuplicateOverlapFindings } from "./evaluators/duplicate-overlap.js"
+export { evaluateSourceEvidenceMismatchFindings } from "./evaluators/source-evidence-mismatch.js"
+export {
+  evaluatePlacementOwnershipFindings,
+  resolvePlacementOwnershipScope,
+  matchesPlacementOwnershipRule,
+  resolveStrongestPlacementOwnershipRules,
+} from "./evaluators/placement-ownership.js"

@@ -43,6 +43,7 @@ It exists so governance semantics are owned as a real domain without moving the 
 - promotion-readiness model
 - pure formatters
 - pure report builders
+- pure evaluators that operate only on passed-in inputs
 
 It must not own:
 
