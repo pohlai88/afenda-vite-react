@@ -1,10 +1,9 @@
-import path from "node:path"
-
 import type { RepoGuardFinding } from "../contracts/repo-guard.js"
 import type {
   PlacementOwnershipRule,
   PlacementOwnershipScope,
 } from "../contracts/placement-ownership.js"
+import { matchesAnyPathPattern } from "../utils/path-patterns.js"
 
 export function evaluatePlacementOwnershipFindings(options: {
   readonly filePaths: readonly string[]
@@ -106,20 +105,4 @@ export function resolveStrongestPlacementOwnershipRules(
 
   const strongestRootLength = Math.max(...rules.map((rule) => rule.root.length))
   return rules.filter((rule) => rule.root.length === strongestRootLength)
-}
-
-function matchesAnyPathPattern(
-  filePath: string,
-  patterns: readonly string[]
-): boolean {
-  return patterns.some((pattern) => {
-    if (pattern.endsWith("/**")) {
-      const prefix = pattern.slice(0, -3)
-      if (filePath === prefix || filePath.startsWith(`${prefix}/`)) {
-        return true
-      }
-    }
-
-    return path.matchesGlob(filePath, pattern)
-  })
 }

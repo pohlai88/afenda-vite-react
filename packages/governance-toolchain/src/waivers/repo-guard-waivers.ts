@@ -1,5 +1,3 @@
-import path from "node:path"
-
 import type {
   RepoGuardCheckResult,
   RepoGuardFinding,
@@ -12,6 +10,7 @@ import type {
   RepoGuardWaiverSoonToExpire,
 } from "../contracts/repo-guard-waivers.js"
 import { statusFromRepoGuardFindings } from "../status/repo-guard-findings.js"
+import { matchesPathPattern } from "../utils/path-patterns.js"
 
 export function evaluateRepoGuardWaiverRegistry(options: {
   readonly registry: RepoGuardWaiverRegistry
@@ -214,7 +213,7 @@ function waiverMatchesFinding(
 
   return (
     waiver.pathPattern === "*" ||
-    path.matchesGlob(finding.filePath, waiver.pathPattern)
+    matchesPathPattern(finding.filePath, waiver.pathPattern)
   )
 }
 

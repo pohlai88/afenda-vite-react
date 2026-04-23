@@ -32,6 +32,11 @@ export type {
   PlacementOwnershipRule,
   PlacementOwnershipScope,
 } from "./contracts/placement-ownership.js"
+export type {
+  RepoGuardDirtyFilePolicy,
+  RepoGuardWorkingTreePolicy,
+  RepoGuardWorktreeEntry,
+} from "./contracts/repo-guard-worktree.js"
 export type { RepoGuardCoverageDefinition } from "./coverage/repo-guard-coverage.js"
 export type {
   RepoGuardStatus,
@@ -63,5 +68,9 @@ export {
   matchesPlacementOwnershipRule,
   resolveStrongestPlacementOwnershipRules,
 } from "./evaluators/placement-ownership.js"
+export {
+  evaluateDirtyFileCandidates,
+  evaluateWorkingTreeFindings,
+} from "./evaluators/repo-guard-worktree.js"
 export { repoGuardCoverageCatalog } from "./registries/repo-guard-coverage-catalog.js"
 export { promotionReadinessCheckCatalog } from "./registries/promotion-readiness-check-catalog.js"

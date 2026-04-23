@@ -2,6 +2,7 @@ import path from "node:path"
 
 import type { RepoGuardFinding } from "../contracts/repo-guard.js"
 import type { DuplicateOverlapPolicy } from "../contracts/duplicate-overlap.js"
+import { matchesAnyPathPattern } from "../utils/path-patterns.js"
 
 export function evaluateDuplicateOverlapFindings(options: {
   readonly filePaths: readonly string[]
@@ -74,11 +75,4 @@ export function evaluateDuplicateOverlapFindings(options: {
   }
 
   return findings
-}
-
-function matchesAnyPathPattern(
-  filePath: string,
-  patterns: readonly string[]
-): boolean {
-  return patterns.some((pattern) => path.matchesGlob(filePath, pattern))
 }

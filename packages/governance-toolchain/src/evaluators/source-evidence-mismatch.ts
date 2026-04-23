@@ -1,10 +1,9 @@
-import path from "node:path"
-
 import type { RepoGuardFinding } from "../contracts/repo-guard.js"
 import type {
   SourceEvidenceMismatchGitEntry,
   SourceEvidenceMismatchPolicy,
 } from "../contracts/source-evidence-mismatch.js"
+import { matchesAnyPathPattern } from "../utils/path-patterns.js"
 
 export function evaluateSourceEvidenceMismatchFindings(options: {
   readonly entries: readonly SourceEvidenceMismatchGitEntry[]
@@ -80,11 +79,4 @@ export function evaluateSourceEvidenceMismatchFindings(options: {
   }
 
   return findings
-}
-
-function matchesAnyPathPattern(
-  filePath: string,
-  patterns: readonly string[]
-): boolean {
-  return patterns.some((pattern) => path.matchesGlob(filePath, pattern))
 }
