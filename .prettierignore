@@ -8,3 +8,4 @@ node_modules
 .vite
 *.min.js
 pnpm-lock.yaml
+docs/architecture/governance/generated/governance-register.md

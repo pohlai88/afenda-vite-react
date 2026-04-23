@@ -36,33 +36,33 @@ This register is generated from `scripts/afenda.config.json` and the latest gove
 - Enforcement maturity counts:
   defined=0, measured=0, warned=3, blocking=8, runtime-enforced=0
 - Violation severity counts:
-  info=0, warn=0, error=2, fatal=0
+  info=0, warn=0, error=3, fatal=0
 - Blocked domains: none
 - Warned domains: `GOV-TRUTH-001`
 
 ## Domains
 
-| Domain            | Title                          | Lifecycle  | Maturity   | CI behavior | Evidence                                                            | Local config                                                                    |
-| ----------------- | ------------------------------ | ---------- | ---------- | ----------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `GOV-FS-001`      | Filesystem governance          | `enforced` | `blocking` | `block`     | `.artifacts/reports/governance/filesystem.report.json`              | `rules/filesystem-governance/filesystem-governance.config.json`                 |
-| `GOV-GEN-001`     | Generated artifact governance  | `enforced` | `blocking` | `block`     | `.artifacts/reports/governance/generated-artifacts.report.json`     | `rules/generated-artifact-governance/generated-artifact-governance.config.json` |
-| `GOV-STORAGE-001` | Storage governance             | `enforced` | `blocking` | `block`     | `.artifacts/reports/governance/storage.report.json`                 | `rules/storage-governance/storage-governance.config.json`                       |
-| `GOV-FS-002`      | Workspace and package topology | `enforced` | `blocking` | `block`     | `.artifacts/reports/governance/workspace-topology.report.json`      | `scripts/afenda.config.json`                                                    |
-| `GOV-ARCH-001`    | Architecture contracts         | `partial`  | `warned`   | `warn`      | `.artifacts/reports/governance/architecture-contracts.report.json`  | `docs/architecture/atc`                                                         |
-| `GOV-DOC-001`     | Documentation integrity        | `partial`  | `warned`   | `warn`      | `.artifacts/reports/governance/documentation-integrity.report.json` | `docs`                                                                          |
-| `GOV-DOC-002`     | Naming convention integrity    | `enforced` | `blocking` | `block`     | `.artifacts/reports/governance/naming-convention.report.json`       | `docs/architecture/governance/NAMING_CONVENTION.md`                             |
-| `GOV-TRUTH-001`   | Repository integrity guard     | `partial`  | `warned`   | `warn`      | `.artifacts/reports/governance/repo-integrity-guard.report.json`    | `scripts/repo-integrity/repo-guard-policy.ts`                                   |
-| `GOV-CI-001`      | Governance registry integrity  | `enforced` | `blocking` | `block`     | `.artifacts/reports/governance/registry-integrity.report.json`      | `scripts/afenda.config.json`                                                    |
-| `GOV-CI-002`      | Governance bindings validity   | `enforced` | `blocking` | `block`     | `.artifacts/reports/governance/bindings.report.json`                | `scripts/afenda.config.json`                                                    |
-| `GOV-CI-003`      | Governance waivers             | `enforced` | `blocking` | `block`     | `.artifacts/reports/governance/waivers-domain.report.json`          | `rules/governance/waivers.json`                                                 |
+| Domain | Title | Lifecycle | Maturity | CI behavior | Evidence | Local config |
+| --- | --- | --- | --- | --- | --- | --- |
+| `GOV-FS-001` | Filesystem governance | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/filesystem.report.json` | `rules/filesystem-governance/filesystem-governance.config.json` |
+| `GOV-GEN-001` | Generated artifact governance | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/generated-artifacts.report.json` | `rules/generated-artifact-governance/generated-artifact-governance.config.json` |
+| `GOV-STORAGE-001` | Storage governance | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/storage.report.json` | `rules/storage-governance/storage-governance.config.json` |
+| `GOV-FS-002` | Workspace and package topology | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/workspace-topology.report.json` | `scripts/afenda.config.json` |
+| `GOV-ARCH-001` | Architecture contracts | `partial` | `warned` | `warn` | `.artifacts/reports/governance/architecture-contracts.report.json` | `docs/architecture/atc` |
+| `GOV-DOC-001` | Documentation integrity | `partial` | `warned` | `warn` | `.artifacts/reports/governance/documentation-integrity.report.json` | `docs` |
+| `GOV-DOC-002` | Naming convention integrity | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/naming-convention.report.json` | `docs/architecture/governance/NAMING_CONVENTION.md` |
+| `GOV-TRUTH-001` | Repository integrity guard | `partial` | `warned` | `warn` | `.artifacts/reports/governance/repo-integrity-guard.report.json` | `scripts/repo-integrity/repo-guard-policy.ts` |
+| `GOV-CI-001` | Governance registry integrity | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/registry-integrity.report.json` | `scripts/afenda.config.json` |
+| `GOV-CI-002` | Governance bindings validity | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/bindings.report.json` | `scripts/afenda.config.json` |
+| `GOV-CI-003` | Governance waivers | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/waivers-domain.report.json` | `rules/governance/waivers.json` |
 
 ## Gates
 
-| Gate            | Title                            | CI behavior | Command                                        |
-| --------------- | -------------------------------- | ----------- | ---------------------------------------------- |
-| `GOV-CI-GATE-A` | Governance registry integrity    | `block`     | `pnpm run script:check-governance-registry`    |
-| `GOV-CI-GATE-B` | Governance bindings validity     | `block`     | `pnpm run script:check-governance-bindings`    |
-| `GOV-CI-GATE-C` | Registered governance checks     | `block`     | `pnpm run script:run-governance-checks`        |
-| `GOV-CI-GATE-D` | Governance evidence completeness | `block`     | `pnpm run script:generate-governance-report`   |
-| `GOV-CI-GATE-E` | Governance waivers validity      | `block`     | `pnpm run script:check-governance-waivers`     |
-| `GOV-CI-GATE-F` | Governance register sync         | `block`     | `pnpm run script:generate-governance-register` |
+| Gate | Title | CI behavior | Command |
+| --- | --- | --- | --- |
+| `GOV-CI-GATE-A` | Governance registry integrity | `block` | `pnpm run script:check-governance-registry` |
+| `GOV-CI-GATE-B` | Governance bindings validity | `block` | `pnpm run script:check-governance-bindings` |
+| `GOV-CI-GATE-C` | Registered governance checks | `block` | `pnpm run script:run-governance-checks` |
+| `GOV-CI-GATE-D` | Governance evidence completeness | `block` | `pnpm run script:generate-governance-report` |
+| `GOV-CI-GATE-E` | Governance waivers validity | `block` | `pnpm run script:check-governance-waivers` |
+| `GOV-CI-GATE-F` | Governance register sync | `block` | `pnpm run script:generate-governance-register` |
