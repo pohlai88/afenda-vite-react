@@ -3,6 +3,11 @@
 
 # Afenda documentation
 
+> Generated from: `scripts/generate-docs-readme.ts`, `docs/**/*.md`
+> Regenerate with: `pnpm run script:generate-docs-readme`
+> Truth class: `derived`
+> Do not edit directly.
+
 This folder is the generated index for repo-wide guides in the Afenda monorepo (`pnpm` + `Turborepo`; web client: `apps/web` with Vite + React).
 
 - AI agents: use [`AGENTS.md`](../AGENTS.md) as the execution index and doc map.
@@ -11,63 +16,45 @@ This folder is the generated index for repo-wide guides in the Afenda monorepo (
 
 These guides describe Afenda, Vite, and ERP concerns for this repository. They are distinct from the older Next.js template docs preserved elsewhere in the workspace.
 
-## Core documentation
+## Start here
 
-| Document                                                                   | Description                                                                                                                      |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| [Architecture](./ARCHITECTURE.md)                                          | Monorepo + ERP systems view, governed UI layer, semantic adapter flow, and adding new modules.                                   |
-| [API reference](./API.md)                                                  | REST contract: `/api/tenants/{tenant}/...`, errors, and tenant-scoped routes.                                                    |
-| [Documentation scope](./DOCUMENTATION_SCOPE.md)                            | Normative vs optional docs; what blocks implementation and what does not.                                                        |
-| [Project structure](./PROJECT_STRUCTURE.md)                                | `apps/web` layout, routes, features, and migration toward `features/*`.                                                          |
-| [Design system](./DESIGN_SYSTEM.md)                                        | Tokens, layout, motion, typography, and accessibility rules.                                                                     |
-| [Brand guidelines](./BRAND_GUIDELINES.md)                                  | Logo, palette, gradient rules, and Afenda visual identity guidance.                                                              |
-| [Components and styling](./COMPONENTS_AND_STYLING.md)                      | React component patterns, colocation rules, and UI implementation guidance.                                                      |
-| [Authentication](./AUTHENTICATION.md)                                      | Vite SPA + backend auth flow, sessions, guards, and Auth0 integration notes.                                                     |
-| [Roles and permissions](./ROLES_AND_PERMISSIONS.md)                        | RBAC roles, PBAC permission keys, and API vs UI enforcement.                                                                     |
-| [State management](./STATE_MANAGEMENT.md)                                  | Local state, Zustand, TanStack Query, forms, and Context boundaries.                                                             |
-| [Performance](./PERFORMANCE.md)                                            | Bundle, list, memoization, and loading-state guidance for the web app.                                                           |
-| [Vite enterprise practices (workspace)](./VITE_ENTERPRISE_WORKSPACE.md)    | Vite 8 + Rolldown quality baseline, apps/web wiring, DevTools/Vitest guards, and review checklist.                               |
-| [Project configuration](./PROJECT_CONFIGURATION.md)                        | ESLint, Prettier, TypeScript, Turborepo, and repo tooling conventions.                                                           |
-| [Repository artifact policy](./REPO_ARTIFACT_POLICY.md)                    | Where build outputs, `.artifacts/` reports, caches, and temp files belong; root anti-patterns.                                   |
-| [Testing](./TESTING.md)                                                    | Vitest + React Testing Library guidance for `apps/web`.                                                                          |
-| [Integrations](./INTEGRATIONS.md)                                          | Third-party APIs, OAuth flows, webhooks, and sync patterns.                                                                      |
-| [Deployment](./DEPLOYMENT.md)                                              | Vercel static deployment, environment variables, and SPA rewrites.                                                               |
-| [Glossary](./GLOSSARY.md)                                                  | ERP and platform vocabulary used across the repository.                                                                          |
-| [Shell Components Guardrails (moved)](./SHELL_COMPONENTS_GUARDRAILS.md)    | Live shell module docs live under `apps/web/src/app/_platform/shell/` (see `README.md` there).                                   |
-| [Architecture evolution](./ARCHITECTURE_EVOLUTION.md)                      | Decision policy for when to upgrade architecture now vs later, with measurable triggers and ownership.                           |
-| [CI Quality Gates (Scaffold)](./VITE_FRONTEND_CI_GATES.md)                 | Use this checklist as non-negotiable CI policy for Vite frontend release readiness.                                              |
-| [ERP App Shell Specification](./APP_SHELL_SPEC.md)                         | Architecture specification for the authenticated ERP shell in apps/web.                                                          |
-| [Feature Module Template (Scaffold)](./VITE_FRONTEND_FEATURE_TEMPLATE.md)  | Export only stable surfaces from feature root index.ts.                                                                          |
-| [Monorepo boundaries](./MONOREPO_BOUNDARIES.md)                            | Cross-cutting client code belongs under src/share/.                                                                              |
-| [Performance Defaults (Scaffold)](./VITE_FRONTEND_PERFORMANCE_DEFAULTS.md) | These defaults are the baseline for scalable Vite SPA performance.                                                               |
-| [Shell Architecture](./SHELL_ARCHITECTURE.md)                              | This document defines the canonical shell architecture for the governed constant layer in packages/shadcn-ui-deprecated.         |
-| [Tailwind + shadcn Migration Plan](./TAILWIND_SHADCN_MIGRATION_PLAN.md)    | Add the new share subdirectories (react-hooks, client-store, api, query) to the shareSubdirectories field if not already listed. |
-| [Vite Config Template (Scaffold)](./VITE_FRONTEND_CONFIG_TEMPLATE.md)      | Create src/vite-preload-recovery.ts and import it from main.tsx:                                                                 |
-| [Vite Frontend Blueprint](./VITE_FRONTEND_BLUEPRINT.md)                    | Use this when creating a new app or resetting architecture drift.                                                                |
+| Task                                                | Start here                       | Why                                                                                                        |
+| --------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Understand repo navigation and CI-critical surfaces | [Open](./OPERATING_MAP.md)       | Start with the operating map for canonical docs, generated surfaces, evidence paths, and CI routing.       |
+| Read canonical workspace policy                     | [Open](./workspace/README.md)    | Workspace docs are the repo-wide operating source for structure, auth, deployment, and tooling policy.     |
+| Review architecture decisions and contracts         | [Open](./architecture/README.md) | Architecture docs route you to narrative ADRs and enforceable ATCs without mixing the two.                 |
+| Check dependency adoption posture                   | [Open](./dependencies/README.md) | Dependency guides separate implemented surfaces from installed-only, planned, optional, and research docs. |
+
+## Canonical and generated docs in this folder
+
+| Document                            | Priority  | Truth      | Class          | Owner                | Description                                                                                                                          |
+| ----------------------------------- | --------- | ---------- | -------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| [Operating map](./OPERATING_MAP.md) | Reference | supporting | supporting-doc | governance-toolchain | Generated navigation map for canonical docs, generated surfaces, CI-blocking areas, evidence paths, and contributor starting points. |
 
 ## Documentation collections
 
-| Collection                                    | Description                                                                                    |
-| --------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [Dependency guides](./dependencies/README.md) | Per-package and infrastructure guides for tooling, UI stack, and planned backend integrations. |
-| [Decisions](./decisions/README.md)            | Generated index for docs in `docs/decisions`.                                                  |
-| [Idea](./__idea__/README.md)                  | Generated index for docs in `docs/__idea__`.                                                   |
+| Collection                                       | Description                                                                                                     |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| [Workspace](./workspace/README.md)               | Canonical repo-wide operating docs for structure, tooling, architecture, auth, deployment, and platform policy. |
+| [Dependency guides](./dependencies/README.md)    | Per-package and infrastructure guides for tooling, UI stack, and planned backend integrations.                  |
+| [Architecture records](./architecture/README.md) | Architecture ADRs and ATCs grouped under docs/architecture for narrative decisions and enforceable contracts.   |
 
-## Compatibility redirects
+## If governance CI fails
 
-| Document                    | Description                                                                     |
-| --------------------------- | ------------------------------------------------------------------------------- |
-| [shadcn/ui](./SHADCN_UI.md) | Compatibility note pointing to the dependency guide under `docs/dependencies/`. |
+- Read [Operating map](./OPERATING_MAP.md) first for the current CI routing path and evidence locations.
+- Open [the governance register](./architecture/governance/generated/governance-register.md) for current domain status and gate context.
+- Review [the governance constitution](./architecture/governance/GOVERNANCE_CONSTITUTION.md) and [scripts README](../scripts/README.md) before changing checks or evidence semantics.
+- Re-run `pnpm run script:check-governance` locally after fixing the relevant area.
 
 ## Not in this folder yet
 
 The following topics are mentioned elsewhere in the repo but do not exist as repo-root `docs/*.md` files today:
 
-| Topic                         | Suggested location / notes                                                                                               |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| OpenAPI / generated SDK       | Optional. See [Documentation scope](./DOCUMENTATION_SCOPE.md); not required to implement from [API reference](./API.md). |
-| Storybook deep-dive           | Add `docs/STORYBOOK.md` if the team wants repo-level Storybook process guidance beyond the dependency guide.             |
-| GitHub Actions / CI deep-dive | Add `docs/CI.md` or a focused `.github/workflows` README if CI behavior needs first-class documentation.                 |
+| Topic                         | Suggested location / notes                                                                                                                   |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| OpenAPI / generated SDK       | Optional. See [Documentation scope](./workspace/DOCUMENTATION_SCOPE.md); not required to implement from [API reference](./workspace/API.md). |
+| Storybook deep-dive           | Add `docs/STORYBOOK.md` if the team wants repo-level Storybook process guidance beyond the dependency guide.                                 |
+| GitHub Actions / CI deep-dive | Add `docs/CI.md` or a focused `.github/workflows` README if CI behavior needs first-class documentation.                                     |
 
 ## Related
 

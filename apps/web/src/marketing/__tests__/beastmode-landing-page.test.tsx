@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import { beforeAll, describe, expect, it } from "vitest"
 
-import BeastmodeLandingPage from "../pages/landing/11.Beastmode"
+import BeastmodeLandingPage from "../pages/landing/beastmode-landing-page"
 
 beforeAll(() => {
   class MockIntersectionObserver implements IntersectionObserver {

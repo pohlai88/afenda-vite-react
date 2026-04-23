@@ -6,7 +6,7 @@ import {
   SetupLayout,
   WorkspaceSetupPage,
 } from "../../../_features/setup"
-import { AppThemeProvider } from "../../theme/app-theme-provider"
+import { AppThemeProvider } from "../../theme"
 import "../auth.css"
 import { AfendaAuthUiProvider } from "../better-auth-ui/afenda-auth-ui-provider"
 import { RequireAuth } from "../guards/require-auth"

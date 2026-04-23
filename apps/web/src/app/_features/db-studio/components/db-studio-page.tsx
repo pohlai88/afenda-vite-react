@@ -10,6 +10,11 @@ import { memo, useDeferredValue, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import {
+  AppSurface,
+  type AppSurfaceContract,
+  StateSurface,
+} from "@/app/_platform/app-surface"
+import {
   Card,
   CardContent,
   CardDescription,
@@ -28,6 +33,7 @@ import {
   resolveApiV1Path,
 } from "../../../_platform/runtime"
 import { useOptionalTenantIdHeaders } from "../../../_platform/tenant/tenant-scope-context"
+import { useOptionalTenantScope } from "../../../_platform/tenant"
 import type {
   BusinessGlossaryEntry,
   StudioPgEnumRow,
@@ -130,9 +136,92 @@ function CatalogLoadingSkeleton() {
   )
 }
 
+function createDbStudioSurfaceContract(input: {
+  readonly tenantName?: string
+  readonly glossaryGeneratedAt?: string
+  readonly truthGeneratedAt?: string
+}): AppSurfaceContract {
+  return {
+    kind: "workspace",
+    header: {
+      kicker: "DB Studio",
+      title: "DB Studio",
+      description:
+        "Read-only catalogs: business glossary, truth governance overlays, domain coverage, physical enums, and recent tenant audit evidence.",
+    },
+    metaRow:
+      input.tenantName || input.glossaryGeneratedAt || input.truthGeneratedAt
+        ? {
+            items: [
+              ...(input.tenantName
+                ? [
+                    {
+                      id: "tenant",
+                      label: "Tenant",
+                      value: input.tenantName,
+                    },
+                  ]
+                : []),
+              ...(input.glossaryGeneratedAt
+                ? [
+                    {
+                      id: "glossary",
+                      label: "Glossary snapshot",
+                      value: `Glossary ${input.glossaryGeneratedAt}`,
+                    },
+                  ]
+                : []),
+              ...(input.truthGeneratedAt
+                ? [
+                    {
+                      id: "truth",
+                      label: "Truth snapshot",
+                      value: `Truth ${input.truthGeneratedAt}`,
+                    },
+                  ]
+                : []),
+            ],
+          }
+        : undefined,
+    content: {
+      sections: [
+        { id: "studio-meta" },
+        { id: "studio-layer-nav" },
+        { id: "studio-catalog-governance" },
+        { id: "studio-logical" },
+        { id: "studio-physical" },
+        { id: "studio-evidence" },
+      ],
+    },
+    stateSurface: {
+      loading: {
+        title: "Loading DB Studio",
+        description:
+          "Please wait while Afenda assembles the database governance surfaces.",
+      },
+      empty: {
+        title: "DB Studio unavailable",
+        description:
+          "This studio surface is available, but no governed catalog content was returned.",
+      },
+      failure: {
+        title: "DB Studio unavailable",
+        description:
+          "Afenda could not load the database governance surface right now.",
+      },
+      forbidden: {
+        title: "DB Studio unavailable",
+        description:
+          "You do not have permission to inspect this governed database surface.",
+      },
+    },
+  }
+}
+
 export function DbStudioPage() {
   const { t } = useTranslation("shell")
   const tenantHeaders = useOptionalTenantIdHeaders()
+  const scope = useOptionalTenantScope()
   const glossaryQ = useStudioGlossary()
   const enumsQ = useStudioEnums()
   const truthQ = useStudioTruthGovernance()
@@ -211,17 +300,59 @@ export function DbStudioPage() {
       }
     : null
 
-  return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {t("db_studio.title")}
-        </h1>
-        <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
-          {t("db_studio.description")}
-        </p>
-      </header>
+  const tenantName =
+    scope?.status === "ready"
+      ? (scope.me.tenant?.memberships.find(
+          (membership) => membership.tenantId === scope.selectedTenantId
+        )?.tenantName ?? scope.me.tenant?.memberships[0]?.tenantName)
+      : undefined
 
+  const surfaceContract = createDbStudioSurfaceContract({
+    tenantName,
+    glossaryGeneratedAt: glossaryMeta?.generated_at,
+    truthGeneratedAt: truthMeta?.generated_at,
+  })
+
+  const isCoreLoading =
+    !glossaryQ.data &&
+    !enumsQ.data &&
+    !truthQ.data &&
+    glossaryQ.isPending &&
+    enumsQ.isPending &&
+    truthQ.isPending
+
+  const isCoreFailure =
+    !glossaryQ.data &&
+    !enumsQ.data &&
+    !truthQ.data &&
+    glossaryQ.isError &&
+    enumsQ.isError &&
+    truthQ.isError
+
+  if (isCoreLoading) {
+    return (
+      <StateSurface
+        surfaceKind="workspace"
+        kind="loading"
+        title={surfaceContract.stateSurface.loading.title}
+        description={surfaceContract.stateSurface.loading.description}
+      />
+    )
+  }
+
+  if (isCoreFailure) {
+    return (
+      <StateSurface
+        surfaceKind="workspace"
+        kind="failure"
+        title={surfaceContract.stateSurface.failure.title}
+        description={surfaceContract.stateSurface.failure.description}
+      />
+    )
+  }
+
+  return (
+    <AppSurface contract={surfaceContract}>
       <DbStudioMetaStrip glossary={glossaryMeta} truth={truthMeta} />
 
       <DbStudioLayerNav />
@@ -437,6 +568,6 @@ export function DbStudioPage() {
           )}
         </CardContent>
       </Card>
-    </main>
+    </AppSurface>
   )
 }

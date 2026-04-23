@@ -9,8 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@afenda/design-system/ui-primitives"
-import { authOrganizationClient } from "@/app/_platform/auth"
-import { useAuthPostLoginDestination } from "@/app/_platform/auth/hooks/use-auth-post-login-destination"
+import {
+  authOrganizationClient,
+  useAuthPostLoginDestination,
+} from "@/app/_platform/auth"
 import { UserProfile } from "@/share/components/settings/account/user-profile"
 import { SetupShell } from "./setup-shell"
 

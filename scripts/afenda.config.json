@@ -45,6 +45,152 @@
       "includeChildDirectories": true
     }
   ],
+  "fileSurvival": {
+    "rollouts": [
+      {
+        "id": "marketing",
+        "scopeRoot": "apps/web/src/marketing",
+        "sharedRoots": ["apps/web/src/marketing/components"],
+        "runtimeOwners": [
+          "apps/web/src/marketing/marketing-layout.tsx",
+          "apps/web/src/marketing/marketing-routes.tsx",
+          "apps/web/src/marketing/marketing-page-registry.ts",
+          "apps/web/src/marketing/marketing-theme-provider.tsx",
+          "apps/web/src/marketing/marketing.config.ts",
+          "apps/web/src/marketing/marketing-configured-home.tsx",
+          "apps/web/src/marketing/marketing-random-home.tsx",
+          "apps/web/src/marketing/marketing-loading-fallback.tsx"
+        ],
+        "rolePatterns": {
+          "routeOwner": [
+            "**/page.tsx",
+            "**/*-page.tsx",
+            "pages/landing/*.tsx"
+          ],
+          "contentOwner": [
+            "**/content.ts",
+            "**/*-editorial.ts",
+            "**/*.config.ts"
+          ],
+          "pageLocalComposition": [
+            "pages/**/*.tsx",
+            "pages/**/*-motion.ts",
+            "pages/**/*-layers.tsx"
+          ]
+        },
+        "ignore": [
+          "**/__tests__/**",
+          "**/*.css",
+          "**/*.generated.*",
+          "**/dist/**",
+          "**/build/**"
+        ],
+        "reviewedExceptions": [],
+        "protectedScopes": [
+          {
+            "id": "marketing-runtime",
+            "roots": [
+              "apps/web/src/marketing/marketing-layout.tsx",
+              "apps/web/src/marketing/marketing-routes.tsx",
+              "apps/web/src/marketing/marketing-page-registry.ts",
+              "apps/web/src/marketing/marketing-theme-provider.tsx",
+              "apps/web/src/marketing/marketing.config.ts",
+              "apps/web/src/marketing/marketing-configured-home.tsx",
+              "apps/web/src/marketing/marketing-random-home.tsx",
+              "apps/web/src/marketing/marketing-loading-fallback.tsx"
+            ]
+          },
+          {
+            "id": "marketing-shared-surface",
+            "roots": ["apps/web/src/marketing/components"]
+          }
+        ],
+        "ownerTruth": [
+          {
+            "root": "apps/web/src/marketing/components",
+            "owner": "marketing-shared-surface"
+          },
+          {
+            "root": "apps/web/src/marketing/pages/company",
+            "owner": "marketing-route:company"
+          },
+          {
+            "root": "apps/web/src/marketing/pages/campaigns",
+            "owner": "marketing-route:campaigns"
+          },
+          {
+            "root": "apps/web/src/marketing/pages/legal",
+            "owner": "marketing-route:legal"
+          },
+          {
+            "root": "apps/web/src/marketing/pages/landing",
+            "owner": "marketing-route:landing"
+          },
+          {
+            "root": "apps/web/src/marketing/pages/product",
+            "owner": "marketing-route:product"
+          },
+          {
+            "root": "apps/web/src/marketing/pages/regional",
+            "owner": "marketing-route:regional"
+          },
+          {
+            "root": "apps/web/src/marketing/marketing-layout.tsx",
+            "owner": "marketing-runtime"
+          },
+          {
+            "root": "apps/web/src/marketing/marketing-routes.tsx",
+            "owner": "marketing-runtime"
+          },
+          {
+            "root": "apps/web/src/marketing/marketing-page-registry.ts",
+            "owner": "marketing-runtime"
+          },
+          {
+            "root": "apps/web/src/marketing/marketing-theme-provider.tsx",
+            "owner": "marketing-runtime"
+          },
+          {
+            "root": "apps/web/src/marketing/marketing.config.ts",
+            "owner": "marketing-runtime"
+          },
+          {
+            "root": "apps/web/src/marketing/marketing-configured-home.tsx",
+            "owner": "marketing-runtime"
+          },
+          {
+            "root": "apps/web/src/marketing/marketing-random-home.tsx",
+            "owner": "marketing-runtime"
+          },
+          {
+            "root": "apps/web/src/marketing/marketing-loading-fallback.tsx",
+            "owner": "marketing-runtime"
+          }
+        ],
+        "blockingPolicy": {
+          "rolloutMode": "block",
+          "blockingCategories": ["wrapper", "dead"],
+          "blockingConfidence": ["high"],
+          "protectedScopeBlockingCategories": [
+            "unknown-role-protected-scope",
+            "shared-single-use"
+          ],
+          "protectedScopeBlockingConfidence": ["high", "medium"]
+        },
+        "rolePrecedence": [
+          "runtime-orchestrator",
+          "registry",
+          "route-owner",
+          "editorial-content",
+          "config",
+          "shared-component",
+          "page-local-composition",
+          "unknown"
+        ],
+        "resolverUnresolvedWarningThreshold": 3
+      }
+    ]
+  },
   "workspaceGovernance": {
     "rootTopology": {
       "primaryProductDirectories": ["apps", "packages"],
@@ -71,7 +217,7 @@
         "package.json",
         "pnpm-workspace.yaml",
         "turbo.json",
-        ".nvmrc",
+        ".npmrc",
         "tsconfig.json",
         "eslint.config.js",
         "prettier.config.js",
@@ -81,6 +227,197 @@
     "packageTopology": {
       "workspaceRootDirectories": ["apps", "packages"],
       "allowedManifestlessDirectories": []
+    },
+    "packageRoots": {
+      "profiles": [
+        {
+          "name": "vite-web-app",
+          "allowedDirectories": [
+            ".artifacts",
+            ".turbo",
+            "config",
+            "dist",
+            "e2e",
+            "node_modules",
+            "public",
+            "scripts",
+            "src"
+          ],
+          "allowedFiles": [
+            ".env.example",
+            "components.json",
+            "index.html",
+            "package.json",
+            "playwright.config.ts",
+            "README.md",
+            "tsconfig.json",
+            "vite.config.ts",
+            "vitest.setup.ts"
+          ]
+        },
+        {
+          "name": "api-app",
+          "allowedDirectories": [
+            ".artifacts",
+            ".turbo",
+            "dist",
+            "node_modules",
+            "src"
+          ],
+          "allowedFiles": [
+            "package.json",
+            "README.md",
+            "tsconfig.json",
+            "vitest.config.ts"
+          ]
+        },
+        {
+          "name": "source-library",
+          "allowedDirectories": [
+            ".artifacts",
+            ".turbo",
+            "dist",
+            "docs",
+            "node_modules",
+            "scripts",
+            "src"
+          ],
+          "allowedFiles": [
+            "AGENTS.md",
+            "README.md",
+            "TESTING.md",
+            "VITEST-WRITER.md",
+            "package.json",
+            "tsconfig.build.json",
+            "tsconfig.json",
+            "vitest.config.ts"
+          ]
+        },
+        {
+          "name": "config-package",
+          "allowedDirectories": ["node_modules"],
+          "allowedFiles": [
+            "base.json",
+            "node.json",
+            "package.json",
+            "react-app.json",
+            "react-library.json"
+          ]
+        },
+        {
+          "name": "database-package",
+          "allowedDirectories": [
+            ".artifacts",
+            ".turbo",
+            "docs",
+            "drizzle",
+            "node_modules",
+            "scripts",
+            "sql",
+            "src"
+          ],
+          "allowedFiles": [
+            "README.md",
+            "drizzle.config.ts",
+            "package.json",
+            "tsconfig.json",
+            "vitest.config.ts"
+          ]
+        },
+        {
+          "name": "design-system-package",
+          "allowedDirectories": [
+            ".artifacts",
+            ".turbo",
+            "design-architecture",
+            "generated",
+            "hooks",
+            "icons",
+            "node_modules",
+            "scripts",
+            "ui-primitives",
+            "utils"
+          ],
+          "allowedFiles": [
+            "VITEST.md",
+            "components.json",
+            "index.ts",
+            "package.json",
+            "prettier.config.js",
+            "tsconfig.json",
+            "vite-env.d.ts",
+            "vitest.config.ts"
+          ]
+        }
+      ],
+      "packages": [
+        {
+          "path": "apps/web",
+          "profile": "vite-web-app",
+          "extraAllowedDirectories": [".turbo"],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "apps/api",
+          "profile": "api-app",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/_database",
+          "profile": "database-package",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/better-auth",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/contracts",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/design-system",
+          "profile": "design-system-package",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/env-loader",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/eslint-config",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/pino-logger",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/typescript-config",
+          "profile": "config-package",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/vitest-config",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        }
+      ]
     },
     "featureTemplate": {
       "featuresRoot": "apps/web/src/app/_features",
@@ -118,6 +455,387 @@
       ],
       "requiredShareSubdirectories": [],
       "enforce": true
+    }
+  },
+  "governance": {
+    "version": 1,
+    "idFamilies": [
+      "GOV-FS",
+      "GOV-ARCH",
+      "GOV-DOC",
+      "GOV-CI",
+      "GOV-GEN",
+      "GOV-STORAGE",
+      "GOV-TEST",
+      "GOV-UI",
+      "GOV-TRUTH"
+    ],
+    "domains": [
+      {
+        "id": "GOV-FS-001",
+        "title": "Filesystem governance",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "enforced",
+        "enforcementMaturity": "blocking",
+        "defaultSeverity": "error",
+        "tier": "tier-3",
+        "docs": {
+          "primary": "rules/filesystem-governance/filesystem-governance.md",
+          "references": [
+            "docs/workspace/MONOREPO_BOUNDARIES.md",
+            "docs/workspace/REPO_ARTIFACT_POLICY.md"
+          ]
+        },
+        "localConfig": "rules/filesystem-governance/filesystem-governance.config.json",
+        "checks": [
+          {
+            "id": "filesystem-check",
+            "command": "pnpm run script:check-filesystem-governance",
+            "scriptPath": "scripts/check-filesystem-governance.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-filesystem-governance-report",
+          "scriptPath": "scripts/generate-filesystem-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/filesystem.report.json",
+        "ciBehavior": "block",
+        "reviewCadence": "30d"
+      },
+      {
+        "id": "GOV-GEN-001",
+        "title": "Generated artifact governance",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "enforced",
+        "enforcementMaturity": "blocking",
+        "defaultSeverity": "error",
+        "tier": "tier-3",
+        "docs": {
+          "primary": "rules/generated-artifact-governance/generated-artifact-governance.md",
+          "references": ["docs/workspace/REPO_ARTIFACT_POLICY.md"]
+        },
+        "localConfig": "rules/generated-artifact-governance/generated-artifact-governance.config.json",
+        "checks": [
+          {
+            "id": "generated-artifact-check",
+            "command": "pnpm run script:check-generated-artifact-governance",
+            "scriptPath": "scripts/check-generated-artifact-governance.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-generated-artifact-governance-report",
+          "scriptPath": "scripts/generate-generated-artifact-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/generated-artifacts.report.json",
+        "ciBehavior": "block",
+        "reviewCadence": "30d"
+      },
+      {
+        "id": "GOV-STORAGE-001",
+        "title": "Storage governance",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "enforced",
+        "enforcementMaturity": "blocking",
+        "defaultSeverity": "error",
+        "tier": "tier-3",
+        "docs": {
+          "primary": "rules/storage-governance/storage-governance.md",
+          "references": ["docs/workspace/REPO_ARTIFACT_POLICY.md"]
+        },
+        "localConfig": "rules/storage-governance/storage-governance.config.json",
+        "checks": [
+          {
+            "id": "storage-check",
+            "command": "pnpm run script:check-storage-governance",
+            "scriptPath": "scripts/check-storage-governance.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-storage-governance-report",
+          "scriptPath": "scripts/generate-storage-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/storage.report.json",
+        "ciBehavior": "block",
+        "reviewCadence": "30d"
+      },
+      {
+        "id": "GOV-FS-002",
+        "title": "Workspace and package topology",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "enforced",
+        "enforcementMaturity": "blocking",
+        "defaultSeverity": "error",
+        "tier": "tier-3",
+        "docs": {
+          "primary": "docs/workspace/MONOREPO_BOUNDARIES.md",
+          "references": [
+            "docs/workspace/PROJECT_STRUCTURE.md",
+            "docs/workspace/REPO_ARTIFACT_POLICY.md"
+          ]
+        },
+        "localConfig": "scripts/afenda.config.json",
+        "checks": [
+          {
+            "id": "workspace-topology-check",
+            "command": "pnpm run script:check-afenda-config",
+            "scriptPath": "scripts/check-afenda-config.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-governance-report",
+          "scriptPath": "scripts/generate-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/workspace-topology.report.json",
+        "ciBehavior": "block",
+        "reviewCadence": "30d"
+      },
+      {
+        "id": "GOV-ARCH-001",
+        "title": "Architecture contracts",
+        "owner": "web-architecture",
+        "lifecycleStatus": "partial",
+        "enforcementMaturity": "warned",
+        "defaultSeverity": "error",
+        "tier": "tier-2",
+        "docs": {
+          "primary": "docs/architecture/atc/ATC-0001-core-web-architecture-baseline.md",
+          "references": [
+            "docs/architecture/adr/ADR-0001-core-web-architecture-baseline.md",
+            "docs/workspace/ARCHITECTURE_EVOLUTION.md",
+            "docs/architecture/atc/ATC_TEMPLATE.md"
+          ]
+        },
+        "localConfig": "docs/architecture/atc",
+        "checks": [
+          {
+            "id": "architecture-contract-check",
+            "command": "pnpm run script:check-architecture-contracts",
+            "scriptPath": "scripts/check-architecture-contracts.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-governance-report",
+          "scriptPath": "scripts/generate-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/architecture-contracts.report.json",
+        "ciBehavior": "warn",
+        "reviewCadence": "30d"
+      },
+      {
+        "id": "GOV-DOC-001",
+        "title": "Documentation integrity",
+        "owner": "docs-policy",
+        "lifecycleStatus": "partial",
+        "enforcementMaturity": "warned",
+        "defaultSeverity": "warn",
+        "tier": "tier-2",
+        "docs": {
+          "primary": "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md",
+          "references": [
+            "docs/architecture/governance/GOVERNANCE_GLOSSARY.md",
+            "docs/architecture/adr/ADR_TEMPLATE.md",
+            "docs/architecture/atc/ATC_TEMPLATE.md"
+          ]
+        },
+        "localConfig": "docs",
+        "checks": [
+          {
+            "id": "doc-governance-check",
+            "command": "pnpm run script:check-doc-governance",
+            "scriptPath": "scripts/check-doc-governance.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-governance-report",
+          "scriptPath": "scripts/generate-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/documentation-integrity.report.json",
+        "ciBehavior": "warn",
+        "reviewCadence": "30d"
+      },
+      {
+        "id": "GOV-DOC-002",
+        "title": "Naming convention integrity",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "enforced",
+        "enforcementMaturity": "blocking",
+        "defaultSeverity": "error",
+        "tier": "tier-3",
+        "docs": {
+          "primary": "docs/architecture/governance/NAMING_CONVENTION.md",
+          "references": [
+            "scripts/RULES.md",
+            "docs/architecture/adr/ADR_TEMPLATE.md",
+            "docs/architecture/atc/ATC_TEMPLATE.md"
+          ]
+        },
+        "localConfig": "docs/architecture/governance/NAMING_CONVENTION.md",
+        "checks": [
+          {
+            "id": "naming-convention-check",
+            "command": "pnpm run script:check-naming-convention",
+            "scriptPath": "scripts/check-naming-convention.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-governance-report",
+          "scriptPath": "scripts/generate-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/naming-convention.report.json",
+        "ciBehavior": "block",
+        "reviewCadence": "30d"
+      },
+      {
+        "id": "GOV-CI-001",
+        "title": "Governance registry integrity",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "enforced",
+        "enforcementMaturity": "blocking",
+        "defaultSeverity": "fatal",
+        "tier": "tier-3",
+        "docs": {
+          "primary": "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md",
+          "references": [
+            "scripts/afenda.config.json",
+            "scripts/afenda.config.schema.json"
+          ]
+        },
+        "localConfig": "scripts/afenda.config.json",
+        "checks": [
+          {
+            "id": "governance-registry-check",
+            "command": "pnpm run script:check-governance-registry",
+            "scriptPath": "scripts/check-governance-registry.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-governance-report",
+          "scriptPath": "scripts/generate-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/registry-integrity.report.json",
+        "ciBehavior": "block",
+        "reviewCadence": "14d"
+      },
+      {
+        "id": "GOV-CI-002",
+        "title": "Governance bindings validity",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "enforced",
+        "enforcementMaturity": "blocking",
+        "defaultSeverity": "fatal",
+        "tier": "tier-3",
+        "docs": {
+          "primary": "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md",
+          "references": ["scripts/afenda.config.json"]
+        },
+        "localConfig": "scripts/afenda.config.json",
+        "checks": [
+          {
+            "id": "governance-binding-check",
+            "command": "pnpm run script:check-governance-bindings",
+            "scriptPath": "scripts/check-governance-bindings.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-governance-report",
+          "scriptPath": "scripts/generate-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/bindings.report.json",
+        "ciBehavior": "block",
+        "reviewCadence": "14d"
+      },
+      {
+        "id": "GOV-CI-003",
+        "title": "Governance waivers",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "enforced",
+        "enforcementMaturity": "blocking",
+        "defaultSeverity": "fatal",
+        "tier": "tier-3",
+        "docs": {
+          "primary": "rules/governance/governance-waivers.md",
+          "references": [
+            "rules/governance/waivers.json",
+            "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md"
+          ]
+        },
+        "localConfig": "rules/governance/waivers.json",
+        "checks": [
+          {
+            "id": "governance-waiver-check",
+            "command": "pnpm run script:check-governance-waivers",
+            "scriptPath": "scripts/check-governance-waivers.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-governance-report",
+          "scriptPath": "scripts/generate-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/waivers-domain.report.json",
+        "ciBehavior": "block",
+        "reviewCadence": "14d"
+      }
+    ],
+    "gates": [
+      {
+        "id": "GOV-CI-GATE-A",
+        "title": "Governance registry integrity",
+        "description": "Validate governance registry shape, IDs, statuses, and control-plane semantics.",
+        "command": "pnpm run script:check-governance-registry",
+        "scriptPath": "scripts/check-governance-registry.ts",
+        "ciBehavior": "block"
+      },
+      {
+        "id": "GOV-CI-GATE-B",
+        "title": "Governance bindings validity",
+        "description": "Validate docs, config, command, report, and evidence bindings declared by the governance registry.",
+        "command": "pnpm run script:check-governance-bindings",
+        "scriptPath": "scripts/check-governance-bindings.ts",
+        "ciBehavior": "block"
+      },
+      {
+        "id": "GOV-CI-GATE-C",
+        "title": "Registered governance checks",
+        "description": "Run all governance domain checks and emit per-domain evidence under .artifacts.",
+        "command": "pnpm run script:run-governance-checks",
+        "scriptPath": "scripts/run-governance-checks.ts",
+        "ciBehavior": "block"
+      },
+      {
+        "id": "GOV-CI-GATE-D",
+        "title": "Governance evidence completeness",
+        "description": "Aggregate domain evidence and fail if blocking domains are missing required reports.",
+        "command": "pnpm run script:generate-governance-report",
+        "scriptPath": "scripts/generate-governance-report.ts",
+        "ciBehavior": "block"
+      },
+      {
+        "id": "GOV-CI-GATE-E",
+        "title": "Governance waivers validity",
+        "description": "Validate waiver ownership, target IDs, expiry, and severity caps.",
+        "command": "pnpm run script:check-governance-waivers",
+        "scriptPath": "scripts/check-governance-waivers.ts",
+        "ciBehavior": "block"
+      },
+      {
+        "id": "GOV-CI-GATE-F",
+        "title": "Governance register sync",
+        "description": "Regenerate the governance register and snapshot so docs match the current control plane and evidence.",
+        "command": "pnpm run script:generate-governance-register",
+        "scriptPath": "scripts/generate-governance-register.ts",
+        "ciBehavior": "block"
+      }
+    ],
+    "evidence": {
+      "root": ".artifacts/reports/governance",
+      "aggregateReportPath": ".artifacts/reports/governance/governance-core.report.json",
+      "summaryReportPath": ".artifacts/reports/governance/governance-summary.report.json",
+      "registerPath": "docs/architecture/governance/generated/governance-register.md",
+      "registerSnapshotPath": ".artifacts/reports/governance/governance-register.snapshot.json"
+    },
+    "waivers": {
+      "registryPath": "rules/governance/waivers.json",
+      "reportPath": ".artifacts/reports/governance/waivers.report.json"
     }
   }
 }

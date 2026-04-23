@@ -317,6 +317,36 @@ function mapTenantActivationError(error: unknown): {
   }
 }
 
+function mapTenantCandidateError(error: unknown): {
+  status: ContentfulStatusCode
+  code: string
+  message: string
+} {
+  if (error instanceof Error) {
+    if (error.message === "listTenantCandidates: unauthenticated") {
+      return {
+        status: 401,
+        code: "auth_required",
+        message: "Authentication is required.",
+      }
+    }
+
+    if ("code" in error && error.code === "IDENTITY_LINK_REQUIRED") {
+      return {
+        status: 400,
+        code: "tenant_context_resolution_failed",
+        message: error.message,
+      }
+    }
+  }
+
+  return {
+    status: 500,
+    code: "tenant_candidates_unavailable",
+    message: "Unable to load tenant candidates for this account.",
+  }
+}
+
 export const authCompanionRoutes = new Hono<ApiEnv>()
   .get("/intelligence", async (c) => {
     const configurationFailure = ensureAuthConfigured(c)
@@ -489,3 +519,36 @@ export const authCompanionRoutes = new Hono<ApiEnv>()
       }
     }
   )
+  .get("/tenant-context/candidates", async (c) => {
+    const configurationFailure = ensureAuthConfigured(c)
+    if (configurationFailure) {
+      return configurationFailure
+    }
+
+    const currentSession = ensureAuthenticatedSession(c)
+    if (currentSession instanceof Response) {
+      return currentSession
+    }
+
+    const runtime = getBetterAuthRuntime()
+
+    try {
+      const tenantCandidates = await runtime.listTenantCandidates({
+        headers: c.req.raw.headers,
+      })
+
+      return c.json(
+        authApiSuccess(readRequestId(c), {
+          authSessionId: currentSession.authSessionId,
+          afendaUserId: tenantCandidates.afendaUserId,
+          activeTenantId: currentSession.tenantId,
+          activeMembershipId: currentSession.membershipId,
+          defaultTenantId: tenantCandidates.defaultTenantId,
+          candidates: tenantCandidates.candidates,
+        })
+      )
+    } catch (error) {
+      const mapped = mapTenantCandidateError(error)
+      return c.json(authApiError(mapped.code, mapped.message), mapped.status)
+    }
+  })

@@ -2,8 +2,8 @@
  * Browser HTTP runtime only (`_platform/runtime`). Server HTTP is `apps/api` — not re-exported here.
  * @see README.md — naming convention: symbols use `ApiClient` / `apiClient` / `api-client-*` file names.
  */
-export { ApiClientBoundary } from "./components/ApiClientBoundary"
-export type { ApiClientBoundaryProps } from "./components/ApiClientBoundary"
+export { ApiClientBoundary } from "./components/api-client-boundary"
+export type { ApiClientBoundaryProps } from "./components/api-client-boundary"
 export { fetchWithTimeout, resolveRequestUrl } from "./adapters/fetch-adapter"
 export { useApiClient } from "./hooks/use-api-client"
 export {
@@ -12,8 +12,8 @@ export {
   apiClientEnvKeys,
   apiClientPlatformPolicy,
 } from "./policy/api-client-policy"
-export { createApiClientCapabilityReport } from "./scripts/api-client-capability-report"
-export type { ApiClientCapabilityReport } from "./scripts/api-client-capability-report"
+export { createApiClientCapabilityReport } from "./scripts/generate-api-client-capability-report"
+export type { ApiClientCapabilityReport } from "./scripts/generate-api-client-capability-report"
 export {
   ApiClientHttpError,
   createApiClient,

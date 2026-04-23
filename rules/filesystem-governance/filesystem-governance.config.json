@@ -89,6 +89,21 @@
       "allowedPromotedSharedRoots": []
     },
     {
+      "root": "packages/design-system/hooks",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/design-system/icons",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/design-system/ui-primitives",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
+    },
+    {
       "root": "packages/eslint-config/src",
       "maxDirectoryDepth": 2,
       "allowedPromotedSharedRoots": []
@@ -134,9 +149,34 @@
       "allowedPromotedSharedRoots": []
     },
     {
+      "root": "packages/_database/src/7w1h-audit",
+      "maxDirectoryDepth": 2,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/_database/src/migrations",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/_database/src/relations",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
+    },
+    {
       "root": "packages/_database/src/schema",
       "maxDirectoryDepth": 3,
       "allowedPromotedSharedRoots": ["shared"]
+    },
+    {
+      "root": "packages/_database/src/studio",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
+    },
+    {
+      "root": "packages/_database/src/views",
+      "maxDirectoryDepth": 1,
+      "allowedPromotedSharedRoots": []
     }
   ],
   "notes": [
@@ -145,6 +185,6 @@
     "Web marketing, app ownership roots, promoted share, route surfaces, RPC, and API source boundaries are now in active governance.",
     "Strict naming applies to tracked source files inside governed roots: generic stems are denied even when the rest of the name is technically valid.",
     "Explicit package export surfaces may keep established root names such as packages/design-system/utils, but internal files beneath those roots must still use responsibility-shaped names.",
-    "Package governance now covers contracts, eslint-config, pino-logger, vitest-config, env-loader, typescript-config, better-auth source/scripts, the database query/schema layers, and the design-system utility export surface."
+    "Package governance now covers contracts, eslint-config, pino-logger, vitest-config, env-loader, typescript-config, better-auth source/scripts, the database query/schema/audit/relation/studio/view layers, and the design-system utility/hook/icon/ui-primitives surfaces."
   ]
 }

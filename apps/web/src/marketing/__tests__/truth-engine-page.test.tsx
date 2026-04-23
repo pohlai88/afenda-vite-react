@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import { beforeAll, describe, expect, it } from "vitest"
 
-import TruthEnginePage from "../pages/product/truth-engine-page"
+import TruthEnginePage from "../pages/product/truth-engine/truth-engine-page"
 
 beforeAll(() => {
   class MockIntersectionObserver implements IntersectionObserver {
@@ -43,6 +43,6 @@ describe("TruthEnginePage", () => {
 
     expect(
       screen.getByRole("link", { name: /View Benchmark ERP/i })
-    ).toHaveAttribute("href", "/marketing/benchmark-erp")
+    ).toHaveAttribute("href", "/marketing/campaigns/erp-benchmark")
   })
 })

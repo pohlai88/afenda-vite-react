@@ -13,7 +13,7 @@ import {
   DropdownMenuSubTrigger,
 } from "@afenda/design-system/ui-primitives"
 
-import { useShellDensity } from "../../theme/use-shell-density"
+import { useShellDensity } from "../../theme"
 
 const noopSubscribe = () => () => {}
 

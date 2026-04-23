@@ -18,7 +18,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint . --cache --cache-location .artifacts/eslint --concurrency auto",
     "test": "vitest --configLoader bundle",
     "test:run": "vitest run --configLoader bundle"
   },
@@ -29,6 +29,7 @@
     "@afenda/pino-logger": "workspace:*",
     "@hono/node-server": "^1.14.1",
     "@hono/zod-validator": "^0.7.6",
+    "drizzle-orm": "catalog:",
     "hono": "^4.7.4",
     "zod": "catalog:"
   },

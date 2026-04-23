@@ -8,11 +8,15 @@
  * Studio snapshots & glossary JSON describe intent; runtime truth is PostgreSQL plus migration history.
  * Envelope timestamp: 2026-04-18T12:00:00.000Z
  *
- * This module: `src/schema/governance/index.ts` — barrel: governance DDL, 7W1H audit enums/logs/boundary, data sources, Zod governance boundary.
+ * This module: `src/schema/governance/index.ts` — barrel: governance DDL, 7W1H audit enums/logs/boundary, business truth records, data sources, Zod governance boundary.
+ * `audit_logs` is platform/user/activity audit; `truth_records` is immutable business mutation truth.
  */
 export * from "./_schema"
 export * from "../../7w1h-audit/audit-enums.schema"
 export * from "../../7w1h-audit/audit-logs.schema"
 export * from "../../7w1h-audit/seven-w1h-audit-boundary.schema"
-export * from "./data-sources.schema"
+export * from "./governance-data-sources.schema"
 export * from "./governance-boundary.schema"
+export * from "./ops-events.schema"
+export * from "./ops-partners.schema"
+export * from "./truth-records.schema"

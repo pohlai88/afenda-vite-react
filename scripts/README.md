@@ -3,37 +3,66 @@
 
 # Scripts
 
+> Generated from: `scripts/generate-docs-readme.ts`, `scripts/*.ts`, `scripts/afenda.config.json`
+> Regenerate with: `pnpm run script:generate-docs-readme`
+> Truth class: `derived`
+> Do not edit directly.
+
 This directory contains small Node/TypeScript CLI utilities and script-local metadata used for repository maintenance and automation in afenda-monorepo.
 
 Run scripts from the repository root with `pnpm` so they use the workspace toolchain and `tsx` configuration.
 
 Layout and contribution rules (flat vs one subdirectory) live in [`RULES.md`](./RULES.md).
 
-| Script                                            | Run                                    | Purpose                                                                                                                   |
-| ------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| [Check Afenda config](./check-afenda-config.ts)   | `pnpm run script:check-afenda-config`  | Validates the Afenda workspace manifest, path drift, package manager alignment, and internal package scope usage.         |
-| [Generate docs README](./generate-docs-readme.ts) | `pnpm run script:generate-docs-readme` | Generates stable `README.md` indexes for `docs/`, `scripts/`, and other readmeTargets configured in `afenda.config.json`. |
-| [Node info](./node-info.ts)                       | `pnpm run script:node-info`            | Example TypeScript CLI script — run with pnpm run script:node-info.                                                       |
+## Start here
+
+- Governance work: start with `script:check-governance`, then inspect the narrower registry, binding, or waiver scripts only if that aggregate flow fails.
+- Docs navigation work: start with `script:generate-docs-readme` because the generated indexes and operating map are derived from this generator.
+- Workspace topology drift: start with `script:check-afenda-config` before editing package layout rules.
+
+| Script                                                              | Run                                             | Failure impact                                   | Primary output                                                                                                                     | Purpose                                                                                                                          |
+| ------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| [Check Afenda config](./check-afenda-config.ts)                     | `pnpm run script:check-afenda-config`           | Blocks `GOV-FS-002`                              | Validation for `.artifacts/reports/governance/workspace-topology.report.json`                                                      | Validates the Afenda workspace manifest, path drift, package manager alignment, and internal package scope usage.                |
+| [Check architecture contracts](./check-architecture-contracts.ts)   | `pnpm run script:check-architecture-contracts`  | Warns `GOV-ARCH-001`                             | Validation for `.artifacts/reports/governance/architecture-contracts.report.json`                                                  | Validates ATC files, ADR-to-ATC linkage, and the minimum enforceable contract fields for architecture contracts.                 |
+| [Check documentation governance](./check-doc-governance.ts)         | `pnpm run script:check-doc-governance`          | Warns `GOV-DOC-001`                              | Validation for `.artifacts/reports/governance/documentation-integrity.report.json`                                                 | Checks governance doctrine files, glossary terms, and the ADR/ATC template contract expected by the repo-local governance spine. |
+| [Check governance bindings](./check-governance-bindings.ts)         | `pnpm run script:check-governance-bindings`     | Blocks CI via `GOV-CI-GATE-B`                    | Validation or orchestration output                                                                                                 | Verifies governance registry links resolve to real docs, configs, scripts, and package.json commands.                            |
+| [Check governance registry](./check-governance-registry.ts)         | `pnpm run script:check-governance-registry`     | Blocks CI via `GOV-CI-GATE-A`                    | Validation or orchestration output                                                                                                 | Validates governance ids, lifecycle semantics, maturity rules, tiers, and evidence-path declarations in afenda.config.           |
+| [Check governance waivers](./check-governance-waivers.ts)           | `pnpm run script:check-governance-waivers`      | Blocks CI when waiver policy is invalid          | `.artifacts/reports/governance/waivers.report.json`                                                                                | Validates waiver ownership, expiry, target ids, and emits the waiver evidence report under .artifacts.                           |
+| [Generate docs README](./generate-docs-readme.ts)                   | `pnpm run script:generate-docs-readme`          | Generated docs only                              | `README.md` indexes under configured targets plus `docs/OPERATING_MAP.md`                                                          | Generates stable `README.md` indexes for `docs/`, `scripts/`, and other readmeTargets configured in `afenda.config.json`.        |
+| [Generate governance register](./generate-governance-register.ts)   | `pnpm run script:generate-governance-register`  | Blocks CI when the register is out of sync       | `docs/architecture/governance/generated/governance-register.md`, `.artifacts/reports/governance/governance-register.snapshot.json` | Builds the generated governance register doc and snapshot from afenda.config and the latest aggregate governance evidence.       |
+| [Generate governance report](./generate-governance-report.ts)       | `pnpm run script:generate-governance-report`    | Blocks CI when governance evidence is incomplete | `.artifacts/reports/governance/governance-core.report.json`, `.artifacts/reports/governance/governance-summary.report.json`        | Aggregates domain evidence and waiver evidence into repo-level governance core and summary reports.                              |
+| [Generate file survival report](./generate-file-survival-report.ts) | `pnpm run script:generate-file-survival-report` | Local utility or support command                 | Validation only                                                                                                                    | Generates report-first file-survival governance audits for configured rollout scopes under `.artifacts/reports/file-survival/`.  |
+| [Run governance checks](./run-governance-checks.ts)                 | `pnpm run script:run-governance-checks`         | Blocks CI via `GOV-CI-GATE-C`                    | Validation or orchestration output                                                                                                 | Executes the registered governance domain checks, emits per-domain evidence, and applies block vs warn behavior by domain tier.  |
+| [Inspect node runtime](./inspect-node-runtime.ts)                   | `pnpm run script:inspect-node-runtime`          | Local utility or support command                 | Validation only                                                                                                                    | Example TypeScript CLI script — run with pnpm run script:inspect-node-runtime.                                                   |
+| [Check File Survival.ts](./check-file-survival.ts)                  | `pnpm run script:check-file-survival`           | Local utility or support command                 | Validation only                                                                                                                    | Check file-survival governance rollouts for policy-blocking findings.                                                            |
+
+## If governance CI fails
+
+- Start with `pnpm run script:check-governance` so registry, bindings, domain checks, evidence generation, and register sync are evaluated in CI order.
+- Read [Operating map](../docs/OPERATING_MAP.md) and the generated governance register before changing individual script semantics.
+- When a script emits evidence, treat the `.artifacts/reports/governance/**` output as part of the fix, not as optional byproduct.
 
 ## Support files
 
-| File                                                       | Purpose                                                                                  |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [`afenda.config.json`](./afenda.config.json)               | Verified workspace manifest for Afenda identity, key paths, and workspace defaults.      |
-| [`afenda.config.schema.json`](./afenda.config.schema.json) | JSON Schema for the Afenda workspace manifest.                                           |
-| [`tsconfig.json`](./tsconfig.json)                         | Type-check configuration for this directory's Node scripts.                              |
-| [`RULES.md`](./RULES.md)                                   | Authoritative layout, naming, and flat vs one-level-nested folder policy for `scripts/`. |
+| File                                                       | Purpose                                                                                                  |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| [`afenda.config.json`](./afenda.config.json)               | Verified workspace manifest for Afenda identity, key paths, workspace defaults, and governance bindings. |
+| [`afenda.config.schema.json`](./afenda.config.schema.json) | JSON Schema for the Afenda workspace manifest.                                                           |
+| [`tsconfig.json`](./tsconfig.json)                         | Type-check configuration for this directory's Node scripts.                                              |
+| [`RULES.md`](./RULES.md)                                   | Authoritative layout, naming, and flat vs one-level-nested folder policy for `scripts/`.                 |
 
 ## Governed README targets
 
-| Path                    | Mode                       | Notes                                                                                      |
-| ----------------------- | -------------------------- | ------------------------------------------------------------------------------------------ |
-| `docs`                  | `docs-root`                | Generate the top-level documentation index for repo-wide guides.                           |
-| `docs`                  | `docs-collections`         | Generate README indexes for governed documentation subdirectories.                         |
-| `scripts`               | `scripts`                  | Generate the scripts directory index and support-file summary.                             |
-| `.agents/skills/shadcn` | `generic-formal-directory` | Generate an index for the in-repo shadcn skill guidance and companion markdown references. |
+| Path                    | Mode                       | Notes                                                                                                                |
+| ----------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `docs`                  | `docs-root`                | Generate the top-level documentation index for repo-wide guides.                                                     |
+| `docs`                  | `docs-collections`         | Generate README indexes for governed documentation subdirectories.                                                   |
+| `scripts`               | `scripts`                  | Generate the scripts directory index and support-file summary.                                                       |
+| `rules`                 | `generic-formal-directory` | Generate an index for durable repository governance rules, machine-readable policy, and refactor planning artifacts. |
+| `.agents/skills/shadcn` | `generic-formal-directory` | Generate an index for the in-repo shadcn skill guidance and companion markdown references.                           |
 
 ## Related
 
 - [Root README](../README.md) - Repository overview and top-level workflows.
+- [Operating map](../docs/OPERATING_MAP.md) - Canonical docs, generated surfaces, CI routes, and evidence map.
 - [Package manifest](../package.json) - Root scripts and shared dev tooling.

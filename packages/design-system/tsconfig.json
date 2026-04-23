@@ -2,6 +2,7 @@
   "extends": "../typescript-config/react-library.json",
   "compilerOptions": {
     "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "baseUrl": ".",
     "resolveJsonModule": true,
     "paths": {

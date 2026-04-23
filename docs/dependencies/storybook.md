@@ -1,3 +1,12 @@
+---
+owner: governance-toolchain
+truthStatus: supporting
+docClass: supporting-doc
+relatedDomain: dependency-guide
+category: web-client-planned
+status: Planned
+---
+
 # Storybook guide (Afenda)
 
 This document describes **planned** **[Storybook](https://storybook.js.org/)** for **`apps/web`**: a **frontend workshop** to build UI in isolation (dense ERP tables, filters, layouts), share **documentation**, and optionally run **interaction tests** and **visual regression** (e.g. **Chromatic**), using the same **React + Vite** stack as production.
@@ -21,23 +30,23 @@ Use **`@storybook/react-vite`** for **`apps/web`** (not **`@storybook/nextjs`**)
 
 ## Adoption checklist (when we install)
 
-| Step | Notes |
-| --- | --- |
-| **1. Init** | From repo root, prefer **`pnpm`**-aware init or add deps with **`pnpm add -D … --filter @afenda/web`** after reviewing [install](https://storybook.js.org/docs/get-started/install). |
-| **2. Framework** | Set **`framework: '@storybook/react-vite'`** and **`StorybookConfig`** from **`@storybook/react-vite`** ([framework doc](https://storybook.js.org/docs/get-started/frameworks/react-vite)). |
-| **3. Align Vite** | Reuse or **mirror** important **`vite.config`** concerns (aliases, env, CSS pipeline) so stories match production ([Vite](./vite.md)). |
+| Step                | Notes                                                                                                                                                                                                                                |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1. Init**         | From repo root, prefer **`pnpm`**-aware init or add deps with **`pnpm add -D … --filter @afenda/web`** after reviewing [install](https://storybook.js.org/docs/get-started/install).                                                 |
+| **2. Framework**    | Set **`framework: '@storybook/react-vite'`** and **`StorybookConfig`** from **`@storybook/react-vite`** ([framework doc](https://storybook.js.org/docs/get-started/frameworks/react-vite)).                                          |
+| **3. Align Vite**   | Reuse or **mirror** important **`vite.config`** concerns (aliases, env, CSS pipeline) so stories match production ([Vite](./vite.md)).                                                                                               |
 | **4. Upgrade path** | Later bumps: **`pnpm dlx storybook@latest upgrade`** (or **`npx`**); mono-repos are auto-detected ([upgrading](https://storybook.js.org/docs/configure/upgrading)). Use **`storybook doctor`** if something looks off after upgrade. |
 
 ---
 
 ## How we will use Storybook
 
-| Topic | Convention |
-| --- | --- |
-| **Colocation** | **`*.stories.tsx`** next to components **or** **`__stories__/`** — pick **one** pattern per feature ([Components and styling](../COMPONENTS_AND_STYLING.md)). |
-| **Data** | Fixtures or [MSW](./msw.md); **never** production APIs. |
-| **CSS** | Match **`apps/web`** global CSS; when [Tailwind v4](./tailwind-v4.md) / [shadcn/ui](./shadcn-ui.md) land, keep **preview** styles in sync with the app. |
-| **Tests** | Prefer **Vitest** + **`composeStories`** for story-based tests where it helps ([Testing](../TESTING.md), [Vitest](./vitest.md)); optional **addon-vitest** / browser mode when the team wants it. |
+| Topic          | Convention                                                                                                                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Colocation** | **`*.stories.tsx`** next to components **or** **`__stories__/`** — pick **one** pattern per feature ([Components and styling](../COMPONENTS_AND_STYLING.md)).                                     |
+| **Data**       | Fixtures or [MSW](./msw.md); **never** production APIs.                                                                                                                                           |
+| **CSS**        | Match **`apps/web`** global CSS; when [Tailwind v4](./tailwind-v4.md) / [shadcn/ui](./shadcn-ui.md) land, keep **preview** styles in sync with the app.                                           |
+| **Tests**      | Prefer **Vitest** + **`composeStories`** for story-based tests where it helps ([Testing](../TESTING.md), [Vitest](./vitest.md)); optional **addon-vitest** / browser mode when the team wants it. |
 
 ---
 

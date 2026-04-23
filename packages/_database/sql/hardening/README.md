@@ -20,7 +20,7 @@ This migration should be **reviewable as the logical data model**, without trigg
 
 ### Migration 0002 — Enterprise hardening (this folder)
 
-Hand-authored **`patch_*.sql`** files (listed below). **Filename letters (a–l) sort alphabetically in the tree, but apply order is not strict A→Z:** `patch_c` is intentionally run **after** partial-unique patches `d`–`g` (see table + `scripts/hardening-patch-order.ts`). Drift is caught by `tsx scripts/verify-hardening-patches.ts` and `src/__tests__/hardening-patches.test.ts`.
+Hand-authored **`patch_*.sql`** files (listed below). **Filename letters (a–l) sort alphabetically in the tree, but apply order is not strict A→Z:** `patch_c` is intentionally run **after** partial-unique patches `d`–`g` (see table + `scripts/verify-hardening-patch-order.ts`). Drift is caught by `tsx scripts/verify-hardening-patches.ts` and `src/__tests__/hardening-patches.test.ts`.
 
 | Concern                                                                                                     | Patch files                                                                                                                                                     |
 | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -35,12 +35,14 @@ Hand-authored **`patch_*.sql`** files (listed below). **Filename letters (a–l)
 | Row-level security (optional; enable when `app.tenant_id` is always set)                                    | `patch_l_row_level_security.sql`                                                                                                                                |
 | Role assignment `scope_id` → MDM entity (tenant / LE / BU / location)                                       | `patch_m_tenant_role_assignment_scope.sql`                                                                                                                      |
 | Temporal overlap wave (role assignments unified EXCLUDE, fiscal periods, item `effective_range` idempotent) | `patch_n_temporal_overlap_wave.sql`                                                                                                                             |
+| Truth spine immutability (`governance.truth_records` append-only trigger)                                   | `patch_o_truth_records_append_only.sql`                                                                                                                         |
 
-**Apply order (canonical list in `scripts/hardening-patch-order.ts`):** `patch_a` → `patch_b` → `patch_d` → `patch_e` → `patch_f` → `patch_g` → `patch_c` → `patch_h` → `patch_i` → `patch_j` → `patch_k` → `patch_l` → `patch_m` → `patch_n`.
+**Apply order (canonical list in `scripts/verify-hardening-patch-order.ts`):** `patch_a` → `patch_b` → `patch_d` → `patch_e` → `patch_f` → `patch_g` → `patch_c` → `patch_h` → `patch_i` → `patch_j` → `patch_k` → `patch_l` → `patch_m` → `patch_n` → `patch_o`.
 
 - **`patch_c`** runs after partial uniques; it still creates `pg_trgm` idempotently before GIN/trigram indexes.
 - **`patch_h`** creates `btree_gist` and temporal `EXCLUDE` constraints.
 - **`patch_f` / `patch_g` / parts of `patch_h` / `patch_c`** use `IF EXISTS` / `DO` blocks when a table is not in baseline yet.
+- **`patch_o`** makes `governance.truth_records` database-enforced append-only so business truth cannot be mutated after insert.
 
 **Naming note:** the generated search column on `mdm.parties` is **`canonical_name_normalized`** (see `patch_b`), aligned with Drizzle — not a separate `*_generated` column name.
 
@@ -62,7 +64,7 @@ Use this checklist so **migration 0001** and **hardening** never fight each othe
 
 ## Applying
 
-Run each `patch_*.sql` in the **order** in `scripts/hardening-patch-order.ts` (not alphabetical by letter alone), via `psql`, your migration runner, or a concatenated migration under `packages/_database/drizzle/` (per your repo’s migration discipline).
+Run each `patch_*.sql` in the **order** in `scripts/verify-hardening-patch-order.ts` (not alphabetical by letter alone), via `psql`, your migration runner, or a concatenated migration under `packages/_database/drizzle/` (per your repo’s migration discipline).
 
 `drizzle-kit push` does not apply ad-hoc files under `sql/hardening/` automatically—they are **explicit** follow-up migrations.
 

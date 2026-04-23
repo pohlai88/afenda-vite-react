@@ -1,0 +1,42 @@
+# Repo Closure Slice Register
+
+This register bounds the active repo-closure slices so cleanup stays reviewable and rollback remains understandable.
+
+## Active Slices
+
+| Slice                                    | Scope                                                                                                                  | Owner lane               | Must not mix with                                                        | Status                    |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------ | ------------------------- |
+| `wave-a-red-gates`                       | root lint, web test runtime blockers, runtime i18n validator                                                           | governance + web runtime | broad deletion, archive moves, naming waves                              | closed                    |
+| `wave-b-reviewed-survival`               | file-survival reviewed-exception marker, ledger, expiry validation                                                     | governance               | feature work, archive expansion, canonical policy changes                | active                    |
+| `wave-b5-worktree-stabilization`         | slice ownership notes and bounded cleanup lanes                                                                        | governance               | repo-wide delete or move work before boundaries are declared             | closed                    |
+| `wave-c1-docs-idea-retirement`           | retire `docs/__idea__`, archive historical idea docs, add minimum doc metadata contract                                | docs/governance          | repo-wide doc cleanup, runtime or API work, performance restructuring    | closed                    |
+| `wave-c2-docs-metadata-adoption`         | adopt owner/truth-status/doc-class metadata across active docs and make docs generation require it                     | docs/governance          | runtime cleanup, package cleanup, performance work, non-doc archive work | closed                    |
+| `wave-c3-docs-truth-consolidation`       | remove superseded root docs, archive historical shell doc stubs, and narrow the active docs index                      | docs/governance          | runtime cleanup, package cleanup, performance work, non-doc archive work | closed                    |
+| `wave-c4-docs-supporting-cluster-review` | move the Vite implementation pack into a dedicated docs collection and narrow supporting docs against canonical policy | docs/governance          | runtime cleanup, package cleanup, performance work, non-doc archive work | closed                    |
+| `wave-c5-root-supporting-doc-retirement` | retire the last root supporting doc from active docs and leave the root docs surface canonical-only                    | docs/governance          | runtime cleanup, package cleanup, performance work, non-doc archive work | closed                    |
+| `wave-c6-marketing-legacy-topology-retirement` | validate and close the retirement of legacy marketing `_components`, flat page files, and in-source prompt artifacts | marketing                | docs-policy cleanup, runtime shell cleanup, package cleanup, performance work | closed                 |
+| `wave-c7-shell-route-handle-path-retirement` | retire the deleted `types/shell-route-handle.ts` path from shell contract/docs and point all truth surfaces at `shell-route-handle.ts` | web runtime              | broader shell refactors, docs-policy cleanup, package cleanup, performance work | closed |
+| `wave-c8-shell-public-surface-truth-alignment` | retire fake shell breadcrumb/header surface names and align shell, route, and app-shell docs with `ShellTopNav`, `ShellTopNavBreadcrumbs`, and `shell-route-surface.ts` | web runtime | broader shell refactors, docs-policy cleanup, package cleanup, performance work | closed |
+| `wave-c9-shell-header-actions-hook-retirement` | retire the dead internal `useShellHeaderActions` hook and align shell docs with the actual header-action runtime path | web runtime | broader shell refactors, docs-policy cleanup, package cleanup, performance work | closed |
+| `wave-gt1-shell-governance-surface-rationalization` | retire `shell-governance-surface.ts` as a duplicate policy alias and make `shell-validation-surface.ts` the sole curated validation/reporting surface | governance-toolchain | runtime shell cleanup, route changes, chunk work, non-governance docs-policy cleanup | closed |
+| `wave-dt1-package-modules-smoke-hardening` | harden the database package coverage-load smoke test so aggregated Turbo/Vitest workload no longer times out and root green-state can be re-established | database-truth | schema/product changes, query behavior changes, docs-policy cleanup, performance-wave work | closed |
+| `wave-d-marketing-canonical`             | public marketing alias/canonical policy and route intent                                                               | marketing                | unrelated runtime cleanup                                                | closed                    |
+| `wave-d-web-chunk-treatment`             | route/domain bundle treatment matrix for heavy web surfaces                                                            | web platform             | unrelated repo-wide refactors                                            | closed_with_followup_debt |
+
+## Bounded Cleanup Lanes
+
+| Lane                   | Primary scope                                                            | Owner lane      | Notes                                                                    |
+| ---------------------- | ------------------------------------------------------------------------ | --------------- | ------------------------------------------------------------------------ |
+| `governance-toolchain` | root config, CI, `scripts/`, workspace policy wiring                     | governance      | includes root gate wiring and repo-level tooling contracts               |
+| `web-runtime-shell`    | `apps/web/src/app`, `apps/web/vite.config.ts`, `packages/vitest-config`  | web runtime     | authenticated runtime, shell, auth, app-surface, and test-runtime wiring |
+| `marketing-public`     | `apps/web/src/marketing`, marketing route tests, marketing contract docs | marketing       | public editorial and campaign surfaces only                              |
+| `api-ops-auth`         | `apps/api`, `packages/better-auth`, `packages/contracts`                 | api             | server routes, auth server runtime, operational endpoints                |
+| `database-truth`       | `packages/_database`                                                     | database        | schema, queries, truth records, and live-db hardening                    |
+| `docs-policy`          | `docs/`, `rules/`                                                        | docs/governance | durable policy, closure records, and source-of-truth docs                |
+
+## Current Working Rule
+
+- Do not introduce new cleanup sprawl while Wave B remains active.
+- Wave A, Wave B.5, and the current Wave D evidence slices are closed.
+- Broad delete or quarantine work must now name its target lane(s) explicitly.
+- Record new closure slices here before they span multiple domains.

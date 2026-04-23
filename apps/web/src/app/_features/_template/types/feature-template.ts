@@ -6,7 +6,11 @@ export const featureTemplateStatuses = [
 
 export type FeatureTemplateStatus = (typeof featureTemplateStatuses)[number]
 
-export const featureTemplateSlugs = ["events", "audit", "partners"] as const
+export const featureTemplateSlugs = [
+  "events",
+  "audit",
+  "counterparties",
+] as const
 
 export type FeatureTemplateSlug = (typeof featureTemplateSlugs)[number]
 

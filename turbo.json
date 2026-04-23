@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "cacheDir": ".artifacts/cache/turbo",
   "ui": "tui",
   "globalDependencies": [
     "pnpm-workspace.yaml",
@@ -68,7 +69,7 @@
     },
     "test:coverage": {
       "dependsOn": ["^transit"],
-      "outputs": ["coverage/**", ".artifacts/vitest/coverage/**"],
+      "outputs": [".artifacts/vitest/coverage/**"],
       "env": ["NODE_ENV", "VITE_*"],
       "passThroughEnv": ["VITEST_*"]
     },

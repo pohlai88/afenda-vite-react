@@ -11,7 +11,7 @@ import {
   DropdownMenuSubTrigger,
 } from "@afenda/design-system/ui-primitives"
 
-import { useShellMotion } from "../../theme/use-shell-motion"
+import { useShellMotion } from "../../theme"
 
 export function ShellUserMenuAccessibility() {
   const { t } = useTranslation("shell")

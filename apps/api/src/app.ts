@@ -22,7 +22,10 @@ import { onError, onNotFound } from "./middleware/error-handler.js"
 import { requestContextMiddleware } from "./middleware/request-context.js"
 import { authCompanionRoutes } from "./routes/auth-companion-routes.js"
 import { betterAuthRoutes } from "./routes/better-auth-routes.js"
+import { commandsRoutes } from "./routes/commands.js"
 import { healthRoutes } from "./routes/health.js"
+import { meRoutes } from "./routes/me.js"
+import { operationsRoutes } from "./routes/operations.js"
 import { userRoutes } from "./routes/users.js"
 
 export type { ApiEnv, AppVariables } from "./contract/request-context.js"
@@ -79,6 +82,9 @@ export function createApp() {
   app.route("/health", healthRoutes)
   app.route("/api/auth", betterAuthRoutes)
   app.route("/api/v1/auth", authCompanionRoutes)
+  app.route("/api/v1/commands", commandsRoutes)
+  app.route("/api/v1/me", meRoutes)
+  app.route("/api/v1/ops", operationsRoutes)
   app.route("/api/users", userRoutes)
 
   return app

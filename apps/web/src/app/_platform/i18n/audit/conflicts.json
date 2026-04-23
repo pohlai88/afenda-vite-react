@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-04-21T18:00:57.208Z",
+  "generatedAt": "2026-04-23T04:39:16.473Z",
   "items": [
     {
       "afendaKey": "allocation.error.over_allocated.message",
@@ -684,6 +684,41 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Resume Existing Workspace",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.tenant_selector_action",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Use This Access Context",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.tenant_selector_default",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Recommended default access context",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.tenant_selector_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "This account can enter more than one active workspace. Select the tenant context to continue.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.tenant_selector_loading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Loading workspace access…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "auth.experience.setup.workspace.tenant_selector_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Choose Active Workspace Access",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -2049,6 +2084,13 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.breadcrumb.counterparties",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Counterparties",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.breadcrumb.db_studio",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -2074,13 +2116,6 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Organization",
-      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
-    },
-    {
-      "afendaKey": "shell.breadcrumb.partners",
-      "status": "accepted",
-      "resolutionSource": "non_glossary",
-      "tolgeeCandidate": "Partner integrations",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -2476,10 +2511,10 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
-      "afendaKey": "shell.context_bar.events.actions.menu.partners",
+      "afendaKey": "shell.context_bar.events.actions.menu.counterparties",
       "status": "accepted",
       "resolutionSource": "non_glossary",
-      "tolgeeCandidate": "Open partner integrations",
+      "tolgeeCandidate": "Open operational counterparties",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -2518,17 +2553,17 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.context_bar.events.tabs.counterparties",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Counterparties",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.context_bar.events.tabs.overview",
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Overview",
-      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
-    },
-    {
-      "afendaKey": "shell.context_bar.events.tabs.partners",
-      "status": "accepted",
-      "resolutionSource": "non_glossary",
-      "tolgeeCandidate": "Partners",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -2896,6 +2931,48 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.demo_users.create_user",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Create user",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.demo_users.description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Typed Vite frontend consuming shared contract packages.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.demo_users.email_placeholder",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Email",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.demo_users.loading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Loading…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.demo_users.name_placeholder",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Name",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.demo_users.title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Users",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.erp_module.customers.page.description",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -3075,6 +3152,272 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "404 — Page not found",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.active_coordination_events",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Active coordination events",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.advance_stage",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Advance stage",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.advancing",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Advancing...",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.already_closed",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Already closed",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.audit_trail_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Audit trail",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.claim_event",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Claim event",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.claiming",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Claiming...",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.counterparty_context",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Counterparty context",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.counterparty_roster",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Counterparty roster",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.counterparty_surface_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Track which outside parties are affecting active event flow, and keep their operational health visible beside the queue.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.counterparty_surface_kicker",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Counterparty roster",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.counterparty_surface_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Operational counterparties",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.needs_owner",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Needs owner",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.no_active_counterparty_escalations",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No active counterparty escalations.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.no_audit_evidence",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No audit evidence has been recorded for this event yet.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.no_counterparties_linked",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No counterparties are linked to this workspace yet.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.no_counterparty_dependency",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "This event does not currently depend on an outside counterparty.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.no_truth_records_tenant",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No truth records have been appended for this tenant yet.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.no_truth_records_workspace",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No truth records have been appended for this workspace yet.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.owner_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Owner",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.owner_value",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Owner: {{owner}}",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.progress_aria",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "{{eventCode}} progress",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.queue_empty",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "No events are in the queue yet. When the first operational record is created, it will appear here with its accountable state trail.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.queue_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Priority queue",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.reassign_to_me",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Reassign to me",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.recent_proof_trail",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Recent proof trail",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.response_window_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Response window",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.retry_surface",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Retry surface",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.source_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Source",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.stage_label",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Stage",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.surface_description",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Keep queue ownership, counterparty dependency, and audit evidence visible while the event is still moving.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.surface_kicker",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Events workspace",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.surface_title",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Events operations",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.truth_proof_1",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Every audit row comes directly from persisted truth records, not a workspace snapshot.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.truth_proof_2",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "This keeps mutation evidence tenant-scoped, ordered, and permission-gated without depending on dashboard preload.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.truth_proof_3",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Auditability is a truth-read surface, not workspace residue.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.unassigned",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Unassigned",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.events_workspace.what_this_proves",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "What this proves",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -3746,7 +4089,7 @@
       "afendaKey": "shell.marketing.landing.subtitle",
       "status": "accepted",
       "resolutionSource": "non_glossary",
-      "tolgeeCandidate": "Run finance, events, and partner workflows from one tenant-aware workspace—built for operators who need clarity at scale.",
+      "tolgeeCandidate": "Run finance, events, and counterparty workflows from one tenant-aware workspace—built for operators who need clarity at scale.",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -4264,7 +4607,7 @@
       "afendaKey": "shell.marketing.token_playground.sample_table_row2",
       "status": "accepted",
       "resolutionSource": "non_glossary",
-      "tolgeeCandidate": "Partner webhook",
+      "tolgeeCandidate": "Counterparty webhook",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -4569,6 +4912,13 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.nav.items.counterparties",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Counterparties",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.nav.items.db_studio",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -4608,13 +4958,6 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "My-Team",
-      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
-    },
-    {
-      "afendaKey": "shell.nav.items.partners",
-      "status": "accepted",
-      "resolutionSource": "non_glossary",
-      "tolgeeCandidate": "Partner integrations",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -4702,6 +5045,20 @@
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
+      "afendaKey": "shell.nav.sub.counterparties.dependencies",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Dependencies",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.nav.sub.counterparties.escalations",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Escalations",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
       "afendaKey": "shell.nav.sub.events.activity",
       "status": "accepted",
       "resolutionSource": "non_glossary",
@@ -4713,20 +5070,6 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Overview",
-      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
-    },
-    {
-      "afendaKey": "shell.nav.sub.partners.integrations",
-      "status": "accepted",
-      "resolutionSource": "non_glossary",
-      "tolgeeCandidate": "Integrations",
-      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
-    },
-    {
-      "afendaKey": "shell.nav.sub.partners.webhooks",
-      "status": "accepted",
-      "resolutionSource": "non_glossary",
-      "tolgeeCandidate": "Webhooks",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -4831,7 +5174,7 @@
       "afendaKey": "shell.nav.workspace.partner_integrations",
       "status": "accepted",
       "resolutionSource": "non_glossary",
-      "tolgeeCandidate": "Partner integrations",
+      "tolgeeCandidate": "Operational counterparties",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {
@@ -5595,6 +5938,55 @@
       "status": "accepted",
       "resolutionSource": "non_glossary",
       "tolgeeCandidate": "Read-only preview",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.tenant_indicator_prefix",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Tenant",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.tenant_switcher_aria",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Switch active workspace",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.tenant_switcher_default",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Default",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.tenant_switcher_load_error",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not load workspace choices.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.tenant_switcher_loading",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Loading workspaces…",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.tenant_switcher_switch_error",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Could not switch workspace access.",
+      "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
+    },
+    {
+      "afendaKey": "shell.top_nav.tenant_switcher_switching",
+      "status": "accepted",
+      "resolutionSource": "non_glossary",
+      "tolgeeCandidate": "Switching…",
       "notes": "Corpus key is outside glossary-authority scope; tracked as non-glossary."
     },
     {

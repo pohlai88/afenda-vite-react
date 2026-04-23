@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import { beforeAll, describe, expect, it } from "vitest"
 
-import ErpBenchmarkCampaignPage from "../pages/campaigns/erp-benchmark-page"
+import ErpBenchmarkCampaignPage from "../pages/campaigns/erp-benchmark/erp-benchmark-page"
 
 beforeAll(() => {
   class MockIntersectionObserver implements IntersectionObserver {
@@ -35,7 +35,7 @@ describe("ErpBenchmarkCampaignPage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /Compare the ERP benchmark without losing the Afenda point of view\./i,
+        name: /Use the benchmark names\. Refuse their blind spots\./i,
       })
     ).toBeInTheDocument()
 

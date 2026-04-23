@@ -18,7 +18,7 @@ import {
   pgTableDataColumnKeys,
   readDrizzlePgViewMeta,
   readDrizzlePgViewSelectedFieldKeys,
-} from "./drizzle-view-test-utils"
+} from "./drizzle-view-testing-utils"
 import {
   MDM_PG_SCHEMA,
   PG_VIEW_NAME_BY_EXPORT,

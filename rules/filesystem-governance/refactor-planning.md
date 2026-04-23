@@ -20,17 +20,20 @@ This plan is intentionally repo-shaped. It is not a generic cleanup list.
 Completed in the first governed rollout:
 
 - filesystem governance policy, config, checker, and screening generator exist under `rules/` and `scripts/`
+- `scripts/afenda.config.json` now governs workspace package roots through explicit package-root profiles, separate from source-root path governance
 - `apps/web/src/marketing/pages` is under active governance
 - `apps/web/src/app/_features` is under active governance
 - `apps/web/src/app/_platform` is under active governance
 - `apps/web/src/share`, `apps/web/src/routes`, and `apps/web/src/rpc` are under active governance
 - `apps/api/src/modules`, `routes`, `middleware`, `contract`, and `lib` are under active governance
+- package source governance now extends beyond utility roots into design-system hooks/icons/ui-primitives and database audit/migration/relation/studio/view layers
 - the flagship marketing page has been normalized from generic page-local names into page-owned names
 - the first web `utils/` cleanup wave is complete for current governed roots
 
 Validation baseline:
 
 - `pnpm run script:check-filesystem-governance`
+- `pnpm run script:check-afenda-config`
 - `pnpm run script:generate-filesystem-governance-report`
 - `pnpm --filter @afenda/web typecheck`
 
@@ -106,10 +109,11 @@ Decision rule:
 
 - if a package directory exports a real public contract, it may stay promoted
 - if a local helper directory only supports one internal area, rename it to its responsibility or fold it into the owner
+- package roots themselves must match declared root profiles so docs, scripts, dist artifacts, and config files do not become a new unguided dumping layer
 
 ### Wave 5: Import Boundary Enforcement
 
-Status: planned
+Status: active
 
 Targets:
 
@@ -120,6 +124,35 @@ Targets:
 Suggested tool path:
 
 - ESLint boundaries or `no-restricted-imports`
+
+Current baseline:
+
+- repository lint policy now blocks relative reach-ins across workspace roots such as `../packages/*`
+- repository lint policy now blocks package-internal path reach-ins such as `@afenda/*/src/*`
+- repository lint policy now blocks feature-to-feature deep imports such as `@/app/_features/<feature>/<internal>`
+- repository lint policy now blocks `_platform` cross-domain internal reach-ins such as `../auth/services/*` from sibling platform domains
+- repository lint policy now blocks non-platform app code from deep-importing `_platform` internals such as `@/app/_platform/auth/services/*`
+- shell route composition now uses an explicit secondary public surface instead of the broad shell root entrypoint
+- shell now exposes explicit secondary public surfaces for route, layout, command, validation, and governance concerns
+- web route files are expected to consume `_features` and `_platform` entrypoints instead of internal files
+- API route files are expected to consume `modules/*/index.ts` entrypoints instead of internal service files
+
+### Wave 6: Generated Artifact Governance
+
+Status: active
+
+Targets:
+
+- govern machine-owned JSON/CSS artifact roots separately from source-root naming policy
+- keep generated package outputs explicit instead of ignoring them by convention
+- validate extension, exact relative-path, and companion-file constraints on generated artifact directories
+
+Current baseline:
+
+- generated artifact governance now covers `packages/design-system/generated`
+- generated artifact governance now covers `packages/design-system/design-architecture/src`
+- generated artifact governance can now require exact allowlisted filenames and schema companions where generated outputs are expected to remain deterministic
+- generated artifact governance now supports mixed-authoring parent declarations so package-level source areas cannot be widened into generated policy accidentally
 
 ### Wave 6: Root Topology and Archive Hygiene
 

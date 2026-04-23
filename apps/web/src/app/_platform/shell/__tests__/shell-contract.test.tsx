@@ -1,14 +1,25 @@
 import { act, render, screen } from "@testing-library/react"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
 import { beforeAll, describe, expect, it, vi } from "vitest"
 
 import { MarketingThemeProvider } from "../../../../marketing/marketing-theme-provider"
 import { initI18n } from "../../i18n"
 import { AppThemeProvider } from "../../theme/app-theme-provider"
-import "../types/shell-route-handle"
+import "../shell-route-handle"
 
 import MarketingRandomHome from "../../../../marketing/marketing-random-home"
 import { ShellLeftSidebarLayout } from "../components/shell-left-sidebar-block"
+
+function createTestQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  })
+}
 
 describe("App shell layout contract", () => {
   beforeAll(async () => {
@@ -37,9 +48,11 @@ describe("App shell layout contract", () => {
 
     const { container } = await act(async () =>
       render(
-        <MarketingThemeProvider>
-          <RouterProvider router={router} />
-        </MarketingThemeProvider>
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MarketingThemeProvider>
+            <RouterProvider router={router} />
+          </MarketingThemeProvider>
+        </QueryClientProvider>
       )
     )
 
@@ -105,9 +118,11 @@ describe("App shell layout contract", () => {
 
     const { container } = await act(async () =>
       render(
-        <AppThemeProvider>
-          <RouterProvider router={router} />
-        </AppThemeProvider>
+        <QueryClientProvider client={createTestQueryClient()}>
+          <AppThemeProvider>
+            <RouterProvider router={router} />
+          </AppThemeProvider>
+        </QueryClientProvider>
       )
     )
 
@@ -160,9 +175,11 @@ describe("App shell layout contract", () => {
 
     const { container } = await act(async () =>
       render(
-        <AppThemeProvider>
-          <RouterProvider router={router} />
-        </AppThemeProvider>
+        <QueryClientProvider client={createTestQueryClient()}>
+          <AppThemeProvider>
+            <RouterProvider router={router} />
+          </AppThemeProvider>
+        </QueryClientProvider>
       )
     )
 

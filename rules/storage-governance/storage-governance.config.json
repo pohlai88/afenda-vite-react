@@ -43,6 +43,16 @@
           "name": "apps-api-backup-2026-04-19",
           "kind": "snapshot",
           "description": "Full backup of apps/api taken before scaffold reset work."
+        },
+        {
+          "name": "docs-idea-retired-2026-04-22",
+          "kind": "legacy-reference",
+          "description": "Retired `docs/__idea__/` material preserved outside the active documentation surface during Wave C.1 docs-policy cleanup."
+        },
+        {
+          "name": "docs-superseded-2026-04-23",
+          "kind": "legacy-reference",
+          "description": "Superseded root docs preserved outside the active documentation surface during Wave C.3 duplicate-truth consolidation."
         }
       ]
     }

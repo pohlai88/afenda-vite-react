@@ -19,6 +19,7 @@ export { RequireAuth } from "./guards/require-auth"
 export { RequireGuest } from "./guards/require-guest"
 export { RequireAppReady } from "./guards/require-app-ready"
 export { RequireSetupRoute } from "./guards/require-setup-route"
+export { AfendaAuthUiProvider } from "./better-auth-ui/afenda-auth-ui-provider"
 
 export { AuthLayout } from "./routes/auth-layout"
 export { authRouteObjects } from "./routes/route-auth"
@@ -28,6 +29,15 @@ export { useAuthIntelligence } from "./hooks/use-auth-intelligence"
 export { useAuthPostLoginDestination } from "./hooks/use-auth-post-login-destination"
 export { useAuthSetupState } from "./hooks/use-auth-setup-state"
 export { useAuthSessions } from "./hooks/use-auth-sessions"
+export {
+  activateAuthTenantContext,
+  listAuthTenantCandidates,
+} from "./services/auth-tenant-context-service"
+export {
+  AuthServiceError,
+  resolveAuthErrorCode,
+} from "./services/auth-error-service"
+export { mapAuthErrorToUserMessage } from "./mappers/map-auth-error-to-user-message"
 
 export type {
   AuthTrustLevel,
@@ -57,3 +67,8 @@ export type {
 } from "./contracts/auth-setup-state"
 
 export type { AuthIntelligenceResource } from "./contracts/auth-view-model"
+export type {
+  AuthTenantCandidate,
+  AuthTenantCandidatePayload,
+  AuthTenantContextPayload,
+} from "./services/auth-tenant-context-service"

@@ -17,9 +17,17 @@ describe.skipIf(!hasDatabaseUrl)(
   () => {
     let pool: Pool
 
-    beforeAll(() => {
-      pool = new Pool({ connectionString: process.env.DATABASE_URL })
-    })
+    beforeAll(async () => {
+      pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        connectionTimeoutMillis: 15_000,
+      })
+
+      // Warm the first connection so individual assertions do not fail on a cold
+      // Postgres handshake when DATABASE_URL is present but slower than Vitest's
+      // default per-test timeout.
+      await pool.query("select 1")
+    }, 20_000)
 
     afterAll(async () => {
       await pool.end()
@@ -28,7 +36,7 @@ describe.skipIf(!hasDatabaseUrl)(
     it("connects (SELECT 1)", async () => {
       const r = await pool.query("select 1 as ok")
       expect(r.rows[0]?.ok).toBe(1)
-    })
+    }, 15_000)
 
     it("has expected PostgreSQL schemas", async () => {
       const want = ["governance", "iam", "mdm", "ref"]
@@ -39,7 +47,7 @@ describe.skipIf(!hasDatabaseUrl)(
       )
       const got = new Set(r.rows.map((x) => x.schema_name))
       for (const s of want) expect(got.has(s), `missing schema ${s}`).toBe(true)
-    })
+    }, 15_000)
 
     it("governance trigger helpers exist (patch A)", async () => {
       const r = await pool.query<{ proname: string }>(
@@ -94,6 +102,20 @@ describe.skipIf(!hasDatabaseUrl)(
        where n.nspname = 'mdm' and c.relname = 'parties'`
       )
       expect(r.rows[0]?.relrowsecurity).toBe(true)
+    })
+
+    it("governance.truth_records has append-only trigger protection (patch O)", async () => {
+      const r = await pool.query<{ tgname: string }>(
+        `select t.tgname
+       from pg_trigger t
+       join pg_class c on c.oid = t.tgrelid
+       join pg_namespace n on n.oid = c.relnamespace
+       where n.nspname = 'governance'
+         and c.relname = 'truth_records'
+         and not t.tgisinternal`
+      )
+      const names = r.rows.map((x) => x.tgname)
+      expect(names).toContain("trg_truth_records_append_only")
     })
   }
 )

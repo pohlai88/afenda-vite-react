@@ -15,7 +15,7 @@ export function shellUserMenuDocsBase(): string {
  */
 export const shellUserMenuFallbackLinks = {
   account: `${shellAppChildPath("settings")}/account`,
-  billing: shellAppChildPath("partners"),
+  billing: shellAppChildPath("counterparties"),
   notifications: shellAppChildPath("audit"),
   notification_settings: shellAppChildPath("audit"),
   help: `${shellUserMenuDocsBase()}/`,

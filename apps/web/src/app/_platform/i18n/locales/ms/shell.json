@@ -360,7 +360,7 @@
     "items": {
       "events": "Log peristiwa",
       "audit": "Jejak audit",
-      "partners": "Integrasi rakan kongsi",
+      "counterparties": "Counterparties",
       "db_studio": "DB Studio",
       "my_project": "Projek saya",
       "my_team": "Pasukan saya",
@@ -413,9 +413,9 @@
         "trail": "Jejak",
         "exports": "Eksport"
       },
-      "partners": {
-        "integrations": "Integrasi",
-        "webhooks": "Webhook"
+      "counterparties": {
+        "dependencies": "Kebergantungan",
+        "escalations": "Eskalasi"
       }
     },
     "breadcrumb_root": "Induk ERP",
@@ -427,7 +427,7 @@
       "section_app": "Aplikasi",
       "event_log": "Log peristiwa",
       "audit_trail": "Jejak audit",
-      "partner_integrations": "Integrasi rakan kongsi",
+      "partner_integrations": "Counterparties operasi",
       "placeholder_title": "Ruang kerja",
       "placeholder_body": "Kawasan ini akan digantikan oleh modul khusus apabila tersedia."
     }
@@ -457,7 +457,7 @@
       "tabs": {
         "overview": "Gambaran",
         "audit": "Audit",
-        "partners": "Rakan kongsi"
+        "counterparties": "Counterparties"
       },
       "actions": {
         "refresh": "Segar semula",
@@ -465,7 +465,7 @@
         "more": "Lagi",
         "menu": {
           "audit": "Buka jejak audit",
-          "partners": "Buka integrasi rakan kongsi",
+          "counterparties": "Buka counterparties operasi",
           "refresh": "Segar semula paparan semasa"
         }
       }
@@ -674,7 +674,7 @@
     "account": "Akaun",
     "events": "Log peristiwa",
     "audit": "Jejak audit",
-    "partners": "Integrasi rakan kongsi",
+    "counterparties": "Counterparties",
     "db_studio": "DB Studio",
     "aria_label": "Navigasi skop",
     "home": "Utama",
@@ -750,7 +750,14 @@
     "enter_fullscreen": "Masuk skrin penuh",
     "exit_fullscreen": "Keluar skrin penuh",
     "exit_focus_mode": "Keluar mod fokus",
-    "focus_hover_expand_hint": "Leret ke tepi atas untuk kembangkan pengepala ruang kerja."
+    "focus_hover_expand_hint": "Leret ke tepi atas untuk kembangkan pengepala ruang kerja.",
+    "tenant_switcher_loading": "Memuatkan ruang kerja…",
+    "tenant_switcher_default": "Lalai",
+    "tenant_switcher_load_error": "Pilihan ruang kerja tidak dapat dimuatkan.",
+    "tenant_switcher_switch_error": "Akses ruang kerja tidak dapat ditukar.",
+    "tenant_switcher_switching": "Menukar…",
+    "tenant_switcher_aria": "Tukar ruang kerja aktif",
+    "tenant_indicator_prefix": "Tenant"
   },
   "actions": {
     "command_running": "Memuatkan…",
@@ -767,49 +774,63 @@
         "title": "Pengurusan Inventori",
         "description": "Urus produk, paras stok, dan transaksi inventori anda."
       },
-      "placeholder": { "message": "Modul inventori akan datang…" }
+      "placeholder": {
+        "message": "Modul inventori akan datang…"
+      }
     },
     "sales": {
       "page": {
         "title": "Pengurusan Jualan",
         "description": "Jejak pesanan, urus saluran jualan, dan pantau hasil."
       },
-      "placeholder": { "message": "Modul jualan akan datang…" }
+      "placeholder": {
+        "message": "Modul jualan akan datang…"
+      }
     },
     "customers": {
       "page": {
         "title": "Pengurusan Pelanggan",
         "description": "Urus hubungan pelanggan, kenalan, dan interaksi."
       },
-      "placeholder": { "message": "Modul pelanggan akan datang…" }
+      "placeholder": {
+        "message": "Modul pelanggan akan datang…"
+      }
     },
     "employees": {
       "page": {
         "title": "Pengurusan Pekerja",
         "description": "Pengurusan HR, penjadualan kakitangan, dan penjejakan prestasi."
       },
-      "placeholder": { "message": "Modul pekerja akan datang…" }
+      "placeholder": {
+        "message": "Modul pekerja akan datang…"
+      }
     },
     "finance": {
       "page": {
         "title": "Pengurusan Kewangan",
         "description": "Perakaunan, laporan kewangan, dan pengurusan transaksi."
       },
-      "placeholder": { "message": "Modul kewangan akan datang…" }
+      "placeholder": {
+        "message": "Modul kewangan akan datang…"
+      }
     },
     "reports": {
       "page": {
         "title": "Laporan Perniagaan",
         "description": "Analitik, papan pemuka, dan business intelligence."
       },
-      "placeholder": { "message": "Modul laporan akan datang…" }
+      "placeholder": {
+        "message": "Modul laporan akan datang…"
+      }
     },
     "settings": {
       "page": {
         "title": "Tetapan Sistem",
         "description": "Konfigurasi pilihan sistem, peranan pengguna, dan integrasi."
       },
-      "placeholder": { "message": "Modul tetapan akan datang…" }
+      "placeholder": {
+        "message": "Modul tetapan akan datang…"
+      }
     }
   },
   "command": {
@@ -839,5 +860,53 @@
     "refreshEventsView": {
       "completed": "Paparan acara berjaya disegarkan semula."
     }
+  },
+  "events_workspace": {
+    "progress_aria": "Kemajuan {{eventCode}}",
+    "queue_title": "Barisan keutamaan",
+    "needs_owner": "Perlu pemilik",
+    "queue_empty": "Belum ada acara dalam barisan. Apabila rekod operasi pertama diwujudkan, acara itu akan muncul di sini bersama jejak status yang boleh dipertanggungjawabkan.",
+    "stage_label": "Peringkat",
+    "source_label": "Sumber",
+    "owner_label": "Pemilik",
+    "unassigned": "Belum ditugaskan",
+    "claiming": "Mengambil alih...",
+    "reassign_to_me": "Serah semula kepada saya",
+    "claim_event": "Ambil acara",
+    "advancing": "Meneruskan...",
+    "already_closed": "Sudah ditutup",
+    "advance_stage": "Teruskan peringkat",
+    "recent_proof_trail": "Jejak bukti terkini",
+    "no_audit_evidence": "Belum ada bukti audit direkodkan untuk acara ini.",
+    "counterparty_context": "Konteks rakan niaga",
+    "response_window_label": "Tetingkap respons",
+    "no_counterparty_dependency": "Acara ini buat masa ini tidak bergantung pada rakan niaga luar.",
+    "audit_trail_title": "Jejak audit",
+    "no_truth_records_workspace": "Belum ada rekod kebenaran ditambah untuk ruang kerja ini.",
+    "counterparty_roster": "Senarai rakan niaga",
+    "owner_value": "Pemilik: {{owner}}",
+    "no_active_counterparty_escalations": "Tiada eskalasi rakan niaga aktif.",
+    "no_counterparties_linked": "Belum ada rakan niaga dipautkan ke ruang kerja ini.",
+    "retry_surface": "Cuba permukaan ini lagi",
+    "surface_title": "Operasi acara",
+    "surface_description": "Pastikan pemilikan barisan, kebergantungan rakan niaga, dan bukti audit sentiasa kelihatan semasa acara masih bergerak.",
+    "surface_kicker": "Ruang kerja acara",
+    "no_truth_records_tenant": "Belum ada rekod kebenaran ditambah untuk tenant ini.",
+    "what_this_proves": "Apa yang ini buktikan",
+    "truth_proof_1": "Setiap baris audit datang terus daripada rekod kebenaran yang disimpan, bukan snapshot ruang kerja.",
+    "truth_proof_2": "Ini memastikan bukti mutasi kekal berskop tenant, tersusun, dan dikawal izin tanpa bergantung pada pramuat papan pemuka.",
+    "truth_proof_3": "Kebolehauditan ialah permukaan bacaan kebenaran, bukan sisa ruang kerja.",
+    "counterparty_surface_title": "Rakan niaga operasi",
+    "counterparty_surface_description": "Jejaki pihak luar yang mempengaruhi aliran acara aktif, dan pastikan kesihatan operasinya kelihatan di sebelah barisan.",
+    "counterparty_surface_kicker": "Senarai rakan niaga",
+    "active_coordination_events": "Acara penyelarasan aktif"
+  },
+  "demo_users": {
+    "title": "Pengguna",
+    "description": "Frontend Vite berjenis yang menggunakan pakej kontrak bersama.",
+    "name_placeholder": "Nama",
+    "email_placeholder": "E-mel",
+    "create_user": "Cipta pengguna",
+    "loading": "Memuat…"
   }
 }

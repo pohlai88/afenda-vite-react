@@ -21,6 +21,7 @@ export type SettingsProps = {
   /** @remarks `SettingsView` */
   view?: SettingsView
   hideNav?: boolean
+  embedded?: boolean
 }
 
 /**
@@ -32,7 +33,13 @@ export type SettingsProps = {
  * @param hideNav - When `true`, hides the settings navigation tabs
  * @returns A JSX element rendering the settings layout and the selected settings panel
  */
-export function Settings({ className, view, path, hideNav }: SettingsProps) {
+export function Settings({
+  className,
+  view,
+  path,
+  hideNav,
+  embedded = false,
+}: SettingsProps) {
   const {
     basePaths,
     emailAndPassword,
@@ -91,64 +98,103 @@ export function Settings({ className, view, path, hideNav }: SettingsProps) {
 
   return (
     <Tabs value={currentView} className={cn("auth-settings-root", className)}>
-      <section className="auth-settings-header">
-        <div className="auth-settings-intro">
-          <div className="auth-settings-eyebrow-row">
-            <Badge variant="outline" className="auth-shell-badge">
-              {t("eyebrow")}
-            </Badge>
-            <span className="auth-shell-wordmark">
-              {localization.settings.settings}
-            </span>
-          </div>
-
-          <div className="auth-settings-copy-block">
-            <h1 className="auth-settings-title">
-              {t(`views.${currentView}.title`)}
-            </h1>
-            <p className="auth-settings-description">
-              {t(`views.${currentView}.description`)}
-            </p>
-          </div>
-        </div>
-
-        <div className="auth-settings-summary">
-          <div className="grid gap-2">
-            <div className="auth-settings-section-title">
-              {currentView === "security" ? (
-                <ShieldCheck
-                  className="size-4 text-primary"
-                  aria-hidden="true"
-                />
-              ) : (
-                <CircleUserRound
-                  className="size-4 text-primary"
-                  aria-hidden="true"
-                />
-              )}
-              {viewLabel}
+      {!embedded ? (
+        <section className="auth-settings-header">
+          <div className="auth-settings-intro">
+            <div className="auth-settings-eyebrow-row">
+              <Badge variant="outline" className="auth-shell-badge">
+                {t("eyebrow")}
+              </Badge>
+              <span className="auth-shell-wordmark">
+                {localization.settings.settings}
+              </span>
             </div>
-            <p className="auth-settings-summary-copy">
-              {t(`views.${currentView}.summary`)}
-            </p>
-          </div>
 
-          <div className="grid gap-3">
-            <div className="auth-settings-section-title">
-              <Sparkles className="size-4 text-primary" aria-hidden="true" />
-              {t("capabilities_title")}
-            </div>
-            <div className="auth-settings-capability-list">
-              {capabilityLabels.map((label) => (
-                <span key={label} className="auth-settings-pill">
-                  {label}
-                </span>
-              ))}
+            <div className="auth-settings-copy-block">
+              <h1 className="auth-settings-title">
+                {t(`views.${currentView}.title`)}
+              </h1>
+              <p className="auth-settings-description">
+                {t(`views.${currentView}.description`)}
+              </p>
             </div>
           </div>
-        </div>
 
-        <div className={cn(hideNav && "hidden")}>
+          <div className="auth-settings-summary">
+            <div className="grid gap-2">
+              <div className="auth-settings-section-title">
+                {currentView === "security" ? (
+                  <ShieldCheck
+                    className="size-4 text-primary"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <CircleUserRound
+                    className="size-4 text-primary"
+                    aria-hidden="true"
+                  />
+                )}
+                {viewLabel}
+              </div>
+              <p className="auth-settings-summary-copy">
+                {t(`views.${currentView}.summary`)}
+              </p>
+            </div>
+
+            <div className="grid gap-3">
+              <div className="auth-settings-section-title">
+                <Sparkles className="size-4 text-primary" aria-hidden="true" />
+                {t("capabilities_title")}
+              </div>
+              <div className="auth-settings-capability-list">
+                {capabilityLabels.map((label) => (
+                  <span key={label} className="auth-settings-pill">
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className={cn(hideNav && "hidden")}>
+            <TabsList
+              variant="line"
+              aria-label={t("tabs_label")}
+              className="auth-settings-nav"
+            >
+              <TabsTrigger
+                value="account"
+                className="auth-settings-trigger"
+                asChild
+              >
+                <Link
+                  href={`${basePaths.settings}/${viewPaths.settings.account}`}
+                >
+                  {localization.settings.account}
+                </Link>
+              </TabsTrigger>
+
+              <TabsTrigger
+                value="security"
+                className="auth-settings-trigger"
+                asChild
+              >
+                <Link
+                  href={`${basePaths.settings}/${viewPaths.settings.security}`}
+                >
+                  {localization.settings.security}
+                </Link>
+              </TabsTrigger>
+            </TabsList>
+          </div>
+        </section>
+      ) : (
+        <div
+          className={cn(
+            "flex flex-wrap items-center gap-3",
+            hideNav && "hidden"
+          )}
+        >
           <TabsList
             variant="line"
             aria-label={t("tabs_label")}
@@ -179,7 +225,7 @@ export function Settings({ className, view, path, hideNav }: SettingsProps) {
             </TabsTrigger>
           </TabsList>
         </div>
-      </section>
+      )}
 
       <TabsContent value="account" tabIndex={-1} className="mt-0">
         <AccountSettings />

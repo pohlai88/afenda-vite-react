@@ -16,7 +16,7 @@ describe("schema/identity/index barrel manifest", () => {
     )
   })
 
-  it("documents five exports (including deprecated users alias)", () => {
+  it("documents six exports (including deprecated users alias)", () => {
     expect(IDENTITY_BARREL_EXPORT_NAMES.length).toBe(
       EXPECTED_IDENTITY_BARREL_EXPORT_COUNT
     )

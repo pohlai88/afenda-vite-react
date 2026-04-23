@@ -48,6 +48,8 @@ export default defineConfig({
     include: ['**/__tests__/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
       ...baseTest.coverage,
+      // HTML coverage output is flaky for this package on Windows; keep stable machine + CLI reports.
+      reporter: ['text', 'json'],
       include: [...coverageInclude],
       exclude: [
         ...(Array.isArray(baseTest.coverage?.exclude)

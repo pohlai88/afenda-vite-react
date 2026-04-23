@@ -5,11 +5,11 @@ import { useTranslation } from "react-i18next"
 
 import { Button, Input, Label } from "@afenda/design-system/ui-primitives"
 
-import { mapAuthErrorToUserMessage } from "@/app/_platform/auth/mappers/map-auth-error-to-user-message"
 import {
   authAccountSettingsAbsoluteUrl,
   authClient,
   authPostAccountDeletionAbsoluteUrl,
+  mapAuthErrorToUserMessage,
   useAfendaSession,
 } from "@/app/_platform/auth"
 

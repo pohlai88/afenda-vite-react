@@ -1,6 +1,6 @@
 import { Toaster } from "@afenda/design-system/ui-primitives"
 import { Outlet } from "react-router-dom"
-import { PublicThemeProvider } from "../../theme/public-theme-provider"
+import { PublicThemeProvider } from "../../theme"
 
 import { AfendaAuthUiProvider } from "../better-auth-ui/afenda-auth-ui-provider"
 import "../auth.css"

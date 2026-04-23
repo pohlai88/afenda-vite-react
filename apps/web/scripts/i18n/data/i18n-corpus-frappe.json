@@ -1,0 +1,536 @@
+{
+  "version": 2,
+  "source": "frappe",
+  "generatedAt": "2026-04-23T04:39:16.715Z",
+  "fetchedFrom": [
+    "https://raw.githubusercontent.com/frappe/frappe/develop/frappe/locale/main.pot",
+    "https://raw.githubusercontent.com/frappe/erpnext/develop/erpnext/locale/main.pot",
+    "https://api.github.com/repos/Dolibarr/dolibarr/contents/htdocs/langs/ms_MY",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/main.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/main.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/commercial.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/commercial.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/accountancy.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/accountancy.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/bills.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/bills.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/products.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/products.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/companies.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/companies.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/hrm.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/hrm.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/errors.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/errors.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/admin.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/admin.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/agenda.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/agenda.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/assets.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/assets.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/banks.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/banks.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/blockedlog.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/blockedlog.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/boxes.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/boxes.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/cashdesk.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/cashdesk.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/categories.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/categories.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/compta.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/compta.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/contracts.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/contracts.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/cron.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/cron.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/datapolicy.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/datapolicy.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/dict.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/dict.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/donations.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/donations.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/ecm.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/ecm.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/eventorganization.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/eventorganization.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/exports.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/exports.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/holiday.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/holiday.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/install.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/install.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/interventions.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/interventions.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/intracommreport.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/intracommreport.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/knowledgemanagement.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/knowledgemanagement.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/languages.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/languages.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/ldap.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/ldap.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/loan.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/loan.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/mailmanspip.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/mailmanspip.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/mails.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/mails.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/margins.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/margins.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/members.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/members.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/modulebuilder.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/modulebuilder.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/mrp.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/mrp.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/multicurrency.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/multicurrency.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/oauth.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/oauth.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/opensurvey.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/opensurvey.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/orders.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/orders.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/other.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/other.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/partnership.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/partnership.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/paypal.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/paypal.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/printing.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/printing.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/productbatch.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/productbatch.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/projects.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/projects.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/propal.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/propal.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/receiptprinter.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/receiptprinter.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/receptions.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/receptions.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/recruitment.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/recruitment.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/resource.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/resource.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/salaries.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/salaries.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/sendings.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/sendings.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/sms.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/sms.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/stocks.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/stocks.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/stripe.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/stripe.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/subtotals.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/subtotals.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/supplier_proposal.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/supplier_proposal.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/suppliers.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/suppliers.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/ticket.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/ticket.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/trips.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/trips.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/users.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/users.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/website.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/website.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/withdrawals.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/withdrawals.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/ms_MY/workflow.lang",
+    "https://raw.githubusercontent.com/Dolibarr/dolibarr/develop/htdocs/langs/en_US/workflow.lang",
+    "https://raw.githubusercontent.com/frappe/frappe/develop/frappe/locale/id.po",
+    "https://raw.githubusercontent.com/frappe/erpnext/develop/erpnext/locale/id.po",
+    "https://raw.githubusercontent.com/frappe/frappe/develop/frappe/locale/vi.po",
+    "https://raw.githubusercontent.com/frappe/erpnext/develop/erpnext/locale/vi.po"
+  ],
+  "entries": [
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Allocated quantity exceeds the available stock."
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Stock Entry"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Entri Persediaan"
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Bút toán tồn kho"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Login"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "value": "Masuk"
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "locale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "value": "Đăng nhập"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Customer"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Pelanggan"
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Khách hàng"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Employee"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Karyawan"
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Nhân viên"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Accounts"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Akun"
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Tài khoản"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Stock"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "persediaan"
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Kho"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Report"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "locale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "value": "Laporan"
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "locale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "value": "Báo cáo"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Selling"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Penjualan"
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Bán hàng"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Dashboard"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "locale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "value": "Dasbor"
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "locale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "value": "Trang tổng quan"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Invoice"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Faktur"
+    },
+    {
+      "afendaKey": "invoice.entity.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Hóa đơn"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Invoices"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Faktur"
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Hóa đơn"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Draft"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "value": "Draf"
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "locale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "value": "Bản nháp"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Paid"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Dibayar"
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Đã thanh toán"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Payment Entry"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Masuk pembayaran"
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Bút toán thanh toán"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Settled"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Diselesaikan"
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Đã thanh toán"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Pending"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "value": "Tertunda"
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "locale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "value": "Đang chờ xử lý"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Human Resources"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Sumber daya manusia"
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Nhân sự"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Accounting"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Akuntansi"
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Kế toán"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Stock"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "persediaan"
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Kho"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Selling"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "id",
+      "sourcePath": "erpnext/locale/id.po",
+      "value": "Penjualan"
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "locale": "vi",
+      "sourcePath": "erpnext/locale/vi.po",
+      "value": "Bán hàng"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "locale": "en",
+      "sourcePath": "frappe/locale/main.pot + erpnext/locale/main.pot",
+      "value": "Settings"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "locale": "id",
+      "sourcePath": "frappe/locale/id.po",
+      "value": "Pengaturan"
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "locale": "vi",
+      "sourcePath": "frappe/locale/vi.po",
+      "value": "Thiết lập"
+    }
+  ]
+}

@@ -2,12 +2,14 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom"
 import { describe, expect, it, vi } from "vitest"
 
+import { TenantScopeTestDoubleProvider } from "../../tenant"
+
 type MockSetupState = {
   state: "auth" | "workspace_required" | "profile_recommended" | "ready"
   isPending: boolean
 }
 
-let mockSetupState: MockSetupState = {
+const mockSetupState: MockSetupState = {
   state: "ready",
   isPending: false,
 }
@@ -40,23 +42,62 @@ function SetupProbe() {
 
 describe("RequireAppReady", () => {
   it("renders children when the app is ready", () => {
-    mockSetupState = {
-      state: "ready",
-      isPending: false,
-    }
-
     render(
       <MemoryRouter initialEntries={["/app/reports"]}>
-        <Routes>
-          <Route
-            path="/app/reports"
-            element={
-              <RequireAppReady>
-                <div data-testid="protected-app">app</div>
-              </RequireAppReady>
-            }
-          />
-        </Routes>
+        <TenantScopeTestDoubleProvider
+          value={{
+            status: "ready",
+            me: {
+              betterAuth: {
+                user: { id: "better-auth-user-1" },
+                session: { id: "auth-session-1" },
+              },
+              afenda: {
+                afendaUserId: "user-1",
+                tenantIds: ["tenant-1"],
+                defaultTenantId: "tenant-1",
+              },
+              actor: {
+                id: "user-1",
+                roles: [],
+                permissions: [],
+              },
+              tenant: {
+                id: "tenant-1",
+                memberships: [],
+                capabilities: [],
+              },
+              truthContext: {
+                enabledModules: ["ops"],
+                commandMatrix: [],
+              },
+              session: {
+                id: "auth-session-1",
+                activeTenantId: "tenant-1",
+                activeMembershipId: "membership-1",
+              },
+              setup: {
+                state: "ready",
+                hasTenantContext: true,
+                profileRecommended: false,
+              },
+            },
+            selectedTenantId: "tenant-1",
+            tenantChoices: [],
+            setSelectedTenantId: vi.fn(),
+          }}
+        >
+          <Routes>
+            <Route
+              path="/app/reports"
+              element={
+                <RequireAppReady>
+                  <div data-testid="protected-app">app</div>
+                </RequireAppReady>
+              }
+            />
+          </Routes>
+        </TenantScopeTestDoubleProvider>
       </MemoryRouter>
     )
 
@@ -64,24 +105,63 @@ describe("RequireAppReady", () => {
   })
 
   it("redirects workspace-required users to setup and preserves the return target", async () => {
-    mockSetupState = {
-      state: "workspace_required",
-      isPending: false,
-    }
-
     render(
       <MemoryRouter initialEntries={["/app/reports?tab=1#pane"]}>
-        <Routes>
-          <Route
-            path="/app/reports"
-            element={
-              <RequireAppReady>
-                <div data-testid="protected-app">app</div>
-              </RequireAppReady>
-            }
-          />
-          <Route path="/setup/workspace" element={<SetupProbe />} />
-        </Routes>
+        <TenantScopeTestDoubleProvider
+          value={{
+            status: "ready",
+            me: {
+              betterAuth: {
+                user: { id: "better-auth-user-1" },
+                session: { id: "auth-session-1" },
+              },
+              afenda: {
+                afendaUserId: "user-1",
+                tenantIds: ["tenant-1"],
+                defaultTenantId: "tenant-1",
+              },
+              actor: {
+                id: "user-1",
+                roles: [],
+                permissions: [],
+              },
+              tenant: {
+                id: "tenant-1",
+                memberships: [],
+                capabilities: [],
+              },
+              truthContext: {
+                enabledModules: ["ops"],
+                commandMatrix: [],
+              },
+              session: {
+                id: "auth-session-1",
+                activeTenantId: "tenant-1",
+                activeMembershipId: "membership-1",
+              },
+              setup: {
+                state: "workspace_required",
+                hasTenantContext: false,
+                profileRecommended: false,
+              },
+            },
+            selectedTenantId: "tenant-1",
+            tenantChoices: [],
+            setSelectedTenantId: vi.fn(),
+          }}
+        >
+          <Routes>
+            <Route
+              path="/app/reports"
+              element={
+                <RequireAppReady>
+                  <div data-testid="protected-app">app</div>
+                </RequireAppReady>
+              }
+            />
+            <Route path="/setup/workspace" element={<SetupProbe />} />
+          </Routes>
+        </TenantScopeTestDoubleProvider>
       </MemoryRouter>
     )
 

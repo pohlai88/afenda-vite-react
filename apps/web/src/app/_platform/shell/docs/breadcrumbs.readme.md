@@ -22,18 +22,18 @@ The design separates contract ownership, structural resolution, runtime wiring, 
 
 ## Module structure
 
-| Area                                          | Role                                                                                         |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `contract/shell-breadcrumb-contract.ts`       | `ShellBreadcrumbDescriptor`, `ShellBreadcrumbResolvedItem`, `ResolveShellBreadcrumbsOptions` |
-| `contract/shell-metadata-contract.ts`         | `ShellMetadata` (`titleKey`, `breadcrumbs`)                                                  |
-| `contract/shell-route-metadata-contract.ts`   | `ShellRouteMetadata` (route modules: `routeId`, `path`, `shell`)                             |
-| `routes/shell-route-definitions.ts`           | Canonical `ShellRouteMetadata` for `/app/*`; router uses `handle: { shell: … }`              |
-| `services/resolve-shell-breadcrumbs.ts`       | Policy resolver: descriptors → render-ready items (`kind`, `label`, path rules)              |
-| `hooks/use-shell-metadata.ts`                 | `useMatches()` → `ShellMetadata`                                                             |
-| `hooks/use-shell-breadcrumbs.ts`              | Pathname + `useTranslation("shell")` + metadata → resolved items                             |
-| `components/app-shell-breadcrumb.tsx`         | Presentation only                                                                            |
-| `__tests__/resolve-shell-breadcrumbs.test.ts` | Resolver-first tests                                                                         |
-| [`index.ts`](../index.ts)                     | Public exports (breadcrumb subset listed below; other shell APIs are exported too)           |
+| Area                                                           | Role                                                                                         |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `contract/shell-breadcrumb-contract.ts`                        | `ShellBreadcrumbDescriptor`, `ShellBreadcrumbResolvedItem`, `ResolveShellBreadcrumbsOptions` |
+| `contract/shell-metadata-contract.ts`                          | `ShellMetadata` (`titleKey`, `breadcrumbs`)                                                  |
+| `contract/shell-route-metadata-contract.ts`                    | `ShellRouteMetadata` (route modules: `routeId`, `path`, `shell`)                             |
+| `routes/shell-route-definitions.ts`                            | Canonical `ShellRouteMetadata` for `/app/*`; router uses `handle: { shell: … }`              |
+| `services/resolve-shell-breadcrumbs.ts`                        | Policy resolver: descriptors → render-ready items (`kind`, `label`, path rules)              |
+| `hooks/use-shell-metadata.ts`                                  | `useMatches()` → `ShellMetadata`                                                             |
+| `hooks/use-shell-breadcrumbs.ts`                               | Pathname + `useTranslation("shell")` + metadata → resolved items                             |
+| `components/shell-top-nav-block/shell-top-nav-breadcrumbs.tsx` | Presentation only                                                                            |
+| `__tests__/resolve-shell-breadcrumbs.test.ts`                  | Resolver-first tests                                                                         |
+| [`shell-layout-surface.ts`](../shell-layout-surface.ts)        | Frame-level public layout surface (`ShellTopNav` is exposed here)                            |
 
 ---
 
@@ -84,14 +84,14 @@ The hook must not own structural breadcrumb policy. Structural policy belongs in
 
 ### 4. Component layer
 
-`AppShellBreadcrumb` is presentational only.
+`ShellTopNavBreadcrumbs` is presentational only.
 
 **Component rules**
 
-- Render nothing when the resolved list is empty.
-- Render `link` items as navigable ancestors.
-- Render `page` items as the current or static segment.
-- Do not duplicate breadcrumb policy in JSX (no pathname comparison, no translation, no invented ids).
+- Render the shell root fallback label when the resolved list is empty.
+- Render resolved breadcrumb items only; do not re-run breadcrumb policy in JSX.
+- Keep pathname comparison and translation out of the component.
+- Do not invent breadcrumb ids or targets in JSX.
 
 ---
 
@@ -166,27 +166,13 @@ The shell breadcrumb system should remain:
 
 ---
 
-## Public surface (`index.ts`)
+## Public surface status
 
-The shell package [`index.ts`](../index.ts) exports the full platform shell. **Breadcrumb-related** exports:
+Breadcrumb internals are intentionally **not** part of the current public shell composition surfaces.
 
-```ts
-export type {
-  ResolveShellBreadcrumbsOptions,
-  ShellBreadcrumbDescriptor,
-  ShellBreadcrumbKind,
-  ShellBreadcrumbResolvedItem,
-} from "./contract/shell-breadcrumb-contract"
-
-export type { ShellMetadata } from "./contract/shell-metadata-contract"
-
-export { resolveShellBreadcrumbs } from "./services/resolve-shell-breadcrumbs"
-export { useShellBreadcrumbs } from "./hooks/use-shell-breadcrumbs"
-export { useShellMetadata } from "./hooks/use-shell-metadata"
-export { AppShellBreadcrumb } from "./components/app-shell-breadcrumb"
-```
-
-Other shell exports (layout, sidebar, navigation policy, etc.) live in the same `index.ts` and are not part of this breadcrumb document.
+- Route modules participate through `ShellRouteMetadata.shell.breadcrumbs`.
+- Layout consumers compose the frame through [`shell-layout-surface.ts`](../shell-layout-surface.ts), which exposes `ShellTopNav`.
+- `ShellTopNavBreadcrumbs`, `useShellBreadcrumbs`, and `resolveShellBreadcrumbs` remain shell-internal implementation details for now.
 
 ---
 

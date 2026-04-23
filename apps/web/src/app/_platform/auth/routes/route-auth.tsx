@@ -2,7 +2,7 @@ import type { RouteObject } from "react-router-dom"
 import { Navigate } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../../../_components"
-import { PublicThemeProvider } from "../../theme/public-theme-provider"
+import { PublicThemeProvider } from "../../theme"
 import { AUTH_ROUTES } from "../auth-paths"
 import { AuthLayout } from "./auth-layout"
 import { RouteAuthCallback } from "./route-auth-callback"

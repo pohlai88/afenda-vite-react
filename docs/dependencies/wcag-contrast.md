@@ -1,3 +1,12 @@
+---
+owner: governance-toolchain
+truthStatus: supporting
+docClass: supporting-doc
+relatedDomain: dependency-guide
+category: web-client-planned
+status: Planned
+---
+
 # WCAG contrast & `wcag-contrast` guide (Afenda)
 
 This document describes **planned** use of the **[`wcag-contrast`](https://www.npmjs.com/package/wcag-contrast)** npm package for **contrast ratio** checks against **design tokens** — complementary to **ESLint jsx-a11y** and manual a11y review, not a full audit.
@@ -29,13 +38,13 @@ This document describes **planned** use of the **[`wcag-contrast`](https://www.n
 
 ## How we use `wcag-contrast`
 
-| Topic | Convention |
-| --- | --- |
-| **Targets** | Gate against **WCAG 2.2** **1.4.3** (minimum) by default; optionally assert **1.4.6** (enhanced) for marketing or high-risk surfaces ([Understanding docs](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)) |
-| **Inputs** | Run against **CSS variables** / token tables, not one-off hex in leaf components |
-| **Modes** | Check **light**, **dark**, optional **high-contrast** / forced-colors considerations ([Design system](../DESIGN_SYSTEM.md)) |
-| **API** | Use **`hex`/`rgb`** for pairs; map ratios to labels with **`score()`** only if it matches your chosen level (AA vs AAA)—verify thresholds in W3C text, not only the helper string |
-| **Beyond contrast** | Non-color cues, focus, semantics, motion — [Design system](../DESIGN_SYSTEM.md); contrast tooling does **not** replace keyboard or SR testing |
+| Topic               | Convention                                                                                                                                                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Targets**         | Gate against **WCAG 2.2** **1.4.3** (minimum) by default; optionally assert **1.4.6** (enhanced) for marketing or high-risk surfaces ([Understanding docs](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)) |
+| **Inputs**          | Run against **CSS variables** / token tables, not one-off hex in leaf components                                                                                                                                               |
+| **Modes**           | Check **light**, **dark**, optional **high-contrast** / forced-colors considerations ([Design system](../DESIGN_SYSTEM.md))                                                                                                    |
+| **API**             | Use **`hex`/`rgb`** for pairs; map ratios to labels with **`score()`** only if it matches your chosen level (AA vs AAA)—verify thresholds in W3C text, not only the helper string                                              |
+| **Beyond contrast** | Non-color cues, focus, semantics, motion — [Design system](../DESIGN_SYSTEM.md); contrast tooling does **not** replace keyboard or SR testing                                                                                  |
 
 ---
 

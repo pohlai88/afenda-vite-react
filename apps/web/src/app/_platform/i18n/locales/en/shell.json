@@ -7,7 +7,7 @@
       "brand_name": "Afenda",
       "hero_eyebrow": "Tenant-aware clarity for operators at scale",
       "title": "Afenda ERP Platform",
-      "subtitle": "Run finance, events, and partner workflows from one tenant-aware workspace—built for operators who need clarity at scale.",
+      "subtitle": "Run finance, events, and counterparty workflows from one tenant-aware workspace—built for operators who need clarity at scale.",
       "cta_role_showcase": "Explore the role showcase",
       "skip_to_main": "Skip to main content",
       "section_start_heading": "Get Started",
@@ -125,7 +125,7 @@
       "sample_table_name": "Name",
       "sample_table_status": "Status",
       "sample_table_row1": "Posting batch #1042",
-      "sample_table_row2": "Partner webhook",
+      "sample_table_row2": "Counterparty webhook",
       "sample_status_ok": "Posted",
       "sample_status_pending": "Pending",
       "field_label": "Sample field (`ui-field`)",
@@ -360,7 +360,7 @@
     "items": {
       "events": "Event log",
       "audit": "Audit trail",
-      "partners": "Partner integrations",
+      "counterparties": "Counterparties",
       "db_studio": "DB Studio",
       "my_project": "My-Project",
       "my_team": "My-Team",
@@ -413,9 +413,9 @@
         "trail": "Trail",
         "exports": "Exports"
       },
-      "partners": {
-        "integrations": "Integrations",
-        "webhooks": "Webhooks"
+      "counterparties": {
+        "dependencies": "Dependencies",
+        "escalations": "Escalations"
       }
     },
     "breadcrumb_root": "ERP",
@@ -427,7 +427,7 @@
       "section_app": "Application",
       "event_log": "Event log",
       "audit_trail": "Audit trail",
-      "partner_integrations": "Partner integrations",
+      "partner_integrations": "Operational counterparties",
       "placeholder_title": "Workspace",
       "placeholder_body": "This area will be replaced by a dedicated module when it ships."
     }
@@ -457,7 +457,7 @@
       "tabs": {
         "overview": "Overview",
         "audit": "Audit",
-        "partners": "Partners"
+        "counterparties": "Counterparties"
       },
       "actions": {
         "refresh": "Refresh",
@@ -465,7 +465,7 @@
         "more": "More",
         "menu": {
           "audit": "Open audit trail",
-          "partners": "Open partner integrations",
+          "counterparties": "Open operational counterparties",
           "refresh": "Refresh current view"
         }
       }
@@ -674,7 +674,7 @@
     "account": "Account",
     "events": "Event log",
     "audit": "Audit trail",
-    "partners": "Partner integrations",
+    "counterparties": "Counterparties",
     "db_studio": "DB Studio",
     "aria_label": "Scope navigation",
     "home": "Home",
@@ -750,7 +750,14 @@
     "enter_fullscreen": "Enter fullscreen",
     "exit_fullscreen": "Exit fullscreen",
     "exit_focus_mode": "Exit focus mode",
-    "focus_hover_expand_hint": "Hover the top edge to show the full workspace header."
+    "focus_hover_expand_hint": "Hover the top edge to show the full workspace header.",
+    "tenant_switcher_loading": "Loading workspaces…",
+    "tenant_switcher_default": "Default",
+    "tenant_switcher_load_error": "Could not load workspace choices.",
+    "tenant_switcher_switch_error": "Could not switch workspace access.",
+    "tenant_switcher_switching": "Switching…",
+    "tenant_switcher_aria": "Switch active workspace",
+    "tenant_indicator_prefix": "Tenant"
   },
   "actions": {
     "command_running": "Loading…",
@@ -767,49 +774,63 @@
         "title": "Inventory Management",
         "description": "Manage your products, stock levels, and inventory transactions."
       },
-      "placeholder": { "message": "Inventory module coming soon…" }
+      "placeholder": {
+        "message": "Inventory module coming soon…"
+      }
     },
     "sales": {
       "page": {
         "title": "Sales Management",
         "description": "Track orders, manage sales pipeline, and monitor revenue."
       },
-      "placeholder": { "message": "Sales module coming soon…" }
+      "placeholder": {
+        "message": "Sales module coming soon…"
+      }
     },
     "customers": {
       "page": {
         "title": "Customer Management",
         "description": "Manage customer relationships, contacts, and interactions."
       },
-      "placeholder": { "message": "Customer module coming soon…" }
+      "placeholder": {
+        "message": "Customer module coming soon…"
+      }
     },
     "employees": {
       "page": {
         "title": "Employee Management",
         "description": "HR management, staff scheduling, and performance tracking."
       },
-      "placeholder": { "message": "Employee module coming soon…" }
+      "placeholder": {
+        "message": "Employee module coming soon…"
+      }
     },
     "finance": {
       "page": {
         "title": "Financial Management",
         "description": "Accounting, financial reports, and transaction management."
       },
-      "placeholder": { "message": "Finance module coming soon…" }
+      "placeholder": {
+        "message": "Finance module coming soon…"
+      }
     },
     "reports": {
       "page": {
         "title": "Business Reports",
         "description": "Analytics, dashboards, and business intelligence."
       },
-      "placeholder": { "message": "Reports module coming soon…" }
+      "placeholder": {
+        "message": "Reports module coming soon…"
+      }
     },
     "settings": {
       "page": {
         "title": "System Settings",
         "description": "Configure system preferences, user roles, and integrations."
       },
-      "placeholder": { "message": "Settings module coming soon…" }
+      "placeholder": {
+        "message": "Settings module coming soon…"
+      }
     }
   },
   "command": {
@@ -839,5 +860,53 @@
     "refreshEventsView": {
       "completed": "Events view refreshed successfully."
     }
+  },
+  "events_workspace": {
+    "progress_aria": "{{eventCode}} progress",
+    "queue_title": "Priority queue",
+    "needs_owner": "Needs owner",
+    "queue_empty": "No events are in the queue yet. When the first operational record is created, it will appear here with its accountable state trail.",
+    "stage_label": "Stage",
+    "source_label": "Source",
+    "owner_label": "Owner",
+    "unassigned": "Unassigned",
+    "claiming": "Claiming...",
+    "reassign_to_me": "Reassign to me",
+    "claim_event": "Claim event",
+    "advancing": "Advancing...",
+    "already_closed": "Already closed",
+    "advance_stage": "Advance stage",
+    "recent_proof_trail": "Recent proof trail",
+    "no_audit_evidence": "No audit evidence has been recorded for this event yet.",
+    "counterparty_context": "Counterparty context",
+    "response_window_label": "Response window",
+    "no_counterparty_dependency": "This event does not currently depend on an outside counterparty.",
+    "audit_trail_title": "Audit trail",
+    "no_truth_records_workspace": "No truth records have been appended for this workspace yet.",
+    "counterparty_roster": "Counterparty roster",
+    "owner_value": "Owner: {{owner}}",
+    "no_active_counterparty_escalations": "No active counterparty escalations.",
+    "no_counterparties_linked": "No counterparties are linked to this workspace yet.",
+    "retry_surface": "Retry surface",
+    "surface_title": "Events operations",
+    "surface_description": "Keep queue ownership, counterparty dependency, and audit evidence visible while the event is still moving.",
+    "surface_kicker": "Events workspace",
+    "no_truth_records_tenant": "No truth records have been appended for this tenant yet.",
+    "what_this_proves": "What this proves",
+    "truth_proof_1": "Every audit row comes directly from persisted truth records, not a workspace snapshot.",
+    "truth_proof_2": "This keeps mutation evidence tenant-scoped, ordered, and permission-gated without depending on dashboard preload.",
+    "truth_proof_3": "Auditability is a truth-read surface, not workspace residue.",
+    "counterparty_surface_title": "Operational counterparties",
+    "counterparty_surface_description": "Track which outside parties are affecting active event flow, and keep their operational health visible beside the queue.",
+    "counterparty_surface_kicker": "Counterparty roster",
+    "active_coordination_events": "Active coordination events"
+  },
+  "demo_users": {
+    "title": "Users",
+    "description": "Typed Vite frontend consuming shared contract packages.",
+    "name_placeholder": "Name",
+    "email_placeholder": "Email",
+    "create_user": "Create user",
+    "loading": "Loading…"
   }
 }

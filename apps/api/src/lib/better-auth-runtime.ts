@@ -8,19 +8,41 @@
  */
 import {
   createAfendaAuth,
-  resolveAfendaAuthCapabilityHooks,
-  setSessionOperatingContext,
   type AfendaAuth,
   type AfendaAuthCapabilityHooks,
+  resolveAfendaAuthCapabilityHooks,
+  setSessionOperatingContext,
   type SetSessionOperatingContextResult,
 } from "@afenda/better-auth"
-import { createDbClient, createPgPool } from "@afenda/database"
+import {
+  createDbClient,
+  createPgPool,
+  listAfendaTenantCandidatesFromBetterAuthUserId,
+  type AfendaTenantCandidateList,
+  type DatabaseClient,
+} from "@afenda/database"
 
+import type { SessionContext } from "../contract/request-context.js"
 import { assertBetterAuthRuntimeEnv } from "./env.js"
+
+export interface BetterAuthCommandAuthority {
+  readonly roles: readonly string[]
+  readonly permissions: readonly string[]
+}
 
 export interface BetterAuthRuntime {
   readonly auth: AfendaAuth
+  readonly db: DatabaseClient
   readonly capabilityHooks: AfendaAuthCapabilityHooks
+  readonly resolveCommandAuthority?: (input: {
+    session: SessionContext
+    tenantId: string
+    actorLabel: string
+    requestId?: string
+  }) => Promise<BetterAuthCommandAuthority>
+  readonly listTenantCandidates: (input: {
+    headers: Headers
+  }) => Promise<AfendaTenantCandidateList>
   readonly activateTenantContext: (input: {
     headers: Headers
     activeTenantId?: string | null
@@ -44,7 +66,22 @@ function createBetterAuthRuntimeState(): BetterAuthRuntimeState {
 
   return {
     auth,
+    db,
     capabilityHooks,
+    listTenantCandidates: async ({ headers }) => {
+      const session = await auth.api.getSession({
+        headers,
+        query: {
+          disableRefresh: true,
+        },
+      })
+
+      if (!session) {
+        throw new Error("listTenantCandidates: unauthenticated")
+      }
+
+      return listAfendaTenantCandidatesFromBetterAuthUserId(db, session.user.id)
+    },
     activateTenantContext: ({ headers, activeTenantId }) =>
       setSessionOperatingContext(auth, db, { headers, activeTenantId }),
     close: async () => {

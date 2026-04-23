@@ -162,12 +162,156 @@ export function createConfig(opts = {}) {
         "afenda-ui/no-auth-scroll-trap": "error",
       },
     },
+    {
+      name: "afenda-ui/app-surface-baseline-events-workspace",
+      files: [
+        "apps/web/src/app/_features/events-workspace/components/events-workspace-pages.tsx",
+      ],
+      plugins: {
+        "afenda-ui": afendaUiPlugin,
+      },
+      rules: {
+        "afenda-ui/require-app-surface-baseline": [
+          "error",
+          {
+            requiredComponents: ["AppSurface", "StateSurface"],
+            forbiddenIdentifiers: [
+              "PageShell",
+              "AuditPageShell",
+              "WorkspaceErrorState",
+              "EmptyWorkspaceState",
+              "AppLoadingState",
+              "AppErrorState",
+              "AppEmptyState",
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda-ui/app-surface-baseline-shell-route-state",
+      files: [
+        "apps/web/src/app/_platform/shell/components/app-shell-route-state.tsx",
+      ],
+      plugins: {
+        "afenda-ui": afendaUiPlugin,
+      },
+      rules: {
+        "afenda-ui/require-app-surface-baseline": [
+          "error",
+          {
+            requiredComponents: ["AppSurface", "StateSurface"],
+            forbiddenClassNameSnippets: ["ui-page"],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda-ui/app-surface-baseline-shell-not-found",
+      files: [
+        "apps/web/src/app/_platform/shell/components/app-shell-not-found.tsx",
+      ],
+      plugins: {
+        "afenda-ui": afendaUiPlugin,
+      },
+      rules: {
+        "afenda-ui/require-app-surface-baseline": [
+          "error",
+          {
+            requiredComponents: ["AppShellRouteState"],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda-ui/app-surface-baseline-shell-access-denied",
+      files: [
+        "apps/web/src/app/_platform/shell/components/app-shell-access-denied.tsx",
+      ],
+      plugins: {
+        "afenda-ui": afendaUiPlugin,
+      },
+      rules: {
+        "afenda-ui/require-app-surface-baseline": [
+          "error",
+          {
+            requiredComponents: ["AppShellRouteState"],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda-ui/app-surface-baseline-settings",
+      files: [
+        "apps/web/src/app/_features/better-auth-settings/better-auth-settings-view.tsx",
+      ],
+      plugins: {
+        "afenda-ui": afendaUiPlugin,
+      },
+      rules: {
+        "afenda-ui/require-app-surface-baseline": [
+          "error",
+          {
+            requiredComponents: ["AppSurface", "StateSurface", "Settings"],
+            requiredComponentProps: {
+              Settings: ["embedded"],
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda-ui/app-surface-baseline-db-studio",
+      files: [
+        "apps/web/src/app/_features/db-studio/components/db-studio-page.tsx",
+      ],
+      plugins: {
+        "afenda-ui": afendaUiPlugin,
+      },
+      rules: {
+        "afenda-ui/require-app-surface-baseline": [
+          "error",
+          {
+            requiredComponents: ["AppSurface", "StateSurface"],
+          },
+        ],
+      },
+    },
     prettier
   )
 }
 
 export function createRepositoryBoundaryConfig() {
   return [
+    {
+      name: "afenda/workspace-path-import-boundaries",
+      files: ["apps/**/*.{js,jsx,ts,tsx}", "packages/**/*.{js,jsx,ts,tsx}"],
+      ignores: [
+        "**/*.{test,spec}.{js,jsx,ts,tsx}",
+        "**/*.stories.{js,jsx,ts,tsx}",
+        "**/__tests__/**",
+        "**/__test__/**",
+      ],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                regex: "^(\\.\\./)+(apps|packages)/",
+                message:
+                  "Do not reach into sibling workspace roots by relative path. Use the owner app alias or package public entrypoint instead.",
+              },
+              {
+                regex: "^@afenda/[^/]+/(src|scripts|dist|node_modules)(/|$)",
+                message:
+                  "Do not import workspace package internals by path. Consume declared package exports only.",
+              },
+            ],
+          },
+        ],
+      },
+    },
     {
       name: "afenda/web-routes/private-folder-import-fence",
       files: ["apps/web/src/routes/**/*.{js,jsx,ts,tsx}"],
@@ -184,6 +328,10 @@ export function createRepositoryBoundaryConfig() {
             patterns: [
               {
                 group: [
+                  "@/app/_features/*/*",
+                  "../app/_features/*/*",
+                  "@/app/_platform/*/*",
+                  "../app/_platform/*/*",
                   "@/app/_features/*/components/*",
                   "@/app/_features/*/hooks/*",
                   "@/app/_features/*/services/*",
@@ -210,7 +358,7 @@ export function createRepositoryBoundaryConfig() {
                   "../app/_platform/*/utils/*",
                 ],
                 message:
-                  "Route modules must depend on feature or platform entrypoints, not conventional private folders.",
+                  "Route modules must depend on feature or platform entrypoints, not internal files or conventional private folders.",
               },
             ],
           },
@@ -230,6 +378,113 @@ export function createRepositoryBoundaryConfig() {
                 group: ["@/routes/*", "**/routes/*"],
                 message:
                   "Feature modules must not import route modules. Route composition stays at the route or platform boundary.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda/web-feature-public-api-boundaries",
+      files: ["apps/web/src/app/_features/**/*.{js,jsx,ts,tsx}"],
+      ignores: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "**/__tests__/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["@/app/_features/*/*"],
+                message:
+                  "Feature modules may depend on other features only through their public entrypoints.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda/web-platform-cross-domain-boundaries",
+      files: ["apps/web/src/app/_platform/**/*.{js,jsx,ts,tsx}"],
+      ignores: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "**/__tests__/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                regex:
+                  "^(\\.\\./)+(app-surface|auth|api-client|config|i18n|runtime|shell|tenant|theme|_template)(/[^/]+)+$",
+                message:
+                  "Platform modules must consume sibling platform domains through their entrypoints, not internal files.",
+              },
+              {
+                regex:
+                  "^@/app/_platform/(app-surface|auth|api-client|config|i18n|runtime|shell|tenant|theme|_template)(/[^/]+)+$",
+                message:
+                  "Platform modules must consume sibling platform domains through their entrypoints, not internal files.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda/web-platform-public-api-boundaries",
+      files: ["apps/web/src/**/*.{js,jsx,ts,tsx}"],
+      ignores: [
+        "apps/web/src/app/_platform/**/*.{js,jsx,ts,tsx}",
+        "**/*.{test,spec}.{js,jsx,ts,tsx}",
+        "**/__tests__/**",
+      ],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                regex: "^@/app/_platform$",
+                message:
+                  "Consume specific platform domain entrypoints instead of the root _platform barrel.",
+              },
+              {
+                regex: "^(\\.\\./)+(app/_platform|_platform)$",
+                message:
+                  "Consume specific platform domain entrypoints instead of the root _platform barrel.",
+              },
+              {
+                regex:
+                  "^@/app/_platform/(app-surface|auth|api-client|config|i18n|runtime|tenant|theme|_template)(/[^/]+)+$",
+                message:
+                  "Outside _platform, consume platform domains through their curated public entrypoints.",
+              },
+              {
+                regex: "^@/app/_platform/shell$",
+                message:
+                  "Outside _platform, consume shell through curated public entrypoints instead of the root shell barrel.",
+              },
+              {
+                regex: "^(\\.\\./)+(app/_platform|_platform)/shell$",
+                message:
+                  "Outside _platform, consume shell through curated public entrypoints instead of the root shell barrel.",
+              },
+              {
+                regex:
+                  "^@/app/_platform/shell/(?!shell-(route|layout|command|validation)-surface$)[^/]+(?:/.*)?$",
+                message:
+                  "Outside _platform, consume shell through curated public entrypoints such as shell-route-surface, shell-layout-surface, shell-command-surface, or shell-validation-surface.",
+              },
+              {
+                regex:
+                  "^(\\.\\./)+(app/_platform|_platform)/(app-surface|auth|api-client|config|i18n|runtime|tenant|theme|_template)(/[^/]+)+$",
+                message:
+                  "Outside _platform, consume platform domains through their curated public entrypoints.",
+              },
+              {
+                regex:
+                  "^(\\.\\./)+(app/_platform|_platform)/shell/(?!shell-(route|layout|command|validation)-surface$)[^/]+(?:/.*)?$",
+                message:
+                  "Outside _platform, consume shell through curated public entrypoints such as shell-route-surface, shell-layout-surface, shell-command-surface, or shell-validation-surface.",
               },
             ],
           },
@@ -273,6 +528,25 @@ export function createRepositoryBoundaryConfig() {
                 ],
                 message:
                   "API modules must not import route or middleware modules directly.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "afenda/api-routes/module-entrypoint-boundaries",
+      files: ["apps/api/src/routes/**/*.{js,jsx,ts,tsx}"],
+      ignores: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "**/__tests__/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["@/modules/*/*", "../modules/*/*", "../../modules/*/*"],
+                message:
+                  "API routes must depend on module entrypoints, not module internal files.",
               },
             ],
           },

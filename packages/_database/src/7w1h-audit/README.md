@@ -2,6 +2,8 @@
 
 Governed **append-only** audit events for **`governance.audit_logs`**: typed columns for core dimensions (Who / What / When / outcome / channel) plus optional **`seven_w1h`** JSON for extended narrative (where, why, which feature, whom, how, phase). Server-only; use from API/workers with a `DatabaseClient`.
 
+This folder is the **platform/activity audit** surface. It is not the business truth spine. Business-domain command outcomes live in **`governance.truth_records`** under [`../schema/governance/truth-records.schema.ts`](../schema/governance/truth-records.schema.ts).
+
 **Imports:** `@afenda/database`, `@afenda/database/7w1h-audit`, or `@afenda/database/audit` (alias). Prefer package exports; do not deep-import `src/` from apps.
 
 Charter and tree rules: [`001-postgreSQL-DDL.md`](../../docs/guideline/001-postgreSQL-DDL.md), [`008-db-tree.md`](../../docs/guideline/008-db-tree.md).
@@ -51,6 +53,7 @@ Audit DDL and logic live under **`src/7w1h-audit/`** so the **7W1H** story stays
 
 - **Append-only:** no updates/deletes on `audit_logs` for normal product flows.
 - **Tenant scope:** rows are tenant-scoped; list queries must always constrain **`tenant_id`** (the query service does this).
+- **Boundary:** do not repurpose `audit_logs` as the business truth record. Business mutation evidence belongs in `truth_records`; 7W1H audit captures platform/user/request context.
 - **Schema changes:** run **`pnpm run db:guard`** (or **`db:ci`**) in `packages/_database` after DDL or contract changes.
 
 ---

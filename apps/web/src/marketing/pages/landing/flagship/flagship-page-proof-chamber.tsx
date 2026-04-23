@@ -3,13 +3,12 @@
  * Owns only the proof-surface chamber block for this page.
  * Keep this file page-local and free of unrelated section composition.
  */
-import { Badge } from "@afenda/design-system/ui-primitives"
 import { motion } from "framer-motion"
 
 import {
   MarketingPageSection,
   MarketingSectionHeading,
-} from "../../_components"
+} from "../../../components"
 import { FLAGSHIP_PAGE_CONTENT } from "./flagship-page-editorial"
 import { getMarketingPageSectionReveal } from "./flagship-page-motion"
 
@@ -96,12 +95,12 @@ export function FlagshipPageProofChamber({
               {...getMarketingPageSectionReveal(reduceMotion, 0.1)}
             >
               <div className="rounded-[1.5rem] border border-white/10 bg-black/22 p-5">
-                <Badge
-                  variant="outline"
-                  className="border-white/12 bg-white/8 text-white/72"
-                >
-                  False State
-                </Badge>
+                <div className="border-b border-white/10 pb-3">
+                  <div className="font-mono text-[10px] tracking-[0.24em] text-white/48 uppercase">
+                    False state
+                  </div>
+                  <div className="mt-2 h-px w-14 bg-white/16" />
+                </div>
                 <div className="mt-4 text-2xl font-semibold tracking-[-0.05em] text-white">
                   Fragmented record.
                 </div>
@@ -112,7 +111,7 @@ export function FlagshipPageProofChamber({
               </div>
 
               <div className="flex items-center justify-center px-1">
-                <div className="rounded-full border border-white/12 bg-white/8 px-4 py-3 text-center">
+                <div className="rounded-[1.4rem] border border-white/12 bg-white/8 px-4 py-3 text-center">
                   <div className="font-mono text-[10px] tracking-[0.24em] text-white/54 uppercase">
                     Law Engine
                   </div>
@@ -123,12 +122,12 @@ export function FlagshipPageProofChamber({
               </div>
 
               <div className="rounded-[1.5rem] border border-white/12 bg-white/[0.08] p-5">
-                <Badge
-                  variant="outline"
-                  className="border-white/12 bg-white/8 text-white/72"
-                >
-                  Verified Continuity
-                </Badge>
+                <div className="border-b border-white/10 pb-3">
+                  <div className="font-mono text-[10px] tracking-[0.24em] text-white/48 uppercase">
+                    Verified continuity
+                  </div>
+                  <div className="mt-2 h-px w-14 bg-white/16" />
+                </div>
                 <div className="mt-4 text-2xl font-semibold tracking-[-0.05em] text-white">
                   Trusted state.
                 </div>

@@ -68,6 +68,27 @@ export const afendaMeContextSchema = z.object({
 
 export type AfendaMeContextValidated = z.infer<typeof afendaMeContextSchema>
 
+export const afendaTenantCandidateSchema = z.object({
+  tenantId: sharedTenantIdSchema,
+  membershipId: sharedUuidSchema,
+  tenantName: z.string().min(1),
+  tenantCode: z.string().min(1),
+  isDefault: z.boolean(),
+})
+
+export const afendaTenantCandidateListSchema = z.object({
+  afendaUserId: sharedUuidSchema,
+  defaultTenantId: sharedTenantIdSchema.nullable(),
+  candidates: z.array(afendaTenantCandidateSchema),
+})
+
+export type AfendaTenantCandidateValidated = z.infer<
+  typeof afendaTenantCandidateSchema
+>
+export type AfendaTenantCandidateListValidated = z.infer<
+  typeof afendaTenantCandidateListSchema
+>
+
 export type TenancyTenantStatus = z.infer<typeof tenancyTenantStatusSchema>
 export type TenancyTenantType = z.infer<typeof tenancyTenantTypeSchema>
 export type TenancyMembershipStatus = z.infer<

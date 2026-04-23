@@ -1,12 +1,12 @@
 /**
  * Validates that `sql/hardening/` contains exactly the expected `patch_*.sql` set
- * (no drift vs `hardening-patch-order.ts`).
+ * (no drift vs `verify-hardening-patch-order.ts`).
  */
 import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
 
-import { HARDENING_PATCH_FILENAMES } from "./hardening-patch-order"
+import { HARDENING_PATCH_FILENAMES } from "./verify-hardening-patch-order"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const hardeningDir = path.join(__dirname, "..", "sql", "hardening")
@@ -30,7 +30,7 @@ export function verifyHardeningPatches(): void {
     const missing = expected.filter((f) => !onDisk.includes(f))
     const extra = onDisk.filter((f) => !expectedSet.has(f))
     throw new Error(
-      "verify-hardening-patches: sql/hardening patch set does not match scripts/hardening-patch-order.ts\n" +
+      "verify-hardening-patches: sql/hardening patch set does not match scripts/verify-hardening-patch-order.ts\n" +
         (missing.length ? `  missing: ${missing.join(", ")}\n` : "") +
         (extra.length ? `  extra: ${extra.join(", ")}\n` : "")
     )

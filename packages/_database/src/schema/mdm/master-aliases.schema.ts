@@ -22,7 +22,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core"
 
-import { dataSources } from "../governance/data-sources.schema"
+import { dataSources } from "../governance/governance-data-sources.schema"
 import {
   createdUpdatedVersionColumns,
   effectiveDateColumns,

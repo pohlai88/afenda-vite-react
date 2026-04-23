@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import { beforeAll, describe, expect, it } from "vitest"
 
-import AboutPage from "../pages/company/about-page"
+import AboutPage from "../pages/company/about/about-page"
 
 beforeAll(() => {
   class MockIntersectionObserver implements IntersectionObserver {
@@ -26,7 +26,7 @@ beforeAll(() => {
 })
 
 describe("AboutPage", () => {
-  it("renders the company page scaffold", () => {
+  it("renders the company editorial page and expected navigation", () => {
     render(
       <MemoryRouter>
         <AboutPage />
@@ -35,14 +35,17 @@ describe("AboutPage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /Afenda exists to make business truth harder to lose\./i,
+        name: /A company built around business truth\./i,
       })
     ).toBeInTheDocument()
 
-    expect(screen.getByText(/Company Position/i)).toBeInTheDocument()
-
     expect(
-      screen.getByRole("link", { name: /Visit Trust Center/i })
-    ).toHaveAttribute("href", "/marketing/legal/trust-center")
+      screen.getByRole("heading", { name: /Most systems explain too late\./i })
+    ).toBeInTheDocument()
+
+    expect(screen.getByRole("link", { name: /View product/i })).toHaveAttribute(
+      "href",
+      "/marketing/product/truth-engine"
+    )
   })
 })

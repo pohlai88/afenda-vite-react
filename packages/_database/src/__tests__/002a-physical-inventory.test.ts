@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url"
 
 import { describe, expect, it } from "vitest"
 
-import { HARDENING_PATCH_FILENAMES } from "../../scripts/hardening-patch-order"
+import { HARDENING_PATCH_FILENAMES } from "../../scripts/verify-hardening-patch-order"
 
 const packageRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),

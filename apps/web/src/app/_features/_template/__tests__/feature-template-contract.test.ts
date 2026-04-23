@@ -4,7 +4,7 @@ import {
   executeFeatureTemplateCommand,
   featureTemplateCommands,
 } from "../actions/feature-template-actions"
-import { createFeatureTemplateReport } from "../scripts/feature-template-report"
+import { createFeatureTemplateReport } from "../scripts/generate-feature-template-report"
 import { fetchFeatureTemplate } from "../services/feature-template-service"
 import { resolveFeatureTemplateSlug } from "../feature-template-policy"
 
@@ -35,7 +35,7 @@ describe("feature template contract", () => {
   })
 
   it("reports the required template folders for onboarding checks", async () => {
-    const report = await createFeatureTemplateReport("partners")
+    const report = await createFeatureTemplateReport("counterparties")
 
     expect(report.structurePolicy.expectedFolders).toEqual(
       expect.arrayContaining(["__tests__", "scripts", "services", "types"])

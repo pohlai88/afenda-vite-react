@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest"
 
-import { marketingLandingVariantSlugs } from "../../marketing/marketing-page-registry"
+import {
+  marketingCanonicalRedirectPaths,
+  marketingLandingVariantSlugs,
+  marketingRoutablePagePaths,
+} from "../../marketing/marketing-page-registry"
 import { marketingRouteObjects } from "../../marketing/marketing-routes"
 
 describe("route-marketing parity", () => {
-  it("exposes a deep-link route for every marketing landing variant", () => {
+  it("exposes routes for every marketing landing variant and every routable marketing page", () => {
     const rootRoute = marketingRouteObjects.find((route) => route.path === "/")
     const marketingRoute = rootRoute?.children?.find(
       (route) => route.path === "marketing"
@@ -23,6 +27,16 @@ describe("route-marketing parity", () => {
     expect(deepLinkSlugs).toEqual(
       expect.arrayContaining([...marketingLandingVariantSlugs])
     )
-    expect(deepLinkSlugs).toHaveLength(marketingLandingVariantSlugs.length)
+    expect(deepLinkSlugs).toEqual(
+      expect.arrayContaining([...marketingRoutablePagePaths])
+    )
+    expect(deepLinkSlugs).toEqual(
+      expect.arrayContaining([...marketingCanonicalRedirectPaths])
+    )
+    expect(deepLinkSlugs).toHaveLength(
+      marketingLandingVariantSlugs.length +
+        marketingRoutablePagePaths.length +
+        marketingCanonicalRedirectPaths.length
+    )
   })
 })

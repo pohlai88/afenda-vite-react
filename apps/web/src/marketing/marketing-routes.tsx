@@ -10,11 +10,12 @@ import type { RouteObject } from "react-router-dom"
 import { Navigate } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../app/_components"
-import { PublicThemeProvider } from "../app/_platform/theme/public-theme-provider"
+import { PublicThemeProvider } from "../app/_platform/theme"
 import { MarketingConfiguredHome } from "./marketing-configured-home"
 import { MarketingLoadingFallback } from "./marketing-loading-fallback"
 import {
   loadMarketingFlagshipPage,
+  marketingCanonicalRedirects,
   marketingLandingLegacyRedirects,
   marketingLandingLegacySlugRoutes,
   marketingRoutablePages,
@@ -126,6 +127,11 @@ export const marketingRouteObjects: RouteObject[] = [
               handle: { shell: null },
             } satisfies RouteObject
           }),
+          ...marketingCanonicalRedirects.map(({ path, to }) => ({
+            path,
+            element: <Navigate to={to} replace />,
+            handle: { shell: null },
+          })),
         ],
       },
       ...marketingLandingLegacySlugRoutes.map(({ path, slug }) => {

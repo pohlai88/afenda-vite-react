@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import { beforeAll, describe, expect, it } from "vitest"
 
-import PdpaPage from "../pages/legal/pdpa-page"
+import PdpaPage from "../pages/legal/pdpa/pdpa-page"
 
 beforeAll(() => {
   class MockIntersectionObserver implements IntersectionObserver {
@@ -39,7 +39,11 @@ describe("PdpaPage", () => {
       })
     ).toBeInTheDocument()
 
-    expect(screen.getByText(/PDPA Surface/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", {
+        name: /Regional policy pages should be specific, navigable, and operationally connected\./i,
+      })
+    ).toBeInTheDocument()
 
     expect(
       screen.getByRole("link", { name: /View Asia Pacific/i })

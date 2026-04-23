@@ -19,18 +19,35 @@ export default [
 
 Workspace packages run `eslint .` from their directory; ESLint walks up and loads the root flat config.
 
+## Repository boundary layer
+
+The repo root [`eslint.config.js`](../../eslint.config.js) consumes `createRepositoryBoundaryConfig()` from this package to enforce Afenda-specific architecture fences on top of the baseline config.
+
+Current enforced boundaries include:
+
+- no relative reach-ins across workspace roots such as `../packages/*` or `../apps/*`
+- no package-internal path reach-ins such as `@afenda/*/src/*`
+- feature modules may depend on other features only through feature entrypoints such as `@/app/_features/<feature>`
+- web routes must use `_features` / `_platform` entrypoints instead of internal files
+- `_platform` modules must consume sibling platform domains through entrypoints instead of cross-domain internal files, regardless of relative-import depth or alias form
+- outside `_platform`, app code must consume platform domains through curated public entrypoints rather than deep imports such as `@/app/_platform/auth/services/*`
+- shell-specific imports outside `_platform` are allowed only for explicit curated surfaces such as `@/app/_platform/shell/shell-route-surface`, `shell-layout-surface`, `shell-command-surface`, or `shell-validation-surface`
+- promoted `share/` must not import feature-owned code
+- API routes must use `modules/*` entrypoints instead of internal service files
+- API modules must not import HTTP route or middleware modules directly
+
 ## Commands (repo root)
 
 Run these from **`c:\NexusCanon\afenda-react-vite`** (or your clone root) so the root `eslint.config.js` loads.
 
-| Command                                                                                                                 | Explanation                                                                                                   |
-| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `pnpm run lint`                                                                                                         | Runs **`turbo run lint`** — lints all packages that define a `lint` script (matches CI).                      |
-| `pnpm exec eslint . --max-warnings 0 --cache --cache-location .eslintcache`                                             | Lints **the whole repo** the same way ESLint resolves files from the root config.                             |
-| `pnpm exec eslint apps/web/src --max-warnings 0 --cache --cache-location .eslintcache`                                  | Lints **only the web app** tree (faster than `eslint .`).                                                     |
-| `pnpm exec eslint "apps/web/src/app/_platform/shell/components" --max-warnings 0 --cache --cache-location .eslintcache` | Lints **only** the platform shell `components` folder (path you asked about).                                 |
-| `pnpm exec eslint "**/components/**/*.{tsx,jsx}" --max-warnings 0 --cache --cache-location .eslintcache`                | Lints **every** `**/components/**` file (matches the `afenda-ui/components-folders` scope in `src/index.js`). |
-| `pnpm exec eslint <path> --fix --cache --cache-location .eslintcache`                                                   | Same as above paths, but applies **auto-fixes** where rules support them.                                     |
+| Command                                                                                                                                                                                                      | Explanation                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `pnpm run lint`                                                                                                                                                                                              | Runs **`turbo run lint`** — lints all packages that define a `lint` script (matches CI).                      |
+| `node -e "require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})" && pnpm exec eslint . --max-warnings 0 --cache --cache-location .artifacts/eslint`                                             | Lints **the whole repo** the same way ESLint resolves files from the root config.                             |
+| `node -e "require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})" && pnpm exec eslint apps/web/src --max-warnings 0 --cache --cache-location .artifacts/eslint`                                  | Lints **only the web app** tree (faster than `eslint .`).                                                     |
+| `node -e "require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})" && pnpm exec eslint "apps/web/src/app/_platform/shell/components" --max-warnings 0 --cache --cache-location .artifacts/eslint` | Lints **only** the platform shell `components` folder (path you asked about).                                 |
+| `node -e "require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})" && pnpm exec eslint "**/components/**/*.{tsx,jsx}" --max-warnings 0 --cache --cache-location .artifacts/eslint`                | Lints **every** `**/components/**` file (matches the `afenda-ui/components-folders` scope in `src/index.js`). |
+| `node -e "require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})" && pnpm exec eslint <path> --fix --cache --cache-location .artifacts/eslint`                                                   | Same as above paths, but applies **auto-fixes** where rules support them.                                     |
 
 **UI governance (`afenda-ui` plugin):** `token-only-tailwind` (palette drift / `driftOnly`), `no-inline-styles`, and `no-direct-radix` apply to `**/components/**/*.{tsx,jsx}` (excluding `*.test.*`, `*.stories.*`, and `components/**/__tests__/**`). Use the `**/components/**` command to scan all of those at once.
 
@@ -90,7 +107,7 @@ Run these from **`c:\NexusCanon\afenda-react-vite`** (or your clone root) so the
 
 ### 5. Persist ESLint cache in CI
 
-**Reasoning:** Local runs already use `--cache`. CI can reuse `.eslintcache` (or Turborepo remote cache) to cut wall-clock time.
+**Reasoning:** Local runs already use `--cache`. CI can reuse `.artifacts/eslint` (or Turborepo remote cache) to cut wall-clock time.
 
 **Do when:** Your pipeline can restore a stable cache key per lockfile + config inputs (this package is included in `turbo.json` lint inputs).
 

@@ -5,7 +5,7 @@ import {
   apiClientCapabilityContract,
   apiClientPlatformPolicy,
 } from "../policy/api-client-policy"
-import { createApiClientCapabilityReport } from "../scripts/api-client-capability-report"
+import { createApiClientCapabilityReport } from "../scripts/generate-api-client-capability-report"
 import {
   ApiClientHttpError,
   createApiClient,

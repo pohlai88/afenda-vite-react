@@ -5,10 +5,12 @@
  */
 import type { WebUser } from "@/rpc"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { createUser, fetchUsers } from "./users.api"
 
 export function UsersView() {
+  const { t } = useTranslation("shell")
   const [users, setUsers] = useState<WebUser[]>([])
   const [email, setEmail] = useState("jane@example.com")
   const [name, setName] = useState("Jane Doe")
@@ -46,30 +48,30 @@ export function UsersView() {
 
   return (
     <section style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
-      <h2>Users</h2>
-      <p>Typed Vite frontend consuming shared contract packages.</p>
+      <h2>{t("demo_users.title")}</h2>
+      <p>{t("demo_users.description")}</p>
 
       <div style={{ display: "grid", gap: 8, marginBottom: 16 }}>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Name"
+          placeholder={t("demo_users.name_placeholder")}
         />
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          placeholder={t("demo_users.email_placeholder")}
         />
         <button
           type="button"
           onClick={() => void handleCreate()}
           disabled={loading}
         >
-          Create user
+          {t("demo_users.create_user")}
         </button>
       </div>
 
-      {loading ? <p>Loading…</p> : null}
+      {loading ? <p>{t("demo_users.loading")}</p> : null}
       {error ? <p>{error}</p> : null}
 
       <ul>

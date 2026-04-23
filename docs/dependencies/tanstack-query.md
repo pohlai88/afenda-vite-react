@@ -1,8 +1,17 @@
+---
+owner: governance-toolchain
+truthStatus: supporting
+docClass: supporting-doc
+relatedDomain: dependency-guide
+category: web-client-adopted
+status: Implemented
+---
+
 # TanStack Query guide (Afenda)
 
 This document describes how **`apps/web`** uses **[TanStack Query](https://tanstack.com/query/latest)** for **server state**: HTTP caching, mutations, and error/loading metadata against the **[API](../API.md)**.
 
-**Status:** **Adopted** in **`apps/web`** (`@tanstack/react-query`; devtools package for local debugging).
+**Status:** **Implemented** in **`apps/web`** (`@tanstack/react-query`; devtools package for local debugging).
 
 **Official documentation:**
 
@@ -18,12 +27,12 @@ This document describes how **`apps/web`** uses **[TanStack Query](https://tanst
 
 ## How we use TanStack Query
 
-| Topic | Convention |
-| --- | --- |
-| **Transport** | `fetch` or a thin client to **`/api/...`** (Vite [proxy](./vite.md)); follow [API](../API.md) |
-| **Keys** | **Stable, hierarchical** keys; include **tenant slug** when data is tenant-scoped |
+| Topic         | Convention                                                                                                      |
+| ------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Transport** | `fetch` or a thin client to **`/api/...`** (Vite [proxy](./vite.md)); follow [API](../API.md)                   |
+| **Keys**      | **Stable, hierarchical** keys; include **tenant slug** when data is tenant-scoped                               |
 | **Mutations** | **`invalidateQueries`** / **`setQueryData`** after writes; use **optimistic** updates only when ERP rules allow |
-| **Errors** | Map [API](../API.md) error envelope to UI; do not rely on raw English strings |
+| **Errors**    | Map [API](../API.md) error envelope to UI; do not rely on raw English strings                                   |
 
 ---
 

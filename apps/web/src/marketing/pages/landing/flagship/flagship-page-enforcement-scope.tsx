@@ -8,7 +8,7 @@ import { motion } from "framer-motion"
 import {
   MarketingPageSection,
   MarketingSectionHeading,
-} from "../../_components"
+} from "../../../components"
 import { FLAGSHIP_PAGE_CONTENT } from "./flagship-page-editorial"
 import { getMarketingPageSectionReveal } from "./flagship-page-motion"
 

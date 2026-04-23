@@ -11,11 +11,11 @@ import {
   DropdownMenuSubTrigger,
 } from "@afenda/design-system/ui-primitives"
 
-import { changeLocale } from "../../i18n"
 import {
+  changeLocale,
   SUPPORTED_LOCALES,
   type SupportedLocale,
-} from "../../i18n/policy/i18n-policy"
+} from "../../i18n"
 
 const LOCALE_OPTIONS = [
   { value: "en" as const, labelKey: "language.option_en" as const },

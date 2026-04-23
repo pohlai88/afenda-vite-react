@@ -1,5 +1,14 @@
 {
   "mcpServers": {
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${workspaceFolder}"
+      ]
+    },
     "hono-docs": {
       "type": "http",
       "url": "https://hono-docs-mcp.yusukebe.workers.dev/mcp"

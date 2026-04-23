@@ -21,6 +21,6 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto"
+    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint . --cache --cache-location .artifacts/eslint --concurrency auto"
   }
 }

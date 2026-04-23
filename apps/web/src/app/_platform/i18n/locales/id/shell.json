@@ -360,7 +360,7 @@
     "items": {
       "events": "Log peristiwa",
       "audit": "Jejak audit",
-      "partners": "Integrasi mitra",
+      "counterparties": "Counterparties",
       "db_studio": "DB Studio",
       "my_project": "Proyek-ku",
       "my_team": "Tim-ku",
@@ -413,9 +413,9 @@
         "trail": "Jejak",
         "exports": "Ekspor"
       },
-      "partners": {
-        "integrations": "Integrasi",
-        "webhooks": "Webhook"
+      "counterparties": {
+        "dependencies": "Dependensi",
+        "escalations": "Eskalasi"
       }
     },
     "breadcrumb_root": "Induk ERP",
@@ -427,7 +427,7 @@
       "section_app": "Aplikasi",
       "event_log": "Log peristiwa",
       "audit_trail": "Jejak audit",
-      "partner_integrations": "Integrasi mitra",
+      "partner_integrations": "Counterparties operasional",
       "placeholder_title": "Ruang kerja",
       "placeholder_body": "Area ini akan diganti modul khusus saat tersedia."
     }
@@ -457,7 +457,7 @@
       "tabs": {
         "overview": "Ringkasan",
         "audit": "Audit",
-        "partners": "Mitra"
+        "counterparties": "Counterparties"
       },
       "actions": {
         "refresh": "Segarkan",
@@ -465,7 +465,7 @@
         "more": "Lainnya",
         "menu": {
           "audit": "Buka jejak audit",
-          "partners": "Buka integrasi mitra",
+          "counterparties": "Buka counterparties operasional",
           "refresh": "Segarkan tampilan saat ini"
         }
       }
@@ -674,7 +674,7 @@
     "account": "Akun",
     "events": "Log peristiwa",
     "audit": "Jejak audit",
-    "partners": "Integrasi mitra",
+    "counterparties": "Counterparties",
     "db_studio": "DB Studio",
     "aria_label": "Navigasi cakupan",
     "home": "Beranda",
@@ -750,7 +750,14 @@
     "enter_fullscreen": "Masuk layar penuh",
     "exit_fullscreen": "Keluar layar penuh",
     "exit_focus_mode": "Keluar mode fokus",
-    "focus_hover_expand_hint": "Arahkan kursor ke tepi atas untuk memperluas bilah header ruang kerja."
+    "focus_hover_expand_hint": "Arahkan kursor ke tepi atas untuk memperluas bilah header ruang kerja.",
+    "tenant_switcher_loading": "Memuat workspace…",
+    "tenant_switcher_default": "Default",
+    "tenant_switcher_load_error": "Pilihan workspace tidak dapat dimuat.",
+    "tenant_switcher_switch_error": "Akses workspace tidak dapat diganti.",
+    "tenant_switcher_switching": "Mengganti…",
+    "tenant_switcher_aria": "Ganti workspace aktif",
+    "tenant_indicator_prefix": "Tenant"
   },
   "actions": {
     "command_running": "Memuat…",
@@ -767,49 +774,63 @@
         "title": "Manajemen Inventaris",
         "description": "Kelola produk, level stok, dan transaksi inventaris Anda."
       },
-      "placeholder": { "message": "Modul inventaris akan segera hadir…" }
+      "placeholder": {
+        "message": "Modul inventaris akan segera hadir…"
+      }
     },
     "sales": {
       "page": {
         "title": "Manajemen Penjualan",
         "description": "Lacak pesanan, kelola pipeline penjualan, dan pantau pendapatan."
       },
-      "placeholder": { "message": "Modul penjualan akan segera hadir…" }
+      "placeholder": {
+        "message": "Modul penjualan akan segera hadir…"
+      }
     },
     "customers": {
       "page": {
         "title": "Manajemen Pelanggan",
         "description": "Kelola hubungan pelanggan, kontak, dan interaksi."
       },
-      "placeholder": { "message": "Modul pelanggan akan segera hadir…" }
+      "placeholder": {
+        "message": "Modul pelanggan akan segera hadir…"
+      }
     },
     "employees": {
       "page": {
         "title": "Manajemen Karyawan",
         "description": "Manajemen HR, penjadwalan staf, dan pelacakan kinerja."
       },
-      "placeholder": { "message": "Modul karyawan akan segera hadir…" }
+      "placeholder": {
+        "message": "Modul karyawan akan segera hadir…"
+      }
     },
     "finance": {
       "page": {
         "title": "Manajemen Keuangan",
         "description": "Akuntansi, laporan keuangan, dan manajemen transaksi."
       },
-      "placeholder": { "message": "Modul keuangan akan segera hadir…" }
+      "placeholder": {
+        "message": "Modul keuangan akan segera hadir…"
+      }
     },
     "reports": {
       "page": {
         "title": "Laporan Bisnis",
         "description": "Analitik, dasbor, dan business intelligence."
       },
-      "placeholder": { "message": "Modul laporan akan segera hadir…" }
+      "placeholder": {
+        "message": "Modul laporan akan segera hadir…"
+      }
     },
     "settings": {
       "page": {
         "title": "Pengaturan Sistem",
         "description": "Konfigurasi preferensi sistem, peran pengguna, dan integrasi."
       },
-      "placeholder": { "message": "Modul pengaturan akan segera hadir…" }
+      "placeholder": {
+        "message": "Modul pengaturan akan segera hadir…"
+      }
     }
   },
   "command": {
@@ -839,5 +860,53 @@
     "refreshEventsView": {
       "completed": "Tampilan acara berhasil disegarkan."
     }
+  },
+  "events_workspace": {
+    "progress_aria": "Progres {{eventCode}}",
+    "queue_title": "Antrian prioritas",
+    "needs_owner": "Perlu pemilik",
+    "queue_empty": "Belum ada event di antrian. Saat catatan operasional pertama dibuat, event akan muncul di sini dengan jejak status yang dapat dipertanggungjawabkan.",
+    "stage_label": "Tahap",
+    "source_label": "Sumber",
+    "owner_label": "Pemilik",
+    "unassigned": "Belum ditugaskan",
+    "claiming": "Mengklaim...",
+    "reassign_to_me": "Alihkan ke saya",
+    "claim_event": "Klaim event",
+    "advancing": "Melanjutkan...",
+    "already_closed": "Sudah ditutup",
+    "advance_stage": "Lanjutkan tahap",
+    "recent_proof_trail": "Jejak bukti terbaru",
+    "no_audit_evidence": "Belum ada bukti audit yang dicatat untuk event ini.",
+    "counterparty_context": "Konteks mitra",
+    "response_window_label": "Jendela respons",
+    "no_counterparty_dependency": "Event ini saat ini tidak bergantung pada mitra eksternal.",
+    "audit_trail_title": "Jejak audit",
+    "no_truth_records_workspace": "Belum ada catatan kebenaran yang ditambahkan untuk ruang kerja ini.",
+    "counterparty_roster": "Daftar mitra",
+    "owner_value": "Pemilik: {{owner}}",
+    "no_active_counterparty_escalations": "Tidak ada eskalasi mitra yang aktif.",
+    "no_counterparties_linked": "Belum ada mitra yang terhubung ke ruang kerja ini.",
+    "retry_surface": "Coba lagi permukaan ini",
+    "surface_title": "Operasi event",
+    "surface_description": "Jaga agar kepemilikan antrian, ketergantungan mitra, dan bukti audit tetap terlihat selama event masih bergerak.",
+    "surface_kicker": "Ruang kerja event",
+    "no_truth_records_tenant": "Belum ada catatan kebenaran yang ditambahkan untuk tenant ini.",
+    "what_this_proves": "Yang dibuktikan ini",
+    "truth_proof_1": "Setiap baris audit berasal langsung dari catatan kebenaran yang tersimpan, bukan dari snapshot ruang kerja.",
+    "truth_proof_2": "Ini menjaga bukti mutasi tetap berlingkup tenant, berurutan, dan dipagari izin tanpa bergantung pada preload dashboard.",
+    "truth_proof_3": "Auditabilitas adalah permukaan baca-kebenaran, bukan residu ruang kerja.",
+    "counterparty_surface_title": "Mitra operasional",
+    "counterparty_surface_description": "Lacak pihak luar yang memengaruhi alur event aktif, dan tampilkan kesehatan operasionalnya di samping antrian.",
+    "counterparty_surface_kicker": "Daftar mitra",
+    "active_coordination_events": "Event koordinasi aktif"
+  },
+  "demo_users": {
+    "title": "Pengguna",
+    "description": "Frontend Vite bertipe yang memakai paket kontrak bersama.",
+    "name_placeholder": "Nama",
+    "email_placeholder": "Email",
+    "create_user": "Buat pengguna",
+    "loading": "Memuat…"
   }
 }

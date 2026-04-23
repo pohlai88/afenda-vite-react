@@ -71,6 +71,14 @@ vi.mock("../marketing-page-registry", () => ({
   marketingLandingLegacySlugRoutes: [
     { path: "infinite-topology", slug: "topology" },
   ],
+  marketingCanonicalRedirects: [
+    {
+      path: "benchmark-erp",
+      to: "/marketing/campaigns/erp-benchmark",
+      canonicalId: "ErpBenchmarkCampaign",
+      reason: "campaign-shortlink",
+    },
+  ],
   marketingLandingLegacyRedirects: [
     { path: "infinitetopology", to: "/infinite-topology" },
   ],
@@ -293,6 +301,24 @@ describe("marketingRouteObjects", () => {
     expect(
       await screen.findByTestId("marketing-erp-benchmark-page")
     ).toBeInTheDocument()
+  })
+
+  it("redirects benchmark shortlinks to the canonical ERP benchmark campaign route", async () => {
+    const router = createMemoryRouter(marketingRouteObjects, {
+      initialEntries: ["/marketing/benchmark-erp"],
+    })
+
+    render(<RouterProvider router={router} />)
+
+    expect(
+      await screen.findByTestId("marketing-erp-benchmark-page")
+    ).toBeInTheDocument()
+
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe(
+        "/marketing/campaigns/erp-benchmark"
+      )
+    })
   })
 
   it("renders routed legal pages through the marketing catalog", async () => {

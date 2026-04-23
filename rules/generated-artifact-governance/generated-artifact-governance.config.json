@@ -1,0 +1,60 @@
+{
+  "$schema": "./generated-artifact-governance.schema-note.json",
+  "version": 1,
+  "ignoredDirectoryNames": ["node_modules"],
+  "mixedAuthoringRoots": [
+    {
+      "root": "packages/design-system",
+      "allowedGeneratedSubroots": ["generated", "design-architecture/src"]
+    }
+  ],
+  "generatedRoots": [
+    {
+      "root": "packages/design-system/generated",
+      "maxDirectoryDepth": 1,
+      "allowedFileExtensions": [".json"],
+      "allowedRelativePaths": [
+        "component-coverage.json",
+        "component-manifests.json",
+        "component-variants.json",
+        "schemas/component-coverage.schema.json",
+        "schemas/component-manifests.schema.json",
+        "schemas/component-variants.schema.json"
+      ],
+      "requiredCompanionFiles": [
+        {
+          "source": "component-coverage.json",
+          "companion": "schemas/component-coverage.schema.json"
+        },
+        {
+          "source": "component-manifests.json",
+          "companion": "schemas/component-manifests.schema.json"
+        },
+        {
+          "source": "component-variants.json",
+          "companion": "schemas/component-variants.schema.json"
+        }
+      ]
+    },
+    {
+      "root": "packages/design-system/design-architecture/src",
+      "maxDirectoryDepth": 2,
+      "allowedFileExtensions": [".css"],
+      "allowedRelativePaths": [
+        "app-theme-vocabulary.css",
+        "local.css",
+        "prettier-tailwind-stylesheet.css",
+        "theme/theme-afenda-extensions.css",
+        "theme/theme-dark.css",
+        "theme/theme-density.css",
+        "theme/theme-keyframes.css",
+        "theme/theme-reduced-motion.css",
+        "theme/theme-shadcn-compat.css",
+        "theme/theme-tailwind-bridge.css",
+        "theme/theme-tokens-layout.css",
+        "theme/theme-tokens-light.css",
+        "theme/theme.css"
+      ]
+    }
+  ]
+}

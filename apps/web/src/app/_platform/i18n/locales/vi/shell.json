@@ -360,7 +360,7 @@
     "items": {
       "events": "Nhật ký sự kiện",
       "audit": "Nhật ký kiểm toán",
-      "partners": "Tích hợp đối tác",
+      "counterparties": "Counterparties",
       "db_studio": "DB Studio",
       "my_project": "Dự án của tôi",
       "my_team": "Nhóm của tôi",
@@ -413,9 +413,9 @@
         "trail": "Dấu vết",
         "exports": "Xuất"
       },
-      "partners": {
-        "integrations": "Tích hợp",
-        "webhooks": "Webhook"
+      "counterparties": {
+        "dependencies": "Phụ thuộc",
+        "escalations": "Leo thang"
       }
     },
     "breadcrumb_root": "Gốc ERP",
@@ -427,7 +427,7 @@
       "section_app": "Ứng dụng",
       "event_log": "Nhật ký sự kiện",
       "audit_trail": "Dấu vết kiểm toán",
-      "partner_integrations": "Tích hợp đối tác",
+      "partner_integrations": "Counterparties vận hành",
       "placeholder_title": "Không gian làm việc",
       "placeholder_body": "Khu vực này sẽ được thay bằng một module riêng khi sẵn sàng."
     }
@@ -457,7 +457,7 @@
       "tabs": {
         "overview": "Tổng quan",
         "audit": "Kiểm toán",
-        "partners": "Đối tác"
+        "counterparties": "Counterparties"
       },
       "actions": {
         "refresh": "Làm mới",
@@ -465,7 +465,7 @@
         "more": "Thêm",
         "menu": {
           "audit": "Mở nhật ký kiểm toán",
-          "partners": "Mở tích hợp đối tác",
+          "counterparties": "Mở counterparties vận hành",
           "refresh": "Làm mới chế độ xem hiện tại"
         }
       }
@@ -674,7 +674,7 @@
     "account": "Tài khoản",
     "events": "Nhật ký sự kiện",
     "audit": "Nhật ký kiểm toán",
-    "partners": "Tích hợp đối tác",
+    "counterparties": "Counterparties",
     "db_studio": "DB Studio",
     "aria_label": "Điều hướng phạm vi",
     "home": "Trang chủ",
@@ -750,7 +750,14 @@
     "enter_fullscreen": "Vào toàn màn hình",
     "exit_fullscreen": "Thoát toàn màn hình",
     "exit_focus_mode": "Thoát chế độ tập trung",
-    "focus_hover_expand_hint": "Di chuyển chuột tới cạnh trên để mở rộng thanh tiêu đề không gian làm việc."
+    "focus_hover_expand_hint": "Di chuyển chuột tới cạnh trên để mở rộng thanh tiêu đề không gian làm việc.",
+    "tenant_switcher_loading": "Đang tải không gian làm việc…",
+    "tenant_switcher_default": "Mặc định",
+    "tenant_switcher_load_error": "Không thể tải các lựa chọn không gian làm việc.",
+    "tenant_switcher_switch_error": "Không thể chuyển quyền truy cập không gian làm việc.",
+    "tenant_switcher_switching": "Đang chuyển…",
+    "tenant_switcher_aria": "Chuyển không gian làm việc đang hoạt động",
+    "tenant_indicator_prefix": "Tenant"
   },
   "actions": {
     "command_running": "Đang tải…",
@@ -767,49 +774,63 @@
         "title": "Quản lý tồn kho",
         "description": "Quản lý sản phẩm, mức tồn kho và giao dịch tồn kho."
       },
-      "placeholder": { "message": "Mô-đun tồn kho sắp ra mắt…" }
+      "placeholder": {
+        "message": "Mô-đun tồn kho sắp ra mắt…"
+      }
     },
     "sales": {
       "page": {
         "title": "Quản lý bán hàng",
         "description": "Theo dõi đơn hàng, quản lý pipeline bán hàng và doanh thu."
       },
-      "placeholder": { "message": "Mô-đun bán hàng sắp ra mắt…" }
+      "placeholder": {
+        "message": "Mô-đun bán hàng sắp ra mắt…"
+      }
     },
     "customers": {
       "page": {
         "title": "Quản lý khách hàng",
         "description": "Quản lý quan hệ khách hàng, liên hệ và tương tác."
       },
-      "placeholder": { "message": "Mô-đun khách hàng sắp ra mắt…" }
+      "placeholder": {
+        "message": "Mô-đun khách hàng sắp ra mắt…"
+      }
     },
     "employees": {
       "page": {
         "title": "Quản lý nhân viên",
         "description": "Quản lý HR, lịch làm việc và theo dõi hiệu suất."
       },
-      "placeholder": { "message": "Mô-đun nhân viên sắp ra mắt…" }
+      "placeholder": {
+        "message": "Mô-đun nhân viên sắp ra mắt…"
+      }
     },
     "finance": {
       "page": {
         "title": "Quản lý tài chính",
         "description": "Kế toán, báo cáo tài chính và quản lý giao dịch."
       },
-      "placeholder": { "message": "Mô-đun tài chính sắp ra mắt…" }
+      "placeholder": {
+        "message": "Mô-đun tài chính sắp ra mắt…"
+      }
     },
     "reports": {
       "page": {
         "title": "Báo cáo kinh doanh",
         "description": "Phân tích, bảng điều khiển và business intelligence."
       },
-      "placeholder": { "message": "Mô-đun báo cáo sắp ra mắt…" }
+      "placeholder": {
+        "message": "Mô-đun báo cáo sắp ra mắt…"
+      }
     },
     "settings": {
       "page": {
         "title": "Cài đặt hệ thống",
         "description": "Cấu hình tùy chọn hệ thống, vai trò người dùng và tích hợp."
       },
-      "placeholder": { "message": "Mô-đun cài đặt sắp ra mắt…" }
+      "placeholder": {
+        "message": "Mô-đun cài đặt sắp ra mắt…"
+      }
     }
   },
   "command": {
@@ -839,5 +860,53 @@
     "refreshEventsView": {
       "completed": "Đã làm mới chế độ xem sự kiện."
     }
+  },
+  "events_workspace": {
+    "progress_aria": "Tiến trình {{eventCode}}",
+    "queue_title": "Hàng đợi ưu tiên",
+    "needs_owner": "Cần người phụ trách",
+    "queue_empty": "Chưa có sự kiện nào trong hàng đợi. Khi bản ghi vận hành đầu tiên được tạo, sự kiện sẽ xuất hiện ở đây cùng dấu vết trạng thái có thể kiểm chứng.",
+    "stage_label": "Giai đoạn",
+    "source_label": "Nguồn",
+    "owner_label": "Người phụ trách",
+    "unassigned": "Chưa phân công",
+    "claiming": "Đang nhận...",
+    "reassign_to_me": "Giao lại cho tôi",
+    "claim_event": "Nhận sự kiện",
+    "advancing": "Đang chuyển bước...",
+    "already_closed": "Đã đóng",
+    "advance_stage": "Chuyển giai đoạn",
+    "recent_proof_trail": "Dấu vết bằng chứng gần đây",
+    "no_audit_evidence": "Chưa có bằng chứng kiểm toán nào được ghi lại cho sự kiện này.",
+    "counterparty_context": "Bối cảnh đối tác",
+    "response_window_label": "Khung phản hồi",
+    "no_counterparty_dependency": "Sự kiện này hiện không phụ thuộc vào đối tác bên ngoài.",
+    "audit_trail_title": "Dấu vết kiểm toán",
+    "no_truth_records_workspace": "Chưa có bản ghi sự thật nào được thêm cho không gian làm việc này.",
+    "counterparty_roster": "Danh sách đối tác",
+    "owner_value": "Người phụ trách: {{owner}}",
+    "no_active_counterparty_escalations": "Không có leo thang đối tác nào đang hoạt động.",
+    "no_counterparties_linked": "Chưa có đối tác nào được liên kết với không gian làm việc này.",
+    "retry_surface": "Thử lại bề mặt này",
+    "surface_title": "Vận hành sự kiện",
+    "surface_description": "Giữ quyền sở hữu hàng đợi, phụ thuộc đối tác và bằng chứng kiểm toán luôn hiển thị khi sự kiện vẫn đang di chuyển.",
+    "surface_kicker": "Không gian làm việc sự kiện",
+    "no_truth_records_tenant": "Chưa có bản ghi sự thật nào được thêm cho tenant này.",
+    "what_this_proves": "Điều này chứng minh gì",
+    "truth_proof_1": "Mỗi dòng kiểm toán đến trực tiếp từ bản ghi sự thật đã lưu, không phải snapshot không gian làm việc.",
+    "truth_proof_2": "Điều này giữ bằng chứng đột biến theo phạm vi tenant, có thứ tự và có kiểm soát quyền mà không phụ thuộc vào preload của dashboard.",
+    "truth_proof_3": "Khả năng kiểm toán là một bề mặt đọc-sự-thật, không phải phần dư của không gian làm việc.",
+    "counterparty_surface_title": "Đối tác vận hành",
+    "counterparty_surface_description": "Theo dõi những bên bên ngoài đang ảnh hưởng đến luồng sự kiện đang hoạt động, và hiển thị tình trạng vận hành của họ cạnh hàng đợi.",
+    "counterparty_surface_kicker": "Danh sách đối tác",
+    "active_coordination_events": "Sự kiện phối hợp đang hoạt động"
+  },
+  "demo_users": {
+    "title": "Người dùng",
+    "description": "Frontend Vite có kiểu dữ liệu tiêu thụ các gói hợp đồng dùng chung.",
+    "name_placeholder": "Tên",
+    "email_placeholder": "Email",
+    "create_user": "Tạo người dùng",
+    "loading": "Đang tải…"
   }
 }

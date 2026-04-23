@@ -12,7 +12,7 @@ Use this template for cross-feature runtime infrastructure only:
 - permissions and guards
 - providers and error boundaries
 
-Do not use this template for ERP modules such as finance, inventory, audit, sales, or partner operations. Those belong in `_features`.
+Do not use this template for ERP modules such as finance, inventory, audit, sales, or counterparty operations. Those belong in `_features`.
 
 ## Folders
 

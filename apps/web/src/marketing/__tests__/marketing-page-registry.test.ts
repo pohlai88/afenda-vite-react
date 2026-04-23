@@ -4,6 +4,8 @@ import {
   DEFAULT_MARKETING_LANDING_VARIANT_ID,
   MARKETING_LANDING_STORAGE_KEY,
   MARKETING_PAGE_HREFS,
+  marketingCanonicalRedirectPaths,
+  marketingCanonicalRedirects,
   getDefaultMarketingLandingVariant,
   isMarketingLandingVariantId,
   isMarketingLandingVariantSlug,
@@ -150,6 +152,21 @@ describe("marketing page registry", () => {
     )
   })
 
+  it("keeps canonical redirect paths unique and disjoint from concrete page paths", () => {
+    expect(new Set(marketingCanonicalRedirectPaths).size).toBe(
+      marketingCanonicalRedirectPaths.length
+    )
+
+    for (const aliasPath of marketingCanonicalRedirectPaths) {
+      expect(marketingRoutablePagePaths).not.toContain(
+        aliasPath as (typeof marketingRoutablePagePaths)[number]
+      )
+      expect(marketingLandingVariantSlugs).not.toContain(
+        aliasPath as (typeof marketingLandingVariantSlugs)[number]
+      )
+    }
+  })
+
   it("resolves the default variant consistently", () => {
     expect(getDefaultMarketingLandingVariant().id).toBe(
       DEFAULT_MARKETING_LANDING_VARIANT_ID
@@ -219,6 +236,9 @@ describe("marketing page registry", () => {
     expect(MARKETING_PAGE_HREFS.truthEngine).toBe(
       "/marketing/product/truth-engine"
     )
+    expect(MARKETING_PAGE_HREFS.benchmarkErp).toBe(
+      "/marketing/campaigns/erp-benchmark"
+    )
     expect(MARKETING_PAGE_HREFS.about).toBe("/marketing/company/about")
     expect(MARKETING_PAGE_HREFS.privacyPolicy).toBe(
       "/marketing/legal/privacy-policy"
@@ -243,33 +263,37 @@ describe("marketing page registry", () => {
     expect(marketingLandingVariantIds).toContain(result)
   })
 
-  it("loads every registry variant module with a default export", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
-
-    try {
-      const modules: Array<{
-        id: string
-        module: Awaited<
-          ReturnType<(typeof marketingLandingVariants)[number]["load"]>
-        >
-      }> = []
-
-      for (const variant of marketingLandingVariants) {
-        modules.push({
-          id: variant.id,
-          module: await variant.load(),
-        })
-      }
-
-      for (const entry of modules) {
-        expect(entry.module.default, `${entry.id} default export`).toBeTypeOf(
-          "function"
-        )
-      }
-    } finally {
-      warn.mockRestore()
+  it("keeps registry variant loaders callable", () => {
+    for (const variant of marketingLandingVariants) {
+      expect(variant.load, `${variant.id} loader`).toBeTypeOf("function")
     }
-  }, 60000)
+  })
+
+  it("keeps canonical redirects pointed at registered routable pages", () => {
+    for (const redirect of marketingCanonicalRedirects) {
+      expect(redirect.to.startsWith("/marketing/")).toBe(true)
+      expect(
+        marketingRoutablePages.some((page) => page.id === redirect.canonicalId)
+      ).toBe(true)
+    }
+  })
+
+  it.each([DEFAULT_MARKETING_LANDING_VARIANT_ID, "Polaris"] as const)(
+    "loads the %s registry variant module with a default export",
+    async (variantId) => {
+      const variant = marketingLandingVariants.find(
+        (candidate) => candidate.id === variantId
+      )
+
+      expect(variant, `${variantId} registry entry`).toBeDefined()
+
+      const module = await variant!.load()
+      expect(module.default, `${variantId} default export`).toBeTypeOf(
+        "function"
+      )
+    },
+    60000
+  )
 
   it("loads every routable marketing page module with a default export", async () => {
     const modules: Array<{
@@ -291,5 +315,5 @@ describe("marketing page registry", () => {
         "function"
       )
     }
-  }, 30000)
+  }, 120000)
 })

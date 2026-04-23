@@ -112,6 +112,15 @@ async function main() {
           `workspaceGovernance.packageTopology.workspaceRootDirectories[${index}]`
         )
       }
+      for (const [
+        index,
+        pkg,
+      ] of config.workspaceGovernance.packageRoots.packages.entries()) {
+        assertRelativeWorkspacePath(
+          pkg.path,
+          `workspaceGovernance.packageRoots.packages[${index}].path`
+        )
+      }
       assertRelativeWorkspacePath(
         config.workspaceGovernance.featureTemplate.featuresRoot,
         "workspaceGovernance.featureTemplate.featuresRoot"
@@ -124,6 +133,117 @@ async function main() {
         config.workspaceGovernance.webClientSrc.srcRoot,
         "workspaceGovernance.webClientSrc.srcRoot"
       )
+      assertRelativeWorkspacePath(
+        config.governance.evidence.root,
+        "governance.evidence.root"
+      )
+      assertRelativeWorkspacePath(
+        config.governance.evidence.aggregateReportPath,
+        "governance.evidence.aggregateReportPath"
+      )
+      assertRelativeWorkspacePath(
+        config.governance.evidence.summaryReportPath,
+        "governance.evidence.summaryReportPath"
+      )
+      assertRelativeWorkspacePath(
+        config.governance.evidence.registerPath,
+        "governance.evidence.registerPath"
+      )
+      assertRelativeWorkspacePath(
+        config.governance.evidence.registerSnapshotPath,
+        "governance.evidence.registerSnapshotPath"
+      )
+      assertRelativeWorkspacePath(
+        config.governance.waivers.registryPath,
+        "governance.waivers.registryPath"
+      )
+      assertRelativeWorkspacePath(
+        config.governance.waivers.reportPath,
+        "governance.waivers.reportPath"
+      )
+      for (const [index, domain] of config.governance.domains.entries()) {
+        assertRelativeWorkspacePath(
+          domain.docs.primary,
+          `governance.domains[${index}].docs.primary`
+        )
+        for (const [referenceIndex, reference] of domain.docs.references.entries()) {
+          assertRelativeWorkspacePath(
+            reference,
+            `governance.domains[${index}].docs.references[${referenceIndex}]`
+          )
+        }
+        assertRelativeWorkspacePath(
+          domain.localConfig,
+          `governance.domains[${index}].localConfig`
+        )
+        assertRelativeWorkspacePath(
+          domain.evidencePath,
+          `governance.domains[${index}].evidencePath`
+        )
+        assertRelativeWorkspacePath(
+          domain.report.scriptPath,
+          `governance.domains[${index}].report.scriptPath`
+        )
+        for (const [checkIndex, check] of domain.checks.entries()) {
+          assertRelativeWorkspacePath(
+            check.scriptPath,
+            `governance.domains[${index}].checks[${checkIndex}].scriptPath`
+          )
+        }
+      }
+      for (const [index, gate] of config.governance.gates.entries()) {
+        assertRelativeWorkspacePath(
+          gate.scriptPath,
+          `governance.gates[${index}].scriptPath`
+        )
+      }
+      for (const [index, rollout] of config.fileSurvival.rollouts.entries()) {
+        assertRelativeWorkspacePath(
+          rollout.scopeRoot,
+          `fileSurvival.rollouts[${index}].scopeRoot`
+        )
+        for (const [sharedIndex, sharedRoot] of rollout.sharedRoots.entries()) {
+          assertRelativeWorkspacePath(
+            sharedRoot,
+            `fileSurvival.rollouts[${index}].sharedRoots[${sharedIndex}]`
+          )
+        }
+        for (const [
+          ownerIndex,
+          runtimeOwner,
+        ] of rollout.runtimeOwners.entries()) {
+          assertRelativeWorkspacePath(
+            runtimeOwner,
+            `fileSurvival.rollouts[${index}].runtimeOwners[${ownerIndex}]`
+          )
+        }
+        for (const [
+          exceptionIndex,
+          reviewedException,
+        ] of rollout.reviewedExceptions.entries()) {
+          assertRelativeWorkspacePath(
+            reviewedException,
+            `fileSurvival.rollouts[${index}].reviewedExceptions[${exceptionIndex}]`
+          )
+        }
+        for (const [
+          scopeIndex,
+          protectedScope,
+        ] of rollout.protectedScopes.entries()) {
+          for (const [rootIndex, protectedRoot] of protectedScope.roots.entries()) {
+            assertRelativeWorkspacePath(
+              protectedRoot,
+              `fileSurvival.rollouts[${index}].protectedScopes[${scopeIndex}].roots[${rootIndex}]`
+            )
+          }
+        }
+        for (const [ownerIndex, ownerRule] of rollout.ownerTruth.entries()) {
+          assertRelativeWorkspacePath(
+            ownerRule.root,
+            `fileSurvival.rollouts[${index}].ownerTruth[${ownerIndex}].root`
+          )
+        }
+      }
     },
     () =>
       `featuresRoot=${config.workspaceGovernance.featureTemplate.featuresRoot}, sharedPackage=${config.workspaceGovernance.sharedPackageTemplate.packagePath}, webClientSrc=${config.workspaceGovernance.webClientSrc.srcRoot}`
@@ -186,9 +306,51 @@ async function main() {
         sharedTypescriptConfigDirectory,
         `Configured TypeScript shared config path "${config.paths.typescriptSharedConfig}" does not exist.`
       )
+      for (const rollout of config.fileSurvival.rollouts) {
+        await assertDirectoryExists(
+          path.join(workspaceRoot, rollout.scopeRoot),
+          `Configured file survival scope root "${rollout.scopeRoot}" does not exist.`
+        )
+        for (const sharedRoot of rollout.sharedRoots) {
+          await assertDirectoryExists(
+            path.join(workspaceRoot, sharedRoot),
+            `Configured file survival shared root "${sharedRoot}" does not exist.`
+          )
+        }
+        for (const runtimeOwner of rollout.runtimeOwners) {
+          await assertFileExists(
+            path.join(workspaceRoot, runtimeOwner),
+            `Configured file survival runtime owner "${runtimeOwner}" does not exist.`
+          )
+        }
+        for (const reviewedException of rollout.reviewedExceptions) {
+          const absoluteReviewedExceptionPath = path.join(
+            workspaceRoot,
+            reviewedException
+          )
+          await assertPathExists(
+            absoluteReviewedExceptionPath,
+            `Configured file survival reviewed exception "${reviewedException}" does not exist.`
+          )
+        }
+        for (const protectedScope of rollout.protectedScopes) {
+          for (const protectedRoot of protectedScope.roots) {
+            await assertPathExists(
+              path.join(workspaceRoot, protectedRoot),
+              `Configured file survival protected scope root "${protectedRoot}" does not exist.`
+            )
+          }
+        }
+        for (const ownerRule of rollout.ownerTruth) {
+          await assertPathExists(
+            path.join(workspaceRoot, ownerRule.root),
+            `Configured file survival owner truth root "${ownerRule.root}" does not exist.`
+          )
+        }
+      }
     },
     () =>
-      `${config.paths.webApp} and ${config.paths.typescriptSharedConfig} exist.`
+      `${config.paths.webApp}, ${config.paths.typescriptSharedConfig}, and ${String(config.fileSurvival.rollouts.length)} file survival rollout(s) exist.`
   )
 
   const [
@@ -248,6 +410,14 @@ async function main() {
     },
     () =>
       "Workspace package roots do not contain manifestless package directories."
+  )
+
+  await runDiagnosticStep(
+    "Enforce workspace package root governance",
+    async () => {
+      await assertPackageRootGovernance(config)
+    },
+    () => "Workspace package roots match declared root profiles."
   )
 
   await runDiagnosticStep(
@@ -573,6 +743,92 @@ async function assertPackageTopologyGovernance(
   }
 }
 
+async function assertPackageRootGovernance(
+  config: Awaited<ReturnType<typeof loadAfendaConfig>>
+) {
+  const packageRootGovernance = config.workspaceGovernance.packageRoots
+  const profileMap = new Map<
+    string,
+    (typeof packageRootGovernance.profiles)[number]
+  >()
+  const packageDefinitionMap = new Map<
+    string,
+    (typeof packageRootGovernance.packages)[number]
+  >()
+
+  for (const profile of packageRootGovernance.profiles) {
+    assert(
+      !profileMap.has(profile.name),
+      `workspaceGovernance.packageRoots.profiles contains duplicate profile "${profile.name}".`
+    )
+    profileMap.set(profile.name, profile)
+  }
+
+  for (const packageDefinition of packageRootGovernance.packages) {
+    const normalizedPath = toPosixPath(packageDefinition.path)
+    assert(
+      profileMap.has(packageDefinition.profile),
+      `workspaceGovernance.packageRoots.packages entry "${normalizedPath}" references unknown profile "${packageDefinition.profile}".`
+    )
+    assert(
+      !packageDefinitionMap.has(normalizedPath),
+      `workspaceGovernance.packageRoots.packages contains duplicate path "${normalizedPath}".`
+    )
+    packageDefinitionMap.set(normalizedPath, packageDefinition)
+  }
+
+  const discoveredPackageDirectories =
+    await collectWorkspacePackageDirectories(config)
+
+  for (const packageDirectory of discoveredPackageDirectories) {
+    assert(
+      packageDefinitionMap.has(packageDirectory),
+      `Workspace package directory "${packageDirectory}" must be declared in workspaceGovernance.packageRoots.packages.`
+    )
+  }
+
+  for (const [packageDirectory, packageDefinition] of packageDefinitionMap) {
+    assert(
+      discoveredPackageDirectories.includes(packageDirectory),
+      `workspaceGovernance.packageRoots.packages entry "${packageDirectory}" does not match a discovered workspace package directory.`
+    )
+
+    const profile = profileMap.get(packageDefinition.profile)
+    assert(
+      profile,
+      `Missing package root profile "${packageDefinition.profile}".`
+    )
+
+    const packageRootPath = path.join(workspaceRoot, packageDirectory)
+    const allowedDirectories = new Set([
+      ...profile.allowedDirectories,
+      ...packageDefinition.extraAllowedDirectories,
+    ])
+    const allowedFiles = new Set([
+      ...profile.allowedFiles,
+      ...packageDefinition.extraAllowedFiles,
+    ])
+    const entries = await fs.readdir(packageRootPath, { withFileTypes: true })
+
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        assert(
+          allowedDirectories.has(entry.name),
+          `Package root "${packageDirectory}" contains disallowed directory "${entry.name}/". Allowed directories: ${[...allowedDirectories].sort((left, right) => left.localeCompare(right)).join(", ")}.`
+        )
+        continue
+      }
+
+      if (entry.isFile()) {
+        assert(
+          allowedFiles.has(entry.name),
+          `Package root "${packageDirectory}" contains disallowed file "${entry.name}". Allowed files: ${[...allowedFiles].sort((left, right) => left.localeCompare(right)).join(", ")}.`
+        )
+      }
+    }
+  }
+}
+
 async function assertSharedPackageTemplateGovernance(
   config: Awaited<ReturnType<typeof loadAfendaConfig>>
 ) {
@@ -599,6 +855,43 @@ async function assertSharedPackageTemplateGovernance(
       `Shared package "${sharedPackageTemplate.packagePath}" must include "${requiredDirectory}/" per workspaceGovernance.sharedPackageTemplate.`
     )
   }
+}
+
+async function collectWorkspacePackageDirectories(
+  config: Awaited<ReturnType<typeof loadAfendaConfig>>
+) {
+  const packageDirectories: string[] = []
+
+  for (const workspaceRootDirectory of config.workspaceGovernance
+    .packageTopology.workspaceRootDirectories) {
+    const rootDirectoryPath = path.join(workspaceRoot, workspaceRootDirectory)
+    const entries = await fs.readdir(rootDirectoryPath, { withFileTypes: true })
+
+    for (const entry of entries) {
+      if (!entry.isDirectory() || entry.name.startsWith(".")) {
+        continue
+      }
+
+      const relativePackageDirectory = toPosixPath(
+        path.join(workspaceRootDirectory, entry.name)
+      )
+      const packageJsonPath = path.join(
+        rootDirectoryPath,
+        entry.name,
+        "package.json"
+      )
+      const packageJsonExists = await fs
+        .stat(packageJsonPath)
+        .then((stats) => stats.isFile())
+        .catch(() => false)
+
+      if (packageJsonExists) {
+        packageDirectories.push(relativePackageDirectory)
+      }
+    }
+  }
+
+  return packageDirectories.sort((left, right) => left.localeCompare(right))
 }
 
 async function assertWebClientSrcGovernance(
@@ -665,6 +958,11 @@ async function assertDirectoryExists(directoryPath: string, message: string) {
 async function assertFileExists(filePath: string, message: string) {
   const stats = await fs.stat(filePath).catch(() => undefined)
   assert(Boolean(stats?.isFile()), message)
+}
+
+async function assertPathExists(targetPath: string, message: string) {
+  const stats = await fs.stat(targetPath).catch(() => undefined)
+  assert(Boolean(stats), message)
 }
 
 function assertScopedPackageName(

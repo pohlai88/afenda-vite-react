@@ -91,4 +91,14 @@ describe("Settings", () => {
     ).toBeInTheDocument()
     expect(screen.getByTestId("security-settings")).toBeInTheDocument()
   })
+
+  it("supports embedded mode without rendering the local page header", () => {
+    render(<Settings view="account" embedded />)
+
+    expect(
+      screen.queryByRole("heading", { name: "Account Preferences" })
+    ).not.toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "Account" })).toBeInTheDocument()
+    expect(screen.getByTestId("account-settings")).toBeInTheDocument()
+  })
 })

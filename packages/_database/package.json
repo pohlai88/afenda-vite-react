@@ -9,7 +9,7 @@
   "scripts": {
     "build": "pnpm run typecheck",
     "typecheck": "tsc -p tsconfig.json",
-    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint . --cache --cache-location .artifacts/eslint --concurrency auto",
     "test": "vitest",
     "test:run": "vitest run",
     "test:live-db": "vitest run src/__tests__/live-db.integration.test.ts",
@@ -31,7 +31,8 @@
     "db:push:force": "pnpm run db:guard && drizzle-kit push --force",
     "db:apply-hardening": "tsx scripts/apply-hardening.ts",
     "db:sync-glossary-enums": "tsx scripts/sync-glossary-enums.ts",
-    "db:pick-demo-tenant-id": "tsx scripts/pick-demo-tenant-id.ts"
+    "db:pick-demo-tenant-id": "tsx scripts/pick-demo-tenant-id.ts",
+    "audit:check-writer-boundary": "tsx scripts/check-audit-writer-boundary.ts"
   },
   "exports": {
     ".": {

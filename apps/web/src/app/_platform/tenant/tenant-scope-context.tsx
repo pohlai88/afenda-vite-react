@@ -13,12 +13,14 @@ import {
 import {
   ApiClientHttpError,
   getSharedApiClient,
-} from "../runtime/services/api-client-service"
-import { resolveApiV1Path } from "../runtime/api-client-config"
-import { getDemoTenantId } from "../config/afenda-local-env"
+  resolveApiV1Path,
+} from "../runtime"
 import { useAfendaSession } from "../auth"
 
-import type { AfendaMeResponse } from "./tenant-scope-types"
+import type {
+  AfendaMeResponse,
+  TenantMembershipChoice,
+} from "./tenant-scope-types"
 
 const STORAGE_KEY = "afenda.selectedTenantId"
 
@@ -42,9 +44,9 @@ function resolveTenantScopeLoadError(error: unknown): {
   if (error instanceof ApiClientHttpError) {
     const body =
       error.body && typeof error.body === "object"
-        ? (error.body as { code?: unknown })
+        ? (error.body as { code?: unknown; error?: { code?: unknown } })
         : null
-    const code = body?.code
+    const code = body?.code ?? body?.error?.code
     if (error.status === 401) {
       return { kind: "api_session", httpStatus: 401 }
     }
@@ -80,6 +82,7 @@ export type TenantScopeState =
       readonly status: "ready"
       readonly me: AfendaMeResponse
       readonly selectedTenantId: string | null
+      readonly tenantChoices: readonly TenantMembershipChoice[]
       readonly setSelectedTenantId: (id: string | null) => void
     }
   | {
@@ -101,6 +104,7 @@ export function TenantScopeProvider(props: { readonly children: ReactNode }) {
   const [snapshot, setSnapshot] = useState<{
     readonly me: AfendaMeResponse
     readonly selectedTenantId: string | null
+    readonly tenantChoices: readonly TenantMembershipChoice[]
   } | null>(null)
   const [phase, setPhase] = useState<"idle" | "loading" | "error" | "ready">(
     "idle"
@@ -153,25 +157,29 @@ export function TenantScopeProvider(props: { readonly children: ReactNode }) {
         if (cancelled) {
           return
         }
-        const tenantIds = me.afenda?.tenantIds ?? []
+        const tenantChoices = me.tenant?.memberships ?? []
+        const tenantIds =
+          tenantChoices.map((candidate) => candidate.tenantId) ??
+          me.afenda?.tenantIds ??
+          []
         const stored =
           typeof sessionStorage !== "undefined"
             ? sessionStorage.getItem(STORAGE_KEY)
             : null
         const fromStorage =
           stored !== null && tenantIds.includes(stored) ? stored : null
-        const demoId = getDemoTenantId()
-        const preferDemo =
-          demoId !== undefined &&
-          tenantIds.includes(demoId) &&
-          fromStorage === null
         const initial =
           fromStorage ??
-          (preferDemo ? demoId : me.afenda?.defaultTenantId) ??
+          me.tenant?.id ??
+          me.afenda?.defaultTenantId ??
           tenantIds[0] ??
           null
 
-        setSnapshot({ me, selectedTenantId: initial })
+        setSnapshot({
+          me,
+          selectedTenantId: initial,
+          tenantChoices,
+        })
         setPhase("ready")
       } catch (e) {
         if (cancelled) {
@@ -205,6 +213,7 @@ export function TenantScopeProvider(props: { readonly children: ReactNode }) {
         status: "ready",
         me: snapshot.me,
         selectedTenantId: snapshot.selectedTenantId,
+        tenantChoices: snapshot.tenantChoices,
         setSelectedTenantId,
       }
     }

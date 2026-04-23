@@ -8,6 +8,13 @@
       "when": 1776502822150,
       "tag": "0000_dear_rockslide",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776818521973,
+      "tag": "0001_wealthy_the_fallen",
+      "breakpoints": true
     }
   ]
 }

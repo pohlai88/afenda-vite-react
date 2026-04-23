@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import { describe, expect, it } from "vitest"
 
-import { MarketingPageShell } from "../pages/_components"
+import { MarketingPageShell } from "../components"
 
 describe("MarketingPageShell", () => {
   it("renders a safe shell with skip link and full mobile/footer page directory", () => {

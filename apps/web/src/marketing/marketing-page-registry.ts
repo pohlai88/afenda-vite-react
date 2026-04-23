@@ -16,7 +16,7 @@ export const MARKETING_PAGE_HREFS = {
   marketingHome: "/marketing",
   flagship: "/marketing/flagship",
   canon: "/marketing/polaris",
-  benchmarkErp: "/marketing/benchmark-erp",
+  benchmarkErp: "/marketing/campaigns/erp-benchmark",
   erpBenchmarkCampaign: "/marketing/campaigns/erp-benchmark",
   truthEngine: "/marketing/product/truth-engine",
   about: "/marketing/company/about",
@@ -40,7 +40,6 @@ export const marketingPageDirectoryNavigation = [
   { label: "Flagship", to: MARKETING_PAGE_HREFS.flagship },
   { label: "Truth Engine", to: MARKETING_PAGE_HREFS.truthEngine },
   { label: "Benchmark ERP", to: MARKETING_PAGE_HREFS.benchmarkErp },
-  { label: "Campaign", to: MARKETING_PAGE_HREFS.erpBenchmarkCampaign },
   { label: "About", to: MARKETING_PAGE_HREFS.about },
   { label: "Trust Center", to: MARKETING_PAGE_HREFS.trustCenter },
   { label: "Governance", to: MARKETING_PAGE_HREFS.dataGovernance },
@@ -53,62 +52,58 @@ export const marketingLandingVariants = [
   {
     id: "Moire",
     slug: "moire",
-    load: () => import("@/marketing/pages/landing/1.Moire-BW"),
+    load: () => import("@/marketing/pages/landing/moire-landing-page"),
   },
   {
     id: "Absolutism",
     slug: "kinetic-absolutism",
-    load: () => import("@/marketing/pages/landing/2.Kinetic-Absolutism-BW"),
+    load: () =>
+      import("@/marketing/pages/landing/kinetic-absolutism-landing-page"),
   },
   {
     id: "Single-Life",
     slug: "single-life",
-    load: () => import("@/marketing/pages/landing/3.Single-Life-BW"),
+    load: () => import("@/marketing/pages/landing/single-life-landing-page"),
   },
   {
     id: "Forensic",
     slug: "forensic",
-    load: () => import("@/marketing/pages/landing/4.Forensic-BW"),
+    load: () => import("@/marketing/pages/landing/forensic-landing-page"),
   },
   {
     id: "Topology",
     slug: "topology",
-    load: () => import("@/marketing/pages/landing/5.Topology-BW"),
+    load: () => import("@/marketing/pages/landing/topology-landing-page"),
   },
   {
     id: "Monochrom",
     slug: "monochrom",
-    load: () => import("@/marketing/pages/landing/6.Monochrom-BW"),
+    load: () => import("@/marketing/pages/landing/monochrom-landing-page"),
   },
   {
     id: "Resolve",
     slug: "resolve",
-    load: () => import("@/marketing/pages/landing/7.Resolve-BW"),
+    load: () => import("@/marketing/pages/landing/resolve-landing-page"),
   },
   {
     id: "Polaris",
     slug: "polaris",
-    load: () => import("@/marketing/pages/landing/8.Polaris"),
+    load: () => import("@/marketing/pages/landing/polaris-landing-page"),
   },
   {
     id: "Surface",
     slug: "surface",
-    load: () => import("@/marketing/pages/landing/9.Surface-BW"),
+    load: () => import("@/marketing/pages/landing/surface-landing-page"),
   },
   {
     id: "Monument",
     slug: "monument",
-    load: () => import("@/marketing/pages/landing/10.Monument"),
+    load: () => import("@/marketing/pages/landing/monument-landing-page"),
   },
   {
     id: "Beastmode",
     slug: "beastmode",
-    load: () => import("@/marketing/pages/landing/11.Beastmode"),
-  },
-  {
-    id: "BenchmarkERP",
-    slug: "benchmark-erp",
-    load: () => import("@/marketing/pages/landing/flagship/flagship-page"),
+    load: () => import("@/marketing/pages/landing/beastmode-landing-page"),
   },
 ] as const satisfies readonly {
   readonly id: string
@@ -120,47 +115,66 @@ export const marketingRoutablePages = [
   {
     id: "ErpBenchmarkCampaign",
     path: "campaigns/erp-benchmark",
-    load: () => import("./pages/campaigns/erp-benchmark-page"),
+    load: () => import("./pages/campaigns/erp-benchmark/erp-benchmark-page"),
   },
   {
     id: "TruthEngine",
     path: "product/truth-engine",
-    load: () => import("./pages/product/truth-engine-page"),
+    load: () => import("./pages/product/truth-engine/truth-engine-page"),
   },
   {
     id: "About",
     path: "company/about",
-    load: () => import("./pages/company/about-page"),
+    load: () => import("./pages/company/about/about-page"),
   },
   {
     id: "TrustCenter",
     path: "legal/trust-center",
-    load: () => import("./pages/legal/trust-center-page"),
+    load: () => import("./pages/legal/trust-center/trust-center-page"),
   },
   {
     id: "DataGovernance",
     path: "legal/data-governance",
-    load: () => import("./pages/legal/data-governance-page"),
+    load: () => import("./pages/legal/data-governance/governance-data-page"),
   },
   {
     id: "PrivacyPolicy",
     path: "legal/privacy-policy",
-    load: () => import("./pages/legal/privacy-policy-page"),
+    load: () => import("./pages/legal/privacy-policy/privacy-policy-page"),
   },
   {
     id: "Pdpa",
     path: "legal/pdpa",
-    load: () => import("./pages/legal/pdpa-page"),
+    load: () => import("./pages/legal/pdpa/pdpa-page"),
   },
   {
     id: "AsiaPacific",
     path: "regional/asia-pacific",
-    load: () => import("./pages/regional/asia-pacific-page"),
+    load: () => import("./pages/regional/asia-pacific/asia-pacific-page"),
   },
 ] as const satisfies readonly {
   readonly id: string
   readonly path: string
   readonly load: () => Promise<MarketingLandingModule>
+}[]
+
+/**
+ * Intentional public aliases that redirect to one canonical marketing route.
+ * These paths stay explicit so campaign shortcuts do not silently duplicate
+ * a separate public page module.
+ */
+export const marketingCanonicalRedirects = [
+  {
+    path: "benchmark-erp",
+    to: MARKETING_PAGE_HREFS.erpBenchmarkCampaign,
+    canonicalId: "ErpBenchmarkCampaign",
+    reason: "campaign-shortlink",
+  },
+] as const satisfies readonly {
+  readonly path: string
+  readonly to: string
+  readonly canonicalId: MarketingRoutablePageDefinition["id"]
+  readonly reason: "campaign-shortlink"
 }[]
 
 export type MarketingLandingVariantDefinition =
@@ -174,6 +188,8 @@ export type MarketingLandingVariantSlug =
   MarketingLandingVariantDefinition["slug"]
 export type MarketingRoutablePageId = MarketingRoutablePageDefinition["id"]
 export type MarketingRoutablePagePath = MarketingRoutablePageDefinition["path"]
+export type MarketingCanonicalRedirectPath =
+  (typeof marketingCanonicalRedirects)[number]["path"]
 
 export const marketingLandingVariantIds = marketingLandingVariants.map(
   (variant) => variant.id
@@ -186,6 +202,10 @@ export const marketingLandingVariantSlugs = marketingLandingVariants.map(
 export const marketingRoutablePagePaths = marketingRoutablePages.map(
   (page) => page.path
 ) as readonly MarketingRoutablePagePath[]
+
+export const marketingCanonicalRedirectPaths = marketingCanonicalRedirects.map(
+  (page) => page.path
+) as readonly MarketingCanonicalRedirectPath[]
 
 /**
  * Root-level paths that load the same code-split chunk as `/marketing/:slug`.

@@ -16,5 +16,5 @@ export {
   getFormatLocale,
 } from "./services/i18n-format-service"
 export { LanguageSwitcher } from "./components/language-switcher"
-export { ErpModulePage } from "./components/ErpModulePage"
-export type { ErpModulePageId } from "./components/ErpModulePage"
+export { ErpModulePage } from "./components/erp-module-page"
+export type { ErpModulePageId } from "./components/erp-module-page"

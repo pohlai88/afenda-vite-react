@@ -62,6 +62,13 @@ function parseEnvNumber(name: string): number | undefined {
   return Number.isFinite(n) ? n : undefined
 }
 
+function resolveMaxWorkers(): number | string | undefined {
+  const raw = process.env.VITEST_MAX_WORKERS?.trim()
+  if (!raw) return undefined
+  const numeric = Number(raw)
+  return Number.isFinite(numeric) ? numeric : raw
+}
+
 function resolvePool(): "forks" | "threads" | "vmThreads" | undefined {
   const raw = process.env.VITEST_POOL
   if (!raw) return undefined
@@ -90,6 +97,12 @@ export function getAfendaVitestTestOptions(
 ): NonNullable<UserConfig["test"]> {
   const environment: VitestEnvironment = options.environment ?? "jsdom"
   const setupFilesOption = options.setupFiles
+  const coverageReportsDirectory = path.join(
+    process.cwd(),
+    ".artifacts",
+    "vitest",
+    "coverage"
+  )
 
   const setupFiles: string[] | undefined =
     setupFilesOption === undefined
@@ -99,6 +112,7 @@ export function getAfendaVitestTestOptions(
       : setupFilesOption
 
   const pool = resolvePool()
+  const maxWorkers = resolveMaxWorkers()
 
   const thresholds = activeThresholds()
 
@@ -116,9 +130,11 @@ export function getAfendaVitestTestOptions(
     ],
     setupFiles,
     pool: pool ?? "threads",
+    ...(maxWorkers === undefined ? {} : { maxWorkers }),
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
+      reportsDirectory: coverageReportsDirectory,
       thresholds: {
         lines: thresholds.lines,
         statements: thresholds.statements,

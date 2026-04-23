@@ -5,7 +5,7 @@
  */
 import { motion } from "framer-motion"
 
-import { MarketingPageSection } from "../../_components"
+import { MarketingPageSection } from "../../../components"
 import { FLAGSHIP_PAGE_CONTENT } from "./flagship-page-editorial"
 import { getMarketingPageSectionReveal } from "./flagship-page-motion"
 
@@ -14,6 +14,7 @@ export interface FlagshipPageBenchmarkPanelProps {
 }
 
 const { narrative, marketRealityCards } = FLAGSHIP_PAGE_CONTENT
+const attribution = narrative.benchmarkThirdPartyAttribution
 
 function AfendaBrand() {
   return <span translate="no">Afenda</span>
@@ -44,6 +45,9 @@ export function FlagshipPageBenchmarkPanel({
         </motion.div>
 
         <div className="space-y-3">
+          <p className="rounded-[1.25rem] border border-white/10 bg-white/[0.03] px-4 py-3 text-[0.78rem] leading-5 text-pretty text-background/55 md:text-[0.82rem]">
+            {attribution}
+          </p>
           {marketRealityCards.map(({ title, body }, index) => (
             <motion.div
               key={title}

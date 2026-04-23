@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import { beforeAll, describe, expect, it } from "vitest"
 
-import AsiaPacificPage from "../pages/regional/asia-pacific-page"
+import AsiaPacificPage from "../pages/regional/asia-pacific/asia-pacific-page"
 
 beforeAll(() => {
   class MockIntersectionObserver implements IntersectionObserver {
@@ -39,7 +39,11 @@ describe("AsiaPacificPage", () => {
       })
     ).toBeInTheDocument()
 
-    expect(screen.getByText(/Regional Posture/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", {
+        name: /Geo-specific pages should carry business, language, and governance meaning together\./i,
+      })
+    ).toBeInTheDocument()
 
     expect(screen.getByRole("link", { name: /View PDPA/i })).toHaveAttribute(
       "href",

@@ -17,11 +17,16 @@ import {
   Label,
   Spinner,
 } from "@afenda/design-system/ui-primitives"
-import { authOrganizationClient, useAfendaSession } from "@/app/_platform/auth"
-import { useAuthPostLoginDestination } from "@/app/_platform/auth/hooks/use-auth-post-login-destination"
-import { mapAuthErrorToUserMessage } from "@/app/_platform/auth/mappers/map-auth-error-to-user-message"
-import { resolveAuthErrorCode } from "@/app/_platform/auth/services/auth-error-service"
-import { activateAuthTenantContext } from "@/app/_platform/auth/services/auth-tenant-context-service"
+import {
+  activateAuthTenantContext,
+  authOrganizationClient,
+  listAuthTenantCandidates,
+  mapAuthErrorToUserMessage,
+  resolveAuthErrorCode,
+  type AuthTenantCandidate,
+  useAfendaSession,
+  useAuthPostLoginDestination,
+} from "@/app/_platform/auth"
 import { SetupShell } from "./setup-shell"
 
 function createWorkspaceSlug(name: string): string {
@@ -47,19 +52,68 @@ export function WorkspaceSetupPage() {
   const [pendingOrganizationId, setPendingOrganizationId] = useState<
     string | null
   >(null)
+  const [tenantCandidates, setTenantCandidates] = useState<
+    readonly AuthTenantCandidate[]
+  >([])
+  const [pendingTenantId, setPendingTenantId] = useState<string | null>(null)
+  const [isLoadingTenantCandidates, setIsLoadingTenantCandidates] =
+    useState(false)
 
   const organizations = organizationsQuery.data ?? []
   const hasOrganizations = organizations.length > 0
+  const hasTenantCandidates = tenantCandidates.length > 0
 
-  async function finalizeSetupNavigation() {
-    await activateAuthTenantContext()
+  async function finalizeSetupNavigation(activeTenantId?: string) {
+    await activateAuthTenantContext(activeTenantId)
+    setTenantCandidates([])
     await sessionQuery.refetch()
     void navigate(destinationPath, { replace: true })
+  }
+
+  async function loadTenantCandidates() {
+    setIsLoadingTenantCandidates(true)
+
+    try {
+      const payload = await listAuthTenantCandidates()
+      setTenantCandidates(payload.candidates)
+      setSubmitError(
+        payload.candidates.length > 0
+          ? null
+          : mapAuthErrorToUserMessage(
+              "tenant_context_resolution_failed",
+              "No active workspace access was found for this account."
+            )
+      )
+    } catch (error) {
+      setSubmitError(
+        mapAuthErrorToUserMessage(
+          resolveAuthErrorCode(error),
+          "Workspace access could not be loaded for tenant selection."
+        )
+      )
+    } finally {
+      setIsLoadingTenantCandidates(false)
+    }
+  }
+
+  async function handleTenantActivationFailure(
+    error: unknown,
+    fallbackMessage: string
+  ) {
+    const code = resolveAuthErrorCode(error)
+
+    if (code === "tenant_selection_required") {
+      await loadTenantCandidates()
+      return
+    }
+
+    setSubmitError(mapAuthErrorToUserMessage(code, fallbackMessage))
   }
 
   async function handleActivateOrganization(organizationId: string) {
     setPendingOrganizationId(organizationId)
     setSubmitError(null)
+    setTenantCandidates([])
 
     const result = await authOrganizationClient.organization.setActive({
       organizationId,
@@ -77,11 +131,9 @@ export function WorkspaceSetupPage() {
     try {
       await finalizeSetupNavigation()
     } catch (error) {
-      setSubmitError(
-        mapAuthErrorToUserMessage(
-          resolveAuthErrorCode(error),
-          "Workspace was selected, but tenant activation is not complete yet."
-        )
+      await handleTenantActivationFailure(
+        error,
+        "Workspace was selected, but tenant activation is not complete yet."
       )
     }
   }
@@ -99,6 +151,7 @@ export function WorkspaceSetupPage() {
 
     setFieldError(null)
     setSubmitError(null)
+    setTenantCandidates([])
     setIsCreating(true)
 
     const result = await authOrganizationClient.organization.create({
@@ -126,12 +179,26 @@ export function WorkspaceSetupPage() {
     try {
       await finalizeSetupNavigation()
     } catch (error) {
-      setSubmitError(
-        mapAuthErrorToUserMessage(
-          resolveAuthErrorCode(error),
-          "Workspace was created, but tenant activation is not complete yet."
-        )
+      await handleTenantActivationFailure(
+        error,
+        "Workspace was created, but tenant activation is not complete yet."
       )
+    }
+  }
+
+  async function handleSelectTenant(tenantId: string) {
+    setPendingTenantId(tenantId)
+    setSubmitError(null)
+
+    try {
+      await finalizeSetupNavigation(tenantId)
+    } catch (error) {
+      await handleTenantActivationFailure(
+        error,
+        "Workspace access was selected, but tenant activation is not complete yet."
+      )
+    } finally {
+      setPendingTenantId(null)
     }
   }
 
@@ -235,13 +302,68 @@ export function WorkspaceSetupPage() {
               {text("setup.workspace.owner_note")}
             </p>
 
-            <Button type="submit" disabled={isCreating}>
+            <Button
+              type="submit"
+              disabled={isCreating || pendingTenantId !== null}
+            >
               {isCreating ? <Spinner /> : null}
               {text("setup.workspace.create_action")}
             </Button>
           </CardFooter>
         </Card>
       </form>
+
+      {hasTenantCandidates || isLoadingTenantCandidates ? (
+        <Card className="setup-panel-card py-0">
+          <CardHeader className="setup-panel-header">
+            <CardTitle className="setup-panel-title">
+              {text("setup.workspace.tenant_selector_title")}
+            </CardTitle>
+            <CardDescription className="setup-panel-description">
+              {text("setup.workspace.tenant_selector_description")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="setup-panel-content">
+            {isLoadingTenantCandidates ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Spinner />
+                {text("setup.workspace.tenant_selector_loading")}
+              </div>
+            ) : (
+              <div className="setup-selection-grid">
+                {tenantCandidates.map((tenant) => (
+                  <div
+                    key={tenant.membershipId}
+                    className="setup-selection-card"
+                  >
+                    <p className="text-sm font-semibold text-foreground">
+                      {tenant.tenantName}
+                    </p>
+                    <p className="mt-1 text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                      {tenant.tenantCode}
+                    </p>
+                    {tenant.isDefault ? (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        {text("setup.workspace.tenant_selector_default")}
+                      </p>
+                    ) : null}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="mt-4 w-full"
+                      disabled={pendingTenantId !== null || isCreating}
+                      onClick={() => handleSelectTenant(tenant.tenantId)}
+                    >
+                      {pendingTenantId === tenant.tenantId ? <Spinner /> : null}
+                      {text("setup.workspace.tenant_selector_action")}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ) : null}
 
       {hasOrganizations || organizationsQuery.isPending ? (
         <Card className="setup-panel-card py-0">
@@ -273,7 +395,10 @@ export function WorkspaceSetupPage() {
                       type="button"
                       variant="outline"
                       className="mt-4 w-full"
-                      disabled={pendingOrganizationId !== null}
+                      disabled={
+                        pendingOrganizationId !== null ||
+                        pendingTenantId !== null
+                      }
                       onClick={() =>
                         handleActivateOrganization(organization.id)
                       }

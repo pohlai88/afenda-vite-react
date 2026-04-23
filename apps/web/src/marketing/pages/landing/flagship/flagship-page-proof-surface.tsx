@@ -1,8 +1,8 @@
 /**
  * Flagship page refactor boundary.
- * Owns only the proof surface section group for `apps/web` marketing flagship.
- * This file composes page-local proof blocks without becoming a mixed dump.
- * Page order lives in `flagship-page.tsx`.
+ * Owns the middle band of FLAGSHIP_SECTION_MATRIX rows in order:
+ * Benchmark → Product Scope (enforcement) → Proof.
+ * Page order in `flagship-page.tsx`; do not reorder without updating the matrix doc.
  */
 import { FlagshipPageBenchmarkPanel } from "./flagship-page-benchmark-panel"
 import { FlagshipPageProofChamber } from "./flagship-page-proof-chamber"

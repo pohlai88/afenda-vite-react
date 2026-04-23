@@ -23,6 +23,8 @@ import { ShellScopeLineageBar } from "./shell-scope-lineage-bar"
 import { ShellTopNavBreadcrumbs } from "./shell-top-nav-breadcrumbs"
 import { ShellTopNavCommandDialog } from "./shell-top-nav-command-dialog"
 import { ShellTopNavConnectPopover } from "./shell-top-nav-connect-popover"
+import { ShellTopNavTenantIndicator } from "./shell-top-nav-tenant-indicator"
+import { ShellTopNavTenantSwitcher } from "./shell-top-nav-tenant-switcher"
 import type { ShellTopNavProps } from "./shell-top-nav-types"
 import type { AppShellSidebarUserProfile } from "../shell-rail-sidebar-block/shell-rail-mini-sidebar"
 import { ShellTopNavTools } from "./shell-top-nav-tools"
@@ -220,6 +222,7 @@ export function ShellTopNav({
                   ) : (
                     <ShellTopNavBreadcrumbs items={breadcrumbs} />
                   )}
+                  <ShellTopNavTenantIndicator className="shrink-0" />
                   <div className="hidden shrink-0 items-center md:flex">
                     <ShellTopNavConnectPopover />
                   </div>
@@ -266,6 +269,7 @@ export function ShellTopNav({
                     trustBeacon={<ShellAuthTrustBeacon />}
                     workspaceSlot={
                       <>
+                        <ShellTopNavTenantSwitcher />
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
@@ -338,6 +342,7 @@ export function ShellTopNav({
                   ) : (
                     <ShellTopNavBreadcrumbs items={breadcrumbs} />
                   )}
+                  <ShellTopNavTenantIndicator className="shrink-0" />
                   <div className="hidden shrink-0 items-center md:flex">
                     <ShellTopNavConnectPopover />
                   </div>
@@ -383,27 +388,30 @@ export function ShellTopNav({
                     className="hidden sm:flex"
                     trustBeacon={<ShellAuthTrustBeacon />}
                     workspaceSlot={
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                            aria-label={focusWindowLabel}
-                            onClick={openFocusWindow}
-                          >
-                            <ExternalLink
-                              className="size-4"
-                              strokeWidth={1.5}
-                              aria-hidden
-                            />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="max-w-xs">
-                          {focusWindowLabel}
-                        </TooltipContent>
-                      </Tooltip>
+                      <>
+                        <ShellTopNavTenantSwitcher />
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="relative rounded-full border border-border-muted bg-card/70 text-muted-foreground shadow-sm transition-colors hover:border-border hover:bg-accent/55 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                              aria-label={focusWindowLabel}
+                              onClick={openFocusWindow}
+                            >
+                              <ExternalLink
+                                className="size-4"
+                                strokeWidth={1.5}
+                                aria-hidden
+                              />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="max-w-xs">
+                            {focusWindowLabel}
+                          </TooltipContent>
+                        </Tooltip>
+                      </>
                     }
                     feedbackLabel={t("feedback.aria_label")}
                     helpLabel={t("help.tooltip")}

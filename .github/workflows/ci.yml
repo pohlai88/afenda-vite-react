@@ -30,17 +30,36 @@ jobs:
         with:
           version: 10
 
+      - name: Resolve Node version
+        id: node_version
+        run: echo "version=$(grep '^use-node-version=' .npmrc | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: ".nvmrc"
+          node-version: ${{ steps.node_version.outputs.version }}
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Governance registry integrity
+        run: pnpm run script:check-governance-registry
+
+      - name: Governance bindings validity
+        run: pnpm run script:check-governance-bindings
+
+      - name: Governance waivers validity
+        run: pnpm run script:check-governance-waivers
+
       - name: Governance checks
-        run: pnpm run script:check-governance
+        run: pnpm run script:run-governance-checks
+
+      - name: Governance evidence completeness
+        run: pnpm run script:generate-governance-report
+
+      - name: Governance register sync
+        run: pnpm run script:generate-governance-register
 
   quality:
     runs-on: ubuntu-latest
@@ -57,10 +76,14 @@ jobs:
         with:
           version: 10
 
+      - name: Resolve Node version
+        id: node_version
+        run: echo "version=$(grep '^use-node-version=' .npmrc | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: ".nvmrc"
+          node-version: ${{ steps.node_version.outputs.version }}
           cache: pnpm
 
       - name: Install dependencies
@@ -70,10 +93,10 @@ jobs:
         run: pnpm --filter @afenda/web run verify:layout
 
       - name: Regenerate i18n corpora and audit
-        run: pnpm run script:i18n-corpus-ingest && pnpm run script:i18n-crossref-audit
+        run: pnpm run script:generate-i18n-corpus && pnpm run script:generate-i18n-crossref-audit
 
       - name: Check generated i18n artifacts are committed
-        run: git diff --exit-code -- scripts/data/i18n-corpus-*.json apps/web/src/app/_platform/i18n/audit/conflicts.json apps/web/src/app/_platform/i18n/audit/provenance.json
+        run: git diff --exit-code -- apps/web/scripts/i18n/data/i18n-corpus-*.json apps/web/src/app/_platform/i18n/audit/conflicts.json apps/web/src/app/_platform/i18n/audit/provenance.json
 
       - name: Design system component governance check
         run: pnpm --filter @afenda/design-system run component-governance:check
@@ -85,7 +108,7 @@ jobs:
         run: pnpm --filter @afenda/design-system run check:tw
 
       - name: Validate i18n policy and conflicts
-        run: pnpm run script:validate-i18n
+        run: pnpm run script:validate-i18n-policy
 
       - name: Format check
         run: pnpm run format:check

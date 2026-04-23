@@ -1,0 +1,123 @@
+{
+  "$schema": "./i18n-key-mapping.schema.json",
+  "version": 1,
+  "description": "Maps upstream Frappe/Odoo source terms to Afenda canonical i18n keys. Used by generate-i18n-corpus.ts to extract candidate values from real .po/.csv translation files.",
+  "mappings": [
+    {
+      "afendaKey": "invoice.entity.label",
+      "frappe": { "sourceId": "Invoice", "module": "accounts" },
+      "odoo": { "sourceId": "Invoice", "addon": "account" }
+    },
+    {
+      "afendaKey": "invoice.header.title.label",
+      "frappe": { "sourceId": "Invoices", "module": "accounts" },
+      "odoo": { "sourceId": "Invoices", "addon": "account" }
+    },
+    {
+      "afendaKey": "invoice.status.paid.label",
+      "frappe": { "sourceId": "Paid", "module": "accounts" },
+      "odoo": { "sourceId": "Paid", "addon": "account" }
+    },
+    {
+      "afendaKey": "invoice.status.draft.label",
+      "frappe": { "sourceId": "Draft", "module": "accounts" },
+      "odoo": { "sourceId": "Draft", "addon": "account" }
+    },
+    {
+      "afendaKey": "allocation.header.title.label",
+      "frappe": { "sourceId": "Stock Entry", "module": "stock" },
+      "odoo": { "sourceId": "Stock Move", "addon": "stock" }
+    },
+    {
+      "afendaKey": "allocation.error.over_allocated.message",
+      "frappe": {
+        "sourceId": "Allocated quantity exceeds the available stock.",
+        "module": "stock"
+      },
+      "odoo": {
+        "sourceId": "You cannot allocate more than the available quantity.",
+        "addon": "stock"
+      }
+    },
+    {
+      "afendaKey": "settlement.header.title.label",
+      "frappe": { "sourceId": "Payment Entry", "module": "accounts" },
+      "odoo": { "sourceId": "Payments", "addon": "account" }
+    },
+    {
+      "afendaKey": "settlement.status.pending.label",
+      "frappe": { "sourceId": "Pending", "module": "accounts" },
+      "odoo": { "sourceId": "Pending", "addon": "account" }
+    },
+    {
+      "afendaKey": "settlement.status.completed.label",
+      "frappe": { "sourceId": "Settled", "module": "accounts" },
+      "odoo": { "sourceId": "Reconciled", "addon": "account" }
+    },
+    {
+      "afendaKey": "dashboard.header.title.label",
+      "frappe": { "sourceId": "Dashboard", "module": "desk" },
+      "odoo": { "sourceId": "Dashboard", "addon": "web" }
+    },
+    {
+      "afendaKey": "dashboard.card.inventory.title.label",
+      "frappe": { "sourceId": "Stock", "module": "stock" },
+      "odoo": { "sourceId": "Inventory", "addon": "stock" }
+    },
+    {
+      "afendaKey": "dashboard.card.sales.title.label",
+      "frappe": { "sourceId": "Selling", "module": "selling" },
+      "odoo": { "sourceId": "Sales", "addon": "sale" }
+    },
+    {
+      "afendaKey": "dashboard.card.customers.title.label",
+      "frappe": { "sourceId": "Customer", "module": "selling" },
+      "odoo": { "sourceId": "Contacts", "addon": "contacts" }
+    },
+    {
+      "afendaKey": "dashboard.card.finance.title.label",
+      "frappe": { "sourceId": "Accounts", "module": "accounts" },
+      "odoo": { "sourceId": "Invoicing", "addon": "account" }
+    },
+    {
+      "afendaKey": "dashboard.card.employees.title.label",
+      "frappe": { "sourceId": "Employee", "module": "hr" },
+      "odoo": { "sourceId": "Employees", "addon": "hr" }
+    },
+    {
+      "afendaKey": "dashboard.card.reports.title.label",
+      "frappe": { "sourceId": "Report", "module": "core" },
+      "odoo": { "sourceId": "Reporting", "addon": "web" }
+    },
+    {
+      "afendaKey": "auth.login.title.label",
+      "frappe": { "sourceId": "Login", "module": "www" },
+      "odoo": { "sourceId": "Log in", "addon": "web" }
+    },
+    {
+      "afendaKey": "shell.erp_module.inventory.page.title",
+      "frappe": { "sourceId": "Stock", "module": "stock" },
+      "odoo": { "sourceId": "Inventory", "addon": "stock" }
+    },
+    {
+      "afendaKey": "shell.erp_module.sales.page.title",
+      "frappe": { "sourceId": "Selling", "module": "selling" },
+      "odoo": { "sourceId": "Sales", "addon": "sale" }
+    },
+    {
+      "afendaKey": "shell.erp_module.finance.page.title",
+      "frappe": { "sourceId": "Accounting", "module": "accounts" },
+      "odoo": { "sourceId": "Invoicing", "addon": "account" }
+    },
+    {
+      "afendaKey": "shell.erp_module.employees.page.title",
+      "frappe": { "sourceId": "Human Resources", "module": "hr" },
+      "odoo": { "sourceId": "Employees", "addon": "hr" }
+    },
+    {
+      "afendaKey": "shell.erp_module.settings.page.title",
+      "frappe": { "sourceId": "Settings", "module": "core" },
+      "odoo": { "sourceId": "Settings", "addon": "base" }
+    }
+  ]
+}

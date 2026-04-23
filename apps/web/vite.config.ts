@@ -308,13 +308,13 @@ async function resolveUserConfig({
           changeOrigin: true,
           secure: false,
         },
-        // Better Auth and other `/api/*` routes (except `/api/v1`) forward as-is — Hono serves `/api/auth/*` on the API host.
+        // Governed API routes forward as-is — Hono mounts `/api/v1/*` directly on the API host.
         "/api/v1": {
           target: env.VITE_API_URL || "http://localhost:8787",
           changeOrigin: true,
           secure: false,
-          rewrite: (p) => p.replace(/^\/api/, ""),
         },
+        // Better Auth and other `/api/*` routes forward as-is — Hono serves `/api/auth/*` on the API host.
         "/api": {
           target: env.VITE_API_URL || "http://localhost:8787",
           changeOrigin: true,
@@ -367,6 +367,27 @@ async function resolveUserConfig({
               id.includes("node_modules/scheduler")
             ) {
               return "vendor-react"
+            }
+            // Keep route-bounded heavy stacks out of the always-on global vendor bucket.
+            if (
+              id.includes("node_modules/three") ||
+              id.includes("node_modules/@react-three/drei") ||
+              id.includes("node_modules/@react-three/fiber")
+            ) {
+              return "vendor-3d"
+            }
+            if (
+              id.includes("node_modules/better-auth") ||
+              id.includes("node_modules/@better-auth/") ||
+              id.includes("node_modules/@better-auth-ui/")
+            ) {
+              return "vendor-auth"
+            }
+            if (id.includes("node_modules/@dnd-kit/")) {
+              return "vendor-dnd"
+            }
+            if (id.includes("node_modules/framer-motion")) {
+              return "vendor-motion"
             }
             return "vendor"
           },
@@ -441,6 +462,11 @@ async function resolveUserConfig({
     test: {
       ...(() => {
         const base = getAfendaVitestTestOptions()
+        const windowsWorkerCeiling =
+          process.platform === "win32" &&
+          process.env.VITEST_MAX_WORKERS === undefined
+            ? { maxWorkers: "50%" as const }
+            : {}
         // Default `threads` pool can time out spawning workers on some Windows setups; forks is more stable.
         const withPool =
           !process.env.VITEST_POOL && process.platform === "win32"
@@ -448,6 +474,7 @@ async function resolveUserConfig({
             : base
         return {
           ...withPool,
+          ...windowsWorkerCeiling,
           coverage: {
             ...withPool.coverage,
             reportsDirectory: path.join(

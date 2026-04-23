@@ -38,7 +38,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json",
-    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint . --cache --cache-location .artifacts/eslint --concurrency auto",
     "auth:migrate": "pnpm dlx auth@latest migrate --config ./src/better-auth-cli-config.ts --yes",
     "auth:migrate:plugins": "node ./scripts/run-auth-migrate-with-plugins.mjs",
     "auth:generate": "pnpm dlx auth@latest generate --config ./src/better-auth-cli-config.ts --adapter drizzle --dialect postgresql --output ./src/schema/auth-schema.generated.ts --yes",

@@ -3,77 +3,64 @@
 
 # Dependency guides
 
+> Generated from: `scripts/generate-docs-readme.ts`, `docs/dependencies/*.md`
+> Regenerate with: `pnpm run script:generate-docs-readme`
+> Truth class: `derived`
+> Do not edit directly.
+
 Docs in `docs/dependencies/` describe npm packages, infrastructure, and stack choices used in `apps/web`, repo tooling, or planned backend and integration work.
 
-Broader UI conventions live in [Components and styling](../COMPONENTS_AND_STYLING.md), and repo tooling expectations live in [Project configuration](../PROJECT_CONFIGURATION.md).
+Broader UI conventions live in [Design system](../workspace/DESIGN_SYSTEM.md), and repo tooling expectations live in [Project configuration](../workspace/PROJECT_CONFIGURATION.md).
 
-**Documentation readiness:** [Documentation scope](../DOCUMENTATION_SCOPE.md).
+**Documentation readiness:** [Documentation scope](../workspace/DOCUMENTATION_SCOPE.md).
 
 ## Guide format
 
 Long-form guides usually share a common shape: Afenda context, official documentation links, usage guidance, red flags, and related references. When behavior-sensitive details matter, verify them against upstream docs before refreshing a guide.
 
+## Start here
+
+- Read implemented guides first. They are the only dependency docs that currently describe live repo behavior.
+- Treat `Installed, not implemented` guides as posture only, not as proof of a standardized runtime pattern.
+- Treat `Planned`, `Optional`, and `Research` guides as decision support, not as approval to install packages without review.
+
 ## Index
-
-### Tooling and platform
-
-| Guide                         | Status  | Scope                                                                     |
-| ----------------------------- | ------- | ------------------------------------------------------------------------- |
-| [pnpm](./pnpm.md)             | Adopted | Workspaces, filters, lockfile policy, and package-manager expectations.   |
-| [Prettier](./prettier.md)     | Adopted | Formatting, `prettier.config.js`, and lint-staged integration.            |
-| [TypeScript](./typescript.md) | Adopted | Shared `tsconfig`, strictness, aliases, and workspace presets.            |
-| [ESLint](./eslint.md)         | Adopted | Flat config, React rules, a11y checks, and Prettier integration.          |
-| [Turborepo](./turborepo.md)   | Adopted | `turbo.json`, task filters, pipelines, and cache usage.                   |
-| [Vercel](./vercel.md)         | Adopted | Static deployment target and pointer to the broader deployment checklist. |
-| [Vite](./vite.md)             | Adopted | Dev server, build, environment variables, and proxy setup.                |
-| [Vitest](./vitest.md)         | Adopted | Test runner guidance and pointer to the testing strategy docs.            |
 
 ### Web client (adopted)
 
-| Guide                                             | Status  | Scope                                                            |
-| ------------------------------------------------- | ------- | ---------------------------------------------------------------- |
-| [React](./react.md)                               | Adopted | React 19, Router usage, and core UI patterns for `apps/web`.     |
-| [TanStack Query](./tanstack-query.md)             | Adopted | Server state, API calls, caching, and invalidation patterns.     |
-| [Zod](./zod.md)                                   | Adopted | Runtime validation, schema conventions, and type inference.      |
-| [Zustand](./zustand.md)                           | Adopted | Client-only UI state and persistence boundaries.                 |
-| [React Hook Form + Zod](./react-hook-form-zod.md) | Adopted | Forms, resolvers, and schema-backed input handling.              |
-| [date-fns](./date-fns.md)                         | Adopted | Date parsing, formatting, locale handling, and timezone helpers. |
+| Guide                                 | Status      | Scope                                                         |
+| ------------------------------------- | ----------- | ------------------------------------------------------------- |
+| [TanStack Query](./tanstack-query.md) | Implemented | Server state, API calls, caching, and invalidation patterns.  |
+| [i18n](./i18n.md)                     | Implemented | Internationalization stack and localization rollout guidance. |
+
+### Web client (installed, not implemented)
+
+| Guide                     | Status                     | Scope                                                            |
+| ------------------------- | -------------------------- | ---------------------------------------------------------------- |
+| [Zustand](./zustand.md)   | Installed, not implemented | Client-only UI state and persistence boundaries.                 |
+| [date-fns](./date-fns.md) | Installed, not implemented | Date parsing, formatting, locale handling, and timezone helpers. |
 
 ### Web client (planned)
 
-| Guide                               | Status      | Scope                                                            |
-| ----------------------------------- | ----------- | ---------------------------------------------------------------- |
-| [Tailwind CSS v4](./tailwind-v4.md) | Adopted     | Utility CSS setup and Vite integration when adopted.             |
-| [shadcn/ui](./shadcn-ui.md)         | Adopted     | Radix-based copy-in components, `components.json`, and theming.  |
-| [Storybook](./storybook.md)         | Planned     | Component sandbox and documentation workflow.                    |
-| [i18n](./i18n.md)                   | Implemented | Internationalization stack and localization rollout guidance.    |
-| [Tiptap](./tiptap.md)               | Planned     | Rich-text editor stack based on ProseMirror.                     |
-| [XYFlow](./xyflow.md)               | Planned     | Diagramming and node-based UI with `@xyflow/react`.              |
-| [wcag-contrast](./wcag-contrast.md) | Planned     | Automated token and contrast checks for accessibility workflows. |
+| Guide                               | Status  | Scope                                                            |
+| ----------------------------------- | ------- | ---------------------------------------------------------------- |
+| [Storybook](./storybook.md)         | Planned | Component sandbox and documentation workflow.                    |
+| [wcag-contrast](./wcag-contrast.md) | Planned | Automated token and contrast checks for accessibility workflows. |
 
 ### Backend, data, and integrations (planned)
 
-| Guide                               | Status                | Scope                                                             |
-| ----------------------------------- | --------------------- | ----------------------------------------------------------------- |
-| [Neon](./neon.md)                   | Planned / recommended | Hosted Postgres guidance and `DATABASE_URL` conventions.          |
-| [Cloudflare R2](./cloudflare-r2.md) | Planned               | S3-compatible object storage guidance for file-backed workflows.  |
-| [Fastify](./fastify.md)             | Planned               | HTTP API implementation guidance for future `apps/api` work.      |
-| [Pino](./pino.md)                   | Planned               | Structured logging patterns for server-side packages and scripts. |
-| [Octokit](./octokit.md)             | Planned               | GitHub API integration guidance for server-side use cases.        |
+| Guide                               | Status  | Scope                                                            |
+| ----------------------------------- | ------- | ---------------------------------------------------------------- |
+| [Cloudflare R2](./cloudflare-r2.md) | Planned | S3-compatible object storage guidance for file-backed workflows. |
 
 ### Optional / when you standardize
 
-| Guide                                                   | Status              | Scope                                                                                                    |
-| ------------------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------- |
-| [MSW](./msw.md)                                         | Optional            | API mocks in tests and Storybook when the team standardizes them.                                        |
-| [Auth.js / Auth0](./authjs-auth0.md)                    | Patterns documented | Authentication-library notes and pointers back to the auth architecture docs.                            |
-| [Vercel Serverless / Edge](./vercel-serverless-edge.md) | Not default         | Guidance for in-repo functions if the SPA later gains them.                                              |
-| [Sentry / OpenTelemetry](./sentry-opentelemetry.md)     | Optional            | Error monitoring and tracing once observability is standardized.                                         |
-| [Translation platforms](./translation-platforms.md)     | Research            | Compare self-hosted localization platforms for Afenda translation operations and terminology governance. |
+| Guide                                               | Status   | Scope                                                            |
+| --------------------------------------------------- | -------- | ---------------------------------------------------------------- |
+| [Sentry / OpenTelemetry](./sentry-opentelemetry.md) | Optional | Error monitoring and tracing once observability is standardized. |
 
 ## Related documentation
 
-- [Documentation scope](../DOCUMENTATION_SCOPE.md) - Normative vs optional docs.
-- [API reference](../API.md) - HTTP contract.
+- [Documentation scope](../workspace/DOCUMENTATION_SCOPE.md) - Normative vs optional docs.
+- [API reference](../workspace/API.md) - HTTP contract.
 - [Database package](../../packages/_database/README.md) — PostgreSQL, Drizzle, migrations.
-- [shadcn/ui](./shadcn-ui.md) - Example long-form dependency guide.

@@ -4,7 +4,7 @@
  * Fire-and-forget POST to the audit API. Does not block UX on failure.
  */
 
-import { resolveApiV1Path } from "../../runtime/api-client-config"
+import { resolveApiV1Path } from "../../runtime"
 
 import type { ShellInteractionAuditEnvelope } from "../contract/shell-interaction-audit-contract"
 import {

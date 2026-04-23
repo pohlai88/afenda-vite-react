@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest"
 import {
   createFeatureTemplateReport,
   featureTemplateRequiredFolders,
-} from "../scripts/feature-template-report"
+} from "../scripts/generate-feature-template-report"
 
 describe("createFeatureTemplateReport", () => {
   it("separates structure policy from unverified structure evidence", async () => {

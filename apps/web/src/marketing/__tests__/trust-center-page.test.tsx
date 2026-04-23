@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import { beforeAll, describe, expect, it } from "vitest"
 
-import TrustCenterPage from "../pages/legal/trust-center-page"
+import TrustCenterPage from "../pages/legal/trust-center/trust-center-page"
 
 beforeAll(() => {
   class MockIntersectionObserver implements IntersectionObserver {

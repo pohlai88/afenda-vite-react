@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- Route module exports a RouteObject plus colocated gate components used only by this subtree. */
 /**
  * Authenticated ERP shell route subtree under `/app/*`.
  *
@@ -9,28 +10,94 @@
  * @see ./README.md — router usage, shell metadata, governance, and how to add `/app` child routes.
  */
 
+import type { ReactElement } from "react"
 import { Navigate, type RouteObject } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../app/_components"
-import { AfendaAuthUiProvider } from "../app/_platform/auth/better-auth-ui/afenda-auth-ui-provider"
-import { BetterAuthSettingsView } from "../app/_features/better-auth-settings/better-auth-settings-view"
+import { BetterAuthSettingsView } from "../app/_features/better-auth-settings"
 import { DbStudioPage } from "../app/_features/db-studio"
-import { FeatureTemplateView } from "../app/_features/_template"
-import { RequireAppReady, RequireAuth } from "../app/_platform/auth"
-import { TenantScopeProvider } from "../app/_platform/tenant"
 import {
+  AuditTrailPage,
+  CounterpartyRosterPage,
+  EventsOpsPage,
+} from "../app/_features/events-workspace"
+import {
+  AfendaAuthUiProvider,
+  RequireAppReady,
+  RequireAuth,
+} from "../app/_platform/auth"
+import { TenantScopeProvider, useTenantScope } from "../app/_platform/tenant"
+import {
+  ShellLeftSidebarLayout,
+  AppShellAccessDenied,
   AppShellNotFound,
+} from "../app/_platform/shell/shell-layout-surface"
+import {
   shellAppChildRouteDefinitions,
-  shellAppDefaultChildSegment,
   shellAppLayoutRoute,
   shellAppNotFoundRoute,
   shellAppSettingsAccountRoute,
   shellAppSettingsSecurityRoute,
   shellAppSettingsAccountPath,
-  ShellLeftSidebarLayout,
-} from "../app/_platform/shell"
-import { AppThemeProvider } from "../app/_platform/theme/app-theme-provider"
+} from "../app/_platform/shell/shell-route-surface"
+import { resolveShellHomeHref } from "../app/_platform/shell/services/resolve-shell-home-href"
+import { AppThemeProvider } from "../app/_platform/theme"
 import { Toaster } from "@afenda/design-system/ui-primitives"
+
+const shellRoutePermissionKeysByPathSegment: Readonly<
+  Partial<
+    Record<
+      (typeof shellAppChildRouteDefinitions)[number]["pathSegment"],
+      readonly string[]
+    >
+  >
+> = {
+  events: ["ops:event:view"],
+  audit: ["ops:audit:view"],
+  counterparties: ["ops:event:view"],
+  "db-studio": ["admin:workspace:manage"],
+}
+
+function AppShellIndexRedirect() {
+  const scope = useTenantScope()
+
+  if (scope.status !== "ready") {
+    return <AppShellAccessDenied />
+  }
+
+  const homeHref =
+    resolveShellHomeHref(scope.me.actor?.permissions ?? []) ?? null
+
+  return homeHref ? (
+    <Navigate replace to={homeHref} />
+  ) : (
+    <AppShellAccessDenied />
+  )
+}
+
+function RequireShellRoutePermission(props: {
+  readonly children: ReactElement
+  readonly permissionKeys?: readonly string[]
+}) {
+  const { children, permissionKeys } = props
+  const scope = useTenantScope()
+
+  if (!permissionKeys?.length) {
+    return children
+  }
+
+  if (scope.status !== "ready") {
+    return <AppShellAccessDenied />
+  }
+
+  const granted = new Set(scope.me.actor?.permissions ?? [])
+
+  return permissionKeys.every((key) => granted.has(key)) ? (
+    children
+  ) : (
+    <AppShellAccessDenied />
+  )
+}
 
 /** `/app/*` route object: layout, index redirect, feature children, splat 404. Paths and `handle.shell` from shell definitions. */
 export const appShellRouteObject: RouteObject = {
@@ -39,11 +106,11 @@ export const appShellRouteObject: RouteObject = {
     <AppThemeProvider>
       <AfendaAuthUiProvider>
         <RequireAuth>
-          <RequireAppReady>
-            <TenantScopeProvider>
+          <TenantScopeProvider>
+            <RequireAppReady>
               <ShellLeftSidebarLayout />
-            </TenantScopeProvider>
-          </RequireAppReady>
+            </RequireAppReady>
+          </TenantScopeProvider>
         </RequireAuth>
         <Toaster />
       </AfendaAuthUiProvider>
@@ -58,7 +125,7 @@ export const appShellRouteObject: RouteObject = {
   children: [
     {
       index: true,
-      element: <Navigate replace to={shellAppDefaultChildSegment} />,
+      element: <AppShellIndexRedirect />,
     },
     ...shellAppChildRouteDefinitions.map(({ pathSegment, metadata }) => ({
       path: pathSegment,
@@ -66,12 +133,39 @@ export const appShellRouteObject: RouteObject = {
         pathSegment === "account" ? (
           <Navigate replace to={shellAppSettingsAccountPath} />
         ) : pathSegment === "db-studio" ? (
-          <DbStudioPage />
+          <RequireShellRoutePermission
+            permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
+          >
+            <DbStudioPage />
+          </RequireShellRoutePermission>
+        ) : pathSegment === "events" ? (
+          <RequireShellRoutePermission
+            permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
+          >
+            <EventsOpsPage />
+          </RequireShellRoutePermission>
+        ) : pathSegment === "audit" ? (
+          <RequireShellRoutePermission
+            permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
+          >
+            <AuditTrailPage />
+          </RequireShellRoutePermission>
+        ) : pathSegment === "counterparties" ? (
+          <RequireShellRoutePermission
+            permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
+          >
+            <CounterpartyRosterPage />
+          </RequireShellRoutePermission>
         ) : (
-          <FeatureTemplateView slug={pathSegment} />
+          <AppShellNotFound />
         ),
       handle: { shell: metadata.shell },
     })),
+    {
+      path: "partners",
+      element: <Navigate replace to="/app/counterparties" />,
+      handle: { shell: shellAppNotFoundRoute.shell },
+    },
     {
       path: "settings/account",
       element: <BetterAuthSettingsView view="account" />,

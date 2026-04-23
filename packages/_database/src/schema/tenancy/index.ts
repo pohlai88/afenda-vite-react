@@ -11,6 +11,7 @@
  * This module: `src/schema/tenancy/index.ts` — convenience surface for tenant context; see `docs/practical-discipline.md` for folder charter.
  */
 export * from "./services/assert-user-has-tenant-access"
+export * from "./services/list-afenda-tenant-candidates"
 export * from "./services/resolve-active-tenant-context"
 export * from "./services/resolve-afenda-me-context"
 export * from "./tenancy-boundary.schema"

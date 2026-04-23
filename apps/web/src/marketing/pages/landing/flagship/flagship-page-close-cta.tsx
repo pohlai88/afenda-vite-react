@@ -29,7 +29,10 @@ export function FlagshipPageCloseCta({
   reduceMotion,
 }: FlagshipPageCloseCtaProps) {
   return (
-    <section className="relative overflow-hidden">
+    <section
+      aria-labelledby="flagship-final-cta-title"
+      className="relative overflow-hidden"
+    >
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/8" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,color-mix(in_oklab,var(--color-primary)_10%,transparent),transparent_40%)]" />
 
@@ -41,8 +44,12 @@ export function FlagshipPageCloseCta({
           <div className="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
             Final State
           </div>
-          <h2 className="mt-5 max-w-5xl text-[clamp(2.5rem,5vw,4.7rem)] leading-[0.92] font-semibold tracking-[-0.055em] text-balance">
-            Put immutable truth between activity and every record you trust.
+          <h2
+            id="flagship-final-cta-title"
+            className="mt-5 max-w-5xl text-[clamp(2.5rem,5vw,4.7rem)] leading-[0.92] font-semibold tracking-[-0.055em] text-balance"
+          >
+            Put accountable truth between every event and every decision it
+            drives.
           </h2>
 
           <p className="mt-6 max-w-3xl text-base leading-8 text-pretty text-muted-foreground">
@@ -51,7 +58,7 @@ export function FlagshipPageCloseCta({
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button asChild size="lg" className="touch-manipulation">
-              <Link to="/login">
+              <Link to="/auth/login">
                 Enter Workspace
                 <ArrowRight aria-hidden="true" className="size-4" />
               </Link>

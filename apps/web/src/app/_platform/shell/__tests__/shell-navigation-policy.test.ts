@@ -7,13 +7,12 @@ import { filterShellNavigationItems } from "../services/filter-shell-navigation-
 describe("filterShellNavigationItems", () => {
   it("returns the same ordered items when no permission gates apply", () => {
     const result = filterShellNavigationItems(shellNavigationItems, {
-      permissions: [],
+      permissions: ["ops:event:view", "ops:audit:view"],
     })
     expect(result.map((i) => i.id)).toEqual([
       "events",
       "audit",
-      "partners",
-      "db_studio",
+      "counterparties",
       "my_project",
       "my_team",
       "my_report",

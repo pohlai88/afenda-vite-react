@@ -112,7 +112,7 @@ describe("AfendaFlagshipPage", () => {
 
     expect(
       screen.getByText(
-        /Put immutable truth between activity and every record you trust\./i
+        /Put accountable truth between every event and every decision it drives\./i
       )
     ).toBeInTheDocument()
 

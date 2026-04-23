@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url"
 import { loadMonorepoEnvLayered } from "@afenda/env-loader"
 import { Pool } from "pg"
 
-import { HARDENING_PATCH_FILENAMES } from "./hardening-patch-order"
+import { HARDENING_PATCH_FILENAMES } from "./verify-hardening-patch-order"
 
 loadMonorepoEnvLayered()
 

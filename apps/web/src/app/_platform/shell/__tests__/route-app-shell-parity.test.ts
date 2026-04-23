@@ -21,7 +21,10 @@ describe("app shell router parity", () => {
       .map((child) => child.path)
       .filter(
         (path): path is string =>
-          typeof path === "string" && path.length > 0 && path !== "*"
+          typeof path === "string" &&
+          path.length > 0 &&
+          path !== "*" &&
+          path !== "partners"
       )
 
     expect(new Set(routerPathSegments).size).toBe(routerPathSegments.length)

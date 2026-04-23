@@ -19,8 +19,6 @@
 
 import { createBrowserRouter, type RouteObject } from "react-router-dom"
 
-import "./app/_platform/shell/types/shell-route-handle"
-
 import { marketingRouteObjects } from "./marketing/marketing-routes"
 import { authRouteObjects, setupRouteObject } from "./app/_platform/auth"
 import { appShellRouteObject } from "./routes/route-app-shell"

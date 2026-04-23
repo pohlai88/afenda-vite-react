@@ -12,10 +12,9 @@
  */
 import { createUserInputSchema } from "../contract/user.js"
 import { success } from "../lib/response.js"
+import { createUser, listUsers } from "../modules/users/index.js"
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
-
-import { createUser, listUsers } from "../modules/users/user.service.js"
 
 export const userRoutes = new Hono()
 

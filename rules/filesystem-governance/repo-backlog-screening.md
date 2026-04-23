@@ -36,25 +36,26 @@ Current governed roots:
 Current status:
 
 - the scoped checker is clean
+- workspace package roots are now intended to be covered by `scripts/afenda.config.json` package-root profiles, not only by `src`-level source governance
 - the scoped screening report shows zero violations
 - the checker is now wired into root `check` and pre-commit
 - stale empty generic directories in the first web rollout were removed
-- package-wave governance now covers the contracts package, eslint-config, pino-logger, the design-system utility export surface, and the database query/schema layers
+- package-wave governance now covers the contracts package, eslint-config, pino-logger, the design-system utility/hook/icon/ui-primitives surfaces, and the database query/schema/audit/migration/relation/studio/view layers
 
 ## Known Follow-Up Hotspots
 
 ### Packages
 
-#### Vendor material inside active roots
+#### Remaining ungov source surfaces
 
 Current observation:
 
-- the first vendor-reference cleanup wave is complete for `packages/pino-logger`, `packages/eslint-config`, and `packages/vitest-config`
-- any future upstream checkouts inside active package roots should be treated as violations and moved into declared storage
+- the main package source roots are now largely governed
+- any additional rollout should be driven by real internal ownership boundaries, not by blanket subtree coverage
 
 Required outcome:
 
-- move vendor/reference material into declared storage roots so package boundaries remain clean
+- promote new governed roots only when the root represents a stable boundary and the current shape stays actionable
 
 #### Root topology storage policy
 
@@ -70,8 +71,9 @@ Required outcome:
 
 The next machine-hardening steps should target:
 
-- ESLint import-boundary enforcement between `routes`, `features`, `share`, and API module ownership
-- package-level governance rollout for `packages/contracts` and any remaining shared libraries
+- widening import-boundary coverage only where a new owner boundary is proven and current public entrypoints are already stable
+- widening source-governance coverage only where active package internals still remain outside current governed roots
+- widening generated-artifact governance only when a directory is clearly machine-owned, filename-stable, and extension-constrained
 - tighter root-topology governance for storage zones such as `.legacy/` and `archives/`
 - optional whitelist support only if a real exception survives architecture review
 

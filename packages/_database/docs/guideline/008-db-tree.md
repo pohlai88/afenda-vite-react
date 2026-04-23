@@ -108,7 +108,7 @@ packages/_database/
 
       governance/
         _schema.ts                                           — authorised (pgSchema("governance") handle)
-        data-sources.schema.ts                               — authorised
+governance-data-sources.schema.ts                    — authorised
         governance-boundary.schema.ts                        — authorised
         index.ts
         __tests__/

@@ -20,8 +20,9 @@ import {
 import { ArrowRight, ShieldCheck } from "lucide-react"
 import { Link } from "react-router-dom"
 
-import { marketingGlassDarkNavInner } from "../../_components"
+import { marketingGlassDarkNavInner } from "../../../components"
 import { MARKETING_PAGE_HREFS } from "../../../marketing-page-registry"
+import { FLAGSHIP_PAGE_CONTENT } from "./flagship-page-editorial"
 
 export interface FlagshipPageHeroProps {
   readonly reduceMotion?: boolean
@@ -95,6 +96,8 @@ const CHAOS_FRAGMENTS: readonly ChaosFragment[] = [
   },
 ] as const
 
+const { hero: HERO_CONTENT } = FLAGSHIP_PAGE_CONTENT
+
 export function FlagshipPageHero({
   reduceMotion: reduceMotionProp,
 }: FlagshipPageHeroProps = {}) {
@@ -121,7 +124,7 @@ export function FlagshipPageHero({
   return (
     <section
       ref={containerRef}
-      aria-label="Chaos is common. Truth is engineered."
+      aria-label={HERO_CONTENT.regionLabel}
       className="relative h-[400vh] overflow-clip bg-[#060606] text-white selection:bg-white selection:text-black"
     >
       <HeroNav opacity={navOpacity} y={navY} />
@@ -168,10 +171,10 @@ function HeroNav({
                 className="text-sm font-semibold tracking-tight text-white"
                 translate="no"
               >
-                Afenda Truth Layer
+                {HERO_CONTENT.navTitle}
               </div>
               <div className="text-xs text-white/52">
-                Accountable business truth under pressure.
+                {HERO_CONTENT.navTagline}
               </div>
             </div>
           </Link>
@@ -451,15 +454,13 @@ function HeroCopy({ progress }: { progress: MotionValue<number> }) {
       >
         <div className="max-w-5xl">
           <div className="font-mono text-[10px] tracking-[0.44em] text-white/52 uppercase">
-            Fragmented truth
+            {HERO_CONTENT.phaseOneEyebrow}
           </div>
           <h1 className="mt-6 text-[clamp(4.5rem,11vw,9rem)] leading-[0.84] font-black tracking-[-0.07em] text-white uppercase">
-            Chaos is
-            <br />
-            common.
+            {HERO_CONTENT.phaseOneHeading}
           </h1>
           <p className="mx-auto mt-6 max-w-3xl text-sm tracking-[0.28em] text-white/56 uppercase md:text-[12px]">
-            Records split between document, operation, finance, and review.
+            {HERO_CONTENT.phaseOneSupport}
           </p>
         </div>
       </motion.div>
@@ -470,16 +471,13 @@ function HeroCopy({ progress }: { progress: MotionValue<number> }) {
       >
         <div className="max-w-5xl">
           <div className="font-mono text-[10px] tracking-[0.44em] text-white/52 uppercase">
-            Enforcement layer
+            {HERO_CONTENT.phaseTwoEyebrow}
           </div>
           <h2 className="mt-6 text-[clamp(4rem,10vw,8rem)] leading-[0.84] font-black tracking-[-0.07em] text-white uppercase">
-            Truth is
-            <br />
-            engineered.
+            {HERO_CONTENT.phaseTwoHeading}
           </h2>
           <p className="mx-auto mt-6 max-w-3xl text-sm tracking-[0.28em] text-white/56 uppercase md:text-[12px]">
-            NexusCanon binds origin, cause, and continuity before the record
-            advances.
+            {HERO_CONTENT.phaseTwoSupport}
           </p>
         </div>
       </motion.div>
@@ -496,30 +494,22 @@ function HeroCopy({ progress }: { progress: MotionValue<number> }) {
         <div className="pointer-events-auto w-full max-w-[38rem] rounded-[2.8rem] border border-white/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.11),rgba(255,255,255,0.07))] p-7 shadow-[0_30px_120px_rgba(0,0,0,0.42)] backdrop-blur-xl md:p-9">
           <div className="flex items-center justify-between gap-6 border-b border-white/10 pb-5">
             <div className="font-mono text-[10px] tracking-[0.34em] text-white/48 uppercase">
-              Afenda Truth Layer
+              {HERO_CONTENT.finalEyebrow}
             </div>
             <div className="font-mono text-[10px] tracking-[0.26em] text-white/34 uppercase">
-              Canon chamber
+              {HERO_CONTENT.finalStatusLabel}
             </div>
           </div>
           <h2 className="mt-5 text-[clamp(3.2rem,7vw,5.6rem)] leading-[0.84] font-black tracking-[-0.065em] text-white">
-            Chaos is common.
-            <br />
-            Truth is engineered.
+            {HERO_CONTENT.finalHeading}
           </h2>
           <p className="mt-6 max-w-[28rem] text-[1.05rem] leading-8 text-white/72 md:text-[1.12rem]">
-            Afenda binds document, entity, event, and transition into one
-            accountable business surface, so enterprise state can survive
-            scrutiny without narrative repair.
+            {HERO_CONTENT.finalBody}
           </p>
 
           <div className="mt-8 grid gap-6 border-t border-white/10 pt-6 md:grid-cols-[minmax(0,1fr)_12rem]">
             <div className="space-y-3">
-              {[
-                "Attributable origin stays attached to every consequential value.",
-                "Causality survives approval, posting, and state transition.",
-                "Continuity holds across finance, operations, inventory, and evidence.",
-              ].map((point) => (
+              {HERO_CONTENT.finalProofPoints.map((point) => (
                 <div
                   key={point}
                   className="flex items-start gap-3 text-white/72"
@@ -536,12 +526,12 @@ function HeroCopy({ progress }: { progress: MotionValue<number> }) {
             </div>
             <div className="rounded-[1.7rem] border border-white/10 bg-black/24 px-4 py-4">
               <div className="font-mono text-[10px] tracking-[0.24em] text-white/38 uppercase">
-                Machine state
+                {HERO_CONTENT.machineStateLabel}
               </div>
               <div className="mt-3 space-y-2 font-mono text-[10px] tracking-[0.22em] text-white/56 uppercase">
-                <div>Origin bound</div>
-                <div>Chain preserved</div>
-                <div>Continuity locked</div>
+                {HERO_CONTENT.machineStateItems.map((item) => (
+                  <div key={item}>{item}</div>
+                ))}
               </div>
             </div>
           </div>

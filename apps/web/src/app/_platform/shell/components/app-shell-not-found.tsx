@@ -1,11 +1,9 @@
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router-dom"
 
-import { Button } from "@afenda/design-system/ui-primitives"
-
+import { useShellPermissions } from "../hooks/use-shell-permissions"
 import { useShellTitle } from "../hooks/use-shell-title"
-
-const APP_SHELL_NOT_FOUND_RETURN_HREF = "/app/events" as const
+import { resolveShellHomeHref } from "../services/resolve-shell-home-href"
+import { AppShellRouteState } from "./app-shell-route-state"
 
 /**
  * Shell-scoped not-found page for `/app/*`.
@@ -18,27 +16,19 @@ const APP_SHELL_NOT_FOUND_RETURN_HREF = "/app/events" as const
 export function AppShellNotFound() {
   const { t } = useTranslation("shell")
   const shellTitle = useShellTitle()
+  const permissions = useShellPermissions()
 
-  const pageTitle = shellTitle ?? t("error.not_found.title")
+  const stateTitle = shellTitle ?? t("error.not_found.title")
+  const homeHref = resolveShellHomeHref(permissions) ?? "/app"
 
   return (
-    <section
-      aria-labelledby="app-shell-not-found-title"
-      className="ui-page ui-stack-relaxed"
-    >
-      <h1 id="app-shell-not-found-title" className="ui-title-page">
-        {pageTitle}
-      </h1>
-
-      <p className="text-muted-foreground">
-        {t("error.not_found.description")}
-      </p>
-
-      <Button asChild variant="secondary">
-        <Link to={APP_SHELL_NOT_FOUND_RETURN_HREF}>
-          {t("error.not_found.link_dashboard")}
-        </Link>
-      </Button>
-    </section>
+    <AppShellRouteState
+      stateKind="failure"
+      stateLabel="Route not found"
+      stateTitle={stateTitle}
+      stateDescription={t("error.not_found.description")}
+      homeHref={homeHref}
+      homeLabel={t("error.not_found.link_dashboard")}
+    />
   )
 }

@@ -113,10 +113,10 @@ export const shellAppChildRouteDefinitions = [
               to: shellAppChildPath("audit"),
             },
             {
-              id: "events-partners",
-              labelKey: "context_bar.events.tabs.partners",
+              id: "events-counterparties",
+              labelKey: "context_bar.events.tabs.counterparties",
               kind: "link",
-              to: shellAppChildPath("partners"),
+              to: shellAppChildPath("counterparties"),
               badgeCount: 2,
             },
           ],
@@ -148,10 +148,10 @@ export const shellAppChildRouteDefinitions = [
                   to: shellAppChildPath("audit"),
                 },
                 {
-                  id: "events-open-partners",
-                  labelKey: "context_bar.events.actions.menu.partners",
+                  id: "events-open-counterparties",
+                  labelKey: "context_bar.events.actions.menu.counterparties",
                   kind: "link",
-                  to: shellAppChildPath("partners"),
+                  to: shellAppChildPath("counterparties"),
                 },
                 {
                   id: "events-refresh-menu",
@@ -188,23 +188,23 @@ export const shellAppChildRouteDefinitions = [
     } satisfies ShellRouteMetadata,
   },
   {
-    pathSegment: "partners",
+    pathSegment: "counterparties",
     metadata: {
-      routeId: "partners",
-      path: shellAppChildPath("partners"),
+      routeId: "counterparties",
+      path: shellAppChildPath("counterparties"),
       shell: {
-        titleKey: "breadcrumb.partners",
+        titleKey: "breadcrumb.counterparties",
         breadcrumbs: [
           { id: "app", labelKey: "breadcrumb.app", to: APP_BASE },
           {
-            id: "partners",
-            labelKey: "breadcrumb.partners",
-            to: shellAppChildPath("partners"),
+            id: "counterparties",
+            labelKey: "breadcrumb.counterparties",
+            to: shellAppChildPath("counterparties"),
           },
         ],
       },
       coverage: {
-        descendantSamplePaths: ["/app/partners/acme/settings"],
+        descendantSamplePaths: ["/app/counterparties/acme/settings"],
       },
     } satisfies ShellRouteMetadata,
   },

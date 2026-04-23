@@ -4,7 +4,7 @@ import { Sidebar } from "@afenda/design-system/ui-primitives"
 import { cn } from "@afenda/design-system/utils"
 
 import { AppShellSidebarRailColumn } from "../shell-rail-sidebar-block/shell-rail-column"
-import { ShellLabelsColumn } from "./panel"
+import { ShellLabelsColumn } from "./shell-left-sidebar-panel"
 import type { ShellLeftSidebarDisplayMode } from "./shell-left-sidebar-display-mode"
 import type { ShellLeftSidebarNavigationModelResult } from "./use-shell-left-sidebar-navigation-model"
 

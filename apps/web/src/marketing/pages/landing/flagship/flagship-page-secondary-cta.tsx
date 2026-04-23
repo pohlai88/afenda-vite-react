@@ -11,7 +11,10 @@ import { motion } from "framer-motion"
 import { ArrowRight, ShieldCheck } from "lucide-react"
 import { Link } from "react-router-dom"
 
-import { MARKETING_EASE_OUT, MarketingSectionHeading } from "../../_components"
+import {
+  MARKETING_EASE_OUT,
+  MarketingSectionHeading,
+} from "../../../components"
 import { MARKETING_PAGE_HREFS } from "../../../marketing-page-registry"
 import { FLAGSHIP_PAGE_CONTENT } from "./flagship-page-editorial"
 import { getMarketingPageSectionReveal } from "./flagship-page-motion"

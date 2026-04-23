@@ -11,11 +11,13 @@ node_modules
 dist/
 **/dist/
 coverage
-apps/web/.artifacts/
+# Regenerated caches (legacy path — safe to delete locally)
 .eslintcache
+apps/*/.eslintcache
+**/.artifacts/
+_tmp_*/
 .turbo
 .tmp/
-apps/*/.eslintcache
 dist-ssr
 *.local
 # Env files (keep `.env.example` committed)
@@ -32,13 +34,6 @@ packages/vitest-config/vitest-github/
 packages/vitest-config/_vitest-github/
 packages/eslint-config/_eslint-github/
 packages/pino-logger/pino-github/
-
-# Repo-level artifacts (see docs/REPO_ARTIFACT_POLICY.md)
-.artifacts/cache/turbo/**
-!.artifacts/cache/turbo/.gitkeep
-.artifacts/reports/shell-governance/*.json
-.artifacts/tmp/*
-!.artifacts/tmp/.gitkeep
 
 # Editor directories and files
 .vscode/*

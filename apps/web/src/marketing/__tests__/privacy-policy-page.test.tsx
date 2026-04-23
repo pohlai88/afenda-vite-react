@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import { beforeAll, describe, expect, it } from "vitest"
 
-import PrivacyPolicyPage from "../pages/legal/privacy-policy-page"
+import PrivacyPolicyPage from "../pages/legal/privacy-policy/privacy-policy-page"
 
 beforeAll(() => {
   class MockIntersectionObserver implements IntersectionObserver {
@@ -41,7 +41,7 @@ describe("PrivacyPolicyPage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /The page explains how data responsibility is framed before policy detail expands\./i,
+        name: /The public privacy page should expose how data responsibility is framed\./i,
       })
     ).toBeInTheDocument()
 

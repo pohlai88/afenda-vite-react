@@ -2,7 +2,7 @@
 
 Authenticated **runtime frame** for `/app/*`: sidebar, header, breadcrumbs, and declared chrome slots. This is **platform infrastructure**, not a feature domain and not a dashboard.
 
-**Layout:** `apps/web/src/app/_platform/shell/` — `contract/`, `services/`, `hooks/`, `components/`, `routes/`, `utils/`, `__tests__/`, `index.ts`.
+**Layout:** `apps/web/src/app/_platform/shell/` — `contract/`, `services/`, `hooks/`, `components/`, `routes/`, `docs/`, `__tests__/`, governed entry surfaces (`index.ts`, `shell-*-surface.ts`), and shell-local support modules.
 
 ## Doctrine
 
@@ -40,7 +40,7 @@ Shell `services/` are **pure** (deterministic, side-effect free): navigation fil
 
 | Path                                                                                        | Scope                                    | Use when                                                                                                                                                |
 | ------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`shellCommandActivityStore`**, **`useShellCommandActivity`**, **`useShellCommandRunner`** | App-wide, one active run per `commandId` | Header actions, any surface that must stay in sync across components (`AppShellHeaderActions` uses this).                                               |
+| **`shellCommandActivityStore`**, **`useShellCommandActivity`**, **`useShellCommandRunner`** | App-wide, one active run per `commandId` | Context-bar actions and any surface that must stay in sync across components.                                                                           |
 | **`useShellCommandInteraction`**                                                            | Per hook instance (local `Set`)          | Modals or feature areas that should not share global activity.                                                                                          |
 | **`useShellCommandExecutor`** / **`createShellCommandExecutor`**                            | No activity / feedback orchestration     | Low-level execution only; prefer **`useShellCommandRunner`** for UI.                                                                                    |
 | **`createShellCommandDispatcher`**                                                          | Throws on failure                        | Tests (`shell-command-dispatcher.test.ts`) or callers that want throw semantics — there is **no** `useShellCommandDispatcher` hook (removed as unused). |
@@ -61,7 +61,7 @@ Stable order of responsibilities:
 3. `resolveShellMetadata()` normalizes `undefined` → shared empty sentinel and optionally runs `validateShellMetadata` (dev logging via `useShellMetadata`).
 4. Consumers (`useShellBreadcrumbs`, `useShellTitle`) read **`useShellMetadata()`** only — no parallel metadata sources.
 
-`utils/translate-shell-namespace-key.ts` is the single cast point for passing runtime `labelKey` strings into `useTranslation("shell")`’s `t()`.
+`translate-shell-namespace-key.ts` is the single cast point for passing runtime `labelKey` strings into `useTranslation("shell")`’s `t()`.
 
 ## Tailwind v4 and global styling
 
@@ -109,16 +109,16 @@ It separates breadcrumb behavior into distinct layers so routing, translation, r
 
 ### Module structure (breadcrumb)
 
-| Area                                          | Role                                                                                         |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `contract/shell-breadcrumb-contract.ts`       | `ShellBreadcrumbDescriptor`, `ShellBreadcrumbResolvedItem`, `ResolveShellBreadcrumbsOptions` |
-| `contract/shell-metadata-contract.ts`         | `ShellMetadata` (`useShellMetadata` return type)                                             |
-| `services/resolve-shell-breadcrumb.ts`        | Match → `ShellBreadcrumbDescriptor[]` from `handle.shell`                                    |
-| `services/resolve-shell-breadcrumbs.ts`       | Pure policy: descriptors → `ShellBreadcrumbResolvedItem[]`                                   |
-| `hooks/use-shell-metadata.ts`                 | Deepest match → `resolveShellMetadata()` → `ShellMetadata`                                   |
-| `hooks/use-shell-breadcrumbs.ts`              | Pathname + `shell` i18n + resolver (render-ready items)                                      |
-| `components/app-shell-breadcrumb.tsx`         | Presentation only                                                                            |
-| `__tests__/resolve-shell-breadcrumbs.test.ts` | Resolver-first Vitest                                                                        |
+| Area                                                           | Role                                                                                         |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `contract/shell-breadcrumb-contract.ts`                        | `ShellBreadcrumbDescriptor`, `ShellBreadcrumbResolvedItem`, `ResolveShellBreadcrumbsOptions` |
+| `contract/shell-metadata-contract.ts`                          | `ShellMetadata` (`useShellMetadata` return type)                                             |
+| `routes/shell-route-definitions.ts`                            | Canonical `ShellRouteMetadata`; breadcrumb descriptors live on `ShellMetadata.breadcrumbs`   |
+| `services/resolve-shell-breadcrumbs.ts`                        | Pure policy: descriptors → `ShellBreadcrumbResolvedItem[]`                                   |
+| `hooks/use-shell-metadata.ts`                                  | Deepest match → `resolveShellMetadata()` → `ShellMetadata`                                   |
+| `hooks/use-shell-breadcrumbs.ts`                               | Pathname + `shell` i18n + resolver (render-ready items)                                      |
+| `components/shell-top-nav-block/shell-top-nav-breadcrumbs.tsx` | Presentation only                                                                            |
+| `__tests__/resolve-shell-breadcrumbs.test.ts`                  | Resolver-first Vitest                                                                        |
 
 ### Architecture
 
@@ -161,14 +161,14 @@ Resolution rules:
 
 #### 4. Component layer
 
-`AppShellBreadcrumb` is presentational only.
+`ShellTopNavBreadcrumbs` is presentational only inside the top-nav block.
 
 Component rules:
 
-- render nothing when the resolved list is empty
-- render `link` items as navigable ancestors
-- render `page` items as the current/static segment
-- do not duplicate route decision logic in JSX
+- render the shell root fallback label when the resolved list is empty
+- render resolved breadcrumb items only; do not re-run breadcrumb policy in JSX
+- keep pathname comparison and translation out of the component
+- do not invent breadcrumb ids or targets in JSX
 
 ### Non-goals
 
@@ -247,8 +247,9 @@ Pipeline:
 2. `useShellMetadata()` returns normalized shell metadata.
 3. `validateShellMetadata()` enforces descriptor correctness (including `commandId` vs `to` by `kind`).
 4. `resolveShellHeaderActions()` converts descriptors into render-ready items (labels translated, paths normalized).
-5. `useShellHeaderActions()` wires `shell` i18n and metadata at runtime.
-6. `AppShellHeaderActions` renders resolved items only; `onCommandAction` dispatches **command intent tokens** (`commandId`) — not a command bus in metadata.
+5. Presentation consumers resolve and render items only; `commandId` stays a **command intent token**, not a command bus in metadata.
+
+There is intentionally **no dedicated `useShellHeaderActions()` hook** right now. Header-action metadata remains governed and validated, but a shared runtime hook should only exist when there is a real multi-consumer presentation surface for it.
 
 Rules:
 
@@ -273,16 +274,14 @@ Rules:
 
 Slot IDs are typed in `contract/shell-slot-contract.ts`. Most slots are **empty** in v1; the doctrine prevents ad hoc prop drilling when extensions arrive.
 
-### Public surface (`index.ts`)
+### Public surfaces
 
-**Contracts & codes:** `ShellMetadata`, `ShellRouteMetadata`, breadcrumb types, header action types (`ShellHeaderActionDescriptor`, `ShellHeaderActionResolvedItem`, …), `ShellMetadataValidationCode`, `shellMetadataValidationCodes`, `shellMetadataValidationCodeList`, invariant types and registry.
+The shell no longer uses one catch-all public barrel for every concern.
 
-**Route catalog:** `shellAppChildPath`, `shellAppChildPathSegments`, `shellAppChildRouteDefinitions`, `shellAppDefaultChildSegment`, `shellAppLayoutRoute`, `shellAppNotFoundRoute`, `shellRouteMetadataList`.
+- [`index.ts`](./index.ts): compatibility/governance root surface for frame primitives (`AppShellLayout`, `AppShellSidebar`, `ShellLeftSidebar`, `ShellLeftSidebarLayout`, `ShellScopeLineageBar`, `ShellTopNav`, `AppShellAccessDenied`, `AppShellNotFound`) plus the stable child-route segment list already used by tests/governance.
+- [`shell-layout-surface.ts`](./shell-layout-surface.ts): curated layout-composition surface (`AppShellLayout`, `AppShellSidebar`, `ShellLeftSidebar`, `ShellLeftSidebarLayout`, `ShellScopeLineageBar`, `ShellTopNav`, `AppShellAccessDenied`, `AppShellNotFound`).
+- [`shell-route-surface.ts`](./shell-route-surface.ts): curated route-composition surface for `/app/*` route wiring.
+- [`shell-command-surface.ts`](./shell-command-surface.ts): command-runner public surface.
+- [`shell-validation-surface.ts`](./shell-validation-surface.ts): curated validation/reporting surface for shell metadata, catalog invariants, resolution traces, and report diffing.
 
-**Resolvers:** `resolveShellBreadcrumbs`, `resolveShellHeaderActions`, `resolveShellMetadata`, `resolveShellTitle`, `validateShellMetadata`, `translateShellNamespaceKey`.
-
-**Hooks:** `useCurrentShellRoute`, `useShellBreadcrumbs`, `useShellHeaderActions`, `useShellMetadata`, `useShellRouteMeta`, `useShellRouteResolution`, `useShellTitle`, `useShellCommandActivity`, `useShellCommandRunner`, `useShellCommandInteraction`, `useShellCommandExecutor`, `useShellCommandFeedback`, feedback ports (`useToastPort`, `useBannerPort`, `useInlineFeedbackPort`).
-
-**Chrome:** `AppShellBreadcrumb`, `AppShellHeader`, `AppShellHeaderActions`, `AppShellLayout`, `AppShellNotFound`, `AppShellSidebar`.
-
-**Governance:** `assertShellMetadata`, `assertShellRouteCatalog`, `collectShellRouteCatalogIssues`, `mapShellMetadataValidationToShellInvariant`, `buildShellValidationReport`, `diffShellValidationReports`, `formatShellValidationReportDiff`, `ShellValidationReport`, `ShellValidationReportDiff`, `ShellValidationReportDoctrine`, `ShellValidationReportIssueDelta`, `ShellValidationReportSampleDelta`, `ShellValidationReportSummary`, `ShellValidationReportTraceChange`, `SHELL_VALIDATION_REPORT_SCHEMA_VERSION`, `shellValidationReportDoctrine`, `ShellResolutionTraceRecord`, `BuildShellValidationReportOptions`, `ShellInvariantError`, `createShellInvariantError`.
+Breadcrumb internals (`resolveShellBreadcrumbs`, `useShellBreadcrumbs`, `ShellTopNavBreadcrumbs`) remain shell-internal today. Route consumers own breadcrumb descriptors through `ShellRouteMetadata.shell.breadcrumbs`; top-nav presentation stays inside `_platform/shell`.

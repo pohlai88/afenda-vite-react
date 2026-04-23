@@ -14,6 +14,7 @@ describe("MarketingLoadingFallback", () => {
     expect(region).toHaveAttribute("aria-busy", "true")
     expect(region).toHaveAttribute("aria-live", "polite")
     expect(region).toHaveAttribute("aria-atomic", "true")
-    expect(region).toHaveTextContent("Loading…")
+    expect(region).toHaveTextContent("AFENDA")
+    expect(region).toHaveTextContent("Resolving truth surface")
   })
 })

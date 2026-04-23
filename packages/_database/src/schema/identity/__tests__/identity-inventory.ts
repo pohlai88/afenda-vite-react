@@ -3,6 +3,7 @@
  * Includes deprecated `users` alias from `iam/user-accounts.schema.ts`.
  */
 export const IDENTITY_BARREL_EXPORT_NAMES = [
+  "deleteIdentityLinksForBetterAuthUser",
   "ensureIdentityLinkForBetterAuthUser",
   "identityLinks",
   "userIdentities",

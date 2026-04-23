@@ -22,6 +22,23 @@ export interface AuthTenantContextPayload {
   readonly afendaUserId: string
 }
 
+export interface AuthTenantCandidate {
+  readonly tenantId: string
+  readonly membershipId: string
+  readonly tenantName: string
+  readonly tenantCode: string
+  readonly isDefault: boolean
+}
+
+export interface AuthTenantCandidatePayload {
+  readonly authSessionId: string | null
+  readonly afendaUserId: string
+  readonly activeTenantId: string | null
+  readonly activeMembershipId: string | null
+  readonly defaultTenantId: string | null
+  readonly candidates: readonly AuthTenantCandidate[]
+}
+
 function readErrorCodeFromHttpError(error: ApiClientHttpError): string {
   const body = error.body
 
@@ -66,6 +83,23 @@ export async function activateAuthTenantContext(
     }
 
     return (payload as AuthApiSuccessEnvelope<AuthTenantContextPayload>).data
+  } catch (error) {
+    throwAuthServiceError(normalizeApiErrorCode(error))
+  }
+}
+
+export async function listAuthTenantCandidates(): Promise<AuthTenantCandidatePayload> {
+  try {
+    const client = getSharedApiClient()
+    const payload = await client.get<
+      AuthApiEnvelope<AuthTenantCandidatePayload>
+    >(resolveApiV1Path("/auth/tenant-context/candidates"))
+
+    if (isAuthApiErrorEnvelope(payload)) {
+      throwAuthServiceError(payload.error.code)
+    }
+
+    return (payload as AuthApiSuccessEnvelope<AuthTenantCandidatePayload>).data
   } catch (error) {
     throwAuthServiceError(normalizeApiErrorCode(error))
   }

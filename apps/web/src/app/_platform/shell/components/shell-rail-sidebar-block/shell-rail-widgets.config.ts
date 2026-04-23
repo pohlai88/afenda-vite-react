@@ -40,9 +40,8 @@ export type ShellRailWidgetSlot =
 export const shellRailWidgetConfig: ShellRailWidgetConfig = {
   enabledFeatureIds: [
     "events",
-    "partners",
+    "counterparties",
     "audit",
-    "db_studio",
     "my_project",
     "my_team",
     "my_report",
@@ -62,7 +61,7 @@ export const shellRailWidgetSlots: readonly ShellRailWidgetSlot[] = [
   },
   {
     kind: "feature",
-    featureId: "partners",
+    featureId: "counterparties",
     emoji: "🌐",
     labelKey: "nav.widgets.my_portal",
   },
@@ -71,12 +70,6 @@ export const shellRailWidgetSlots: readonly ShellRailWidgetSlot[] = [
     featureId: "audit",
     emoji: "📋",
     labelKey: "nav.widgets.my_task",
-  },
-  {
-    kind: "feature",
-    featureId: "db_studio",
-    emoji: "🗂️",
-    labelKey: "nav.widgets.db_studio",
   },
   {
     kind: "feature",

@@ -10,7 +10,7 @@
  */
 import { relations } from "drizzle-orm"
 
-import { dataSources } from "../schema/governance/data-sources.schema"
+import { dataSources } from "../schema/governance/governance-data-sources.schema"
 import { externalIdentities } from "../schema/mdm/external-identities.schema"
 import { items } from "../schema/mdm/items.schema"
 import { masterAliases } from "../schema/mdm/master-aliases.schema"

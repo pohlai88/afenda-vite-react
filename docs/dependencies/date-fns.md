@@ -1,8 +1,17 @@
+---
+owner: governance-toolchain
+truthStatus: supporting
+docClass: supporting-doc
+relatedDomain: dependency-guide
+category: web-client-installed-not-implemented
+status: Installed, not implemented
+---
+
 # date-fns guide (Afenda)
 
-This document describes how **`apps/web`** uses **[date-fns](https://date-fns.org/)** for **immutable** date parsing, formatting, and comparison with **named imports** (tree-shaking friendly), aligned with API **ISO 8601** strings, **[Zod](./zod.md)** parsing at boundaries, and future **[i18n](./i18n.md)**.
+This document describes how **`apps/web`** should use **[date-fns](https://date-fns.org/)** for **immutable** date parsing, formatting, and comparison with **named imports** (tree-shaking friendly), aligned with API **ISO 8601** strings, **[Zod](./zod.md)** parsing at boundaries, and future **[i18n](./i18n.md)**.
 
-**Status:** **Adopted** in **`apps/web`** — **`date-fns` ^4.x** in dependencies (verify exact version in [`apps/web/package.json`](../../apps/web/package.json)).
+**Status:** **Installed, not implemented** in **`apps/web`** — **`date-fns`** is present in [`apps/web/package.json`](../../apps/web/package.json), but there is no active repo-standard date helper layer built on it yet.
 
 **Official documentation:**
 
@@ -19,13 +28,13 @@ This document describes how **`apps/web`** uses **[date-fns](https://date-fns.or
 
 ---
 
-## How we use date-fns
+## Intended use when adopted
 
-| Topic | Convention |
-| --- | --- |
-| **Imports** | **Named imports** from **`date-fns`** — e.g. `import { format, parseISO } from 'date-fns'`. Avoid **`import * as dfns`** or barrels that pull the whole library ([Performance](../PERFORMANCE.md)) |
-| **API JSON** | Prefer **ISO 8601** strings in [API](../API.md) payloads; validate with [Zod](./zod.md), then **`parseISO`** (or **`parse`**) before passing to **date-fns** |
-| **Locales** | Import **only** locales you need — e.g. `import { de } from 'date-fns/locale/de'` — and pass **`{ locale }`** into **`format`**, **`formatDistance`**, **`formatRelative`**, etc. ([I18n](https://date-fns.org/docs/I18n)) |
+| Topic          | Convention                                                                                                                                                                                                                                                                                            |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Imports**    | **Named imports** from **`date-fns`** — e.g. `import { format, parseISO } from 'date-fns'`. Avoid **`import * as dfns`** or barrels that pull the whole library ([Performance](../PERFORMANCE.md))                                                                                                    |
+| **API JSON**   | Prefer **ISO 8601** strings in [API](../API.md) payloads; validate with [Zod](./zod.md), then **`parseISO`** (or **`parse`**) before passing to **date-fns**                                                                                                                                          |
+| **Locales**    | Import **only** locales you need — e.g. `import { de } from 'date-fns/locale/de'` — and pass **`{ locale }`** into **`format`**, **`formatDistance`**, **`formatRelative`**, etc. ([I18n](https://date-fns.org/docs/I18n))                                                                            |
 | **Time zones** | For ERP scheduling and **DST**-correct arithmetic in a **fixed IANA zone**, prefer **`@date-fns/tz`** **`TZDate`** with **date-fns** (`addHours`, `format`, …). **`TZDateMini`** is smaller but **`toString()`** follows the **system** zone—use **`TZDate`** when display in the target zone matters |
 
 ### Illustrative patterns
@@ -33,19 +42,22 @@ This document describes how **`apps/web`** uses **[date-fns](https://date-fns.or
 **Format + locale:**
 
 ```typescript
-import { format, formatDistance, subDays } from 'date-fns';
-import { es } from 'date-fns/locale/es';
+import { format, formatDistance, subDays } from "date-fns"
+import { es } from "date-fns/locale/es"
 
-format(new Date(2024, 8, 15), 'PPPP', { locale: es });
-formatDistance(subDays(new Date(), 3), new Date(), { addSuffix: true, locale: es });
+format(new Date(2024, 8, 15), "PPPP", { locale: es })
+formatDistance(subDays(new Date(), 3), new Date(), {
+  addSuffix: true,
+  locale: es,
+})
 ```
 
 **ISO from the wire:**
 
 ```typescript
-import { parseISO, isValid } from 'date-fns';
+import { parseISO, isValid } from "date-fns"
 
-const d = parseISO(isoStringFromApi);
+const d = parseISO(isoStringFromApi)
 if (!isValid(d)) {
   /* handle bad data — Zod should catch this earlier when possible */
 }
@@ -54,20 +66,20 @@ if (!isValid(d)) {
 **Optional FP style** (curried / composable pipelines):
 
 ```typescript
-import { addDays, format } from 'date-fns/fp';
+import { addDays, format } from "date-fns/fp"
 
-const addWeek = addDays(7);
-const asYmd = format('yyyy-MM-dd');
+const addWeek = addDays(7)
+const asYmd = format("yyyy-MM-dd")
 ```
 
 **Time zone–aware instance** (when product requires it):
 
 ```typescript
-import { TZDate } from '@date-fns/tz';
-import { addHours } from 'date-fns';
+import { TZDate } from "@date-fns/tz"
+import { addHours } from "date-fns"
 
-const closing = new TZDate(2025, 3, 15, 9, 0, 0, 'Europe/Copenhagen');
-const next = addHours(closing, 8);
+const closing = new TZDate(2025, 3, 15, 9, 0, 0, "Europe/Copenhagen")
+const next = addHours(closing, 8)
 ```
 
 Add **`@date-fns/tz`** to the package that needs it; keep **server** and **client** boundaries clear for audits.

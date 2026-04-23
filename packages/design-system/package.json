@@ -12,7 +12,7 @@
     "validate-tokens": "pnpm exec vitest run design-architecture/__tests__ --configLoader bundle",
     "tokens:check": "pnpm run validate-tokens",
     "typecheck": "tsc -p tsconfig.json",
-    "lint": "eslint . --cache --cache-location .eslintcache --concurrency auto",
+    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint . --cache --cache-location .artifacts/eslint --concurrency auto",
     "format": "prettier --write \"utils/**/*.ts\" \"scripts/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.{ts,tsx}\" \"prettier.config.js\"",
     "format:check": "prettier --check \"utils/**/*.ts\" \"scripts/**/*.ts\" \"ui-primitives/**/*.{ts,tsx}\" \"icons/**/*.{ts,tsx}\" \"components.json\" \"hooks/**/*.{ts,tsx}\" \"prettier.config.js\"",
     "icons:generate": "tsx icons/script/build-icons.ts",

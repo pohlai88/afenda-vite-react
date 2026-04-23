@@ -1,8 +1,17 @@
+---
+owner: governance-toolchain
+truthStatus: supporting
+docClass: supporting-doc
+relatedDomain: dependency-guide
+category: web-client-installed-not-implemented
+status: Installed, not implemented
+---
+
 # Zustand guide (Afenda)
 
-This document describes how **`apps/web`** uses **[Zustand](https://github.com/pmndrs/zustand)** **v5** for **small, client-only UI state** (shell, theme, layout prefs)—**not** authoritative ERP **server truth**, which belongs behind the HTTP [API](../API.md) and **[TanStack Query](./tanstack-query.md)**.
+This document describes how **`apps/web`** should use **[Zustand](https://github.com/pmndrs/zustand)** **v5** for **small, client-only UI state** (shell, theme, layout prefs) if we standardize it later—**not** authoritative ERP **server truth**, which belongs behind the HTTP [API](../API.md) and **[TanStack Query](./tanstack-query.md)**.
 
-**Status:** **Adopted** in **`apps/web`** — **`zustand`** **`^5.0.12`** in [`apps/web/package.json`](../../apps/web/package.json). A concrete shell store lives in [`apps/web/src/share/client-store/app-shell-store.ts`](../../apps/web/src/share/client-store/app-shell-store.ts): **`create`** with **`devtools`** wrapping **`persist`**, **`partialize`** limiting what reaches **`localStorage`**.
+**Status:** **Installed, not implemented** in **`apps/web`** — **`zustand`** **`^5.0.12`** is present in [`apps/web/package.json`](../../apps/web/package.json), but the active app runtime does **not** currently wire a Zustand store. Existing shell state is handled by local hooks and a custom store under [`apps/web/src/app/_platform/shell/store/`](../../apps/web/src/app/_platform/shell/store/).
 
 **Official documentation:**
 
@@ -18,24 +27,24 @@ This document describes how **`apps/web`** uses **[Zustand](https://github.com/p
 
 ## Stack (`apps/web`)
 
-| Piece | Role |
-| --- | --- |
-| **`create`** | Define store + actions |
-| **`persist`** | **UX-only** hydration (e.g. theme, language, sidebar) — **`partialize`** must **exclude** secrets and volatile server-backed fields |
-| **`devtools`** | Debug/time-travel in development (strip or gate in production if desired) |
-| **Selectors** | Prefer **narrow** slices; use **`useShallow`** when selecting **objects/arrays** to avoid extra renders ([docs](https://zustand.docs.pmnd.rs/guides/prevent-rerenders-with-use-shallow), [README](https://github.com/pmndrs/zustand#selecting-multiple-state-slices)) |
+| Piece          | Role                                                                                                                                                                                                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`create`**   | Define store + actions                                                                                                                                                                                                                                                |
+| **`persist`**  | **UX-only** hydration (e.g. theme, language, sidebar) — **`partialize`** must **exclude** secrets and volatile server-backed fields                                                                                                                                   |
+| **`devtools`** | Debug/time-travel in development (strip or gate in production if desired)                                                                                                                                                                                             |
+| **Selectors**  | Prefer **narrow** slices; use **`useShallow`** when selecting **objects/arrays** to avoid extra renders ([docs](https://zustand.docs.pmnd.rs/guides/prevent-rerenders-with-use-shallow), [README](https://github.com/pmndrs/zustand#selecting-multiple-state-slices)) |
 
 ---
 
-## How we use Zustand
+## Intended use when adopted
 
-| Topic | Convention |
-| --- | --- |
-| **Server truth** | Tenant data, permissions, domain entities → **HTTP** + **TanStack Query** ([API](../API.md), [TanStack Query](./tanstack-query.md)) |
-| **Stores** | **Small**, feature-scoped stores; avoid one **global god-store** unless it stays UI-only ([State management](../STATE_MANAGEMENT.md)) |
-| **Example** | [`app-shell-store.ts`](../../apps/web/src/share/client-store/app-shell-store.ts) — **`partialize`** persists **`theme`**, **`language`**, **`sidebarOpen`** only; **`currentUser`** and **`lastUpdated`** stay **non-persisted** (review when wiring real auth) |
-| **Placement** | New substantial client state → prefer **`apps/web/src/features/*`** colocation ([AGENTS.md](../../AGENTS.md)) |
-| **Persist** | **Non-sensitive** UX only; **tokens**, refresh material, or **PII** require explicit [Authentication](../AUTHENTICATION.md) / security review |
+| Topic             | Convention                                                                                                                                    |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Server truth**  | Tenant data, permissions, domain entities → **HTTP** + **TanStack Query** ([API](../API.md), [TanStack Query](./tanstack-query.md))           |
+| **Stores**        | **Small**, feature-scoped stores; avoid one **global god-store** unless it stays UI-only ([State management](../STATE_MANAGEMENT.md))         |
+| **Current state** | No live Zustand store is bound into the web runtime today; this guide is a policy target, not a description of current implementation.        |
+| **Placement**     | New substantial client state → prefer **`apps/web/src/features/*`** colocation ([AGENTS.md](../../AGENTS.md))                                 |
+| **Persist**       | **Non-sensitive** UX only; **tokens**, refresh material, or **PII** require explicit [Authentication](../AUTHENTICATION.md) / security review |
 
 ---
 
@@ -47,10 +56,10 @@ This document describes how **`apps/web`** uses **[Zustand](https://github.com/p
 
 ---
 
-## Deeper reference
+## Implementation note
 
-- [`apps/web/src/share/client-store/app-shell-store.ts`](../../apps/web/src/share/client-store/app-shell-store.ts) — **`devtools` + `persist` + `partialize`** pattern.
-- [Vite](./vite.md) — **`zustand`** in **`optimizeDeps.include`** where useful ([`vite.config.ts`](../../apps/web/vite.config.ts)).
+- [`apps/web/package.json`](../../apps/web/package.json) — dependency is installed, but there is no repo-standard store implementation yet.
+- [`apps/web/src/app/_platform/shell/store/`](../../apps/web/src/app/_platform/shell/store/) — current shell activity state uses a custom store instead of Zustand.
 
 ---
 

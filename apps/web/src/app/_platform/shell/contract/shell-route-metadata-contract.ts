@@ -2,7 +2,7 @@
  * SHELL ROUTE METADATA CONTRACT
  *
  * Route modules declare this shape; the router attaches only `shell` to
- * `handle` (see `types/shell-route-handle.ts`). `routeId` and `path` stay on
+ * `handle` (see `shell-route-handle.ts`). `routeId` and `path` stay on
  * the definition for docs, tooling, and future route tables.
  */
 

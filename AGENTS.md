@@ -10,29 +10,30 @@ This file is intentionally scoped for AI assistants (Cursor, Copilot Chat, PR au
 
 Monorepo guides live under repo-root **`docs/`** (human-readable index: [`docs/README.md`](docs/README.md)). App-specific docs may also live under **`apps/web/docs/`** when added.
 
-| Topic                                                          | Source of truth                                                                                                         |
-| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Monorepo + ERP systems view                                    | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)                                                                          |
-| Architecture upgrade policy (triggers + ADR cadence)           | [`docs/ARCHITECTURE_EVOLUTION.md`](docs/ARCHITECTURE_EVOLUTION.md)                                                      |
-| Authentication (Vite SPA + backend)                            | [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md)                                                                      |
-| Roles and permissions (RBAC + PBAC)                            | [`docs/ROLES_AND_PERMISSIONS.md`](docs/ROLES_AND_PERMISSIONS.md)                                                        |
-| Third-party integrations (OAuth APIs, webhooks)                | [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md)                                                                          |
-| Database (PostgreSQL + Drizzle, schema, migrations, audit)     | [`packages/_database/README.md`](packages/_database/README.md) · [`packages/_database/docs/`](packages/_database/docs/) |
-| HTTP API (REST contract, tenant routes)                        | [`docs/API.md`](docs/API.md)                                                                                            |
-| Documentation scope (normative vs optional; OpenAPI)           | [`docs/DOCUMENTATION_SCOPE.md`](docs/DOCUMENTATION_SCOPE.md)                                                            |
-| Dependency stack guides (tooling, UI, infra, planned packages) | [`docs/dependencies/README.md`](docs/dependencies/README.md)                                                            |
-| Deployment (Vercel + Vite client)                              | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)                                                                              |
-| Domain glossary (ERP + platform terms)                         | [`docs/GLOSSARY.md`](docs/GLOSSARY.md)                                                                                  |
-| Project architecture (app layout)                              | [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)                                                                |
-| Brand & visual identity                                        | [`docs/BRAND_GUIDELINES.md`](docs/BRAND_GUIDELINES.md)                                                                  |
-| Design system (tokens, principles, a11y)                       | [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md)                                                                        |
-| Component & styling patterns                                   | [`docs/COMPONENTS_AND_STYLING.md`](docs/COMPONENTS_AND_STYLING.md)                                                      |
-| shadcn/ui (Vite, when adopted)                                 | [`docs/dependencies/shadcn-ui.md`](docs/dependencies/shadcn-ui.md)                                                      |
-| Performance guidance                                           | [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md)                                                                            |
-| Testing (Vitest + RTL)                                         | [`docs/TESTING.md`](docs/TESTING.md)                                                                                    |
-| State management approach                                      | [`docs/STATE_MANAGEMENT.md`](docs/STATE_MANAGEMENT.md)                                                                  |
-| Project / build configuration                                  | [`docs/PROJECT_CONFIGURATION.md`](docs/PROJECT_CONFIGURATION.md)                                                        |
-| Vite enterprise practices (`apps/web` + CI checklist)          | [`docs/VITE_ENTERPRISE_WORKSPACE.md`](docs/VITE_ENTERPRISE_WORKSPACE.md)                                                |
+| Topic                                                          | Source of truth                                                                                                                |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Monorepo + ERP systems view                                    | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)                                                                                 |
+| Architecture upgrade policy (triggers + ADR cadence)           | [`docs/ARCHITECTURE_EVOLUTION.md`](docs/ARCHITECTURE_EVOLUTION.md)                                                             |
+| Authentication (Vite SPA + backend)                            | [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md)                                                                             |
+| Roles and permissions (RBAC + PBAC)                            | [`docs/ROLES_AND_PERMISSIONS.md`](docs/ROLES_AND_PERMISSIONS.md)                                                               |
+| Third-party integrations (OAuth APIs, webhooks)                | [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md)                                                                                 |
+| Database (PostgreSQL + Drizzle, schema, migrations, audit)     | [`packages/_database/README.md`](packages/_database/README.md) · [`packages/_database/docs/`](packages/_database/docs/)        |
+| HTTP API (REST contract, tenant routes)                        | [`docs/API.md`](docs/API.md)                                                                                                   |
+| Documentation scope (normative vs optional; OpenAPI)           | [`docs/DOCUMENTATION_SCOPE.md`](docs/DOCUMENTATION_SCOPE.md)                                                                   |
+| Dependency stack guides (tooling, UI, infra, planned packages) | [`docs/dependencies/README.md`](docs/dependencies/README.md)                                                                   |
+| Deployment (Vercel + Vite client)                              | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)                                                                                     |
+| Domain glossary (ERP + platform terms)                         | [`docs/GLOSSARY.md`](docs/GLOSSARY.md)                                                                                         |
+| Project architecture (app layout)                              | [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)                                                                       |
+| Marketing — flagship About Company (design prompt)             | [`docs/marketing/about-company-flagship-cursor-super-prompt.md`](docs/marketing/about-company-flagship-cursor-super-prompt.md) |
+| Brand & visual identity                                        | [`docs/BRAND_GUIDELINES.md`](docs/BRAND_GUIDELINES.md)                                                                         |
+| Design system (tokens, principles, a11y)                       | [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md)                                                                               |
+| Component & styling patterns                                   | [`docs/COMPONENTS_AND_STYLING.md`](docs/COMPONENTS_AND_STYLING.md)                                                             |
+| shadcn/ui (Vite, when adopted)                                 | [`docs/dependencies/shadcn-ui.md`](docs/dependencies/shadcn-ui.md)                                                             |
+| Performance guidance                                           | [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md)                                                                                   |
+| Testing (Vitest + RTL)                                         | [`docs/TESTING.md`](docs/TESTING.md)                                                                                           |
+| State management approach                                      | [`docs/STATE_MANAGEMENT.md`](docs/STATE_MANAGEMENT.md)                                                                         |
+| Project / build configuration                                  | [`docs/PROJECT_CONFIGURATION.md`](docs/PROJECT_CONFIGURATION.md)                                                               |
+| Vite enterprise practices (`apps/web` + CI checklist)          | [`docs/VITE_ENTERPRISE_WORKSPACE.md`](docs/VITE_ENTERPRISE_WORKSPACE.md)                                                       |
 
 ### 2. Operating principles (AI perspective)
 

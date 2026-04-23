@@ -79,5 +79,8 @@
 
   "vitest.configSearchPatternExclude": "{**/node_modules/**,**/vendor/**,**/.*/**,**/*.d.ts,**/packages/vitest-config/_vitest-github/**}",
 
-  "vitest.maximumConfigs": 12
+  "vitest.maximumConfigs": 12,
+
+  "notebook.formatOnSave.enabled": true,
+  "notebook.defaultFormatter": "esbenp.prettier-vscode"
 }

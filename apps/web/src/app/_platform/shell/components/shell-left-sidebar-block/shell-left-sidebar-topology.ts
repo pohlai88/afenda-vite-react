@@ -54,7 +54,7 @@ const shellLeftSidebarModuleSectionDefinitions = [
   {
     id: "insights",
     labelKey: "nav.workspace.section_insights",
-    moduleIds: ["partners"],
+    moduleIds: ["counterparties"],
   },
 ] as const satisfies readonly ShellLeftSidebarModuleSectionDefinition[]
 
@@ -67,9 +67,15 @@ const shellLeftSidebarSubmoduleDefinitions = {
     { id: "trail", labelKey: "nav.sub.audit.trail" },
     { id: "exports", labelKey: "nav.sub.audit.exports" },
   ],
-  partners: [
-    { id: "integrations", labelKey: "nav.sub.partners.integrations" },
-    { id: "webhooks", labelKey: "nav.sub.partners.webhooks" },
+  counterparties: [
+    {
+      id: "integrations",
+      labelKey: "nav.sub.counterparties.dependencies",
+    },
+    {
+      id: "webhooks",
+      labelKey: "nav.sub.counterparties.escalations",
+    },
   ],
 } as const satisfies Readonly<
   Partial<

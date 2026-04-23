@@ -15,3 +15,11 @@ export function artifactsRoot(repoRoot: string): string {
 export function shellGovernanceReportsDir(repoRoot: string): string {
   return path.join(repoRoot, ARTIFACTS_ROOT_NAME, "reports", "shell-governance")
 }
+
+export function governanceReportsDir(repoRoot: string): string {
+  return path.join(repoRoot, ARTIFACTS_ROOT_NAME, "reports", "governance")
+}
+
+export function fileSurvivalReportsDir(repoRoot: string): string {
+  return path.join(repoRoot, ARTIFACTS_ROOT_NAME, "reports", "file-survival")
+}

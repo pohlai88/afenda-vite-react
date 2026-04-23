@@ -1,5 +1,6 @@
 /// <reference types="node" />
 
+import { existsSync } from "fs"
 import fs from "fs/promises"
 import path from "path"
 import prettier from "prettier"
@@ -11,6 +12,11 @@ interface DocMetadata {
   description?: string
   category?: string
   status?: string
+  owner?: string
+  truthStatus?: string
+  docClass?: string
+  relatedDomain?: string
+  supersededBy?: string
   order?: number
   hidden?: boolean
 }
@@ -32,6 +38,11 @@ interface DocEntry {
   description: string
   category?: string
   status?: string
+  owner?: string
+  truthStatus?: string
+  docClass?: string
+  relatedDomain?: string
+  supersededBy?: string
   order: number
   hidden: boolean
 }
@@ -42,6 +53,12 @@ interface DirectoryEntry {
   title: string
   description: string
   order: number
+}
+
+interface CollectionTaskGuide {
+  task: string
+  startPath: string
+  why: string
 }
 
 interface ScriptOverride {
@@ -109,11 +126,21 @@ interface SummaryCandidate {
     | "generic-block"
 }
 
+interface ScriptInsight {
+  failureImpact: string
+  primaryOutput: string
+}
+
 const FRONT_MATTER_KEYS = new Set<keyof DocMetadata>([
   "title",
   "description",
   "category",
   "status",
+  "owner",
+  "truthStatus",
+  "docClass",
+  "relatedDomain",
+  "supersededBy",
   "order",
   "hidden",
 ])
@@ -123,6 +150,25 @@ const TEXT_FRONT_MATTER_KEYS = new Set<keyof DocMetadata>([
   "description",
   "category",
   "status",
+  "owner",
+  "truthStatus",
+  "docClass",
+  "relatedDomain",
+  "supersededBy",
+])
+
+const DOC_TRUTH_STATUS_VALUES = new Set([
+  "canonical",
+  "supporting",
+  "historical",
+])
+
+const DOC_CLASS_VALUES = new Set([
+  "canonical-doc",
+  "supporting-doc",
+  "historical-archive",
+  "reviewed-exception",
+  "delete",
 ])
 
 const COMPAT_FRONT_MATTER_ALIASES: Partial<
@@ -132,8 +178,10 @@ const COMPAT_FRONT_MATTER_ALIASES: Partial<
 }
 
 const TITLE_EXCEPTIONS: Record<string, string> = {
+  adr: "ADR",
   ai: "AI",
   api: "API",
+  atc: "ATC",
   ci: "CI",
   erp: "ERP",
   i18n: "i18n",
@@ -152,6 +200,7 @@ const MIN_PREFERRED_DESCRIPTION_LENGTH = 90
 const DEPENDENCY_CATEGORY_SET = new Set<string>([
   "tooling-platform",
   "web-client-adopted",
+  "web-client-installed-not-implemented",
   "web-client-planned",
   "backend-planned",
   "optional",
@@ -266,20 +315,74 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
     description: "ERP and platform vocabulary used across the repository.",
     order: 170,
   },
-  "SHELL_COMPONENTS_GUARDRAILS.md": {
-    title: "Shell Components Guardrails (moved)",
+  "OPERATING_MAP.md": {
+    title: "Operating map",
     description:
-      "Live shell module docs live under `apps/web/src/app/_platform/shell/` (see `README.md` there).",
-    order: 171,
+      "Generated navigation map for canonical docs, generated surfaces, CI-blocking areas, evidence paths, and contributor starting points.",
+    order: 5,
   },
 }
 
 const ROOT_COLLECTION_OVERRIDES: Record<string, DirectoryOverride> = {
+  architecture: {
+    title: "Architecture records",
+    description:
+      "Architecture ADRs and ATCs grouped under docs/architecture for narrative decisions and enforceable contracts.",
+    order: 11,
+  },
+  governance: {
+    title: "Governance",
+    description:
+      "Repo-local governance doctrine, glossary, generated register, and operating model for checks, evidence, and CI gates.",
+    order: 12,
+  },
   dependencies: {
     title: "Dependency guides",
     description:
       "Per-package and infrastructure guides for tooling, UI stack, and planned backend integrations.",
     order: 10,
+  },
+  workspace: {
+    title: "Workspace",
+    description:
+      "Canonical repo-wide operating docs for structure, tooling, architecture, auth, deployment, and platform policy.",
+    order: 9,
+  },
+  "architecture/adr": {
+    title: "ADR records",
+    description:
+      "Narrative architecture decision records that explain what changed, why it changed, and the expected consequences.",
+    order: 10,
+  },
+  "architecture/atc": {
+    title: "ATC contracts",
+    description:
+      "Executable architecture truth contracts for rules that are meant to be enforced, evidenced, and CI-routed.",
+    order: 20,
+  },
+  "architecture/governance": {
+    title: "Governance",
+    description:
+      "Governance doctrine, glossary, and generated register for the repo-local governance spine.",
+    order: 30,
+  },
+  "architecture/scaffolds": {
+    title: "Scaffolds and templates",
+    description:
+      "Reference templates, blueprints, and implementation packs that support canonical workspace policy.",
+    order: 40,
+  },
+  marketing: {
+    title: "Marketing",
+    description:
+      "Flagship marketing briefs and Cursor prompts — e.g. About Company editorial/design override.",
+    order: 15,
+  },
+  scaffolds: {
+    title: "Scaffolds and templates",
+    description:
+      "Supporting implementation packs, templates, and release checklists that sit under canonical repo policy docs.",
+    order: 20,
   },
 }
 
@@ -294,17 +397,80 @@ const SCRIPT_FILE_OVERRIDES: Record<string, ScriptOverride> = {
     order: 5,
     runCommand: "pnpm run script:check-afenda-config",
   },
+  "check-architecture-contracts.ts": {
+    title: "Check architecture contracts",
+    description:
+      "Validates ATC files, ADR-to-ATC linkage, and the minimum enforceable contract fields for architecture contracts.",
+    order: 6,
+    runCommand: "pnpm run script:check-architecture-contracts",
+  },
+  "check-doc-governance.ts": {
+    title: "Check documentation governance",
+    description:
+      "Checks governance doctrine files, glossary terms, and the ADR/ATC template contract expected by the repo-local governance spine.",
+    order: 7,
+    runCommand: "pnpm run script:check-doc-governance",
+  },
+  "check-governance-bindings.ts": {
+    title: "Check governance bindings",
+    description:
+      "Verifies governance registry links resolve to real docs, configs, scripts, and package.json commands.",
+    order: 8,
+    runCommand: "pnpm run script:check-governance-bindings",
+  },
+  "check-governance-registry.ts": {
+    title: "Check governance registry",
+    description:
+      "Validates governance ids, lifecycle semantics, maturity rules, tiers, and evidence-path declarations in afenda.config.",
+    order: 9,
+    runCommand: "pnpm run script:check-governance-registry",
+  },
+  "check-governance-waivers.ts": {
+    title: "Check governance waivers",
+    description:
+      "Validates waiver ownership, expiry, target ids, and emits the waiver evidence report under .artifacts.",
+    order: 10,
+    runCommand: "pnpm run script:check-governance-waivers",
+  },
   "generate-docs-readme.ts": {
     title: "Generate docs README",
     description:
       "Generates stable `README.md` indexes for `docs/`, `scripts/`, and other readmeTargets configured in `afenda.config.json`.",
-    order: 10,
+    order: 11,
     runCommand: "pnpm run script:generate-docs-readme",
   },
-  "node-info.ts": {
-    title: "Node info",
+  "generate-governance-register.ts": {
+    title: "Generate governance register",
+    description:
+      "Builds the generated governance register doc and snapshot from afenda.config and the latest aggregate governance evidence.",
+    order: 12,
+    runCommand: "pnpm run script:generate-governance-register",
+  },
+  "generate-governance-report.ts": {
+    title: "Generate governance report",
+    description:
+      "Aggregates domain evidence and waiver evidence into repo-level governance core and summary reports.",
+    order: 13,
+    runCommand: "pnpm run script:generate-governance-report",
+  },
+  "generate-file-survival-report.ts": {
+    title: "Generate file survival report",
+    description:
+      "Generates report-first file-survival governance audits for configured rollout scopes under `.artifacts/reports/file-survival/`.",
+    order: 14,
+    runCommand: "pnpm run script:generate-file-survival-report",
+  },
+  "inspect-node-runtime.ts": {
+    title: "Inspect node runtime",
     order: 20,
-    runCommand: "pnpm run script:node-info",
+    runCommand: "pnpm run script:inspect-node-runtime",
+  },
+  "run-governance-checks.ts": {
+    title: "Run governance checks",
+    description:
+      "Executes the registered governance domain checks, emits per-domain evidence, and applies block vs warn behavior by domain tier.",
+    order: 15,
+    runCommand: "pnpm run script:run-governance-checks",
   },
 }
 
@@ -366,142 +532,120 @@ const DEPENDENCY_FILE_OVERRIDES: Record<string, FileOverride> = {
   "react.md": {
     title: "React",
     description: "React 19, Router usage, and core UI patterns for `apps/web`.",
-    category: "web-client-adopted",
     order: 10,
   },
   "tanstack-query.md": {
     title: "TanStack Query",
     description: "Server state, API calls, caching, and invalidation patterns.",
-    category: "web-client-adopted",
     order: 20,
   },
   "zod.md": {
     title: "Zod",
     description: "Runtime validation, schema conventions, and type inference.",
-    category: "web-client-adopted",
     order: 30,
   },
   "zustand.md": {
     title: "Zustand",
     description: "Client-only UI state and persistence boundaries.",
-    category: "web-client-adopted",
     order: 40,
   },
   "react-hook-form-zod.md": {
     title: "React Hook Form + Zod",
     description: "Forms, resolvers, and schema-backed input handling.",
-    category: "web-client-adopted",
     order: 50,
   },
   "date-fns.md": {
     title: "date-fns",
     description:
       "Date parsing, formatting, locale handling, and timezone helpers.",
-    category: "web-client-adopted",
     order: 60,
   },
   "tailwind-v4.md": {
     title: "Tailwind CSS v4",
     description: "Utility CSS setup and Vite integration when adopted.",
-    category: "web-client-planned",
     order: 10,
   },
   "shadcn-ui.md": {
     title: "shadcn/ui",
     description:
       "Radix-based copy-in components, `components.json`, and theming.",
-    category: "web-client-planned",
     order: 20,
   },
   "storybook.md": {
     title: "Storybook",
     description: "Component sandbox and documentation workflow.",
-    category: "web-client-planned",
     order: 30,
   },
   "i18n.md": {
     title: "i18n",
     description:
       "Internationalization stack and localization rollout guidance.",
-    category: "web-client-planned",
     order: 40,
   },
   "tiptap.md": {
     title: "Tiptap",
     description: "Rich-text editor stack based on ProseMirror.",
-    category: "web-client-planned",
     order: 50,
   },
   "xyflow.md": {
     title: "XYFlow",
     description: "Diagramming and node-based UI with `@xyflow/react`.",
-    category: "web-client-planned",
     order: 60,
   },
   "wcag-contrast.md": {
     title: "wcag-contrast",
     description:
       "Automated token and contrast checks for accessibility workflows.",
-    category: "web-client-planned",
     order: 70,
   },
   "neon.md": {
     title: "Neon",
     description: "Hosted Postgres guidance and `DATABASE_URL` conventions.",
-    category: "backend-planned",
     order: 10,
   },
   "cloudflare-r2.md": {
     title: "Cloudflare R2",
     description:
       "S3-compatible object storage guidance for file-backed workflows.",
-    category: "backend-planned",
     order: 30,
   },
   "fastify.md": {
     title: "Fastify",
     description: "HTTP API implementation guidance for future `apps/api` work.",
-    category: "backend-planned",
     order: 40,
   },
   "pino.md": {
     title: "Pino",
     description:
       "Structured logging patterns for server-side packages and scripts.",
-    category: "backend-planned",
     order: 50,
   },
   "octokit.md": {
     title: "Octokit",
     description: "GitHub API integration guidance for server-side use cases.",
-    category: "backend-planned",
     order: 60,
   },
   "msw.md": {
     title: "MSW",
     description:
       "API mocks in tests and Storybook when the team standardizes them.",
-    category: "optional",
     order: 10,
   },
   "authjs-auth0.md": {
     title: "Auth.js / Auth0",
     description:
       "Authentication-library notes and pointers back to the auth architecture docs.",
-    category: "optional",
     order: 20,
   },
   "vercel-serverless-edge.md": {
     title: "Vercel Serverless / Edge",
     description: "Guidance for in-repo functions if the SPA later gains them.",
-    category: "optional",
     order: 30,
   },
   "sentry-opentelemetry.md": {
     title: "Sentry / OpenTelemetry",
     description:
       "Error monitoring and tracing once observability is standardized.",
-    category: "optional",
     order: 40,
   },
 }
@@ -509,6 +653,8 @@ const DEPENDENCY_FILE_OVERRIDES: Record<string, FileOverride> = {
 const DEPENDENCY_CATEGORY_LABELS: Record<string, string> = {
   "tooling-platform": "Tooling and platform",
   "web-client-adopted": "Web client (adopted)",
+  "web-client-installed-not-implemented":
+    "Web client (installed, not implemented)",
   "web-client-planned": "Web client (planned)",
   "backend-planned": "Backend, data, and integrations (planned)",
   optional: "Optional / when you standardize",
@@ -517,6 +663,7 @@ const DEPENDENCY_CATEGORY_LABELS: Record<string, string> = {
 const DEPENDENCY_CATEGORY_ORDER = [
   "tooling-platform",
   "web-client-adopted",
+  "web-client-installed-not-implemented",
   "web-client-planned",
   "backend-planned",
   "optional",
@@ -524,8 +671,14 @@ const DEPENDENCY_CATEGORY_ORDER = [
 
 async function main() {
   const afendaConfig = await loadAfendaConfig()
+  const docsRoot = path.join(workspaceRoot, "docs")
 
   assertDependencyCategoryConfiguration()
+
+  await writeIfChanged(
+    path.join(docsRoot, "OPERATING_MAP.md"),
+    await renderOperatingMap(docsRoot, workspaceRoot, afendaConfig)
+  )
 
   const targets = await resolveReadmeTargets(
     workspaceRoot,
@@ -647,8 +800,11 @@ async function discoverDirectoriesWithDocs(
           entry.name.endsWith(".md") &&
           entry.name !== "README.md"
       )
+      const hasReadme = childFiles.some(
+        (entry) => entry.isFile() && entry.name === "README.md"
+      )
 
-      if (hasMarkdownDocs) {
+      if (hasMarkdownDocs || hasReadme) {
         directories.add(childDirectory)
       }
 
@@ -673,21 +829,52 @@ async function renderRootReadme(
   ])
 
   const coreEntries: DocEntry[] = fileEntries.filter(
-    (entry) => !entry.hidden && entry.category !== "redirect"
+    (entry) => isVisibleDocEntry(entry) && entry.category !== "redirect"
   )
   const redirectEntries: DocEntry[] = fileEntries.filter(
-    (entry) => !entry.hidden && entry.category === "redirect"
+    (entry) => isVisibleDocEntry(entry) && entry.category === "redirect"
   )
 
   assertUniqueOrder(coreEntries, "root docs")
   assertUniqueOrder(directoryEntries, "root doc collections")
+  assertRequiredDocMetadata(coreEntries, "root docs")
+  assertRequiredDocMetadata(redirectEntries, "root redirects")
   assertUniqueTitles(coreEntries, "root docs")
   assertNonEmptyDescriptions(coreEntries, "root docs")
   assertNonEmptyDescriptions(redirectEntries, "root redirects")
 
+  const startHereGuides: CollectionTaskGuide[] = [
+    {
+      task: "Understand repo navigation and CI-critical surfaces",
+      startPath: "OPERATING_MAP.md",
+      why: "Start with the operating map for canonical docs, generated surfaces, evidence paths, and CI routing.",
+    },
+    {
+      task: "Read canonical workspace policy",
+      startPath: "workspace/README.md",
+      why: "Workspace docs are the repo-wide operating source for structure, auth, deployment, and tooling policy.",
+    },
+    {
+      task: "Review architecture decisions and contracts",
+      startPath: "architecture/README.md",
+      why: "Architecture docs route you to narrative ADRs and enforceable ATCs without mixing the two.",
+    },
+    {
+      task: "Check dependency adoption posture",
+      startPath: "dependencies/README.md",
+      why: "Dependency guides separate implemented surfaces from installed-only, planned, optional, and research docs.",
+    },
+  ]
+
   const sections = [
     GENERATED_HEADER,
     `# ${afendaConfig.product.name} documentation`,
+    "",
+    renderGeneratedMetadataNotice({
+      sourcePaths: ["scripts/generate-docs-readme.ts", "docs/**/*.md"],
+      command: "pnpm run script:generate-docs-readme",
+      truthClass: "derived",
+    }),
     "",
     `This folder is the generated index for repo-wide guides in the ${afendaConfig.product.name} monorepo (\`${afendaConfig.workspace.packageManager}\` + \`Turborepo\`; web client: \`${afendaConfig.paths.webApp}\` with Vite + React).`,
     "",
@@ -697,15 +884,21 @@ async function renderRootReadme(
     "",
     `These guides describe ${afendaConfig.product.name}, Vite, and ERP concerns for this repository. They are distinct from the older Next.js template docs preserved elsewhere in the workspace.`,
     "",
-    "## Core documentation",
+    "## Start here",
     "",
-    renderTable(
-      ["Document", "Description"],
-      coreEntries.map((entry) => [
-        formatLink(docsRoot, entry.absolutePath, entry.title),
-        entry.description,
-      ])
-    ),
+    renderTaskGuideTable(docsRoot, startHereGuides),
+  ]
+
+  if (coreEntries.length > 0) {
+    sections.push(
+      "",
+      "## Canonical and generated docs in this folder",
+      "",
+      renderDocMetadataTable(docsRoot, coreEntries)
+    )
+  }
+
+  sections.push(
     "",
     "## Documentation collections",
     "",
@@ -719,25 +912,42 @@ async function renderRootReadme(
         ),
         entry.description,
       ])
-    ),
-  ]
+    )
+  )
 
   if (redirectEntries.length > 0) {
     sections.push(
       "",
       "## Compatibility redirects",
       "",
-      renderTable(
-        ["Document", "Description"],
-        redirectEntries.map((entry) => [
-          formatLink(docsRoot, entry.absolutePath, entry.title),
-          entry.description,
-        ])
-      )
+      renderDocMetadataTable(docsRoot, redirectEntries)
     )
   }
 
   sections.push(
+    "",
+    "## If governance CI fails",
+    "",
+    "- Read [Operating map](./OPERATING_MAP.md) first for the current CI routing path and evidence locations.",
+    `- Open ${formatExistingRelativeDocLink(
+      docsRoot,
+      workspaceRoot,
+      [
+        "docs/architecture/governance/generated/governance-register.md",
+        "docs/governance/generated/governance-register.md",
+      ],
+      "the governance register"
+    )} for current domain status and gate context.`,
+    `- Review ${formatExistingRelativeDocLink(
+      docsRoot,
+      workspaceRoot,
+      [
+        "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md",
+        "docs/governance/GOVERNANCE_CONSTITUTION.md",
+      ],
+      "the governance constitution"
+    )} and [scripts README](../scripts/README.md) before changing checks or evidence semantics.`,
+    "- Re-run `pnpm run script:check-governance` locally after fixing the relevant area.",
     "",
     "## Not in this folder yet",
     "",
@@ -745,7 +955,7 @@ async function renderRootReadme(
     "",
     "| Topic | Suggested location / notes |",
     "| --- | --- |",
-    "| OpenAPI / generated SDK | Optional. See [Documentation scope](./DOCUMENTATION_SCOPE.md); not required to implement from [API reference](./API.md). |",
+    "| OpenAPI / generated SDK | Optional. See [Documentation scope](./workspace/DOCUMENTATION_SCOPE.md); not required to implement from [API reference](./workspace/API.md). |",
     "| Storybook deep-dive | Add `docs/STORYBOOK.md` if the team wants repo-level Storybook process guidance beyond the dependency guide. |",
     "| GitHub Actions / CI deep-dive | Add `docs/CI.md` or a focused `.github/workflows` README if CI behavior needs first-class documentation. |",
     "",
@@ -767,7 +977,7 @@ async function renderDependenciesReadme(
     docsRoot,
     DEPENDENCY_FILE_OVERRIDES
   )
-  const visibleEntries: DocEntry[] = entries.filter((entry) => !entry.hidden)
+  const visibleEntries: DocEntry[] = entries.filter(isVisibleDocEntry)
 
   const groupedEntries = new Map<string, DocEntry[]>()
 
@@ -785,6 +995,7 @@ async function renderDependenciesReadme(
     groupedEntries.set(entry.category, group)
   }
 
+  assertRequiredDocMetadata(visibleEntries, "dependency guides")
   assertUniqueTitles(visibleEntries, "dependency guides")
   assertNonEmptyDescriptions(visibleEntries, "dependency guides")
 
@@ -803,15 +1014,27 @@ async function renderDependenciesReadme(
     GENERATED_HEADER,
     "# Dependency guides",
     "",
+    renderGeneratedMetadataNotice({
+      sourcePaths: ["scripts/generate-docs-readme.ts", "docs/dependencies/*.md"],
+      command: "pnpm run script:generate-docs-readme",
+      truthClass: "derived",
+    }),
+    "",
     "Docs in `docs/dependencies/` describe npm packages, infrastructure, and stack choices used in `apps/web`, repo tooling, or planned backend and integration work.",
     "",
-    "Broader UI conventions live in [Components and styling](../COMPONENTS_AND_STYLING.md), and repo tooling expectations live in [Project configuration](../PROJECT_CONFIGURATION.md).",
+    "Broader UI conventions live in [Design system](../workspace/DESIGN_SYSTEM.md), and repo tooling expectations live in [Project configuration](../workspace/PROJECT_CONFIGURATION.md).",
     "",
-    "**Documentation readiness:** [Documentation scope](../DOCUMENTATION_SCOPE.md).",
+    "**Documentation readiness:** [Documentation scope](../workspace/DOCUMENTATION_SCOPE.md).",
     "",
     "## Guide format",
     "",
     "Long-form guides usually share a common shape: Afenda context, official documentation links, usage guidance, red flags, and related references. When behavior-sensitive details matter, verify them against upstream docs before refreshing a guide.",
+    "",
+    "## Start here",
+    "",
+    "- Read implemented guides first. They are the only dependency docs that currently describe live repo behavior.",
+    "- Treat `Installed, not implemented` guides as posture only, not as proof of a standardized runtime pattern.",
+    "- Treat `Planned`, `Optional`, and `Research` guides as decision support, not as approval to install packages without review.",
     "",
     "## Index",
   ]
@@ -842,10 +1065,9 @@ async function renderDependenciesReadme(
     "",
     "## Related documentation",
     "",
-    "- [Documentation scope](../DOCUMENTATION_SCOPE.md) - Normative vs optional docs.",
-    "- [API reference](../API.md) - HTTP contract.",
-    "- [Database package](../../packages/_database/README.md) — PostgreSQL, Drizzle, migrations.",
-    "- [shadcn/ui](./shadcn-ui.md) - Example long-form dependency guide."
+    "- [Documentation scope](../workspace/DOCUMENTATION_SCOPE.md) - Normative vs optional docs.",
+    "- [API reference](../workspace/API.md) - HTTP contract.",
+    "- [Database package](../../packages/_database/README.md) — PostgreSQL, Drizzle, migrations."
   )
 
   return withTrailingNewline(sections.join("\n"))
@@ -857,28 +1079,78 @@ async function renderGenericReadme(
 ): Promise<string> {
   const entries = await getDocEntries(directory, docsRoot)
   const visibleEntries: DocEntry[] = sortEntries(
-    entries.filter((entry) => !entry.hidden)
+    entries.filter(isVisibleDocEntry)
   )
+  const childCollections = await getDirectChildCollectionEntries(directory, docsRoot)
   const relativeDirectory = toPosixPath(path.relative(docsRoot, directory))
-  const title = toTitleCase(relativeDirectory.split("/").at(-1) ?? "Docs")
+  const override = ROOT_COLLECTION_OVERRIDES[relativeDirectory]
+  const title =
+    override?.title ??
+    toTitleCase(relativeDirectory.split("/").at(-1) ?? "Docs")
+  const description =
+    override?.description ??
+    `This index is generated from markdown files in \`docs/${relativeDirectory}\`.`
 
+  assertRequiredDocMetadata(visibleEntries, `docs/${relativeDirectory}`)
   assertUniqueTitles(visibleEntries, `docs/${relativeDirectory}`)
   assertNonEmptyDescriptions(visibleEntries, `docs/${relativeDirectory}`)
 
   const sections = [
     GENERATED_HEADER,
-    `# ${title} docs`,
+    `# ${title}`,
     "",
-    `This index is generated from markdown files in \`docs/${relativeDirectory}\`.`,
+    renderGeneratedMetadataNotice({
+      sourcePaths: ["scripts/generate-docs-readme.ts", `docs/${relativeDirectory}`],
+      command: "pnpm run script:generate-docs-readme",
+      truthClass: "derived",
+    }),
     "",
-    renderTable(
-      ["Document", "Description"],
-      visibleEntries.map((entry) => [
-        formatLink(directory, entry.absolutePath, entry.title),
-        entry.description,
-      ])
-    ),
+    description,
   ]
+
+  const startHereGuides = getCollectionTaskGuides(relativeDirectory)
+  if (startHereGuides.length > 0) {
+    sections.push("", "## Start here", "", renderTaskGuideTable(directory, startHereGuides))
+  }
+
+  if (childCollections.length > 0) {
+    sections.push(
+      "",
+      "## Subcollections",
+      "",
+      renderTable(
+        ["Collection", "Description"],
+        childCollections.map((entry) => [
+          formatLink(directory, path.join(entry.absolutePath, "README.md"), entry.title),
+          entry.description,
+        ])
+      )
+    )
+  }
+
+  if (visibleEntries.length > 0) {
+    sections.push("", "## Documents", "", renderDocMetadataTable(directory, visibleEntries))
+  }
+
+  const relatedCommands = getCollectionRelatedCommands(relativeDirectory)
+  if (relatedCommands.length > 0) {
+    sections.push(
+      "",
+      "## Related commands",
+      "",
+      ...relatedCommands.map((command) => `- \`${command}\``)
+    )
+  }
+
+  const ciFailureGuidance = getCollectionCiFailureGuidance(relativeDirectory)
+  if (ciFailureGuidance.length > 0) {
+    sections.push(
+      "",
+      "## If this area fails in CI",
+      "",
+      ...ciFailureGuidance.map((line) => `- ${line}`)
+    )
+  }
 
   return withTrailingNewline(sections.join("\n"))
 }
@@ -898,26 +1170,46 @@ async function renderScriptsReadme(
     GENERATED_HEADER,
     "# Scripts",
     "",
+    renderGeneratedMetadataNotice({
+      sourcePaths: ["scripts/generate-docs-readme.ts", "scripts/*.ts", "scripts/afenda.config.json"],
+      command: "pnpm run script:generate-docs-readme",
+      truthClass: "derived",
+    }),
+    "",
     `This directory contains small Node/TypeScript CLI utilities and script-local metadata used for repository maintenance and automation in ${afendaConfig.workspace.rootPackageName}.`,
     "",
     `Run scripts from the repository root with \`${afendaConfig.workspace.packageManager}\` so they use the workspace toolchain and \`tsx\` configuration.`,
     "",
     "Layout and contribution rules (flat vs one subdirectory) live in [`RULES.md`](./RULES.md).",
     "",
+    "## Start here",
+    "",
+    "- Governance work: start with `script:check-governance`, then inspect the narrower registry, binding, or waiver scripts only if that aggregate flow fails.",
+    "- Docs navigation work: start with `script:generate-docs-readme` because the generated indexes and operating map are derived from this generator.",
+    "- Workspace topology drift: start with `script:check-afenda-config` before editing package layout rules.",
+    "",
     renderTable(
-      ["Script", "Run", "Purpose"],
+      ["Script", "Run", "Failure impact", "Primary output", "Purpose"],
       scriptEntries.map((entry) => [
         formatLink(scriptsDirectory, entry.absolutePath, entry.title),
         entry.runCommand ? `\`${entry.runCommand}\`` : "N/A",
+        getScriptInsight(entry, afendaConfig).failureImpact,
+        getScriptInsight(entry, afendaConfig).primaryOutput,
         entry.description,
       ])
     ),
+    "",
+    "## If governance CI fails",
+    "",
+    "- Start with `pnpm run script:check-governance` so registry, bindings, domain checks, evidence generation, and register sync are evaluated in CI order.",
+    "- Read [Operating map](../docs/OPERATING_MAP.md) and the generated governance register before changing individual script semantics.",
+    "- When a script emits evidence, treat the `.artifacts/reports/governance/**` output as part of the fix, not as optional byproduct.",
     "",
     "## Support files",
     "",
     "| File | Purpose |",
     "| --- | --- |",
-    `| [\`afenda.config.json\`](./afenda.config.json) | Verified workspace manifest for ${afendaConfig.product.name} identity, key paths, and workspace defaults. |`,
+    `| [\`afenda.config.json\`](./afenda.config.json) | Verified workspace manifest for ${afendaConfig.product.name} identity, key paths, workspace defaults, and governance bindings. |`,
     "| [`afenda.config.schema.json`](./afenda.config.schema.json) | JSON Schema for the Afenda workspace manifest. |",
     "| [`tsconfig.json`](./tsconfig.json) | Type-check configuration for this directory's Node scripts. |",
     "| [`RULES.md`](./RULES.md) | Authoritative layout, naming, and flat vs one-level-nested folder policy for `scripts/`. |",
@@ -936,10 +1228,506 @@ async function renderScriptsReadme(
     "## Related",
     "",
     `- [Root README](${relativeMarkdownPath(scriptsDirectory, path.join(workspaceRoot, "README.md"))}) - Repository overview and top-level workflows.`,
+    `- [Operating map](${relativeMarkdownPath(scriptsDirectory, path.join(workspaceRoot, "docs", "OPERATING_MAP.md"))}) - Canonical docs, generated surfaces, CI routes, and evidence map.`,
     `- [Package manifest](${relativeMarkdownPath(scriptsDirectory, path.join(workspaceRoot, "package.json"))}) - Root scripts and shared dev tooling.`,
   ]
 
   return withTrailingNewline(sections.join("\n"))
+}
+
+async function renderOperatingMap(
+  docsRoot: string,
+  workspaceRoot: string,
+  afendaConfig: AfendaConfig
+): Promise<string> {
+  const governanceRegisterPath =
+    findExistingRelativePath(workspaceRoot, [
+      "docs/architecture/governance/generated/governance-register.md",
+      afendaConfig.governance.evidence.registerPath,
+    ]) ?? afendaConfig.governance.evidence.registerPath
+  const governanceSummary = await readJsonIfExists<{
+    totalDomains: number
+    passedDomains: number
+    warnedDomains: number
+    blockedDomains: number
+    finalVerdict: string
+    finalVerdictExplanation: string
+    verdictReasons: string[]
+    evidenceCompleteCount: number
+    activeWaiverCount: number
+    expiredWaiverCount: number
+  }>(
+    path.join(
+      workspaceRoot,
+      ".artifacts/reports/governance/governance-summary.report.json"
+    )
+  )
+
+  const sections = [
+    "---",
+    "owner: governance-toolchain",
+    "truthStatus: supporting",
+    "docClass: supporting-doc",
+    "relatedDomain: operating-map",
+    "title: Operating map",
+    "description: Generated navigation map for canonical docs, generated surfaces, CI-blocking areas, and evidence paths.",
+    "order: 5",
+    "---",
+    "",
+    GENERATED_HEADER,
+    "# Operating map",
+    "",
+    renderGeneratedMetadataNotice({
+      sourcePaths: [
+        "scripts/generate-docs-readme.ts",
+        "scripts/afenda.config.json",
+        ".artifacts/reports/governance/governance-summary.report.json",
+      ],
+      command: "pnpm run script:generate-docs-readme",
+      truthClass: "derived",
+    }),
+    "",
+    "This document is the repo-local navigation surface for contributors. It explains what is canonical, what is generated, what blocks CI, and where to start based on the kind of change you are making.",
+    "",
+    "## Start by task",
+    "",
+    renderTaskGuideTable(docsRoot, [
+      {
+        task: "Change repo-wide implementation policy or workspace guidance",
+        startPath: "workspace/README.md",
+        why: "Workspace docs are the canonical starting point for repo-wide implementation changes.",
+      },
+      {
+        task: "Change architecture decisions or enforceable contracts",
+        startPath: "architecture/README.md",
+        why: "Architecture docs route you to ADRs for decision history and ATCs for enforceable contracts.",
+      },
+      {
+        task: "Diagnose governance CI failures",
+        startPath: (
+          findExistingRelativePath(workspaceRoot, [
+            "docs/architecture/governance/generated/governance-register.md",
+            "docs/governance/generated/governance-register.md",
+          ]) ?? "docs/architecture/governance/generated/governance-register.md"
+        ).replace(/^docs\//, ""),
+        why: "The governance register shows current domain status, evidence paths, and CI behavior in one place.",
+      },
+      {
+        task: "Update generated docs navigation",
+        startPath: "../scripts/README.md",
+        why: "The docs generator owns the generated README indexes and this operating map.",
+      },
+    ]),
+    "",
+    "## Canonical docs first",
+    "",
+    renderBulletLinks(docsRoot, workspaceRoot, [
+      "docs/workspace/README.md",
+      "docs/architecture/README.md",
+      "docs/architecture/adr/README.md",
+      "docs/architecture/atc/README.md",
+      "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md",
+      "docs/workspace/PROJECT_STRUCTURE.md",
+      "docs/workspace/REPO_ARTIFACT_POLICY.md",
+    ]),
+    "",
+    "## Generated and derived surfaces",
+    "",
+    renderBulletLinks(docsRoot, workspaceRoot, [
+      "docs/README.md",
+      "docs/OPERATING_MAP.md",
+      "docs/dependencies/README.md",
+      "docs/architecture/README.md",
+      "docs/architecture/governance/generated/governance-register.md",
+      "scripts/README.md",
+    ]),
+    "",
+    "## Governance and CI blocking surfaces",
+    "",
+    renderTable(
+      ["Gate", "CI behavior", "Command", "Purpose"],
+      afendaConfig.governance.gates.map((gate) => [
+        `\`${gate.id}\``,
+        `\`${gate.ciBehavior}\``,
+        `\`${gate.command}\``,
+        gate.description,
+      ])
+    ),
+    "",
+    "## Evidence map",
+    "",
+    renderTable(
+      ["Surface", "Path"],
+      [
+        ["Governance evidence root", `\`${afendaConfig.governance.evidence.root}\``],
+        [
+          "Aggregate governance report",
+          `\`${afendaConfig.governance.evidence.aggregateReportPath}\``,
+        ],
+        [
+          "Governance summary report",
+          `\`${afendaConfig.governance.evidence.summaryReportPath}\``,
+        ],
+        ["Governance register", `\`${governanceRegisterPath}\``],
+        [
+          "Governance register snapshot",
+          `\`${afendaConfig.governance.evidence.registerSnapshotPath}\``,
+        ],
+        ["Waiver registry", `\`${afendaConfig.governance.waivers.registryPath}\``],
+        [
+          "Waiver evidence report",
+          `\`${afendaConfig.governance.waivers.reportPath}\``,
+        ],
+      ]
+    ),
+  ]
+
+  if (governanceSummary) {
+    sections.push(
+      "",
+      "## Current governance summary",
+      "",
+      `- Final verdict: \`${governanceSummary.finalVerdict}\``,
+      `- Explanation: ${governanceSummary.finalVerdictExplanation}`,
+      `- Verdict reasons: ${governanceSummary.verdictReasons.join(", ") || "none"}`,
+      `- Domains: ${governanceSummary.totalDomains} total; ${governanceSummary.passedDomains} passed; ${governanceSummary.warnedDomains} warned; ${governanceSummary.blockedDomains} blocked`,
+      `- Evidence complete: ${governanceSummary.evidenceCompleteCount} / ${governanceSummary.totalDomains}`,
+      `- Active waivers: ${governanceSummary.activeWaiverCount}; expired waivers: ${governanceSummary.expiredWaiverCount}`
+    )
+  }
+
+  sections.push(
+    "",
+    "## If governance CI fails",
+    "",
+    "- Run `pnpm run script:check-governance` from the repo root.",
+    "- Open the generated governance register and the relevant evidence report under `.artifacts/reports/governance/`.",
+    "- If the failure is architectural, start with `docs/architecture/atc/` before editing code or policy text.",
+    "- If the failure is documentation or navigation, regenerate docs with `pnpm run script:generate-docs-readme` after the fix.",
+    "",
+    "## Related",
+    "",
+    "- [Docs root](./README.md) - Generated docs index.",
+    "- [Scripts README](../scripts/README.md) - Script inventory, failure impact, and primary outputs.",
+    "- [Repository README](../README.md) - Top-level overview and workflows."
+  )
+
+  return withTrailingNewline(sections.join("\n"))
+}
+
+function renderGeneratedMetadataNotice(input: {
+  sourcePaths: string[]
+  command: string
+  truthClass: "derived"
+}) {
+  return [
+    `> Generated from: ${input.sourcePaths
+      .map((sourcePath) => `\`${sourcePath}\``)
+      .join(", ")}`,
+    `> Regenerate with: \`${input.command}\``,
+    `> Truth class: \`${input.truthClass}\``,
+    "> Do not edit directly.",
+  ].join("\n")
+}
+
+function renderDocMetadataTable(
+  baseDirectory: string,
+  entries: readonly DocEntry[]
+) {
+  return renderTable(
+    ["Document", "Priority", "Truth", "Class", "Owner", "Description"],
+    entries.map((entry) => [
+      formatLink(baseDirectory, entry.absolutePath, entry.title),
+      getReadPriority(entry),
+      entry.truthStatus ?? "unspecified",
+      entry.docClass ?? "unspecified",
+      entry.owner ?? "unspecified",
+      entry.description,
+    ])
+  )
+}
+
+function getReadPriority(entry: DocEntry) {
+  if (entry.docClass === "canonical-doc" || entry.truthStatus === "canonical") {
+    return "Read first"
+  }
+
+  if (
+    entry.docClass === "historical-archive" ||
+    entry.truthStatus === "historical"
+  ) {
+    return "Historical"
+  }
+
+  return "Reference"
+}
+
+function renderTaskGuideTable(
+  baseDirectory: string,
+  guides: readonly CollectionTaskGuide[]
+) {
+  return renderTable(
+    ["Task", "Start here", "Why"],
+    guides.map((guide) => [
+      guide.task,
+      formatGuidePath(baseDirectory, guide.startPath),
+      guide.why,
+    ])
+  )
+}
+
+function formatGuidePath(baseDirectory: string, startPath: string) {
+  const normalized = toPosixPath(startPath)
+
+  if (normalized.startsWith("../")) {
+    return `[Open](${normalized})`
+  }
+
+  return `[Open](${relativeMarkdownPath(
+    baseDirectory,
+    path.join(baseDirectory, normalized)
+  )})`
+}
+
+function getCollectionTaskGuides(relativeDirectory: string): CollectionTaskGuide[] {
+  switch (relativeDirectory) {
+    case "workspace":
+      return [
+        {
+          task: "Find canonical implementation policy",
+          startPath: "PROJECT_STRUCTURE.md",
+          why: "Workspace docs hold the durable repo-wide implementation guidance for structure and operating conventions.",
+        },
+        {
+          task: "Change auth, deployment, or toolchain behavior",
+          startPath: "PROJECT_CONFIGURATION.md",
+          why: "Configuration and workspace docs are the canonical start for shared runtime and tooling changes.",
+        },
+      ]
+    case "architecture":
+      return [
+        {
+          task: "Read decision history",
+          startPath: "adr/README.md",
+          why: "ADRs explain what was decided, why it was decided, and the expected consequences.",
+        },
+        {
+          task: "Check enforceable contracts",
+          startPath: "atc/README.md",
+          why: "ATCs describe architecture surfaces that are bound to checks, evidence, and CI behavior.",
+        },
+        {
+          task: "Understand governance doctrine",
+          startPath: "governance/README.md",
+          why: "Governance docs explain how architecture, evidence, and CI truth are tied together.",
+        },
+      ]
+    case "dependencies":
+      return [
+        {
+          task: "Check what is actually implemented",
+          startPath: "README.md",
+          why: "Implemented dependency guides are the only ones that should be treated as live repo behavior.",
+        },
+      ]
+    default:
+      return []
+  }
+}
+
+function getCollectionRelatedCommands(relativeDirectory: string) {
+  switch (relativeDirectory) {
+    case "workspace":
+      return [
+        "pnpm run script:generate-docs-readme",
+        "pnpm run script:check-doc-governance",
+      ]
+    case "architecture":
+      return [
+        "pnpm run script:check-architecture-contracts",
+        "pnpm run script:check-governance",
+      ]
+    case "dependencies":
+      return ["pnpm run script:generate-docs-readme"]
+    default:
+      return []
+  }
+}
+
+function getCollectionCiFailureGuidance(relativeDirectory: string) {
+  switch (relativeDirectory) {
+    case "architecture":
+      return [
+        "open `docs/OPERATING_MAP.md` first to see the current CI routing and evidence surfaces",
+        "review the ATC or ADR linked to the failing area before editing checks",
+        "re-run `pnpm run script:check-architecture-contracts` after the fix",
+      ]
+    case "workspace":
+      return [
+        "start with `pnpm run script:check-doc-governance` for docs issues or `pnpm run script:check-afenda-config` for topology issues",
+        "regenerate docs with `pnpm run script:generate-docs-readme` after changing any generated index surface",
+      ]
+    default:
+      return []
+  }
+}
+
+function formatExistingRelativeDocLink(
+  fromDirectory: string,
+  workspaceRoot: string,
+  candidates: string[],
+  label: string
+) {
+  const resolved = findExistingRelativePath(workspaceRoot, candidates)
+
+  if (!resolved) {
+    return `\`${label}\``
+  }
+
+  return formatLink(fromDirectory, path.join(workspaceRoot, resolved), label)
+}
+
+function renderBulletLinks(
+  fromDirectory: string,
+  workspaceRoot: string,
+  relativePaths: string[]
+) {
+  const lines = relativePaths
+    .map((relativePath) => findExistingRelativePath(workspaceRoot, [relativePath]))
+    .filter((value): value is string => Boolean(value))
+    .map((relativePath) => {
+      const absolutePath = path.join(workspaceRoot, relativePath)
+      const label = relativePath
+        .replace(/^docs\//, "")
+        .replace(/^scripts\//, "scripts/")
+
+      return `- ${formatLink(fromDirectory, absolutePath, label)}`
+    })
+
+  return lines.join("\n")
+}
+
+function findExistingRelativePath(
+  workspaceRoot: string,
+  candidates: readonly string[]
+) {
+  for (const candidate of candidates) {
+    if (existsSync(path.join(workspaceRoot, candidate))) {
+      return candidate
+    }
+  }
+
+  return undefined
+}
+
+async function readJsonIfExists<T>(filePath: string): Promise<T | undefined> {
+  try {
+    return JSON.parse(await fs.readFile(filePath, "utf8")) as T
+  } catch (error) {
+    const code =
+      typeof error === "object" && error && "code" in error
+        ? String((error as { code?: string }).code)
+        : ""
+
+    if (code === "ENOENT") {
+      return undefined
+    }
+
+    throw error
+  }
+}
+
+function getScriptInsight(
+  entry: ScriptEntry,
+  afendaConfig: AfendaConfig
+): ScriptInsight {
+  const scriptPath = `scripts/${toPosixPath(entry.fileName)}`
+
+  if (entry.fileName === "generate-governance-report.ts") {
+    return {
+      failureImpact: "Blocks CI when governance evidence is incomplete",
+      primaryOutput:
+        `\`${afendaConfig.governance.evidence.aggregateReportPath}\`, ` +
+        `\`${afendaConfig.governance.evidence.summaryReportPath}\``,
+    }
+  }
+
+  if (entry.fileName === "generate-governance-register.ts") {
+    const registerPath =
+      findExistingRelativePath(workspaceRoot, [
+        "docs/architecture/governance/generated/governance-register.md",
+        afendaConfig.governance.evidence.registerPath,
+      ]) ?? afendaConfig.governance.evidence.registerPath
+
+    return {
+      failureImpact: "Blocks CI when the register is out of sync",
+      primaryOutput:
+        `\`${registerPath}\`, ` +
+        `\`${afendaConfig.governance.evidence.registerSnapshotPath}\``,
+    }
+  }
+
+  if (entry.fileName === "generate-docs-readme.ts") {
+    return {
+      failureImpact: "Generated docs only",
+      primaryOutput:
+        "`README.md` indexes under configured targets plus `docs/OPERATING_MAP.md`",
+    }
+  }
+
+  if (entry.fileName === "check-governance-waivers.ts") {
+    return {
+      failureImpact: "Blocks CI when waiver policy is invalid",
+      primaryOutput: `\`${afendaConfig.governance.waivers.reportPath}\``,
+    }
+  }
+
+  const gate = afendaConfig.governance.gates.find(
+    (candidate) => candidate.scriptPath === scriptPath
+  )
+  const checkDomain = afendaConfig.governance.domains.find((domain) =>
+    domain.checks.some((check) => check.scriptPath === scriptPath)
+  )
+  const reportDomain = afendaConfig.governance.domains.find(
+    (domain) => domain.report.scriptPath === scriptPath
+  )
+
+  if (gate) {
+    return {
+      failureImpact:
+        gate.ciBehavior === "block"
+          ? `Blocks CI via \`${gate.id}\``
+          : `Warns via \`${gate.id}\``,
+      primaryOutput: reportDomain
+        ? `\`${reportDomain.evidencePath}\``
+        : "Validation or orchestration output",
+    }
+  }
+
+  if (checkDomain) {
+    return {
+      failureImpact:
+        checkDomain.ciBehavior === "block"
+          ? `Blocks \`${checkDomain.id}\``
+          : `Warns \`${checkDomain.id}\``,
+      primaryOutput: `Validation for \`${checkDomain.evidencePath}\``,
+    }
+  }
+
+  if (reportDomain) {
+    return {
+      failureImpact:
+        reportDomain.ciBehavior === "block"
+          ? `Supports blocking evidence for \`${reportDomain.id}\``
+          : `Supports warning evidence for \`${reportDomain.id}\``,
+      primaryOutput: `\`${reportDomain.evidencePath}\``,
+    }
+  }
+
+  return {
+    failureImpact: "Local utility or support command",
+    primaryOutput: "Validation only",
+  }
 }
 
 async function renderFormalDirectoryReadme(
@@ -955,7 +1743,7 @@ async function renderFormalDirectoryReadme(
     }
   )
   const visibleEntries: DocEntry[] = sortEntries(
-    entries.filter((entry) => !entry.hidden)
+    entries.filter(isVisibleDocEntry)
   )
   const title =
     target.title ??
@@ -975,16 +1763,18 @@ async function renderFormalDirectoryReadme(
     GENERATED_HEADER,
     `# ${title}`,
     "",
-    description,
+    renderGeneratedMetadataNotice({
+      sourcePaths: ["scripts/generate-docs-readme.ts", target.relativePath],
+      command: "pnpm run script:generate-docs-readme",
+      truthClass: "derived",
+    }),
     "",
-    renderTable(
-      ["Document", "Description"],
-      visibleEntries.map((entry) => [
-        formatLink(target.absolutePath, entry.absolutePath, entry.title),
-        entry.description,
-      ])
-    ),
+    description,
   ]
+
+  if (visibleEntries.length > 0) {
+    sections.push("", renderDocMetadataTable(target.absolutePath, visibleEntries))
+  }
 
   for (const childSection of childSections) {
     sections.push(
@@ -993,13 +1783,7 @@ async function renderFormalDirectoryReadme(
       "",
       `Markdown docs in \`${childSection.relativePath}\`.`,
       "",
-      renderTable(
-        ["Document", "Description"],
-        childSection.entries.map((entry) => [
-          formatLink(target.absolutePath, entry.absolutePath, entry.title),
-          entry.description,
-        ])
-      )
+      renderDocMetadataTable(target.absolutePath, childSection.entries)
     )
   }
 
@@ -1008,6 +1792,7 @@ async function renderFormalDirectoryReadme(
     "## Related",
     "",
     `- [Root README](${relativeMarkdownPath(target.absolutePath, path.join(workspaceRoot, "README.md"))}) - Repository overview and top-level workflows.`,
+    `- [Operating map](${relativeMarkdownPath(target.absolutePath, path.join(workspaceRoot, "docs", "OPERATING_MAP.md"))}) - Canonical docs, generated surfaces, CI routes, and evidence map.`,
     `- [Package manifest](${relativeMarkdownPath(target.absolutePath, path.join(workspaceRoot, "package.json"))}) - Root scripts and shared tooling.`
   )
 
@@ -1034,9 +1819,7 @@ async function getGenericChildDirectorySections(
             frontMatterMode: "compat",
           }
         )
-        const visibleEntries = sortEntries(
-          entries.filter((entry) => !entry.hidden)
-        )
+        const visibleEntries = sortEntries(entries.filter(isVisibleDocEntry))
 
         if (visibleEntries.length === 0) {
           return undefined
@@ -1096,20 +1879,80 @@ async function getDirectoryEntries(
             entry.name.endsWith(".md") &&
             entry.name !== "README.md"
         )
+        const hasReadme = childFiles.some(
+          (entry) => entry.isFile() && entry.name === "README.md"
+        )
 
-        if (!hasMarkdownDocs) {
+        if (!hasMarkdownDocs && !hasReadme) {
           return undefined
         }
 
-        const override = ROOT_COLLECTION_OVERRIDES[child.name]
+        const relativePath = toPosixPath(path.relative(docsRoot, childDirectory))
+        const override =
+          ROOT_COLLECTION_OVERRIDES[relativePath] ??
+          ROOT_COLLECTION_OVERRIDES[child.name]
 
         return {
           absolutePath: childDirectory,
-          relativeToDocs: toPosixPath(path.relative(docsRoot, childDirectory)),
+          relativeToDocs: relativePath,
           title: override?.title ?? toTitleCase(child.name),
           description:
             override?.description ??
-            `Generated index for docs in \`docs/${toPosixPath(path.relative(docsRoot, childDirectory))}\`.`,
+            `Generated index for docs in \`docs/${relativePath}\`.`,
+          order: override?.order ?? 999,
+        } satisfies DirectoryEntry
+      })
+  )
+
+  return directories.filter(Boolean).sort((left, right) => {
+    if (!left || !right) {
+      return 0
+    }
+
+    return left.order - right.order || left.title.localeCompare(right.title)
+  }) as DirectoryEntry[]
+}
+
+async function getDirectChildCollectionEntries(
+  directory: string,
+  docsRoot: string
+): Promise<DirectoryEntry[]> {
+  const children = await fs.readdir(directory, { withFileTypes: true })
+
+  const directories = await Promise.all(
+    children
+      .filter((child) => child.isDirectory())
+      .map(async (child) => {
+        const childDirectory = path.join(directory, child.name)
+        const childFiles = await fs.readdir(childDirectory, {
+          withFileTypes: true,
+        })
+        const hasMarkdownDocs = childFiles.some(
+          (entry) =>
+            entry.isFile() &&
+            entry.name.endsWith(".md") &&
+            entry.name !== "README.md"
+        )
+        const hasReadme = childFiles.some(
+          (entry) => entry.isFile() && entry.name === "README.md"
+        )
+
+        if (!hasMarkdownDocs && !hasReadme) {
+          return undefined
+        }
+
+        const relativePath = toPosixPath(path.relative(docsRoot, childDirectory))
+        const override =
+          ROOT_COLLECTION_OVERRIDES[relativePath] ??
+          ROOT_COLLECTION_OVERRIDES[child.name]
+
+        return {
+          absolutePath: childDirectory,
+          relativeToDocs: relativePath,
+          title: override?.title ?? toTitleCase(child.name),
+          description:
+            override?.description ??
+            `Generated index for docs in \`docs/${relativePath}\`.`,
           order: override?.order ?? 999,
         } satisfies DirectoryEntry
       })
@@ -1242,6 +2085,11 @@ async function getDocEntries(
         override?.status ??
         parsedDoc.frontMatter.status ??
         extractStatus(parsedDoc.body)
+      const owner = parsedDoc.frontMatter.owner
+      const truthStatus = parsedDoc.frontMatter.truthStatus
+      const docClass = parsedDoc.frontMatter.docClass
+      const relatedDomain = parsedDoc.frontMatter.relatedDomain
+      const supersededBy = parsedDoc.frontMatter.supersededBy
       const order = override?.order ?? parsedDoc.frontMatter.order ?? 999
       const hidden = override?.hidden ?? parsedDoc.frontMatter.hidden ?? false
 
@@ -1253,6 +2101,11 @@ async function getDocEntries(
         description,
         category,
         status,
+        owner,
+        truthStatus,
+        docClass,
+        relatedDomain,
+        supersededBy,
         order,
         hidden,
       } satisfies DocEntry
@@ -1345,6 +2198,26 @@ function parseDoc(
       }
     }
 
+    if (
+      key === "truthStatus" &&
+      typeof value === "string" &&
+      !DOC_TRUTH_STATUS_VALUES.has(value)
+    ) {
+      throw new Error(
+        `Front matter "truthStatus" must be one of ${Array.from(DOC_TRUTH_STATUS_VALUES).join(", ")} in ${relativePath}`
+      )
+    }
+
+    if (
+      key === "docClass" &&
+      typeof value === "string" &&
+      !DOC_CLASS_VALUES.has(value)
+    ) {
+      throw new Error(
+        `Front matter "docClass" must be one of ${Array.from(DOC_CLASS_VALUES).join(", ")} in ${relativePath}`
+      )
+    }
+
     frontMatter[key] = value as never
   }
 
@@ -1429,6 +2302,42 @@ function extractStatus(body: string) {
   }
 
   return undefined
+}
+
+function isVisibleDocEntry(entry: DocEntry) {
+  if (entry.hidden) {
+    return false
+  }
+
+  return entry.docClass !== "historical-archive" && entry.docClass !== "delete"
+}
+
+function assertRequiredDocMetadata(
+  entries: readonly DocEntry[],
+  scope: string
+) {
+  for (const entry of entries) {
+    const missingFields: string[] = []
+
+    if (!entry.owner) {
+      missingFields.push("owner")
+    }
+    if (!entry.truthStatus) {
+      missingFields.push("truthStatus")
+    }
+    if (!entry.docClass) {
+      missingFields.push("docClass")
+    }
+    if (!entry.relatedDomain) {
+      missingFields.push("relatedDomain")
+    }
+
+    if (missingFields.length > 0) {
+      throw new Error(
+        `Missing required doc metadata for ${entry.relativeToDocs} in ${scope}: ${missingFields.join(", ")}`
+      )
+    }
+  }
 }
 
 function sortEntries<T extends { order: number; title: string }>(

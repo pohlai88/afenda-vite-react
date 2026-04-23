@@ -3,28 +3,34 @@
 
 # Shadcn skill docs
 
+> Generated from: `scripts/generate-docs-readme.ts`, `.agents/skills/shadcn`
+> Regenerate with: `pnpm run script:generate-docs-readme`
+> Truth class: `derived`
+> Do not edit directly.
+
 Generate an index for the in-repo shadcn skill guidance and companion markdown references.
 
-| Document                                      | Description                                                                                                                                                                                                                                                                                                                                                                                      |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [Customization & Theming](./customization.md) | Components reference semantic CSS variable tokens. Change the variables to change every component.                                                                                                                                                                                                                                                                                               |
-| [shadcn](./SKILL.md)                          | Manages shadcn components and projects — adding, searching, fixing, debugging, styling, and composing UI. Provides project context, component docs, and usage examples. Applies when working with shadcn/ui, component registries, presets, --preset codes, or any project with a components.json file. Also triggers for "shadcn init", "create an app with --preset", or "switch to --preset". |
-| [shadcn CLI Reference](./cli.md)              | Some components include an api link to the underlying library (e.g. cmdk for the command component).                                                                                                                                                                                                                                                                                             |
-| [shadcn MCP Server](./mcp.md)                 | The CLI includes an MCP server that lets AI assistants search, browse, view, and install components from registries.                                                                                                                                                                                                                                                                             |
+| Document                                      | Priority  | Truth       | Class       | Owner       | Description                                                                                                                                                                                                                                                                                                                                                                                      |
+| --------------------------------------------- | --------- | ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Customization & Theming](./customization.md) | Reference | unspecified | unspecified | unspecified | Components reference semantic CSS variable tokens. Change the variables to change every component.                                                                                                                                                                                                                                                                                               |
+| [shadcn](./SKILL.md)                          | Reference | unspecified | unspecified | unspecified | Manages shadcn components and projects — adding, searching, fixing, debugging, styling, and composing UI. Provides project context, component docs, and usage examples. Applies when working with shadcn/ui, component registries, presets, --preset codes, or any project with a components.json file. Also triggers for "shadcn init", "create an app with --preset", or "switch to --preset". |
+| [shadcn CLI Reference](./cli.md)              | Reference | unspecified | unspecified | unspecified | Some components include an api link to the underlying library (e.g. cmdk for the command component).                                                                                                                                                                                                                                                                                             |
+| [shadcn MCP Server](./mcp.md)                 | Reference | unspecified | unspecified | unspecified | The CLI includes an MCP server that lets AI assistants search, browse, view, and install components from registries.                                                                                                                                                                                                                                                                             |
 
 ## Rules
 
 Markdown docs in `.agents/skills/shadcn/rules`.
 
-| Document                                        | Description                                                                                                          |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| [Base vs Radix](./rules/base-vs-radix.md)       | API differences between base and radix. Check the base field from npx shadcn@latest info.                            |
-| [Component Composition](./rules/composition.md) | Never render items directly inside the content container.                                                            |
-| [Forms & Inputs](./rules/forms.md)              | Always use FieldGroup + Field — never raw div with space-y-:                                                         |
-| [Icons](./rules/icons.md)                       | Add data-icon="inline-start" (prefix) or data-icon="inline-end" (suffix) to the icon. No sizing classes on the icon. |
-| [Styling & Customization](./rules/styling.md)   | See customization.md for theming, CSS variables, and adding custom colors.                                           |
+| Document                                        | Priority  | Truth       | Class       | Owner       | Description                                                                                                          |
+| ----------------------------------------------- | --------- | ----------- | ----------- | ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| [Base vs Radix](./rules/base-vs-radix.md)       | Reference | unspecified | unspecified | unspecified | API differences between base and radix. Check the base field from npx shadcn@latest info.                            |
+| [Component Composition](./rules/composition.md) | Reference | unspecified | unspecified | unspecified | Never render items directly inside the content container.                                                            |
+| [Forms & Inputs](./rules/forms.md)              | Reference | unspecified | unspecified | unspecified | Always use FieldGroup + Field — never raw div with space-y-:                                                         |
+| [Icons](./rules/icons.md)                       | Reference | unspecified | unspecified | unspecified | Add data-icon="inline-start" (prefix) or data-icon="inline-end" (suffix) to the icon. No sizing classes on the icon. |
+| [Styling & Customization](./rules/styling.md)   | Reference | unspecified | unspecified | unspecified | See customization.md for theming, CSS variables, and adding custom colors.                                           |
 
 ## Related
 
 - [Root README](../../../README.md) - Repository overview and top-level workflows.
+- [Operating map](../../../docs/OPERATING_MAP.md) - Canonical docs, generated surfaces, CI routes, and evidence map.
 - [Package manifest](../../../package.json) - Root scripts and shared tooling.

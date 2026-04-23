@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest"
 
-import { HARDENING_PATCH_FILENAMES } from "../../scripts/hardening-patch-order"
+import { HARDENING_PATCH_FILENAMES } from "../../scripts/verify-hardening-patch-order"
 import { verifyHardeningPatches } from "../../scripts/verify-hardening-patches"
 
 describe("sql/hardening patch set", () => {
-  it("matches scripts/hardening-patch-order.ts (no missing or stray patch_*.sql)", () => {
+  it("matches scripts/verify-hardening-patch-order.ts (no missing or stray patch_*.sql)", () => {
     expect(() => verifyHardeningPatches()).not.toThrow()
   })
 

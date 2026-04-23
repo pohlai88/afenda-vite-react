@@ -23,6 +23,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
+      reportsDirectory: ".artifacts/vitest/coverage",
       reportOnFailure: true,
       include: ["src/7w1h-audit/**/*.ts"],
       exclude: [

@@ -1,6 +1,6 @@
 # `@afenda/database`
 
-Server-only **PostgreSQL** + **Drizzle ORM** boundary for Afenda: multi-schema DDL (`ref`, `iam`, `mdm`, `finance`, `governance`), **7W1H audit** (`governance.audit_logs` + JSON envelope), Drizzle **relations**, read-model **views**, query helpers, studio glossary metadata, and **raw SQL hardening** beside generated migrations.
+Server-only **PostgreSQL** + **Drizzle ORM** boundary for Afenda: multi-schema DDL (`ref`, `iam`, `mdm`, `finance`, `governance`), **7W1H audit** (`governance.audit_logs` + JSON envelope), **business truth records** (`governance.truth_records`), Drizzle **relations**, read-model **views**, query helpers, studio glossary metadata, and **raw SQL hardening** beside generated migrations.
 
 ## Where to start
 
@@ -14,6 +14,21 @@ Server-only **PostgreSQL** + **Drizzle ORM** boundary for Afenda: multi-schema D
 | [`sql/hardening/README.md`](./sql/hardening/README.md)                           | Patch order for hand-authored SQL                                                    |
 
 **Machine inventory:** [`docs/guideline/schema-inventory.json`](./docs/guideline/schema-inventory.json) lists `src/schema/**/*.ts` and `src/7w1h-audit/**/*.ts`; keep it in sync (`pnpm run db:inventory:sync`) — drift fails `db:guard` / `db:inventory:verify`.
+
+## Audit boundary
+
+- **`governance.audit_logs`** under [`src/7w1h-audit/`](./src/7w1h-audit/README.md) is the platform-facing 7W1H audit surface for user/session/request/activity evidence.
+- **`governance.truth_records`** under [`src/schema/governance/truth-records.schema.ts`](./src/schema/governance/truth-records.schema.ts) is the business-domain truth spine for immutable command outcomes and before/after state.
+- They are related but not interchangeable: `audit_logs` explains operational/user activity; `truth_records` explains business state mutation.
+
+## Counterparty naming boundary
+
+- The product/runtime language now uses **counterparty** for the external operating actor domain.
+- The current physical schema still uses legacy **partner** identifiers in [`ops_partners`](./src/schema/governance/ops-partners.schema.ts) and `ops_events.partner_id`.
+- Treat that as an explicit anti-corruption boundary for now:
+  - storage stays stable on `partner_*`
+  - API/UI/view-model layers expose `counterparty*`
+  - a physical DB rename is a separate migration slice, not an implicit drift
 
 ## Package exports
 

@@ -5,7 +5,7 @@ export type ShellBreadcrumbLabelKey =
   | "breadcrumb.app"
   | "breadcrumb.events"
   | "breadcrumb.audit"
-  | "breadcrumb.partners"
+  | "breadcrumb.counterparties"
   | "breadcrumb.db_studio"
 
 export type ShellNavGroupLabelKey =
@@ -21,13 +21,13 @@ export type ShellNavSidebarSubLabelKey =
   | "nav.sub.events.activity"
   | "nav.sub.audit.trail"
   | "nav.sub.audit.exports"
-  | "nav.sub.partners.integrations"
-  | "nav.sub.partners.webhooks"
+  | "nav.sub.counterparties.dependencies"
+  | "nav.sub.counterparties.escalations"
 
 export type ShellNavItemLabelKey =
   | "nav.items.events"
   | "nav.items.audit"
-  | "nav.items.partners"
+  | "nav.items.counterparties"
   | "nav.items.db_studio"
   | "nav.items.my_project"
   | "nav.items.my_team"

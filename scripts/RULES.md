@@ -54,8 +54,12 @@ Introduce a **single** nested directory when **all** of the following are true:
 
 ### Naming
 
-- **Files:** `kebab-case.ts` for entrypoints and modules.
+This document covers script-local layout and entrypoint rules.
+The canonical naming doctrine now lives in [`docs/architecture/governance/NAMING_CONVENTION.md`](../docs/architecture/governance/NAMING_CONVENTION.md).
+
+- **Files:** root script entrypoints remain `kebab-case.ts` and should follow the root-script grammar from the naming doctrine: `<action>-<domain>-<target>.ts`.
 - **Directories:** `kebab-case` or short **lowercase** domain names (`readme`, `ci`, `afenda`).
+- **Meaning model:** root `scripts/` names must be self-identifying because they are repo-global surfaces; local app/package scripts should move to their owner rather than forcing root to become a junk drawer.
 
 ---
 
@@ -64,7 +68,7 @@ Introduce a **single** nested directory when **all** of the following are true:
 Every **user-facing** CLI must:
 
 1. Have a **`pnpm run script:…`** script in the **root** `package.json` (workspace runs from repo root).
-2. Prefer **`tsx scripts/…`** so TypeScript runs without a separate build step.
+2. Prefer **`tsx scripts/…`** for repo-global implementations. When a command is owned by one app or package, keep the root command as a thin delegating entrypoint to that owner rather than keeping the implementation in root `scripts/`.
 3. Include a **short module comment** or docstring that states purpose (the README generator uses this text).
 
 Internal modules (no direct `pnpm` invocation) should be marked in [`generate-docs-readme.ts`](./generate-docs-readme.ts) `SCRIPT_FILE_OVERRIDES` with `hidden: true`, or live only under a nested folder without a root `package.json` script.
@@ -88,6 +92,6 @@ Internal modules (no direct `pnpm` invocation) should be marked in [`generate-do
 
 ## 6. Related documentation
 
-- [Architecture evolution](../docs/ARCHITECTURE_EVOLUTION.md) — when to add complexity vs defer.
+- [Architecture evolution](../docs/workspace/ARCHITECTURE_EVOLUTION.md) — when to add complexity vs defer.
 - [AGENTS.md](../AGENTS.md) — AI/human execution index.
-- [Project configuration](../docs/PROJECT_CONFIGURATION.md) — repo-wide tooling.
+- [Project configuration](../docs/workspace/PROJECT_CONFIGURATION.md) — repo-wide tooling.

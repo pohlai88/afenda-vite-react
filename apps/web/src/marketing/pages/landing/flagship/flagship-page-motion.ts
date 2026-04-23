@@ -3,7 +3,7 @@
  * Owns page-local reveal and transition helpers only.
  * Do not place section markup, copy, or page composition here.
  */
-import { MARKETING_EASE_OUT } from "../../_components"
+import { MARKETING_EASE_OUT } from "../../../components"
 
 export function getMarketingPageSectionReveal(
   reduceMotion: boolean,
