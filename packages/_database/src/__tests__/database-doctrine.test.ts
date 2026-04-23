@@ -1,4 +1,5 @@
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs"
+import { execFileSync } from "node:child_process"
+import { existsSync, readFileSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -22,37 +23,31 @@ const forbiddenCodeImportPatterns = [
   /from\s+["'][^"']*_database\/src[^"']*["']/,
 ]
 
-const ignoredDirectoryNames = new Set([
-  ".git",
-  ".turbo",
-  "coverage",
-  "dist",
-  "drizzle",
-  "node_modules",
-])
+const trackedCodePathspecs = [
+  "*.ts",
+  "*.tsx",
+  "*.js",
+  "*.jsx",
+  "*.mjs",
+  "*.cjs",
+] as const
 
-function listFiles(root: string, predicate: (filePath: string) => boolean) {
-  const files: string[] = []
-
-  function walk(current: string) {
-    for (const entry of readdirSync(current)) {
-      if (ignoredDirectoryNames.has(entry)) {
-        continue
-      }
-      const fullPath = path.join(current, entry)
-      const stat = statSync(fullPath)
-      if (stat.isDirectory()) {
-        walk(fullPath)
-        continue
-      }
-      if (predicate(fullPath)) {
-        files.push(fullPath)
-      }
+function listTrackedCodeFiles(root: string) {
+  const output = execFileSync(
+    "git",
+    ["ls-files", "--", ...trackedCodePathspecs],
+    {
+      cwd: root,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
     }
-  }
+  )
 
-  walk(root)
-  return files
+  return output
+    .split(/\r?\n/u)
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+    .map((relativePath) => path.join(root, relativePath))
 }
 
 describe("database package doctrine", () => {
@@ -83,11 +78,9 @@ describe("database package doctrine", () => {
 
   it(
     "does not use forbidden database import paths in code",
-    { timeout: 120_000 },
+    { timeout: 30_000 },
     () => {
-      const files = listFiles(repoRoot, (filePath) =>
-        /\.(?:ts|tsx|js|jsx|mjs|cjs)$/.test(filePath)
-      )
+      const files = listTrackedCodeFiles(repoRoot)
       const offenders = files.flatMap((filePath) => {
         const text = readFileSync(filePath, "utf8")
         return forbiddenCodeImportPatterns.some((pattern) => pattern.test(text))
