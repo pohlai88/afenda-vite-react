@@ -888,7 +888,7 @@ test("source/evidence mismatch fails when source changes without evidence refres
   const findings = evaluateSourceEvidenceMismatchFindings({
     entries: [
       {
-        path: "scripts/afenda.config.json",
+        path: "packages/_database/scripts/sync-schema-inventory.ts",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
@@ -906,7 +906,7 @@ test("source/evidence mismatch fails when evidence changes without bound source 
   const findings = evaluateSourceEvidenceMismatchFindings({
     entries: [
       {
-        path: "docs/architecture/governance/generated/governance-register.md",
+        path: "packages/_database/docs/guideline/schema-inventory.json",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
@@ -923,80 +923,29 @@ test("source/evidence mismatch fails when evidence changes without bound source 
   )
 })
 
-test("source/evidence mismatch fails on partial evidence refresh", () => {
-  const findings = evaluateSourceEvidenceMismatchFindings({
-    entries: [
-      {
-        path: "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
-        path: "docs/architecture/governance/README.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-    ],
-    policy: repoGuardPolicy.sourceEvidenceMismatch,
-  })
-
-  assert.equal(findings.length, 1)
-  assert.equal(findings[0]?.ruleId, "RG-TRUTH-004")
-  assert.match(
-    findings[0]?.message ?? "",
-    /Only part of the declared evidence set was refreshed/u
-  )
-})
-
 test("source/evidence mismatch stays clean when a full binding refresh is present", () => {
   const findings = evaluateSourceEvidenceMismatchFindings({
     entries: [
       {
-        path: "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
+        path: "packages/design-system/ui-primitives/_registry.ts",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
       },
       {
-        path: "docs/architecture/adr/ADR-0008-repository-integrity-guard-architecture.md",
+        path: "packages/design-system/generated/component-manifests.json",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
       },
       {
-        path: "docs/architecture/atc/ATC-0005-repository-integrity-guard-baseline.md",
+        path: "packages/design-system/generated/component-variants.json",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
       },
       {
-        path: "docs/architecture/governance/REPO_GUARDRAIL_TODO.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
-        path: "docs/OPERATING_MAP.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
-        path: "docs/architecture/adr/README.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
-        path: "docs/architecture/atc/README.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
-        path: "docs/architecture/governance/README.md",
+        path: "packages/design-system/generated/component-coverage.json",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,

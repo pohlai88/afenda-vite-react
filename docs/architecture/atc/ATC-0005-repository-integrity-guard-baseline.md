@@ -52,7 +52,7 @@ This contract binds the Repository Integrity Guard to real commands, real eviden
 
 - **Evidence path:** `.artifacts/reports/governance/repo-integrity-guard.report.json`
 - Required evidence artifacts:
-  repo-guard JSON report, repo-guard Markdown report, aggregate governance report, generated governance register
+  repo-guard JSON report, repo-guard Markdown report, aggregate governance report
 - Validation cadence:
   every repo-guard CI run and every governance run
 
@@ -61,7 +61,7 @@ This contract binds the Repository Integrity Guard to real commands, real eviden
 - What counts as drift:
   broken repo-guard command surface, broken report contract, evidence unreadable by the control plane, or V1 claiming stronger coverage than the repo can prove
 - How drift is recorded:
-  repo-guard evidence, governance aggregate report, and generated governance register
+  repo-guard evidence and governance aggregate report
 - When drift blocks:
   this contract does not block directly in V1; the bound domain warns while the repo-truth layer is still partial
 

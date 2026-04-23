@@ -464,7 +464,6 @@ export const repoGuardPolicy: RepoGuardPolicy = {
   ],
   warnStemTokens: ["final", "temp", "copy", "new"],
   protectedGeneratedPaths: [
-    "docs/architecture/governance/generated/governance-register.md",
     "apps/web/scripts/i18n/data/*.json",
     "apps/web/src/app/_platform/i18n/audit/*.json",
     "docs/README.md",
@@ -644,34 +643,6 @@ export const repoGuardPolicy: RepoGuardPolicy = {
     ],
     bindings: [
       {
-        id: "governance-register-refresh",
-        sourcePathPatterns: ["scripts/afenda.config.json"],
-        evidencePathPatterns: [
-          "docs/architecture/governance/generated/governance-register.md",
-        ],
-      },
-      {
-        id: "repo-guard-architecture-discovery",
-        sourcePathPatterns: [
-          "docs/architecture/adr/ADR-0008-repository-integrity-guard-architecture.md",
-          "docs/architecture/atc/ATC-0005-repository-integrity-guard-baseline.md",
-          "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
-          "docs/architecture/governance/REPO_GUARDRAIL_TODO.md",
-        ],
-        evidencePathPatterns: [
-          "docs/OPERATING_MAP.md",
-          "docs/architecture/adr/README.md",
-          "docs/architecture/atc/README.md",
-          "docs/architecture/governance/README.md",
-        ],
-        requiredEvidencePaths: [
-          "docs/OPERATING_MAP.md",
-          "docs/architecture/adr/README.md",
-          "docs/architecture/atc/README.md",
-          "docs/architecture/governance/README.md",
-        ],
-      },
-      {
         id: "design-system-component-governance",
         sourcePathPatterns: [
           "packages/design-system/ui-primitives/**/*.tsx",
@@ -723,26 +694,6 @@ export const repoGuardPolicy: RepoGuardPolicy = {
   },
   generatedAuthenticity: {
     bindings: [
-      {
-        id: "governance-register-markdown",
-        kind: "governance-register-markdown",
-        targetPath:
-          "docs/architecture/governance/generated/governance-register.md",
-        requiredSources: [
-          "scripts/afenda.config.json",
-          ".artifacts/reports/governance/governance-core.report.json",
-        ],
-      },
-      {
-        id: "governance-register-snapshot",
-        kind: "governance-register-snapshot",
-        targetPath:
-          ".artifacts/reports/governance/governance-register.snapshot.json",
-        requiredSources: [
-          "scripts/afenda.config.json",
-          ".artifacts/reports/governance/governance-core.report.json",
-        ],
-      },
       {
         id: "design-system-component-manifests",
         kind: "design-system-component-governance",

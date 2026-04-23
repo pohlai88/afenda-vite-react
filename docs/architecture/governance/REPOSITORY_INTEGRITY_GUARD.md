@@ -92,11 +92,11 @@ The guard now includes the original V1 native scanners plus the first post-V1 st
 
 `RG-STRUCT-001` is currently grounded in declared rollout owner truth, runtime owners, and shared roots.
 It is not yet the full final ownership model for every repo surface.
-`RG-TRUTH-002` currently binds the governance register surfaces, design-system component governance artifacts, and selected database generated artifacts to explicit provenance and canonical renderers.
+`RG-TRUTH-002` currently binds design-system component governance artifacts and selected database generated artifacts to explicit provenance and canonical renderers.
 It is not yet full generated-artifact authenticity coverage for every governed generated root.
 `RG-STRUCT-003` currently enforces only high-confidence cross-root drift rules for selected app roots and workspace-private path leakage.
 It is not yet the full final package/public-surface import contract for the repo.
-`RG-TRUTH-004` currently enforces declared source/evidence bindings for the governance register, repository-guard architecture discovery surfaces, design-system component-governance outputs, and selected database generated artifacts.
+`RG-TRUTH-004` currently enforces declared source/evidence bindings for design-system component-governance outputs and selected database generated artifacts.
 It is not yet the full final source-to-evidence map for every governed report and generated artifact.
 `RG-HYGIENE-005` currently enforces only warning-level suspicious variant detection and duplicate-basename detection in duplicate-sensitive governed surfaces.
 It is not yet a full semantic overlap detector for docs, generators, or business logic.
