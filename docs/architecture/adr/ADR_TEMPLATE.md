@@ -5,11 +5,15 @@ status: template
 owner: docs-policy
 truthStatus: supporting
 docClass: supporting-doc
+surfaceType: doctrine
 relatedDomain: decision-record
 order: 999
 ---
 
 # ADR-XXXX: [Decision title]
+
+This document records a governed architecture decision.
+Use it for narrative decision context, implementation posture, and evidence expectations.
 
 - **Decision status:** Proposed | Accepted | Superseded | Rejected
 - **Implementation status:** Not started | Partial | Substantially implemented | Complete

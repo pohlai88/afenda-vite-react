@@ -5,11 +5,15 @@ status: template
 owner: web-architecture
 truthStatus: supporting
 docClass: supporting-doc
+surfaceType: doctrine
 relatedDomain: architecture-contract
 order: 999
 ---
 
 # ATC-XXXX: [Contract title]
+
+This document records an enforceable architecture truth contract.
+Use it when the repo must bind checks, evidence, and CI behavior to an architecture surface.
 
 ## Contract identity
 
