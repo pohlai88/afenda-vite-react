@@ -486,6 +486,100 @@ test("workspace package import helper allows bare and exported wildcard subpaths
   )
 })
 
+test("boundary import findings do not treat package-local coverage directories as machine-noise roots", async () => {
+  const fixtureRoot = path.join(
+    workspaceRoot,
+    ".artifacts/tmp/repo-guard-package-local-coverage"
+  )
+  const packageManifestPath = path.join(
+    fixtureRoot,
+    "packages/governance-toolchain/package.json"
+  )
+  const packageIndexPath = path.join(
+    fixtureRoot,
+    "packages/governance-toolchain/src/index.ts"
+  )
+  const coverageModulePath = path.join(
+    fixtureRoot,
+    "packages/governance-toolchain/src/coverage/repo-guard-coverage.ts"
+  )
+
+  await fs.mkdir(path.dirname(packageManifestPath), { recursive: true })
+  await fs.mkdir(path.dirname(coverageModulePath), { recursive: true })
+  await fs.writeFile(
+    packageManifestPath,
+    JSON.stringify(
+      {
+        name: "@afenda/governance-toolchain",
+        type: "module",
+        exports: {
+          ".": "./src/index.ts",
+        },
+      },
+      null,
+      2
+    ),
+    "utf8"
+  )
+  await fs.writeFile(
+    packageIndexPath,
+    `export * from "./coverage/repo-guard-coverage.js"\n`,
+    "utf8"
+  )
+  await fs.writeFile(
+    coverageModulePath,
+    `export const coverageCatalog = [] as const\n`,
+    "utf8"
+  )
+
+  const findings = await evaluateBoundaryImportFindings({
+    repoRoot: fixtureRoot,
+    filePaths: ["packages/governance-toolchain/src/index.ts"],
+    policy: repoGuardPolicy.boundaryImport,
+  })
+
+  assert.equal(findings.length, 0)
+
+  await fs.rm(fixtureRoot, { recursive: true, force: true })
+})
+
+test("boundary import findings still fail on imports into repo-root machine-noise coverage", async () => {
+  const fixtureRoot = path.join(
+    workspaceRoot,
+    ".artifacts/tmp/repo-guard-root-coverage-import"
+  )
+  const importerPath = path.join(
+    fixtureRoot,
+    "apps/web/src/share/ui/blocked-coverage-import.ts"
+  )
+  const coveragePath = path.join(fixtureRoot, "coverage/generated/report.ts")
+
+  await fs.mkdir(path.dirname(importerPath), { recursive: true })
+  await fs.mkdir(path.dirname(coveragePath), { recursive: true })
+  await fs.writeFile(
+    importerPath,
+    `import { report } from "../../../../../coverage/generated/report"\n`,
+    "utf8"
+  )
+  await fs.writeFile(
+    coveragePath,
+    `export const report = "generated"\n`,
+    "utf8"
+  )
+
+  const findings = await evaluateBoundaryImportFindings({
+    repoRoot: fixtureRoot,
+    filePaths: ["apps/web/src/share/ui/blocked-coverage-import.ts"],
+    policy: repoGuardPolicy.boundaryImport,
+  })
+
+  assert.equal(findings.length, 1)
+  assert.equal(findings[0]?.ruleId, "RG-STRUCT-003")
+  assert.match(findings[0]?.message ?? "", /machine-noise boundary/u)
+
+  await fs.rm(fixtureRoot, { recursive: true, force: true })
+})
+
 test("boundary import findings fail on blocked shared-to-feature dependency and ignore tests", async () => {
   const fixtureRoot = path.join(
     workspaceRoot,

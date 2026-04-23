@@ -61,9 +61,15 @@ export async function evaluateBoundaryImportFindings(options: {
         continue
       }
 
+      const normalizedTarget = normalizeImportTarget(
+        filePath,
+        record.importPath
+      )
+      const blockedPatternTarget = normalizedTarget ?? record.importPath
+
       if (
         options.policy.globalBlockedImportPatterns.some((pattern) =>
-          pattern.test(record.importPath)
+          pattern.test(blockedPatternTarget)
         )
       ) {
         findings.push({
@@ -78,11 +84,6 @@ export async function evaluateBoundaryImportFindings(options: {
         })
         continue
       }
-
-      const normalizedTarget = normalizeImportTarget(
-        filePath,
-        record.importPath
-      )
       if (!normalizedTarget) {
         continue
       }

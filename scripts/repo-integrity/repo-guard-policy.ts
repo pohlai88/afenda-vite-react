@@ -505,10 +505,10 @@ export const repoGuardPolicy: RepoGuardPolicy = {
       "**/*.d.ts",
     ],
     globalBlockedImportPatterns: [
-      /(?:^|\/)\.artifacts(?:\/|$)/u,
-      /(?:^|\/)\.turbo(?:\/|$)/u,
-      /(?:^|\/)node_modules(?:\/|$)/u,
-      /(?:^|\/)coverage(?:\/|$)/u,
+      /^\.artifacts(?:\/|$)/u,
+      /^\.turbo(?:\/|$)/u,
+      /^node_modules(?:\/|$)/u,
+      /^coverage(?:\/|$)/u,
     ],
     globalIgnoredImportPatterns: [/^\w[\w-]*$/u],
     rules: [
