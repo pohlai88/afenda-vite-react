@@ -20,6 +20,12 @@ export interface BoundaryImportPolicy {
   readonly rules: readonly BoundaryImportRule[]
 }
 
+interface WorkspacePackageExportSurface {
+  readonly packageName: string
+  readonly allowBareImport: boolean
+  readonly allowedSubpathPatterns: readonly string[]
+}
+
 export interface ParsedImportRecord {
   readonly importPath: string
   readonly line: number
@@ -31,6 +37,8 @@ export async function evaluateBoundaryImportFindings(options: {
   readonly policy: BoundaryImportPolicy
 }): Promise<readonly RepoGuardFinding[]> {
   const findings: RepoGuardFinding[] = []
+  const workspacePackageExportSurfaces =
+    await loadWorkspacePackageExportSurfaces(options.repoRoot)
 
   for (const filePath of options.filePaths) {
     if (!matchesAnyGlob(filePath, options.policy.sourceGlobs)) {
@@ -76,6 +84,18 @@ export async function evaluateBoundaryImportFindings(options: {
         record.importPath
       )
       if (!normalizedTarget) {
+        continue
+      }
+
+      const workspacePackageFinding = evaluateWorkspacePackageImportFinding({
+        filePath,
+        importPath: record.importPath,
+        line: record.line,
+        workspacePackageExportSurfaces,
+      })
+
+      if (workspacePackageFinding) {
+        findings.push(workspacePackageFinding)
         continue
       }
 
@@ -174,6 +194,199 @@ export function normalizeImportTarget(
     path.posix.join(importerDirectory, importPath)
   )
   return resolved.startsWith("../") ? null : resolved
+}
+
+export function isAllowedWorkspacePackageImport(options: {
+  readonly importPath: string
+  readonly exportSurface: WorkspacePackageExportSurface
+}): boolean {
+  const { importPath, exportSurface } = options
+  if (importPath === exportSurface.packageName) {
+    return exportSurface.allowBareImport
+  }
+
+  const packagePrefix = `${exportSurface.packageName}/`
+  if (!importPath.startsWith(packagePrefix)) {
+    return true
+  }
+
+  const subpath = importPath.slice(packagePrefix.length)
+  return exportSurface.allowedSubpathPatterns.some((pattern) =>
+    matchesExportSubpathPattern(subpath, pattern)
+  )
+}
+
+async function loadWorkspacePackageExportSurfaces(
+  repoRoot: string
+): Promise<ReadonlyMap<string, WorkspacePackageExportSurface>> {
+  const manifestPaths = await collectWorkspacePackageManifestPaths(repoRoot)
+  const surfaces = await Promise.all(
+    manifestPaths.map(async (manifestPath) => {
+      const manifestRaw = await fs.readFile(manifestPath, "utf8")
+      const manifest = JSON.parse(manifestRaw) as {
+        readonly name?: string
+        readonly exports?: Record<string, unknown> | string
+      }
+
+      const packageName = manifest.name
+      if (!packageName?.startsWith("@afenda/")) {
+        return null
+      }
+
+      return {
+        packageName,
+        allowBareImport: hasBareExport(manifest.exports),
+        allowedSubpathPatterns: extractAllowedSubpathPatterns(manifest.exports),
+      } satisfies WorkspacePackageExportSurface
+    })
+  )
+
+  return new Map(
+    surfaces
+      .filter(
+        (surface): surface is WorkspacePackageExportSurface => surface !== null
+      )
+      .map((surface) => [surface.packageName, surface])
+  )
+}
+
+async function collectWorkspacePackageManifestPaths(
+  repoRoot: string
+): Promise<readonly string[]> {
+  const roots = ["apps", "packages"] as const
+  const manifestPaths: string[] = []
+
+  for (const root of roots) {
+    const absoluteRoot = path.join(repoRoot, root)
+    let entries: Awaited<ReturnType<typeof fs.readdir>>
+    try {
+      entries = await fs.readdir(absoluteRoot, { withFileTypes: true })
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "ENOENT"
+      ) {
+        continue
+      }
+      throw error
+    }
+    for (const entry of entries) {
+      if (!entry.isDirectory()) {
+        continue
+      }
+      const manifestPath = path.join(absoluteRoot, entry.name, "package.json")
+      try {
+        await fs.access(manifestPath)
+        manifestPaths.push(manifestPath)
+      } catch {
+        continue
+      }
+    }
+  }
+
+  return manifestPaths
+}
+
+function hasBareExport(
+  exportsField: Record<string, unknown> | string | undefined
+): boolean {
+  if (!exportsField) {
+    return false
+  }
+  if (typeof exportsField === "string") {
+    return true
+  }
+  return Object.hasOwn(exportsField, ".")
+}
+
+function extractAllowedSubpathPatterns(
+  exportsField: Record<string, unknown> | string | undefined
+): readonly string[] {
+  if (!exportsField || typeof exportsField === "string") {
+    return []
+  }
+
+  return Object.keys(exportsField)
+    .filter((key) => key.startsWith("./") && key !== ".")
+    .map((key) => key.slice(2))
+}
+
+function evaluateWorkspacePackageImportFinding(options: {
+  readonly filePath: string
+  readonly importPath: string
+  readonly line: number
+  readonly workspacePackageExportSurfaces: ReadonlyMap<
+    string,
+    WorkspacePackageExportSurface
+  >
+}): RepoGuardFinding | null {
+  const packageSpecifier = extractWorkspacePackageSpecifier(options.importPath)
+  if (!packageSpecifier) {
+    return null
+  }
+
+  const exportSurface = options.workspacePackageExportSurfaces.get(
+    packageSpecifier.packageName
+  )
+  if (!exportSurface) {
+    return null
+  }
+
+  if (
+    isAllowedWorkspacePackageImport({
+      importPath: options.importPath,
+      exportSurface,
+    })
+  ) {
+    return null
+  }
+
+  return {
+    severity: "error",
+    ruleId: "RG-STRUCT-003",
+    filePath: options.filePath,
+    message:
+      "Import path bypasses the package's declared public export surface.",
+    evidence: `line=${String(options.line)}; import=${options.importPath}; package=${packageSpecifier.packageName}`,
+    suggestedFix:
+      "Import through a declared package export or add an explicit export before using the subpath.",
+  }
+}
+
+function extractWorkspacePackageSpecifier(importPath: string): {
+  readonly packageName: string
+  readonly subpath: string | null
+} | null {
+  if (!importPath.startsWith("@afenda/")) {
+    return null
+  }
+
+  const segments = importPath.split("/")
+  if (segments.length < 2) {
+    return null
+  }
+
+  const packageName = `${segments[0]}/${segments[1]}`
+  const subpath = segments.length > 2 ? segments.slice(2).join("/") : null
+  return {
+    packageName,
+    subpath,
+  }
+}
+
+function matchesExportSubpathPattern(
+  subpath: string,
+  pattern: string
+): boolean {
+  if (!pattern.includes("*")) {
+    return subpath === pattern
+  }
+
+  const escapedPattern = pattern.replace(/[|\\{}()[\]^$+?.]/gu, "\\$&")
+  const regex = new RegExp(`^${escapedPattern.replaceAll("*", ".*")}$`, "u")
+  return regex.test(subpath)
 }
 
 function matchesAnyGlob(

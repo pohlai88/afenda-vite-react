@@ -10,6 +10,7 @@ import { loadAfendaConfig } from "../afenda-config.js"
 import { repoGuardPolicy } from "../repo-integrity/repo-guard-policy.js"
 import {
   evaluateBoundaryImportFindings,
+  isAllowedWorkspacePackageImport,
   normalizeImportTarget,
   parseImportsFromSource,
 } from "./boundary-import-guard.js"
@@ -322,6 +323,36 @@ test("boundary import target normalization preserves app aliases and package tar
   )
 })
 
+test("workspace package import helper allows bare and exported wildcard subpaths only", () => {
+  const exportSurface = {
+    packageName: "@afenda/demo-public",
+    allowBareImport: true,
+    allowedSubpathPatterns: ["public", "public/*"],
+  }
+
+  assert.equal(
+    isAllowedWorkspacePackageImport({
+      importPath: "@afenda/demo-public",
+      exportSurface,
+    }),
+    true
+  )
+  assert.equal(
+    isAllowedWorkspacePackageImport({
+      importPath: "@afenda/demo-public/public/button",
+      exportSurface,
+    }),
+    true
+  )
+  assert.equal(
+    isAllowedWorkspacePackageImport({
+      importPath: "@afenda/demo-public/internal/secret",
+      exportSurface,
+    }),
+    false
+  )
+})
+
 test("boundary import findings fail on blocked shared-to-feature dependency and ignore tests", async () => {
   const fixtureRoot = path.join(
     workspaceRoot,
@@ -373,6 +404,71 @@ test("boundary import findings fail on blocked shared-to-feature dependency and 
   assert.equal(findings[0]?.ruleId, "RG-STRUCT-003")
   assert.equal(findings[0]?.filePath, "apps/web/src/share/ui/shared-shell.ts")
   assert.match(findings[0]?.message ?? "", /Shared code must not depend/u)
+
+  await fs.rm(fixtureRoot, { recursive: true, force: true })
+})
+
+test("boundary import findings fail on non-exported internal package subpaths", async () => {
+  const fixtureRoot = path.join(
+    workspaceRoot,
+    ".artifacts/tmp/repo-guard-package-export-boundary"
+  )
+  const packageManifestPath = path.join(
+    fixtureRoot,
+    "packages/demo-public/package.json"
+  )
+  const allowedImporterPath = path.join(
+    fixtureRoot,
+    "apps/web/src/share/ui/allowed-import.ts"
+  )
+  const blockedImporterPath = path.join(
+    fixtureRoot,
+    "apps/web/src/share/ui/blocked-import.ts"
+  )
+
+  await fs.mkdir(path.dirname(packageManifestPath), { recursive: true })
+  await fs.mkdir(path.dirname(allowedImporterPath), { recursive: true })
+  await fs.writeFile(
+    packageManifestPath,
+    JSON.stringify(
+      {
+        name: "@afenda/demo-public",
+        type: "module",
+        exports: {
+          ".": "./src/index.ts",
+          "./public": "./src/public/index.ts",
+          "./public/*": "./src/public/*",
+        },
+      },
+      null,
+      2
+    ),
+    "utf8"
+  )
+  await fs.writeFile(
+    allowedImporterPath,
+    `import { Button } from "@afenda/demo-public/public/button"\n`,
+    "utf8"
+  )
+  await fs.writeFile(
+    blockedImporterPath,
+    `import { secret } from "@afenda/demo-public/internal/secret"\n`,
+    "utf8"
+  )
+
+  const findings = await evaluateBoundaryImportFindings({
+    repoRoot: fixtureRoot,
+    filePaths: [
+      "apps/web/src/share/ui/allowed-import.ts",
+      "apps/web/src/share/ui/blocked-import.ts",
+    ],
+    policy: repoGuardPolicy.boundaryImport,
+  })
+
+  assert.equal(findings.length, 1)
+  assert.equal(findings[0]?.ruleId, "RG-STRUCT-003")
+  assert.match(findings[0]?.message ?? "", /declared public export surface/u)
+  assert.match(findings[0]?.evidence ?? "", /@afenda\/demo-public\/internal/u)
 
   await fs.rm(fixtureRoot, { recursive: true, force: true })
 })

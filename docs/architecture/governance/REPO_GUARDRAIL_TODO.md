@@ -228,7 +228,7 @@ Promotion requirements:
 Current implementation note:
 
 - First cut is implemented inside the Repository Integrity Guard as a native scanner.
-- Current coverage is intentionally narrow and high-confidence: selected app-root cross-boundary drift and workspace-private path leakage.
+- Current coverage is intentionally narrow and high-confidence: selected app-root cross-boundary drift, workspace-private path leakage, and package subpath import enforcement against declared `exports`.
 - Full public-surface and package-internal boundary coverage still need follow-through.
 
 ### Guardrail RG-TRUTH-004 — Source / evidence mismatch guard
