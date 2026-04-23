@@ -36,7 +36,7 @@ This register is generated from `scripts/afenda.config.json` and the latest gove
 - Enforcement maturity counts:
   defined=0, measured=0, warned=3, blocking=8, runtime-enforced=0
 - Violation severity counts:
-  info=0, warn=0, error=5, fatal=0
+  info=0, warn=0, error=2, fatal=0
 - Blocked domains: none
 - Warned domains: `GOV-TRUTH-001`
 
