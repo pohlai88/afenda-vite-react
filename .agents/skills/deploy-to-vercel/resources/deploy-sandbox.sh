@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Vercel Deployment Script for Codex (via claimable deploy endpoint)
-# Usage: ./deploy-codex.sh [project-path]
+# Vercel deployment via claimable deploy endpoint (restricted / unauthenticated shells)
+# Usage: ./deploy-sandbox.sh [project-path]
 # Returns: JSON with previewUrl, claimUrl, deploymentId, projectId
 
 set -euo pipefail

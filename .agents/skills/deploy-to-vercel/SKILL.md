@@ -206,9 +206,9 @@ The script auto-detects the framework from `package.json`, packages the project 
 
 ---
 
-### No-Auth Fallback — Codex sandbox
+### No-Auth Fallback — restricted shell (alternate endpoint)
 
-**When to use:** In the Codex sandbox where the CLI may not be authenticated. Codex runs in a sandboxed environment by default — try the CLI first, and fall back to the deploy script if auth fails.
+**When to use:** In a sandboxed or headless environment where the Vercel CLI may not be authenticated. Try the CLI first, and fall back to this deploy script if auth fails.
 
 1. **Check whether the Vercel CLI is installed** (no escalation needed for this check):
 
@@ -228,13 +228,13 @@ The script auto-detects the framework from `package.json`, packages the project 
    skill_dir="<path-to-skill>"
 
    # Deploy current directory
-   bash "$skill_dir/resources/deploy-codex.sh"
+   bash "$skill_dir/resources/deploy-sandbox.sh"
 
    # Deploy specific project
-   bash "$skill_dir/resources/deploy-codex.sh" /path/to/project
+   bash "$skill_dir/resources/deploy-sandbox.sh" /path/to/project
 
    # Deploy existing tarball
-   bash "$skill_dir/resources/deploy-codex.sh" /path/to/project.tgz
+   bash "$skill_dir/resources/deploy-sandbox.sh" /path/to/project.tgz
    ```
 
 The script handles framework detection, packaging, and deployment. It waits for the build to complete and returns JSON with `previewUrl` and `claimUrl`.
@@ -263,9 +263,9 @@ The path may vary depending on where the user installed the skill.
 
 You likely cannot run `vercel login` or `git push`. Go directly to the **no-auth fallback — claude.ai sandbox**.
 
-### Codex
+### Other sandboxed agents
 
-Codex runs in a sandbox. Check if the CLI is available first, then fall back to the deploy script. Go to the **no-auth fallback — Codex sandbox**.
+If the CLI is unavailable or unauthenticated, check `command -v vercel` first, then use the **no-auth fallback — restricted shell (alternate endpoint)** with `deploy-sandbox.sh`.
 
 ---
 
@@ -305,7 +305,7 @@ Deployment failed due to network restrictions. To fix this:
 3. Try deploying again
 ```
 
-### Escalated Network Access (Codex / sandboxed environments)
+### Escalated Network Access (sandboxed environments)
 
 If deployment fails due to network issues (timeouts, DNS errors, connection resets) in a sandboxed environment, rerun with escalated permissions (`sandbox_permissions=require_escalated`). Do not escalate the initial CLI availability check — only escalate the actual deploy command.
 
@@ -318,4 +318,4 @@ the command with escalated permissions — want me to proceed?
 
 ### CLI Auth Failure
 
-If `vercel login` or `vercel deploy` fails with authentication errors, fall back to the no-auth deploy script (claude.ai or Codex variant, depending on the environment).
+If `vercel login` or `vercel deploy` fails with authentication errors, fall back to the no-auth deploy script (`deploy.sh` for the default claimable endpoint, or `deploy-sandbox.sh` for the alternate endpoint, depending on the environment).

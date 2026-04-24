@@ -13,7 +13,7 @@ Non-interactive (defaults):
 npx skills add vercel/turborepo --yes
 ```
 
-Interactive (pick agent targets such as Cursor / Codex):
+Interactive (pick agent targets such as Cursor or other assistants):
 
 ```bash
 npx skills add vercel/turborepo

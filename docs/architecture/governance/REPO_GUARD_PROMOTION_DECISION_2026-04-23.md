@@ -14,7 +14,7 @@ order: 19
 ## Decision
 
 - Date: `2026-04-23`
-- Deciders: `Codex baseline review; human promotion approval still required`
+- Deciders: `Tooling-assisted baseline review; human promotion approval still required`
 - Domain: `GOV-TRUTH-001`
 - Decision: `hold at warned`
 

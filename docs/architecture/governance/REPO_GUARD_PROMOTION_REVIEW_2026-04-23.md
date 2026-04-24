@@ -14,7 +14,7 @@ order: 17
 ## Scope
 
 - Review date: `2026-04-23`
-- Reviewer: `Codex`
+- Reviewer: `Assistant session (automated)`
 - Domain: `GOV-TRUTH-001`
 - Evidence report: [repo-guard-promotion-readiness.report.md](/C:/NexusCanon/afenda-react-vite/.artifacts/reports/governance/repo-guard-promotion-readiness.report.md)
 - Scorecard: [REPO_GUARD_PROMOTION_SCORECARD_2026-04-23.md](/C:/NexusCanon/afenda-react-vite/docs/architecture/governance/REPO_GUARD_PROMOTION_SCORECARD_2026-04-23.md)
