@@ -1,21 +1,15 @@
 # Afenda Features SDK
 
-`@afenda/features-sdk` is an internal Afenda package for governed feature discovery, validation, scaffolding, and handoff workflows inside the Afenda workspace.
+`@afenda/features-sdk` is the internal Afenda package for governed feature planning workflows.
 
-## Sync-Pack
+Today its active module is `sync-pack`, which combines:
 
-The current module is `sync-pack`, which converts curated discovery signals into governed internal feature planning packs for Afenda teams.
+- typed SDK APIs
+- CLI entrypoints
+- governed rules and seed data
+- internal operating docs
 
-```ts
-import {
-  appCandidateSchema,
-  checkGeneratedPacks,
-  createTechStackScaffoldManifest,
-  generateFeaturePack,
-  runSyncPackDoctor,
-  scoreCandidate,
-} from "@afenda/features-sdk/sync-pack"
-```
+This package is intentionally broader than a CLI wrapper. The CLI is one surface of the package, not the whole package.
 
 ## Start Here
 
@@ -25,82 +19,114 @@ From the workspace root:
 pnpm run feature-sync
 ```
 
-That quickstart output explains what Sync-Pack is, the green path, and the next command to run.
+That command is deterministic quickstart only.
 
-Daily operator path:
+- It explains what Sync-Pack is.
+- It points to the next command to run.
+- It never auto-runs validation.
+
+The daily operator path is explicit:
 
 ```txt
-pnpm run feature-sync
 pnpm run feature-sync:verify
 ```
 
-Root command rule:
+## What This Package Owns
 
-```txt
-feature-sync is always quickstart only.
-It never auto-runs verify.
+- Library APIs under `src/sync-pack`
+- CLI binaries such as `afenda-sync-pack` and the gated subcommand entrypoints
+- Rules and curated seed data under `rules/sync-pack`
+- Active operating docs under `docs/sync-pack`
+- Tests for SDK, CLI, and contract behavior under `tests/sync-pack`
+
+## SDK Surface
+
+Programmatic usage stays under the package name:
+
+```ts
+import {
+  appCandidateSchema,
+  checkFeatureSdkPackageContract,
+  checkGeneratedPacks,
+  createTechStackScaffoldManifest,
+  generateFeaturePack,
+  runSyncPackDoctor,
+  runSyncPackValidate,
+  runSyncPackVerify,
+  scoreCandidate,
+} from "@afenda/features-sdk/sync-pack"
 ```
 
-## Command Intent
+The current public surface is not just command execution. It also exports:
 
-| Command                      | Class             | Use when                                                        |
-| ---------------------------- | ----------------- | --------------------------------------------------------------- |
-| `feature-sync`               | start here        | You do not know what to run.                                    |
-| `feature-sync:help`          | start here        | You need command discovery and examples.                        |
-| `feature-sync:verify`        | operator workflow | You want the supported daily workflow across all release gates. |
-| `feature-sync:release-check` | release gate      | You need to prove the SDK package/build contract is valid.      |
-| `feature-sync:check`         | release gate      | You need to validate generated feature-pack files.              |
-| `feature-sync:doctor`        | release gate      | You need to inspect dependency and stack-version drift.         |
-| `feature-sync:validate`      | release gate      | You need to validate curated seed JSON.                         |
-| `feature-sync:rank`          | operator utility  | You need a priority scoring table.                              |
-| `feature-sync:report`        | operator utility  | You need a grouped portfolio report.                            |
-| `feature-sync:generate`      | operator utility  | You need to write generated planning packs.                     |
-| `feature-sync:scaffold`      | operator utility  | You need a tech-stack scaffold for an app candidate.            |
+- schemas and inferred types
+- scoring rules
+- pack generation helpers
+- scaffold generation helpers
+- gated validation and verification functions
 
-`feature-sync:verify` and the release-gate commands are CI-safe. Operator utilities are human-oriented.
+## CLI Surface
 
-CLI binaries after build/publish:
+Preferred workspace entrypoints:
+
+| Command                               | Class             | Use when                                                               |
+| ------------------------------------- | ----------------- | ---------------------------------------------------------------------- |
+| `pnpm run feature-sync`               | start here        | You need the deterministic first step.                                 |
+| `pnpm run feature-sync:help`          | start here        | You need grouped command help and examples.                            |
+| `pnpm run feature-sync:verify`        | operator workflow | You want the supported daily verification workflow.                    |
+| `pnpm run feature-sync:release-check` | release gate      | You need to validate package/build integrity.                          |
+| `pnpm run feature-sync:check`         | release gate      | You need to validate generated pack structure and candidate alignment. |
+| `pnpm run feature-sync:doctor`        | release gate      | You need to inspect dependency and stack drift.                        |
+| `pnpm run feature-sync:validate`      | release gate      | You need to validate curated seed input.                               |
+| `pnpm run feature-sync:rank`          | operator utility  | You need a candidate scoring view.                                     |
+| `pnpm run feature-sync:report`        | operator utility  | You need grouped portfolio evidence.                                   |
+| `pnpm run feature-sync:generate`      | operator utility  | You need to write planning packs from seed data.                       |
+| `pnpm run feature-sync:scaffold`      | operator utility  | You need a tech-stack scaffold manifest.                               |
+
+Built CLI binaries remain available for package-local execution:
 
 ```txt
-afenda-sync-pack quickstart
+afenda-sync-pack
 afenda-sync-pack help
-afenda-sync-pack scaffold
-afenda-sync-pack doctor
-afenda-sync-pack check
 afenda-sync-pack verify
+afenda-sync-pack release-check
+afenda-sync-pack check
+afenda-sync-pack doctor
 afenda-sync-pack validate
 afenda-sync-pack rank
 afenda-sync-pack report
-afenda-sync-pack release-check
 afenda-sync-pack generate
+afenda-sync-pack scaffold
 ```
 
-Repo-local development scripts remain available from the workspace root:
+## Naming Decision
 
-```txt
-pnpm run feature-sync
-pnpm run feature-sync:help
-pnpm run feature-sync:verify
-pnpm run feature-sync:validate
-pnpm run feature-sync:rank
-pnpm run feature-sync:report
-pnpm run feature-sync:generate
-pnpm run feature-sync:check
-pnpm run feature-sync:doctor
-pnpm run feature-sync:release-check
-pnpm run feature-sync:scaffold
-```
+Keep the package name as `features-sdk`.
 
-## Internal support boundary
+Why:
 
-This package is optimized for internal use only.
+- The package exports reusable SDK APIs, not only command handlers.
+- The package owns rules, seed data, contracts, and generated-artifact doctrine in addition to CLI entrypoints.
+- The active CLI brand is already more precise at the module level: `sync-pack` / `afenda-sync-pack`.
 
-- Start-here commands: `feature-sync`, `feature-sync:help`
-- Operator workflow command: `feature-sync:verify`
-- Underlying CI-safe gates: `check`, `doctor`, `release-check`, `validate`
-- Operator utilities: `rank`, `report`, `generate`, `scaffold`
+Rename to `features-cli` only if the package is later reduced to a CLI-only wrapper or split into:
+
+- `@afenda/features-sdk` for reusable APIs
+- `@afenda/features-cli` for a dedicated command-distribution package
+
+That split is not justified by the current codebase shape.
+
+## Internal Boundary
+
+This package is optimized for internal Afenda use only.
+
 - Supported environment: Afenda pnpm workspace
-- Supported consumers: Afenda internal teams
+- Active target: internal SDK and internal operator CLI
+- Partner-restricted and public externalization remain deferred
 
-See package-local operating docs in `docs/sync-pack/` for the internal operating contract, `FSDK-CLI-001` release-gate rules, and `FSDK-CLI-002` operator workflow rules.
-See `docs/sync-pack/FSDK-CLI_SCORECARD.md` for the governed internal scorecard and target state.
+## Docs Map
+
+- [Sync-Pack README](./docs/sync-pack/README.md): active module guide
+- [Internal Operating Contract](./docs/sync-pack/INTERNAL_OPERATING_CONTRACT.md): supported environment and operating rules
+- [CLI Scorecard](./docs/sync-pack/FSDK-CLI_SCORECARD.md): governed readiness scoring and target state
+- [Archive README](./docs/sync-pack/archive/README.md): historical, non-active planning material
