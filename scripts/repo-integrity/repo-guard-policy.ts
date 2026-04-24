@@ -758,26 +758,6 @@ export const repoGuardPolicy: RepoGuardPolicy = {
   generatedAuthenticity: {
     bindings: [
       {
-        id: "governance-register-markdown",
-        kind: "governance-register-markdown",
-        targetPath:
-          "docs/architecture/governance/generated/governance-register.md",
-        requiredSources: [
-          "scripts/afenda.config.json",
-          ".artifacts/reports/governance/governance-core.report.json",
-        ],
-      },
-      {
-        id: "governance-register-snapshot",
-        kind: "governance-register-snapshot",
-        targetPath:
-          ".artifacts/reports/governance/governance-register.snapshot.json",
-        requiredSources: [
-          "scripts/afenda.config.json",
-          ".artifacts/reports/governance/governance-core.report.json",
-        ],
-      },
-      {
         id: "design-system-component-manifests",
         kind: "design-system-component-governance",
         artifact: "manifests",

@@ -13,10 +13,10 @@
     }
   },
   "dependencies": {
-    "@afenda/features-sdk": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@afenda/features-sdk": "workspace:*",
     "@afenda/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "tsx": "catalog:",

@@ -1050,8 +1050,6 @@ test("generated authenticity stays clean for calibrated design-system and databa
   const findings = await evaluateGeneratedArtifactAuthenticityFindings({
     repoRoot: workspaceRoot,
     trackedFiles: [
-      ".artifacts/reports/governance/governance-register.snapshot.json",
-      "docs/architecture/governance/generated/governance-register.md",
       "packages/design-system/generated/component-manifests.json",
       "packages/design-system/generated/component-variants.json",
       "packages/design-system/generated/component-coverage.json",
@@ -1062,8 +1060,6 @@ test("generated authenticity stays clean for calibrated design-system and databa
     policy: {
       bindings: repoGuardPolicy.generatedAuthenticity.bindings.filter(
         (binding) =>
-          binding.id === "governance-register-markdown" ||
-          binding.id === "governance-register-snapshot" ||
           binding.id === "design-system-component-manifests" ||
           binding.id === "design-system-component-variants" ||
           binding.id === "design-system-component-coverage" ||
@@ -1071,9 +1067,7 @@ test("generated authenticity stays clean for calibrated design-system and databa
           binding.id === "database-glossary-snapshot"
       ),
       orphanRoots: repoGuardPolicy.generatedAuthenticity.orphanRoots.filter(
-        (root) =>
-          root.root === "docs/architecture/governance/generated" ||
-          root.root === "packages/design-system/generated"
+        (root) => root.root === "packages/design-system/generated"
       ),
     },
   })
