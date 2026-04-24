@@ -669,7 +669,6 @@ export const repoGuardPolicy: RepoGuardPolicy = {
         ],
         requiredEvidencePaths: [
           "docs/architecture/governance/generated/governance-register.md",
-          ".artifacts/reports/governance/governance-register.snapshot.json",
         ],
       },
       {

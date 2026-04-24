@@ -1,6 +1,6 @@
 ---
 title: ADR-0008 repository integrity guard architecture
-description: Decision record for the repository-truth guardrail layer, its aggregate-first design, warn-first rollout, and self-managed evidence model.
+description: Decision record for the repository-truth guardrail layer, its aggregate-first design, warn-first rollout, self-managed evidence model, and discovery index alignment.
 status: active
 owner: governance-toolchain
 truthStatus: canonical

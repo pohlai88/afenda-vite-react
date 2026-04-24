@@ -1,6 +1,6 @@
 ---
 title: ATC-0005 repository integrity guard baseline
-description: Enforceable contract for the Repository Integrity Guard command surface, report contract, evidence paths, and warn-first promotion baseline.
+description: Enforceable contract for the Repository Integrity Guard command surface, report contract, evidence paths, warn-first promotion baseline, and discovery surface parity.
 status: active
 owner: governance-toolchain
 truthStatus: canonical

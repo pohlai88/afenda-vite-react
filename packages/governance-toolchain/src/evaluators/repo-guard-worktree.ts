@@ -90,7 +90,8 @@ export function evaluateWorkingTreeFindings(
 
     if (
       entry.modifiedTracked &&
-      matchesAnyPathPattern(entry.path, policy.protectedGeneratedPaths)
+      matchesAnyPathPattern(entry.path, policy.protectedGeneratedPaths) &&
+      hasWorktreeDriftVersusIndex(entry.code)
     ) {
       findings.push({
         severity: "error",
@@ -124,4 +125,13 @@ function isIgnoredByPolicy(
     matchesAnyPathPattern(filePath, policy.machineNoiseExcludePatterns) ||
     matchesAnyPathPattern(filePath, policy.protectedGeneratedPaths)
   )
+}
+
+/** True when `git status --porcelain` shows the work tree differs from the index (second column). */
+function hasWorktreeDriftVersusIndex(porcelainCode: string): boolean {
+  if (porcelainCode.length < 2) {
+    return false
+  }
+  const workTreeColumn = porcelainCode.charAt(1)
+  return workTreeColumn !== " " && workTreeColumn !== "."
 }

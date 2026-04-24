@@ -484,8 +484,9 @@ Current high-confidence relative-path boundary blocks also include:
 - governance register refresh
   source:
   - `scripts/afenda.config.json`
-    evidence:
+    evidence (tracked / porcelain-visible):
   - `docs/architecture/governance/generated/governance-register.md`
+    evidence (generated, gitignored; not used for `RG-TRUTH-004` porcelain parity):
   - `.artifacts/reports/governance/governance-register.snapshot.json`
 - repo-guard architecture discovery surfaces
   source:

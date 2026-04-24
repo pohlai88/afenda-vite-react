@@ -32,6 +32,7 @@ Decision anchor and contract baseline:
 - [Repo guard repo map](./REPO_GUARD_REPO_MAP.md)
 - [Repo guard activation plan](./REPO_GUARD_ACTIVATION_PLAN.md)
 - [Repo guard false positive log](./REPO_GUARD_FALSE_POSITIVE_LOG.md)
+- [Operating map](../../OPERATING_MAP.md) for repo-local navigation across canonical doctrine, generated indexes, and CI gates
 
 ## Architecture binding
 

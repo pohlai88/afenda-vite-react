@@ -293,6 +293,27 @@ test("evaluateWorkingTreeFindings warns on normal dirty files and fails protecte
   )
 })
 
+test("evaluateWorkingTreeFindings allows staged-only updates to protected generated paths", () => {
+  const ciFindings = evaluateWorkingTreeFindings(
+    [
+      {
+        code: "M ",
+        path: "docs/architecture/governance/generated/governance-register.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+    ],
+    repoGuardPolicy,
+    "ci"
+  )
+
+  assert.equal(
+    ciFindings.filter((finding) => finding.ruleId === "WORKTREE-002").length,
+    0
+  )
+})
+
 test("waivers apply only to matching unexpired native findings", () => {
   const check: RepoGuardCheckResult = {
     key: "dirty-file-scan",
@@ -1077,6 +1098,28 @@ test("source/evidence mismatch stays clean when governance register sources and 
       },
       {
         path: ".artifacts/reports/governance/governance-register.snapshot.json",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+    ],
+    policy: repoGuardPolicy.sourceEvidenceMismatch,
+  })
+
+  assert.equal(findings.length, 0)
+})
+
+test("source/evidence mismatch stays clean when governance register markdown refreshes with afenda config", () => {
+  const findings = evaluateSourceEvidenceMismatchFindings({
+    entries: [
+      {
+        path: "scripts/afenda.config.json",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/governance/generated/governance-register.md",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
