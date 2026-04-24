@@ -1,0 +1,18 @@
+{
+  "id": "knowledge-workflow-hub",
+  "name": "Knowledge Workflow Hub",
+  "source": "openalternative",
+  "sourceUrl": "https://openalternative.co/categories",
+  "sourceCategory": "Productivity & Utilities",
+  "internalCategory": "productivity-utilities",
+  "lane": "operate",
+  "priority": "essential",
+  "buildMode": "inspire",
+  "internalUseCase": "Provide knowledge base workflow automation, user preferences, import/export, and task state persistence.",
+  "openSourceReferences": ["https://openalternative.co/categories"],
+  "licenseReviewRequired": false,
+  "securityReviewRequired": false,
+  "dataSensitivity": "medium",
+  "ownerTeam": "Workspace Tools",
+  "status": "candidate"
+}

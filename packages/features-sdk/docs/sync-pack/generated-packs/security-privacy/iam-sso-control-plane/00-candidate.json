@@ -1,0 +1,18 @@
+{
+  "id": "iam-sso-control-plane",
+  "name": "IAM SSO Control Plane",
+  "source": "openalternative",
+  "sourceUrl": "https://openalternative.co/categories",
+  "sourceCategory": "Security & Privacy",
+  "internalCategory": "security-privacy",
+  "lane": "platform",
+  "priority": "critical",
+  "buildMode": "adapt",
+  "internalUseCase": "Provide IAM, SSO, access review, security audit, and compliance evidence for internal apps.",
+  "openSourceReferences": ["https://openalternative.co/categories"],
+  "licenseReviewRequired": true,
+  "securityReviewRequired": true,
+  "dataSensitivity": "high",
+  "ownerTeam": "Platform Security",
+  "status": "approved"
+}

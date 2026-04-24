@@ -109,6 +109,79 @@
     "tokens:check": {
       "dependsOn": ["^transit"],
       "cache": false
+    },
+    "sync-pack:validate": {
+      "dependsOn": ["^transit"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/pnpm-workspace.yaml"]
+    },
+    "sync-pack:quickstart": {
+      "dependsOn": ["^transit"],
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/pnpm-workspace.yaml"]
+    },
+    "sync-pack:help": {
+      "dependsOn": ["^transit"],
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/pnpm-workspace.yaml"]
+    },
+    "sync-pack:verify": {
+      "dependsOn": ["build", "^transit"],
+      "cache": false,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/package.json",
+        "$TURBO_ROOT$/pnpm-workspace.yaml",
+        "$TURBO_ROOT$/apps/*/package.json",
+        "$TURBO_ROOT$/packages/*/package.json"
+      ]
+    },
+    "sync-pack:rank": {
+      "dependsOn": ["^transit"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/pnpm-workspace.yaml"]
+    },
+    "sync-pack:report": {
+      "dependsOn": ["^transit"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/pnpm-workspace.yaml"]
+    },
+    "sync-pack:generate": {
+      "dependsOn": ["^transit"],
+      "cache": false,
+      "outputs": ["docs/sync-pack/generated-packs/**"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/pnpm-workspace.yaml"]
+    },
+    "sync-pack:check": {
+      "dependsOn": ["^transit"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/pnpm-workspace.yaml"]
+    },
+    "sync-pack:doctor": {
+      "dependsOn": ["^transit"],
+      "cache": false,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/package.json",
+        "$TURBO_ROOT$/pnpm-workspace.yaml",
+        "$TURBO_ROOT$/apps/*/package.json",
+        "$TURBO_ROOT$/packages/*/package.json"
+      ]
+    },
+    "sync-pack:release-check": {
+      "dependsOn": ["build", "^transit"],
+      "cache": false,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/package.json",
+        "$TURBO_ROOT$/pnpm-workspace.yaml"
+      ]
+    },
+    "sync-pack:scaffold": {
+      "dependsOn": ["^transit"],
+      "cache": false,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/package.json",
+        "$TURBO_ROOT$/pnpm-workspace.yaml",
+        "$TURBO_ROOT$/apps/web/package.json"
+      ]
     }
   }
 }

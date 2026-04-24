@@ -1,0 +1,18 @@
+{
+  "id": "bi-reporting-starter",
+  "name": "BI Reporting Starter",
+  "source": "openalternative",
+  "sourceUrl": "https://openalternative.co/categories",
+  "sourceCategory": "Data & Analytics",
+  "internalCategory": "data-analytics",
+  "lane": "intelligence",
+  "priority": "critical",
+  "buildMode": "adapt",
+  "internalUseCase": "Provide BI reporting, product analytics, metric definitions, exports, and lineage notes.",
+  "openSourceReferences": ["https://openalternative.co/categories"],
+  "licenseReviewRequired": true,
+  "securityReviewRequired": true,
+  "dataSensitivity": "high",
+  "ownerTeam": "Data Platform",
+  "status": "candidate"
+}

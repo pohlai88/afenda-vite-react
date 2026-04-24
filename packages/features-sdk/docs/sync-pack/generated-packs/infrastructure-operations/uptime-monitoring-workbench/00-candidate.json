@@ -1,0 +1,18 @@
+{
+  "id": "uptime-monitoring-workbench",
+  "name": "Uptime Monitoring Workbench",
+  "source": "openalternative",
+  "sourceUrl": "https://openalternative.co/categories",
+  "sourceCategory": "Infrastructure & Operations",
+  "internalCategory": "infrastructure-operations",
+  "lane": "platform",
+  "priority": "critical",
+  "buildMode": "adapt",
+  "internalUseCase": "Provide uptime monitoring, health checks, event logs, and operational runbook evidence.",
+  "openSourceReferences": ["https://openalternative.co/categories"],
+  "licenseReviewRequired": true,
+  "securityReviewRequired": true,
+  "dataSensitivity": "medium",
+  "ownerTeam": "Platform Operations",
+  "status": "approved"
+}

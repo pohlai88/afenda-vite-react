@@ -1,0 +1,18 @@
+{
+  "id": "internal-support-crm",
+  "name": "Internal Support CRM",
+  "source": "openalternative",
+  "sourceUrl": "https://openalternative.co/categories",
+  "sourceCategory": "Business Software",
+  "internalCategory": "business-saas",
+  "lane": "operate",
+  "priority": "critical",
+  "buildMode": "adapt",
+  "internalUseCase": "Provide internal support, CRM tracking, ownership, and audit records for repeated business workflows.",
+  "openSourceReferences": ["https://openalternative.co/categories"],
+  "licenseReviewRequired": true,
+  "securityReviewRequired": true,
+  "dataSensitivity": "medium",
+  "ownerTeam": "Business Operations",
+  "status": "candidate"
+}

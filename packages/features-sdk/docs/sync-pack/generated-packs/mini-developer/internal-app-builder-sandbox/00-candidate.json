@@ -1,0 +1,18 @@
+{
+  "id": "internal-app-builder-sandbox",
+  "name": "Internal App Builder Sandbox",
+  "source": "openalternative",
+  "sourceUrl": "https://openalternative.co/categories",
+  "sourceCategory": "Developer Tools",
+  "internalCategory": "mini-developer",
+  "lane": "platform",
+  "priority": "good-to-have",
+  "buildMode": "inspire",
+  "internalUseCase": "Provide governed mini-developer tooling with sandbox boundaries, generated artifact policy, approval gate, and rollback plan.",
+  "openSourceReferences": ["https://openalternative.co/categories"],
+  "licenseReviewRequired": false,
+  "securityReviewRequired": true,
+  "dataSensitivity": "low",
+  "ownerTeam": "Developer Experience",
+  "status": "candidate"
+}

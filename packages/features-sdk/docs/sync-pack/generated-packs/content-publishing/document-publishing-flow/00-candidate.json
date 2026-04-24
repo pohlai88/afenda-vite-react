@@ -1,0 +1,18 @@
+{
+  "id": "document-publishing-flow",
+  "name": "Document Publishing Flow",
+  "source": "openalternative",
+  "sourceUrl": "https://openalternative.co/categories",
+  "sourceCategory": "Content & Publishing",
+  "internalCategory": "content-publishing",
+  "lane": "operate",
+  "priority": "critical",
+  "buildMode": "adapt",
+  "internalUseCase": "Provide document management, revision review, publishing workflow, and retention evidence.",
+  "openSourceReferences": ["https://openalternative.co/categories"],
+  "licenseReviewRequired": true,
+  "securityReviewRequired": true,
+  "dataSensitivity": "high",
+  "ownerTeam": "Content Operations",
+  "status": "candidate"
+}

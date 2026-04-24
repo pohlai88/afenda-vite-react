@@ -1,0 +1,119 @@
+{
+  "name": "@afenda/features-sdk",
+  "private": false,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Owned feature SDK modules for governed Afenda feature discovery, scaffolding, and handoff workflows.",
+  "license": "UNLICENSED",
+  "keywords": [
+    "afenda",
+    "features-sdk",
+    "sync-pack",
+    "governance",
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pohlai88/afenda-vite-react.git",
+    "directory": "packages/features-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/pohlai88/afenda-vite-react/issues"
+  },
+  "homepage": "https://github.com/pohlai88/afenda-vite-react/tree/main/packages/features-sdk",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "files": [
+    "dist",
+    "docs/sync-pack/README.md",
+    "docs/sync-pack/*.md",
+    "README.md",
+    "rules/sync-pack/*.md",
+    "rules/sync-pack/openalternative.seed.json"
+  ],
+  "bin": {
+    "afenda-sync-pack": "./dist/sync-pack/cli/sync-pack.js",
+    "afenda-sync-pack-check": "./dist/sync-pack/cli/check.js",
+    "afenda-sync-pack-doctor": "./dist/sync-pack/cli/doctor.js",
+    "afenda-sync-pack-generate": "./dist/sync-pack/cli/generate.js",
+    "afenda-sync-pack-rank": "./dist/sync-pack/cli/rank.js",
+    "afenda-sync-pack-release-check": "./dist/sync-pack/cli/release-check.js",
+    "afenda-sync-pack-report": "./dist/sync-pack/cli/report.js",
+    "afenda-sync-pack-scaffold": "./dist/sync-pack/cli/scaffold.js",
+    "afenda-sync-pack-validate": "./dist/sync-pack/cli/validate.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./sync-pack": {
+      "types": "./dist/sync-pack/index.d.ts",
+      "import": "./dist/sync-pack/index.js",
+      "default": "./dist/sync-pack/index.js"
+    },
+    "./sync-pack/generator": {
+      "types": "./dist/sync-pack/generator/index.d.ts",
+      "import": "./dist/sync-pack/generator/index.js",
+      "default": "./dist/sync-pack/generator/index.js"
+    },
+    "./sync-pack/check": {
+      "types": "./dist/sync-pack/check/index.d.ts",
+      "import": "./dist/sync-pack/check/index.js",
+      "default": "./dist/sync-pack/check/index.js"
+    },
+    "./sync-pack/doctor": {
+      "types": "./dist/sync-pack/doctor/index.d.ts",
+      "import": "./dist/sync-pack/doctor/index.js",
+      "default": "./dist/sync-pack/doctor/index.js"
+    },
+    "./sync-pack/scaffold": {
+      "types": "./dist/sync-pack/scaffold/index.d.ts",
+      "import": "./dist/sync-pack/scaffold/index.js",
+      "default": "./dist/sync-pack/scaffold/index.js"
+    },
+    "./sync-pack/schema": {
+      "types": "./dist/sync-pack/schema/index.d.ts",
+      "import": "./dist/sync-pack/schema/index.js",
+      "default": "./dist/sync-pack/schema/index.js"
+    },
+    "./sync-pack/scoring": {
+      "types": "./dist/sync-pack/scoring/index.d.ts",
+      "import": "./dist/sync-pack/scoring/index.js",
+      "default": "./dist/sync-pack/scoring/index.js"
+    }
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@afenda/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "scripts": {
+    "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node scripts/copy-sync-pack-assets.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint src tests --cache --cache-location .artifacts/eslint --concurrency auto",
+    "test": "vitest --configLoader bundle",
+    "test:run": "vitest run --configLoader bundle",
+    "sync-pack:quickstart": "tsx src/sync-pack/cli/quickstart.ts",
+    "sync-pack:help": "tsx src/sync-pack/cli/sync-pack.ts --help",
+    "sync-pack:verify": "tsx src/sync-pack/cli/verify.ts",
+    "sync-pack:validate": "tsx src/sync-pack/cli/validate.ts",
+    "sync-pack:rank": "tsx src/sync-pack/cli/rank.ts",
+    "sync-pack:generate": "tsx src/sync-pack/cli/generate.ts",
+    "sync-pack:report": "tsx src/sync-pack/cli/report.ts",
+    "sync-pack:check": "tsx src/sync-pack/cli/check.ts",
+    "sync-pack:doctor": "tsx src/sync-pack/cli/doctor.ts",
+    "sync-pack:release-check": "tsx src/sync-pack/cli/release-check.ts",
+    "sync-pack:scaffold": "tsx src/sync-pack/cli/scaffold.ts"
+  }
+}

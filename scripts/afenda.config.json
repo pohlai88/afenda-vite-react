@@ -404,6 +404,12 @@
           "extraAllowedFiles": []
         },
         {
+          "path": "packages/features-sdk",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
           "path": "packages/governance-toolchain",
           "profile": "source-library",
           "extraAllowedDirectories": [],

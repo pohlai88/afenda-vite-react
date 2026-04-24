@@ -1,0 +1,18 @@
+{
+  "id": "ai-work-assistant",
+  "name": "AI Work Assistant",
+  "source": "openalternative",
+  "sourceUrl": "https://openalternative.co/categories",
+  "sourceCategory": "AI & Machine Learning",
+  "internalCategory": "communication-ai-ml",
+  "lane": "intelligence",
+  "priority": "essential",
+  "buildMode": "inspire",
+  "internalUseCase": "Provide an AI assistant pattern for internal communication, knowledge base lookup, and workflow automation.",
+  "openSourceReferences": ["https://openalternative.co/categories"],
+  "licenseReviewRequired": false,
+  "securityReviewRequired": true,
+  "dataSensitivity": "medium",
+  "ownerTeam": "AI Enablement",
+  "status": "candidate"
+}
