@@ -386,6 +386,12 @@
           "extraAllowedFiles": []
         },
         {
+          "path": "packages/cline",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
           "path": "packages/contracts",
           "profile": "source-library",
           "extraAllowedDirectories": [],

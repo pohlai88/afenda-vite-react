@@ -662,7 +662,11 @@ export const repoGuardPolicy: RepoGuardPolicy = {
     bindings: [
       {
         id: "governance-register-refresh",
-        sourcePathPatterns: ["scripts/afenda.config.json"],
+        sourcePathPatterns: [
+          "scripts/afenda.config.json",
+          "scripts/governance/generate-governance-register.ts",
+          "scripts/lib/governance-spine.ts",
+        ],
         evidencePathPatterns: [
           "docs/architecture/governance/generated/governance-register.md",
           ".artifacts/reports/governance/governance-register.snapshot.json",
@@ -685,7 +689,9 @@ export const repoGuardPolicy: RepoGuardPolicy = {
         id: "repo-guard-architecture-discovery-surfaces",
         sourcePathPatterns: [
           "docs/architecture/adr/ADR-0008-repository-integrity-guard-architecture.md",
+          "docs/architecture/adr/ADR-0009-cline-single-package-extraction-ready-boundaries.md",
           "docs/architecture/atc/ATC-0005-repository-integrity-guard-baseline.md",
+          "docs/architecture/atc/ATC-0006-cline-package-boundaries-and-ownership.md",
           "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
           "docs/architecture/governance/REPO_GUARDRAIL_TODO.md",
         ],
@@ -697,7 +703,6 @@ export const repoGuardPolicy: RepoGuardPolicy = {
         requiredEvidencePaths: [
           "docs/architecture/adr/README.md",
           "docs/architecture/atc/README.md",
-          "docs/architecture/governance/README.md",
         ],
       },
       {

@@ -1,0 +1,33 @@
+{
+  "name": "@afenda/cline",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Governed Cline runtime kernel, MCP host skeleton, and Feature SDK plugin integration for Afenda.",
+  "license": "UNLICENSED",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@afenda/features-sdk": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@afenda/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "scripts": {
+    "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint src tests --cache --cache-location .artifacts/eslint --concurrency auto",
+    "test": "vitest --configLoader bundle",
+    "test:run": "vitest run --configLoader bundle"
+  }
+}

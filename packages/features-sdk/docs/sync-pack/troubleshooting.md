@@ -1,6 +1,6 @@
 ---
 title: Sync-Pack Troubleshooting
-description: Failure isolation and recovery guide for Sync-Pack operators and contributors.
+description: Failure isolation and recovery guide for Sync-Pack operators and maintainers.
 status: active
 owner: governance-toolchain
 truthStatus: supporting
@@ -12,11 +12,11 @@ order: 50
 
 # Sync-Pack Troubleshooting
 
-Use this guide when `feature-sync:verify` or a direct Sync-Pack command fails.
+Use this guide when `feature-sync:verify`, `feature-sync:intent-check`, `feature-sync:sync-examples`, or `feature-sync:quality-validate` fails.
 
-## Fast isolation order
+## Fast Isolation Order
 
-Run the failing workflow in the smallest safe pieces:
+Daily operator path:
 
 ```txt
 pnpm --filter @afenda/features-sdk build
@@ -26,161 +26,56 @@ pnpm run feature-sync:doctor
 pnpm run feature-sync:validate
 ```
 
-## Problem: quickstart/help command does not run
-
-### Likely causes
-
-- workspace dependencies not installed
-- package not built
-- wrong working directory
-
-### Recovery
+Maintainer path:
 
 ```txt
-pnpm install
-pnpm --filter @afenda/features-sdk build
-pnpm run feature-sync
-```
-
-## Problem: `release-check` fails
-
-### Typical causes
-
-- missing `dist` outputs
-- missing docs or rule files
-- bad package metadata
-- missing export/bin targets
-
-### Recovery steps
-
-1. rebuild the package
-2. inspect `packages/features-sdk/package.json`
-3. inspect `packages/features-sdk/docs/sync-pack`
-4. inspect `packages/features-sdk/rules/sync-pack`
-
-### Primary command
-
-```txt
-pnpm --filter @afenda/features-sdk build
-```
-
-## Problem: `check` fails
-
-### Typical causes
-
-- no generated packs yet
-- generated pack directory names do not match candidate ids
-- generated pack category directory does not match `internalCategory`
-- markdown files are empty
-
-### Recovery steps
-
-```txt
-pnpm run feature-sync:generate
-pnpm run feature-sync:check
-```
-
-If still failing, inspect:
-
-- `docs/sync-pack/generated-packs/**/00-candidate.json`
-- category folder names
-- empty markdown sections
-
-## Problem: `doctor` reports drift
-
-### Typical causes
-
-- wrong major version for guarded packages like `zod`
-- package declares explicit versions where `catalog:` is expected
-
-### Recovery steps
-
-- align dependency majors to workspace policy
-- switch allowed dependencies to `catalog:`
-- rerun doctor directly before verify
-- use the remediation command/doc printed with the finding instead of guessing
-
-```txt
-pnpm run feature-sync:doctor
-```
-
-## Problem: `validate` fails after editing seed metadata
-
-### Typical causes
-
-- invalid URL
-- invalid kebab-case id
-- invalid enum value
-- lane/category mismatch
-
-### Recovery steps
-
-1. inspect the failing candidate in `rules/sync-pack/openalternative.seed.json`
-2. compare it to [metadata-reference.md](./metadata-reference.md)
-3. rerun validate
-
-```txt
-pnpm run feature-sync:validate
-```
-
-## Problem: verify fails but step details are unclear
-
-### Recovery steps
-
-Use JSON output for clearer parsing:
-
-```txt
-pnpm run feature-sync:verify -- --json --ci
-```
-
-Then inspect:
-
-- `steps[].name`
-- `steps[].status`
-- `findings[].code`
-- `findings[].message`
-- `findings[].remediation.command`
-- `findings[].remediation.doc`
-
-## Problem: human-oriented commands reject `--json`
-
-### Expected behavior
-
-This is by design for commands like:
-
-- `rank`
-- `report`
-- `generate`
-- `scaffold`
-
-### Fix
-
-Run them without `--json` and `--ci` unless the command definition explicitly supports those flags.
-
-## Problem: running outside the Afenda workspace
-
-### Symptoms
-
-- workspace discovery errors
-- package resolution failures
-- seed or catalog lookup failures
-
-### Fix
-
-Run commands from inside the Afenda pnpm workspace root.
-
-## Final recovery pattern
-
-After any fix:
-
-```txt
-pnpm run feature-sync:verify
-```
-
-Do not stop at an individual green subcommand if the normal daily workflow is still red.
-
-If you changed the package, docs, or contracts themselves, finish with:
-
-```txt
+pnpm run feature-sync:intent-check
+pnpm run feature-sync:sync-examples
 pnpm run feature-sync:quality-validate
 ```
+
+## Problem: `intent-check` fails
+
+Typical causes:
+
+- package-owned changes exist with no changed non-draft intent
+- intent truth-binding paths are invalid
+- changed files are not covered by `expectedDiffScope`
+
+Recovery:
+
+```txt
+pnpm run feature-sync:intent
+pnpm run feature-sync:intent-check
+```
+
+Then fix the truth-binding coverage and promote status from `draft`.
+
+## Problem: `sync-examples` fails
+
+Typical causes:
+
+- a golden pack is no longer approved
+- generated pack structure drifted
+- the governed example set is incomplete
+
+Recovery:
+
+```txt
+pnpm run feature-sync:check
+pnpm run feature-sync:sync-examples
+```
+
+## Problem: `quality-validate` fails after maintainers changed the package
+
+Typical causes:
+
+- intent coverage is missing
+- example fitness is stale or broken
+- docs or command surfaces drifted from the live CLI
+
+Recovery:
+
+1. fix the first blocking finding
+2. rerun the narrow maintainer command
+3. rerun `pnpm run feature-sync:quality-validate`

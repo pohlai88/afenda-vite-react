@@ -124,6 +124,34 @@
       "cache": false,
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/pnpm-workspace.yaml"]
     },
+    "sync-pack:intent": {
+      "dependsOn": ["^transit"],
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/pnpm-workspace.yaml"]
+    },
+    "sync-pack:intent-check": {
+      "dependsOn": ["^transit"],
+      "cache": false,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/package.json",
+        "$TURBO_ROOT$/pnpm-workspace.yaml",
+        "$TURBO_ROOT$/turbo.json"
+      ]
+    },
+    "sync-pack:sync-examples": {
+      "dependsOn": ["^transit"],
+      "cache": false,
+      "outputs": [
+        "docs/sync-pack/example-pack-registry.json",
+        "docs/sync-pack/GOLDEN_EXAMPLES.md"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/package.json",
+        "$TURBO_ROOT$/pnpm-workspace.yaml"
+      ]
+    },
     "sync-pack:verify": {
       "dependsOn": ["build", "^transit"],
       "cache": false,

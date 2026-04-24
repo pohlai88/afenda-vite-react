@@ -1,6 +1,6 @@
 ---
 title: Sync-Pack CLI Scorecard
-description: Governed scorecard for internal Sync-Pack CLI readiness and target state.
+description: Governed scorecard for internal Sync-Pack readiness and target state.
 status: active
 owner: governance-toolchain
 truthStatus: supporting
@@ -14,45 +14,27 @@ order: 27
 
 ## Purpose
 
-This scorecard tracks internal CLI readiness against the governed Sync-Pack benchmark set.
+This scorecard tracks internal Sync-Pack readiness against the governed benchmark set.
 
-## Score rubric
+## Recorded Scores
 
-| Dimension                      | Weight |
-| ------------------------------ | -----: |
-| Onboarding and discoverability |     20 |
-| Operator workflow              |     20 |
-| CI and automation contract     |     20 |
-| Diagnostics and remediation    |     20 |
-| Contract and test rigor        |     20 |
-
-## Recorded scores
-
-| State                                 |     Score |
-| ------------------------------------- | --------: |
-| Pre-V3 baseline                       |  62 / 100 |
-| Current standing before V4 completion |  85 / 100 |
-| Internal target                       | 90+ / 100 |
-| Partner target                        | 85+ / 100 |
-| Public target                         | 95+ / 100 |
+| State                       |     Score |
+| --------------------------- | --------: |
+| Pre-V3 baseline             |  62 / 100 |
+| Post-V4 standing            |  85 / 100 |
+| Final internal slice target |  95 / 100 |
+| Internal target band        | 90+ / 100 |
+| Partner target              | 85+ / 100 |
+| Public target               | 95+ / 100 |
 
 Partner and public targets remain deferred.
 
-## Benchmark set
+## V95 Closing Moves
 
-| CLI          | Lesson adopted                              |
-| ------------ | ------------------------------------------- |
-| `changesets` | gated, non-interactive workflow contract    |
-| `pnpm`       | workspace-scale flag and error discipline   |
-| `knip`       | analyzer-style findings and CI output       |
-| `citty`      | command-tree structure without manual drift |
-| `sherif`     | small, opinionated monorepo CLI clarity     |
+This final internal slice closes the score by adding:
 
-## Current V4 scoring intent
-
-V4 is meant to close the remaining internal gap by delivering:
-
-- deterministic root command behavior
-- metadata-backed command tree routing
-- normalized gated findings and remediation
-- governed scorecard enforcement through the package contract
+- truth-bound change intent
+- verdict-style intent checking
+- golden example fitness with explicit sync
+- root control-console quickstart
+- docs, tests, and package-contract alignment

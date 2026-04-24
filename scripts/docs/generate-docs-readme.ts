@@ -1426,6 +1426,18 @@ async function renderOperatingMap(
       ])
     ),
     "",
+    "## Workspace package roots",
+    "",
+    "Declared in `scripts/afenda.config.json` for topology enforcement. Regenerate this file when the list changes (`pnpm run script:generate-docs-readme`).",
+    "",
+    renderTable(
+      ["Path", "Profile"],
+      afendaConfig.workspaceGovernance.packageRoots.packages.map((pkg) => [
+        `\`${pkg.path}\``,
+        `\`${pkg.profile}\``,
+      ])
+    ),
+    "",
     "## Evidence map",
     "",
     renderTable(

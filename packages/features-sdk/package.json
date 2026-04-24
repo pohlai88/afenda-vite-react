@@ -31,6 +31,8 @@
     "dist",
     "docs/sync-pack/README.md",
     "docs/sync-pack/*.md",
+    "docs/sync-pack/change-intents/README.md",
+    "docs/sync-pack/example-pack-registry.json",
     "README.md",
     "rules/sync-pack/*.md",
     "rules/sync-pack/openalternative.seed.json"
@@ -107,6 +109,9 @@
     "sync-pack:quickstart": "tsx src/sync-pack/cli/quickstart.ts",
     "sync-pack:help": "tsx src/sync-pack/cli/sync-pack.ts --help",
     "sync-pack:verify": "tsx src/sync-pack/cli/verify.ts",
+    "sync-pack:intent": "tsx src/sync-pack/cli/intent.ts",
+    "sync-pack:intent-check": "tsx src/sync-pack/cli/intent-check.ts",
+    "sync-pack:sync-examples": "tsx src/sync-pack/cli/sync-examples.ts",
     "sync-pack:quality-validate": "tsx src/sync-pack/cli/quality-validate.ts",
     "sync-pack:validate": "tsx src/sync-pack/cli/validate.ts",
     "sync-pack:rank": "tsx src/sync-pack/cli/rank.ts",

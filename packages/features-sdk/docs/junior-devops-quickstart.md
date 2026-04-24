@@ -1,6 +1,6 @@
 ---
 title: Junior DevOps Quickstart
-description: Junior-friendly quickstart for building, verifying, and troubleshooting Sync-Pack in the Afenda workspace.
+description: Junior-friendly quickstart for Sync-Pack daily verification and maintainer closure.
 status: active
 owner: governance-toolchain
 truthStatus: supporting
@@ -14,32 +14,11 @@ order: 3
 
 This guide answers five questions first:
 
-1. What is Sync-Pack?
-2. Who uses it?
-3. What command do I run first?
-4. What does success look like?
-5. What do I do when it fails?
-
-If you are a junior developer rather than DevOps, read:
-
-- [junior-developer-usage-guide.md](./junior-developer-usage-guide.md)
-
-## What is Sync-Pack?
-
-Sync-Pack is Afenda's internal feature-planning and validation workflow inside `@afenda/features-sdk`.
-
-It combines:
-
-- package integrity checks
-- generated pack validation
-- dependency/catalog drift inspection
-- seed metadata validation
-
-## Who uses it?
-
-- junior DevOps operating the internal package and CI checks
-- junior developers consuming generated planning packs
-- package contributors maintaining rules, schemas, and CLI workflows
+1. what is Sync-Pack?
+2. what command do I run first?
+3. what command do I run daily?
+4. what does green look like?
+5. what do I do when it fails?
 
 ## What command do I run first?
 
@@ -49,35 +28,26 @@ From repo root:
 pnpm run feature-sync
 ```
 
-This is the supported first step.
+This is the supported first step and read-only control console.
 
-It prints quickstart guidance only.
-
-## What command do I run next?
+## What command do I run daily?
 
 ```txt
 pnpm run feature-sync:verify
 ```
 
-That is the supported daily operator command.
+## Maintainer-only commands
 
-## What are the current internal features?
+If you are changing the SDK/package itself rather than operating it day to day, use:
 
-The internal package currently supports:
+```txt
+pnpm run feature-sync:intent
+pnpm run feature-sync:intent-check
+pnpm run feature-sync:sync-examples
+pnpm run feature-sync:quality-validate
+```
 
-- package release checks
-- generated pack checks
-- dependency and catalog doctor checks
-- seed validation
-- governed pack generation
-- tech-stack scaffold generation
-- explicit quickstart and verify workflows
-- package-first quality validation
-- richer gated remediation with exact rerun commands and governed doc links
-
-## Clean-clone checklist
-
-From the monorepo root:
+## Clean-Clone Checklist
 
 ```txt
 pnpm install
@@ -86,17 +56,17 @@ pnpm run feature-sync
 pnpm run feature-sync:verify
 ```
 
-## Expected success state
+## Expected Success State
 
-You are in a healthy state when:
+You are healthy when:
 
 - quickstart prints guidance without errors
 - verify completes
-- verify JSON/text summary shows `errorCount: 0`
+- verify shows `errorCount: 0`
 - `release-check`, `check`, and `validate` pass
-- `doctor` may show warnings, but warnings alone do not fail CI mode
+- `doctor` warnings, if present, stay visible but non-blocking
 
-## If verify fails
+## If Verify Fails
 
 Isolate the failing step in this order:
 
@@ -107,97 +77,26 @@ pnpm run feature-sync:doctor
 pnpm run feature-sync:validate
 ```
 
-Then use this rule of thumb:
-
-### If `release-check` fails
-
-Likely causes:
-
-- missing build output under `dist`
-- missing required package docs or rules
-- invalid package metadata
-- broken export or bin targets
-
-First fix to try:
+If you changed the SDK/package and maintainer closure fails, isolate:
 
 ```txt
-pnpm --filter @afenda/features-sdk build
+pnpm run feature-sync:intent-check
+pnpm run feature-sync:sync-examples
+pnpm run feature-sync:quality-validate
 ```
 
-Then re-run `feature-sync:release-check`.
+## JSON Mode
 
-### If `check` fails
-
-Likely causes:
-
-- no generated packs exist
-- wrong file set in a generated pack
-- candidate id does not match the folder path
-- candidate category does not match the folder path
-- a markdown section is empty
-
-First fix to try:
-
-```txt
-pnpm run feature-sync:generate
-pnpm run feature-sync:check
-```
-
-### If `doctor` fails
-
-Likely causes:
-
-- guarded dependency major version mismatch
-- package declares explicit versions where workspace catalog is preferred
-
-First fix to try:
-
-- align major versions with workspace policy
-- switch allowed dependencies to `catalog:` when appropriate
-
-### If `validate` fails
-
-Likely causes:
-
-- invalid candidate metadata in `rules/sync-pack/openalternative.seed.json`
-- wrong enum values
-- lane/category mismatch
-- malformed URLs or ids
-
-First fix to try:
-
-- compare the failing candidate against the metadata reference
-- repair the seed file and re-run validate
-
-## JSON mode for CI or scripting
-
-Supported gate and workflow commands accept:
+Gate and maintainer validation commands support:
 
 ```txt
 --json --ci
 ```
 
-Example:
+Examples:
 
 ```txt
 pnpm run feature-sync:verify -- --json --ci
+pnpm run feature-sync:intent-check -- --json --ci
+pnpm run feature-sync:quality-validate -- --json --ci
 ```
-
-Behavior:
-
-- JSON only on stdout
-- errors set failure exit code in CI mode
-- warnings alone remain non-blocking
-
-If you changed the SDK package, docs, or contracts themselves rather than only running the daily workflow, finish with:
-
-```txt
-pnpm run feature-sync:quality-validate
-```
-
-## Next docs to use
-
-- [junior-developer-usage-guide.md](./junior-developer-usage-guide.md)
-- [sync-pack/command-handbook.md](./sync-pack/command-handbook.md)
-- [sync-pack/finding-remediation-catalog.md](./sync-pack/finding-remediation-catalog.md)
-- [sync-pack/troubleshooting.md](./sync-pack/troubleshooting.md)

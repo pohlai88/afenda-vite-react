@@ -5,6 +5,14 @@ import {
   type CandidateSelection,
 } from "../candidate-selection.js"
 import { createCliErrorResult, isJsonOutput } from "../cli-output.js"
+import {
+  inspectSyncPackControlConsoleState,
+  syncPackIntentContractId,
+} from "../intent/index.js"
+import {
+  syncPackExampleContractId,
+  syncPackGoldenExamplePackIds,
+} from "../example-fitness/index.js"
 
 export interface CliFlagDefinition {
   readonly name: `--${string}` | "-h"
@@ -16,12 +24,13 @@ export interface CliCommandDefinition {
   readonly name: string
   readonly summary: string
   readonly usage: string
-  readonly group: "start" | "workflow" | "gate" | "operator"
+  readonly group: "start" | "workflow" | "maintainer" | "gate" | "operator"
   readonly gate?: boolean
   readonly hidden?: boolean
   readonly flags: readonly CliFlagDefinition[]
   readonly examples: readonly string[]
   readonly troubleshooting?: readonly string[]
+  readonly contractLabel?: string
   readonly load?: () => Promise<unknown>
 }
 
@@ -100,6 +109,29 @@ const candidateSelectionFlags = [
   },
 ] as const satisfies readonly CliFlagDefinition[]
 
+const intentScaffoldFlags = [
+  {
+    name: "--id",
+    description: "Stable kebab-case id for the new intent file.",
+    value: true,
+  },
+  {
+    name: "--title",
+    description: "Short human title for the change intent.",
+    value: true,
+  },
+  {
+    name: "--owner",
+    description: "Owner name or team for the change intent.",
+    value: true,
+  },
+  {
+    name: "--summary",
+    description: "Optional short summary; defaults to the title.",
+    value: true,
+  },
+] as const satisfies readonly CliFlagDefinition[]
+
 export const syncPackCommands = {
   help: {
     name: "help",
@@ -162,6 +194,7 @@ export const syncPackCommands = {
     usage: "afenda-sync-pack verify [--json] [--ci]",
     group: "workflow",
     gate: false,
+    contractLabel: `${syncPackOperatorWorkflowCliContractId} operator workflow command`,
     flags: [...ciJsonFlags, ...helpFlags],
     examples: [
       "pnpm run feature-sync:verify",
@@ -180,8 +213,9 @@ export const syncPackCommands = {
     summary:
       "Run the package-first internal quality validation workflow for @afenda/features-sdk.",
     usage: "afenda-sync-pack quality-validate [--preflight] [--json] [--ci]",
-    group: "workflow",
+    group: "maintainer",
     gate: false,
+    contractLabel: "maintainer closure workflow",
     flags: [...preflightFlag, ...ciJsonFlags, ...helpFlags],
     examples: [
       "pnpm run feature-sync:quality-validate",
@@ -193,6 +227,65 @@ export const syncPackCommands = {
       "Doctor warnings outside packages/features-sdk remain visible and tracked, but they do not block package closure.",
     ],
     load: () => import("./quality-validate.js"),
+  },
+  intent: {
+    name: "intent",
+    summary: "Scaffold a draft Sync-Pack change-intent truth artifact.",
+    usage:
+      "afenda-sync-pack intent --id <kebab-case-id> --title <title> --owner <owner> [--summary <summary>]",
+    group: "maintainer",
+    gate: false,
+    contractLabel: `${syncPackIntentContractId} change-intent scaffold utility`,
+    flags: [...intentScaffoldFlags, ...helpFlags],
+    examples: [
+      'pnpm run feature-sync:intent -- --id v95-governance-runtime --title "V95 governance runtime" --owner governance-toolchain',
+      'afenda-sync-pack intent --id add-example-fitness --title "Add example fitness" --owner governance-toolchain',
+    ],
+    troubleshooting: [
+      "Intent ids must be kebab-case and match the output filename.",
+      "Intent scaffolding writes draft files only; promote status before maintainer closure.",
+    ],
+    load: () => import("./intent.js"),
+  },
+  "intent-check": {
+    name: "intent-check",
+    summary:
+      "Validate truth-bound change-intent coverage for package maintainer work.",
+    usage: "afenda-sync-pack intent-check [--json] [--ci]",
+    group: "maintainer",
+    gate: true,
+    contractLabel: `${syncPackIntentContractId} maintainer verdict gate`,
+    flags: [...ciJsonFlags, ...helpFlags],
+    examples: [
+      "pnpm run feature-sync:intent-check",
+      "pnpm run feature-sync:intent-check -- --json --ci",
+      "afenda-sync-pack intent-check --json --ci",
+    ],
+    troubleshooting: [
+      "If package-owned Sync-Pack files changed, at least one changed non-draft intent must exist.",
+      "Use truthBinding.expectedDiffScope to cover the exact files you changed.",
+    ],
+    load: () => import("./intent-check.js"),
+  },
+  "sync-examples": {
+    name: "sync-examples",
+    summary:
+      "Refresh governed golden-example fitness metadata and guide output.",
+    usage: "afenda-sync-pack sync-examples",
+    group: "maintainer",
+    gate: false,
+    contractLabel: `${syncPackExampleContractId} golden example sync utility`,
+    flags: [...helpFlags],
+    examples: [
+      "pnpm run feature-sync:sync-examples",
+      "pnpm --filter @afenda/features-sdk sync-pack:sync-examples",
+      "afenda-sync-pack sync-examples",
+    ],
+    troubleshooting: [
+      "sync-examples is the only mutating repair path for example fitness metadata.",
+      "If a golden example is broken or stale, fix it and rerun sync-examples before quality-validate.",
+    ],
+    load: () => import("./sync-examples.js"),
   },
   doctor: {
     name: "doctor",
@@ -471,13 +564,16 @@ export function formatCandidateSelectionSummary(
 
 export function printCommandHelp(command: CliCommandDefinition): void {
   const contractLabel =
-    command.group === "gate"
+    command.contractLabel ??
+    (command.group === "gate"
       ? `${syncPackReleaseGateCliContractId} release-gate command`
       : command.group === "workflow"
         ? `${syncPackOperatorWorkflowCliContractId} operator workflow command`
-        : command.group === "start"
-          ? "start-here command"
-          : "non-gated operator command"
+        : command.group === "maintainer"
+          ? "maintainer command"
+          : command.group === "start"
+            ? "start-here command"
+            : "non-gated operator command")
 
   console.log(`${command.summary}
 
@@ -522,6 +618,8 @@ export function printSyncPackUsage(): void {
   )
   console.log(`  ${syncPackCommandTreeContractId} command tree routing`)
   console.log(`  ${syncPackRootCommandContractId} deterministic root command`)
+  console.log(`  ${syncPackIntentContractId} truth-bound change intent`)
+  console.log(`  ${syncPackExampleContractId} golden example fitness`)
   console.log("")
   console.log("Start Here:")
   console.log("  pnpm run feature-sync")
@@ -530,20 +628,25 @@ export function printSyncPackUsage(): void {
     "  Shows what Sync-Pack is, the deterministic start-here path, and which command to run next."
   )
   console.log("")
-  console.log("Daily Path:")
+  console.log("Daily Operator:")
   console.log("  pnpm run feature-sync:verify")
   console.log(
     "  Runs release-check, check, doctor, and validate in the supported order."
   )
-  console.log("  pnpm run feature-sync:quality-validate")
-  console.log(
-    "  Runs the package-first release validation workflow for @afenda/features-sdk."
-  )
+  console.log("")
+  console.log("SDK/package Maintainer:")
+
+  for (const command of syncPackCommandDefinitions.filter(
+    (definition) => definition.group === "maintainer"
+  )) {
+    console.log(`  ${command.name.padEnd(14)} ${command.summary}`)
+  }
+
   console.log("")
   console.log("Usage:")
   console.log("  afenda-sync-pack <command> [options]")
   console.log("")
-  console.log("Operator Workflow:")
+  console.log("Workflow:")
 
   for (const command of syncPackCommandDefinitions.filter(
     (definition) => definition.group === "workflow"
@@ -575,60 +678,50 @@ export function printSyncPackUsage(): void {
   console.log("  afenda-sync-pack help <command>")
 }
 
-export function printQuickstart(): void {
+export async function printQuickstart(): Promise<void> {
+  const currentState = await inspectSyncPackControlConsoleState()
+
   console.log("Afenda Sync-Pack Quickstart")
   console.log("")
-  console.log("What is Sync-Pack?")
-  console.log(
-    "  Sync-Pack turns curated software discovery into governed, build-ready internal feature planning packs."
-  )
+  console.log("Feature Sync — Start Here")
   console.log("")
-  console.log("What should I run first?")
+  console.log("Daily operator:")
   console.log("  pnpm run feature-sync:verify")
   console.log("")
-  console.log("Common explicit paths:")
+  console.log("SDK/package maintainer:")
+  console.log("  pnpm run feature-sync:intent")
+  console.log("  pnpm run feature-sync:intent-check")
+  console.log("  pnpm run feature-sync:sync-examples")
+  console.log("  pnpm run feature-sync:quality-validate")
+  console.log("")
+  console.log("Golden examples:")
+
+  for (const packId of syncPackGoldenExamplePackIds) {
+    console.log(`  ${packId}`)
+  }
+
+  console.log("")
+  console.log("Current state:")
+  console.log(`  Workspace: ${currentState.workspace}`)
+  console.log(`  SDK changes detected: ${currentState.sdkChangesDetected}`)
+  console.log(`  Intent coverage: ${currentState.intentCoverage}`)
+  console.log("")
+  console.log("Common explicit gates:")
   console.log("  pnpm run feature-sync:release-check")
   console.log("  pnpm run feature-sync:check")
   console.log("  pnpm run feature-sync:doctor")
   console.log("  pnpm run feature-sync:validate")
   console.log("  pnpm run feature-sync:help")
   console.log("")
-  console.log("What do the commands mean?")
-  console.log(
-    "  verify         Runs release-check, check, doctor, and validate in one operator workflow."
-  )
-  console.log("  release-check  Verifies the SDK package/build contract.")
-  console.log("  check          Validates generated feature-pack files.")
-  console.log("  doctor         Finds stack and dependency-version drift.")
-  console.log("  validate       Validates curated seed input.")
-  console.log(
-    "  quality-validate Runs the sequential package-first release validation workflow."
-  )
-  console.log(
-    "  rank/report    Human-readable portfolio review commands with optional candidate filters."
-  )
-  console.log(
-    "  generate       Writes generated planning packs from seed data or a filtered candidate slice."
-  )
-  console.log(
-    "  scaffold       Writes a tech-stack scaffold with placement and route hints for a candidate app."
-  )
-  console.log("")
-  console.log("What does green mean?")
-  console.log(
-    "  verify:        release-check/check/validate pass, doctor has no errors"
-  )
-  console.log("  release-check: 0 errors, 0 warnings")
-  console.log("  check:         0 errors, 0 warnings")
-  console.log("  doctor:        0 errors; warnings are allowed")
-  console.log("  validate:      seed parses successfully")
-  console.log("")
-  console.log("Canonical workflow:")
-  console.log("  pnpm run feature-sync:verify")
+  console.log("Externalization:")
+  console.log("  deferred")
   console.log("")
   console.log("Root contract:")
   console.log("  feature-sync is always quickstart only.")
   console.log("  It never auto-runs verify.")
+  console.log("")
+  console.log("Recommended next action:")
+  console.log("  pnpm run feature-sync:verify")
 }
 
 function rawCommandArgs(

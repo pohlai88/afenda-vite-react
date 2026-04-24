@@ -14,5 +14,5 @@
   "securityReviewRequired": true,
   "dataSensitivity": "high",
   "ownerTeam": "Data Platform",
-  "status": "candidate"
+  "status": "approved"
 }

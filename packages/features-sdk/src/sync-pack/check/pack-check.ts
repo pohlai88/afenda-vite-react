@@ -61,7 +61,9 @@ function sameStringArray(
   )
 }
 
-async function findPackDirectories(rootDirectory: string): Promise<string[]> {
+export async function findGeneratedPackDirectories(
+  rootDirectory: string
+): Promise<string[]> {
   if (!existsSync(rootDirectory)) {
     return []
   }
@@ -84,7 +86,9 @@ async function findPackDirectories(rootDirectory: string): Promise<string[]> {
   const nestedDirectories = await Promise.all(
     entries
       .filter((entry) => entry.isDirectory())
-      .map((entry) => findPackDirectories(path.join(rootDirectory, entry.name)))
+      .map((entry) =>
+        findGeneratedPackDirectories(path.join(rootDirectory, entry.name))
+      )
   )
 
   return nestedDirectories.flat().sort()
@@ -271,7 +275,7 @@ async function validateMarkdownFiles(
   return findings
 }
 
-async function checkPackDirectory(
+export async function checkGeneratedPackDirectory(
   packDirectory: string
 ): Promise<SyncPackCheckFinding[]> {
   const entries = await readdir(packDirectory, { withFileTypes: true })
@@ -297,7 +301,7 @@ export async function checkGeneratedPacks(
   const packsRoot = path.resolve(
     options.packsRoot ?? resolveGeneratedPacksPath()
   )
-  const packDirectories = await findPackDirectories(packsRoot)
+  const packDirectories = await findGeneratedPackDirectories(packsRoot)
   const findings: SyncPackCheckFinding[] = []
 
   if (packDirectories.length === 0) {
@@ -314,7 +318,7 @@ export async function checkGeneratedPacks(
   }
 
   for (const packDirectory of packDirectories) {
-    findings.push(...(await checkPackDirectory(packDirectory)))
+    findings.push(...(await checkGeneratedPackDirectory(packDirectory)))
   }
 
   const { errorCount, warningCount } = countFindings(findings)

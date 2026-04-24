@@ -1,6 +1,6 @@
 ---
 title: Features SDK Documentation
-description: Documentation entrypoint for @afenda/features-sdk with junior-friendly onboarding and Sync-Pack references.
+description: Documentation entrypoint for @afenda/features-sdk with internal-first onboarding and maintainer workflow references.
 status: active
 owner: governance-toolchain
 truthStatus: supporting
@@ -12,103 +12,58 @@ order: 1
 
 # Features SDK Documentation
 
-`@afenda/features-sdk` is Afenda's internal SDK package for governed feature discovery, planning, validation, and handoff workflows.
+`@afenda/features-sdk` is Afenda’s internal SDK package for governed feature planning, validation, and maintainer closure.
 
-Today the active module is **Sync-Pack**.
+Its active module is **Sync-Pack**.
 
-Use this folder when you need a practical path from:
+## Start Here By Role
 
-```txt
-new operator / junior developer
--> understand the tool
--> run the correct command
--> interpret findings
--> follow the remediation path
--> fix common failures
-```
+### New contributor or junior operator
 
-The internal operating chain is:
-
-```txt
-Idea -> Template -> Tech Stack -> Contract -> Implementation Plan -> DoD
-```
-
-## Start here by role
-
-### If you are new to the package
-
-Read these in order:
+Read in this order:
 
 1. [getting-started.md](./getting-started.md)
 2. [junior-devops-quickstart.md](./junior-devops-quickstart.md)
 3. [junior-developer-usage-guide.md](./junior-developer-usage-guide.md)
 4. [sync-pack/README.md](./sync-pack/README.md)
 
-### If you need the daily operator path
+### Maintainer changing the SDK/package
 
-Go straight to:
+Use these next:
 
-- [junior-devops-quickstart.md](./junior-devops-quickstart.md)
-- [junior-developer-usage-guide.md](./junior-developer-usage-guide.md)
-- [sync-pack/command-handbook.md](./sync-pack/command-handbook.md)
-- [sync-pack/troubleshooting.md](./sync-pack/troubleshooting.md)
+- [sync-pack/FSDK-INTENT-001_CHANGE_INTENT_CONTRACT.md](./sync-pack/FSDK-INTENT-001_CHANGE_INTENT_CONTRACT.md)
+- [sync-pack/change-intents/README.md](./sync-pack/change-intents/README.md)
+- [sync-pack/FSDK-EXAMPLE-001_GOLDEN_EXAMPLE_FITNESS_CONTRACT.md](./sync-pack/FSDK-EXAMPLE-001_GOLDEN_EXAMPLE_FITNESS_CONTRACT.md)
+- [sync-pack/QUALITY_VALIDATION_EXECUTION_PLAN.md](./sync-pack/QUALITY_VALIDATION_EXECUTION_PLAN.md)
 
-### If you need schema and contract details
+## Current Internal Surface
 
-Go to:
+The active internal surface now covers:
 
-- [sync-pack/metadata-reference.md](./sync-pack/metadata-reference.md)
-- [sync-pack/finding-remediation-catalog.md](./sync-pack/finding-remediation-catalog.md)
-- [sync-pack/architecture-map.md](./sync-pack/architecture-map.md)
+- deterministic root quickstart through `feature-sync`
+- explicit daily operator workflow through `feature-sync:verify`
+- truth-bound change intent through `feature-sync:intent` and `feature-sync:intent-check`
+- governed golden example fitness through `feature-sync:sync-examples`
+- package-first closure through `feature-sync:quality-validate`
 
-## Documentation map
+## Documentation Map
 
-| Document                                                                                           | Audience                          | Purpose                                                                |
-| -------------------------------------------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------- |
-| [getting-started.md](./getting-started.md)                                                         | new contributors                  | Explain what the package is, what it owns, and the safe starting path. |
-| [junior-devops-quickstart.md](./junior-devops-quickstart.md)                                       | junior DevOps / junior developers | Operational quickstart from clone to verify to basic failure handling. |
-| [junior-developer-usage-guide.md](./junior-developer-usage-guide.md)                               | junior developers                 | Safe command order from candidate metadata to generated pack handoff.  |
-| [sync-pack/README.md](./sync-pack/README.md)                                                       | all users                         | Sync-Pack module index and docs map.                                   |
-| [sync-pack/command-handbook.md](./sync-pack/command-handbook.md)                                   | operators                         | Purpose, usage, output meaning, exit behavior, and fixes per command.  |
-| [sync-pack/QUALITY_VALIDATION_EXECUTION_PLAN.md](./sync-pack/QUALITY_VALIDATION_EXECUTION_PLAN.md) | maintainers and release owners    | Package-first sequential release validation and closure policy.        |
-| [sync-pack/metadata-reference.md](./sync-pack/metadata-reference.md)                               | operators and contributors        | Field-by-field reference for seed candidate and scaffold metadata.     |
-| [sync-pack/finding-remediation-catalog.md](./sync-pack/finding-remediation-catalog.md)             | operators                         | Meaning and fixes for current finding codes.                           |
-| [sync-pack/troubleshooting.md](./sync-pack/troubleshooting.md)                                     | operators                         | Failure isolation and recovery playbook.                               |
-| [sync-pack/recipes.md](./sync-pack/recipes.md)                                                     | operators and contributors        | Task-based examples for common workflows.                              |
-| [sync-pack/architecture-map.md](./sync-pack/architecture-map.md)                                   | contributors                      | Source layout, export map, and flow between modules.                   |
-| [sync-pack/INTERNAL_ROADMAP.md](./sync-pack/INTERNAL_ROADMAP.md)                                   | maintainers and leads             | Internal-first now/next/later plan for the SDK and CLI.                |
+| Document                                                                                                                         | Audience                  | Purpose                                                |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------ |
+| [getting-started.md](./getting-started.md)                                                                                       | all new users             | Explain what Sync-Pack is and the safe first commands. |
+| [junior-devops-quickstart.md](./junior-devops-quickstart.md)                                                                     | junior DevOps             | Daily operator path and failure isolation.             |
+| [junior-developer-usage-guide.md](./junior-developer-usage-guide.md)                                                             | junior developers         | Safe command order from seed to generated pack.        |
+| [sync-pack/README.md](./sync-pack/README.md)                                                                                     | all users                 | Active Sync-Pack guide and docs map.                   |
+| [sync-pack/command-handbook.md](./sync-pack/command-handbook.md)                                                                 | operators and maintainers | Command purpose, examples, and recovery guidance.      |
+| [sync-pack/FSDK-INTENT-001_CHANGE_INTENT_CONTRACT.md](./sync-pack/FSDK-INTENT-001_CHANGE_INTENT_CONTRACT.md)                     | maintainers               | Truth-bound change intent contract.                    |
+| [sync-pack/change-intents/README.md](./sync-pack/change-intents/README.md)                                                       | maintainers               | Intent lifecycle and file rules.                       |
+| [sync-pack/FSDK-EXAMPLE-001_GOLDEN_EXAMPLE_FITNESS_CONTRACT.md](./sync-pack/FSDK-EXAMPLE-001_GOLDEN_EXAMPLE_FITNESS_CONTRACT.md) | maintainers               | Golden example fitness rules and repair flow.          |
+| [sync-pack/GOLDEN_EXAMPLES.md](./sync-pack/GOLDEN_EXAMPLES.md)                                                                   | operators and maintainers | Golden example starting points and usage guidance.     |
+| [sync-pack/finding-remediation-catalog.md](./sync-pack/finding-remediation-catalog.md)                                           | operators                 | Meaning and fixes for current finding codes.           |
+| [sync-pack/INTERNAL_ROADMAP.md](./sync-pack/INTERNAL_ROADMAP.md)                                                                 | maintainers and leads     | Internal roadmap and closure state.                    |
 
-## Current package boundary
+## Operating Rule
 
-- Supported environment: Afenda pnpm workspace
-- Current active module: `sync-pack`
-- Stable daily workflow: `quickstart -> verify`
-- Internal status: internal-only tooling for Afenda operators and contributors
+The package is internal-first.
 
-## Documentation contract
-
-**FSDK-DOCS-001: Junior Operator Documentation Contract**
-
-Rule:
-
-```txt
-A junior DevOps engineer must be able to clone, build, verify,
-inspect warnings, and fix common failures using docs only.
-```
-
-**FSDK-DOCS-002: Junior Developer Usage Contract**
-
-Rule:
-
-```txt
-A junior developer must be able to identify the safe command order,
-generate a governed pack, and understand when to stop and ask for help.
-```
-
-This docs set now covers both contracts.
-
-It also keeps the remediation layer in sync with the live commands:
-
-- exact rerun command where applicable
-- governed doc link for the finding family
-- operator-safe workflow from failure back to green
+It is not currently optimized for partner or public externalization. Those surfaces remain explicitly deferred.

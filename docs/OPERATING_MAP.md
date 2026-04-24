@@ -60,6 +60,27 @@ This document is the repo-local navigation surface for contributors. It explains
 | `GOV-CI-GATE-E` | `block`     | `pnpm run script:check-governance-waivers`   | Validate waiver ownership, target IDs, expiry, and severity caps.                                               |
 | `GOV-CI-GATE-F` | `block`     | `pnpm run script:check-governance-register`  | Validate the generated governance register and snapshot match the current control plane and aggregate evidence. |
 
+## Workspace package roots
+
+Declared in `scripts/afenda.config.json` for topology enforcement. Regenerate this file when the list changes (`pnpm run script:generate-docs-readme`).
+
+| Path                            | Profile                 |
+| ------------------------------- | ----------------------- |
+| `apps/web`                      | `vite-web-app`          |
+| `apps/api`                      | `api-app`               |
+| `packages/_database`            | `database-package`      |
+| `packages/better-auth`          | `source-library`        |
+| `packages/cline`                | `source-library`        |
+| `packages/contracts`            | `source-library`        |
+| `packages/design-system`        | `design-system-package` |
+| `packages/env-loader`           | `source-library`        |
+| `packages/features-sdk`         | `source-library`        |
+| `packages/governance-toolchain` | `source-library`        |
+| `packages/eslint-config`        | `source-library`        |
+| `packages/pino-logger`          | `source-library`        |
+| `packages/typescript-config`    | `config-package`        |
+| `packages/vitest-config`        | `source-library`        |
+
 ## Evidence map
 
 | Surface                      | Path                                                              |

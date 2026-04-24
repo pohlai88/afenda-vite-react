@@ -847,6 +847,20 @@ export function renderGovernanceRegisterMarkdown(
     )
   }
 
+  lines.push(
+    "",
+    "## Workspace package roots",
+    "",
+    "Declared in `scripts/afenda.config.json` (`workspaceGovernance.packageRoots`). When this list changes, regenerate `docs/OPERATING_MAP.md` and this register.",
+    "",
+    "| Path | Profile |",
+    "| --- | --- |"
+  )
+
+  for (const pkg of config.workspaceGovernance.packageRoots.packages) {
+    lines.push(`| \`${pkg.path}\` | \`${pkg.profile}\` |`)
+  }
+
   if (report.summary.missingEvidenceDomains.length > 0) {
     lines.push("", "## Missing evidence", "")
     for (const domainId of report.summary.missingEvidenceDomains) {

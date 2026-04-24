@@ -20,7 +20,7 @@ order: 100
 
 ## Decision
 
-- Current status: candidate
+- Current status: approved
 - Build mode: adapt
 - Declared priority: critical
 - Recommended priority: critical
@@ -30,7 +30,7 @@ order: 100
 
 - License review required: Yes
 - Security review required: Yes
-- Approval status: candidate
+- Approval status: approved
 
 ## Links
 

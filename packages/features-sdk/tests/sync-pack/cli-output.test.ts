@@ -15,6 +15,7 @@ import {
   syncPackReleaseGateCliContractId,
   syncPackRootCommandContractId,
 } from "../../src/sync-pack/cli/shared.js"
+import * as intentModule from "../../src/sync-pack/intent/index.js"
 
 const originalExitCode = process.exitCode
 
@@ -181,12 +182,15 @@ describe("printSyncPackUsage", () => {
     const output = log.mock.calls.map((call) => String(call[0])).join("\n")
 
     expect(output).toContain("Start Here:")
-    expect(output).toContain("Daily Path:")
-    expect(output).toContain("Operator Workflow:")
+    expect(output).toContain("Daily Operator:")
+    expect(output).toContain("SDK/package Maintainer:")
+    expect(output).toContain("Workflow:")
     expect(output).toContain("Release Gates:")
     expect(output).toContain("Operator Utilities:")
     expect(output).toContain("pnpm run feature-sync")
     expect(output).toContain("pnpm run feature-sync:verify")
+    expect(output).toContain("intent-check")
+    expect(output).toContain("sync-examples")
   })
 })
 
@@ -265,7 +269,9 @@ describe("command metadata", () => {
       expect(command.summary.length).toBeGreaterThan(0)
       expect(command.usage.length).toBeGreaterThan(0)
       expect(command.examples.length).toBeGreaterThan(0)
-      expect(["start", "workflow", "gate", "operator"]).toContain(command.group)
+      expect(["start", "workflow", "maintainer", "gate", "operator"]).toContain(
+        command.group
+      )
     }
   })
 
@@ -296,20 +302,33 @@ describe("command metadata", () => {
 })
 
 describe("printQuickstart", () => {
-  it("answers the operator starting questions", () => {
+  it("prints the read-only control console", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => undefined)
+    vi.spyOn(
+      intentModule,
+      "inspectSyncPackControlConsoleState"
+    ).mockResolvedValue({
+      workspace: "dirty",
+      sdkChangesDetected: "yes",
+      intentCoverage: "required",
+    })
 
-    printQuickstart()
+    await printQuickstart()
 
     const output = log.mock.calls.map((call) => String(call[0])).join("\n")
 
-    expect(output).toContain("What is Sync-Pack?")
-    expect(output).toContain("What should I run first?")
-    expect(output).toContain("Common explicit paths:")
-    expect(output).toContain("What do the commands mean?")
-    expect(output).toContain("What does green mean?")
-    expect(output).toContain("pnpm run feature-sync:verify")
+    expect(output).toContain("Feature Sync — Start Here")
+    expect(output).toContain("Daily operator:")
+    expect(output).toContain("SDK/package maintainer:")
+    expect(output).toContain("Golden examples:")
+    expect(output).toContain("Current state:")
+    expect(output).toContain("Workspace: dirty")
+    expect(output).toContain("SDK changes detected: yes")
+    expect(output).toContain("Intent coverage: required")
+    expect(output).toContain("pnpm run feature-sync:intent-check")
+    expect(output).toContain("pnpm run feature-sync:sync-examples")
     expect(output).toContain("Root contract:")
     expect(output).toContain("It never auto-runs verify.")
+    expect(output).toContain("Externalization:")
   })
 })

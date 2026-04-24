@@ -9,6 +9,11 @@ import {
   type SyncPackFindingResult,
   type SyncPackFindingSeverity,
 } from "../finding.js"
+import {
+  checkGoldenExampleFitness,
+  type CheckGoldenExampleFitnessResult,
+} from "../example-fitness/index.js"
+import { type SyncPackIntentCheckResult } from "../intent/index.js"
 import type { AppCandidate } from "../schema/candidate.schema.js"
 import { findFeaturesSdkRoot, findWorkspaceRoot } from "../workspace.js"
 import { readSeedCandidates } from "../workspace.js"
@@ -18,6 +23,7 @@ export type SyncPackQualityValidationPhase =
   | "integrity"
   | "quality"
   | "root-ux"
+  | "maintainer"
   | "workflow"
   | "gate"
   | "operator"
@@ -32,11 +38,13 @@ export type SyncPackQualityValidationStepName =
   | "lint"
   | "root-quickstart"
   | "root-help"
+  | "intent-check"
   | "verify"
   | "verify-json"
   | "check"
   | "doctor"
   | "validate"
+  | "golden-example-fitness"
   | "rank-filter"
   | "report-filter"
   | "generate-filter"
@@ -134,6 +142,8 @@ type StructuredResultLike = {
 const qualityValidationEvidencePaths = [
   "tests/sync-pack/built-cli-smoke.test.ts",
   "tests/sync-pack/cli-transcript.test.ts",
+  "tests/sync-pack/example-fitness.test.ts",
+  "tests/sync-pack/intent.test.ts",
   "tests/sync-pack/verify.test.ts",
 ] as const
 
@@ -147,46 +157,98 @@ const docsSurfaceAssertions = [
   },
   {
     filePath: "docs/getting-started.md",
-    includes: ["feature-sync:verify", "feature-sync:quality-validate"],
+    includes: [
+      "feature-sync:verify",
+      "feature-sync:intent-check",
+      "feature-sync:quality-validate",
+    ],
   },
   {
     filePath: "docs/junior-developer-usage-guide.md",
-    includes: ["feature-sync:generate", "feature-sync:quality-validate"],
+    includes: [
+      "feature-sync:generate",
+      "feature-sync:sync-examples",
+      "feature-sync:quality-validate",
+    ],
   },
   {
     filePath: "docs/junior-devops-quickstart.md",
-    includes: ["feature-sync:verify", "feature-sync:quality-validate"],
+    includes: [
+      "feature-sync:verify",
+      "feature-sync:intent-check",
+      "feature-sync:quality-validate",
+    ],
   },
   {
     filePath: "README.md",
-    includes: ["feature-sync:quality-validate", "feature-sync:verify"],
+    includes: [
+      "feature-sync:intent",
+      "feature-sync:quality-validate",
+      "feature-sync:verify",
+    ],
   },
   {
     filePath: "docs/sync-pack/README.md",
-    includes: ["feature-sync:quality-validate", "feature-sync:verify"],
+    includes: [
+      "feature-sync:intent-check",
+      "feature-sync:sync-examples",
+      "feature-sync:quality-validate",
+      "feature-sync:verify",
+    ],
   },
   {
     filePath: "docs/sync-pack/command-handbook.md",
-    includes: ["quality-validate", "--category", "--lane", "--owner", "--pack"],
+    includes: [
+      "intent-check",
+      "sync-examples",
+      "quality-validate",
+      "--category",
+      "--lane",
+      "--owner",
+      "--pack",
+    ],
   },
   {
     filePath: "docs/sync-pack/INTERNAL_OPERATING_CONTRACT.md",
-    includes: ["feature-sync:quality-validate", "feature-sync:verify"],
+    includes: [
+      "feature-sync:intent-check",
+      "feature-sync:quality-validate",
+      "feature-sync:verify",
+    ],
   },
   {
     filePath: "docs/sync-pack/finding-remediation-catalog.md",
-    includes: ["invalid-seed-candidate", "catalog-not-used"],
+    includes: [
+      "invalid-seed-candidate",
+      "missing-change-intent",
+      "golden-example-pack-not-approved",
+    ],
   },
   {
     filePath: "docs/sync-pack/INTERNAL_ROADMAP.md",
     includes: [
-      "richer remediation in gated findings",
-      "internal change-intent discipline",
+      "intent governance",
+      "golden example fitness",
+      "maintenance only",
     ],
   },
   {
+    filePath: "docs/sync-pack/GOLDEN_EXAMPLES.md",
+    includes: [
+      "internal-support-crm",
+      "bi-reporting-starter",
+      "iam-sso-control-plane",
+      "uptime-monitoring-workbench",
+      "feature-sync:sync-examples",
+    ],
+  },
+  {
+    filePath: "docs/sync-pack/change-intents/README.md",
+    includes: [".intent.json", "truthBinding", "accepted", "implemented"],
+  },
+  {
     filePath: "rules/sync-pack/FEATURE_SYNC_PACK_DOD.md",
-    includes: ["feature-sync:quality-validate"],
+    includes: ["feature-sync:intent-check", "feature-sync:quality-validate"],
   },
   {
     filePath: qualityValidationDocPath,
@@ -954,6 +1016,33 @@ export async function runSyncPackQualityValidation(
     )
   }
 
+  const addLibraryStructuredStep = (
+    stepName: SyncPackQualityValidationStepName,
+    phase: SyncPackQualityValidationPhase,
+    command: string,
+    result:
+      | SyncPackIntentCheckResult
+      | CheckGoldenExampleFitnessResult
+      | Pick<SyncPackFindingResult, "findings">
+  ): void => {
+    const findings = result.findings.map((finding) =>
+      createQualityFinding({
+        step: stepName,
+        phase,
+        severity: finding.severity,
+        code: finding.code,
+        message: finding.message,
+        filePath: finding.filePath,
+        remediation: finding.remediation,
+        command,
+        workspaceRoot,
+        packageRoot,
+      })
+    )
+
+    addStep(summarizeQualityStep(stepName, phase, command, findings))
+  }
+
   if (options.includePreflight) {
     await executeTextStep(
       createPnpmSpec(
@@ -1033,6 +1122,10 @@ export async function runSyncPackQualityValidation(
     {
       includes: [
         "Afenda Sync-Pack Quickstart",
+        "Feature Sync — Start Here",
+        "Daily operator:",
+        "SDK/package maintainer:",
+        "Current state:",
         "pnpm run feature-sync:verify",
         "It never auto-runs verify.",
       ],
@@ -1050,9 +1143,23 @@ export async function runSyncPackQualityValidation(
     {
       includes: [
         "Afenda Sync-Pack CLI",
-        "Operator Workflow:",
+        "Daily Operator:",
+        "SDK/package Maintainer:",
+        "Workflow:",
         "Release Gates:",
       ],
+    }
+  )
+  await executeStructuredStep(
+    createNodeSpec(
+      "intent-check",
+      "maintainer",
+      packageRoot,
+      "node dist/sync-pack/cli/sync-pack.js intent-check --json --ci",
+      [builtSyncPackCli, "intent-check", "--json", "--ci"]
+    ),
+    {
+      requireZeroErrors: true,
     }
   )
   await executeTextStep(
@@ -1125,6 +1232,14 @@ export async function runSyncPackQualityValidation(
       requireZeroErrors: true,
       requireZeroWarnings: true,
     }
+  )
+  addLibraryStructuredStep(
+    "golden-example-fitness",
+    "maintainer",
+    "read-only golden example fitness validation",
+    await checkGoldenExampleFitness({
+      packageRoot,
+    })
   )
 
   if (!selectedCandidate) {

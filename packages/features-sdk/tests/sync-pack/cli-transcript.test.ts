@@ -33,12 +33,14 @@ describe("Sync-Pack CLI transcripts", () => {
     const { stdout, stderr } = await runBuiltCli([])
 
     expect(stderr).toBe("")
-    expect(stdout).toContain("What is Sync-Pack?")
-    expect(stdout).toContain("What should I run first?")
-    expect(stdout).toContain("Common explicit paths:")
-    expect(stdout).toContain("What do the commands mean?")
-    expect(stdout).toContain("What does green mean?")
+    expect(stdout).toContain("Feature Sync — Start Here")
+    expect(stdout).toContain("Daily operator:")
+    expect(stdout).toContain("SDK/package maintainer:")
+    expect(stdout).toContain("Golden examples:")
+    expect(stdout).toContain("Current state:")
     expect(stdout).toContain("pnpm run feature-sync:verify")
+    expect(stdout).toContain("pnpm run feature-sync:intent-check")
+    expect(stdout).toContain("pnpm run feature-sync:sync-examples")
     expect(stdout).toContain("It never auto-runs verify.")
     expect(stdout).not.toContain("Feature Sync-Pack verify")
   })
@@ -48,8 +50,9 @@ describe("Sync-Pack CLI transcripts", () => {
 
     expect(stderr).toBe("")
     expect(stdout).toContain("Start Here:")
-    expect(stdout).toContain("Daily Path:")
-    expect(stdout).toContain("Operator Workflow:")
+    expect(stdout).toContain("Daily Operator:")
+    expect(stdout).toContain("SDK/package Maintainer:")
+    expect(stdout).toContain("Workflow:")
     expect(stdout).toContain("Release Gates:")
     expect(stdout).toContain("Operator Utilities:")
   })
@@ -74,6 +77,15 @@ describe("Sync-Pack CLI transcripts", () => {
     expect(stdout).toContain("afenda-sync-pack verify [--json] [--ci]")
     expect(stdout).toContain("FSDK-CLI-002")
     expect(stdout).toContain("pnpm run feature-sync:verify")
+  })
+
+  it("prints afenda-sync-pack help intent-check transcript", async () => {
+    const { stdout, stderr } = await runBuiltCli(["help", "intent-check"])
+
+    expect(stderr).toBe("")
+    expect(stdout).toContain("afenda-sync-pack intent-check [--json] [--ci]")
+    expect(stdout).toContain("FSDK-INTENT-001")
+    expect(stdout).toContain("pnpm run feature-sync:intent-check")
   })
 
   it("prints a representative failure transcript for invalid option usage", async () => {

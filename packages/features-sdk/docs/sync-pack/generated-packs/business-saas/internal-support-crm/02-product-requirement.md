@@ -35,6 +35,6 @@ order: 20
 
 ## Rollout Expectation
 
-- Current status: candidate
+- Current status: approved
 - Next rollout decision: Not yet known
 - Initial audience: Not yet known

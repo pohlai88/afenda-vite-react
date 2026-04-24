@@ -1,0 +1,66 @@
+{
+  "id": "v95-governance-runtime",
+  "title": "V95 governance runtime",
+  "status": "accepted",
+  "owner": "governance-toolchain",
+  "summary": "Close the final internal Sync-Pack slice with truth-bound intent, golden example fitness, and a root control console.",
+  "changedSurface": [
+    "src",
+    "docs",
+    "rules",
+    "package-metadata",
+    "generated-packs",
+    "root-scripts"
+  ],
+  "commandsAffected": [
+    "feature-sync",
+    "feature-sync:help",
+    "feature-sync:intent",
+    "feature-sync:intent-check",
+    "feature-sync:sync-examples",
+    "feature-sync:quality-validate"
+  ],
+  "truthBinding": {
+    "doctrineRefs": [
+      "packages/features-sdk/docs/sync-pack/FSDK-INTENT-001_CHANGE_INTENT_CONTRACT.md",
+      "packages/features-sdk/docs/sync-pack/FSDK-EXAMPLE-001_GOLDEN_EXAMPLE_FITNESS_CONTRACT.md",
+      "packages/features-sdk/docs/sync-pack/FSDK-CLI-004_ROOT_COMMAND_CONTRACT.md",
+      "packages/features-sdk/docs/sync-pack/INTERNAL_ROADMAP.md"
+    ],
+    "invariantRefs": [
+      "FSDK-CLI-003",
+      "FSDK-CLI-004",
+      "FSDK-FINDING-001",
+      "FSDK-INTENT-001",
+      "FSDK-EXAMPLE-001"
+    ],
+    "expectedDiffScope": [
+      "packages/features-sdk/src/**",
+      "packages/features-sdk/docs/**",
+      "packages/features-sdk/rules/**",
+      "packages/features-sdk/package.json",
+      "package.json",
+      "turbo.json"
+    ],
+    "expectedGeneratedOutputs": [
+      "packages/features-sdk/docs/sync-pack/example-pack-registry.json",
+      "packages/features-sdk/docs/sync-pack/GOLDEN_EXAMPLES.md"
+    ],
+    "evidenceRefs": [
+      "packages/features-sdk/src/sync-pack/intent/index.ts",
+      "packages/features-sdk/src/sync-pack/example-fitness/index.ts",
+      "packages/features-sdk/tests/sync-pack/intent.test.ts",
+      "packages/features-sdk/tests/sync-pack/example-fitness.test.ts"
+    ]
+  },
+  "validationPlan": [
+    "pnpm --filter @afenda/features-sdk typecheck",
+    "pnpm --filter @afenda/features-sdk build",
+    "pnpm --filter @afenda/features-sdk test:run",
+    "pnpm --filter @afenda/features-sdk lint",
+    "pnpm run feature-sync:intent-check",
+    "pnpm run feature-sync:sync-examples",
+    "pnpm run feature-sync:quality-validate"
+  ],
+  "reviewNote": "Final internal slice only. No Go-100 features are mixed into this change."
+}

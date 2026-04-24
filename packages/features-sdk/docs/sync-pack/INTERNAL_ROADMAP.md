@@ -1,6 +1,6 @@
 ---
 title: Sync-Pack Internal Roadmap
-description: Internal-first roadmap for @afenda/features-sdk and the Sync-Pack module.
+description: Final internal roadmap state for @afenda/features-sdk and Sync-Pack.
 status: active
 owner: governance-toolchain
 truthStatus: supporting
@@ -12,78 +12,33 @@ order: 25
 
 # Sync-Pack Internal Roadmap
 
-This roadmap is for internal Afenda priorities only.
-
-It does not describe partner or public externalization work unless that work becomes directly necessary for internal operation.
+This roadmap is internal-first only.
 
 ## Now
 
-These are the current internal priorities and should stay green:
+The final internal slice now includes:
 
-- deterministic start-here command:
-  - `pnpm run feature-sync`
-- explicit daily workflow:
-  - `pnpm run feature-sync:verify`
-- release gates that are safe for CI and readable by humans:
-  - `release-check`
-  - `check`
-  - `doctor`
-  - `validate`
-- clear junior-facing docs for DevOps and developers
-- governed 11-file planning pack generation
-- workspace-scoped operator filters:
-  - `--category`
-  - `--lane`
-  - `--owner`
-  - `--pack`
-- stronger scaffold output for internal app bootstrap:
-  - dependency recommendations
-  - route suggestions
-  - package placement hints
-- package contract validation for docs, rules, templates, exports, and bins
-- read-only validation vs explicit sync/repair separation
-- richer remediation in gated findings:
-  - exact rerun command
-  - governed doc reference
-  - file-targeted fix guidance
+- deterministic root control console through `feature-sync`
+- explicit daily operator workflow through `feature-sync:verify`
+- intent governance through `feature-sync:intent` and `feature-sync:intent-check`
+- golden example fitness through `feature-sync:sync-examples`
+- package-first maintainer closure through `feature-sync:quality-validate`
+- richer remediation in gated findings
+- junior-facing docs that match the live CLI
 
 ## Next
 
-These improvements are valuable soon, but they are not blockers for current internal use:
+maintenance only.
 
-- internal change-intent discipline for SDK changes:
-  - changed surface
-  - generated outputs expected
-  - approval or review note
-- more generated example packs across categories so teams start from governed examples instead of empty folders
+There is no open internal feature slice after this V95 pass.
 
 ## Later
 
-These remain intentionally deferred until internal-first work demands them:
+These remain intentionally deferred:
 
 - partner-restricted SDK mode
 - public npm externalization
-- GitHub PR bundle automation
-- GitHub Actions reporting and annotation workflow
-- interactive CLI picker or TUI
+- public CLI packaging
 - shell completion
 - AI-assisted command generation
-- package split into separate SDK and CLI distributions
-
-## Planning Rule
-
-Use this priority order:
-
-1. protect internal operator correctness
-2. reduce junior developer confusion
-3. reduce drift in generated artifacts and metadata
-4. improve speed and convenience only after the first three are stable
-
-## Success Signal
-
-The roadmap is working when:
-
-- a junior developer can follow docs without asking which command to run first
-- a junior DevOps operator can isolate failures from `verify`
-- generated planning packs stay consistent across teams
-- SDK changes do not silently drift from rules, docs, or package contracts
+- broader CI/reporting layers beyond the current package-first surface

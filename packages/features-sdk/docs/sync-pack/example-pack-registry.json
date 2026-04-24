@@ -1,0 +1,90 @@
+[
+  {
+    "packId": "internal-support-crm",
+    "name": "Internal Support CRM",
+    "category": "business-saas",
+    "maturity": "golden",
+    "fitness": {
+      "lastVerifiedAt": "2026-04-24T15:41:25.298Z",
+      "sdkVersion": "0.0.0",
+      "verifyStatus": "pass"
+    }
+  },
+  {
+    "packId": "ai-work-assistant",
+    "name": "AI Work Assistant",
+    "category": "communication-ai-ml",
+    "maturity": "secondary",
+    "fitness": {
+      "lastVerifiedAt": "2026-04-24T15:41:25.304Z",
+      "sdkVersion": "0.0.0",
+      "verifyStatus": "pass"
+    }
+  },
+  {
+    "packId": "document-publishing-flow",
+    "name": "Document Publishing Flow",
+    "category": "content-publishing",
+    "maturity": "secondary",
+    "fitness": {
+      "lastVerifiedAt": "2026-04-24T15:41:25.313Z",
+      "sdkVersion": "0.0.0",
+      "verifyStatus": "pass"
+    }
+  },
+  {
+    "packId": "bi-reporting-starter",
+    "name": "BI Reporting Starter",
+    "category": "data-analytics",
+    "maturity": "golden",
+    "fitness": {
+      "lastVerifiedAt": "2026-04-24T15:41:25.318Z",
+      "sdkVersion": "0.0.0",
+      "verifyStatus": "pass"
+    }
+  },
+  {
+    "packId": "uptime-monitoring-workbench",
+    "name": "Uptime Monitoring Workbench",
+    "category": "infrastructure-operations",
+    "maturity": "golden",
+    "fitness": {
+      "lastVerifiedAt": "2026-04-24T15:41:25.326Z",
+      "sdkVersion": "0.0.0",
+      "verifyStatus": "pass"
+    }
+  },
+  {
+    "packId": "internal-app-builder-sandbox",
+    "name": "Internal App Builder Sandbox",
+    "category": "mini-developer",
+    "maturity": "secondary",
+    "fitness": {
+      "lastVerifiedAt": "2026-04-24T15:41:25.331Z",
+      "sdkVersion": "0.0.0",
+      "verifyStatus": "pass"
+    }
+  },
+  {
+    "packId": "knowledge-workflow-hub",
+    "name": "Knowledge Workflow Hub",
+    "category": "productivity-utilities",
+    "maturity": "secondary",
+    "fitness": {
+      "lastVerifiedAt": "2026-04-24T15:41:25.343Z",
+      "sdkVersion": "0.0.0",
+      "verifyStatus": "pass"
+    }
+  },
+  {
+    "packId": "iam-sso-control-plane",
+    "name": "IAM SSO Control Plane",
+    "category": "security-privacy",
+    "maturity": "golden",
+    "fitness": {
+      "lastVerifiedAt": "2026-04-24T15:41:25.350Z",
+      "sdkVersion": "0.0.0",
+      "verifyStatus": "pass"
+    }
+  }
+]

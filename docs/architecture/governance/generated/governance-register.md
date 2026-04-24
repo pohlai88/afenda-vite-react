@@ -66,3 +66,24 @@ This register is generated from `scripts/afenda.config.json` and the latest gove
 | `GOV-CI-GATE-D` | Governance aggregate integrity | `block` | `pnpm run script:check-governance-aggregate` |
 | `GOV-CI-GATE-E` | Governance waivers validity | `block` | `pnpm run script:check-governance-waivers` |
 | `GOV-CI-GATE-F` | Governance register consistency | `block` | `pnpm run script:check-governance-register` |
+
+## Workspace package roots
+
+Declared in `scripts/afenda.config.json` (`workspaceGovernance.packageRoots`). When this list changes, regenerate `docs/OPERATING_MAP.md` and this register.
+
+| Path | Profile |
+| --- | --- |
+| `apps/web` | `vite-web-app` |
+| `apps/api` | `api-app` |
+| `packages/_database` | `database-package` |
+| `packages/better-auth` | `source-library` |
+| `packages/cline` | `source-library` |
+| `packages/contracts` | `source-library` |
+| `packages/design-system` | `design-system-package` |
+| `packages/env-loader` | `source-library` |
+| `packages/features-sdk` | `source-library` |
+| `packages/governance-toolchain` | `source-library` |
+| `packages/eslint-config` | `source-library` |
+| `packages/pino-logger` | `source-library` |
+| `packages/typescript-config` | `config-package` |
+| `packages/vitest-config` | `source-library` |

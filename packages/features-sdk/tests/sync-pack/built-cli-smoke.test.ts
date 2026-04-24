@@ -32,9 +32,14 @@ describe("built Sync-Pack CLIs", () => {
 
     expect(stderr).toBe("")
     expect(stdout).toContain("Afenda Sync-Pack Quickstart")
-    expect(stdout).toContain("What should I run first?")
-    expect(stdout).toContain("Common explicit paths:")
+    expect(stdout).toContain("Feature Sync — Start Here")
+    expect(stdout).toContain("Daily operator:")
+    expect(stdout).toContain("SDK/package maintainer:")
+    expect(stdout).toContain("Golden examples:")
+    expect(stdout).toContain("Current state:")
     expect(stdout).toContain("pnpm run feature-sync:verify")
+    expect(stdout).toContain("pnpm run feature-sync:intent-check")
+    expect(stdout).toContain("pnpm run feature-sync:sync-examples")
     expect(stdout).toContain("Root contract:")
     expect(stdout).toContain("It never auto-runs verify.")
     expect(stdout).not.toContain("Feature Sync-Pack verify")
@@ -49,8 +54,12 @@ describe("built Sync-Pack CLIs", () => {
     expect(stdout).toContain("FSDK-CLI-002")
     expect(stdout).toContain("FSDK-CLI-003")
     expect(stdout).toContain("FSDK-CLI-004")
+    expect(stdout).toContain("FSDK-INTENT-001")
+    expect(stdout).toContain("FSDK-EXAMPLE-001")
     expect(stdout).toContain("Start Here:")
-    expect(stdout).toContain("Operator Workflow:")
+    expect(stdout).toContain("Daily Operator:")
+    expect(stdout).toContain("SDK/package Maintainer:")
+    expect(stdout).toContain("Workflow:")
     expect(stdout).toContain("Release Gates:")
   })
 
@@ -78,6 +87,54 @@ describe("built Sync-Pack CLIs", () => {
     expect(stdout).toContain("afenda-sync-pack quality-validate")
     expect(stdout).toContain("--preflight")
     expect(stdout).toContain("pnpm run feature-sync:quality-validate")
+  })
+
+  it("prints intent-check help from the dispatcher", async () => {
+    const { stdout, stderr } = await runBuiltCli("sync-pack.js", [
+      "help",
+      "intent-check",
+    ])
+
+    expect(stderr).toBe("")
+    expect(stdout).toContain("afenda-sync-pack intent-check [--json] [--ci]")
+    expect(stdout).toContain("FSDK-INTENT-001")
+    expect(stdout).toContain("pnpm run feature-sync:intent-check")
+  })
+
+  it("prints sync-examples help from the dispatcher", async () => {
+    const { stdout, stderr } = await runBuiltCli("sync-pack.js", [
+      "help",
+      "sync-examples",
+    ])
+
+    expect(stderr).toBe("")
+    expect(stdout).toContain("afenda-sync-pack sync-examples")
+    expect(stdout).toContain("FSDK-EXAMPLE-001")
+    expect(stdout).toContain("pnpm run feature-sync:sync-examples")
+  })
+
+  it("runs intent-check as JSON-only output", async () => {
+    const { stdout, stderr } = await runBuiltCli("sync-pack.js", [
+      "intent-check",
+      "--json",
+      "--ci",
+    ])
+    const result = JSON.parse(stdout) as {
+      contractId: string
+      verdict: string
+      findings: unknown[]
+      errorCount: number
+      warningCount: number
+      changedFiles: string[]
+      matchedIntentIds: string[]
+    }
+
+    expect(stderr).toBe("")
+    expect(result.contractId).toBe("FSDK-INTENT-001")
+    expect(typeof result.verdict).toBe("string")
+    expect(Array.isArray(result.findings)).toBe(true)
+    expect(Array.isArray(result.changedFiles)).toBe(true)
+    expect(Array.isArray(result.matchedIntentIds)).toBe(true)
   })
 
   it("runs verify as JSON-only output", async () => {

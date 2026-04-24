@@ -18,5 +18,5 @@ await runCli(async () => {
     return
   }
 
-  printQuickstart()
+  await printQuickstart()
 }, "Feature Sync-Pack quickstart")
