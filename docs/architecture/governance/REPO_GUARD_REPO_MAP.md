@@ -238,6 +238,7 @@ Current boundary implication:
 
 - imports through declared package exports are public-surface candidates
 - deep imports into undeclared package internals should be treated as boundary-tightening follow-up
+- relative filesystem imports that cross into a different workspace root are now treated as high-confidence boundary violations
 
 ## Generated and evidence roots
 
@@ -253,6 +254,7 @@ Current boundary implication:
 Declared in [repo-guard-policy.ts](/C:/NexusCanon/afenda-react-vite/scripts/repo-integrity/repo-guard-policy.ts):
 
 - `docs/architecture/governance/generated/governance-register.md`
+- `.artifacts/reports/governance/governance-register.snapshot.json`
 - `apps/web/scripts/i18n/data/*.json`
 - `apps/web/src/app/_platform/i18n/audit/*.json`
 - `docs/README.md`
@@ -462,6 +464,10 @@ Global machine-noise import blocks currently include:
 - `node_modules`
 - `coverage`
 
+Current high-confidence relative-path boundary blocks also include:
+
+- relative imports from one workspace root into another workspace root such as `apps/* -> packages/*` or `packages/* -> apps/*`
+
 ## Doctrine and evidence binding map
 
 ### Guard doctrine and contract surfaces
@@ -480,6 +486,7 @@ Global machine-noise import blocks currently include:
   - `scripts/afenda.config.json`
     evidence:
   - `docs/architecture/governance/generated/governance-register.md`
+  - `.artifacts/reports/governance/governance-register.snapshot.json`
 - repo-guard architecture discovery surfaces
   source:
   - `docs/architecture/adr/ADR-0008-repository-integrity-guard-architecture.md`

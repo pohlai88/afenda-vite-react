@@ -700,6 +700,37 @@ test("boundary import findings fail on non-exported internal package subpaths", 
   await fs.rm(fixtureRoot, { recursive: true, force: true })
 })
 
+test("boundary import findings fail on relative imports into a different workspace root", async () => {
+  const fixtureRoot = path.join(
+    workspaceRoot,
+    ".artifacts/tmp/repo-guard-cross-workspace-relative-import"
+  )
+  const importerPath = path.join(
+    fixtureRoot,
+    "apps/web/src/share/ui/blocked-relative-package-import.ts"
+  )
+
+  await fs.mkdir(path.dirname(importerPath), { recursive: true })
+  await fs.writeFile(
+    importerPath,
+    `import { contract } from "../../../../../packages/contracts/src/index"\n`,
+    "utf8"
+  )
+
+  const findings = await evaluateBoundaryImportFindings({
+    repoRoot: fixtureRoot,
+    filePaths: ["apps/web/src/share/ui/blocked-relative-package-import.ts"],
+    policy: repoGuardPolicy.boundaryImport,
+  })
+
+  assert.equal(findings.length, 1)
+  assert.equal(findings[0]?.ruleId, "RG-STRUCT-003")
+  assert.match(findings[0]?.message ?? "", /different workspace root/u)
+  assert.match(findings[0]?.evidence ?? "", /packages\/contracts\/src\/index/u)
+
+  await fs.rm(fixtureRoot, { recursive: true, force: true })
+})
+
 test("placement ownership scopes reuse rollout owner truth and runtime/shared roots", async () => {
   const config = await loadAfendaConfig()
   const scopes = buildPlacementOwnershipScopes(config)
@@ -998,6 +1029,8 @@ test("generated authenticity stays clean for calibrated design-system and databa
   const findings = await evaluateGeneratedArtifactAuthenticityFindings({
     repoRoot: workspaceRoot,
     trackedFiles: [
+      ".artifacts/reports/governance/governance-register.snapshot.json",
+      "docs/architecture/governance/generated/governance-register.md",
       "packages/design-system/generated/component-manifests.json",
       "packages/design-system/generated/component-variants.json",
       "packages/design-system/generated/component-coverage.json",
@@ -1008,6 +1041,8 @@ test("generated authenticity stays clean for calibrated design-system and databa
     policy: {
       bindings: repoGuardPolicy.generatedAuthenticity.bindings.filter(
         (binding) =>
+          binding.id === "governance-register-markdown" ||
+          binding.id === "governance-register-snapshot" ||
           binding.id === "design-system-component-manifests" ||
           binding.id === "design-system-component-variants" ||
           binding.id === "design-system-component-coverage" ||
@@ -1015,9 +1050,79 @@ test("generated authenticity stays clean for calibrated design-system and databa
           binding.id === "database-glossary-snapshot"
       ),
       orphanRoots: repoGuardPolicy.generatedAuthenticity.orphanRoots.filter(
-        (root) => root.root === "packages/design-system/generated"
+        (root) =>
+          root.root === "docs/architecture/governance/generated" ||
+          root.root === "packages/design-system/generated"
       ),
     },
+  })
+
+  assert.equal(findings.length, 0)
+})
+
+test("source/evidence mismatch stays clean when governance register sources and both outputs refresh together", () => {
+  const findings = evaluateSourceEvidenceMismatchFindings({
+    entries: [
+      {
+        path: "scripts/afenda.config.json",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/governance/generated/governance-register.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: ".artifacts/reports/governance/governance-register.snapshot.json",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+    ],
+    policy: repoGuardPolicy.sourceEvidenceMismatch,
+  })
+
+  assert.equal(findings.length, 0)
+})
+
+test("source/evidence mismatch stays clean when repo-guard doctrine discovery surfaces refresh together", () => {
+  const findings = evaluateSourceEvidenceMismatchFindings({
+    entries: [
+      {
+        path: "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/OPERATING_MAP.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/adr/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/atc/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/governance/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+    ],
+    policy: repoGuardPolicy.sourceEvidenceMismatch,
   })
 
   assert.equal(findings.length, 0)

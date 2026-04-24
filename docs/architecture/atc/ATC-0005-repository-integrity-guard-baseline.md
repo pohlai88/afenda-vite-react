@@ -35,7 +35,7 @@ This contract binds the Repository Integrity Guard to real commands, real eviden
 - Bound code/config surfaces:
   `scripts/afenda.config.json`, `.artifacts/reports/governance/repo-integrity-guard.report.json`, `.artifacts/reports/governance/repo-integrity-guard.report.md`, governance evidence loading in `scripts/lib/governance-spine.ts`
 - Explicitly out of scope:
-  duplicate/overlap, source/evidence mismatch, and advanced document-control guardrails that are not yet fully implemented
+  promotion from warned to blocking, full repo-wide package-internal boundary coverage, full generator-manifest inventory, and final doctrine-network authority resolution
 
 ## Enforcement surfaces
 
@@ -76,16 +76,17 @@ This contract binds the Repository Integrity Guard to real commands, real eviden
   - `pnpm run repo:guard`
   - `pnpm run repo:guard:ci`
   - `pnpm run repo:guard:report`
-- V1 native scanners are intentionally limited to:
+- V1 started with a minimal native scanner baseline:
   - dirty file scan
   - working tree legitimacy
-- Current warned baseline also includes:
+- Current warned baseline now also includes first-cut native repo guards for:
   - `RG-STRUCT-001` placement and ownership
   - `RG-TRUTH-002` generated artifact authenticity
   - `RG-STRUCT-003` boundary and import regression
   - `RG-TRUTH-004` source and evidence mismatch
   - `RG-HYGIENE-005` duplicate and overlap hygiene
   - `RG-ADVISORY-006` stronger document control
+- Those native guards remain partial-calibration surfaces, not proof of blocking readiness.
 - Promotion from warned to blocking requires:
   - ADR + ATC baseline remains current
   - truth-critical guards are implemented

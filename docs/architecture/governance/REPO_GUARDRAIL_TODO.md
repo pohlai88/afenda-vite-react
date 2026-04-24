@@ -179,7 +179,7 @@ Dependencies:
 Current implementation note:
 
 - First cut is implemented inside the Repository Integrity Guard as a native scanner.
-- Current coverage binds design-system component-governance artifacts and selected database generated artifacts to explicit provenance and canonical renderers.
+- Current coverage binds governance-register outputs, design-system component-governance artifacts, and selected database generated artifacts to explicit provenance and canonical renderers.
 - Wider generated-root provenance and authenticity coverage still need follow-through.
 
 Promotion requirements:
@@ -270,7 +270,7 @@ Promotion requirements:
 Current implementation note:
 
 - First cut is implemented inside the Repository Integrity Guard as a native scanner.
-- Current coverage is intentionally narrow and high-confidence: selected design-system and database evidence loops.
+- Current coverage is intentionally narrow and high-confidence: governance-register refresh, repo-guard discovery surfaces, and selected design-system and database evidence loops.
 - Full source-to-evidence bindings for all governed reports and generated outputs still need follow-through.
 
 ### Guardrail RG-HYGIENE-005 — Duplicate / overlap guard

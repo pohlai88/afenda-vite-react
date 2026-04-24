@@ -57,8 +57,8 @@ This ADR creates that architecture contract.
 1. The repository truth layer is implemented as a **Repository Integrity Guard** that aggregates existing governance evaluators first and adds only a small number of native repo-hygiene scanners.
 2. V1 remains **warn-first** through `GOV-TRUTH-001` rather than entering the blocking root `check` chain immediately.
 3. The guard writes **self-managed evidence** at its own evidence path, but that evidence must remain readable by the existing governance control plane through a nested governance-domain projection.
-4. Native scanners in V1 stay intentionally small: dirty-file scan and working-tree legitimacy only.
-5. Deeper guardrails such as placement/ownership, generated-authenticity, and boundary regression are follow-on architecture work, not hidden V1 promises.
+4. Native scanners in V1 start intentionally small, with follow-on first-cut native guardrails added incrementally under the same warn-first posture as repo-native calibration improves.
+5. Deeper guardrails such as placement/ownership, generated-authenticity, boundary regression, source/evidence mismatch, duplicate hygiene, and stronger document control remain partial calibration work rather than hidden completeness promises.
 
 ## Delivery classification
 
@@ -73,7 +73,7 @@ This ADR creates that architecture contract.
 
 - This ADR does not claim repository guard coverage is complete.
 - This ADR does not claim `GOV-TRUTH-001` is blocking in CI.
-- This ADR does not claim advanced placement, boundary, or generated-authenticity guards are already implemented.
+- This ADR does not claim the current first-cut native guardrails are fully calibrated or promotion-ready.
 
 ### How this ADR should be used
 
@@ -148,16 +148,16 @@ This ADR creates that architecture contract.
 
 - The guard introduces another governance surface to maintain.
 - Warn-first rollout means some contributors may overread “implemented” as “complete” unless ADR/ATC language stays explicit.
-- Coverage reporting and deeper guardrails are still follow-on work.
+- Deeper tightening, calibration, and promotion review are still follow-on work.
 
 ## Evidence and enforcement matrix
 
-| Contract statement                               | Source of truth                                                | Current evidence                                                              | Enforcement mechanism                                     | Gap / follow-up                                                |
-| ------------------------------------------------ | -------------------------------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
-| Repository truth is aggregate-first              | `scripts/lib/repo-guard.ts`, this ADR                          | adapter checks for filesystem/generated/storage/naming/docs/topology/survival | `repo:guard`, `script:check-repo-guard`                   | placement, boundary, and authenticity guardrails still missing |
-| V1 is warn-first                                 | `scripts/afenda.config.json`, this ADR                         | `GOV-TRUTH-001` in governance register and evidence                           | governance domain with `ciBehavior: warn`                 | promotion gate still needs ADR/ATC-backed follow-through       |
-| Evidence is self-managed but governance-readable | `scripts/lib/repo-guard.ts`, `scripts/lib/governance-spine.ts` | repo-guard evidence JSON with nested governance-domain projection             | governance report loading and aggregate report generation | continue hardening self-managed evidence behavior over time    |
-| Native scanners stay intentionally small in V1   | `scripts/lib/repo-guard.ts`, this ADR                          | dirty-file and working-tree scanners only                                     | code review plus repo-guard tests                         | future guardrails still need explicit implementation waves     |
+| Contract statement                                   | Source of truth                                                | Current evidence                                                                                                 | Enforcement mechanism                                     | Gap / follow-up                                                        |
+| ---------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Repository truth is aggregate-first                  | `scripts/lib/repo-guard.ts`, this ADR                          | adapter checks for filesystem/generated/storage/naming/docs/topology/survival plus first-cut native repo guards  | `repo:guard`, `script:check-repo-guard`                   | deeper repo-native calibration and promotion evidence still pending    |
+| V1 is warn-first                                     | `scripts/afenda.config.json`, this ADR                         | `GOV-TRUTH-001` in governance register and evidence                                                              | governance domain with `ciBehavior: warn`                 | promotion gate still needs ADR/ATC-backed follow-through               |
+| Evidence is self-managed but governance-readable     | `scripts/lib/repo-guard.ts`, `scripts/lib/governance-spine.ts` | repo-guard evidence JSON with nested governance-domain projection                                                | governance report loading and aggregate report generation | continue hardening self-managed evidence behavior over time            |
+| Native scanners stay intentionally incremental in V1 | `scripts/lib/repo-guard.ts`, this ADR                          | dirty-file, worktree, placement, authenticity, boundary, mismatch, duplicate, and document-control native checks | code review plus repo-guard tests                         | keep tightening only where the repo map is strong enough to justify it |
 
 ## Implementation plan
 
@@ -170,16 +170,17 @@ This ADR creates that architecture contract.
 
 ### Required follow-through
 
-- [ ] Write and maintain the companion ATC baseline for the repo-truth layer — governance-toolchain — immediate
-- [ ] Implement placement / ownership guard as the next structure-focused follow-up — governance-toolchain — next guardrail wave
-- [ ] Implement generated artifact authenticity guard as the next truth-critical follow-up — governance-toolchain — next guardrail wave
-- [ ] Add explicit coverage reporting so the guard can state what remains uncovered — governance-toolchain — after ADR/ATC baseline lands
+- [x] Write and maintain the companion ATC baseline for the repo-truth layer — governance-toolchain — immediate
+- [x] Implement placement / ownership guard as the next structure-focused follow-up — governance-toolchain — next guardrail wave
+- [x] Implement generated artifact authenticity guard as the next truth-critical follow-up — governance-toolchain — next guardrail wave
+- [x] Add explicit coverage reporting so the guard can state what remains uncovered — governance-toolchain — after ADR/ATC baseline lands
+- [ ] Keep tightening repo-native policy calibration, provenance coverage, and promotion evidence without overstating blocking readiness — governance-toolchain — current phase
 
 ### Exit criteria for “implemented”
 
-- [ ] The repo-truth layer has a stable ADR + ATC pair
-- [ ] The guard command surface and evidence paths remain stable
-- [ ] The next guardrail waves are tracked through explicit contracts rather than implied future work
+- [x] The repo-truth layer has a stable ADR + ATC pair
+- [x] The guard command surface and evidence paths remain stable
+- [x] The next guardrail waves are tracked through explicit contracts rather than implied future work
 
 ## Validation plan
 

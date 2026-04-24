@@ -159,7 +159,8 @@ Current calibration progress:
 - major app/package families are represented in static ownership scopes
 - generator truth map is seeded with real repo-global, app-local, and package-local generators
 - package export surfaces are now enforced as part of `RG-STRUCT-003`
-- remaining work is tighter package-internal boundary rules beyond current `exports` enforcement and wider provenance bindings
+- governance-register refresh and repo-guard discovery-surface bindings are now explicitly encoded in repo-guard policy
+- remaining work is tighter package-internal boundary rules beyond current `exports` enforcement, fuller generator manifests, and wider provenance bindings
 
 ## Phase 2 — Guard activation and tightening
 

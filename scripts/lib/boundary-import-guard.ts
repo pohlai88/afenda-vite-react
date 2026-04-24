@@ -88,6 +88,20 @@ export async function evaluateBoundaryImportFindings(options: {
         continue
       }
 
+      const relativeWorkspaceRootFinding = evaluateRelativeWorkspaceRootFinding(
+        {
+          filePath,
+          importPath: record.importPath,
+          line: record.line,
+          normalizedTarget,
+        }
+      )
+
+      if (relativeWorkspaceRootFinding) {
+        findings.push(relativeWorkspaceRootFinding)
+        continue
+      }
+
       const workspacePackageFinding = evaluateWorkspacePackageImportFinding({
         filePath,
         importPath: record.importPath,
@@ -356,6 +370,39 @@ function evaluateWorkspacePackageImportFinding(options: {
   }
 }
 
+function evaluateRelativeWorkspaceRootFinding(options: {
+  readonly filePath: string
+  readonly importPath: string
+  readonly line: number
+  readonly normalizedTarget: string
+}): RepoGuardFinding | null {
+  if (!options.importPath.startsWith(".")) {
+    return null
+  }
+
+  const importerWorkspaceRoot = extractWorkspaceRoot(options.filePath)
+  const targetWorkspaceRoot = extractWorkspaceRoot(options.normalizedTarget)
+
+  if (
+    !importerWorkspaceRoot ||
+    !targetWorkspaceRoot ||
+    importerWorkspaceRoot === targetWorkspaceRoot
+  ) {
+    return null
+  }
+
+  return {
+    severity: "error",
+    ruleId: "RG-STRUCT-003",
+    filePath: options.filePath,
+    message:
+      "Relative import crosses into a different workspace root. Use the owner app alias or a package public entrypoint instead.",
+    evidence: `line=${String(options.line)}; import=${options.importPath}; target=${options.normalizedTarget}`,
+    suggestedFix:
+      "Replace the relative filesystem reach with an app alias or declared package export.",
+  }
+}
+
 function extractWorkspacePackageSpecifier(importPath: string): {
   readonly packageName: string
   readonly subpath: string | null
@@ -388,6 +435,20 @@ function matchesExportSubpathPattern(
   const escapedPattern = pattern.replace(/[|\\{}()[\]^$+?.]/gu, "\\$&")
   const regex = new RegExp(`^${escapedPattern.replaceAll("*", ".*")}$`, "u")
   return regex.test(subpath)
+}
+
+function extractWorkspaceRoot(filePath: string): string | null {
+  const normalizedPath = filePath.replace(/\\/gu, "/")
+  const segments = normalizedPath.split("/")
+
+  if (
+    (segments[0] === "apps" || segments[0] === "packages") &&
+    segments.length >= 2
+  ) {
+    return `${segments[0]}/${segments[1]}`
+  }
+
+  return null
 }
 
 function matchesAnyGlob(
