@@ -51,14 +51,14 @@ This document is the repo-local navigation surface for contributors. It explains
 
 ## Governance and CI blocking surfaces
 
-| Gate            | CI behavior | Command                                        | Purpose                                                                                               |
-| --------------- | ----------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `GOV-CI-GATE-A` | `block`     | `pnpm run script:check-governance-registry`    | Validate governance registry shape, IDs, statuses, and control-plane semantics.                       |
-| `GOV-CI-GATE-B` | `block`     | `pnpm run script:check-governance-bindings`    | Validate docs, config, command, report, and evidence bindings declared by the governance registry.    |
-| `GOV-CI-GATE-C` | `block`     | `pnpm run script:run-governance-checks`        | Run all governance domain checks and emit per-domain evidence under .artifacts.                       |
-| `GOV-CI-GATE-D` | `block`     | `pnpm run script:generate-governance-report`   | Aggregate domain evidence and fail if blocking domains are missing required reports.                  |
-| `GOV-CI-GATE-E` | `block`     | `pnpm run script:check-governance-waivers`     | Validate waiver ownership, target IDs, expiry, and severity caps.                                     |
-| `GOV-CI-GATE-F` | `block`     | `pnpm run script:generate-governance-register` | Regenerate the governance register and snapshot so docs match the current control plane and evidence. |
+| Gate            | CI behavior | Command                                      | Purpose                                                                                                         |
+| --------------- | ----------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `GOV-CI-GATE-A` | `block`     | `pnpm run script:check-governance-registry`  | Validate governance registry shape, IDs, statuses, and control-plane semantics.                                 |
+| `GOV-CI-GATE-B` | `block`     | `pnpm run script:check-governance-bindings`  | Validate docs, config, command, report, and evidence bindings declared by the governance registry.              |
+| `GOV-CI-GATE-C` | `block`     | `pnpm run script:run-governance-checks`      | Run all governance domain checks and emit per-domain evidence under .artifacts.                                 |
+| `GOV-CI-GATE-D` | `block`     | `pnpm run script:check-governance-aggregate` | Validate waiver, aggregate, and summary governance evidence without rewriting generated surfaces.               |
+| `GOV-CI-GATE-E` | `block`     | `pnpm run script:check-governance-waivers`   | Validate waiver ownership, target IDs, expiry, and severity caps.                                               |
+| `GOV-CI-GATE-F` | `block`     | `pnpm run script:check-governance-register`  | Validate the generated governance register and snapshot match the current control plane and aggregate evidence. |
 
 ## Evidence map
 

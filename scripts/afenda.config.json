@@ -460,12 +460,6 @@
       ],
       "requireDirectoriesWhenPackageExists": true
     },
-    "uiPackageTemplate": {
-      "packagePath": "packages/shadcn-ui-deprecated",
-      "requiredDirectories": ["src/components/ui", "src/hooks", "src/lib"],
-      "requiredFiles": ["components.json", "package.json", "tsconfig.json"],
-      "requireDirectoriesWhenPackageExists": true
-    },
     "webClientSrc": {
       "srcRoot": "apps/web/src",
       "allowedTopLevelDirectories": [
@@ -859,10 +853,10 @@
       },
       {
         "id": "GOV-CI-GATE-D",
-        "title": "Governance evidence completeness",
-        "description": "Aggregate domain evidence and fail if blocking domains are missing required reports.",
-        "command": "pnpm run script:generate-governance-report",
-        "scriptPath": "scripts/governance/generate-governance-report.ts",
+        "title": "Governance aggregate integrity",
+        "description": "Validate waiver, aggregate, and summary governance evidence without rewriting generated surfaces.",
+        "command": "pnpm run script:check-governance-aggregate",
+        "scriptPath": "scripts/governance/check-governance-aggregate.ts",
         "ciBehavior": "block"
       },
       {
@@ -875,10 +869,10 @@
       },
       {
         "id": "GOV-CI-GATE-F",
-        "title": "Governance register sync",
-        "description": "Regenerate the governance register and snapshot so docs match the current control plane and evidence.",
-        "command": "pnpm run script:generate-governance-register",
-        "scriptPath": "scripts/governance/generate-governance-register.ts",
+        "title": "Governance register consistency",
+        "description": "Validate the generated governance register and snapshot match the current control plane and aggregate evidence.",
+        "command": "pnpm run script:check-governance-register",
+        "scriptPath": "scripts/governance/check-governance-register.ts",
         "ciBehavior": "block"
       }
     ],

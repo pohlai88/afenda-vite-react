@@ -20,7 +20,31 @@ It turns curated software discovery into governed internal feature packs using t
 Idea -> Template -> Tech Stack -> Contract -> Implementation Plan -> DoD
 ```
 
-## Start Here
+## Current Internal Features
+
+The module currently provides:
+
+- typed candidate and metadata validation
+- candidate scoring and category/lane mapping
+- governed 11-file pack generation
+- generated-pack validation
+- package contract validation
+- dependency and stack drift inspection
+- aggregated operator verification workflow
+- package-first quality validation workflow
+- workspace-scoped candidate filtering for `rank`, `report`, and `generate`
+- tech-stack scaffold manifest generation with package placement and route guidance
+- richer gated finding remediation with exact rerun commands and governed doc links
+- junior-friendly start-here and usage guidance
+
+## Start here
+
+If you are new, read these in order:
+
+1. [../getting-started.md](../getting-started.md)
+2. [../junior-devops-quickstart.md](../junior-devops-quickstart.md)
+3. [../junior-developer-usage-guide.md](../junior-developer-usage-guide.md)
+4. [command-handbook.md](./command-handbook.md)
 
 Workspace entrypoint:
 
@@ -51,24 +75,27 @@ It never auto-runs verify.
 
 ## CLI Model
 
-| Command                               | Class             | Purpose                                                    |
-| ------------------------------------- | ----------------- | ---------------------------------------------------------- |
-| `pnpm run feature-sync`               | start here        | Explain the module, boundaries, and next command.          |
-| `pnpm run feature-sync:help`          | start here        | Show grouped command help and examples.                    |
-| `pnpm run feature-sync:verify`        | operator workflow | Run `release-check -> check -> doctor -> validate`.        |
-| `pnpm run feature-sync:release-check` | release gate      | Validate `FSDK-CONTRACT-001` package/build integrity.      |
-| `pnpm run feature-sync:check`         | release gate      | Validate generated pack structure and candidate alignment. |
-| `pnpm run feature-sync:doctor`        | release gate      | Inspect guarded dependency and stack drift.                |
-| `pnpm run feature-sync:validate`      | release gate      | Validate curated seed input.                               |
-| `pnpm run feature-sync:rank`          | operator utility  | Print candidate scoring evidence.                          |
-| `pnpm run feature-sync:report`        | operator utility  | Print grouped portfolio evidence.                          |
-| `pnpm run feature-sync:generate`      | operator utility  | Generate planning packs from seed candidates.              |
-| `pnpm run feature-sync:scaffold`      | operator utility  | Generate a tech-stack scaffold manifest.                   |
+| Command                                  | Class             | Purpose                                                       |
+| ---------------------------------------- | ----------------- | ------------------------------------------------------------- |
+| `pnpm run feature-sync`                  | start here        | Explain the module, boundaries, and next command.             |
+| `pnpm run feature-sync:help`             | start here        | Show grouped command help and examples.                       |
+| `pnpm run feature-sync:verify`           | operator workflow | Run `release-check -> check -> doctor -> validate`.           |
+| `pnpm run feature-sync:quality-validate` | operator workflow | Run the full package-first release validation workflow.       |
+| `pnpm run feature-sync:release-check`    | release gate      | Validate `FSDK-CONTRACT-001` package/build integrity.         |
+| `pnpm run feature-sync:check`            | release gate      | Validate generated pack structure and candidate alignment.    |
+| `pnpm run feature-sync:doctor`           | release gate      | Inspect guarded dependency and stack drift.                   |
+| `pnpm run feature-sync:validate`         | release gate      | Validate curated seed input.                                  |
+| `pnpm run feature-sync:rank`             | operator utility  | Print candidate scoring evidence.                             |
+| `pnpm run feature-sync:report`           | operator utility  | Print grouped portfolio evidence with optional filters.       |
+| `pnpm run feature-sync:generate`         | operator utility  | Generate planning packs from seed candidates or one slice.    |
+| `pnpm run feature-sync:scaffold`         | operator utility  | Generate a tech-stack scaffold manifest plus placement hints. |
 
 Boundary:
 
 - `verify` and the gated commands are CI-safe
+- `quality-validate` is the package-first release validation workflow for maintainers
 - `rank`, `report`, `generate`, and `scaffold` are still human-oriented operator utilities
+- `rank`, `report`, and `generate` now share the candidate filter family: `--category`, `--lane`, `--owner`, `--pack`
 
 ## SDK Model
 
@@ -112,6 +139,7 @@ Reason:
 
 ## Active Contracts
 
+- [../../rules/sync-pack/FEATURE_SYNC_PACK_DOD.md](../../rules/sync-pack/FEATURE_SYNC_PACK_DOD.md)
 - [INTERNAL_OPERATING_CONTRACT.md](./INTERNAL_OPERATING_CONTRACT.md)
 - [FSDK-CLI-001_RELEASE_GATE_CLI_CONTRACT.md](./FSDK-CLI-001_RELEASE_GATE_CLI_CONTRACT.md)
 - [FSDK-CLI-002_OPERATOR_WORKFLOW_CONTRACT.md](./FSDK-CLI-002_OPERATOR_WORKFLOW_CONTRACT.md)
@@ -120,6 +148,19 @@ Reason:
 - [FSDK-FINDING-001_UNIFIED_FINDING_CONTRACT.md](./FSDK-FINDING-001_UNIFIED_FINDING_CONTRACT.md)
 - [FSDK-CLI_SCORECARD.md](./FSDK-CLI_SCORECARD.md)
 - [CLI_OPERATOR_BENCHMARK_NOTE.md](./CLI_OPERATOR_BENCHMARK_NOTE.md)
+- [INTERNAL_ROADMAP.md](./INTERNAL_ROADMAP.md)
+- [QUALITY_VALIDATION_EXECUTION_PLAN.md](./QUALITY_VALIDATION_EXECUTION_PLAN.md)
+
+## Practical docs for operators
+
+- [command-handbook.md](./command-handbook.md): what each command does, when to use it, and how to recover from common failures
+- [../junior-developer-usage-guide.md](../junior-developer-usage-guide.md): safe command order for junior developers
+- [metadata-reference.md](./metadata-reference.md): field-level metadata contract for candidates and scaffold manifests
+- [finding-remediation-catalog.md](./finding-remediation-catalog.md): current finding codes, meanings, and likely fixes
+- [troubleshooting.md](./troubleshooting.md): isolate failures quickly
+- [recipes.md](./recipes.md): common workflows from seed to pack to verify
+- [architecture-map.md](./architecture-map.md): source layout and extension map for contributors
+- [INTERNAL_ROADMAP.md](./INTERNAL_ROADMAP.md): internal now/next/later plan
 
 ## Internal Readiness
 
@@ -130,6 +171,14 @@ Current governed scorecard state:
 - internal target: `90+ / 100`
 
 Read the full rationale in [FSDK-CLI_SCORECARD.md](./FSDK-CLI_SCORECARD.md).
+
+## Definition Of Done
+
+The canonical internal Definition of Done lives in:
+
+- [../../rules/sync-pack/FEATURE_SYNC_PACK_DOD.md](../../rules/sync-pack/FEATURE_SYNC_PACK_DOD.md)
+
+Use that rule when deciding whether Sync-Pack is ready for internal use, not partner/public use.
 
 ## Troubleshooting
 
@@ -149,7 +198,7 @@ pnpm run feature-sync:doctor
 pnpm run feature-sync:validate
 ```
 
-`doctor` warnings remain non-blocking until a separate dependency cleanup pass promotes them.
+`doctor` warnings remain non-blocking until a separate dependency cleanup pass promotes them, but active warnings should still carry a concrete remediation path.
 
 ## Active vs Historical
 

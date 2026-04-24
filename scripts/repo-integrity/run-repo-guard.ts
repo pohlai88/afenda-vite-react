@@ -9,7 +9,8 @@ import { repoGuardPolicy } from "./repo-guard-policy.js"
 const config = await loadAfendaConfig()
 const args = new Set(process.argv.slice(2))
 const mode = args.has("--ci") ? "ci" : "human"
-const writeEvidence = args.has("--ci") || args.has("--report")
+const writeEvidence =
+  !args.has("--read-only") && (args.has("--ci") || args.has("--report"))
 
 const result = await runRepoGuard({
   config,

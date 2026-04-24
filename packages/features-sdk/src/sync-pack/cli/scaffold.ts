@@ -45,4 +45,10 @@ await runCli(async () => {
   )
   console.log(`Output: ${result.outputDirectory}`)
   console.log(`Files: ${result.writtenFiles.length}`)
+  console.log(
+    `Planning pack: ${result.manifest.placement.planningPackDirectory}`
+  )
+  console.log(`Web feature: ${result.manifest.placement.webFeatureDirectory}`)
+  console.log(`API module: ${result.manifest.placement.apiModuleDirectory}`)
+  console.log(`API route: ${result.manifest.placement.apiRouteFile}`)
 }, "Feature Sync-Pack scaffold")

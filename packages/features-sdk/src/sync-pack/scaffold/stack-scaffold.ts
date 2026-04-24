@@ -10,10 +10,15 @@ import type { StackDependencyGroup } from "../schema/stack-contract.schema.js"
 import {
   stackScaffoldManifestSchema,
   type StackDependency,
+  type StackRouteSuggestion,
   type StackScaffoldManifest,
 } from "../schema/stack-contract.schema.js"
 import { getTechStackForCategory } from "../schema/tech-stack.schema.js"
-import { findWorkspaceRoot } from "../workspace.js"
+import {
+  findFeaturesSdkRoot,
+  findWorkspaceRoot,
+  resolveGeneratedPacksPath,
+} from "../workspace.js"
 
 import {
   readWorkspaceCatalogVersions,
@@ -278,6 +283,15 @@ function toDependencyRecord(
 
 function renderScaffoldReadme(manifest: StackScaffoldManifest): string {
   const recommendation = getTechStackForCategory(manifest.category)
+  const routeSuggestions = manifest.routeSuggestions
+    .map(
+      (suggestion) =>
+        `- ${suggestion.surface}: ${suggestion.path} (${suggestion.rationale})`
+    )
+    .join("\n")
+  const nextCommands = manifest.nextCommands
+    .map((command) => `- ${command}`)
+    .join("\n")
 
   return `# ${manifest.packageName}
 
@@ -301,10 +315,92 @@ ${Object.entries(recommendation.defaultStack)
 
 ${recommendation.categoryOverride.map((value) => `- ${value}`).join("\n")}
 
+## Placement Hints
+
+- planning pack: ${manifest.placement.planningPackDirectory}
+- web feature: ${manifest.placement.webFeatureDirectory}
+- api module: ${manifest.placement.apiModuleDirectory}
+- api route file: ${manifest.placement.apiRouteFile}
+
+## Suggested Routes
+
+${routeSuggestions}
+
+## Next Commands
+
+${nextCommands}
+
 ## Deferred
 
 GitHub PR submission and GitHub Actions blocking checks are deferred until the scaffold CLI and SDK contract are accepted.
 `
+}
+
+function normalizeRelativePath(filePath: string): string {
+  return filePath.split(path.sep).join("/")
+}
+
+function resolvePlanningPackDirectory(
+  workspaceRoot: string,
+  featuresSdkRoot: string,
+  category: FeatureCategory,
+  appId: string
+): string {
+  const planningPackDirectory = path.join(
+    resolveGeneratedPacksPath(featuresSdkRoot),
+    category,
+    appId
+  )
+  const relativePath = path.relative(workspaceRoot, planningPackDirectory)
+
+  if (
+    relativePath === "" ||
+    relativePath === "." ||
+    relativePath.startsWith("..")
+  ) {
+    return `packages/features-sdk/docs/sync-pack/generated-packs/${category}/${appId}`
+  }
+
+  return normalizeRelativePath(relativePath)
+}
+
+function createPlacementHints(
+  workspaceRoot: string,
+  appId: string,
+  category: FeatureCategory
+): StackScaffoldManifest["placement"] {
+  const featuresSdkRoot = findFeaturesSdkRoot(workspaceRoot)
+
+  return {
+    planningPackDirectory: resolvePlanningPackDirectory(
+      workspaceRoot,
+      featuresSdkRoot,
+      category,
+      appId
+    ),
+    webFeatureDirectory: `apps/web/src/app/_features/${appId}`,
+    apiModuleDirectory: `apps/api/src/modules/${appId}`,
+    apiRouteFile: `apps/api/src/routes/${appId}.ts`,
+  }
+}
+
+function createRouteSuggestions(
+  appId: string
+): readonly StackRouteSuggestion[] {
+  return [
+    {
+      surface: "web",
+      path: `/app/${appId}`,
+      rationale:
+        "Suggested web route segment for the feature shell; align it with the owning app router before implementation.",
+    },
+    {
+      surface: "api",
+      path: `/api/${appId}`,
+      rationale:
+        "Suggested API base path for a dedicated Hono route file and module directory.",
+    },
+  ]
 }
 
 export async function createTechStackScaffoldManifest(
@@ -328,6 +424,14 @@ export async function createTechStackScaffoldManifest(
     dependencies,
     devDependencies,
     scripts: scaffoldScripts,
+    placement: createPlacementHints(workspaceRoot, options.appId, category),
+    routeSuggestions: createRouteSuggestions(options.appId),
+    nextCommands: [
+      "pnpm run feature-sync:verify",
+      `pnpm run feature-sync:scaffold -- --app-id ${options.appId} --category ${category}`,
+      "pnpm run feature-sync:doctor -- --target apps/web",
+      "pnpm run feature-sync:doctor -- --target apps/api",
+    ],
     notes: [
       "Use catalog: for dependencies available in pnpm-workspace.yaml.",
       "Run sync-pack:doctor before implementation handoff.",

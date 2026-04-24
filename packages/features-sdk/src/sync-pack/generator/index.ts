@@ -3,7 +3,10 @@ export type {
   GenerateFeaturePackResult,
 } from "./generate-pack.js"
 export { generateFeaturePack } from "./generate-pack.js"
-export type { CandidateReportGroups } from "./generate-report.js"
+export type {
+  CandidateReportGroups,
+  CandidateReportOptions,
+} from "./generate-report.js"
 export { generateCandidateReport, groupCandidates } from "./generate-report.js"
 export {
   renderBulletList,

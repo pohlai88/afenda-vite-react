@@ -36,7 +36,7 @@ order: 100
 
 - Source URL: https://openalternative.co/categories
 - Open-source references:
-- https://openalternative.co/categories
+  - https://openalternative.co/categories
 - Generated pack path: `packages/features-sdk/docs/sync-pack/generated-packs/business-saas/internal-support-crm`
 
 ## Definition Of Done

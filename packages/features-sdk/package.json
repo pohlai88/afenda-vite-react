@@ -107,6 +107,7 @@
     "sync-pack:quickstart": "tsx src/sync-pack/cli/quickstart.ts",
     "sync-pack:help": "tsx src/sync-pack/cli/sync-pack.ts --help",
     "sync-pack:verify": "tsx src/sync-pack/cli/verify.ts",
+    "sync-pack:quality-validate": "tsx src/sync-pack/cli/quality-validate.ts",
     "sync-pack:validate": "tsx src/sync-pack/cli/validate.ts",
     "sync-pack:rank": "tsx src/sync-pack/cli/rank.ts",
     "sync-pack:generate": "tsx src/sync-pack/cli/generate.ts",

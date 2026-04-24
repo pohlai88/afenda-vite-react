@@ -36,6 +36,7 @@ Operator workflow:
 
 ```txt
 pnpm run feature-sync:verify
+pnpm run feature-sync:quality-validate
 ```
 
 Release-gate commands:
@@ -64,16 +65,19 @@ Recommended internal validation order:
 pnpm run feature-sync
 pnpm --filter @afenda/features-sdk build
 pnpm run feature-sync:verify
+pnpm run feature-sync:quality-validate
 ```
 
 ## Failure interpretation
 
 - `feature-sync` explains the CLI purpose, green path, and next commands
 - `feature-sync:verify` runs the supported operator workflow and gives a final verdict
+- `feature-sync:quality-validate` runs the package-first release validation workflow and gives a closure verdict
 - `release-check` validates `FSDK-CONTRACT-001` package integrity
 - `check` validates generated pack structure and candidate contract alignment
 - `doctor` validates dependency/version drift with warnings remaining non-blocking
 - `validate` confirms curated seed input parses cleanly
+- gated findings must include remediation rich enough to point operators at the next command and the governed doc family
 
 ## Common remediation flows
 
@@ -93,5 +97,6 @@ Boundary summary:
 - `feature-sync` and `feature-sync:help` are the start-here commands
 - bare `feature-sync` is quickstart only and never auto-runs `verify`
 - `feature-sync:verify` is the operator workflow command
+- `feature-sync:quality-validate` is the package-first release validation command
 - `release-check`, `check`, `doctor`, and `validate` are the underlying CI-safe gates
 - `rank`, `report`, `generate`, and `scaffold` are operator utilities

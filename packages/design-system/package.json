@@ -99,7 +99,7 @@
     "sonner": "catalog:",
     "tailwind-merge": "^3.3.1",
     "vaul": "catalog:",
-    "zod": "^4.3.6"
+    "zod": "catalog:"
   },
   "peerDependencies": {
     "react": "^19.0.0",

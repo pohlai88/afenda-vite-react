@@ -6,6 +6,7 @@ import {
 } from "../lib/governance-spine.js"
 
 const config = await loadAfendaConfig()
+const readOnly = process.argv.includes("--read-only")
 const waiverRegistry = await loadGovernanceWaiverRegistry(
   workspaceRoot,
   config.governance.waivers.registryPath
@@ -17,7 +18,9 @@ const report = evaluateGovernanceWaivers(
   new Date()
 )
 
-await writeGovernanceWaiverReport(workspaceRoot, config, report)
+if (!readOnly) {
+  await writeGovernanceWaiverReport(workspaceRoot, config, report)
+}
 
 if (report.violations.length === 0) {
   console.log("Governance waivers check passed.")

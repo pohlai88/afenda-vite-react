@@ -672,6 +672,16 @@ export const repoGuardPolicy: RepoGuardPolicy = {
         ],
       },
       {
+        id: "docs-operating-map-refresh",
+        sourcePathPatterns: [
+          "scripts/docs/generate-docs-readme.ts",
+          "scripts/afenda.config.json",
+          ".artifacts/reports/governance/governance-summary.report.json",
+        ],
+        evidencePathPatterns: ["docs/OPERATING_MAP.md"],
+        requiredEvidencePaths: ["docs/OPERATING_MAP.md"],
+      },
+      {
         id: "repo-guard-architecture-discovery-surfaces",
         sourcePathPatterns: [
           "docs/architecture/adr/ADR-0008-repository-integrity-guard-architecture.md",
@@ -680,13 +690,11 @@ export const repoGuardPolicy: RepoGuardPolicy = {
           "docs/architecture/governance/REPO_GUARDRAIL_TODO.md",
         ],
         evidencePathPatterns: [
-          "docs/OPERATING_MAP.md",
           "docs/architecture/adr/README.md",
           "docs/architecture/atc/README.md",
           "docs/architecture/governance/README.md",
         ],
         requiredEvidencePaths: [
-          "docs/OPERATING_MAP.md",
           "docs/architecture/adr/README.md",
           "docs/architecture/atc/README.md",
           "docs/architecture/governance/README.md",

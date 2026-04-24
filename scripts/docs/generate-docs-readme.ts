@@ -427,18 +427,46 @@ const SCRIPT_FILE_OVERRIDES: Record<string, ScriptOverride> = {
     order: 8,
     runCommand: "pnpm run script:check-governance-bindings",
   },
+  "check-governance.ts": {
+    title: "Check governance",
+    description:
+      "Strict read-only governance gate that runs fail-fast registry, bindings, repo guard, domain, waiver, aggregate, register, and honesty validation.",
+    order: 21,
+    runCommand: "pnpm run script:check-governance",
+  },
+  "check-governance-fast.ts": {
+    title: "Check governance (fast)",
+    description:
+      "Cheap preflight governance guard for local work: registry, bindings, Afenda config, and repo guard before broader CI checks.",
+    order: 22,
+    runCommand: "pnpm run script:check-governance:fast",
+  },
   "check-governance-registry.ts": {
     title: "Check governance registry",
     description:
       "Validates governance ids, lifecycle semantics, maturity rules, tiers, and evidence-path declarations in afenda.config.",
-    order: 9,
+    order: 23,
     runCommand: "pnpm run script:check-governance-registry",
+  },
+  "check-governance-aggregate.ts": {
+    title: "Check governance aggregate",
+    description:
+      "Validates waiver, aggregate, and summary governance evidence without rewriting generated surfaces.",
+    order: 24,
+    runCommand: "pnpm run script:check-governance-aggregate",
+  },
+  "check-governance-register.ts": {
+    title: "Check governance register",
+    description:
+      "Validates the generated governance register and snapshot match the current control plane and aggregate evidence.",
+    order: 25,
+    runCommand: "pnpm run script:check-governance-register",
   },
   "check-governance-waivers.ts": {
     title: "Check governance waivers",
     description:
       "Validates waiver ownership, expiry, target ids, and emits the waiver evidence report under .artifacts.",
-    order: 10,
+    order: 26,
     runCommand: "pnpm run script:check-governance-waivers",
   },
   "generate-docs-readme.ts": {
@@ -451,22 +479,22 @@ const SCRIPT_FILE_OVERRIDES: Record<string, ScriptOverride> = {
   "generate-governance-register.ts": {
     title: "Generate governance register",
     description:
-      "Builds the generated governance register doc and snapshot from afenda.config and the latest aggregate governance evidence.",
-    order: 12,
+      "Repair command that rewrites the generated governance register doc and snapshot from afenda.config and aggregate governance evidence.",
+    order: 27,
     runCommand: "pnpm run script:generate-governance-register",
   },
   "generate-governance-report.ts": {
     title: "Generate governance report",
     description:
-      "Aggregates domain evidence and waiver evidence into repo-level governance core and summary reports.",
-    order: 13,
+      "Repair command that rewrites repo-level governance core and summary reports from current domain and waiver evidence.",
+    order: 28,
     runCommand: "pnpm run script:generate-governance-report",
   },
   "generate-file-survival-report.ts": {
     title: "Generate file survival report",
     description:
       "Generates report-first file-survival governance audits for configured rollout scopes under `.artifacts/reports/file-survival/`.",
-    order: 14,
+    order: 29,
     runCommand: "pnpm run script:generate-file-survival-report",
   },
   "inspect-node-runtime.ts": {
@@ -478,8 +506,15 @@ const SCRIPT_FILE_OVERRIDES: Record<string, ScriptOverride> = {
     title: "Run governance checks",
     description:
       "Executes the registered governance domain checks, emits per-domain evidence, and applies block vs warn behavior by domain tier.",
-    order: 15,
+    order: 30,
     runCommand: "pnpm run script:run-governance-checks",
+  },
+  "sync-governance.ts": {
+    title: "Sync governance",
+    description:
+      "Repair command that refreshes governance aggregate and register derived surfaces after a check detects drift.",
+    order: 31,
+    runCommand: "pnpm run script:sync-governance",
   },
 }
 
@@ -1220,7 +1255,7 @@ async function renderScriptsReadme(
     "",
     "## Start here",
     "",
-    "- Governance work: start with `script:check-governance`, then inspect the narrower registry, binding, or waiver scripts only if that aggregate flow fails.",
+    "- Governance work: start with `script:check-governance` for the strict read-only fail-fast gate, or `script:check-governance:fast` for the cheaper local preflight.",
     "- Docs navigation work: start with `script:generate-docs-readme` because the generated indexes and operating map are derived from this generator.",
     "- Workspace topology drift: start with `script:check-afenda-config` before editing package layout rules.",
     "",
@@ -1237,7 +1272,7 @@ async function renderScriptsReadme(
     "",
     "## If governance CI fails",
     "",
-    "- Start with `pnpm run script:check-governance` so registry, bindings, domain checks, evidence generation, and register sync are evaluated in CI order.",
+    "- Start with `pnpm run script:check-governance` so registry, bindings, repo guard, domain checks, aggregate drift, and register drift are evaluated in fail-fast order.",
     "- Read [Operating map](../docs/OPERATING_MAP.md) and the generated governance register before changing individual script semantics.",
     "- When a script emits evidence, treat the `.artifacts/reports/governance/**` output as part of the fix, not as optional byproduct.",
     "",

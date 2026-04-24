@@ -39,7 +39,7 @@ Provide internal support, CRM tracking, ownership, and audit records for repeate
 - Recommended priority: critical
 - Score: 15
 - Score reasons:
-- Critical signals: audit, crm, support
+  - Critical signals: audit, crm, support
 - Medium data sensitivity
 - Security review required
 - License review required
@@ -49,7 +49,7 @@ Provide internal support, CRM tracking, ownership, and audit records for repeate
 - Source category: Business Software
 - Source URL: https://openalternative.co/categories
 - References:
-- https://openalternative.co/categories
+  - https://openalternative.co/categories
 
 ## Non-Goals
 

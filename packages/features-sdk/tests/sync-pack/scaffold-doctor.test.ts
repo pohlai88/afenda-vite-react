@@ -91,6 +91,20 @@ describe("Tech stack scaffold", () => {
       expect(zodDependency?.source).toBe("workspace-catalog")
       expect(reactDependency?.versionSpec).toBe("^19.2.4")
       expect(reactDependency?.source).toBe("workspace-package")
+      expect(manifest.placement).toMatchObject({
+        planningPackDirectory:
+          "packages/features-sdk/docs/sync-pack/generated-packs/business-saas/internal-support-crm",
+        webFeatureDirectory: "apps/web/src/app/_features/internal-support-crm",
+        apiModuleDirectory: "apps/api/src/modules/internal-support-crm",
+        apiRouteFile: "apps/api/src/routes/internal-support-crm.ts",
+      })
+      expect(manifest.routeSuggestions).toContainEqual(
+        expect.objectContaining({
+          surface: "web",
+          path: "/app/internal-support-crm",
+        })
+      )
+      expect(manifest.nextCommands).toContain("pnpm run feature-sync:verify")
     } finally {
       await rm(workspaceRoot, { recursive: true, force: true })
     }
@@ -113,6 +127,18 @@ describe("Tech stack scaffold", () => {
 
       expect(result.writtenFiles).toHaveLength(3)
       expect(packageJson.dependencies?.zod).toBe("catalog:")
+      expect(result.manifest.routeSuggestions).toHaveLength(2)
+
+      const scaffoldReadme = await readFile(
+        path.join(outputDirectory, "README.md"),
+        "utf8"
+      )
+
+      expect(scaffoldReadme).toContain("## Placement Hints")
+      expect(scaffoldReadme).toContain("## Suggested Routes")
+      expect(scaffoldReadme).toContain(
+        "apps/web/src/app/_features/internal-support-crm"
+      )
     } finally {
       await rm(workspaceRoot, { recursive: true, force: true })
     }
@@ -178,7 +204,9 @@ describe("Sync-Pack doctor", () => {
       expect(warning).toMatchObject({
         severity: "warning",
         remediation: {
-          action: expect.stringContaining("Replace the explicit version"),
+          action: expect.stringContaining("change dependencies.vite"),
+          command: "pnpm run feature-sync:doctor",
+          doc: "docs/sync-pack/finding-remediation-catalog.md",
         },
       })
     } finally {

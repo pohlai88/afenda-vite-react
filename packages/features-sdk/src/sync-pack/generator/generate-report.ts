@@ -3,6 +3,12 @@ import {
   type AppCandidate,
 } from "../schema/candidate.schema.js"
 import {
+  describeCandidateSelection,
+  filterCandidates,
+  hasCandidateSelection,
+  type CandidateSelection,
+} from "../candidate-selection.js"
+import {
   featureCategories,
   featureLanes,
   type FeatureCategory,
@@ -25,6 +31,10 @@ export interface CandidateReportGroups {
   readonly byStatus: Readonly<Record<CandidateStatus, number>>
 }
 
+export interface CandidateReportOptions {
+  readonly filters?: CandidateSelection
+}
+
 function createCountMap<T extends string>(
   values: readonly T[]
 ): Record<T, number> {
@@ -39,9 +49,10 @@ function increment<T extends string>(counts: Record<T, number>, key: T): void {
 }
 
 export function groupCandidates(
-  candidatesInput: unknown
+  candidatesInput: unknown,
+  options: CandidateReportOptions = {}
 ): CandidateReportGroups {
-  const candidates = appCandidateArraySchema.parse(candidatesInput)
+  const candidates = filterCandidates(candidatesInput, options.filters)
   const byLane = createCountMap(featureLanes)
   const byCategory = createCountMap(featureCategories)
   const byPriority = createCountMap(appPriorities)
@@ -94,14 +105,34 @@ function renderCandidateTable(candidates: readonly AppCandidate[]): string {
   ].join("\n")
 }
 
-export function generateCandidateReport(candidatesInput: unknown): string {
-  const candidates = appCandidateArraySchema.parse(candidatesInput)
+function renderFilterSummary(
+  selection: CandidateSelection | undefined
+): string {
+  const parts = describeCandidateSelection(selection)
+
+  if (parts.length === 0) {
+    return ""
+  }
+
+  return `Applied filters: ${parts.join(", ")}`
+}
+
+export function generateCandidateReport(
+  candidatesInput: unknown,
+  options: CandidateReportOptions = {}
+): string {
+  const allCandidates = appCandidateArraySchema.parse(candidatesInput)
+  const candidates = filterCandidates(allCandidates, options.filters)
   const groups = groupCandidates(candidates)
+  const filtered = hasCandidateSelection(options.filters)
 
   return [
     "# Feature Sync-Pack Report",
     "",
-    `Total candidates: ${groups.total}`,
+    filtered
+      ? `Selected candidates: ${groups.total} of ${allCandidates.length}`
+      : `Total candidates: ${groups.total}`,
+    renderFilterSummary(options.filters),
     "",
     renderCountTable("By Lane", groups.byLane),
     "",

@@ -552,12 +552,16 @@ export async function writeGovernanceWaiverReport(
 export async function runGovernanceChecks(
   config: AfendaConfig,
   repoRoot: string,
-  generatedAt: Date
+  generatedAt: Date,
+  options?: {
+    readonly writeReports?: boolean
+  }
 ): Promise<{
   readonly reports: readonly GovernanceDomainReport[]
   readonly blockingFailures: readonly string[]
   readonly warningFailures: readonly string[]
 }> {
+  const writeReports = options?.writeReports ?? true
   const reports: GovernanceDomainReport[] = []
   const blockingFailures: string[] = []
   const warningFailures: string[] = []
@@ -566,12 +570,21 @@ export async function runGovernanceChecks(
     const executions: GovernanceCheckExecution[] = []
     const violations: GovernanceDomainViolation[] = []
     const reportPath = path.join(repoRoot, domain.evidencePath)
+    const originalReportContent = writeReports
+      ? null
+      : await fs.readFile(reportPath, "utf8").catch(() => null)
 
-    await fs.rm(reportPath, { force: true }).catch(() => undefined)
+    if (writeReports) {
+      await fs.rm(reportPath, { force: true }).catch(() => undefined)
+    }
 
     for (const check of domain.checks) {
       const startedAt = Date.now()
-      const result = spawnSync(check.command, {
+      const command =
+        !writeReports && !check.command.includes("--read-only")
+          ? `${check.command} -- --read-only`
+          : check.command
+      const result = spawnSync(command, {
         cwd: repoRoot,
         encoding: "utf8",
         shell: true,
@@ -588,7 +601,7 @@ export async function runGovernanceChecks(
 
       executions.push({
         id: check.id,
-        command: check.command,
+        command,
         scriptPath: check.scriptPath,
         status: exitCode === 0 ? "passed" : "failed",
         exitCode,
@@ -599,7 +612,7 @@ export async function runGovernanceChecks(
         violations.push({
           checkId: check.id,
           severity: domain.defaultSeverity,
-          message: `Check "${check.command}" failed with exit code ${String(exitCode)}.`,
+          message: `Check "${command}" failed with exit code ${String(exitCode)}.`,
         })
       }
     }
@@ -612,8 +625,15 @@ export async function runGovernanceChecks(
       selfManagedReport ??
       buildGovernanceDomainReport(domain, generatedAt, executions, violations)
     reports.push(report)
-    if (!selfManagedReport) {
+    if (writeReports && !selfManagedReport) {
       await writeJsonFile(reportPath, report)
+    }
+    if (!writeReports) {
+      if (originalReportContent === null) {
+        await fs.rm(reportPath, { force: true }).catch(() => undefined)
+      } else {
+        await fs.writeFile(reportPath, originalReportContent, "utf8")
+      }
     }
 
     if (violations.length === 0) {

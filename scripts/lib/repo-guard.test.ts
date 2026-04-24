@@ -1102,6 +1102,12 @@ test("source/evidence mismatch stays clean when governance register sources and 
         previousPath: undefined,
         untracked: false,
       },
+      {
+        path: "docs/OPERATING_MAP.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
     ],
     policy: repoGuardPolicy.sourceEvidenceMismatch,
   })
@@ -1109,7 +1115,7 @@ test("source/evidence mismatch stays clean when governance register sources and 
   assert.equal(findings.length, 0)
 })
 
-test("source/evidence mismatch stays clean when governance register markdown refreshes with afenda config", () => {
+test("source/evidence mismatch stays clean when governance register markdown and operating map refresh with afenda config", () => {
   const findings = evaluateSourceEvidenceMismatchFindings({
     entries: [
       {
@@ -1124,6 +1130,12 @@ test("source/evidence mismatch stays clean when governance register markdown ref
         previousPath: undefined,
         untracked: false,
       },
+      {
+        path: "docs/OPERATING_MAP.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
     ],
     policy: repoGuardPolicy.sourceEvidenceMismatch,
   })
@@ -1131,17 +1143,11 @@ test("source/evidence mismatch stays clean when governance register markdown ref
   assert.equal(findings.length, 0)
 })
 
-test("source/evidence mismatch stays clean when repo-guard doctrine discovery surfaces refresh together", () => {
+test("source/evidence mismatch stays clean when repo-guard doctrine discovery readmes refresh together", () => {
   const findings = evaluateSourceEvidenceMismatchFindings({
     entries: [
       {
         path: "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
-        path: "docs/OPERATING_MAP.md",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
@@ -1417,6 +1423,40 @@ test("source/evidence mismatch stays clean when a full binding refresh is presen
       },
       {
         path: "packages/design-system/generated/component-coverage.json",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+    ],
+    policy: repoGuardPolicy.sourceEvidenceMismatch,
+  })
+
+  assert.equal(findings.length, 0)
+})
+
+test("source/evidence mismatch stays clean for operating map refresh via docs generator", () => {
+  const findings = evaluateSourceEvidenceMismatchFindings({
+    entries: [
+      {
+        path: "scripts/docs/generate-docs-readme.ts",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "scripts/afenda.config.json",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/OPERATING_MAP.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/governance/generated/governance-register.md",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,

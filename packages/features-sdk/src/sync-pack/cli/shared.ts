@@ -1,5 +1,9 @@
 import { ZodError, z } from "zod"
 
+import {
+  candidateSelectionSchema,
+  type CandidateSelection,
+} from "../candidate-selection.js"
 import { createCliErrorResult, isJsonOutput } from "../cli-output.js"
 
 export interface CliFlagDefinition {
@@ -61,6 +65,38 @@ const ciJsonFlags = [
   {
     name: "--ci",
     description: "Use CI exit-code behavior; warnings remain non-blocking.",
+  },
+] as const satisfies readonly CliFlagDefinition[]
+
+const preflightFlag = [
+  {
+    name: "--preflight",
+    description:
+      "Include pnpm install --frozen-lockfile for CI/bootstrap validation.",
+  },
+] as const satisfies readonly CliFlagDefinition[]
+
+const candidateSelectionFlags = [
+  {
+    name: "--category",
+    description: "Filter candidates by governed feature category.",
+    value: true,
+  },
+  {
+    name: "--lane",
+    description: "Filter candidates by lane.",
+    value: true,
+  },
+  {
+    name: "--owner",
+    description: "Filter candidates by owner team.",
+    value: true,
+  },
+  {
+    name: "--pack",
+    description:
+      "Filter candidates by pack id or category/id selector such as business-saas/internal-support-crm.",
+    value: true,
   },
 ] as const satisfies readonly CliFlagDefinition[]
 
@@ -139,6 +175,25 @@ export const syncPackCommands = {
     ],
     load: () => import("./verify.js"),
   },
+  "quality-validate": {
+    name: "quality-validate",
+    summary:
+      "Run the package-first internal quality validation workflow for @afenda/features-sdk.",
+    usage: "afenda-sync-pack quality-validate [--preflight] [--json] [--ci]",
+    group: "workflow",
+    gate: false,
+    flags: [...preflightFlag, ...ciJsonFlags, ...helpFlags],
+    examples: [
+      "pnpm run feature-sync:quality-validate",
+      "pnpm run feature-sync:quality-validate -- --preflight",
+      "afenda-sync-pack quality-validate --json --ci",
+    ],
+    troubleshooting: [
+      "Quality validation is sequential by design; fix the first blocking step before rerunning.",
+      "Doctor warnings outside packages/features-sdk remain visible and tracked, but they do not block package closure.",
+    ],
+    load: () => import("./quality-validate.js"),
+  },
   doctor: {
     name: "doctor",
     summary: "Inspect stack and dependency-version drift.",
@@ -204,31 +259,46 @@ export const syncPackCommands = {
   rank: {
     name: "rank",
     summary: "Print candidate priority scoring table.",
-    usage: "afenda-sync-pack rank",
+    usage:
+      "afenda-sync-pack rank [--category <category>] [--lane <lane>] [--owner <team>] [--pack <id>]",
     group: "operator",
     gate: false,
-    flags: [...helpFlags],
-    examples: ["pnpm run feature-sync:rank", "afenda-sync-pack rank"],
+    flags: [...candidateSelectionFlags, ...helpFlags],
+    examples: [
+      "pnpm run feature-sync:rank",
+      "pnpm run feature-sync:rank -- --category business-saas",
+      'afenda-sync-pack rank --lane platform --owner "Security Platform"',
+    ],
     load: () => import("./rank.js"),
   },
   report: {
     name: "report",
     summary: "Print the candidate portfolio report.",
-    usage: "afenda-sync-pack report",
+    usage:
+      "afenda-sync-pack report [--category <category>] [--lane <lane>] [--owner <team>] [--pack <id>]",
     group: "operator",
     gate: false,
-    flags: [...helpFlags],
-    examples: ["pnpm run feature-sync:report", "afenda-sync-pack report"],
+    flags: [...candidateSelectionFlags, ...helpFlags],
+    examples: [
+      "pnpm run feature-sync:report",
+      "pnpm run feature-sync:report -- --lane operate",
+      "afenda-sync-pack report --pack business-saas/internal-support-crm",
+    ],
     load: () => import("./report.js"),
   },
   generate: {
     name: "generate",
     summary: "Generate planning packs from the curated seed.",
-    usage: "afenda-sync-pack generate",
+    usage:
+      "afenda-sync-pack generate [--category <category>] [--lane <lane>] [--owner <team>] [--pack <id>]",
     group: "operator",
     gate: false,
-    flags: [...helpFlags],
-    examples: ["pnpm run feature-sync:generate", "afenda-sync-pack generate"],
+    flags: [...candidateSelectionFlags, ...helpFlags],
+    examples: [
+      "pnpm run feature-sync:generate",
+      "pnpm run feature-sync:generate -- --category mini-developer",
+      "afenda-sync-pack generate --pack internal-app-builder-sandbox",
+    ],
     troubleshooting: [
       "Generated pack validation failures: run pnpm run feature-sync:check after generation.",
     ],
@@ -375,6 +445,30 @@ export function resolveSyncPackCliRequest(
   }
 }
 
+export function readCandidateSelection(
+  cli: ParsedCliCommand
+): CandidateSelection {
+  return candidateSelectionSchema.parse({
+    category: cli.getOptionValue("--category"),
+    lane: cli.getOptionValue("--lane"),
+    owner: cli.getOptionValue("--owner"),
+    pack: cli.getOptionValue("--pack"),
+  })
+}
+
+export function formatCandidateSelectionSummary(
+  selection: CandidateSelection
+): string {
+  const parts = [
+    selection.category ? `category=${selection.category}` : undefined,
+    selection.lane ? `lane=${selection.lane}` : undefined,
+    selection.owner ? `owner=${selection.owner}` : undefined,
+    selection.pack ? `pack=${selection.pack}` : undefined,
+  ].filter((value): value is string => Boolean(value))
+
+  return parts.length > 0 ? parts.join(", ") : "none"
+}
+
 export function printCommandHelp(command: CliCommandDefinition): void {
   const contractLabel =
     command.group === "gate"
@@ -441,6 +535,10 @@ export function printSyncPackUsage(): void {
   console.log(
     "  Runs release-check, check, doctor, and validate in the supported order."
   )
+  console.log("  pnpm run feature-sync:quality-validate")
+  console.log(
+    "  Runs the package-first release validation workflow for @afenda/features-sdk."
+  )
   console.log("")
   console.log("Usage:")
   console.log("  afenda-sync-pack <command> [options]")
@@ -503,12 +601,17 @@ export function printQuickstart(): void {
   console.log("  check          Validates generated feature-pack files.")
   console.log("  doctor         Finds stack and dependency-version drift.")
   console.log("  validate       Validates curated seed input.")
-  console.log("  rank/report    Human-readable portfolio review commands.")
   console.log(
-    "  generate       Writes generated planning packs from seed data."
+    "  quality-validate Runs the sequential package-first release validation workflow."
   )
   console.log(
-    "  scaffold       Writes a tech-stack scaffold for a candidate app."
+    "  rank/report    Human-readable portfolio review commands with optional candidate filters."
+  )
+  console.log(
+    "  generate       Writes generated planning packs from seed data or a filtered candidate slice."
+  )
+  console.log(
+    "  scaffold       Writes a tech-stack scaffold with placement and route hints for a candidate app."
   )
   console.log("")
   console.log("What does green mean?")

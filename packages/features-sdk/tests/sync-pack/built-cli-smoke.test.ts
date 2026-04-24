@@ -68,6 +68,18 @@ describe("built Sync-Pack CLIs", () => {
     expect(stdout).toContain("pnpm run feature-sync:verify")
   })
 
+  it("prints quality-validate help from the dispatcher", async () => {
+    const { stdout, stderr } = await runBuiltCli("sync-pack.js", [
+      "help",
+      "quality-validate",
+    ])
+
+    expect(stderr).toBe("")
+    expect(stdout).toContain("afenda-sync-pack quality-validate")
+    expect(stdout).toContain("--preflight")
+    expect(stdout).toContain("pnpm run feature-sync:quality-validate")
+  })
+
   it("runs verify as JSON-only output", async () => {
     const { stdout, stderr } = await runBuiltCli("sync-pack.js", [
       "verify",

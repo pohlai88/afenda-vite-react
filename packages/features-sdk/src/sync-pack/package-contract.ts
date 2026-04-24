@@ -68,15 +68,27 @@ const requiredFilesEntries = [
 
 const requiredSourceFiles = [
   "README.md",
+  "docs/README.md",
+  "docs/getting-started.md",
+  "docs/junior-developer-usage-guide.md",
+  "docs/junior-devops-quickstart.md",
   "docs/sync-pack/README.md",
+  "docs/sync-pack/architecture-map.md",
   "docs/sync-pack/CLI_OPERATOR_BENCHMARK_NOTE.md",
+  "docs/sync-pack/command-handbook.md",
   "docs/sync-pack/FSDK-CLI-001_RELEASE_GATE_CLI_CONTRACT.md",
   "docs/sync-pack/FSDK-CLI-002_OPERATOR_WORKFLOW_CONTRACT.md",
   "docs/sync-pack/FSDK-CLI-003_COMMAND_TREE_CONTRACT.md",
   "docs/sync-pack/FSDK-CLI-004_ROOT_COMMAND_CONTRACT.md",
   "docs/sync-pack/FSDK-CLI_SCORECARD.md",
   "docs/sync-pack/FSDK-FINDING-001_UNIFIED_FINDING_CONTRACT.md",
+  "docs/sync-pack/finding-remediation-catalog.md",
   "docs/sync-pack/INTERNAL_OPERATING_CONTRACT.md",
+  "docs/sync-pack/INTERNAL_ROADMAP.md",
+  "docs/sync-pack/metadata-reference.md",
+  "docs/sync-pack/QUALITY_VALIDATION_EXECUTION_PLAN.md",
+  "docs/sync-pack/recipes.md",
+  "docs/sync-pack/troubleshooting.md",
   "rules/sync-pack/FEATURE_APPROVAL_GATE.md",
   "rules/sync-pack/FEATURE_PRIORITY_MATRIX.md",
   "rules/sync-pack/FEATURE_SYNC_PACK_DOD.md",
@@ -98,8 +110,25 @@ const requiredBuildAssetFiles = [
   "dist/sync-pack/templates/10-handoff.md",
 ] as const
 
+const findingRemediationDocPath =
+  "docs/sync-pack/finding-remediation-catalog.md" as const
+const releaseCheckCommand = "pnpm run feature-sync:release-check" as const
+const buildCommand = "pnpm --filter @afenda/features-sdk build" as const
+
 async function readPackageJson(packageJsonPath: string): Promise<PackageJson> {
   return JSON.parse(await readFile(packageJsonPath, "utf8")) as PackageJson
+}
+
+function createReleaseCheckRemediation(
+  action: string,
+  options: {
+    readonly command?: string
+  } = {}
+): ReturnType<typeof createFindingRemediation> {
+  return createFindingRemediation(action, {
+    command: options.command ?? releaseCheckCommand,
+    doc: findingRemediationDocPath,
+  })
 }
 
 function packageTargetToPath(packageRoot: string, target: string): string {
@@ -148,11 +177,10 @@ function validateExports(
         code: "missing-export-target",
         filePath,
         message: `Export target ${target} does not exist.`,
-        remediation: createFindingRemediation(
-          "Build @afenda/features-sdk before running release-check.",
+        remediation: createReleaseCheckRemediation(
+          `Rebuild @afenda/features-sdk so export target ${target} is emitted again, then rerun release-check.`,
           {
-            command: "pnpm --filter @afenda/features-sdk build",
-            doc: "docs/sync-pack/FSDK-CLI-001_RELEASE_GATE_CLI_CONTRACT.md",
+            command: buildCommand,
           }
         ),
       },
@@ -189,8 +217,8 @@ async function validateBins(
         code: "bin-target-not-js",
         filePath,
         message: `Bin ${binName} target ${target} must end with .js.`,
-        remediation: createFindingRemediation(
-          "Update package.json bin targets to point at built JavaScript files with .js extension."
+        remediation: createReleaseCheckRemediation(
+          `Update package.json so bin ${binName} points to a built .js entrypoint, then rerun release-check.`
         ),
       })
     }
@@ -201,11 +229,10 @@ async function validateBins(
         code: "missing-bin-target",
         filePath,
         message: `Bin ${binName} target ${target} does not exist.`,
-        remediation: createFindingRemediation(
-          "Build @afenda/features-sdk before running release-check.",
+        remediation: createReleaseCheckRemediation(
+          `Rebuild @afenda/features-sdk so bin target ${target} exists again, then rerun release-check.`,
           {
-            command: "pnpm --filter @afenda/features-sdk build",
-            doc: "docs/sync-pack/FSDK-CLI-001_RELEASE_GATE_CLI_CONTRACT.md",
+            command: buildCommand,
           }
         ),
       })
@@ -220,8 +247,11 @@ async function validateBins(
         code: "bin-target-missing-shebang",
         filePath,
         message: `Bin ${binName} target ${target} must start with #!/usr/bin/env node.`,
-        remediation: createFindingRemediation(
-          "Restore the Node shebang at the top of the CLI entrypoint source file."
+        remediation: createReleaseCheckRemediation(
+          `Restore the Node shebang in the CLI entrypoint that builds ${target}, rebuild the package, then rerun release-check.`,
+          {
+            command: buildCommand,
+          }
         ),
       })
     }
@@ -240,8 +270,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "invalid-package-name",
       message: "Package name must be @afenda/features-sdk.",
-      remediation: createFindingRemediation(
-        "Restore the internal SDK package name in packages/features-sdk/package.json."
+      remediation: createReleaseCheckRemediation(
+        "Restore the internal SDK package name in packages/features-sdk/package.json, then rerun release-check."
       ),
     })
   }
@@ -251,8 +281,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "missing-package-version",
       message: "Package version must be declared.",
-      remediation: createFindingRemediation(
-        "Restore a declared package version in packages/features-sdk/package.json."
+      remediation: createReleaseCheckRemediation(
+        "Restore a declared package version in packages/features-sdk/package.json, then rerun release-check."
       ),
     })
   }
@@ -262,8 +292,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "invalid-package-module-type",
       message: "Package type must be module.",
-      remediation: createFindingRemediation(
-        "Set package.json type to module so the published SDK stays ESM."
+      remediation: createReleaseCheckRemediation(
+        "Set package.json type to module so the published SDK stays ESM, then rerun release-check."
       ),
     })
   }
@@ -273,8 +303,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "missing-package-description",
       message: "Package description must be declared.",
-      remediation: createFindingRemediation(
-        "Restore the package description in packages/features-sdk/package.json."
+      remediation: createReleaseCheckRemediation(
+        "Restore the package description in packages/features-sdk/package.json, then rerun release-check."
       ),
     })
   }
@@ -284,8 +314,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "invalid-package-license",
       message: "Package license must remain UNLICENSED for internal readiness.",
-      remediation: createFindingRemediation(
-        "Restore the package license to UNLICENSED until partner/public externalization is approved."
+      remediation: createReleaseCheckRemediation(
+        "Restore the package license to UNLICENSED until partner/public externalization is approved, then rerun release-check."
       ),
     })
   }
@@ -295,8 +325,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "invalid-repository-directory",
       message: "Package repository.directory must be packages/features-sdk.",
-      remediation: createFindingRemediation(
-        "Restore repository.directory to packages/features-sdk in package.json."
+      remediation: createReleaseCheckRemediation(
+        "Restore repository.directory to packages/features-sdk in package.json, then rerun release-check."
       ),
     })
   }
@@ -306,8 +336,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "missing-package-bugs-url",
       message: "Package bugs.url must be declared.",
-      remediation: createFindingRemediation(
-        "Declare bugs.url in packages/features-sdk/package.json."
+      remediation: createReleaseCheckRemediation(
+        "Declare bugs.url in packages/features-sdk/package.json, then rerun release-check."
       ),
     })
   }
@@ -317,8 +347,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "missing-package-homepage",
       message: "Package homepage must be declared.",
-      remediation: createFindingRemediation(
-        "Declare homepage in packages/features-sdk/package.json."
+      remediation: createReleaseCheckRemediation(
+        "Declare homepage in packages/features-sdk/package.json, then rerun release-check."
       ),
     })
   }
@@ -328,8 +358,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "invalid-publish-access",
       message: "Package publishConfig.access must remain restricted.",
-      remediation: createFindingRemediation(
-        "Restore publishConfig.access to restricted; partner/public publish posture is deferred."
+      remediation: createReleaseCheckRemediation(
+        "Restore publishConfig.access to restricted; partner/public publish posture is deferred, then rerun release-check."
       ),
     })
   }
@@ -339,8 +369,8 @@ function validatePackageMetadata(
       severity: "error",
       code: "missing-sync-pack-keyword",
       message: "Package keywords must include sync-pack.",
-      remediation: createFindingRemediation(
-        "Add sync-pack to the package keywords list."
+      remediation: createReleaseCheckRemediation(
+        "Add sync-pack to the package keywords list, then rerun release-check."
       ),
     })
   }
@@ -363,8 +393,8 @@ function validateFiles(
         severity: "error",
         code: "missing-files-entry",
         message: `Package files must include ${entry}.`,
-        remediation: createFindingRemediation(
-          "Restore the required files entry in packages/features-sdk/package.json."
+        remediation: createReleaseCheckRemediation(
+          `Restore ${entry} to the package files list in packages/features-sdk/package.json, then rerun release-check.`
         ),
       },
     ]
@@ -387,8 +417,8 @@ function validateRequiredPackageFiles(
         code: "missing-required-package-file",
         filePath,
         message: `Required package file ${target} does not exist.`,
-        remediation: createFindingRemediation(
-          "Restore the required Sync-Pack docs, rules, or seed data before release-check."
+        remediation: createReleaseCheckRemediation(
+          `Restore the required package file ${target}, then rerun release-check.`
         ),
       },
     ]
@@ -411,10 +441,10 @@ function validateRequiredBuildAssets(
         code: "missing-required-build-asset",
         filePath,
         message: `Required build asset ${target} does not exist.`,
-        remediation: createFindingRemediation(
-          "Rebuild @afenda/features-sdk and verify the asset copy step restores the missing template.",
+        remediation: createReleaseCheckRemediation(
+          `Rebuild @afenda/features-sdk so build asset ${target} is copied into dist again, then rerun release-check.`,
           {
-            command: "pnpm --filter @afenda/features-sdk build",
+            command: buildCommand,
           }
         ),
       },
@@ -434,8 +464,8 @@ function validateRuntimeDependencies(
       severity: "error",
       code: "missing-runtime-zod-dependency",
       message: "Package must declare zod as a runtime dependency.",
-      remediation: createFindingRemediation(
-        "Restore zod under dependencies, not only devDependencies."
+      remediation: createReleaseCheckRemediation(
+        "Restore zod under dependencies, not only devDependencies, then rerun release-check."
       ),
     },
   ]
@@ -460,8 +490,8 @@ function validateNodeEngine(
       code: "node-engine-policy-mismatch",
       filePath: packageJsonPath,
       message: `Package node engine ${packageNodeEngine ?? "missing"} must match root policy ${rootNodeEngine ?? "missing"} in ${rootPackageJsonPath}.`,
-      remediation: createFindingRemediation(
-        "Synchronize packages/features-sdk engines.node with the root package policy."
+      remediation: createReleaseCheckRemediation(
+        "Synchronize packages/features-sdk engines.node with the root package policy, then rerun release-check."
       ),
     },
   ]

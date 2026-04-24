@@ -32,11 +32,14 @@
     "script:inspect-vite-env": "pnpm --filter @afenda/web run inspect:vite-env",
     "script:inspect-node-runtime": "tsx scripts/runtime/inspect-node-runtime.ts",
     "script:generate-docs-readme": "tsx scripts/docs/generate-docs-readme.ts",
-    "script:check-governance": "pnpm run script:check-governance-registry && pnpm run script:check-governance-bindings && pnpm run script:run-governance-checks && pnpm run script:generate-governance-report && pnpm run script:generate-governance-register && pnpm run script:test-governance-honesty",
+    "script:check-governance": "tsx scripts/governance/check-governance.ts",
+    "script:check-governance:fast": "tsx scripts/governance/check-governance-fast.ts",
     "script:check-toolchain-runtime": "tsx scripts/runtime/check-toolchain-runtime.ts",
     "script:check-afenda-config": "tsx scripts/config/check-afenda-config.ts",
     "script:check-governance-registry": "tsx scripts/governance/check-governance-registry.ts",
     "script:check-governance-bindings": "tsx scripts/governance/check-governance-bindings.ts",
+    "script:check-governance-aggregate": "tsx scripts/governance/check-governance-aggregate.ts",
+    "script:check-governance-register": "tsx scripts/governance/check-governance-register.ts",
     "script:check-governance-waivers": "tsx scripts/governance/check-governance-waivers.ts",
     "script:check-architecture-contracts": "tsx scripts/governance/check-architecture-contracts.ts",
     "script:check-doc-governance": "tsx scripts/governance/check-doc-governance.ts",
@@ -53,6 +56,7 @@
     "script:check-notebook-governance": "tsx scripts/governance/check-notebook-governance.ts",
     "script:generate-storage-governance-report": "tsx scripts/governance/generate-storage-governance-report.ts",
     "script:generate-file-survival-report": "tsx scripts/governance/generate-file-survival-report.ts",
+    "script:sync-governance": "tsx scripts/governance/sync-governance.ts",
     "script:check-file-survival": "tsx scripts/governance/check-file-survival.ts",
     "script:generate-governance-reports": "pnpm run script:generate-filesystem-governance-report && pnpm run script:generate-generated-artifact-governance-report && pnpm run script:generate-storage-governance-report && pnpm run script:generate-file-survival-report && pnpm run script:generate-governance-report && pnpm run script:generate-governance-register",
     "script:test-governance": "tsx --test scripts/lib/governance-spine.test.ts",
@@ -76,6 +80,7 @@
     "feature-sync": "pnpm exec turbo run sync-pack:quickstart --filter=@afenda/features-sdk --",
     "feature-sync:help": "pnpm exec turbo run sync-pack:help --filter=@afenda/features-sdk --",
     "feature-sync:verify": "pnpm exec turbo run sync-pack:verify --filter=@afenda/features-sdk --",
+    "feature-sync:quality-validate": "pnpm exec turbo run sync-pack:quality-validate --filter=@afenda/features-sdk --",
     "feature-sync:validate": "pnpm exec turbo run sync-pack:validate --filter=@afenda/features-sdk --",
     "feature-sync:rank": "pnpm exec turbo run sync-pack:rank --filter=@afenda/features-sdk",
     "feature-sync:generate": "pnpm exec turbo run sync-pack:generate --filter=@afenda/features-sdk",
@@ -114,12 +119,12 @@
     "resend-cli": "^1.8.0",
     "shadcn": "^4.2.0",
     "simple-git-hooks": "^2.13.1",
-    "tsx": "^4.21.0",
+    "tsx": "catalog:",
     "turbo": "^2.9.4",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm run script:check-governance && pnpm exec lint-staged --concurrent false"
+    "pre-commit": "pnpm run script:check-governance:fast && pnpm exec lint-staged --concurrent false"
   }
 }

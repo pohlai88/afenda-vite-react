@@ -59,6 +59,10 @@ const guardedMajorVersions: Record<string, number> = {
   "@tailwindcss/cli": 4,
 }
 
+const findingRemediationDocPath =
+  "docs/sync-pack/finding-remediation-catalog.md" as const
+const doctorCommand = "pnpm run feature-sync:doctor" as const
+
 function parseMajorVersion(versionSpec: string): number | undefined {
   const match = versionSpec.match(/\d+/)
   return match ? Number(match[0]) : undefined
@@ -171,6 +175,21 @@ function resolveVersionSpec(
   return versionSpec
 }
 
+function describeDependencyField(
+  entry: ReturnType<typeof dependencyEntries>[number]
+): string {
+  return `${entry.section}.${entry.name}`
+}
+
+function createDoctorRemediation(
+  action: string
+): ReturnType<typeof createFindingRemediation> {
+  return createFindingRemediation(action, {
+    command: doctorCommand,
+    doc: findingRemediationDocPath,
+  })
+}
+
 function checkGuardedMajorVersion(
   entry: ReturnType<typeof dependencyEntries>[number],
   packageJsonPath: string,
@@ -199,11 +218,8 @@ function checkGuardedMajorVersion(
       code: "guarded-major-version-mismatch",
       filePath: packageJsonPath,
       message: `${entry.name} in ${entry.section} resolves to ${resolvedVersionSpec}; expected major ${expectedMajorVersion}.`,
-      remediation: createFindingRemediation(
-        "Align the dependency major version with the governed workspace policy.",
-        {
-          doc: "docs/sync-pack/FSDK-FINDING-001_UNIFIED_FINDING_CONTRACT.md",
-        }
+      remediation: createDoctorRemediation(
+        `Edit ${packageJsonPath} so ${describeDependencyField(entry)} resolves to major ${expectedMajorVersion}, then rerun Sync-Pack doctor.`
       ),
     },
   ]
@@ -232,11 +248,8 @@ function checkCatalogDrift(
         code: "catalog-major-version-drift",
         filePath: packageJsonPath,
         message: `${entry.name} in ${entry.section} declares ${entry.versionSpec}; workspace catalog is ${catalogVersions[entry.name]}.`,
-        remediation: createFindingRemediation(
-          "Update the declared version or switch to catalog: so the package matches the workspace catalog.",
-          {
-            doc: "docs/sync-pack/INTERNAL_OPERATING_CONTRACT.md",
-          }
+        remediation: createDoctorRemediation(
+          `Edit ${packageJsonPath} so ${describeDependencyField(entry)} uses catalog: or matches ${catalogVersions[entry.name]}, then rerun Sync-Pack doctor.`
         ),
       },
     ]
@@ -248,8 +261,8 @@ function checkCatalogDrift(
       code: "catalog-not-used",
       filePath: packageJsonPath,
       message: `${entry.name} is available in the workspace catalog; prefer catalog: instead of ${entry.versionSpec}.`,
-      remediation: createFindingRemediation(
-        "Replace the explicit version with catalog: if the workspace policy allows it."
+      remediation: createDoctorRemediation(
+        `Edit ${packageJsonPath} and change ${describeDependencyField(entry)} from ${entry.versionSpec} to catalog:, then rerun Sync-Pack doctor.`
       ),
     },
   ]

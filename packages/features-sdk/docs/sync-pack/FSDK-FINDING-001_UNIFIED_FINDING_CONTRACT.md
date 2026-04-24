@@ -48,5 +48,7 @@ type Finding = {
 
 - Every `error` finding must include remediation.
 - `warning` findings should include remediation when there is a concrete next step.
+- Remediation should include the next rerun command when one exists.
+- Remediation should include the governed doc family when the finding belongs to a documented finding set.
 - JSON result envelopes must preserve `findings`, `errorCount`, and `warningCount`.
 - `verify` may extend the base finding with workflow-specific fields such as `step`.

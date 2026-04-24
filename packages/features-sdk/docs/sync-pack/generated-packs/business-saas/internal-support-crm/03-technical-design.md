@@ -24,7 +24,7 @@ order: 30
 - Category: business-saas
 - Build mode: adapt
 - Tech stack category override:
-- Tenant-aware workflow
+  - Tenant-aware workflow
 - Approvals
 - Audit records
 - Role/permission matrix

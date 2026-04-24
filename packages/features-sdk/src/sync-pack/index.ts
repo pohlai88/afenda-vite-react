@@ -3,6 +3,13 @@ export {
   appCandidateArraySchema,
   appCandidateSchema,
 } from "./schema/candidate.schema.js"
+export type { CandidateSelection } from "./candidate-selection.js"
+export {
+  candidateSelectionSchema,
+  describeCandidateSelection,
+  filterCandidates,
+  hasCandidateSelection,
+} from "./candidate-selection.js"
 export type { FeatureCategory, FeatureLane } from "./schema/category.schema.js"
 export {
   categoryLaneMap,
@@ -60,12 +67,18 @@ export type {
   StackDependency,
   StackDependencyGroup,
   StackScaffoldManifest,
+  StackScaffoldPlacement,
+  StackRouteSuggestion,
+  StackRouteSurface,
 } from "./schema/stack-contract.schema.js"
 export {
   dependencyVersionSourceSchema,
   stackDependencyGroupSchema,
   stackDependencySchema,
+  stackRouteSuggestionSchema,
+  stackRouteSurfaceSchema,
   stackScaffoldManifestSchema,
+  stackScaffoldPlacementSchema,
 } from "./schema/stack-contract.schema.js"
 export type { CandidatePriorityScore } from "./scoring/score-candidate.js"
 export { scoreCandidate } from "./scoring/score-candidate.js"
@@ -80,7 +93,10 @@ export type {
   GenerateFeaturePackResult,
 } from "./generator/generate-pack.js"
 export { generateFeaturePack } from "./generator/generate-pack.js"
-export type { CandidateReportGroups } from "./generator/generate-report.js"
+export type {
+  CandidateReportGroups,
+  CandidateReportOptions,
+} from "./generator/generate-report.js"
 export {
   generateCandidateReport,
   groupCandidates,
@@ -154,6 +170,23 @@ export {
   summarizeSyncPackVerifyResult,
   summarizeSyncPackVerifyStep,
 } from "./verify/index.js"
+export type {
+  RunSyncPackQualityValidationOptions,
+  SyncPackQualityValidationDisposition,
+  SyncPackQualityValidationFinding,
+  SyncPackQualityValidationPhase,
+  SyncPackQualityValidationResult,
+  SyncPackQualityValidationStatus,
+  SyncPackQualityValidationStepName,
+  SyncPackQualityValidationStepResult,
+  SyncPackQualityValidationVerdict,
+} from "./quality-validation/index.js"
+export {
+  runSyncPackQualityValidation,
+  type ExternalCommandResult,
+  type ExternalCommandRunner,
+  type ExternalCommandSpec,
+} from "./quality-validation/index.js"
 export {
   findFeaturesSdkRoot,
   findWorkspaceRoot,

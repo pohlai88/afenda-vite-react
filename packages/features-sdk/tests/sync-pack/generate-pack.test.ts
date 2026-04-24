@@ -128,6 +128,40 @@ describe("checkGeneratedPacks", () => {
       await rm(outputDirectory, { recursive: true, force: true })
     }
   })
+
+  it("returns a structured finding when 00-candidate.json is invalid", async () => {
+    const outputDirectory = await mkdtemp(
+      path.join(os.tmpdir(), "feature-sync-check-invalid-")
+    )
+
+    try {
+      const result = await generateFeaturePack({
+        candidate,
+        outputDirectory,
+      })
+
+      await writeFile(
+        path.join(result.packDirectory, "00-candidate.json"),
+        "{ invalid json }\n",
+        "utf8"
+      )
+
+      const invalidCheck = await checkGeneratedPacks({
+        packsRoot: outputDirectory,
+      })
+
+      expect(invalidCheck.errorCount).toBe(1)
+      expect(invalidCheck.findings[0]).toMatchObject({
+        code: "invalid-candidate-json",
+        remediation: {
+          command: "pnpm run feature-sync:check",
+          doc: "docs/sync-pack/finding-remediation-catalog.md",
+        },
+      })
+    } finally {
+      await rm(outputDirectory, { recursive: true, force: true })
+    }
+  })
 })
 
 describe("runSyncPackValidate", () => {
@@ -163,6 +197,44 @@ describe("runSyncPackValidate", () => {
       await rm(packageRoot, { recursive: true, force: true })
     }
   })
+
+  it("returns a structured error finding for invalid seed candidate data", async () => {
+    const packageRoot = await mkdtemp(
+      path.join(os.tmpdir(), "feature-sync-validate-invalid-")
+    )
+    const seedPath = path.join(
+      packageRoot,
+      "rules",
+      "sync-pack",
+      "openalternative.seed.json"
+    )
+
+    try {
+      await mkdir(path.dirname(seedPath), { recursive: true })
+      await writeFile(
+        seedPath,
+        `${JSON.stringify([{ ...candidate, lane: "operate" }], null, 2)}\n`,
+        "utf8"
+      )
+
+      const result = await runSyncPackValidate({ packageRoot })
+
+      expect(result.errorCount).toBe(1)
+      expect(result.warningCount).toBe(0)
+      expect(result.candidateCount).toBe(0)
+      expect(result.findings[0]).toMatchObject({
+        severity: "error",
+        code: "invalid-seed-candidate",
+        filePath: seedPath,
+        remediation: {
+          command: "pnpm run feature-sync:validate",
+          doc: "docs/sync-pack/metadata-reference.md",
+        },
+      })
+    } finally {
+      await rm(packageRoot, { recursive: true, force: true })
+    }
+  })
 })
 
 describe("root delegated scripts", () => {
@@ -174,6 +246,9 @@ describe("root delegated scripts", () => {
 
     expect(rootPackageJson.scripts?.["feature-sync:verify"]).toBe(
       "pnpm exec turbo run sync-pack:verify --filter=@afenda/features-sdk --"
+    )
+    expect(rootPackageJson.scripts?.["feature-sync:quality-validate"]).toBe(
+      "pnpm exec turbo run sync-pack:quality-validate --filter=@afenda/features-sdk --"
     )
     expect(rootPackageJson.scripts?.["feature-sync"]).toBe(
       "pnpm exec turbo run sync-pack:quickstart --filter=@afenda/features-sdk --"

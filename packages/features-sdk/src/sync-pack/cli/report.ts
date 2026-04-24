@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
+import { filterCandidates } from "../candidate-selection.js"
 import { generateCandidateReport } from "../generator/generate-report.js"
 import { readSeedCandidates } from "../workspace.js"
 
 import {
+  formatCandidateSelectionSummary,
   parseCliCommand,
   printCommandHelp,
+  readCandidateSelection,
   requireSyncPackCommandDefinition,
   runCli,
 } from "./shared.js"
@@ -21,5 +24,15 @@ await runCli(async () => {
   }
 
   const candidates = await readSeedCandidates()
-  console.log(generateCandidateReport(candidates))
+  const selection = readCandidateSelection(cli)
+  const selectedCandidates = filterCandidates(candidates, selection)
+
+  if (selectedCandidates.length === 0) {
+    throw new Error(
+      `No candidates matched the requested filters (${formatCandidateSelectionSummary(selection)}).`
+    )
+  }
+
+  const report = generateCandidateReport(candidates, { filters: selection })
+  console.log(report)
 }, "Feature Sync-Pack report")
