@@ -943,6 +943,7 @@ async function renderRootReadme(
     "- AI agents: use [`AGENTS.md`](../AGENTS.md) as the execution index and doc map.",
     "- Humans: start here or from the root [`README.md`](../README.md).",
     `- App-specific and package-specific docs may also live under the owner's \`docs/\` surface when that owner starts owning local guidance.`,
+    "- Workspace package topology is summarized in [`OPERATING_MAP.md`](./OPERATING_MAP.md) and mirrored in the generated governance register.",
     "",
     `These guides include both repo-wide docs and repo-wide doctrine. Docs are explanatory or operational surfaces; doctrine is authoritative governing text classified separately from general docs.`,
     "",

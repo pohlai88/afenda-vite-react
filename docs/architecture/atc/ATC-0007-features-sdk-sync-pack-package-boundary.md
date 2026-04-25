@@ -42,7 +42,7 @@ This contract binds `@afenda/features-sdk` to its actual Sync-Pack truth boundar
 - Static checks:
   `pnpm run script:check-architecture-contracts`, `pnpm --filter @afenda/features-sdk build`, `pnpm --filter @afenda/features-sdk typecheck`
 - Tests:
-  `pnpm --filter @afenda/features-sdk test:run`, `pnpm --filter @afenda/cline test:run`
+  `pnpm --filter @afenda/features-sdk test:run`, `pnpm --filter @afenda/operator-kernel test:run`
 - CI gates:
   workspace quality, package tests, and architecture contract evidence completeness
 - Runtime assertions:
@@ -52,7 +52,7 @@ This contract binds `@afenda/features-sdk` to its actual Sync-Pack truth boundar
 
 - **Evidence path:** `.artifacts/reports/governance/architecture-contracts.report.json`
 - Required evidence artifacts:
-  architecture-contracts report, CI logs for package build/typecheck/test, scaffold contract validation in package test results, and runtime parity evidence in Cline package tests
+  architecture-contracts report, CI logs for package build/typecheck/test, scaffold contract validation in package test results, and runtime parity evidence in Operator Kernel package tests
 - Validation cadence:
   every architecture contract check and every Features SDK package change
 

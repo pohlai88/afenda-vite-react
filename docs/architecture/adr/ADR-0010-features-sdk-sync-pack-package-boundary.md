@@ -49,7 +49,7 @@ The repository also now needs this ADR to state the stronger runtime truth model
 - `@afenda/features-sdk/sync-pack` is the execution truth for the 10 governed Sync-Pack workflows
 - `syncPackWorkflowCatalog` is the authoritative metadata and execution binding surface for those workflows
 - scaffold placement output is part of the package truth model and must stay workspace-relative and POSIX-normalized
-- CLI entrypoints remain operator affordances, but `cline` runtime execution must call typed SDK APIs directly
+- CLI entrypoints remain operator affordances, but Operator Kernel runtime execution must call typed SDK APIs directly
 
 ## Decision summary
 
@@ -145,7 +145,7 @@ The repository also now needs this ADR to state the stronger runtime truth model
 - Reviewers can reason about `packages/features-sdk` as one owned package boundary and execution truth engine.
 - The package-contract checker has architecture-level context rather than standing alone as an internal implementation detail.
 - Documentation now reflects that this package is more than a CLI wrapper.
-- Cline runtime integration now depends on typed SDK calls instead of reconstructing workflow logic.
+- Operator Kernel runtime integration now depends on typed SDK calls instead of reconstructing workflow logic.
 
 ### Negative
 
@@ -155,14 +155,14 @@ The repository also now needs this ADR to state the stronger runtime truth model
 
 ## Evidence and enforcement matrix
 
-| Contract statement                                                    | Source of truth                                        | Current evidence                                                                       | Enforcement mechanism                                     | Gap / follow-up                            |
-| --------------------------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------ |
-| Features SDK is the internal Sync-Pack execution truth boundary       | this ADR, `packages/features-sdk/**`                   | package tree, workflow catalog, SDK exports, package metadata, and runtime integration | package build + typecheck + tests + architecture doctrine | none for the governed runtime slice        |
-| Public package exports stay narrow and Sync-Pack-focused              | this ADR, `packages/features-sdk/src/index.ts`         | `src/index.ts` exports only the Sync-Pack surface                                      | code review + typecheck + package tests                   | no extra export-only lint needed right now |
-| Workflow metadata and execution stay bound together                   | this ADR, `src/sync-pack/workflow-catalog.ts`          | `syncPackWorkflowCatalog` powers the Cline runtime registry and tool parity tests      | package tests + `ATC-CLINE-TOOLS-001` parity enforcement  | keep maintainer-only flows out for now     |
-| Scaffold placement paths remain governed truth                        | this ADR, `src/sync-pack/scaffold/path-contract.ts`    | runtime path assertion plus scaffold package tests                                     | runtime assertion + package tests                         | none                                       |
-| Package contract remains part of the owned truth model                | this ADR, `src/sync-pack/package-contract.ts`          | package-contract checker plus `tests/sync-pack/package-contract.test.ts`               | tests + package validation                                | none                                       |
-| Docs, rules, templates, and shipped assets remain part of package law | this ADR, package docs/rules, package `files` metadata | package-contract required file checks and built template asset expectations            | package-contract tests + install/build behavior           | richer CI evidence remains optional        |
+| Contract statement                                                    | Source of truth                                        | Current evidence                                                                            | Enforcement mechanism                                       | Gap / follow-up                            |
+| --------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------ |
+| Features SDK is the internal Sync-Pack execution truth boundary       | this ADR, `packages/features-sdk/**`                   | package tree, workflow catalog, SDK exports, package metadata, and runtime integration      | package build + typecheck + tests + architecture doctrine   | none for the governed runtime slice        |
+| Public package exports stay narrow and Sync-Pack-focused              | this ADR, `packages/features-sdk/src/index.ts`         | `src/index.ts` exports only the Sync-Pack surface                                           | code review + typecheck + package tests                     | no extra export-only lint needed right now |
+| Workflow metadata and execution stay bound together                   | this ADR, `src/sync-pack/workflow-catalog.ts`          | `syncPackWorkflowCatalog` powers the Operator Kernel runtime registry and tool parity tests | package tests + `ATC-OPERATOR-TOOLS-001` parity enforcement | keep maintainer-only flows out for now     |
+| Scaffold placement paths remain governed truth                        | this ADR, `src/sync-pack/scaffold/path-contract.ts`    | runtime path assertion plus scaffold package tests                                          | runtime assertion + package tests                           | none                                       |
+| Package contract remains part of the owned truth model                | this ADR, `src/sync-pack/package-contract.ts`          | package-contract checker plus `tests/sync-pack/package-contract.test.ts`                    | tests + package validation                                  | none                                       |
+| Docs, rules, templates, and shipped assets remain part of package law | this ADR, package docs/rules, package `files` metadata | package-contract required file checks and built template asset expectations                 | package-contract tests + install/build behavior             | richer CI evidence remains optional        |
 
 ## Implementation plan
 
@@ -191,7 +191,7 @@ The repository also now needs this ADR to state the stronger runtime truth model
 ## Validation plan
 
 - Required checks:
-  `pnpm --filter @afenda/features-sdk build`, `pnpm --filter @afenda/features-sdk typecheck`, `pnpm --filter @afenda/features-sdk test:run`, `pnpm --filter @afenda/cline test:run`, `pnpm run script:check-architecture-contracts`
+  `pnpm --filter @afenda/features-sdk build`, `pnpm --filter @afenda/features-sdk typecheck`, `pnpm --filter @afenda/features-sdk test:run`, `pnpm --filter @afenda/operator-kernel test:run`, `pnpm run script:check-architecture-contracts`
 - Required manual QA:
   review `syncPackWorkflowCatalog`, scaffold placement output, and package-contract expectations together before boundary changes
 - Runtime/operational signals to watch:

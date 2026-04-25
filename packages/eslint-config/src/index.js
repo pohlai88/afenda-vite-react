@@ -312,23 +312,23 @@ export function createRepositoryBoundaryConfig() {
       },
     },
     {
-      name: "afenda/cline-governed-boundaries",
-      files: ["packages/cline/**/*.{js,jsx,ts,tsx,mjs,cjs}"],
+      name: "afenda/operator-kernel-governed-boundaries",
+      files: ["packages/operator-kernel/**/*.{js,jsx,ts,tsx,mjs,cjs}"],
       plugins: {
         "afenda-ui": afendaUiPlugin,
       },
       rules: {
-        "afenda-ui/enforce-cline-boundaries": "error",
+        "afenda-ui/enforce-operator-kernel-boundaries": "error",
       },
     },
     {
-      name: "afenda/cline-no-subprocess-runtime",
-      files: ["packages/cline/src/**/*.{js,jsx,ts,tsx,mjs,cjs}"],
+      name: "afenda/operator-kernel-no-subprocess-runtime",
+      files: ["packages/operator-kernel/src/**/*.{js,jsx,ts,tsx,mjs,cjs}"],
       plugins: {
         "afenda-ui": afendaUiPlugin,
       },
       rules: {
-        "afenda-ui/no-cline-child-process": "error",
+        "afenda-ui/no-operator-kernel-child-process": "error",
       },
     },
     {

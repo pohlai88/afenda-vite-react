@@ -1,7 +1,7 @@
 ---
 title: ADR-0009 Cline single-package governed runtime boundaries
 description: Decision record for keeping Cline as one governed operator runtime package with strict core, runtime, MCP transport, and Feature SDK truth-engine boundaries.
-status: active
+status: superseded
 owner: governance-toolchain
 truthStatus: canonical
 docClass: canonical-doc
@@ -15,6 +15,7 @@ order: 19
 - **Implementation status:** Implemented
 - **Enforcement status:** Blocking automation + tests
 - **Evidence status:** Active
+- **Superseded by:** ADR-0016
 - **Date:** 2026-04-24
 - **Owner:** Governance toolchain
 - **Review by:** 2026-07-24
@@ -185,7 +186,7 @@ The repository now needs a stronger statement than the original migration-only b
 ## Validation plan
 
 - Required checks:
-  `pnpm --filter @afenda/cline build`, `pnpm --filter @afenda/cline typecheck`, `pnpm --filter @afenda/cline test:run`, `pnpm --filter @afenda/features-sdk typecheck`, `pnpm run script:test-repo-guard`, `pnpm run script:check-architecture-contracts`
+  Superseded by ADR-0016. Current live validation uses `pnpm --filter @afenda/operator-kernel build`, `pnpm --filter @afenda/operator-kernel typecheck`, `pnpm --filter @afenda/operator-kernel test:run`, `pnpm --filter @afenda/features-sdk typecheck`, `pnpm run script:test-repo-guard`, `pnpm run script:check-architecture-contracts`.
 - Required manual QA:
   review the runtime protocol and confirm mutating workflows remain gated to `architect_commander`
 - Runtime/operational signals to watch:
@@ -216,6 +217,6 @@ The repository now needs a stronger statement than the original migration-only b
 
 ## References
 
-- [ATC-0006 Cline package boundaries and ownership](../atc/ATC-0006-cline-package-boundaries-and-ownership.md)
+- [ATC-0006 Operator Kernel package boundaries and ownership](../atc/ATC-0006-cline-package-boundaries-and-ownership.md)
 - [ADR template](./ADR_TEMPLATE.md)
 - [Governance constitution](../governance/GOVERNANCE_CONSTITUTION.md)

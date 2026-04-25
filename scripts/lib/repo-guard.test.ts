@@ -752,14 +752,14 @@ test("boundary import findings fail on relative imports into a different workspa
   await fs.rm(fixtureRoot, { recursive: true, force: true })
 })
 
-test("boundary import findings fail when cline reaches into features-sdk source internals", async () => {
+test("boundary import findings fail when operator-kernel reaches into features-sdk source internals", async () => {
   const fixtureRoot = path.join(
     workspaceRoot,
-    ".artifacts/tmp/repo-guard-cline-features-sdk-boundary"
+    ".artifacts/tmp/repo-guard-operator-kernel-features-sdk-boundary"
   )
   const importerPath = path.join(
     fixtureRoot,
-    "packages/cline/src/plugins/features-sdk/tools/leak.ts"
+    "packages/operator-kernel/src/plugins/features-sdk/tools/leak.ts"
   )
 
   await fs.mkdir(path.dirname(importerPath), { recursive: true })
@@ -771,7 +771,9 @@ test("boundary import findings fail when cline reaches into features-sdk source 
 
   const findings = await evaluateBoundaryImportFindings({
     repoRoot: fixtureRoot,
-    filePaths: ["packages/cline/src/plugins/features-sdk/tools/leak.ts"],
+    filePaths: [
+      "packages/operator-kernel/src/plugins/features-sdk/tools/leak.ts",
+    ],
     policy: repoGuardPolicy.boundaryImport,
   })
 
@@ -779,7 +781,7 @@ test("boundary import findings fail when cline reaches into features-sdk source 
   assert.equal(findings[0]?.ruleId, "RG-PKG-BOUNDARY-001")
   assert.match(
     findings[0]?.message ?? "",
-    /packages\/cline may not reach into packages\/features-sdk/u
+    /packages\/operator-kernel may not reach into packages\/features-sdk/u
   )
 
   await fs.rm(fixtureRoot, { recursive: true, force: true })
@@ -788,15 +790,15 @@ test("boundary import findings fail when cline reaches into features-sdk source 
 test("boundary import findings keep MCP transport pinned to runtime/index", async () => {
   const fixtureRoot = path.join(
     workspaceRoot,
-    ".artifacts/tmp/repo-guard-cline-mcp-runtime-only"
+    ".artifacts/tmp/repo-guard-operator-kernel-mcp-runtime-only"
   )
   const blockedImporterPath = path.join(
     fixtureRoot,
-    "packages/cline/src/mcp-server/blocked.ts"
+    "packages/operator-kernel/src/mcp-adapter/blocked.ts"
   )
   const allowedImporterPath = path.join(
     fixtureRoot,
-    "packages/cline/src/mcp-server/allowed.ts"
+    "packages/operator-kernel/src/mcp-adapter/allowed.ts"
   )
 
   await fs.mkdir(path.dirname(blockedImporterPath), { recursive: true })
@@ -807,15 +809,15 @@ test("boundary import findings keep MCP transport pinned to runtime/index", asyn
   )
   await fs.writeFile(
     allowedImporterPath,
-    `import { createDefaultClineRuntime } from "../runtime/index.js"\n`,
+    `import { createDefaultOperatorRuntime } from "../runtime/index.js"\n`,
     "utf8"
   )
 
   const findings = await evaluateBoundaryImportFindings({
     repoRoot: fixtureRoot,
     filePaths: [
-      "packages/cline/src/mcp-server/blocked.ts",
-      "packages/cline/src/mcp-server/allowed.ts",
+      "packages/operator-kernel/src/mcp-adapter/blocked.ts",
+      "packages/operator-kernel/src/mcp-adapter/allowed.ts",
     ],
     policy: repoGuardPolicy.boundaryImport,
   })
@@ -827,18 +829,18 @@ test("boundary import findings keep MCP transport pinned to runtime/index", asyn
   await fs.rm(fixtureRoot, { recursive: true, force: true })
 })
 
-test("boundary import findings fail on child_process imports and subprocess execution in cline runtime", async () => {
+test("boundary import findings fail on child_process imports and subprocess execution in operator-kernel runtime", async () => {
   const fixtureRoot = path.join(
     workspaceRoot,
-    ".artifacts/tmp/repo-guard-cline-subprocess"
+    ".artifacts/tmp/repo-guard-operator-kernel-subprocess"
   )
   const importOnlyPath = path.join(
     fixtureRoot,
-    "packages/cline/src/runtime/import-only.ts"
+    "packages/operator-kernel/src/runtime/import-only.ts"
   )
   const spawnPath = path.join(
     fixtureRoot,
-    "packages/cline/src/runtime/spawn.ts"
+    "packages/operator-kernel/src/runtime/spawn.ts"
   )
 
   await fs.mkdir(path.dirname(importOnlyPath), { recursive: true })
@@ -856,8 +858,8 @@ test("boundary import findings fail on child_process imports and subprocess exec
   const findings = await evaluateBoundaryImportFindings({
     repoRoot: fixtureRoot,
     filePaths: [
-      "packages/cline/src/runtime/import-only.ts",
-      "packages/cline/src/runtime/spawn.ts",
+      "packages/operator-kernel/src/runtime/import-only.ts",
+      "packages/operator-kernel/src/runtime/spawn.ts",
     ],
     policy: repoGuardPolicy.boundaryImport,
   })

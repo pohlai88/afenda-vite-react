@@ -74,7 +74,7 @@ Declared in `scripts/afenda.config.json` for topology enforcement. Regenerate th
 | `apps/api`                      | `api-app`               |
 | `packages/_database`            | `database-package`      |
 | `packages/better-auth`          | `source-library`        |
-| `packages/cline`                | `source-library`        |
+| `packages/operator-kernel`      | `source-library`        |
 | `packages/contracts`            | `source-library`        |
 | `packages/design-system`        | `design-system-package` |
 | `packages/env-loader`           | `source-library`        |
@@ -100,10 +100,10 @@ Declared in `scripts/afenda.config.json` for topology enforcement. Regenerate th
 
 ## Current governance summary
 
-- Final verdict: `warn`
-- Explanation: warn: no blocking failures, but warned domains have drift or incomplete evidence (GOV-TRUTH-001)
-- Verdict reasons: warned-domain
-- Domains: 11 total; 10 passed; 1 warned; 0 blocked
+- Final verdict: `pass`
+- Explanation: pass: no blocking failures, no expired waivers, and all enforced domains emitted evidence (11/11 reports present)
+- Verdict reasons: all-clear
+- Domains: 11 total; 11 passed; 0 warned; 0 blocked
 - Evidence complete: 11 / 11
 - Active waivers: 0; expired waivers: 0
 

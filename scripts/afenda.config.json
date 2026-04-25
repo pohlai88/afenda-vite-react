@@ -386,7 +386,7 @@
           "extraAllowedFiles": []
         },
         {
-          "path": "packages/cline",
+          "path": "packages/operator-kernel",
           "profile": "source-library",
           "extraAllowedDirectories": [],
           "extraAllowedFiles": []

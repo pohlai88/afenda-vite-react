@@ -77,9 +77,15 @@
     "**/packages/vitest-config/_vitest-github/**": true
   },
 
-  "vitest.configSearchPatternExclude": "{**/node_modules/**,**/vendor/**,**/.*/**,**/*.d.ts,**/packages/vitest-config/_vitest-github/**}",
+  "vitest.rootConfig": "./vitest.config.ts",
+  "vitest.configSearchPatternInclude": "{vitest.config.ts,apps/*/vite.config.ts,apps/*/vitest.config.ts,packages/*/vitest.config.ts}",
+  "vitest.configSearchPatternExclude": "{**/node_modules/**,**/vendor/**,**/.*/**,**/archives/**,**/.legacy/**,**/.artifacts/**,**/*.d.ts,**/packages/vitest-config/_vitest-github/**}",
+  "vitest.nodeEnv": {
+    "VITEST_MAX_WORKERS": "50%",
+    "VITEST_POOL": "forks"
+  },
 
-  "vitest.maximumConfigs": 12,
+  "vitest.maximumConfigs": 9,
 
   "notebook.formatOnSave.enabled": true,
   "notebook.defaultFormatter": "esbenp.prettier-vscode"

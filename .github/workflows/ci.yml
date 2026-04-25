@@ -122,6 +122,9 @@ jobs:
       - name: Features SDK package surface check
         run: pnpm --filter @afenda/features-sdk surface:check
 
+      - name: Operator Kernel package surface check
+        run: pnpm --filter @afenda/operator-kernel surface:check
+
       - name: Database package Drizzle guardrails
         run: pnpm -C packages/_database run db:ci
 

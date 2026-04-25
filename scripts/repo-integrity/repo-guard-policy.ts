@@ -578,72 +578,72 @@ export const repoGuardPolicy: RepoGuardPolicy = {
       },
       {
         id: "RG-PKG-BOUNDARY-001",
-        scopeRoot: "packages/cline/src",
+        scopeRoot: "packages/operator-kernel/src",
         blockedTargetPrefixes: ["packages/features-sdk"],
         severity: "error",
         message:
-          "packages/cline may not reach into packages/features-sdk by relative path. Consume the public @afenda/features-sdk/sync-pack surface instead.",
+          "packages/operator-kernel may not reach into packages/features-sdk by relative path. Consume the public @afenda/features-sdk/sync-pack surface instead.",
         suggestedFix:
           "Replace the relative filesystem reach with @afenda/features-sdk/sync-pack.",
       },
       {
         id: "RG-PKG-BOUNDARY-001",
-        scopeRoot: "packages/cline/src",
+        scopeRoot: "packages/operator-kernel/src",
         blockedTargetPrefixes: [],
         blockedImportPatterns: [
           {
             pattern: /^@afenda\/features-sdk(?!\/sync-pack$)/u,
             message:
-              "packages/cline may consume only the public @afenda/features-sdk/sync-pack surface.",
+              "packages/operator-kernel may consume only the public @afenda/features-sdk/sync-pack surface.",
             suggestedFix:
               "Import the Sync-Pack execution truth through @afenda/features-sdk/sync-pack only.",
           },
         ],
         severity: "error",
         message:
-          "packages/cline may consume only the governed public Sync-Pack surface from Features SDK.",
+          "packages/operator-kernel may consume only the governed public Sync-Pack surface from Features SDK.",
       },
       {
         id: "RG-PKG-BOUNDARY-001",
-        scopeRoot: "packages/cline/src/mcp-server",
+        scopeRoot: "packages/operator-kernel/src/mcp-adapter",
         blockedTargetPrefixes: [
-          "packages/cline/src/core",
-          "packages/cline/src/plugins",
-          "packages/cline/src/runtime",
+          "packages/operator-kernel/src/core",
+          "packages/operator-kernel/src/plugins",
+          "packages/operator-kernel/src/runtime",
         ],
-        allowedTargetPrefixes: ["packages/cline/src/runtime/index"],
+        allowedTargetPrefixes: ["packages/operator-kernel/src/runtime/index"],
         severity: "error",
         message:
-          "packages/cline/src/mcp-server is transport-only and may depend only on the top-level runtime API.",
+          "packages/operator-kernel/src/mcp-adapter is transport-only and may depend only on the top-level runtime API.",
         suggestedFix:
-          "Delegate through packages/cline/src/runtime/index.ts instead of importing runtime, core, or plugin internals.",
+          "Delegate through packages/operator-kernel/src/runtime/index.ts instead of importing runtime, core, or plugin internals.",
       },
       {
         id: "RG-PKG-BOUNDARY-001",
-        scopeRoot: "packages/cline/src/mcp-server",
+        scopeRoot: "packages/operator-kernel/src/mcp-adapter",
         blockedTargetPrefixes: [],
         blockedImportPatterns: [
           {
             pattern: /^@afenda\/features-sdk(?:\/|$)/u,
             message:
-              "packages/cline/src/mcp-server is transport-only and may not import Features SDK directly.",
+              "packages/operator-kernel/src/mcp-adapter is transport-only and may not import Features SDK directly.",
             suggestedFix:
-              "Keep MCP transport bound to the top-level Cline runtime API only.",
+              "Keep MCP transport bound to the top-level Operator Kernel runtime API only.",
           },
         ],
         severity: "error",
         message:
-          "packages/cline/src/mcp-server is transport-only and may not import Features SDK directly.",
+          "packages/operator-kernel/src/mcp-adapter is transport-only and may not import Features SDK directly.",
       },
       {
         id: "RG-EXEC-001",
-        scopeRoot: "packages/cline/src",
+        scopeRoot: "packages/operator-kernel/src",
         blockedTargetPrefixes: [],
         blockedImportPatterns: [
           {
             pattern: /^(?:node:)?child_process$/u,
             message:
-              "packages/cline/src may not import child_process. Execute through the public Sync-Pack workflow catalog instead.",
+              "packages/operator-kernel/src may not import child_process. Execute through the public Sync-Pack workflow catalog instead.",
             suggestedFix:
               "Remove child_process usage and route execution through the typed SDK workflow catalog.",
           },
@@ -653,14 +653,14 @@ export const repoGuardPolicy: RepoGuardPolicy = {
             pattern:
               /\b(?:spawn|spawnSync|exec|execSync|execFile|execFileSync|fork)\s*\(/u,
             message:
-              "packages/cline/src may not execute subprocess APIs. Route execution through the typed SDK workflow catalog instead.",
+              "packages/operator-kernel/src may not execute subprocess APIs. Route execution through the typed SDK workflow catalog instead.",
             suggestedFix:
-              "Remove subprocess execution from the Cline runtime layer and invoke the governed SDK workflow directly.",
+              "Remove subprocess execution from the Operator Kernel runtime layer and invoke the governed SDK workflow directly.",
           },
         ],
         severity: "error",
         message:
-          "packages/cline/src may not import or execute subprocess APIs.",
+          "packages/operator-kernel/src may not import or execute subprocess APIs.",
       },
     ],
   },
