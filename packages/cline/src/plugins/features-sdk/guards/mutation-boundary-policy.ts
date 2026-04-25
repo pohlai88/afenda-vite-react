@@ -2,6 +2,7 @@ import type {
   ClineOperatorMode,
   GovernedClineToolDefinition,
 } from "../mode/cline-mode-contract.js"
+import { GovernedClineError } from "../errors.js"
 import { resolveOperatorScopePolicy } from "./operator-scope-policy.js"
 
 export function isMutationAllowedForMode(mode: ClineOperatorMode): boolean {
@@ -17,8 +18,15 @@ export function assertMutationBoundary(
   }
 
   if (!isMutationAllowedForMode(mode)) {
-    throw new Error(
-      `Mode ${mode} cannot use mutating tool ${tool.name}. Governed mutation is not allowed in this operator scope.`
+    throw new GovernedClineError(
+      `Mode ${mode} cannot use mutating tool ${tool.name}. Governed mutation is not allowed in this operator scope.`,
+      {
+        code: "mutation-blocked",
+        invariant: "ATC-0006",
+        doctrine: "ADR-0009/ATC-0006",
+        resolution:
+          "Use architect_commander for mutating generate/scaffold operations.",
+      }
     )
   }
 }

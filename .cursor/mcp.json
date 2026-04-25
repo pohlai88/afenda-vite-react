@@ -13,12 +13,19 @@
       "type": "http",
       "url": "https://hono-docs-mcp.yusukebe.workers.dev/mcp"
     },
+    "fetch": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    },
     "resend": {
+      "type": "stdio",
       "command": "node",
       "args": ["./scripts/integrations/mcp-resend-stdio.mjs"],
       "cwd": "."
     },
     "better-auth": {
+      "type": "http",
       "url": "https://mcp.better-auth.com/mcp"
     }
   }

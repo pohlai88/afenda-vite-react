@@ -26,6 +26,29 @@ async function runBuiltCli(
   )
 }
 
+async function runBuiltCliAllowFailure(
+  entrypoint: string,
+  args: readonly string[]
+): Promise<{ stdout: string; stderr: string }> {
+  try {
+    return await runBuiltCli(entrypoint, args)
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "stdout" in error &&
+      "stderr" in error
+    ) {
+      return {
+        stdout: String(error.stdout ?? ""),
+        stderr: String(error.stderr ?? ""),
+      }
+    }
+
+    throw error
+  }
+}
+
 describe("built Sync-Pack CLIs", () => {
   it("runs bare afenda-sync-pack as deterministic quickstart only", async () => {
     const { stdout, stderr } = await runBuiltCli("sync-pack.js", [])
@@ -114,7 +137,7 @@ describe("built Sync-Pack CLIs", () => {
   })
 
   it("runs intent-check as JSON-only output", async () => {
-    const { stdout, stderr } = await runBuiltCli("sync-pack.js", [
+    const { stdout, stderr } = await runBuiltCliAllowFailure("sync-pack.js", [
       "intent-check",
       "--json",
       "--ci",

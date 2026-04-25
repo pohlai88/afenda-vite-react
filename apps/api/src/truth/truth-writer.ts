@@ -23,6 +23,7 @@ export function hashTruthRecordEnvelope(input: TruthRecordEnvelope): string {
     ...input,
     timestamp: input.timestamp.toISOString(),
     invariantRefs: [...(input.invariantRefs ?? [])].sort(),
+    linkage: canonicalize(input.linkage ?? null),
     beforeState: canonicalize(input.beforeState),
     afterState: canonicalize(input.afterState),
     metadata: canonicalize(input.metadata ?? {}),

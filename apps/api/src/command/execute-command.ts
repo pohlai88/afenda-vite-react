@@ -6,23 +6,22 @@ import { tenantRoleAssignments, tenantRoles } from "@afenda/database/schema"
 import type { SessionContext } from "../contract/request-context.js"
 import { getBetterAuthRuntime } from "../lib/better-auth-runtime.js"
 import { hasBetterAuthRuntimeEnv } from "../lib/env.js"
+import { createWorkflowExecutionContext } from "../workflow/core/context.js"
+import type {
+  WorkflowExecutionContext,
+  WorkflowTransitionResult,
+} from "../workflow/core/contracts.js"
 import type { CommandExecutionRequest } from "./command-contracts.js"
 import { rolePermissionCatalog } from "./command-matrix.js"
 import { commandRegistry } from "./command-registry.js"
 
-export interface CommandExecutionContext {
-  readonly actorId: string
-  readonly actorLabel: string
+export interface CommandExecutionContext extends WorkflowExecutionContext {
   readonly membershipId: string | null
-  readonly tenantId: string
   readonly roles: readonly string[]
   readonly permissions: readonly string[]
-  readonly requestId?: string
 }
 
-export interface CommandExecutionResult {
-  readonly truthRecordId: string
-}
+export type CommandExecutionResult = WorkflowTransitionResult
 
 async function resolveRoleCodes(
   db: DatabaseClient,
@@ -92,61 +91,71 @@ export async function resolveActorAuthorityForTenant(input: {
       })
 
       return {
-        actorId,
-        actorLabel: input.actorLabel,
+        ...createWorkflowExecutionContext({
+          tenantId,
+          actorId,
+          actorLabel: input.actorLabel,
+          requestId: input.requestId,
+        }),
         membershipId,
-        tenantId,
         roles: [...authority.roles],
         permissions: [...authority.permissions],
-        requestId: input.requestId,
       }
     }
 
     if (!membershipId || !runtime.db) {
       return {
-        actorId,
-        actorLabel: input.actorLabel,
+        ...createWorkflowExecutionContext({
+          tenantId,
+          actorId,
+          actorLabel: input.actorLabel,
+          requestId: input.requestId,
+        }),
         membershipId,
-        tenantId,
         roles: [],
         permissions: [],
-        requestId: input.requestId,
       }
     }
 
     const roles = await resolveRoleCodes(runtime.db, tenantId, membershipId)
 
     return {
-      actorId,
-      actorLabel: input.actorLabel,
+      ...createWorkflowExecutionContext({
+        tenantId,
+        actorId,
+        actorLabel: input.actorLabel,
+        requestId: input.requestId,
+      }),
       membershipId,
-      tenantId,
       roles,
       permissions: resolvePermissionsFromRoles(roles),
-      requestId: input.requestId,
     }
   }
 
   if (!membershipId) {
     return {
-      actorId,
-      actorLabel: input.actorLabel,
+      ...createWorkflowExecutionContext({
+        tenantId,
+        actorId,
+        actorLabel: input.actorLabel,
+        requestId: input.requestId,
+      }),
       membershipId,
-      tenantId,
       roles: [],
       permissions: [],
-      requestId: input.requestId,
     }
   }
 
   return {
-    actorId,
-    actorLabel: input.actorLabel,
+    ...createWorkflowExecutionContext({
+      tenantId,
+      actorId,
+      actorLabel: input.actorLabel,
+      requestId: input.requestId,
+    }),
     membershipId,
-    tenantId,
     roles: [],
     permissions: [],
-    requestId: input.requestId,
   }
 }
 

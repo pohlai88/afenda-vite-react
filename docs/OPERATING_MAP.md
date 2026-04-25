@@ -22,23 +22,27 @@ This document is the repo-local navigation surface for contributors. It explains
 
 ## Start by task
 
-| Task                                                         | Start here                                                         | Why                                                                                                |
-| ------------------------------------------------------------ | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| Change repo-wide implementation policy or workspace guidance | [Open](./workspace/README.md)                                      | Workspace docs are the canonical starting point for repo-wide implementation changes.              |
-| Change architecture decisions or enforceable contracts       | [Open](./architecture/README.md)                                   | Architecture docs route you to ADRs for decision history and ATCs for enforceable contracts.       |
-| Diagnose governance CI failures                              | [Open](./architecture/governance/generated/governance-register.md) | The governance register shows current domain status, evidence paths, and CI behavior in one place. |
-| Update generated docs navigation                             | [Open](../scripts/README.md)                                       | The docs generator owns the generated README indexes and this operating map.                       |
+| Task                                                    | Start here                                                         | Why                                                                                                |
+| ------------------------------------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Change repo-wide implementation policy or official docs | [Open](./ARCHITECTURE.md)                                          | Root docs are the canonical starting point for repo-wide implementation changes.                   |
+| Change architecture decisions or enforceable contracts  | [Open](./architecture/README.md)                                   | Architecture docs route you to ADRs for decision history and ATCs for enforceable contracts.       |
+| Diagnose governance CI failures                         | [Open](./architecture/governance/generated/governance-register.md) | The governance register shows current domain status, evidence paths, and CI behavior in one place. |
+| Update generated docs navigation                        | [Open](../scripts/README.md)                                       | The docs generator owns the generated README indexes and this operating map.                       |
 
 ## Canonical docs and doctrine first
 
-- [workspace/README.md](./workspace/README.md)
-- [workspace/BOUNDARY_SURFACES.md](./workspace/BOUNDARY_SURFACES.md)
+- [ARCHITECTURE.md](./ARCHITECTURE.md)
+- [API.md](./API.md)
+- [BOUNDARY_SURFACES.md](./BOUNDARY_SURFACES.md)
+- [MONOREPO_BOUNDARIES.md](./MONOREPO_BOUNDARIES.md)
+- [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)
+- [PROJECT_CONFIGURATION.md](./PROJECT_CONFIGURATION.md)
+- [REPO_ARTIFACT_POLICY.md](./REPO_ARTIFACT_POLICY.md)
+- [DOCUMENTATION_SCOPE.md](./DOCUMENTATION_SCOPE.md)
 - [architecture/README.md](./architecture/README.md)
 - [architecture/adr/README.md](./architecture/adr/README.md)
 - [architecture/atc/README.md](./architecture/atc/README.md)
 - [architecture/governance/GOVERNANCE_CONSTITUTION.md](./architecture/governance/GOVERNANCE_CONSTITUTION.md)
-- [workspace/PROJECT_STRUCTURE.md](./workspace/PROJECT_STRUCTURE.md)
-- [workspace/REPO_ARTIFACT_POLICY.md](./workspace/REPO_ARTIFACT_POLICY.md)
 
 ## Generated and derived surfaces
 
@@ -74,6 +78,7 @@ Declared in `scripts/afenda.config.json` for topology enforcement. Regenerate th
 | `packages/contracts`            | `source-library`        |
 | `packages/design-system`        | `design-system-package` |
 | `packages/env-loader`           | `source-library`        |
+| `packages/events`               | `source-library`        |
 | `packages/features-sdk`         | `source-library`        |
 | `packages/governance-toolchain` | `source-library`        |
 | `packages/eslint-config`        | `source-library`        |
@@ -95,10 +100,10 @@ Declared in `scripts/afenda.config.json` for topology enforcement. Regenerate th
 
 ## Current governance summary
 
-- Final verdict: `pass`
-- Explanation: pass: no blocking failures, no expired waivers, and all enforced domains emitted evidence (11/11 reports present)
-- Verdict reasons: all-clear
-- Domains: 11 total; 11 passed; 0 warned; 0 blocked
+- Final verdict: `warn`
+- Explanation: warn: no blocking failures, but warned domains have drift or incomplete evidence (GOV-TRUTH-001)
+- Verdict reasons: warned-domain
+- Domains: 11 total; 10 passed; 1 warned; 0 blocked
 - Evidence complete: 11 / 11
 - Active waivers: 0; expired waivers: 0
 

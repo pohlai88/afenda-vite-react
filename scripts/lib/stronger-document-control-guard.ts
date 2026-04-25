@@ -8,6 +8,8 @@ export interface DocumentControlScope {
   readonly fileGlobs: readonly string[]
   readonly requiredFrontmatterKeys: readonly string[]
   readonly requiredContentPatterns: readonly string[]
+  readonly forbiddenContentPatterns?: readonly string[]
+  readonly forbiddenContentSeverity?: "warn" | "error"
 }
 
 export interface DocumentControlPolicy {
@@ -43,7 +45,7 @@ export async function evaluateStrongerDocumentControlFindings(options: {
     const content = await fs.readFile(absolutePath, "utf8")
     const frontmatter = parseFrontmatter(content)
 
-    if (!frontmatter.present) {
+    if (!frontmatter.present && scope.requiredFrontmatterKeys.length > 0) {
       findings.push({
         severity: "warn",
         ruleId: "RG-ADVISORY-006",
@@ -86,6 +88,24 @@ export async function evaluateStrongerDocumentControlFindings(options: {
         evidence: `scope=${scope.id}; missing-patterns=${missingPatterns.join(",")}`,
         suggestedFix:
           "Restore the expected architecture or governance linkage markers for this document class.",
+      })
+    }
+
+    const forbiddenPatterns = scope.forbiddenContentPatterns ?? []
+    const matchedForbiddenPatterns = forbiddenPatterns.filter((pattern) =>
+      content.includes(pattern)
+    )
+
+    if (matchedForbiddenPatterns.length > 0) {
+      findings.push({
+        severity: scope.forbiddenContentSeverity ?? "error",
+        ruleId: "RG-TRUTH-005",
+        filePath,
+        message:
+          "Governed document contains retired or forbidden contract language for its active surface.",
+        evidence: `scope=${scope.id}; forbidden-patterns=${matchedForbiddenPatterns.join(",")}`,
+        suggestedFix:
+          "Replace the retired wording with the current live contract or generated surface guidance.",
       })
     }
   }

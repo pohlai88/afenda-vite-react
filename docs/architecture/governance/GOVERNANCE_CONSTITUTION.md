@@ -38,7 +38,7 @@ No derived artifact is allowed to redefine policy independently of the canonical
 
 ## Root vs owner-local surfaces
 
-The governance spine follows the canonical boundary model in `docs/workspace/BOUNDARY_SURFACES.md`.
+The governance spine follows the canonical boundary model in `docs/BOUNDARY_SURFACES.md`.
 
 - Root doctrine exists only for repo-wide or multi-owner governance.
 - Root `rules/` exists only for enforcement-tied policy artifacts.

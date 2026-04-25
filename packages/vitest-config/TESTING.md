@@ -36,7 +36,7 @@ Use [Vitest’s guides](https://vitest.dev/guide/) for API details; the notes be
 
 - **Locale parity & release gates:** `pnpm run script:validate-i18n` (included in root `pnpm run check`) verifies `en` vs `ms` / `id` / `vi` key parity, forbids empty strings, checks glossary English matches canonical resources, fails on unresolved audit **`review`** rows affecting release namespaces (`shell`, `auth`, `dashboard`), and enforces the non-`en` “differs from English” ratio (with documented allowlists / prefix exclusions in [`apps/web/src/share/i18n/policy.ts`](../../apps/web/src/share/i18n/policy.ts)).
 - **Cross-reference audit:** `pnpm run script:i18n-crossref-audit` refreshes [`apps/web/src/share/i18n/audit/conflicts.json`](../../apps/web/src/share/i18n/audit/conflicts.json) from [`apps/web/src/share/i18n/glossary/canonical-terms.json`](../../apps/web/src/share/i18n/glossary/canonical-terms.json) plus sample Frappe/Odoo inputs under [`scripts/data/`](../../scripts/data/).
-- **Unit tests:** [`apps/web/src/share/i18n/__test__/config.test.ts`](../../apps/web/src/share/i18n/__test__/config.test.ts) and [`format.test.ts`](../../apps/web/src/share/i18n/__test__/format.test.ts) — call **`initI18n()`** in `beforeAll` when exercising formatters or language persistence.
+- **Unit tests:** [`apps/web/src/share/i18n/__tests__/config.test.ts`](../../apps/web/src/share/i18n/__tests__/config.test.ts) and [`format.test.ts`](../../apps/web/src/share/i18n/__tests__/format.test.ts) — call **`initI18n()`** in `beforeAll` when exercising formatters or language persistence.
 
 ---
 
@@ -44,43 +44,43 @@ Use [Vitest’s guides](https://vitest.dev/guide/) for API details; the notes be
 
 ### Test file location
 
-**Web app (`apps/web`):** tests **must** live under `__test__/` (singular) inside `src/` — never colocated next to source files.
+**Web app (`apps/web`):** tests **must** live under `__tests__/` inside `src/` — never colocated next to source files.
 
 ```
 src/features/auth/
   components/
     LoginView.tsx
-  __test__/
+  __tests__/
     login-view.test.tsx        # imports from ../components/LoginView
 ```
 
-**Workspace packages** (e.g. `packages/design-system`): use a `__tests__/` (plural) folder next to the code under test (or at package root). Example: `packages/design-system/icons/__tests__/icons-barrel.test.ts`. The design-system package sets `vitest.config.ts` so only `**/__tests__/**/*.{test,spec}.{ts,tsx}` runs there.
+**Workspace packages** (e.g. `packages/design-system`): use the same `__tests__/` folder next to the code under test (or at package root). Example: `packages/design-system/icons/__tests__/icons-barrel.test.ts`. The design-system package sets `vitest.config.ts` so only `**/__tests__/**/*.{test,spec}.{ts,tsx}` runs there.
 
-Include patterns (from `getAfendaVitestTestOptions()`): `src/**/__test__/**/*.{test,spec}.{ts,tsx}` **and** `**/__tests__/**/*.{test,spec}.{ts,tsx}`.
+Include patterns (from `getAfendaVitestTestOptions()`): `src/**/__tests__/**/*.{test,spec}.{ts,tsx}` **and** `**/__tests__/**/*.{test,spec}.{ts,tsx}`.
 
 ### Basic component test
 
 Prefer **`userEvent`** over raw **`fireEvent`** for realistic interaction. With **`globals: true`** in Vitest you can use **`describe` / `test` / `expect`** without imports; **`vi.fn()`** replaces **`jest.fn()`**.
 
 ```tsx
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { describe, expect, test, vi } from 'vitest'
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { describe, expect, test, vi } from "vitest"
 
-import { Button } from '../components/Button'
+import { Button } from "../components/Button"
 
-describe('Button', () => {
-  test('renders button with text', () => {
+describe("Button", () => {
+  test("renders button with text", () => {
     render(<Button>Click me</Button>)
-    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Click me" })).toBeInTheDocument()
   })
 
-  test('calls onClick when clicked', async () => {
+  test("calls onClick when clicked", async () => {
     const handleClick = vi.fn()
     const user = userEvent.setup()
     render(<Button onClick={handleClick}>Click me</Button>)
 
-    await user.click(screen.getByRole('button', { name: 'Click me' }))
+    await user.click(screen.getByRole("button", { name: "Click me" }))
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 })
@@ -91,36 +91,36 @@ describe('Button', () => {
 ### Form testing
 
 ```tsx
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { describe, expect, test, vi } from 'vitest'
+import { render, screen, waitFor } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { describe, expect, test, vi } from "vitest"
 
-import { ContactForm } from '../ContactForm'
+import { ContactForm } from "../ContactForm"
 
-describe('ContactForm', () => {
-  test('submits form with valid data', async () => {
+describe("ContactForm", () => {
+  test("submits form with valid data", async () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()
 
     render(<ContactForm onSubmit={onSubmit} />)
 
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-    await user.type(screen.getByLabelText(/name/i), 'John Doe')
-    await user.click(screen.getByRole('button', { name: /submit/i }))
+    await user.type(screen.getByLabelText(/email/i), "test@example.com")
+    await user.type(screen.getByLabelText(/name/i), "John Doe")
+    await user.click(screen.getByRole("button", { name: /submit/i }))
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        name: 'John Doe',
+        email: "test@example.com",
+        name: "John Doe",
       })
     })
   })
 
-  test('shows validation errors', async () => {
+  test("shows validation errors", async () => {
     const user = userEvent.setup()
     render(<ContactForm />)
 
-    await user.click(screen.getByRole('button', { name: /submit/i }))
+    await user.click(screen.getByRole("button", { name: /submit/i }))
 
     expect(screen.getByText(/email is required/i)).toBeInTheDocument()
     expect(screen.getByText(/name is required/i)).toBeInTheDocument()
@@ -133,35 +133,35 @@ describe('ContactForm', () => {
 **[MSW](https://mswjs.io/)** is optional—add **`msw`** as a dev dependency. Below uses **MSW v2** style (`http`, `HttpResponse`); adjust if your version differs.
 
 ```tsx
-import { render, screen, waitFor } from '@testing-library/react'
-import { http, HttpResponse } from 'msw'
-import { setupServer } from 'msw/node'
-import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import { render, screen, waitFor } from "@testing-library/react"
+import { http, HttpResponse } from "msw"
+import { setupServer } from "msw/node"
+import { afterAll, afterEach, beforeAll, describe, expect, test } from "vitest"
 
-import { UserList } from '../UserList'
+import { UserList } from "../UserList"
 
 const server = setupServer(
-  http.get('/api/users', () => {
+  http.get("/api/users", () => {
     return HttpResponse.json([
-      { id: 1, name: 'John Doe' },
-      { id: 2, name: 'Jane Smith' },
+      { id: 1, name: "John Doe" },
+      { id: 2, name: "Jane Smith" },
     ])
-  }),
+  })
 )
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+beforeAll(() => server.listen({ onUnhandledRequest: "error" }))
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
-describe('UserList', () => {
-  test('displays users after loading', async () => {
+describe("UserList", () => {
+  test("displays users after loading", async () => {
     render(<UserList />)
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument()
 
     await waitFor(() => {
-      expect(screen.getByText('John Doe')).toBeInTheDocument()
-      expect(screen.getByText('Jane Smith')).toBeInTheDocument()
+      expect(screen.getByText("John Doe")).toBeInTheDocument()
+      expect(screen.getByText("Jane Smith")).toBeInTheDocument()
     })
 
     expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
@@ -174,18 +174,18 @@ describe('UserList', () => {
 Use **`renderHook`** from **`@testing-library/react`**. Wrap state updates in **`act`** from **`react`** when needed.
 
 ```tsx
-import { renderHook, act } from '@testing-library/react'
-import { describe, expect, test } from 'vitest'
+import { renderHook, act } from "@testing-library/react"
+import { describe, expect, test } from "vitest"
 
-import { useCounter } from '../useCounter'
+import { useCounter } from "../useCounter"
 
-describe('useCounter', () => {
-  test('initializes with 0', () => {
+describe("useCounter", () => {
+  test("initializes with 0", () => {
     const { result } = renderHook(() => useCounter())
     expect(result.current.count).toBe(0)
   })
 
-  test('increments', () => {
+  test("increments", () => {
     const { result } = renderHook(() => useCounter())
 
     act(() => {
@@ -207,7 +207,7 @@ describe('useCounter', () => {
 4. **`getByTestId`** — last resort.
 
 ```tsx
-screen.getByRole('button', { name: /submit/i })
+screen.getByRole("button", { name: /submit/i })
 screen.getByLabelText(/email/i)
 // Avoid querying by class name or implementation details.
 ```
@@ -223,13 +223,13 @@ screen.getByLabelText(/email/i)
 
 ```ts
 /// <reference types="vitest/config" />
-import { getAfendaVitestTestOptions } from './src/vitest/defaults'
-import { defineConfig } from 'vite'
+import { getAfendaVitestTestOptions } from "./src/vitest/defaults"
+import { defineConfig } from "vite"
 
 export default defineConfig({
   test: {
-    ...getAfendaVitestTestOptions({ environment: 'node', setupFiles: [] }),
-    name: '@afenda/vitest-config',
+    ...getAfendaVitestTestOptions({ environment: "node", setupFiles: [] }),
+    name: "@afenda/vitest-config",
   },
 })
 ```
@@ -267,7 +267,7 @@ Ratchet the **`default`** preset in [`src/vitest/defaults.ts`](./src/vitest/defa
 
 ### ESLint and test files
 
-**[`eslint.config.js`](../../eslint.config.js)** (repo root) treats `**/__test__/**/*.{js,ts,tsx}`, `**/__tests__/**/*.{js,ts,tsx}` (and `*.{test,spec}.{ts,tsx}`) as test files: Vitest globals and relaxed `no-unsafe-*` rules for assertion APIs. Production **`src/**`** code keeps full type-checked rules.
+**[`eslint.config.js`](../../eslint.config.js)** (repo root) treats `**/__tests__/**` (and `*.{test,spec}.{ts,tsx}`) as test files: Vitest globals and relaxed `no-unsafe-*` rules for assertion APIs. Production **`src/**`\*\* code keeps full type-checked rules.
 
 Optional extras (only if you need them): mock **`fetch`**, **`matchMedia`**, **`ResizeObserver`**, etc., in **`@afenda/vitest-config`** (shared) or an app-only setup module listed in **`setupFiles`** after the shared jest-dom setup entry.
 
@@ -278,9 +278,9 @@ Optional extras (only if you need them): mock **`fetch`**, **`matchMedia`**, **`
 If most tests need **TanStack Query**, **React Router**, or a **theme**, create **`apps/web/test/test-utils.tsx`** and wrap **`render`**:
 
 ```tsx
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, type RenderOptions } from '@testing-library/react'
-import type { ReactElement, ReactNode } from 'react'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { render, type RenderOptions } from "@testing-library/react"
+import type { ReactElement, ReactNode } from "react"
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -300,12 +300,12 @@ function AllProviders({ children }: { children: ReactNode }) {
 
 export function renderWithProviders(
   ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>,
+  options?: Omit<RenderOptions, "wrapper">
 ) {
   return render(ui, { wrapper: AllProviders, ...options })
 }
 
-export * from '@testing-library/react'
+export * from "@testing-library/react"
 export { renderWithProviders as render }
 ```
 
@@ -324,7 +324,7 @@ Use **`userEvent`** (async) and **`waitFor`**; wrap discrete synchronous updates
 Vitest + RTL usually handle DOM cleanup. Clear mocks when needed:
 
 ```ts
-import { afterEach, vi } from 'vitest'
+import { afterEach, vi } from "vitest"
 
 afterEach(() => {
   vi.clearAllMocks()
@@ -334,7 +334,7 @@ afterEach(() => {
 ### Timers
 
 ```ts
-import { afterEach, beforeEach, vi } from 'vitest'
+import { afterEach, beforeEach, vi } from "vitest"
 
 beforeEach(() => {
   vi.useFakeTimers()
@@ -407,6 +407,6 @@ Using **`getByRole`** and **`getByLabelText`** in tests nudges components toward
 - [State management](../../docs/STATE_MANAGEMENT.md) — forms, Query client
 - [Performance](../../docs/PERFORMANCE.md) — list rendering and test doubles
 - [Project configuration](../../docs/PROJECT_CONFIGURATION.md) — scripts and tooling
-- [Project structure](../../docs/PROJECT_STRUCTURE.md) — where tests live (`__test__/` directories inside each source folder)
+- [Project structure](../../docs/PROJECT_STRUCTURE.md) — where tests live (`__tests__/` directories inside each source folder)
 - [Components and styling](../../docs/COMPONENTS_AND_STYLING.md)
 - [Design system](../../docs/DESIGN_SYSTEM.md)

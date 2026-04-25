@@ -14,7 +14,7 @@ order: 50
 
 These defaults are the baseline for scalable Vite SPA performance.
 Use this when setting a baseline for new frontend work or reviewing drift.
-It does not replace the canonical performance and Vite workspace policy in [`../../workspace/PERFORMANCE.md`](../../workspace/PERFORMANCE.md) and [`../../workspace/VITE_ENTERPRISE_WORKSPACE.md`](../../workspace/VITE_ENTERPRISE_WORKSPACE.md).
+It does not replace the canonical performance and Vite workspace policy in [`../../PERFORMANCE.md`](../../PERFORMANCE.md) and [`../../VITE_ENTERPRISE_WORKSPACE.md`](../../VITE_ENTERPRISE_WORKSPACE.md).
 
 ## 1) Initial Load Strategy
 

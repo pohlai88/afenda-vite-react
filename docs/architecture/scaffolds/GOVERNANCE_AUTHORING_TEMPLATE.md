@@ -18,7 +18,7 @@ This file does not replace the canonical doctrine in:
 
 - [`../governance/GOVERNANCE_CONSTITUTION.md`](../governance/GOVERNANCE_CONSTITUTION.md)
 - [`../governance/NAMING_CONVENTION.md`](../governance/NAMING_CONVENTION.md)
-- [`../../workspace/BOUNDARY_SURFACES.md`](../../workspace/BOUNDARY_SURFACES.md)
+- [`../../BOUNDARY_SURFACES.md`](../../BOUNDARY_SURFACES.md)
 
 It is the practical authoring pattern that keeps format, metadata, naming, and section shape consistent.
 

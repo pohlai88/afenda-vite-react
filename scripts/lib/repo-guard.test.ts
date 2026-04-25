@@ -752,6 +752,126 @@ test("boundary import findings fail on relative imports into a different workspa
   await fs.rm(fixtureRoot, { recursive: true, force: true })
 })
 
+test("boundary import findings fail when cline reaches into features-sdk source internals", async () => {
+  const fixtureRoot = path.join(
+    workspaceRoot,
+    ".artifacts/tmp/repo-guard-cline-features-sdk-boundary"
+  )
+  const importerPath = path.join(
+    fixtureRoot,
+    "packages/cline/src/plugins/features-sdk/tools/leak.ts"
+  )
+
+  await fs.mkdir(path.dirname(importerPath), { recursive: true })
+  await fs.writeFile(
+    importerPath,
+    `import { definition } from "../../../../../features-sdk/src/sync-pack/cli/shared.js"\n`,
+    "utf8"
+  )
+
+  const findings = await evaluateBoundaryImportFindings({
+    repoRoot: fixtureRoot,
+    filePaths: ["packages/cline/src/plugins/features-sdk/tools/leak.ts"],
+    policy: repoGuardPolicy.boundaryImport,
+  })
+
+  assert.equal(findings.length, 1)
+  assert.equal(findings[0]?.ruleId, "RG-PKG-BOUNDARY-001")
+  assert.match(
+    findings[0]?.message ?? "",
+    /packages\/cline may not reach into packages\/features-sdk/u
+  )
+
+  await fs.rm(fixtureRoot, { recursive: true, force: true })
+})
+
+test("boundary import findings keep MCP transport pinned to runtime/index", async () => {
+  const fixtureRoot = path.join(
+    workspaceRoot,
+    ".artifacts/tmp/repo-guard-cline-mcp-runtime-only"
+  )
+  const blockedImporterPath = path.join(
+    fixtureRoot,
+    "packages/cline/src/mcp-server/blocked.ts"
+  )
+  const allowedImporterPath = path.join(
+    fixtureRoot,
+    "packages/cline/src/mcp-server/allowed.ts"
+  )
+
+  await fs.mkdir(path.dirname(blockedImporterPath), { recursive: true })
+  await fs.writeFile(
+    blockedImporterPath,
+    `import { plugin } from "../plugins/features-sdk/plugin.js"\n`,
+    "utf8"
+  )
+  await fs.writeFile(
+    allowedImporterPath,
+    `import { createDefaultClineRuntime } from "../runtime/index.js"\n`,
+    "utf8"
+  )
+
+  const findings = await evaluateBoundaryImportFindings({
+    repoRoot: fixtureRoot,
+    filePaths: [
+      "packages/cline/src/mcp-server/blocked.ts",
+      "packages/cline/src/mcp-server/allowed.ts",
+    ],
+    policy: repoGuardPolicy.boundaryImport,
+  })
+
+  assert.equal(findings.length, 1)
+  assert.equal(findings[0]?.ruleId, "RG-PKG-BOUNDARY-001")
+  assert.match(findings[0]?.message ?? "", /transport-only/u)
+
+  await fs.rm(fixtureRoot, { recursive: true, force: true })
+})
+
+test("boundary import findings fail on child_process imports and subprocess execution in cline runtime", async () => {
+  const fixtureRoot = path.join(
+    workspaceRoot,
+    ".artifacts/tmp/repo-guard-cline-subprocess"
+  )
+  const importOnlyPath = path.join(
+    fixtureRoot,
+    "packages/cline/src/runtime/import-only.ts"
+  )
+  const spawnPath = path.join(
+    fixtureRoot,
+    "packages/cline/src/runtime/spawn.ts"
+  )
+
+  await fs.mkdir(path.dirname(importOnlyPath), { recursive: true })
+  await fs.writeFile(
+    importOnlyPath,
+    `import { spawn } from "child_process"\n`,
+    "utf8"
+  )
+  await fs.writeFile(
+    spawnPath,
+    `const status = spawn("node", ["--version"])\nexport { status }\n`,
+    "utf8"
+  )
+
+  const findings = await evaluateBoundaryImportFindings({
+    repoRoot: fixtureRoot,
+    filePaths: [
+      "packages/cline/src/runtime/import-only.ts",
+      "packages/cline/src/runtime/spawn.ts",
+    ],
+    policy: repoGuardPolicy.boundaryImport,
+  })
+
+  assert.equal(findings.length, 2)
+  assert.ok(findings.every((finding) => finding.ruleId === "RG-EXEC-001"))
+  assert.match(
+    findings.map((finding) => finding.message).join("\n"),
+    /child_process|subprocess/u
+  )
+
+  await fs.rm(fixtureRoot, { recursive: true, force: true })
+})
+
 test("placement ownership scopes reuse rollout owner truth and runtime/shared roots", async () => {
   const config = await loadAfendaConfig()
   const scopes = buildPlacementOwnershipScopes(config)
@@ -1102,6 +1222,12 @@ test("source/evidence mismatch stays clean when governance register sources and 
         previousPath: undefined,
         untracked: false,
       },
+      {
+        path: "docs/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
     ],
     policy: repoGuardPolicy.sourceEvidenceMismatch,
   })
@@ -1126,6 +1252,12 @@ test("source/evidence mismatch stays clean when governance register markdown and
       },
       {
         path: "docs/OPERATING_MAP.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/README.md",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
@@ -1160,6 +1292,64 @@ test("source/evidence mismatch stays clean when repo-guard doctrine discovery re
       },
       {
         path: "docs/architecture/governance/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/OPERATING_MAP.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+    ],
+    policy: repoGuardPolicy.sourceEvidenceMismatch,
+  })
+
+  assert.equal(findings.length, 0)
+})
+
+test("source/evidence mismatch stays clean when architecture ADR and ATC docs refresh discovery readmes", () => {
+  const findings = evaluateSourceEvidenceMismatchFindings({
+    entries: [
+      {
+        path: "docs/architecture/adr/ADR-0011-consolidated-reuse-decision-audit.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/atc/ATC-0009-consolidated-reuse-decision-audit.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/adr/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/atc/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/OPERATING_MAP.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/README.md",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
@@ -1355,6 +1545,36 @@ order: 99
   await fs.rm(fixtureRoot, { recursive: true, force: true })
 })
 
+test("stronger document control rejects retired tenant-routed API wording in active guidance", async () => {
+  const fixtureRoot = path.join(
+    workspaceRoot,
+    ".artifacts/tmp/repo-guard-document-control-retired-api"
+  )
+  const docPath = path.join(
+    fixtureRoot,
+    "apps/web/src/app/_platform/runtime/README.md"
+  )
+
+  await fs.mkdir(path.dirname(docPath), { recursive: true })
+  await fs.writeFile(
+    docPath,
+    "# Runtime guidance\n\nUse `/api/tenants/acme/profile` for tenant reads.\n",
+    "utf8"
+  )
+
+  const findings = await evaluateStrongerDocumentControlFindings({
+    repoRoot: fixtureRoot,
+    filePaths: ["apps/web/src/app/_platform/runtime/README.md"],
+    policy: repoGuardPolicy.strongerDocumentControl,
+  })
+
+  assert.equal(findings.length, 1)
+  assert.equal(findings[0]?.ruleId, "RG-TRUTH-005")
+  assert.match(findings[0]?.message ?? "", /retired or forbidden contract/u)
+
+  await fs.rm(fixtureRoot, { recursive: true, force: true })
+})
+
 test("source/evidence mismatch fails when source changes without evidence refresh", () => {
   const findings = evaluateSourceEvidenceMismatchFindings({
     entries: [
@@ -1428,6 +1648,64 @@ test("source/evidence mismatch stays clean when a full binding refresh is presen
   assert.equal(findings.length, 0)
 })
 
+test("source/evidence mismatch stays clean for API route truth refreshes", () => {
+  const findings = evaluateSourceEvidenceMismatchFindings({
+    entries: [
+      {
+        path: "apps/api/src/app.ts",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/API.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/ARCHITECTURE.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/DOCUMENTATION_SCOPE.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "scripts/governance/generate-api-route-surface.ts",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/OPERATING_MAP.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/governance/generated/api-route-surface.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+    ],
+    policy: repoGuardPolicy.sourceEvidenceMismatch,
+  })
+
+  assert.equal(findings.length, 0)
+})
+
 test("source/evidence mismatch stays clean for operating map refresh via docs generator", () => {
   const findings = evaluateSourceEvidenceMismatchFindings({
     entries: [
@@ -1450,7 +1728,59 @@ test("source/evidence mismatch stays clean for operating map refresh via docs ge
         untracked: false,
       },
       {
+        path: "docs/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
         path: "docs/architecture/governance/generated/governance-register.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+    ],
+    policy: repoGuardPolicy.sourceEvidenceMismatch,
+  })
+
+  assert.equal(findings.length, 0)
+})
+
+test("source/evidence mismatch stays clean for operating map refresh driven by architecture docs", () => {
+  const findings = evaluateSourceEvidenceMismatchFindings({
+    entries: [
+      {
+        path: "docs/architecture/adr/ADR-0011-consolidated-reuse-decision-audit.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/atc/ATC-0009-consolidated-reuse-decision-audit.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/OPERATING_MAP.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/adr/README.md",
+        modifiedTracked: true,
+        previousPath: undefined,
+        untracked: false,
+      },
+      {
+        path: "docs/architecture/atc/README.md",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,

@@ -3,6 +3,7 @@ import type {
   CommandExecutionContext,
   CommandExecutionResult,
 } from "../../command/execute-command.js"
+import { materializeWorkflowTransition } from "../../workflow/adapters/truth-event.js"
 import {
   claimStateForActor,
   persistOpsMutation,
@@ -68,15 +69,32 @@ export async function executeOpsEventClaimCommand(
     },
   }
 
+  const transition = materializeWorkflowTransition({
+    context,
+    truthRecord,
+    eventType: "ops.event.claimed",
+    eventPayload: {
+      eventId: current.id,
+      eventCode: nextEvent.eventCode,
+      commandType: "ops.event.claim",
+      previousState: current.state,
+      nextState: nextEvent.state,
+      ownerActorId: nextEvent.ownerActorId,
+      ownerLabel: nextEvent.ownerLabel,
+    },
+  })
+
   const truthRecordId = await persistOpsMutation({
     tenantId: context.tenantId,
     expectedEvent: current,
     nextEvent,
-    truthRecord,
+    truthRecord: transition.truthRecord,
   })
 
   return {
     truthRecordId,
+    linkage: transition.linkage,
+    event: transition.event,
   }
 }
 
@@ -135,14 +153,31 @@ export async function executeOpsEventAdvanceCommand(
     },
   }
 
+  const transition = materializeWorkflowTransition({
+    context,
+    truthRecord,
+    eventType: "ops.event.advanced",
+    eventPayload: {
+      eventId: current.id,
+      eventCode: nextEvent.eventCode,
+      commandType: "ops.event.advance",
+      previousState: current.state,
+      nextState: nextEvent.state,
+      ownerActorId: nextEvent.ownerActorId,
+      ownerLabel: nextEvent.ownerLabel,
+    },
+  })
+
   const truthRecordId = await persistOpsMutation({
     tenantId: context.tenantId,
     expectedEvent: current,
     nextEvent,
-    truthRecord,
+    truthRecord: transition.truthRecord,
   })
 
   return {
     truthRecordId,
+    linkage: transition.linkage,
+    event: transition.event,
   }
 }

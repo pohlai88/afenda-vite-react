@@ -9,7 +9,7 @@ This workspace uses **Vitest 4** with **Vite 8**. Shared configuration lives in 
 
 ## Authoritative docs
 
-1. **[`docs/TESTING.md`](docs/TESTING.md)** — file layout (`__test__/`), RTL, MSW, env overrides, coverage presets.
+1. **[`docs/TESTING.md`](docs/TESTING.md)** — file layout (`__tests__/`), RTL, MSW, env overrides, coverage presets.
 2. **[`packages/vitest-config/AGENTS.md`](packages/vitest-config/AGENTS.md)** — consumption patterns and failure triage (fix product code first).
 3. **[`docs/VITE_ENTERPRISE_WORKSPACE.md`](docs/VITE_ENTERPRISE_WORKSPACE.md)** — Vitest reuses Vite; DevTools must stay off under `VITEST` (see `apps/web/vite.config.ts`).
 

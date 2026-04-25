@@ -15,18 +15,34 @@ describe("governed Cline tool gating", () => {
     })
   })
 
-  it("blocks tools that are not implemented in the phase-1 registry", () => {
+  it("allows feature devops to use planning tools", () => {
+    expect(assertToolAllowed("feature_devops", "report")).toMatchObject({
+      name: "report",
+      command: "pnpm run feature-sync:report",
+    })
+  })
+
+  it("blocks tools outside the guided operator scope", () => {
     expect(() => assertToolAllowed("guided_operator", "report")).toThrowError(
       ClineToolAccessError
     )
   })
 
-  it("returns the guided operator allowlist only for phase-1 tools", () => {
+  it("allows architect commander to reach mutating scaffold execution", () => {
+    expect(assertToolAllowed("architect_commander", "scaffold")).toMatchObject({
+      name: "scaffold",
+      mutating: true,
+    })
+  })
+
+  it("returns the full guided operator allowlist", () => {
     expect(listAllowedToolsForMode("guided_operator")).toEqual([
       "quickstart",
-      "verify",
+      "release-check",
       "check",
       "doctor",
+      "validate",
+      "verify",
     ])
   })
 

@@ -432,6 +432,15 @@ function sortEvents(
 }
 
 function buildTruthRecord(input: TruthRecordEnvelope): OpsTruthRecord {
+  const metadata = {
+    ...(input.metadata ?? {}),
+    ...(input.linkage
+      ? {
+          executionLinkage: input.linkage,
+        }
+      : {}),
+  }
+
   return {
     id: randomUUID(),
     tenantId: input.tenantId,
@@ -445,7 +454,7 @@ function buildTruthRecord(input: TruthRecordEnvelope): OpsTruthRecord {
     doctrineRef: input.doctrineRef ?? null,
     invariantRefs: [...(input.invariantRefs ?? [])],
     hash: hashTruthRecordEnvelope(input),
-    metadata: input.metadata ?? {},
+    metadata,
   }
 }
 
@@ -1318,7 +1327,14 @@ class DbOpsProjectionStore implements OpsProjectionStore {
         doctrineRef: input.truthRecord.doctrineRef,
         invariantRefs: [...(input.truthRecord.invariantRefs ?? [])],
         hash,
-        metadata: input.truthRecord.metadata ?? {},
+        metadata: {
+          ...(input.truthRecord.metadata ?? {}),
+          ...(input.truthRecord.linkage
+            ? {
+                executionLinkage: input.truthRecord.linkage,
+              }
+            : {}),
+        },
       })
     })
 

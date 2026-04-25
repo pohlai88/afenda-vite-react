@@ -11,7 +11,14 @@ export interface ClineToolDefinition<TInput = unknown, TResult = unknown> {
   readonly summary: string
   readonly usage?: string
   readonly mutating: boolean
-  readonly execute?: (input: TInput) => Promise<TResult>
+  readonly execute?: (
+    input: TInput,
+    context: ClineToolExecutionContext
+  ) => Promise<TResult>
+}
+
+export interface ClineToolExecutionContext {
+  readonly workspaceRoot: string
 }
 
 export interface ClineResourceDefinition<TResult = unknown> {

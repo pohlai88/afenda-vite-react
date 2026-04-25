@@ -105,8 +105,8 @@ Internal modules (no direct `pnpm` invocation) should be marked in [`docs/genera
 
 ## 6. Related documentation
 
-- [Boundary surfaces](../docs/workspace/BOUNDARY_SURFACES.md) — canonical root vs owner-local surface doctrine.
-- [Architecture evolution](../docs/workspace/ARCHITECTURE_EVOLUTION.md) — when to add complexity vs defer.
+- [Boundary surfaces](../docs/BOUNDARY_SURFACES.md) — canonical root vs owner-local surface doctrine.
+- [Architecture evolution](../docs/ARCHITECTURE_EVOLUTION.md) — when to add complexity vs defer.
 - [AGENTS.md](../AGENTS.md) — AI/human execution index.
-- [Project configuration](../docs/workspace/PROJECT_CONFIGURATION.md) — repo-wide tooling.
+- [Project configuration](../docs/PROJECT_CONFIGURATION.md) — repo-wide tooling.
 - [Scripts topology handoff](../docs/architecture/governance/SCRIPTS_TOPOLOGY_HANDOFF.md) — developer handoff for grouped scripts ownership and migration baseline.

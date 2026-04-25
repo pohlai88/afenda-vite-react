@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process"
 
 const commands = [
+  "pnpm run script:generate-api-route-surface",
   "pnpm run script:generate-governance-report",
   "pnpm run script:generate-governance-register",
 ] as const

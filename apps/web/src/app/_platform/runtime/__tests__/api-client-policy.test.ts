@@ -35,7 +35,7 @@ describe("_platform/runtime", () => {
   })
 
   it("joins base URL and path", () => {
-    expect(joinApiClientUrl("", "/api/tenants/acme")).toBe("/api/tenants/acme")
+    expect(joinApiClientUrl("", "/api/v1/me")).toBe("/api/v1/me")
     expect(joinApiClientUrl("http://localhost:3000", "/api/foo")).toBe(
       "http://localhost:3000/api/foo"
     )

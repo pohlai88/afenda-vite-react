@@ -410,6 +410,12 @@
           "extraAllowedFiles": []
         },
         {
+          "path": "packages/events",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
           "path": "packages/features-sdk",
           "profile": "source-library",
           "extraAllowedDirectories": [],
@@ -504,8 +510,8 @@
         "docs": {
           "primary": "rules/filesystem-governance/filesystem-governance.md",
           "references": [
-            "docs/workspace/MONOREPO_BOUNDARIES.md",
-            "docs/workspace/REPO_ARTIFACT_POLICY.md"
+            "docs/MONOREPO_BOUNDARIES.md",
+            "docs/REPO_ARTIFACT_POLICY.md"
           ]
         },
         "localConfig": "rules/filesystem-governance/filesystem-governance.config.json",
@@ -534,7 +540,7 @@
         "tier": "tier-3",
         "docs": {
           "primary": "rules/generated-artifact-governance/generated-artifact-governance.md",
-          "references": ["docs/workspace/REPO_ARTIFACT_POLICY.md"]
+          "references": ["docs/REPO_ARTIFACT_POLICY.md"]
         },
         "localConfig": "rules/generated-artifact-governance/generated-artifact-governance.config.json",
         "checks": [
@@ -562,7 +568,7 @@
         "tier": "tier-3",
         "docs": {
           "primary": "rules/storage-governance/storage-governance.md",
-          "references": ["docs/workspace/REPO_ARTIFACT_POLICY.md"]
+          "references": ["docs/REPO_ARTIFACT_POLICY.md"]
         },
         "localConfig": "rules/storage-governance/storage-governance.config.json",
         "checks": [
@@ -589,10 +595,10 @@
         "defaultSeverity": "error",
         "tier": "tier-3",
         "docs": {
-          "primary": "docs/workspace/MONOREPO_BOUNDARIES.md",
+          "primary": "docs/MONOREPO_BOUNDARIES.md",
           "references": [
-            "docs/workspace/PROJECT_STRUCTURE.md",
-            "docs/workspace/REPO_ARTIFACT_POLICY.md"
+            "docs/PROJECT_STRUCTURE.md",
+            "docs/REPO_ARTIFACT_POLICY.md"
           ]
         },
         "localConfig": "scripts/afenda.config.json",
@@ -623,7 +629,7 @@
           "primary": "docs/architecture/atc/ATC-0001-core-web-architecture-baseline.md",
           "references": [
             "docs/architecture/adr/ADR-0001-core-web-architecture-baseline.md",
-            "docs/workspace/ARCHITECTURE_EVOLUTION.md",
+            "docs/ARCHITECTURE_EVOLUTION.md",
             "docs/architecture/atc/ATC_TEMPLATE.md"
           ]
         },

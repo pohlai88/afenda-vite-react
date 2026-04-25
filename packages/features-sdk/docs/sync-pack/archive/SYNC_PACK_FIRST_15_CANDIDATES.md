@@ -315,9 +315,9 @@ Named tools are category signals and reference points, not default implementatio
 Canonical doctrine:
 
 - [Sync-Pack intake model](./SYNC_PACK_INTAKE_MODEL.md)
-- [Architecture](../../workspace/ARCHITECTURE.md)
-- [Project structure](../../workspace/PROJECT_STRUCTURE.md)
-- [Architecture evolution](../../workspace/ARCHITECTURE_EVOLUTION.md)
+- [Architecture](../../../../../docs/ARCHITECTURE.md)
+- [Project structure](../../../../../docs/PROJECT_STRUCTURE.md)
+- [Architecture evolution](../../../../../docs/ARCHITECTURE_EVOLUTION.md)
 
 External references:
 

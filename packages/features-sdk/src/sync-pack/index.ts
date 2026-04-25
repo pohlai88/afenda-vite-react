@@ -120,6 +120,28 @@ export type {
   WriteTechStackScaffoldResult,
 } from "./scaffold/stack-scaffold.js"
 export {
+  requireSyncPackWorkflowDefinition,
+  runSyncPackGenerate,
+  runSyncPackQuickstart,
+  runSyncPackRank,
+  runSyncPackReport,
+  runSyncPackScaffold,
+  syncPackWorkflowCatalog,
+  type RunSyncPackGenerateOptions,
+  type RunSyncPackQuickstartOptions,
+  type RunSyncPackRankOptions,
+  type RunSyncPackReportOptions,
+  type RunSyncPackScaffoldOptions,
+  type SyncPackGenerateResult,
+  type SyncPackQuickstartResult,
+  type SyncPackRankResult,
+  type SyncPackReportResult,
+  type SyncPackWorkflowCapability,
+  type SyncPackWorkflowCatalog,
+  type SyncPackWorkflowDefinition,
+  type SyncPackWorkflowName,
+} from "./workflow-catalog.js"
+export {
   readWorkspaceCatalogVersions,
   type WorkspaceCatalogVersions,
 } from "./scaffold/workspace-catalog.js"

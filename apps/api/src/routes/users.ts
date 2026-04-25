@@ -17,14 +17,12 @@ import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 
 export const userRoutes = new Hono()
-
-userRoutes.get("/", async (c) => {
-  const users = await listUsers()
-  return c.json(success(users))
-})
-
-userRoutes.post("/", zValidator("json", createUserInputSchema), async (c) => {
-  const input = c.req.valid("json")
-  const user = await createUser(input)
-  return c.json(success(user), 201)
-})
+  .get("/", async (c) => {
+    const users = await listUsers()
+    return c.json(success(users))
+  })
+  .post("/", zValidator("json", createUserInputSchema), async (c) => {
+    const input = c.req.valid("json")
+    const user = await createUser(input)
+    return c.json(success(user), 201)
+  })

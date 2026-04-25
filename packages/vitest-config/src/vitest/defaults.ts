@@ -120,9 +120,10 @@ export function getAfendaVitestTestOptions(
     globals: true,
     environment,
     include: [
-      // Singular `__test__` (legacy / some templates)
-      "src/**/__test__/**/*.{test,spec}.{ts,tsx}",
-      // Plural `__tests__` anywhere under the project root, at any folder depth:
+      // Source-owned test folders inside app or package source trees.
+      "src/**/__tests__/**/*.{test,spec}.{ts,tsx}",
+      // `__tests__/` is the only accepted test-directory name in the workspace.
+      // Match files directly in `__tests__/` and nested files below that folder:
       // - files directly in `__tests__/` (`**/__tests__/*`)
       // - files in nested dirs under `__tests__/` (`**/__tests__/**/*`)
       "**/__tests__/*.{test,spec}.{ts,tsx}",

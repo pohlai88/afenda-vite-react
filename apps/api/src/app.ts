@@ -30,65 +30,63 @@ import { userRoutes } from "./routes/users.js"
 
 export type { ApiEnv, AppVariables } from "./contract/request-context.js"
 
-export function createApp() {
-  const app = new Hono<ApiEnv>()
-
-  app.onError(onError)
-  app.notFound(onNotFound)
-
-  app.use("*", requestContextMiddleware)
-  app.use("/api/*", betterAuthSessionContextMiddleware)
-  app.use("*", requestLoggingMiddleware)
-  app.use("*", secureHeaders())
-
-  app.use(
-    "/api/*",
-    cors({
-      origin: env.WEB_ORIGIN,
-      allowHeaders: ["Content-Type", "Authorization", "X-Request-Id"],
-      allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      exposeHeaders: ["X-Request-Id"],
-      credentials: true,
-      maxAge: 86400,
-    })
-  )
-
-  app.use(
-    "/api/*",
-    bodyLimit({
-      maxSize: 2 * 1024 * 1024,
-      onError: (c) =>
-        c.json(
-          failure({
-            code: "BAD_REQUEST",
-            message: "Request body exceeds the configured limit.",
-            requestId: c.get("requestId"),
-          }),
-          413
-        ),
-    })
-  )
-
-  app.get("/", (c) =>
-    c.json(
-      success({
-        service: "@afenda/api",
-        runtime: "node",
-        version: apiPackage.version,
+function buildApp() {
+  return new Hono<ApiEnv>()
+    .onError(onError)
+    .notFound(onNotFound)
+    .use("*", requestContextMiddleware)
+    .use("/api/*", betterAuthSessionContextMiddleware)
+    .use("*", requestLoggingMiddleware)
+    .use("*", secureHeaders())
+    .use(
+      "/api/*",
+      cors({
+        origin: env.WEB_ORIGIN,
+        allowHeaders: ["Content-Type", "Authorization", "X-Request-Id"],
+        allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        exposeHeaders: ["X-Request-Id"],
+        credentials: true,
+        maxAge: 86400,
       })
     )
-  )
+    .use(
+      "/api/*",
+      bodyLimit({
+        maxSize: 2 * 1024 * 1024,
+        onError: (c) =>
+          c.json(
+            failure({
+              code: "BAD_REQUEST",
+              message: "Request body exceeds the configured limit.",
+              requestId: c.get("requestId"),
+            }),
+            413
+          ),
+      })
+    )
+    .get("/", (c) =>
+      c.json(
+        success({
+          service: "@afenda/api",
+          runtime: "node",
+          version: apiPackage.version,
+        })
+      )
+    )
+    .route("/health", healthRoutes)
+    .route("/api/auth", betterAuthRoutes)
+    .route("/api/v1/auth", authCompanionRoutes)
+    .route("/api/v1/commands", commandsRoutes)
+    .route("/api/v1/me", meRoutes)
+    .route("/api/v1/ops", operationsRoutes)
+    .route("/api/users", userRoutes)
+}
 
-  app.route("/health", healthRoutes)
-  app.route("/api/auth", betterAuthRoutes)
-  app.route("/api/v1/auth", authCompanionRoutes)
-  app.route("/api/v1/commands", commandsRoutes)
-  app.route("/api/v1/me", meRoutes)
-  app.route("/api/v1/ops", operationsRoutes)
-  app.route("/api/users", userRoutes)
+const app = buildApp()
 
-  return app
+export function createApp() {
+  return buildApp()
 }
 
 /** Hono RPC client (`hc<AppType>()`) — share with `apps/web` via `import type`. */
-export type AppType = ReturnType<typeof createApp>
+export type AppType = typeof app

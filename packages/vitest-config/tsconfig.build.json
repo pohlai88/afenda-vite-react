@@ -12,5 +12,5 @@
     "types": ["node", "vitest/globals"]
   },
   "include": ["./src/vitest/**/*.ts"],
-  "exclude": ["./src/**/*.test.ts", "./src/**/__test__/**"]
+  "exclude": ["./src/**/*.test.ts", "./src/**/__tests__/**"]
 }

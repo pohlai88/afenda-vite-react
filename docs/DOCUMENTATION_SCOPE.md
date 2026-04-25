@@ -22,7 +22,11 @@ This page clarifies **which docs are normative** for building Afenda, what is **
 | UI patterns and stack facts        | [Components and styling](./COMPONENTS_AND_STYLING.md)   |
 | Package-specific conventions       | [Dependency guides](./dependencies/README.md)           |
 
-You can **implement `apps/api`** (Fastify routes, handlers, auth hooks) and **`apps/web`** (React screens, TanStack Query calls) using **only** the above. **`apps/api`** may not exist in the tree yet; the contract in [API.md](./API.md) is still the source of truth for routes and behavior.
+You can implement the live Afenda surfaces using only the above. Today that means:
+
+- **`apps/api`** exists and is a Hono API
+- **`apps/web`** consumes that API through a typed Hono RPC surface and a generic browser client surface
+- [API.md](./API.md) is the narrative contract, while [`docs/architecture/governance/generated/api-route-surface.md`](./architecture/governance/generated/api-route-surface.md) is the generated route inventory
 
 ## Optional (improve quality; not required to start)
 
@@ -35,7 +39,7 @@ You can **implement `apps/api`** (Fastify routes, handlers, auth hooks) and **`a
 
 ## Deferred items explained
 
-- **OpenAPI** was listed as a follow-up to [API.md](./API.md) because the **markdown contract** is sufficient for internal implementation. Deferring OpenAPI does **not** leave gaps that prevent coding; it defers **machine-readable** duplication and codegen.
+- **OpenAPI** remains optional because the current gap-closure wave uses a generated Hono route-surface artifact instead of introducing a second spec system in the same step. Deferring OpenAPI does **not** block coding; it defers a richer partner/codegen surface.
 - If a **public partner API** or **strict contract testing** becomes a requirement, add OpenAPI generation from **`apps/api`** (or hand-maintained `openapi.yaml`) and link it from [API.md](./API.md).
 
 ## Related

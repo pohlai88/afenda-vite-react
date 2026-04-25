@@ -185,6 +185,9 @@ importers:
       '@afenda/env-loader':
         specifier: workspace:*
         version: link:../../packages/env-loader
+      '@afenda/events':
+        specifier: workspace:*
+        version: link:../../packages/events
       '@afenda/pino-logger':
         specifier: workspace:*
         version: link:../../packages/pino-logger
@@ -561,13 +564,13 @@ importers:
 
   packages/cline:
     dependencies:
+      '@afenda/features-sdk':
+        specifier: workspace:*
+        version: link:../features-sdk
       zod:
         specifier: 'catalog:'
         version: 4.3.6
     devDependencies:
-      '@afenda/features-sdk':
-        specifier: workspace:*
-        version: link:../features-sdk
       '@afenda/tsconfig':
         specifier: workspace:*
         version: link:../typescript-config
@@ -781,6 +784,31 @@ importers:
       typescript-eslint:
         specifier: ^8.46.0
         version: 8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+    devDependencies:
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.4(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(jsdom@29.0.2(@noble/hashes@2.2.0))(msw@2.12.14(@types/node@24.12.2)(typescript@5.9.3))(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+
+  packages/events:
+    devDependencies:
+      '@afenda/tsconfig':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@afenda/vitest-config':
+        specifier: workspace:*
+        version: link:../vitest-config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.12.2
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vite:
+        specifier: 'catalog:'
+        version: 7.3.2(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.4(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(jsdom@29.0.2(@noble/hashes@2.2.0))(msw@2.12.14(@types/node@24.12.2)(typescript@5.9.3))(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/features-sdk:
     dependencies:

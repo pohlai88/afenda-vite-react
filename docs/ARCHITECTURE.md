@@ -15,24 +15,28 @@ For **folder-by-folder layout inside the Vite app** (`apps/web/src`, features, p
 
 ## 1. Afenda monorepo (ERP system)
 
-Afenda is delivered as a **pnpm** + **Turborepo** monorepo. The **primary surface** is the **React + Vite** SPA under **`apps/web`**, which implements the **ERP web client**: shell, navigation, and **feature modules** aligned to business capabilities (see [Project structure](./PROJECT_STRUCTURE.md)).
+Afenda is delivered as a **pnpm** + **Turborepo** monorepo with two primary live applications:
+
+- **`apps/web`** — the React + Vite ERP web client
+- **`apps/api`** — the Hono API that owns session-aware bootstrap, commands, ops surfaces, and the typed route contract shared with the web client
 
 ### How it works
 
 - **Package manager:** [pnpm](https://pnpm.io/) workspaces (`pnpm-workspace.yaml`) install dependencies and link local packages.
 - **Task runner:** [Turborepo](https://turborepo.com/) (`turbo.json`) runs `build`, `lint`, `typecheck`, `test`, and other tasks across `apps/*` and `packages/*` with caching and dependency ordering.
-- **Primary application:** the **React + Vite** app under **`apps/web`** (see [`apps/web/package.json`](../apps/web/package.json)). Production output is static assets under `apps/web/dist/` (served like any Vite build).
+- **Primary applications:** the **React + Vite** app under **`apps/web`** and the **Hono** API under **`apps/api`** (see [`apps/web/package.json`](../apps/web/package.json) and [`apps/api/package.json`](../apps/api/package.json)).
 - **Shared TypeScript:** [`packages/typescript-config/`](../packages/typescript-config/) holds shared `tsconfig` presets consumed by apps and packages.
 - **Workspace testing:** [`packages/vitest-config/`](../packages/vitest-config/) (`@afenda/vitest-config`) holds **shared Vitest defaults** (global setup, `getAfendaVitestTestOptions()`, coverage presets). Future E2E, Storybook, and broader UI test glue may live in additional packages as the repo grows.
 - **Persistent data:** ERP state belongs in **PostgreSQL** (and related services), accessed from **API or workers** -- see [Database package](../packages/_database/README.md). The Vite app talks to HTTP APIs, not the DB directly.
+- **Live API truth:** [`apps/api/src/app.ts`](../apps/api/src/app.ts) is the route composition source of truth, and [`docs/architecture/governance/generated/api-route-surface.md`](./architecture/governance/generated/api-route-surface.md) is the generated route inventory.
 
 ```text
 afenda-monorepo/
 ├── apps/
+│   ├── api/                 # Hono API (bootstrap, commands, ops, auth companion)
 │   └── web/                 # ERP web client (Vite + React)
 ├── packages/
-│   ├── shadcn-ui/           # Governed shadcn/ui primitives + semantic layer (@afenda/shadcn-ui-deprecated)
-│   ├── features/core/       # Shared feature domain types (@afenda/core)
+│   ├── events/              # Governed shared execution-linkage and event-envelope primitives
 │   ├── typescript-config/   # Shared tsconfig presets
 │   ├── vitest-config/       # Shared Vitest defaults (@afenda/vitest-config)
 │   └── shared/              # Cross-app shared modules (public API via package root)
@@ -48,10 +52,10 @@ afenda-monorepo/
 ### Development and build flow
 
 1. **Install:** `pnpm install` at the repo root.
-2. **Dev:** `pnpm dev` runs Turbo `dev` tasks (typically the Vite dev server for `apps/web` and any other configured apps).
+2. **Dev:** `pnpm dev` runs Turbo `dev` tasks for the live apps (typically the Vite dev server for `apps/web` and the Hono API dev server for `apps/api`).
 3. **Quality gates:** `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, and `pnpm build` delegate to Turbo so each package's scripts run in the right order.
 
-This repository is the **live ERP product source tree**. Day-to-day architecture decisions for UI, workflows, and domain code belong under **`apps/web/src`** as described in [Project structure](./PROJECT_STRUCTURE.md).
+This repository is the **live ERP product source tree**. Day-to-day architecture decisions for UI belong under **`apps/web/src`** as described in [Project structure](./PROJECT_STRUCTURE.md); route and command/runtime truth belong under **`apps/api/src`** and must stay aligned with [API reference](./API.md).
 
 ---
 
@@ -238,7 +242,7 @@ pnpm run lint                          # ESLint
 ## Related docs
 
 - [Documentation scope](./DOCUMENTATION_SCOPE.md) -- Which docs are normative vs optional
-- [API reference](./API.md) -- REST contract (`/api/tenants/{tenant}/...`) for the HTTP server
+- [API reference](./API.md) -- live Hono contract narrative for `/api/v1/*`, `/api/auth/*`, and `/api/users`
 - [Project structure](./PROJECT_STRUCTURE.md) -- **application** layout under `apps/web`
 - [Monorepo boundaries](./MONOREPO_BOUNDARIES.md) -- machine-enforced root, **`apps/web/src`** topology (`webClientSrc`), feature template, and shared-package rules
 - [Architecture evolution](./ARCHITECTURE_EVOLUTION.md) -- Trigger-based policy for upgrade timing and ADR ownership

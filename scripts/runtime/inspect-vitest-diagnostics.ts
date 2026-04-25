@@ -7,7 +7,7 @@
  * Usage (from repo root):
  *   pnpm run script:inspect-vitest-diagnostics
  *   pnpm run script:inspect-vitest-diagnostics -- design-system
- *   pnpm run script:inspect-vitest-diagnostics -- web src/share/__test__/shell-registry.test.ts
+ *   pnpm run script:inspect-vitest-diagnostics -- web src/share/__tests__/shell-registry.test.ts
  *   pnpm run script:inspect-vitest-diagnostics -- --all --json
  */
 import path from "node:path"

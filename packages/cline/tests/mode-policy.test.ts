@@ -26,4 +26,16 @@ describe("governed Cline mode policy", () => {
       allowMutation: true,
     })
   })
+
+  it("lets feature devops plan without mutation", () => {
+    expect(getCapabilitiesForMode("feature_devops")).toEqual([
+      "read",
+      "diagnose",
+      "execute_safe",
+      "plan",
+    ])
+    expect(getModeScopePolicy("feature_devops")).toMatchObject({
+      allowMutation: false,
+    })
+  })
 })

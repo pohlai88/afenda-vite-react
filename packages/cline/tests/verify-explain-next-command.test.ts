@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest"
 
-import { createFindingRemediation } from "../../features-sdk/src/sync-pack/finding.js"
 import {
+  createFindingRemediation,
   summarizeSyncPackVerifyResult,
   summarizeSyncPackVerifyStep,
   type SyncPackVerifyFinding,
-} from "../../features-sdk/src/sync-pack/verify/index.js"
+} from "@afenda/features-sdk/sync-pack"
 import { createModeAwareVerifyResponse } from "../src/plugins/features-sdk/explain/mode-aware-response.js"
 
 function createFinding(

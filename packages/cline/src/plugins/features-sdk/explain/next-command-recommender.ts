@@ -1,4 +1,4 @@
-import type { SyncPackVerifyResult } from "@afenda/features-sdk"
+import type { SyncPackVerifyResult } from "@afenda/features-sdk/sync-pack"
 import { isSafeGovernedCommand } from "../guards/safe-command-policy.js"
 import type { ClineOperatorMode } from "../mode/cline-mode-contract.js"
 

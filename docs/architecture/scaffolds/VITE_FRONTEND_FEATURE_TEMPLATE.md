@@ -14,7 +14,7 @@ order: 40
 
 Use this contract for every new ERP feature module.
 It should be used when shaping feature-owned modules and their local surfaces.
-It does not replace the canonical structure and boundary doctrine in [`../../workspace/PROJECT_STRUCTURE.md`](../../workspace/PROJECT_STRUCTURE.md), [`../../workspace/MONOREPO_BOUNDARIES.md`](../../workspace/MONOREPO_BOUNDARIES.md), and [`../../workspace/BOUNDARY_SURFACES.md`](../../workspace/BOUNDARY_SURFACES.md).
+It does not replace the canonical structure and boundary doctrine in [`../../PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md), [`../../MONOREPO_BOUNDARIES.md`](../../MONOREPO_BOUNDARIES.md), and [`../../BOUNDARY_SURFACES.md`](../../BOUNDARY_SURFACES.md).
 
 ## Folder Template
 

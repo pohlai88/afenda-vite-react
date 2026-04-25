@@ -290,7 +290,6 @@ export function createRepositoryBoundaryConfig() {
         "**/*.{test,spec}.{js,jsx,ts,tsx}",
         "**/*.stories.{js,jsx,ts,tsx}",
         "**/__tests__/**",
-        "**/__test__/**",
       ],
       rules: {
         "no-restricted-imports": [
@@ -313,13 +312,32 @@ export function createRepositoryBoundaryConfig() {
       },
     },
     {
+      name: "afenda/cline-governed-boundaries",
+      files: ["packages/cline/**/*.{js,jsx,ts,tsx,mjs,cjs}"],
+      plugins: {
+        "afenda-ui": afendaUiPlugin,
+      },
+      rules: {
+        "afenda-ui/enforce-cline-boundaries": "error",
+      },
+    },
+    {
+      name: "afenda/cline-no-subprocess-runtime",
+      files: ["packages/cline/src/**/*.{js,jsx,ts,tsx,mjs,cjs}"],
+      plugins: {
+        "afenda-ui": afendaUiPlugin,
+      },
+      rules: {
+        "afenda-ui/no-cline-child-process": "error",
+      },
+    },
+    {
       name: "afenda/web-routes/private-folder-import-fence",
       files: ["apps/web/src/routes/**/*.{js,jsx,ts,tsx}"],
       ignores: [
         "**/*.{test,spec}.{js,jsx,ts,tsx}",
         "**/*.stories.{js,jsx,ts,tsx}",
         "**/__tests__/**",
-        "**/__test__/**",
       ],
       rules: {
         "no-restricted-imports": [

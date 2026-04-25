@@ -14,7 +14,7 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: [
-      "src/**/__test__/**/*.{test,spec}.{ts,tsx}",
+      "src/**/__tests__/**/*.{test,spec}.{ts,tsx}",
       "**/__tests__/**/*.{test,spec}.{ts,tsx}",
     ],
     setupFiles: [],

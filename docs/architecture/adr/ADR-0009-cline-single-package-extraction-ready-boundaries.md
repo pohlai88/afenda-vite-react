@@ -1,6 +1,6 @@
 ---
-title: ADR-0009 Cline single-package extraction-ready boundaries
-description: Decision record for starting Cline as one package with strict internal boundaries for core, MCP hosting, and Feature SDK plugin ownership.
+title: ADR-0009 Cline single-package governed runtime boundaries
+description: Decision record for keeping Cline as one governed operator runtime package with strict core, runtime, MCP transport, and Feature SDK truth-engine boundaries.
 status: active
 owner: governance-toolchain
 truthStatus: canonical
@@ -9,18 +9,18 @@ relatedDomain: decision-record
 order: 19
 ---
 
-# ADR-0009: Cline single-package extraction-ready boundaries
+# ADR-0009: Cline single-package governed runtime boundaries
 
 - **Decision status:** Accepted
-- **Implementation status:** Partial
-- **Enforcement status:** Manual
-- **Evidence status:** Planned
+- **Implementation status:** Implemented
+- **Enforcement status:** Blocking automation + tests
+- **Evidence status:** Active
 - **Date:** 2026-04-24
 - **Owner:** Governance toolchain
 - **Review by:** 2026-07-24
 - **Scope:** bounded subsystem
 - **Decision type:** Adopt now
-- **Operational posture:** Transitional contract
+- **Operational posture:** Active contract
 - **Related governance domains:** GOV-ARCH-001
 - **Related ATCs:** ATC-0006
 
@@ -34,31 +34,38 @@ At the same time, the initial embedded prototype that began under `packages/feat
 - Sync-Pack-specific logic leaked into what should become reusable runtime surfaces
 - extraction into standalone packages would be harder later if the embedded prototype kept growing
 
-The repository needs a transitional decision that keeps implementation fast while preserving the long-term dependency law and avoiding fake-generic abstractions in the core.
+The repository now needs a stronger statement than the original migration-only baseline because the package has become a real governed runtime:
+
+- `@afenda/features-sdk/sync-pack` is the execution truth for the 10 governed Sync-Pack workflows
+- `packages/cline` wraps those workflows with mode gating, explanation, next-action guidance, and runtime protocol normalization
+- `packages/cline/src/mcp-server` must remain transport-only and delegate only through the top-level runtime API
+- the package boundary must be enforced by code, lint, repo-guard, build checks, and parity tests rather than review discipline alone
 
 ## Decision summary
 
 1. Cline will start as a single workspace package at `packages/cline`.
-2. `packages/cline` must enforce strict internal ownership boundaries across `src/core`, `src/mcp-server`, and `src/plugins/features-sdk`.
-3. `src/core` remains runtime-neutral and must not import Feature SDK, Sync-Pack, or repo-specific remediation logic.
-4. `src/plugins/features-sdk` owns Feature SDK and Sync-Pack specific logic, including migrated code from the embedded prototype.
-5. `src/mcp-server` remains transport-only and may not own business logic or domain remediation behavior.
-6. The earlier embedded prototype in `packages/features-sdk` is treated as a migration source, not a permanent home.
-7. Extraction into multiple packages is deferred until usage proves the need.
+2. `packages/cline` is the governed internal operator runtime, not a metadata shell or CLI wrapper.
+3. `packages/cline` must invoke only public typed SDK APIs from `@afenda/features-sdk/sync-pack`; it may not import SDK source internals, reconstruct workflow logic, or shell out to CLI commands for execution.
+4. `src/core` remains runtime-neutral and must not import Feature SDK, Sync-Pack, or repo-specific remediation logic.
+5. `src/plugins/features-sdk` owns mode gating, safety policy, explanation, and runtime wrapping for Sync-Pack workflows, but not the workflow truth itself.
+6. `src/mcp-server` remains transport-only and may depend only on the top-level runtime API exported from `src/runtime/index.ts`.
+7. `RG-PKG-BOUNDARY-001`, `RG-EXEC-001`, and `ATC-CLINE-TOOLS-001` are blocking invariants for this package boundary.
+8. Extraction into multiple packages is deferred until usage proves the need.
 
 ## Delivery classification
 
 ### What is immediately true
 
 - `packages/cline` is the approved package boundary for the governed Cline runtime.
-- Internal dependency law is binding even before package extraction.
-- The existing embedded prototype should be migrated rather than expanded in place.
+- The runtime executes all 10 governed Sync-Pack tools through the public workflow catalog.
+- Internal dependency law is enforced by lint, repo-guard, tests, and build-time checks.
 
 ### What is not yet true
 
 - This ADR does not claim `packages/cline` is already a feature-complete Cline platform.
 - This ADR does not claim package extraction is required in Phase 1.
-- This ADR does not claim rich planning, explainers, or readiness evaluation belong in core today.
+- This ADR does not claim package extraction is no longer useful in the future.
+- This ADR does not claim MCP transport is a standalone external product surface.
 
 ### How this ADR should be used
 
@@ -69,7 +76,7 @@ The repository needs a transitional decision that keeps implementation fast whil
 ## Scope and boundaries
 
 - In scope:
-  `packages/cline`, migration of the embedded Cline prototype, internal dependency law, and the initial Feature SDK plugin boundary.
+  `packages/cline`, the governed runtime protocol, mode law, MCP transport isolation, Feature SDK plugin boundary, and parity between declared tools and the public SDK workflow catalog.
 - Out of scope:
   separate package publishing, second-plugin generalization, full planner/explainer architecture, and standalone MCP deployment maturity.
 - Affected repos/apps/packages:
@@ -82,16 +89,19 @@ The repository needs a transitional decision that keeps implementation fast whil
 ### Required
 
 - `packages/cline/src/core` must own runtime-neutral primitives only.
-- `packages/cline/src/plugins/features-sdk` must own Feature SDK and Sync-Pack-specific reasoning.
-- `packages/cline/src/mcp-server` must own only boot, registration, routing, config loading, and runtime wiring.
-- The internal dependency law must remain `src/core <- src/mcp-server` and `src/core <- src/plugins/features-sdk -> @afenda/features-sdk`.
-- Existing embedded Cline code must remain removed from the live `@afenda/features-sdk` export surface; it may not return as an actively exported parallel runtime surface.
+- `packages/cline/src/runtime` must own the top-level execution protocol, runtime factory, and governed tool resolution path.
+- `packages/cline/src/plugins/features-sdk` must own Feature SDK-specific gating, explanation, and runtime wrapping while invoking the public SDK truth surface only through `@afenda/features-sdk/sync-pack`.
+- `packages/cline/src/mcp-server` must own only request mapping, runtime delegation, and response serialization.
+- The internal dependency law must remain `src/core <- src/runtime <- src/mcp-server` and `src/core <- src/plugins/features-sdk -> @afenda/features-sdk/sync-pack`.
+- Declared governed tool names, the `cline` runtime registry, and the public SDK workflow catalog must stay identical in names and count.
 
 ### Forbidden
 
 - `src/core -> src/plugins/features-sdk`
 - `src/core -> @afenda/features-sdk`
-- `src/mcp-server` owning domain remediation, governance scoring, or Sync-Pack business logic
+- `src/plugins/features-sdk -> packages/features-sdk/src/**`
+- `src/mcp-server -> src/core/**`, `src/mcp-server -> src/plugins/**`, or `src/mcp-server -> @afenda/features-sdk*`
+- subprocess execution or `child_process` usage anywhere in `packages/cline/src/**`
 - keeping a live exported Cline surface inside `@afenda/features-sdk` after migration
 
 ### Allowed exceptions
@@ -128,22 +138,24 @@ The repository needs a transitional decision that keeps implementation fast whil
 
 - Implementation can proceed without premature package splitting.
 - The Cline runtime is no longer conceptually owned by `@afenda/features-sdk`.
-- Migration from the embedded prototype preserves working behavior while improving future extractability.
+- The package now has a real operator execution protocol instead of a policy shell.
+- MCP transport stays narrow because execution truth and business logic live elsewhere.
 
 ### Negative
 
-- Internal boundaries must be enforced socially and structurally before package extraction exists.
-- Some code may still feel Sync-Pack-shaped during Phase 1 while the plugin boundary is being proven.
-- Additional cleanup is required to remove the embedded export surface from `@afenda/features-sdk`.
+- The package now carries stronger doctrine and enforcement maintenance overhead.
+- Runtime wiring still depends on one plugin, so future generalization must be deliberate rather than assumed.
+- Multi-package extraction remains deferred, not disproven.
 
 ## Evidence and enforcement matrix
 
-| Contract statement                                        | Source of truth                                        | Current evidence                                            | Enforcement mechanism              | Gap / follow-up                                     |
-| --------------------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
-| Cline starts as one package with internal boundaries      | this ADR, `packages/cline/**`                          | package tree and migrated source under `packages/cline/src` | review discipline + typecheck      | stronger import-boundary enforcement can come later |
-| Core stays domain-agnostic                                | this ADR, `packages/cline/src/core/**`                 | core contracts and engine do not import Feature SDK         | review discipline + lint/typecheck | add automated boundary guard later if needed        |
-| Feature SDK plugin owns domain reasoning                  | this ADR, `packages/cline/src/plugins/features-sdk/**` | migrated mode/guards/tools/explain code                     | review discipline + tests          | deepen plugin functionality in Phase 2              |
-| Embedded prototype is not kept as the live export surface | this ADR, `packages/features-sdk/src/index.ts`         | `@afenda/features-sdk` exports only the Sync-Pack surface   | code review + typecheck            | stronger automated boundary checks can come later   |
+| Contract statement                                           | Source of truth                                                 | Current evidence                                                                 | Enforcement mechanism                                      | Gap / follow-up                                   |
+| ------------------------------------------------------------ | --------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------- |
+| Cline is the governed runtime package                        | this ADR, `packages/cline/**`                                   | runtime protocol, runtime factory, plugin execution, and MCP delegation surfaces | typecheck + tests + architecture doctrine                  | revisit only if package extraction becomes useful |
+| Cline consumes Features SDK through public Sync-Pack only    | this ADR, `packages/cline/src/**`, `packages/features-sdk/**`   | `tools/index.ts`, `create-default-cline-runtime.ts`, public workflow catalog     | ESLint + repo-guard + build-output assertion               | none for the documented runtime slice             |
+| MCP transport depends only on the top-level runtime API      | this ADR, `packages/cline/src/mcp-server/**`                    | MCP runtime wrapper imports `../runtime/index.js` only                           | ESLint + repo-guard + runtime delegation tests             | keep future transports on the same law            |
+| Tool tuple, runtime registry, and SDK workflow catalog match | this ADR, runtime contracts, workflow catalog, tool parity test | canonical tuple, generated runtime registry, and SDK catalog stay in lockstep    | `ATC-CLINE-TOOLS-001` parity test + package test suite     | add extra evidence only if a second plugin lands  |
+| Embedded prototype stays removed from the live export path   | this ADR, `packages/features-sdk/src/index.ts`                  | `@afenda/features-sdk` exports only the Sync-Pack surface                        | code review + typecheck + architecture contract validation | none                                              |
 
 ## Implementation plan
 
@@ -160,25 +172,26 @@ The repository needs a transitional decision that keeps implementation fast whil
 - [x] Migrate the existing embedded prototype into `packages/cline/src/plugins/features-sdk` — governance-toolchain — current phase
 - [x] Remove exported embedded Cline surface from `@afenda/features-sdk` — governance-toolchain — current phase
 - [x] Add the companion ATC and keep it current as evidence improves — governance-toolchain — current phase
-- [ ] Add stronger automated boundary enforcement for `packages/cline` internal import law — governance-toolchain — next phase
+- [x] Add blocking automation for package boundary, tool parity, MCP isolation, and no-subprocess runtime law — governance-toolchain — current phase
 
 ### Exit criteria for “implemented”
 
 - [x] `packages/cline` exists and typechecks
-- [ ] Feature SDK plugin behavior is exercised by tests from the new package
+- [x] Feature SDK plugin behavior is exercised by tests from the new package
 - [x] `@afenda/features-sdk` no longer exports a live `./cline` surface
+- [x] blocking invariants prevent source imports, subprocess execution, MCP logic bleed, and tool drift
 - [x] ADR + ATC pair remain current and pass architecture contract checks
 
 ## Validation plan
 
 - Required checks:
-  `pnpm --filter @afenda/cline typecheck`, `pnpm --filter @afenda/cline test:run`, `pnpm --filter @afenda/features-sdk typecheck`, `pnpm run script:check-architecture-contracts`
+  `pnpm --filter @afenda/cline build`, `pnpm --filter @afenda/cline typecheck`, `pnpm --filter @afenda/cline test:run`, `pnpm --filter @afenda/features-sdk typecheck`, `pnpm run script:test-repo-guard`, `pnpm run script:check-architecture-contracts`
 - Required manual QA:
-  review the new package tree and confirm no domain-specific imports exist in `src/core`
+  review the runtime protocol and confirm mutating workflows remain gated to `architect_commander`
 - Runtime/operational signals to watch:
-  accidental core-to-plugin imports, reintroduction of `features-sdk` exported Cline surfaces, and duplicated behavior across old and new locations
+  accidental core-to-plugin imports, reintroduction of `features-sdk` source reaches, subprocess execution in runtime code, or MCP transport importing internal surfaces
 - How success will be measured after rollout:
-  one authoritative Cline package exists, Feature SDK integration remains functional, and future extraction remains optional rather than urgent
+  one authoritative Cline runtime package exists, Feature SDK execution truth remains functional, and future extraction remains optional rather than urgent
 
 ## Trigger metrics (for revisit, escalation, or migration)
 

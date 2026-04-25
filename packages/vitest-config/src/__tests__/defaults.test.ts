@@ -13,7 +13,7 @@ describe("getAfendaVitestTestOptions", () => {
     expect(t.environment).toBe("jsdom")
     expect(t.include).toEqual(
       expect.arrayContaining([
-        "src/**/__test__/**/*.{test,spec}.{ts,tsx}",
+        "src/**/__tests__/**/*.{test,spec}.{ts,tsx}",
         "**/__tests__/*.{test,spec}.{ts,tsx}",
         "**/__tests__/**/*.{test,spec}.{ts,tsx}",
       ])

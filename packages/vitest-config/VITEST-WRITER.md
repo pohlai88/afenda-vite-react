@@ -4,9 +4,9 @@ This file replaces upstream Vitest-internal test-authoring guidance. For Afenda 
 
 ## Placement
 
-- **`apps/web`:** tests under **`src/**/__test__/`** (singular) next to the feature.
-- **Workspace packages:** often **`__tests__/`** (plural); some packages narrow **`include`** in their own `vitest.config.ts` (see **`TESTING.md`**).
-- **`getAfendaVitestTestOptions()`** includes both `src/**/__test__/**` and `**/__tests__/**` patterns by default.
+- **`apps/web`:** tests under **`src/**/**tests**/`\*\* next to the feature.
+- **Workspace packages:** use the same **`__tests__/`** convention; some packages narrow **`include`** in their own `vitest.config.ts` (see **`TESTING.md`**).
+- **`getAfendaVitestTestOptions()`** includes both `src/**/__tests__/**` and `**/__tests__/**` patterns by default.
 
 ## Stack
 

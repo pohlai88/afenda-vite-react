@@ -24,6 +24,10 @@ import {
   readWorkspaceCatalogVersions,
   type WorkspaceCatalogVersions,
 } from "./workspace-catalog.js"
+import {
+  assertScaffoldPlacementPaths,
+  toRelativePosixPath,
+} from "./path-contract.js"
 
 interface CreateTechStackScaffoldManifestOptions {
   readonly appId: string
@@ -336,10 +340,6 @@ GitHub PR submission and GitHub Actions blocking checks are deferred until the s
 `
 }
 
-function normalizeRelativePath(filePath: string): string {
-  return filePath.split(path.sep).join("/")
-}
-
 function resolvePlanningPackDirectory(
   workspaceRoot: string,
   featuresSdkRoot: string,
@@ -351,17 +351,13 @@ function resolvePlanningPackDirectory(
     category,
     appId
   )
-  const relativePath = path.relative(workspaceRoot, planningPackDirectory)
 
-  if (
-    relativePath === "" ||
-    relativePath === "." ||
-    relativePath.startsWith("..")
-  ) {
-    return `packages/features-sdk/docs/sync-pack/generated-packs/${category}/${appId}`
-  }
-
-  return normalizeRelativePath(relativePath)
+  return toRelativePosixPath({
+    workspaceRoot,
+    targetPath: planningPackDirectory,
+    label: "placement.planningPackDirectory",
+    fallbackPath: `packages/features-sdk/docs/sync-pack/generated-packs/${category}/${appId}`,
+  })
 }
 
 function createPlacementHints(
@@ -371,7 +367,7 @@ function createPlacementHints(
 ): StackScaffoldManifest["placement"] {
   const featuresSdkRoot = findFeaturesSdkRoot(workspaceRoot)
 
-  return {
+  return assertScaffoldPlacementPaths({
     planningPackDirectory: resolvePlanningPackDirectory(
       workspaceRoot,
       featuresSdkRoot,
@@ -381,7 +377,7 @@ function createPlacementHints(
     webFeatureDirectory: `apps/web/src/app/_features/${appId}`,
     apiModuleDirectory: `apps/api/src/modules/${appId}`,
     apiRouteFile: `apps/api/src/routes/${appId}.ts`,
-  }
+  })
 }
 
 function createRouteSuggestions(

@@ -38,7 +38,7 @@ Use these documents in order:
 
 1. [Scripts directory rules](../../../scripts/RULES.md)
 2. [Scripts README](../../../scripts/README.md)
-3. [Project configuration](../../workspace/PROJECT_CONFIGURATION.md)
+3. [Project configuration](../../PROJECT_CONFIGURATION.md)
 
 This handoff is a summary, not the source of truth.
 

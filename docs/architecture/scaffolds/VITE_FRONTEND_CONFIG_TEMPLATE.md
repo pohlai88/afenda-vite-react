@@ -14,7 +14,7 @@ order: 30
 
 Use this as the default `vite.config.ts` baseline for new frontend apps.
 It should be used when bootstrapping or re-baselining a Vite frontend app.
-It does not replace the canonical Vite policy in [`../../workspace/VITE_ENTERPRISE_WORKSPACE.md`](../../workspace/VITE_ENTERPRISE_WORKSPACE.md) or the tooling rules in [`../../workspace/PROJECT_CONFIGURATION.md`](../../workspace/PROJECT_CONFIGURATION.md).
+It does not replace the canonical Vite policy in [`../../VITE_ENTERPRISE_WORKSPACE.md`](../../VITE_ENTERPRISE_WORKSPACE.md) or the tooling rules in [`../../PROJECT_CONFIGURATION.md`](../../PROJECT_CONFIGURATION.md).
 
 ```ts
 /// <reference types="vitest/config" />
@@ -69,7 +69,7 @@ export default defineConfig(({ command, mode }) => {
       globals: true,
       environment: "jsdom",
       setupFiles: ["@afenda/vitest-config/vitest/setup"],
-      include: ["src/**/__test__/**/*.{test,spec}.{ts,tsx}"],
+      include: ["src/**/__tests__/**/*.{test,spec}.{ts,tsx}"],
     },
     define: {
       __DEV__: isServe,

@@ -4,6 +4,7 @@
   "promotedSharedDirectories": ["share", "shared"],
   "ignoredDirectoryNames": ["__tests__", "coverage", "dist", "node_modules"],
   "deniedDirectoryNames": [
+    "__test__",
     "content",
     "data",
     "helper",

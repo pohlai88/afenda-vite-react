@@ -6,6 +6,11 @@ import { loadAfendaConfig } from "../config/afenda-config.js"
 import type { RepoGuardFinding } from "./repo-guard.js"
 import type { GovernanceAggregateReport } from "./governance-spine.js"
 import type { BusinessGlossarySnapshot } from "../../packages/_database/src/studio/business-glossary.schema.js"
+import {
+  buildApiRouteSurfaceReport,
+  renderApiRouteSurfaceMarkdown,
+  renderApiRouteSurfaceReportJson,
+} from "../governance/generate-api-route-surface.js"
 import { generateGovernanceArtifacts } from "../../packages/design-system/scripts/component-governance/core.js"
 import {
   buildSchemaInventoryPayload,
@@ -48,6 +53,13 @@ export interface GeneratedAuthenticityGovernanceRegisterSnapshotBinding {
   readonly requiredSources: readonly string[]
 }
 
+export interface GeneratedAuthenticityApiRouteSurfaceBinding {
+  readonly id: string
+  readonly kind: "api-route-surface"
+  readonly targetPath: string
+  readonly requiredSources: readonly string[]
+}
+
 export interface GeneratedAuthenticityDesignSystemComponentGovernanceBinding {
   readonly id: string
   readonly kind: "design-system-component-governance"
@@ -74,6 +86,7 @@ export type GeneratedAuthenticityBinding =
   | GeneratedAuthenticityHashManifestBinding
   | GeneratedAuthenticityGovernanceRegisterMarkdownBinding
   | GeneratedAuthenticityGovernanceRegisterSnapshotBinding
+  | GeneratedAuthenticityApiRouteSurfaceBinding
   | GeneratedAuthenticityDesignSystemComponentGovernanceBinding
   | GeneratedAuthenticityDatabaseSchemaInventoryBinding
   | GeneratedAuthenticityDatabaseGlossarySnapshotBinding
@@ -209,6 +222,54 @@ export async function evaluateGeneratedAuthenticityBinding(options: {
         evidence: `binding=${options.binding.id}; expected-generated-hash=${options.binding.expectedGeneratedHash}; actual-generated-hash=${generatedHash}`,
         suggestedFix:
           "Regenerate the artifact or refresh the authenticity manifest if the canonical output changed intentionally.",
+      })
+    }
+
+    return findings
+  }
+
+  if (options.binding.kind === "api-route-surface") {
+    const actualContent = await fs.readFile(targetAbsolutePath, "utf8")
+    const generatedAt = resolveApiRouteSurfaceGeneratedAt({
+      targetPath: options.binding.targetPath,
+      actualContent,
+    })
+
+    if (!generatedAt) {
+      findings.push({
+        severity: "error",
+        ruleId: "RG-TRUTH-002",
+        filePath: options.binding.targetPath,
+        message:
+          "Generated API route surface is missing the generatedAt marker required for canonical verification.",
+        evidence: `binding=${options.binding.id}`,
+        suggestedFix:
+          "Regenerate the API route surface from its canonical generator so the authenticity guard can verify it.",
+      })
+      return findings
+    }
+
+    const report = buildApiRouteSurfaceReport(generatedAt)
+    const expectedContent = options.binding.targetPath.endsWith(".json")
+      ? renderApiRouteSurfaceReportJson(report)
+      : withTrailingNewline(renderApiRouteSurfaceMarkdown(report))
+
+    if (
+      !generatedContentsMatch(
+        options.binding.targetPath,
+        actualContent,
+        expectedContent
+      )
+    ) {
+      findings.push({
+        severity: "error",
+        ruleId: "RG-TRUTH-002",
+        filePath: options.binding.targetPath,
+        message:
+          "Generated artifact content does not match the canonical renderer for its declared provenance.",
+        evidence: `binding=${options.binding.id}`,
+        suggestedFix:
+          "Regenerate the artifact from its bound renderer or correct the provenance declaration.",
       })
     }
 
@@ -379,6 +440,22 @@ function normalizeGeneratedContent(content: string): string {
 
 function withTrailingNewline(content: string): string {
   return content.endsWith("\n") ? content : `${content}\n`
+}
+
+function resolveApiRouteSurfaceGeneratedAt(options: {
+  readonly targetPath: string
+  readonly actualContent: string
+}): string | null {
+  if (options.targetPath.endsWith(".json")) {
+    const parsed = JSON.parse(options.actualContent) as {
+      generatedAt?: string
+    }
+
+    return typeof parsed.generatedAt === "string" ? parsed.generatedAt : null
+  }
+
+  const match = options.actualContent.match(/^- Generated at: `([^`]+)`$/mu)
+  return match?.[1] ?? null
 }
 
 function generatedContentsMatch(

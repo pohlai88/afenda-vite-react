@@ -18,7 +18,6 @@ export default [
       "**/*.{test,spec}.{js,jsx,ts,tsx}",
       "**/*.stories.{js,jsx,ts,tsx}",
       "**/__tests__/**",
-      "**/__test__/**",
     ],
     rules: {
       "no-restricted-imports": [

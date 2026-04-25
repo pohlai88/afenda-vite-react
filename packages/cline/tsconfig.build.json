@@ -6,8 +6,8 @@
     "emitDeclarationOnly": false,
     "noEmit": false,
     "outDir": "dist",
-    "rootDir": ".."
+    "rootDir": "src"
   },
-  "include": ["src/**/*.ts", "../features-sdk/src/sync-pack/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["tests", "dist", "node_modules"]
 }

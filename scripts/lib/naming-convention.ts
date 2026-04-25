@@ -2188,7 +2188,7 @@ function evaluateWebShareRoot(
 
   evaluateRecursiveNamingSurface(root, "apps/web/src/share", issues, {
     onFile(fileName, relativePath, directoryName) {
-      if (directoryName === "__test__" || directoryName === "__tests__") {
+      if (directoryName === "__tests__") {
         return validateTestFile("shared component", fileName, relativePath)
       }
 
@@ -2231,6 +2231,13 @@ function evaluateWebRpcRoot(repoRoot: string, issues: NamingConventionIssue[]) {
       })
     }
   }
+
+  evaluatePhaseTwoTestDirectory(
+    path.join(root, "__tests__"),
+    "apps/web/src/rpc/__tests__",
+    "rpc",
+    issues
+  )
 }
 
 function evaluateWebMarketingRoot(
@@ -2505,7 +2512,7 @@ function evaluateVitestConfigPackageRoot(
       issues,
       {
         onFile(fileName, relativePath, directoryName) {
-          if (directoryName === "__test__" || directoryName === "__tests__") {
+          if (directoryName === "__tests__") {
             return validatePackageTestFile(
               "vitest config",
               fileName,
@@ -3216,6 +3223,15 @@ function evaluateRecursiveNamingSurface(
     const entries = fs.readdirSync(next.absoluteRoot, { withFileTypes: true })
     for (const entry of entries) {
       if (entry.isDirectory()) {
+        if (entry.name === "__test__") {
+          issues.push({
+            severity: "error",
+            rule: "singular-test-directory",
+            path: `${next.relativeRoot}/${entry.name}`,
+            message:
+              'Test directories in governed surfaces must use "__tests__". Singular "__test__" is not allowed.',
+          })
+        }
         if (options.ignoredDirectoryNames?.has(entry.name)) {
           continue
         }

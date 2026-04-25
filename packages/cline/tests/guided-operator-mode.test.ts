@@ -4,7 +4,7 @@ import { createModeAwareVerifyResponse } from "../src/plugins/features-sdk/expla
 import {
   summarizeSyncPackVerifyResult,
   summarizeSyncPackVerifyStep,
-} from "../../features-sdk/src/sync-pack/verify/index.js"
+} from "@afenda/features-sdk/sync-pack"
 
 describe("guided operator mode behavior", () => {
   it("keeps the response bounded to one exact next command", () => {
@@ -21,9 +21,11 @@ describe("guided operator mode behavior", () => {
     expect(response.exactNextCommand.split(/\s+/).length).toBeGreaterThan(1)
     expect(response.allowedTools).toEqual([
       "quickstart",
-      "verify",
+      "release-check",
       "check",
       "doctor",
+      "validate",
+      "verify",
     ])
   })
 })

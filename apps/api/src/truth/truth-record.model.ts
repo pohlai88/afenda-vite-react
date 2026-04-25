@@ -1,3 +1,5 @@
+import type { ExecutionLinkage } from "@afenda/events"
+
 export type TruthRecordEnvelope = {
   readonly tenantId: string
   readonly entityType: string
@@ -9,5 +11,6 @@ export type TruthRecordEnvelope = {
   readonly afterState: Record<string, unknown> | null
   readonly doctrineRef?: string | null
   readonly invariantRefs?: readonly string[]
+  readonly linkage?: ExecutionLinkage
   readonly metadata?: Record<string, unknown>
 }

@@ -1,12 +1,20 @@
-import type { SyncPackVerifyResult } from "@afenda/features-sdk"
+import type {
+  ClineToolDefinition,
+  ClineToolExecutionContext,
+} from "../../../core/contracts.js"
+import type { SyncPackVerifyResult } from "@afenda/features-sdk/sync-pack"
+import {
+  CLINE_TOOL_NAMES,
+  clineOperatorModes,
+  type ClineOperatorMode,
+  type GovernedClineToolName,
+} from "../../../runtime/contracts.js"
 
-export const clineOperatorModes = [
-  "guided_operator",
-  "feature_devops",
-  "architect_commander",
-] as const
-
-export type ClineOperatorMode = (typeof clineOperatorModes)[number]
+export { CLINE_TOOL_NAMES, clineOperatorModes }
+export type {
+  ClineOperatorMode,
+  GovernedClineToolName,
+} from "../../../runtime/contracts.js"
 
 export const clineCapabilities = [
   "read",
@@ -18,32 +26,19 @@ export const clineCapabilities = [
 
 export type ClineCapability = (typeof clineCapabilities)[number]
 
-export const governedClineToolNames = [
-  "quickstart",
-  "verify",
-  "check",
-  "doctor",
-  "validate",
-  "release-check",
-  "rank",
-  "report",
-  "scaffold",
-  "generate",
-] as const
-
-export type GovernedClineToolName = (typeof governedClineToolNames)[number]
-
 export type ClineConfidenceGrade = "low" | "medium" | "high"
 
-export interface GovernedClineToolDefinition {
+export interface GovernedClineToolDefinition<
+  TResult = unknown,
+> extends ClineToolDefinition<unknown, TResult> {
   readonly name: GovernedClineToolName
-  readonly capability: ClineCapability
-  readonly summary: string
-  readonly usage: string
   readonly command: string
-  readonly mutating: boolean
   readonly gated: boolean
   readonly group: "start" | "workflow" | "maintainer" | "gate" | "operator"
+  readonly execute: (
+    input: unknown,
+    context: ClineToolExecutionContext
+  ) => Promise<TResult>
 }
 
 export interface ClineModeScopePolicy {

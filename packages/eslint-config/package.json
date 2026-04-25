@@ -16,5 +16,12 @@
     "eslint-plugin-react-refresh": "catalog:",
     "globals": "catalog:",
     "typescript-eslint": "^8.46.0"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
+  },
+  "scripts": {
+    "test": "vitest --configLoader bundle",
+    "test:run": "vitest run --configLoader bundle"
   }
 }

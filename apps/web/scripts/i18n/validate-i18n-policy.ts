@@ -337,7 +337,7 @@ function collectTsxFiles(dir: string): string[] {
     if (entry.isDirectory()) {
       const seg = entry.name
       // Tests use literal strings by design; marketing previews are English-only demos.
-      if (seg === "__tests__" || seg === "__test__" || seg === "_template") {
+      if (seg === "__tests__" || seg === "_template") {
         continue
       }
       out.push(...collectTsxFiles(full))

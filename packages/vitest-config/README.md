@@ -40,15 +40,15 @@ Example: [`packages/design-system/vitest.config.ts`](../../packages/design-syste
 
 ## What the factory configures
 
-| Area              | Notes                                                                                                                                                                                                           |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`globals`**     | `true` — `describe` / `expect` / `vi` without per-file imports (Vitest globals)                                                                                                                                 |
-| **`environment`** | Default `jsdom`; override with `options.environment` or use `getAfendaVitestNodeTestOptions()`                                                                                                                  |
-| **`include`**     | `src/**/__test__/**/*.{test,spec}.{ts,tsx}` and `**/__tests__/**/*.{test,spec}.{ts,tsx}` — apps may use `__test__/` (singular) under `src/`; packages often use `__tests__/` (see [`TESTING.md`](./TESTING.md)) |
-| **`setupFiles`**  | Default: shared [`setup.ts`](./src/vitest/setup.ts) for non-node; for `node`, default `[]`. Pass `setupFiles: []` explicitly to skip **all** setup including jest-dom                                           |
-| **`pool`**        | Default **`threads`** when `VITEST_POOL` is unset (Vitest upstream default is **`forks`** — see intentional choices below)                                                                                      |
-| **`coverage`**    | Provider **`v8`**, reporters `text` / `json` / `html`, thresholds from **`COVERAGE_PRESETS`** or env (see below)                                                                                                |
-| **`mockReset`**   | `true` — Jest-like mock semantics for shared utilities                                                                                                                                                          |
+| Area              | Notes                                                                                                                                                                                                        |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`globals`**     | `true` — `describe` / `expect` / `vi` without per-file imports (Vitest globals)                                                                                                                              |
+| **`environment`** | Default `jsdom`; override with `options.environment` or use `getAfendaVitestNodeTestOptions()`                                                                                                               |
+| **`include`**     | `src/**/__tests__/**/*.{test,spec}.{ts,tsx}` and `**/__tests__/**/*.{test,spec}.{ts,tsx}` — `__tests__/` is the workspace-standard test folder for both apps and packages (see [`TESTING.md`](./TESTING.md)) |
+| **`setupFiles`**  | Default: shared [`setup.ts`](./src/vitest/setup.ts) for non-node; for `node`, default `[]`. Pass `setupFiles: []` explicitly to skip **all** setup including jest-dom                                        |
+| **`pool`**        | Default **`threads`** when `VITEST_POOL` is unset (Vitest upstream default is **`forks`** — see intentional choices below)                                                                                   |
+| **`coverage`**    | Provider **`v8`**, reporters `text` / `json` / `html`, thresholds from **`COVERAGE_PRESETS`** or env (see below)                                                                                             |
+| **`mockReset`**   | `true` — Jest-like mock semantics for shared utilities                                                                                                                                                       |
 
 **Peer dependencies:** `vitest`, `vite`, `@testing-library/jest-dom` (see [`package.json`](./package.json)).
 

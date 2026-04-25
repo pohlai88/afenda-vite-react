@@ -341,6 +341,11 @@ Examples:
 - `shell-navigation-policy.test.ts`
 - `app-surface.test.tsx`
 
+Directory convention:
+
+- test directories in governed live surfaces must use `__tests__/`
+- singular `__test__/` is invalid unless an explicit governance waiver says otherwise
+
 ### Spec-style tests
 
 Format:
@@ -369,6 +374,8 @@ Rules:
 - `.test` is the default for live governed unit and integration tests
 - `.spec` is reserved for spec/E2E-style surfaces
 - `test.ts` and `spec.ts` alone are forbidden
+- `__tests__/` is the only accepted test-directory name in governed live surfaces
+- `__test__/` is rejected unless explicitly waived
 
 ---
 

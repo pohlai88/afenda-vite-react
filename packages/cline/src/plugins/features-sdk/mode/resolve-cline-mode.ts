@@ -1,7 +1,7 @@
 import {
   clineOperatorModes,
   type ClineOperatorMode,
-} from "./cline-mode-contract.js"
+} from "../../../runtime/contracts.js"
 
 export function resolveClineMode(input: unknown): ClineOperatorMode {
   if (

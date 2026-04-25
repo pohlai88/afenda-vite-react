@@ -322,19 +322,19 @@ Contributors applying this model should at minimum align with:
 - `pnpm run script:check-afenda-config`
 - `pnpm run script:generate-docs-readme`
 
-If the Sync-Pack pipeline becomes a durable operational surface, promote it later through an ADR or ATC only when the trigger conditions in [Architecture evolution](../../workspace/ARCHITECTURE_EVOLUTION.md) are met.
+If the Sync-Pack pipeline becomes a durable operational surface, promote it later through an ADR or ATC only when the trigger conditions in [Architecture evolution](../../../../../docs/ARCHITECTURE_EVOLUTION.md) are met.
 
 ## References
 
 Internal references:
 
-- [Architecture](../../workspace/ARCHITECTURE.md)
-- [Architecture evolution](../../workspace/ARCHITECTURE_EVOLUTION.md)
-- [Project structure](../../workspace/PROJECT_STRUCTURE.md)
-- [Monorepo boundaries](../../workspace/MONOREPO_BOUNDARIES.md)
-- [Boundary surfaces](../../workspace/BOUNDARY_SURFACES.md)
-- [API](../../workspace/API.md)
-- [State management](../../workspace/STATE_MANAGEMENT.md)
+- [Architecture](../../../../../docs/ARCHITECTURE.md)
+- [Architecture evolution](../../../../../docs/ARCHITECTURE_EVOLUTION.md)
+- [Project structure](../../../../../docs/PROJECT_STRUCTURE.md)
+- [Monorepo boundaries](../../../../../docs/MONOREPO_BOUNDARIES.md)
+- [Boundary surfaces](../../../../../docs/BOUNDARY_SURFACES.md)
+- [API](../../../../../docs/API.md)
+- [State management](../../../../../docs/STATE_MANAGEMENT.md)
 
 External references:
 

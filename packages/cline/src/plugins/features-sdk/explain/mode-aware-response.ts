@@ -1,4 +1,4 @@
-import type { SyncPackVerifyResult } from "@afenda/features-sdk"
+import type { SyncPackVerifyResult } from "@afenda/features-sdk/sync-pack"
 import { assertSafeGovernedCommand } from "../guards/safe-command-policy.js"
 import { listAllowedToolsForMode } from "../mode/assert-tool-allowed.js"
 import type {

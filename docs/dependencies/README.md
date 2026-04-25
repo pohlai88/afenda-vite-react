@@ -10,9 +10,9 @@
 
 Docs in `docs/dependencies/` describe npm packages, infrastructure, and stack choices used in `apps/web`, repo tooling, or planned backend and integration work.
 
-Broader UI conventions live in [Design system](../workspace/DESIGN_SYSTEM.md), and repo tooling expectations live in [Project configuration](../workspace/PROJECT_CONFIGURATION.md).
+Broader UI conventions live in [Design system](../DESIGN_SYSTEM.md), and repo tooling expectations live in [Project configuration](../PROJECT_CONFIGURATION.md).
 
-**Documentation readiness:** [Documentation scope](../workspace/DOCUMENTATION_SCOPE.md).
+**Documentation readiness:** [Documentation scope](../DOCUMENTATION_SCOPE.md).
 
 ## Guide format
 
@@ -61,6 +61,6 @@ Long-form guides usually share a common shape: Afenda context, official document
 
 ## Related documentation
 
-- [Documentation scope](../workspace/DOCUMENTATION_SCOPE.md) - Normative vs optional docs.
-- [API reference](../workspace/API.md) - HTTP contract.
+- [Documentation scope](../DOCUMENTATION_SCOPE.md) - Normative vs optional docs.
+- [API reference](../API.md) - HTTP contract.
 - [Database package](../../packages/_database/README.md) — PostgreSQL, Drizzle, migrations.

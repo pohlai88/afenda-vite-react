@@ -14,7 +14,7 @@ order: 10
 
 This document defines the supporting scaffold baseline for a scalable, maintainable Vite frontend in the current Afenda workspace.
 Use it when creating a new app or resetting architecture drift.
-It does not replace the canonical workspace policy in [`../../workspace/VITE_ENTERPRISE_WORKSPACE.md`](../../workspace/VITE_ENTERPRISE_WORKSPACE.md) and [`../../workspace/PROJECT_STRUCTURE.md`](../../workspace/PROJECT_STRUCTURE.md).
+It does not replace the canonical workspace policy in [`../../VITE_ENTERPRISE_WORKSPACE.md`](../../VITE_ENTERPRISE_WORKSPACE.md) and [`../../PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md).
 
 ## Scope
 

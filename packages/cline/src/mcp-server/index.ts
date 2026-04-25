@@ -1,17 +1,22 @@
-import type { ClinePluginManifest } from "../core/contracts.js"
 import {
-  createClineOrchestrator,
-  type ClineOrchestrator,
-} from "../core/orchestrator.js"
+  createDefaultClineRuntime,
+  type ClineExecuteInput,
+  type ClineExecuteOutput,
+  type ClineRuntime,
+} from "../runtime/index.js"
 
 export interface ClineMcpServerRuntime {
-  readonly orchestrator: ClineOrchestrator
+  readonly runtime: ClineRuntime
+  readonly executeTool: (
+    input: ClineExecuteInput
+  ) => Promise<ClineExecuteOutput>
 }
 
-export function createClineMcpServerRuntime(
-  plugins: readonly ClinePluginManifest[]
-): ClineMcpServerRuntime {
+export function createClineMcpServerRuntime(): ClineMcpServerRuntime {
+  const runtime = createDefaultClineRuntime()
+
   return {
-    orchestrator: createClineOrchestrator(plugins),
+    runtime,
+    executeTool: (input) => runtime.execute(input),
   }
 }

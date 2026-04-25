@@ -12,6 +12,7 @@ This index is generated from markdown files in `docs/architecture/governance/gen
 
 ## Documents
 
-| Document                                        | Surface  | Priority  | Truth      | Class          | Owner                | Description                                                                |
-| ----------------------------------------------- | -------- | --------- | ---------- | -------------- | -------------------- | -------------------------------------------------------------------------- |
-| [Governance register](./governance-register.md) | doctrine | Reference | supporting | supporting-doc | governance-toolchain | Generated register of governance domains, evidence paths, and CI behavior. |
+| Document                                        | Surface  | Priority  | Truth      | Class          | Owner                | Description                                                                     |
+| ----------------------------------------------- | -------- | --------- | ---------- | -------------- | -------------------- | ------------------------------------------------------------------------------- |
+| [Governance register](./governance-register.md) | doctrine | Reference | supporting | supporting-doc | governance-toolchain | Generated register of governance domains, evidence paths, and CI behavior.      |
+| [API route surface](./api-route-surface.md)     | doctrine | Reference | supporting | supporting-doc | web-api-architecture | Generated inventory of the live Hono route tree mounted by apps/api/src/app.ts. |

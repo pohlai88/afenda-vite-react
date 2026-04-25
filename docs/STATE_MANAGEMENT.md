@@ -47,7 +47,9 @@ function TenantDashboard({ tenantId }: { tenantId: string }) {
   const { data, isPending, error } = useQuery({
     queryKey: ["dashboard", tenantId],
     queryFn: () =>
-      fetch(`/api/tenants/${tenantId}/dashboard`).then((r) => r.json()),
+      fetch("/api/v1/ops/events-workspace", {
+        headers: { "X-Tenant-Id": tenantId },
+      }).then((r) => r.json()),
   })
 
   if (isPending) return <Spinner />

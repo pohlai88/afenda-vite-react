@@ -230,7 +230,7 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
   "API.md": {
     title: "API reference",
     description:
-      "REST contract: `/api/tenants/{tenant}/...`, errors, and tenant-scoped routes.",
+      "Live Hono contract for `/api/v1/me`, `/api/v1/commands/execute`, `/api/v1/ops/*`, and `/api/users`.",
     order: 20,
   },
   "DOCUMENTATION_SCOPE.md": {
@@ -239,11 +239,29 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
       "Normative vs optional docs; what blocks implementation and what does not.",
     order: 30,
   },
+  "BOUNDARY_SURFACES.md": {
+    title: "Boundary surfaces",
+    description:
+      "Canonical root-vs-owner-local boundary doctrine for docs, doctrine, rules, scripts, schema, and tests.",
+    order: 32,
+  },
+  "MONOREPO_BOUNDARIES.md": {
+    title: "Monorepo boundaries",
+    description:
+      "Repo-wide package, topology, and root-vs-owner-local placement rules for the working monorepo.",
+    order: 34,
+  },
   "PROJECT_STRUCTURE.md": {
     title: "Project structure",
     description:
       "`apps/web` layout, routes, ownership boundaries, and owner-local surface placement guidance.",
     order: 40,
+  },
+  "SHELL_ARCHITECTURE.md": {
+    title: "Shell architecture",
+    description:
+      "Canonical shell/runtime guidance for the current governed web client surface.",
+    order: 45,
   },
   "DESIGN_SYSTEM.md": {
     title: "Design system",
@@ -268,6 +286,12 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
       "Vite SPA + backend auth flow, sessions, guards, and Auth0 integration notes.",
     order: 90,
   },
+  "MARKETING_FRONTEND_CONTRACT.md": {
+    title: "Marketing frontend contract",
+    description:
+      "Current contract for the marketing-facing frontend surface without treating it as a second canonical doc tree.",
+    order: 95,
+  },
   "ROLES_AND_PERMISSIONS.md": {
     title: "Roles and permissions",
     description: "RBAC roles, PBAC permission keys, and API vs UI enforcement.",
@@ -286,7 +310,7 @@ const ROOT_FILE_OVERRIDES: Record<string, FileOverride> = {
     order: 120,
   },
   "VITE_ENTERPRISE_WORKSPACE.md": {
-    title: "Vite enterprise practices (workspace)",
+    title: "Vite enterprise practices",
     description:
       "Vite 8 + Rolldown quality baseline, apps/web wiring, DevTools/Vitest guards, and review checklist.",
     order: 125,
@@ -350,12 +374,6 @@ const ROOT_COLLECTION_OVERRIDES: Record<string, DirectoryOverride> = {
     description:
       "Per-package and infrastructure guides for tooling, UI stack, and planned backend integrations.",
     order: 10,
-  },
-  workspace: {
-    title: "Workspace",
-    description:
-      "Canonical repo-wide operating docs for structure, tooling, architecture, auth, deployment, and platform policy.",
-    order: 9,
   },
   "architecture/adr": {
     title: "ADR records",
@@ -894,9 +912,9 @@ async function renderRootReadme(
       why: "Start with the operating map for canonical docs, generated surfaces, evidence paths, and CI routing.",
     },
     {
-      task: "Read canonical workspace policy",
-      startPath: "workspace/README.md",
-      why: "Workspace docs are the repo-wide operating source for structure, auth, deployment, and tooling policy.",
+      task: "Read official repo-wide implementation guidance",
+      startPath: "ARCHITECTURE.md",
+      why: "Root docs are the official repo-wide operating surface for structure, runtime, and implementation guidance.",
     },
     {
       task: "Review architecture decisions and contracts",
@@ -999,7 +1017,7 @@ async function renderRootReadme(
     "",
     "| Topic | Suggested location / notes |",
     "| --- | --- |",
-    "| OpenAPI / generated SDK | Optional. See [Documentation scope](./workspace/DOCUMENTATION_SCOPE.md); not required to implement from [API reference](./workspace/API.md). |",
+    "| OpenAPI / generated SDK | Optional. See [Documentation scope](./DOCUMENTATION_SCOPE.md); not required to implement from [API reference](./API.md). |",
     "| Storybook deep-dive | Add `docs/STORYBOOK.md` if the team wants repo-level Storybook process guidance beyond the dependency guide. |",
     "| GitHub Actions / CI deep-dive | Add `docs/CI.md` or a focused `.github/workflows` README if CI behavior needs first-class documentation. |",
     "",
@@ -1069,9 +1087,9 @@ async function renderDependenciesReadme(
     "",
     "Docs in `docs/dependencies/` describe npm packages, infrastructure, and stack choices used in `apps/web`, repo tooling, or planned backend and integration work.",
     "",
-    "Broader UI conventions live in [Design system](../workspace/DESIGN_SYSTEM.md), and repo tooling expectations live in [Project configuration](../workspace/PROJECT_CONFIGURATION.md).",
+    "Broader UI conventions live in [Design system](../DESIGN_SYSTEM.md), and repo tooling expectations live in [Project configuration](../PROJECT_CONFIGURATION.md).",
     "",
-    "**Documentation readiness:** [Documentation scope](../workspace/DOCUMENTATION_SCOPE.md).",
+    "**Documentation readiness:** [Documentation scope](../DOCUMENTATION_SCOPE.md).",
     "",
     "## Guide format",
     "",
@@ -1112,8 +1130,8 @@ async function renderDependenciesReadme(
     "",
     "## Related documentation",
     "",
-    "- [Documentation scope](../workspace/DOCUMENTATION_SCOPE.md) - Normative vs optional docs.",
-    "- [API reference](../workspace/API.md) - HTTP contract.",
+    "- [Documentation scope](../DOCUMENTATION_SCOPE.md) - Normative vs optional docs.",
+    "- [API reference](../API.md) - HTTP contract.",
     "- [Database package](../../packages/_database/README.md) — PostgreSQL, Drizzle, migrations."
   )
 
@@ -1364,9 +1382,9 @@ async function renderOperatingMap(
     "",
     renderTaskGuideTable(docsRoot, [
       {
-        task: "Change repo-wide implementation policy or workspace guidance",
-        startPath: "workspace/README.md",
-        why: "Workspace docs are the canonical starting point for repo-wide implementation changes.",
+        task: "Change repo-wide implementation policy or official docs",
+        startPath: "ARCHITECTURE.md",
+        why: "Root docs are the canonical starting point for repo-wide implementation changes.",
       },
       {
         task: "Change architecture decisions or enforceable contracts",
@@ -1393,14 +1411,18 @@ async function renderOperatingMap(
     "## Canonical docs and doctrine first",
     "",
     renderBulletLinks(docsRoot, workspaceRoot, [
-      "docs/workspace/README.md",
-      "docs/workspace/BOUNDARY_SURFACES.md",
+      "docs/ARCHITECTURE.md",
+      "docs/API.md",
+      "docs/BOUNDARY_SURFACES.md",
+      "docs/MONOREPO_BOUNDARIES.md",
+      "docs/PROJECT_STRUCTURE.md",
+      "docs/PROJECT_CONFIGURATION.md",
+      "docs/REPO_ARTIFACT_POLICY.md",
+      "docs/DOCUMENTATION_SCOPE.md",
       "docs/architecture/README.md",
       "docs/architecture/adr/README.md",
       "docs/architecture/atc/README.md",
       "docs/architecture/governance/GOVERNANCE_CONSTITUTION.md",
-      "docs/workspace/PROJECT_STRUCTURE.md",
-      "docs/workspace/REPO_ARTIFACT_POLICY.md",
     ]),
     "",
     "## Generated and derived surfaces",
@@ -1612,24 +1634,6 @@ function getCollectionTaskGuides(
   relativeDirectory: string
 ): CollectionTaskGuide[] {
   switch (relativeDirectory) {
-    case "workspace":
-      return [
-        {
-          task: "Find canonical implementation policy",
-          startPath: "PROJECT_STRUCTURE.md",
-          why: "Workspace docs hold the durable repo-wide implementation guidance for structure and operating conventions.",
-        },
-        {
-          task: "Decide root vs owner-local placement",
-          startPath: "BOUNDARY_SURFACES.md",
-          why: "Boundary surfaces doctrine defines what belongs at root, what stays with the owner, and why doctrine is not the same thing as general docs.",
-        },
-        {
-          task: "Change auth, deployment, or toolchain behavior",
-          startPath: "PROJECT_CONFIGURATION.md",
-          why: "Configuration and workspace docs are the canonical start for shared runtime and tooling changes.",
-        },
-      ]
     case "architecture":
       return [
         {
@@ -1663,11 +1667,6 @@ function getCollectionTaskGuides(
 
 function getCollectionRelatedCommands(relativeDirectory: string) {
   switch (relativeDirectory) {
-    case "workspace":
-      return [
-        "pnpm run script:generate-docs-readme",
-        "pnpm run script:check-doc-governance",
-      ]
     case "architecture":
       return [
         "pnpm run script:check-architecture-contracts",
@@ -1687,11 +1686,6 @@ function getCollectionCiFailureGuidance(relativeDirectory: string) {
         "open `docs/OPERATING_MAP.md` first to see the current CI routing and evidence surfaces",
         "review the ATC or ADR linked to the failing area before editing checks",
         "re-run `pnpm run script:check-architecture-contracts` after the fix",
-      ]
-    case "workspace":
-      return [
-        "start with `pnpm run script:check-doc-governance` for docs and doctrine issues or `pnpm run script:check-afenda-config` for topology issues",
-        "regenerate docs with `pnpm run script:generate-docs-readme` after changing any generated index surface",
       ]
     default:
       return []

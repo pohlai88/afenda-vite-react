@@ -1,6 +1,6 @@
 ---
-title: ATC-0007 Features SDK Sync-Pack package boundary
-description: Enforceable architecture contract for the @afenda/features-sdk package boundary, its Sync-Pack-focused export surface, and its package-contract-backed shipped assets.
+title: ATC-0007 Features SDK Sync-Pack execution truth boundary
+description: Enforceable architecture contract for the @afenda/features-sdk truth engine, its public workflow catalog, scaffold path contract, and package-contract-backed export surface.
 status: active
 owner: governance-toolchain
 truthStatus: canonical
@@ -9,7 +9,7 @@ relatedDomain: architecture-contract
 order: 24
 ---
 
-# ATC-0007: Features SDK Sync-Pack package boundary
+# ATC-0007: Features SDK Sync-Pack execution truth boundary
 
 ## Contract identity
 
@@ -26,44 +26,44 @@ order: 24
 
 ## Intent
 
-This contract binds `@afenda/features-sdk` to its actual Sync-Pack package boundary so the repo can prove the package owns a narrow export surface, a real package-contract validator, and the docs/rules/assets required by that package contract without overstating publication or enforcement maturity.
+This contract binds `@afenda/features-sdk` to its actual Sync-Pack truth boundary so the repo can prove the package owns a narrow export surface, a public workflow catalog, a scaffold path contract, and the docs/rules/assets required by that package contract without overstating publication scope.
 
 ## Implementation bindings
 
 - In-scope paths:
   `packages/features-sdk/**`, `docs/architecture/adr/ADR-0010-features-sdk-sync-pack-package-boundary.md`
 - Bound code/config surfaces:
-  `packages/features-sdk/package.json`, `packages/features-sdk/src/index.ts`, `packages/features-sdk/src/sync-pack/**`, `packages/features-sdk/tests/sync-pack/package-contract.test.ts`, `packages/features-sdk/docs/sync-pack/**`, `packages/features-sdk/rules/sync-pack/**`
+  `packages/features-sdk/package.json`, `packages/features-sdk/src/index.ts`, `packages/features-sdk/src/sync-pack/**`, `packages/features-sdk/src/sync-pack/workflow-catalog.ts`, `packages/features-sdk/src/sync-pack/scaffold/path-contract.ts`, `packages/features-sdk/tests/sync-pack/**`, `packages/features-sdk/docs/sync-pack/**`, `packages/features-sdk/rules/sync-pack/**`
 - Explicitly out of scope:
   public package distribution, non-Sync-Pack feature ownership, and stronger repo-wide blocking enforcement for package-internal architecture drift
 
 ## Enforcement surfaces
 
 - Static checks:
-  `pnpm run script:check-architecture-contracts`, `pnpm --filter @afenda/features-sdk typecheck`
+  `pnpm run script:check-architecture-contracts`, `pnpm --filter @afenda/features-sdk build`, `pnpm --filter @afenda/features-sdk typecheck`
 - Tests:
-  `pnpm --filter @afenda/features-sdk test:run`
+  `pnpm --filter @afenda/features-sdk test:run`, `pnpm --filter @afenda/cline test:run`
 - CI gates:
-  workspace quality and architecture contract evidence completeness
+  workspace quality, package tests, and architecture contract evidence completeness
 - Runtime assertions:
-  none
+  scaffold placement path validation through `FSDK-SCAFFOLD-PATH-001`
 
 ## Evidence
 
 - **Evidence path:** `.artifacts/reports/governance/architecture-contracts.report.json`
 - Required evidence artifacts:
-  architecture-contracts report, CI logs for package typecheck/test, and package-contract test coverage in package test results
+  architecture-contracts report, CI logs for package build/typecheck/test, scaffold contract validation in package test results, and runtime parity evidence in Cline package tests
 - Validation cadence:
   every architecture contract check and every Features SDK package change
 
 ## Drift handling
 
 - What counts as drift:
-  widening `@afenda/features-sdk` exports beyond the Sync-Pack boundary, broken package-contract-backed file expectations, or docs claiming stronger package maturity than the repo can prove
+  widening `@afenda/features-sdk` exports beyond the Sync-Pack boundary, tool catalog drift, broken scaffold path contracts, broken package-contract-backed file expectations, or docs claiming stronger package maturity than the repo can prove
 - How drift is recorded:
-  architecture-contract findings, package test failures, and code review findings
+  architecture-contract findings, package test failures, runtime parity failures, and code review findings
 - When drift blocks:
-  this contract currently warns rather than blocks while stronger package-boundary automation is still pending
+  the bound architecture-contract domain still warns overall, but package build, runtime assertions, and package tests fail immediately for the documented surfaces
 
 ## Linked commands
 
@@ -73,5 +73,6 @@ This contract binds `@afenda/features-sdk` to its actual Sync-Pack package bound
 ## Notes
 
 - `packages/features-sdk/src/index.ts` is intentionally narrow and currently exports only the Sync-Pack surface.
-- `src/sync-pack/package-contract.ts` is a real owned contract surface and part of the package boundary story.
+- `syncPackWorkflowCatalog` is part of the public truth model for the governed runtime slice.
+- `FSDK-SCAFFOLD-PATH-001` makes scaffold placement output a runtime-checked contract rather than a loose convention.
 - This contract does not make `@afenda/features-sdk` a public distribution promise.

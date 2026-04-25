@@ -7,10 +7,10 @@ export const clineCapabilityToolPolicy: Record<
   ClineCapability,
   readonly GovernedClineToolName[]
 > = {
-  read: ["quickstart", "rank", "report"],
-  diagnose: ["verify", "check", "doctor", "validate", "release-check"],
-  execute_safe: ["verify", "check", "doctor", "validate", "release-check"],
-  plan: ["quickstart", "rank", "report"],
+  read: ["quickstart"],
+  diagnose: ["release-check", "check", "doctor", "validate"],
+  execute_safe: ["verify"],
+  plan: ["rank", "report"],
   generate_guarded: ["generate", "scaffold"],
 } as const
 

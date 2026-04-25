@@ -152,7 +152,7 @@ export function auditCompositeFkUniqueConstraints(options: {
 function walkSchemaTs(dir: string, out: string[]): void {
   if (!fs.existsSync(dir)) return
   for (const name of fs.readdirSync(dir)) {
-    if (name === "__tests__" || name === "__test__") continue
+    if (name === "__tests__") continue
     const p = path.join(dir, name)
     const st = fs.statSync(p)
     if (st.isDirectory()) walkSchemaTs(p, out)

@@ -26,6 +26,7 @@
     "@afenda/better-auth": "workspace:*",
     "@afenda/database": "workspace:*",
     "@afenda/env-loader": "workspace:*",
+    "@afenda/events": "workspace:*",
     "@afenda/pino-logger": "workspace:*",
     "@hono/node-server": "^1.14.1",
     "@hono/zod-validator": "^0.7.6",

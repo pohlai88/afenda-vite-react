@@ -734,7 +734,7 @@ describe("createApp (scaffold)", () => {
     expect(body.truthContext?.commandMatrix).toHaveLength(2)
   })
 
-  it("GET /api/v1/ops/workspace returns an empty workspace when no ops projection exists", async () => {
+  it("retires legacy ops compatibility routes", async () => {
     setBetterAuthRuntimeForTests(
       createRuntimeOverride({
         getSession: async () => ({
@@ -751,97 +751,29 @@ describe("createApp (scaffold)", () => {
           },
         }),
         resolveCommandAuthority: async () => ({
-          roles: ["ops_viewer"],
-          permissions: ["ops:event:view"],
+          roles: ["workspace_admin"],
+          permissions: [
+            "ops:event:view",
+            "ops:event:claim",
+            "ops:event:advance",
+            "ops:audit:view",
+          ],
         }),
       })
     )
 
     const app = createApp()
-    const res = await app.request("/api/v1/ops/workspace")
 
-    expect(res.status).toBe(200)
-    expect(res.headers.get("deprecation")).toBe("true")
-    expect(res.headers.get("x-afenda-legacy-surface")).toBe(
-      "ops-workspace-snapshot"
-    )
-    await expect(res.json()).resolves.toMatchObject({
-      workspace: {
-        tenantId: "tenant-1",
-        tenantName: "Acme Operations",
-      },
-      events: [],
-      auditEntries: [],
-      counterparties: [],
-    })
-  })
+    const retiredRoutes = [
+      { method: "GET", path: "/api/v1/ops/workspace" },
+      { method: "POST", path: "/api/v1/ops/events/evt-4301/claim" },
+      { method: "POST", path: "/api/v1/ops/events/evt-4301/advance" },
+    ] as const
 
-  it("GET /api/v1/ops/workspace forbids actors without workspace read permission", async () => {
-    setBetterAuthRuntimeForTests(
-      createRuntimeOverride({
-        getSession: async () => ({
-          session: {
-            id: "auth-session-1",
-            activeTenantId: "tenant-1",
-            activeMembershipId: "membership-1",
-          },
-          user: {
-            id: "user-1",
-            email: "operator@acme.test",
-            emailVerified: true,
-            name: "Rhea Coleman",
-          },
-        }),
-        resolveCommandAuthority: async () => ({
-          roles: ["ops_viewer"],
-          permissions: [],
-        }),
-      })
-    )
-
-    const app = createApp()
-    const res = await app.request("/api/v1/ops/workspace")
-
-    expect(res.status).toBe(403)
-  })
-
-  it("GET /api/v1/ops/workspace hides audit entries when audit permission is absent", async () => {
-    __seedOpsProjectionStoreForTests()
-
-    setBetterAuthRuntimeForTests(
-      createRuntimeOverride({
-        getSession: async () => ({
-          session: {
-            id: "auth-session-1",
-            activeTenantId: "tenant-1",
-            activeMembershipId: "membership-1",
-          },
-          user: {
-            id: "user-1",
-            email: "operator@acme.test",
-            emailVerified: true,
-            name: "Rhea Coleman",
-          },
-        }),
-        resolveCommandAuthority: async () => ({
-          roles: ["ops_viewer"],
-          permissions: ["ops:event:view"],
-        }),
-      })
-    )
-
-    const app = createApp()
-    const res = await app.request("/api/v1/ops/workspace")
-
-    expect(res.status).toBe(200)
-    expect(res.headers.get("deprecation")).toBe("true")
-    expect(res.headers.get("x-afenda-legacy-surface")).toBe(
-      "ops-workspace-snapshot"
-    )
-    await expect(res.json()).resolves.toMatchObject({
-      events: expect.any(Array),
-      auditEntries: [],
-    })
+    for (const route of retiredRoutes) {
+      const res = await app.request(route.path, { method: route.method })
+      expect(res.status).toBe(404)
+    }
   })
 
   it("GET /api/v1/ops/events-workspace returns a tenant-scoped events surface without workspace preload", async () => {
@@ -1271,9 +1203,35 @@ describe("createApp (scaffold)", () => {
     expect(claimRes.status).toBe(200)
     const claimBody = (await claimRes.json()) as {
       truthRecordId: string
+      linkage: {
+        tenantId: string
+        requestId: string
+        correlationId: string
+        causationId: string
+        executionHash: string
+      }
+      event: {
+        version: "v1"
+        eventType: string
+        linkage: {
+          tenantId: string
+          requestId: string
+          correlationId: string
+          causationId: string
+          executionHash: string
+        }
+      }
     }
 
     expect(typeof claimBody.truthRecordId).toBe("string")
+    expect(claimBody.linkage.tenantId).toBe("tenant-1")
+    expect(claimBody.linkage.requestId).toMatch(/.+/u)
+    expect(claimBody.linkage.correlationId).toBe(claimBody.linkage.requestId)
+    expect(claimBody.linkage.causationId).toMatch(/.+/u)
+    expect(claimBody.linkage.executionHash).toMatch(/^[a-f0-9]{64}$/u)
+    expect(claimBody.event.version).toBe("v1")
+    expect(claimBody.event.eventType).toBe("ops.event.claimed")
+    expect(claimBody.event.linkage).toEqual(claimBody.linkage)
     const afterClaimRead = await app.request("/api/v1/ops/events-workspace")
     expect(afterClaimRead.status).toBe(200)
     const afterClaimBody = (await afterClaimRead.json()) as {
@@ -1293,6 +1251,28 @@ describe("createApp (scaffold)", () => {
       )
     ).toBe(true)
 
+    const auditAfterClaimRes = await app.request("/api/v1/ops/audit?limit=1")
+    expect(auditAfterClaimRes.status).toBe(200)
+    const auditAfterClaimBody = (await auditAfterClaimRes.json()) as {
+      entries: Array<{
+        commandType: string
+        metadata: {
+          executionLinkage?: {
+            tenantId: string
+            requestId: string
+            correlationId: string
+            causationId: string
+            executionHash: string
+          }
+        }
+      }>
+    }
+
+    expect(auditAfterClaimBody.entries[0]?.commandType).toBe("ops.event.claim")
+    expect(auditAfterClaimBody.entries[0]?.metadata.executionLinkage).toEqual(
+      claimBody.linkage
+    )
+
     const advanceRes = await app.request("/api/v1/commands/execute", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -1304,8 +1284,29 @@ describe("createApp (scaffold)", () => {
     expect(advanceRes.status).toBe(200)
     const advanceBody = (await advanceRes.json()) as {
       truthRecordId: string
+      linkage: {
+        tenantId: string
+        requestId: string
+        correlationId: string
+        causationId: string
+        executionHash: string
+      }
+      event: {
+        version: "v1"
+        eventType: string
+        linkage: {
+          tenantId: string
+          requestId: string
+          correlationId: string
+          causationId: string
+          executionHash: string
+        }
+      }
     }
     expect(typeof advanceBody.truthRecordId).toBe("string")
+    expect(advanceBody.event.version).toBe("v1")
+    expect(advanceBody.event.eventType).toBe("ops.event.advanced")
+    expect(advanceBody.event.linkage).toEqual(advanceBody.linkage)
 
     const afterAdvanceRead = await app.request("/api/v1/ops/events-workspace")
     expect(afterAdvanceRead.status).toBe(200)
@@ -1324,6 +1325,30 @@ describe("createApp (scaffold)", () => {
           entry.eventId === "evt-4301" && entry.actionLabel === "Advanced stage"
       )
     ).toBe(true)
+
+    const auditAfterAdvanceRes = await app.request("/api/v1/ops/audit?limit=1")
+    expect(auditAfterAdvanceRes.status).toBe(200)
+    const auditAfterAdvanceBody = (await auditAfterAdvanceRes.json()) as {
+      entries: Array<{
+        commandType: string
+        metadata: {
+          executionLinkage?: {
+            tenantId: string
+            requestId: string
+            correlationId: string
+            causationId: string
+            executionHash: string
+          }
+        }
+      }>
+    }
+
+    expect(auditAfterAdvanceBody.entries[0]?.commandType).toBe(
+      "ops.event.advance"
+    )
+    expect(auditAfterAdvanceBody.entries[0]?.metadata.executionLinkage).toEqual(
+      advanceBody.linkage
+    )
   })
 
   it("rejects forbidden commands when actor permissions do not include the command grant", async () => {

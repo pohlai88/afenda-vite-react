@@ -8,8 +8,24 @@ export interface BoundaryImportRule {
   readonly scopeRoot: string
   readonly blockedTargetPrefixes: readonly string[]
   readonly allowedTargetPrefixes?: readonly string[]
+  readonly blockedImportPatterns?: readonly BoundaryImportPattern[]
+  readonly allowedImportPatterns?: readonly RegExp[]
+  readonly blockedSourcePatterns?: readonly BoundarySourcePattern[]
   readonly severity: "error" | "warn"
   readonly message: string
+  readonly suggestedFix?: string
+}
+
+export interface BoundaryImportPattern {
+  readonly pattern: RegExp
+  readonly message?: string
+  readonly suggestedFix?: string
+}
+
+export interface BoundarySourcePattern {
+  readonly pattern: RegExp
+  readonly message?: string
+  readonly suggestedFix?: string
 }
 
 export interface BoundaryImportPolicy {
@@ -49,15 +65,60 @@ export async function evaluateBoundaryImportFindings(options: {
     }
 
     const absolutePath = path.join(options.repoRoot, filePath)
-    const source = await fs.readFile(absolutePath, "utf8")
+    let source: string
+    try {
+      source = await fs.readFile(absolutePath, "utf8")
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "ENOENT"
+      ) {
+        continue
+      }
+      throw error
+    }
     const imports = parseImportsFromSource(source)
+    const applicableRules = options.policy.rules.filter(
+      (rule) =>
+        filePath === rule.scopeRoot || filePath.startsWith(`${rule.scopeRoot}/`)
+    )
+
+    for (const rule of applicableRules) {
+      for (const pattern of rule.blockedSourcePatterns ?? []) {
+        pattern.pattern.lastIndex = 0
+        const match = pattern.pattern.exec(source)
+        if (!match || typeof match.index !== "number") {
+          continue
+        }
+
+        findings.push({
+          severity: rule.severity,
+          ruleId: rule.id,
+          filePath,
+          message: pattern.message ?? rule.message,
+          evidence: `line=${String(findLineNumberForIndex(source, match.index))}; pattern=${pattern.pattern.source}`,
+          suggestedFix:
+            pattern.suggestedFix ??
+            rule.suggestedFix ??
+            "Remove the blocked runtime pattern and route the behavior through an allowed governed surface instead.",
+        })
+      }
+    }
 
     for (const record of imports) {
-      if (
+      const isGloballyIgnoredImport =
         options.policy.globalIgnoredImportPatterns.some((pattern) =>
           pattern.test(record.importPath)
         )
-      ) {
+      const matchesRuleSpecificBlockedImport = applicableRules.some((rule) =>
+        (rule.blockedImportPatterns ?? []).some((entry) =>
+          entry.pattern.test(record.importPath)
+        )
+      )
+
+      if (isGloballyIgnoredImport && !matchesRuleSpecificBlockedImport) {
         continue
       }
 
@@ -84,6 +145,72 @@ export async function evaluateBoundaryImportFindings(options: {
         })
         continue
       }
+      let matchedScopedRule = false
+      for (const rule of applicableRules) {
+        if (
+          rule.allowedImportPatterns?.some((pattern) =>
+            pattern.test(record.importPath)
+          )
+        ) {
+          continue
+        }
+
+        const blockedImportPattern = rule.blockedImportPatterns?.find((entry) =>
+          entry.pattern.test(record.importPath)
+        )
+
+        if (blockedImportPattern) {
+          findings.push({
+            severity: rule.severity,
+            ruleId: rule.id,
+            filePath,
+            message: blockedImportPattern.message ?? rule.message,
+            evidence: `line=${String(record.line)}; import=${record.importPath}`,
+            suggestedFix:
+              blockedImportPattern.suggestedFix ??
+              rule.suggestedFix ??
+              "Depend on an allowed public surface or move the code into the owning domain.",
+          })
+          matchedScopedRule = true
+          break
+        }
+
+        if (!normalizedTarget) {
+          continue
+        }
+
+        if (
+          rule.allowedTargetPrefixes?.some((prefix) =>
+            matchesTargetPrefix(normalizedTarget, prefix)
+          )
+        ) {
+          continue
+        }
+
+        if (
+          rule.blockedTargetPrefixes.some((prefix) =>
+            matchesTargetPrefix(normalizedTarget, prefix)
+          )
+        ) {
+          findings.push({
+            severity: rule.severity,
+            ruleId: rule.id,
+            filePath,
+            message: rule.message,
+            evidence: `line=${String(record.line)}; import=${record.importPath}; target=${normalizedTarget}`,
+            suggestedFix:
+              rule.suggestedFix ??
+              "Depend on an allowed public surface or move the code into the owning domain.",
+          })
+          matchedScopedRule = true
+          break
+        }
+      }
+
+      if (matchedScopedRule) {
+        continue
+      }
+
       if (!normalizedTarget) {
         continue
       }
@@ -112,42 +239,6 @@ export async function evaluateBoundaryImportFindings(options: {
       if (workspacePackageFinding) {
         findings.push(workspacePackageFinding)
         continue
-      }
-
-      const applicableRules = options.policy.rules.filter(
-        (rule) =>
-          filePath === rule.scopeRoot ||
-          filePath.startsWith(`${rule.scopeRoot}/`)
-      )
-
-      for (const rule of applicableRules) {
-        if (
-          rule.allowedTargetPrefixes?.some(
-            (prefix) =>
-              normalizedTarget === prefix ||
-              normalizedTarget.startsWith(`${prefix}/`)
-          )
-        ) {
-          continue
-        }
-
-        if (
-          rule.blockedTargetPrefixes.some(
-            (prefix) =>
-              normalizedTarget === prefix ||
-              normalizedTarget.startsWith(`${prefix}/`)
-          )
-        ) {
-          findings.push({
-            severity: rule.severity,
-            ruleId: rule.id,
-            filePath,
-            message: rule.message,
-            evidence: `line=${String(record.line)}; import=${record.importPath}; target=${normalizedTarget}`,
-            suggestedFix:
-              "Depend on an allowed public surface or move the code into the owning domain.",
-          })
-        }
       }
     }
   }
@@ -456,4 +547,31 @@ function matchesAnyGlob(
   patterns: readonly string[]
 ): boolean {
   return patterns.some((pattern) => path.matchesGlob(filePath, pattern))
+}
+
+function matchesTargetPrefix(
+  normalizedTarget: string,
+  prefix: string
+): boolean {
+  return (
+    normalizedTarget === prefix ||
+    normalizedTarget.startsWith(`${prefix}/`) ||
+    stripKnownScriptExtension(normalizedTarget) === prefix
+  )
+}
+
+function stripKnownScriptExtension(value: string): string {
+  return value.replace(/\.(?:[cm]?[jt]sx?)$/u, "")
+}
+
+function findLineNumberForIndex(source: string, index: number): number {
+  let line = 1
+
+  for (let cursor = 0; cursor < index; cursor += 1) {
+    if (source[cursor] === "\n") {
+      line += 1
+    }
+  }
+
+  return line
 }

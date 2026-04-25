@@ -18,26 +18,47 @@ These guides include both repo-wide docs and repo-wide doctrine. Docs are explan
 
 ## Start here
 
-| Task                                                | Start here                       | Why                                                                                                        |
-| --------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Understand repo navigation and CI-critical surfaces | [Open](./OPERATING_MAP.md)       | Start with the operating map for canonical docs, generated surfaces, evidence paths, and CI routing.       |
-| Read canonical workspace policy                     | [Open](./workspace/README.md)    | Workspace docs are the repo-wide operating source for structure, auth, deployment, and tooling policy.     |
-| Review architecture decisions and contracts         | [Open](./architecture/README.md) | Architecture docs route you to narrative ADRs and enforceable ATCs without mixing the two.                 |
-| Check dependency adoption posture                   | [Open](./dependencies/README.md) | Dependency guides separate implemented surfaces from installed-only, planned, optional, and research docs. |
+| Task                                                | Start here                       | Why                                                                                                         |
+| --------------------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Understand repo navigation and CI-critical surfaces | [Open](./OPERATING_MAP.md)       | Start with the operating map for canonical docs, generated surfaces, evidence paths, and CI routing.        |
+| Read official repo-wide implementation guidance     | [Open](./ARCHITECTURE.md)        | Root docs are the official repo-wide operating surface for structure, runtime, and implementation guidance. |
+| Review architecture decisions and contracts         | [Open](./architecture/README.md) | Architecture docs route you to narrative ADRs and enforceable ATCs without mixing the two.                  |
+| Check dependency adoption posture                   | [Open](./dependencies/README.md) | Dependency guides separate implemented surfaces from installed-only, planned, optional, and research docs.  |
 
 ## Docs and generated surfaces in this folder
 
-| Document                            | Surface | Priority  | Truth      | Class          | Owner                | Description                                                                                                                          |
-| ----------------------------------- | ------- | --------- | ---------- | -------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| [Operating map](./OPERATING_MAP.md) | docs    | Reference | supporting | supporting-doc | governance-toolchain | Generated navigation map for docs, doctrine, generated surfaces, CI-blocking areas, evidence paths, and contributor starting points. |
+| Document                                                        | Surface  | Priority   | Truth      | Class          | Owner                | Description                                                                                                                          |
+| --------------------------------------------------------------- | -------- | ---------- | ---------- | -------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| [Operating map](./OPERATING_MAP.md)                             | docs     | Reference  | supporting | supporting-doc | governance-toolchain | Generated navigation map for docs, doctrine, generated surfaces, CI-blocking areas, evidence paths, and contributor starting points. |
+| [Architecture](./ARCHITECTURE.md)                               | docs     | Read first | canonical  | canonical-doc  | docs-policy          | Monorepo + ERP systems view, governed UI layer, semantic adapter flow, and adding new modules.                                       |
+| [API reference](./API.md)                                       | docs     | Read first | canonical  | canonical-doc  | api-ops-auth         | Live Hono contract for `/api/v1/me`, `/api/v1/commands/execute`, `/api/v1/ops/*`, and `/api/users`.                                  |
+| [Documentation scope](./DOCUMENTATION_SCOPE.md)                 | docs     | Read first | canonical  | canonical-doc  | docs-policy          | Normative vs optional docs; what blocks implementation and what does not.                                                            |
+| [Boundary surfaces](./BOUNDARY_SURFACES.md)                     | doctrine | Read first | canonical  | canonical-doc  | governance-toolchain | Canonical root-vs-owner-local boundary doctrine for docs, doctrine, rules, scripts, schema, and tests.                               |
+| [Monorepo boundaries](./MONOREPO_BOUNDARIES.md)                 | doctrine | Read first | canonical  | canonical-doc  | governance-toolchain | Repo-wide package, topology, and root-vs-owner-local placement rules for the working monorepo.                                       |
+| [Project structure](./PROJECT_STRUCTURE.md)                     | docs     | Read first | canonical  | canonical-doc  | web-runtime-shell    | `apps/web` layout, routes, ownership boundaries, and owner-local surface placement guidance.                                         |
+| [Shell architecture](./SHELL_ARCHITECTURE.md)                   | docs     | Read first | canonical  | canonical-doc  | web-runtime-shell    | Canonical shell/runtime guidance for the current governed web client surface.                                                        |
+| [Design system](./DESIGN_SYSTEM.md)                             | docs     | Read first | canonical  | canonical-doc  | web-runtime-shell    | Tokens, layout, motion, typography, and accessibility rules.                                                                         |
+| [Brand guidelines](./BRAND_GUIDELINES.md)                       | docs     | Read first | canonical  | canonical-doc  | marketing-public     | Logo, palette, gradient rules, and Afenda visual identity guidance.                                                                  |
+| [Authentication](./AUTHENTICATION.md)                           | docs     | Read first | canonical  | canonical-doc  | api-ops-auth         | Vite SPA + backend auth flow, sessions, guards, and Auth0 integration notes.                                                         |
+| [Marketing frontend contract](./MARKETING_FRONTEND_CONTRACT.md) | docs     | Read first | canonical  | canonical-doc  | marketing-public     | Current contract for the marketing-facing frontend surface without treating it as a second canonical doc tree.                       |
+| [Roles and permissions](./ROLES_AND_PERMISSIONS.md)             | docs     | Read first | canonical  | canonical-doc  | api-ops-auth         | RBAC roles, PBAC permission keys, and API vs UI enforcement.                                                                         |
+| [State management](./STATE_MANAGEMENT.md)                       | docs     | Read first | canonical  | canonical-doc  | web-runtime-shell    | Local state, Zustand, TanStack Query, forms, and Context boundaries.                                                                 |
+| [Performance](./PERFORMANCE.md)                                 | docs     | Read first | canonical  | canonical-doc  | web-runtime-shell    | Bundle, list, memoization, and loading-state guidance for the web app.                                                               |
+| [Vite enterprise practices](./VITE_ENTERPRISE_WORKSPACE.md)     | docs     | Read first | canonical  | canonical-doc  | governance-toolchain | Vite 8 + Rolldown quality baseline, apps/web wiring, DevTools/Vitest guards, and review checklist.                                   |
+| [Project configuration](./PROJECT_CONFIGURATION.md)             | docs     | Read first | canonical  | canonical-doc  | governance-toolchain | ESLint, Prettier, TypeScript, Turborepo, and repo tooling conventions.                                                               |
+| [Repository artifact policy](./REPO_ARTIFACT_POLICY.md)         | docs     | Read first | canonical  | canonical-doc  | governance-toolchain | Where build outputs, `.artifacts/` reports, caches, and temp files belong; root anti-patterns.                                       |
+| [Testing](./TESTING.md)                                         | docs     | Read first | canonical  | canonical-doc  | governance-toolchain | Vitest + React Testing Library guidance for `apps/web`.                                                                              |
+| [Integrations](./INTEGRATIONS.md)                               | docs     | Read first | canonical  | canonical-doc  | api-ops-auth         | Third-party APIs, OAuth flows, webhooks, and sync patterns.                                                                          |
+| [Deployment](./DEPLOYMENT.md)                                   | docs     | Read first | canonical  | canonical-doc  | governance-toolchain | Vercel static deployment, environment variables, and SPA rewrites.                                                                   |
+| [Glossary](./GLOSSARY.md)                                       | docs     | Read first | canonical  | canonical-doc  | docs-policy          | ERP and platform vocabulary used across the repository.                                                                              |
+| [Architecture evolution](./ARCHITECTURE_EVOLUTION.md)           | docs     | Read first | canonical  | canonical-doc  | docs-policy          | Operating guide for applying ADR-0002 trigger-based upgrade policy during architecture review.                                       |
 
 ## Documentation and doctrine collections
 
-| Collection                                       | Description                                                                                                     |
-| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| [Workspace](./workspace/README.md)               | Canonical repo-wide operating docs for structure, tooling, architecture, auth, deployment, and platform policy. |
-| [Dependency guides](./dependencies/README.md)    | Per-package and infrastructure guides for tooling, UI stack, and planned backend integrations.                  |
-| [Architecture records](./architecture/README.md) | Architecture ADRs and ATCs grouped under docs/architecture for narrative decisions and enforceable contracts.   |
+| Collection                                       | Description                                                                                                   |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| [Dependency guides](./dependencies/README.md)    | Per-package and infrastructure guides for tooling, UI stack, and planned backend integrations.                |
+| [Architecture records](./architecture/README.md) | Architecture ADRs and ATCs grouped under docs/architecture for narrative decisions and enforceable contracts. |
 
 ## If governance CI fails
 
@@ -50,11 +71,11 @@ These guides include both repo-wide docs and repo-wide doctrine. Docs are explan
 
 The following topics are mentioned elsewhere in the repo but do not exist as repo-root `docs/*.md` files today:
 
-| Topic                         | Suggested location / notes                                                                                                                   |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| OpenAPI / generated SDK       | Optional. See [Documentation scope](./workspace/DOCUMENTATION_SCOPE.md); not required to implement from [API reference](./workspace/API.md). |
-| Storybook deep-dive           | Add `docs/STORYBOOK.md` if the team wants repo-level Storybook process guidance beyond the dependency guide.                                 |
-| GitHub Actions / CI deep-dive | Add `docs/CI.md` or a focused `.github/workflows` README if CI behavior needs first-class documentation.                                     |
+| Topic                         | Suggested location / notes                                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| OpenAPI / generated SDK       | Optional. See [Documentation scope](./DOCUMENTATION_SCOPE.md); not required to implement from [API reference](./API.md). |
+| Storybook deep-dive           | Add `docs/STORYBOOK.md` if the team wants repo-level Storybook process guidance beyond the dependency guide.             |
+| GitHub Actions / CI deep-dive | Add `docs/CI.md` or a focused `.github/workflows` README if CI behavior needs first-class documentation.                 |
 
 ## Related
 

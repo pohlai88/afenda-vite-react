@@ -28,10 +28,10 @@ Domain-specific calls (finance, inventory, …) should live in **`_features/<nam
 
 ## Environment
 
-| Variable            | Purpose                                                                                                                                                                                                  |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VITE_API_BASE_URL` | Optional. Empty = same origin, paths like `/api/tenants/...`. Set to a same-origin path such as `/api/v1` or an absolute `http(s)` URL when the API is not proxied. Protocol-relative URLs are rejected. |
-| `VITE_API_TIMEOUT`  | Optional. Default request timeout in ms (clamped). Falls back to 30s when unset.                                                                                                                         |
+| Variable            | Purpose                                                                                                                                                                                                                                 |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_API_BASE_URL` | Optional. Empty = same origin for live Hono routes such as `/api/v1/me` and `/api/v1/ops/*`. Set to a same-origin path such as `/api/v1` or an absolute `http(s)` URL when the API is not proxied. Protocol-relative URLs are rejected. |
+| `VITE_API_TIMEOUT`  | Optional. Default request timeout in ms (clamped). Falls back to 30s when unset.                                                                                                                                                        |
 
 Never put secrets in `VITE_*` variables; they are exposed to the browser. See [Vite env docs](https://vitejs.dev/guide/env-and-mode.html).
 
@@ -51,9 +51,9 @@ JSON object and array bodies are serialized automatically. Native `BodyInit` val
 ```ts
 import { useApiClient } from "@/app/_platform/api-client"
 
-function useTenantProfile(tenant: string) {
+function useShellBootstrap() {
   const api = useApiClient()
-  return api.get<{ profile: { id: string } }>(`/api/tenants/${tenant}/profile`)
+  return api.get<{ afenda?: { defaultTenantId?: string | null } }>("/api/v1/me")
 }
 ```
 

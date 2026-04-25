@@ -14,7 +14,7 @@ order: 20
 
 Use this checklist as non-negotiable CI policy for Vite frontend release readiness.
 It should be used during rollout and review of frontend changes.
-It does not replace the canonical workspace policy in [`../../workspace/VITE_ENTERPRISE_WORKSPACE.md`](../../workspace/VITE_ENTERPRISE_WORKSPACE.md), [`../../workspace/TESTING.md`](../../workspace/TESTING.md), and [`../../workspace/PROJECT_CONFIGURATION.md`](../../workspace/PROJECT_CONFIGURATION.md).
+It does not replace the canonical workspace policy in [`../../VITE_ENTERPRISE_WORKSPACE.md`](../../VITE_ENTERPRISE_WORKSPACE.md), [`../../TESTING.md`](../../TESTING.md), and [`../../PROJECT_CONFIGURATION.md`](../../PROJECT_CONFIGURATION.md).
 
 ## Required Gates
 

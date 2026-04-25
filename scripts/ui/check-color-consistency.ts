@@ -14,7 +14,7 @@ import path from "node:path"
 
 const SCAN_PATHS = ["packages/design-system", "apps/web/src"] as const
 
-const EXCLUDE_DIR_NAMES = new Set(["__tests__", "__test__"])
+const EXCLUDE_DIR_NAMES = new Set(["__tests__"])
 
 /** When true, only `.ts` and `.tsx` (matches prior `rg --type code` behavior). */
 const CODE_TS_TSX = new Set([".ts", ".tsx"])

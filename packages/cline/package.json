@@ -13,10 +13,10 @@
     }
   },
   "dependencies": {
+    "@afenda/features-sdk": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@afenda/features-sdk": "workspace:*",
     "@afenda/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "tsx": "catalog:",
@@ -24,7 +24,7 @@
     "vitest": "catalog:"
   },
   "scripts": {
-    "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
+    "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node scripts/assert-dist-boundary.mjs",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint src tests --cache --cache-location .artifacts/eslint --concurrency auto",
     "test": "vitest --configLoader bundle",

@@ -398,6 +398,28 @@ test("bounded runtime Phase 2 surface rejects invalid role naming", () => {
   }
 })
 
+test("governed surfaces reject singular __test__ directories", () => {
+  const repoRoot = createFixtureRepo({
+    "package.json": JSON.stringify({ name: "fixture", private: true }, null, 2),
+    "docs/architecture/governance/NAMING_CONVENTION.md": "# Naming",
+    "docs/architecture/adr/ADR_TEMPLATE.md": "# Template",
+    "docs/architecture/atc/ATC_TEMPLATE.md": "# Template",
+    "packages/vitest-config/src/vitest/defaults.ts":
+      "export const vitestDefaults = {}",
+    "packages/vitest-config/src/__test__/defaults.test.ts": "export {}",
+  })
+
+  try {
+    const result = evaluateNamingConvention(repoRoot, {})
+    const messages = result.errors.map((issue) => issue.message).join("\n")
+
+    assert.match(messages, /must use "__tests__"/u)
+    assert.match(messages, /Singular "__test__" is not allowed/u)
+  } finally {
+    cleanupFixtureRepo(repoRoot)
+  }
+})
+
 test("bounded tenant Phase 2 surface passes with valid naming", () => {
   const repoRoot = createFixtureRepo({
     "package.json": JSON.stringify({ name: "fixture", private: true }, null, 2),
@@ -759,7 +781,8 @@ test("remaining app and package roots pass with valid naming", () => {
     "apps/web/src/routes/__tests__/route-marketing-parity.test.ts": "export {}",
     "apps/web/src/share/components/auth/auth.tsx":
       "export function Auth() { return null }",
-    "apps/web/src/share/components/auth/__test__/sign-up.test.tsx": "export {}",
+    "apps/web/src/share/components/auth/__tests__/sign-up.test.tsx":
+      "export {}",
     "apps/web/src/rpc/index.ts": "export {}",
     "apps/web/src/rpc/web-client.ts": "export const webClient = {}",
     "apps/web/src/marketing/README.md": "# marketing",
@@ -815,7 +838,7 @@ test("remaining app and package roots pass with valid naming", () => {
       "export {}",
     "packages/vitest-config/src/vitest/defaults.ts":
       "export const vitestDefaults = {}",
-    "packages/vitest-config/src/__test__/defaults.test.ts": "export {}",
+    "packages/vitest-config/src/__tests__/defaults.test.ts": "export {}",
     "packages/vitest-config/dist/vitest/defaults.js":
       "export const vitestDefaults = {}",
     "packages/vitest-config/dist/vitest/defaults.d.ts":

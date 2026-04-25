@@ -209,6 +209,12 @@ export const repoGuardPolicy: RepoGuardPolicy = {
           kind: "owner-root",
           matchMode: "prefix",
         },
+        {
+          owner: "apps/api:workflow",
+          root: "apps/api/src/workflow",
+          kind: "owner-root",
+          matchMode: "prefix",
+        },
       ],
     },
     {
@@ -258,6 +264,19 @@ export const repoGuardPolicy: RepoGuardPolicy = {
         {
           owner: "packages/env-loader:src",
           root: "packages/env-loader/src",
+          kind: "owner-root",
+          matchMode: "prefix",
+        },
+      ],
+    },
+    {
+      id: "package-events-src",
+      scopeRoot: "packages/events/src",
+      ignorePatterns: [],
+      rules: [
+        {
+          owner: "packages/events:src",
+          root: "packages/events/src",
           kind: "owner-root",
           matchMode: "prefix",
         },
@@ -481,8 +500,10 @@ export const repoGuardPolicy: RepoGuardPolicy = {
   warnStemTokens: ["final", "temp", "copy", "new"],
   protectedGeneratedPaths: [
     ".artifacts/reports/governance/governance-register.snapshot.json",
+    ".artifacts/reports/governance/api-route-surface.report.json",
     "apps/web/scripts/i18n/data/*.json",
     "apps/web/src/app/_platform/i18n/audit/*.json",
+    "docs/architecture/governance/generated/api-route-surface.md",
     "docs/architecture/governance/generated/governance-register.md",
     "docs/README.md",
     "scripts/README.md",
@@ -554,6 +575,92 @@ export const repoGuardPolicy: RepoGuardPolicy = {
         severity: "error",
         message:
           "App shared components must not depend on feature, marketing, route, or RPC implementation roots.",
+      },
+      {
+        id: "RG-PKG-BOUNDARY-001",
+        scopeRoot: "packages/cline/src",
+        blockedTargetPrefixes: ["packages/features-sdk"],
+        severity: "error",
+        message:
+          "packages/cline may not reach into packages/features-sdk by relative path. Consume the public @afenda/features-sdk/sync-pack surface instead.",
+        suggestedFix:
+          "Replace the relative filesystem reach with @afenda/features-sdk/sync-pack.",
+      },
+      {
+        id: "RG-PKG-BOUNDARY-001",
+        scopeRoot: "packages/cline/src",
+        blockedTargetPrefixes: [],
+        blockedImportPatterns: [
+          {
+            pattern: /^@afenda\/features-sdk(?!\/sync-pack$)/u,
+            message:
+              "packages/cline may consume only the public @afenda/features-sdk/sync-pack surface.",
+            suggestedFix:
+              "Import the Sync-Pack execution truth through @afenda/features-sdk/sync-pack only.",
+          },
+        ],
+        severity: "error",
+        message:
+          "packages/cline may consume only the governed public Sync-Pack surface from Features SDK.",
+      },
+      {
+        id: "RG-PKG-BOUNDARY-001",
+        scopeRoot: "packages/cline/src/mcp-server",
+        blockedTargetPrefixes: [
+          "packages/cline/src/core",
+          "packages/cline/src/plugins",
+          "packages/cline/src/runtime",
+        ],
+        allowedTargetPrefixes: ["packages/cline/src/runtime/index"],
+        severity: "error",
+        message:
+          "packages/cline/src/mcp-server is transport-only and may depend only on the top-level runtime API.",
+        suggestedFix:
+          "Delegate through packages/cline/src/runtime/index.ts instead of importing runtime, core, or plugin internals.",
+      },
+      {
+        id: "RG-PKG-BOUNDARY-001",
+        scopeRoot: "packages/cline/src/mcp-server",
+        blockedTargetPrefixes: [],
+        blockedImportPatterns: [
+          {
+            pattern: /^@afenda\/features-sdk(?:\/|$)/u,
+            message:
+              "packages/cline/src/mcp-server is transport-only and may not import Features SDK directly.",
+            suggestedFix:
+              "Keep MCP transport bound to the top-level Cline runtime API only.",
+          },
+        ],
+        severity: "error",
+        message:
+          "packages/cline/src/mcp-server is transport-only and may not import Features SDK directly.",
+      },
+      {
+        id: "RG-EXEC-001",
+        scopeRoot: "packages/cline/src",
+        blockedTargetPrefixes: [],
+        blockedImportPatterns: [
+          {
+            pattern: /^(?:node:)?child_process$/u,
+            message:
+              "packages/cline/src may not import child_process. Execute through the public Sync-Pack workflow catalog instead.",
+            suggestedFix:
+              "Remove child_process usage and route execution through the typed SDK workflow catalog.",
+          },
+        ],
+        blockedSourcePatterns: [
+          {
+            pattern:
+              /\b(?:spawn|spawnSync|exec|execSync|execFile|execFileSync|fork)\s*\(/u,
+            message:
+              "packages/cline/src may not execute subprocess APIs. Route execution through the typed SDK workflow catalog instead.",
+            suggestedFix:
+              "Remove subprocess execution from the Cline runtime layer and invoke the governed SDK workflow directly.",
+          },
+        ],
+        severity: "error",
+        message:
+          "packages/cline/src may not import or execute subprocess APIs.",
       },
     ],
   },
@@ -652,6 +759,19 @@ export const repoGuardPolicy: RepoGuardPolicy = {
           "**Decision anchor:**",
         ],
       },
+      {
+        id: "active-api-runtime-guidance",
+        fileGlobs: [
+          "docs/API.md",
+          "docs/README.md",
+          "docs/STATE_MANAGEMENT.md",
+          "apps/web/src/app/_platform/runtime/README.md",
+        ],
+        requiredFrontmatterKeys: [],
+        requiredContentPatterns: [],
+        forbiddenContentPatterns: ["/api/tenants/"],
+        forbiddenContentSeverity: "error",
+      },
     ],
   },
   sourceEvidenceMismatch: {
@@ -661,37 +781,28 @@ export const repoGuardPolicy: RepoGuardPolicy = {
     ],
     bindings: [
       {
-        id: "governance-register-refresh",
-        sourcePathPatterns: [
-          "scripts/afenda.config.json",
-          "scripts/governance/generate-governance-register.ts",
-          "scripts/lib/governance-spine.ts",
-        ],
-        evidencePathPatterns: [
-          "docs/architecture/governance/generated/governance-register.md",
-          ".artifacts/reports/governance/governance-register.snapshot.json",
-        ],
-        requiredEvidencePaths: [
-          "docs/architecture/governance/generated/governance-register.md",
-        ],
-      },
-      {
         id: "docs-operating-map-refresh",
         sourcePathPatterns: [
           "scripts/docs/generate-docs-readme.ts",
           "scripts/afenda.config.json",
           ".artifacts/reports/governance/governance-summary.report.json",
+          "docs/*.md",
+          "docs/dependencies/*.md",
+          "docs/marketing/*.md",
+          "docs/scaffolds/**/*.md",
+          "docs/architecture/adr/ADR-*.md",
+          "docs/architecture/atc/ATC-*.md",
+          "docs/architecture/governance/*.md",
+          "docs/architecture/scaffolds/**/*.md",
         ],
-        evidencePathPatterns: ["docs/OPERATING_MAP.md"],
-        requiredEvidencePaths: ["docs/OPERATING_MAP.md"],
+        evidencePathPatterns: ["docs/OPERATING_MAP.md", "docs/README.md"],
+        requiredEvidencePaths: ["docs/OPERATING_MAP.md", "docs/README.md"],
       },
       {
         id: "repo-guard-architecture-discovery-surfaces",
         sourcePathPatterns: [
-          "docs/architecture/adr/ADR-0008-repository-integrity-guard-architecture.md",
-          "docs/architecture/adr/ADR-0009-cline-single-package-extraction-ready-boundaries.md",
-          "docs/architecture/atc/ATC-0005-repository-integrity-guard-baseline.md",
-          "docs/architecture/atc/ATC-0006-cline-package-boundaries-and-ownership.md",
+          "docs/architecture/adr/ADR-*.md",
+          "docs/architecture/atc/ATC-*.md",
           "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
           "docs/architecture/governance/REPO_GUARDRAIL_TODO.md",
         ],
@@ -703,6 +814,24 @@ export const repoGuardPolicy: RepoGuardPolicy = {
         requiredEvidencePaths: [
           "docs/architecture/adr/README.md",
           "docs/architecture/atc/README.md",
+        ],
+      },
+      {
+        id: "api-route-surface-refresh",
+        sourcePathPatterns: [
+          "scripts/governance/generate-api-route-surface.ts",
+          "docs/API.md",
+          "docs/ARCHITECTURE.md",
+          "docs/DOCUMENTATION_SCOPE.md",
+          "docs/architecture/adr/ADR-0013-gap-closure-sequencing-and-runtime-truth-convergence.md",
+          "docs/architecture/atc/ATC-0011-gap-closure-sequencing-and-runtime-truth-convergence.md",
+        ],
+        evidencePathPatterns: [
+          ".artifacts/reports/governance/api-route-surface.report.json",
+          "docs/architecture/governance/generated/api-route-surface.md",
+        ],
+        requiredEvidencePaths: [
+          "docs/architecture/governance/generated/api-route-surface.md",
         ],
       },
       {
@@ -757,6 +886,28 @@ export const repoGuardPolicy: RepoGuardPolicy = {
   },
   generatedAuthenticity: {
     bindings: [
+      {
+        id: "api-route-surface-report",
+        kind: "api-route-surface",
+        targetPath:
+          ".artifacts/reports/governance/api-route-surface.report.json",
+        requiredSources: [
+          "apps/api/src/app.ts",
+          "apps/api/src/routes",
+          "scripts/governance/generate-api-route-surface.ts",
+        ],
+      },
+      {
+        id: "api-route-surface-markdown",
+        kind: "api-route-surface",
+        targetPath:
+          "docs/architecture/governance/generated/api-route-surface.md",
+        requiredSources: [
+          "apps/api/src/app.ts",
+          "apps/api/src/routes",
+          "scripts/governance/generate-api-route-surface.ts",
+        ],
+      },
       {
         id: "design-system-component-manifests",
         kind: "design-system-component-governance",
@@ -821,6 +972,7 @@ export const repoGuardPolicy: RepoGuardPolicy = {
       {
         root: "docs/architecture/governance/generated",
         allowedGeneratedPaths: [
+          "docs/architecture/governance/generated/api-route-surface.md",
           "docs/architecture/governance/generated/README.md",
           "docs/architecture/governance/generated/governance-register.md",
         ],

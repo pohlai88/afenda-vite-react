@@ -1,4 +1,4 @@
-import type { SyncPackVerifyResult } from "@afenda/features-sdk"
+import type { SyncPackVerifyResult } from "@afenda/features-sdk/sync-pack"
 import type { ClineConfidenceGrade } from "../mode/cline-mode-contract.js"
 
 export function gradeVerifyConfidence(

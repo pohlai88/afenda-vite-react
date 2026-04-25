@@ -1,4 +1,5 @@
 import type { GovernedClineToolDefinition } from "../mode/cline-mode-contract.js"
+import { GovernedClineError } from "../errors.js"
 
 const allowedCommandPrefix = "pnpm run feature-sync"
 const disallowedShellFragments = ["&&", "||", ";", "|", ">", "<"]
@@ -22,8 +23,15 @@ export function assertSafeGovernedCommand(
   context: string
 ): void {
   if (!isSafeGovernedCommand(command)) {
-    throw new Error(
-      `${context} resolved to unsupported command ${command}. Governed Cline requires exact pnpm feature-sync commands only.`
+    throw new GovernedClineError(
+      `${context} resolved to unsupported command ${command}. Governed Cline requires exact pnpm feature-sync commands only.`,
+      {
+        code: "unsafe-governed-command",
+        invariant: "RG-EXEC-001",
+        doctrine: "ADR-0009/ATC-0006",
+        resolution:
+          "Keep remediation and next-action commands pinned to governed pnpm feature-sync commands without shell chaining.",
+      }
     )
   }
 }
