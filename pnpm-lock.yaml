@@ -577,9 +577,6 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.12.2
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 4.1.4(vitest@4.1.4)
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
