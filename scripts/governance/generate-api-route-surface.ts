@@ -98,12 +98,15 @@ function compareRoutes(
 export function renderApiRouteSurfaceMarkdown(
   report: ApiRouteSurfaceReport
 ): string {
-  const routeRows = report.routes
-    .map(
-      (route) =>
-        `| \`${route.method}\` | \`${route.path}\` | \`${route.basePath}\` | \`${route.surface}\` |`
-    )
-    .join("\n")
+  const routeRows = renderMarkdownTable(
+    ["Method", "Path", "Base path", "Surface"],
+    report.routes.map((route) => [
+      `\`${route.method}\``,
+      `\`${route.path}\``,
+      `\`${route.basePath}\``,
+      `\`${route.surface}\``,
+    ])
+  )
 
   const surfaceRows = Object.entries(report.summary.governedSurfaces)
     .sort(([left], [right]) => left.localeCompare(right))
@@ -136,10 +139,26 @@ ${surfaceRows}
 
 ## Mounted routes
 
-| Method | Path | Base path | Surface |
-| --- | --- | --- | --- |
 ${routeRows}
 `
+}
+
+function renderMarkdownTable(
+  headers: readonly string[],
+  rows: readonly (readonly string[])[]
+): string {
+  const widths = headers.map((header, columnIndex) =>
+    Math.max(header.length, ...rows.map((row) => row[columnIndex]?.length ?? 0))
+  )
+
+  const renderRow = (cells: readonly string[]) =>
+    `| ${cells.map((cell, index) => cell.padEnd(widths[index] ?? 0)).join(" | ")} |`
+
+  return [
+    renderRow(headers),
+    renderRow(widths.map((width) => "-".repeat(width))),
+    ...rows.map(renderRow),
+  ].join("\n")
 }
 
 export function renderApiRouteSurfaceReportJson(
