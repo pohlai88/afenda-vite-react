@@ -14,7 +14,7 @@ order: 999
 This file is generated from `apps/api/src/app.ts` by `scripts/governance/generate-api-route-surface.ts`.
 Use it as the route-inventory truth surface. [docs/API.md](../../../API.md) is the narrative companion.
 
-- Generated at: `2026-04-25T02:27:57.843Z`
+- Generated at: `2026-04-25T17:18:18.414Z`
 - Route count: 14
 - Methods: `GET`, `POST`
 
