@@ -95,8 +95,10 @@
   },
   "devDependencies": {
     "@afenda/tsconfig": "workspace:*",
+    "@arethetypeswrong/cli": "^0.18.2",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "publint": "^0.3.18",
     "tsx": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
@@ -109,6 +111,9 @@
     "test": "vitest --configLoader bundle",
     "test:run": "vitest run --configLoader bundle",
     "test:coverage": "vitest run --coverage --configLoader bundle",
+    "surface:publint": "publint run --pack pnpm",
+    "surface:attw": "attw --pack . --profile esm-only --no-emoji --no-summary",
+    "surface:check": "pnpm run build && pnpm run surface:publint && pnpm run surface:attw",
     "sync-pack:quickstart": "tsx src/sync-pack/cli/quickstart.ts",
     "sync-pack:help": "tsx src/sync-pack/cli/sync-pack.ts --help",
     "sync-pack:verify": "tsx src/sync-pack/cli/verify.ts",
