@@ -96,6 +96,7 @@
   "devDependencies": {
     "@afenda/tsconfig": "workspace:*",
     "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
@@ -107,6 +108,7 @@
     "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint src tests --cache --cache-location .artifacts/eslint --concurrency auto",
     "test": "vitest --configLoader bundle",
     "test:run": "vitest run --configLoader bundle",
+    "test:coverage": "vitest run --coverage --configLoader bundle",
     "sync-pack:quickstart": "tsx src/sync-pack/cli/quickstart.ts",
     "sync-pack:help": "tsx src/sync-pack/cli/sync-pack.ts --help",
     "sync-pack:verify": "tsx src/sync-pack/cli/verify.ts",

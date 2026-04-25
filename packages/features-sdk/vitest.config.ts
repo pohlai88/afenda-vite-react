@@ -8,5 +8,12 @@ export default defineConfig({
     include: ["tests/**/*.{test,spec}.ts"],
     pool: "threads",
     mockReset: true,
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      reportsDirectory: ".artifacts/vitest/coverage",
+      include: ["src/**/*.ts"],
+      exclude: ["src/**/*.d.ts"],
+    },
   },
 })
