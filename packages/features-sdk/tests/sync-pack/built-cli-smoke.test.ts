@@ -49,7 +49,15 @@ async function runBuiltCliAllowFailure(
   }
 }
 
-describe("built Sync-Pack CLIs", () => {
+/**
+ * TEST POLICY:
+ * This suite executes built CLI binaries via subprocess (execFile),
+ * which can exceed default Vitest timeouts in CI environments.
+ *
+ * Timeout is intentionally extended ONLY for this suite.
+ * Do NOT raise global testTimeout in vitest config.
+ */
+describe("built Sync-Pack CLIs", { timeout: 15_000 }, () => {
   it("runs bare afenda-sync-pack as deterministic quickstart only", async () => {
     const { stdout, stderr } = await runBuiltCli("sync-pack.js", [])
 
