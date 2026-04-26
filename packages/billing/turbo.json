@@ -1,0 +1,18 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "typecheck": {
+      "outputs": []
+    },
+    "test": {
+      "outputs": []
+    },
+    "test:run": {
+      "outputs": []
+    },
+    "lint": {
+      "outputs": [".artifacts/eslint/**"]
+    }
+  }
+}

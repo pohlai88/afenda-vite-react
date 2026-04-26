@@ -39,6 +39,7 @@ export type ShellRailWidgetSlot =
  */
 export const shellRailWidgetConfig: ShellRailWidgetConfig = {
   enabledFeatureIds: [
+    "dashboard",
     "events",
     "counterparties",
     "audit",
@@ -53,6 +54,12 @@ export const shellRailWidgetConfig: ShellRailWidgetConfig = {
  * Canonical rail rows: seven features + **+** (customize visibility).
  */
 export const shellRailWidgetSlots: readonly ShellRailWidgetSlot[] = [
+  {
+    kind: "feature",
+    featureId: "dashboard",
+    emoji: "🏠",
+    labelKey: "nav.widgets.my_erp",
+  },
   {
     kind: "feature",
     featureId: "events",

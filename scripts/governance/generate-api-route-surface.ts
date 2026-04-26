@@ -16,6 +16,7 @@ export type ApiRouteSurfaceEntry = {
     | "auth"
     | "auth-v1"
     | "commands"
+    | "mdm"
     | "me"
     | "ops"
     | "users"
@@ -70,6 +71,9 @@ export function classifyApiRouteSurface(
   }
   if (routePath.startsWith("/api/v1/commands")) {
     return "commands"
+  }
+  if (routePath.startsWith("/api/v1/mdm")) {
+    return "mdm"
   }
   if (routePath.startsWith("/api/v1/me")) {
     return "me"
@@ -194,7 +198,12 @@ export function buildApiRouteSurfaceReport(
     generatedAt,
     sourceOfTruth: {
       app: "apps/api/src/app.ts#createApp",
-      routes: ["apps/api/src/app.ts", "apps/api/src/routes/**"],
+      routes: [
+        "apps/api/src/app.ts",
+        "apps/api/src/api-*.routes.ts",
+        "apps/api/src/command/*.routes.ts",
+        "apps/api/src/modules/**/*.routes.ts",
+      ],
     },
     summary: {
       routeCount: routes.length,

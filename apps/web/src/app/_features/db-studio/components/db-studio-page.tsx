@@ -32,8 +32,10 @@ import {
   getSharedApiClient,
   resolveApiV1Path,
 } from "../../../_platform/runtime"
-import { useOptionalTenantIdHeaders } from "../../../_platform/tenant/tenant-scope-context"
-import { useOptionalTenantScope } from "../../../_platform/tenant"
+import {
+  useOptionalTenantIdHeaders,
+  useOptionalTenantScope,
+} from "../../../_platform/tenant/tenant-scope-context"
 import type {
   BusinessGlossaryEntry,
   StudioPgEnumRow,

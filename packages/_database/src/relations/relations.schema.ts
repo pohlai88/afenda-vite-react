@@ -30,6 +30,8 @@ export {
   chartOfAccountSetsRelations,
   fiscalCalendarsRelations,
   fiscalPeriodsRelations,
+  invoiceItemsRelations,
+  invoicesRelations,
   legalEntityCoaAssignmentsRelations,
 } from "./finance-relations"
 

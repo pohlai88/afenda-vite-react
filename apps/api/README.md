@@ -1,74 +1,86 @@
 # @afenda/api
 
-**Hono** on Node (`@hono/node-server`) — thin HTTP edge, middleware pipeline, route modules.
+Afenda's live HTTP API runs in this package on **Hono** with the Node adapter.
+It is no longer a minimal scaffold. The active surface includes auth companion routes,
+shell bootstrap, governed command execution, operations reads, and a lightweight typed-client demo surface.
 
-## Target stack (Afenda)
+## Live stack
 
-This package follows an **API-first** layout: modular routes, thin transport, strong typing into the Vite client.
+| Layer        | Choice                                               |
+| ------------ | ---------------------------------------------------- |
+| Runtime      | Node.js via `@hono/node-server`                      |
+| Transport    | Hono                                                 |
+| Validation   | Zod + `@hono/zod-validator`                          |
+| Auth runtime | Better Auth via `@afenda/better-auth` integration    |
+| Data access  | `@afenda/database` + Drizzle-backed packages         |
+| Typed client | `hono/client` using `AppType` from `@afenda/api/app` |
 
-| Layer            | Choice                                                                                       |
-| ---------------- | -------------------------------------------------------------------------------------------- |
-| **Frontend**     | Vite + React (`@afenda/web`) — normal SPA; dev proxy to this API                             |
-| **Backend**      | Hono + `@hono/node-server`                                                                   |
-| **Validation**   | Zod + `@hono/zod-validator`                                                                  |
-| **Typed client** | `hono/client` `hc<AppType>()` (types exported from `@afenda/api/app` after `pnpm run build`) |
-| **Runtime**      | Node.js (see `package.json` `engines`)                                                       |
+## Source of truth
 
-This stack stays **simpler to reason about and debug** than a heavier traditional backend: clear process boundary (Vite dev server vs API), Hono’s middleware model, Node adapter, and RPC-style typing flow match Hono’s documented API use cases.
+- Narrative API contract: [`../../docs/API.md`](../../docs/API.md)
+- Generated route inventory: [`../../docs/architecture/governance/generated/api-route-surface.md`](../../docs/architecture/governance/generated/api-route-surface.md)
+- Authentication posture: [`../../docs/AUTHENTICATION.md`](../../docs/AUTHENTICATION.md)
 
-## Production hardening (after baseline)
+If this README and the mounted Hono app disagree, [`src/app.ts`](./src/app.ts) wins.
 
-Add these **in order** once the baseline routes, errors, and client typing are stable.
+## Current layout
 
-### Phase 1
+- `src/app.ts`: canonical app composition and mounted route tree
+- `src/index.ts`: server bootstrap and shutdown wiring
+- `src/routes/`: transport surfaces for auth, me, commands, ops, health, and users
+- `src/command/`: governed command contracts, registry, matrix, and execution orchestration
+- `src/modules/operations/`: operations read models, state machine, and command handlers
+- `src/modules/users/`: typed-client demo surface backed by an in-memory repository
+- `src/middleware/`: request context, Better Auth session context, and error handling
+- `src/truth/` and `src/workflow/`: truth-record and workflow transition support
+- `src/contract/` and `src/lib/`: shared HTTP contracts, envelopes, env, logging, and helpers
 
-1. **Request timing metrics** — latency and status per route (observability hooks).
-2. **Structured logger bridge** — production JSON logs (e.g. Pino) aligned with request IDs.
-3. **Auth middleware** — verify sessions or tokens before protected routes.
-4. **Cookie / session strategy** — explicit SameSite, secure, and domain policy for the SPA + API hosts.
-5. **RFC 9457 Problem Details** — standardize error bodies (`application/problem+json`) alongside or instead of the current `{ ok, error }` JSON envelope where appropriate.
+## Mounted route groups
 
-### Phase 2
+- `GET /`
+- `GET /health`
+- `/api/auth/*`
+- `/api/v1/auth/*`
+- `GET /api/v1/me`
+- `/api/v1/mdm/*`
+- `POST /api/v1/commands/execute`
+- `POST /api/v1/legacy-erp/ingest`
+- `POST /api/v1/legacy-erp/pull/counterparties`
+- `POST /api/v1/legacy-erp/pull/items`
+- `POST /api/v1/legacy-erp/transform`
+- `/api/v1/ops/*`
+- `/api/users`
 
-1. **Rate limiting** — per IP / key / route (Hono middleware or edge).
-2. **Idempotency** — safe retries for mutating endpoints (third-party or custom middleware).
-3. **ETag** — for read-heavy endpoints (Hono provides ETag helpers; cache validators).
-4. **OpenAPI** — only if **external** clients need formal contracts; internal `hc` typing often suffices.
+For the exact method and path inventory, use the generated route surface document instead of duplicating it here.
 
-Hono’s ecosystem includes **logger**, **ETag**, **middleware** primitives, and community packages for concerns like **idempotency**; pick pieces that fit your deployment (Node vs serverless).
+## Development
 
-## Scaffold (current)
-
-This tree was **replaced** from a full implementation. The previous **`apps/api`** (Better Auth, DB, studio, audit, etc.) is archived at:
-
-**[`archives/apps-api-backup-2026-04-19/`](../archives/apps-api-backup-2026-04-19/)** (config + `src` + `scripts`; `node_modules` / `dist` not included).
-
-### Layout
-
-- `src/index.ts` — `serve`, env load
-- `src/app.ts` — `createApp()`, middleware, route mounting (`/health`, `/api/*`)
-- `src/routes/` — `health`, `auth` (placeholder), `users`, `index` mounts sub-apps
-- `src/middleware/` — `logger` (via `hono/logger` in `app.ts`), `request-context`, `error-handler`
-- `src/lib/` — `env`, `errors`, `response` helpers
-- `src/modules/` — feature folders (e.g. `users/` schema + service)
-
-### Run
+From repo root:
 
 ```bash
 pnpm --filter @afenda/api dev
 ```
 
-Default port **8787** when `PORT` is unset (`index.ts` uses `process.env.PORT ?? 8787`). **`apps/web`** dev proxy targets **`http://localhost:8787`** by default (`VITE_API_URL` overrides). Graceful shutdown: `server.close()` on `SIGINT` / `SIGTERM` ([`@hono/node-server`](https://github.com/honojs/node-server)).
+Default port is `8787` when `PORT` is unset.
 
-### Endpoints (scaffold)
+Useful checks:
 
-- `GET /` and `GET /health` — liveness JSON via `success()` (`ok`, `data.service`, `data.status`, `data.now`, `data.uptimeSeconds`)
-- `GET /api/users`, `POST /api/users` — in-memory users; `POST` returns **201** with `success(user)`; invalid JSON body → **400** (default `@hono/zod-validator` response)
-- `GET /api/auth/session` — placeholder (`success()`; `authenticated` / `user`) until Better Auth is wired again
+```bash
+pnpm --filter @afenda/api lint
+pnpm --filter @afenda/api typecheck
+pnpm --filter @afenda/api test:run
+pnpm run script:generate-api-route-surface
+```
 
-## Typed client (web)
+## Housekeeping notes
 
-The Vite app imports **`AppType`** from **`@afenda/api/app`** (build the API first so `dist/*.d.ts` exists). See **`src/api-client/client.ts`** in `@afenda/web`. Frontend and API stay **separate processes**; no Hono-in-Vite plugin is required for this layout.
+- The `/api/users` surface is intentionally lightweight and uses an in-memory repository for typed-client regression coverage.
+- Operations transport now uses `counterparty` vocabulary externally even where some persistence remains on legacy partner identifiers internally.
+- `/api/v1/legacy-erp/transform` is an admin-gated anti-corruption seam for stable legacy payload ingestion and Afenda-shape normalization.
+- `/api/v1/legacy-erp/ingest` is the first digest-and-persist seam: counterparties and items are written through canonical MDM ownership, while journals remain candidate-only until finance is live.
+- `/api/v1/legacy-erp/pull/counterparties` is the first connector-backed intake seam: it fetches paginated legacy TPM `customers` over HTTP, transforms them into Afenda counterparties, and persists them through MDM.
+- `/api/v1/legacy-erp/pull/items` extends that pattern for legacy MRP `products`: it fetches paginated item master records, normalizes them into Afenda item intake records, and persists them through `/api/v1/mdm/items`.
+- There is no dedicated payment or billing route surface mounted in the live API today. If payment flows are introduced, they should land as an explicit bounded surface rather than being hidden inside operations transport.
 
 ## File envelope
 

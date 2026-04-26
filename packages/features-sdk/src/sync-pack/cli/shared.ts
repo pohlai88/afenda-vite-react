@@ -351,7 +351,7 @@ export const syncPackCommands = {
   },
   rank: {
     name: "rank",
-    summary: "Print candidate priority scoring table.",
+    summary: "Print candidate priority ranking with decision context.",
     usage:
       "afenda-sync-pack rank [--category <category>] [--lane <lane>] [--owner <team>] [--pack <id>]",
     group: "operator",
@@ -366,7 +366,7 @@ export const syncPackCommands = {
   },
   report: {
     name: "report",
-    summary: "Print the candidate portfolio report.",
+    summary: "Print the candidate portfolio and decision artifact report.",
     usage:
       "afenda-sync-pack report [--category <category>] [--lane <lane>] [--owner <team>] [--pack <id>]",
     group: "operator",
@@ -399,7 +399,7 @@ export const syncPackCommands = {
   },
   scaffold: {
     name: "scaffold",
-    summary: "Generate a tech-stack scaffold manifest.",
+    summary: "Generate a tech-stack scaffold manifest and handoff contract.",
     usage:
       "afenda-sync-pack scaffold [--app-id <id>] [--category <category>] [--package-name <name>] [--out <path>]",
     group: "operator",

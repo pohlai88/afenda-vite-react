@@ -15,6 +15,8 @@ import { accounts } from "../schema/finance/accounts.schema"
 import { chartOfAccountSets } from "../schema/finance/chart-of-account-sets.schema"
 import { fiscalCalendars } from "../schema/finance/fiscal-calendars.schema"
 import { fiscalPeriods } from "../schema/finance/fiscal-periods.schema"
+import { invoiceItems } from "../schema/finance/invoice-items.schema"
+import { invoices } from "../schema/finance/invoices.schema"
 import { legalEntityCoaAssignments } from "../schema/finance/legal-entity-coa-assignments.schema"
 import { itemEntitySettings } from "../schema/mdm/item-entity-settings.schema"
 import { legalEntities } from "../schema/mdm/legal-entities.schema"
@@ -104,5 +106,20 @@ export const accountsRelations = relations(accounts, ({ one, many }) => ({
   }),
   cogsItemSettings: many(itemEntitySettings, {
     relationName: "cogs_account_item_settings",
+  }),
+}))
+
+export const invoicesRelations = relations(invoices, ({ one, many }) => ({
+  tenant: one(tenants, {
+    fields: [invoices.tenantId],
+    references: [tenants.id],
+  }),
+  items: many(invoiceItems),
+}))
+
+export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
+  invoice: one(invoices, {
+    fields: [invoiceItems.tenantId, invoiceItems.invoiceId],
+    references: [invoices.tenantId, invoices.id],
   }),
 }))

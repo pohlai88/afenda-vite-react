@@ -5,7 +5,6 @@ import path from "node:path"
 import { loadAfendaConfig } from "../config/afenda-config.js"
 import type { RepoGuardFinding } from "./repo-guard.js"
 import type { GovernanceAggregateReport } from "./governance-spine.js"
-import type { BusinessGlossarySnapshot } from "../../packages/_database/src/studio/business-glossary.schema.js"
 import {
   buildApiRouteSurfaceReport,
   renderApiRouteSurfaceMarkdown,
@@ -24,6 +23,10 @@ import {
   buildGovernanceRegisterSnapshot,
   renderGovernanceRegisterMarkdown,
 } from "./governance-spine.js"
+
+type BusinessGlossarySnapshot = Parameters<
+  typeof synchronizeBusinessGlossarySnapshot
+>[0]
 
 export interface GeneratedAuthenticityOrphanRoot {
   readonly root: string

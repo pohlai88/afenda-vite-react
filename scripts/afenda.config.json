@@ -293,6 +293,7 @@
             "TESTING.md",
             "VITEST-WRITER.md",
             "package.json",
+            "turbo.json",
             "tsconfig.build.json",
             "tsconfig.json",
             "vitest.config.ts"
@@ -306,7 +307,8 @@
             "node.json",
             "package.json",
             "react-app.json",
-            "react-library.json"
+            "react-library.json",
+            "turbo.json"
           ]
         },
         {
@@ -413,7 +415,97 @@
           "path": "packages/events",
           "profile": "source-library",
           "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["HANDOFF.md"]
+        },
+        {
+          "path": "packages/admin",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["MIGRATION_NOTES.md"]
+        },
+        {
+          "path": "packages/billing",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["MIGRATION_NOTES.md"]
+        },
+        {
+          "path": "packages/cache",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["MIGRATION_NOTES.md"]
+        },
+        {
+          "path": "packages/errors",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
           "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/feature-flags",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["MIGRATION_NOTES.md"]
+        },
+        {
+          "path": "packages/finance-core",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["MIGRATION_NOTES.md"]
+        },
+        {
+          "path": "packages/knowledge-ai",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/knowledge-contracts",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/knowledge-domain",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/knowledge-indexer",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/knowledge-search",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/metrics",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["MIGRATION_NOTES.md"]
+        },
+        {
+          "path": "packages/notifications",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["MIGRATION_NOTES.md"]
+        },
+        {
+          "path": "packages/rate-limit",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["MIGRATION_NOTES.md"]
+        },
+        {
+          "path": "packages/search",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": ["MIGRATION_NOTES.md"]
         },
         {
           "path": "packages/features-sdk",
@@ -423,6 +515,12 @@
         },
         {
           "path": "packages/governance-toolchain",
+          "profile": "source-library",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/machine",
           "profile": "source-library",
           "extraAllowedDirectories": [],
           "extraAllowedFiles": []
@@ -441,6 +539,12 @@
         },
         {
           "path": "packages/typescript-config",
+          "profile": "config-package",
+          "extraAllowedDirectories": [],
+          "extraAllowedFiles": []
+        },
+        {
+          "path": "packages/turborepo",
           "profile": "config-package",
           "extraAllowedDirectories": [],
           "extraAllowedFiles": []
@@ -496,7 +600,8 @@
       "GOV-STORAGE",
       "GOV-TEST",
       "GOV-UI",
-      "GOV-TRUTH"
+      "GOV-TRUTH",
+      "GOV-KNOW"
     ],
     "domains": [
       {
@@ -583,6 +688,37 @@
           "scriptPath": "scripts/governance/generate-storage-governance-report.ts"
         },
         "evidencePath": ".artifacts/reports/governance/storage.report.json",
+        "ciBehavior": "block",
+        "reviewCadence": "30d"
+      },
+      {
+        "id": "GOV-KNOW-001",
+        "title": "Knowledge intelligence retrieval quality",
+        "owner": "governance-toolchain",
+        "lifecycleStatus": "enforced",
+        "enforcementMaturity": "blocking",
+        "defaultSeverity": "error",
+        "tier": "tier-3",
+        "docs": {
+          "primary": "docs/architecture/atc/ATC-0017-knowledge-ownership-and-retrieval-quality-contract.md",
+          "references": [
+            "docs/architecture/adr/ADR-0019-knowledge-engine-team-first-baseline.md",
+            "docs/REPO_ARTIFACT_POLICY.md"
+          ]
+        },
+        "localConfig": "rules/knowledge-intelligence",
+        "checks": [
+          {
+            "id": "knowledge-intelligence-thresholds",
+            "command": "pnpm run script:check-knowledge-intelligence-thresholds",
+            "scriptPath": "scripts/governance/check-knowledge-intelligence-thresholds.ts"
+          }
+        ],
+        "report": {
+          "command": "pnpm run script:generate-governance-report",
+          "scriptPath": "scripts/governance/generate-governance-report.ts"
+        },
+        "evidencePath": ".artifacts/reports/governance/knowledge-intelligence.report.json",
         "ciBehavior": "block",
         "reviewCadence": "30d"
       },

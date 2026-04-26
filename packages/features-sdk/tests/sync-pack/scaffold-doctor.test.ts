@@ -105,6 +105,10 @@ describe("Tech stack scaffold", () => {
         })
       )
       expect(manifest.nextCommands).toContain("pnpm run feature-sync:verify")
+      expect(manifest.handoff.implementationSurfaces).toEqual([
+        "apps/web",
+        "apps/api",
+      ])
     } finally {
       await rm(workspaceRoot, { recursive: true, force: true })
     }
@@ -136,6 +140,7 @@ describe("Tech stack scaffold", () => {
 
       expect(scaffoldReadme).toContain("## Placement Hints")
       expect(scaffoldReadme).toContain("## Suggested Routes")
+      expect(scaffoldReadme).toContain("## Handoff Contract")
       expect(scaffoldReadme).toContain(
         "apps/web/src/app/_features/internal-support-crm"
       )

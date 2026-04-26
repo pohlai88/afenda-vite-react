@@ -1,8 +1,8 @@
 /**
  * User contract: transport and service boundary schema; single source of truth for input/output.
- * Schemas live in `contract/user`; this module re-exports for `@afenda/api` module boundaries.
+ * Schemas live in `contract/user.contract`; this module re-exports for `@afenda/api` module boundaries.
  * module · validation · users
- * Upstream: `../contract/user`. Downstream: user.service, routes/users, Vitest.
+ * Upstream: `../contract/user.contract`. Downstream: user.service, routes/users, Vitest.
  * Side effects: none.
  * Coupling: field names align with future DB columns when added.
  * stable
@@ -15,4 +15,4 @@ export {
   userSchema,
   type CreateUserInput,
   type User,
-} from "../../contract/user.js"
+} from "../../contract/user.contract.js"

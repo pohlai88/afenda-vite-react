@@ -34,6 +34,7 @@ const requiredFixturePackageFiles = [
   "docs/sync-pack/troubleshooting.md",
   "docs/sync-pack/change-intents/README.md",
   "docs/sync-pack/example-pack-registry.json",
+  "rules/sync-pack/FSDK-SYNC-001_FEATURE_FACTORY_BOUNDARY_CONTRACT.md",
   "rules/sync-pack/FEATURE_APPROVAL_GATE.md",
   "rules/sync-pack/FEATURE_PRIORITY_MATRIX.md",
   "rules/sync-pack/FEATURE_SYNC_PACK_DOD.md",

@@ -64,7 +64,7 @@ describe("shell route state surfaces", () => {
     expect(screen.getByText("Unknown route")).toBeInTheDocument()
     expect(
       screen.getByRole("link", { name: "Back to workspace" })
-    ).toHaveAttribute("href", "/app/events")
+    ).toHaveAttribute("href", "/app/dashboard")
   })
 
   it("renders the access-denied shell state inside the canonical app surface", () => {
@@ -79,6 +79,6 @@ describe("shell route state surfaces", () => {
     expect(screen.getAllByText("Access denied")).toHaveLength(2)
     expect(
       screen.getByRole("link", { name: "Go to workspace" })
-    ).toHaveAttribute("href", "/app/events")
+    ).toHaveAttribute("href", "/app/dashboard")
   })
 })

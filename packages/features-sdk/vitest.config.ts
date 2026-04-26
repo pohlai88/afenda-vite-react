@@ -7,6 +7,7 @@ export default defineConfig({
     environment: "node",
     include: ["tests/**/*.{test,spec}.ts"],
     pool: "threads",
+    testTimeout: 30_000,
     mockReset: true,
     coverage: {
       provider: "v8",

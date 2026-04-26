@@ -30,6 +30,7 @@ describe("auditQueryInputSchema", () => {
     expect(parsed.w1hHowMechanism).toBe("shell.command")
     expect(parsed.w1hWherePathname).toBe("/settings")
     expect(parsed.w1hHowInteractionPhase).toBe("succeeded")
+    expect(parsed.offset).toBe(0)
     expect(parsed.limit).toBe(100)
   })
 

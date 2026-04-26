@@ -114,6 +114,7 @@ The guard now includes the original V1 native scanners plus the first post-V1 st
 - `RG-STRUCT-001` placement and ownership
 - `RG-TRUTH-002` generated artifact authenticity
 - `RG-STRUCT-003` boundary and import regression
+- `RG-STRUCT-004` API ownership topology
 - `RG-TRUTH-004` source and evidence mismatch
 - `RG-HYGIENE-005` duplicate and overlap hygiene
 - `RG-ADVISORY-006` stronger document control
@@ -124,6 +125,8 @@ It is not yet the full final ownership model for every repo surface.
 It is not yet full generated-artifact authenticity coverage for every governed generated root.
 `RG-STRUCT-003` currently enforces high-confidence cross-root drift rules for selected app roots, workspace-private path leakage, and package subpath imports that bypass declared `exports`.
 It is not yet the full final package/public-surface import contract for the repo.
+`RG-STRUCT-004` currently enforces ownership-first topology for governed API roots by rejecting generic function-bucket folders such as `routes/`, `middleware/`, `lib/`, `utils/`, and `helpers/`.
+It is not yet the full final API topology model for every API bounded context or feature root.
 `RG-TRUTH-004` currently enforces declared source/evidence bindings for design-system component-governance outputs and selected database generated artifacts.
 It is not yet the full final source-to-evidence map for every governed report and generated artifact.
 `RG-HYGIENE-005` currently enforces only warning-level suspicious variant detection and duplicate-basename detection in duplicate-sensitive governed surfaces.

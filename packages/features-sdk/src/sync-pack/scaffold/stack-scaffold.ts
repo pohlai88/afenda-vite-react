@@ -10,6 +10,7 @@ import type { StackDependencyGroup } from "../schema/stack-contract.schema.js"
 import {
   stackScaffoldManifestSchema,
   type StackDependency,
+  type StackImplementationSurface,
   type StackRouteSuggestion,
   type StackScaffoldManifest,
 } from "../schema/stack-contract.schema.js"
@@ -56,6 +57,11 @@ interface ReferenceVersions {
   readonly catalog: WorkspaceCatalogVersions
   readonly packageVersions: Record<string, string>
 }
+
+const scaffoldImplementationSurfaces = [
+  "apps/web",
+  "apps/api",
+] as const satisfies readonly StackImplementationSurface[]
 
 const dependencyDefinitions = [
   {
@@ -296,6 +302,9 @@ function renderScaffoldReadme(manifest: StackScaffoldManifest): string {
   const nextCommands = manifest.nextCommands
     .map((command) => `- ${command}`)
     .join("\n")
+  const requiredValidation = manifest.handoff.requiredValidation
+    .map((item) => `- ${item}`)
+    .join("\n")
 
   return `# ${manifest.packageName}
 
@@ -333,6 +342,15 @@ ${routeSuggestions}
 ## Next Commands
 
 ${nextCommands}
+
+## Handoff Contract
+
+- Boundary rule: ${manifest.handoff.boundaryRule}
+- Implementation surfaces: ${manifest.handoff.implementationSurfaces.join(", ")}
+
+## Validation Required Before Implementation
+
+${requiredValidation}
 
 ## Deferred
 
@@ -399,6 +417,20 @@ function createRouteSuggestions(
   ]
 }
 
+function createScaffoldHandoff(): StackScaffoldManifest["handoff"] {
+  return {
+    boundaryRule:
+      "Product implementation stays in apps/web and apps/api; Sync-Pack owns planning, scaffold, and handoff only.",
+    implementationSurfaces: [...scaffoldImplementationSurfaces],
+    requiredValidation: [
+      "Review the generated planning pack before implementation starts.",
+      "Confirm apps/web route and feature ownership.",
+      "Confirm apps/api module and route ownership.",
+      "Run pnpm run feature-sync:verify before implementation handoff.",
+    ],
+  }
+}
+
 export async function createTechStackScaffoldManifest(
   options: CreateTechStackScaffoldManifestOptions
 ): Promise<StackScaffoldManifest> {
@@ -433,6 +465,7 @@ export async function createTechStackScaffoldManifest(
       "Run sync-pack:doctor before implementation handoff.",
       "GitHub PR submission and GitHub Actions enforcement are deferred for this SDK baseline.",
     ],
+    handoff: createScaffoldHandoff(),
   })
 }
 

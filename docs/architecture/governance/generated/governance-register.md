@@ -47,6 +47,7 @@ This register is generated from `scripts/afenda.config.json` and the latest gove
 | `GOV-FS-001` | Filesystem governance | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/filesystem.report.json` | `rules/filesystem-governance/filesystem-governance.config.json` |
 | `GOV-GEN-001` | Generated artifact governance | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/generated-artifacts.report.json` | `rules/generated-artifact-governance/generated-artifact-governance.config.json` |
 | `GOV-STORAGE-001` | Storage governance | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/storage.report.json` | `rules/storage-governance/storage-governance.config.json` |
+| `GOV-KNOW-001` | Knowledge intelligence retrieval quality | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/knowledge-intelligence.report.json` | `rules/knowledge-intelligence` |
 | `GOV-FS-002` | Workspace and package topology | `enforced` | `blocking` | `block` | `.artifacts/reports/governance/workspace-topology.report.json` | `scripts/afenda.config.json` |
 | `GOV-ARCH-001` | Architecture contracts | `partial` | `warned` | `warn` | `.artifacts/reports/governance/architecture-contracts.report.json` | `docs/architecture/atc` |
 | `GOV-DOC-001` | Documentation integrity | `partial` | `warned` | `warn` | `.artifacts/reports/governance/documentation-integrity.report.json` | `docs` |
@@ -82,9 +83,26 @@ Declared in `scripts/afenda.config.json` (`workspaceGovernance.packageRoots`). W
 | `packages/design-system` | `design-system-package` |
 | `packages/env-loader` | `source-library` |
 | `packages/events` | `source-library` |
+| `packages/admin` | `source-library` |
+| `packages/billing` | `source-library` |
+| `packages/cache` | `source-library` |
+| `packages/errors` | `source-library` |
+| `packages/feature-flags` | `source-library` |
+| `packages/finance-core` | `source-library` |
+| `packages/knowledge-ai` | `source-library` |
+| `packages/knowledge-contracts` | `source-library` |
+| `packages/knowledge-domain` | `source-library` |
+| `packages/knowledge-indexer` | `source-library` |
+| `packages/knowledge-search` | `source-library` |
+| `packages/metrics` | `source-library` |
+| `packages/notifications` | `source-library` |
+| `packages/rate-limit` | `source-library` |
+| `packages/search` | `source-library` |
 | `packages/features-sdk` | `source-library` |
 | `packages/governance-toolchain` | `source-library` |
+| `packages/machine` | `source-library` |
 | `packages/eslint-config` | `source-library` |
 | `packages/pino-logger` | `source-library` |
 | `packages/typescript-config` | `config-package` |
+| `packages/turborepo` | `config-package` |
 | `packages/vitest-config` | `source-library` |

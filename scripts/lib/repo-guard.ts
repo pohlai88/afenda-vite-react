@@ -27,6 +27,7 @@ import {
   loadGeneratedArtifactGovernanceConfig,
 } from "./generated-artifact-governance.js"
 import { evaluateGeneratedArtifactAuthenticityFindings } from "./generated-artifact-authenticity-guard.js"
+import { evaluateApiOwnershipTopologyFindings } from "./api-ownership-topology-guard.js"
 import { evaluateNamingConvention } from "./naming-convention.js"
 import {
   buildPlacementOwnershipScopes,
@@ -106,6 +107,7 @@ export async function runRepoGuard(options: {
     evaluateDocumentationCheck(repoRoot),
     evaluateWorkspaceTopologyCheck(options.config, repoRoot),
     evaluateFileSurvivalCheck(options.config, repoRoot),
+    evaluateApiOwnershipTopologyCheck(repoRoot, options.policy),
     evaluatePlacementOwnershipCheck(options.config, repoRoot, options.policy),
     evaluateBoundaryImportCheck(repoRoot, options.policy),
     evaluateSourceEvidenceMismatchCheck(repoRoot, options.policy),
@@ -523,6 +525,25 @@ async function evaluateBoundaryImportCheck(
   }
 }
 
+async function evaluateApiOwnershipTopologyCheck(
+  repoRoot: string,
+  policy: RepoGuardPolicy
+): Promise<RepoGuardCheckResult> {
+  const trackedFiles = listGitFiles(repoRoot, ["ls-files"])
+  const findings = evaluateApiOwnershipTopologyFindings({
+    filePaths: trackedFiles,
+    policy: policy.apiOwnershipTopology,
+  })
+
+  return {
+    key: "api-ownership-topology",
+    title: "API ownership topology",
+    status: statusFromRepoGuardFindings(findings),
+    source: "native",
+    findings,
+  }
+}
+
 async function evaluateSourceEvidenceMismatchCheck(
   repoRoot: string,
   policy: RepoGuardPolicy
@@ -640,11 +661,19 @@ function listGitFiles(
     throw new Error(result.stderr || `git ${args.join(" ")} failed`)
   }
 
-  return result.stdout
+  const filePaths = result.stdout
     .split(/\r?\n/u)
     .map((line) => line.trim())
     .filter(Boolean)
     .map((value) => toPosixPath(value))
+
+  if (!args.includes("ls-files") || args.includes("--others")) {
+    return filePaths
+  }
+
+  const deletedPaths = new Set(readDeletedGitPaths(repoRoot))
+
+  return filePaths.filter((filePath) => !deletedPaths.has(filePath))
 }
 
 function readGitStatusEntries(
@@ -682,6 +711,12 @@ function readGitStatusEntries(
         modifiedTracked: code !== "??" && code !== "",
       } satisfies RepoGuardWorktreeEntry
     })
+}
+
+function readDeletedGitPaths(repoRoot: string): readonly string[] {
+  return readGitStatusEntries(repoRoot)
+    .filter((entry) => entry.code.includes("D"))
+    .map((entry) => entry.path)
 }
 
 function toPosixPath(value: string): string {

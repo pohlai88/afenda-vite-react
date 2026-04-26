@@ -1,0 +1,13 @@
+{
+  "extends": "@afenda/tsconfig/node.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@afenda/database": ["../_database/src/index.ts"],
+      "@afenda/database/*": ["../_database/src/*"],
+      "drizzle-orm": ["../../node_modules/.pnpm/node_modules/drizzle-orm"]
+    }
+  },
+  "include": ["src/**/*.ts"]
+}

@@ -23,7 +23,13 @@ vi.mock("@/app/_platform/auth", () => ({
   useAfendaSession: vi.fn(),
 }))
 
-vi.mock("@/app/_platform/tenant", () => ({
+vi.mock("@/app/_platform/auth/better-auth-ui/afenda-auth-ui-provider", () => ({
+  AfendaAuthUiProvider: ({ children }: { readonly children: ReactNode }) => (
+    <>{children}</>
+  ),
+}))
+
+vi.mock("@/app/_platform/tenant/tenant-scope-context", () => ({
   useOptionalTenantScope: vi.fn(),
 }))
 
@@ -44,7 +50,7 @@ vi.mock("react-router-dom", async () => {
 })
 
 import { useAfendaSession } from "@/app/_platform/auth"
-import { useOptionalTenantScope } from "@/app/_platform/tenant"
+import { useOptionalTenantScope } from "@/app/_platform/tenant/tenant-scope-context"
 
 const mockedUseAfendaSession = vi.mocked(useAfendaSession)
 const mockedUseOptionalTenantScope = vi.mocked(useOptionalTenantScope)

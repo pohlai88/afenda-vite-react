@@ -66,7 +66,10 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/app/_platform/tenant", () => ({
+vi.mock("@/app/_platform/tenant/tenant-scope-context", () => ({
+  useOptionalTenantIdHeaders: vi.fn(() => ({
+    "X-Tenant-Id": "tenant-1",
+  })),
   useOptionalTenantScope: vi.fn(() => ({
     status: "ready",
     selectedTenantId: "tenant-1",
@@ -80,12 +83,6 @@ vi.mock("@/app/_platform/tenant", () => ({
         ],
       },
     },
-  })),
-}))
-
-vi.mock("@/app/_platform/tenant/tenant-scope-context", () => ({
-  useOptionalTenantIdHeaders: vi.fn(() => ({
-    "X-Tenant-Id": "tenant-1",
   })),
 }))
 

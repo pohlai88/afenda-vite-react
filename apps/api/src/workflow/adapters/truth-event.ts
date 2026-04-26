@@ -6,7 +6,7 @@ import {
 } from "@afenda/events"
 
 import type { TruthRecordEnvelope } from "../../truth/truth-record.model.js"
-import type { WorkflowExecutionContext } from "../core/contracts.js"
+import type { WorkflowExecutionContext } from "../core/workflow-execution.contracts.js"
 
 export function materializeWorkflowTransition<
   TPayload extends Record<string, unknown>,

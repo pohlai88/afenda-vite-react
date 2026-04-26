@@ -38,6 +38,14 @@ export const financeFiscalPeriodStatusSchema = z.enum([
   "hard_closed",
 ])
 
+export const financeInvoiceStatusSchema = z.enum([
+  "draft",
+  "open",
+  "paid",
+  "void",
+  "uncollectible",
+])
+
 /** Insert-style payload for `finance.accounts` (omit DB defaults where optional). */
 export const financeAccountInsertSchema = z.object({
   tenantId: uuid(),
@@ -88,3 +96,46 @@ export type FinanceAccountInsert = z.infer<typeof financeAccountInsertSchema>
 export type FinanceFiscalPeriodInsert = z.infer<
   typeof financeFiscalPeriodInsertSchema
 >
+
+export const financeInvoiceItemInsertSchema = z.object({
+  description: z.string().trim().min(1).max(200),
+  quantity: z.number().positive(),
+  unitPriceMinor: z.number().int().nonnegative(),
+  amountMinor: z.number().int().nonnegative(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+})
+
+export const financeInvoiceInsertSchema = z
+  .object({
+    tenantId: uuid(),
+    subscriptionId: z.string().trim().min(1).max(120),
+    invoiceNumber: z.string().trim().min(1).max(60),
+    customerLabel: z.string().trim().min(1).max(200),
+    status: financeInvoiceStatusSchema,
+    subtotalMinor: z.number().int().nonnegative(),
+    taxAmountMinor: z.number().int().nonnegative(),
+    totalMinor: z.number().int().nonnegative(),
+    currencyCode: z.string().trim().length(3),
+    periodStartAt: z.iso.datetime(),
+    periodEndAt: z.iso.datetime(),
+    dueAt: z.iso.datetime(),
+    openedAt: z.iso.datetime().optional().nullable(),
+    paidAt: z.iso.datetime().optional().nullable(),
+    voidedAt: z.iso.datetime().optional().nullable(),
+    items: z.array(financeInvoiceItemInsertSchema).min(1),
+    metadata: z.record(z.string(), z.unknown()).optional(),
+  })
+  .superRefine((row, ctx) => {
+    if (row.periodEndAt < row.periodStartAt) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["periodEndAt"],
+        message: "periodEndAt must be on or after periodStartAt",
+      })
+    }
+  })
+
+export type FinanceInvoiceItemInsert = z.infer<
+  typeof financeInvoiceItemInsertSchema
+>
+export type FinanceInvoiceInsert = z.infer<typeof financeInvoiceInsertSchema>

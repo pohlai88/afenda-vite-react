@@ -40,9 +40,9 @@ describe("app shell router parity", () => {
       expect(definition.pathSegment.trim().length).toBeGreaterThan(0)
       expect(definition.metadata.routeId.trim().length).toBeGreaterThan(0)
       expect(definition.metadata.path.trim().length).toBeGreaterThan(0)
-      expect(definition.metadata.shell.titleKey.trim().length).toBeGreaterThan(
-        0
-      )
+      expect(
+        definition.metadata.shell.titleKey?.trim().length ?? 0
+      ).toBeGreaterThan(0)
     }
   })
 

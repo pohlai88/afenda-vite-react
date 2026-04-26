@@ -40,5 +40,42 @@
     "priority_items_one": "{{count}} tugas terbuka hari ini",
     "priority_items_other": "{{count}} tugas terbuka hari ini",
     "separator": "·"
+  },
+  "hero": {
+    "badge": "Ringkasan workspace",
+    "description": "Tampilan operasional yang terjaga untuk pendapatan, tekanan eksekusi, dan kesiapan modul di workspace aktif.",
+    "priority": { "label": "Antrian prioritas" },
+    "workspace": { "label": "Workspace aktif" }
+  },
+  "stats": {
+    "revenue": {
+      "label": "Pendapatan berisiko",
+      "helper": "Naik 8,4% dibanding minggu lalu"
+    },
+    "queue": {
+      "label": "Item koordinasi terbuka",
+      "helper": "3 perlu penanggung jawab pada jam ini"
+    },
+    "sla": {
+      "label": "Cakupan SLA",
+      "helper": "Masih dalam target untuk alur aktif"
+    }
+  },
+  "chart": {
+    "title": "Aliran pendapatan",
+    "description": "Pergerakan pendapatan dan operasi harian untuk jendela operasi saat ini."
+  },
+  "readiness": {
+    "title": "Kesiapan modul",
+    "description": "Seberapa dekat modul utama menuju kualitas rollout yang terjaga.",
+    "inventory": {
+      "helper": "Integritas stok dan kontrol pergerakan sebagian besar sudah siap."
+    },
+    "sales": {
+      "helper": "Pengambilan order sudah didefinisikan; alur hilir masih butuh pendalaman."
+    },
+    "finance": {
+      "helper": "Billing dan inti finance sudah tersedia untuk irisan berikutnya."
+    }
   }
 }

@@ -19,6 +19,7 @@ test("governed-root registry preserves the current covered roots", () => {
       "governance-docs",
       "adr-docs",
       "atc-docs",
+      "api-contract-surface",
       "web-platform-i18n",
       "web-platform-runtime",
       "web-platform-tenant",
@@ -51,6 +52,7 @@ test("governed-root registry preserves the current covered roots", () => {
       "docs/architecture/governance",
       "docs/architecture/adr",
       "docs/architecture/atc",
+      "apps/api/src/contract",
       "apps/web/src/app/_platform/i18n",
       "apps/web/src/app/_platform/runtime",
       "apps/web/src/app/_platform/tenant",
@@ -226,6 +228,49 @@ test("index files warn but do not block", () => {
       result.warnings.map((issue) => issue.message).join("\n"),
       /avoid index entrypoints/u
     )
+  } finally {
+    cleanupFixtureRepo(repoRoot)
+  }
+})
+
+test("api contract surface rejects weak contract filenames", () => {
+  const repoRoot = createFixtureRepo({
+    "package.json": JSON.stringify({ name: "fixture", private: true }, null, 2),
+    "docs/architecture/governance/NAMING_CONVENTION.md": "# Naming",
+    "docs/architecture/adr/ADR_TEMPLATE.md": "# Template",
+    "docs/architecture/atc/ATC_TEMPLATE.md": "# Template",
+    "apps/api/src/contract/envelope.ts": "export type Envelope = {}",
+    "apps/api/src/contract/request-context.ts":
+      "export type RequestContext = {}",
+    "apps/api/src/contract/user.ts": "export type User = {}",
+  })
+
+  try {
+    const result = evaluateNamingConvention(repoRoot, {})
+    const messages = result.errors.map((issue) => issue.message).join("\n")
+
+    assert.match(messages, /API contract modules must use/u)
+  } finally {
+    cleanupFixtureRepo(repoRoot)
+  }
+})
+
+test("api contract surface passes with explicit contract role naming", () => {
+  const repoRoot = createFixtureRepo({
+    "package.json": JSON.stringify({ name: "fixture", private: true }, null, 2),
+    "docs/architecture/governance/NAMING_CONVENTION.md": "# Naming",
+    "docs/architecture/adr/ADR_TEMPLATE.md": "# Template",
+    "docs/architecture/atc/ATC_TEMPLATE.md": "# Template",
+    "apps/api/src/contract/http-envelope.contract.ts":
+      "export type HttpEnvelopeContract = {}",
+    "apps/api/src/contract/request-context.contract.ts":
+      "export type RequestContextContract = {}",
+    "apps/api/src/contract/user.contract.ts": "export type UserContract = {}",
+  })
+
+  try {
+    const result = evaluateNamingConvention(repoRoot, {})
+    assert.equal(result.errors.length, 0)
   } finally {
     cleanupFixtureRepo(repoRoot)
   }
@@ -785,6 +830,8 @@ test("remaining app and package roots pass with valid naming", () => {
       "export {}",
     "apps/web/src/rpc/index.ts": "export {}",
     "apps/web/src/rpc/web-client.ts": "export const webClient = {}",
+    "apps/web/src/rpc/web-envelope.contract.ts":
+      "export const webErrorEnvelopeSchema = {}",
     "apps/web/src/marketing/README.md": "# marketing",
     "apps/web/src/marketing/marketing-layout.tsx":
       "export function MarketingLayout() { return null }",
@@ -932,7 +979,10 @@ test("remaining app and package roots reject invalid naming", () => {
     const messages = result.errors.map((issue) => issue.message).join("\n")
 
     assert.match(messages, /route modules must use "route-<subject>\.tsx"/u)
-    assert.match(messages, /rpc modules must use "web-<subject>\.ts"/u)
+    assert.match(
+      messages,
+      /rpc modules must use "web-<subject>\.ts" or "web-<subject>\.contract\.ts"/u
+    )
     assert.match(messages, /marketing landing variants must use descriptive/u)
     assert.match(messages, /about page modules must use explicit about-page/u)
     assert.match(messages, /better-auth generated modules must use/u)

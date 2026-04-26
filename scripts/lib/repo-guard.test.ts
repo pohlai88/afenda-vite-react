@@ -24,6 +24,7 @@ import {
   buildPlacementOwnershipScopes,
   evaluatePlacementOwnershipFindings,
 } from "./placement-ownership-guard.js"
+import { evaluateApiOwnershipTopologyFindings } from "./api-ownership-topology-guard.js"
 import {
   buildRepoGuardCoverage,
   buildRepoGuardReport,
@@ -199,6 +200,13 @@ test("buildRepoGuardCoverage classifies implemented, partial, and missing surfac
       findings: [],
     },
     {
+      key: "api-ownership-topology",
+      title: "API ownership topology",
+      status: "pass",
+      source: "native",
+      findings: [],
+    },
+    {
       key: "source-evidence-mismatch",
       title: "Source and evidence mismatch",
       status: "pass",
@@ -229,12 +237,16 @@ test("buildRepoGuardCoverage classifies implemented, partial, and missing surfac
     },
     {
       implemented: 9,
-      partial: 6,
+      partial: 7,
       missing: 0,
     }
   )
   assert.equal(
     coverage.entries.find((entry) => entry.id === "RG-STRUCT-003")?.status,
+    "partial"
+  )
+  assert.equal(
+    coverage.entries.find((entry) => entry.id === "RG-STRUCT-004")?.status,
     "partial"
   )
   assert.equal(
@@ -1083,12 +1095,59 @@ test("placement ownership findings stay clean for package-local roots covered by
     filePaths: [
       "apps/api/src/app.ts",
       "apps/api/src/index.ts",
+      "apps/api/src/api-env.ts",
       "packages/contracts/src/index.ts",
       "packages/_database/scripts/sync-schema-inventory.ts",
-      "apps/api/src/routes/health.ts",
+      "apps/api/src/truth/truth-writer.ts",
     ],
     scopes: repoGuardPolicy.placementOwnershipStaticScopes,
     ignoredPathPatterns: [],
+  })
+
+  assert.equal(findings.length, 0)
+})
+
+test("API ownership topology findings fail for forbidden API function buckets", () => {
+  const findings = evaluateApiOwnershipTopologyFindings({
+    filePaths: [
+      "apps/api/src/routes/health.ts",
+      "apps/api/src/middleware/request-context.ts",
+      "apps/api/src/lib/errors.ts",
+      "apps/api/src/operations/ops.commands.ts",
+    ],
+    policy: repoGuardPolicy.apiOwnershipTopology,
+  })
+
+  assert.equal(findings.length, 3)
+  assert.ok(findings.every((finding) => finding.ruleId === "RG-STRUCT-004"))
+  assert.ok(
+    findings.some(
+      (finding) => finding.filePath === "apps/api/src/routes/health.ts"
+    )
+  )
+  assert.ok(
+    findings.some(
+      (finding) =>
+        finding.filePath === "apps/api/src/middleware/request-context.ts"
+    )
+  )
+  assert.ok(
+    findings.some(
+      (finding) => finding.filePath === "apps/api/src/lib/errors.ts"
+    )
+  )
+  assert.match(findings[0]?.message ?? "", /forbidden API function bucket/u)
+})
+
+test("API ownership topology findings stay clean for non-forbidden API roots", () => {
+  const findings = evaluateApiOwnershipTopologyFindings({
+    filePaths: [
+      "apps/api/src/app.ts",
+      "apps/api/src/command/execute-command.ts",
+      "apps/api/src/truth/truth-writer.ts",
+      "apps/api/src/workflow/adapters/truth-event.ts",
+    ],
+    policy: repoGuardPolicy.apiOwnershipTopology,
   })
 
   assert.equal(findings.length, 0)
@@ -1258,12 +1317,6 @@ test("source/evidence mismatch stays clean when governance register markdown and
         previousPath: undefined,
         untracked: false,
       },
-      {
-        path: "docs/README.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
     ],
     policy: repoGuardPolicy.sourceEvidenceMismatch,
   })
@@ -1271,17 +1324,11 @@ test("source/evidence mismatch stays clean when governance register markdown and
   assert.equal(findings.length, 0)
 })
 
-test("source/evidence mismatch stays clean when repo-guard doctrine discovery readmes refresh together", () => {
+test("source/evidence mismatch stays clean when repo-guard doctrine changes refresh the ATC discovery readme", () => {
   const findings = evaluateSourceEvidenceMismatchFindings({
     entries: [
       {
         path: "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
-        path: "docs/architecture/adr/README.md",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
@@ -1293,19 +1340,7 @@ test("source/evidence mismatch stays clean when repo-guard doctrine discovery re
         untracked: false,
       },
       {
-        path: "docs/architecture/governance/README.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
         path: "docs/OPERATING_MAP.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
-        path: "docs/README.md",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,
@@ -1317,7 +1352,7 @@ test("source/evidence mismatch stays clean when repo-guard doctrine discovery re
   assert.equal(findings.length, 0)
 })
 
-test("source/evidence mismatch stays clean when architecture ADR and ATC docs refresh discovery readmes", () => {
+test("source/evidence mismatch stays clean when architecture ADR and ATC docs refresh their own discovery readmes", () => {
   const findings = evaluateSourceEvidenceMismatchFindings({
     entries: [
       {
@@ -1346,12 +1381,6 @@ test("source/evidence mismatch stays clean when architecture ADR and ATC docs re
       },
       {
         path: "docs/OPERATING_MAP.md",
-        modifiedTracked: true,
-        previousPath: undefined,
-        untracked: false,
-      },
-      {
-        path: "docs/README.md",
         modifiedTracked: true,
         previousPath: undefined,
         untracked: false,

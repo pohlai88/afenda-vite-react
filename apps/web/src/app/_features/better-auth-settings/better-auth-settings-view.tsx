@@ -11,7 +11,8 @@ import {
   StateSurface,
 } from "@/app/_platform/app-surface"
 import { useAfendaSession } from "@/app/_platform/auth"
-import { useOptionalTenantScope } from "@/app/_platform/tenant"
+import { AfendaAuthUiProvider } from "@/app/_platform/auth/better-auth-ui/afenda-auth-ui-provider"
+import { useOptionalTenantScope } from "@/app/_platform/tenant/tenant-scope-context"
 import { Settings } from "@/share/components/settings/settings"
 
 export type BetterAuthSettingsViewProps = {
@@ -137,8 +138,10 @@ export function BetterAuthSettingsView({ view }: BetterAuthSettingsViewProps) {
   }
 
   return (
-    <AppSurface contract={contract}>
-      <Settings view={view} embedded className="auth-settings-page" />
-    </AppSurface>
+    <AfendaAuthUiProvider>
+      <AppSurface contract={contract}>
+        <Settings view={view} embedded className="auth-settings-page" />
+      </AppSurface>
+    </AfendaAuthUiProvider>
   )
 }

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { useOptionalTenantIdHeaders } from "@/app/_platform/tenant"
+import { useOptionalTenantIdHeaders } from "@/app/_platform/tenant/tenant-scope-context"
 
 import {
   advanceWorkspaceEvent,

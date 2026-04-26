@@ -1,13 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "cacheDir": ".artifacts/cache/turbo",
-  "ui": "tui",
-  "globalDependencies": [
-    "pnpm-workspace.yaml",
-    "turbo.json",
-    "eslint.config.js"
-  ],
-  "globalEnv": ["NODE_ENV", "CI"],
+  "futureFlags": {
+    "globalConfiguration": true,
+    "affectedUsingTaskInputs": true,
+    "watchUsingTaskInputs": true
+  },
+  "global": {
+    "cacheDir": ".artifacts/cache/turbo",
+    "ui": "tui",
+    "inputs": ["pnpm-workspace.yaml", "turbo.json"],
+    "env": ["NODE_ENV", "CI"],
+    "passThroughEnv": ["TURBO_TOKEN", "TURBO_TEAM"]
+  },
   "tasks": {
     "transit": {
       "dependsOn": ["^transit"]

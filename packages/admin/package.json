@@ -1,0 +1,26 @@
+{
+  "name": "@afenda/admin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Admin adaptation layer for tenant, audit, and system-health services (Drizzle via @afenda/database).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@afenda/database": "workspace:*",
+    "drizzle-orm": "catalog:"
+  },
+  "devDependencies": {
+    "@afenda/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}

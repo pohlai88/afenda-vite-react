@@ -41,3 +41,7 @@ order: 30
 - Auth integration: Tenant-aware auth and RBAC contracts by default.
 - External service dependencies: Not yet known
 - Event or webhook needs: Not yet known
+
+## Likely Implementation Surfaces
+
+{{score.likelyImplementationSurfaces}}

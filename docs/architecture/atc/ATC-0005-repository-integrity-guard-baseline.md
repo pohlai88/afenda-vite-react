@@ -83,6 +83,7 @@ This contract binds the Repository Integrity Guard to real commands, real eviden
   - `RG-STRUCT-001` placement and ownership
   - `RG-TRUTH-002` generated artifact authenticity
   - `RG-STRUCT-003` boundary and import regression
+  - `RG-STRUCT-004` API ownership topology
   - `RG-TRUTH-004` source and evidence mismatch
   - `RG-HYGIENE-005` duplicate and overlap hygiene
   - `RG-ADVISORY-006` stronger document control

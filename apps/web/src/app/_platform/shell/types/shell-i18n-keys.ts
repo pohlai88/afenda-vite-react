@@ -25,9 +25,14 @@ export type ShellNavSidebarSubLabelKey =
   | "nav.sub.counterparties.escalations"
 
 export type ShellNavItemLabelKey =
+  | "nav.dashboard"
   | "nav.items.events"
   | "nav.items.audit"
   | "nav.items.counterparties"
+  | "nav.finance"
+  | "nav.invoices"
+  | "nav.allocations"
+  | "nav.settlements"
   | "nav.items.db_studio"
   | "nav.items.my_project"
   | "nav.items.my_team"

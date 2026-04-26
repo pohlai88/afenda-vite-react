@@ -40,5 +40,42 @@
     "priority_items_one": "{{count}} tugasan terbuka hari ini",
     "priority_items_other": "{{count}} tugasan terbuka hari ini",
     "separator": "·"
+  },
+  "hero": {
+    "badge": "Ringkasan ruang kerja",
+    "description": "Paparan operasi yang dikawal untuk hasil, tekanan pelaksanaan, dan kesiapsiagaan modul dalam ruang kerja aktif.",
+    "priority": { "label": "Barisan keutamaan" },
+    "workspace": { "label": "Ruang kerja aktif" }
+  },
+  "stats": {
+    "revenue": {
+      "label": "Hasil berisiko",
+      "helper": "Naik 8.4% berbanding minggu lalu"
+    },
+    "queue": {
+      "label": "Item penyelarasan terbuka",
+      "helper": "3 memerlukan pemilik pada jam ini"
+    },
+    "sla": {
+      "label": "Liputan SLA",
+      "helper": "Masih dalam sasaran bagi aliran aktif"
+    }
+  },
+  "chart": {
+    "title": "Aliran hasil",
+    "description": "Pergerakan hasil dan operasi harian untuk tetingkap operasi semasa."
+  },
+  "readiness": {
+    "title": "Kesiapsiagaan modul",
+    "description": "Sejauh mana modul utama menghampiri mutu rollout yang dikawal.",
+    "inventory": {
+      "helper": "Integriti stok dan kawalan pergerakan kebanyakannya sudah siap."
+    },
+    "sales": {
+      "helper": "Tangkapan pesanan sudah ditakrifkan; aliran hiliran masih perlukan pendalaman."
+    },
+    "finance": {
+      "helper": "Pengebilan dan teras kewangan tersedia untuk hirisan seterusnya."
+    }
   }
 }

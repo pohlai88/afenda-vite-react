@@ -5,7 +5,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { DatabaseClient } from "../../client"
 import { auditActionKeys } from "../contracts/audit-action-catalog"
-import { queryAuditLogs } from "../services/audit-query-service"
+import {
+  countAuditLogs,
+  getAuditActorActivity,
+  getAuditModuleActivity,
+  getAuditSubjectHistory,
+  queryAuditLogPage,
+  queryAuditLogs,
+} from "../services/audit-query-service"
 import {
   buildAuditLog,
   type BuildAuditLogInput,
@@ -112,6 +119,39 @@ describe("buildAuditLog", () => {
     expect(row.occurredAt).toBe(occurredAt)
     expect(row.recordedAt).toBe(recordedAt)
   })
+
+  it("writes computed change evidence into metadata", () => {
+    const row = buildAuditLog({
+      tenantId,
+      subjectType,
+      action: "auth.user.updated",
+      changeEvidence: {
+        previousValue: { password: "before", status: "draft" },
+        nextValue: { password: "after", status: "active" },
+      },
+    })
+
+    expect(row.metadata).toEqual({
+      changeEvidence: {
+        changes: [
+          {
+            field: "password",
+            oldValue: "***",
+            newValue: "***",
+            masked: true,
+          },
+          {
+            field: "status",
+            oldValue: "draft",
+            newValue: "active",
+            masked: false,
+          },
+        ],
+        previousValue: { password: "***", status: "draft" },
+        nextValue: { password: "***", status: "active" },
+      },
+    })
+  })
 })
 
 describe("insertAuditLog", () => {
@@ -193,7 +233,8 @@ describe("insertGovernedAuditLog", () => {
 describe("queryAuditLogs", () => {
   it("runs select with only tenantId (minimal filter path)", async () => {
     const rows: unknown[] = []
-    const limit = vi.fn().mockResolvedValue(rows)
+    const offset = vi.fn().mockResolvedValue(rows)
+    const limit = vi.fn().mockReturnValue({ offset })
     const orderBy = vi.fn().mockReturnValue({ limit })
     const where = vi.fn().mockReturnValue({ orderBy })
     const from = vi.fn().mockReturnValue({ where })
@@ -206,11 +247,13 @@ describe("queryAuditLogs", () => {
     })
     expect(result).toBe(rows)
     expect(limit).toHaveBeenCalledWith(25)
+    expect(offset).toHaveBeenCalledWith(0)
   })
 
   it("runs select with optional filters", async () => {
     const rows = [{ id: "01900000-0000-7000-8000-000000000003" }]
-    const limit = vi.fn().mockResolvedValue(rows)
+    const offset = vi.fn().mockResolvedValue(rows)
+    const limit = vi.fn().mockReturnValue({ offset })
     const orderBy = vi.fn().mockReturnValue({ limit })
     const where = vi.fn().mockReturnValue({ orderBy })
     const from = vi.fn().mockReturnValue({ where })
@@ -232,6 +275,7 @@ describe("queryAuditLogs", () => {
       w1hWherePathname: "/app",
       w1hHowMechanism: "click",
       w1hHowInteractionPhase: "succeeded",
+      offset: 10,
       limit: 50,
     })
 
@@ -241,5 +285,113 @@ describe("queryAuditLogs", () => {
     expect(where).toHaveBeenCalled()
     expect(orderBy).toHaveBeenCalled()
     expect(limit).toHaveBeenCalledWith(50)
+    expect(offset).toHaveBeenCalledWith(10)
+  })
+})
+
+describe("audit query helpers", () => {
+  it("counts matching audit logs", async () => {
+    const where = vi.fn().mockResolvedValue([{ total: 7 }])
+    const from = vi.fn().mockReturnValue({ where })
+    const select = vi.fn().mockReturnValue({ from })
+    const db = { select } as unknown as DatabaseClient
+
+    await expect(
+      countAuditLogs(db, {
+        tenantId,
+      })
+    ).resolves.toBe(7)
+  })
+
+  it("returns rows with total for paged queries", async () => {
+    const rows = [{ id: "01900000-0000-7000-8000-000000000004" }]
+
+    const offset = vi.fn().mockResolvedValue(rows)
+    const limit = vi.fn().mockReturnValue({ offset })
+    const orderBy = vi.fn().mockReturnValue({ limit })
+    const whereRows = vi.fn().mockReturnValue({ orderBy })
+    const fromRows = vi.fn().mockReturnValue({ where: whereRows })
+
+    const whereCount = vi.fn().mockResolvedValue([{ total: 1 }])
+    const fromCount = vi.fn().mockReturnValue({ where: whereCount })
+
+    const select = vi
+      .fn()
+      .mockReturnValueOnce({ from: fromRows })
+      .mockReturnValueOnce({ from: fromCount })
+    const db = { select } as unknown as DatabaseClient
+
+    await expect(
+      queryAuditLogPage(db, {
+        tenantId,
+        limit: 20,
+      })
+    ).resolves.toEqual({
+      entries: rows,
+      total: 1,
+    })
+  })
+
+  it("maps history and activity helpers onto the paged query surface", async () => {
+    const page = {
+      entries: [{ id: "01900000-0000-7000-8000-000000000005" }],
+      total: 1,
+    }
+
+    const offset1 = vi.fn().mockResolvedValue(page.entries)
+    const limit1 = vi.fn().mockReturnValue({ offset: offset1 })
+    const orderBy1 = vi.fn().mockReturnValue({ limit: limit1 })
+    const whereRows1 = vi.fn().mockReturnValue({ orderBy: orderBy1 })
+    const fromRows1 = vi.fn().mockReturnValue({ where: whereRows1 })
+    const whereCount1 = vi.fn().mockResolvedValue([{ total: 1 }])
+    const fromCount1 = vi.fn().mockReturnValue({ where: whereCount1 })
+
+    const offset2 = vi.fn().mockResolvedValue(page.entries)
+    const limit2 = vi.fn().mockReturnValue({ offset: offset2 })
+    const orderBy2 = vi.fn().mockReturnValue({ limit: limit2 })
+    const whereRows2 = vi.fn().mockReturnValue({ orderBy: orderBy2 })
+    const fromRows2 = vi.fn().mockReturnValue({ where: whereRows2 })
+    const whereCount2 = vi.fn().mockResolvedValue([{ total: 1 }])
+    const fromCount2 = vi.fn().mockReturnValue({ where: whereCount2 })
+
+    const offset3 = vi.fn().mockResolvedValue(page.entries)
+    const limit3 = vi.fn().mockReturnValue({ offset: offset3 })
+    const orderBy3 = vi.fn().mockReturnValue({ limit: limit3 })
+    const whereRows3 = vi.fn().mockReturnValue({ orderBy: orderBy3 })
+    const fromRows3 = vi.fn().mockReturnValue({ where: whereRows3 })
+    const whereCount3 = vi.fn().mockResolvedValue([{ total: 1 }])
+    const fromCount3 = vi.fn().mockReturnValue({ where: whereCount3 })
+
+    const select = vi
+      .fn()
+      .mockReturnValueOnce({ from: fromRows1 })
+      .mockReturnValueOnce({ from: fromCount1 })
+      .mockReturnValueOnce({ from: fromRows2 })
+      .mockReturnValueOnce({ from: fromCount2 })
+      .mockReturnValueOnce({ from: fromRows3 })
+      .mockReturnValueOnce({ from: fromCount3 })
+    const db = { select } as unknown as DatabaseClient
+
+    await expect(
+      getAuditSubjectHistory(db, {
+        tenantId,
+        subjectType: "user",
+        subjectId: "sub-1",
+      })
+    ).resolves.toEqual(page)
+
+    await expect(
+      getAuditActorActivity(db, {
+        tenantId,
+        actorUserId: "018f1234-5678-7abc-8def-123456789abd",
+      })
+    ).resolves.toEqual(page)
+
+    await expect(
+      getAuditModuleActivity(db, {
+        tenantId,
+        targetModule: "finance",
+      })
+    ).resolves.toEqual(page)
   })
 })

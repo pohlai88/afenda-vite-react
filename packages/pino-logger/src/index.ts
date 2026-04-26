@@ -4,3 +4,4 @@ export {
   getRequestLogger,
 } from "./hono-request-logging.js"
 export { createServiceLogger } from "./pino-root-logger.js"
+export { timeAsyncOperation } from "./timed-operation.js"

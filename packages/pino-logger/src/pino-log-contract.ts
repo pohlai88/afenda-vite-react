@@ -8,4 +8,5 @@ export interface AppLogger {
   info(bindings: AppLogBindings, message?: string): void
   warn(bindings: AppLogBindings, message?: string): void
   error(bindings: AppLogBindings, message?: string): void
+  fatal(bindings: AppLogBindings, message?: string): void
 }

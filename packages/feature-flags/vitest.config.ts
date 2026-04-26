@@ -1,0 +1,11 @@
+/// <reference types="vitest/config" />
+import { defineConfig } from "vitest/config"
+
+export default defineConfig({
+  test: {
+    environment: "node",
+    globals: true,
+    include: ["tests/**/*.test.ts"],
+    name: "@afenda/feature-flags",
+  },
+})

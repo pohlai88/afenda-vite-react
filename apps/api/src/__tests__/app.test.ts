@@ -1,10 +1,21 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { createApp } from "../app.js"
 import {
   resetBetterAuthRuntimeForTests,
   setBetterAuthRuntimeForTests,
-} from "../lib/better-auth-runtime.js"
+} from "../api-auth-runtime.js"
+import { resetApiHealthManagerForTests } from "../api-health-manager.js"
+import {
+  __resetCounterpartiesForTests,
+  __resetItemsForTests,
+} from "../modules/mdm/index.js"
+import {
+  __resetLegacyCounterpartySourceConfigForTests,
+  __resetLegacyItemSourceConfigForTests,
+  __setLegacyCounterpartySourceConfigForTests,
+  __setLegacyItemSourceConfigForTests,
+} from "../modules/legacy-erp/index.js"
 import {
   __resetOpsProjectionStoreForTests,
   __seedOpsProjectionStoreForTests,
@@ -15,7 +26,7 @@ import {
 import {
   createAnonymousSessionContext,
   setSessionContext,
-} from "../middleware/request-context.js"
+} from "../api-request-context.middleware.js"
 import { __resetUsersForTests } from "../modules/users/user.service.js"
 
 function createRuntimeOverride(input?: {
@@ -146,9 +157,15 @@ function createRuntimeOverride(input?: {
   }
 }
 
-describe("createApp (scaffold)", () => {
+describe("createApp", () => {
   beforeEach(() => {
+    resetApiHealthManagerForTests()
     __resetUsersForTests()
+    __resetCounterpartiesForTests()
+    __resetItemsForTests()
+    __resetLegacyCounterpartySourceConfigForTests()
+    __resetLegacyItemSourceConfigForTests()
+    vi.unstubAllGlobals()
     __resetOpsProjectionStoreForTests()
     setBetterAuthRuntimeForTests(createRuntimeOverride())
     process.env.DATABASE_URL ??=
@@ -158,18 +175,609 @@ describe("createApp (scaffold)", () => {
   })
 
   afterEach(async () => {
+    __resetLegacyCounterpartySourceConfigForTests()
+    __resetLegacyItemSourceConfigForTests()
+    vi.unstubAllGlobals()
     await resetBetterAuthRuntimeForTests()
   })
-  it("GET /health returns ok", async () => {
+  it("GET /health returns the full health report", async () => {
     const app = createApp()
     const res = await app.request("/health")
     expect(res.status).toBe(200)
     const body = (await res.json()) as {
       ok?: boolean
-      data?: { status?: string }
+      data?: {
+        status?: string
+        service?: string
+        dependencies?: Array<{ name?: string; status?: string }>
+      }
     }
     expect(body.ok).toBe(true)
+    expect(body.data?.status).toBe("healthy")
+    expect(body.data?.service).toBe("@afenda/api")
+    expect(body.data?.dependencies).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: "memory",
+          status: "healthy",
+        }),
+      ])
+    )
+  })
+
+  it("GET /health/live returns the liveness probe", async () => {
+    const app = createApp()
+    const res = await app.request("/health/live")
+    expect(res.status).toBe(200)
+
+    const body = (await res.json()) as {
+      ok?: boolean
+      data?: { status?: string }
+    }
+
+    expect(body.ok).toBe(true)
     expect(body.data?.status).toBe("ok")
+  })
+
+  it("GET /health/ready returns the readiness probe", async () => {
+    const app = createApp()
+    const res = await app.request("/health/ready")
+    expect(res.status).toBe(200)
+
+    const body = (await res.json()) as {
+      ok?: boolean
+      data?: { status?: string; checks?: unknown[] }
+    }
+
+    expect(body.ok).toBe(true)
+    expect(body.data?.status).toBe("ok")
+    expect(body.data?.checks).toEqual([])
+  })
+
+  it("GET /health/startup returns the startup probe", async () => {
+    const app = createApp()
+    const res = await app.request("/health/startup")
+    expect(res.status).toBe(200)
+
+    const body = (await res.json()) as {
+      ok?: boolean
+      data?: { status?: string }
+    }
+
+    expect(body.ok).toBe(true)
+    expect(body.data?.status).toBe("ok")
+  })
+
+  it("GET /health/version returns the runtime version report", async () => {
+    const app = createApp()
+    const res = await app.request("/health/version")
+    expect(res.status).toBe(200)
+
+    const body = (await res.json()) as {
+      ok?: boolean
+      data?: { service?: string; version?: string; nodeVersion?: string }
+    }
+
+    expect(body.ok).toBe(true)
+    expect(body.data?.service).toBe("@afenda/api")
+    expect(typeof body.data?.version).toBe("string")
+    expect(body.data?.nodeVersion).toContain("v")
+  })
+
+  it("POST /api/v1/legacy-erp/transform adapts stable legacy payloads for Afenda", async () => {
+    setBetterAuthRuntimeForTests(
+      createRuntimeOverride({
+        getSession: async () => ({
+          session: {
+            id: "auth-session-1",
+            activeTenantId: "tenant-1",
+            activeMembershipId: "membership-1",
+          },
+          user: {
+            id: "user-1",
+            name: "Admin Operator",
+            email: "admin@afenda.test",
+            emailVerified: true,
+          },
+        }),
+        resolveCommandAuthority: async () => ({
+          roles: ["workspace_admin"],
+          permissions: [
+            "admin:workspace:manage",
+            "mdm:counterparty:view",
+            "mdm:item:view",
+          ],
+        }),
+      })
+    )
+
+    const app = createApp()
+    const res = await app.request("/api/v1/legacy-erp/transform", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-tenant-id": "tenant-1",
+      },
+      body: JSON.stringify({
+        entityKind: "counterparty",
+        sourceSystem: "legacy_crm",
+        payload: {
+          externalId: "crm-42",
+          name: "Acme Retail",
+          type: "vendor",
+          status: "active",
+        },
+      }),
+    })
+
+    expect(res.status).toBe(200)
+
+    const body = (await res.json()) as {
+      ok?: boolean
+      data?: {
+        adaptation?: {
+          targetBoundary?: string
+          normalizedRecord?: { code?: string; kind?: string }
+        }
+      }
+    }
+
+    expect(body.ok).toBe(true)
+    expect(body.data?.adaptation?.targetBoundary).toBe("mdm.counterparty")
+    expect(body.data?.adaptation?.normalizedRecord?.code).toBe("ACME-RETAIL")
+    expect(body.data?.adaptation?.normalizedRecord?.kind).toBe("supplier")
+  })
+
+  it("POST /api/v1/legacy-erp/transform rejects non-admin actors", async () => {
+    setBetterAuthRuntimeForTests(
+      createRuntimeOverride({
+        getSession: async () => ({
+          session: {
+            id: "auth-session-1",
+            activeTenantId: "tenant-1",
+            activeMembershipId: "membership-1",
+          },
+          user: {
+            id: "user-1",
+            name: "Ops Viewer",
+            email: "viewer@afenda.test",
+            emailVerified: true,
+          },
+        }),
+        resolveCommandAuthority: async () => ({
+          roles: ["ops_viewer"],
+          permissions: ["ops:event:view"],
+        }),
+      })
+    )
+
+    const app = createApp()
+    const res = await app.request("/api/v1/legacy-erp/transform", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-tenant-id": "tenant-1",
+      },
+      body: JSON.stringify({
+        entityKind: "inventory-item",
+        sourceSystem: "legacy_mrp",
+        payload: {
+          sku: "RM-001",
+          name: "Resin Pellet",
+        },
+      }),
+    })
+
+    expect(res.status).toBe(403)
+  })
+
+  it("POST /api/v1/legacy-erp/ingest persists supported records through owner modules", async () => {
+    setBetterAuthRuntimeForTests(
+      createRuntimeOverride({
+        getSession: async () => ({
+          session: {
+            id: "auth-session-1",
+            activeTenantId: "tenant-1",
+            activeMembershipId: "membership-1",
+          },
+          user: {
+            id: "user-1",
+            name: "Admin Operator",
+            email: "admin@afenda.test",
+            emailVerified: true,
+          },
+        }),
+        resolveCommandAuthority: async () => ({
+          roles: ["workspace_admin"],
+          permissions: [
+            "admin:workspace:manage",
+            "mdm:counterparty:view",
+            "mdm:item:view",
+          ],
+        }),
+      })
+    )
+
+    const app = createApp()
+    const res = await app.request("/api/v1/legacy-erp/ingest", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-tenant-id": "tenant-1",
+      },
+      body: JSON.stringify({
+        records: [
+          {
+            entityKind: "counterparty",
+            sourceSystem: "legacy_crm",
+            payload: {
+              externalId: "crm-108",
+              name: "Eastern Partners",
+              type: "customer",
+            },
+          },
+          {
+            entityKind: "inventory-item",
+            sourceSystem: "legacy_mrp",
+            payload: {
+              sku: "RM-002",
+              name: "Resin Additive",
+            },
+          },
+        ],
+      }),
+    })
+
+    expect(res.status).toBe(200)
+
+    const body = (await res.json()) as {
+      ok?: boolean
+      data?: {
+        ingestion?: {
+          totalRecords?: number
+          persistedCount?: number
+          candidateOnlyCount?: number
+          results?: Array<{
+            disposition?: string
+            persistedRecord?: { code?: string }
+            adaptation?: { entityKind?: string }
+          }>
+        }
+      }
+    }
+
+    expect(body.ok).toBe(true)
+    expect(body.data?.ingestion?.totalRecords).toBe(2)
+    expect(body.data?.ingestion?.persistedCount).toBe(2)
+    expect(body.data?.ingestion?.candidateOnlyCount).toBe(0)
+    expect(body.data?.ingestion?.results?.[0]?.disposition).toBe("persisted")
+    expect(body.data?.ingestion?.results?.[0]?.persistedRecord?.code).toBe(
+      "EASTERN-PARTNERS"
+    )
+    expect(body.data?.ingestion?.results?.[1]?.persistedRecord?.code).toBe(
+      "RM-002"
+    )
+
+    const listRes = await app.request("/api/v1/mdm/counterparties", {
+      headers: {
+        "x-tenant-id": "tenant-1",
+      },
+    })
+
+    expect(listRes.status).toBe(200)
+
+    const listBody = (await listRes.json()) as {
+      ok?: boolean
+      data?: {
+        items?: Array<{ code?: string; displayName?: string }>
+      }
+    }
+
+    expect(listBody.ok).toBe(true)
+    expect(listBody.data?.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "EASTERN-PARTNERS",
+          displayName: "Eastern Partners",
+        }),
+      ])
+    )
+
+    const itemListRes = await app.request("/api/v1/mdm/items", {
+      headers: {
+        "x-tenant-id": "tenant-1",
+      },
+    })
+
+    expect(itemListRes.status).toBe(200)
+
+    const itemListBody = (await itemListRes.json()) as {
+      ok?: boolean
+      data?: {
+        items?: Array<{ itemCode?: string; itemName?: string }>
+      }
+    }
+
+    expect(itemListBody.ok).toBe(true)
+    expect(itemListBody.data?.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          itemCode: "RM-002",
+          itemName: "Resin Additive",
+        }),
+      ])
+    )
+  })
+
+  it("POST /api/v1/legacy-erp/pull/counterparties fetches legacy TPM customers and persists them through MDM", async () => {
+    __setLegacyCounterpartySourceConfigForTests({
+      sourceProfile: "legacy-tpm-customers",
+      sourceSystem: "legacy_tpm",
+      baseUrl: "https://legacy.example.test/api",
+      bearerToken: "token-123",
+      tenantId: "legacy-tenant-1",
+      endpointPath: "/customers",
+    })
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            data: [
+              {
+                id: "cust-900",
+                code: "CUST900",
+                name: "Delta Hypermarket",
+                taxCode: "TAX-900",
+                isActive: true,
+              },
+            ],
+            metadata: {
+              pageNumber: 1,
+              pageSize: 50,
+              totalPages: 1,
+              totalCount: 1,
+            },
+          }),
+          { status: 200, headers: { "content-type": "application/json" } }
+        )
+      )
+    )
+
+    setBetterAuthRuntimeForTests(
+      createRuntimeOverride({
+        getSession: async () => ({
+          session: {
+            id: "auth-session-1",
+            activeTenantId: "tenant-1",
+            activeMembershipId: "membership-1",
+          },
+          user: {
+            id: "user-1",
+            name: "Admin Operator",
+            email: "admin@afenda.test",
+            emailVerified: true,
+          },
+        }),
+        resolveCommandAuthority: async () => ({
+          roles: ["workspace_admin"],
+          permissions: ["admin:workspace:manage", "mdm:counterparty:view"],
+        }),
+      })
+    )
+
+    const app = createApp()
+    const res = await app.request("/api/v1/legacy-erp/pull/counterparties", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-tenant-id": "tenant-1",
+      },
+      body: JSON.stringify({
+        sourceProfile: "legacy-tpm-customers",
+        pageSize: 50,
+        maxRecords: 100,
+      }),
+    })
+
+    expect(res.status).toBe(200)
+
+    const body = (await res.json()) as {
+      ok?: boolean
+      data?: {
+        pull?: {
+          sourceProfile?: string
+          sourceSystem?: string
+          fetchedCount?: number
+          pagesFetched?: number
+        }
+        ingestion?: {
+          persistedCount?: number
+          results?: Array<{
+            persistedRecord?: { code?: string }
+          }>
+        }
+      }
+    }
+
+    expect(body.ok).toBe(true)
+    expect(body.data?.pull).toMatchObject({
+      sourceProfile: "legacy-tpm-customers",
+      sourceSystem: "legacy_tpm",
+      fetchedCount: 1,
+      pagesFetched: 1,
+    })
+    expect(body.data?.ingestion?.persistedCount).toBe(1)
+    expect(body.data?.ingestion?.results?.[0]?.persistedRecord?.code).toBe(
+      "CUST900"
+    )
+
+    const listRes = await app.request("/api/v1/mdm/counterparties", {
+      headers: {
+        "x-tenant-id": "tenant-1",
+      },
+    })
+
+    expect(listRes.status).toBe(200)
+    const listBody = (await listRes.json()) as {
+      ok?: boolean
+      data?: {
+        items?: Array<{ code?: string; displayName?: string }>
+      }
+    }
+
+    expect(listBody.ok).toBe(true)
+    expect(listBody.data?.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "CUST900",
+          displayName: "Delta Hypermarket",
+        }),
+      ])
+    )
+  })
+
+  it("POST /api/v1/legacy-erp/pull/items fetches legacy MRP products and persists them through MDM", async () => {
+    __setLegacyItemSourceConfigForTests({
+      sourceProfile: "legacy-mrp-products",
+      sourceSystem: "legacy_mrp",
+      baseUrl: "https://legacy.example.test/api",
+      bearerToken: "token-123",
+      tenantId: "legacy-tenant-1",
+      endpointPath: "/products",
+    })
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            data: [
+              {
+                id: "prod-900",
+                sku: "FG-900",
+                name: "Finished Gel",
+                status: "active",
+              },
+            ],
+            pagination: {
+              page: 1,
+              pageSize: 50,
+              totalPages: 1,
+              total: 1,
+            },
+          }),
+          { status: 200, headers: { "content-type": "application/json" } }
+        )
+      )
+    )
+
+    setBetterAuthRuntimeForTests(
+      createRuntimeOverride({
+        getSession: async () => ({
+          session: {
+            id: "auth-session-1",
+            activeTenantId: "tenant-1",
+            activeMembershipId: "membership-1",
+          },
+          user: {
+            id: "user-1",
+            name: "Admin Operator",
+            email: "admin@afenda.test",
+            emailVerified: true,
+          },
+        }),
+        resolveCommandAuthority: async () => ({
+          roles: ["workspace_admin"],
+          permissions: ["admin:workspace:manage", "mdm:item:view"],
+        }),
+      })
+    )
+
+    const app = createApp()
+    const res = await app.request("/api/v1/legacy-erp/pull/items", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-tenant-id": "tenant-1",
+      },
+      body: JSON.stringify({
+        sourceProfile: "legacy-mrp-products",
+        pageSize: 50,
+        maxRecords: 100,
+      }),
+    })
+
+    expect(res.status).toBe(200)
+
+    const body = (await res.json()) as {
+      ok?: boolean
+      data?: {
+        pull?: {
+          sourceProfile?: string
+          sourceSystem?: string
+          fetchedCount?: number
+          pagesFetched?: number
+        }
+        ingestion?: {
+          persistedCount?: number
+          results?: Array<{
+            persistedRecord?: { code?: string }
+          }>
+        }
+      }
+    }
+
+    expect(body.ok).toBe(true)
+    expect(body.data?.pull).toMatchObject({
+      sourceProfile: "legacy-mrp-products",
+      sourceSystem: "legacy_mrp",
+      fetchedCount: 1,
+      pagesFetched: 1,
+    })
+    expect(body.data?.ingestion?.persistedCount).toBe(1)
+    expect(body.data?.ingestion?.results?.[0]?.persistedRecord?.code).toBe(
+      "FG-900"
+    )
+
+    const listRes = await app.request("/api/v1/mdm/items", {
+      headers: {
+        "x-tenant-id": "tenant-1",
+      },
+    })
+
+    expect(listRes.status).toBe(200)
+    const listBody = (await listRes.json()) as {
+      ok?: boolean
+      data?: {
+        items?: Array<{ itemCode?: string; itemName?: string }>
+      }
+    }
+
+    expect(listBody.ok).toBe(true)
+    expect(listBody.data?.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          itemCode: "FG-900",
+          itemName: "Finished Gel",
+        }),
+      ])
+    )
+  })
+
+  it("GET /metrics returns prometheus metrics text", async () => {
+    const app = createApp()
+    await app.request("/health")
+
+    const res = await app.request("/metrics")
+    expect(res.status).toBe(200)
+    expect(res.headers.get("content-type")).toContain("text/plain")
+
+    const body = await res.text()
+    expect(body).toContain("http_request_duration_seconds")
+    expect(body).toContain('route="/health"')
+    expect(body).toContain('app="@afenda/api"')
   })
 
   it("GET / returns service map", async () => {
@@ -996,6 +1604,128 @@ describe("createApp (scaffold)", () => {
 
     const app = createApp()
     const res = await app.request("/api/v1/ops/counterparties")
+
+    expect(res.status).toBe(403)
+  })
+
+  it("GET /api/v1/mdm/counterparties returns the canonical MDM counterparty surface", async () => {
+    setBetterAuthRuntimeForTests(
+      createRuntimeOverride({
+        getSession: async () => ({
+          session: {
+            id: "auth-session-1",
+            activeTenantId: "tenant-1",
+            activeMembershipId: "membership-1",
+          },
+          user: {
+            id: "user-1",
+            email: "steward@acme.test",
+            emailVerified: true,
+            name: "Dana Steward",
+          },
+        }),
+        resolveCommandAuthority: async () => ({
+          roles: ["mdm_steward"],
+          permissions: ["mdm:counterparty:view"],
+        }),
+      })
+    )
+
+    const app = createApp()
+    const res = await app.request("/api/v1/mdm/counterparties")
+
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as {
+      ok?: boolean
+      data?: {
+        tenantId: string
+        items: Array<{ id: string; displayName: string }>
+      }
+    }
+
+    expect(body.ok).toBe(true)
+    expect(body.data?.tenantId).toBe("tenant-1")
+    expect(body.data?.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "counterparty-atlas",
+          displayName: "Atlas Commerce",
+        }),
+      ])
+    )
+  })
+
+  it("POST /api/v1/mdm/counterparties creates a canonical counterparty through MDM", async () => {
+    setBetterAuthRuntimeForTests(
+      createRuntimeOverride({
+        getSession: async () => ({
+          session: {
+            id: "auth-session-1",
+            activeTenantId: "tenant-1",
+            activeMembershipId: "membership-1",
+          },
+          user: {
+            id: "user-1",
+            email: "steward@acme.test",
+            emailVerified: true,
+            name: "Dana Steward",
+          },
+        }),
+        resolveCommandAuthority: async () => ({
+          roles: ["mdm_steward"],
+          permissions: ["mdm:counterparty:view", "mdm:counterparty:write"],
+        }),
+      })
+    )
+
+    const app = createApp()
+    const createRes = await app.request("/api/v1/mdm/counterparties", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        displayName: "Eastern Partners",
+        kind: "customer",
+        aliases: ["East Partners"],
+      }),
+    })
+
+    expect(createRes.status).toBe(201)
+    const createBody = (await createRes.json()) as {
+      ok?: boolean
+      data?: { item?: { code?: string; canonicalName?: string } }
+    }
+    expect(createBody.ok).toBe(true)
+    expect(createBody.data?.item?.code).toBe("EASTERN-PARTNERS")
+    expect(createBody.data?.item?.canonicalName).toBe("EASTERN PARTNERS")
+  })
+
+  it("GET /api/v1/mdm/counterparties forbids actors without MDM read permission", async () => {
+    setBetterAuthRuntimeForTests(
+      createRuntimeOverride({
+        getSession: async () => ({
+          session: {
+            id: "auth-session-1",
+            activeTenantId: "tenant-1",
+            activeMembershipId: "membership-1",
+          },
+          user: {
+            id: "user-1",
+            email: "operator@acme.test",
+            emailVerified: true,
+            name: "Rhea Coleman",
+          },
+        }),
+        resolveCommandAuthority: async () => ({
+          roles: ["ops_viewer"],
+          permissions: ["ops:event:view"],
+        }),
+      })
+    )
+
+    const app = createApp()
+    const res = await app.request("/api/v1/mdm/counterparties")
 
     expect(res.status).toBe(403)
   })

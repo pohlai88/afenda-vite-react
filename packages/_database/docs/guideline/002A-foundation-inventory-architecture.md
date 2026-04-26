@@ -216,7 +216,7 @@ packages/_database/
 
       governance/
         _schema.ts
-governance-data-sources.schema.ts
+        governance-data-sources.schema.ts
         governance-boundary.schema.ts
         index.ts
         __tests__/

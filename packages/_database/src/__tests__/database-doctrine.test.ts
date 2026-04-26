@@ -48,6 +48,7 @@ function listTrackedCodeFiles(root: string) {
     .map((entry) => entry.trim())
     .filter(Boolean)
     .map((relativePath) => path.join(root, relativePath))
+    .filter((filePath) => existsSync(filePath))
 }
 
 describe("database package doctrine", () => {

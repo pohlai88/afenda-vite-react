@@ -22,8 +22,14 @@ order: 80
 ## Files And Owners
 
 - Owner team: {{candidate.ownerTeam}}
-- Repo placement: Not yet known
+- Repo placement: apps/web and apps/api implementation surfaces confirmed during handoff
 - Reviewer: Not yet known
+
+## Confidence And Assumptions
+
+- Ranking confidence: {{score.confidence}}
+- Assumptions affecting confidence:
+  {{score.assumptions}}
 
 ## Migration Notes
 
@@ -36,3 +42,7 @@ order: 80
 - Deployment surface: Not yet known
 - Observability: OpenTelemetry-ready logging by default
 - Operational owner: Not yet known
+
+## Validation Required Before Implementation
+
+{{score.requiredValidation}}

@@ -2,6 +2,36 @@
   "header": {
     "title": { "label": "Hóa đơn" }
   },
+  "summary": {
+    "description": "Theo dõi khối lượng hóa đơn và tổng giá trị thương mại còn mở từ workspace tài chính.",
+    "count": { "label": "Số lượng hóa đơn" },
+    "amount": { "label": "Tổng còn mở" }
+  },
+  "table": {
+    "number": { "label": "Số" },
+    "customer": { "label": "Khách hàng" },
+    "status": { "label": "Trạng thái" },
+    "total": { "label": "Tổng" },
+    "due": { "label": "Hạn thanh toán" }
+  },
+  "create": {
+    "title": { "label": "Tạo hóa đơn nháp" },
+    "description": {
+      "message": "Ghi nhận hóa đơn thuộc sở hữu tài chính mà không đi qua operations."
+    },
+    "action": { "label": "Tạo hóa đơn" },
+    "pending": { "label": "Đang tạo..." }
+  },
+  "form": {
+    "customer": { "label": "Khách hàng" },
+    "description": { "label": "Mô tả dòng" },
+    "quantity": { "label": "Số lượng" },
+    "unit_price": { "label": "Đơn giá (minor)" }
+  },
+  "state": {
+    "loading": { "label": "Đang tải hóa đơn..." },
+    "error": { "label": "Không thể tải hóa đơn." }
+  },
   "status": {
     "paid": { "label": "Đã thanh toán" },
     "draft": { "label": "Bản nháp" }

@@ -3,14 +3,14 @@ import { and, eq } from "drizzle-orm"
 import { type DatabaseClient } from "@afenda/database"
 import { tenantRoleAssignments, tenantRoles } from "@afenda/database/schema"
 
-import type { SessionContext } from "../contract/request-context.js"
-import { getBetterAuthRuntime } from "../lib/better-auth-runtime.js"
-import { hasBetterAuthRuntimeEnv } from "../lib/env.js"
-import { createWorkflowExecutionContext } from "../workflow/core/context.js"
+import type { SessionContext } from "../contract/request-context.contract.js"
+import { getBetterAuthRuntime } from "../api-auth-runtime.js"
+import { hasBetterAuthRuntimeEnv } from "../api-env.js"
+import { createWorkflowExecutionContext } from "../workflow/core/workflow-execution-context.js"
 import type {
   WorkflowExecutionContext,
   WorkflowTransitionResult,
-} from "../workflow/core/contracts.js"
+} from "../workflow/core/workflow-execution.contracts.js"
 import type { CommandExecutionRequest } from "./command-contracts.js"
 import { rolePermissionCatalog } from "./command-matrix.js"
 import { commandRegistry } from "./command-registry.js"

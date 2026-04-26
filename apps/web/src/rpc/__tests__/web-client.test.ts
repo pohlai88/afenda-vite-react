@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf, it } from "vitest"
 
-import type { WebSuccessEnvelope } from "../web-envelope"
-import type { WebCreateUserInput, WebUser } from "../web-user"
+import type { WebSuccessEnvelope } from "../web-envelope.contract"
+import type { WebCreateUserInput, WebUser } from "../web-user.contract"
 import {
   createUser,
   fetchUsers,
@@ -22,6 +22,10 @@ describe("rpc/web-client", () => {
 
   it("keeps the users RPC surface type-safe", () => {
     const client = createApiClient("http://localhost:8787")
+
+    expect(client.api.users).toBeDefined()
+    expect(typeof fetchUsers).toBe("function")
+    expect(typeof createUser).toBe("function")
 
     expectTypeOf(client).not.toBeAny()
     expectTypeOf(client.api.users).not.toBeAny()

@@ -14,6 +14,7 @@ import {
 
 const candidateIdSchema = z
   .string()
+  .trim()
   .min(1)
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
     message: "Use stable kebab-case app ids.",
@@ -22,20 +23,20 @@ const candidateIdSchema = z
 export const appCandidateSchema = z
   .strictObject({
     id: candidateIdSchema,
-    name: z.string().min(1),
+    name: z.string().trim().min(1),
     source: z.literal("openalternative"),
-    sourceUrl: z.string().url(),
-    sourceCategory: z.string().min(1),
+    sourceUrl: z.string().trim().url(),
+    sourceCategory: z.string().trim().min(1),
     internalCategory: featureCategorySchema,
     lane: featureLaneSchema,
     priority: appPrioritySchema,
     buildMode: buildModeSchema,
-    internalUseCase: z.string().min(1),
-    openSourceReferences: z.array(z.string().url()).min(1),
+    internalUseCase: z.string().trim().min(1),
+    openSourceReferences: z.array(z.string().trim().url()).min(1),
     licenseReviewRequired: z.boolean(),
     securityReviewRequired: z.boolean(),
     dataSensitivity: dataSensitivitySchema,
-    ownerTeam: z.string().min(1),
+    ownerTeam: z.string().trim().min(1),
     status: candidateStatusSchema,
   })
   .superRefine((candidate, context) => {
@@ -46,6 +47,18 @@ export const appCandidateSchema = z
         code: "custom",
         path: ["lane"],
         message: `Lane must be "${expectedLane}" for category "${candidate.internalCategory}".`,
+      })
+    }
+
+    const normalizedReferences = candidate.openSourceReferences.map(
+      (reference) => reference.trim().toLowerCase()
+    )
+
+    if (new Set(normalizedReferences).size !== normalizedReferences.length) {
+      context.addIssue({
+        code: "custom",
+        path: ["openSourceReferences"],
+        message: "Open-source references must not contain duplicates.",
       })
     }
   })

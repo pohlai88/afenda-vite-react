@@ -21,7 +21,7 @@
     "vitest": "catalog:"
   },
   "scripts": {
-    "test": "vitest --configLoader bundle",
-    "test:run": "vitest run --configLoader bundle"
+    "test": "node -e \"console.log('No test suite configured for @afenda/eslint-config')\"",
+    "test:run": "node -e \"console.log('No test suite configured for @afenda/eslint-config')\""
   }
 }

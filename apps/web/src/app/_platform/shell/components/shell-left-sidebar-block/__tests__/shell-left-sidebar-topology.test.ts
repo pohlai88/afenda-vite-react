@@ -39,11 +39,11 @@ describe("shell-left-sidebar-topology", () => {
     expect(model.moduleSections[0]?.items[0]?.label).toBe("nav.items.events")
     expect(model.moduleSections[0]?.items[0]?.submoduleCount).toBe(2)
     expect(model.widgetShelf.label).toBe("nav.workspace.section_app")
-    expect(model.widgetShelf.items).toHaveLength(7)
+    expect(model.widgetShelf.items).toHaveLength(8)
     expect(model.widgetShelf.items[0]?.description).toBe(
       "nav.widgets.customize"
     )
-    expect(model.widgetShelf.items[3]?.description).toBe(
+    expect(model.widgetShelf.items[4]?.description).toBe(
       "nav.lifecycle.coming_soon"
     )
   })

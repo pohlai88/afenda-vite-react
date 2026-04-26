@@ -22,16 +22,9 @@ type ManifestModule = {
   manifest?: PrimitiveGovernanceManifest
 }
 
-type ImportMetaWithGlob = ImportMeta & {
-  glob?: <T>(pattern: string) => Record<string, () => Promise<T>>
-}
-
-const importMetaWithGlob = import.meta as ImportMetaWithGlob
 const manifestModuleLoaders =
-  typeof importMetaWithGlob.glob === "function"
-    ? importMetaWithGlob.glob<ManifestModule>(
-        "../../ui-primitives/**/*.manifest.ts"
-      )
+  typeof import.meta.glob === "function"
+    ? import.meta.glob<ManifestModule>("../../ui-primitives/**/*.manifest.ts")
     : {}
 
 const VARIANT_TOKEN_REGEX =

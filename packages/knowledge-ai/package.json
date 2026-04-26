@@ -1,0 +1,27 @@
+{
+  "name": "@afenda/knowledge-ai",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Cited Q&A orchestration contracts for knowledge retrieval and model adapters.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@afenda/knowledge-contracts": "workspace:*",
+    "@afenda/knowledge-indexer": "workspace:*",
+    "@afenda/knowledge-search": "workspace:*"
+  },
+  "devDependencies": {
+    "@afenda/tsconfig": "workspace:*",
+    "typescript": "catalog:"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint . --cache --cache-location .artifacts/eslint --concurrency auto"
+  }
+}

@@ -12,7 +12,7 @@ order: 1
 
 # Features SDK Documentation
 
-`@afenda/features-sdk` is Afenda’s internal SDK package for governed feature planning, validation, and maintainer closure.
+`@afenda/features-sdk` is Afenda’s internal SDK package for governed feature planning, validation, maintainer closure, and implementation handoff.
 
 Its active module is **Sync-Pack**.
 
@@ -42,6 +42,8 @@ The active internal surface now covers:
 
 - deterministic root quickstart through `feature-sync`
 - explicit daily operator workflow through `feature-sync:verify`
+- decision-oriented candidate ranking and reporting for implementation handoff
+- governed planning-pack generation and scaffold-manifest handoff
 - truth-bound change intent through `feature-sync:intent` and `feature-sync:intent-check`
 - governed golden example fitness through `feature-sync:sync-examples`
 - package-first closure through `feature-sync:quality-validate`
@@ -67,3 +69,5 @@ The active internal surface now covers:
 The package is internal-first.
 
 It is not currently optimized for partner or public externalization. Those surfaces remain explicitly deferred.
+
+Product implementation also remains intentionally outside `packages/features-sdk`.

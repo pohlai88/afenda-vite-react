@@ -50,7 +50,7 @@ packages/operator-kernel/
 
 ## Public exports
 
-The package root currently re-exports:
+The package root currently re-exports symbols from:
 
 - `./core`
 - `./mcp-adapter`
@@ -209,6 +209,21 @@ The bundled plugin is available through:
 
 - `featuresSdkPlugin.featuresSdkOperatorPlugin`
 
+## Where to change what
+
+- `src/core/contracts.ts`: neutral contracts for tools, resources, safety policies, and plugin manifests
+- `src/core/findings.ts`: shared finding/result shapes
+- `src/core/registry.ts`: plugin aggregation into a runtime registry
+- `src/core/orchestrator.ts`: thin orchestration layer over the registry
+- `src/runtime/contracts.ts`: governed operator modes, canonical tool names, and execute input/output shapes
+- `src/runtime/create-default-operator-runtime.ts`: built-in runtime execution path and error normalization
+- `src/plugins/features-sdk/tools/index.ts`: governed tool definitions sourced from the Sync-Pack workflow catalog
+- `src/plugins/features-sdk/plugin.ts`: bundled plugin manifest and safety policy wiring
+- `src/plugins/features-sdk/mode/*`: mode capability law and tool gating
+- `src/plugins/features-sdk/guards/*`: command and mutation boundaries
+- `src/plugins/features-sdk/explain/*`: explanation and next-action shaping
+- `src/mcp-adapter/index.ts`: adapter-only wrapper over the top-level runtime API
+
 ## Relationship to `@afenda/features-sdk`
 
 `@afenda/operator-kernel` does not implement its own workflow engine. The actual workflow
@@ -230,6 +245,7 @@ pnpm --filter @afenda/operator-kernel run build
 pnpm --filter @afenda/operator-kernel run typecheck
 pnpm --filter @afenda/operator-kernel run lint
 pnpm --filter @afenda/operator-kernel run test:run
+pnpm --filter @afenda/operator-kernel run surface:check
 ```
 
 Available package scripts:

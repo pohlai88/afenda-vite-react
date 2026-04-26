@@ -19,7 +19,7 @@ Afenda currently runs a **Hono** API in `apps/api`. This document does not defin
 
 | Concern                     | Live surface                                                                                                                                |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| API implementation          | [`apps/api/src/app.ts`](../apps/api/src/app.ts) and [`apps/api/src/routes/`](../apps/api/src/routes/)                                       |
+| API implementation          | [`apps/api/src/app.ts`](../apps/api/src/app.ts) and [`apps/api/src/modules/`](../apps/api/src/modules/)                                     |
 | Browser Hono RPC client     | [`apps/web/src/rpc/web-client.ts`](../apps/web/src/rpc/web-client.ts)                                                                       |
 | Browser generic HTTP client | [`apps/web/src/app/_platform/runtime/services/api-client-service.ts`](../apps/web/src/app/_platform/runtime/services/api-client-service.ts) |
 | Shell bootstrap consumer    | [`apps/web/src/app/_platform/tenant/tenant-scope-context.tsx`](../apps/web/src/app/_platform/tenant/tenant-scope-context.tsx)               |
@@ -30,14 +30,47 @@ The live app mounts these primary route groups:
 
 - `GET /`
 - `GET /health`
+- `GET /health/live`
+- `GET /health/ready`
+- `GET /health/startup`
+- `GET /health/version`
 - `/api/auth/*`
 - `/api/v1/auth/*`
 - `/api/v1/me`
+- `/api/v1/mdm/*`
 - `/api/v1/commands/execute`
+- `/api/v1/legacy-erp/ingest`
+- `/api/v1/legacy-erp/pull/counterparties`
+- `/api/v1/legacy-erp/pull/items`
+- `/api/v1/legacy-erp/transform`
 - `/api/v1/ops/*`
 - `/api/users`
 
 Use the generated route surface for the exact method/path inventory. The sections below explain the operational contract that the web app relies on today.
+
+## Operational probes: `/health*`
+
+The API exposes process and readiness probes for local smoke checks, monitors, and deployment health gates.
+
+### `GET /health`
+
+Returns the full health report, including overall status, uptime, process metrics, and dependency checks.
+
+### `GET /health/live`
+
+Returns the liveness probe. This answers whether the process is responsive.
+
+### `GET /health/ready`
+
+Returns the readiness probe. This answers whether the API is ready to receive traffic.
+
+### `GET /health/startup`
+
+Returns the startup probe. This answers whether API initialization has completed.
+
+### `GET /health/version`
+
+Returns service, app version, Node version, and runtime environment.
 
 ## Authentication and session posture
 
@@ -107,6 +140,117 @@ Current command error codes:
 - `409 INVALID_TRANSITION`
 - `409 STALE_STATE`
 
+## Master data surfaces: `/api/v1/mdm/*`
+
+These are the canonical API ownership surfaces for business-entity master data.
+
+### `GET /api/v1/mdm/counterparties`
+
+Returns the canonical tenant-scoped counterparty list.
+
+Requires `mdm:counterparty:view`.
+
+### `GET /api/v1/mdm/counterparties/:counterpartyId`
+
+Returns one canonical counterparty by tenant-scoped identifier.
+
+Requires `mdm:counterparty:view`.
+
+### `POST /api/v1/mdm/counterparties`
+
+Creates a canonical counterparty through the MDM ownership boundary.
+
+Requires `mdm:counterparty:write`.
+
+### `GET /api/v1/mdm/items`
+
+Returns the canonical tenant-scoped item list.
+
+Requires `mdm:item:view`.
+
+### `GET /api/v1/mdm/items/:itemId`
+
+Returns one canonical item by tenant-scoped identifier.
+
+Requires `mdm:item:view`.
+
+### `POST /api/v1/mdm/items`
+
+Creates a canonical item through the MDM ownership boundary.
+
+Requires `mdm:item:write`.
+
+## Legacy anti-corruption surface: `/api/v1/legacy-erp/*`
+
+This is an internal transform seam for stable legacy ERP APIs.
+
+It exists to:
+
+- digest legacy transport payloads
+- normalize them into Afenda-shaped candidate records
+- keep live owner modules insulated from legacy response contracts
+
+### `POST /api/v1/legacy-erp/transform`
+
+Transforms one stable legacy payload into one Afenda-shaped candidate record.
+
+Current supported `entityKind` values:
+
+- `counterparty` -> `mdm.counterparty`
+- `journal-entry` -> `finance.journal-entry`
+- `inventory-item` -> `mdm.item`
+
+This route does not persist records.
+It returns normalized output plus transform warnings for unmapped legacy values.
+
+Requires `admin:workspace:manage`.
+
+### `POST /api/v1/legacy-erp/ingest`
+
+Digests a batch of stable legacy payloads and routes them to the first live Afenda owner modules.
+
+Current behavior:
+
+- `counterparty` records are persisted through `/api/v1/mdm/counterparties` ownership logic
+- `inventory-item` records are persisted through `/api/v1/mdm/items` ownership logic
+- `journal-entry` remains candidate-only until the finance owner boundary is live
+- the response includes per-record disposition so unsupported entities are visible instead of being silently dropped
+
+Requires `admin:workspace:manage`.
+
+### `POST /api/v1/legacy-erp/pull/counterparties`
+
+Pulls paginated legacy TPM `customers` from a configured remote API and immediately routes them through the same Afenda ingest path.
+
+Current connector behavior:
+
+- remote source profile: `legacy-tpm-customers`
+- remote endpoint shape: paginated `GET /customers`
+- transport config comes from `LEGACY_TPM_API_URL`, `LEGACY_TPM_API_TOKEN`, and optional `LEGACY_TPM_TENANT_ID`
+- fetched records are transformed into `counterparty` intake payloads
+- transformed records are then persisted through the canonical MDM counterparty boundary
+
+This is the first true pull-transform-persist path.
+It is no longer the only live source connector: items now follow the same pattern through `/api/v1/legacy-erp/pull/items`.
+
+Requires `admin:workspace:manage`.
+
+### `POST /api/v1/legacy-erp/pull/items`
+
+Pulls paginated legacy MRP `products` from a configured remote API and immediately routes them through the same Afenda ingest path.
+
+Current connector behavior:
+
+- remote source profile: `legacy-mrp-products`
+- remote endpoint shape: paginated `GET /products`
+- transport config comes from `LEGACY_MRP_API_URL`, `LEGACY_MRP_API_TOKEN`, and optional `LEGACY_MRP_TENANT_ID`
+- fetched records are transformed into `inventory-item` intake payloads
+- transformed records are then persisted through the canonical MDM item boundary
+
+This is the first live inventory-side extraction seam.
+
+Requires `admin:workspace:manage`.
+
 ## Operations read surfaces: `/api/v1/ops/*`
 
 These are the current tenant-scoped operations read APIs.
@@ -135,7 +279,9 @@ Requires `ops:audit:view`.
 
 ### `GET /api/v1/ops/counterparties`
 
-Returns the counterparty operating surface plus linked events.
+Returns the counterparty operating projection plus linked events.
+
+This is not the canonical master-data write boundary. Canonical counterparties now live under `/api/v1/mdm/counterparties`.
 
 Requires `ops:event:view`.
 

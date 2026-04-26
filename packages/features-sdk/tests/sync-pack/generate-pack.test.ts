@@ -15,6 +15,7 @@ import {
   findWorkspaceRoot,
   generateCandidateReport,
   generateFeaturePack,
+  generateSyncPackRankingReport,
   getRequiredPackFileNames,
   groupCandidates,
   checkGeneratedPacks,
@@ -72,6 +73,9 @@ describe("generateFeaturePack", () => {
       expect(candidateJson).toEqual(candidate)
       expect(technicalDesign).toContain("Product Pack and Technical Pack")
       expect(technicalDesign).toContain("Provider abstraction")
+      expect(result.handoff.contractId).toBe("FSDK-SYNC-PACK-001")
+      expect(result.handoff.likelyImplementationSurfaces).toContain("apps/web")
+      expect(result.handoff.requiredValidation.length).toBeGreaterThan(0)
     } finally {
       await rm(outputDirectory, { recursive: true, force: true })
     }
@@ -82,6 +86,7 @@ describe("generateCandidateReport", () => {
   it("groups by lane, category, priority, build mode, and status", () => {
     const groups = groupCandidates([candidate])
     const report = generateCandidateReport([candidate])
+    const ranking = generateSyncPackRankingReport([candidate])
 
     expect(groups.byLane.intelligence).toBe(1)
     expect(groups.byCategory["communication-ai-ml"]).toBe(1)
@@ -90,6 +95,8 @@ describe("generateCandidateReport", () => {
     expect(groups.byStatus.approved).toBe(1)
     expect(report).toContain("## By Lane")
     expect(report).toContain("| communication-ai-ml | 1 |")
+    expect(report).toContain("## Ranking Decision Artifact")
+    expect(ranking.rows[0]?.likelyImplementationSurfaces).toContain("apps/web")
   })
 })
 

@@ -6,6 +6,11 @@ import {
   appCandidateSchema,
   type AppCandidate,
 } from "../schema/candidate.schema.js"
+import {
+  createSyncPackGeneratedPlanHandoff,
+  type SyncPackGeneratedPlanHandoff,
+} from "../pack/sync-pack-plan.contract.js"
+import { createSyncPackRankingReportRow } from "../report/generate-sync-pack-ranking-report.js"
 import { getTechStackForCategory } from "../schema/tech-stack.schema.js"
 import {
   getRequiredPackFileNames,
@@ -35,10 +40,12 @@ export interface GenerateFeaturePackResult {
   readonly candidate: AppCandidate
   readonly packDirectory: string
   readonly writtenFiles: readonly string[]
+  readonly handoff: SyncPackGeneratedPlanHandoff
 }
 
 function buildPackContext(candidate: AppCandidate): TemplateContext {
   const score = scoreCandidate(candidate)
+  const ranking = createSyncPackRankingReportRow(candidate, score)
   const techStack = getTechStackForCategory(candidate.internalCategory)
 
   return {
@@ -68,6 +75,12 @@ function buildPackContext(candidate: AppCandidate): TemplateContext {
     "score.recommendedPriority": score.recommendedPriority,
     "score.total": String(score.score),
     "score.reasons": renderBulletList(score.reasons),
+    "score.confidence": ranking.confidence,
+    "score.assumptions": renderBulletList(ranking.assumptions),
+    "score.likelyImplementationSurfaces": renderBulletList(
+      ranking.likelyImplementationSurfaces
+    ),
+    "score.requiredValidation": renderBulletList(ranking.requiredValidation),
     "techStack.default": renderTechStack(techStack.defaultStack),
     "techStack.categoryOverride": renderBulletList(techStack.categoryOverride),
   }
@@ -90,6 +103,10 @@ export async function generateFeaturePack(
     outputDirectory,
     candidate.internalCategory,
     candidate.id
+  )
+  const ranking = createSyncPackRankingReportRow(
+    candidate,
+    scoreCandidate(candidate)
   )
   const context = buildPackContext(candidate)
   const writtenFiles: string[] = []
@@ -128,5 +145,11 @@ export async function generateFeaturePack(
     candidate,
     packDirectory,
     writtenFiles,
+    handoff: createSyncPackGeneratedPlanHandoff({
+      candidate,
+      planningPackDirectory: packDirectory,
+      likelyImplementationSurfaces: ranking.likelyImplementationSurfaces,
+      requiredValidation: ranking.requiredValidation,
+    }),
   }
 }

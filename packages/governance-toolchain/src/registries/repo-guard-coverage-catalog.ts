@@ -137,6 +137,18 @@ export const repoGuardCoverageCatalog = [
       "Implemented as a first cut; package export enforcement is active, but full public-surface policy is still incomplete.",
   },
   {
+    id: "RG-STRUCT-004",
+    title: "API ownership topology",
+    area: "guardrail",
+    owner: "governance-toolchain",
+    baselineStatus: "partial",
+    enforcement: "warned",
+    checkKeys: ["api-ownership-topology"],
+    evidence: ["scripts/lib/api-ownership-topology-guard.ts"],
+    notes:
+      "Implemented as a first cut; governed API roots now reject generic top-level function buckets, but wider API topology normalization is still incomplete.",
+  },
+  {
     id: "RG-TRUTH-004",
     title: "Source and evidence mismatch",
     area: "guardrail",

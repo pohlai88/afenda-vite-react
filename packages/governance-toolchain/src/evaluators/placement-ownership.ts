@@ -93,6 +93,10 @@ export function matchesPlacementOwnershipRule(
     return filePath === rule.root
   }
 
+  if (rule.matchMode === "startsWith") {
+    return filePath.startsWith(rule.root)
+  }
+
   return filePath === rule.root || filePath.startsWith(`${rule.root}/`)
 }
 

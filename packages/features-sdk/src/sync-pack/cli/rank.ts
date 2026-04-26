@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { filterCandidates } from "../candidate-selection.js"
+import { createSyncPackRankingReportRow } from "../report/generate-sync-pack-ranking-report.js"
 import { scoreCandidate } from "../scoring/score-candidate.js"
 import { readSeedCandidates } from "../workspace.js"
 
@@ -45,13 +46,16 @@ await runCli(async () => {
   })
 
   console.log(`Applied filters: ${formatCandidateSelectionSummary(selection)}`)
-  console.log("| Candidate | Declared | Recommended | Score | Match |")
-  console.log("| --- | --- | --- | ---: | --- |")
+  console.log(
+    "| Candidate | Declared | Recommended | Score | Confidence | Surfaces | Match |"
+  )
+  console.log("| --- | --- | --- | ---: | --- | --- | --- |")
 
   for (const candidate of rankedCandidates) {
     const score = scoreCandidate(candidate)
+    const ranking = createSyncPackRankingReportRow(candidate, score)
     console.log(
-      `| ${candidate.id} | ${score.declaredPriority} | ${score.recommendedPriority} | ${score.score} | ${score.declaredPriorityMatchesRecommendation ? "yes" : "no"} |`
+      `| ${candidate.id} | ${score.declaredPriority} | ${score.recommendedPriority} | ${score.score} | ${ranking.confidence} | ${ranking.likelyImplementationSurfaces.join(", ")} | ${score.declaredPriorityMatchesRecommendation ? "yes" : "no"} |`
     )
   }
 }, "Feature Sync-Pack ranking")

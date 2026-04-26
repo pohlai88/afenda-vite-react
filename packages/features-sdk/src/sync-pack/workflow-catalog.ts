@@ -27,6 +27,7 @@ import {
   type GenerateFeaturePackResult,
 } from "./generator/generate-pack.js"
 import { generateCandidateReport } from "./generator/generate-report.js"
+import { createSyncPackRankingReportRow } from "./report/generate-sync-pack-ranking-report.js"
 import {
   inspectSyncPackControlConsoleState,
   type SyncPackControlConsoleState,
@@ -39,6 +40,7 @@ import {
   featureCategorySchema,
   type FeatureCategory,
 } from "./schema/category.schema.js"
+import type { AppPriority } from "./schema/priority.schema.js"
 import {
   writeTechStackScaffold,
   type WriteTechStackScaffoldResult,
@@ -101,7 +103,14 @@ export interface SyncPackQuickstartResult {
 
 export interface SyncPackRankRow {
   readonly candidateId: string
+  readonly declaredPriority: AppPriority
+  readonly recommendedPriority: AppPriority
   readonly score: CandidatePriorityScore
+  readonly confidence: "low" | "medium" | "high"
+  readonly declaredPriorityMatchesRecommendation: boolean
+  readonly assumptions: readonly string[]
+  readonly likelyImplementationSurfaces: readonly ("apps/web" | "apps/api")[]
+  readonly requiredValidation: readonly string[]
 }
 
 export interface RunSyncPackRankOptions {
@@ -262,7 +271,7 @@ export async function runSyncPackRank(
 
   const rows = [...state.filteredCandidates]
     .map((candidate) => ({
-      candidateId: candidate.id,
+      ...createSyncPackRankingReportRow(candidate, scoreCandidate(candidate)),
       score: scoreCandidate(candidate),
     }))
     .sort((left, right) => {

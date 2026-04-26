@@ -1,5 +1,9 @@
 import fs from "node:fs"
 import path from "node:path"
+import {
+  parseNamingContract,
+  validateNamingContract,
+} from "@afenda/governance-toolchain"
 
 export interface NamingConventionIssue {
   readonly severity: "error" | "warn"
@@ -45,18 +49,6 @@ const APPROVED_ROOT_SCRIPT_VERBS = new Set([
   "inspect",
 ])
 
-const ROLE_SUFFIXES = new Set([
-  "test",
-  "spec",
-  "stories",
-  "schema",
-  "contract",
-  "policy",
-  "adapter",
-  "provider",
-  "store",
-])
-
 const BANNED_GENERIC_SUBJECTS = new Set([
   "section",
   "component",
@@ -71,14 +63,6 @@ const BANNED_GENERIC_SUBJECTS = new Set([
   "temp",
   "copy",
   "test",
-])
-
-const EMPTY_ROLE_SUBJECTS = new Set([
-  "schema",
-  "contract",
-  "policy",
-  "store",
-  "provider",
 ])
 
 const ADR_FILE_PATTERN = /^ADR-\d{4}-[a-z0-9]+(?:-[a-z0-9]+)*\.md$/u
@@ -159,6 +143,18 @@ const NAMING_GOVERNED_ROOTS: readonly NamingGovernedRoot[] = [
       deliverableFamilies: [],
     },
     (context, issues) => evaluateAtcDocs(context.repoRoot, issues)
+  ),
+  createNamingGovernedRoot(
+    {
+      id: "api-contract-surface",
+      relativeRoot: "apps/api/src/contract",
+      includePatterns: ["apps/api/src/contract/*.ts"],
+      namingFamilies: ["contract-suffix"],
+      allowedIndexBoundaries: [],
+      testNamingRules: [],
+      deliverableFamilies: [],
+    },
+    (context, issues) => evaluateApiContractRoot(context.repoRoot, issues)
   ),
   createNamingGovernedRoot(
     {
@@ -787,6 +783,36 @@ function evaluateAtcDocs(repoRoot: string, issues: NamingConventionIssue[]) {
 
     evaluateGenericAndRoleOnlyName(fileName, relativePath, issues)
   }
+}
+
+function evaluateApiContractRoot(
+  repoRoot: string,
+  issues: NamingConventionIssue[]
+) {
+  const root = path.join(repoRoot, "apps", "api", "src", "contract")
+  if (!fs.existsSync(root)) {
+    return
+  }
+
+  evaluateRecursiveNamingSurface(root, "apps/api/src/contract", issues, {
+    onFile(fileName, relativePath) {
+      if (!fileName.endsWith(".ts")) {
+        return null
+      }
+
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*\.contract\.ts$/u.test(fileName)) {
+        return {
+          severity: "error",
+          rule: "api-contract-suffix",
+          path: relativePath,
+          message:
+            'API contract modules must use "<subject>.contract.ts" naming.',
+        }
+      }
+
+      return null
+    },
+  })
 }
 
 function evaluateWebPlatformI18nRoot(
@@ -2221,13 +2247,13 @@ function evaluateWebRpcRoot(repoRoot: string, issues: NamingConventionIssue[]) {
 
     evaluateGenericAndRoleOnlyName(fileName, relativePath, issues)
 
-    if (!/^web-[a-z0-9]+(?:-[a-z0-9]+)*\.ts$/u.test(fileName)) {
+    if (!/^web-[a-z0-9]+(?:-[a-z0-9]+)*(?:\.contract)?\.ts$/u.test(fileName)) {
       issues.push({
         severity: "error",
         rule: "rpc-web-prefix",
         path: relativePath,
         message:
-          'rpc modules must use "web-<subject>.ts" naming in the rpc root.',
+          'rpc modules must use "web-<subject>.ts" or "web-<subject>.contract.ts" naming in the rpc root.',
       })
     }
   }
@@ -3372,29 +3398,17 @@ function evaluateGenericAndRoleOnlyName(
   relativePath: string,
   issues: NamingConventionIssue[]
 ) {
-  const identity = describeFilenameIdentity(fileName)
-  if (!identity) {
-    return
-  }
+  const contract = parseNamingContract(relativePath)
+  const contractViolations = validateNamingContract(contract, {
+    bannedGenericSubjects: [...BANNED_GENERIC_SUBJECTS],
+  })
 
-  if (identity.isRoleOnly) {
+  for (const violation of contractViolations) {
     issues.push({
-      severity: "error",
-      rule: "role-without-subject",
-      path: relativePath,
-      message:
-        "Governed filenames must include a subject and may not consist only of an artifact role.",
-    })
-    return
-  }
-
-  if (BANNED_GENERIC_SUBJECTS.has(identity.primarySubject)) {
-    issues.push({
-      severity: "error",
-      rule: "generic-name",
-      path: relativePath,
-      message:
-        "Generic or catch-all filenames are not allowed in controlled naming domains.",
+      severity: violation.severity,
+      rule: violation.rule,
+      path: violation.path,
+      message: violation.message,
     })
   }
 }
@@ -3412,39 +3426,6 @@ function getRootEntrypointFiles(
   }
 
   return files
-}
-
-function describeFilenameIdentity(fileName: string): {
-  readonly primarySubject: string
-  readonly isRoleOnly: boolean
-} | null {
-  const stem = stripExtension(fileName)
-  const parts = stem.split(".")
-  const trailing = parts.at(-1)
-  const hasRoleSuffix = Boolean(trailing && ROLE_SUFFIXES.has(trailing))
-
-  const subjectStem = hasRoleSuffix ? parts.slice(0, -1).join(".") : stem
-
-  if (
-    !subjectStem ||
-    subjectStem === "README" ||
-    subjectStem.endsWith("_TEMPLATE")
-  ) {
-    if (hasRoleSuffix && subjectStem.length === 0) {
-      return {
-        primarySubject: trailing ?? "",
-        isRoleOnly: true,
-      }
-    }
-
-    return null
-  }
-
-  return {
-    primarySubject:
-      subjectStem.split(/[-_.]/u).filter(Boolean)[0]?.toLowerCase() ?? "",
-    isRoleOnly: false,
-  }
 }
 
 function stripExtension(fileName: string): string {

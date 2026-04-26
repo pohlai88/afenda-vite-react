@@ -1,12 +1,26 @@
+import { lazy } from "react"
 import type { RouteObject } from "react-router-dom"
 import { Navigate } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../../../_components"
 import { PublicThemeProvider } from "../../theme"
 import { AUTH_ROUTES } from "../auth-paths"
-import { AuthLayout } from "./auth-layout"
-import { RouteAuthCallback } from "./route-auth-callback"
-import { RouteAuthUnified } from "./route-auth-unified"
+
+const AuthLayout = lazy(() =>
+  import("./auth-layout").then((module) => ({ default: module.AuthLayout }))
+)
+
+const RouteAuthCallback = lazy(() =>
+  import("./route-auth-callback").then((module) => ({
+    default: module.RouteAuthCallback,
+  }))
+)
+
+const RouteAuthUnified = lazy(() =>
+  import("./route-auth-unified").then((module) => ({
+    default: module.RouteAuthUnified,
+  }))
+)
 
 /**
  * Public authentication route objects.

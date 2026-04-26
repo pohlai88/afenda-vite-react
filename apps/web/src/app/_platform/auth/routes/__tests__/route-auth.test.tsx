@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react"
+import { Suspense } from "react"
 import { createMemoryRouter, Outlet, RouterProvider } from "react-router-dom"
 import { describe, expect, it, vi } from "vitest"
 
@@ -35,26 +36,34 @@ vi.mock("../auth-layout", () => ({
 import { authRouteObjects } from "../route-auth"
 
 describe("authRouteObjects", () => {
-  it("renders the standalone auth route inside its own shell", () => {
+  it("renders the standalone auth route inside its own shell", async () => {
     const router = createMemoryRouter(authRouteObjects, {
       initialEntries: ["/auth/login"],
     })
 
-    render(<RouterProvider router={router} />)
+    render(
+      <Suspense fallback={null}>
+        <RouterProvider router={router} />
+      </Suspense>
+    )
 
-    expect(screen.getByTestId("auth-layout-shell")).toBeInTheDocument()
-    expect(screen.getByTestId("route-auth-unified")).toBeInTheDocument()
+    expect(await screen.findByTestId("auth-layout-shell")).toBeInTheDocument()
+    expect(await screen.findByTestId("route-auth-unified")).toBeInTheDocument()
   })
 
-  it("renders the explicit auth callback route inside the auth shell", () => {
+  it("renders the explicit auth callback route inside the auth shell", async () => {
     const router = createMemoryRouter(authRouteObjects, {
       initialEntries: ["/auth/callback"],
     })
 
-    render(<RouterProvider router={router} />)
+    render(
+      <Suspense fallback={null}>
+        <RouterProvider router={router} />
+      </Suspense>
+    )
 
-    expect(screen.getByTestId("auth-layout-shell")).toBeInTheDocument()
-    expect(screen.getByTestId("route-auth-callback")).toBeInTheDocument()
+    expect(await screen.findByTestId("auth-layout-shell")).toBeInTheDocument()
+    expect(await screen.findByTestId("route-auth-callback")).toBeInTheDocument()
   })
 
   it("redirects legacy short paths to canonical auth URLs", async () => {
@@ -62,7 +71,11 @@ describe("authRouteObjects", () => {
       initialEntries: ["/login"],
     })
 
-    render(<RouterProvider router={router} />)
+    render(
+      <Suspense fallback={null}>
+        <RouterProvider router={router} />
+      </Suspense>
+    )
 
     await waitFor(() => {
       expect(router.state.location.pathname).toBe("/auth/login")

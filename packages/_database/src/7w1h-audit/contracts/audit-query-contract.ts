@@ -40,6 +40,7 @@ export const auditQueryInputSchema = z
     correlationId: z.string().min(1).optional(),
     fromRecordedAt: z.date().optional(),
     toRecordedAt: z.date().optional(),
+    offset: z.number().int().min(0).default(0),
     limit: z.number().int().positive().max(500).default(100),
     ...w1hTextShape,
     [AUDIT_QUERY_W1H_PHASE_FILTER.key]: z

@@ -51,6 +51,7 @@ Exports include:
 - scaffold helpers
 - release-check, check, doctor, validate, and verify functions
 - workspace resolution helpers
+- feature-factory decision and handoff helpers
 
 ### `src/sync-pack/cli/`
 
@@ -69,6 +70,28 @@ Important contract rule:
 ```txt
 bare afenda-sync-pack -> quickstart only
 ```
+
+### `src/sync-pack/candidate/`
+
+Feature-factory candidate contract, scoring, and ranking helpers.
+
+Use this area when you need to tighten seed truth, ranking determinism, or candidate-level decision logic.
+
+### `src/sync-pack/report/`
+
+Decision-oriented ranking report contracts and renderers.
+
+This layer turns scores into implementation-facing artifacts with confidence, likely implementation surfaces, and required validation.
+
+### `src/sync-pack/pack/`
+
+Generated implementation-pack contracts and handoff helpers.
+
+This layer keeps generated packs handoff-ready without turning the SDK into a feature implementation package.
+
+### `src/sync-pack/scaffold/`
+
+Scaffold manifest contracts, placement rules, and handoff-oriented scaffold generation.
 
 ### `src/sync-pack/schema/`
 
@@ -196,3 +219,13 @@ metadata schema
 ```
 
 If one layer changes, the other three should usually be reviewed too.
+
+For the Feature Factory slice, also remember:
+
+```txt
+candidate truth
+-> ranking decision artifact
+-> generated implementation pack
+-> scaffold handoff contract
+-> app implementation outside the package
+```

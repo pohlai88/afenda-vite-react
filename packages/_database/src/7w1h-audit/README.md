@@ -24,12 +24,14 @@ Audit DDL and logic live under **`src/7w1h-audit/`** so the **7W1H** story stays
 | `audit-logs.schema.ts`                        | `governance.audit_logs` Drizzle table — **no** `updated_at`, **no** soft delete                 |
 | `seven-w1h-audit-boundary.schema.ts`          | Zod v4 shapes for inserts and `seven_w1h` JSON                                                  |
 | `contracts/audit-action-catalog.ts`           | Allowed **`action`** keys for **governed** writers (`buildAuditLog` / `insertGovernedAuditLog`) |
+| `contracts/audit-change-contract.ts`          | Typed field-diff / masked snapshot evidence stored in `metadata.changeEvidence`                 |
 | `contracts/audit-query-contract.ts`           | Zod input for **`queryAuditLogs`** (tenant + filters + `seven_w1h` text paths)                  |
 | `contracts/audit-seven-w1h-query-manifest.ts` | Which JSON paths are queryable + phase filter key                                               |
+| `services/build-audit-change-evidence.ts`     | Adopted legacy diffing: field changes + sensitive-field masking                                 |
 | `services/build-audit-log.ts`                 | Build `NewAuditLog` with catalog **`action`** + defaults                                        |
 | `services/validate-audit-log.ts`              | Validate row shape before insert                                                                |
 | `services/insert-audit-log.ts`                | **`insertAuditLog`**, **`insertGovernedAuditLog`**                                              |
-| `services/audit-query-service.ts`             | **`queryAuditLogs`** — list with optional `seven_w1h` `#>>` filters                             |
+| `services/audit-query-service.ts`             | **`queryAuditLogs`**, **`queryAuditLogPage`**, count/history/activity helpers                   |
 | `index.ts`                                    | Barrel (also re-exported from `@afenda/database` where applicable)                              |
 | `__tests__/`                                  | Vitest for boundary schemas and query contract                                                  |
 
@@ -40,12 +42,15 @@ Audit DDL and logic live under **`src/7w1h-audit/`** so the **7W1H** story stays
 1. Prefer **`insertGovernedAuditLog`**, which uses **`buildAuditLog`** → **`validateAuditLog`** → insert. **`action`** must be an **`AuditActionKey`** from the catalog.
 2. Use **`insertAuditLog`** when you must pass a row that already satisfies validation (e.g. migrations or tightly controlled call sites). Do not bypass **`tenant_id`** or append-only rules.
 3. Put stable dimensions in **top-level columns**; use **`seven_w1h`** and **`metadata`** for richer context without exploding the table for every product idea.
+4. When you have before/after subject snapshots, pass **`changeEvidence`** to **`buildAuditLog`**. It stores masked legacy-style diffs under **`metadata.changeEvidence`** without changing table shape.
 
 ---
 
 ## Read path
 
-- **`queryAuditLogs(db, input)`** — parse input with **`auditQueryInputSchema`** / **`parseAuditQueryInput`**; filters include tenant, subject, actor, action, outcome, correlation fields, time range, and optional **`seven_w1h`** path filters defined in the query manifest.
+- **`queryAuditLogs(db, input)`** — list rows with tenant scope, offset/limit, and optional **`seven_w1h`** path filters.
+- **`queryAuditLogPage(db, input)`** — same filters plus total count for UI/reporting pagination.
+- **`getAuditSubjectHistory(...)`**, **`getAuditActorActivity(...)`**, **`getAuditModuleActivity(...)`** — mature convenience helpers adapted from the legacy audit package onto the 7W1H schema.
 
 ---
 

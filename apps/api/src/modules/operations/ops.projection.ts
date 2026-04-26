@@ -9,8 +9,8 @@ import {
 } from "@afenda/database/schema"
 import { and, desc, eq, lt } from "drizzle-orm"
 
-import { getBetterAuthRuntime } from "../../lib/better-auth-runtime.js"
-import { hasBetterAuthRuntimeEnv } from "../../lib/env.js"
+import { getBetterAuthRuntime } from "../../api-auth-runtime.js"
+import { hasBetterAuthRuntimeEnv } from "../../api-env.js"
 import { hashTruthRecordEnvelope } from "../../truth/truth-writer.js"
 import type { TruthRecordEnvelope } from "../../truth/truth-record.model.js"
 import {

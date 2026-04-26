@@ -2,6 +2,19 @@
   "header": {
     "title": { "label": "Settlements" }
   },
+  "summary": {
+    "description": "Track cash movement readiness and completed treasury handoff.",
+    "count": { "label": "Settlement records" },
+    "amount": { "label": "Settlement amount" },
+    "pending": { "label": "Pending settlements" }
+  },
+  "table": {
+    "number": { "label": "Settlement #" },
+    "invoice": { "label": "Invoice" },
+    "counterparty": { "label": "Counterparty" },
+    "status": { "label": "Status" },
+    "due": { "label": "Due date" }
+  },
   "status": {
     "pending": { "label": "Pending settlement" },
     "completed": { "label": "Settled" }

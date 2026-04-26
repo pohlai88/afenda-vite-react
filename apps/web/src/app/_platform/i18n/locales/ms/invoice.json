@@ -2,6 +2,36 @@
   "header": {
     "title": { "label": "Invois" }
   },
+  "summary": {
+    "description": "Pantau jumlah invois dan jumlah komersial tertunggak dari ruang kerja kewangan.",
+    "count": { "label": "Bilangan invois" },
+    "amount": { "label": "Jumlah tertunggak" }
+  },
+  "table": {
+    "number": { "label": "Nombor" },
+    "customer": { "label": "Pelanggan" },
+    "status": { "label": "Status" },
+    "total": { "label": "Jumlah" },
+    "due": { "label": "Tarikh akhir" }
+  },
+  "create": {
+    "title": { "label": "Cipta invois draf" },
+    "description": {
+      "message": "Rakam invois milik kewangan tanpa melalui operations."
+    },
+    "action": { "label": "Cipta invois" },
+    "pending": { "label": "Sedang mencipta..." }
+  },
+  "form": {
+    "customer": { "label": "Pelanggan" },
+    "description": { "label": "Keterangan baris" },
+    "quantity": { "label": "Kuantiti" },
+    "unit_price": { "label": "Harga seunit (minor)" }
+  },
+  "state": {
+    "loading": { "label": "Memuatkan invois..." },
+    "error": { "label": "Tidak dapat memuatkan invois." }
+  },
   "status": {
     "paid": { "label": "Dibayar" },
     "draft": { "label": "Draf" }

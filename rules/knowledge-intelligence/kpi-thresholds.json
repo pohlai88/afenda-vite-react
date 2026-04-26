@@ -1,0 +1,7 @@
+{
+  "$comment": "ATC-0017-style floor/ceiling checks for static knowledge intelligence baselines. Tune as production metrics stabilize.",
+  "minIndexedChunkCount": 0,
+  "minSemanticQueryCount": 0,
+  "maxZeroResultRate": 1,
+  "requirePluginRegistryEnforced": true
+}

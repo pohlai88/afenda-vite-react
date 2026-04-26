@@ -21,6 +21,8 @@ type TestSession = {
 
 type TestVariables = {
   requestId: string
+  traceId: string
+  spanId: string
   session: TestSession
   logger: AppLogger
 }
@@ -84,6 +86,7 @@ describe("createHonoRequestLoggingMiddleware", () => {
 
     app.use("*", async (context, next) => {
       context.set("requestId", "req-123")
+      context.set("traceId", "trace-123")
       context.set("session", {
         authenticated: true,
         authSessionId: "auth-session-1",
@@ -125,6 +128,7 @@ describe("createHonoRequestLoggingMiddleware", () => {
     const response = await app.request("/bound")
 
     expect(response.status).toBe(200)
+    expect(response.headers.get("x-trace-id")).toBe("trace-123")
     expect(loggerSeenInHandler).toBeDefined()
     expect(loggerSeenInHandler).not.toBe(rootLogger)
 
@@ -138,6 +142,8 @@ describe("createHonoRequestLoggingMiddleware", () => {
 
     expect(entry.msg).toBe("request completed")
     expect(entry.requestId).toBe("req-123")
+    expect(entry.traceId).toBe("trace-123")
+    expect(typeof entry.spanId).toBe("string")
     expect(entry.method).toBe("GET")
     expect(entry.path).toBe("/bound")
     expect(entry.statusCode).toBe(200)

@@ -40,5 +40,42 @@
     "priority_items_one": "{{count}} việc mở hôm nay",
     "priority_items_other": "{{count}} việc mở hôm nay",
     "separator": "·"
+  },
+  "hero": {
+    "badge": "Tổng quan workspace",
+    "description": "Bề mặt vận hành được quản trị cho doanh thu, áp lực thực thi và mức sẵn sàng của module trong workspace hiện tại.",
+    "priority": { "label": "Hàng đợi ưu tiên" },
+    "workspace": { "label": "Workspace hiện tại" }
+  },
+  "stats": {
+    "revenue": {
+      "label": "Doanh thu có rủi ro",
+      "helper": "Tăng 8,4% so với tuần trước"
+    },
+    "queue": {
+      "label": "Mục phối hợp đang mở",
+      "helper": "3 mục cần người phụ trách trong giờ này"
+    },
+    "sla": {
+      "label": "Bao phủ SLA",
+      "helper": "Vẫn trong mục tiêu trên các luồng đang hoạt động"
+    }
+  },
+  "chart": {
+    "title": "Dòng doanh thu",
+    "description": "Biến động doanh thu và vận hành theo ngày cho khung thời gian hoạt động hiện tại."
+  },
+  "readiness": {
+    "title": "Mức sẵn sàng của module",
+    "description": "Các module chính đang tiến gần mức chất lượng rollout được quản trị đến đâu.",
+    "inventory": {
+      "helper": "Tính toàn vẹn tồn kho và kiểm soát luân chuyển phần lớn đã sẵn sàng."
+    },
+    "sales": {
+      "helper": "Khâu ghi nhận đơn hàng đã được xác định; các luồng hạ nguồn vẫn cần đào sâu."
+    },
+    "finance": {
+      "helper": "Billing và lõi tài chính đã sẵn sàng cho lát cắt tiếp theo."
+    }
   }
 }

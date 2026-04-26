@@ -2,14 +2,14 @@
  * User service: business rules live here; routes stay thin transport adapters.
  * Owns orchestration only; persistence via `user.repo.ts`.
  * module · users · service
- * Upstream: user.schema, user.repo, `conflict` from lib/errors. Downstream: routes/users, tests.
+ * Upstream: user.schema, user.repo, `conflict` from api-errors. Downstream: user.routes, tests.
  * Side effects: via repository only.
  * Coupling: duplicate email → `conflict()` (409).
  * experimental
  * @module modules/users/user.service
  * @package @afenda/api
  */
-import { conflict } from "../../lib/errors.js"
+import { conflict } from "../../api-errors.js"
 import type { CreateUserInput, User } from "./user.schema.js"
 import { __resetUserRepoForTests, userRepository } from "./user.repo.js"
 

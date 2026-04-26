@@ -2,6 +2,36 @@
   "header": {
     "title": { "label": "Faktur" }
   },
+  "summary": {
+    "description": "Pantau volume faktur dan total komersial terbuka dari workspace keuangan.",
+    "count": { "label": "Jumlah faktur" },
+    "amount": { "label": "Total outstanding" }
+  },
+  "table": {
+    "number": { "label": "Nomor" },
+    "customer": { "label": "Pelanggan" },
+    "status": { "label": "Status" },
+    "total": { "label": "Total" },
+    "due": { "label": "Jatuh tempo" }
+  },
+  "create": {
+    "title": { "label": "Buat faktur draft" },
+    "description": {
+      "message": "Catat faktur yang dimiliki finance tanpa melewati operations."
+    },
+    "action": { "label": "Buat faktur" },
+    "pending": { "label": "Membuat..." }
+  },
+  "form": {
+    "customer": { "label": "Pelanggan" },
+    "description": { "label": "Deskripsi baris" },
+    "quantity": { "label": "Jumlah" },
+    "unit_price": { "label": "Harga unit (minor)" }
+  },
+  "state": {
+    "loading": { "label": "Memuat faktur..." },
+    "error": { "label": "Tidak dapat memuat faktur." }
+  },
   "status": {
     "paid": { "label": "Lunas" },
     "draft": { "label": "Draf" }

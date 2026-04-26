@@ -2,7 +2,7 @@ export interface PlacementOwnershipRule {
   readonly owner: string
   readonly root: string
   readonly kind: "runtime-owner" | "shared-root" | "owner-root"
-  readonly matchMode: "exact" | "prefix"
+  readonly matchMode: "exact" | "prefix" | "startsWith"
 }
 
 export interface PlacementOwnershipScope {

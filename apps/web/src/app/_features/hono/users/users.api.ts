@@ -7,8 +7,11 @@
  * @package @afenda/web
  */
 import { apiClient } from "../../../../rpc/web-client"
-import type { WebSuccessEnvelope } from "../../../../rpc/web-envelope"
-import type { WebCreateUserInput, WebUser } from "../../../../rpc/web-user"
+import type { WebSuccessEnvelope } from "../../../../rpc/web-envelope.contract"
+import type {
+  WebCreateUserInput,
+  WebUser,
+} from "../../../../rpc/web-user.contract"
 
 export async function fetchUsers(): Promise<WebSuccessEnvelope<WebUser[]>> {
   const response = await apiClient.api.users.$get()

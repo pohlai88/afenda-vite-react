@@ -1,6 +1,6 @@
 # Afenda Features SDK
 
-`@afenda/features-sdk` is Afenda’s internal package for governed feature-planning workflows.
+`@afenda/features-sdk` is Afenda’s internal Feature Factory package for governed feature-planning workflows.
 
 Its active module is `sync-pack`, which combines:
 
@@ -10,6 +10,12 @@ Its active module is `sync-pack`, which combines:
 - internal operating contracts and docs
 
 This package is intentionally broader than a CLI wrapper. The CLI is one surface of the package, not the package identity.
+
+The package boundary is:
+
+- `features-sdk`: decide, rank, package, scaffold, hand off
+- `apps/web` and `apps/api`: implement product behavior
+- `operator-kernel`: execute governed workflows against the typed Sync-Pack truth surface
 
 ## Start Here
 
@@ -40,6 +46,8 @@ The internal package now includes:
 - workspace-scoped candidate filters for `rank`, `report`, and `generate`
 - scaffold manifests with package placement, route hints, and next commands
 - richer remediation across gated findings
+- decision-oriented ranking output with confidence, likely implementation surfaces, and validation requirements
+- scaffold handoff contracts that keep implementation out of the SDK package
 - junior-friendly quickstart, usage, and troubleshooting docs
 
 ## SDK Surface
@@ -119,6 +127,7 @@ This package is optimized for internal Afenda workspace use only.
 
 - active target: internal SDK and internal operator CLI
 - partner-restricted and public externalization remain deferred
+- product implementation remains outside this package
 
 ## Docs Map
 

@@ -5,6 +5,17 @@ export {
   hasCandidateSelection,
 } from "./candidate-selection.js"
 export type { CandidateSelection } from "./candidate-selection.js"
+export {
+  parseSyncPackCandidate,
+  parseSyncPackCandidates,
+  syncPackCandidateArrayContractSchema,
+  syncPackCandidateContractId,
+  syncPackCandidateSchema,
+} from "./candidate/sync-pack-candidate.contract.js"
+export type { SyncPackCandidate } from "./candidate/sync-pack-candidate.contract.js"
+export { rankSyncPackCandidates } from "./candidate/sync-pack-candidate-rank.js"
+export type { RankedSyncPackCandidate } from "./candidate/sync-pack-candidate-rank.js"
+export { scoreCandidate } from "./candidate/sync-pack-candidate-score.js"
 export { checkGeneratedPacks } from "./check/pack-check.js"
 export type {
   CheckGeneratedPacksOptions,
@@ -12,7 +23,10 @@ export type {
   SyncPackCheckResult,
   SyncPackCheckSeverity,
 } from "./check/pack-check.js"
-export { requireSyncPackCommandDefinition } from "./cli/shared.js"
+export {
+  getSyncPackCommandDefinition,
+  requireSyncPackCommandDefinition,
+} from "./cli/shared.js"
 export type { CliCommandDefinition } from "./cli/shared.js"
 export { runSyncPackDoctor } from "./doctor/stack-doctor.js"
 export type {
@@ -54,6 +68,11 @@ export type {
   GenerateFeaturePackResult,
 } from "./generator/generate-pack.js"
 export {
+  createSyncPackGeneratedPlanHandoff,
+  syncPackPlanContractId,
+} from "./pack/sync-pack-plan.contract.js"
+export type { SyncPackGeneratedPlanHandoff } from "./pack/sync-pack-plan.contract.js"
+export {
   generateCandidateReport,
   groupCandidates,
 } from "./generator/generate-report.js"
@@ -61,6 +80,24 @@ export type {
   CandidateReportGroups,
   CandidateReportOptions,
 } from "./generator/generate-report.js"
+export {
+  createSyncPackRankingReportRow,
+  generateSyncPackRankingReport,
+  renderSyncPackRankingReport,
+} from "./report/generate-sync-pack-ranking-report.js"
+export {
+  syncPackImplementationSurfaceSchema,
+  syncPackRankingConfidenceSchema,
+  syncPackRankingReportContractId,
+  syncPackRankingReportRowSchema,
+  syncPackRankingReportSchema,
+} from "./report/sync-pack-ranking-report.contract.js"
+export type {
+  SyncPackImplementationSurface,
+  SyncPackRankingConfidence,
+  SyncPackRankingReport,
+  SyncPackRankingReportRow,
+} from "./report/sync-pack-ranking-report.contract.js"
 export {
   createSyncPackChangeIntentTemplate,
   inspectSyncPackControlConsoleState,
@@ -115,6 +152,11 @@ export {
   createTechStackScaffoldManifest,
   writeTechStackScaffold,
 } from "./scaffold/stack-scaffold.js"
+export {
+  syncPackScaffoldManifestContractId,
+  syncPackScaffoldManifestContractSchema,
+} from "./scaffold/sync-pack-scaffold-manifest.contract.js"
+export type { SyncPackScaffoldManifest } from "./scaffold/sync-pack-scaffold-manifest.contract.js"
 export type {
   WriteTechStackScaffoldOptions,
   WriteTechStackScaffoldResult,
@@ -190,10 +232,12 @@ export type {
 } from "./schema/review.schema.js"
 export {
   dependencyVersionSourceSchema,
+  stackImplementationSurfaceSchema,
   stackDependencyGroupSchema,
   stackDependencySchema,
   stackRouteSuggestionSchema,
   stackRouteSurfaceSchema,
+  stackScaffoldHandoffSchema,
   stackScaffoldManifestSchema,
   stackScaffoldPlacementSchema,
 } from "./schema/stack-contract.schema.js"
@@ -201,8 +245,10 @@ export type {
   DependencyVersionSource,
   StackDependency,
   StackDependencyGroup,
+  StackImplementationSurface,
   StackRouteSuggestion,
   StackRouteSurface,
+  StackScaffoldHandoff,
   StackScaffoldManifest,
   StackScaffoldPlacement,
 } from "./schema/stack-contract.schema.js"
@@ -226,7 +272,6 @@ export {
   priorityScoreThresholds,
   priorityScoreWeights,
 } from "./scoring/priority-rules.js"
-export { scoreCandidate } from "./scoring/score-candidate.js"
 export type { CandidatePriorityScore } from "./scoring/score-candidate.js"
 export { runSyncPackValidate } from "./validate/index.js"
 export type {

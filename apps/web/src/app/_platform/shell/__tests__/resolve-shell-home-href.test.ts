@@ -5,15 +5,15 @@ import { resolveShellHomeHref } from "../services/resolve-shell-home-href"
 describe("resolveShellHomeHref", () => {
   it("prefers the first active allowed route in shell order", () => {
     expect(resolveShellHomeHref(["ops:event:view", "ops:audit:view"])).toBe(
-      "/app/events"
+      "/app/dashboard"
     )
   })
 
-  it("falls through to the next active route when events access is absent", () => {
-    expect(resolveShellHomeHref(["ops:audit:view"])).toBe("/app/audit")
+  it("returns the dashboard when gated workspace routes are absent", () => {
+    expect(resolveShellHomeHref(["ops:audit:view"])).toBe("/app/dashboard")
   })
 
-  it("returns null when no active app routes are allowed", () => {
-    expect(resolveShellHomeHref([])).toBeNull()
+  it("returns the dashboard when no permission-gated workspace routes are allowed", () => {
+    expect(resolveShellHomeHref([])).toBe("/app/dashboard")
   })
 })

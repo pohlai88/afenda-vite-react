@@ -13,7 +13,7 @@
  * ## Runtime exports
  *
  * - **1** constant object: `DRIZZLE_RELATION_NAME`
- * - **43** Drizzle relation graphs: `*Relations` (including `auditLogsRelations`)
+ * - **45** Drizzle relation graphs: `*Relations` (including `auditLogsRelations`)
  */
 export const RELATIONS_GRAPH_EXPORT_NAMES = [
   "auditLogsRelations",
@@ -22,6 +22,8 @@ export const RELATIONS_GRAPH_EXPORT_NAMES = [
   "chartOfAccountSetsRelations",
   "fiscalCalendarsRelations",
   "fiscalPeriodsRelations",
+  "invoiceItemsRelations",
+  "invoicesRelations",
   "legalEntityCoaAssignmentsRelations",
   "countriesRelations",
   "currenciesRelations",

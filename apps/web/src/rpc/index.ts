@@ -6,8 +6,8 @@
  * @module rpc
  * @package @afenda/web
  */
-export * from "./web-envelope"
-export * from "./web-request-context"
-export * from "./web-user"
+export * from "./web-envelope.contract"
+export * from "./web-request-context.contract"
+export * from "./web-user.contract"
 export * from "./web-client"
 export * from "./web-users"

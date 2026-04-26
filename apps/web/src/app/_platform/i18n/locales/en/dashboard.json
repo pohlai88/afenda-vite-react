@@ -40,5 +40,42 @@
     "priority_items_one": "{{count}} open task today",
     "priority_items_other": "{{count}} open tasks today",
     "separator": "·"
+  },
+  "hero": {
+    "badge": "Workspace overview",
+    "description": "A governed operating view for revenue, execution pressure, and module readiness across the active workspace.",
+    "priority": { "label": "Priority queue" },
+    "workspace": { "label": "Active workspace" }
+  },
+  "stats": {
+    "revenue": {
+      "label": "Revenue at risk",
+      "helper": "Up 8.4% versus last week"
+    },
+    "queue": {
+      "label": "Open coordination items",
+      "helper": "3 need an owner this hour"
+    },
+    "sla": {
+      "label": "SLA coverage",
+      "helper": "Within target across active flows"
+    }
+  },
+  "chart": {
+    "title": "Revenue flow",
+    "description": "Daily revenue and operations movement for the current operating window."
+  },
+  "readiness": {
+    "title": "Module readiness",
+    "description": "How close key modules are to governed rollout quality.",
+    "inventory": {
+      "helper": "Stock integrity and movement controls are mostly in place."
+    },
+    "sales": {
+      "helper": "Order capture is defined; downstream workflows still need depth."
+    },
+    "finance": {
+      "helper": "Billing and finance core are available for the next slice."
+    }
   }
 }

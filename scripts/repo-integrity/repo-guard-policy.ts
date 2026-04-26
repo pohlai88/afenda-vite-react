@@ -5,6 +5,7 @@ import type {
 } from "@afenda/governance-toolchain"
 
 import type { BoundaryImportPolicy } from "../lib/boundary-import-guard.js"
+import type { ApiOwnershipTopologyPolicy } from "../lib/api-ownership-topology-guard.js"
 import type { GeneratedAuthenticityPolicy } from "../lib/generated-artifact-authenticity-guard.js"
 import type { DocumentControlPolicy } from "../lib/stronger-document-control-guard.js"
 
@@ -19,6 +20,7 @@ export interface RepoGuardPolicy {
   readonly reportMarkdownPath: string
   readonly waiverRegistryPath: string
   readonly waiverSoonToExpireDays: number
+  readonly apiOwnershipTopology: ApiOwnershipTopologyPolicy
   readonly boundaryImport: BoundaryImportPolicy
   readonly duplicateOverlap: DuplicateOverlapPolicy
   readonly strongerDocumentControl: DocumentControlPolicy
@@ -180,28 +182,16 @@ export const repoGuardPolicy: RepoGuardPolicy = {
           matchMode: "prefix",
         },
         {
-          owner: "apps/api:lib",
-          root: "apps/api/src/lib",
-          kind: "owner-root",
-          matchMode: "prefix",
-        },
-        {
-          owner: "apps/api:middleware",
-          root: "apps/api/src/middleware",
-          kind: "owner-root",
-          matchMode: "prefix",
-        },
-        {
           owner: "apps/api:modules",
           root: "apps/api/src/modules",
           kind: "owner-root",
           matchMode: "prefix",
         },
         {
-          owner: "apps/api:routes",
-          root: "apps/api/src/routes",
-          kind: "owner-root",
-          matchMode: "prefix",
+          owner: "apps/api:shared-root",
+          root: "apps/api/src/api-",
+          kind: "shared-root",
+          matchMode: "startsWith",
         },
         {
           owner: "apps/api:truth",
@@ -516,6 +506,22 @@ export const repoGuardPolicy: RepoGuardPolicy = {
     ".artifacts/reports/governance/repo-integrity-guard.report.md",
   waiverRegistryPath: "rules/repo-integrity/repo-guard-waivers.json",
   waiverSoonToExpireDays: 14,
+  apiOwnershipTopology: {
+    governedRoot: "apps/api/src",
+    forbiddenTopLevelBuckets: [
+      "routes",
+      "middleware",
+      "lib",
+      "utils",
+      "helpers",
+    ],
+    ruleId: "RG-STRUCT-004",
+    severity: "error",
+    message:
+      "API source topology must be ownership-first: folders encode ownership and filenames encode artifact role.",
+    suggestedFix:
+      "Move the file into a real ownership folder such as a domain/system root, or promote it to an explicit api-* root artifact when it is shared across the entire API app.",
+  },
   boundaryImport: {
     sourceGlobs: [
       "apps/web/src/**/*.{ts,tsx}",
@@ -796,29 +802,31 @@ export const repoGuardPolicy: RepoGuardPolicy = {
           "docs/architecture/scaffolds/**/*.md",
         ],
         evidencePathPatterns: ["docs/OPERATING_MAP.md", "docs/README.md"],
-        requiredEvidencePaths: ["docs/OPERATING_MAP.md", "docs/README.md"],
+        requiredEvidencePaths: ["docs/OPERATING_MAP.md"],
       },
       {
-        id: "repo-guard-architecture-discovery-surfaces",
+        id: "architecture-adr-discovery-surfaces",
+        sourcePathPatterns: ["docs/architecture/adr/ADR-*.md"],
+        evidencePathPatterns: ["docs/architecture/adr/README.md"],
+        requiredEvidencePaths: ["docs/architecture/adr/README.md"],
+      },
+      {
+        id: "architecture-atc-discovery-surfaces",
         sourcePathPatterns: [
-          "docs/architecture/adr/ADR-*.md",
           "docs/architecture/atc/ATC-*.md",
           "docs/architecture/governance/REPOSITORY_INTEGRITY_GUARD.md",
           "docs/architecture/governance/REPO_GUARDRAIL_TODO.md",
         ],
-        evidencePathPatterns: [
-          "docs/architecture/adr/README.md",
-          "docs/architecture/atc/README.md",
-          "docs/architecture/governance/README.md",
-        ],
-        requiredEvidencePaths: [
-          "docs/architecture/adr/README.md",
-          "docs/architecture/atc/README.md",
-        ],
+        evidencePathPatterns: ["docs/architecture/atc/README.md"],
+        requiredEvidencePaths: ["docs/architecture/atc/README.md"],
       },
       {
         id: "api-route-surface-refresh",
         sourcePathPatterns: [
+          "apps/api/src/app.ts",
+          "apps/api/src/api-*.routes.ts",
+          "apps/api/src/command/*.routes.ts",
+          "apps/api/src/modules/**/*.routes.ts",
           "scripts/governance/generate-api-route-surface.ts",
           "docs/API.md",
           "docs/ARCHITECTURE.md",
@@ -893,7 +901,7 @@ export const repoGuardPolicy: RepoGuardPolicy = {
           ".artifacts/reports/governance/api-route-surface.report.json",
         requiredSources: [
           "apps/api/src/app.ts",
-          "apps/api/src/routes",
+          "apps/api/src",
           "scripts/governance/generate-api-route-surface.ts",
         ],
       },
@@ -904,7 +912,7 @@ export const repoGuardPolicy: RepoGuardPolicy = {
           "docs/architecture/governance/generated/api-route-surface.md",
         requiredSources: [
           "apps/api/src/app.ts",
-          "apps/api/src/routes",
+          "apps/api/src",
           "scripts/governance/generate-api-route-surface.ts",
         ],
       },

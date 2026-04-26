@@ -1,0 +1,6 @@
+export * from "./search.contract"
+export * from "./search-index-registry"
+export * from "./memory-search-engine.adapter"
+export * from "./search-indexer.service"
+export * from "./search-client.service"
+export * from "./search-sync.service"

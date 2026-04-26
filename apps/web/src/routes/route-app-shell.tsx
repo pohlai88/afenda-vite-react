@@ -10,22 +10,15 @@
  * @see ./README.md — router usage, shell metadata, governance, and how to add `/app` child routes.
  */
 
-import type { ReactElement } from "react"
+import { lazy, type ReactElement } from "react"
 import { Navigate, type RouteObject } from "react-router-dom"
 
 import { AppRouteErrorFallback } from "../app/_components"
-import { BetterAuthSettingsView } from "../app/_features/better-auth-settings"
-import { DbStudioPage } from "../app/_features/db-studio"
+import { RequireAppReady, RequireAuth } from "../app/_platform/auth"
 import {
-  AuditTrailPage,
-  CounterpartyRosterPage,
-  EventsOpsPage,
-} from "../app/_features/events-workspace"
-import {
-  AfendaAuthUiProvider,
-  RequireAppReady,
-  RequireAuth,
-} from "../app/_platform/auth"
+  erpModuleCatalog,
+  getEnabledErpModulePermissionKeysByPathSegment,
+} from "../app/_platform/erp-catalog"
 import { TenantScopeProvider, useTenantScope } from "../app/_platform/tenant"
 import {
   ShellLeftSidebarLayout,
@@ -44,19 +37,68 @@ import { resolveShellHomeHref } from "../app/_platform/shell/services/resolve-sh
 import { AppThemeProvider } from "../app/_platform/theme"
 import { Toaster } from "@afenda/design-system/ui-primitives"
 
-const shellRoutePermissionKeysByPathSegment: Readonly<
-  Partial<
-    Record<
-      (typeof shellAppChildRouteDefinitions)[number]["pathSegment"],
-      readonly string[]
-    >
-  >
-> = {
-  events: ["ops:event:view"],
-  audit: ["ops:audit:view"],
-  counterparties: ["ops:event:view"],
-  "db-studio": ["admin:workspace:manage"],
-}
+const BetterAuthSettingsView = lazy(() =>
+  import("../app/_features/better-auth-settings").then((module) => ({
+    default: module.BetterAuthSettingsView,
+  }))
+)
+
+const DbStudioPage = lazy(() =>
+  import("../app/_features/db-studio").then((module) => ({
+    default: module.DbStudioPage,
+  }))
+)
+
+const EventsOpsPage = lazy(() =>
+  import("../app/_features/events-workspace").then((module) => ({
+    default: module.EventsOpsPage,
+  }))
+)
+
+const AuditTrailPage = lazy(() =>
+  import("../app/_features/events-workspace").then((module) => ({
+    default: module.AuditTrailPage,
+  }))
+)
+
+const DashboardPage = lazy(() =>
+  import("../app/_features/dashboard").then((module) => ({
+    default: module.DashboardPage,
+  }))
+)
+
+const FinancePage = lazy(() =>
+  import("../app/_features/finance").then((module) => ({
+    default: module.FinancePage,
+  }))
+)
+
+const InvoicesPage = lazy(() =>
+  import("../app/_features/finance").then((module) => ({
+    default: module.InvoicesPage,
+  }))
+)
+
+const AllocationsPage = lazy(() =>
+  import("../app/_features/finance").then((module) => ({
+    default: module.AllocationsPage,
+  }))
+)
+
+const SettlementsPage = lazy(() =>
+  import("../app/_features/finance").then((module) => ({
+    default: module.SettlementsPage,
+  }))
+)
+
+const CounterpartyRosterPage = lazy(() =>
+  import("../app/_features/events-workspace").then((module) => ({
+    default: module.CounterpartyRosterPage,
+  }))
+)
+
+const shellRoutePermissionKeysByPathSegment =
+  getEnabledErpModulePermissionKeysByPathSegment(erpModuleCatalog)
 
 function AppShellIndexRedirect() {
   const scope = useTenantScope()
@@ -104,16 +146,14 @@ export const appShellRouteObject: RouteObject = {
   path: "/app",
   element: (
     <AppThemeProvider>
-      <AfendaAuthUiProvider>
-        <RequireAuth>
-          <TenantScopeProvider>
-            <RequireAppReady>
-              <ShellLeftSidebarLayout />
-            </RequireAppReady>
-          </TenantScopeProvider>
-        </RequireAuth>
-        <Toaster />
-      </AfendaAuthUiProvider>
+      <RequireAuth>
+        <TenantScopeProvider>
+          <RequireAppReady>
+            <ShellLeftSidebarLayout />
+          </RequireAppReady>
+        </TenantScopeProvider>
+      </RequireAuth>
+      <Toaster />
     </AppThemeProvider>
   ),
   errorElement: (
@@ -149,6 +189,36 @@ export const appShellRouteObject: RouteObject = {
             permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
           >
             <AuditTrailPage />
+          </RequireShellRoutePermission>
+        ) : pathSegment === "dashboard" ? (
+          <RequireShellRoutePermission
+            permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
+          >
+            <DashboardPage />
+          </RequireShellRoutePermission>
+        ) : pathSegment === "finance" ? (
+          <RequireShellRoutePermission
+            permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
+          >
+            <FinancePage />
+          </RequireShellRoutePermission>
+        ) : pathSegment === "invoices" ? (
+          <RequireShellRoutePermission
+            permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
+          >
+            <InvoicesPage />
+          </RequireShellRoutePermission>
+        ) : pathSegment === "allocations" ? (
+          <RequireShellRoutePermission
+            permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
+          >
+            <AllocationsPage />
+          </RequireShellRoutePermission>
+        ) : pathSegment === "settlements" ? (
+          <RequireShellRoutePermission
+            permissionKeys={shellRoutePermissionKeysByPathSegment[pathSegment]}
+          >
+            <SettlementsPage />
           </RequireShellRoutePermission>
         ) : pathSegment === "counterparties" ? (
           <RequireShellRoutePermission

@@ -79,11 +79,28 @@ Declared in `scripts/afenda.config.json` for topology enforcement. Regenerate th
 | `packages/design-system`        | `design-system-package` |
 | `packages/env-loader`           | `source-library`        |
 | `packages/events`               | `source-library`        |
+| `packages/admin`                | `source-library`        |
+| `packages/billing`              | `source-library`        |
+| `packages/cache`                | `source-library`        |
+| `packages/errors`               | `source-library`        |
+| `packages/feature-flags`        | `source-library`        |
+| `packages/finance-core`         | `source-library`        |
+| `packages/knowledge-ai`         | `source-library`        |
+| `packages/knowledge-contracts`  | `source-library`        |
+| `packages/knowledge-domain`     | `source-library`        |
+| `packages/knowledge-indexer`    | `source-library`        |
+| `packages/knowledge-search`     | `source-library`        |
+| `packages/metrics`              | `source-library`        |
+| `packages/notifications`        | `source-library`        |
+| `packages/rate-limit`           | `source-library`        |
+| `packages/search`               | `source-library`        |
 | `packages/features-sdk`         | `source-library`        |
 | `packages/governance-toolchain` | `source-library`        |
+| `packages/machine`              | `source-library`        |
 | `packages/eslint-config`        | `source-library`        |
 | `packages/pino-logger`          | `source-library`        |
 | `packages/typescript-config`    | `config-package`        |
+| `packages/turborepo`            | `config-package`        |
 | `packages/vitest-config`        | `source-library`        |
 
 ## Evidence map

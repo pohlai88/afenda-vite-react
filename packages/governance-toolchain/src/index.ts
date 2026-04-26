@@ -43,6 +43,13 @@ export type {
   RepoGuardMode,
   PromotionReadinessStatus,
 } from "./status/status.js"
+export type {
+  NamingContract,
+  NamingContractRole,
+  NamingContractScope,
+  NamingContractValidationOptions,
+  NamingContractViolation,
+} from "./naming/naming.contract.js"
 export { buildRepoGuardCoverage } from "./coverage/repo-guard-coverage.js"
 export { buildRepoGuardReport } from "./reports/repo-guard-report.js"
 export { buildPromotionReadinessReport } from "./reports/promotion-readiness-report.js"
@@ -72,5 +79,7 @@ export {
   evaluateDirtyFileCandidates,
   evaluateWorkingTreeFindings,
 } from "./evaluators/repo-guard-worktree.js"
+export { parseNamingContract } from "./naming/naming.parser.js"
+export { validateNamingContract } from "./naming/naming.validator.js"
 export { repoGuardCoverageCatalog } from "./registries/repo-guard-coverage-catalog.js"
 export { promotionReadinessCheckCatalog } from "./registries/promotion-readiness-check-catalog.js"

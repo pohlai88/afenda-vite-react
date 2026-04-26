@@ -9,6 +9,10 @@ import {
   type CandidateSelection,
 } from "../candidate-selection.js"
 import {
+  generateSyncPackRankingReport,
+  renderSyncPackRankingReport,
+} from "../report/generate-sync-pack-ranking-report.js"
+import {
   featureCategories,
   featureLanes,
   type FeatureCategory,
@@ -125,6 +129,7 @@ export function generateCandidateReport(
   const candidates = filterCandidates(allCandidates, options.filters)
   const groups = groupCandidates(candidates)
   const filtered = hasCandidateSelection(options.filters)
+  const rankingReport = generateSyncPackRankingReport(allCandidates, options)
 
   return [
     "# Feature Sync-Pack Report",
@@ -145,6 +150,8 @@ export function generateCandidateReport(
     renderCountTable("By Status", groups.byStatus),
     "",
     renderCandidateTable(candidates),
+    "",
+    renderSyncPackRankingReport(rankingReport),
     "",
   ].join("\n")
 }

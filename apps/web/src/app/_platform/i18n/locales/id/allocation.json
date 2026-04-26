@@ -1,10 +1,27 @@
 {
   "error": {
     "over_allocated": {
-      "message": "Kuantitas alokasi melebihi stok yang tersedia untuk baris ini."
+      "message": "Jumlah alokasi melebihi stok yang tersedia untuk baris ini."
     }
   },
   "header": {
     "title": { "label": "Alokasi" }
+  },
+  "summary": {
+    "description": "Lacak ke mana nilai faktur dialokasikan sebelum posting atau penyelesaian.",
+    "count": { "label": "Alokasi aktif" },
+    "amount": { "label": "Nilai teralokasi" }
+  },
+  "table": {
+    "number": { "label": "No. alokasi" },
+    "invoice": { "label": "Faktur" },
+    "target": { "label": "Target" },
+    "status": { "label": "Status" },
+    "amount": { "label": "Jumlah" }
+  },
+  "status": {
+    "planned": { "label": "Direncanakan" },
+    "allocated": { "label": "Dialokasikan" },
+    "released": { "label": "Dilepas" }
   }
 }

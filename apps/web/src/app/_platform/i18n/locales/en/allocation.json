@@ -6,5 +6,22 @@
   },
   "header": {
     "title": { "label": "Allocations" }
+  },
+  "summary": {
+    "description": "Track where invoice value is being assigned before posting or settlement.",
+    "count": { "label": "Active allocations" },
+    "amount": { "label": "Allocated amount" }
+  },
+  "table": {
+    "number": { "label": "Allocation #" },
+    "invoice": { "label": "Invoice" },
+    "target": { "label": "Target" },
+    "status": { "label": "Status" },
+    "amount": { "label": "Amount" }
+  },
+  "status": {
+    "planned": { "label": "Planned" },
+    "allocated": { "label": "Allocated" },
+    "released": { "label": "Released" }
   }
 }

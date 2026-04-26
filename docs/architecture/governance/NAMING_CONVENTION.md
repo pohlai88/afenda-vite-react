@@ -399,6 +399,37 @@ Forbidden:
 Exception:
 A highly local file may use a shorter subject if the owning path already makes the domain explicit and the filename still communicates the artifact’s actual responsibility.
 
+## 8. API ownership and role naming rule
+
+API source layout must follow ownership-first topology.
+
+Folders answer: who owns this artifact?
+Filenames answer: what kind of artifact is this?
+
+Therefore:
+
+- Domain/system ownership belongs in folders.
+- Artifact function belongs in filenames.
+- Shared API-wide artifacts may live at API root only when their filename is explicitly prefixed with `api-*`.
+- Generic top-level function buckets such as `routes/`, `middleware/`, `lib/`, `utils/`, and `helpers/` are not allowed in governed API surfaces.
+
+Examples:
+
+Good:
+
+- `operations/ops.projection.ts`
+- `users/user.routes.ts`
+- `auth/auth.middleware.ts`
+- `api-request-context.middleware.ts`
+- `api-error-boundary.middleware.ts`
+
+Bad:
+
+- `routes/operations.ts`
+- `middleware/request-context.ts`
+- `lib/errors.ts`
+- `utils/format.ts`
+
 ---
 
 # Forbidden naming patterns

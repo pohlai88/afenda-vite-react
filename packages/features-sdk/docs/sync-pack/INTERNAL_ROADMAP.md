@@ -20,6 +20,8 @@ The final internal slice now includes:
 
 - deterministic root control console through `feature-sync`
 - explicit daily operator workflow through `feature-sync:verify`
+- decision-oriented ranking/report artifacts for candidate handoff
+- generated implementation packs and scaffold handoff contracts
 - intent governance through `feature-sync:intent` and `feature-sync:intent-check`
 - golden example fitness through `feature-sync:sync-examples`
 - package-first maintainer closure through `feature-sync:quality-validate`
@@ -28,9 +30,9 @@ The final internal slice now includes:
 
 ## Next
 
-maintenance only.
+maintenance and feature-factory hardening only.
 
-There is no open internal feature slice after this V95 pass.
+There is no open package-boundary slice after this pass; future work should improve the Feature Factory pipeline without moving product implementation into this package.
 
 ## Later
 

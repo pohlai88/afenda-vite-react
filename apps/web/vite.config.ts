@@ -372,9 +372,33 @@ async function resolveUserConfig({
             if (
               id.includes("node_modules/three") ||
               id.includes("node_modules/@react-three/drei") ||
-              id.includes("node_modules/@react-three/fiber")
+              id.includes("node_modules/@react-three/fiber") ||
+              id.includes("node_modules/camera-controls")
             ) {
               return "vendor-3d"
+            }
+            // Better Auth UI pulls email-preview/rendering helpers and large icon packs through settings/auth screens.
+            // Keep those transitive packages out of the generic vendor chunk so they remain route-bound.
+            if (
+              id.includes("node_modules/@react-email/code-block") ||
+              id.includes("node_modules/prismjs")
+            ) {
+              return "vendor-auth-email-code"
+            }
+            if (id.includes("node_modules/@react-email/tailwind")) {
+              return "vendor-auth-email-tailwind"
+            }
+            if (id.includes("node_modules/tailwindcss")) {
+              return "vendor-auth-email-tailwindcss"
+            }
+            if (id.includes("node_modules/@react-email/")) {
+              return "vendor-auth-email"
+            }
+            if (
+              id.includes("node_modules/@hugeicons/") ||
+              id.includes("node_modules/@remixicon/")
+            ) {
+              return "vendor-auth-icons"
             }
             if (
               id.includes("node_modules/better-auth") ||
@@ -383,11 +407,44 @@ async function resolveUserConfig({
             ) {
               return "vendor-auth"
             }
+            if (
+              id.includes("node_modules/lucide-react") ||
+              id.includes("node_modules/lucide")
+            ) {
+              return "vendor-icons"
+            }
             if (id.includes("node_modules/@dnd-kit/")) {
               return "vendor-dnd"
             }
-            if (id.includes("node_modules/framer-motion")) {
+            if (
+              id.includes("node_modules/framer-motion") ||
+              id.includes("node_modules/motion-dom") ||
+              id.includes("node_modules/motion-utils")
+            ) {
               return "vendor-motion"
+            }
+            if (
+              id.includes("node_modules/@tanstack/react-query") ||
+              id.includes("node_modules/@tanstack/query-core")
+            ) {
+              return "vendor-query"
+            }
+            if (
+              id.includes("node_modules/i18next") ||
+              id.includes("node_modules/react-i18next")
+            ) {
+              return "vendor-i18n"
+            }
+            if (id.includes("node_modules/zod")) {
+              return "vendor-validation"
+            }
+            if (
+              id.includes("node_modules/tailwind-merge") ||
+              id.includes("node_modules/class-variance-authority") ||
+              id.includes("node_modules/sonner") ||
+              id.includes("node_modules/next-themes")
+            ) {
+              return "vendor-ui-runtime"
             }
             return "vendor"
           },

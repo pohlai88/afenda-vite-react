@@ -6,8 +6,8 @@
 import { serve } from "@hono/node-server"
 
 import { createApp } from "./app.js"
-import { env } from "./lib/env.js"
-import { apiLogger } from "./lib/logger.js"
+import { env } from "./api-env.js"
+import { apiLogger } from "./api-logger.js"
 
 const app = createApp()
 

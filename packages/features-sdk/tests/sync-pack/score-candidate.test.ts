@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  createSyncPackRankingReportRow,
   getTechStackForCategory,
   scoreCandidate,
   type AppCandidate,
@@ -73,6 +74,32 @@ describe("scoreCandidate", () => {
 
     expect(result.recommendedPriority).toBe("good-to-have")
     expect(result.declaredPriorityMatchesRecommendation).toBe(true)
+  })
+
+  it("builds a decision-oriented ranking row", () => {
+    const criticalCandidate = candidate({
+      id: "iam-sso-audit",
+      name: "IAM SSO Audit",
+      internalCategory: "security-privacy",
+      lane: "platform",
+      priority: "critical",
+      buildMode: "adapt",
+      internalUseCase:
+        "Provide IAM, SSO, access review, security audit, and compliance evidence.",
+      licenseReviewRequired: true,
+      securityReviewRequired: true,
+      dataSensitivity: "high",
+      status: "approved",
+    })
+    const result = scoreCandidate(criticalCandidate)
+    const ranking = createSyncPackRankingReportRow(criticalCandidate, result)
+
+    expect(ranking.confidence).toBe("high")
+    expect(ranking.likelyImplementationSurfaces).toContain("apps/web")
+    expect(ranking.likelyImplementationSurfaces).toContain("apps/api")
+    expect(ranking.requiredValidation).toContain(
+      "Complete security review before implementation starts."
+    )
   })
 })
 

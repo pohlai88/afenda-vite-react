@@ -24,7 +24,8 @@ order: 100
 - Build mode: {{candidate.buildMode}}
 - Declared priority: {{candidate.priority}}
 - Recommended priority: {{score.recommendedPriority}}
-- Next decision: Not yet known
+- Ranking confidence: {{score.confidence}}
+- Next decision: Move implementation into apps/web and apps/api only after contract review
 
 ## Approval
 
@@ -38,6 +39,14 @@ order: 100
 - Open-source references:
   {{candidate.openSourceReferences}}
 - Generated pack path: `packages/features-sdk/docs/sync-pack/generated-packs/{{candidate.internalCategory}}/{{candidate.id}}`
+
+## Likely Implementation Surfaces
+
+{{score.likelyImplementationSurfaces}}
+
+## Validation Required Before Implementation
+
+{{score.requiredValidation}}
 
 ## Definition Of Done
 

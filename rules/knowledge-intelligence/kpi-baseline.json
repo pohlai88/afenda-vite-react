@@ -1,0 +1,9 @@
+{
+  "$comment": "Committed static baseline for CI threshold checks (empty workspace at rest).",
+  "generatedAt": "2026-04-25T00:00:00.000Z",
+  "indexedChunkCount": 0,
+  "semanticQueryCount": 0,
+  "zeroResultRate": 0,
+  "lastRetrievalMode": null,
+  "pluginRegistryEnforced": true
+}

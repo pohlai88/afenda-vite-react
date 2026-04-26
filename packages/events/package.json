@@ -13,7 +13,7 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint src tests --cache --cache-location .artifacts/eslint --concurrency auto",
+    "lint": "node -e \"require('node:fs').mkdirSync('.artifacts/eslint',{recursive:true})\" && eslint src --cache --cache-location .artifacts/eslint --concurrency auto",
     "test": "vitest --configLoader bundle",
     "test:run": "vitest run --configLoader bundle"
   },

@@ -2,6 +2,36 @@
   "header": {
     "title": { "label": "Invoices" }
   },
+  "summary": {
+    "description": "Monitor invoice volume and outstanding commercial totals from the finance workspace.",
+    "count": { "label": "Invoice count" },
+    "amount": { "label": "Outstanding total" }
+  },
+  "table": {
+    "number": { "label": "Number" },
+    "customer": { "label": "Customer" },
+    "status": { "label": "Status" },
+    "total": { "label": "Total" },
+    "due": { "label": "Due date" }
+  },
+  "create": {
+    "title": { "label": "Create draft invoice" },
+    "description": {
+      "message": "Capture a finance-owned invoice without routing through operations."
+    },
+    "action": { "label": "Create invoice" },
+    "pending": { "label": "Creating..." }
+  },
+  "form": {
+    "customer": { "label": "Customer" },
+    "description": { "label": "Line description" },
+    "quantity": { "label": "Quantity" },
+    "unit_price": { "label": "Unit price (minor)" }
+  },
+  "state": {
+    "loading": { "label": "Loading invoices..." },
+    "error": { "label": "Could not load invoices." }
+  },
   "status": {
     "paid": { "label": "Paid" },
     "draft": { "label": "Draft" }

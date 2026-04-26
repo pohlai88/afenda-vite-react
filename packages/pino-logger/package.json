@@ -12,16 +12,16 @@
     }
   },
   "dependencies": {
-    "hono": "^4.7.4",
+    "hono": "^4.12.15",
     "pino": "^9.13.1"
   },
   "devDependencies": {
     "@afenda/tsconfig": "workspace:*",
     "@afenda/vitest-config": "workspace:*",
     "@types/node": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:",
-    "vitest": "catalog:",
-    "typescript": "catalog:"
+    "vitest": "catalog:"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",

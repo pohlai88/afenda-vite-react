@@ -12,6 +12,8 @@
  */
 import type { NewAuditLog } from "../audit-logs.schema"
 import { type AuditActionKey } from "../contracts/audit-action-catalog"
+import { type BuildAuditChangeEvidenceInput } from "../contracts/audit-change-contract"
+import { buildAuditChangeEvidence } from "./build-audit-change-evidence"
 import { validateAuditLog } from "./validate-audit-log"
 
 export interface BuildAuditLogInput extends Omit<
@@ -21,14 +23,21 @@ export interface BuildAuditLogInput extends Omit<
   action: AuditActionKey
   occurredAt?: Date
   recordedAt?: Date
+  changeEvidence?: BuildAuditChangeEvidenceInput
 }
 
 export function buildAuditLog(input: BuildAuditLogInput): NewAuditLog {
   const now = new Date()
+  const { changeEvidence, ...rowInput } = input
+  const metadata = { ...(input.metadata ?? {}) }
+
+  if (changeEvidence !== undefined) {
+    metadata.changeEvidence = buildAuditChangeEvidence(changeEvidence)
+  }
 
   return validateAuditLog({
-    ...input,
-    metadata: input.metadata ?? {},
+    ...rowInput,
+    metadata,
     sevenW1h: input.sevenW1h ?? {},
     occurredAt: input.occurredAt ?? now,
     recordedAt: input.recordedAt ?? now,

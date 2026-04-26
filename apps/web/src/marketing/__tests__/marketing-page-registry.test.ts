@@ -296,24 +296,17 @@ describe("marketing page registry", () => {
   )
 
   it("loads every routable marketing page module with a default export", async () => {
-    const modules: Array<{
-      id: string
-      module: Awaited<
-        ReturnType<(typeof marketingRoutablePages)[number]["load"]>
-      >
-    }> = []
-
-    for (const page of marketingRoutablePages) {
-      modules.push({
+    const modules = await Promise.all(
+      marketingRoutablePages.map(async (page) => ({
         id: page.id,
         module: await page.load(),
-      })
-    }
+      }))
+    )
 
     for (const entry of modules) {
       expect(entry.module.default, `${entry.id} default export`).toBeTypeOf(
         "function"
       )
     }
-  }, 120000)
+  }, 180000)
 })

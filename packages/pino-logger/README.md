@@ -7,6 +7,8 @@ Scope:
 - Pino root logger creation
 - request-scoped logger binding
 - Hono middleware for request completion logging
+- trace/span binding for request logs
+- generic async timing helper
 
 Rules:
 

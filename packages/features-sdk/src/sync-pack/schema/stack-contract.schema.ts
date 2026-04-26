@@ -36,6 +36,14 @@ export const stackRouteSuggestionSchema = z.strictObject({
   rationale: z.string().min(1),
 })
 
+export const stackImplementationSurfaceSchema = z.enum(["apps/web", "apps/api"])
+
+export const stackScaffoldHandoffSchema = z.strictObject({
+  boundaryRule: z.string().min(1),
+  implementationSurfaces: z.array(stackImplementationSurfaceSchema).min(1),
+  requiredValidation: z.array(z.string().min(1)).min(1),
+})
+
 export const stackScaffoldManifestSchema = z.strictObject({
   appId: z
     .string()
@@ -53,6 +61,7 @@ export const stackScaffoldManifestSchema = z.strictObject({
   routeSuggestions: z.array(stackRouteSuggestionSchema).min(1),
   nextCommands: z.array(z.string().min(1)).min(1),
   notes: z.array(z.string().min(1)),
+  handoff: stackScaffoldHandoffSchema,
 })
 
 export type StackDependencyGroup = z.infer<typeof stackDependencyGroupSchema>
@@ -65,4 +74,8 @@ export type StackScaffoldPlacement = z.infer<
 >
 export type StackRouteSurface = z.infer<typeof stackRouteSurfaceSchema>
 export type StackRouteSuggestion = z.infer<typeof stackRouteSuggestionSchema>
+export type StackImplementationSurface = z.infer<
+  typeof stackImplementationSurfaceSchema
+>
+export type StackScaffoldHandoff = z.infer<typeof stackScaffoldHandoffSchema>
 export type StackScaffoldManifest = z.infer<typeof stackScaffoldManifestSchema>

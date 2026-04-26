@@ -1,9 +1,22 @@
 {
   "header": {
-    "title": { "label": "Thanh toán bù trừ" }
+    "title": { "label": "Settlements" }
+  },
+  "summary": {
+    "description": "Track cash movement readiness and completed treasury handoff.",
+    "count": { "label": "Settlement records" },
+    "amount": { "label": "Settlement amount" },
+    "pending": { "label": "Pending settlements" }
+  },
+  "table": {
+    "number": { "label": "Settlement #" },
+    "invoice": { "label": "Invoice" },
+    "counterparty": { "label": "Counterparty" },
+    "status": { "label": "Status" },
+    "due": { "label": "Due date" }
   },
   "status": {
-    "pending": { "label": "Đang chờ quyết toán" },
-    "completed": { "label": "Đã quyết toán" }
+    "pending": { "label": "Pending settlement" },
+    "completed": { "label": "Settled" }
   }
 }
